@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <QtCore>
 #include <tissueCoreExport.h>
 
 // ///////////////////////////////////////////////////////////////////
@@ -44,19 +45,37 @@ public:
 //  Incidence concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual unsigned long *borders(int dimension, unsigned long id) const = 0;
-    virtual int borderCount(int dimension, unsigned long id) const = 0;
-    virtual unsigned long *regions(int dimension, unsigned long id) const = 0;
-    virtual int regionCount(int dimension, unsigned long id) const = 0;
-
-// OR
-
     virtual unsigned long *incidentElementIds(int dimension, unsigned long id, int incidenceDimension) const = 0;
     virtual int incidentElementCount(int dimension, unsigned long id, int incidenceDimension) const = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Neighborhood concept
 //  ///////////////////////////////////////////////////////////////////
+
+    virtual unsigned long *adjacentElementIds(int dimension, unsigned long id, int incidenceDimension) const = 0;
+    virtual int adjacentElementCount(int dimension, unsigned long id, int incidenceDimension) const = 0;
+
+//  ///////////////////////////////////////////////////////////////////
+//  Mutation concept
+//  ///////////////////////////////////////////////////////////////////
+
+    virtual unsigned long addElement(int dimension, unsigned long id = NULL) const = 0;
+    virtual void removeElement(int dimension, unsigned long id) const = 0;
+
+    virtual void linkElements(int dimension, unsigned long id, unsigned long incidentId) const = 0;
+    virtual void unlinkElements(int dimension, unsigned long id, unsigned long incidentId) const = 0;
+
+//  ///////////////////////////////////////////////////////////////////
+//  Property concept
+//  ///////////////////////////////////////////////////////////////////
+
+    virtual QString *elementPropertyNames(int dimension) const = 0;
+    virtual bool hasElementProperty(int dimension, QString propertyName) const = 0;
+    virtual QMap elementProperty(int dimension, QString propertyName) const = 0;
+
+    virtual void addElementProperty(int dimension, QString propertyName, QMap values = NULL) const = 0;
+    virtual void updateElementProperty(int dimension, QString propertyName, QMap values) const = 0;
+    virtual void removeElementProperty(int dimension, QString propertyName) const = 0;
 
 };
 
