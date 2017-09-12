@@ -34,6 +34,10 @@ add_executable(${PROJECT_NAME}
 qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
+target_link_libraries(${PROJECT_NAME}
+  dtkDiscreteGeometryCore
+  dtkCore)
+
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
