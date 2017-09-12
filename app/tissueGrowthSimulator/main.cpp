@@ -17,6 +17,7 @@
 #include <QtWidgets>
 
 #include <dtkDiscreteGeometryCore>
+#include <dtkImaging>
 
 int main(int argc, char *argv[])
 {
@@ -30,6 +31,15 @@ int main(int argc, char *argv[])
     geometry_settings.beginGroup("plugins");
     dtkDiscreteGeometryCore::initialize(geometry_settings.value("plugins").toString());
     geometry_settings.endGroup();
+
+    // ///////////////////////////////////////////////////////////////////
+    // Register imaging concepts
+    // ///////////////////////////////////////////////////////////////////
+
+    dtkImagingSettings imaging_settings;
+    imaging_settings.beginGroup("plugins");
+    dtkImaging::initialize(imaging_settings.value("plugins").toString());
+    imaging_settings.endGroup();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window
