@@ -23,9 +23,8 @@
 
 class TISSUECORE_EXPORT tissueCellComplexData
 {
-
 public:
-             tissueCellComplexData(void) {};
+             tissueCellComplexData(void) = default;
     virtual ~tissueCellComplexData(void) {};
 
 public:
@@ -59,7 +58,7 @@ public:
 //  Mutation concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual unsigned long addElement(int dimension, unsigned long id = NULL) const = 0;
+    //virtual unsigned long addElement(int dimension, unsigned long id = NULL) const = 0;
     virtual void removeElement(int dimension, unsigned long id) const = 0;
 
     virtual void linkElements(int dimension, unsigned long id, unsigned long incidentId) const = 0;
@@ -69,14 +68,13 @@ public:
 //  Property concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual QString *elementPropertyNames(int dimension) const = 0;
-    virtual bool hasElementProperty(int dimension, QString propertyName) const = 0;
-    virtual QMap elementProperty(int dimension, QString propertyName) const = 0;
+    virtual const QString& elementPropertyNames(int dimension) const = 0;
+    virtual bool hasElementProperty(int dimension, const QString& propertyName) const = 0;
+    //virtual const QMap<> elementProperty(int dimension, const QString& propertyName) const = 0;
 
-    virtual void addElementProperty(int dimension, QString propertyName, QMap values = NULL) const = 0;
-    virtual void updateElementProperty(int dimension, QString propertyName, QMap values) const = 0;
-    virtual void removeElementProperty(int dimension, QString propertyName) const = 0;
-
+    // virtual void addElementProperty(int dimension, const QString& propertyName, QMap values = NULL) const = 0;
+    // virtual void updateElementProperty(int dimension, const QString& propertyName, QMap values) const = 0;
+    // virtual void removeElementProperty(int dimension, const QString& propertyName) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
