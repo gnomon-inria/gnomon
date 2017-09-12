@@ -74,6 +74,12 @@ find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+find_package(dtk REQUIRED)
+find_package(dtkDiscreteGeometry REQUIRED)
+
+include_directories(${dtk_INCLUDE_DIRS})
+include_directories(${dtkDiscreteGeometry_INCLUDE_DIRS})
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################

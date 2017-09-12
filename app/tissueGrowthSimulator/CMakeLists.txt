@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}
   ${${PROJECT_NAME}_HEADERS})
 
 qt5_use_modules(${PROJECT_NAME} Core)
+qt5_use_modules(${PROJECT_NAME} Widgets)
 
 ## ###################################################################
 ## Install rules - targets

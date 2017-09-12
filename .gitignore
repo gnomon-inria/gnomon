@@ -12,10 +12,9 @@
 ##
 ### Code:
 
-add_subdirectory(tissueCore)
-# add_subdirectory(tissueScript)
-# add_subdirectory(tissueComposer)
-# add_subdirectory(tissueWidgets)
+*~
+
+build
 
 ######################################################################
-### CMakeLists.txt ends here
+### .gitignore ends here
