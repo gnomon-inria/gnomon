@@ -35,6 +35,7 @@ qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
+target_link_libraries(${PROJECT_NAME} dtkComposer)
 target_link_libraries(${PROJECT_NAME} dtkDiscreteGeometryCore)
 target_link_libraries(${PROJECT_NAME} dtkImaging)
 
