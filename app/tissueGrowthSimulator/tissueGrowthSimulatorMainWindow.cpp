@@ -13,19 +13,21 @@
 // Code:
 
 #include "tissueGrowthSimulatorMainWindow.h"
+#include "tissueGrowthSimulatorMainWidget.h"
 
 class tissueGrowthSimulatorMainWindowPrivate
 {
 public:
+    tissueGrowthSimulatorMainWidget* main_widget;
 };
 
 tissueGrowthSimulatorMainWindow::tissueGrowthSimulatorMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     d = new tissueGrowthSimulatorMainWindowPrivate;
-
-    QWidget *central = new QWidget(this);
-
-    this->setCentralWidget(central);
+    d->main_widget = new tissueGrowthSimulatorMainWidget;
+    setCentralWidget(d->main_widget);
+    setWindowTitle("Tissue Growth Simulator");
+    resize(800, 600);
 }
 
 tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)

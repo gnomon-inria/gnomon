@@ -19,9 +19,13 @@ project(tissueGrowthSimulator)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  tissueGrowthSimulatorEditorsPanel.h
+  tissueGrowthSimulatorMainWidget.h
   tissueGrowthSimulatorMainWindow.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueGrowthSimulatorEditorsPanel.cpp
+  tissueGrowthSimulatorMainWidget.cpp
   tissueGrowthSimulatorMainWindow.cpp
   main.cpp)
 
@@ -35,6 +39,7 @@ add_executable(${PROJECT_NAME}
 
 qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
+qt5_use_modules(${PROJECT_NAME} OpenGL)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkComposer)

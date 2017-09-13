@@ -48,8 +48,6 @@ int main(int argc, char *argv[])
     // ///////////////////////////////////////////////////////////////////
 
     tissueGrowthSimulatorMainWindow *window = new tissueGrowthSimulatorMainWindow;
-    window->setWindowTitle("tissueGrowthSimulator");
-    window->resize(800, 600);
     window->show();
     window->raise();
 
