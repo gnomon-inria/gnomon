@@ -58,7 +58,7 @@ public:
 //  Mutation concept
 //  ///////////////////////////////////////////////////////////////////
 
-    //virtual unsigned long addElement(int dimension, unsigned long id = NULL) const = 0;
+    virtual unsigned long addElement(int dimension, unsigned long *id = NULL) const = 0;
     virtual void removeElement(int dimension, unsigned long id) const = 0;
 
     virtual void linkElements(int dimension, unsigned long id, unsigned long incidentId) const = 0;
@@ -70,9 +70,9 @@ public:
 
     virtual std::vector<QString> elementPropertyNames(int dimension) const = 0;
     virtual bool hasElementProperty(int dimension, const QString& propertyName) const = 0;
-    virtual QMap<unsigned long, QVariant> elementProperty(int dimension, const QString& propertyName) const = 0;
+    virtual QMap<unsigned long, QVariant>* elementProperty(int dimension, const QString& propertyName) const = 0;
 
-    virtual void addElementProperty(int dimension, const QString& propertyName, const QMap<unsigned long, QVariant>& values = NULL) const = 0;
+    virtual void addElementProperty(int dimension, const QString& propertyName) const = 0;
     virtual void updateElementProperty(int dimension, const QString& propertyName, const QMap<unsigned long, QVariant>& values) const = 0;
     virtual void removeElementProperty(int dimension, const QString& propertyName) const = 0;
 };
