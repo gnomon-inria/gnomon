@@ -19,6 +19,8 @@
 #include <dtkDiscreteGeometryCore>
 #include <dtkImaging>
 
+#include "tissueGrowthSimulatorMainWindow.h"
+
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
@@ -45,11 +47,11 @@ int main(int argc, char *argv[])
     // Main window
     // ///////////////////////////////////////////////////////////////////
 
-    QWidget *widget = new QWidget();
-    widget->setWindowTitle("tissueGrowthSimulator");
-    widget->resize(800, 600);
-    widget->show();
-    widget->raise();
+    tissueGrowthSimulatorMainWindow *window = new tissueGrowthSimulatorMainWindow;
+    window->setWindowTitle("tissueGrowthSimulator");
+    window->resize(800, 600);
+    window->show();
+    window->raise();
 
     return application.exec();
 }

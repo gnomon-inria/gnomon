@@ -18,9 +18,11 @@ project(tissueGrowthSimulator)
 ## Sources
 ## #################################################################
 
-set(${PROJECT_NAME}_HEADERS)
+set(${PROJECT_NAME}_HEADERS
+  tissueGrowthSimulatorMainWindow.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueGrowthSimulatorMainWindow.cpp
   main.cpp)
 
 ## #################################################################
