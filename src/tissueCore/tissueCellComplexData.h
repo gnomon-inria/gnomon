@@ -31,6 +31,7 @@ public:
     virtual ~tissueCellComplexData(void) {};
 
 public:
+    virtual void setDimension(int dimension = 3) = 0;
     virtual int dimension(void) const = 0;
     virtual bool isValid(void) const = 0;
 
@@ -38,46 +39,49 @@ public:
 //  Element concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual bool hasElement(int dimension, unsigned long id) const = 0;
+    virtual bool hasElement(int dimension, long id) const = 0;
 
-    virtual std::vector<unsigned long> elementIds(int dimension) const = 0;
-    virtual unsigned long elementCount(int dimension) const = 0;
+    virtual QList<long> elementIds(int dimension) const = 0;
+    virtual long elementCount(int dimension) const = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Incidence concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual std::vector<unsigned long> incidentElementIds(int dimension, unsigned long id, int incidenceDimension) const = 0;
-    virtual int incidentElementCount(int dimension, unsigned long id, int incidenceDimension) const = 0;
+    virtual QList<long> incidentElementIds(int dimension, long id, int incidenceDimension) const = 0;
+    virtual int incidentElementCount(int dimension, long id, int incidenceDimension) const = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Neighborhood concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual std::vector<unsigned long> adjacentElementIds(int dimension, unsigned long id, int incidenceDimension) const = 0;
-    virtual int adjacentElementCount(int dimension, unsigned long id, int incidenceDimension) const = 0;
+    virtual QList<long> adjacentElementIds(int dimension, long id, int incidenceDimension) const = 0;
+    virtual int adjacentElementCount(int dimension, long id, int incidenceDimension) const = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Mutation concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual unsigned long addElement(int dimension, unsigned long *id = NULL) const = 0;
-    virtual void removeElement(int dimension, unsigned long id) const = 0;
+    virtual long addElement(int dimension) = 0;
+    virtual long addElement(int dimension, long id) = 0;
+    virtual void removeElement(int dimension, long id) = 0;
 
-    virtual void linkElements(int dimension, unsigned long id, unsigned long incidentId) const = 0;
-    virtual void unlinkElements(int dimension, unsigned long id, unsigned long incidentId) const = 0;
+    virtual void linkElements(int dimension, long id, long incidentId) = 0;
+    virtual void unlinkElements(int dimension, long id, long incidentId) = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Property concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual std::vector<QString> elementPropertyNames(int dimension) const = 0;
+    virtual QList<QString> elementPropertyNames(int dimension) const = 0;
     virtual bool hasElementProperty(int dimension, const QString& propertyName) const = 0;
-    virtual QMap<unsigned long, QVariant>* elementProperty(int dimension, const QString& propertyName) const = 0;
 
-    virtual void addElementProperty(int dimension, const QString& propertyName) const = 0;
-    virtual void updateElementProperty(int dimension, const QString& propertyName, const QMap<unsigned long, QVariant>& values) const = 0;
-    virtual void removeElementProperty(int dimension, const QString& propertyName) const = 0;
+    virtual const QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) const = 0;
+    virtual       QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) = 0;
+
+    virtual void addElementProperty(int dimension, const QString& propertyName) = 0;
+    virtual void updateElementProperty(int dimension, const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) = 0;
+    virtual void removeElementProperty(int dimension, const QString& propertyName) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
