@@ -104,3 +104,4 @@ public:
 public:
     tissueGrowthSimulatorComposerWidget *q;
 };
+

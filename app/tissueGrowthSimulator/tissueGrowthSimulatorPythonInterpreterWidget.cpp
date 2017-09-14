@@ -13,7 +13,7 @@
 // Code:
 
 #include "tissueGrowthSimulatorPythonInterpreterWidget.h"
-
+#include "tissueGrowthSimulatorCodeEditor.h"
 
 #include <dtkGuiSupport/dtkInterpreter.h>
 #include <dtkScript/dtkScriptInterpreterPython.h>
@@ -26,7 +26,8 @@ public:
 
     //tissueGrowthSimulatorPythonInterpreterWidgetPrivate() : unsaved(false) { }
 
-    QTextEdit* editor_widget;
+    //QTextEdit* editor_widget;
+    tissueGrowthSimulatorCodeEditor* editor_widget;
 
     dtkInterpreter* interpreter_widget;
 
@@ -61,8 +62,7 @@ tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpr
 
     // Create the editor and the prompt and add them to the splitter.
 
-    d->editor_widget = new QTextEdit;
-    d->editor_widget->setFontFamily("monospace");
+    d->editor_widget = new tissueGrowthSimulatorCodeEditor;
     splitter->addWidget(d->editor_widget);
 
     d->interpreter_widget = new dtkInterpreter;
