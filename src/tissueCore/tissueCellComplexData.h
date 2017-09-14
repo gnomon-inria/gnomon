@@ -78,17 +78,12 @@ public:
     virtual QList<QString> elementPropertyNames(int dimension) const = 0;
     virtual bool hasElementProperty(int dimension, const QString& propertyName) const = 0;
 
-<<<<<<< Updated upstream
     virtual const QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) const = 0;
     virtual       QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) = 0;
 
     virtual void addElementProperty(int dimension, const QString& propertyName) = 0;
     virtual void updateElementProperty(int dimension, const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) = 0;
     virtual void removeElementProperty(int dimension, const QString& propertyName) = 0;
-=======
-    virtual void addElementProperty(int dimension, const QString& propertyName) const = 0;
-    virtual void updateElementProperty(int dimension, const QString& propertyName, const QMap<unsigned long, QVariant>& values) const = 0;
-    virtual void removeElementProperty(int dimension, const QString& propertyName) const = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Orientation concept
@@ -96,7 +91,6 @@ public:
 
     virtual QList<long> orientedFaceVertexIds(long faceId) const = 0;
 
->>>>>>> Stashed changes
 };
 
 // ///////////////////////////////////////////////////////////////////
