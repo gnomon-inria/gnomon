@@ -20,6 +20,8 @@
 
 class tissueCoreVisuWidgetPrivate;
 
+class tissueCellComplexData;  // in fine tissueCellComplex
+
 class tissueCoreVisuWidget : public QFrame
 {
     Q_OBJECT
@@ -27,6 +29,8 @@ class tissueCoreVisuWidget : public QFrame
 public:
      tissueCoreVisuWidget(QWidget *parent = Q_NULLPTR);
     ~tissueCoreVisuWidget(void);
+
+    void addCellComplex(tissueCellComplexData &);  //  in fine tissueCellComplex
 
 private:
     tissueCoreVisuWidgetPrivate *d;

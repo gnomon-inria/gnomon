@@ -109,6 +109,7 @@ include_directories(${dtkImaging_INCLUDE_DIRS})
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/tissueCore)
+include_directories(${CMAKE_SOURCE_DIR}/src/tissueComposer)
 
 ## ###################################################################
 ## Input
