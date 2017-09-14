@@ -36,8 +36,11 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS})
 
-qt5_use_modules(${PROJECT_NAME} Core)
+## ###################################################################
+## Link rules
+## ###################################################################
 
+target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} dtkCore)
 
 ## #################################################################
@@ -56,10 +59,21 @@ set(PROJECT_NAME_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
 ## ###################################################################
+## Install rules - files
+## ###################################################################
+
+install(FILES ${${PROJECT_NAME}_HEADERS}
+  DESTINATION include/tissue
+  COMPONENT tissue-core)
+
+## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT tissue-core
+         EXPORT tissueDepends)
 
 ######################################################################
 ### CMakeLists.txt ends here

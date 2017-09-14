@@ -12,10 +12,28 @@
 ##
 ### Code:
 
+## #################################################################
+## Input
+## #################################################################
+
 add_subdirectory(tissueCore)
 # add_subdirectory(tissueScript)
 # add_subdirectory(tissueComposer)
 # add_subdirectory(tissueWidgets)
+
+## #################################################################
+## Targets
+## #################################################################
+
+set(TISSUE_TARGETS)
+
+set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueCore)
+
+## #################################################################
+## Target export
+## #################################################################
+
+export(TARGETS ${TISSUE_TARGETS} FILE "${CMAKE_BINARY_DIR}/tissueDepends.cmake")
 
 ######################################################################
 ### CMakeLists.txt ends here
