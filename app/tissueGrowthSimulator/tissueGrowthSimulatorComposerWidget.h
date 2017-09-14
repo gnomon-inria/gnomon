@@ -22,16 +22,13 @@ class dtkComposerSceneNode;
 
 class tissueGrowthSimulatorComposerWidgetPrivate;
 
-class tissueGrowthSimulatorComposerWidget : public QMainWindow
+class tissueGrowthSimulatorComposerWidget : public QFrame
 {
     Q_OBJECT
 
 public:
      tissueGrowthSimulatorComposerWidget(QWidget *parent = 0);
     ~tissueGrowthSimulatorComposerWidget(void);
-
-    void readSettings(void);
-    void writeSettings(void);
 
 public slots:
     bool compositionOpen(void);
@@ -43,19 +40,11 @@ public slots:
     bool compositionInsert(const QString& file);
 
 protected slots:
-    void switchToCompo(void);
-    void switchToDstrb(void);
-    void switchToDebug(void);
-    void switchToView(void);
-
-protected slots:
     void showControls(void);
-
-protected slots:
     void onComposerNodeFlagged(dtkComposerSceneNode *);
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    //void closeEvent(QCloseEvent *event);
 
 private:
     tissueGrowthSimulatorComposerWidgetPrivate *d;

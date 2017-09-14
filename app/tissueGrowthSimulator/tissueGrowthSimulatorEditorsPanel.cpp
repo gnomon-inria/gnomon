@@ -39,7 +39,7 @@ tissueGrowthSimulatorEditorsPanel::tissueGrowthSimulatorEditorsPanel(QWidget *pa
     d->tab_bar->addTab("Composer");
     d->stacked_widget->addWidget(new tissueGrowthSimulatorComposerWidget);
 
-    d->tab_bar->addTab("Python interpreter");
+    d->tab_bar->addTab("Python");
     d->stacked_widget->addWidget(new tissueGrowthSimulatorPythonInterpreterWidget);
 
     QObject::connect(d->tab_bar, SIGNAL(currentChanged(int)), d->stacked_widget, SLOT(setCurrentIndex(int)));

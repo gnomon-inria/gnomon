@@ -39,11 +39,6 @@
 #include <dtkCore/dtkCore.h>
 #include <dtkCore/dtkCorePluginManager.h>
 
-#if defined(DTK_BUILD_SUPPORT_PLOT)
-#include <dtkPlotSupport/dtkPlotView.h>
-#include <dtkPlotSupport/dtkPlotViewSettings.h>
-#endif
-
 #include <dtkLog/dtkLog.h>
 
 #include <dtkWidgets/dtkWidgetsLogView.h>
@@ -106,23 +101,21 @@ void tissueGrowthSimulatorComposerWidgetPrivate::setModified(bool modified)
 // tissueGrowthSimulatorComposerWidget
 // /////////////////////////////////////////////////////////////////
 
-tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget *parent) : QMainWindow(parent), d(new tissueGrowthSimulatorComposerWidgetPrivate)
+tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget *parent) :
+    QFrame(parent),
+    d(new tissueGrowthSimulatorComposerWidgetPrivate)
 {
     d->q = this;
-    d->wl = 0;
-    d->wr = 0;
 
-    // --
-
-    this->readSettings();
+    //this->readSettings();
 
     // -- Elements
 
     d->composer = new dtkComposerWidget;
-    d->composer->view()->setBackgroundBrush(QBrush(QPixmap(":dtkVisualProgramming/pixmaps/dtkComposerScene-bg.png")));
-    d->composer->view()->setCacheMode(QGraphicsView::CacheBackground);
+    //d->composer->view()->setBackgroundBrush(QBrush(QPixmap(":dtkVisualProgramming/pixmaps/dtkComposerScene-bg.png")));
+    //d->composer->view()->setCacheMode(QGraphicsView::CacheBackground);
 
-    d->controls = NULL;
+    d->controls = nullptr;
 
     d->editor = new dtkComposerSceneNodeEditor(this);
     d->editor->setScene(d->composer->scene());
@@ -151,10 +144,6 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     d->log_view->setVisible(false);
 
     d->view_manager = new dtkComposerViewManager;
-// #if defined(DTK_BUILD_SUPPORT_PLOT)
-//     d->plot_view_settings = new dtkPlotViewSettings(d->view_manager);
-//     d->view_manager->addWidget(d->plot_view_settings);
-// #endif
     d->view_manager->setVisible(false);
 
     connect(d->composer->scene(), SIGNAL(flagged(dtkComposerSceneNode *)), this, SLOT(onComposerNodeFlagged(dtkComposerSceneNode *)));
@@ -175,84 +164,21 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     d->composition_insert_action = new QAction("Insert", this);
     d->composition_insert_action->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_I);
 
-    d->composition_quit_action = new QAction("Quit", this);
-    d->composition_quit_action->setShortcut(QKeySequence::Quit);
-
     d->undo_action = d->composer->stack()->createUndoAction(this);
     d->undo_action->setShortcut(QKeySequence::Undo);
 
     d->redo_action = d->composer->stack()->createRedoAction(this);
     d->redo_action->setShortcut(QKeySequence::Redo);
 
-    QAction *switchToCompoAction = new QAction("Switch to composition perspective", this);
-    QAction *switchToDstrbAction = new QAction("Switch to distributed perspective", this);
-    QAction *switchToDebugAction = new QAction("Switch to debug perspective", this);
-    QAction *switchToViewAction = new QAction("Switch to view perspective", this);
-
-    switchToCompoAction->setShortcut(Qt::ControlModifier + Qt::AltModifier + Qt::Key_1);
-    switchToDstrbAction->setShortcut(Qt::ControlModifier + Qt::AltModifier + Qt::Key_2);
-    switchToDebugAction->setShortcut(Qt::ControlModifier + Qt::AltModifier + Qt::Key_3);
-    switchToViewAction->setShortcut(Qt::ControlModifier + Qt::AltModifier + Qt::Key_4);
-
-    this->addAction(switchToCompoAction);
-    this->addAction(switchToDstrbAction);
-    this->addAction(switchToDebugAction);
-    this->addAction(switchToViewAction);
-
     // -- Toolbar
 
     dtkComposerEvaluatorToolBar *mainToolBar = new dtkComposerEvaluatorToolBar(tr("Main"), this);
     mainToolBar->setComposerWidget(d->composer);
-
-    this->addToolBar(mainToolBar);
-
-    QFrame *buttons = new QFrame(this);
-    buttons->setObjectName("tissueGrowthSimulatorComposerWidgetSegmentedButtons");
-
-    d->compo_button = new QPushButton("Composition", buttons);
-    d->compo_button->setObjectName("tissueGrowthSimulatorComposerWidgetSegmentedButtonLeft");
-    d->compo_button->setFixedSize(75, 25);
-    d->compo_button->setCheckable(true);
-    d->compo_button->setChecked(true);
-
-    d->distr_button = new QPushButton("Distribution", buttons);
-    d->distr_button->setObjectName("tissueGrowthSimulatorComposerWidgetSegmentedButtonMiddle");
-    d->distr_button->setFixedSize(75, 25);
-    d->distr_button->setCheckable(true);
-
-    d->debug_button = new QPushButton("Debug", buttons);
-    d->debug_button->setObjectName("tissueGrowthSimulatorComposerWidgetSegmentedButtonRight");
-    d->debug_button->setFixedSize(75, 25);
-    d->debug_button->setCheckable(true);
-
-    d->view_button = new QPushButton("View", buttons);
-    d->view_button->setObjectName("tissueGrowthSimulatorComposerWidgetSegmentedButtonRight");
-    d->view_button->setFixedSize(75, 25);
-    d->view_button->setCheckable(true);
-
-    QButtonGroup *button_group = new QButtonGroup(this);
-    button_group->setExclusive(true);
-    button_group->addButton(d->compo_button);
-    button_group->addButton(d->distr_button);
-    button_group->addButton(d->debug_button);
-    button_group->addButton(d->view_button);
-
-    QHBoxLayout *buttons_layout = new QHBoxLayout(buttons);
-    buttons_layout->setMargin(0);
-    buttons_layout->setSpacing(11);
-    buttons_layout->addWidget(d->compo_button);
-    buttons_layout->addWidget(d->distr_button);
-    buttons_layout->addWidget(d->debug_button);
-    buttons_layout->addWidget(d->view_button);
-
-    mainToolBar->addWidget(new dtkSpacer(this));
     mainToolBar->addWidget(new dtkNotificationDisplay(this));
-    mainToolBar->addWidget(new dtkSpacer(this));
-    mainToolBar->addWidget(buttons);
 
     // -- Menus
 
-    QMenuBar *menu_bar = this->menuBar();
+    QMenuBar *menu_bar = new QMenuBar();
 
     d->recent_compositions_menu = new dtkRecentFilesMenu("Open recent...", this);
 
@@ -263,8 +189,6 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     d->composition_menu->addAction(d->composition_saveas_action);
     d->composition_menu->addSeparator();
     d->composition_menu->addAction(d->composition_insert_action);
-    d->composition_menu->addSeparator();
-    d->composition_menu->addAction(d->composition_quit_action);
 
     d->edit_menu = menu_bar->addMenu("Edit");
     d->edit_menu->addAction(d->composer->view()->searchAction());
@@ -283,12 +207,6 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     d->edit_menu->addSeparator();
     d->edit_menu->addAction(d->composer->scene()->maskEdgesAction());
     d->edit_menu->addAction(d->composer->scene()->unmaskEdgesAction());
-
-    QMenu *view_menu = menu_bar->addMenu("View");
-    view_menu->addAction(switchToCompoAction);
-    view_menu->addAction(switchToDstrbAction);
-    view_menu->addAction(switchToDebugAction);
-    view_menu->addAction(switchToViewAction);
 
     dtkScreenMenu *screen_menu = new dtkScreenMenu("Screen",this);
     menu_bar->addMenu(screen_menu);
@@ -310,17 +228,7 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
 
     connect(catchExceptionsAction, SIGNAL(triggered(bool)), d->composer->evaluator(),SLOT(setCatchExceptions(bool)));
 
-    connect(switchToCompoAction, SIGNAL(triggered()), this, SLOT(switchToCompo()));
-    connect(switchToDstrbAction, SIGNAL(triggered()), this, SLOT(switchToDstrb()));
-    connect(switchToDebugAction, SIGNAL(triggered()), this, SLOT(switchToDebug()));
-    connect(switchToViewAction, SIGNAL(triggered()), this, SLOT(switchToView()));
-
     connect(showControlsAction, SIGNAL(triggered()), this, SLOT(showControls()));
-
-    connect(d->compo_button, SIGNAL(pressed()), this, SLOT(switchToCompo()));
-    connect(d->distr_button, SIGNAL(pressed()), this, SLOT(switchToDstrb()));
-    connect(d->debug_button, SIGNAL(pressed()), this, SLOT(switchToDebug()));
-    connect(d->view_button, SIGNAL(pressed()), this, SLOT(switchToView()));
 
     connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(close()));
 
@@ -330,7 +238,6 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     connect(d->composition_save_action, SIGNAL(triggered()), this, SLOT(compositionSave()));
     connect(d->composition_saveas_action, SIGNAL(triggered()), this, SLOT(compositionSaveAs()));
     connect(d->composition_insert_action, SIGNAL(triggered()), this, SLOT(compositionInsert()));
-    connect(d->composition_quit_action, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     connect(d->recent_compositions_menu, SIGNAL(recentFileTriggered(const QString&)), this, SLOT(compositionOpen(const QString&)));
 
@@ -378,20 +285,32 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     central->addWidget(d->inner);
     central->addWidget(bottom);
 
-    QFile stylesheet(":dtkVisualProgramming/dtkVisualProgramming.qss");
-    stylesheet.open(QIODevice::ReadOnly);
+    QVBoxLayout* main_layout = new QVBoxLayout;
+    setLayout(main_layout);
 
-    this->setCentralWidget(central);
-    this->setStyleSheet(QString(stylesheet.readAll()));
-    this->setUnifiedTitleAndToolBarOnMac(true);
-
-    stylesheet.close();
-
-#if defined(Q_OS_MAC) && (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_6)
-    d->enableFullScreenSupport();
-#endif
+    main_layout->addWidget(menu_bar);
+    main_layout->addWidget(mainToolBar);
+    main_layout->addWidget(central);
 
     d->setCurrentFile("");
+
+    // Set up composition workspace.
+
+    d->composer->setVisible(true);
+    d->composer->compass()->setVisible(true);
+    d->nodes->setVisible(true);
+    d->scene->setVisible(true);
+    d->editor->setVisible(true);
+    d->stack->setVisible(false);
+    d->view_manager->setVisible(false);
+
+    d->graph->setVisible(false);
+    d->log_view->setVisible(false);
+
+
+    int wl = d->nodes->size().width();
+    int wr = d->stack->size().width();
+    d->inner->setSizes(QList<int>() << wl << 0 << this->size().width() - wl - wr << wr);
 }
 
 tissueGrowthSimulatorComposerWidget::~tissueGrowthSimulatorComposerWidget(void)
@@ -399,6 +318,7 @@ tissueGrowthSimulatorComposerWidget::~tissueGrowthSimulatorComposerWidget(void)
     delete d;
 }
 
+/*
 void tissueGrowthSimulatorComposerWidget::readSettings(void)
 {
     QSettings settings("inria", "dtk");
@@ -418,18 +338,22 @@ void tissueGrowthSimulatorComposerWidget::writeSettings(void)
     settings.setValue("size", size());
     settings.endGroup();
 }
+*/
 
 bool tissueGrowthSimulatorComposerWidget::compositionOpen(void)
 {
     if(!d->maySave())
         return true;
 
+    /*
     QSettings settings("inria", "dtk");
     settings.beginGroup("VisualProgramming");
     QString path = settings.value("last_open_dir", QDir::homePath()).toString();
     settings.endGroup();
+    */
 
-    QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), path, QString("dtk composition (*.dtk)"));
+    //QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), path, QString("dtk composition (*.dtk)"));
+    QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), QString(), QString("dtk composition (*.dtk)"));
     dialog->setStyleSheet("background-color: none ; color: none;");
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setFileMode(QFileDialog::AnyFile);
@@ -573,119 +497,6 @@ bool tissueGrowthSimulatorComposerWidget::compositionInsert(const QString& file)
     return status;
 }
 
-void tissueGrowthSimulatorComposerWidget::switchToCompo(void)
-{
-    dtkNotify("Composition workspace", 2000);
-
-    d->compo_button->blockSignals(true);
-    d->compo_button->setChecked(true);
-    d->compo_button->blockSignals(false);
-
-    if(!d->wl && !d->wr) {
-        d->wl = d->nodes->size().width();
-        d->wr = d->stack->size().width();
-    }
-
-    d->composer->setVisible(true);
-    d->composer->compass()->setVisible(true);
-    d->nodes->setVisible(true);
-    d->scene->setVisible(true);
-    d->editor->setVisible(true);
-    d->stack->setVisible(true);
-    // d->distributor->setVisible(false);
-    d->view_manager->setVisible(false);
-
-    d->graph->setVisible(false);
-    d->log_view->setVisible(false);
-
-    d->inner->setSizes(QList<int>() << d->wl << 0 << this->size().width() - d->wl - d->wr << d->wr);
-}
-
-void tissueGrowthSimulatorComposerWidget::switchToDstrb(void)
-{
-    dtkNotify("Distribution workspace", 2000);
-
-    d->distr_button->blockSignals(true);
-    d->distr_button->setChecked(true);
-    d->distr_button->blockSignals(false);
-
-    if(!d->wl && !d->wr) {
-        d->wl = d->nodes->size().width();
-        d->wr = d->stack->size().width();
-    }
-
-    d->composer->setVisible(true);
-    d->composer->compass()->setVisible(true);
-    d->nodes->setVisible(false);
-    d->scene->setVisible(true);
-    d->editor->setVisible(true);
-    d->stack->setVisible(true);
-    // d->distributor->setVisible(true);
-    d->view_manager->setVisible(false);
-
-    d->graph->setVisible(false);
-    d->log_view->setVisible(false);
-
-    d->inner->setSizes(QList<int>() << d->wl << 0 << this->size().width() - d->wl - d->wr << d->wr);
-}
-
-void tissueGrowthSimulatorComposerWidget::switchToDebug(void)
-{
-    dtkNotify("Debug workspace", 2000);
-
-    d->debug_button->blockSignals(true);
-    d->debug_button->setChecked(true);
-    d->debug_button->blockSignals(false);
-
-    if(!d->wl && !d->wr) {
-        d->wl = d->nodes->size().width();
-        d->wr = d->stack->size().width();
-    }
-
-    d->composer->setVisible(true);
-    d->composer->compass()->setVisible(true);
-    d->nodes->setVisible(false);
-    d->scene->setVisible(false);
-    d->editor->setVisible(false);
-    d->stack->setVisible(false);
-    // d->distributor->setVisible(false);
-    d->view_manager->setVisible(false);
-
-    d->graph->setVisible(true);
-    d->graph->update();
-    d->log_view->setVisible(true);
-
-    int w = this->size().width() - d->wl - d->wr;
-
-    d->inner->setSizes(QList<int>() << d->wl << w/2 << w/2 << d->wr);
-}
-
-void tissueGrowthSimulatorComposerWidget::switchToView(void)
-{
-    dtkNotify("View workspace", 2000);
-
-    d->view_button->blockSignals(true);
-    d->view_button->setChecked(true);
-    d->view_button->blockSignals(false);
-
-    if(!d->wl && !d->wr) {
-        d->wl = d->nodes->size().width();
-        d->wr = d->stack->size().width();
-    }
-
-    d->composer->setVisible(false);
-    d->composer->compass()->setVisible(false);
-    d->nodes->setVisible(false);
-    d->scene->setVisible(false);
-    d->editor->setVisible(false);
-    d->stack->setVisible(false);
-    // d->distributor->setVisible(false);
-    d->view_manager->setVisible(true);
-
-    d->graph->setVisible(false);
-    d->log_view->setVisible(false);
-}
-
 void tissueGrowthSimulatorComposerWidget::showControls(void)
 {
     if(!d->controls) {
@@ -703,16 +514,18 @@ void tissueGrowthSimulatorComposerWidget::showControls(void)
     d->controls->show();
 }
 
+/*
 void tissueGrowthSimulatorComposerWidget::closeEvent(QCloseEvent *event)
 {
     if (d->maySave()) {
-         writeSettings();
+         //writeSettings();
          d->closing = true;
          event->accept();
      } else {
          event->ignore();
      }
 }
+*/
 
 void tissueGrowthSimulatorComposerWidget::onComposerNodeFlagged(dtkComposerSceneNode *node)
 {
