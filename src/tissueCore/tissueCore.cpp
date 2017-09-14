@@ -53,6 +53,16 @@ void uninitialize(void)
     manager().uninitialize();
 }
 
+void setVerboseLoading(bool b)
+{
+    manager().setVerboseLoading(b);
+}
+
+void setAutoLoading(bool auto_load)
+{
+    manager().setAutoLoading(auto_load);
+}
+
 };
 
 //

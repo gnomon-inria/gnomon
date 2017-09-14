@@ -17,9 +17,10 @@
 ## #################################################################
 
 add_subdirectory(tissueCore)
-# add_subdirectory(tissueScript)
-# add_subdirectory(tissueComposer)
-# add_subdirectory(tissueWidgets)
+
+if(DTK_BUILD_COMPOSER)
+  add_subdirectory(tissueComposer)
+endif(DTK_BUILD_COMPOSER)
 
 ## #################################################################
 ## Targets
@@ -28,6 +29,10 @@ add_subdirectory(tissueCore)
 set(TISSUE_TARGETS)
 
 set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueCore)
+
+if(DTK_BUILD_COMPOSER)
+  set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueComposer)
+endif(DTK_BUILD_COMPOSER)
 
 ## #################################################################
 ## Target export
