@@ -19,6 +19,7 @@ project(tissueGrowthSimulator)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  tissueGrowthSimulatorCodeEditor.h
   tissueGrowthSimulatorComposerWidget.h
   tissueGrowthSimulatorComposerWidget_p.h
   tissueGrowthSimulatorEditorsPanel.h
@@ -27,6 +28,7 @@ set(${PROJECT_NAME}_HEADERS
   tissueGrowthSimulatorPythonInterpreterWidget.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueGrowthSimulatorCodeEditor.cpp
   tissueGrowthSimulatorComposerWidget.cpp
   tissueGrowthSimulatorEditorsPanel.cpp
   tissueGrowthSimulatorMainWidget.cpp
