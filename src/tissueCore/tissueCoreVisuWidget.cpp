@@ -12,8 +12,7 @@
 
 // Code:
 
-#include "tissueGrowthSimulatorVisualizationWidget.h"
-#include <QtOpenGL>
+#include "tissueCoreVisuWidget.h"
 #include <dtkWidgets>
 #include <dtkComposer/dtkComposerViewManager.h>
 #include <dtkComposer/dtkComposerViewWidget.h>
@@ -23,7 +22,7 @@
 #include <vtkRenderer.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 
-class tissueGrowthSimulatorVisualizationWidgetPrivate
+class tissueCoreVisuWidgetPrivate
 {
 public:
     vtkGenericOpenGLRenderWindow *window;
@@ -31,9 +30,9 @@ public:
     vtkRenderer *renderer;
 };
 
-tissueGrowthSimulatorVisualizationWidget::tissueGrowthSimulatorVisualizationWidget(QWidget *parent) : QFrame(parent)
+tissueCoreVisuWidget::tissueCoreVisuWidget(QWidget *parent) : QFrame(parent)
 {
-    d = new tissueGrowthSimulatorVisualizationWidgetPrivate;
+    d = new tissueCoreVisuWidgetPrivate;
 
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(1, 0, 0);
@@ -52,10 +51,11 @@ tissueGrowthSimulatorVisualizationWidget::tissueGrowthSimulatorVisualizationWidg
     this->setLayout(layout);
 }
 
-tissueGrowthSimulatorVisualizationWidget::~tissueGrowthSimulatorVisualizationWidget(void)
+tissueCoreVisuWidget::~tissueCoreVisuWidget(void)
 {
+    delete d->widget;
     delete d;
 }
 
 //
-// tissueGrowthSimulatorVisualizationWidget.cpp ends here
+// tissueCoreVisuWidget.cpp ends here

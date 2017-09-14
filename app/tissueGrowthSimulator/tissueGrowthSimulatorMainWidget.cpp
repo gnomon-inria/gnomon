@@ -14,7 +14,7 @@
 
 #include "tissueGrowthSimulatorMainWidget.h"
 #include "tissueGrowthSimulatorEditorsPanel.h"
-#include "tissueGrowthSimulatorVisualizationWidget.h"
+#include <tissueCoreVisuWidget>
 #include <QtOpenGL>
 
 class tissueGrowthSimulatorMainWidgetPrivate
@@ -23,7 +23,7 @@ public:
     //QOpenGLWidget* visualization_widget;
     //QFrame* visualization_widget;
     tissueGrowthSimulatorEditorsPanel* editors_panel;
-    tissueGrowthSimulatorVisualizationWidget* visualization_widget;
+    tissueCoreVisuWidget* visualization_widget;
 };
 
 tissueGrowthSimulatorMainWidget::tissueGrowthSimulatorMainWidget(QWidget *parent) : QFrame(parent)
@@ -33,7 +33,7 @@ tissueGrowthSimulatorMainWidget::tissueGrowthSimulatorMainWidget(QWidget *parent
 
     d = new tissueGrowthSimulatorMainWidgetPrivate;
 
-    d->visualization_widget = new tissueGrowthSimulatorVisualizationWidget();
+    d->visualization_widget = new tissueCoreVisuWidget();
     layout->addWidget(d->visualization_widget);
 
     d->editors_panel = new tissueGrowthSimulatorEditorsPanel();
