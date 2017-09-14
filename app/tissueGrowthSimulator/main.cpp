@@ -20,6 +20,7 @@
 
 #include <QVTKOpenGLWidget.h>
 
+#include <dtkWidgets/dtkApplication.h>
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerExtension.h>
 
@@ -29,8 +30,22 @@ int main(int argc, char *argv[])
 {
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
-    QApplication application(argc, argv);
+    dtkApplication *application = dtkApplication::create(argc, argv);
+    application->setApplicationName("TissueGrowthSimulator");
+    application->setOrganizationName("inria");
+    application->setOrganizationDomain("fr");
+    application->setApplicationVersion("0.1.0");
 
+    QCommandLineParser *parser = application->parser();
+    parser->setApplicationDescription("DTK visual programming.");
+
+    application->initialize();
+
+    QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
+
+    if (parser->isSet(verboseOption)) {
+        dtkComposer::extension::pluginManager().setVerboseLoading(true);
+    }
 
     // ///////////////////////////////////////////////////////////////////
     // Prepare composer
@@ -47,7 +62,7 @@ int main(int argc, char *argv[])
     window->show();
     window->raise();
 
-    return application.exec();
+    return application->exec();
 }
 
 //
