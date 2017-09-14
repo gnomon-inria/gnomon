@@ -22,11 +22,14 @@ set(${PROJECT_NAME}_HEADERS
   tissueCore
   tissueCore.h
   tissueCoreSettings
-  tissueCoreSettings.h)
+  tissueCoreSettings.h
+  tissueCellComplexData
+  tissueCellComplexData.h)
 
 set(${PROJECT_NAME}_SOURCES
   tissueCore.cpp
-  tissueCoreSettings.cpp)
+  tissueCoreSettings.cpp
+  tissueCellComplexData.cpp)
 
 ## #################################################################
 ## Build rules
