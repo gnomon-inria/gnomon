@@ -19,6 +19,8 @@ project(tissueCore)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  tissueAbstractTissueGrowthModel
+  tissueAbstractTissueGrowthModel.h
   tissueCore
   tissueCore.h
   tissueCoreSettings
@@ -27,6 +29,7 @@ set(${PROJECT_NAME}_HEADERS
   tissueCellComplexData.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueAbstractTissueGrowthModel.cpp
   tissueCore.cpp
   tissueCoreSettings.cpp
   tissueCellComplexData.cpp)
