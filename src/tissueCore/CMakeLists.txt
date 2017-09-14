@@ -19,17 +19,25 @@ project(tissueCore)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  tissueAbstractTissueGrowthModel
+  tissueAbstractTissueGrowthModel.h
   tissueCore
   tissueCore.h
   tissueCoreSettings
   tissueCoreSettings.h
   tissueCellComplexData
-  tissueCellComplexData.h)
+  tissueCellComplexData.h
+  tissueCoreVisuWidget
+  tissueCoreVisuWidget.h
+  tissueCellComplex
+  tissueCellComplex.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueAbstractTissueGrowthModel.cpp
   tissueCore.cpp
   tissueCoreSettings.cpp
-  tissueCellComplexData.cpp)
+  tissueCellComplexData.cpp
+  tissueCoreVisuWidget.cpp)
 
 ## #################################################################
 ## Wrapping
@@ -65,7 +73,10 @@ add_library(${PROJECT_NAME} SHARED
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+target_link_libraries(${PROJECT_NAME} Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} dtkCore)
+target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 ## #################################################################
 ## Export header file
