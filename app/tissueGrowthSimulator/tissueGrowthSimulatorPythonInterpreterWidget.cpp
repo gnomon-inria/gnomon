@@ -15,10 +15,15 @@
 #include "tissueGrowthSimulatorPythonInterpreterWidget.h"
 #include "tissueGrowthSimulatorCodeEditor.h"
 
-#include <dtkGuiSupport/dtkInterpreter.h>
-#include <dtkScript/dtkScriptInterpreterPython.h>
+#include <dtkConfig.h>
+
+#include <dtkWidgets/dtkInterpreter.h>
 #include <dtkSplitter>
 #include <dtkLog.h>
+
+#if defined(DTK_BUILD_WRAPPERS)
+#include <dtkScript/dtkScriptInterpreterPython.h>
+#endif
 
 class tissueGrowthSimulatorPythonInterpreterWidgetPrivate
 {
@@ -31,7 +36,9 @@ public:
 
     dtkInterpreter* interpreter_widget;
 
+#if defined(DTK_BUILD_WRAPPERS)
     dtkScriptInterpreterPython* interpreter;
+#endif
 
     /*
     QString path;
@@ -66,8 +73,10 @@ tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpr
     splitter->addWidget(d->editor_widget);
 
     d->interpreter_widget = new dtkInterpreter;
+#if defined(DTK_BUILD_WRAPPERS)
     d->interpreter = new dtkScriptInterpreterPython;
     d->interpreter_widget->registerInterpreter(d->interpreter);
+#endif
     splitter->addWidget(d->interpreter_widget);
 
     // Fill the toolbar.
@@ -88,7 +97,9 @@ tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpr
 tissueGrowthSimulatorPythonInterpreterWidget::~tissueGrowthSimulatorPythonInterpreterWidget(void)
 {
     delete d->interpreter_widget;
+#if defined(DTK_BUILD_WRAPPERS)
     delete d->interpreter;
+#endif
     delete d;
 }
 
@@ -145,7 +156,11 @@ void tissueGrowthSimulatorPythonInterpreterWidget::runFile()
 
     int status;
 
-    QString output = d->interpreter->interpret(input, &status);
+    QString output;
+
+#if defined(DTK_BUILD_WRAPPERS)
+    output = d->interpreter->interpret(input, &status);
+#endif
 
     d->interpreter_widget->output(output);
 }

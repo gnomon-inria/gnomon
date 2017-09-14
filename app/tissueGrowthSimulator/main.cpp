@@ -18,6 +18,8 @@
 
 #include <dtkDiscreteGeometryCore>
 #include <dtkImaging>
+#include <QSurfaceFormat>
+#include <QVTKOpenGLWidget.h>
 
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerExtension.h>
@@ -26,6 +28,8 @@
 
 int main(int argc, char *argv[])
 {
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+
     QApplication application(argc, argv);
 
     // ///////////////////////////////////////////////////////////////////

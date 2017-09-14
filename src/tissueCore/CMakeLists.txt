@@ -19,17 +19,25 @@ project(tissueCore)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  tissueAbstractTissueGrowthModel
+  tissueAbstractTissueGrowthModel.h
   tissueCore
   tissueCore.h
   tissueCoreSettings
   tissueCoreSettings.h
   tissueCellComplexData
-  tissueCellComplexData.h)
+  tissueCellComplexData.h
+  tissueCoreVisuWidget
+  tissueCoreVisuWidget.h
+  tissueCellComplex
+  tissueCellComplex.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueAbstractTissueGrowthModel.cpp
   tissueCore.cpp
   tissueCoreSettings.cpp
-  tissueCellComplexData.cpp)
+  tissueCellComplexData.cpp
+  tissueCoreVisuWidget.cpp)
 
 ## #################################################################
 ## Wrapping
@@ -37,14 +45,11 @@ set(${PROJECT_NAME}_SOURCES
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${dtk_MODULE_PATH})
 
-include(dtkWrap)
-
 set(${PROJECT_NAME}_SOURCES_WRAP)
 
-message("DTK_BUILD_WRAPPERS ${DTK_BUILD_WRAPPERS}")
-message("DTK_WRAPPING_PYTHON ${DTK_WRAPPING_PYTHON}")
-
 if(DTK_BUILD_WRAPPERS)
+
+  include(dtkWrap)
 
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
@@ -68,7 +73,10 @@ add_library(${PROJECT_NAME} SHARED
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+target_link_libraries(${PROJECT_NAME} Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} dtkCore)
+target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 ## #################################################################
 ## Export header file

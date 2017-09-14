@@ -17,6 +17,7 @@
 %module tissuecore
 
 %include "@dtk_WRAP_BASE@"
+%import "@dtk_WRAP_CORE@"
 
 %{
 
