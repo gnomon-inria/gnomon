@@ -12,6 +12,7 @@
 
 // Code:
 
+#include "tissueCore.h"
 #include "tissueCellComplexData.h"
 
 #include "tissueCore.h"

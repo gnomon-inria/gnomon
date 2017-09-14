@@ -1,0 +1,41 @@
+/* Version: $Id$
+ *
+ */
+
+/* Commentary:
+ *
+ */
+
+/* Change Log:
+ *
+ */
+
+/* Code: */
+
+#pragma once
+
+%module tissuecore
+
+%include "@dtk_WRAP_BASE@"
+
+%{
+
+#include <tissueCore/tissueCore.h>
+#include <tissueCore/tissueCellComplexData.h>
+
+%}
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  TISSUECORE_EXPORT
+#define TISSUECORE_EXPORT
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+
+%include <tissueCore/tissueCellComplexData.h>
+
+/* tissueCore.i ends here */
