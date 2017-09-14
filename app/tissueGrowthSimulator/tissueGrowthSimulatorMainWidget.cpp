@@ -14,30 +14,50 @@
 
 #include "tissueGrowthSimulatorMainWidget.h"
 #include "tissueGrowthSimulatorEditorsPanel.h"
+
 #include <tissueCoreVisuWidget>
+
+#include <dtkWidgets/dtkViewController.h>
+#include <dtkWidgets/dtkViewManager.h>
+
 #include <QtOpenGL>
 
 class tissueGrowthSimulatorMainWidgetPrivate
 {
 public:
-    //QOpenGLWidget* visualization_widget;
-    //QFrame* visualization_widget;
-    tissueGrowthSimulatorEditorsPanel* editors_panel;
-    tissueCoreVisuWidget* visualization_widget;
+    tissueGrowthSimulatorEditorsPanel *editors_panel;
+
+public:
+    tissueCoreVisuWidget *visualization_widget;
+
+public:
+    dtkViewManager *view_manager;
 };
 
 tissueGrowthSimulatorMainWidget::tissueGrowthSimulatorMainWidget(QWidget *parent) : QFrame(parent)
 {
-    QVBoxLayout* layout = new QVBoxLayout;
-    setLayout(layout);
-
     d = new tissueGrowthSimulatorMainWidgetPrivate;
 
-    d->visualization_widget = new tissueCoreVisuWidget();
-    layout->addWidget(d->visualization_widget);
+    d->view_manager = new dtkViewManager(this);
+    d->editors_panel = new tissueGrowthSimulatorEditorsPanel(this);
 
-    d->editors_panel = new tissueGrowthSimulatorEditorsPanel();
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(d->view_manager);
     layout->addWidget(d->editors_panel);
+
+    this->setLayout(layout);
+
+    // ///////////////////////////////////////////////////////////////////
+    // Instanciating main vtk view
+    // ///////////////////////////////////////////////////////////////////
+
+    d->visualization_widget = new tissueCoreVisuWidget;
+    d->visualization_widget->setObjectName("Main View");
+
+    QTimer::singleShot(1000, this, [=]() {
+        dtkViewController::instance()->add(d->visualization_widget);
+    });
 }
 
 tissueGrowthSimulatorMainWidget::~tissueGrowthSimulatorMainWidget(void)

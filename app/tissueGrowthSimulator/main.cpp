@@ -18,7 +18,9 @@
 
 #include <dtkDiscreteGeometryCore>
 #include <dtkImaging>
+
 #include <QSurfaceFormat>
+
 #include <QVTKOpenGLWidget.h>
 
 #include <dtkComposer/dtkComposer.h>
@@ -38,6 +40,7 @@ int main(int argc, char *argv[])
 
     dtkDiscreteGeometryCoreSettings geometry_settings;
     geometry_settings.beginGroup("plugins");
+    dtkDiscreteGeometryCore::setVerboseLoading(false);
     dtkDiscreteGeometryCore::initialize(geometry_settings.value("plugins").toString());
     geometry_settings.endGroup();
 
@@ -47,13 +50,14 @@ int main(int argc, char *argv[])
 
     dtkImagingSettings imaging_settings;
     imaging_settings.beginGroup("plugins");
+    dtkImaging::setVerboseLoading(false);
     dtkImaging::initialize(imaging_settings.value("plugins").toString());
     imaging_settings.endGroup();
 
     // ///////////////////////////////////////////////////////////////////
     // Prepare composer
     // ///////////////////////////////////////////////////////////////////
-    //
+
     dtkComposer::node::initialize();
     dtkComposer::extension::initialize();
 

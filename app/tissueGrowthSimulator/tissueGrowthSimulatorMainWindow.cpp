@@ -18,16 +18,19 @@
 class tissueGrowthSimulatorMainWindowPrivate
 {
 public:
-    tissueGrowthSimulatorMainWidget* main_widget;
+    tissueGrowthSimulatorMainWidget *main_widget;
 };
 
 tissueGrowthSimulatorMainWindow::tissueGrowthSimulatorMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     d = new tissueGrowthSimulatorMainWindowPrivate;
+
     d->main_widget = new tissueGrowthSimulatorMainWidget;
-    setCentralWidget(d->main_widget);
-    setWindowTitle("Tissue Growth Simulator");
-    resize(800, 600);
+
+    this->setCentralWidget(d->main_widget);
+    this->setWindowTitle("Tissue Growth Simulator");
+
+    this->resize(800, 600);
 }
 
 tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)

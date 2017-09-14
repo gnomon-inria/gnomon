@@ -36,7 +36,6 @@ set(${PROJECT_NAME}_SOURCES
   tissueGrowthSimulatorPythonInterpreterWidget.cpp
   main.cpp)
 
-
 ## #################################################################
 ## Build rules
 ## #################################################################
