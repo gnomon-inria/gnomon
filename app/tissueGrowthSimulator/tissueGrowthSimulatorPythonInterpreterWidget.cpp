@@ -16,7 +16,7 @@
 
 #include <dtkConfig.h>
 
-#include <dtkGuiSupport/dtkInterpreter.h>
+#include <dtkWidgets/dtkInterpreter.h>
 #include <dtkSplitter>
 #include <dtkLog.h>
 
