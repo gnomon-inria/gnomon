@@ -33,6 +33,7 @@ protected slots:
     void saveFile();
     void saveFileAs();
     void runFile();
+
 private:
     tissueGrowthSimulatorPythonInterpreterWidgetPrivate *d;
 };
