@@ -78,6 +78,14 @@ target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
+if(DTK_BUILD_WRAPPERS)
+
+  if(DTK_WRAPPING_PYTHON)
+      target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+  endif()
+
+endif(DTK_BUILD_WRAPPERS)
+
 ## #################################################################
 ## Export header file
 ## #################################################################
@@ -114,7 +122,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
     if(APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${PROJECT_SOURCE_DIR}/dtkImagingCore.i
-        COMMAND ln -sf ../lib/libtissueCore.dylib _tisssuecore.so
+        COMMAND ln -sf ../lib/libtissueCore.dylib _tissuecore.so
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
       set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
@@ -123,7 +131,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
     if(UNIX AND NOT APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
-        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libtissueCire.so _tisssuecore.so
+        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libtissueCore.so _tissuecore.so
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
       set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
