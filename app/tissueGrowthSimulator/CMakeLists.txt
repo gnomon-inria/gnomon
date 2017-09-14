@@ -20,14 +20,17 @@ project(tissueGrowthSimulator)
 
 set(${PROJECT_NAME}_HEADERS
   tissueGrowthSimulatorEditorsPanel.h
+  tissueGrowthSimulatorVisualizationWidget.h
   tissueGrowthSimulatorMainWidget.h
   tissueGrowthSimulatorMainWindow.h)
 
 set(${PROJECT_NAME}_SOURCES
   tissueGrowthSimulatorEditorsPanel.cpp
+  tissueGrowthSimulatorVisualizationWidget.cpp
   tissueGrowthSimulatorMainWidget.cpp
   tissueGrowthSimulatorMainWindow.cpp
   main.cpp)
+
 
 ## #################################################################
 ## Build rules
@@ -43,8 +46,12 @@ qt5_use_modules(${PROJECT_NAME} OpenGL)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkComposer)
+target_link_libraries(${PROJECT_NAME} dtkGuiSupport)
+target_link_libraries(${PROJECT_NAME} dtkWidgets)
 target_link_libraries(${PROJECT_NAME} dtkDiscreteGeometryCore)
 target_link_libraries(${PROJECT_NAME} dtkImaging)
+
+target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 ## ###################################################################
 ## Install rules - targets

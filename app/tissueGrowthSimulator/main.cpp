@@ -18,11 +18,15 @@
 
 #include <dtkDiscreteGeometryCore>
 #include <dtkImaging>
+#include <QSurfaceFormat>
+#include <QVTKOpenGLWidget.h>
 
 #include "tissueGrowthSimulatorMainWindow.h"
 
 int main(int argc, char *argv[])
 {
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+
     QApplication application(argc, argv);
 
     // ///////////////////////////////////////////////////////////////////
