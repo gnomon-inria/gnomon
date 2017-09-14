@@ -13,6 +13,8 @@
 // Code:
 
 #include "tissueGrowthSimulatorEditorsPanel.h"
+#include "tissueGrowthSimulatorPythonInterpreterWidget.h"
+#include "tissueGrowthSimulatorComposerWidget.h"
 
 class tissueGrowthSimulatorEditorsPanelPrivate
 {
@@ -35,8 +37,12 @@ tissueGrowthSimulatorEditorsPanel::tissueGrowthSimulatorEditorsPanel(QWidget *pa
     layout->addWidget(d->stacked_widget);
 
     d->tab_bar->addTab("Composer");
+    d->stacked_widget->addWidget(new tissueGrowthSimulatorComposerWidget);
+
     d->tab_bar->addTab("Python interpreter");
-    d->stacked_widget->addWidget(new QTextEdit());
+    d->stacked_widget->addWidget(new tissueGrowthSimulatorPythonInterpreterWidget);
+
+    QObject::connect(d->tab_bar, SIGNAL(currentChanged(int)), d->stacked_widget, SLOT(setCurrentIndex(int)));
 }
 
 tissueGrowthSimulatorEditorsPanel::~tissueGrowthSimulatorEditorsPanel(void)
