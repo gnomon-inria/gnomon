@@ -92,6 +92,16 @@ include_directories(${dtk_INCLUDE_DIRS})
 include_directories(${dtkDiscreteGeometry_INCLUDE_DIRS})
 include_directories(${dtkImaging_INCLUDE_DIRS})
 
+  find_package(VTK)
+  if(NOT VTK_FOUND )
+    message(WARNING "VTK_DIR not found")
+  endif()
+
+  if(VTK_FOUND)
+  include(${VTK_USE_FILE})
+  endif()
+
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
