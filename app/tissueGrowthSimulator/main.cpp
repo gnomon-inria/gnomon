@@ -19,6 +19,9 @@
 #include <dtkDiscreteGeometryCore>
 #include <dtkImaging>
 
+#include <dtkComposer/dtkComposer.h>
+#include <dtkComposer/dtkComposerExtension.h>
+
 #include "tissueGrowthSimulatorMainWindow.h"
 
 int main(int argc, char *argv[])
@@ -42,6 +45,13 @@ int main(int argc, char *argv[])
     imaging_settings.beginGroup("plugins");
     dtkImaging::initialize(imaging_settings.value("plugins").toString());
     imaging_settings.endGroup();
+
+    // ///////////////////////////////////////////////////////////////////
+    // Prepare composer
+    // ///////////////////////////////////////////////////////////////////
+    //
+    dtkComposer::node::initialize();
+    dtkComposer::extension::initialize();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window
