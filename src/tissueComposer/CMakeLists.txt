@@ -32,9 +32,11 @@ find_package(Qt5 REQUIRED COMPONENTS
 ## Input
 ## #################################################################
 
-set(${PROJECT_NAME}_HEADERS)
+set(${PROJECT_NAME}_HEADERS
+  tissueTissueGrowthModelNode.h)
 
-set(${PROJECT_NAME}_SOURCES)
+set(${PROJECT_NAME}_SOURCES
+  tissueTissueGrowthModelNode.cpp)
 
 set(${PROJECT_NAME}_RESOURCES tissueComposer.qrc)
 

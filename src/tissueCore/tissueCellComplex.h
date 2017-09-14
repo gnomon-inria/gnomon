@@ -24,7 +24,7 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class TISSUECORE_EXPORT tissueCellComplex :
+class TISSUECORE_EXPORT tissueCellComplex
 {
 protected:
     tissueCellComplexData *m_data;
@@ -76,11 +76,11 @@ public:
 public:
     void setDimension(int dimension = 3) { m_data->setDimension(dimension); }
 
-    long addElement(int dimension) { m_data->addElement(dimension); }
-    long addElement(int dimension, long id) { m_data->addElement(dimension, id); }
+    long addElement(int dimension) { return m_data->addElement(dimension); }
+    long addElement(int dimension, long id) { return m_data->addElement(dimension, id); }
     void removeElement(int dimension, long id) { m_data->removeElement(dimension, id); }
 
-    void linkElements(int dimension, long id, long incidentId) { m_data->linkElements(dimension, id) }
+    void linkElements(int dimension, long id, long incidentId) { m_data->linkElements(dimension, id, incidentId); }
     void unlinkElements(int dimension, long id, long incidentId) { m_data->unlinkElements(dimension, id, incidentId); }
 
 public:
@@ -88,7 +88,7 @@ public:
     bool hasElementProperty(int dimension, const QString& propertyName) const { return m_data->hasElementProperty(dimension, propertyName); }
 
     const QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) const { return m_data->elementProperty(dimension, propertyName); }
-          QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) { return m_data->elementProperty(dimension, propertyName); }
+          QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName)       { return m_data->elementProperty(dimension, propertyName); }
 
 public:
     void addElementProperty(int dimension, const QString& propertyName) { m_data->addElementProperty(dimension, propertyName); }
@@ -98,7 +98,7 @@ public:
 
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT(tissueCellComplexData *)
+DTK_DECLARE_OBJECT(tissueCellComplex *)
 
 //
 // tissueCellComplex.h ends here
