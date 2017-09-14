@@ -22,22 +22,52 @@ set(${PROJECT_NAME}_HEADERS
   tissueCore
   tissueCore.h
   tissueCoreSettings
-  tissueCoreSettings.h)
+  tissueCoreSettings.h
+  tissueCellComplexData
+  tissueCellComplexData.h)
 
 set(${PROJECT_NAME}_SOURCES
   tissueCore.cpp
-  tissueCoreSettings.cpp)
+  tissueCoreSettings.cpp
+  tissueCellComplexData.cpp)
+
+## #################################################################
+## Wrapping
+## #################################################################
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${dtk_MODULE_PATH})
+
+include(dtkWrap)
+
+set(${PROJECT_NAME}_SOURCES_WRAP)
+
+message("DTK_BUILD_WRAPPERS ${DTK_BUILD_WRAPPERS}")
+message("DTK_WRAPPING_PYTHON ${DTK_WRAPPING_PYTHON}")
+
+if(DTK_BUILD_WRAPPERS)
+
+  set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
+
+  if (DTK_WRAPPING_PYTHON)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i @ONLY)
+    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissuecore python ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
+  endif()
+endif()
 
 ## #################################################################
 ## Build rules
 ## #################################################################
 
 add_library(${PROJECT_NAME} SHARED
+  ${${PROJECT_NAME}_SOURCES_WRAP}
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS})
 
-qt5_use_modules(${PROJECT_NAME} Core)
+## ###################################################################
+## Link rules
+## ###################################################################
 
+target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} dtkCore)
 
 ## #################################################################
@@ -55,11 +85,62 @@ set(PROJECT_NAME_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
+## #################################################################
+## Handling of generated script modules
+## #################################################################
+
+set(${PROJECT_NAME}_MODULES)
+
+if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
+
+  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
+
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+      DEPENDS ${PROJECT_SOURCE_DIR}/dtkCore.i
+      COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
+      COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/tissuecore.py ${CMAKE_BINARY_DIR}/modules
+      COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
+
+    set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/tissuecore.py)
+
+    if(APPLE)
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        DEPENDS ${PROJECT_SOURCE_DIR}/dtkImagingCore.i
+        COMMAND ln -sf ../lib/libtissueCore.dylib _tisssuecore.so
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+
+      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
+    endif(APPLE)
+
+    if(UNIX AND NOT APPLE)
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
+        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libtissueCire.so _tisssuecore.so
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+
+      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
+    endif(UNIX AND NOT APPLE)
+
+  endif(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
+
+endif(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
+
+## ###################################################################
+## Install rules - files
+## ###################################################################
+
+install(FILES ${${PROJECT_NAME}_HEADERS}
+  DESTINATION include/tissue
+  COMPONENT tissue-core)
+
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT tissue-core
+         EXPORT tissueDepends)
 
 ######################################################################
 ### CMakeLists.txt ends here

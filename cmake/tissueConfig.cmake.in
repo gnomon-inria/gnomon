@@ -13,22 +13,19 @@
 ### Code:
 
 ## ###################################################################
-## Editor specifics
+## Defines:
+## - tissue_INCLUDE_DIRS
 ## ###################################################################
 
-*~
+set(tissue_INCLUDE_DIRS
+  "@CMAKE_CURRENT_SOURCE_DIR@/src/tissueCore"
+  "@CMAKE_CURRENT_BINARY_DIR@")
 
 ## ###################################################################
-## Build directories
+## Options
 ## ###################################################################
 
-build
-
-## ###################################################################
-## Generated files
-## ###################################################################
-
-src/tissueCore/tissueCore.i
+include("@CMAKE_BINARY_DIR@/tissueDepends.cmake")
 
 ######################################################################
-### .gitignore ends here
+### tissue.cmake.in ends here
