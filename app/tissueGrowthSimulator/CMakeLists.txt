@@ -22,7 +22,6 @@ set(${PROJECT_NAME}_HEADERS
   tissueGrowthSimulatorComposerWidget.h
   tissueGrowthSimulatorComposerWidget_p.h
   tissueGrowthSimulatorEditorsPanel.h
-  tissueGrowthSimulatorVisualizationWidget.h
   tissueGrowthSimulatorMainWidget.h
   tissueGrowthSimulatorMainWindow.h
   tissueGrowthSimulatorPythonInterpreterWidget.h)
@@ -30,7 +29,6 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   tissueGrowthSimulatorComposerWidget.cpp
   tissueGrowthSimulatorEditorsPanel.cpp
-  tissueGrowthSimulatorVisualizationWidget.cpp
   tissueGrowthSimulatorMainWidget.cpp
   tissueGrowthSimulatorMainWindow.cpp
   tissueGrowthSimulatorPythonInterpreterWidget.cpp
@@ -56,6 +54,7 @@ target_link_libraries(${PROJECT_NAME} dtkGuiSupport)
 target_link_libraries(${PROJECT_NAME} dtkImaging)
 target_link_libraries(${PROJECT_NAME} dtkScript)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
+target_link_libraries(${PROJECT_NAME} tissueCore)
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
