@@ -83,10 +83,10 @@ tissueCoreVisuWidget::~tissueCoreVisuWidget(void)
 
 void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
 {
-    if ( ! d->data ) {
-        dtkWarn() << Q_FUNC_INFO << "cellData already pushed";
-        return;
-    }
+    // if ( ! d->data ) {
+    //     qDebug() << Q_FUNC_INFO << "cellData already pushed";
+    //     return;
+    // }
 
     vtkPoints* polydataPoints = vtkPoints::New();
     vtkCellArray* polydataFaces = vtkCellArray::New();
@@ -157,7 +157,7 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
     polydata->GetPointData()->SetScalars(temperature);
     /polydata->GetPointData()->AddArray(vorticity);
     */
-    
+
     ///// END OF FAKE
 
     vtkPolyData* polydata = vtkPolyData::New();
@@ -172,15 +172,15 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
     vtkActor* actor = vtkActor::New();
     actor->SetMapper(mapper);
 
-    vtkRenderWindowInteractor *interactor = vtkRenderWindowInteractor::New();
-    interactor->SetRenderWindow(d->window);
+    // vtkRenderWindowInteractor *interactor = vtkRenderWindowInteractor::New();
+    // interactor->SetRenderWindow(d->window);
 
     d->renderer->AddActor(actor);
+    // d->window->Render();
 
-    d->window->Render();
-    interactor->Start();
+    // interactor->Start();
 
-    dtkWarn() << Q_FUNC_INFO << "Object added";
+    qDebug() << Q_FUNC_INFO << "Object added";
     return;
 }
 
