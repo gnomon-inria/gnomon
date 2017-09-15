@@ -21,7 +21,7 @@
 //  ///////////////////////////////////////////////////////////////////
 
 namespace tissueCore {
-	DTK_DEFINE_CONCEPT(tissueAbstractTissueGrowthModel, growthModel, tissueCore)
+  DTK_DEFINE_CONCEPT(tissueAbstractTissueGrowthModel, growthmodel, tissueCore);
 }
 
 //

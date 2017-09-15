@@ -38,7 +38,7 @@ public:
 
 tissueTissueGrowthModelNode::tissueTissueGrowthModelNode(void) : dtkComposerNodeObject<tissueAbstractTissueGrowthModel>(), d(new tissueTissueGrowthModelNodePrivate())
 {
-    this->setFactory(tissueCore::growthModel::pluginFactory());
+    this->setFactory(tissueCore::growthmodel::pluginFactory());
 
     this->appendReceiver(&d->complex_in);
 

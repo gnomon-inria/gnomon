@@ -56,7 +56,7 @@ DTK_DECLARE_PLUGIN_MANAGER(tissueAbstractTissueGrowthModel, TISSUECORE_EXPORT)  
 //  ///////////////////////////////////////////////////////////////////
 
 namespace tissueCore {
-	DTK_DECLARE_CONCEPT(tissueAbstractTissueGrowthModel, TISSUECORE_EXPORT, growthModel)
+	DTK_DECLARE_CONCEPT(tissueAbstractTissueGrowthModel, TISSUECORE_EXPORT, growthmodel)
 }
 
 //
