@@ -94,6 +94,9 @@ public:
     void addElementProperty(int dimension, const QString& propertyName) { m_data->addElementProperty(dimension, propertyName); }
     void updateElementProperty(int dimension, const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) { m_data->updateElementProperty(dimension, propertyName, values, eraseProperty); }
     void removeElementProperty(int dimension, const QString& propertyName) { m_data->removeElementProperty(dimension, propertyName); }
+
+public:
+    QList<long> orientedFaceVertexIds(long faceId) const { return m_data->orientedFaceVertexIds(faceId); }
 };
 
 // ///////////////////////////////////////////////////////////////////

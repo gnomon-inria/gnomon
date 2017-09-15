@@ -14,7 +14,7 @@
 
 #include "tissueCoreSettings.h"
 
-tissueCoreSettings::tissueCoreSettings(void) : QSettings(QSettings::IniFormat, QSettings::UserScope, "tissue-core")
+tissueCoreSettings::tissueCoreSettings(void) : QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "tissue-core")
 {
     this->beginGroup("tissue-core");
 
