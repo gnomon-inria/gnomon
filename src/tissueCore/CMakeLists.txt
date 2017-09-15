@@ -112,7 +112,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
   if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
 
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      DEPENDS ${PROJECT_SOURCE_DIR}/dtkCore.i
+      DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
       COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
       COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/tissuecore.py ${CMAKE_BINARY_DIR}/modules
       COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
@@ -121,7 +121,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
 
     if(APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/dtkImagingCore.i
+        DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
         COMMAND ln -sf ../lib/libtissueCore.dylib _tissuecore.so
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
