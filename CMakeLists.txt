@@ -85,12 +85,8 @@ include(GenerateExportHeader)
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 
 find_package(dtk REQUIRED)
-find_package(dtkDiscreteGeometry REQUIRED)
-find_package(dtkImaging REQUIRED)
 
 include_directories(${dtk_INCLUDE_DIRS})
-include_directories(${dtkDiscreteGeometry_INCLUDE_DIRS})
-include_directories(${dtkImaging_INCLUDE_DIRS})
 
   find_package(VTK)
   if(NOT VTK_FOUND )

@@ -16,13 +16,11 @@
 #include <QtDebug>
 #include <QtWidgets>
 
-#include <dtkDiscreteGeometryCore>
-#include <dtkImaging>
-
 #include <QSurfaceFormat>
 
 #include <QVTKOpenGLWidget.h>
 
+#include <dtkWidgets/dtkApplication.h>
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerExtension.h>
 
@@ -32,27 +30,22 @@ int main(int argc, char *argv[])
 {
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
-    QApplication application(argc, argv);
+    dtkApplication *application = dtkApplication::create(argc, argv);
+    application->setApplicationName("TissueGrowthSimulator");
+    application->setOrganizationName("inria");
+    application->setOrganizationDomain("fr");
+    application->setApplicationVersion("0.1.0");
 
-    // ///////////////////////////////////////////////////////////////////
-    // Register discrete geometry concepts
-    // ///////////////////////////////////////////////////////////////////
+    QCommandLineParser *parser = application->parser();
+    parser->setApplicationDescription("DTK visual programming.");
 
-    dtkDiscreteGeometryCoreSettings geometry_settings;
-    geometry_settings.beginGroup("plugins");
-    dtkDiscreteGeometryCore::setVerboseLoading(false);
-    dtkDiscreteGeometryCore::initialize(geometry_settings.value("plugins").toString());
-    geometry_settings.endGroup();
+    application->initialize();
 
-    // ///////////////////////////////////////////////////////////////////
-    // Register imaging concepts
-    // ///////////////////////////////////////////////////////////////////
+    QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
 
-    dtkImagingSettings imaging_settings;
-    imaging_settings.beginGroup("plugins");
-    dtkImaging::setVerboseLoading(false);
-    dtkImaging::initialize(imaging_settings.value("plugins").toString());
-    imaging_settings.endGroup();
+    if (parser->isSet(verboseOption)) {
+        dtkComposer::extension::pluginManager().setVerboseLoading(true);
+    }
 
     // ///////////////////////////////////////////////////////////////////
     // Prepare composer
@@ -69,7 +62,7 @@ int main(int argc, char *argv[])
     window->show();
     window->raise();
 
-    return application.exec();
+    return application->exec();
 }
 
 //
