@@ -26,6 +26,7 @@
 #include "vtkDoubleArray.h"
 #include "vtkFloatArray.h"
 #include "vtkIntArray.h"
+#include "vtkCellData.h"
 #include "vtkPointData.h"
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
@@ -82,15 +83,41 @@ tissueCoreVisuWidget::~tissueCoreVisuWidget(void)
 
 void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
 {
-    if ( ! d->data ) {
-        dtkWarn() << Q_FUNC_INFO << "CellComplexData already pushed";
-        return;
+    // if ( ! d->data ) {
+    //     qDebug() << Q_FUNC_INFO << "cellData already pushed";
+    //     return;
+    // }
+
+    vtkPoints* polydataPoints = vtkPoints::New();
+    vtkCellArray* polydataFaces = vtkCellArray::New();
+    vtkDoubleArray* polydataFaceData = vtkDoubleArray::New();
+
+    QMap<long, QVariant> positions = cell.elementProperty(0,"position");
+
+    QMap<long,long> vertexPoint = QMap<long,long>();
+
+    QList<long> vertices = cell.elementIds(0);
+
+    for (const auto& vertexId : vertices) {
+        std::vector<double> pos = positions[vertexId].value<std::vector<double> >();
+        long vtkId = polydataPoints->InsertNextPoint(pos[0],pos[1],pos[2]);
+        vertexPoint[vertexId] = vtkId;
     }
 
+    QList<long> faces = cell.elementIds(2);
+
+    for (const auto& faceId : faces) {
+        QList<long> faceVertices = cell.orientedFaceVertexIds(faceId);
+        long vtkId = polydataFaces->InsertNextCell(faceVertices.size());
+        for (const auto& v : faceVertices) {
+            polydataFaces->InsertCellPoint(vertexPoint[v]);
+        }
+        polydataFaceData->InsertValue(vtkId,faceId);
+    }
 
     ///////  FAKE OBJECT
 
-    vtkFloatArray* pcoords = vtkFloatArray::New();
+    /*vtkFloatArray* pcoords = vtkFloatArray::New();
     pcoords->SetNumberOfComponents(3);
     pcoords->SetNumberOfTuples(4);
 
@@ -128,9 +155,15 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
     polydata->SetPoints(points);
     polydata->SetStrips(strips);
     polydata->GetPointData()->SetScalars(temperature);
-    polydata->GetPointData()->AddArray(vorticity);
+    /polydata->GetPointData()->AddArray(vorticity);
+    */
 
     ///// END OF FAKE
+
+    vtkPolyData* polydata = vtkPolyData::New();
+    polydata->SetPoints(polydataPoints);
+    polydata->SetPolys(polydataFaces);
+    polydata->GetCellData()->SetScalars(polydataFaceData);
 
     vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
     mapper->SetInputData(polydata);
@@ -139,15 +172,15 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
     vtkActor* actor = vtkActor::New();
     actor->SetMapper(mapper);
 
-    vtkRenderWindowInteractor *interactor = vtkRenderWindowInteractor::New();
-    interactor->SetRenderWindow(d->window);
+    // vtkRenderWindowInteractor *interactor = vtkRenderWindowInteractor::New();
+    // interactor->SetRenderWindow(d->window);
 
     d->renderer->AddActor(actor);
+    // d->window->Render();
 
-    d->window->Render();
-    interactor->Start();
+    // interactor->Start();
 
-    dtkWarn() << Q_FUNC_INFO << "Object added";
+    qDebug() << Q_FUNC_INFO << "Object added";
     return;
 }
 
