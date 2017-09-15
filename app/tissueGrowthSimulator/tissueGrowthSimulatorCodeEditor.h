@@ -6,6 +6,7 @@
 
 class tissueGrowthSimulatorCodeEditorLineNumberArea;
 class tissueGrowthSimulatorCodeEditorSyntaxHighlighter;
+class tissueGrowthSimulatorCodeEditorPrivate;
 
 class tissueGrowthSimulatorCodeEditor : public QPlainTextEdit
 {
@@ -13,6 +14,7 @@ class tissueGrowthSimulatorCodeEditor : public QPlainTextEdit
 
 public:
     tissueGrowthSimulatorCodeEditor(QWidget *parent = 0);
+    ~tissueGrowthSimulatorCodeEditor();
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
@@ -24,10 +26,10 @@ private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
+    //void updateVocabulary();
 
 private:
-    QWidget *m_lineNumberArea;
-    tissueGrowthSimulatorCodeEditorSyntaxHighlighter* m_highlighter;
+    tissueGrowthSimulatorCodeEditorPrivate* d;
 };
 
 
@@ -51,24 +53,20 @@ private:
     tissueGrowthSimulatorCodeEditor *m_codeEditor;
 };
 
+class tissueGrowthSimulatorCodeEditorSyntaxHighlighterPrivate;
+
 class tissueGrowthSimulatorCodeEditorSyntaxHighlighter : QSyntaxHighlighter
 {
 public:
 
     tissueGrowthSimulatorCodeEditorSyntaxHighlighter(QTextDocument* document);
 
+    ~tissueGrowthSimulatorCodeEditorSyntaxHighlighter();
+
     void highlightBlock(const QString& text);
 
 protected:
 
-    QRegularExpression m_commentExpr;
-    QRegularExpression m_wordExpr;
-
-    QSet<QString> m_keywords;
-    QSet<QString> m_builtins;
-
-    QTextCharFormat m_keywordFormat;
-    QTextCharFormat m_builtinFormat;
-    QTextCharFormat m_commentFormat;
+    tissueGrowthSimulatorCodeEditorSyntaxHighlighterPrivate *d;
 };
 

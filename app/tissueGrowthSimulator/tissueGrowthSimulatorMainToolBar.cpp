@@ -29,6 +29,8 @@ public:
 
     QAction* open_script_action;
     QAction* run_script_action;
+    QAction* save_script_action;
+    QAction* saveas_script_action;
 
     std::vector<QAction*> composer_specific_actions;
     std::vector<QAction*> script_specific_actions;
@@ -80,6 +82,12 @@ tissueGrowthSimulatorMainToolBar::tissueGrowthSimulatorMainToolBar(QWidget* pare
 
     d->run_script_action = addAction(QIcon::fromTheme("system-run"), "Run script");
     d->script_specific_actions.push_back(d->run_script_action);
+
+    d->save_script_action = addAction(QIcon::fromTheme("document-save"), "Save script");
+    d->script_specific_actions.push_back(d->save_script_action);
+
+    d->saveas_script_action = addAction(QIcon::fromTheme("document-save-as"), "Save script as");
+    d->script_specific_actions.push_back(d->saveas_script_action);
 
     // Create the notification display.
     addWidget(new dtkNotificationDisplay(this));

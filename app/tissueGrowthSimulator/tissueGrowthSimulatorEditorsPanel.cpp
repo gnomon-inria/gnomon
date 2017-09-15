@@ -47,13 +47,13 @@ tissueGrowthSimulatorEditorsPanel::tissueGrowthSimulatorEditorsPanel(QWidget *pa
     
     // Create the composer widget.
 
-    d->tab_bar->addTab("Composer");
+    d->tab_bar->addTab("&Composer");
     d->composer_widget = new tissueGrowthSimulatorComposerWidget;
     d->stacked_widget->addWidget(d->composer_widget);
 
     // Create the script widget.
 
-    d->tab_bar->addTab("Python");
+    d->tab_bar->addTab("&Python");
     d->script_widget = new tissueGrowthSimulatorPythonInterpreterWidget;
     d->stacked_widget->addWidget(d->script_widget);
 
@@ -67,7 +67,7 @@ tissueGrowthSimulatorEditorsPanel::tissueGrowthSimulatorEditorsPanel(QWidget *pa
     d->tool_bar->setMode(0);
 }
 
-tissueGrowthSimulatorEditorsPanel::~tissueGrowthSimulatorEditorsPanel(void)
+tissueGrowthSimulatorEditorsPanel::~tissueGrowthSimulatorEditorsPanel()
 {
     delete d;
 }

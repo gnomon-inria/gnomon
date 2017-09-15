@@ -1,8 +1,20 @@
 #include "tissueGrowthSimulatorCodeEditor.h"
+#include <set>
+
+class tissueGrowthSimulatorCodeEditorPrivate
+{
+public:
+    QWidget* line_number_area;
+    tissueGrowthSimulatorCodeEditorSyntaxHighlighter* highlighter;
+    std::set<QString> vocabulary;
+    //QTimer* timer;
+};
 
 tissueGrowthSimulatorCodeEditor::tissueGrowthSimulatorCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
-    m_lineNumberArea = new tissueGrowthSimulatorCodeEditorLineNumberArea(this);
+    d = new tissueGrowthSimulatorCodeEditorPrivate;
+
+    d->line_number_area = new tissueGrowthSimulatorCodeEditorLineNumberArea(this);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
@@ -12,8 +24,48 @@ tissueGrowthSimulatorCodeEditor::tissueGrowthSimulatorCodeEditor(QWidget *parent
     highlightCurrentLine();
     setFont(QFont("monospace"));
 
-    m_highlighter = new tissueGrowthSimulatorCodeEditorSyntaxHighlighter(document());
+    d->highlighter = new tissueGrowthSimulatorCodeEditorSyntaxHighlighter(document());
+
+    /*
+    d->timer = new QTimer(this);
+    d->timer->start(1000);
+    connect(d->timer, SIGNAL(timeout()), this, SLOT(updateVocabulary()));
+    */
 }
+
+tissueGrowthSimulatorCodeEditor::~tissueGrowthSimulatorCodeEditor()
+{
+    delete d;
+}
+
+/*
+#include <iostream>
+#include <string>
+void tissueGrowthSimulatorCodeEditor::updateVocabulary()
+{
+    QRegularExpression re("([a-zA-Z_][a-zA-Z0-9_]+)");
+
+    d->vocabulary.clear();
+
+    QTextBlock block = document()->begin();
+    while(block.isValid())
+    {
+        QRegularExpressionMatchIterator it = re.globalMatch(block.text());
+        while(it.hasNext())
+        {
+            QRegularExpressionMatch match = it.next();
+
+            d->vocabulary.insert( match.captured(1) );
+        }
+
+        block = block.next();
+    }
+
+    for(QString str : d->vocabulary) std::cout << str.toStdString() << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+}
+*/
 
 int tissueGrowthSimulatorCodeEditor::lineNumberAreaWidth()
 {
@@ -40,10 +92,10 @@ void tissueGrowthSimulatorCodeEditor::updateLineNumberAreaWidth(int)
 void tissueGrowthSimulatorCodeEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
     if (dy) {
-        m_lineNumberArea->scroll(0, dy);
+        d->line_number_area->scroll(0, dy);
     }
     else {
-        m_lineNumberArea->update(0, rect.y(), m_lineNumberArea->width(), rect.height());
+        d->line_number_area->update(0, rect.y(), d->line_number_area->width(), rect.height());
     }
 
     if (rect.contains(viewport()->rect())) {
@@ -56,7 +108,7 @@ void tissueGrowthSimulatorCodeEditor::resizeEvent(QResizeEvent *e)
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    d->line_number_area->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
 void tissueGrowthSimulatorCodeEditor::highlightCurrentLine()
@@ -80,7 +132,7 @@ void tissueGrowthSimulatorCodeEditor::highlightCurrentLine()
 
 void tissueGrowthSimulatorCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-    QPainter painter(m_lineNumberArea);
+    QPainter painter(d->line_number_area);
     painter.fillRect(event->rect(), Qt::lightGray);
 
 
@@ -93,7 +145,7 @@ void tissueGrowthSimulatorCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *even
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(Qt::black);
-            painter.drawText(0, top, m_lineNumberArea->width(), fontMetrics().height(),
+            painter.drawText(0, top, d->line_number_area->width(), fontMetrics().height(),
                              Qt::AlignRight, number);
         }
 
@@ -104,224 +156,417 @@ void tissueGrowthSimulatorCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *even
     }
 }
 
-tissueGrowthSimulatorCodeEditorSyntaxHighlighter::tissueGrowthSimulatorCodeEditorSyntaxHighlighter(QTextDocument* document) :
-    QSyntaxHighlighter(document),
-    m_commentExpr("^[[:blank:]]*#"),
-    m_wordExpr("([a-zA-Z_][a-zA-Z0-9_]+)")
+class tissueGrowthSimulatorCodeEditorSyntaxHighlighterPrivate
 {
-    m_keywords << "and";
-    m_keywords << "as";
-    m_keywords << "assert";
-    m_keywords << "break";
-    m_keywords << "class";
-    m_keywords << "continue";
-    m_keywords << "def";
-    m_keywords << "del";
-    m_keywords << "elif";
-    m_keywords << "else";
-    m_keywords << "except";
-    m_keywords << "exec";
-    m_keywords << "finally";
-    m_keywords << "for";
-    m_keywords << "from";
-    m_keywords << "global";
-    m_keywords << "if";
-    m_keywords << "import";
-    m_keywords << "in";
-    m_keywords << "is";
-    m_keywords << "lambda";
-    m_keywords << "not";
-    m_keywords << "or";
-    m_keywords << "pass";
-    m_keywords << "print";
-    m_keywords << "raise";
-    m_keywords << "return";
-    m_keywords << "try";
-    m_keywords << "while";
-    m_keywords << "with";
-    m_keywords << "yield";
-    m_builtins << "ArithmeticError";
-    m_builtins << "AssertionError";
-    m_builtins << "AttributeError";
-    m_builtins << "BaseException";
-    m_builtins << "BufferError";
-    m_builtins << "BytesWarning";
-    m_builtins << "DeprecationWarning";
-    m_builtins << "EOFError";
-    m_builtins << "Ellipsis";
-    m_builtins << "EnvironmentError";
-    m_builtins << "Exception";
-    m_builtins << "False";
-    m_builtins << "FloatingPointError";
-    m_builtins << "FutureWarning";
-    m_builtins << "GeneratorExit";
-    m_builtins << "IOError";
-    m_builtins << "ImportError";
-    m_builtins << "ImportWarning";
-    m_builtins << "IndentationError";
-    m_builtins << "IndexError";
-    m_builtins << "KeyError";
-    m_builtins << "KeyboardInterrupt";
-    m_builtins << "LookupError";
-    m_builtins << "MemoryError";
-    m_builtins << "NameError";
-    m_builtins << "None";
-    m_builtins << "NotImplemented";
-    m_builtins << "NotImplementedError";
-    m_builtins << "OSError";
-    m_builtins << "OverflowError";
-    m_builtins << "PendingDeprecationWarning";
-    m_builtins << "ReferenceError";
-    m_builtins << "RuntimeError";
-    m_builtins << "RuntimeWarning";
-    m_builtins << "StandardError";
-    m_builtins << "StopIteration";
-    m_builtins << "SyntaxError";
-    m_builtins << "SyntaxWarning";
-    m_builtins << "SystemError";
-    m_builtins << "SystemExit";
-    m_builtins << "TabError";
-    m_builtins << "True";
-    m_builtins << "TypeError";
-    m_builtins << "UnboundLocalError";
-    m_builtins << "UnicodeDecodeError";
-    m_builtins << "UnicodeEncodeError";
-    m_builtins << "UnicodeError";
-    m_builtins << "UnicodeTranslateError";
-    m_builtins << "UnicodeWarning";
-    m_builtins << "UserWarning";
-    m_builtins << "ValueError";
-    m_builtins << "Warning";
-    m_builtins << "ZeroDivisionError";
-    m_builtins << "__debug__";
-    m_builtins << "__doc__";
-    m_builtins << "__import__";
-    m_builtins << "__name__";
-    m_builtins << "__package__";
-    m_builtins << "abs";
-    m_builtins << "all";
-    m_builtins << "any";
-    m_builtins << "apply";
-    m_builtins << "basestring";
-    m_builtins << "bin";
-    m_builtins << "bool";
-    m_builtins << "buffer";
-    m_builtins << "bytearray";
-    m_builtins << "bytes";
-    m_builtins << "callable";
-    m_builtins << "chr";
-    m_builtins << "classmethod";
-    m_builtins << "cmp";
-    m_builtins << "coerce";
-    m_builtins << "compile";
-    m_builtins << "complex";
-    m_builtins << "copyright";
-    m_builtins << "credits";
-    m_builtins << "delattr";
-    m_builtins << "dict";
-    m_builtins << "dir";
-    m_builtins << "divmod";
-    m_builtins << "enumerate";
-    m_builtins << "eval";
-    m_builtins << "execfile";
-    m_builtins << "exit";
-    m_builtins << "file";
-    m_builtins << "filter";
-    m_builtins << "float";
-    m_builtins << "format";
-    m_builtins << "frozenset";
-    m_builtins << "getattr";
-    m_builtins << "globals";
-    m_builtins << "hasattr";
-    m_builtins << "hash";
-    m_builtins << "help";
-    m_builtins << "hex";
-    m_builtins << "id";
-    m_builtins << "input";
-    m_builtins << "int";
-    m_builtins << "intern";
-    m_builtins << "isinstance";
-    m_builtins << "issubclass";
-    m_builtins << "iter";
-    m_builtins << "len";
-    m_builtins << "license";
-    m_builtins << "list";
-    m_builtins << "locals";
-    m_builtins << "long";
-    m_builtins << "map";
-    m_builtins << "max";
-    m_builtins << "memoryview";
-    m_builtins << "min";
-    m_builtins << "next";
-    m_builtins << "object";
-    m_builtins << "oct";
-    m_builtins << "open";
-    m_builtins << "ord";
-    m_builtins << "pow";
-    m_builtins << "print";
-    m_builtins << "property";
-    m_builtins << "quit";
-    m_builtins << "range";
-    m_builtins << "raw_input";
-    m_builtins << "reduce";
-    m_builtins << "reload";
-    m_builtins << "repr";
-    m_builtins << "reversed";
-    m_builtins << "round";
-    m_builtins << "set";
-    m_builtins << "setattr";
-    m_builtins << "slice";
-    m_builtins << "sorted";
-    m_builtins << "staticmethod";
-    m_builtins << "str";
-    m_builtins << "sum";
-    m_builtins << "super";
-    m_builtins << "tuple";
-    m_builtins << "type";
-    m_builtins << "unichr";
-    m_builtins << "unicode";
-    m_builtins << "vars";
-    m_builtins << "xrange";
-    m_builtins << "zip";
+public:
+    // 're' suffix stands for Regular Expression.
 
-    m_keywordFormat.setFontWeight(QFont::Bold);
+    QRegularExpression comment_re;
+    QRegularExpression word_re;
+    QRegularExpression defclass_re;
+    QRegularExpression number_re;
 
-    m_builtinFormat.setFontWeight(QFont::Bold);
+    QSet<QString> keywords;
+    QSet<QString> builtins;
+    QString braces;
+    QSet<QString> operators;
 
-    m_commentFormat.setForeground(Qt::darkGray);
-    m_commentFormat.setFontItalic(true);
+    QTextCharFormat keyword_format;
+    QTextCharFormat builtin_format;
+    QTextCharFormat operator_format;
+    QTextCharFormat comment_format;
+    QTextCharFormat defclass_format;
+    QTextCharFormat brace_format;
+    QTextCharFormat number_format;
+    QTextCharFormat string_format;
+};
 
+tissueGrowthSimulatorCodeEditorSyntaxHighlighter::tissueGrowthSimulatorCodeEditorSyntaxHighlighter(QTextDocument* document) : QSyntaxHighlighter(document)
+{
+    d = new tissueGrowthSimulatorCodeEditorSyntaxHighlighterPrivate;
+
+    // Declare some useful regular expressions.
+
+    d->comment_re = QRegularExpression("^[[:blank:]]*#");
+
+    d->word_re = QRegularExpression("([a-zA-Z_][a-zA-Z0-9_]+)");
+
+    d->defclass_re = QRegularExpression("^[[:blank:]]*(def|class)[[:blank:]]+([a-zA-Z_][a-zA-Z0-9_]+)");
+
+    d->number_re = QRegularExpression("[+-]?([0-9]*[.])?[0-9]+");
+
+    // Declare list of braces, operators, keywords, builtins, etc.
+
+    d->braces = "{}[]()";
+
+    // We assume that operator == appears before operator = and that operator ** appears before operator * and so on.
+
+    d->operators << "===";
+    d->operators << "==";
+    d->operators << "+=";
+    d->operators << "-=";
+    d->operators << "<>";
+    d->operators << ">>";
+    d->operators << "<<";
+    d->operators << "**";
+    d->operators << "=";
+    d->operators << ">";
+    d->operators << "<";
+    d->operators << "+";
+    d->operators << "-";
+    d->operators << "*";
+    d->operators << "|";
+    d->operators << "^";
+
+    /*
+    The list of keywords and the list of builtins were generated by the following python code.
+
+        import keyword
+
+        for k in keyword.kwlist:
+            print("d->keywords << \"" + k + "\";")
+
+        for fn in dir(__builtins__):
+            print("d->builtins << \"" + fn + "\";")
+    */
+    
+    d->keywords << "False";
+    d->keywords << "None";
+    d->keywords << "True";
+    d->keywords << "and";
+    d->keywords << "as";
+    d->keywords << "assert";
+    d->keywords << "break";
+    d->keywords << "class";
+    d->keywords << "continue";
+    d->keywords << "def";
+    d->keywords << "del";
+    d->keywords << "elif";
+    d->keywords << "else";
+    d->keywords << "except";
+    d->keywords << "finally";
+    d->keywords << "for";
+    d->keywords << "from";
+    d->keywords << "global";
+    d->keywords << "if";
+    d->keywords << "import";
+    d->keywords << "in";
+    d->keywords << "is";
+    d->keywords << "lambda";
+    d->keywords << "nonlocal";
+    d->keywords << "not";
+    d->keywords << "or";
+    d->keywords << "pass";
+    d->keywords << "raise";
+    d->keywords << "return";
+    d->keywords << "try";
+    d->keywords << "while";
+    d->keywords << "with";
+    d->keywords << "yield";
+
+    d->builtins << "ArithmeticError";
+    d->builtins << "AssertionError";
+    d->builtins << "AttributeError";
+    d->builtins << "BaseException";
+    d->builtins << "BlockingIOError";
+    d->builtins << "BrokenPipeError";
+    d->builtins << "BufferError";
+    d->builtins << "BytesWarning";
+    d->builtins << "ChildProcessError";
+    d->builtins << "ConnectionAbortedError";
+    d->builtins << "ConnectionError";
+    d->builtins << "ConnectionRefusedError";
+    d->builtins << "ConnectionResetError";
+    d->builtins << "DeprecationWarning";
+    d->builtins << "EOFError";
+    d->builtins << "Ellipsis";
+    d->builtins << "EnvironmentError";
+    d->builtins << "Exception";
+    d->builtins << "False";
+    d->builtins << "FileExistsError";
+    d->builtins << "FileNotFoundError";
+    d->builtins << "FloatingPointError";
+    d->builtins << "FutureWarning";
+    d->builtins << "GeneratorExit";
+    d->builtins << "IOError";
+    d->builtins << "ImportError";
+    d->builtins << "ImportWarning";
+    d->builtins << "IndentationError";
+    d->builtins << "IndexError";
+    d->builtins << "InterruptedError";
+    d->builtins << "IsADirectoryError";
+    d->builtins << "KeyError";
+    d->builtins << "KeyboardInterrupt";
+    d->builtins << "LookupError";
+    d->builtins << "MemoryError";
+    d->builtins << "ModuleNotFoundError";
+    d->builtins << "NameError";
+    d->builtins << "None";
+    d->builtins << "NotADirectoryError";
+    d->builtins << "NotImplemented";
+    d->builtins << "NotImplementedError";
+    d->builtins << "OSError";
+    d->builtins << "OverflowError";
+    d->builtins << "PendingDeprecationWarning";
+    d->builtins << "PermissionError";
+    d->builtins << "ProcessLookupError";
+    d->builtins << "RecursionError";
+    d->builtins << "ReferenceError";
+    d->builtins << "ResourceWarning";
+    d->builtins << "RuntimeError";
+    d->builtins << "RuntimeWarning";
+    d->builtins << "StopAsyncIteration";
+    d->builtins << "StopIteration";
+    d->builtins << "SyntaxError";
+    d->builtins << "SyntaxWarning";
+    d->builtins << "SystemError";
+    d->builtins << "SystemExit";
+    d->builtins << "TabError";
+    d->builtins << "TimeoutError";
+    d->builtins << "True";
+    d->builtins << "TypeError";
+    d->builtins << "UnboundLocalError";
+    d->builtins << "UnicodeDecodeError";
+    d->builtins << "UnicodeEncodeError";
+    d->builtins << "UnicodeError";
+    d->builtins << "UnicodeTranslateError";
+    d->builtins << "UnicodeWarning";
+    d->builtins << "UserWarning";
+    d->builtins << "ValueError";
+    d->builtins << "Warning";
+    d->builtins << "ZeroDivisionError";
+    d->builtins << "__build_class__";
+    d->builtins << "__debug__";
+    d->builtins << "__doc__";
+    d->builtins << "__import__";
+    d->builtins << "__loader__";
+    d->builtins << "__name__";
+    d->builtins << "__package__";
+    d->builtins << "__spec__";
+    d->builtins << "abs";
+    d->builtins << "all";
+    d->builtins << "any";
+    d->builtins << "ascii";
+    d->builtins << "bin";
+    d->builtins << "bool";
+    d->builtins << "bytearray";
+    d->builtins << "bytes";
+    d->builtins << "callable";
+    d->builtins << "chr";
+    d->builtins << "classmethod";
+    d->builtins << "compile";
+    d->builtins << "complex";
+    d->builtins << "copyright";
+    d->builtins << "credits";
+    d->builtins << "delattr";
+    d->builtins << "dict";
+    d->builtins << "dir";
+    d->builtins << "divmod";
+    d->builtins << "enumerate";
+    d->builtins << "eval";
+    d->builtins << "exec";
+    d->builtins << "exit";
+    d->builtins << "filter";
+    d->builtins << "float";
+    d->builtins << "format";
+    d->builtins << "frozenset";
+    d->builtins << "getattr";
+    d->builtins << "globals";
+    d->builtins << "hasattr";
+    d->builtins << "hash";
+    d->builtins << "help";
+    d->builtins << "hex";
+    d->builtins << "id";
+    d->builtins << "input";
+    d->builtins << "int";
+    d->builtins << "isinstance";
+    d->builtins << "issubclass";
+    d->builtins << "iter";
+    d->builtins << "len";
+    d->builtins << "license";
+    d->builtins << "list";
+    d->builtins << "locals";
+    d->builtins << "map";
+    d->builtins << "max";
+    d->builtins << "memoryview";
+    d->builtins << "min";
+    d->builtins << "next";
+    d->builtins << "object";
+    d->builtins << "oct";
+    d->builtins << "open";
+    d->builtins << "ord";
+    d->builtins << "pow";
+    d->builtins << "print";
+    d->builtins << "property";
+    d->builtins << "quit";
+    d->builtins << "range";
+    d->builtins << "repr";
+    d->builtins << "reversed";
+    d->builtins << "round";
+    d->builtins << "set";
+    d->builtins << "setattr";
+    d->builtins << "slice";
+    d->builtins << "sorted";
+    d->builtins << "staticmethod";
+    d->builtins << "str";
+    d->builtins << "sum";
+    d->builtins << "super";
+    d->builtins << "tuple";
+    d->builtins << "type";
+    d->builtins << "vars";
+    d->builtins << "zip";
+
+    // Declare how detected entities should be formatted.
+
+    d->keyword_format.setForeground(Qt::blue);
+
+    d->operator_format.setForeground(Qt::red);
+
+    //d->builtin_format.setFontWeight(QFont::Bold);
+
+    d->comment_format.setForeground(Qt::darkGreen);
+    d->comment_format.setFontItalic(true);
+
+    d->defclass_format.setFontWeight(QFont::Bold);
+
+    d->brace_format.setForeground(Qt::darkGray);
+
+    d->string_format.setForeground(Qt::magenta);
+
+    d->number_format.setForeground(Qt::magenta);
+}
+
+tissueGrowthSimulatorCodeEditorSyntaxHighlighter::~tissueGrowthSimulatorCodeEditorSyntaxHighlighter()
+{
+    delete d;
 }
 
 void tissueGrowthSimulatorCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
 {
+    QRegularExpressionMatch match;
+    QRegularExpressionMatchIterator it;
 
-    QRegularExpressionMatch match = m_commentExpr.match(text);
+    // Highlight comments.
+
+    match = d->comment_re.match(text);
 
     if(match.hasMatch())
     {
-        setFormat(0, text.size(), m_commentFormat);
+        setFormat(0, text.size(), d->comment_format);
     }
     else
     {
-        QRegularExpressionMatchIterator it = m_wordExpr.globalMatch(text);
+        // Highlight keywords and builtins.
+
+        it = d->word_re.globalMatch(text);
         while(it.hasNext())
         {
             match = it.next();
 
             const int nth = 1;
 
-            QString captured = match.captured(nth);
-            int start = match.capturedStart(nth);
-            int length = match.capturedLength(nth);
+            const QString captured = match.captured(nth);
+            const int start = match.capturedStart(nth);
+            const int length = match.capturedLength(nth);
 
-            if(m_keywords.contains(captured))
+            if(d->keywords.contains(captured))
             {
-                setFormat(start, length, m_keywordFormat);
+                setFormat(start, length, d->keyword_format);
             }
-            else if(m_builtins.contains(captured))
+            else if(d->builtins.contains(captured))
             {
-                setFormat(start, length, m_builtinFormat);
+                setFormat(start, length, d->builtin_format);
+            }
+        }
+
+        // Highlight names of functions and classes.
+
+        it = d->defclass_re.globalMatch(text);
+        while(it.hasNext())
+        {
+            match = it.next();
+
+            const int nth = 2;
+
+            const QString captured = match.captured(nth);
+            const int start = match.capturedStart(nth);
+            const int length = match.capturedLength(nth);
+
+            setFormat(start, length, d->defclass_format);
+        }
+
+        // Highlight braces.
+
+        for(int i = 0; i < text.size(); i++)
+        {
+            if(d->braces.contains(text.at(i)))
+            {
+                setFormat(i, 1, d->brace_format);
+            }
+        }
+
+        // Highlight operators.
+
+        for(QString oper : d->operators)
+        {
+            int j = 0;
+            while( (j = text.indexOf(oper,j)) != -1 )
+            {
+                setFormat(j, oper.size(), d->operator_format);
+                j += oper.size();
+            }
+        }
+
+        // Highlight number litterals.
+
+        it = d->number_re.globalMatch(text);
+        while(it.hasNext())
+        {
+            match = it.next();
+
+            const int nth = 0;
+
+            const QString captured = match.captured(nth);
+            const int start = match.capturedStart(nth);
+            const int length = match.capturedLength(nth);
+
+            setFormat(start, length, d->number_format);
+        }
+
+        // Highlight string litterals.
+
+        {
+            const QString species_of_quotes = "\"'";
+
+            QChar kind = 0;
+            int start = 0;
+            int length = 0;
+
+            for(int j = 0; j < text.size(); j++)
+            {
+                if(kind == 0)
+                {
+                    if(species_of_quotes.contains(text.at(j)))
+                    {
+                        kind = text.at(j);
+                        start = j;
+                        length = 1;
+                    }
+                }
+                else
+                {
+                    length++;
+                    if(text.at(j) == kind && text.at(j-1) != QChar('\\'))
+                    {
+                        setFormat(start, length, d->string_format);
+                        kind = 0;
+                    }
+                }
+            }
+
+            if(kind != 0)
+            {
+                setFormat(start, length, d->string_format);
             }
         }
     }

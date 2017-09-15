@@ -17,9 +17,11 @@
 
 #include <dtkConfig.h>
 
+#include <dtkWidgets/dtkNotificationDisplay.h>
+#include <dtkWidgets/dtkNotification.h>
 #include <dtkWidgets/dtkInterpreter.h>
-#include <dtkSplitter>
-#include <dtkLog.h>
+#include <dtkWidgets/dtkSplitter.h>
+#include <dtkLog/dtkLogger.h>
 
 #if defined(DTK_BUILD_WRAPPERS)
 #include <dtkScript/dtkScriptInterpreterPython.h>
@@ -29,9 +31,6 @@ class tissueGrowthSimulatorPythonInterpreterWidgetPrivate
 {
 public:
 
-    //tissueGrowthSimulatorPythonInterpreterWidgetPrivate() : unsaved(false) { }
-
-    //QTextEdit* editor_widget;
     tissueGrowthSimulatorCodeEditor* editor_widget;
 
     dtkInterpreter* interpreter_widget;
@@ -39,17 +38,6 @@ public:
 #if defined(DTK_BUILD_WRAPPERS)
     dtkScriptInterpreterPython* interpreter;
 #endif
-
-    /*
-    QString path;
-
-    bool unsaved;
-
-    bool hasFile()
-    {
-        return path.isEmpty() == false;
-    }
-    */
 };
 
 tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpreterWidget(QWidget *parent) : dtkSplitter(parent)
@@ -67,9 +55,18 @@ tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpr
     d->interpreter_widget->registerInterpreter(d->interpreter);
 #endif
     addWidget(d->interpreter_widget);
+
+    // Put some sample python into the editor.
+
+    QString python_sample;
+    QTextStream stream(&python_sample);
+    stream << "#\n";
+    stream << "# " + QDate::currentDate().toString() + "\n";
+    stream << "#\n";
+    d->editor_widget->setPlainText(python_sample);
 }
 
-tissueGrowthSimulatorPythonInterpreterWidget::~tissueGrowthSimulatorPythonInterpreterWidget(void)
+tissueGrowthSimulatorPythonInterpreterWidget::~tissueGrowthSimulatorPythonInterpreterWidget()
 {
     delete d->interpreter_widget;
 #if defined(DTK_BUILD_WRAPPERS)
@@ -80,17 +77,6 @@ tissueGrowthSimulatorPythonInterpreterWidget::~tissueGrowthSimulatorPythonInterp
 
 void tissueGrowthSimulatorPythonInterpreterWidget::openFile()
 {
-    /*
-    if(d->unsaved)
-    {
-        QMessageBox::StandardButton ret = QMessageBox::question(this, "Save changes ?", "Save changes ?", QMessageBox::Yes|QMessageBox::No);
-        if(ret == QMessageBox::Yes)
-        {
-            //bool ret = saveFile();
-        }
-    }
-    */
-
     QString path = QFileDialog::getOpenFileName(this, "Open script");
 
     if(path.isNull() == false)
@@ -133,11 +119,18 @@ void tissueGrowthSimulatorPythonInterpreterWidget::runFile()
 
     QString output;
 
+    QTime time;
+    time.start();
+
 #if defined(DTK_BUILD_WRAPPERS)
     output = d->interpreter->interpret(input, &status);
 #endif
 
+    int elapsed = time.elapsed();
+
     d->interpreter_widget->output(output);
+
+    dtkNotify(QString("Script executed in %1 ms.").arg(elapsed), 30000);
 }
 
 //
