@@ -64,10 +64,11 @@ protected:
     QRegularExpression m_commentExpr;
     QRegularExpression m_wordExpr;
 
-    QStringList m_keywords;
-    QStringList m_builtins;
+    QSet<QString> m_keywords;
+    QSet<QString> m_builtins;
 
     QTextCharFormat m_keywordFormat;
     QTextCharFormat m_builtinFormat;
     QTextCharFormat m_commentFormat;
 };
+
