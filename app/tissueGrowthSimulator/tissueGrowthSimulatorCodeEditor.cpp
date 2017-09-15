@@ -1,12 +1,12 @@
 #include "tissueGrowthSimulatorCodeEditor.h"
-#include <set>
+//#include <set>
 
 class tissueGrowthSimulatorCodeEditorPrivate
 {
 public:
     QWidget* line_number_area;
     tissueGrowthSimulatorCodeEditorSyntaxHighlighter* highlighter;
-    std::set<QString> vocabulary;
+    //std::set<QString> vocabulary;
     //QTimer* timer;
 };
 
