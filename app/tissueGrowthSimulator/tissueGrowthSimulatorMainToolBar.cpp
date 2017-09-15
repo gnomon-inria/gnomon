@@ -5,6 +5,7 @@
 #include <dtkComposerScene.h>
 #include <dtkComposerWidget.h>
 #include <dtkComposerEvaluator.h>
+#include <dtkNotificationDisplay.h>
 
 #include <vector>
 
@@ -79,6 +80,9 @@ tissueGrowthSimulatorMainToolBar::tissueGrowthSimulatorMainToolBar(QWidget* pare
 
     d->run_script_action = addAction(QIcon::fromTheme("system-run"), "Run script");
     d->script_specific_actions.push_back(d->run_script_action);
+
+    // Create the notification display.
+    addWidget(new dtkNotificationDisplay(this));
 
     // Connect some actions.
     //tissueGrowthSimulatorPythonInterpreterWidget
