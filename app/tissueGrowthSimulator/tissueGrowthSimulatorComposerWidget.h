@@ -19,6 +19,7 @@
 #include <QtWidgets>
 
 class dtkComposerSceneNode;
+class dtkComposerWidget;
 
 class tissueGrowthSimulatorComposerWidgetPrivate;
 
@@ -29,6 +30,9 @@ class tissueGrowthSimulatorComposerWidget : public QFrame
 public:
      tissueGrowthSimulatorComposerWidget(QWidget *parent = 0);
     ~tissueGrowthSimulatorComposerWidget(void);
+
+public:
+    dtkComposerWidget* composerWidget();
 
 public slots:
     bool compositionOpen(void);

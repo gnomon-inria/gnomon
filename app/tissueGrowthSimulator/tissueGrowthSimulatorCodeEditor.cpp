@@ -109,6 +109,9 @@ tissueGrowthSimulatorCodeEditorSyntaxHighlighter::tissueGrowthSimulatorCodeEdito
     m_commentExpr("^[[:blank:]]*#"),
     m_wordExpr("([a-zA-Z_][a-zA-Z0-9_]+)")
 {
+    // TODO :
+    // use a std::set<std::string> with lexicographic ordering rather than QStringList.
+
     m_keywords << "and";
     m_keywords << "as";
     m_keywords << "assert";

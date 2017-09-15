@@ -170,12 +170,6 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     d->redo_action = d->composer->stack()->createRedoAction(this);
     d->redo_action->setShortcut(QKeySequence::Redo);
 
-    // -- Toolbar
-
-    dtkComposerEvaluatorToolBar *mainToolBar = new dtkComposerEvaluatorToolBar(tr("Main"), this);
-    mainToolBar->setComposerWidget(d->composer);
-    mainToolBar->addWidget(new dtkNotificationDisplay(this));
-
     // -- Menus
 
     QMenuBar *menu_bar = new QMenuBar();
@@ -217,16 +211,18 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     QMenu *window_menu = menu_bar->addMenu("Window");
     window_menu->addAction(showControlsAction);
 
+    /*
     QMenu *run_menu = mainToolBar->menu(this);
     menu_bar->addMenu(run_menu);
     QAction *catchExceptionsAction = new QAction("Catch exceptions", this);
     run_menu->addAction(catchExceptionsAction);
     catchExceptionsAction->setCheckable(true);
     catchExceptionsAction->setChecked(true);
+    */
 
     // -- Connections
 
-    connect(catchExceptionsAction, SIGNAL(triggered(bool)), d->composer->evaluator(),SLOT(setCatchExceptions(bool)));
+    //connect(catchExceptionsAction, SIGNAL(triggered(bool)), d->composer->evaluator(),SLOT(setCatchExceptions(bool)));
 
     connect(showControlsAction, SIGNAL(triggered()), this, SLOT(showControls()));
 
@@ -289,7 +285,6 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     setLayout(main_layout);
 
     main_layout->addWidget(menu_bar);
-    main_layout->addWidget(mainToolBar);
     main_layout->addWidget(central);
 
     d->setCurrentFile("");
@@ -532,6 +527,10 @@ void tissueGrowthSimulatorComposerWidget::onComposerNodeFlagged(dtkComposerScene
     dtkComposerViewController::instance()->insert(node);
 }
 
+dtkComposerWidget* tissueGrowthSimulatorComposerWidget::composerWidget()
+{
+    return d->composer;
+}
 
 //
 // tissueGrowthSimulatorComposerWidget.cpp ends here

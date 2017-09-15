@@ -23,6 +23,7 @@ set(${PROJECT_NAME}_HEADERS
   tissueGrowthSimulatorComposerWidget.h
   tissueGrowthSimulatorComposerWidget_p.h
   tissueGrowthSimulatorEditorsPanel.h
+  tissueGrowthSimulatorMainToolBar.h
   tissueGrowthSimulatorMainWidget.h
   tissueGrowthSimulatorMainWindow.h
   tissueGrowthSimulatorPythonInterpreterWidget.h)
@@ -31,6 +32,7 @@ set(${PROJECT_NAME}_SOURCES
   tissueGrowthSimulatorCodeEditor.cpp
   tissueGrowthSimulatorComposerWidget.cpp
   tissueGrowthSimulatorEditorsPanel.cpp
+  tissueGrowthSimulatorMainToolBar.cpp
   tissueGrowthSimulatorMainWidget.cpp
   tissueGrowthSimulatorMainWindow.cpp
   tissueGrowthSimulatorPythonInterpreterWidget.cpp

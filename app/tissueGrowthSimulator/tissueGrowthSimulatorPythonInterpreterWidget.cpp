@@ -52,46 +52,21 @@ public:
     */
 };
 
-tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpreterWidget(QWidget *parent) : QFrame(parent)
+tissueGrowthSimulatorPythonInterpreterWidget::tissueGrowthSimulatorPythonInterpreterWidget(QWidget *parent) : dtkSplitter(parent)
 {
     d = new tissueGrowthSimulatorPythonInterpreterWidgetPrivate;
-
-    // Create the layout and fill it with widgets.
-
-    QVBoxLayout* layout = new QVBoxLayout;
-    setLayout(layout);
-
-    QToolBar* tb = new QToolBar;
-    layout->addWidget(tb);
-
-    dtkSplitter* splitter = new dtkSplitter;
-    layout->addWidget(splitter, 1);
 
     // Create the editor and the prompt and add them to the splitter.
 
     d->editor_widget = new tissueGrowthSimulatorCodeEditor;
-    splitter->addWidget(d->editor_widget);
+    addWidget(d->editor_widget);
 
     d->interpreter_widget = new dtkInterpreter;
 #if defined(DTK_BUILD_WRAPPERS)
     d->interpreter = new dtkScriptInterpreterPython;
     d->interpreter_widget->registerInterpreter(d->interpreter);
 #endif
-    splitter->addWidget(d->interpreter_widget);
-
-    // Fill the toolbar.
-
-    QAction* a_open = tb->addAction("Open");
-    connect(a_open, SIGNAL(triggered()), this, SLOT(openFile()));
-
-    QAction* a_save = tb->addAction("Save");
-    connect(a_save, SIGNAL(triggered()), this, SLOT(saveFile()));
-
-    QAction* a_saveas = tb->addAction("Save as");
-    connect(a_saveas, SIGNAL(triggered()), this, SLOT(saveFileAs()));
-
-    QAction* a_run = tb->addAction("Run");
-    connect(a_run, SIGNAL(triggered()), this, SLOT(runFile()));
+    addWidget(d->interpreter_widget);
 }
 
 tissueGrowthSimulatorPythonInterpreterWidget::~tissueGrowthSimulatorPythonInterpreterWidget(void)

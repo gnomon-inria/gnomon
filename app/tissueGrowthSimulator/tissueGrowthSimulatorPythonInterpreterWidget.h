@@ -18,9 +18,11 @@
 #include <QtGui>
 #include <QtWidgets>
 
+#include <dtkSplitter>
+
 class tissueGrowthSimulatorPythonInterpreterWidgetPrivate;
 
-class tissueGrowthSimulatorPythonInterpreterWidget : public QFrame
+class tissueGrowthSimulatorPythonInterpreterWidget : public dtkSplitter
 {
     Q_OBJECT
 
@@ -28,7 +30,7 @@ public:
      tissueGrowthSimulatorPythonInterpreterWidget(QWidget *parent = Q_NULLPTR);
     ~tissueGrowthSimulatorPythonInterpreterWidget(void);
 
-protected slots:
+public slots:
     void openFile();
     void saveFile();
     void saveFileAs();
