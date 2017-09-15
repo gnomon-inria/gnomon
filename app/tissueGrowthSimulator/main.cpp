@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     application->setApplicationVersion("0.1.0");
 
     QCommandLineParser *parser = application->parser();
-    parser->setApplicationDescription("DTK visual programming.");
+    parser->setApplicationDescription("Tissue Growth Simulator application.");
 
     application->initialize();
 
