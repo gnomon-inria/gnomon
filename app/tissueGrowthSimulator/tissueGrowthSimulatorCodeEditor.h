@@ -21,12 +21,18 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    QString textUnderCursor();
+
+public slots:
+    void enableAutocompletion(bool enabled);
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
-    //void updateVocabulary();
+    void updateVocabulary();
+    void insertCompletion(QString);
 
 private:
     tissueGrowthSimulatorCodeEditorPrivate* d;
