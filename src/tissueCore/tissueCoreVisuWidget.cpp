@@ -57,7 +57,7 @@ tissueCoreVisuWidget::tissueCoreVisuWidget(QWidget *parent) : QFrame(parent)
     d->data = nullptr;
 
     d->renderer = vtkRenderer::New();
-    d->renderer->SetBackground(0, 0, 0);
+    d->renderer->SetBackground(1, 1, 1);
 
     d->window = vtkGenericOpenGLRenderWindow::New();
     d->window->AddRenderer(d->renderer);
@@ -68,8 +68,9 @@ tissueCoreVisuWidget::tissueCoreVisuWidget(QWidget *parent) : QFrame(parent)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->addWidget(d->widget);
+    layout->setContentsMargins(0, 0, 0, 0);
 
-    this->setFixedHeight(300);
+    // this->setFixedHeight(300);
     this->setLayout(layout);
 }
 
@@ -94,7 +95,7 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
 
     QMap<long, QVariant> positions = cell.elementProperty(0,"position");
 
-    QMap<long,long> vertexPoint = QMap<long,long>();
+    QMap<long,long> vertexPoint;
 
     QList<long> vertices = cell.elementIds(0);
 
@@ -167,7 +168,7 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
 
     vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
     mapper->SetInputData(polydata);
-    mapper->SetScalarRange(0, 40);
+    mapper->SetScalarRange(0, cell.elementCount(2)-1);
 
     vtkActor* actor = vtkActor::New();
     actor->SetMapper(mapper);
