@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <tissueCore>
+
 class tissueOmero
 {
 public:

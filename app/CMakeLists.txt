@@ -13,6 +13,7 @@
 ### Code:
 
 add_subdirectory(tissueGrowthSimulator)
+add_subdirectory(tissueOmeroClient)
 
 ######################################################################
 ### CMakeLists.txt ends here

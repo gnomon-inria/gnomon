@@ -82,6 +82,8 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
+find_path(OMERO_DIR NAMES omero.h PATHS /opt/omero /usr/local /usr/local/omero)
+
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 
 find_package(dtk REQUIRED)
@@ -106,6 +108,7 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/tissueCore)
 include_directories(${CMAKE_SOURCE_DIR}/src/tissueComposer)
+include_directories(${CMAKE_SOURCE_DIR}/src/tissueOmero)
 
 ## ###################################################################
 ## Input
