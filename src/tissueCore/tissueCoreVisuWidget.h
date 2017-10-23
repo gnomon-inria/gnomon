@@ -18,11 +18,13 @@
 #include <QtGui>
 #include <QtWidgets>
 
+#include <dtkWidgets>
+
+class tissueCellComplexData;
+
 class tissueCoreVisuWidgetPrivate;
 
-class tissueCellComplexData;  // in fine tissueCellComplex
-
-class tissueCoreVisuWidget : public QFrame
+class tissueCoreVisuWidget : public QWidget
 {
     Q_OBJECT
 
@@ -30,7 +32,7 @@ public:
      tissueCoreVisuWidget(QWidget *parent = Q_NULLPTR);
     ~tissueCoreVisuWidget(void);
 
-    void addCellComplex(tissueCellComplexData &);  //  in fine tissueCellComplex
+    void addCellComplex(tissueCellComplexData&);
 
 private:
     tissueCoreVisuWidgetPrivate *d;

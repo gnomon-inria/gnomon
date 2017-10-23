@@ -55,7 +55,7 @@ tissueGrowthSimulatorMainWidget::tissueGrowthSimulatorMainWidget(QWidget *parent
     d->visualization_widget = new tissueCoreVisuWidget;
     d->visualization_widget->setObjectName("Main View");
 
-    QTimer::singleShot(1000, this, [=]() {
+    QTimer::singleShot(1000, this, [=] () {
         dtkViewController::instance()->add(d->visualization_widget);
     });
 }

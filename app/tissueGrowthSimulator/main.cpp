@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
     tissueGrowthSimulatorMainWindow *window = new tissueGrowthSimulatorMainWindow;
     window->show();
-    window->raise(); 
+    window->raise();
 
     return application->exec();
 }
