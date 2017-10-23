@@ -17,6 +17,7 @@
 ## #################################################################
 
 add_subdirectory(tissueCore)
+add_subdirectory(tissueOmero)
 
 if(DTK_BUILD_COMPOSER)
   add_subdirectory(tissueComposer)
