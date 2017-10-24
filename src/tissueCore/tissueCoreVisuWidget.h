@@ -24,7 +24,7 @@ class tissueCellComplexData;
 
 class tissueCoreVisuWidgetPrivate;
 
-class tissueCoreVisuWidget : public QWidget
+class tissueCoreVisuWidget : public dtkViewWidget
 {
     Q_OBJECT
 
@@ -32,7 +32,11 @@ public:
      tissueCoreVisuWidget(QWidget *parent = Q_NULLPTR);
     ~tissueCoreVisuWidget(void);
 
+public:
     void addCellComplex(tissueCellComplexData&);
+
+public:
+    QWidget *widget(void);
 
 private:
     tissueCoreVisuWidgetPrivate *d;

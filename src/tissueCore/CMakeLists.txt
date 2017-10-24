@@ -75,7 +75,10 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} Qt5::Gui)
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+
 target_link_libraries(${PROJECT_NAME} dtkCore)
+target_link_libraries(${PROJECT_NAME} dtkWidgets)
+
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 if(DTK_BUILD_WRAPPERS)

@@ -51,7 +51,7 @@ public:
     vtkPolyData *data;
 };
 
-tissueCoreVisuWidget::tissueCoreVisuWidget(QWidget *parent) : QWidget(parent)
+tissueCoreVisuWidget::tissueCoreVisuWidget(QWidget *parent) : dtkViewWidget(parent)
 {
     d = new tissueCoreVisuWidgetPrivate;
 
@@ -134,6 +134,11 @@ void tissueCoreVisuWidget::addCellComplex(tissueCellComplexData &cell)
     qDebug() << Q_FUNC_INFO << "Object added";
 
     return;
+}
+
+QWidget *tissueCoreVisuWidget::widget(void)
+{
+    return d->widget;
 }
 
 //
