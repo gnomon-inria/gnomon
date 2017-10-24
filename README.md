@@ -39,7 +39,7 @@ In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt. In
 ``` shell
 cd $HOME/Development/Qt
 echo "$HOME/Development/Qt/5.9.2/gcc_64/bin
-MyPathToQtFolder/5.9.2/gcc_64" > qt592.conf
+$HOME/Development/Qt/5.9.2/gcc_64" > qt592.conf
 ```
 
 In the bashrc file, one can add the following lines:
@@ -50,17 +50,17 @@ In the bashrc file, one can add the following lines:
 ## #################################################################
 
 export QT_SELECT=qt592
-export Qt5_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5'
-export Qt5Core_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Core'
-export Qt5Concurrent_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Concurrent'
-export Qt5Gui_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Gui'
-export Qt5Widgets_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Widgets'
-export Qt5Test_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Test'
-export Qt5OpenGL_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5OpenGL'
-export Qt5PrintSupport_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5PrintSupport'
-export Qt5Xml_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Xml'
-export Qt5SerialBus_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5SerialBus'
-export Qt5Network_DIR='MyPathToQtFolder/5.9.2/gcc_64/lib/cmake/Qt5Network'
+export Qt5_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5'
+export Qt5Core_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Core'
+export Qt5Concurrent_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Concurrent'
+export Qt5Gui_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Gui'
+export Qt5Widgets_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Widgets'
+export Qt5Test_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Test'
+export Qt5OpenGL_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5OpenGL'
+export Qt5PrintSupport_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5PrintSupport'
+export Qt5Xml_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Xml'
+export Qt5SerialBus_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5SerialBus'
+export Qt5Network_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Network'
 ```
 
 It remains to set this config as the default one for qtchooser. One has to create as sudoer a symbolink link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
