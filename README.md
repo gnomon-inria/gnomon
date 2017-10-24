@@ -11,6 +11,9 @@ sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
 ```
 
+### MacOS config
+
+
 ### CMake 3.9 version
 
 Uninstall previous version if older. Check that `libncurses5-dev` or equivalent is installed, then do the following:
@@ -92,6 +95,14 @@ make -j4
 ```
 
 ## dtk and applicative layers installation
+
+### MacOS case
+
+For MacOs users, in every cmake configurations that follow, one has to add the following cmake option:
+
+``` shell
+-DPYTHON_INCLUDE_DIR=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7
+```
 
 ### dtk
 
