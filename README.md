@@ -31,3 +31,17 @@ $ git submodule update --init
 $ mkdir build
 $ cmake ..
 '''
+
+Sources can also be downloaded from:
+https://codeload.github.com/openmicroscopy/openmicroscopy/zip/develop/openmicroscopy-develop.zip
+in this case, compilation with cmake does not work.
+Prérequisite:
+- ice (cf before)
+- jre (http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jre-9.0.1_osx-x64_bin.dmg)
+- JDK (http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_osx-x64_bin.dmg)
+
+
+Test:
+http://downloads.openmicroscopy.org/omero/5.4.0/artifacts/OMERO.insight-5.4.0-ice36-b74-mac.zip
+cmake -DCMAKE_INCLUDE_PATH:PATH=/usr/local/opt/ice/include -DCMAKE_LIBRARY_PATH:PATH=/usr/local/opt/ice/lib -DICE_HOME:PATH=/usr/local/opt/ice -Dice-SLICE_DIR:PATH=/usr/local/opt/ice ..
+brew install zeroc-ice/tap/ice@3.6

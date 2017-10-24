@@ -82,7 +82,23 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-find_path(OMERO_DIR NAMES omero.h PATHS /opt/omero /usr/local /usr/local/omero)
+set(Ice_DEBUG ON)
+find_package(Ice)
+
+find_package(omero-ice)
+find_package(omero-client)
+
+if(Ice_FOUND)
+  message("${Ice_LIBRARIES}")
+endif()
+
+if (OMERO_CLIENT_FOUND)
+  include_directories(${OMERO_CLIENT_INCLUDE_DIR})
+endif()
+
+if (OMERO_ICE_FOUND)
+  include_directories(${OMERO_ICE_INCLUDE_DIR})
+endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 

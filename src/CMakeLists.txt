@@ -17,7 +17,10 @@
 ## #################################################################
 
 add_subdirectory(tissueCore)
-add_subdirectory(tissueOmero)
+
+if(OMERO_ICE_FOUND AND OMERO_CLIENT_FOUND)
+  add_subdirectory(tissueOmero)
+endif()
 
 if(DTK_BUILD_COMPOSER)
   add_subdirectory(tissueComposer)

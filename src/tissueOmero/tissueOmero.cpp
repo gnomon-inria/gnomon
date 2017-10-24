@@ -34,7 +34,7 @@ tissueOmero::tissueOmero(void)
 
     qDebug() << Q_FUNC_INFO << d->omero_server;
 
-    client = new omero::client(qPrintable(d->omero_server));
+    d->client = new omero::client(qPrintable(d->omero_server));
     //client->createSession("root", "ome");
 }
 
