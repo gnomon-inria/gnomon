@@ -67,6 +67,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core)
 #target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} tissueCore)
+target_link_libraries(${PROJECT_NAME} ${OMERO_DIR})
 
 if(DTK_BUILD_WRAPPERS)
 

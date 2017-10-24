@@ -14,11 +14,14 @@
 
 #include "tissueOmero.h"
 #include <tissueCore>
+#include <omero/client.h>
 
 class tissueOmeroPrivate
 {
 public:
     QString omero_server;
+    omero::client *client;
+
 };
 
 tissueOmero::tissueOmero(void)
@@ -30,6 +33,9 @@ tissueOmero::tissueOmero(void)
     settings.endGroup();
 
     qDebug() << Q_FUNC_INFO << d->omero_server;
+
+    client = new omero::client(qPrintable(d->omero_server));
+    //client->createSession("root", "ome");
 }
 
 tissueOmero::~tissueOmero(void)
