@@ -22,6 +22,11 @@ public:
     tissueOmero(void);
    ~tissueOmero(void);
 
+public:
+  void readData(void);
+  void writeData(void);
+  void browseDB(void);
+
 private:
     class tissueOmeroPrivate *d;
 };

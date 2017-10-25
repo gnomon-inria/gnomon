@@ -28,16 +28,16 @@ tissueCoreSettings::tissueCoreSettings(void) : QSettings(QSettings::IniFormat, Q
     this->beginGroup("omero");
 
     if(!this->allKeys().contains("server"))
-        this->setValue("omero", QString());
+        this->setValue("server", QString("myhost.company.com"));
 
     if(!this->allKeys().contains("user"))
-        this->setValue("user", QString());
+        this->setValue("user", QString("nobody"));
 
     if(!this->allKeys().contains("passwd"))
-        this->setValue("passwd", QString());
+        this->setValue("passwd", QString("insert your password here"));
 
     if(!this->allKeys().contains("port"))
-        this->setValue("port", QString());
+        this->setValue("port", 4064);
 
     this->sync();
     this->endGroup();

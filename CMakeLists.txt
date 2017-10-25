@@ -86,19 +86,14 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-set(Ice_DEBUG true)
+#set(Ice_DEBUG true)
 set(Ice_VERSION 3.6.4)
 find_package(Ice ${Ice_VERSION} COMPONENTS Ice IceUtil Glacier2 IceXML)
 find_package(omero-ice)
 find_package(omero-client)
 
-message("ICE FND: ${Ice_FOUND}")
-message("ICE INC: ${Ice_INCLUDE_DIRS}")
-message("ICE LIB: ${Ice_LIBRARIES}")
-message("SLICE  : ${Ice_SLICE_DIRS}")
-
 if(Ice_FOUND)
-  include_directories(${ICE_INCLUDE_DIRS})
+  include_directories(${Ice_INCLUDE_DIRS})
 endif()
 
 if (OMERO_CLIENT_FOUND)
