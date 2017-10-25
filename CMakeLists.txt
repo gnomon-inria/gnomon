@@ -46,7 +46,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules" "${CMAKE_SOURCE_DIR}/cmake")
+## #################################################################
+## Load project .cmake files first
+## #################################################################
+
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_ROOT}/Modules")
 
 ## #################################################################
 ## Install prefix
@@ -82,9 +86,16 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
+set(Ice_DEBUG true)
 find_package(Ice)
 find_package(omero-ice)
 find_package(omero-client)
+
+if(ICE_FOUND)
+  message("ICE INC: ${Ice_INCLUDE_DIRS}")
+  message("ICE LIB: ${Ice_LIBRARIES}")
+  message("SLICE  : ${Ice_SLICE_DIRS}")
+endif()
 
 if (OMERO_CLIENT_FOUND)
   include_directories(${OMERO_CLIENT_INCLUDE_DIR})
