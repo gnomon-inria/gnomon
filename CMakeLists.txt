@@ -89,7 +89,9 @@ find_package(omero-ice)
 find_package(omero-client)
 
 if(Ice_FOUND)
-  message("${Ice_LIBRARIES}")
+  message("lib = ${Ice_LIBRARIES}")
+  message("ver = ${Ice_VERSION}")
+  message("inc = ${Ice_INCLUDE_DIRS}")
 endif()
 
 if (OMERO_CLIENT_FOUND)
