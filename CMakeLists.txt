@@ -47,12 +47,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 ## #################################################################
-## Load project .cmake files first
-## #################################################################
-
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_ROOT}/Modules")
-
-## #################################################################
 ## Install prefix
 ## #################################################################
 
@@ -86,15 +80,18 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-set(Ice_DEBUG true)
-find_package(Ice)
+#set(Ice_DEBUG true)
+set(Ice_VERSION 3.6.4)
+find_package(Ice ${Ice_VERSION} COMPONENTS Ice IceUtil Glacier2 IceXML)
 find_package(omero-ice)
 find_package(omero-client)
 
-if(ICE_FOUND)
-  message("ICE INC: ${Ice_INCLUDE_DIRS}")
-  message("ICE LIB: ${Ice_LIBRARIES}")
-  message("SLICE  : ${Ice_SLICE_DIRS}")
+message("ICE FND: ${Ice_FOUND}")
+message("ICE INC: ${Ice_INCLUDE_DIRS}")
+message("ICE LIB: ${Ice_LIBRARIES}")
+message("SLICE  : ${Ice_SLICE_DIRS}")
+
+if(Ice_FOUND)
   include_directories(${ICE_INCLUDE_DIRS})
 endif()
 
