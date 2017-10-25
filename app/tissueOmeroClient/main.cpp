@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     application->setApplicationVersion("0.1.0");
 
     tissueOmero omero;
+    omero.browseDB();
 
     return 0;
 }

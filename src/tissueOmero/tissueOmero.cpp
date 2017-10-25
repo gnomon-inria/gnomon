@@ -15,6 +15,13 @@
 #include "tissueOmero.h"
 #include <tissueCore>
 #include <omero/client.h>
+#include <omero/api/IContainer.h>
+#include <omero/api/IAdmin.h>
+#include <omero/sys/ParametersI.h>
+#include <omero/all.h>
+#include <omero/api/ISession.h>
+#include <omero/model/Session.h>
+
 
 class tissueOmeroPrivate
 {
@@ -26,7 +33,7 @@ public:
 public:
     omero::client_ptr client;
     omero::api::ServiceFactoryPrx sf;
-
+    omero::api::IContainerPrx containerService;
 
 };
 
@@ -55,12 +62,28 @@ tissueOmero::~tissueOmero(void)
   if(d->client){
     d->client->closeSession();
   }
+
   delete d;
 }
 
 void tissueOmero::browseDB(void)
 {
+  int long userID = d->sf->getAdminService()->getEventContext()->userId;
+  qWarning() << "OMERO: UserID: " << userID ;
 
+  omero::sys::ParametersIPtr params = new omero::sys::ParametersI();
+
+	//indicate to load leaves
+	params->leaves();
+  params->addId(omero::rtypes::rlong(userID));
+
+  omero::api::IContainerPrx containerService = d->sf->getContainerService();
+  omero::sys::LongList list;
+	omero::api::IObjectList objlist = containerService->loadContainerHierarchy("Project", list, params);
+  qWarning() << "OMERO: Found projects" << objlist.size() ;
+
+  omero::api::IObjectList objlist2 = containerService->loadContainerHierarchy("Dataset", list, params);
+  qWarning() << "OMERO: Found dataset" << objlist2.size() ;
 }
 
 void tissueOmero::readData(void)
