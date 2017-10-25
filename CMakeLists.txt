@@ -95,6 +95,7 @@ if(ICE_FOUND)
   message("ICE INC: ${Ice_INCLUDE_DIRS}")
   message("ICE LIB: ${Ice_LIBRARIES}")
   message("SLICE  : ${Ice_SLICE_DIRS}")
+  include_directories(${ICE_INCLUDE_DIRS})
 endif()
 
 if (OMERO_CLIENT_FOUND)
