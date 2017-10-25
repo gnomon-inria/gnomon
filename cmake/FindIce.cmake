@@ -365,7 +365,7 @@ function(_Ice_FIND)
       HINTS ${ice_roots}
       PATH_SUFFIXES ${ice_library_suffixes}
       DOC "Ice ${component} library (debug)")
-    include(${CMAKE_CURRENT_LIST_DIR}/SelectLibraryConfigurations.cmake)
+    include(SelectLibraryConfigurations.cmake)
     select_library_configurations(Ice_${component_upcase})
     mark_as_advanced("${component_cache_release}" "${component_cache_debug}")
     if(${component_cache})
@@ -420,7 +420,7 @@ endfunction()
 
 _Ice_FIND()
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs.cmake)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ice
                                   FOUND_VAR Ice_FOUND
                                   REQUIRED_VARS Ice_SLICE2CPP_EXECUTABLE
