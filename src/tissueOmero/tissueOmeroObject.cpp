@@ -34,7 +34,7 @@ tissueOmeroObject::~tissueOmeroObject(void)
   delete d;
 }
 
-tissueOmeroObject::setId(int id)
+void tissueOmeroObject::setId(int id)
 {
   d->id = id;
 }
