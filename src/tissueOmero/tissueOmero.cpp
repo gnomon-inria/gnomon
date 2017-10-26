@@ -13,6 +13,7 @@
 // Code:
 
 #include "tissueOmero.h"
+#include "tissueOmeroObject.h"
 #include <tissueCore>
 #include <omero/client.h>
 #include <omero/api/IContainer.h>
@@ -29,8 +30,8 @@ public:
 public:
     omero::client_ptr client;
     omero::api::ServiceFactoryPrx sf;
-
-
+public:
+    QList<tissueOmeroObject> topDir;
 };
 
 tissueOmero::tissueOmero(void)
@@ -58,6 +59,7 @@ tissueOmero::~tissueOmero(void)
   if(d->client){
     d->client->closeSession();
   }
+  d->topDir.clear();
   delete d;
 }
 
