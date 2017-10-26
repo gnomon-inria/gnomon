@@ -21,6 +21,8 @@
 #include <dtkCore>
 #include <dtkWidgets>
 
+class tissueCellComplex;
+
 class tissueViewPrivate;
 
 class tissueView : public dtkViewWidget
@@ -30,6 +32,9 @@ class tissueView : public dtkViewWidget
 public:
      tissueView(QWidget *parent = Q_NULLPTR);
     ~tissueView(void);
+
+public:
+    void addCellComplex(tissueCellComplex&);
 
 public:
     QWidget *widget(void);
