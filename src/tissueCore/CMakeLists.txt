@@ -27,17 +27,26 @@ set(${PROJECT_NAME}_HEADERS
   tissueCore.h
   tissueCoreSettings
   tissueCoreSettings.h
+  tissueCellComplex
+  tissueCellComplex.h
   tissueCellComplexData
   tissueCellComplexData.h
-  tissueCellComplex
-  tissueCellComplex.h)
+  tissueCellGraph
+  tissueCellGraph.h
+  tissueAbstractCellGraphData
+  tissueAbstractCellGraphData.h
+  tissueCoreVisuWidget
+  tissueCoreVisuWidget.h)
 
 set(${PROJECT_NAME}_SOURCES
   tissueAbstractTissueGrowthModel.cpp
   tissueAbstractCellGraphFromImage.cpp
   tissueCore.cpp
   tissueCoreSettings.cpp
-  tissueCellComplexData.cpp)
+  tissueCellComplexData.cpp
+  tissueCellComplexData.cpp
+  tissueAbstractCellGraphData.cpp
+  tissueCoreVisuWidget.cpp)
 
 ## #################################################################
 ## Wrapping
