@@ -27,8 +27,6 @@ set(${PROJECT_NAME}_HEADERS
   tissueCoreSettings.h
   tissueCellComplexData
   tissueCellComplexData.h
-  tissueCoreVisuWidget
-  tissueCoreVisuWidget.h
   tissueCellComplex
   tissueCellComplex.h)
 
@@ -36,8 +34,7 @@ set(${PROJECT_NAME}_SOURCES
   tissueAbstractTissueGrowthModel.cpp
   tissueCore.cpp
   tissueCoreSettings.cpp
-  tissueCellComplexData.cpp
-  tissueCoreVisuWidget.cpp)
+  tissueCellComplexData.cpp)
 
 ## #################################################################
 ## Wrapping

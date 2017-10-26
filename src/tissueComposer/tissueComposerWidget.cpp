@@ -12,8 +12,8 @@
 
 // Code:
 
-#include "tissueGrowthSimulatorComposerWidget.h"
-#include "tissueGrowthSimulatorComposerWidget_p.h"
+#include "tissueComposerWidget.h"
+#include "tissueComposerWidget_p.h"
 
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
@@ -53,10 +53,10 @@
 #include <QtWidgets>
 
 // /////////////////////////////////////////////////////////////////
-// tissueGrowthSimulatorComposerWidgetPrivate
+// tissueComposerWidgetPrivate
 // /////////////////////////////////////////////////////////////////
 
-bool tissueGrowthSimulatorComposerWidgetPrivate::maySave(void)
+bool tissueComposerWidgetPrivate::maySave(void)
 {
     if(this->closing)
         return true;
@@ -78,7 +78,7 @@ bool tissueGrowthSimulatorComposerWidgetPrivate::maySave(void)
     return true;
 }
 
-void tissueGrowthSimulatorComposerWidgetPrivate::setCurrentFile(const QString &file)
+void tissueComposerWidgetPrivate::setCurrentFile(const QString &file)
 {
      this->current_composition = file;
 
@@ -92,28 +92,23 @@ void tissueGrowthSimulatorComposerWidgetPrivate::setCurrentFile(const QString &f
      q->setWindowFilePath(shownName);
 }
 
-void tissueGrowthSimulatorComposerWidgetPrivate::setModified(bool modified)
+void tissueComposerWidgetPrivate::setModified(bool modified)
 {
     q->setWindowModified(modified);
 }
 
 // /////////////////////////////////////////////////////////////////
-// tissueGrowthSimulatorComposerWidget
+// tissueComposerWidget
 // /////////////////////////////////////////////////////////////////
 
-tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget *parent) :
-    QFrame(parent),
-    d(new tissueGrowthSimulatorComposerWidgetPrivate)
+tissueComposerWidget::tissueComposerWidget(QWidget *parent) : QFrame(parent)
 {
+    d = new tissueComposerWidgetPrivate;
     d->q = this;
-
-    //this->readSettings();
 
     // -- Elements
 
     d->composer = new dtkComposerWidget;
-    //d->composer->view()->setBackgroundBrush(QBrush(QPixmap(":dtkVisualProgramming/pixmaps/dtkComposerScene-bg.png")));
-    //d->composer->view()->setCacheMode(QGraphicsView::CacheBackground);
 
     d->controls = nullptr;
 
@@ -211,18 +206,7 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     QMenu *window_menu = menu_bar->addMenu("Window");
     window_menu->addAction(showControlsAction);
 
-    /*
-    QMenu *run_menu = mainToolBar->menu(this);
-    menu_bar->addMenu(run_menu);
-    QAction *catchExceptionsAction = new QAction("Catch exceptions", this);
-    run_menu->addAction(catchExceptionsAction);
-    catchExceptionsAction->setCheckable(true);
-    catchExceptionsAction->setChecked(true);
-    */
-
     // -- Connections
-
-    //connect(catchExceptionsAction, SIGNAL(triggered(bool)), d->composer->evaluator(),SLOT(setCatchExceptions(bool)));
 
     connect(showControlsAction, SIGNAL(triggered()), this, SLOT(showControls()));
 
@@ -282,10 +266,11 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     central->addWidget(bottom);
 
     QVBoxLayout* main_layout = new QVBoxLayout;
-    setLayout(main_layout);
-
+    main_layout->setContentsMargins(0, 0, 0, 0);
     main_layout->addWidget(menu_bar);
     main_layout->addWidget(central);
+
+    this->setLayout(main_layout);
 
     d->setCurrentFile("");
 
@@ -302,52 +287,22 @@ tissueGrowthSimulatorComposerWidget::tissueGrowthSimulatorComposerWidget(QWidget
     d->graph->setVisible(false);
     d->log_view->setVisible(false);
 
-
     int wl = d->nodes->size().width();
     int wr = d->stack->size().width();
+
     d->inner->setSizes(QList<int>() << wl << 0 << this->size().width() - wl - wr << wr);
 }
 
-tissueGrowthSimulatorComposerWidget::~tissueGrowthSimulatorComposerWidget(void)
+tissueComposerWidget::~tissueComposerWidget(void)
 {
     delete d;
 }
 
-/*
-void tissueGrowthSimulatorComposerWidget::readSettings(void)
-{
-    QSettings settings("inria", "dtk");
-    settings.beginGroup("VisualProgramming");
-    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(600, 400)).toSize();
-    move(pos);
-    resize(size);
-    settings.endGroup();
-}
-
-void tissueGrowthSimulatorComposerWidget::writeSettings(void)
-{
-    QSettings settings("inria", "dtk");
-    settings.beginGroup("VisualProgramming");
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
-    settings.endGroup();
-}
-*/
-
-bool tissueGrowthSimulatorComposerWidget::compositionOpen(void)
+bool tissueComposerWidget::compositionOpen(void)
 {
     if(!d->maySave())
         return true;
 
-    /*
-    QSettings settings("inria", "dtk");
-    settings.beginGroup("VisualProgramming");
-    QString path = settings.value("last_open_dir", QDir::homePath()).toString();
-    settings.endGroup();
-    */
-
-    //QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), path, QString("dtk composition (*.dtk)"));
     QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), QString(), QString("dtk composition (*.dtk)"));
     dialog->setStyleSheet("background-color: none ; color: none;");
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
@@ -357,7 +312,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionOpen(void)
     return true;
 }
 
-bool tissueGrowthSimulatorComposerWidget::compositionOpen(const QString& file)
+bool tissueComposerWidget::compositionOpen(const QString& file)
 {
     if(sender() == d->recent_compositions_menu && !d->maySave())
         return true;
@@ -382,7 +337,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionOpen(const QString& file)
     return status;
 }
 
-bool tissueGrowthSimulatorComposerWidget::compositionSave(void)
+bool tissueComposerWidget::compositionSave(void)
 {
     bool status;
 
@@ -400,7 +355,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionSave(void)
     return status;
 }
 
-bool tissueGrowthSimulatorComposerWidget::compositionSaveAs(void)
+bool tissueComposerWidget::compositionSaveAs(void)
 {
     bool status = false;
 
@@ -432,7 +387,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionSaveAs(void)
     return status;
 }
 
-bool tissueGrowthSimulatorComposerWidget::compositionSaveAs(const QString& file, dtkComposerWriter::Type type)
+bool tissueComposerWidget::compositionSaveAs(const QString& file, dtkComposerWriter::Type type)
 {
     bool status = false;
 
@@ -459,7 +414,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionSaveAs(const QString& file,
     return status;
 }
 
-bool tissueGrowthSimulatorComposerWidget::compositionInsert(void)
+bool tissueComposerWidget::compositionInsert(void)
 {
     QSettings settings("inria", "dtk");
     settings.beginGroup("VisualProgramming");
@@ -475,7 +430,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionInsert(void)
     return true;
 }
 
-bool tissueGrowthSimulatorComposerWidget::compositionInsert(const QString& file)
+bool tissueComposerWidget::compositionInsert(const QString& file)
 {
     bool status = d->composer->insert(file);
 
@@ -492,7 +447,7 @@ bool tissueGrowthSimulatorComposerWidget::compositionInsert(const QString& file)
     return status;
 }
 
-void tissueGrowthSimulatorComposerWidget::showControls(void)
+void tissueComposerWidget::showControls(void)
 {
     if(!d->controls) {
         d->controls = new dtkComposerControls(this);
@@ -509,28 +464,25 @@ void tissueGrowthSimulatorComposerWidget::showControls(void)
     d->controls->show();
 }
 
-/*
-void tissueGrowthSimulatorComposerWidget::closeEvent(QCloseEvent *event)
+void tissueComposerWidget::closeEvent(QCloseEvent *event)
 {
     if (d->maySave()) {
-         //writeSettings();
          d->closing = true;
          event->accept();
      } else {
          event->ignore();
      }
 }
-*/
 
-void tissueGrowthSimulatorComposerWidget::onComposerNodeFlagged(dtkComposerSceneNode *node)
+void tissueComposerWidget::onComposerNodeFlagged(dtkComposerSceneNode *node)
 {
     dtkComposerViewController::instance()->insert(node);
 }
 
-dtkComposerWidget* tissueGrowthSimulatorComposerWidget::composerWidget()
+dtkComposerWidget* tissueComposerWidget::composerWidget()
 {
     return d->composer;
 }
 
 //
-// tissueGrowthSimulatorComposerWidget.cpp ends here
+// tissueComposerWidget.cpp ends here

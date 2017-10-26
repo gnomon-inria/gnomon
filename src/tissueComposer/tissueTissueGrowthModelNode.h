@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <tissueComposerExport.h>
-
 #include <dtkComposer>
+
+#include <tissueComposerExport.h>
 
 class tissueAbstractTissueGrowthModel;
 

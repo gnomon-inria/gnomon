@@ -18,21 +18,23 @@
 
 #include <QtWidgets>
 
+#include <tissueComposerExport.h>
+
 class dtkComposerSceneNode;
 class dtkComposerWidget;
 
-class tissueGrowthSimulatorComposerWidgetPrivate;
+class tissueComposerWidgetPrivate;
 
-class tissueGrowthSimulatorComposerWidget : public QFrame
+class TISSUECOMPOSER_EXPORT tissueComposerWidget : public QFrame
 {
     Q_OBJECT
 
 public:
-     tissueGrowthSimulatorComposerWidget(QWidget *parent = 0);
-    ~tissueGrowthSimulatorComposerWidget(void);
+     tissueComposerWidget(QWidget *parent = 0);
+    ~tissueComposerWidget(void);
 
 public:
-    dtkComposerWidget* composerWidget();
+    dtkComposerWidget* composerWidget(void);
 
 public slots:
     bool compositionOpen(void);
@@ -48,11 +50,11 @@ protected slots:
     void onComposerNodeFlagged(dtkComposerSceneNode *);
 
 protected:
-    //void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 private:
-    tissueGrowthSimulatorComposerWidgetPrivate *d;
+    tissueComposerWidgetPrivate *d;
 };
 
 //
-// tissueGrowthSimulatorComposerWidget.h ends here
+// tissueComposerWidget.h ends here

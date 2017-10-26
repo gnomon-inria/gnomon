@@ -37,9 +37,9 @@ class dtkWidgetsLogView;
 class dtkComposerViewManager;
 class dtkPlotViewSettings;
 
-class tissueGrowthSimulatorComposerWidget;
+class tissueComposerWidget;
 
-class tissueGrowthSimulatorComposerWidgetPrivate : public QObject
+class tissueComposerWidgetPrivate : public QObject
 {
     Q_OBJECT
 
@@ -102,6 +102,8 @@ public:
     QString current_composition;
 
 public:
-    tissueGrowthSimulatorComposerWidget *q;
+    tissueComposerWidget *q;
 };
 
+//
+// tissueComposerWidget_p.h ends here

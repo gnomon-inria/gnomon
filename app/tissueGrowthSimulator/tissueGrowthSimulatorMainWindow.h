@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include <QtCore>
-#include <QtGui>
 #include <QtWidgets>
 
 class tissueGrowthSimulatorMainWindow : public QMainWindow
@@ -32,4 +30,3 @@ private:
 
 //
 // tissueGrowthSimulatorMainWindow.h ends here
-//

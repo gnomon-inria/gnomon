@@ -17,6 +17,9 @@
 ## #################################################################
 
 add_subdirectory(tissueCore)
+add_subdirectory(tissueFonts)
+add_subdirectory(tissueVisualization)
+add_subdirectory(tissueWidgets)
 
 if(DTK_BUILD_COMPOSER)
   add_subdirectory(tissueComposer)
@@ -29,6 +32,9 @@ endif(DTK_BUILD_COMPOSER)
 set(TISSUE_TARGETS)
 
 set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueCore)
+set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueFonts)
+set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueVisualization)
+set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueWidgets)
 
 if(DTK_BUILD_COMPOSER)
   set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueComposer)

@@ -82,21 +82,19 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
 
 find_package(dtk REQUIRED)
 
 include_directories(${dtk_INCLUDE_DIRS})
 
 find_package(VTK)
-if(NOT VTK_FOUND )
-  message(WARNING "VTK_DIR not found")
-endif()
 
-if(VTK_FOUND)
+if(NOT VTK_FOUND)
+  message(WARNING "VTK_DIR not found")
+else()
   include(${VTK_USE_FILE})
 endif()
-
 
 ## #################################################################
 ## Dependencies - internal
@@ -106,6 +104,9 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/tissueCore)
 include_directories(${CMAKE_SOURCE_DIR}/src/tissueComposer)
+include_directories(${CMAKE_SOURCE_DIR}/src/tissueFonts)
+include_directories(${CMAKE_SOURCE_DIR}/src/tissueVisualization)
+include_directories(${CMAKE_SOURCE_DIR}/src/tissueWidgets)
 
 ## ###################################################################
 ## Input
