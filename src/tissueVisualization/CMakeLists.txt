@@ -58,10 +58,21 @@ set(${PROJECT_NAME}_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
 ## ###################################################################
+## Install rules - files
+## ###################################################################
+
+install(FILES ${${PROJECT_NAME}_HEADERS}
+  DESTINATION include/tissue
+  COMPONENT tissue-visualization)
+
+## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT tissue-visualization
+         EXPORT tissueDepends)
 
 ######################################################################
 ### CMakeLists.txt ends here

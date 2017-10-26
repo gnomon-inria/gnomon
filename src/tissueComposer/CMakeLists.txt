@@ -24,12 +24,15 @@ project(tissueComposer)
 
 set(${PROJECT_NAME}_HEADERS
   tissueComposer
+  tissueComposerNodeView
+  tissueComposerNodeView.h
   tissueComposerWidget
   tissueComposerWidget_p.h
   tissueComposerWidget.h
   tissueTissueGrowthModelNode.h)
 
 set(${PROJECT_NAME}_SOURCES
+  tissueComposerNodeView.cpp
   tissueComposerWidget.cpp
   tissueTissueGrowthModelNode.cpp)
 
@@ -56,10 +59,11 @@ qt5_use_modules(${PROJECT_NAME} Network)
 qt5_use_modules(${PROJECT_NAME} Svg)
 qt5_use_modules(${PROJECT_NAME} Xml)
 
-target_link_libraries(${PROJECT_NAME} tissueCore)
-
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkComposer)
+
+target_link_libraries(${PROJECT_NAME} tissueCore)
+target_link_libraries(${PROJECT_NAME} tissueVisualization)
 
 # #################################################################
 ## Target properties

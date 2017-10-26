@@ -18,9 +18,8 @@
 #include <QtGui>
 #include <QtWidgets>
 
+#include <dtkCore>
 #include <dtkWidgets>
-
-class tissueCellComplexData;
 
 class tissueViewPrivate;
 
@@ -33,14 +32,13 @@ public:
     ~tissueView(void);
 
 public:
-    void addCellComplex(tissueCellComplexData&);
-
-public:
     QWidget *widget(void);
 
 private:
     tissueViewPrivate *d;
 };
+
+DTK_DECLARE_OBJECT(tissueView *)
 
 //
 // tissueView.h ends here

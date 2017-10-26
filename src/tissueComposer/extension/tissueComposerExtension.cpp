@@ -14,6 +14,7 @@
 
 #include "tissueComposerExtension.h"
 
+#include <tissueComposerNodeView.h>
 #include <tissueTissueGrowthModelNode.h>
 
 // ///////////////////////////////////////////////////////////////////
@@ -36,7 +37,9 @@ void tissueComposerExtension::extend(dtkComposerNodeFactory *factory)
         dtkError() << Q_FUNC_INFO << "No composer factory, can't extend it with dtkLinearAlgebraSparse nodes ";
         return;
     }
-    factory->record(":dtkComposer/tissueTissueGrowthModelNode.json", dtkComposerNodeCreator< tissueTissueGrowthModelNode >);
+
+    factory->record(":dtkComposer/tissueComposerNodeView.json", dtkComposerNodeCreator<tissueComposerNodeView>);
+    factory->record(":dtkComposer/tissueTissueGrowthModelNode.json", dtkComposerNodeCreator<tissueTissueGrowthModelNode>);
 }
 
 //
