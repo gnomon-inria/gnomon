@@ -21,10 +21,13 @@ project(tissueOmero)
 set(${PROJECT_NAME}_HEADERS
   tissueOmero
   tissueOmero.h
+  tissueOmeroObject
+  tissueOmeroObject.h
 )
 
 set(${PROJECT_NAME}_SOURCES
   tissueOmero.cpp
+  tissueOmeroObject.cpp
 )
 
 ## #################################################################
