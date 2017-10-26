@@ -34,6 +34,8 @@
 
 #include <QVTKOpenGLWidget.h>
 
+#include "tissueCellComplex.h"
+
 class tissueViewPrivate
 {
 public:
