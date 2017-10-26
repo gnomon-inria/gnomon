@@ -20,7 +20,7 @@
 
 #include <dtkWidgets>
 
-class tissueCellComplexData;
+class tissueCellComplex;
 
 class tissueViewPrivate;
 
@@ -33,7 +33,7 @@ public:
     ~tissueView(void);
 
 public:
-    void addCellComplex(tissueCellComplexData&);
+    void addCellComplex(tissueCellComplex&);
 
 public:
     QWidget *widget(void);
