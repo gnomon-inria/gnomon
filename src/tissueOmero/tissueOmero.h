@@ -15,6 +15,15 @@
 #pragma once
 
 #include <tissueCore>
+#include <omero/client.h>
+#include <omero/model/Project.h>
+#include <omero/model/Dataset.h>
+#include <omero/model/Image.h>
+#include <omero/api/IContainer.h>
+#include <omero/sys/ParametersI.h>
+#include <omero/api/IAdmin.h>
+#include <omero/api/IMetadata.h>
+
 
 class tissueOmero
 {

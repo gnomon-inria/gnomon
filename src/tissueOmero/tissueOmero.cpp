@@ -15,10 +15,7 @@
 #include "tissueOmero.h"
 #include "tissueOmeroObject.h"
 #include <tissueCore>
-#include <omero/client.h>
-#include <omero/api/IContainer.h>
-#include <omero/sys/ParametersI.h>
-#include <omero/api/IAdmin.h>
+
 
 class tissueOmeroPrivate
 {
@@ -27,11 +24,14 @@ public:
     int omero_port;
     QString omero_user;
     QString omero_passwd;
+
 public:
     omero::client_ptr client;
     omero::api::ServiceFactoryPrx sf;
+    omero::api::IAdminPrx admin;
+
 public:
-    QList<tissueOmeroObject> topDir;
+    QList<tissueOmeroObject *> topDir;
 };
 
 tissueOmero::tissueOmero(void)
@@ -45,43 +45,66 @@ tissueOmero::tissueOmero(void)
     d->omero_passwd = settings.value("passwd").toString();
     settings.endGroup();
 
-    qWarning() << Q_FUNC_INFO << d->omero_server;
+    omero::client_ptr initialize_client = new omero::client(qPrintable(d->omero_server), d->omero_port);
+    omero::api::ServiceFactoryPrx session_new = initialize_client->createSession(qPrintable(d->omero_user), qPrintable(d->omero_passwd));
 
-    d->client = new omero::client(qPrintable(d->omero_server), d->omero_port);
-    d->sf = d->client->createSession(qPrintable(d->omero_user), qPrintable(d->omero_passwd));
+    d->client = initialize_client->createClient(false);
+    d->sf = d->client->getSession();
     d->sf->closeOnDestroy();
+    d->admin = d->sf->getAdminService();
 
     qWarning() << "sessionID: " << QString::fromStdString(d->client->getSessionId()) <<  "Metadata:" << d->client->getSession()->getMetadataService();
+
 }
 
 tissueOmero::~tissueOmero(void)
 {
-  if(d->client){
-    d->client->closeSession();
-  }
-  d->topDir.clear();
-  delete d;
+    if(d->client){
+      d->client->closeSession();
+    }
+    d->topDir.clear();
+    delete d;
 }
 
 void tissueOmero::browseDB(void)
 {
+    int long userID = d->admin->getEventContext()->userId;
+    qWarning() << "OMERO: UserID: " << userID ;
 
-  int long userID = d->sf->getAdminService()->getEventContext()->userId;
-  qWarning() << "OMERO: UserID: " << userID ;
+    omero::sys::ParametersIPtr params = new omero::sys::ParametersI();
+  	params->leaves();
+    params->addId(13);
 
-  omero::sys::ParametersIPtr params = new omero::sys::ParametersI();
+    omero::api::IContainerPrx containerService = d->sf->getContainerService();
+    omero::sys::LongList list;
+  	omero::api::IObjectList projectList = containerService->loadContainerHierarchy("Project", list, params);
+    qWarning() << "OMERO: Found projects" << projectList.size() ;
 
-	params->leaves();
-  params->addId(userID);
+    for(int i=0; i< projectList.size(); i++)
+	  {
+  		omero::model::ProjectPtr proj = omero::model::ProjectPtr::dynamicCast(projectList[i]);
+  		std::string projectName = proj->getName()->getValue();
+  		qWarning() << "OMERO: Project: " << projectName.data() ;
 
-  omero::api::IContainerPrx containerService = d->sf->getContainerService();
-  omero::sys::LongList list;
-	omero::api::IObjectList objlist = d->sf->getContainerService()->loadContainerHierarchy("Project", list, NULL);
-  qWarning() << "OMERO: Found projects" << objlist.size() ;
+  		omero::model::ProjectLinkedDatasetSeq datasets = proj->linkedDatasetList();
 
-  omero::api::IObjectList objlist2 = d->sf->getContainerService()->loadContainerHierarchy("Dataset", list, NULL);
-  qWarning() << "OMERO: Found dataset" << objlist2.size() ;
+  		for(int j=0; j< datasets.size(); j++)
+  		{
+  			omero::model::DatasetPtr ds = datasets[j];
+  			std::string datasetName = ds->getName()->getValue();
+  			qWarning() << "OMERO: Dataset: " << datasetName.data();
 
+  			omero::model::DatasetLinkedImageSeq images = ds->linkedImageList();
+
+  			for(int k=0; k< images.size(); k++)
+  			{
+  				omero::model::ImagePtr img = images[k];
+  				std::string imgName = img->getName()->getValue();
+  				int long imgid = img->getId()->getValue();
+          qWarning() << "OMERO: Image: ID: " << imgid ;
+			  }
+		  }
+    }
 }
 
 void tissueOmero::readData(void)
