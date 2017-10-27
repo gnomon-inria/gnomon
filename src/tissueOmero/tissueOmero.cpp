@@ -68,12 +68,17 @@ tissueOmero::~tissueOmero(void)
 
 void tissueOmero::browseDB(void)
 {
-    int long userID = d->admin->getEventContext()->userId;
+    omero::api::IAdminPrx admin = d->sf->getAdminService();
+    qWarning() << "admin" << admin;
+    omero::sys::EventContextPtr context = admin->getEventContext();
+    qWarning() << "context" << context;
+
+    int long userID = context->userId;
     qWarning() << "OMERO: UserID: " << userID ;
 
     omero::sys::ParametersIPtr params = new omero::sys::ParametersI();
   	params->leaves();
-    params->addId(13);
+    params->addId(userID);
 
     omero::api::IContainerPrx containerService = d->sf->getContainerService();
     omero::sys::LongList list;

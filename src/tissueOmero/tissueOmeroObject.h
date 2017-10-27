@@ -27,8 +27,14 @@ public:
 public:
     void setId(int);
     int id(void);
+
+public:
     tissueOmeroType::type type(void);
     void setType(tissueOmeroType::type type);
+
+    bool isProject(void);
+    bool isDataset(void);
+    bool isImage(void);
 
 private:
     class tissueOmeroObjectPrivate *d;

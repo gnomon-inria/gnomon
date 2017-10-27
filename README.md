@@ -44,4 +44,30 @@ Prérequisite:
 Test:
 http://downloads.openmicroscopy.org/omero/5.4.0/artifacts/OMERO.insight-5.4.0-ice36-b74-mac.zip
 cmake -DCMAKE_INCLUDE_PATH:PATH=/usr/local/opt/ice/include -DCMAKE_LIBRARY_PATH:PATH=/usr/local/opt/ice/lib -DICE_HOME:PATH=/usr/local/opt/ice -Dice-SLICE_DIR:PATH=/usr/local/opt/ice ..
-brew install zeroc-ice/tap/ice@3.6
+
+
+## install an old bversion of ice
+
+### find the git tag
+'''
+cd "$(brew --repo homebrew/core)"
+git log master -- Formula/ice.rb
+ -> search for the specifiec version you need ( here <= 3.6.3 )
+'''
+
+###  checkout the specific version
+'''
+cd "$(brew --repo homebrew/core)" && git checkout a2abaa62e3575aca4ffcb337ca00a9aa6ddccd4b
+HOMEBREW_NO_AUTO_UPDATE=1 brew install ice
+'''
+
+### do back to master
+'''
+git -C "$(brew --repo homebrew/core)" checkout master
+'''
+
+### link to the ice version you want to use
+'''
+brew unlink ice@3.6
+brew link ice
+'''
