@@ -21,6 +21,7 @@
 #include <vtkContextView.h>
 #include <vtkDoubleArray.h>
 #include <vtkFloatArray.h>
+#include <vtkGlyph3D.h>
 #include <vtkIntArray.h>
 #include <vtkCellData.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -31,10 +32,12 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkSphereSource.h>
 
 #include <QVTKOpenGLWidget.h>
 
 #include "tissueCellComplex.h"
+#include "tissueCellGraph.h"
 
 class tissueViewPrivate
 {
@@ -121,6 +124,75 @@ void tissueView::addCellComplex(tissueCellComplex &cell)
     actor->SetMapper(mapper);
 
     d->renderer->AddActor(actor);
+
+    return;
+}
+
+void tissueView::addCellGraph(tissueCellGraph &graph)
+{
+    vtkPoints* polydataPoints = vtkPoints::New();
+    vtkCellArray* polydataLines = vtkCellArray::New();
+    vtkDoubleArray* polydataPointData = vtkDoubleArray::New();
+
+    QMap<long, QVariant> positions = graph.vertexProperty("barycenter");
+
+    QMap<long,long> vertexPoint;
+
+    QList<long> vertices = graph.vertexIds();
+
+    for (const auto& vertexId : vertices) {
+        std::vector<double> pos = positions[vertexId].value<std::vector<double> >();
+        long vtkId = polydataPoints->InsertNextPoint(pos[0],pos[1],pos[2]);
+        vertexPoint[vertexId] = vtkId;
+        polydataPointData->InsertValue(vtkId,vertexId);
+    }
+
+    QList<long> edges = graph.edgeIds();
+
+    for (const auto& edgeId : edges) {
+        QList<long> edgeVertices = graph.edgeVertexIds(edgeId);
+        long vtkId = polydataLines->InsertNextCell(edgeVertices.size());
+        for (const auto& v : edgeVertices) {
+            polydataLines->InsertCellPoint(vertexPoint[v]);
+        }
+    }
+
+    vtkPolyData* linePolydata = vtkPolyData::New();
+    linePolydata->SetPoints(polydataPoints);
+    linePolydata->SetLines(polydataLines);
+
+    vtkPolyDataMapper* lineMapper = vtkPolyDataMapper::New();
+    lineMapper->SetInputData(linePolydata);
+    // lineMapper->SetScalarRange(0, 1);
+
+    vtkActor* lineActor = vtkActor::New();
+    lineActor->SetMapper(lineMapper);
+    d->renderer->AddActor(lineActor);
+
+    vtkPolyData* pointPolydata = vtkPolyData::New();
+    pointPolydata->SetPoints(polydataPoints);
+    pointPolydata->GetPointData()->SetScalars(polydataPointData);
+
+    vtkSphereSource* sphere = vtkSphereSource::New();
+    sphere->SetRadius(1);
+    sphere->SetThetaResolution(12);
+    sphere->SetPhiResolution(12);
+    sphere->Update();
+
+    vtkGlyph3D* glyph = vtkGlyph3D::New();
+    glyph->SetScaleModeToDataScalingOff();
+    glyph->SetColorModeToColorByScalar();
+    glyph->SetSourceData(sphere->GetOutput());
+    glyph->SetInputData(pointPolydata);
+    glyph->Update();
+
+    vtkPolyDataMapper* pointMapper = vtkPolyDataMapper::New();
+    pointMapper->SetInputData(glyph->GetOutput());
+    pointMapper->SetScalarRange(0, graph.vertexCount()-1);
+
+    vtkActor* pointActor = vtkActor::New();
+    pointActor->SetMapper(pointMapper);
+    d->renderer->AddActor(pointActor);
 
     return;
 }
