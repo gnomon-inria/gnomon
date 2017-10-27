@@ -62,7 +62,11 @@ int main(int argc, char *argv[])
     window->show();
     window->raise();
 
-    return application->exec();
+    int status = application->exec();
+
+    delete window;
+
+    return status;
 }
 
 //

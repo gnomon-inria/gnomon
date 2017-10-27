@@ -12,6 +12,8 @@
 
 // Code:
 
+#include <tissueCore>
+
 #include "tissueCodeEditor.h"
 
 #include <set>
@@ -266,7 +268,17 @@ tissueCodeEditor::tissueCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
 void tissueCodeEditor::openScript(void)
 {
-    QString file_name = QFileDialog::getOpenFileName(this, "Open Script", QDir::homePath(), "*.py");
+    QString path = QDir::homePath();
+
+    tissueCoreSettings settings;
+    settings.beginGroup("editor");
+
+    path = settings.value("last_open_script_path").toString();
+
+    QString file_name = QFileDialog::getOpenFileName(this, "Open Script", path, "*.py");
+
+    if(file_name.isEmpty())
+        return;
 
     QFile file(file_name);
 
@@ -276,6 +288,12 @@ void tissueCodeEditor::openScript(void)
     this->setPlainText(file.readAll());
 
     file.close();
+
+    QFileInfo info(file_name);
+
+    settings.setValue("last_open_script_path", info.absolutePath());
+
+    settings.endGroup();
 }
 
 void tissueCodeEditor::enableAutocompletion(bool enabled)

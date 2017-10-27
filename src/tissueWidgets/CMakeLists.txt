@@ -37,6 +37,8 @@ add_library(${PROJECT_NAME} SHARED
 qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
+target_link_libraries(${PROJECT_NAME} tissueCore)
+
 ## #################################################################
 ## Export header file
 ## #################################################################
