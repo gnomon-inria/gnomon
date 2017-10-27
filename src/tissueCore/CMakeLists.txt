@@ -34,9 +34,7 @@ set(${PROJECT_NAME}_HEADERS
   tissueCellGraph
   tissueCellGraph.h
   tissueAbstractCellGraphData
-  tissueAbstractCellGraphData.h
-  tissueCoreVisuWidget
-  tissueCoreVisuWidget.h)
+  tissueAbstractCellGraphData.h)
 
 set(${PROJECT_NAME}_SOURCES
   tissueAbstractTissueGrowthModel.cpp
@@ -45,8 +43,7 @@ set(${PROJECT_NAME}_SOURCES
   tissueCoreSettings.cpp
   tissueCellComplexData.cpp
   tissueCellComplexData.cpp
-  tissueAbstractCellGraphData.cpp
-  tissueCoreVisuWidget.cpp)
+  tissueAbstractCellGraphData.cpp)
 
 ## #################################################################
 ## Wrapping
