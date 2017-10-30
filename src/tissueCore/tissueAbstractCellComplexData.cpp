@@ -13,7 +13,7 @@
 // Code:
 
 #include "tissueCore.h"
-#include "tissueCellComplexData.h"
+#include "tissueAbstractCellComplexData.h"
 
 #include "tissueCore.h"
 
@@ -22,7 +22,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace tissueCore {
-    DTK_DEFINE_CONCEPT(tissueCellComplexData, cellcomplexdata, tissueCore);
+    DTK_DEFINE_CONCEPT(tissueAbstractCellComplexData, cellcomplexdata, tissueCore);
 }
 
 //
