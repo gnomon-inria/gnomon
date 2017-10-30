@@ -24,6 +24,10 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   tissueGrowthSimulatorMainWindow.cpp)
 
+if(APPLE)
+  set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES} tissueGrowthSimulatorMainWindow.mm)
+endif(APPLE)
+
 ## #################################################################
 ## Wrapping
 ## #################################################################
@@ -46,8 +50,7 @@ if(DTK_BUILD_WRAPPERS)
 
     if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
-      set(${PROJECT_NAME}_SIP_WRAPPERS
-        sip${PROJECT_NAME}tissueGrowthSimulatorMainWindow.cpp)
+      set(${PROJECT_NAME}_SIP_WRAPPERS sip${PROJECT_NAME}tissueGrowthSimulatorMainWindow.cpp)
 
       dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissueGrowthSimulator "${CMAKE_SOURCE_DIR}/sip/tissueGrowthSimulator/tissueGrowthSimulatormod.sip" "${${PROJECT_NAME}_SIP_WRAPPERS}" ${${PROJECT_NAME}_WRAP_DEPENDS})
 

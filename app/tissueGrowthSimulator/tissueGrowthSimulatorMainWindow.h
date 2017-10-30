@@ -27,6 +27,11 @@ public:
 public:
     void addEditor(QWidget *);
 
+#if defined(Q_OS_MAC)
+protected:
+    void initialize(void);
+#endif
+
 public:
     static tissueGrowthSimulatorMainWindow *downcast(QWidget *widget)
     {

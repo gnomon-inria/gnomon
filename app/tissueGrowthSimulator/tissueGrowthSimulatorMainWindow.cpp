@@ -128,6 +128,10 @@ tissueGrowthSimulatorMainWindow::tissueGrowthSimulatorMainWindow(QWidget *parent
 
     this->setCentralWidget(central);
     this->setWindowTitle("Tissue Growth Simulator");
+
+#if defined(Q_OS_MAC)
+    this->initialize();
+#endif
 }
 
 tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)
@@ -143,6 +147,8 @@ tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)
 
 void tissueGrowthSimulatorMainWindow::addEditor(QWidget *editor)
 {
+    d->interpreter_widget->hide();
+
     d->editor_splitter->addWidget(editor);
 }
 
