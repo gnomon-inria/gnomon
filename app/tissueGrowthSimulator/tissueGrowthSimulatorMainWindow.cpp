@@ -143,7 +143,7 @@ tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)
 
 void tissueGrowthSimulatorMainWindow::addEditor(QWidget *editor)
 {
-    d->editor_splitter->replaceWidget(d->editor_splitter->count()-1, editor);
+    d->editor_splitter->addWidget(editor);
 }
 
 //
