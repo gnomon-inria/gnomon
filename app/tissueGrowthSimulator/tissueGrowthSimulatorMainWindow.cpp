@@ -50,6 +50,9 @@ public:
     QTabWidget *editors;
 
 public:
+    dtkSplitter *editor_splitter;
+
+public:
     QToolBar *tool_bar;
 
     QAction *open_action;
@@ -82,14 +85,14 @@ tissueGrowthSimulatorMainWindow::tissueGrowthSimulatorMainWindow(QWidget *parent
     d->interpreter_widget->registerInterpreter(d->interpreter);
 #endif
 
-    dtkSplitter *splitter = new dtkSplitter(this);
-    splitter->addWidget(d->editor);
-    splitter->addWidget(d->interpreter_widget);
+    d->editor_splitter = new dtkSplitter(this);
+    d->editor_splitter->addWidget(d->editor);
+    d->editor_splitter->addWidget(d->interpreter_widget);
 
     d->editors = new QTabWidget(this);
     d->editors->setContentsMargins(0, 0, 0, 0);
     d->editors->addTab(d->composer, "Composer");
-    d->editors->addTab(splitter, "Python");
+    d->editors->addTab(d->editor_splitter, "Python");
 
     d->tool_bar = this->addToolBar("Main");
 
@@ -129,8 +132,6 @@ tissueGrowthSimulatorMainWindow::tissueGrowthSimulatorMainWindow(QWidget *parent
 
 tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)
 {
-    qDebug() << Q_FUNC_INFO << "Saving pos and size" << this->pos() << this->size();
-
     tissueCoreSettings settings;
     settings.beginGroup("main_window");
     settings.setValue("position", this->pos());
@@ -138,6 +139,11 @@ tissueGrowthSimulatorMainWindow::~tissueGrowthSimulatorMainWindow(void)
     settings.endGroup();
 
     delete d;
+}
+
+void tissueGrowthSimulatorMainWindow::addEditor(QWidget *editor)
+{
+    d->editor_splitter->replaceWidget(d->editor_splitter->count()-1, editor);
 }
 
 //

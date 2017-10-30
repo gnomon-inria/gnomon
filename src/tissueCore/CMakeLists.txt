@@ -51,8 +51,11 @@ if(DTK_BUILD_WRAPPERS)
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
   if (DTK_WRAPPING_PYTHON)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissuecore python ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
+
+    if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
+      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i @ONLY)
+      dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissuecore python ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
+    endif()
   endif()
 endif()
 
@@ -109,33 +112,36 @@ set(${PROJECT_NAME}_MODULES)
 
 if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
 
-  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
+  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
 
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
-      COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-      COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/tissuecore.py ${CMAKE_BINARY_DIR}/modules
-      COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
-
-    set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/tissuecore.py)
-
-    if(APPLE)
+    if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
-        COMMAND ln -sf ../lib/libtissueCore.dylib _tissuecore.so
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/tissuecore.py ${CMAKE_BINARY_DIR}/modules
+        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
 
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
-    endif(APPLE)
+      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/tissuecore.py)
 
-    if(UNIX AND NOT APPLE)
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
-        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libtissueCore.so _tissuecore.so
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+      if(APPLE)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+          DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
+          COMMAND ln -sf ../lib/libtissueCore.dylib _tissuecore.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
-    endif(UNIX AND NOT APPLE)
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
+      endif(APPLE)
+
+      if(UNIX AND NOT APPLE)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+          DEPENDS ${PROJECT_SOURCE_DIR}/tissueCore.i
+          COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libtissueCore.so _tissuecore.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
+      endif(UNIX AND NOT APPLE)
+
+    endif()
 
   endif(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
 

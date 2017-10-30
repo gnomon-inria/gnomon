@@ -24,6 +24,9 @@ public:
      tissueGrowthSimulatorMainWindow(QWidget *parent = Q_NULLPTR);
     ~tissueGrowthSimulatorMainWindow(void);
 
+public:
+    void addEditor(QWidget *);
+
 private:
     class tissueGrowthSimulatorMainWindowPrivate *d;
 };
