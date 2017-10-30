@@ -27,6 +27,12 @@ public:
 public:
     void addEditor(QWidget *);
 
+public:
+    static tissueGrowthSimulatorMainWindow *downcast(QWidget *widget)
+    {
+        return dynamic_cast<tissueGrowthSimulatorMainWindow *>(widget);
+    }
+
 private:
     class tissueGrowthSimulatorMainWindowPrivate *d;
 };
