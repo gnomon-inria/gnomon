@@ -22,6 +22,7 @@
 #include <dtkWidgets>
 
 class tissueCellComplex;
+class tissueCellGraph;
 
 class tissueViewPrivate;
 
@@ -35,6 +36,7 @@ public:
 
 public:
     void addCellComplex(tissueCellComplex&);
+    void addCellGraph(tissueCellGraph&);
 
 public:
     QWidget *widget(void);

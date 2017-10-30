@@ -21,20 +21,33 @@ project(tissueCore)
 set(${PROJECT_NAME}_HEADERS
   tissueAbstractTissueGrowthModel
   tissueAbstractTissueGrowthModel.h
+  tissueAbstractCellGraphFromImage
+  tissueAbstractCellGraphFromImage.h
   tissueCore
   tissueCore.h
   tissueCoreSettings
   tissueCoreSettings.h
-  tissueCellComplexData
-  tissueCellComplexData.h
   tissueCellComplex
-  tissueCellComplex.h)
+  tissueCellComplex.h
+  tissueAbstractCellComplexData
+  tissueAbstractCellComplexData.h
+  tissueCellImage
+  tissueCellImage.h
+  tissueAbstractCellImageData
+  tissueAbstractCellImageData.h
+  tissueCellGraph
+  tissueCellGraph.h
+  tissueAbstractCellGraphData
+  tissueAbstractCellGraphData.h)
 
 set(${PROJECT_NAME}_SOURCES
-  tissueAbstractTissueGrowthModel.cpp
   tissueCore.cpp
   tissueCoreSettings.cpp
-  tissueCellComplexData.cpp)
+  tissueAbstractCellComplexData.cpp
+  tissueAbstractCellImageData.cpp
+  tissueAbstractCellGraphData.cpp
+  tissueAbstractTissueGrowthModel.cpp
+  tissueAbstractCellGraphFromImage.cpp)
 
 ## #################################################################
 ## Wrapping

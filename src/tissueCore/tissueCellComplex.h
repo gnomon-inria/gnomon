@@ -16,7 +16,7 @@
 
 #include <tissueCoreExport.h>
 
-#include "tissueCellComplexData.h"
+#include "tissueAbstractCellComplexData.h"
 
 #include <QtCore>
 
@@ -27,11 +27,11 @@
 class TISSUECORE_EXPORT tissueCellComplex
 {
 protected:
-    tissueCellComplexData *m_data;
+    tissueAbstractCellComplexData *m_data;
 
 public:
     explicit tissueCellComplex(void) : m_data(nullptr) {}
-    explicit tissueCellComplex(tissueCellComplexData *data) : m_data(data) {}
+    explicit tissueCellComplex(tissueAbstractCellComplexData *data) : m_data(data) {}
     tissueCellComplex(const tissueCellComplex& o) : m_data(o.m_data->clone()) {}
 
     ~tissueCellComplex(void) { if (m_data) { delete m_data; } m_data = nullptr; }
@@ -53,10 +53,10 @@ public:
     }
 
 public:
-    const tissueCellComplexData *data(void) const { return m_data; }
-          tissueCellComplexData *data(void)       { return m_data; }
+    const tissueAbstractCellComplexData *data(void) const { return m_data; }
+          tissueAbstractCellComplexData *data(void)       { return m_data; }
 
-    void setData(tissueCellComplexData* data) { m_data = data; }
+    void setData(tissueAbstractCellComplexData* data) { m_data = data; }
 
 public:
     int dimension(void) const { return m_data->dimension(); }

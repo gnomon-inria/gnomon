@@ -22,7 +22,9 @@
 %{
 
 #include <tissueCore/tissueCore.h>
-#include <tissueCore/tissueCellComplexData.h>
+#include <tissueCore/tissueAbstractCellComplexData.h>
+#include <tissueCore/tissueAbstractCellImageData.h>
+#include <tissueCore/tissueAbstractCellGraphData.h>
 
 %}
 
@@ -37,6 +39,8 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <tissueCore/tissueCellComplexData.h>
+%include <tissueCore/tissueAbstractCellComplexData.h>
+%include <tissueCore/tissueAbstractCellImageData.h>
+#include <tissueCore/tissueAbstractCellGraphData.h>
 
 /* tissueCore.i ends here */

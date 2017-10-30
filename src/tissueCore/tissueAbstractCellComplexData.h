@@ -24,13 +24,13 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class TISSUECORE_EXPORT tissueCellComplexData
+class TISSUECORE_EXPORT tissueAbstractCellComplexData
 {
 public:
-             tissueCellComplexData(void) = default;
-    virtual ~tissueCellComplexData(void) {};
+             tissueAbstractCellComplexData(void) = default;
+    virtual ~tissueAbstractCellComplexData(void) {};
 
-    virtual tissueCellComplexData* clone(void) const = 0;
+    virtual tissueAbstractCellComplexData* clone(void) const = 0;
 
 public:
     virtual void setDimension(int dimension = 3) = 0;
@@ -97,17 +97,17 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (tissueCellComplexData *)
-DTK_DECLARE_PLUGIN        (tissueCellComplexData, TISSUECORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(tissueCellComplexData, TISSUECORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(tissueCellComplexData, TISSUECORE_EXPORT)
+DTK_DECLARE_OBJECT        (tissueAbstractCellComplexData *)
+DTK_DECLARE_PLUGIN        (tissueAbstractCellComplexData, TISSUECORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(tissueAbstractCellComplexData, TISSUECORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(tissueAbstractCellComplexData, TISSUECORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to tissueCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace tissueCore {
-    DTK_DECLARE_CONCEPT(tissueCellComplexData, TISSUECORE_EXPORT, cellcomplexdata);
+    DTK_DECLARE_CONCEPT(tissueAbstractCellComplexData, TISSUECORE_EXPORT, cellcomplexdata);
 }
 
 //
