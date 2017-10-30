@@ -63,12 +63,9 @@ if(DTK_BUILD_WRAPPERS)
 
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
-  if (DTK_WRAPPING_PYTHON)
-
-    if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
-      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i @ONLY)
-      dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissuecore python ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
-    endif()
+  if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i @ONLY)
+    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissuecore python ${CMAKE_CURRENT_SOURCE_DIR}/tissueCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
   endif()
 endif()
 
