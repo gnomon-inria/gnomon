@@ -23,8 +23,12 @@
 
 #include <tissueCore/tissueCore.h>
 #include <tissueCore/tissueAbstractCellComplexData.h>
+#include <tissueCore/tissueCellComplex.h>
 #include <tissueCore/tissueAbstractCellImageData.h>
+#include <tissueCore/tissueCellImage.h>
 #include <tissueCore/tissueAbstractCellGraphData.h>
+#include <tissueCore/tissueCellGraph.h>
+#include <tissueCore/tissueAbstractCellGraphFromImage.h>
 
 %}
 
@@ -40,7 +44,11 @@
 // /////////////////////////////////////////////////////////////////
 
 %include <tissueCore/tissueAbstractCellComplexData.h>
+%include <tissueCore/tissueCellComplex.h>
 %include <tissueCore/tissueAbstractCellImageData.h>
+%include <tissueCore/tissueCellImage.h>
 %include <tissueCore/tissueAbstractCellGraphData.h>
+%include <tissueCore/tissueCellGraph.h>
+%include <tissueCore/tissueAbstractCellGraphFromImage.h>
 
 /* tissueCore.i ends here */
