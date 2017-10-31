@@ -41,6 +41,6 @@
 
 %include <tissueCore/tissueAbstractCellComplexData.h>
 %include <tissueCore/tissueAbstractCellImageData.h>
-#include <tissueCore/tissueAbstractCellGraphData.h>
+%include <tissueCore/tissueAbstractCellGraphData.h>
 
 /* tissueCore.i ends here */
