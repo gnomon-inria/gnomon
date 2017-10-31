@@ -2,7 +2,7 @@
 
 ## Prerequisites stuff
 
-For sake of clarity, les tu consider that all the programms are install under `$HOME/Development` folder.
+For sake of clarity, let's consider that all the programs are installed under `$HOME/Development` folder.
 
 ### OpenGL Stuff (at least for ubuntu)
 
@@ -78,7 +78,8 @@ tar -zxvf VTK-8.0.1.tar.gz
 cd VTK-8.0.1/
 mkdir build
 cd build
-cmake .. -DVTK_Group_Qt=On -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
+cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
+make -j4
 ```
 
 
@@ -113,7 +114,7 @@ cd dtk
 git checkout develop
 mkdir build
 cd build
-cmake .. -DDTK_BUILD_SCRIPT=ON -DDBUILD_WRAPPERS=ON -DDTK_WRAPPING_PYTHON=ON
+cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTED=ON -DDTK_BUILD_SCRIPT=ON -DDTK_BUILD_WIDGETS=ON -DDTK_BUILD_WRAPPERS=ON -DDTK_BUILD_SUPPORT_COMPOSER=ON -DDTK_BUILD_SUPPORT_CONTAINER=ON -DDTK_BUILD_SUPPORT_CORE=ON -DDTK_BUILD_SUPPORT_GUI=ON -DDTK_BUILD_SUPPORT_MATH=ON
 make -j4
 ```
 
