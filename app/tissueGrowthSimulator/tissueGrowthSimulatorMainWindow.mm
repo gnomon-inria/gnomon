@@ -18,7 +18,7 @@
 
 void tissueGrowthSimulatorMainWindow::initialize(void)
 {
-    if (NSAppKitVersionNumber <= NSAppKitVersionNumber10_12)
+    if (![NSProcessInfo.processInfo isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){10,10,0}])
         return;
 
     NSView *view = (NSView *)(this->winId());
