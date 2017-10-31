@@ -18,13 +18,12 @@
 
 void tissueGrowthSimulatorMainWindow::initialize(void)
 {
-    if (![NSProcessInfo.processInfo isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){10,10,0}])
-        return;
-
+#if __MAC_OS_X_VERSION_MAX_ALLOWED > 1090
     NSView *view = (NSView *)(this->winId());
 
     NSWindow *window = [view window];
     window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
+#endif
 }
 
 //
