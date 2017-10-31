@@ -18,10 +18,12 @@
 
 void tissueGrowthSimulatorMainWindow::initialize(void)
 {
+    if (NSAppKitVersionNumber <= NSAppKitVersionNumber10_12)
+        return;
+
     NSView *view = (NSView *)(this->winId());
 
     NSWindow *window = [view window];
-    // window.titlebarAppearsTransparent = YES;
     window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
 }
 

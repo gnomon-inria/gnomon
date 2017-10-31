@@ -18,12 +18,13 @@ class dtkImage;
 
 #include <QtCore>
 
-#include <tissueCoreExport.h>
 #include <dtkCore>
 
-//  ///////////////////////////////////////////////////////////////////
-//  
-//  ///////////////////////////////////////////////////////////////////
+#include <tissueCoreExport.h>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 class TISSUECORE_EXPORT tissueAbstractCellImageData
 {
@@ -59,8 +60,8 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT(tissueAbstractCellImageData *)
-DTK_DECLARE_PLUGIN(tissueAbstractCellImageData, TISSUECORE_EXPORT)
+DTK_DECLARE_OBJECT        (tissueAbstractCellImageData *)
+DTK_DECLARE_PLUGIN        (tissueAbstractCellImageData, TISSUECORE_EXPORT)
 DTK_DECLARE_PLUGIN_FACTORY(tissueAbstractCellImageData, TISSUECORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(tissueAbstractCellImageData, TISSUECORE_EXPORT)
 
