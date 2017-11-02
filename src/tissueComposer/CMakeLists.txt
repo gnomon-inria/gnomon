@@ -74,8 +74,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
 set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 0)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION   ${tissue_VERSION}
-  SOVERSION ${tissue_VERSION_MAJOR})
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${tissue_VERSION} SOVERSION ${tissue_VERSION_MAJOR})
 
 ## #################################################################
 ## Export header file
