@@ -1,0 +1,54 @@
+/* Version: $Id$
+ *
+ */
+
+/* Commentary:
+ *
+ */
+
+/* Change Log:
+ *
+ */
+
+/* Code: */
+
+#pragma once
+
+%module gnomoncore
+
+%include "@dtk_WRAP_BASE@"
+%import "@dtk_WRAP_CORE@"
+
+%{
+
+#include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonAbstractCellComplexData.h>
+#include <gnomonCore/gnomonCellComplex.h>
+#include <gnomonCore/gnomonAbstractCellImageData.h>
+#include <gnomonCore/gnomonCellImage.h>
+#include <gnomonCore/gnomonAbstractCellGraphData.h>
+#include <gnomonCore/gnomonCellGraph.h>
+#include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+
+%}
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMONCORE_EXPORT
+#define GNOMONCORE_EXPORT
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+
+%include <gnomonCore/gnomonAbstractCellComplexData.h>
+%include <gnomonCore/gnomonCellComplex.h>
+%include <gnomonCore/gnomonAbstractCellImageData.h>
+%include <gnomonCore/gnomonCellImage.h>
+%include <gnomonCore/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonCellGraph.h>
+%include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+
+/* gnomonCore.i ends here */

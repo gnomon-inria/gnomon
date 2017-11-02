@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="dtkComposer">
+    <file>gnomonComposerNodeView.json</file>
+    <file>gnomonTissueGrowthModelNode.json</file>
+  </qresource>
+</RCC>

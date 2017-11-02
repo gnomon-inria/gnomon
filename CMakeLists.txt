@@ -16,7 +16,7 @@ cmake_minimum_required(VERSION 3.6.0)
 
 ######################################################################
 
-project(tissue)
+project(gnomon)
 
 ## ###################################################################
 ## Version setup
@@ -102,11 +102,11 @@ endif()
 
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueCore)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueComposer)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueFonts)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueVisualization)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueWidgets)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 
 ## ###################################################################
 ## Input
@@ -133,9 +133,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cm
 install(FILES
   "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tissue)
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/gnomon)
 
-install(EXPORT tissueDepends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tissue)
+install(EXPORT gnomonDepends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/gnomon)
 
 ## ###################################################################
 ## Beautifying

@@ -16,35 +16,35 @@
 ## Input
 ## #################################################################
 
-add_subdirectory(tissueCore)
-add_subdirectory(tissueFonts)
-add_subdirectory(tissueVisualization)
-add_subdirectory(tissueWidgets)
+add_subdirectory(gnomonCore)
+add_subdirectory(gnomonFonts)
+add_subdirectory(gnomonVisualization)
+add_subdirectory(gnomonWidgets)
 
 if(DTK_BUILD_COMPOSER)
-  add_subdirectory(tissueComposer)
+  add_subdirectory(gnomonComposer)
 endif(DTK_BUILD_COMPOSER)
 
 ## #################################################################
 ## Targets
 ## #################################################################
 
-set(TISSUE_TARGETS)
+set(GNOMON_TARGETS)
 
-set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueCore)
-set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueFonts)
-set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueVisualization)
-set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueWidgets)
+set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonCore)
+set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonFonts)
+set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonVisualization)
+set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonWidgets)
 
 if(DTK_BUILD_COMPOSER)
-  set(TISSUE_TARGETS ${TISSUE_TARGETS} tissueComposer)
+  set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonComposer)
 endif(DTK_BUILD_COMPOSER)
 
 ## #################################################################
 ## Target export
 ## #################################################################
 
-export(TARGETS ${TISSUE_TARGETS} FILE "${CMAKE_BINARY_DIR}/tissueDepends.cmake")
+export(TARGETS ${GNOMON_TARGETS} FILE "${CMAKE_BINARY_DIR}/gnomonDepends.cmake")
 
 ######################################################################
 ### CMakeLists.txt ends here

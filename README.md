@@ -157,14 +157,14 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-## Tissue and tissue plugins
+## Tissue and gnomon plugins
 
-### tissue
+### gnomon
 
 ``` shell
 cd $HOME/Development
-git clone git@gitlab.inria.fr:tissue/tissue.git
-cd tissue
+git clone git@gitlab.inria.fr:gnomon/gnomon.git
+cd gnomon
 git checkout develop
 mkdir build
 cd build
@@ -173,16 +173,16 @@ make -j4
 ```
 
 
-### tissue plugins
+### gnomon plugins
 
 ``` shell
 cd $HOME/Development
-git clone git@gitlab.inria.fr:tissue/tissue-plugins.git
-cd tissue-plugins
+git clone git@gitlab.inria.fr:gnomon/gnomon-plugins.git
+cd gnomon-plugins
 git checkout develop
 mkdir build
 cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dtissue_DIR=$HOME/Development/tissue/build
+cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gnomon/build
 make -j4
 ```
 
@@ -193,7 +193,7 @@ In the `$HOME/.config` folder, one has to create a folder `inria`, then one has 
 ``` shell
 touch dtk-composer.ini
 touch dtk-imaging.ini
-touch tissue-core.ini
+touch gnomon-core.ini
 ```
 
 ### Composer config
@@ -202,10 +202,10 @@ Edit `dtk-composer.ini` file and add the following lines:
 
 ``` shell
 [extension]
-plugins=$HOME/Development/dtk-imaging/build/plugins:$HOME/Development/dtk-discrete-geometry/build/plugins:$HOME/Development/tissue/build/plugins
+plugins=$HOME/Development/dtk-imaging/build/plugins:$HOME/Development/dtk-discrete-geometry/build/plugins:$HOME/Development/gnomon/build/plugins
 ```
 
-This will enable the composer embedded into tissue application to find node extensions provided by tissue, dtk-imaging and dtk-discrete-geometry.
+This will enable the composer embedded into gnomon application to find node extensions provided by gnomon, dtk-imaging and dtk-discrete-geometry.
 
 ### dtk imaging config
 
@@ -218,22 +218,22 @@ plugins=$HOME/Development/dtk-plugins-imaging/build/lib
 
 This will tell to dtk-imaging layer where are the plugins that implements its abstractions.
 
-### tissue config
+### gnomon config
 
-Edit `tissue-core.ini` file and add the following lines:
-
-``` shell
-[tissue-core]
-plugins=$HOME/Development/tissue-plugins/build/lib
-```
-
-## Launch tissueGrowthSimulator
-
-In order to check the validity of the installation, one can launch tissueGrowthSimulator executable as follows:
+Edit `gnomon-core.ini` file and add the following lines:
 
 ``` shell
-cd $HOME/Development/tissue/build
-./bin/tissueGrowthSimulator
+[gnomon-core]
+plugins=$HOME/Development/gnomon-plugins/build/lib
 ```
 
-Then in the research field, one can look for tissue and check that at least one node from tissue is available. One can then drag and drop it into the composer. Eventually, one can select the node and check in th left panel whether an implementation is available.
+## Launch gnomonGrowthSimulator
+
+In order to check the validity of the installation, one can launch gnomonGrowthSimulator executable as follows:
+
+``` shell
+cd $HOME/Development/gnomon/build
+./bin/gnomonGrowthSimulator
+```
+
+Then in the research field, one can look for gnomon and check that at least one node from gnomon is available. One can then drag and drop it into the composer. Eventually, one can select the node and check in th left panel whether an implementation is available.

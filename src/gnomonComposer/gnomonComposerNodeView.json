@@ -1,0 +1,7 @@
+{
+    "title" : "gnomonView",
+    "kind" : "view",
+    "type" : "gnomonView",
+    "tags" : ["gnomon", "view"],
+    "description" : ""
+}

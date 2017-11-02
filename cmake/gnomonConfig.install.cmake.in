@@ -12,7 +12,10 @@
 ##
 ### Code:
 
-add_subdirectory(gnomonGrowthSimulator)
+set(gnomon_INCLUDE_DIRS
+  "@CMAKE_INSTALL_PREFIX@/include/gnomon")
+
+include("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/cmake/gnomon/gnomonDepends.cmake")
 
 ######################################################################
-### CMakeLists.txt ends here
+### gnomonConfig.install.cmake.in ends here
