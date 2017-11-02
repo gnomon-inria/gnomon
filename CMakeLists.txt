@@ -86,6 +86,10 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
+# need of SSL_VERSION for Omero
+find_package(OpenSSL)
+message("SSL: ${OPENSSL_VERSION}")
+
 #set(Ice_DEBUG true)
 #set(Ice_VERSION 3.6.4)
 #find_package(Ice ${Ice_VERSION} COMPONENTS Ice IceUtil Glacier2 IceXML)

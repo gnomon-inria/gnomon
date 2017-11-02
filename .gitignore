@@ -35,6 +35,7 @@ build
 ## ###################################################################
 
 src/tissueCore/tissueCore.i
+src/tissueOmero/tissueOmeroConfig.h
 
 ######################################################################
 ### .gitignore ends here

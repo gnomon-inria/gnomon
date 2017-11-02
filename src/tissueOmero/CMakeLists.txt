@@ -54,6 +54,14 @@ endif()
 ## Build rules
 ## #################################################################
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueOmeroConfig.h.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/tissueOmeroConfig.h)
+set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
+  tissueOmeroConfig.h)
+
+## #################################################################
+
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES_WRAP}
   ${${PROJECT_NAME}_SOURCES}

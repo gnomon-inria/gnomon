@@ -12,6 +12,8 @@
 
 // Code:
 
+#include "tissueOmeroConfig.h"
+
 #include "tissueOmero.h"
 #include "tissueOmeroObject.h"
 #include <tissueCore>
@@ -21,7 +23,7 @@ class tissueOmeroPrivate
 {
 public:
     QString omero_server;
-    int omero_port;
+    QString omero_port;
     QString omero_user;
     QString omero_passwd;
 
@@ -40,13 +42,27 @@ tissueOmero::tissueOmero(void)
     tissueCoreSettings settings;
     settings.beginGroup("omero");
     d->omero_server = settings.value("server").toString();
-    d->omero_port = settings.value("port").toInt();
+    d->omero_port = settings.value("port").toString();
     d->omero_user = settings.value("user").toString();
     d->omero_passwd = settings.value("passwd").toString();
     settings.endGroup();
 
-    omero::client_ptr initialize_client = new omero::client(qPrintable(d->omero_server), d->omero_port);
-    omero::api::ServiceFactoryPrx session_new = initialize_client->createSession(qPrintable(d->omero_user), qPrintable(d->omero_passwd));
+    // create omero client context (only way to change the SSL cipher)
+    Ice::InitializationData data;
+    data.properties = Ice::createProperties();
+    data.properties->setProperty("omero.host", qPrintable(d->omero_server));
+    data.properties->setProperty("omero.port", qPrintable(d->omero_port));
+    data.properties->setProperty("omero.user", qPrintable(d->omero_user));
+    data.properties->setProperty("omero.pass", qPrintable(d->omero_passwd));
+
+#if OPENSSL_VERSION_MAJOR <= 1 && OPENSSL_VERSION_MINOR < 1
+    data.properties->setProperty("IceSSL.Ciphers", "ADH");
+#else
+    data.properties->setProperty("IceSSL.Ciphers", "ADH:@SECLEVEL=0");
+#endif
+    
+    omero::client_ptr initialize_client = new omero::client(data);
+    omero::api::ServiceFactoryPrx session_new = initialize_client->createSession();
 
     d->client = initialize_client->createClient(false);
     d->sf = d->client->getSession();
