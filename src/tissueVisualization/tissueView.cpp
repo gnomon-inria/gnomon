@@ -32,6 +32,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 
 #include <QVTKOpenGLWidget.h>
@@ -84,9 +85,9 @@ QWidget *tissueView::widget(void)
 
 void tissueView::addCellComplex(tissueCellComplex &cell)
 {
-    vtkPoints* polydataPoints = vtkPoints::New();
-    vtkCellArray* polydataFaces = vtkCellArray::New();
-    vtkDoubleArray* polydataFaceData = vtkDoubleArray::New();
+    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkDoubleArray> polydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
 
     QMap<long, QVariant> positions = cell.elementProperty(0,"position");
 
@@ -111,16 +112,16 @@ void tissueView::addCellComplex(tissueCellComplex &cell)
         polydataFaceData->InsertValue(vtkId,faceId);
     }
 
-    vtkPolyData* polydata = vtkPolyData::New();
+    vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
     polydata->SetPoints(polydataPoints);
     polydata->SetPolys(polydataFaces);
     polydata->GetCellData()->SetScalars(polydataFaceData);
 
-    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polydata);
     mapper->SetScalarRange(0, cell.elementCount(2)-1);
 
-    vtkActor* actor = vtkActor::New();
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
 
     d->renderer->AddActor(actor);
@@ -130,9 +131,9 @@ void tissueView::addCellComplex(tissueCellComplex &cell)
 
 void tissueView::addCellGraph(tissueCellGraph &graph)
 {
-    vtkPoints* polydataPoints = vtkPoints::New();
-    vtkCellArray* polydataLines = vtkCellArray::New();
-    vtkDoubleArray* polydataPointData = vtkDoubleArray::New();
+    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkCellArray> polydataLines = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
 
     QMap<long, QVariant> positions = graph.vertexProperty("barycenter");
 
@@ -141,7 +142,7 @@ void tissueView::addCellGraph(tissueCellGraph &graph)
     QList<long> vertices = graph.vertexIds();
 
     for (const auto& vertexId : vertices) {
-        std::vector<double> pos = positions[vertexId].value<std::vector<double> >();
+        std::vector<double> pos = positions[vertexId].value<std::vector<double>>();
         long vtkId = polydataPoints->InsertNextPoint(pos[0],pos[1],pos[2]);
         vertexPoint[vertexId] = vtkId;
         polydataPointData->InsertValue(vtkId,vertexId);
@@ -157,41 +158,41 @@ void tissueView::addCellGraph(tissueCellGraph &graph)
         }
     }
 
-    vtkPolyData* linePolydata = vtkPolyData::New();
+    vtkSmartPointer<vtkPolyData> linePolydata = vtkSmartPointer<vtkPolyData>::New();
     linePolydata->SetPoints(polydataPoints);
     linePolydata->SetLines(polydataLines);
 
-    vtkPolyDataMapper* lineMapper = vtkPolyDataMapper::New();
+    vtkSmartPointer<vtkPolyDataMapper> lineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     lineMapper->SetInputData(linePolydata);
-    // lineMapper->SetScalarRange(0, 1);
 
-    vtkActor* lineActor = vtkActor::New();
+    vtkSmartPointer<vtkActor> lineActor = vtkSmartPointer<vtkActor>::New();
     lineActor->SetMapper(lineMapper);
-    d->renderer->AddActor(lineActor);
 
-    vtkPolyData* pointPolydata = vtkPolyData::New();
+    vtkSmartPointer<vtkPolyData> pointPolydata = vtkSmartPointer<vtkPolyData>::New();
     pointPolydata->SetPoints(polydataPoints);
     pointPolydata->GetPointData()->SetScalars(polydataPointData);
 
-    vtkSphereSource* sphere = vtkSphereSource::New();
+    vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
     sphere->SetRadius(1);
     sphere->SetThetaResolution(12);
     sphere->SetPhiResolution(12);
     sphere->Update();
 
-    vtkGlyph3D* glyph = vtkGlyph3D::New();
+    vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
     glyph->SetScaleModeToDataScalingOff();
     glyph->SetColorModeToColorByScalar();
     glyph->SetSourceData(sphere->GetOutput());
     glyph->SetInputData(pointPolydata);
     glyph->Update();
 
-    vtkPolyDataMapper* pointMapper = vtkPolyDataMapper::New();
+    vtkSmartPointer<vtkPolyDataMapper> pointMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     pointMapper->SetInputData(glyph->GetOutput());
     pointMapper->SetScalarRange(0, graph.vertexCount()-1);
 
-    vtkActor* pointActor = vtkActor::New();
+    vtkSmartPointer<vtkActor> pointActor = vtkSmartPointer<vtkActor>::New();
     pointActor->SetMapper(pointMapper);
+
+    d->renderer->AddActor(lineActor);
     d->renderer->AddActor(pointActor);
 
     return;

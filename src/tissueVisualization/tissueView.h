@@ -21,12 +21,14 @@
 #include <dtkCore>
 #include <dtkWidgets>
 
+#include <tissueVisualizationExport.h>
+
 class tissueCellComplex;
 class tissueCellGraph;
 
 class tissueViewPrivate;
 
-class tissueView : public dtkViewWidget
+class TISSUEVISUALIZATION_EXPORT tissueView : public dtkViewWidget
 {
     Q_OBJECT
 

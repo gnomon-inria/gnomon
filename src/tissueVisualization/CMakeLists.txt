@@ -19,12 +19,30 @@ project(tissueVisualization)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  tissueActor
+  tissueActor.h
+  tissueActorImage
+  tissueActorImage.h
+  tissueActorMesh
+  tissueActorMesh.h
+  tissueActorVolume
+  tissueActorVolume.h
+  tissueClutEditor
+  tissueClutEditor.h
   tissueView
   tissueView.h
+  tissueViewManager
+  tissueViewManager.h
   tissueVisualization)
 
 set(${PROJECT_NAME}_SOURCES
-  tissueView.cpp)
+  tissueActor.cpp
+  tissueActorImage.cpp
+  tissueActorMesh.cpp
+  tissueActorVolume.cpp
+  tissueClutEditor.cpp
+  tissueView.cpp
+  tissueViewManager.cpp)
 
 ## #################################################################
 ## Build rules
