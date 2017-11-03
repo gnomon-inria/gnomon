@@ -1,6 +1,6 @@
 {
           "title" : "Cell Graph from Image",
-           "kind" : "extractor",
+           "kind" : "process",
            "type" : "gnomonCellGraphFromImage",
            "tags" : ["gnomon","graph","image"],
     "description" : "<h3>Cell Graph from Image</h3>
