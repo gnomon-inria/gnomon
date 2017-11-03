@@ -1,0 +1,10 @@
+{
+          "title" : "Cell Graph from Image",
+           "kind" : "extractor",
+           "type" : "gnomonCellGraphFromImage",
+           "tags" : ["gnomon","graph","image"],
+    "description" : "<h3>Cell Graph from Image</h3>
+                     <p>Extract the adjacency graph between cells of a segmented image and compute some predefined properties.</p>",
+         "inputs" : ["semgented image","use margins","min contact area","background label","properties to compute"],
+         "outputs": ["cell graph"]
+}

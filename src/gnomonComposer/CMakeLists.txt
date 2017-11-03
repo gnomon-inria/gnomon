@@ -29,11 +29,13 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposerWidget
   gnomonComposerWidget_p.h
   gnomonComposerWidget.h
+  gnomonCellGraphFromImageNode.h
   gnomonTissueGrowthModelNode.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeView.cpp
   gnomonComposerWidget.cpp
+  gnomonCellGraphFromImageNode.cpp
   gnomonTissueGrowthModelNode.cpp)
 
 set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)

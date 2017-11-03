@@ -3,5 +3,6 @@
   <qresource prefix="dtkComposer">
     <file>gnomonComposerNodeView.json</file>
     <file>gnomonTissueGrowthModelNode.json</file>
+    <file>gnomonCellGraphfromImageNode.json</file>
   </qresource>
 </RCC>
