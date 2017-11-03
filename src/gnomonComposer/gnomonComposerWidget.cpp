@@ -246,11 +246,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->inner->addWidget(d->graph);
     d->inner->addWidget(d->composer);
     d->inner->addWidget(right);
-    d->inner->setSizes(QList<int>()
-                    << 300
-                    << 0
-                    << this->size().width()-300-350
-                    << 350);
 
     QHBoxLayout *b_layout = new QHBoxLayout;
     b_layout->setContentsMargins(0, 0, 0, 0);
@@ -287,10 +282,11 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->graph->setVisible(false);
     d->log_view->setVisible(false);
 
-    int wl = d->nodes->size().width();
-    int wr = d->stack->size().width();
+    int wl = qMin(d->nodes->size().width(), 300);
+    int wr = qMax(d->stack->size().width(), 300);
+    int wc = parent->size().width() - wl - wr;
 
-    d->inner->setSizes(QList<int>() << wl << 0 << this->size().width() - wl - wr << wr);
+    d->inner->setSizes(QList<int>() << wl << 0 << wc << wr);
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)

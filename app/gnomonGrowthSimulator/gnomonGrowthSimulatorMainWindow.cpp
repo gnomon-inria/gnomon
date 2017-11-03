@@ -68,6 +68,12 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
 {
     d = new gnomonGrowthSimulatorMainWindowPrivate;
 
+    gnomonCoreSettings settings;
+    settings.beginGroup("main_window");
+    this->move(settings.value("position").toPoint());
+    this->resize(settings.value("size").toSize());
+    settings.endGroup();
+
     d->font = new gnomonFontAwesome(this);
     d->font->initFontAwesome();
 
@@ -120,11 +126,6 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     QWidget *central = new QWidget(this);
     central->setLayout(layout);
 
-    gnomonCoreSettings settings;
-    settings.beginGroup("main_window");
-    this->move(settings.value("position").toPoint());
-    this->resize(settings.value("size").toSize());
-    settings.endGroup();
 
     this->setCentralWidget(central);
     this->setWindowTitle("Tissue Growth Simulator");
