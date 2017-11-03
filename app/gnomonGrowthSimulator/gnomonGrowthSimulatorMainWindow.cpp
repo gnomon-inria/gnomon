@@ -118,6 +118,21 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
         }
     });
 
+    d->run_action = d->tool_bar->addAction(d->font->icon(fa::save), "Save", this, [=] () {
+            if (d->editors->currentIndex() == 0) {
+                d->composer->compositionSave();
+            } else {
+                qWarning() << "not implemented";
+            }
+    });
+    d->run_action = d->tool_bar->addAction(d->font->icon(fa::pencil), "Save As", this, [=] () {
+            if (d->editors->currentIndex() == 0) {
+                d->composer->compositionSaveAs();
+            } else {
+                qWarning() << "not implemented";
+            }
+    });
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(d->view_manager);
