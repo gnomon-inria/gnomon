@@ -121,7 +121,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${PROJECT_SOURCE_DIR}/gnomonVisualization.i
         COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomoncore.py ${CMAKE_BINARY_DIR}/modules
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomonvisualization.py ${CMAKE_BINARY_DIR}/modules
         COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
 
       set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/gnomonvizualization.py)
