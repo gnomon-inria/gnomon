@@ -19,7 +19,7 @@
 #include <QtCore>
 
 #include <dtkLog>
-#include "dtkImage.h"
+#include <dtkImage.h>
 
 class gnomonCellGraphFromImageNodePrivate
 {
@@ -29,7 +29,7 @@ public:
 	dtkComposerTransmitterReceiver<float> min_contact_area;
 	dtkComposerTransmitterReceiver<long> background_label;
 	// dtkComposerTransmitterReceiver<QList<QString>&> property_names;
-	
+
 	dtkComposerTransmitterEmitter<gnomonCellGraph *> graph_out;
 };
 

@@ -32,9 +32,9 @@ protected:
 public:
     explicit gnomonCellGraph(void) : m_data(nullptr) {}
     explicit gnomonCellGraph(gnomonAbstractCellGraphData *data) : m_data(data) {}
-    gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
+             gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
 
-    ~gnomonCellGraph(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+    virtual ~gnomonCellGraph(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:
     gnomonCellGraph& operator = (const gnomonCellGraph& o)
@@ -71,14 +71,14 @@ public:
 public:
     virtual QList<long> vertexIds(void) const { return m_data->vertexIds(); }
     virtual long vertexCount(void) const { return m_data->vertexCount(); }
-    
+
     virtual QList<long> adjacentVertexIds(long vertexId) const { return m_data->adjacentVertexIds(vertexId); }
     virtual long adjacentVertexCount(long vertexId) const { return m_data->adjacentVertexCount(vertexId); }
 
 public:
     virtual QList<long> edgeIds(void) const { return m_data->edgeIds(); }
     virtual long edgeCount(void) const { return m_data->edgeCount(); }
-    
+
     virtual QList<long> incidentEdgeIds(long vertexId) const { return m_data->incidentEdgeIds(vertexId); }
     virtual long incidentEdgeCount(long vertexId) const { return m_data->incidentEdgeCount(vertexId); }
 
