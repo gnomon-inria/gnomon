@@ -5,15 +5,11 @@
 class gnomonOmeroProject : public gnomonOmeroObject
 {
  public:
-  bool gnomonOmeroProject::isProject(void);
-  bool gnomonOmeroProject::isDataset(void);
-  bool gnomonOmeroProject::isImage(void);
+  bool isProject(void);
+  bool isDataset(void);
+  bool isImage(void);
+  gnomonOmeroType::type type(void);
 };
-
-gnomonOmeroType::type gnomonOmeroProject::type(void)
-{
-  return gnomonOmeroType::project;
-}
 
 inline bool gnomonOmeroProject::isProject(void) {return true;}
 inline bool gnomonOmeroProject::isDataset(void) {return false;}
