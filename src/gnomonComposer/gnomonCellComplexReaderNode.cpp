@@ -19,7 +19,6 @@
 #include <QtCore>
 
 #include <dtkLog>
-#include <dtkImage.h>
 
 class gnomonCellComplexReaderNodePrivate
 {
