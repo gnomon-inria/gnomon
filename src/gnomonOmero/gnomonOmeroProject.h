@@ -5,6 +5,9 @@
 class gnomonOmeroProject : public gnomonOmeroObject
 {
  public:
+  gnomonOmeroProject(void);
+  
+ public:
   bool isProject(void);
   bool isDataset(void);
   bool isImage(void);

@@ -13,13 +13,7 @@
 // Code:
 
 #include "gnomonOmeroObject.h"
-
-class gnomonOmeroObjectPrivate
-{
-public:
-    int id;
-    gnomonOmeroType::type type;
-};
+#include "gnomonOmeroObject_p.h"
 
 gnomonOmeroObject::gnomonOmeroObject(void)
 {

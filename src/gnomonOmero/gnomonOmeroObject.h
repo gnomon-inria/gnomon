@@ -34,7 +34,7 @@ public:
     virtual bool isDataset(void) = 0;
     virtual bool isImage(void)   = 0;
 
-private:
+protected:
     class gnomonOmeroObjectPrivate *d;
 };
 
