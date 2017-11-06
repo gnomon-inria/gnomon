@@ -1,0 +1,41 @@
+/* Version: $Id$
+ *
+ */
+
+/* Commentary:
+ *
+ */
+
+/* Change Log:
+ *
+ */
+
+/* Code: */
+
+#pragma once
+
+%module gnomonvisualization
+
+%include "@dtk_WRAP_BASE@"
+%import "@dtk_WRAP_CORE@"
+
+%{
+
+#include <gnomonVisualization/gnomonView.h>
+
+%}
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMONVISUALIZATION_EXPORT
+#define GNOMONVISUALIZATION_EXPORT
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+
+%include <gnomonVisualization/gnomonView.h>
+
+/* gnomonVisualization.i ends here */

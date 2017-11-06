@@ -16,7 +16,7 @@ cmake_minimum_required(VERSION 3.6.0)
 
 ######################################################################
 
-project(tissue)
+project(gnomon)
 
 ## ###################################################################
 ## Version setup
@@ -109,21 +109,19 @@ if (OMERO_ICE_FOUND)
   include_directories(${OMERO_ICE_INCLUDE_DIR})
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
 
 find_package(dtk REQUIRED)
 
 include_directories(${dtk_INCLUDE_DIRS})
 
 find_package(VTK)
-if(NOT VTK_FOUND )
-  message(WARNING "VTK_DIR not found")
-endif()
 
-if(VTK_FOUND)
+if(NOT VTK_FOUND)
+  message(WARNING "VTK_DIR not found")
+else()
   include(${VTK_USE_FILE})
 endif()
-
 
 ## #################################################################
 ## Dependencies - internal
@@ -131,9 +129,12 @@ endif()
 
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueCore)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueComposer)
-include_directories(${CMAKE_SOURCE_DIR}/src/tissueOmero)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnonomOmero)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 
 ## ###################################################################
 ## Input
@@ -160,9 +161,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cm
 install(FILES
   "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tissue)
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/gnomon)
 
-install(EXPORT tissueDepends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tissue)
+install(EXPORT gnomonDepends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/gnomon)
 
 ## ###################################################################
 ## Beautifying
