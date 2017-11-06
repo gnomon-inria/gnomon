@@ -1,6 +1,6 @@
 # Installation
 
-## Prerequisites stuff
+## Pre-requisites stuff
 
 For sake of clarity, let's consider that all the programs are installed under `$HOME/Development` folder.
 
@@ -31,10 +31,12 @@ sudo updatedb
 
 ### Qt5 installation on ubuntu
 
+Download and install the latest release of Qt5 (here 5.9.2):
 ``` shell
 cd $HOME/Development
 wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
 chmod +x qt-unified-linux-x64-3.0.1-online.run
+./qt-unified-linux-x64-3.0.1-online.run
 ```
 
 In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt. In this folder, one has to create a conf file for qtchooser as follows:
@@ -45,7 +47,7 @@ echo "$HOME/Development/Qt/5.9.2/gcc_64/bin
 $HOME/Development/Qt/5.9.2/gcc_64" > qt592.conf
 ```
 
-In the bashrc file, one can add the following lines:
+To enable Qt5 and define environment variables, add the following lines to the `~/.bashrc` file:
 
 ``` shell
 ## #################################################################
@@ -66,7 +68,7 @@ export Qt5SerialBus_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5SerialBus'
 export Qt5Network_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Network'
 ```
 
-It remains to set this config as the default one for qtchooser. One has to create as sudoer a symbolink link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
+It remains to set this config as the default one for qtchooser. One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
 
 
 ### VTK8 installation
@@ -83,7 +85,7 @@ make -j4
 ```
 
 
-### Vt installation
+### Morpheme 'vt' installation
 
 ``` shell
 cd $HOME/Development
@@ -118,7 +120,7 @@ cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTE
 make -j4
 ```
 
-### dtk imaging
+### dtk-imaging
 
 ``` shell
 cd $HOME/Development
@@ -131,7 +133,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build
 make -j4
 ```
 
-### dtk plugins imaging
+### dtk-plugins-imaging
 
 ``` shell
 cd $HOME/Development
@@ -144,7 +146,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-### dtk discrete geometry
+### dtk-discrete-geometry
 
 ``` shell
 cd $HOME/Development
@@ -157,7 +159,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-## Gnomon plugins
+## Gnomon & gnomon-plugins
 
 ### gnomon
 
@@ -173,7 +175,7 @@ make -j4
 ```
 
 
-### gnomon plugins
+### gnomon-plugins
 
 ``` shell
 cd $HOME/Development
@@ -207,7 +209,7 @@ plugins=$HOME/Development/dtk-imaging/build/plugins:$HOME/Development/dtk-discre
 
 This will enable the composer embedded into gnomon application to find node extensions provided by gnomon, dtk-imaging and dtk-discrete-geometry.
 
-### dtk imaging config
+### dtk-imaging config
 
 Edit `dtk-imaging.ini` file and add the following lines:
 
