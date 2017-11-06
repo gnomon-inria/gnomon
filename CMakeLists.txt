@@ -132,7 +132,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnonomOmero)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 

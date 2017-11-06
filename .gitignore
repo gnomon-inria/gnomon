@@ -34,8 +34,8 @@ build
 ## Generated files
 ## ###################################################################
 
-src/tissueCore/tissueCore.i
-src/tissueOmero/tissueOmeroConfig.h
+src/gnomonCore/gnomonCore.i
+src/gnomonOmero/gnomonOmeroConfig.h
 
 ######################################################################
 ### .gitignore ends here
