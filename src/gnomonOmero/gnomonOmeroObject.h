@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <QtCore>
+
 namespace gnomonOmeroType{
   enum type {none, project, dataset, image};
 };
@@ -26,6 +28,7 @@ public:
 
 public:
     int id(void);
+    QStringList annotation(void);
 
 public:
     virtual gnomonOmeroType::type type(void) = 0;
