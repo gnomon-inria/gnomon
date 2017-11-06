@@ -157,7 +157,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-## Tissue and gnomon plugins
+## Gnomon plugins
 
 ### gnomon
 
