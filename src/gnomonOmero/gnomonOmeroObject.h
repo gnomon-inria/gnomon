@@ -25,16 +25,14 @@ public:
    ~gnomonOmeroObject(void);
 
 public:
-    void setId(int);
     int id(void);
 
 public:
-    gnomonOmeroType::type type(void);
-    void setType(gnomonOmeroType::type type);
+    virtual gnomonOmeroType::type type(void) = 0;
 
-    bool isProject(void);
-    bool isDataset(void);
-    bool isImage(void);
+    virtual bool isProject(void) = 0;
+    virtual bool isDataset(void) = 0;
+    virtual bool isImage(void)   = 0;
 
 private:
     class gnomonOmeroObjectPrivate *d;
