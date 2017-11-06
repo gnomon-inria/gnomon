@@ -29,6 +29,7 @@
 #include <gnomonCore/gnomonAbstractCellGraphData.h>
 #include <gnomonCore/gnomonCellGraph.h>
 #include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+#include <gnomonCore/gnomonAbstractCellComplexReader.h>
 
 %}
 
@@ -50,5 +51,6 @@
 %include <gnomonCore/gnomonAbstractCellGraphData.h>
 %include <gnomonCore/gnomonCellGraph.h>
 %include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+%include <gnomonCore/gnomonAbstractCellComplexReader.h>
 
 /* gnomonCore.i ends here */

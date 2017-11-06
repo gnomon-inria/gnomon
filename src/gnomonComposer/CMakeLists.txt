@@ -30,12 +30,14 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposerWidget_p.h
   gnomonComposerWidget.h
   gnomonCellGraphFromImageNode.h
+  gnomonCellComplexReaderNode.h
   gnomonTissueGrowthModelNode.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeView.cpp
   gnomonComposerWidget.cpp
   gnomonCellGraphFromImageNode.cpp
+  gnomonCellComplexReaderNode.cpp
   gnomonTissueGrowthModelNode.cpp)
 
 set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)

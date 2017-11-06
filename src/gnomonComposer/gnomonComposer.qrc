@@ -4,5 +4,6 @@
     <file>gnomonComposerNodeView.json</file>
     <file>gnomonTissueGrowthModelNode.json</file>
     <file>gnomonCellGraphFromImageNode.json</file>
+    <file>gnomonCellComplexReaderNode.json</file>
   </qresource>
 </RCC>
