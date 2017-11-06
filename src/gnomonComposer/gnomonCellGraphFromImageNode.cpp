@@ -28,7 +28,7 @@ public:
 	dtkComposerTransmitterReceiver<bool> use_margins;
 	dtkComposerTransmitterReceiver<float> min_contact_area;
 	dtkComposerTransmitterReceiver<long> background_label;
-	// dtkComposerTransmitterReceiver<QList<QString>&> property_names;
+	dtkComposerTransmitterReceiver<QStringList> property_names;
 
 	dtkComposerTransmitterEmitter<gnomonCellGraph *> graph_out;
 };
@@ -42,7 +42,7 @@ gnomonCellGraphFromImageNode::gnomonCellGraphFromImageNode(void) : dtkComposerNo
     this->appendReceiver(&d->use_margins);
     this->appendReceiver(&d->min_contact_area);
     this->appendReceiver(&d->background_label);
-    // this->appendReceiver(&d->property_names);
+    this->appendReceiver(&d->property_names);
 
     this->appendEmitter (&d->graph_out);
 }
@@ -70,7 +70,7 @@ void gnomonCellGraphFromImageNode::run(void)
         graphFromImage->setUseMargins(d->use_margins.data());
         graphFromImage->setMinContactArea(d->min_contact_area.data());
         graphFromImage->setBackgroundLabel(d->background_label.data());
-        // graphFromImage->setPredefinedProperties(d->property_names.data());
+        graphFromImage->setPredefinedProperties(d->property_names.data());
 
         graphFromImage->run();
 

@@ -36,7 +36,7 @@ public:
 
     virtual void setBackgroundLabel(long label) = 0;
 
-    virtual void setPredefinedProperties(const QList<QString>& names) = 0;
+    virtual void setPredefinedProperties(const QStringList& names) = 0;
 
     // Outputs
 public:
