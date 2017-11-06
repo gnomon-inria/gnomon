@@ -1,21 +1,11 @@
 
 #include "gnomonOmeroImage.h"
+#include "gnomonOmeroObject_p.h"
 
-class gnomonOmeroImagePrivate
+gnomonOmeroImage::gnomonOmeroImage(void) : gnomonOmeroObject()
 {
-public:
+    d->type = gnomonOmeroType::image;
 
-};
-
-gnomonOmeroImage::gnomonOmeroImage(void)
-{
-    d = new gnomonOmeroImagePrivate;
-
-}
-
-gnomonOmeroImage::~gnomonOmeroImage(void)
-{
-  delete d;
 }
 
 gnomonOmeroType::type gnomonOmeroImage::type(void)

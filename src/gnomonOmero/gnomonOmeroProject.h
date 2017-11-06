@@ -22,10 +22,6 @@ public:
   QList<gnomonOmeroDataset*> datasets(void);
   QList<gnomonOmeroImage*> images(void);
 
-
-private:
-    class gnomonOmeroProjectPrivate *d;
-
 };
 
 inline bool gnomonOmeroProject::isProject(void) {return true;}

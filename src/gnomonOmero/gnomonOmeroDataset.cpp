@@ -1,29 +1,19 @@
 
 #include "gnomonOmeroDataset.h"
+#include "gnomonOmeroObject_p.h"
 
-class gnomonOmeroDatasetPrivate
+gnomonOmeroDataset::gnomonOmeroDataset(void) : gnomonOmeroObject()
 {
-public:
-
-};
-
-gnomonOmeroDataset::gnomonOmeroDataset(void)
-{
-    d = new gnomonOmeroDatasetPrivate;
-
+  d->type = gnomonOmeroType::dataset;
 }
 
-gnomonOmeroDataset::~gnomonOmeroDataset(void)
+
+gnomonOmeroType::type gnomonOmeroDataset::type(void)
 {
-    delete d;
+  return gnomonOmeroType::dataset;
 }
 
 QList<gnomonOmeroImage*> gnomonOmeroDataset::images(void)
 {
 
-}
-
-gnomonOmeroType::type gnomonOmeroDataset::type(void)
-{
-  return gnomonOmeroType::dataset;
 }

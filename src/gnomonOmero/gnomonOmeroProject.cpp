@@ -1,21 +1,15 @@
 
 #include "gnomonOmeroProject.h"
+#include "gnomonOmeroObject_p.h"
 
-class gnomonOmeroProjectPrivate
+gnomonOmeroProject::gnomonOmeroProject(void) : gnomonOmeroObject()
 {
-public:
-
-};
-
-gnomonOmeroProject::gnomonOmeroProject(void)
-{
-    d = new gnomonOmeroProjectPrivate;
-
+  d->type = gnomonOmeroType::project;
 }
 
-gnomonOmeroProject::~gnomonOmeroProject(void)
+gnomonOmeroType::type gnomonOmeroProject::type(void)
 {
-    delete d;
+  return gnomonOmeroType::project;
 }
 
 QList<gnomonOmeroDataset*> gnomonOmeroProject::datasets(void)
@@ -26,9 +20,4 @@ QList<gnomonOmeroDataset*> gnomonOmeroProject::datasets(void)
 QList<gnomonOmeroImage*> gnomonOmeroProject::images(void)
 {
 
-}
-
-inline gnomonOmeroType::type gnomonOmeroProject::type(void)
-{
-  return gnomonOmeroType::project;
 }

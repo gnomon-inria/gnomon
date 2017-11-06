@@ -46,7 +46,7 @@ public:
   QList<gnomonOmeroDataset*> datasets(void);
   QList<gnomonOmeroImage*> images(void);
 
-private:
+protected:
     class gnomonOmeroPrivate *d;
 };
 

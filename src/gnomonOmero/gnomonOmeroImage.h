@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include <QtCore>
 #include <gnomonOmeroObject>
 
 class gnomonOmeroImage : public gnomonOmeroObject
 {
+
 public:
     gnomonOmeroImage(void);
    ~gnomonOmeroImage(void);
@@ -16,11 +16,7 @@ public:
   bool isImage(void)   ;
   gnomonOmeroType::type type(void);
 
-private:
-    class gnomonOmeroImagePrivate *d;
-
 };
-
 
 inline bool gnomonOmeroImage::isProject(void) {return false;}
 inline bool gnomonOmeroImage::isDataset(void) {return false;}

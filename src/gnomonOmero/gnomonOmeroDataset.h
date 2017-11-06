@@ -7,6 +7,7 @@
 
 class gnomonOmeroDataset : public gnomonOmeroObject
 {
+
 public:
     gnomonOmeroDataset(void);
    ~gnomonOmeroDataset(void);
@@ -19,9 +20,6 @@ public:
 
 public:
     QList<gnomonOmeroImage*> images(void);
-
-private:
-    class gnomonOmeroDatasetPrivate *d;
 
 };
 

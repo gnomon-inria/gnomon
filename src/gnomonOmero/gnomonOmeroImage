@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 #include "gnomonOmeroImage.h"
+=======
+#include <gnomonOmeroImage>
+>>>>>>> 56657654cd0dd72e11d9fadfd2a9777dc40d60d5
