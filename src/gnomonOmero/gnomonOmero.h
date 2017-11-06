@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <tissueCore>
+#include <gnomonCore>
 #include <omero/client.h>
 #include <omero/model/Project.h>
 #include <omero/model/Dataset.h>
@@ -25,11 +25,11 @@
 #include <omero/api/IMetadata.h>
 
 
-class tissueOmero
+class gnomonOmero
 {
 public:
-    tissueOmero(void);
-   ~tissueOmero(void);
+    gnomonOmero(void);
+   ~gnomonOmero(void);
 
 public:
   void readData(void);
@@ -37,9 +37,9 @@ public:
   void browseDB(void);
 
 private:
-    class tissueOmeroPrivate *d;
+    class gnomonOmeroPrivate *d;
 };
 
 
 //
-// tissueOmero.h ends here
+// gnomonOmero.h ends here

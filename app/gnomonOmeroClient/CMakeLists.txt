@@ -12,7 +12,7 @@
 ##
 ### Code:
 
-project(tissueOmeroClient)
+project(gnomonOmeroClient)
 
 ## #################################################################
 ## Sources
@@ -34,7 +34,7 @@ add_executable(${PROJECT_NAME}
 
 qt5_use_modules(${PROJECT_NAME} Core)
 
-target_link_libraries(${PROJECT_NAME} tissueOmero)
+target_link_libraries(${PROJECT_NAME} gnomonOmero)
 
 ## ###################################################################
 ## Install rules - targets

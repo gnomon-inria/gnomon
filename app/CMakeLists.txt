@@ -13,7 +13,7 @@
 ### Code:
 
 add_subdirectory(gnomonGrowthSimulator)
-add_subdirectory(tissueOmeroClient)
+add_subdirectory(gnomonOmeroClient)
 
 ######################################################################
 ### CMakeLists.txt ends here

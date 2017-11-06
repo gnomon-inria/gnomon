@@ -12,22 +12,22 @@
 ##
 ### Code:
 
-project(tissueOmero)
+project(gnomonOmero)
 
 ## #################################################################
 ## Sources
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  tissueOmero
-  tissueOmero.h
-  tissueOmeroObject
-  tissueOmeroObject.h
+  gnomonOmero
+  gnomonOmero.h
+  gnomonOmeroObject
+  gnomonOmeroObject.h
 )
 
 set(${PROJECT_NAME}_SOURCES
-  tissueOmero.cpp
-  tissueOmeroObject.cpp
+  gnomonOmero.cpp
+  gnomonOmeroObject.cpp
 )
 
 ## #################################################################
@@ -45,8 +45,8 @@ if(DTK_BUILD_WRAPPERS)
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
   if (DTK_WRAPPING_PYTHON)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueOmero.i.in ${CMAKE_CURRENT_SOURCE_DIR}/tissueOmero.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP tissuecore python ${CMAKE_CURRENT_SOURCE_DIR}/tissueOmero.i ${${PROJECT_NAME}_WRAP_DEPENDS})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmero.i.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmero.i @ONLY)
+    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmero.i ${${PROJECT_NAME}_WRAP_DEPENDS})
   endif()
 endif()
 
@@ -54,11 +54,11 @@ endif()
 ## Build rules
 ## #################################################################
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tissueOmeroConfig.h.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/tissueOmeroConfig.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmeroConfig.h.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmeroConfig.h)
 set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_HEADERS}
-  tissueOmeroConfig.h)
+  gnomonOmeroConfig.h)
 
 ## #################################################################
 
@@ -77,7 +77,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core)
 #target_link_libraries(${PROJECT_NAME} dtkCore)
 #target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
-target_link_libraries(${PROJECT_NAME} tissueCore)
+target_link_libraries(${PROJECT_NAME} gnomonCore)
 target_link_libraries(${PROJECT_NAME} ${OMERO_CLIENT_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${OMERO_ICE_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${Ice_LIBRARIES})
@@ -116,29 +116,29 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
   if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
 
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      DEPENDS ${PROJECT_SOURCE_DIR}/tissueOmero.i
+      DEPENDS ${PROJECT_SOURCE_DIR}/gnomonOmero.i
       COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-      COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/tissuecore.py ${CMAKE_BINARY_DIR}/modules
+      COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomoncore.py ${CMAKE_BINARY_DIR}/modules
       COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
 
-    set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/tissuecore.py)
+    set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/gnomoncore.py)
 
     if(APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/tissueOmero.i
-        COMMAND ln -sf ../lib/libtissueOmero.dylib _tissuecore.so
+        DEPENDS ${PROJECT_SOURCE_DIR}/gnomonOmero.i
+        COMMAND ln -sf ../lib/libgnomonOmero.dylib _gnomoncore.so
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
+      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomoncore.so)
     endif(APPLE)
 
     if(UNIX AND NOT APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/tissueOmero.i
-        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libtissueOmero.so _tissuecore.so
+        DEPENDS ${PROJECT_SOURCE_DIR}/gnomonOmero.i
+        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libgnomonOmero.so _gnomoncore.so
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_tissuecore.so)
+      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomoncore.so)
     endif(UNIX AND NOT APPLE)
 
   endif(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
@@ -150,8 +150,8 @@ endif(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/tissue
-  COMPONENT tissue-core)
+  DESTINATION include/gnomon
+  COMPONENT gnomon-core)
 
 ## ###################################################################
 ## Install rules - targets
@@ -159,8 +159,8 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 
 install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT tissue-core
-         EXPORT tissueDepends)
+      COMPONENT gnomon-core
+         EXPORT gnomonDepends)
 
 ######################################################################
 ### CMakeLists.txt ends here

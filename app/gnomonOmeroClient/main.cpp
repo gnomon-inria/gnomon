@@ -13,19 +13,19 @@
 // Code:
 
 
-#include <tissueCore>
-#include <tissueCoreSettings>
-#include <tissueOmero>
+#include <gnomonCore>
+#include <gnomonCoreSettings>
+#include <gnomonOmero>
 
 int main(int argc, char *argv[])
 {
     dtkCoreApplication *application = dtkCoreApplication::create(argc, argv);
-    application->setApplicationName("TissueOmeroClient");
+    application->setApplicationName("GnomonOmeroClient");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
     application->setApplicationVersion("0.1.0");
 
-    tissueOmero omero;
+    gnomonOmero omero;
     omero.browseDB();
 
     return 0;

@@ -12,14 +12,14 @@
 
 // Code:
 
-#include "tissueOmeroConfig.h"
+#include "gnomonOmeroConfig.h"
 
-#include "tissueOmero.h"
-#include "tissueOmeroObject.h"
-#include <tissueCore>
+#include "gnomonOmero.h"
+#include "gnomonOmeroObject.h"
+#include <gnomonCore>
 
 
-class tissueOmeroPrivate
+class gnomonOmeroPrivate
 {
 public:
     QString omero_server;
@@ -33,13 +33,13 @@ public:
     omero::api::IAdminPrx admin;
 
 public:
-    QList<tissueOmeroObject *> topDir;
+    QList<gnomonOmeroObject *> topDir;
 };
 
-tissueOmero::tissueOmero(void)
+gnomonOmero::gnomonOmero(void)
 {
-    this->d = new tissueOmeroPrivate;
-    tissueCoreSettings settings;
+    this->d = new gnomonOmeroPrivate;
+    gnomonCoreSettings settings;
     settings.beginGroup("omero");
     d->omero_server = settings.value("server").toString();
     d->omero_port = settings.value("port").toString();
@@ -60,7 +60,7 @@ tissueOmero::tissueOmero(void)
 #else
     data.properties->setProperty("IceSSL.Ciphers", "ADH:@SECLEVEL=0");
 #endif
-    
+
     omero::client_ptr initialize_client = new omero::client(data);
     omero::api::ServiceFactoryPrx session_new = initialize_client->createSession();
 
@@ -73,7 +73,7 @@ tissueOmero::tissueOmero(void)
 
 }
 
-tissueOmero::~tissueOmero(void)
+gnomonOmero::~gnomonOmero(void)
 {
     if(d->client){
       d->client->closeSession();
@@ -82,7 +82,7 @@ tissueOmero::~tissueOmero(void)
     delete d;
 }
 
-void tissueOmero::browseDB(void)
+void gnomonOmero::browseDB(void)
 {
     omero::api::IAdminPrx admin = d->sf->getAdminService();
     qWarning() << "admin" << admin;
@@ -128,15 +128,15 @@ void tissueOmero::browseDB(void)
     }
 }
 
-void tissueOmero::readData(void)
+void gnomonOmero::readData(void)
 {
 
 }
 
-void tissueOmero::writeData(void)
+void gnomonOmero::writeData(void)
 {
 
 }
 
 //
-// tissueOmero.cpp ends here
+// gnomonOmero.cpp ends here

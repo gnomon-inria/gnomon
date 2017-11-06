@@ -22,7 +22,7 @@ add_subdirectory(gnomonVisualization)
 add_subdirectory(gnomonWidgets)
 
 if(OMERO_ICE_FOUND AND OMERO_CLIENT_FOUND)
-  add_subdirectory(tissueOmero)
+  add_subdirectory(gnomonOmero)
 endif()
 
 if(DTK_BUILD_COMPOSER)

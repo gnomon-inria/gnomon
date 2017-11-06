@@ -14,32 +14,32 @@
 
 #pragma once
 
-namespace tissueOmeroType{
+namespace gnomonOmeroType{
   enum type {none, project, dataset, image};
 };
 
-class tissueOmeroObject
+class gnomonOmeroObject
 {
 public:
-    tissueOmeroObject(void);
-   ~tissueOmeroObject(void);
+    gnomonOmeroObject(void);
+   ~gnomonOmeroObject(void);
 
 public:
     void setId(int);
     int id(void);
 
 public:
-    tissueOmeroType::type type(void);
-    void setType(tissueOmeroType::type type);
+    gnomonOmeroType::type type(void);
+    void setType(gnomonOmeroType::type type);
 
     bool isProject(void);
     bool isDataset(void);
     bool isImage(void);
 
 private:
-    class tissueOmeroObjectPrivate *d;
+    class gnomonOmeroObjectPrivate *d;
 };
 
 
 //
-// tissueOmeroObject.h ends here
+// gnomonOmeroObject.h ends here
