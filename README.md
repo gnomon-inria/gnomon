@@ -1,8 +1,28 @@
 # Installation
 
-## Pre-requisites stuff
-
 For sake of clarity, let's consider that all the programs are installed under `$HOME/Development` folder.
+
+If you want to use a Conda (named `gnomon-dtk`) or VirtualEnv, create it using the following recipe:
+``` yml
+name: gnomon-dtk
+channels:
+  - defaults
+dependencies:
+  - python=2.7
+  - ipython-qtconsole
+  - jinja2
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - zeroc-ice
+```
+
+Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
+
+Pre-requisites might be installed outside the environment.
+
+## Pre-requisites stuff
 
 ### OpenGL Stuff (at least for ubuntu)
 
@@ -12,11 +32,12 @@ sudo apt install mesa-common-dev
 ```
 
 ### MacOS config
-
+???
 
 ### CMake 3.9 version
 
-Uninstall previous version if older. Check that `libncurses5-dev` or equivalent is installed, then do the following:
+Uninstall previous version if older.
+Check that `libncurses5-dev` or equivalent is installed, then do the following:
 
 ``` shell
 cd $HOME/Development
@@ -39,7 +60,8 @@ chmod +x qt-unified-linux-x64-3.0.1-online.run
 ./qt-unified-linux-x64-3.0.1-online.run
 ```
 
-In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt. In this folder, one has to create a conf file for qtchooser as follows:
+In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt.
+In this folder, one has to create a conf file for qtchooser as follows:
 
 ``` shell
 cd $HOME/Development/Qt
@@ -68,18 +90,28 @@ export Qt5SerialBus_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5SerialBus'
 export Qt5Network_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Network'
 ```
 
-It remains to set this config as the default one for qtchooser. One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
+It remains to set this config as the default one for qtchooser.
+One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
 
 
 ### VTK8 installation
 
+Starts by downloading the sources for VTK8 (here 8.0.1):
 ``` shell
 cd $HOME/Development
 wget http://www.vtk.org/files/release/8.0/VTK-8.0.1.tar.gz
+```
+
+Unzip and create the `build` directory:
+``` shell
 tar -zxvf VTK-8.0.1.tar.gz
 cd VTK-8.0.1/
 mkdir build
 cd build
+```
+
+Compile after defining `cmake` options using arguments parsing (`cmake` options can also be defined using `ccmake ..` to access CMake curse interface):
+``` shell
 cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
 make -j4
 ```
@@ -87,9 +119,20 @@ make -j4
 
 ### Morpheme 'vt' installation
 
+Start by cloning the Morpheme source code, replacing `mylogin` with you INRIA forge login:
 ``` shell
 cd $HOME/Development
 git clone git+ssh://mylogin@scm.gforge.inria.fr/gitroot/morpheme-privat/morpheme-privat.git
+```
+
+Checkout the first tagged release (for timagetk) named "timagetkRelease1.0.0":
+``` shell
+git tag
+git checkout timagetkRelease1.0.0
+```
+
+Compile `vt` library as follow:
+``` shell
 cd morpheme-privat/vt
 mkdir build
 cd build
@@ -239,3 +282,74 @@ cd $HOME/Development/gnomon/build
 ```
 
 Then in the research field, one can look for gnomon and check that at least one node from gnomon is available. One can then drag and drop it into the composer. Eventually, one can select the node and check in th left panel whether an implementation is available.
+
+
+## Optionals
+
+TimageTK and tissue_analysis are pure python packages, to install them uses the setup.py with the following option depending on the type of install you would like:
+
+  * System-wide install:
+``` shell
+python setup.py install
+```
+
+  * User specific install:
+``` shell
+python setup.py install --user
+```
+
+  * System-wide "developer install":
+``` shell
+python setup.py develop
+```
+
+  * User specific "developer install":
+``` shell
+python setup.py develop --user
+```
+
+  * Conda / VirtualEnv install:
+If you are working under Conda or VirtualEnv activate the environment first, then use the `-prefix=` option to specify installation path.
+Example here with a conda environment named `gnomon-dtk`:
+``` shell
+source activate gnomon-dtk
+cd $HOME/Development/timagetk
+python setup.py --prefix=$CONDA_ENV_PATH
+```
+
+
+### TimageTK, the image toolkit
+
+Clone TimageTK source code:
+
+``` shell
+cd $HOME/Development/
+git clone https://github.com/VirtualPlants/timagetk.git
+```
+
+Install it under the Conda environment (here named `gnomon-dtk`):
+``` shell
+source activate gnomon-dtk
+cd timagetk
+python setup.py --prefix=$CONDA_ENV_PATH
+```
+
+
+### tissue_analysis, the cell quantification toolkit
+
+Clone tissue_analysis source code:
+
+``` shell
+cd $HOME/Development/
+git clone https://github.com/VirtualPlants/tissue_analysis.git
+```
+
+Install it under the Conda environment (here named `gnomon-dtk`):
+``` shell
+source activate gnomon-dtk
+cd tissue_analysis
+python setup.py --prefix=$CONDA_ENV_PATH
+```
+
+
+
