@@ -182,7 +182,7 @@ cd gnomon-plugins
 git checkout develop
 mkdir build
 cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gnomon/build
+cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gnomon/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build
 make -j4
 ```
 
