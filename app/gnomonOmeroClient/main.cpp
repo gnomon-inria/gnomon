@@ -32,9 +32,10 @@ int main(int argc, char *argv[])
     gnomonOmero omero;
     allProject = omero.projects();
     qWarning() << "OMERO: Found projects" << allProject.size();
-    gnomonOmeroProject omeroDataset;
-    allDataset = omeroDataset.datasets();
-    qWarning() << "OMERO: Found projects" << allDataset.size();
+
+    gnomonOmeroProjectPtr  omeroDataset = allProject.first();
+    allDataset = omeroDataset->datasets();
+    qWarning() << "OMERO: Found Dataset" << allDataset.size();
 
 
     return 0;
