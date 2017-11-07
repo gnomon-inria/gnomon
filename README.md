@@ -99,8 +99,8 @@ One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x8
 
 #### Qt objects within Python environnement using sip.
 
-Uninstall already existing version of sip if version < 4.19("sip -V" to check the version), otherwise skip to PyQt5 installation.
-Since the latest sip version of some platform packages managers is not up to date with the latest PyQt5, you can install them by hand from the sources.
+Uninstall already existing version of sip if its version is less than 4.19 ("sip -V" to check the version), otherwise skip to PyQt5 installation.
+Since the latest sip version of some packages managers is not up to date with the latest PyQt5, you can install them by hand from the sources.
 
 Dowload and install sip :
 ``` shell
