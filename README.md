@@ -278,7 +278,10 @@ $ ./build.py build-cpp
 $
 '''
 
-## install an old bversion of ice
+The compilation is done in: openmicroscopy-5.2.7/target/OMERO.cpp-5.2.7-ice36-Mac OS X-10.12.6-x86_64
+
+
+## install an old version of ice
 
 ### find the git tag
 '''
@@ -303,3 +306,12 @@ git -C "$(brew --repo homebrew/core)" checkout master
 brew unlink ice@3.6
 brew link ice
 '''
+
+
+# special directive compilation
+
+## macOSX
+...
+
+## linux
+export ICE_HOME=/opt/Ice-6.4.2

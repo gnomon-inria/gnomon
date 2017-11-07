@@ -64,11 +64,13 @@ gnomonOmero::gnomonOmero(void)
     data.properties->setProperty("omero.user", qPrintable(d->omero_user));
     data.properties->setProperty("omero.pass", qPrintable(d->omero_passwd));
 
+#if not defined (__APPLE__)
 #if OPENSSL_VERSION_MAJOR <= 1 && OPENSSL_VERSION_MINOR < 1
     data.properties->setProperty("IceSSL.Ciphers", "ADH");
 #else
     data.properties->setProperty("IceSSL.Ciphers", "ADH:@SECLEVEL=0");
 #endif
+#endif // __APPLE__
 
     omero::client_ptr initialize_client = new omero::client(data);
     omero::api::ServiceFactoryPrx session_new = initialize_client->createSession();

@@ -86,9 +86,10 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-# need of SSL_VERSION for Omero
-find_package(OpenSSL)
-message("SSL: ${OPENSSL_VERSION}")
+# need of SSL_VERSION for Omero (except MacOSX)
+if(NOT APPLE)
+  find_package(OpenSSL)
+endif()
 
 #set(Ice_DEBUG true)
 #set(Ice_VERSION 3.6.4)
