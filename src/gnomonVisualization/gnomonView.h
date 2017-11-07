@@ -23,9 +23,12 @@
 
 #include <gnomonVisualizationExport.h>
 
+class vtkImageData;
+
 class gnomonCellComplex;
 class gnomonCellGraph;
 
+class gnomonViewManager;
 class gnomonViewPrivate;
 
 class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
@@ -41,7 +44,13 @@ public:
     void addCellGraph(gnomonCellGraph&);
 
 public:
+    gnomonViewManager *manager(void);
+
+public:
     QWidget *widget(void);
+
+public slots:
+    void onInserted(vtkImageData *image);
 
 private:
     gnomonViewPrivate *d;

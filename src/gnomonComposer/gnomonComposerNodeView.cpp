@@ -19,6 +19,8 @@
 #include <dtkWidgets>
 #include <dtkLog>
 
+#include <dtkImaging>
+
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerNodeViewPrivate
 // /////////////////////////////////////////////////////////////////
@@ -26,8 +28,13 @@
 class gnomonComposerNodeViewPrivate
 {
 public:
-    gnomonView *view;
+    static gnomonView *view;
+
+public:
+    dtkComposerTransmitterReceiver<dtkImage *> receiver;
 };
+
+gnomonView *gnomonComposerNodeViewPrivate::view = Q_NULLPTR;
 
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerNodeView
@@ -36,7 +43,8 @@ public:
 gnomonComposerNodeView::gnomonComposerNodeView(void) : dtkComposerNodeLeaf()
 {
     d = new gnomonComposerNodeViewPrivate;
-    d->view = Q_NULLPTR;
+
+    this->appendReceiver(&(d->receiver));
 }
 
 gnomonComposerNodeView::~gnomonComposerNodeView(void)
@@ -47,12 +55,30 @@ gnomonComposerNodeView::~gnomonComposerNodeView(void)
 
 void gnomonComposerNodeView::run(void)
 {
-    if(d->view)
-        return;
+    if(!d->view) {
+        d->view = new gnomonView;
 
-    d->view = new gnomonView;
+        dtkViewController::instance()->insert(d->view);
+    }
 
-    dtkViewController::instance()->insert(d->view);
+    if(!d->receiver.isEmpty()) {
+
+        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+
+        if(!converter)
+            return;
+
+        dtkImage *image = d->receiver.data();
+
+        converter->setInput(image);
+
+        if(!converter->convert())
+            return;
+
+        vtkImageData *data = static_cast<vtkImageData *>(converter->output());
+
+        d->view->manager()->insert(data);
+    }
 }
 
 //

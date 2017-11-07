@@ -13,6 +13,12 @@
 // Code:
 
 #include "gnomonView.h"
+#include "gnomonViewManager.h"
+
+#include "gnomonActor.h"
+
+#include "gnomonCellComplex.h"
+#include "gnomonCellGraph.h"
 
 #include <dtkWidgets>
 
@@ -37,20 +43,22 @@
 
 #include <QVTKOpenGLWidget.h>
 
-#include "gnomonCellComplex.h"
-#include "gnomonCellGraph.h"
-
 class gnomonViewPrivate
 {
 public:
     vtkGenericOpenGLRenderWindow *window;
     QVTKOpenGLWidget *widget;
     vtkRenderer *renderer;
+
+public:
+    gnomonViewManager *manager;
 };
 
 gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 {
     d = new gnomonViewPrivate;
+
+    d->manager = new gnomonViewManager;
 
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(1, 1, 1);
@@ -67,6 +75,8 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     layout->setContentsMargins(0, 0, 0, 0);
 
     this->setLayout(layout);
+
+    connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *image)));
 }
 
 gnomonView::~gnomonView(void)
@@ -74,8 +84,14 @@ gnomonView::~gnomonView(void)
     d->renderer->Delete();
     d->window->Delete();
 
+    delete d->manager;
     delete d->widget;
     delete d;
+}
+
+gnomonViewManager *gnomonView::manager(void)
+{
+    return d->manager;
 }
 
 QWidget *gnomonView::widget(void)
@@ -196,6 +212,11 @@ void gnomonView::addCellGraph(gnomonCellGraph &graph)
     d->renderer->AddActor(pointActor);
 
     return;
+}
+
+void gnomonView::onInserted(vtkImageData *image)
+{
+    d->renderer->AddActor(d->manager->actor(image));
 }
 
 //

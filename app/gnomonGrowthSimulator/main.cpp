@@ -14,15 +14,15 @@
 
 #include <QtCore>
 #include <QtDebug>
+#include <QtOpenGL>
 #include <QtWidgets>
 
-#include <QSurfaceFormat>
+#include <dtkComposer>
+#include <dtkWidgets>
+
+#include <dtkImaging>
 
 #include <QVTKOpenGLWidget.h>
-
-#include <dtkWidgets/dtkApplication.h>
-#include <dtkComposer/dtkComposer.h>
-#include <dtkComposer/dtkComposerExtension.h>
 
 #include "gnomonGrowthSimulatorMainWindow.h"
 
@@ -53,6 +53,12 @@ int main(int argc, char *argv[])
 
     dtkComposer::node::initialize();
     dtkComposer::extension::initialize();
+
+    // ///////////////////////////////////////////////////////////////////
+    // Applicative layers
+    // ///////////////////////////////////////////////////////////////////
+
+    dtkImaging::initialize();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window
