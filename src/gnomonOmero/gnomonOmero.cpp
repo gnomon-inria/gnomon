@@ -92,10 +92,6 @@ gnomonOmero::gnomonOmero(void)
     omero::api::IAdminPrx admin = d->sf->getAdminService();
     omero::sys::EventContextPtr context = admin->getEventContext();
     d->userID = context->userId;
-
-
-    qWarning() << "sessionID: " << QString::fromStdString(d->client->getSessionId()) <<  "Metadata:" << d->client->getSession()->getMetadataService();
-
 }
 
 gnomonOmero::~gnomonOmero(void)
@@ -110,6 +106,14 @@ gnomonOmero::~gnomonOmero(void)
 int long gnomonOmero::userId(void)
 {
   return d->userID;
+}
+
+QString gnomonOmero::sessionId(void)
+{
+    if (d->client)
+        return  QString::fromStdString(d->client->getSessionId());
+    else
+        return QString();
 }
 
 void gnomonOmero::browseDB(void)

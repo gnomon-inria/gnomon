@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
     application->setApplicationVersion("0.1.0");
 
     gnomonOmero omero;
+
+    qDebug() << "Session ID:" << omero.sessionId();
+
     QList<gnomonOmeroProjectPtr> allProject = omero.projects();
     qWarning() << "Found " << allProject.size() << "project(s)";
 
