@@ -61,7 +61,8 @@ public:
     QAction *save_as_action;
 
 public:
-    gnomonFontAwesome *font;
+    gnomonFontAwesome *font_awesome;
+    gnomonFontSourceCodePro *font_source_code_pro;
 };
 
 gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent) : QMainWindow(parent)
@@ -74,14 +75,18 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     this->resize(settings.value("size").toSize());
     settings.endGroup();
 
-    d->font = new gnomonFontAwesome(this);
-    d->font->initFontAwesome();
+    d->font_awesome = new gnomonFontAwesome(this);
+    d->font_awesome->initFontAwesome();
+
+    d->font_source_code_pro = new gnomonFontSourceCodePro(this);
+    d->font_source_code_pro->initFontSourceCodePro();
 
     d->view_manager = new dtkViewManager(this);
 
     d->composer = new gnomonComposerWidget(this);
 
     d->editor = new gnomonCodeEditor;
+    d->editor->setFont(d->font_source_code_pro->font(12));
 
     d->interpreter_widget = new dtkInterpreter;
 
@@ -102,14 +107,14 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
 
     d->tool_bar = this->addToolBar("Main");
 
-    d->open_action = d->tool_bar->addAction(d->font->icon(fa::folderopen), "Open", this, [=] () {
+    d->open_action = d->tool_bar->addAction(d->font_awesome->icon(fa::folderopen), "Open", this, [=] () {
         if (d->editors->currentIndex() == 0)
             d->composer->compositionOpen();
         else
             d->editor->openScript();
     });
 
-    d->run_action = d->tool_bar->addAction(d->font->icon(fa::play), "Run", this, [=] () {
+    d->run_action = d->tool_bar->addAction(d->font_awesome->icon(fa::play), "Run", this, [=] () {
         if (d->editors->currentIndex() == 0) {
             d->composer->composerWidget()->run();
         } else {
@@ -118,14 +123,14 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
         }
     });
 
-    d->run_action = d->tool_bar->addAction(d->font->icon(fa::save), "Save", this, [=] () {
+    d->run_action = d->tool_bar->addAction(d->font_awesome->icon(fa::save), "Save", this, [=] () {
             if (d->editors->currentIndex() == 0) {
                 d->composer->compositionSave();
             } else {
                 qWarning() << "not implemented";
             }
     });
-    d->run_action = d->tool_bar->addAction(d->font->icon(fa::pencil), "Save As", this, [=] () {
+    d->run_action = d->tool_bar->addAction(d->font_awesome->icon(fa::pencil), "Save As", this, [=] () {
             if (d->editors->currentIndex() == 0) {
                 d->composer->compositionSaveAs();
             } else {
