@@ -20,6 +20,9 @@
 int main(int argc, char *argv[])
 {
     QList<gnomonOmeroProjectPtr> allProject;
+    QList<gnomonOmeroDatasetPtr> allDataset;
+    int long id;
+
     dtkCoreApplication *application = dtkCoreApplication::create(argc, argv);
     application->setApplicationName("GnomonOmeroClient");
     application->setOrganizationName("inria");
@@ -29,6 +32,10 @@ int main(int argc, char *argv[])
     gnomonOmero omero;
     allProject = omero.projects();
     qWarning() << "OMERO: Found projects" << allProject.size();
+    gnomonOmeroProject omeroDataset;
+    allDataset = omeroDataset.datasets();
+    qWarning() << "OMERO: Found projects" << allDataset.size();
+
 
     return 0;
 }

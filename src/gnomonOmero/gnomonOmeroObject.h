@@ -24,7 +24,7 @@ class gnomonOmeroObject
 {
 public:
     gnomonOmeroObject(void);
-   ~gnomonOmeroObject(void);
+   virtual ~gnomonOmeroObject(void);
 
 public:
     int id(void);

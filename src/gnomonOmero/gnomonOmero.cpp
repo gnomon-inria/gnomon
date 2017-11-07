@@ -16,7 +16,18 @@
 
 #include "gnomonOmero.h"
 #include "gnomonOmeroObject.h"
+
 #include <gnomonCore>
+#include <omero/client.h>
+#include <omero/model/Project.h>
+#include <omero/model/Dataset.h>
+#include <omero/model/Image.h>
+#include <omero/model/Pixels.h>
+#include <omero/model/PixelsType.h>
+#include <omero/api/IContainer.h>
+#include <omero/sys/ParametersI.h>
+#include <omero/api/IAdmin.h>
+#include <omero/api/IMetadata.h>
 
 
 class gnomonOmeroPrivate
@@ -27,10 +38,6 @@ public:
     QString omero_user;
     QString omero_passwd;
 
-public:
-    int xdim, ydim, zdim, cdim, tdim;
-    double xphysize, yphysize, zphysize;
-    std::string pixtype;
 
 public:
     omero::client_ptr client;
@@ -42,6 +49,7 @@ public:
 
 public:
     QList<gnomonOmeroObject *> topDir;
+    int long userID;
 
 };
 
@@ -80,6 +88,11 @@ gnomonOmero::gnomonOmero(void)
     d->pixelsService = d->sf->getPixelsService();
     d->rawPixelsStore = d->sf->createRawPixelsStore();
 
+    omero::api::IAdminPrx admin = d->sf->getAdminService();
+    omero::sys::EventContextPtr context = admin->getEventContext();
+    d->userID = context->userId;
+
+
     qWarning() << "sessionID: " << QString::fromStdString(d->client->getSessionId()) <<  "Metadata:" << d->client->getSession()->getMetadataService();
 
 }
@@ -91,6 +104,11 @@ gnomonOmero::~gnomonOmero(void)
     }
     d->topDir.clear();
     delete d;
+}
+
+int long gnomonOmero::userId(void)
+{
+  return d->userID;
 }
 
 void gnomonOmero::browseDB(void)
@@ -142,20 +160,14 @@ void gnomonOmero::browseDB(void)
 QList<gnomonOmeroProjectPtr> gnomonOmero::projects(void)
 {
     QList<gnomonOmeroProjectPtr> listProject;
-    omero::api::IAdminPrx admin = d->sf->getAdminService();
-    omero::sys::EventContextPtr context = admin->getEventContext();
-
-    int long userID = context->userId;
-    //qWarning() << "OMERO: UserID: " << userID ;
 
     omero::sys::ParametersIPtr params = new omero::sys::ParametersI();
     params->leaves();
-    params->addId(userID);
+    params->addId(d->userID);
 
     d->containerService = d->sf->getContainerService();
     omero::sys::LongList list;
     omero::api::IObjectList projectList = d->containerService->loadContainerHierarchy("Project", list, params);
-    //qWarning() << "OMERO: Found projects" << projectList.size();
 
     for(int i=0; i< projectList.size(); i++)
     {
@@ -168,17 +180,12 @@ QList<gnomonOmeroProjectPtr> gnomonOmero::projects(void)
 
 }
 
-QList<gnomonOmeroDataset*> gnomonOmero::datasets(void)
+QList<gnomonOmeroDatasetPtr> gnomonOmero::datasets(void)
 {
-    // omero::model::ProjectLinkedDatasetSeq datasets = proj->linkedDatasetList();
-    //
-    // for(int j=0; j< datasets.size(); j++)
-    // {
-    // }
 
 }
 
-QList<gnomonOmeroImage*> gnomonOmero::images(void)
+QList<gnomonOmeroImagePtr> gnomonOmero::images(void)
 {
 
 }

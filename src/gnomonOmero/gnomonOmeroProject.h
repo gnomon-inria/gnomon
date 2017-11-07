@@ -2,11 +2,13 @@
 #pragma once
 
 #include <QtCore>
+
 #include <gnomonOmeroObject>
-#include "gnomonOmeroDataset.h"
 #include "gnomonOmeroImage.h"
+#include "gnomonOmeroDataset.h"
 
 #include <omero/model/Project.h>
+#include <omero/model/Image.h>
 
 class gnomonOmeroProject : public gnomonOmeroObject
 {
@@ -23,8 +25,8 @@ public:
   gnomonOmeroType::type type(void);
 
 public:
-  QList<gnomonOmeroDataset*> datasets(void);
-  QList<gnomonOmeroImage*> images(void);
+  QList<gnomonOmeroDatasetPtr> datasets(void);
+  QList<gnomonOmeroImagePtr> images(void);
 
 private:
     class gnomonOmeroProjectPrivate *e;
@@ -33,3 +35,5 @@ private:
 inline bool gnomonOmeroProject::isProject(void) {return true;}
 inline bool gnomonOmeroProject::isDataset(void) {return false;}
 inline bool gnomonOmeroProject::isImage(void)   {return false;}
+
+typedef QSharedPointer<gnomonOmeroProject> gnomonOmeroProjectPtr;
