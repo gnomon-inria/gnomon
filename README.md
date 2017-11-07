@@ -240,7 +240,8 @@ Then in the research field, one can look for gnomon and check that at least one 
 
 ## omero layer
 
-We need to install omero C++ and zeroc-ice
+We need to install omero C++ and zeroc-ice. Omero MUST be at the same level than the server. At the moment,
+the version is 5.2.7
 
 Omero depens on ICE (https://zeroc.com/products/ice)
 
@@ -259,20 +260,9 @@ For macOSX:
 $ brew install zeroc-ice/tap/ice
 '''
 
-Omero will be installed from the sources: https://docs.openmicroscopy.org/omero/5.1.4/developers/installation.html
-and https://docs.openmicroscopy.org/omero/5.1.4/developers/Cpp.html#building-with-cmake-directly
+Omero will be installed from the sources:
+http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
 
-'''
-$ git clone https://github.com/openmicroscopy/openmicroscopy.git
-$ cd openmicroscopy
-$ git submodule update --init
-$ mkdir build
-$ cmake ..
-'''
-
-Sources can also be downloaded from:
-https://codeload.github.com/openmicroscopy/openmicroscopy/zip/develop/openmicroscopy-develop.zip
-in this case, compilation with cmake does not work.
 Prérequisite:
 - ice (cf before)
 - JDK: http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-macosx-x64.dmg
@@ -280,10 +270,13 @@ Prérequisite:
 
 WARNING: omero-5.2.7 DOES NOT BUILD with java9 !!!!!
 
-Test:
-http://downloads.openmicroscopy.org/omero/5.4.0/artifacts/OMERO.insight-5.4.0-ice36-b74-mac.zip
-cmake -DCMAKE_INCLUDE_PATH:PATH=/usr/local/opt/ice/include -DCMAKE_LIBRARY_PATH:PATH=/usr/local/opt/ice/lib -DICE_HOME:PATH=/usr/local/opt/ice -Dice-SLICE_DIR:PATH=/usr/local/opt/ice ..
-
+'''
+$ wget http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
+$ unzip openmicroscopy-5.2.7.zip
+$ cd openmicroscopy-5.2.7
+$ ./build.py build-cpp
+$
+'''
 
 ## install an old bversion of ice
 
