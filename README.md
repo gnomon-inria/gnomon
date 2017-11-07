@@ -95,6 +95,38 @@ export Qt5Network_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Network'
 It remains to set this config as the default one for qtchooser.
 One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
 
+### Qt5 wrapping
+
+#### Qt objects within Python environnement using sip.
+
+Uninstall already existing version of sip if version < 4.19("sip -V" to check the version), otherwise skip to PyQt5 installation.
+Since the latest sip version of some platform packages managers is not up to date with the latest PyQt5, you can install them by hand from the sources.
+
+Dowload and install sip :
+``` shell
+cd $HOME/Development
+wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.5/sip-4.19.5.tar.gz
+tar -zxvf sip-4.19.5.tar.gz
+cd sip-4.19.5
+python2.7 configure.py
+sudo make install
+```
+
+Make sure that the folder containing the qmake executable of the Qt librairies you have installed is the only folder containing a qmake executable, namely "$HOME/Development/Qt/5.9.2/gcc_64/bin". You can append it to your PATH, modify your .bashrc by adding : PATH=$PATH:$HOME/Development/Qt/5.9.2/gcc_64/bin to it.
+
+Download and install PyQt5 :
+``` shell
+cd $HOME/Development
+wget https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.9.1/PyQt5_gpl-5.9.1.tar.gz
+tar -zxvf PyQt5_gpl-5.9.1.tar.gz
+cd PyQt5_gpl-5.9.1
+python2.7 configure.py
+sudo make install
+```
+
+#### Qt objects within Python environnement using SWIG.
+
+Install swig development packages with RPM.
 
 ### VTK8 installation
 
@@ -177,7 +209,7 @@ cd dtk
 git checkout develop
 mkdir build
 cd build
-cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTED=ON -DDTK_BUILD_SCRIPT=ON -DDTK_BUILD_WIDGETS=ON -DDTK_BUILD_WRAPPERS=ON -DDTK_BUILD_SUPPORT_COMPOSER=ON -DDTK_BUILD_SUPPORT_CONTAINER=ON -DDTK_BUILD_SUPPORT_CORE=ON -DDTK_BUILD_SUPPORT_GUI=ON -DDTK_BUILD_SUPPORT_MATH=ON
+cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTED=ON -DDTK_BUILD_SCRIPT=ON -DDTK_BUILD_WIDGETS=ON -DDTK_BUILD_WRAPPERS=ON -DDTK_BUILD_SUPPORT_COMPOSER=ON -DDTK_PYTHON_WRAPPER=BOTH -DDTK_BUILD_SUPPORT_CONTAINER=ON -DDTK_BUILD_SUPPORT_CORE=ON -DDTK_BUILD_SUPPORT_GUI=ON -DDTK_BUILD_SUPPORT_MATH=ON
 make -j4
 ```
 
@@ -368,6 +400,3 @@ source activate gnomon-dtk
 cd tissue_analysis
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
-
-
-
