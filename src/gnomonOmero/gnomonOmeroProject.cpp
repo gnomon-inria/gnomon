@@ -44,16 +44,9 @@ QList<gnomonOmeroDatasetPtr> gnomonOmeroProject::datasets(void)
   {
     omero::model::DatasetPtr ds = datasets[i];
     gnomonOmeroDatasetPtr item = gnomonOmeroDatasetPtr(new gnomonOmeroDataset(ds));
-    // std::string datasetName = ds->getName()->getValue();
-    // qWarning() << "OMERO: Dataset: " << datasetName.data();
     listDataset << item;
 
   }
 
   return listDataset;
-}
-
-QList<gnomonOmeroImagePtr> gnomonOmeroProject::images(void)
-{
-
 }

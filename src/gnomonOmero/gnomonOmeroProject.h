@@ -26,7 +26,6 @@ public:
 
 public:
   QList<gnomonOmeroDatasetPtr> datasets(void);
-  QList<gnomonOmeroImagePtr> images(void);
 
 private:
     class gnomonOmeroProjectPrivate *e;
