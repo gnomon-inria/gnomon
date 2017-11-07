@@ -31,13 +31,11 @@ int main(int argc, char *argv[])
 
     if ( allProject.size() >= 1 ) {
         for (int i=0; i < allProject.size(); ++i) {
-            gnomonOmeroProjectPtr  omeroDataset = allProject.at(i);
-            QList<gnomonOmeroDatasetPtr> allDataset = omeroDataset->datasets();
+            QList<gnomonOmeroDatasetPtr> allDataset = allProject.at(i)->datasets();
             qWarning() << "project" << i << ", id=" << allProject.at(i)->id()  << ": found " << allDataset.size() << "dataset(s)";
 
             for(int j=0 ; j< allDataset.size(); ++j) {
-                gnomonOmeroDatasetPtr omeroImages = allDataset.at(j);
-                QList<gnomonOmeroImagePtr> allImages = omeroImages->images();
+                QList<gnomonOmeroImagePtr> allImages = allDataset.at(i)->images();
                 qWarning() << "dataset" << j << ": found " << allImages.size() << "image(s)";
             }
         }
