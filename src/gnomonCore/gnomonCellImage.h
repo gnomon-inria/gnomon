@@ -63,7 +63,7 @@ public:
     virtual QList<long> adjacentCellIds(long cellId) const { return m_data->adjacentCellIds(cellId); }
     virtual long adjacentCellCount(long cellId) const { return m_data->adjacentCellCount(cellId); }
 
-    virtual QList<QString> cellPropertyNames(void) const { return m_data->cellPropertyNames(); };
+    virtual QStringList cellPropertyNames(void) const { return m_data->cellPropertyNames(); };
     virtual bool hasCellProperty(const QString& propertyName) const { return m_data->hasCellProperty(propertyName); }
 
     virtual const QMap<long, QVariant>& cellProperty(const QString& propertyName) const { return m_data->cellProperty(propertyName); }

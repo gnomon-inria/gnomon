@@ -84,7 +84,7 @@ public:
     void unlinkElements(int dimension, long id, long incidentId) { m_data->unlinkElements(dimension, id, incidentId); }
 
 public:
-    QList<QString> elementPropertyNames(int dimension) const { return m_data->elementPropertyNames(dimension); }
+    QStringList elementPropertyNames(int dimension) const { return m_data->elementPropertyNames(dimension); }
     bool hasElementProperty(int dimension, const QString& propertyName) const { return m_data->hasElementProperty(dimension, propertyName); }
 
     const QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) const { return m_data->elementProperty(dimension, propertyName); }
