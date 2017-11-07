@@ -162,8 +162,8 @@ git clone git+ssh://mylogin@scm.gforge.inria.fr/gitroot/morpheme-privat/morpheme
 
 Checkout the first tagged release (for timagetk) named "timagetkRelease1.0.0":
 ``` shell
-git checkout openalea_wrapper_v1.7 origin/openalea_wrapper_v1.7
-git branch openalea_wrapper_v1.7
+git branch openalea_wrapper_v1.7 origin/openalea_wrapper_v1.7
+git checkout openalea_wrapper_v1.7
 ```
 
 Compile `vt` library as follow (dependency with 'lemon' & 'vtk'):

@@ -143,7 +143,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
 
 
     this->setCentralWidget(central);
-    this->setWindowTitle("Tissue Growth Simulator");
+    this->setWindowTitle("gnomon Growth Simulator");
 
 #if defined(Q_OS_MAC)
     this->initialize();
