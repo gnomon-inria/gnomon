@@ -48,7 +48,6 @@ public:
     omero::api::RawPixelsStorePrx rawPixelsStore;
 
 public:
-    QList<gnomonOmeroObject *> topDir;
     int long userID;
 
 };
@@ -103,8 +102,8 @@ gnomonOmero::~gnomonOmero(void)
 {
     if(d->client){
       d->client->closeSession();
+      d->client->__del__();
     }
-    d->topDir.clear();
     delete d;
 }
 

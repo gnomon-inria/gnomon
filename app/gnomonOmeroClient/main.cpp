@@ -19,10 +19,6 @@
 
 int main(int argc, char *argv[])
 {
-    QList<gnomonOmeroProjectPtr> allProject;
-    QList<gnomonOmeroDatasetPtr> allDataset;
-    int long id;
-
     dtkCoreApplication *application = dtkCoreApplication::create(argc, argv);
     application->setApplicationName("GnomonOmeroClient");
     application->setOrganizationName("inria");
@@ -30,18 +26,19 @@ int main(int argc, char *argv[])
     application->setApplicationVersion("0.1.0");
 
     gnomonOmero omero;
-    allProject = omero.projects();
+    QList<gnomonOmeroProjectPtr> allProject = omero.projects();
     qWarning() << "Found " << allProject.size() << "project(s)";
 
     if ( allProject.size() >= 1 ) {
         for (int i=0; i < allProject.size(); ++i) {
             gnomonOmeroProjectPtr  omeroDataset = allProject.at(i);
-            allDataset = omeroDataset->datasets();
+            QList<gnomonOmeroDatasetPtr> allDataset = omeroDataset->datasets();
             qWarning() << "project" << i << ", id=" << allProject.at(i)->id()  << ": found " << allDataset.size() << "dataset(s)";
 
             for(int j=0 ; j< allDataset.size(); ++j) {
-                // gnomonOmeroImagePtr omeroImages = allDataset.at(j);
-                // qWarning() << "dataset" << j << ": found " << omeroImages.size() << "image(s)";
+                gnomonOmeroDatasetPtr omeroImages = allDataset.at(j);
+                QList<gnomonOmeroImagePtr> allImages = omeroImages->images();
+                qWarning() << "dataset" << j << ": found " << allImages.size() << "image(s)";
             }
         }
     }
