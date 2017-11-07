@@ -6,9 +6,9 @@ For sake of clarity, let's consider that all the programs are installed under `$
 ## Pre-requisites stuff
 
 ### Using Conda environment:
-If you want to use a Conda environment, here named `gnomon-dtk` (or a VirtualEnv), create it using the following recipe (for VirtualEnv install dependencies):
+If you want to use a Conda environment, here named `gnomon` (or a VirtualEnv), create it using the following recipe (for VirtualEnv install dependencies):
 ``` yml
-name: gnomon-dtk
+name: gnomon
 channels:
   - defaults
 dependencies:
@@ -162,8 +162,8 @@ git clone git+ssh://mylogin@scm.gforge.inria.fr/gitroot/morpheme-privat/morpheme
 
 Checkout the first tagged release (for timagetk) named "timagetkRelease1.0.0":
 ``` shell
-git tag
-git checkout timagetkRelease1.0.0
+git checkout openalea_wrapper_v1.7 origin/openalea_wrapper_v1.7
+git branch openalea_wrapper_v1.7
 ```
 
 Compile `vt` library as follow (dependency with 'lemon' & 'vtk'):
@@ -360,9 +360,9 @@ python setup.py develop --user
 
   * Conda / VirtualEnv install:
 If you are working under Conda or VirtualEnv activate the environment first, then use the `-prefix=` option to specify installation path.
-Example here with a conda environment named `gnomon-dtk`:
+Example here with a conda environment named `gnomon`:
 ``` shell
-source activate gnomon-dtk
+source activate gnomon
 cd $HOME/Development/timagetk
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
@@ -377,9 +377,9 @@ cd $HOME/Development/
 git clone https://github.com/VirtualPlants/timagetk.git
 ```
 
-Install it under the Conda environment (here named `gnomon-dtk`):
+Install it under the Conda environment (here named `gnomon`):
 ``` shell
-source activate gnomon-dtk
+source activate gnomon
 cd timagetk
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
@@ -394,9 +394,9 @@ cd $HOME/Development/
 git clone https://github.com/VirtualPlants/tissue_analysis.git
 ```
 
-Install it under the Conda environment (here named `gnomon-dtk`):
+Install it under the Conda environment (here named `gnomon`):
 ``` shell
-source activate gnomon-dtk
+source activate gnomon
 cd tissue_analysis
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
