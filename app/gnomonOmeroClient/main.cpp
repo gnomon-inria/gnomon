@@ -35,7 +35,10 @@ int main(int argc, char *argv[])
     if ( allProject.size() >= 1 ) {
         for (int i=0; i < allProject.size(); ++i) {
             QList<gnomonOmeroDatasetPtr> allDataset = allProject.at(i)->datasets();
-            qWarning() << "project" << i << ", id=" << allProject.at(i)->id()  << ": found " << allDataset.size() << "dataset(s)";
+            qWarning() << "project" << i
+                       << ", id=" << allProject.at(i)->id()
+                       << ": found " << allDataset.size() << "dataset(s)";
+            qWarning() << "project name = " << allProject.at(i)->name();
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 QList<gnomonOmeroImagePtr> allImages = allDataset.at(i)->images();

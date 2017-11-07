@@ -1,4 +1,3 @@
-
 #include "gnomonOmeroDataset.h"
 #include "gnomonOmeroObject_p.h"
 
@@ -32,6 +31,11 @@ gnomonOmeroDataset::~gnomonOmeroDataset(void)
 gnomonOmeroType::type gnomonOmeroDataset::type(void)
 {
   return gnomonOmeroType::dataset;
+}
+
+QString gnomonOmeroDataset::name(void)
+{
+    return QString();
 }
 
 QList<gnomonOmeroImagePtr> gnomonOmeroDataset::images(void)

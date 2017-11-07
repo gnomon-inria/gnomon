@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <gnomonOmeroObject>
@@ -17,6 +16,7 @@ public:
   bool isDataset(void) ;
   bool isImage(void)   ;
   gnomonOmeroType::type type(void);
+  QString name(void);
 
 private:
   class gnomonOmeroImagePrivate *e;

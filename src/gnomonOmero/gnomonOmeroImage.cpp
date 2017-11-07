@@ -1,4 +1,3 @@
-
 #include "gnomonOmeroImage.h"
 #include "gnomonOmeroObject_p.h"
 
@@ -31,4 +30,9 @@ gnomonOmeroImage::~gnomonOmeroImage(void)
 gnomonOmeroType::type gnomonOmeroImage::type(void)
 {
   return gnomonOmeroType::image;
+}
+
+QString gnomonOmeroImage::name(void)
+{
+    return QString();
 }
