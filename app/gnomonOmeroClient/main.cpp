@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         for (int i=0; i < allProject.size(); ++i) {
             gnomonOmeroProjectPtr  omeroDataset = allProject.at(i);
             allDataset = omeroDataset->datasets();
-            qWarning() << "project" << i << ": found " << allDataset.size() << "dataset(s)";
+            qWarning() << "project" << i << ", id=" << allProject.at(i)->id()  << ": found " << allDataset.size() << "dataset(s)";
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 //gnomonOmeroImagePtr omeroImages = allDataset.at(j);
