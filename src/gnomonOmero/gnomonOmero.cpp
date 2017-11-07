@@ -184,12 +184,14 @@ QList<gnomonOmeroProjectPtr> gnomonOmero::projects(void)
 
 QList<gnomonOmeroDatasetPtr> gnomonOmero::datasets(void)
 {
-
+    QList<gnomonOmeroDatasetPtr> listDataset;
+    return listDataset;
 }
 
 QList<gnomonOmeroImagePtr> gnomonOmero::images(void)
 {
-
+    QList<gnomonOmeroImagePtr> listImage;
+    return listImage;
 }
 
 //
