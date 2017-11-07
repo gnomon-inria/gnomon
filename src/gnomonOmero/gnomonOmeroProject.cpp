@@ -5,7 +5,6 @@ class gnomonOmeroProjectPrivate
 {
 public:
   omero::model::ProjectPtr ref2omero;
-  omero::model::DatasetPtr ref2omeroDataset;
 
 };
 
@@ -56,19 +55,5 @@ QList<gnomonOmeroDatasetPtr> gnomonOmeroProject::datasets(void)
 
 QList<gnomonOmeroImagePtr> gnomonOmeroProject::images(void)
 {
-  // QList<gnomonOmeroImagePtr> listImage;
-  //
-  // omero::model::DatasetLinkedImageSeq images = e->ref2omeroDataset->linkedImageList();
-  //
-  // for(int i=0; i< images.size(); i++)
-  // {
-  //   omero::model::ImagePtr img = images[i];
-  //   gnomonOmeroImagePtr item = gnomonOmeroImagePtr(new gnomonOmeroImage(img));
-  //   // std::string imgName = img->getName()->getValue();
-  //   // int long imgid = img->getId()->getValue();
-  //   // qWarning() << "OMERO: Image: ID: " << imgid ;
-  //   listImage << item;
-  // }
-  //
-  // return listImage;
+
 }

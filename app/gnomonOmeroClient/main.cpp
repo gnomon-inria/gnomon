@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
             qWarning() << "project" << i << ": found " << allDataset.size() << "dataset(s)";
 
             for(int j=0 ; j< allDataset.size(); ++j) {
-                //gnomonOmeroImagePtr omeroImages = allDataset.at(j);
-                //qWarning() << "dataset" << j << ": found " << omeroImages.size() << "image(s)";
+                // gnomonOmeroImagePtr omeroImages = allDataset.at(j);
+                // qWarning() << "dataset" << j << ": found " << omeroImages.size() << "image(s)";
             }
         }
     }

@@ -9,6 +9,7 @@ class gnomonOmeroImage : public gnomonOmeroObject
 
 public:
     gnomonOmeroImage(void);
+    gnomonOmeroImage(omero::model::ImagePtr);
    ~gnomonOmeroImage(void);
 
 public:

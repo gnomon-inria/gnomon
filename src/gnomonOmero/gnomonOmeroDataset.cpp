@@ -36,5 +36,17 @@ gnomonOmeroType::type gnomonOmeroDataset::type(void)
 
 QList<gnomonOmeroImagePtr> gnomonOmeroDataset::images(void)
 {
+  QList<gnomonOmeroImagePtr> listImage;
+
+  omero::model::DatasetLinkedImageSeq images = e->ref2omero->linkedImageList();
+
+  for(int i=0; i< images.size(); i++)
+  {
+    omero::model::ImagePtr img = images[i];
+    gnomonOmeroImagePtr item = gnomonOmeroImagePtr(new gnomonOmeroImage(img));
+    listImage << item;
+  }
+
+  return listImage;
 
 }
