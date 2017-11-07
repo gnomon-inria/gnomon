@@ -105,7 +105,7 @@ public:
 //  Property concept 
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual QList<QString> vertexPropertyNames(void) const = 0;
+    virtual QStringList vertexPropertyNames(void) const = 0;
     virtual bool hasVertexProperty(const QString& propertyName) const = 0;
 
     virtual const QMap<long, QVariant>& vertexProperty(const QString& propertyName) const = 0;
@@ -115,7 +115,7 @@ public:
     virtual void removeVertexProperty(const QString& propertyName) = 0;
 
 
-    virtual QList<QString> edgePropertyNames(void) const = 0;
+    virtual QStringList edgePropertyNames(void) const = 0;
     virtual bool hasEdgeProperty(const QString& propertyName) const = 0;
 
     virtual const QMap<long, QVariant>& edgeProperty(const QString& propertyName) const = 0;
@@ -132,14 +132,14 @@ public:
     // virtual QMap<long, QVariant>& addEdgeOrientedProperty(const QString& OrientedPropertyName) = 0;
     // virtual void removeEdgeOrientedProperty(const QString& OrientedPropertyName) = 0;
 
-    // virtual QList<QString> edgeOrientedPropertyNames(void) const = 0;
+    // virtual QStringList edgeOrientedPropertyNames(void) const = 0;
     // virtual bool hasEdgeOrientedProperty(const QString& OrientedPropertyName) const = 0;
 
     // virtual const QMap<long, QVariant>& edgeOrientedProperty(const QString& OrientedPropertyName) const = 0;
     // virtual       QMap<long, QVariant>& edgeOrientedProperty(const QString& OrientedPropertyName) = 0;
 
 
-    virtual QList<QString> graphPropertyNames(void) const = 0;
+    virtual QStringList graphPropertyNames(void) const = 0;
     virtual bool hasGraphProperty(const QString& propertyName) const = 0;
 
     virtual const QVariant& graphProperty(const QString& propertyName) const = 0;
