@@ -17,6 +17,7 @@
 #include <QtOpenGL>
 #include <QtWidgets>
 
+#include <dtkLog>
 #include <dtkComposer>
 #include <dtkWidgets>
 
@@ -31,13 +32,13 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
     dtkApplication *application = dtkApplication::create(argc, argv);
-    application->setApplicationName("TissueGrowthSimulator");
+    application->setApplicationName("gnomon Growth Simulator");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
     application->setApplicationVersion("0.1.0");
 
     QCommandLineParser *parser = application->parser();
-    parser->setApplicationDescription("Tissue Growth Simulator application.");
+    parser->setApplicationDescription("gnomon Growth Simulator application.");
 
     application->initialize();
 
@@ -48,6 +49,12 @@ int main(int argc, char *argv[])
     }
 
     // ///////////////////////////////////////////////////////////////////
+    // Prepare logger
+    // ///////////////////////////////////////////////////////////////////
+
+    dtkLogger::instance().setLevel(dtkLog::Level::Info);
+
+    // ///////////////////////////////////////////////////////////////////
     // Prepare composer
     // ///////////////////////////////////////////////////////////////////
 
@@ -55,9 +62,10 @@ int main(int argc, char *argv[])
     dtkComposer::extension::initialize();
 
     // ///////////////////////////////////////////////////////////////////
-    // Applicative layers
+    // Prepare layers
     // ///////////////////////////////////////////////////////////////////
 
+    dtkImaging::setVerboseLoading(false);
     dtkImaging::initialize();
 
     // ///////////////////////////////////////////////////////////////////

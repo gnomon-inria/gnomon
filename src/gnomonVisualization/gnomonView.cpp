@@ -29,6 +29,7 @@
 #include <vtkDoubleArray.h>
 #include <vtkFloatArray.h>
 #include <vtkGlyph3D.h>
+#include <vtkImageData.h>
 #include <vtkIntArray.h>
 #include <vtkCellData.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -62,7 +63,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d->manager = new gnomonViewManager;
 
     d->renderer = vtkRenderer::New();
-    d->renderer->SetBackground(1, 1, 1);
+    d->renderer->SetBackground(0.2, 0.2, 0.2);
 
     d->window = vtkGenericOpenGLRenderWindow::New();
     d->window->AddRenderer(d->renderer);
@@ -217,11 +218,11 @@ void gnomonView::addCellGraph(gnomonCellGraph &graph)
 
 void gnomonView::onInserted(vtkImageData *image)
 {
-    qDebug() << Q_FUNC_INFO << image << d->manager->actor(image);
-
     gnomonActorVolume *actor = dynamic_cast<gnomonActorVolume *>(d->manager->actor(image));
     actor->setInteractor(d->widget->GetInteractor());
     actor->setVolume(image);
+
+    image->PrintSelf(std::cout, vtkIndent());
 
     d->renderer->AddActor(actor);
 }

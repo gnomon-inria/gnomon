@@ -123,6 +123,8 @@ void gnomonActorVolume::update(void)
     double max = valuesRange[1];
     double mid = (min + max)/2.;
 
+    qDebug() << Q_FUNC_INFO << min << max << mid;
+
     if(!d->colorFunction) {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
         d->colorFunction->SetColorSpaceToRGB();
