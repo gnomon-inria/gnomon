@@ -16,6 +16,7 @@
 #include "gnomonViewManager.h"
 
 #include "gnomonActor.h"
+#include "gnomonActorVolume.h"
 
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
@@ -76,7 +77,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     this->setLayout(layout);
 
-    connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *image)));
+    connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -216,7 +217,13 @@ void gnomonView::addCellGraph(gnomonCellGraph &graph)
 
 void gnomonView::onInserted(vtkImageData *image)
 {
-    d->renderer->AddActor(d->manager->actor(image));
+    qDebug() << Q_FUNC_INFO << image << d->manager->actor(image);
+
+    gnomonActorVolume *actor = dynamic_cast<gnomonActorVolume *>(d->manager->actor(image));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setVolume(image);
+
+    d->renderer->AddActor(actor);
 }
 
 //

@@ -108,6 +108,8 @@ void gnomonActorVolume::update(void)
     if (!d->interactor)
         return;
 
+    qDebug() << Q_FUNC_INFO;
+
     if(!d->mapper)
         d->mapper = vtkSmartVolumeMapper::New();
 
@@ -149,6 +151,7 @@ void gnomonActorVolume::update(void)
     d->volProperty->Modified();
 
     if(!d->vol) {
+        qDebug() << Q_FUNC_INFO << 2;
         d->vol = vtkVolume::New();
         d->vol->SetMapper(d->mapper);
         d->vol->SetProperty(d->volProperty);
@@ -172,7 +175,7 @@ void gnomonActorVolume::update(void)
             d->outline_corner_actor = vtkSmartPointer<vtkActor>::New();
             d->outline_corner_actor->SetMapper(d->outline_corner_mapper);
             d->outline_corner_actor->GetProperty()->SetColor(1, 0, 0);
-            d->outline_corner_actor->SetVisibility(0);
+            d->outline_corner_actor->SetVisibility(1);
             this->AddPart(d->outline_corner_actor);
         }
     }

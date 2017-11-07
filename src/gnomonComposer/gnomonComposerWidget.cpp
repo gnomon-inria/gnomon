@@ -15,6 +15,8 @@
 #include "gnomonComposerWidget.h"
 #include "gnomonComposerWidget_p.h"
 
+#include <gnomonCore>
+
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
 #include <dtkComposer/dtkComposerWidget.h>
@@ -299,7 +301,14 @@ bool gnomonComposerWidget::compositionOpen(void)
     if(!d->maySave())
         return true;
 
-    QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), QString(), QString("dtk composition (*.dtk)"));
+    QString path;
+
+    gnomonCoreSettings settings;
+    settings.beginGroup("editor");
+    path = settings.value("last_open_composition_path").toString();
+    settings.endGroup();
+
+    QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), path, QString("dtk composition (*.dtk)"));
     dialog->setStyleSheet("background-color: none ; color: none;");
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setFileMode(QFileDialog::AnyFile);
@@ -322,13 +331,10 @@ bool gnomonComposerWidget::compositionOpen(const QString& file)
 
     QFileInfo info(file);
 
-    QSettings settings("inria", "dtk");
-    settings.beginGroup("VisualProgramming");
-    settings.setValue("last_open_dir", info.absolutePath());
+    gnomonCoreSettings settings;
+    settings.beginGroup("editor");
+    settings.setValue("last_open_composition_path", info.absolutePath());
     settings.endGroup();
-
-    if(status)
-        dtkNotify(QString("<div style=\"color: #006600\">Opened %1</div>").arg(info.baseName()), 3000);
 
     return status;
 }
