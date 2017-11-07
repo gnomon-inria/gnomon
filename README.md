@@ -275,9 +275,10 @@ https://codeload.github.com/openmicroscopy/openmicroscopy/zip/develop/openmicros
 in this case, compilation with cmake does not work.
 Prérequisite:
 - ice (cf before)
-- jre (http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jre-9.0.1_osx-x64_bin.dmg)
-- JDK (http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_osx-x64_bin.dmg)
+- JDK: http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-macosx-x64.dmg
+- JRE: http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jre-8u151-macosx-x64.dmg
 
+WARNING: omero-5.2.7 DOES NOT BUILD with java9 !!!!!
 
 Test:
 http://downloads.openmicroscopy.org/omero/5.4.0/artifacts/OMERO.insight-5.4.0-ice36-b74-mac.zip
