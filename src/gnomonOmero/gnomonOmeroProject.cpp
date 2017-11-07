@@ -1,4 +1,3 @@
-
 #include "gnomonOmeroProject.h"
 #include "gnomonOmeroObject_p.h"
 
@@ -22,8 +21,6 @@ gnomonOmeroProject::gnomonOmeroProject(omero::model::ProjectPtr proj) : gnomonOm
   e       = new gnomonOmeroProjectPrivate;
   d->type = gnomonOmeroType::project;
   e->ref2omero = proj;
-  qWarning() << "aaaa" << e->ref2omero;
-
 }
 
 gnomonOmeroProject::~gnomonOmeroProject(void)
@@ -41,7 +38,6 @@ gnomonOmeroType::type gnomonOmeroProject::type(void)
 
 QList<gnomonOmeroDatasetPtr> gnomonOmeroProject::datasets(void)
 {
-  qWarning() << "kkkkk" << e->ref2omero;
   QList<gnomonOmeroDatasetPtr> listDataset;
   omero::model::ProjectLinkedDatasetSeq datasets = e->ref2omero->linkedDatasetList();
 

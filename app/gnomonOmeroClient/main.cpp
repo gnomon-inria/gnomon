@@ -31,11 +31,20 @@ int main(int argc, char *argv[])
 
     gnomonOmero omero;
     allProject = omero.projects();
-    qWarning() << "OMERO: Found projects" << allProject.size();
+    qWarning() << "Found " << allProject.size() << "project(s)";
 
-    gnomonOmeroProjectPtr  omeroDataset = allProject.first();
-    allDataset = omeroDataset->datasets();
-    qWarning() << "OMERO: Found Dataset" << allDataset.size();
+    if ( allProject.size() >= 1 ) {
+        for (int i=0; i < allProject.size(); ++i) {
+            gnomonOmeroProjectPtr  omeroDataset = allProject.at(i);
+            allDataset = omeroDataset->datasets();
+            qWarning() << "project" << i << ": found " << allDataset.size() << "dataset(s)";
+
+            for(int j=0 ; j< allDataset.size(); ++j) {
+                //gnomonOmeroImagePtr omeroImages = allDataset.at(j);
+                //qWarning() << "dataset" << j << ": found " << omeroImages.size() << "image(s)";
+            }
+        }
+    }
 
 
     return 0;
