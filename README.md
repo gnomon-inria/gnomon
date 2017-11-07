@@ -158,7 +158,7 @@ make -j4
  built -->
 
 
-## dtk and applicative layers installation
+## Get dtk and its applicative layers
 
 ### MacOS case
 
@@ -220,7 +220,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-## Gnomon & gnomon-plugins
+## Get gnomon & gnomon-plugins
 
 ### gnomon
 
@@ -304,7 +304,7 @@ Then in the research field, one can look for gnomon and check that at least one 
 
 ## Optionals
 
-TimageTK and tissue_analysis are pure python packages, to install them uses the setup.py with the following option depending on the type of install you would like:
+TimageTK and tissue_analysis are pure python packages, to install them uses the `setup.py` with the following option depending on the type of install you would like:
 
   * System-wide install:
 ``` shell
