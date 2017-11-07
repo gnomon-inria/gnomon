@@ -75,7 +75,7 @@ public:
 //  Property concept
 //  ///////////////////////////////////////////////////////////////////
 
-    virtual QList<QString> elementPropertyNames(int dimension) const = 0;
+    virtual QStringList elementPropertyNames(int dimension) const = 0;
     virtual bool hasElementProperty(int dimension, const QString& propertyName) const = 0;
 
     virtual const QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) const = 0;

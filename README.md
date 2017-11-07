@@ -2,7 +2,11 @@
 
 For sake of clarity, let's consider that all the programs are installed under `$HOME/Development` folder.
 
-If you want to use a Conda (named `gnomon-dtk`) or VirtualEnv, create it using the following recipe:
+
+## Pre-requisites stuff
+
+### Using Conda environment:
+If you want to use a Conda environment, here named `gnomon-dtk` (or a VirtualEnv), create it using the following recipe (for VirtualEnv install dependencies):
 ``` yml
 name: gnomon-dtk
 channels:
@@ -21,8 +25,6 @@ dependencies:
 Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
 
 Pre-requisites might be installed outside the environment.
-
-## Pre-requisites stuff
 
 ### OpenGL Stuff (at least for ubuntu)
 
@@ -56,8 +58,8 @@ Download and install the latest release of Qt5 (here 5.9.2):
 ``` shell
 cd $HOME/Development
 wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-chmod +x qt-unified-linux-x64-3.0.1-online.run
-./qt-unified-linux-x64-3.0.1-online.run
+chmod +x qt-unified-linux-x64-online.run
+./qt-unified-linux-x64-online.run
 ```
 
 In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt.
@@ -118,6 +120,7 @@ make -j4
 
 
 ### Morpheme 'vt' installation
+<!-- Why not use the one packaged with timagetk ?! -->
 
 Start by cloning the Morpheme source code, replacing `mylogin` with you INRIA forge login:
 ``` shell
@@ -131,7 +134,7 @@ git tag
 git checkout timagetkRelease1.0.0
 ```
 
-Compile `vt` library as follow:
+Compile `vt` library as follow (dependency with 'lemon' & 'vtk'):
 ``` shell
 cd morpheme-privat/vt
 mkdir build
@@ -139,8 +142,23 @@ cd build
 cmake ..
 make -j4
 ```
+<!-- Compilation flags to be defined -->
+<!-- LOG: ccmake .. -->
+<!-- GNU CXX COMPILER
 
-## dtk and applicative layers installation
+ WARNING, lemon was NOT found
+
+ WARNING, tracker will NOT be built
+
+ WARNING, vtk was either not found or too old
+
+ WARNING, library ' libfilters' building will NOT be complete
+
+ WARNING, executables ' extraction_arbre' and 'classification' will NOT be
+ built -->
+
+
+## Get dtk and its applicative layers
 
 ### MacOS case
 
@@ -202,7 +220,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-## Gnomon & gnomon-plugins
+## Get gnomon & gnomon-plugins
 
 ### gnomon
 
@@ -286,7 +304,7 @@ Then in the research field, one can look for gnomon and check that at least one 
 
 ## Optionals
 
-TimageTK and tissue_analysis are pure python packages, to install them uses the setup.py with the following option depending on the type of install you would like:
+TimageTK and tissue_analysis are pure python packages, to install them uses the `setup.py` with the following option depending on the type of install you would like:
 
   * System-wide install:
 ``` shell

@@ -92,21 +92,21 @@ public:
     virtual void removeEdge(long edgeId) { return m_data->removeEdge(edgeId); }
 
 public:
-    virtual QList<QString> vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
+    virtual QStringList vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
     virtual bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); }
     virtual const QMap<long, QVariant>& vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); }
     virtual       QMap<long, QVariant>& vertexProperty(const QString& propertyName) { return m_data->vertexProperty(propertyName); }
     virtual QMap<long, QVariant>& addVertexProperty(const QString& propertyName) { return m_data->addVertexProperty(propertyName); }
     virtual void removeVertexProperty(const QString& propertyName) { return m_data->removeVertexProperty(propertyName); }
 
-    virtual QList<QString> edgePropertyNames(void) const { return m_data->edgePropertyNames(); }
+    virtual QStringList edgePropertyNames(void) const { return m_data->edgePropertyNames(); }
     virtual bool hasEdgeProperty(const QString& propertyName) const { return m_data->hasEdgeProperty(propertyName); }
     virtual const QMap<long, QVariant>& edgeProperty(const QString& propertyName) const { return m_data->edgeProperty(propertyName); }
     virtual       QMap<long, QVariant>& edgeProperty(const QString& propertyName) { return m_data->edgeProperty(propertyName); }
     virtual QMap<long, QVariant>& addEdgeProperty(const QString& propertyName) { return m_data->addEdgeProperty(propertyName); }
     virtual void removeEdgeProperty(const QString& propertyName) { return m_data->removeEdgeProperty(propertyName); }
 
-    virtual QList<QString> graphPropertyNames(void) const { return m_data->graphPropertyNames(); }
+    virtual QStringList graphPropertyNames(void) const { return m_data->graphPropertyNames(); }
     virtual bool hasGraphProperty(const QString& propertyName) const { return m_data->hasGraphProperty(propertyName); }
     virtual const QVariant& graphProperty(const QString& propertyName) const { return m_data->graphProperty(propertyName); }
     virtual       QVariant& graphProperty(const QString& propertyName) { return m_data->graphProperty(propertyName); }
