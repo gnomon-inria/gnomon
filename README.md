@@ -58,8 +58,8 @@ Download and install the latest release of Qt5 (here 5.9.2):
 ``` shell
 cd $HOME/Development
 wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-chmod +x qt-unified-linux-x64-3.0.1-online.run
-./qt-unified-linux-x64-3.0.1-online.run
+chmod +x qt-unified-linux-x64-online.run
+./qt-unified-linux-x64-online.run
 ```
 
 In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt.
