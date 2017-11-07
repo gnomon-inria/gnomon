@@ -31,6 +31,7 @@
 #include "gnomonOmeroDataset.h"
 #include "gnomonOmeroImage.h"
 
+typedef QSharedPointer<gnomonOmeroProject> gnomonOmeroProjectPtr;
 
 class gnomonOmero
 {
@@ -42,13 +43,14 @@ public:
   void browseDB(void);
 
 public:
-  QList<gnomonOmeroProject*> projects(void);
+  QList<gnomonOmeroProjectPtr> projects(void);
   QList<gnomonOmeroDataset*> datasets(void);
   QList<gnomonOmeroImage*> images(void);
 
 protected:
     class gnomonOmeroPrivate *d;
 };
+
 
 
 //

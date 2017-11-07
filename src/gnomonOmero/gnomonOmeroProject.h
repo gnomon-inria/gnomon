@@ -6,11 +6,15 @@
 #include "gnomonOmeroDataset.h"
 #include "gnomonOmeroImage.h"
 
+#include <omero/model/Project.h>
+
 class gnomonOmeroProject : public gnomonOmeroObject
 {
 public:
     gnomonOmeroProject(void);
+    gnomonOmeroProject(omero::model::ProjectPtr);
    ~gnomonOmeroProject(void);
+
 
 public:
   bool isProject(void) ;
@@ -22,6 +26,8 @@ public:
   QList<gnomonOmeroDataset*> datasets(void);
   QList<gnomonOmeroImage*> images(void);
 
+private:
+    class gnomonOmeroProjectPrivate *e;
 };
 
 inline bool gnomonOmeroProject::isProject(void) {return true;}

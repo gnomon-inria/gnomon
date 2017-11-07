@@ -42,6 +42,7 @@ public:
 
 public:
     QList<gnomonOmeroObject *> topDir;
+
 };
 
 gnomonOmero::gnomonOmero(void)
@@ -138,13 +139,42 @@ void gnomonOmero::browseDB(void)
     }
 }
 
-QList<gnomonOmeroProject*> gnomonOmero::projects(void)
+QList<gnomonOmeroProjectPtr> gnomonOmero::projects(void)
 {
+    QList<gnomonOmeroProjectPtr> listProject;
+    omero::api::IAdminPrx admin = d->sf->getAdminService();
+    omero::sys::EventContextPtr context = admin->getEventContext();
+
+    int long userID = context->userId;
+    //qWarning() << "OMERO: UserID: " << userID ;
+
+    omero::sys::ParametersIPtr params = new omero::sys::ParametersI();
+    params->leaves();
+    params->addId(userID);
+
+    d->containerService = d->sf->getContainerService();
+    omero::sys::LongList list;
+    omero::api::IObjectList projectList = d->containerService->loadContainerHierarchy("Project", list, params);
+    //qWarning() << "OMERO: Found projects" << projectList.size();
+
+    for(int i=0; i< projectList.size(); i++)
+    {
+      omero::model::ProjectPtr proj = omero::model::ProjectPtr::dynamicCast(projectList[i]);
+      gnomonOmeroProjectPtr item = gnomonOmeroProjectPtr(new gnomonOmeroProject(proj));
+      listProject << item;
+    }
+
+    return listProject;
 
 }
 
 QList<gnomonOmeroDataset*> gnomonOmero::datasets(void)
 {
+    // omero::model::ProjectLinkedDatasetSeq datasets = proj->linkedDatasetList();
+    //
+    // for(int j=0; j< datasets.size(); j++)
+    // {
+    // }
 
 }
 
