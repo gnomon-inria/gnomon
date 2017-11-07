@@ -1,19 +1,27 @@
 
 #pragma once
+
+#include <QtCore>
 #include <gnomonOmeroObject>
+#include "gnomonOmeroImage.h"
 
 class gnomonOmeroDataset : public gnomonOmeroObject
 {
- public:
-  bool gnomonOmeroDataset::isProject(void);
-  bool gnomonOmeroDataset::isDataset(void);
-  bool gnomonOmeroDataset::isImage(void);
-};
 
-gnomonOmeroType::type gnomonOmeroDataset::type(void)
-{
-  return gnomonOmeroType::dataset;
-}
+public:
+    gnomonOmeroDataset(void);
+   ~gnomonOmeroDataset(void);
+
+public:
+   bool isProject(void) ;
+   bool isDataset(void) ;
+   bool isImage(void)   ;
+   gnomonOmeroType::type type(void);
+
+public:
+    QList<gnomonOmeroImage*> images(void);
+
+};
 
 inline bool gnomonOmeroDataset::isProject(void) {return false;}
 inline bool gnomonOmeroDataset::isDataset(void) {return true;}

@@ -23,17 +23,24 @@ set(${PROJECT_NAME}_HEADERS
   gnomonOmero.h
   gnomonOmeroObject
   gnomonOmeroObject.h
+  gnomonOmeroObject_p.h
   gnomonOmeroDataset
   gnomonOmeroDataset.h
+  gnomonOmeroImage
+  gnomonOmeroImage.h
   gnomonOmeroProject
   gnomonOmeroProject.h
+  gnomonOmeroImage
+  gnomonOmeroImage.h
 )
 
 set(${PROJECT_NAME}_SOURCES
   gnomonOmero.cpp
   gnomonOmeroObject.cpp
   gnomonOmeroDataset.cpp
+  gnomonOmeroImage.cpp
   gnomonOmeroProject.cpp
+  gnomonOmeroImage.cpp
 )
 
 ## #################################################################

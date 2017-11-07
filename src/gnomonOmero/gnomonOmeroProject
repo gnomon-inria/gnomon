@@ -1,1 +1,1 @@
-#include <gnomonOmeroProject>
+#include "gnomonOmeroProject.h"

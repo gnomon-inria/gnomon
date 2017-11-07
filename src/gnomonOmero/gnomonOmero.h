@@ -14,16 +14,24 @@
 
 #pragma once
 
+#include <QtCore>
 #include <gnomonCore>
 #include <omero/client.h>
 #include <omero/model/Project.h>
 #include <omero/model/Dataset.h>
 #include <omero/model/Image.h>
+#include <omero/model/Pixels.h>
+#include <omero/model/PixelsType.h>
 #include <omero/api/IContainer.h>
 #include <omero/sys/ParametersI.h>
 #include <omero/api/IAdmin.h>
 #include <omero/api/IMetadata.h>
 
+#include "gnomonOmeroProject.h"
+#include "gnomonOmeroDataset.h"
+#include "gnomonOmeroImage.h"
+
+typedef QSharedPointer<gnomonOmeroProject> gnomonOmeroProjectPtr;
 
 class gnomonOmero
 {
@@ -32,13 +40,17 @@ public:
    ~gnomonOmero(void);
 
 public:
-  void readData(void);
-  void writeData(void);
   void browseDB(void);
 
-private:
+public:
+  QList<gnomonOmeroProjectPtr> projects(void);
+  QList<gnomonOmeroDataset*> datasets(void);
+  QList<gnomonOmeroImage*> images(void);
+
+protected:
     class gnomonOmeroPrivate *d;
 };
+
 
 
 //
