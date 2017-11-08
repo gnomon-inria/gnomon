@@ -28,6 +28,7 @@ public:
     dtkComposerTransmitterReceiver<int> dimension;
 
     dtkComposerTransmitterEmitter<gnomonCellComplex *> cellcomplex_out;
+    dtkComposerTransmitterEmitter<gnomonCellComplex *> adjacency_out;
 };
 
 
@@ -39,6 +40,7 @@ gnomonCellComplexFromImageNode::gnomonCellComplexFromImageNode(void) : dtkCompos
     this->appendReceiver(&d->dimension);
 
     this->appendEmitter (&d->cellcomplex_out);
+    this->appendEmitter (&d->adjacency_out);
 }
 
 gnomonCellComplexFromImageNode::~gnomonCellComplexFromImageNode(void)
@@ -66,6 +68,7 @@ void gnomonCellComplexFromImageNode::run(void)
         cellcomplexFromImage->run();
 
         d->cellcomplex_out.setData(cellcomplexFromImage->computedComplex());
+        d->adjacency_out.setData(cellcomplexFromImage->adjacencyComplex());
     }
 }
 

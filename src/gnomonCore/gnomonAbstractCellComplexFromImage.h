@@ -36,6 +36,8 @@ public:
 public:
     virtual gnomonCellComplex *computedComplex(void) const = 0;
 
+    virtual gnomonCellComplex *adjacencyComplex(void) const = 0;
+
 public:
     virtual void run(void) = 0;
 
