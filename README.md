@@ -112,7 +112,7 @@ python2.7 configure.py
 sudo make install
 ```
 
-Make sure that the folder containing the qmake executable of the Qt librairies you have installed is the only folder containing a qmake executable, namely "$HOME/Development/Qt/5.9.2/gcc_64/bin". You can append it to your PATH, modify your .bashrc by adding : PATH=$PATH:$HOME/Development/Qt/5.9.2/gcc_64/bin to it.
+Make sure that the folder containing the qmake executable of the Qt librairies you have installed is the only folder containing a qmake executable, namely "$HOME/Development/Qt/5.9.2/gcc_64/bin". You can prepend it to your PATH, modify your .bashrc by adding : PATH=$HOME/Development/Qt/5.9.2/gcc_64/bin:$PATH to it.
 
 Download and install PyQt5 :
 ``` shell
