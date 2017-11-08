@@ -119,7 +119,10 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
             d->composer->composerWidget()->run();
         } else {
             int stat;
-            d->interpreter_widget->output(d->interpreter->interpret(d->editor->toPlainText(), &stat));
+            if (d->interpreter_widget)
+                d->interpreter_widget->output(d->interpreter->interpret(d->editor->toPlainText(), &stat));
+            else
+                d->interpreter->interpret(d->editor->toPlainText(), &stat);
         }
     });
 
@@ -169,8 +172,10 @@ gnomonGrowthSimulatorMainWindow::~gnomonGrowthSimulatorMainWindow(void)
 void gnomonGrowthSimulatorMainWindow::addEditor(QWidget *editor)
 {
     d->interpreter_widget->hide();
+    d->interpreter_widget->deleteLater();
+    d->interpreter_widget = Q_NULLPTR;
 
-    d->editor_splitter->addWidget(editor);
+     d->editor_splitter->addWidget(editor);
 }
 
 //
