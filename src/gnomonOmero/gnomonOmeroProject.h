@@ -24,7 +24,7 @@ public:
   gnomonOmeroType::type type(void);
 
   int long id(void);
-  QStringList annotation(void);
+  QStringList details(void);
   QString name(void);
 
 public:

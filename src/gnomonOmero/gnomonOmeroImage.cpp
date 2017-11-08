@@ -1,11 +1,23 @@
 #include "gnomonOmeroImage.h"
 #include "gnomonOmeroObject_p.h"
 
+#include <omero/model/Pixels.h>
+#include <omero/model/PixelsType.h>
+#include "omero/model/TagAnnotationI.h"
+#include <omero/model/ImageAnnotationLinkI.h>
+#include <omero/all.h>
+#include <omero/client.h>
+
 class gnomonOmeroImagePrivate
 {
 public:
   omero::model::ImagePtr ref2omero;
+  omero::model::PixelsTypePtr pixel_type;
 
+public:
+  int number_of_channels, number_of_timepoints;
+  double pixel_size_x, pixel_size_y, pixel_size_z, dim_x, dim_y, dim_z;
+  QString description;
 };
 
 gnomonOmeroImage::gnomonOmeroImage(void) : gnomonOmeroObject()
@@ -39,36 +51,32 @@ int long gnomonOmeroImage::id(void)
   return imgId;
 }
 
-QStringList gnomonOmeroImage::annotation(void)
+QStringList gnomonOmeroImage::details(void)
 {
-  // omero::sys::LongList imglist;
-  // imglist.push_back(imgId);
-  // omero::model::ImagePtr img = d->containerService->getImages("Image",imglist,0)[0];
-  //
-  // omero::model::PixelsPtr pixels = img->getPrimaryPixels();
-  // long int pixelID = pixels->getId()->getValue();
-  // omero::model::PixelsPtr pixelsObject = d->pixelsService->retrievePixDescription(pixelID);
-  //
-  // long pixelId = pixelsObject->getId()->getValue();
-  // d->rawPixelsStore->setPixelsId(pixelId, false);
-  //
-  // d->xdim = pixelsObject->getSizeX()->getValue();
-  // d->ydim = pixelsObject->getSizeY()->getValue();
-  // d->zdim = pixelsObject->getSizeZ()->getValue();
-  //
-  // d->cdim = pixelsObject->getSizeC()->getValue();
-  // d->tdim = pixelsObject->getSizeT()->getValue();
-  //
-  // d->xphysize = pixelsObject->getPhysicalSizeX()->getValue();
-  // d->yphysize = pixelsObject->getPhysicalSizeY()->getValue();
-  // d->zphysize = pixelsObject->getPhysicalSizeZ()->getValue();
-  //
-  // d->pixtype = pixelsObject->getPixelsType()->getValue()->getValue();
-  //
-  // qWarning()<< " OMERO Image id " << imgId;
-  // // qWarning()<< " Dimensions(x,y,z,c,t) = "<<xdim<<","<<ydim<<","<<zdim<<","<<cdim<<","<<tdim ;
-  // // qWarning()<< " PhyicalSize(x,y,z) "<<xphysize<<","<<yphysize<<","<<zphysize;
-  // qWarning()<< " PixelType: "<< d->pixtype;
+
+  QStringList list;
+
+  e->description = QString::fromStdString(e->ref2omero->getDescription()->getValue());
+
+  e->pixel_type = e->ref2omero->getPrimaryPixels()->getPixelsType();
+
+  e->number_of_channels = e->ref2omero->getPrimaryPixels()->getSizeC()->getValue();
+  qWarning() << "nb channels: " << e->number_of_channels ;
+  e->number_of_timepoints = e->ref2omero->getPrimaryPixels()->getSizeT()->getValue();
+  qWarning() << "nb timepoint: " << e->number_of_channels ;
+
+  e->dim_x = e->ref2omero->getPrimaryPixels()->getSizeX()->getValue();
+  qWarning() << "pixel dim x: " << e->dim_x ;
+  e->dim_y = e->ref2omero->getPrimaryPixels()->getSizeY()->getValue();
+  qWarning() << "pixel dim y: " << e->dim_y ;
+  e->dim_z = e->ref2omero->getPrimaryPixels()->getSizeZ()->getValue();
+  qWarning() << "pixel dim z: " << e->dim_z ;
+
+  //e->pixel_size_x = e->ref2omero->getPrimaryPixels()->getPhysicalSizeX()->getValue();
+  //e->pixel_size_y = e->ref2omero->getPrimaryPixels()->getPhysicalSizeY()->getValue();
+  //e->pixel_size_z = e->ref2omero->getPrimaryPixels()->getPhysicalSizeZ()->getValue();
+
+  // list.push_back(QString::fromStdString(e->pixtype));
   return QStringList();
 }
 

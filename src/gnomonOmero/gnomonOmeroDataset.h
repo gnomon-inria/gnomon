@@ -20,8 +20,8 @@ public:
    bool isImage(void)   ;
    gnomonOmeroType::type type(void);
    int long id(void);
-   QStringList annotation(void);
-  QString name(void);
+   QStringList details(void);
+   QString name(void);
 
 public:
     QList<gnomonOmeroImagePtr> images(void);

@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     qDebug() << "Session ID:" << omero.sessionId();
 
     QList<gnomonOmeroProjectPtr> allProject = omero.projects();
-    qWarning() << "Found " << allProject.size() << "project(s)" ;//<< ", id=" << allProject.id();
+    qWarning() << "Found " << allProject.size() << "project(s)" ;
 
         for (int i=0; i < allProject.size(); ++i) {
             QList<gnomonOmeroDatasetPtr> allDataset = allProject.at(i)->datasets();
@@ -38,13 +38,23 @@ int main(int argc, char *argv[])
                        << ", id=" << allProject.at(i)->id()
                        << ": found " << allDataset.size() << "dataset(s)";
             qWarning() << "project name = " << allProject.at(i)->name();
+            //qWarning() << " details Project " << allProject.at(i)->details();
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 QList<gnomonOmeroImagePtr> allImages = allDataset.at(j)->images();
                 qWarning() << "dataset" << i
                 << ", id=" << allDataset.at(j)->id()
-                << ": found " << allDataset.size() << "images(s)";
+                << ": found " << allDataset.size() << "images(s)"
+                << ", dataset Name " << allDataset.at(j)->name();
 
+                for(int k=0 ; k< allImages.size(); ++k) {
+                  qWarning() << "images" << i
+                  << ", id=" << allImages.at(k)->id()
+                  << ", image Name " << allImages.at(k)->name();
+                  qWarning() << ", details " <<allImages.at(k)->details();
+
+
+                }
             }
         }
 

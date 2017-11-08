@@ -65,7 +65,8 @@ int long gnomonOmeroDataset::id(void)
   return datasetId;
 }
 
-QStringList gnomonOmeroDataset::annotation(void)
+QStringList gnomonOmeroDataset::details(void)
 {
+  return QStringList(); 
 
 }

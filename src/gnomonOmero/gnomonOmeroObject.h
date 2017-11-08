@@ -28,7 +28,7 @@ public:
 
 public:
     virtual int long id(void) = 0;
-    virtual QStringList annotation(void)= 0;
+    virtual QStringList details(void)= 0;
 
 public:
     virtual gnomonOmeroType::type type(void) = 0;

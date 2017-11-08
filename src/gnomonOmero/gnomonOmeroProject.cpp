@@ -66,7 +66,18 @@ int long gnomonOmeroProject::id(void)
   return projectId;
 }
 
-QStringList gnomonOmeroProject::annotation(void)
+QStringList gnomonOmeroProject::details(void)
 {
+    QStringList list;
+    QString description = QString::fromStdString(e->ref2omero->getDescription()->getValue());
 
+    omero::model::DetailsPtr details = e->ref2omero->getDetails();
+    //std::string owner = details->getOwner();
+
+    list << description;
+    return list;
+
+  // details->getOwner();
+  // details->getCreationEvent();
+  // details->getUpdateEvent();
 }
