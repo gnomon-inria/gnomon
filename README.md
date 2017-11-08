@@ -150,7 +150,6 @@ cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -D
 make -j4
 ```
 
-
 ### Morpheme 'vt' installation
 <!-- Why not use the one packaged with timagetk ?! -->
 

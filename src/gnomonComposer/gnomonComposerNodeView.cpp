@@ -70,16 +70,12 @@ void gnomonComposerNodeView::run(void)
 
         dtkImage *image = d->receiver.data();
 
-        qDebug() << Q_FUNC_INFO << image->dim() << image->storageType() << image->xDim() << image->yDim() << image->zDim();
-
         converter->setInput(image);
 
         if(!converter->convert())
             return;
 
         vtkImageData *data = static_cast<vtkImageData *>(converter->output());
-
-        data->PrintSelf(std::cout, vtkIndent());
 
         d->view->manager()->insert(data);
     }
