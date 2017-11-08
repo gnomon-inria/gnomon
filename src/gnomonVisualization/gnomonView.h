@@ -51,6 +51,7 @@ public:
 
 public slots:
     void onInserted(vtkImageData *image);
+    void onInserted(gnomonCellGraph *cellgraph);
 
 private:
     gnomonViewPrivate *d;

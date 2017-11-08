@@ -17,6 +17,7 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorMeshCellGraph.h"
 
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
@@ -222,6 +223,14 @@ void gnomonView::onInserted(vtkImageData *image)
     actor->setInteractor(d->widget->GetInteractor());
     actor->setVolume(image);
 
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(gnomonCellGraph *cellgraph)
+{
+    gnomonActorMeshCellGraph *actor = dynamic_cast<gnomonActorMeshCellGraph *>(d->manager->actor(cellgraph));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setCellGraph(cellgraph);
     d->renderer->AddActor(actor);
 }
 
