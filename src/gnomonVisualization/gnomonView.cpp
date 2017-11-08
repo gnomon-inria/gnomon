@@ -222,8 +222,6 @@ void gnomonView::onInserted(vtkImageData *image)
     actor->setInteractor(d->widget->GetInteractor());
     actor->setVolume(image);
 
-    image->PrintSelf(std::cout, vtkIndent());
-
     d->renderer->AddActor(actor);
 }
 
