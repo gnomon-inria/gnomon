@@ -18,6 +18,7 @@
 
 class vtkPolyData;
 class vtkImageData;
+class gnomonView;
 
 class gnomonInspectorViewTreePrivate;
 
@@ -27,6 +28,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewTree : public QTreeWidget {
 public:
      gnomonInspectorViewTree(QWidget *parent = 0);
     ~gnomonInspectorViewTree(void);
+
+    void setView(gnomonView *view);
 
  public:
     void insert(vtkPolyData *mesh);

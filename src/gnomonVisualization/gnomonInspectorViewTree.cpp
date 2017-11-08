@@ -14,6 +14,10 @@
 
 #include "gnomonInspectorViewTree.h"
 
+#include "gnomonView"
+#include "gnomonActor"
+#include "gnomonViewManager"
+
 #include <QtCore>
 #include <QtWidgets>
 
@@ -26,8 +30,13 @@
 class gnomonInspectorViewTreePrivate {
 
 public:
+    gnomonView *view;
+
     QHash<QTreeWidgetItem *, vtkPolyData *> mesh_items;
     QHash<QTreeWidgetItem *, vtkImageData *> volume_items;
+
+    std::size_t next_mesh_id;
+    std::size_t next_volume_id;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -36,6 +45,10 @@ public:
 
 gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(parent), d(new gnomonInspectorViewTreePrivate)
 {
+    d->view = nullptr;
+    d->next_volume_id = 0;
+    d->next_mesh_id = 0;
+
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
     this->setCursor(Qt::ArrowCursor);
     this->setFrameShape(QFrame::NoFrame);
@@ -46,6 +59,23 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
 
     connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(onItemSelected()));
     connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this, SLOT(onItemClicked(QTreeWidgetItem *, int)));
+}
+
+gnomonInspectorViewTree::~gnomonInspectorViewTree() {
+    // ///////////////////////////////////////////////////////////////////
+    // Cleans the tree by deleting the tree items, not the data
+    // ///////////////////////////////////////////////////////////////////
+    for(auto item : d->mesh_items.keys()) {
+        delete item;
+    }
+    for(auto item : d->volume_items.keys()) {
+        delete item;
+    }
+}
+
+void gnomonInspectorViewTree::setView(gnomonView *view)
+{
+    d->view = view;
 }
 
 void gnomonInspectorViewTree::insert(vtkPolyData *mesh)
@@ -59,20 +89,17 @@ void gnomonInspectorViewTree::insert(vtkPolyData *mesh)
         return;
     }
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "toto" << "Mesh");
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Mesh " + d->next_mesh_id << "Mesh");
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 
-    // if(numActor *actor = d->view->manager()->actor(mesh))
-    //     item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
-    // else
-    //     item->setCheckState(2, Qt::Unchecked);
-
     d->mesh_items.insert(item, mesh);
+    ++d->next_mesh_id;
 
-    // foreach(numField *field, d->pool)
-    //     this->insert(field);
-
-    // d->pool.clear();
+    if(gnomonActor *actor = d->view->manager()->actor(mesh)) {
+        item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+    } else {
+        item->setCheckState(2, Qt::Unchecked);
+    }
 }
 
 void gnomonInspectorViewTree::insert(vtkImageData *volume)
@@ -85,15 +112,17 @@ void gnomonInspectorViewTree::insert(vtkImageData *volume)
     if(d->volume_items.values().contains(volume))
         return;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "titi" << "Volume");
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Volume " + QString::number(d->next_volume_id) << "Volume");
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 
     d->volume_items.insert(item, volume);
-}
+    ++d->next_volume_id;
 
-
-gnomonInspectorViewTree::~gnomonInspectorViewTree(void)
-{
+    if(gnomonActor *actor = d->view->manager()->actor(volume)) {
+        item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+    } else {
+        item->setCheckState(2, Qt::Unchecked);
+    }
 
 }
 

@@ -53,7 +53,6 @@ public:
     vtkGenericOpenGLRenderWindow *window;
     QVTKOpenGLWidget *widget;
     vtkRenderer *renderer;
-    QWidget *inspector;
 
 public:
     gnomonViewManager *manager;
@@ -65,6 +64,8 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     d->manager = new gnomonViewManager;
 
+gnomonInspectorViewTree *inspector= d->manager->inspector();
+inspector->setView(this);
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(0.2, 0.2, 0.2);
 
@@ -83,7 +84,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
 
-    d->inspector = new gnomonInspectorViewTree(this);
+
 }
 
 gnomonView::~gnomonView(void)
@@ -93,7 +94,6 @@ gnomonView::~gnomonView(void)
 
     delete d->manager;
     delete d->widget;
-    delete d->inspector;
     delete d;
 }
 
@@ -109,7 +109,7 @@ QWidget *gnomonView::widget(void)
 
 QWidget *gnomonView::inspector()
 {
-    return d->inspector;
+return d->manager->inspector();
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)
@@ -236,31 +236,6 @@ void gnomonView::onInserted(vtkImageData *image)
     image->PrintSelf(std::cout, vtkIndent());
 
     d->renderer->AddActor(actor);
-
-    // ///////////////////////////////////////////////////////////////////
-    // Create the master inspector widget here
-    // Check all the available meshes and volumes
-    // Create the inspectors for meshes and volumes
-    // ///////////////////////////////////////////////////////////////////
-    gnomonInspectorViewTree *inspector = static_cast<gnomonInspectorViewTree *>(d->inspector);
-
-    QList<vtkPolyData *> meshes = d->manager->meshes();
-    QList<vtkImageData *> volumes = d->manager->volumes();
-
-    QList<QTreeWidgetItem *> top_items;
-    for(auto mesh : meshes) {
-        gnomonActor *actor = d->manager->actor(mesh);
-        QTreeWidgetItem *item = new QTreeWidgetItem(0);
-        top_items.append(item);
-    }
-
-    for(auto volume : volumes) {
-        gnomonActor *actor = d->manager->actor(image);
-        QTreeWidgetItem *item = new QTreeWidgetItem(0);
-        top_items.append(item);
-    }
-
-    inspector->addTopLevelItems(top_items);
 }
 
 //

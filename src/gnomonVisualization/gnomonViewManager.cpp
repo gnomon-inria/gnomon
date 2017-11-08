@@ -16,6 +16,7 @@
 #include "gnomonActorMesh.h"
 #include "gnomonActorVolume.h"
 #include "gnomonViewManager.h"
+#include "gnomonInspectorViewTree.h"
 
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
@@ -23,10 +24,17 @@
 class gnomonViewManagerPrivate
 {
 public:
+    gnomonInspectorViewTree *inspector;
+
+public:
     QHash<vtkPolyData *, gnomonActor *> meshes;
     QHash<vtkImageData *, gnomonActor *> volumes;
 };
 
+gnomonInspectorViewTree *gnomonViewManager::inspector(void)
+{
+    return d->inspector;
+}
 gnomonActor *gnomonViewManager::actor(vtkPolyData *mesh)
 {
     return d->meshes.value(mesh, NULL);
@@ -55,6 +63,8 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     actor->setVolume(volume);
 
     d->volumes.insert(volume, actor);
+
+    d->inspector->insert(volume);
 
     emit inserted(volume);
 
@@ -105,13 +115,13 @@ void gnomonViewManager::update(void)
 
 gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerPrivate)
 {
-
+    d->inspector = new gnomonInspectorViewTree();
 }
 
 gnomonViewManager::~gnomonViewManager(void)
 {
     this->clear();
-
+    delete d->inspector;
     delete d;
 
     d = NULL;

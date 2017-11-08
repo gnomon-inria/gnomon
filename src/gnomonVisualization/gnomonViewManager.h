@@ -23,6 +23,8 @@ class gnomonActorVolume;
 class vtkImageData;
 class vtkPolyData;
 
+class gnomonInspectorViewTree;
+
 class GNOMONCORE_EXPORT gnomonViewManager : public QObject
 {
     Q_OBJECT
@@ -38,6 +40,8 @@ public:
 public:
     void remove(vtkPolyData *mesh);
     void remove(vtkImageData *volume);
+
+    gnomonInspectorViewTree *inspector(void);
 
 public:
     QList<vtkPolyData *> meshes(void);
