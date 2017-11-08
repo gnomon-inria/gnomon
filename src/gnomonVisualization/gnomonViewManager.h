@@ -18,8 +18,10 @@
 
 class gnomonActor;
 class gnomonActorMesh;
+class gnomonActorMeshCellGraph;
 class gnomonActorVolume;
 
+class gnomonCellGraph;
 class vtkImageData;
 class vtkPolyData;
 
@@ -30,26 +32,32 @@ class GNOMONCORE_EXPORT gnomonViewManager : public QObject
 public:
     gnomonActor *actor(vtkPolyData *mesh);
     gnomonActor *actor(vtkImageData *volume);
+    gnomonActor *actor(gnomonCellGraph *cellgraph);
 
 public:
     gnomonActor *insert(vtkPolyData *mesh);
     gnomonActor *insert(vtkImageData *volume);
+    gnomonActor *insert(gnomonCellGraph *cellgraph);
 
 public:
     void remove(vtkPolyData *mesh);
     void remove(vtkImageData *volume);
+    void remove(gnomonCellGraph *cellgraph);
 
 public:
     QList<vtkPolyData *> meshes(void);
     QList<vtkImageData *> volumes(void);
+    QList<gnomonCellGraph *> cellgraphs(void);
 
 signals:
     void inserted(vtkPolyData *mesh);
     void inserted(vtkImageData *volume);
+    void inserted(gnomonCellGraph *cellgraph);
 
 signals:
     void removed(vtkPolyData *mesh);
     void removed(vtkImageData *volume);
+    void removed(gnomonCellGraph *cellgraph);
 
 public slots:
     void clear(void);
