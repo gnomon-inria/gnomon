@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonActorMesh.h"
+#include "gnomonActorMesh_p.h"
 
 #include <QtWidgets>
 
@@ -42,19 +43,6 @@ public:
     }
 };
 
-// /////////////////////////////////////////////////////////////////
-// gnomonActorMeshPrivate
-// /////////////////////////////////////////////////////////////////
-
-class gnomonActorMeshPrivate
-{
-public:
-    vtkSmartPointer<vtkPolyData> mesh;
-    vtkSmartPointer<vtkPolyDataMapper> mapper;
-    vtkSmartPointer<vtkActor> actor;
-
-    vtkRenderWindowInteractor *interactor;
-};
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorMesh

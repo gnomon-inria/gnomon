@@ -25,6 +25,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorImage.h
   gnomonActorMesh
   gnomonActorMesh.h
+  gnomonActorMesh_p.h
   gnomonActorVolume
   gnomonActorVolume.h
   gnomonClutEditor
