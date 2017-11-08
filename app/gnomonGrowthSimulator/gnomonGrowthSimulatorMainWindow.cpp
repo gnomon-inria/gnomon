@@ -50,7 +50,7 @@ public:
     QTabWidget *editors;
 
 public:
-    dtkSplitter *editor_splitter;
+    QSplitter *editor_splitter;
 
 public:
     QToolBar *tool_bar;
@@ -96,7 +96,8 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->interpreter_widget->registerInterpreter(d->interpreter);
 #endif
 
-    d->editor_splitter = new dtkSplitter(this);
+    d->editor_splitter = new QSplitter(this);
+    d->editor_splitter->setHandleWidth(1);
     d->editor_splitter->addWidget(d->editor);
     d->editor_splitter->addWidget(d->interpreter_widget);
 
@@ -141,14 +142,9 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
             }
     });
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(d->view_manager);
-    layout->addWidget(d->editors);
-
-    QWidget *central = new QWidget(this);
-    central->setLayout(layout);
-
+    QSplitter *central = new QSplitter(Qt::Vertical, this);
+    central->addWidget(d->view_manager);
+    central->addWidget(d->editors);
 
     this->setCentralWidget(central);
     this->setWindowTitle("gnomon Growth Simulator");
