@@ -113,6 +113,7 @@ void gnomonActorVolume::update(void)
     if(!d->mapper)
         d->mapper = vtkSmartVolumeMapper::New();
 
+    d->mapper->SetRequestedRenderModeToGPU();
     d->mapper->SetInputData(d->volume);
     d->mapper->Modified();
     d->mapper->Update();
