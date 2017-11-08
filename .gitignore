@@ -36,6 +36,7 @@ build
 
 src/gnomonCore/gnomonCore.i
 src/gnomonStyle/gnomonStyle.qss
+src/gnomonStyle/gnomonStyleValues.h
 
 ######################################################################
 ### .gitignore ends here

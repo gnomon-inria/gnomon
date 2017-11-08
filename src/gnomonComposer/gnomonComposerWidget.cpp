@@ -16,6 +16,7 @@
 #include "gnomonComposerWidget_p.h"
 
 #include <gnomonCore>
+#include <gnomonStyle>
 
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
@@ -35,7 +36,6 @@
 #include <dtkComposer/dtkComposerStack.h>
 #include <dtkComposer/dtkComposerStackView.h>
 #include <dtkComposer/dtkComposerView.h>
-#include <dtkComposer/dtkComposerViewManager.h>
 #include <dtkComposer/dtkComposerViewController.h>
 
 #include <dtkCore/dtkCore.h>
@@ -111,6 +111,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     // -- Elements
 
     d->composer = new dtkComposerWidget;
+    d->composer->view()->setBackgroundBrush(QColor(GNOMON_STYLE_BACKGROUNDCOLOR));
 
     d->controls = nullptr;
 
@@ -139,9 +140,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     d->log_view = new dtkWidgetsLogView(this);
     d->log_view->setVisible(false);
-
-    d->view_manager = new dtkComposerViewManager;
-    d->view_manager->setVisible(false);
 
     connect(d->composer->scene(), SIGNAL(flagged(dtkComposerSceneNode *)), this, SLOT(onComposerNodeFlagged(dtkComposerSceneNode *)));
 
@@ -228,7 +226,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     dtkSplitter *left = new dtkSplitter(this);
     left->setOrientation(Qt::Vertical);
     left->addWidget(d->nodes);
-    left->addWidget(d->view_manager);
 
     dtkSplitter *right = new dtkSplitter(this);
     right->setOrientation(Qt::Vertical);
@@ -279,7 +276,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->scene->setVisible(true);
     d->editor->setVisible(true);
     d->stack->setVisible(false);
-    d->view_manager->setVisible(false);
 
     d->graph->setVisible(false);
     d->log_view->setVisible(false);

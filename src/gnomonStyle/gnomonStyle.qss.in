@@ -1,3 +1,7 @@
 QFrame {
-    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+    background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
+}
+
+QPlainTextEdit {
+    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@"
 }

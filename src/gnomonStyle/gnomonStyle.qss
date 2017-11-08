@@ -1,3 +1,7 @@
 QFrame {
-    background: "#282C34";
+    background: "#21242b";
+}
+
+QPlainTextEdit {
+    background: "#282C34"
 }

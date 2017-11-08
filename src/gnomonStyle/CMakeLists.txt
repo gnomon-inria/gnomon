@@ -35,7 +35,7 @@ set(GNOMON_STYLE_LIGHTMAGENTA "#C678DD")
 set(GNOMON_STYLE_LIGHTCYAN "#56B6C2")
 set(GNOMON_STYLE_LIGHTWHITE "#FFFFFF")
 set(GNOMON_STYLE_BACKGROUNDCOLOR "#282C34")
-set(GNOMON_STYLE_BACKGROUNDALTCOLOR "##21242b")
+set(GNOMON_STYLE_BACKGROUNDALTCOLOR "#21242b")
 set(GNOMON_STYLE_FOREGROUNDCOLOR "#ABB2BF")
 set(GNOMON_STYLE_CURSORCOLOR "#528BFF")
 set(GNOMON_STYLE_BORDERCOLOR "#32363E")
@@ -47,7 +47,8 @@ set(GNOMON_STYLE_ACCENTCOLOR "#528BFF")
 
 set(${PROJECT_NAME}_HEADERS
   gnomonStyle
-  gnomonStyle.h)
+  gnomonStyle.h
+  gnomonStyleValues.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonStyle.cpp)
@@ -58,6 +59,8 @@ set(${PROJECT_NAME}_SOURCES_RCC
 ## #################################################################
 ## Build rules
 ## #################################################################
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonStyleValues.h.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonStyleValues.h @ONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonStyle.qss.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonStyle.qss @ONLY)
 

@@ -25,8 +25,6 @@ QString gnomonStyleSheet(void)
 
     file.close();
 
-    qDebug() << Q_FUNC_INFO << contents;
-
     return contents;
 }
 
