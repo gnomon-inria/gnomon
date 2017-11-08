@@ -74,5 +74,8 @@ QStringList gnomonOmeroImage::annotation(void)
 
 QString gnomonOmeroImage::name(void)
 {
-    return QString();
+  if( e->ref2omero )
+      return QString::fromStdString(e->ref2omero->getName()->getValue());
+  else
+      return QString();
 }

@@ -35,7 +35,10 @@ gnomonOmeroType::type gnomonOmeroDataset::type(void)
 
 QString gnomonOmeroDataset::name(void)
 {
-    return QString();
+  if( e->ref2omero )
+      return QString::fromStdString(e->ref2omero->getName()->getValue());
+  else
+      return QString();
 }
 
 QList<gnomonOmeroImagePtr> gnomonOmeroDataset::images(void)

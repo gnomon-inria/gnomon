@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
     QList<gnomonOmeroProjectPtr> allProject = omero.projects();
     qWarning() << "Found " << allProject.size() << "project(s)" ;//<< ", id=" << allProject.id();
 
-     //if ( allProject.size() >= 1 ) {
         for (int i=0; i < allProject.size(); ++i) {
             QList<gnomonOmeroDatasetPtr> allDataset = allProject.at(i)->datasets();
             qWarning() << "project" << i
@@ -42,12 +41,12 @@ int main(int argc, char *argv[])
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 QList<gnomonOmeroImagePtr> allImages = allDataset.at(j)->images();
-                qWarning() << "dataset" << i << ", id=" << allDataset.at(j)->id()  << ": found " << allDataset.size() << "images(s)";
+                qWarning() << "dataset" << i
+                << ", id=" << allDataset.at(j)->id()
+                << ": found " << allDataset.size() << "images(s)";
 
             }
         }
-    //}
-
 
     return 0;
 }

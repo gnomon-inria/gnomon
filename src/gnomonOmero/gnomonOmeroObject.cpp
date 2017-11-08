@@ -27,11 +27,6 @@ gnomonOmeroObject::~gnomonOmeroObject(void)
   delete d;
 }
 
-// int long gnomonOmeroObject::id(void)
-// {
-//   return d->id;
-// }
-
 
 //
 // gnomonOmeroObject.cpp ends here
