@@ -50,3 +50,15 @@ QList<gnomonOmeroImagePtr> gnomonOmeroDataset::images(void)
   return listImage;
 
 }
+
+int long gnomonOmeroDataset::id(void)
+{
+  int long datasetId = e->ref2omero->getId()->getValue();
+  qWarning() << "datasetID: " << datasetId ;
+  return datasetId;
+}
+
+QStringList gnomonOmeroDataset::annotation(void)
+{
+
+}

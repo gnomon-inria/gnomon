@@ -30,19 +30,20 @@ int main(int argc, char *argv[])
     qDebug() << "Session ID:" << omero.sessionId();
 
     QList<gnomonOmeroProjectPtr> allProject = omero.projects();
-    qWarning() << "Found " << allProject.size() << "project(s)";
+    qWarning() << "Found " << allProject.size() << "project(s)" ;//<< ", id=" << allProject.id();
 
-    if ( allProject.size() >= 1 ) {
+     //if ( allProject.size() >= 1 ) {
         for (int i=0; i < allProject.size(); ++i) {
             QList<gnomonOmeroDatasetPtr> allDataset = allProject.at(i)->datasets();
-            qWarning() << "project" << i << ", id=" << allProject.at(i)->id()  << ": found " << allDataset.size() << "dataset(s)";
+            qWarning() << "dataset" << i << ", id=" << allDataset.at(i)->id()  << ": found " << allDataset.size() << "dataset(s)";
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 QList<gnomonOmeroImagePtr> allImages = allDataset.at(i)->images();
-                qWarning() << "dataset" << j << ": found " << allImages.size() << "image(s)";
+                qWarning() << "image" << j << ", id=" << allImages.at(i)->id() << ": found " << allImages.size() << "image(s)";
+
             }
         }
-    }
+    //}
 
 
     return 0;

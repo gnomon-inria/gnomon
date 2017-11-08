@@ -50,3 +50,15 @@ QList<gnomonOmeroDatasetPtr> gnomonOmeroProject::datasets(void)
 
   return listDataset;
 }
+
+int long gnomonOmeroProject::id(void)
+{
+  int long projectId = e->ref2omero->getId()->getValue();
+  qWarning() << "projectID: " << projectId ;
+  return projectId;
+}
+
+QStringList gnomonOmeroProject::annotation(void)
+{
+
+}

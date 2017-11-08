@@ -23,6 +23,8 @@ public:
   bool isDataset(void) ;
   bool isImage(void)   ;
   gnomonOmeroType::type type(void);
+  int long id(void);
+  QStringList annotation(void);
 
 public:
   QList<gnomonOmeroDatasetPtr> datasets(void);
