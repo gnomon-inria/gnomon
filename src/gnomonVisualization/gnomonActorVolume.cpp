@@ -98,6 +98,7 @@ void gnomonActorVolume::setVolume(vtkImageData *volume)
 void gnomonActorVolume::setInteractor(void *interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    
 }
 
 void gnomonActorVolume::update(void)

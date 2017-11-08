@@ -52,6 +52,7 @@ vtkStandardNewMacro(gnomonActorMesh);
 
 void gnomonActorMesh::setInteractor(void *interactor)
 {
+    qDebug()<<"--> Mesh Interactor";
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }
 
@@ -75,12 +76,16 @@ void gnomonActorMesh::update(void)
         d->mapper->SetInputData(d->mesh);
     }
 
+    qDebug()<<"--> Mesh Mapper";
+
     if(!d->actor) {
         d->actor = vtkSmartPointer<vtkActor>::New();
         d->actor->SetMapper(d->mapper);
 
         this->AddPart(d->actor);
     }
+
+    qDebug()<<"--> Mesh Actor";
 
     d->interactor->Render();
 }

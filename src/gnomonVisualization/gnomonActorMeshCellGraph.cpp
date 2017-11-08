@@ -36,7 +36,7 @@ class gnomonActorMeshCellGraphPrivate
 {
 public:
     gnomonCellGraph *cellgraph; 
-    
+
     vtkSmartPointer<vtkSphereSource> sphere;
 };
 
@@ -56,6 +56,15 @@ void gnomonActorMeshCellGraph::setCellGraph(gnomonCellGraph *cellgraph)
 
 void gnomonActorMeshCellGraph::update(void)
 {
+    if(!dd->cellgraph)
+        return;
+
+    qDebug()<<d->interactor;
+
+    if(!d->interactor)
+        return;
+
+    qDebug()<<"--> Mesh Cell Graph Update";
 
     if(!dd->sphere) {
         dd->sphere = vtkSmartPointer<vtkSphereSource>::New();
@@ -65,10 +74,14 @@ void gnomonActorMeshCellGraph::update(void)
         dd->sphere->Update();
     }
 
+    qDebug()<<"--> Mesh Cell Graph Sphere";
+
     if(!d->mapper) {
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         d->mapper->SetInputData(dd->sphere->GetOutput());
     }
+
+    qDebug()<<"--> Mesh Cell Graph Mapper";
 
     if(!d->actor) {
         d->actor = vtkSmartPointer<vtkActor>::New();
@@ -77,19 +90,25 @@ void gnomonActorMeshCellGraph::update(void)
         this->AddPart(d->actor);
     }
 
+    qDebug()<<"--> Mesh Cell Graph Actor";
+
     d->interactor->Render();
 }
 
-gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellGraphPrivate)
+gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), d(new gnomonActorMeshPrivate), dd(new gnomonActorMeshCellGraphPrivate)
 {
+    qDebug()<<"--> Actor Cell Graph Create";
     dd->cellgraph = Q_NULLPTR;
+    d->mesh = Q_NULLPTR;
 }
 
 gnomonActorMeshCellGraph::~gnomonActorMeshCellGraph(void)
 {
     delete dd;
+    delete d;
 
     dd = NULL;
+    d = NULL;
 }
 
 //

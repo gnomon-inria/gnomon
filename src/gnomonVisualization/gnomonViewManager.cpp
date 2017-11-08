@@ -76,7 +76,11 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
     gnomonActorMeshCellGraph *actor = gnomonActorMeshCellGraph::New();
     actor->setCellGraph(cellgraph);
 
+    qDebug()<<"--> View Insert Cell Graph"; 
+
     d->cellgraphs.insert(cellgraph, actor);
+
+    qDebug()<<"<-- View Insert Cell Graph"; 
 
     emit inserted(cellgraph);
 
