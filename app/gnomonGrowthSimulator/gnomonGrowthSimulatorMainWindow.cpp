@@ -24,6 +24,7 @@
 #include <dtkWidgets>
 
 #include <gnomonCore>
+#include <gnomonStyle>
 #include <gnomonComposer>
 #include <gnomonWidgets>
 #include <gnomonFonts>
@@ -152,6 +153,8 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
 #if defined(Q_OS_MAC)
     this->initialize();
 #endif
+
+    this->setStyleSheet(gnomonStyleSheet());
 }
 
 gnomonGrowthSimulatorMainWindow::~gnomonGrowthSimulatorMainWindow(void)
