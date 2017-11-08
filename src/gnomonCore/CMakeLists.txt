@@ -23,6 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractCellGraphFromImage
   gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellComplexFromImage
+  gnomonAbstractCellComplexFromImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
   gnomonCore
@@ -50,6 +52,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractCellGraphFromImage.cpp
+  gnomonAbstractCellComplexFromImage.cpp
   gnomonAbstractCellComplexReader.cpp)
 
 ## #################################################################

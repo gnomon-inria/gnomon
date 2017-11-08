@@ -17,6 +17,7 @@
 #include <gnomonComposerNodeView.h>
 #include <gnomonTissueGrowthModelNode.h>
 #include <gnomonCellGraphFromImageNode.h>
+#include <gnomonCellComplexFromImageNode.h>
 #include <gnomonCellComplexReaderNode.h>
 
 // ///////////////////////////////////////////////////////////////////
@@ -43,6 +44,7 @@ void gnomonComposerExtension::extend(dtkComposerNodeFactory *factory)
     factory->record(":dtkComposer/gnomonComposerNodeView.json", dtkComposerNodeCreator<gnomonComposerNodeView>);
     factory->record(":dtkComposer/gnomonTissueGrowthModelNode.json", dtkComposerNodeCreator<gnomonTissueGrowthModelNode>);
     factory->record(":dtkComposer/gnomonCellGraphFromImageNode.json", dtkComposerNodeCreator<gnomonCellGraphFromImageNode>);
+    factory->record(":dtkComposer/gnomonCellComplexFromImageNode.json", dtkComposerNodeCreator<gnomonCellComplexFromImageNode>);
     factory->record(":dtkComposer/gnomonCellComplexReaderNode.json", dtkComposerNodeCreator<gnomonCellComplexReaderNode>);
 }
 
