@@ -45,12 +45,15 @@
 
 #include <QVTKOpenGLWidget.h>
 
+#include "gnomonInspectorViewTree.h"
+
 class gnomonViewPrivate
 {
 public:
     vtkGenericOpenGLRenderWindow *window;
     QVTKOpenGLWidget *widget;
     vtkRenderer *renderer;
+    QWidget *inspector;
 
 public:
     gnomonViewManager *manager;
@@ -79,6 +82,8 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     this->setLayout(layout);
 
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
+
+    d->inspector = new gnomonInspectorViewTree(this);
 }
 
 gnomonView::~gnomonView(void)
@@ -88,6 +93,7 @@ gnomonView::~gnomonView(void)
 
     delete d->manager;
     delete d->widget;
+    delete d->inspector;
     delete d;
 }
 
@@ -99,6 +105,11 @@ gnomonViewManager *gnomonView::manager(void)
 QWidget *gnomonView::widget(void)
 {
     return d->widget;
+}
+
+QWidget *gnomonView::inspector()
+{
+    return d->inspector;
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)
@@ -225,6 +236,31 @@ void gnomonView::onInserted(vtkImageData *image)
     image->PrintSelf(std::cout, vtkIndent());
 
     d->renderer->AddActor(actor);
+
+    // ///////////////////////////////////////////////////////////////////
+    // Create the master inspector widget here
+    // Check all the available meshes and volumes
+    // Create the inspectors for meshes and volumes
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorViewTree *inspector = static_cast<gnomonInspectorViewTree *>(d->inspector);
+
+    QList<vtkPolyData *> meshes = d->manager->meshes();
+    QList<vtkImageData *> volumes = d->manager->volumes();
+
+    QList<QTreeWidgetItem *> top_items;
+    for(auto mesh : meshes) {
+        gnomonActor *actor = d->manager->actor(mesh);
+        QTreeWidgetItem *item = new QTreeWidgetItem(0);
+        top_items.append(item);
+    }
+
+    for(auto volume : volumes) {
+        gnomonActor *actor = d->manager->actor(image);
+        QTreeWidgetItem *item = new QTreeWidgetItem(0);
+        top_items.append(item);
+    }
+
+    inspector->addTopLevelItems(top_items);
 }
 
 //

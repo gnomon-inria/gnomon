@@ -78,6 +78,7 @@ void gnomonComposerNodeView::run(void)
         vtkImageData *data = static_cast<vtkImageData *>(converter->output());
 
         d->view->manager()->insert(data);
+        // d->view->inspector()->insert(data);
     }
 }
 

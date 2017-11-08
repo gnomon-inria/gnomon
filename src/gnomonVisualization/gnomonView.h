@@ -31,6 +31,8 @@ class gnomonCellGraph;
 class gnomonViewManager;
 class gnomonViewPrivate;
 
+class gnomonInspector;
+
 class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
 {
     Q_OBJECT
@@ -48,6 +50,7 @@ public:
 
 public:
     QWidget *widget(void);
+    QWidget *inspector(void);
 
 public slots:
     void onInserted(vtkImageData *image);

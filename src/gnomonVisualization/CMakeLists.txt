@@ -29,6 +29,13 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorVolume.h
   gnomonClutEditor
   gnomonClutEditor.h
+  gnomonInspector
+  gnomonInspector.h
+  gnomonInspectorImage
+  gnomonInspectorImage.h
+  gnomonInspectorViewTree.h
+  gnomonInspectorVolume
+  gnomonInspectorVolume.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -41,6 +48,10 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorMesh.cpp
   gnomonActorVolume.cpp
   gnomonClutEditor.cpp
+  gnomonInspector.cpp
+  gnomonInspectorImage.cpp
+  gnomonInspectorViewTree.cpp
+  gnomonInspectorVolume.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 
