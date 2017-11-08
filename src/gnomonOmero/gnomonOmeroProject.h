@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <QtCore>
@@ -23,8 +22,10 @@ public:
   bool isDataset(void) ;
   bool isImage(void)   ;
   gnomonOmeroType::type type(void);
+
   int long id(void);
   QStringList annotation(void);
+  QString name(void);
 
 public:
   QList<gnomonOmeroDatasetPtr> datasets(void);

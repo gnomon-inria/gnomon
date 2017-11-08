@@ -1,4 +1,3 @@
-
 #include "gnomonOmeroImage.h"
 #include "gnomonOmeroObject_p.h"
 
@@ -70,5 +69,10 @@ QStringList gnomonOmeroImage::annotation(void)
   // // qWarning()<< " Dimensions(x,y,z,c,t) = "<<xdim<<","<<ydim<<","<<zdim<<","<<cdim<<","<<tdim ;
   // // qWarning()<< " PhyicalSize(x,y,z) "<<xphysize<<","<<yphysize<<","<<zphysize;
   // qWarning()<< " PixelType: "<< d->pixtype;
+  return QStringList();
+}
 
+QString gnomonOmeroImage::name(void)
+{
+    return QString();
 }

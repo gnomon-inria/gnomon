@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <QtCore>
@@ -22,6 +21,7 @@ public:
    gnomonOmeroType::type type(void);
    int long id(void);
    QStringList annotation(void);
+  QString name(void);
 
 public:
     QList<gnomonOmeroImagePtr> images(void);

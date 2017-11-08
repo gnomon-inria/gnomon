@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <gnomonOmeroObject>
@@ -19,6 +18,7 @@ public:
   gnomonOmeroType::type type(void);
   int long id(void);
   QStringList annotation(void);
+  QString name(void);
 
 private:
   class gnomonOmeroImagePrivate *e;

@@ -32,7 +32,9 @@ public:
 
 public:
     virtual gnomonOmeroType::type type(void) = 0;
+    virtual QString name(void) = 0;
 
+public:
     virtual bool isProject(void) = 0;
     virtual bool isDataset(void) = 0;
     virtual bool isImage(void)   = 0;

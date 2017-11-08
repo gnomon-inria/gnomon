@@ -35,6 +35,14 @@ gnomonOmeroType::type gnomonOmeroProject::type(void)
   return gnomonOmeroType::project;
 }
 
+QString gnomonOmeroProject::name(void)
+{
+    if( e->ref2omero )
+        return QString::fromStdString(e->ref2omero->getName()->getValue());
+    else
+        return QString();
+}
+
 QList<gnomonOmeroDatasetPtr> gnomonOmeroProject::datasets(void)
 {
   QList<gnomonOmeroDatasetPtr> listDataset;
