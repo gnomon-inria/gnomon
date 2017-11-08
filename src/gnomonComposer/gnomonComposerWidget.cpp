@@ -28,7 +28,6 @@
 #include <dtkComposer/dtkComposerNodeFactory.h>
 #include <dtkComposer/dtkComposerNodeFactoryView.h>
 #include <dtkComposer/dtkComposerGraph.h>
-#include <dtkComposer/dtkComposerGraphView.h>
 #include <dtkComposer/dtkComposerScene.h>
 #include <dtkComposer/dtkComposerSceneModel.h>
 #include <dtkComposer/dtkComposerSceneNodeEditor.h>
@@ -133,14 +132,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->nodes = new dtkComposerNodeFactoryView(this);
     d->nodes->setFactory(d->composer->factory());
 
-    d->graph = new dtkComposerGraphView(this);
-    d->graph->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
-    d->graph->setGraph (d->composer->graph());
-    d->graph->setVisible(false);
-
-    d->log_view = new dtkWidgetsLogView(this);
-    d->log_view->setVisible(false);
-
     connect(d->composer->scene(), SIGNAL(flagged(dtkComposerSceneNode *)), this, SLOT(onComposerNodeFlagged(dtkComposerSceneNode *)));
 
     d->closing = false;
@@ -242,27 +233,13 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->inner = new dtkSplitter(this);
     d->inner->setOrientation(Qt::Horizontal);
     d->inner->addWidget(left);
-    d->inner->addWidget(d->graph);
     d->inner->addWidget(d->composer);
     d->inner->addWidget(right);
-
-    QHBoxLayout *b_layout = new QHBoxLayout;
-    b_layout->setContentsMargins(0, 0, 0, 0);
-    b_layout->setSpacing(0);
-    b_layout->addWidget(d->log_view);
-
-    QWidget *bottom = new QWidget(this);
-    bottom->setLayout(b_layout);
-
-    dtkSplitter *central = new dtkSplitter(this);
-    central->setOrientation(Qt::Vertical);
-    central->addWidget(d->inner);
-    central->addWidget(bottom);
 
     QVBoxLayout* main_layout = new QVBoxLayout;
     main_layout->setContentsMargins(0, 0, 0, 0);
     main_layout->addWidget(menu_bar);
-    main_layout->addWidget(central);
+    main_layout->addWidget(d->inner);
 
     this->setLayout(main_layout);
 
@@ -276,9 +253,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->scene->setVisible(true);
     d->editor->setVisible(true);
     d->stack->setVisible(false);
-
-    d->graph->setVisible(false);
-    d->log_view->setVisible(false);
 
     int wl = qMin(d->nodes->size().width(), 300);
     int wr = qMax(d->stack->size().width(), 300);

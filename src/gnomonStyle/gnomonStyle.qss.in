@@ -1,7 +1,17 @@
 QFrame {
+    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
     background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
 }
 
 QPlainTextEdit {
-    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@"
+    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
+    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+}
+
+QPushButton {
+    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
+    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 4px;
 }

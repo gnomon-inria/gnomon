@@ -20,7 +20,6 @@
 class dtkComposerWidget;
 class dtkComposerControls;
 class dtkComposerNodeFactoryView;
-class dtkComposerGraphView;
 class dtkComposerSceneModel;
 class dtkComposerSceneNodeEditor;
 class dtkComposerSceneView;
@@ -31,8 +30,6 @@ class dtkDistributor;
 class dtkRecentFilesMenu;
 
 class dtkSplitter;
-
-class dtkWidgetsLogView;
 
 class dtkComposerViewManager;
 class dtkPlotViewSettings;
@@ -56,7 +53,6 @@ public:
     dtkComposerWidget *composer;
     dtkComposerControls *controls;
     dtkComposerNodeFactoryView *nodes;
-    dtkComposerGraphView *graph;
     dtkComposerSceneModel *model;
     dtkComposerSceneNodeEditor *editor;
     dtkComposerSceneView *scene;
@@ -68,9 +64,6 @@ public:
 public:
     dtkComposerViewManager *view_manager;
     dtkPlotViewSettings *plot_view_settings;
-
-public:
-    dtkWidgetsLogView *log_view;
 
 public:
     dtkSplitter *inner;

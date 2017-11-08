@@ -79,6 +79,9 @@ qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
+target_link_libraries(${PROJECT_NAME} gnomonCore)
+target_link_libraries(${PROJECT_NAME} gnomonStyle)
+
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 # #################################################################

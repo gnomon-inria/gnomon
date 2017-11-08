@@ -21,6 +21,8 @@
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
 
+#include <gnomonStyle>
+
 #include <dtkWidgets>
 
 #include <vtkActor.h>
@@ -58,12 +60,14 @@ public:
 
 gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 {
+    QColor background_color = QColor(GNOMON_STYLE_BACKGROUNDCOLOR);
+
     d = new gnomonViewPrivate;
 
     d->manager = new gnomonViewManager;
 
     d->renderer = vtkRenderer::New();
-    d->renderer->SetBackground(0.2, 0.2, 0.2);
+    d->renderer->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
     d->window = vtkGenericOpenGLRenderWindow::New();
     d->window->AddRenderer(d->renderer);
