@@ -126,5 +126,48 @@ void gnomonInspectorViewTree::insert(vtkImageData *volume)
 
 }
 
+void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
+{
+    if(!d->view)
+        return;
+
+    // if(column == 2) {
+
+        gnomonActor *actor = nullptr;
+
+        if(d->mesh_items.keys().contains(item)) {
+            actor = d->view->manager()->actor(d->mesh_items.value(item));
+        }
+
+
+        if(d->volume_items.keys().contains(item)) {
+            actor = d->view->manager()->actor(d->volume_items.value(item));
+        }
+
+        if(!actor)
+            return;
+
+        if (item->checkState(2) == Qt::Checked)
+            actor->show();
+        else {
+            actor->hide();
+        }
+
+        emit checked(actor, (item->checkState(2) == Qt::Checked));
+
+        d->view->update();
+    // }
+}
+
+void gnomonInspectorViewTree::onItemSelected(void)
+{
+    if(d->mesh_items.keys().contains(this->currentItem())) {
+        emit selected(d->mesh_items.value(this->currentItem()));
+    }
+    if(d->volume_items.keys().contains(this->currentItem())) {
+        emit selected(d->volume_items.value(this->currentItem()));
+    }
+}
+
 //
 // gnomonInspectorViewTree.cpp ends here

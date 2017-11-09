@@ -12,7 +12,9 @@
 
 // Code:
 
-#include "gnomonCoreExport.h"
+#pragma once
+
+#include "gnomonVisualizationExport.h"
 
 #include <QtCore>
 
@@ -25,7 +27,7 @@ class vtkPolyData;
 
 class gnomonInspectorViewTree;
 
-class GNOMONCORE_EXPORT gnomonViewManager : public QObject
+class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
 {
     Q_OBJECT
 
@@ -41,7 +43,7 @@ public:
     void remove(vtkPolyData *mesh);
     void remove(vtkImageData *volume);
 
-    gnomonInspectorViewTree *inspector(void);
+    gnomonInspectorViewTree *inspectorTree(void);
 
 public:
     QList<vtkPolyData *> meshes(void);
@@ -60,6 +62,10 @@ public slots:
 
 public slots:
     void update(void);
+
+ protected slots:
+    void onMeshSelected(vtkPolyData *mesh);
+    void onVolumeSelected(vtkImageData *volume);
 
 private:
      gnomonViewManager(void);

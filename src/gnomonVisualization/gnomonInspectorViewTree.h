@@ -12,6 +12,8 @@
 
 // Code:
 
+#pragma once
+
 #include <gnomonVisualizationExport.h>
 
 #include <QTreeWidget>
@@ -19,6 +21,7 @@
 class vtkPolyData;
 class vtkImageData;
 class gnomonView;
+class gnomonActor;
 
 class gnomonInspectorViewTreePrivate;
 
@@ -35,8 +38,18 @@ public:
     void insert(vtkPolyData *mesh);
     void insert(vtkImageData *volume);
 
+ signals:
+    void checked(gnomonActor *, bool);
+
+    void selected(vtkPolyData *mesh);
+    void selected(vtkImageData *volume);
+
 public slots:
-    // void insert(vtkImageData *);
+
+
+private slots:
+   void onItemClicked(QTreeWidgetItem *item, int column);
+   void onItemSelected(void);
 
  private:
     gnomonInspectorViewTreePrivate *d;

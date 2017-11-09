@@ -33,7 +33,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspector.h
   gnomonInspectorImage
   gnomonInspectorImage.h
+  gnomonInspectorViewTree
   gnomonInspectorViewTree.h
+  gnomonInspectorViewWidget
+  gnomonInspectorViewWidget.h
   gnomonInspectorVolume
   gnomonInspectorVolume.h
   gnomonView
@@ -51,6 +54,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspector.cpp
   gnomonInspectorImage.cpp
   gnomonInspectorViewTree.cpp
+  gnomonInspectorViewWidget.cpp
   gnomonInspectorVolume.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)

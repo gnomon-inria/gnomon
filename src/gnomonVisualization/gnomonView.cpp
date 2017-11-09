@@ -64,8 +64,9 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     d->manager = new gnomonViewManager;
 
-gnomonInspectorViewTree *inspector= d->manager->inspector();
-inspector->setView(this);
+    gnomonInspectorViewTree *inspector= d->manager->inspectorTree();
+    inspector->setView(this);
+
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(0.2, 0.2, 0.2);
 
@@ -83,8 +84,7 @@ inspector->setView(this);
     this->setLayout(layout);
 
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
-
-
+    connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -109,7 +109,7 @@ QWidget *gnomonView::widget(void)
 
 QWidget *gnomonView::inspector()
 {
-return d->manager->inspector();
+    return d->manager->inspectorTree();
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)
