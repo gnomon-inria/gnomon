@@ -23,6 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractCellGraphFromImage
   gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellComplexFromImage
+  gnomonAbstractCellComplexFromImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
   gnomonCore
@@ -50,6 +52,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractCellGraphFromImage.cpp
+  gnomonAbstractCellComplexFromImage.cpp
   gnomonAbstractCellComplexReader.cpp)
 
 ## #################################################################
@@ -66,7 +69,7 @@ if(DTK_BUILD_WRAPPERS)
 
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
-  if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
+  if (DTK_WRAPPING_PYTHON AND (DTK_PYTHON_WRAPPER MATCHES "SWIG" OR DTK_PYTHON_WRAPPER MATCHES "BOTH"))
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i @ONLY)
     dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
   endif()

@@ -34,7 +34,7 @@ build
 ## Generated files
 ## ###################################################################
 
-src/tissueCore/tissueCore.i
+src/gnomonCore/gnomonCore.i
 
 ######################################################################
 ### .gitignore ends here

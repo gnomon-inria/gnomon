@@ -25,12 +25,12 @@ class gnomonCellGraphFromImageNodePrivate
 {
 public:
     dtkComposerTransmitterReceiver<dtkImage *> image_in;
-	dtkComposerTransmitterReceiver<bool> use_margins;
-	dtkComposerTransmitterReceiver<float> min_contact_area;
-	dtkComposerTransmitterReceiver<long> background_label;
-	dtkComposerTransmitterReceiver<QStringList> property_names;
+    dtkComposerTransmitterReceiver<bool> use_margins;
+    dtkComposerTransmitterReceiver<float> min_contact_area;
+    dtkComposerTransmitterReceiver<long> background_label;
+    dtkComposerTransmitterReceiver<QStringList> property_names;
 
-	dtkComposerTransmitterEmitter<gnomonCellGraph *> graph_out;
+    dtkComposerTransmitterEmitter<gnomonCellGraph *> graph_out;
 };
 
 
