@@ -30,6 +30,7 @@ public:
   void browseDB(void);
   int long userId(void);
   QString sessionId(void);
+  gnomonOmeroImage image(long int);
 
 public:
   QList<gnomonOmeroProjectPtr> projects(void);

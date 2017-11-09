@@ -71,12 +71,6 @@ QStringList gnomonOmeroProject::details(void)
     QStringList list;
     QString description = QString::fromStdString(e->ref2omero->getDescription()->getValue());
 
-    omero::model::DetailsPtr details = e->ref2omero->getDetails();
-    //omero::model::ExperimenterPtr owner = details->getOwner();
-
     list << description;
     return list;
-
-  // details->getCreationEvent();
-  // details->getUpdateEvent();
 }

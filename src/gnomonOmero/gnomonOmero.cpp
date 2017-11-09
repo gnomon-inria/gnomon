@@ -16,6 +16,7 @@
 
 #include "gnomonOmero.h"
 #include "gnomonOmeroObject.h"
+#include "gnomonOmeroImage.h"
 
 #include <gnomonCore>
 #include <omero/client.h>
@@ -107,6 +108,17 @@ int long gnomonOmero::userId(void)
 {
   return d->userID;
 }
+
+gnomonOmeroImage gnomonOmero::image(long int id)
+{
+  omero::sys::LongList imglist;
+  imglist.push_back(id);
+  omero::model::ImagePtr img = d->containerService->getImages("Image",imglist,0)[0];
+
+  return gnomonOmeroImage(img);
+
+}
+
 
 QString gnomonOmero::sessionId(void)
 {

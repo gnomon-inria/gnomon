@@ -24,6 +24,9 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   main.cpp)
 
+include_directories(${dtk_INCLUDE_DIRS})
+include_directories(${dtkImaging_INCLUDE_DIRS})
+
 ## #################################################################
 ## Build rules
 ## #################################################################
@@ -35,6 +38,8 @@ add_executable(${PROJECT_NAME}
 qt5_use_modules(${PROJECT_NAME} Core)
 
 target_link_libraries(${PROJECT_NAME} gnomonOmero)
+target_link_libraries(${PROJECT_NAME} dtkCore)
+target_link_libraries(${PROJECT_NAME} dtkImaging)
 
 ## ###################################################################
 ## Install rules - targets

@@ -17,6 +17,7 @@
 #include <gnomonCoreSettings>
 #include <gnomonOmero>
 
+
 int main(int argc, char *argv[])
 {
     dtkCoreApplication *application = dtkCoreApplication::create(argc, argv);
@@ -38,7 +39,6 @@ int main(int argc, char *argv[])
                        << ", id=" << allProject.at(i)->id()
                        << ": found " << allDataset.size() << "dataset(s)";
             qWarning() << "project name = " << allProject.at(i)->name();
-            //qWarning() << " details Project " << allProject.at(i)->details();
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 QList<gnomonOmeroImagePtr> allImages = allDataset.at(j)->images();
@@ -52,11 +52,10 @@ int main(int argc, char *argv[])
                   << ", id=" << allImages.at(k)->id()
                   << ", image Name " << allImages.at(k)->name();
                   qWarning() << ", details " <<allImages.at(k)->details();
-
-
                 }
             }
         }
+        qWarning() << "image 451" << omero.image(451).details();
 
     return 0;
 }

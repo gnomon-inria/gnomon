@@ -4,10 +4,11 @@
 #include <omero/model/Length.h>
 #include <omero/model/Pixels.h>
 #include <omero/model/PixelsType.h>
-#include "omero/model/TagAnnotationI.h"
-#include <omero/model/ImageAnnotationLinkI.h>
+#include <omero/model/Experimenter.h>
+
 #include <omero/all.h>
 #include <omero/client.h>
+
 
 class gnomonOmeroImagePrivate
 {
@@ -20,7 +21,7 @@ public:
   double pixel_size_x, pixel_size_y, pixel_size_z;
   double dim_x, dim_y, dim_z;
   QString description;
-  omero::model::ExperimenterPtr owner;
+  omero::RStringPtr owner;
 };
 
 gnomonOmeroImage::gnomonOmeroImage(void) : gnomonOmeroObject()
@@ -39,23 +40,18 @@ gnomonOmeroImage::gnomonOmeroImage(void) : gnomonOmeroObject()
 
 }
 
-gnomonOmeroImage::gnomonOmeroImage(int long id) : gnomonOmeroObject()
-{
-
-
-}
-
 gnomonOmeroImage::gnomonOmeroImage(omero::model::ImagePtr img) : gnomonOmeroObject()
 {
   d->type = gnomonOmeroType::image;
   e = new gnomonOmeroImagePrivate();
   e->ref2omero = img ;
 
+  // omero::model::DetailsPtr details = e->ref2omero->getDetails();
+  // e->owner = details->getOwner()->getMiddleName();
+
   if(e->ref2omero->getDescription()) {
     e->description = QString::fromStdString(e->ref2omero->getDescription()->getValue());
   }
-  // omero::model::DetailsPtr details = e->ref2omero->getDetails();
-  // e->owner = details->getOwner();
 
   if(e->ref2omero->getPrimaryPixels()) {
 
@@ -81,7 +77,6 @@ gnomonOmeroImage::gnomonOmeroImage(omero::model::ImagePtr img) : gnomonOmeroObje
 gnomonOmeroImage::~gnomonOmeroImage(void)
 {
   delete e;
-
 }
 
 gnomonOmeroType::type gnomonOmeroImage::type(void)
@@ -101,7 +96,7 @@ QStringList gnomonOmeroImage::details(void)
   QStringList list;
   QString item;
 
-  item = "description       : " + e->description ;
+  item = "description : " + e->description ;
   list << item;
   item = "nb channels : " + QString::number(e->number_of_channels);
   list << item;
@@ -129,4 +124,57 @@ QString gnomonOmeroImage::name(void)
       return QString::fromStdString(e->ref2omero->getName()->getValue());
   else
       return QString();
+}
+
+QString gnomonOmeroImage::description(void)
+{
+  return e->description;
+}
+
+int gnomonOmeroImage::number_of_channels(void)
+{
+  return e->number_of_channels;
+}
+
+int gnomonOmeroImage::number_of_timepoints(void)
+{
+  return e->number_of_timepoints;
+}
+
+double gnomonOmeroImage::dim_x(void)
+{
+  return e->dim_x;
+}
+
+double gnomonOmeroImage::dim_y(void)
+{
+  return e->dim_y;
+}
+
+double gnomonOmeroImage::dim_z(void)
+{
+  return e->dim_z;
+}
+
+double gnomonOmeroImage::pixel_size_x(void)
+{
+  return e->pixel_size_x;
+}
+
+double gnomonOmeroImage::pixel_size_y(void)
+{
+  return e->pixel_size_y;
+
+}
+
+double gnomonOmeroImage::pixel_size_z(void)
+{
+  return e->pixel_size_z;
+
+}
+
+dtkImage gnomonOmeroImage::data(void)
+{
+
+
 }
