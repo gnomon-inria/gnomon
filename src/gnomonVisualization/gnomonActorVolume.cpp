@@ -127,6 +127,8 @@ void gnomonActorVolume::setVolume(vtkImageData *volume)
     d->volume = volume;
 
     this->update();
+
+    d->computeHistogram();
 }
 
 void gnomonActorVolume::setInteractor(void *interactor)
@@ -137,6 +139,7 @@ void gnomonActorVolume::setInteractor(void *interactor)
 
 void gnomonActorVolume::update(void)
 {
+
     if(!d->volume)
         return;
 
@@ -308,8 +311,6 @@ void gnomonActorVolume::update(void)
     this->show();
 
     d->interactor->Render();
-
-    d->computeHistogram();
 }
 
 void gnomonActorVolume::showScalarBarTitle(bool show)
@@ -327,17 +328,17 @@ void gnomonActorVolume::showScalarBarTitle(bool show)
 void gnomonActorVolume::show()
 {
     this->VisibilityOn();
-
     showScalarBar(d->scalarbar_state);
+    d->interactor->Render();
 }
 
 void gnomonActorVolume::hide()
 {
     this->VisibilityOff();
-
     bool state_scalarbar = d->scalarbar_state;
     showScalarBar(false);
     d->scalarbar_state = state_scalarbar;
+    d->interactor->Render();
 }
 
 void gnomonActorVolume::setScalarBarOrientationToVertical(bool value)
