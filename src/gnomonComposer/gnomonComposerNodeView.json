@@ -3,5 +3,8 @@
     "kind" : "view",
     "type" : "gnomonView",
     "tags" : ["gnomon", "view"],
-    "description" : ""
+    "description" : "<h3>Gnomon Cell View</h3>
+    				 <p>View tissue images, graphs & complexes in 3D</p>",
+    "width" : "300",
+    "inputs" : ["image","cell graph"]
 }

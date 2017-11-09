@@ -17,6 +17,7 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorMeshCellGraph.h"
 
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
@@ -32,7 +33,6 @@
 #include <vtkImageData.h>
 #include <vtkIntArray.h>
 #include <vtkCellData.h>
-#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -43,13 +43,18 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <QVTKOpenGLWidget.h>
+// #include <vtkRenderWindow.h>
+// #include <QVTKWidget.h>
 
 class gnomonViewPrivate
 {
 public:
     vtkGenericOpenGLRenderWindow *window;
     QVTKOpenGLWidget *widget;
+    // vtkRenderWindow *window;
+    // QVTKWidget *widget;
     vtkRenderer *renderer;
 
 public:
@@ -66,9 +71,11 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d->renderer->SetBackground(0.2, 0.2, 0.2);
 
     d->window = vtkGenericOpenGLRenderWindow::New();
+    // d->window = vtkRenderWindow::New();
     d->window->AddRenderer(d->renderer);
 
     d->widget = new QVTKOpenGLWidget(this);
+    // d->widget = new QVTKWidget(this);
     d->widget->SetRenderWindow(d->window);
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -79,6 +86,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     this->setLayout(layout);
 
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
+    connect(d->manager, SIGNAL(inserted(gnomonCellGraph *)), this, SLOT(onInserted(gnomonCellGraph *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -221,6 +229,15 @@ void gnomonView::onInserted(vtkImageData *image)
     gnomonActorVolume *actor = dynamic_cast<gnomonActorVolume *>(d->manager->actor(image));
     actor->setInteractor(d->widget->GetInteractor());
     actor->setVolume(image);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(gnomonCellGraph *cellgraph)
+{
+    gnomonActorMeshCellGraph *actor = dynamic_cast<gnomonActorMeshCellGraph *>(d->manager->actor(cellgraph));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setCellGraph(cellgraph);
 
     d->renderer->AddActor(actor);
 }

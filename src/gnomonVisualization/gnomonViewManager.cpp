@@ -14,8 +14,12 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorMesh.h"
+#include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorVolume.h"
+
 #include "gnomonViewManager.h"
+
+#include <gnomonCellGraph.h>
 
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
@@ -25,6 +29,7 @@ class gnomonViewManagerPrivate
 public:
     QHash<vtkPolyData *, gnomonActor *> meshes;
     QHash<vtkImageData *, gnomonActor *> volumes;
+    QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
 };
 
 gnomonActor *gnomonViewManager::actor(vtkPolyData *mesh)
@@ -35,6 +40,11 @@ gnomonActor *gnomonViewManager::actor(vtkPolyData *mesh)
 gnomonActor *gnomonViewManager::actor(vtkImageData *volume)
 {
     return d->volumes.value(volume, NULL);
+}
+
+gnomonActor *gnomonViewManager::actor(gnomonCellGraph *cellgraph)
+{
+    return d->cellgraphs.value(cellgraph, NULL);
 }
 
 gnomonActor *gnomonViewManager::insert(vtkPolyData *mesh)
@@ -61,6 +71,19 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     return actor;
 }
 
+gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
+{
+    gnomonActorMeshCellGraph *actor = gnomonActorMeshCellGraph::New();
+    actor->setCellGraph(cellgraph);
+
+    d->cellgraphs.insert(cellgraph, actor);
+
+    emit inserted(cellgraph);
+
+    return actor;
+}
+
+
 void gnomonViewManager::remove(vtkPolyData *mesh)
 {
     d->meshes.remove(mesh);
@@ -75,6 +98,13 @@ void gnomonViewManager::remove(vtkImageData *volume)
     emit removed(volume);
 }
 
+void gnomonViewManager::remove(gnomonCellGraph *cellgraph)
+{
+    d->cellgraphs.remove(cellgraph);
+
+    emit removed(cellgraph);
+}
+
 QList<vtkPolyData *> gnomonViewManager::meshes(void)
 {
     return d->meshes.keys();
@@ -85,13 +115,20 @@ QList<vtkImageData *> gnomonViewManager::volumes(void)
     return d->volumes.keys();
 }
 
+QList<gnomonCellGraph *> gnomonViewManager::cellgraphs(void)
+{
+    return d->cellgraphs.keys();
+}
+
 void gnomonViewManager::clear(void)
 {
     qDeleteAll(d->meshes.values());
     qDeleteAll(d->volumes.values());
+    qDeleteAll(d->cellgraphs.values());
 
     d->meshes.clear();
     d->volumes.clear();
+    d->cellgraphs.clear();
 }
 
 void gnomonViewManager::update(void)
@@ -100,6 +137,9 @@ void gnomonViewManager::update(void)
         actor->update();
 
     foreach(gnomonActor *actor, d->volumes)
+        actor->update();
+
+    foreach(gnomonActor *actor, d->cellgraphs)
         actor->update();
 }
 

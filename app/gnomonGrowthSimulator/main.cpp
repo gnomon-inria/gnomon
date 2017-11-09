@@ -27,6 +27,7 @@
 #include <QVTKOpenGLWidget.h>
 
 #include "gnomonGrowthSimulatorMainWindow.h"
+#include <vtkGenericOpenGLRenderWindow.h>
 
 int main(int argc, char *argv[])
 {
