@@ -89,6 +89,7 @@ void gnomonActorMeshCellGraph::update(void)
         long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
         vertexPoint[vertexId] = vtkId;
         polydataPointData->InsertValue(vtkId,vertexId);
+        qDebug()<<vtkId<<":"<<vertexId<<" ("<<positions_x[vertexId].value<double>()<<","<<positions_y[vertexId].value<double>()<<","<<positions_z[vertexId].value<double>()<<")";
     }
 
     QList<long> edges = dd->cellgraph->edgeIds();
