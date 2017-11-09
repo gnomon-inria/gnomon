@@ -8,6 +8,8 @@
 
 #include "gnomonClutEditor.h"
 
+#include <QStackedWidget>
+
 #include "vtkImageData.h"
 #include "vtkPointData.h"
 #include "vtkDataArray.h"
@@ -22,7 +24,7 @@ class gnomonInspectorViewWidgetPrivate
 {
 public:
     QHash<gnomonActor *, QWidget *> widgets;
-    QVBoxLayout *layout;
+    QStackedWidget *stacked_widget;
 
 public:
     QWidget *dummy;
@@ -32,13 +34,19 @@ public:
 // gnomonInspectorViewWidget
 // ///////////////////////////////////////////////////////////////////
 
-gnomonInspectorViewWidget::gnomonInspectorViewWidget() : d(new gnomonInspectorViewWidgetPrivate)
+gnomonInspectorViewWidget::gnomonInspectorViewWidget(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorViewWidgetPrivate)
 {
     d->dummy = new QWidget(this);
+    d->stacked_widget = new QStackedWidget(this);
+    d->stacked_widget->setMinimumSize(800, 145);
+
+    this->setWidgetResizable(true);
+    this->setWidget(d->stacked_widget);
 }
 
 gnomonInspectorViewWidget::~gnomonInspectorViewWidget()
 {
+    delete d->stacked_widget;
     delete d->dummy;
     delete d;
 }
@@ -50,7 +58,7 @@ void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
     }
 
     if(d->widgets.keys().contains(actor)) {
-        this->setCurrentWidget(d->widgets.value(actor));
+        d->stacked_widget->setCurrentWidget(d->widgets.value(actor));
         d->widgets.value(actor)->setEnabled(enabled);
         return;
     }
@@ -60,8 +68,8 @@ void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
     if (gnomonActorMesh *mesh_actor = dynamic_cast<gnomonActorMesh *>(actor)) {
         QWidget *mesh_inspector = new gnomonInspectorVolume();
         d->widgets.insert(mesh_actor, mesh_inspector);
-        this->addWidget(mesh_inspector);
-        this->setCurrentWidget(mesh_inspector);
+        d->stacked_widget->addWidget(mesh_inspector);
+        d->stacked_widget->setCurrentWidget(mesh_inspector);
         mesh_inspector->setEnabled(enabled);
         return;
     }
@@ -82,8 +90,8 @@ void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
 
         d->widgets.insert(volume_actor, volume_inspector);
 
-        this->addWidget(volume_inspector);
-        this->setCurrentWidget(volume_inspector);
+        d->stacked_widget->addWidget(volume_inspector);
+        d->stacked_widget->setCurrentWidget(volume_inspector);
         volume_inspector->setEnabled(enabled);
         return;
     }
