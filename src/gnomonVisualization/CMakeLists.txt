@@ -25,6 +25,11 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorImage.h
   gnomonActorMesh
   gnomonActorMesh.h
+  gnomonActorMesh_p.h
+  gnomonActorMeshCellComplex
+  gnomonActorMeshCellComplex.h
+  gnomonActorMeshCellGraph
+  gnomonActorMeshCellGraph.h
   gnomonActorVolume
   gnomonActorVolume.h
   gnomonClutEditor
@@ -51,6 +56,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActorImage.cpp
   gnomonActorMesh.cpp
+  gnomonActorMeshCellComplex.cpp
+  gnomonActorMeshCellGraph.cpp
   gnomonActorVolume.cpp
   gnomonClutEditor.cpp
   gnomonInspector.cpp

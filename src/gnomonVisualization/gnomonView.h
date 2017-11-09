@@ -56,6 +56,8 @@ public:
 public slots:
     void onInserted(vtkImageData *image);
     void onInserted(vtkPolyData *mesh);
+    void onInserted(gnomonCellComplex *cellcomplex);
+    void onInserted(gnomonCellGraph *cellgraph);
 
     void onInspectorSelected(QWidget *inspector);
 

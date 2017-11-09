@@ -70,7 +70,7 @@ private:
     gnomonActorMesh(const gnomonActorMesh&);
     void operator = (const gnomonActorMesh&);
 
-private:
+protected:
     class gnomonActorMeshPrivate *d;
 };
 

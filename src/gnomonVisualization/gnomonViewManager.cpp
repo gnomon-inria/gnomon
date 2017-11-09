@@ -14,11 +14,17 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorMesh.h"
+#include "gnomonActorMeshCellComplex.h"
+#include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorVolume.h"
+
 #include "gnomonViewManager.h"
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorViewWidget.h"
 #include "gnomonInspectorMain.h"
+
+#include <gnomonCellComplex.h>
+#include <gnomonCellGraph.h>
 
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
@@ -33,6 +39,8 @@ public:
 public:
     QHash<vtkPolyData *, gnomonActor *> meshes;
     QHash<vtkImageData *, gnomonActor *> volumes;
+    QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
+    QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
 };
 
 gnomonInspectorViewTree *gnomonViewManager::inspectorTree(void)
@@ -55,11 +63,6 @@ gnomonActor *gnomonViewManager::actor(vtkPolyData *mesh)
     return d->meshes.value(mesh, NULL);
 }
 
-gnomonActor *gnomonViewManager::actor(vtkImageData *volume)
-{
-    return d->volumes.value(volume, NULL);
-}
-
 gnomonActor *gnomonViewManager::insert(vtkPolyData *mesh)
 {
     gnomonActorMesh *actor = gnomonActorMesh::New();
@@ -70,6 +73,24 @@ gnomonActor *gnomonViewManager::insert(vtkPolyData *mesh)
     emit inserted(mesh);
 
     return actor;
+}
+
+void gnomonViewManager::remove(vtkPolyData *mesh)
+{
+    d->meshes.remove(mesh);
+
+    emit removed(mesh);
+}
+
+QList<vtkPolyData *> gnomonViewManager::meshes(void)
+{
+    return d->meshes.keys();
+}
+
+
+gnomonActor *gnomonViewManager::actor(vtkImageData *volume)
+{
+    return d->volumes.value(volume, NULL);
 }
 
 gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
@@ -86,13 +107,6 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     return actor;
 }
 
-void gnomonViewManager::remove(vtkPolyData *mesh)
-{
-    d->meshes.remove(mesh);
-
-    emit removed(mesh);
-}
-
 void gnomonViewManager::remove(vtkImageData *volume)
 {
     d->volumes.remove(volume);
@@ -100,23 +114,87 @@ void gnomonViewManager::remove(vtkImageData *volume)
     emit removed(volume);
 }
 
-QList<vtkPolyData *> gnomonViewManager::meshes(void)
-{
-    return d->meshes.keys();
-}
-
 QList<vtkImageData *> gnomonViewManager::volumes(void)
 {
     return d->volumes.keys();
 }
 
+
+gnomonActor *gnomonViewManager::actor(gnomonCellComplex *cellcomplex)
+{
+    return d->cellcomplexes.value(cellcomplex, NULL);
+}
+
+gnomonActor *gnomonViewManager::insert(gnomonCellComplex *cellcomplex)
+{
+    qDebug()<<"View Manager Cell Complex Create";
+    gnomonActorMeshCellComplex *actor = gnomonActorMeshCellComplex::New();
+    actor->setCellComplex(cellcomplex);
+
+    d->cellcomplexes.insert(cellcomplex, actor);
+    qDebug()<<"View Manager Cell Complex Emit";
+
+    emit inserted(cellcomplex);
+
+    return actor;
+}
+
+void gnomonViewManager::remove(gnomonCellComplex *cellcomplex)
+{
+    d->cellcomplexes.remove(cellcomplex);
+
+    emit removed(cellcomplex);
+}
+
+QList<gnomonCellComplex *> gnomonViewManager::cellcomplexes(void)
+{
+    return d->cellcomplexes.keys();
+}
+
+
+gnomonActor *gnomonViewManager::actor(gnomonCellGraph *cellgraph)
+{
+    return d->cellgraphs.value(cellgraph, NULL);
+}
+
+gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
+{
+    gnomonActorMeshCellGraph *actor = gnomonActorMeshCellGraph::New();
+    actor->setCellGraph(cellgraph);
+
+    d->cellgraphs.insert(cellgraph, actor);
+
+    emit inserted(cellgraph);
+
+    return actor;
+}
+
+void gnomonViewManager::remove(gnomonCellGraph *cellgraph)
+{
+    d->cellgraphs.remove(cellgraph);
+
+    emit removed(cellgraph);
+}
+
+QList<gnomonCellGraph *> gnomonViewManager::cellgraphs(void)
+{
+    return d->cellgraphs.keys();
+}
+
+
 void gnomonViewManager::clear(void)
 {
     qDeleteAll(d->meshes.values());
-    qDeleteAll(d->volumes.values());
-
     d->meshes.clear();
+
+    qDeleteAll(d->volumes.values());
     d->volumes.clear();
+
+    qDeleteAll(d->cellcomplexes.values());
+    d->cellcomplexes.clear();
+
+    qDeleteAll(d->cellgraphs.values());
+    d->cellgraphs.clear();
 }
 
 void gnomonViewManager::update(void)
