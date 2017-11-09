@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include <gnomonVisualizationExport.h>
 
 #include <vtkActor.h>
 #include <vtkPolyData.h>
@@ -26,7 +27,7 @@
 // gnomonActorMeshPrivate
 // /////////////////////////////////////////////////////////////////
 
-class gnomonActorMeshPrivate
+class GNOMONVISUALIZATION_EXPORT gnomonActorMeshPrivate
 {
 public:
     vtkSmartPointer<vtkPolyData> mesh;

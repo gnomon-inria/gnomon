@@ -93,6 +93,7 @@ void gnomonActorMesh::update(void)
 gnomonActorMesh::gnomonActorMesh(void) : gnomonActor(), d(new gnomonActorMeshPrivate)
 {
     d->mesh = Q_NULLPTR;
+    d->interactor = Q_NULLPTR;
 }
 
 gnomonActorMesh::~gnomonActorMesh(void)

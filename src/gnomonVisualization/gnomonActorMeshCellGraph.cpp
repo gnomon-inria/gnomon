@@ -27,6 +27,11 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
+#include <vtkDoubleArray.h>
+#include <vtkFloatArray.h>
+#include <vtkGlyph3D.h>
+#include <vtkCellData.h>
+#include <vtkPointData.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorMeshCellGraphPrivate
@@ -38,6 +43,7 @@ public:
     gnomonCellGraph *cellgraph; 
 
     vtkSmartPointer<vtkSphereSource> sphere;
+    vtkSmartPointer<vtkActor> point_actor;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -59,12 +65,58 @@ void gnomonActorMeshCellGraph::update(void)
     if(!dd->cellgraph)
         return;
 
-    qDebug()<<d->interactor;
-
     if(!d->interactor)
         return;
 
-    qDebug()<<"--> Mesh Cell Graph Update";
+    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkCellArray> polydataLines = vtkSmartPointer<vtkCellArray>::New();
+
+    vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
+
+    QMap<long, QVariant> positions_x = dd->cellgraph->vertexProperty("barycenter_x");
+    QMap<long, QVariant> positions_y = dd->cellgraph->vertexProperty("barycenter_y");
+    QMap<long, QVariant> positions_z = dd->cellgraph->vertexProperty("barycenter_z");
+
+    QMap<long,long> vertexPoint;
+
+    QList<long> vertices = dd->cellgraph->vertexIds();
+
+    for (const auto& vertexId : vertices) {
+        long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
+        vertexPoint[vertexId] = vtkId;
+        polydataPointData->InsertValue(vtkId,vertexId);
+    }
+
+    QList<long> edges = dd->cellgraph->edgeIds();
+
+    for (const auto& edgeId : edges) {
+        QList<long> edgeVertices = dd->cellgraph->edgeVertexIds(edgeId);
+        long vtkId = polydataLines->InsertNextCell(edgeVertices.size());
+        for (const auto& v : edgeVertices) {
+            polydataLines->InsertCellPoint(vertexPoint[v]);
+        }
+    }
+
+    if (!d->mesh) {
+        d->mesh = vtkSmartPointer<vtkPolyData>::New();
+        d->mesh->SetPoints(polydataPoints);
+        d->mesh->SetLines(polydataLines);
+    }
+
+    if (!d->mapper) {
+        d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        d->mapper->SetInputData(d->mesh);
+    }
+
+    if(!d->actor) {
+        d->actor = vtkSmartPointer<vtkActor>::New();
+        d->actor->SetMapper(d->mapper);
+        this->AddPart(d->actor);
+    }
+
+    vtkSmartPointer<vtkPolyData> pointPolydata = vtkSmartPointer<vtkPolyData>::New();
+    pointPolydata->SetPoints(polydataPoints);
+    pointPolydata->GetPointData()->SetScalars(polydataPointData);
 
     if(!dd->sphere) {
         dd->sphere = vtkSmartPointer<vtkSphereSource>::New();
@@ -74,20 +126,21 @@ void gnomonActorMeshCellGraph::update(void)
         dd->sphere->Update();
     }
 
-    qDebug()<<"--> Mesh Cell Graph Sphere";
+    vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
+    glyph->SetScaleModeToDataScalingOff();
+    glyph->SetColorModeToColorByScalar();
+    glyph->SetSourceData(dd->sphere->GetOutput());
+    glyph->SetInputData(pointPolydata);
+    glyph->Update();
 
-    if(!d->mapper) {
-        d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        d->mapper->SetInputData(dd->sphere->GetOutput());
-    }
+    vtkSmartPointer<vtkPolyDataMapper> pointMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    pointMapper->SetInputData(glyph->GetOutput());
+    pointMapper->SetScalarRange(0, dd->cellgraph->vertexCount()-1);
 
-    qDebug()<<"--> Mesh Cell Graph Mapper";
-
-    if(!d->actor) {
-        d->actor = vtkSmartPointer<vtkActor>::New();
-        d->actor->SetMapper(d->mapper);
-
-        this->AddPart(d->actor);
+    if(!dd->point_actor) {
+        dd->point_actor = vtkSmartPointer<vtkActor>::New();
+        dd->point_actor ->SetMapper(pointMapper);
+        this->AddPart(dd->point_actor);
     }
 
     qDebug()<<"--> Mesh Cell Graph Actor";
@@ -95,20 +148,20 @@ void gnomonActorMeshCellGraph::update(void)
     d->interactor->Render();
 }
 
-gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), d(new gnomonActorMeshPrivate), dd(new gnomonActorMeshCellGraphPrivate)
+gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellGraphPrivate)
 {
     qDebug()<<"--> Actor Cell Graph Create";
     dd->cellgraph = Q_NULLPTR;
-    d->mesh = Q_NULLPTR;
+    // d->mesh = Q_NULLPTR;
 }
 
 gnomonActorMeshCellGraph::~gnomonActorMeshCellGraph(void)
 {
     delete dd;
-    delete d;
+    // delete d;
 
     dd = NULL;
-    d = NULL;
+    // d = NULL;
 }
 
 //

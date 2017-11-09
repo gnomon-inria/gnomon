@@ -44,9 +44,6 @@ private:
     gnomonActorMeshCellGraph(const gnomonActorMeshCellGraph&);
     void operator = (const gnomonActorMeshCellGraph&);
 
-protected:
-    class gnomonActorMeshPrivate *d;
-
 private:
 	class gnomonActorMeshCellGraphPrivate *dd;
 };
