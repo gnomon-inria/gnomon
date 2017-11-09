@@ -216,29 +216,12 @@ void gnomonViewManager::onVolumeSelected(vtkImageData *volume)
     d->inspector_widget->setActor(actor(volume), true);
 
     emit selected(d->inspector_widget);
-
-    //     numVolumeActor *actor = dynamic_cast<numVolumeActor *>(d->view->manager()->actor(volume));
-
-    //     if(actor) {
-    //         d->clut->setVolume(actor->vol());
-    //         d->clut->setVolumeProperty(actor->volumeProperty());
-    //         d->clut->setMapper(actor->mapper());
-    //         d->clut->setColorTransferFunction(actor->colorTransferFunction());
-    //         d->clut->setOpacityTransferFunction(actor->opacityTransferFunction());
-    //         d->clut->setColorAndOpacityTransferFunction(actor->colorTransferFunction(), actor->opacityTransferFunction());
-    //     }
-    // }
+    //to implement
 }
 
 void gnomonViewManager::onMeshSelected(vtkPolyData *mesh)
 {
-    // if(!d->view)
-    //     return;
-
-    // this->setMesh(mesh);
-
-    // if(numActor *actor = d->view->manager()->actor(mesh))
-    //     d->widget->setActor(actor, actor->isVisible());
+    //to implement
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -249,10 +232,11 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
 {
     d->inspector_tree = new gnomonInspectorViewTree();
     d->inspector_widget = new gnomonInspectorViewWidget();
-    d->inspector_main = new gnomonInspectorMain();
 
+    d->inspector_main = new gnomonInspectorMain();
     d->inspector_main->addWidget(d->inspector_tree);
     d->inspector_main->addWidget(d->inspector_widget);
+
     connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
     connect(d->inspector_tree, SIGNAL(selected(vtkImageData *)), this, SLOT(onVolumeSelected(vtkImageData *)));
 }
