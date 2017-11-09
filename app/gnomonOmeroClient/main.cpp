@@ -42,13 +42,13 @@ int main(int argc, char *argv[])
 
             for(int j=0 ; j< allDataset.size(); ++j) {
                 QList<gnomonOmeroImagePtr> allImages = allDataset.at(j)->images();
-                qWarning() << "dataset" << i
+                qWarning() << "dataset" << j
                 << ", id=" << allDataset.at(j)->id()
                 << ": found " << allDataset.size() << "images(s)"
                 << ", dataset Name " << allDataset.at(j)->name();
 
                 for(int k=0 ; k< allImages.size(); ++k) {
-                  qWarning() << "images" << i
+                  qWarning() << "images" << k
                   << ", id=" << allImages.at(k)->id()
                   << ", image Name " << allImages.at(k)->name();
                   qWarning() << ", details " <<allImages.at(k)->details();
