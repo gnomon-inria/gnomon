@@ -38,6 +38,11 @@ gnomonInspectorViewTree *gnomonViewManager::inspectorTree(void)
     return d->inspector_tree;
 }
 
+gnomonInspectorViewWidget *gnomonViewManager::inspectorWidget(void)
+{
+    return d->inspector_widget;
+}
+
 gnomonActor *gnomonViewManager::actor(vtkPolyData *mesh)
 {
     return d->meshes.value(mesh, NULL);
@@ -123,15 +128,9 @@ void gnomonViewManager::update(void)
 // ///////////////////////////////////////////////////////////////////
 void gnomonViewManager::onVolumeSelected(vtkImageData *volume)
 {
-    // this->setVolume(volume);
+    d->inspector_widget->setActor(actor(volume), true);
 
-    // if(numActor *actor = d->view->manager()->actor(volume))
-    //     d->widget->setActor(actor, actor->isVisible());
-
-    // if(!d->view)
-    //     return;
-
-    // if (d->clut) {
+    emit selected(d->inspector_widget);
 
     //     numVolumeActor *actor = dynamic_cast<numVolumeActor *>(d->view->manager()->actor(volume));
 

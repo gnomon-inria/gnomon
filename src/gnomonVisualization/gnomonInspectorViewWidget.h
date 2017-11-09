@@ -18,13 +18,20 @@
 
 #include <QStackedWidget>
 
+class gnomonActor;
+class gnomonInspectorViewWidgetPrivate;
+
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewWidget : public QStackedWidget {
     Q_OBJECT
  public:
-    gnomonInspectorViewWidget(){};
-    ~gnomonInspectorViewWidget(){};
+    gnomonInspectorViewWidget();
+    ~gnomonInspectorViewWidget();
 
+ public slots:
+    void setActor(gnomonActor *actor, bool enabled);
 
+ public:
+    gnomonInspectorViewWidgetPrivate *d;
 };
 
 //

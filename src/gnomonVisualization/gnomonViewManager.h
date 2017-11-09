@@ -17,6 +17,7 @@
 #include "gnomonVisualizationExport.h"
 
 #include <QtCore>
+#include <QWidget>
 
 class gnomonActor;
 class gnomonActorMesh;
@@ -26,6 +27,9 @@ class vtkImageData;
 class vtkPolyData;
 
 class gnomonInspectorViewTree;
+class gnomonInspectorViewWidget;
+
+class QWidget;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
 {
@@ -44,6 +48,7 @@ public:
     void remove(vtkImageData *volume);
 
     gnomonInspectorViewTree *inspectorTree(void);
+    gnomonInspectorViewWidget *inspectorWidget(void);
 
 public:
     QList<vtkPolyData *> meshes(void);
@@ -56,6 +61,9 @@ signals:
 signals:
     void removed(vtkPolyData *mesh);
     void removed(vtkImageData *volume);
+
+ signals:
+    void selected(QWidget *inspector);
 
 public slots:
     void clear(void);

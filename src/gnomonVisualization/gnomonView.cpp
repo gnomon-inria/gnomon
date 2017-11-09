@@ -17,6 +17,7 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorMesh.h"
 
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
@@ -42,8 +43,9 @@
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
-
 #include <QVTKOpenGLWidget.h>
+
+#include <QWidget>
 
 #include "gnomonInspectorViewTree.h"
 
@@ -53,6 +55,7 @@ public:
     vtkGenericOpenGLRenderWindow *window;
     QVTKOpenGLWidget *widget;
     vtkRenderer *renderer;
+    QWidget *current_inspector;
 
 public:
     gnomonViewManager *manager;
@@ -66,6 +69,8 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     gnomonInspectorViewTree *inspector= d->manager->inspectorTree();
     inspector->setView(this);
+
+    d->current_inspector = d->manager->inspectorTree();
 
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(0.2, 0.2, 0.2);
@@ -85,6 +90,8 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
     connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
+
+    connect(d->manager, SIGNAL(selected(QWidget *)), this, SLOT(onInspectorSelected(QWidget *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -109,7 +116,7 @@ QWidget *gnomonView::widget(void)
 
 QWidget *gnomonView::inspector()
 {
-    return d->manager->inspectorTree();
+    return d->current_inspector;
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)
@@ -234,6 +241,23 @@ void gnomonView::onInserted(vtkImageData *image)
     actor->setVolume(image);
 
     d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(vtkPolyData *mesh)
+{
+    gnomonActorMesh *actor = dynamic_cast<gnomonActorMesh *>(d->manager->actor(mesh));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setMesh(mesh);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInspectorSelected(QWidget *inspector)
+{
+    qWarning() << Q_FUNC_INFO;
+    d->current_inspector = inspector;
+    d->current_inspector->show();
+    this->update();
 }
 
 //

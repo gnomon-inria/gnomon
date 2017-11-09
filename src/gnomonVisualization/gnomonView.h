@@ -24,6 +24,7 @@
 #include <gnomonVisualizationExport.h>
 
 class vtkImageData;
+class vtkPolyData;
 
 class gnomonCellComplex;
 class gnomonCellGraph;
@@ -49,11 +50,14 @@ public:
     gnomonViewManager *manager(void);
 
 public:
-    QWidget *widget(void);
-    QWidget *inspector(void);
+    QWidget *widget(void) override;
+    QWidget *inspector(void) override;
 
 public slots:
     void onInserted(vtkImageData *image);
+    void onInserted(vtkPolyData *mesh);
+
+    void onInspectorSelected(QWidget *inspector);
 
 private:
     gnomonViewPrivate *d;
