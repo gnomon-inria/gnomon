@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonInspectorVolume.h"
+#include "gnomonClutEditor.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorVolumePrivate
@@ -21,7 +22,7 @@
 class gnomonInspectorVolumePrivate
 {
 public:
-
+    gnomonClutEditor *editor;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -30,7 +31,12 @@ public:
 
 gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspector(), d(new gnomonInspectorVolumePrivate)
 {
+    d->editor = new gnomonClutEditor(this);
 
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(d->editor);
 }
 
 // ///////////////////////////////////////////////////////////////////

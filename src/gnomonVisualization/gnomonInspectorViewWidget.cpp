@@ -21,7 +21,8 @@ public:
 // gnomonInspectorViewWidget
 // ///////////////////////////////////////////////////////////////////
 
-gnomonInspectorViewWidget::gnomonInspectorViewWidget() : d(new gnomonInspectorViewWidgetPrivate){
+gnomonInspectorViewWidget::gnomonInspectorViewWidget() : d(new gnomonInspectorViewWidgetPrivate)
+{
     d->dummy = new QWidget(this);
 }
 
@@ -45,11 +46,11 @@ void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
 
     QWidget *widget = nullptr;
 
-    if(gnomonActorMesh *mesh_actor = dynamic_cast<gnomonActorMesh *>(actor)) {
+    if (gnomonActorMesh *mesh_actor = dynamic_cast<gnomonActorMesh *>(actor)) {
 
     }
 
-    if(gnomonActor *volume_actor = dynamic_cast<gnomonActorVolume *>(actor)) {
+    if (gnomonActor *volume_actor = dynamic_cast<gnomonActorVolume *>(actor)) {
 
     }
 }

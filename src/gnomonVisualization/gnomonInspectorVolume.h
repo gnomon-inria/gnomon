@@ -20,6 +20,8 @@
 
 #include <gnomonVisualizationExport.h>
 
+class gnomonClutEditor;
+
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public gnomonInspector
 {
 protected:
@@ -29,6 +31,9 @@ protected:
 private:
     gnomonInspectorVolume(const gnomonInspectorVolume&) = delete;
     void operator = (const gnomonInspectorVolume&) = delete;
+
+public:
+    gnomonClutEditor *editor(void) const;
 
  private:
     class gnomonInspectorVolumePrivate *d;
