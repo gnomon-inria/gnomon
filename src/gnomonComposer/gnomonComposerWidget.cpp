@@ -158,7 +158,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // -- Menus
 
-    QMenuBar *menu_bar = new QMenuBar(qobject_cast<QMainWindow *>(this->parentWidget()));
+    QMenuBar *menu_bar = new QMenuBar(0);
 
     d->recent_compositions_menu = new dtkRecentFilesMenu("Open recent...", this);
 
