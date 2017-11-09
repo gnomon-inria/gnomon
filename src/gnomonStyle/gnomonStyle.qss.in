@@ -1,3 +1,11 @@
+QLineEdit {
+    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
+    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 4px;
+}
+
 QFrame {
     color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
     background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
@@ -8,10 +16,24 @@ QPlainTextEdit {
     background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
 }
 
-QPushButton {
+QPushButton, QToolButton {
     color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
     background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
 
     border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
     border-radius: 4px;
 }
+
+QToolBar::left {
+    background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
+}
+
+/* QToolBar::handle { */
+/*     background: none; */
+/*     image: none; */
+/* } */
+
+/* QToolBar QToolButton { */
+/*     background: none; */
+/*     border: none; */
+/* } */

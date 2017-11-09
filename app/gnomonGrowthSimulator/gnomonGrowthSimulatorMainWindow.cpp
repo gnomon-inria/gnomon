@@ -107,7 +107,11 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->editors->addTab(d->composer, "Composer");
     d->editors->addTab(d->editor_splitter, "Python");
 
-    d->tool_bar = this->addToolBar("Main");
+    d->tool_bar = new QToolBar(this);
+    d->tool_bar->setOrientation(Qt::Vertical);
+    d->tool_bar->setAllowedAreas(Qt::LeftToolBarArea);
+
+    this->addToolBar(Qt::LeftToolBarArea, d->tool_bar);
 
     d->open_action = d->tool_bar->addAction(d->font_awesome->icon(fa::folderopen), "Open", this, [=] () {
         if (d->editors->currentIndex() == 0)
