@@ -13,6 +13,16 @@
 // Code:
 
 #include "gnomonView.h"
+#include "gnomonViewManager.h"
+
+#include "gnomonActor.h"
+#include "gnomonActorVolume.h"
+#include "gnomonActorMesh.h"
+#include "gnomonActorMeshCellComplex.h"
+#include "gnomonActorMeshCellGraph.h"
+
+#include "gnomonCellComplex.h"
+#include "gnomonCellGraph.h"
 
 #include <dtkWidgets>
 
@@ -22,9 +32,9 @@
 #include <vtkDoubleArray.h>
 #include <vtkFloatArray.h>
 #include <vtkGlyph3D.h>
+#include <vtkImageData.h>
 #include <vtkIntArray.h>
 #include <vtkCellData.h>
-#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -34,31 +44,52 @@
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
-
 #include <QVTKOpenGLWidget.h>
 
-#include "gnomonCellComplex.h"
-#include "gnomonCellGraph.h"
+// #include <vtkGenericOpenGLRenderWindow.h>
+// #include <QVTKOpenGLWidget.h>
+#include <vtkRenderWindow.h>
+#include <QVTKWidget.h>
+
+#include <QWidget>
+
+#include "gnomonInspectorViewTree.h"
+#include "gnomonInspectorMain.h"
 
 class gnomonViewPrivate
 {
 public:
-    vtkGenericOpenGLRenderWindow *window;
-    QVTKOpenGLWidget *widget;
+    // vtkGenericOpenGLRenderWindow *window;
+    // QVTKOpenGLWidget *widget;
+    vtkRenderWindow *window;
+    QVTKWidget *widget;
     vtkRenderer *renderer;
+    QWidget *current_inspector;
+
+public:
+    gnomonViewManager *manager;
 };
 
 gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 {
     d = new gnomonViewPrivate;
 
-    d->renderer = vtkRenderer::New();
-    d->renderer->SetBackground(1, 1, 1);
+    d->manager = new gnomonViewManager;
 
-    d->window = vtkGenericOpenGLRenderWindow::New();
+    gnomonInspectorViewTree *inspector= d->manager->inspectorTree();
+    inspector->setView(this);
+
+    d->current_inspector = d->manager->inspectorTree();
+
+    d->renderer = vtkRenderer::New();
+    d->renderer->SetBackground(0.2, 0.2, 0.2);
+
+    // d->window = vtkGenericOpenGLRenderWindow::New();
+    d->window = vtkRenderWindow::New();
     d->window->AddRenderer(d->renderer);
 
-    d->widget = new QVTKOpenGLWidget(this);
+    // d->widget = new QVTKOpenGLWidget(this);
+    d->widget = new QVTKWidget(this);
     d->widget->SetRenderWindow(d->window);
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -67,6 +98,14 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     layout->setContentsMargins(0, 0, 0, 0);
 
     this->setLayout(layout);
+
+    connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
+
+    connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
+    connect(d->manager, SIGNAL(selected(QWidget *)), this, SLOT(onInspectorSelected(QWidget *)));
+
+    connect(d->manager, SIGNAL(inserted(gnomonCellComplex *)), this, SLOT(onInserted(gnomonCellComplex *)));
+    connect(d->manager, SIGNAL(inserted(gnomonCellGraph *)), this, SLOT(onInserted(gnomonCellGraph *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -74,13 +113,24 @@ gnomonView::~gnomonView(void)
     d->renderer->Delete();
     d->window->Delete();
 
+    delete d->manager;
     delete d->widget;
     delete d;
+}
+
+gnomonViewManager *gnomonView::manager(void)
+{
+    return d->manager;
 }
 
 QWidget *gnomonView::widget(void)
 {
     return d->widget;
+}
+
+QWidget *gnomonView::inspector()
+{
+    return d->manager->inspectorMain();
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)
@@ -196,6 +246,49 @@ void gnomonView::addCellGraph(gnomonCellGraph &graph)
     d->renderer->AddActor(pointActor);
 
     return;
+}
+
+void gnomonView::onInserted(vtkImageData *image)
+{
+    gnomonActorVolume *actor = dynamic_cast<gnomonActorVolume *>(d->manager->actor(image));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setVolume(image);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(vtkPolyData *mesh)
+{
+    gnomonActorMesh *actor = dynamic_cast<gnomonActorMesh *>(d->manager->actor(mesh));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setMesh(mesh);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(gnomonCellGraph *cellgraph)
+{
+    gnomonActorMeshCellGraph *actor = dynamic_cast<gnomonActorMeshCellGraph *>(d->manager->actor(cellgraph));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setCellGraph(cellgraph);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(gnomonCellComplex *cellcomplex)
+{
+    gnomonActorMeshCellComplex *actor = dynamic_cast<gnomonActorMeshCellComplex *>(d->manager->actor(cellcomplex));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setCellComplex(cellcomplex);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInspectorSelected(QWidget *inspector)
+{
+    d->current_inspector = inspector;
+    d->current_inspector->show();
+    this->update();
 }
 
 //

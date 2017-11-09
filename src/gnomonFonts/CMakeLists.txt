@@ -20,13 +20,16 @@ project(gnomonFonts)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonFonts
-  gnomonFontAwesome.h)
+  gnomonFontAwesome.h
+  gnomonFontSourceCodePro.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonFontAwesome.cpp)
+  gnomonFontAwesome.cpp
+  gnomonFontSourceCodePro.cpp)
 
 set(${PROJECT_NAME}_SOURCES_RCC
-  gnomonFontAwesome.qrc)
+  gnomonFontAwesome.qrc
+  gnomonFontSourceCodePro.qrc)
 
 ## #################################################################
 ## Build rules

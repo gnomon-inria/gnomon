@@ -29,11 +29,17 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposerWidget
   gnomonComposerWidget_p.h
   gnomonComposerWidget.h
+  gnomonCellGraphFromImageNode.h
+  gnomonCellComplexFromImageNode.h
+  gnomonCellComplexReaderNode.h
   gnomonTissueGrowthModelNode.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeView.cpp
   gnomonComposerWidget.cpp
+  gnomonCellGraphFromImageNode.cpp
+  gnomonCellComplexFromImageNode.cpp
+  gnomonCellComplexReaderNode.cpp
   gnomonTissueGrowthModelNode.cpp)
 
 set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
@@ -61,6 +67,7 @@ qt5_use_modules(${PROJECT_NAME} Xml)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkComposer)
+target_link_libraries(${PROJECT_NAME} dtkImaging)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
 target_link_libraries(${PROJECT_NAME} gnomonVisualization)

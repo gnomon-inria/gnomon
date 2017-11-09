@@ -50,7 +50,7 @@ public:
     QTabWidget *editors;
 
 public:
-    dtkSplitter *editor_splitter;
+    QSplitter *editor_splitter;
 
 public:
     QToolBar *tool_bar;
@@ -61,21 +61,32 @@ public:
     QAction *save_as_action;
 
 public:
-    gnomonFontAwesome *font;
+    gnomonFontAwesome *font_awesome;
+    gnomonFontSourceCodePro *font_source_code_pro;
 };
 
 gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     d = new gnomonGrowthSimulatorMainWindowPrivate;
 
-    d->font = new gnomonFontAwesome(this);
-    d->font->initFontAwesome();
+    gnomonCoreSettings settings;
+    settings.beginGroup("main_window");
+    this->move(settings.value("position").toPoint());
+    this->resize(settings.value("size").toSize());
+    settings.endGroup();
+
+    d->font_awesome = new gnomonFontAwesome(this);
+    d->font_awesome->initFontAwesome();
+
+    d->font_source_code_pro = new gnomonFontSourceCodePro(this);
+    d->font_source_code_pro->initFontSourceCodePro();
 
     d->view_manager = new dtkViewManager(this);
 
     d->composer = new gnomonComposerWidget(this);
 
     d->editor = new gnomonCodeEditor;
+    d->editor->setFont(d->font_source_code_pro->font(12));
 
     d->interpreter_widget = new dtkInterpreter;
 
@@ -85,7 +96,8 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->interpreter_widget->registerInterpreter(d->interpreter);
 #endif
 
-    d->editor_splitter = new dtkSplitter(this);
+    d->editor_splitter = new QSplitter(this);
+    d->editor_splitter->setHandleWidth(1);
     d->editor_splitter->addWidget(d->editor);
     d->editor_splitter->addWidget(d->interpreter_widget);
 
@@ -96,38 +108,46 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
 
     d->tool_bar = this->addToolBar("Main");
 
-    d->open_action = d->tool_bar->addAction(d->font->icon(fa::folderopen), "Open", this, [=] () {
+    d->open_action = d->tool_bar->addAction(d->font_awesome->icon(fa::folderopen), "Open", this, [=] () {
         if (d->editors->currentIndex() == 0)
             d->composer->compositionOpen();
         else
             d->editor->openScript();
     });
 
-    d->run_action = d->tool_bar->addAction(d->font->icon(fa::play), "Run", this, [=] () {
+    d->run_action = d->tool_bar->addAction(d->font_awesome->icon(fa::play), "Run", this, [=] () {
         if (d->editors->currentIndex() == 0) {
             d->composer->composerWidget()->run();
         } else {
             int stat;
-            d->interpreter_widget->output(d->interpreter->interpret(d->editor->toPlainText(), &stat));
+            if (d->interpreter_widget)
+                d->interpreter_widget->output(d->interpreter->interpret(d->editor->toPlainText(), &stat));
+            else
+                d->interpreter->interpret(d->editor->toPlainText(), &stat);
         }
     });
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(d->view_manager);
-    layout->addWidget(d->editors);
+    d->run_action = d->tool_bar->addAction(d->font_awesome->icon(fa::save), "Save", this, [=] () {
+            if (d->editors->currentIndex() == 0) {
+                d->composer->compositionSave();
+            } else {
+                qWarning() << "not implemented";
+            }
+    });
+    d->run_action = d->tool_bar->addAction(d->font_awesome->icon(fa::pencil), "Save As", this, [=] () {
+            if (d->editors->currentIndex() == 0) {
+                d->composer->compositionSaveAs();
+            } else {
+                qWarning() << "not implemented";
+            }
+    });
 
-    QWidget *central = new QWidget(this);
-    central->setLayout(layout);
-
-    gnomonCoreSettings settings;
-    settings.beginGroup("main_window");
-    this->move(settings.value("position").toPoint());
-    this->resize(settings.value("size").toSize());
-    settings.endGroup();
+    QSplitter *central = new QSplitter(Qt::Vertical, this);
+    central->addWidget(d->view_manager);
+    central->addWidget(d->editors);
 
     this->setCentralWidget(central);
-    this->setWindowTitle("Tissue Growth Simulator");
+    this->setWindowTitle("gnomon Growth Simulator");
 
 #if defined(Q_OS_MAC)
     this->initialize();
@@ -148,8 +168,10 @@ gnomonGrowthSimulatorMainWindow::~gnomonGrowthSimulatorMainWindow(void)
 void gnomonGrowthSimulatorMainWindow::addEditor(QWidget *editor)
 {
     d->interpreter_widget->hide();
+    d->interpreter_widget->deleteLater();
+    d->interpreter_widget = Q_NULLPTR;
 
-    d->editor_splitter->addWidget(editor);
+     d->editor_splitter->addWidget(editor);
 }
 
 //

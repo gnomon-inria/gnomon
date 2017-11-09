@@ -14,30 +14,34 @@
 
 #include <QtCore>
 #include <QtDebug>
+#include <QtOpenGL>
 #include <QtWidgets>
 
-#include <QSurfaceFormat>
+#include <dtkLog>
+#include <dtkComposer>
+#include <dtkWidgets>
 
+#include <dtkImaging>
+
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <QVTKOpenGLWidget.h>
 
-#include <dtkWidgets/dtkApplication.h>
-#include <dtkComposer/dtkComposer.h>
-#include <dtkComposer/dtkComposerExtension.h>
-
 #include "gnomonGrowthSimulatorMainWindow.h"
+#include <vtkGenericOpenGLRenderWindow.h>
 
 int main(int argc, char *argv[])
 {
+    vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
     dtkApplication *application = dtkApplication::create(argc, argv);
-    application->setApplicationName("TissueGrowthSimulator");
+    application->setApplicationName("gnomon Growth Simulator");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
     application->setApplicationVersion("0.1.0");
 
     QCommandLineParser *parser = application->parser();
-    parser->setApplicationDescription("Tissue Growth Simulator application.");
+    parser->setApplicationDescription("gnomon Growth Simulator application.");
 
     application->initialize();
 
@@ -48,11 +52,24 @@ int main(int argc, char *argv[])
     }
 
     // ///////////////////////////////////////////////////////////////////
+    // Prepare logger
+    // ///////////////////////////////////////////////////////////////////
+
+    dtkLogger::instance().setLevel(dtkLog::Level::Info);
+
+    // ///////////////////////////////////////////////////////////////////
     // Prepare composer
     // ///////////////////////////////////////////////////////////////////
 
     dtkComposer::node::initialize();
     dtkComposer::extension::initialize();
+
+    // ///////////////////////////////////////////////////////////////////
+    // Prepare layers
+    // ///////////////////////////////////////////////////////////////////
+
+    dtkImaging::setVerboseLoading(false);
+    dtkImaging::initialize();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window

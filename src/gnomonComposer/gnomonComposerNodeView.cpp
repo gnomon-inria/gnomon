@@ -19,6 +19,10 @@
 #include <dtkWidgets>
 #include <dtkLog>
 
+#include <dtkImaging>
+#include <gnomonCellComplex>
+#include <gnomonCellGraph>
+
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerNodeViewPrivate
 // /////////////////////////////////////////////////////////////////
@@ -26,8 +30,15 @@
 class gnomonComposerNodeViewPrivate
 {
 public:
-    gnomonView *view;
+    static gnomonView *view;
+
+public:
+    dtkComposerTransmitterReceiver<dtkImage *> image_receiver;
+    dtkComposerTransmitterReceiver<gnomonCellComplex *> cellcomplex_receiver;
+    dtkComposerTransmitterReceiver<gnomonCellGraph *> cellgraph_receiver;
 };
+
+gnomonView *gnomonComposerNodeViewPrivate::view = Q_NULLPTR;
 
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerNodeView
@@ -36,7 +47,10 @@ public:
 gnomonComposerNodeView::gnomonComposerNodeView(void) : dtkComposerNodeLeaf()
 {
     d = new gnomonComposerNodeViewPrivate;
-    d->view = Q_NULLPTR;
+
+    this->appendReceiver(&(d->image_receiver));
+    this->appendReceiver(&(d->cellcomplex_receiver));
+    this->appendReceiver(&(d->cellgraph_receiver));
 }
 
 gnomonComposerNodeView::~gnomonComposerNodeView(void)
@@ -47,12 +61,45 @@ gnomonComposerNodeView::~gnomonComposerNodeView(void)
 
 void gnomonComposerNodeView::run(void)
 {
-    if(d->view)
-        return;
+    if(!d->view) {
+        d->view = new gnomonView;
 
-    d->view = new gnomonView;
+        dtkViewController::instance()->insert(d->view);
+    }
 
-    dtkViewController::instance()->insert(d->view);
+    if(!d->image_receiver.isEmpty()) {
+
+        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+
+        if(!converter)
+            return;
+
+        dtkImage *image = d->image_receiver.data();
+
+        converter->setInput(image);
+
+        if(!converter->convert())
+            return;
+
+        vtkImageData *data = static_cast<vtkImageData *>(converter->output());
+
+        d->view->manager()->insert(data);
+    }
+
+    if (!d->cellcomplex_receiver.isEmpty()) {
+
+        gnomonCellComplex *data = d->cellcomplex_receiver.data();
+        qDebug()<<"Node Get Cell Complex";
+        
+        d->view->manager()->insert(data);
+    }
+
+    if (!d->cellgraph_receiver.isEmpty()) {
+
+        gnomonCellGraph *data = d->cellgraph_receiver.data();
+        
+        d->view->manager()->insert(data);
+    }
 }
 
 //

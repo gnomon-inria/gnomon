@@ -17,6 +17,7 @@
 ## #################################################################
 
 add_subdirectory(gnomonCore)
+add_subdirectory(gnomonStyle)
 add_subdirectory(gnomonFonts)
 add_subdirectory(gnomonVisualization)
 add_subdirectory(gnomonWidgets)
@@ -36,6 +37,7 @@ endif(DTK_BUILD_COMPOSER)
 set(GNOMON_TARGETS)
 
 set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonCore)
+set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonStyle)
 set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonFonts)
 set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonVisualization)
 set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonWidgets)

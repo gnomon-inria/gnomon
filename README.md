@@ -1,8 +1,30 @@
 # Installation
 
-## Prerequisites stuff
-
 For sake of clarity, let's consider that all the programs are installed under `$HOME/Development` folder.
+
+
+## Pre-requisites stuff
+
+### Using Conda environment:
+If you want to use a Conda environment, here named `gnomon` (or a VirtualEnv), create it using the following recipe (for VirtualEnv install dependencies):
+``` yml
+name: gnomon
+channels:
+  - defaults
+dependencies:
+  - python=2.7
+  - ipython-qtconsole
+  - jinja2
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - zeroc-ice
+```
+
+Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
+
+Pre-requisites might be installed outside the environment.
 
 ### OpenGL Stuff (at least for ubuntu)
 
@@ -12,11 +34,12 @@ sudo apt install mesa-common-dev
 ```
 
 ### MacOS config
-
+???
 
 ### CMake 3.9 version
 
-Uninstall previous version if older. Check that `libncurses5-dev` or equivalent is installed, then do the following:
+Uninstall previous version if older.
+Check that `libncurses5-dev` or equivalent is installed, then do the following:
 
 ``` shell
 cd $HOME/Development
@@ -31,13 +54,16 @@ sudo updatedb
 
 ### Qt5 installation on ubuntu
 
+Download and install the latest release of Qt5 (here 5.9.2):
 ``` shell
 cd $HOME/Development
 wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-chmod +x qt-unified-linux-x64-3.0.1-online.run
+chmod +x qt-unified-linux-x64-online.run
+./qt-unified-linux-x64-online.run
 ```
 
-In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt. In this folder, one has to create a conf file for qtchooser as follows:
+In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt.
+In this folder, one has to create a conf file for qtchooser as follows:
 
 ``` shell
 cd $HOME/Development/Qt
@@ -45,7 +71,7 @@ echo "$HOME/Development/Qt/5.9.2/gcc_64/bin
 $HOME/Development/Qt/5.9.2/gcc_64" > qt592.conf
 ```
 
-In the bashrc file, one can add the following lines:
+To enable Qt5 and define environment variables, add the following lines to the `~/.bashrc` file:
 
 ``` shell
 ## #################################################################
@@ -66,36 +92,104 @@ export Qt5SerialBus_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5SerialBus'
 export Qt5Network_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Network'
 ```
 
-It remains to set this config as the default one for qtchooser. One has to create as sudoer a symbolink link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
+It remains to set this config as the default one for qtchooser.
+One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
 
+### Qt5 wrapping
+
+#### Qt objects within Python environnement using sip.
+
+Uninstall already existing version of sip if its version is less than 4.19 ("sip -V" to check the version), otherwise skip to PyQt5 installation.
+Since the latest sip version of some packages managers is not up to date with the latest PyQt5, you can install them by hand from the sources.
+
+Dowload and install sip :
+``` shell
+cd $HOME/Development
+wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.5/sip-4.19.5.tar.gz
+tar -zxvf sip-4.19.5.tar.gz
+cd sip-4.19.5
+python2.7 configure.py
+sudo make install
+```
+
+Make sure that the folder containing the qmake executable of the Qt librairies you have installed is the only folder containing a qmake executable, namely "$HOME/Development/Qt/5.9.2/gcc_64/bin". You can prepend it to your PATH, modify your .bashrc by adding : PATH=$HOME/Development/Qt/5.9.2/gcc_64/bin:$PATH to it.
+
+Download and install PyQt5 :
+``` shell
+cd $HOME/Development
+wget https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.9.1/PyQt5_gpl-5.9.1.tar.gz
+tar -zxvf PyQt5_gpl-5.9.1.tar.gz
+cd PyQt5_gpl-5.9.1
+python2.7 configure.py
+sudo make install
+```
+
+#### Qt objects within Python environnement using SWIG.
+
+Install swig development packages with RPM.
 
 ### VTK8 installation
 
+Starts by downloading the sources for VTK8 (here 8.0.1):
 ``` shell
 cd $HOME/Development
 wget http://www.vtk.org/files/release/8.0/VTK-8.0.1.tar.gz
+```
+
+Unzip and create the `build` directory:
+``` shell
 tar -zxvf VTK-8.0.1.tar.gz
 cd VTK-8.0.1/
 mkdir build
 cd build
+```
+
+Compile after defining `cmake` options using arguments parsing (`cmake` options can also be defined using `ccmake ..` to access CMake curse interface):
+``` shell
 cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
 make -j4
 ```
 
+### Morpheme 'vt' installation
+<!-- Why not use the one packaged with timagetk ?! -->
 
-### Vt installation
-
+Start by cloning the Morpheme source code, replacing `mylogin` with you INRIA forge login:
 ``` shell
 cd $HOME/Development
 git clone git+ssh://mylogin@scm.gforge.inria.fr/gitroot/morpheme-privat/morpheme-privat.git
+```
+
+Checkout the first tagged release (for timagetk) named "timagetkRelease1.0.0":
+``` shell
+git branch openalea_wrapper_v1.7 origin/openalea_wrapper_v1.7
+git checkout openalea_wrapper_v1.7
+```
+
+Compile `vt` library as follow (dependency with 'lemon' & 'vtk'):
+``` shell
 cd morpheme-privat/vt
 mkdir build
 cd build
 cmake ..
 make -j4
 ```
+<!-- Compilation flags to be defined -->
+<!-- LOG: ccmake .. -->
+<!-- GNU CXX COMPILER
 
-## dtk and applicative layers installation
+ WARNING, lemon was NOT found
+
+ WARNING, tracker will NOT be built
+
+ WARNING, vtk was either not found or too old
+
+ WARNING, library ' libfilters' building will NOT be complete
+
+ WARNING, executables ' extraction_arbre' and 'classification' will NOT be
+ built -->
+
+
+## Get dtk and its applicative layers
 
 ### MacOS case
 
@@ -114,11 +208,11 @@ cd dtk
 git checkout develop
 mkdir build
 cd build
-cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTED=ON -DDTK_BUILD_SCRIPT=ON -DDTK_BUILD_WIDGETS=ON -DDTK_BUILD_WRAPPERS=ON -DDTK_BUILD_SUPPORT_COMPOSER=ON -DDTK_BUILD_SUPPORT_CONTAINER=ON -DDTK_BUILD_SUPPORT_CORE=ON -DDTK_BUILD_SUPPORT_GUI=ON -DDTK_BUILD_SUPPORT_MATH=ON
+cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTED=ON -DDTK_BUILD_SCRIPT=ON -DDTK_BUILD_WIDGETS=ON -DDTK_BUILD_WRAPPERS=ON -DDTK_BUILD_SUPPORT_COMPOSER=ON -DDTK_PYTHON_WRAPPER=BOTH -DDTK_BUILD_SUPPORT_CONTAINER=ON -DDTK_BUILD_SUPPORT_CORE=ON -DDTK_BUILD_SUPPORT_GUI=ON -DDTK_BUILD_SUPPORT_MATH=ON
 make -j4
 ```
 
-### dtk imaging
+### dtk-imaging
 
 ``` shell
 cd $HOME/Development
@@ -131,7 +225,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build
 make -j4
 ```
 
-### dtk plugins imaging
+### dtk-plugins-imaging
 
 ``` shell
 cd $HOME/Development
@@ -144,7 +238,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-### dtk discrete geometry
+### dtk-discrete-geometry
 
 ``` shell
 cd $HOME/Development
@@ -157,7 +251,7 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-## Tissue and gnomon plugins
+## Get gnomon & gnomon-plugins
 
 ### gnomon
 
@@ -173,7 +267,7 @@ make -j4
 ```
 
 
-### gnomon plugins
+### gnomon-plugins
 
 ``` shell
 cd $HOME/Development
@@ -182,7 +276,7 @@ cd gnomon-plugins
 git checkout develop
 mkdir build
 cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gnomon/build
+cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gnomon/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build
 make -j4
 ```
 
@@ -207,7 +301,7 @@ plugins=$HOME/Development/dtk-imaging/build/plugins:$HOME/Development/dtk-discre
 
 This will enable the composer embedded into gnomon application to find node extensions provided by gnomon, dtk-imaging and dtk-discrete-geometry.
 
-### dtk imaging config
+### dtk-imaging config
 
 Edit `dtk-imaging.ini` file and add the following lines:
 
@@ -315,3 +409,70 @@ brew link ice
 
 ## linux
 export ICE_HOME=/opt/Ice-6.4.2
+
+## Optionals
+
+TimageTK and tissue_analysis are pure python packages, to install them uses the `setup.py` with the following option depending on the type of install you would like:
+
+  * System-wide install:
+``` shell
+python setup.py install
+```
+
+  * User specific install:
+``` shell
+python setup.py install --user
+```
+
+  * System-wide "developer install":
+``` shell
+python setup.py develop
+```
+
+  * User specific "developer install":
+``` shell
+python setup.py develop --user
+```
+
+  * Conda / VirtualEnv install:
+If you are working under Conda or VirtualEnv activate the environment first, then use the `-prefix=` option to specify installation path.
+Example here with a conda environment named `gnomon`:
+``` shell
+source activate gnomon
+cd $HOME/Development/timagetk
+python setup.py --prefix=$CONDA_ENV_PATH
+```
+
+
+### TimageTK, the image toolkit
+
+Clone TimageTK source code:
+
+``` shell
+cd $HOME/Development/
+git clone https://github.com/VirtualPlants/timagetk.git
+```
+
+Install it under the Conda environment (here named `gnomon`):
+``` shell
+source activate gnomon
+cd timagetk
+python setup.py --prefix=$CONDA_ENV_PATH
+```
+
+
+### tissue_analysis, the cell quantification toolkit
+
+Clone tissue_analysis source code:
+
+``` shell
+cd $HOME/Development/
+git clone https://github.com/VirtualPlants/tissue_analysis.git
+```
+
+Install it under the Conda environment (here named `gnomon`):
+``` shell
+source activate gnomon
+cd tissue_analysis
+python setup.py --prefix=$CONDA_ENV_PATH
+```

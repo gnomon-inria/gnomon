@@ -1,0 +1,10 @@
+{
+          "title" : "Cell Complex from Image",
+           "kind" : "process",
+           "type" : "gnomonCellComplexFromImage",
+           "tags" : ["gnomon","cellcomplex","image"],
+    "description" : "<h3>Cell Complex from Image</h3>
+                     <p>Extract the topological complex representing cells in a segmented image.</p>",
+         "inputs" : ["segmented image","dimension"],
+         "outputs": ["cellcomplex","adjacency"]
+}

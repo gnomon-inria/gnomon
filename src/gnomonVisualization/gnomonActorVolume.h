@@ -58,6 +58,12 @@ public:
     void *vol(void);
     void *volumeProperty(void);
 
+ public:
+    double rangeMin() const;
+    double rangeMax() const;
+
+    const QList<int>& histogram() const;
+
 public:
     void setColorTransferFunction(vtkColorTransferFunction *);
     void setOpacityTransferFunction(vtkPiecewiseFunction *);

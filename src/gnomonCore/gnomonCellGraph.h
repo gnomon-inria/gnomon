@@ -32,9 +32,9 @@ protected:
 public:
     explicit gnomonCellGraph(void) : m_data(nullptr) {}
     explicit gnomonCellGraph(gnomonAbstractCellGraphData *data) : m_data(data) {}
-    gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
+             gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
 
-    ~gnomonCellGraph(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+    virtual ~gnomonCellGraph(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:
     gnomonCellGraph& operator = (const gnomonCellGraph& o)
@@ -71,14 +71,14 @@ public:
 public:
     virtual QList<long> vertexIds(void) const { return m_data->vertexIds(); }
     virtual long vertexCount(void) const { return m_data->vertexCount(); }
-    
+
     virtual QList<long> adjacentVertexIds(long vertexId) const { return m_data->adjacentVertexIds(vertexId); }
     virtual long adjacentVertexCount(long vertexId) const { return m_data->adjacentVertexCount(vertexId); }
 
 public:
     virtual QList<long> edgeIds(void) const { return m_data->edgeIds(); }
     virtual long edgeCount(void) const { return m_data->edgeCount(); }
-    
+
     virtual QList<long> incidentEdgeIds(long vertexId) const { return m_data->incidentEdgeIds(vertexId); }
     virtual long incidentEdgeCount(long vertexId) const { return m_data->incidentEdgeCount(vertexId); }
 
@@ -92,21 +92,21 @@ public:
     virtual void removeEdge(long edgeId) { return m_data->removeEdge(edgeId); }
 
 public:
-    virtual QList<QString> vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
+    virtual QStringList vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
     virtual bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); }
     virtual const QMap<long, QVariant>& vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); }
     virtual       QMap<long, QVariant>& vertexProperty(const QString& propertyName) { return m_data->vertexProperty(propertyName); }
     virtual QMap<long, QVariant>& addVertexProperty(const QString& propertyName) { return m_data->addVertexProperty(propertyName); }
     virtual void removeVertexProperty(const QString& propertyName) { return m_data->removeVertexProperty(propertyName); }
 
-    virtual QList<QString> edgePropertyNames(void) const { return m_data->edgePropertyNames(); }
+    virtual QStringList edgePropertyNames(void) const { return m_data->edgePropertyNames(); }
     virtual bool hasEdgeProperty(const QString& propertyName) const { return m_data->hasEdgeProperty(propertyName); }
     virtual const QMap<long, QVariant>& edgeProperty(const QString& propertyName) const { return m_data->edgeProperty(propertyName); }
     virtual       QMap<long, QVariant>& edgeProperty(const QString& propertyName) { return m_data->edgeProperty(propertyName); }
     virtual QMap<long, QVariant>& addEdgeProperty(const QString& propertyName) { return m_data->addEdgeProperty(propertyName); }
     virtual void removeEdgeProperty(const QString& propertyName) { return m_data->removeEdgeProperty(propertyName); }
 
-    virtual QList<QString> graphPropertyNames(void) const { return m_data->graphPropertyNames(); }
+    virtual QStringList graphPropertyNames(void) const { return m_data->graphPropertyNames(); }
     virtual bool hasGraphProperty(const QString& propertyName) const { return m_data->hasGraphProperty(propertyName); }
     virtual const QVariant& graphProperty(const QString& propertyName) const { return m_data->graphProperty(propertyName); }
     virtual       QVariant& graphProperty(const QString& propertyName) { return m_data->graphProperty(propertyName); }

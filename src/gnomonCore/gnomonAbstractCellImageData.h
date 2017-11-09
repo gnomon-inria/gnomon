@@ -43,7 +43,7 @@ public:
     virtual QList<long> adjacentCellIds(long cellId) const = 0;
     virtual long adjacentCellCount(long cellId) const = 0;
 
-    virtual QList<QString> cellPropertyNames(void) const = 0;
+    virtual QStringList cellPropertyNames(void) const = 0;
     virtual bool hasCellProperty(const QString& propertyName) const = 0;
 
     virtual const QMap<long, QVariant>& cellProperty(const QString& propertyName) const = 0;
