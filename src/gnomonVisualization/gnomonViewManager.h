@@ -28,7 +28,7 @@ class vtkPolyData;
 
 class gnomonInspectorViewTree;
 class gnomonInspectorViewWidget;
-
+class gnomonInspectorMain;
 class QWidget;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
@@ -49,6 +49,7 @@ public:
 
     gnomonInspectorViewTree *inspectorTree(void);
     gnomonInspectorViewWidget *inspectorWidget(void);
+    gnomonInspectorMain *inspectorMain(void);
 
 public:
     QList<vtkPolyData *> meshes(void);

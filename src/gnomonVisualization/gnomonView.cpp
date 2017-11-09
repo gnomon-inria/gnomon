@@ -48,6 +48,7 @@
 #include <QWidget>
 
 #include "gnomonInspectorViewTree.h"
+#include "gnomonInspectorMain.h"
 
 class gnomonViewPrivate
 {
@@ -116,7 +117,7 @@ QWidget *gnomonView::widget(void)
 
 QWidget *gnomonView::inspector()
 {
-    return d->current_inspector;
+    return d->manager->inspectorMain();
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)

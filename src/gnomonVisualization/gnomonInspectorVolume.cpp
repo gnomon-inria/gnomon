@@ -31,7 +31,6 @@ public:
 
 gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspector(), d(new gnomonInspectorVolumePrivate)
 {
-    qWarning() << Q_FUNC_INFO;
     d->editor = new gnomonClutEditor();
 
     QVBoxLayout *layout = new QVBoxLayout();

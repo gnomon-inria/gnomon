@@ -18,6 +18,7 @@
 #include "gnomonViewManager.h"
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorViewWidget.h"
+#include "gnomonInspectorMain.h"
 
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
@@ -27,6 +28,7 @@ class gnomonViewManagerPrivate
 public:
     gnomonInspectorViewTree *inspector_tree;
     gnomonInspectorViewWidget *inspector_widget;
+    gnomonInspectorMain *inspector_main;
 
 public:
     QHash<vtkPolyData *, gnomonActor *> meshes;
@@ -41,6 +43,11 @@ gnomonInspectorViewTree *gnomonViewManager::inspectorTree(void)
 gnomonInspectorViewWidget *gnomonViewManager::inspectorWidget(void)
 {
     return d->inspector_widget;
+}
+
+gnomonInspectorMain *gnomonViewManager::inspectorMain(void)
+{
+    return d->inspector_main;
 }
 
 gnomonActor *gnomonViewManager::actor(vtkPolyData *mesh)
@@ -164,7 +171,10 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
 {
     d->inspector_tree = new gnomonInspectorViewTree();
     d->inspector_widget = new gnomonInspectorViewWidget();
+    d->inspector_main = new gnomonInspectorMain();
 
+    d->inspector_main->addWidget(d->inspector_tree);
+    d->inspector_main->addWidget(d->inspector_widget);
     connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
     connect(d->inspector_tree, SIGNAL(selected(vtkImageData *)), this, SLOT(onVolumeSelected(vtkImageData *)));
 }
