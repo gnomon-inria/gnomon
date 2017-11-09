@@ -31,6 +31,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposerWidget.h
   gnomonCellGraphFromImageNode.h
   gnomonCellComplexFromImageNode.h
+  gnomonCellImageFromImageNode.h
   gnomonCellComplexReaderNode.h
   gnomonTissueGrowthModelNode.h)
 
@@ -39,6 +40,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonComposerWidget.cpp
   gnomonCellGraphFromImageNode.cpp
   gnomonCellComplexFromImageNode.cpp
+  gnomonCellImageFromImageNode.cpp
   gnomonCellComplexReaderNode.cpp
   gnomonTissueGrowthModelNode.cpp)
 
