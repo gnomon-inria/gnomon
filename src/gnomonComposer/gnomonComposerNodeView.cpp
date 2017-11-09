@@ -86,7 +86,7 @@ void gnomonComposerNodeView::run(void)
     if (!d->cellgraph_receiver.isEmpty()) {
 
         gnomonCellGraph *data = d->cellgraph_receiver.data();
-        qDebug()<<"--> Node Insert Cell Graph"; 
+        
         d->view->manager()->insert(data);
     }
 }

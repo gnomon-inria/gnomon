@@ -43,6 +43,10 @@ public:
     gnomonCellGraph *cellgraph; 
 
     vtkSmartPointer<vtkSphereSource> sphere;
+
+    vtkSmartPointer<vtkPolyData> point_mesh;
+    vtkSmartPointer<vtkGlyph3D> point_glyph;
+    vtkSmartPointer<vtkPolyDataMapper> point_mapper;
     vtkSmartPointer<vtkActor> point_actor;
 };
 
@@ -114,9 +118,12 @@ void gnomonActorMeshCellGraph::update(void)
         this->AddPart(d->actor);
     }
 
-    vtkSmartPointer<vtkPolyData> pointPolydata = vtkSmartPointer<vtkPolyData>::New();
-    pointPolydata->SetPoints(polydataPoints);
-    pointPolydata->GetPointData()->SetScalars(polydataPointData);
+
+    if (!dd->point_mesh) {
+        dd->point_mesh = vtkSmartPointer<vtkPolyData>::New();
+        dd->point_mesh->SetPoints(polydataPoints);
+        dd->point_mesh->GetPointData()->SetScalars(polydataPointData);
+    }
 
     if(!dd->sphere) {
         dd->sphere = vtkSmartPointer<vtkSphereSource>::New();
@@ -126,42 +133,40 @@ void gnomonActorMeshCellGraph::update(void)
         dd->sphere->Update();
     }
 
-    vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
-    glyph->SetScaleModeToDataScalingOff();
-    glyph->SetColorModeToColorByScalar();
-    glyph->SetSourceData(dd->sphere->GetOutput());
-    glyph->SetInputData(pointPolydata);
-    glyph->Update();
+    if (!dd->point_glyph) {
+        dd->point_glyph = vtkSmartPointer<vtkGlyph3D>::New();
+        dd->point_glyph->SetScaleModeToDataScalingOff();
+        dd->point_glyph->SetColorModeToColorByScalar();
+        dd->point_glyph->SetSourceData(dd->sphere->GetOutput());
+        dd->point_glyph->SetInputData(dd->point_mesh);
+        dd->point_glyph->Update();
+    }
 
-    vtkSmartPointer<vtkPolyDataMapper> pointMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    pointMapper->SetInputData(glyph->GetOutput());
-    pointMapper->SetScalarRange(0, dd->cellgraph->vertexCount()-1);
+    if (!dd->point_mapper) {
+        dd->point_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        dd->point_mapper->SetInputData(dd->point_glyph->GetOutput());
+        dd->point_mapper->SetScalarRange(0, dd->cellgraph->vertexCount()-1);
+    }
 
     if(!dd->point_actor) {
         dd->point_actor = vtkSmartPointer<vtkActor>::New();
-        dd->point_actor ->SetMapper(pointMapper);
+        dd->point_actor ->SetMapper(dd->point_mapper);
         this->AddPart(dd->point_actor);
     }
-
-    qDebug()<<"--> Mesh Cell Graph Actor";
 
     d->interactor->Render();
 }
 
 gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellGraphPrivate)
 {
-    qDebug()<<"--> Actor Cell Graph Create";
     dd->cellgraph = Q_NULLPTR;
-    // d->mesh = Q_NULLPTR;
 }
 
 gnomonActorMeshCellGraph::~gnomonActorMeshCellGraph(void)
 {
     delete dd;
-    // delete d;
 
     dd = NULL;
-    // d = NULL;
 }
 
 //

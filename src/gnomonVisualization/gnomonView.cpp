@@ -236,13 +236,10 @@ void gnomonView::onInserted(vtkImageData *image)
 void gnomonView::onInserted(gnomonCellGraph *cellgraph)
 {
     gnomonActorMeshCellGraph *actor = dynamic_cast<gnomonActorMeshCellGraph *>(d->manager->actor(cellgraph));
-    qDebug()<<"--> Insert Cell Graph Interactor";
     actor->setInteractor(d->widget->GetInteractor());
-    qDebug()<<"--> Insert Cell Graph Set";
     actor->setCellGraph(cellgraph);
-    qDebug()<<"--> Insert Cell Graph Actor";
+
     d->renderer->AddActor(actor);
-    qDebug()<<"--> Insert Cell Graph OK!";
 }
 
 //
