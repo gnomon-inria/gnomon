@@ -255,11 +255,11 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->editor->setVisible(true);
     d->stack->setVisible(false);
 
-    int wl = qMin(d->nodes->size().width(), 300);
-    int wr = qMax(d->stack->size().width(), 300);
+    int wl = 300;
+    int wr = 300;
     int wc = parent->size().width() - wl - wr;
 
-    d->inner->setSizes(QList<int>() << wl << 0 << wc << wr);
+    d->inner->setSizes(QList<int>() << wl << wc << wr);
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)
