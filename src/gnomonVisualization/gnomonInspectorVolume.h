@@ -24,7 +24,7 @@ class gnomonClutEditor;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public gnomonInspector
 {
-protected:
+public:
      gnomonInspectorVolume(void);
     ~gnomonInspectorVolume(void);
 

@@ -25,6 +25,7 @@
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 
+#include <QSizePolicy>
 // /////////////////////////////////////////////////////////////////
 // gnomonClutEditor - Helper functions
 // /////////////////////////////////////////////////////////////////
@@ -698,6 +699,7 @@ public:
 
 gnomonClutEditor::gnomonClutEditor(QWidget *parent) : QWidget(parent), d(new gnomonClutEditorPrivate)
 {
+    this->setMinimumSize(QSize(400, 140));
     d->min = 100.0;
     d->max = 200.0;
 
