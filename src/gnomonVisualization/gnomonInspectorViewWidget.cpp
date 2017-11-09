@@ -5,6 +5,9 @@
 #include "gnomonActorVolume.h"
 
 #include "gnomonInspectorVolume.h"
+#include "gnomonInspectorMesh.h"
+#include "gnomonActorMeshCellComplex.h"
+#include "gnomonActorMeshCellGraph.h"
 
 #include "gnomonClutEditor.h"
 
@@ -66,11 +69,29 @@ void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
     QWidget *widget = nullptr;
 
     if (gnomonActorMesh *mesh_actor = dynamic_cast<gnomonActorMesh *>(actor)) {
-        QWidget *mesh_inspector = new gnomonInspectorVolume();
+        QWidget *mesh_inspector = new gnomonInspectorMesh();
         d->widgets.insert(mesh_actor, mesh_inspector);
         d->stacked_widget->addWidget(mesh_inspector);
         d->stacked_widget->setCurrentWidget(mesh_inspector);
         mesh_inspector->setEnabled(enabled);
+        return;
+    }
+
+    if (gnomonActorMeshCellComplex *complex_actor = dynamic_cast<gnomonActorMeshCellComplex *>(actor)) {
+        QWidget *complex_inspector = new gnomonInspectorMesh();
+        d->widgets.insert(complex_actor, complex_inspector);
+        d->stacked_widget->addWidget(complex_inspector);
+        d->stacked_widget->setCurrentWidget(complex_inspector);
+        complex_inspector->setEnabled(enabled);
+        return;
+    }
+
+    if (gnomonActorMeshCellGraph *graph_actor = dynamic_cast<gnomonActorMeshCellGraph *>(actor)) {
+        QWidget *graph_inspector = new gnomonInspectorMesh();
+        d->widgets.insert(graph_actor, graph_inspector);
+        d->stacked_widget->addWidget(graph_inspector);
+        d->stacked_widget->setCurrentWidget(graph_inspector);
+        graph_inspector->setEnabled(enabled);
         return;
     }
 

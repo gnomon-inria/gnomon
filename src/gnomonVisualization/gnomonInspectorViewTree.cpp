@@ -34,9 +34,13 @@ public:
 
     QHash<QTreeWidgetItem *, vtkPolyData *> mesh_items;
     QHash<QTreeWidgetItem *, vtkImageData *> volume_items;
+    QHash<QTreeWidgetItem *, gnomonCellComplex *> complex_items;
+    QHash<QTreeWidgetItem *, gnomonCellGraph *> graph_items;
 
     std::size_t next_mesh_id;
     std::size_t next_volume_id;
+    std::size_t next_complex_id;
+    std::size_t next_graph_id;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -48,6 +52,8 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
     d->view = nullptr;
     d->next_volume_id = 0;
     d->next_mesh_id = 0;
+    d->next_graph_id = 0;
+    d->next_complex_id = 0;
 
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
     this->setCursor(Qt::ArrowCursor);
@@ -69,6 +75,12 @@ gnomonInspectorViewTree::~gnomonInspectorViewTree() {
         delete item;
     }
     for(auto item : d->volume_items.keys()) {
+        delete item;
+    }
+    for(auto item : d->complex_items.keys()) {
+        delete item;
+    }
+    for(auto item : d->graph_items.keys()) {
         delete item;
     }
 }
@@ -124,7 +136,52 @@ void gnomonInspectorViewTree::insert(vtkImageData *volume)
     } else {
         item->setCheckState(2, Qt::Unchecked);
     }
+}
 
+void gnomonInspectorViewTree::insert(gnomonCellComplex *complex)
+{
+    if(!complex) {
+        qDebug() << Q_FUNC_INFO << "complex is NULL";
+        return;
+    }
+
+    if(d->complex_items.values().contains(complex))
+        return;
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Complex " + QString::number(d->next_complex_id) << "Complex");
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+
+    d->complex_items.insert(item, complex);
+    ++d->next_complex_id;
+
+    if(gnomonActor *actor = d->view->manager()->actor(complex)) {
+        item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+    } else {
+        item->setCheckState(2, Qt::Unchecked);
+    }
+}
+
+void gnomonInspectorViewTree::insert(gnomonCellGraph *graph)
+{
+    if(!graph) {
+        qDebug() << Q_FUNC_INFO << "graph is NULL";
+        return;
+    }
+
+    if(d->graph_items.values().contains(graph))
+        return;
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Graph " + QString::number(d->next_graph_id) << "Graph");
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+
+    d->graph_items.insert(item, graph);
+    ++d->next_graph_id;
+
+    if(gnomonActor *actor = d->view->manager()->actor(graph)) {
+        item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+    } else {
+        item->setCheckState(2, Qt::Unchecked);
+    }
 }
 
 void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
@@ -141,6 +198,14 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
 
         if(d->volume_items.keys().contains(item)) {
             actor = d->view->manager()->actor(d->volume_items.value(item));
+        }
+
+        if(d->complex_items.keys().contains(item)) {
+            actor = d->view->manager()->actor(d->complex_items.value(item));
+        }
+
+        if(d->graph_items.keys().contains(item)) {
+            actor = d->view->manager()->actor(d->graph_items.value(item));
         }
 
         if(!actor)
@@ -165,6 +230,12 @@ void gnomonInspectorViewTree::onItemSelected(void)
     }
     if(d->volume_items.keys().contains(this->currentItem())) {
         emit selected(d->volume_items.value(this->currentItem()));
+    }
+    if(d->complex_items.keys().contains(this->currentItem())) {
+        emit selected(d->complex_items.value(this->currentItem()));
+    }
+    if(d->graph_items.keys().contains(this->currentItem())) {
+        emit selected(d->graph_items.value(this->currentItem()));
     }
 }
 

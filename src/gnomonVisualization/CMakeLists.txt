@@ -40,6 +40,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspectorImage.h
   gnomonInspectorMain
   gnomonInspectorMain.h
+  gnomonInspectorMesh
+  gnomonInspectorMesh.h
   gnomonInspectorViewTree
   gnomonInspectorViewTree.h
   gnomonInspectorViewWidget
@@ -62,6 +64,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonClutEditor.cpp
   gnomonInspector.cpp
   gnomonInspectorImage.cpp
+  gnomonInspectorMesh.cpp
   gnomonInspectorMain.cpp
   gnomonInspectorViewTree.cpp
   gnomonInspectorViewWidget.cpp

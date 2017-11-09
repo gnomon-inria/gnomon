@@ -134,6 +134,8 @@ gnomonActor *gnomonViewManager::insert(gnomonCellComplex *cellcomplex)
     d->cellcomplexes.insert(cellcomplex, actor);
     qDebug()<<"View Manager Cell Complex Emit";
 
+    d->inspector_tree->insert(cellcomplex);
+
     emit inserted(cellcomplex);
 
     return actor;
@@ -163,6 +165,8 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
     actor->setCellGraph(cellgraph);
 
     d->cellgraphs.insert(cellgraph, actor);
+
+    d->inspector_tree->insert(cellgraph);
 
     emit inserted(cellgraph);
 
