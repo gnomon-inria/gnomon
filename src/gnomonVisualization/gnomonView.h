@@ -24,12 +24,15 @@
 #include <gnomonVisualizationExport.h>
 
 class vtkImageData;
+class vtkPolyData;
 
 class gnomonCellComplex;
 class gnomonCellGraph;
 
 class gnomonViewManager;
 class gnomonViewPrivate;
+
+class gnomonInspector;
 
 class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
 {
@@ -47,10 +50,16 @@ public:
     gnomonViewManager *manager(void);
 
 public:
-    QWidget *widget(void);
+    QWidget *widget(void) override;
+    QWidget *inspector(void) override;
 
 public slots:
     void onInserted(vtkImageData *image);
+    void onInserted(vtkPolyData *mesh);
+    void onInserted(gnomonCellComplex *cellcomplex);
+    void onInserted(gnomonCellGraph *cellgraph);
+
+    void onInspectorSelected(QWidget *inspector);
 
 private:
     gnomonViewPrivate *d;

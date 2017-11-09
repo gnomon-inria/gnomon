@@ -1,8 +1,25 @@
+/*
+;; Version: $Id$
+;;
+*/
+
+/*
+;; Commentary:
+;;
+*/
+
+/*
+;; Change Log:
+;;
+*/
+
+/* Code: */
+
 QLineEdit {
     color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
     background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
 
-    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border: 1px solid "@GNOMON_STYLE_BORDERCOLOR@";
     border-radius: 4px;
 }
 
@@ -20,7 +37,7 @@ QPushButton, QToolButton {
     color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
     background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
 
-    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border: 1px solid "@GNOMON_STYLE_BORDERCOLOR@";
     border-radius: 4px;
 }
 
@@ -28,12 +45,14 @@ QToolBar::left {
     background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
 }
 
-/* QToolBar::handle { */
-/*     background: none; */
-/*     image: none; */
-/* } */
+QToolBar::handle {
+    background: none;
+    image: none;
+}
 
-/* QToolBar QToolButton { */
-/*     background: none; */
-/*     border: none; */
-/* } */
+QToolBar QToolButton {
+    background: transparent;
+    border: none;
+}
+
+/* gnomonStyle.qss.in ends here */

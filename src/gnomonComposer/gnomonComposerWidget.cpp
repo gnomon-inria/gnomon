@@ -48,7 +48,6 @@
 #include <dtkWidgets/dtkScreenMenu.h>
 #include <dtkWidgets/dtkRecentFilesMenu.h>
 #include <dtkWidgets/dtkSpacer.h>
-#include <dtkWidgets/dtkSplitter.h>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -159,7 +158,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // -- Menus
 
-    QMenuBar *menu_bar = new QMenuBar();
+    QMenuBar *menu_bar = new QMenuBar(qobject_cast<QMainWindow *>(this->parentWidget()));
 
     d->recent_compositions_menu = new dtkRecentFilesMenu("Open recent...", this);
 
@@ -215,11 +214,8 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // -- Layout
 
-    dtkSplitter *left = new dtkSplitter(this);
-    left->setOrientation(Qt::Vertical);
-    left->addWidget(d->nodes);
-
-    dtkSplitter *right = new dtkSplitter(this);
+    QSplitter *right = new QSplitter(this);
+    right->setHandleWidth(1);
     right->setOrientation(Qt::Vertical);
     right->addWidget(d->scene);
     right->addWidget(d->editor);
@@ -231,16 +227,21 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
                     << this->size().height()/4
                     << this->size().height()/4);
 
-    d->inner = new dtkSplitter(this);
-    d->inner->setOrientation(Qt::Horizontal);
-    d->inner->addWidget(left);
-    d->inner->addWidget(d->composer);
-    d->inner->addWidget(right);
+    int wl = 300;
+    int wr = 300;
+    int wc = parent->size().width() - wl - wr;
+
+    QSplitter *inner = new QSplitter(this);
+    inner->setHandleWidth(1);
+    inner->setOrientation(Qt::Horizontal);
+    inner->addWidget(d->nodes);
+    inner->addWidget(d->composer);
+    inner->addWidget(right);
+    inner->setSizes(QList<int>() << wl << wc << wr);
 
     QVBoxLayout* main_layout = new QVBoxLayout;
     main_layout->setContentsMargins(0, 0, 0, 0);
-    main_layout->addWidget(menu_bar);
-    main_layout->addWidget(d->inner);
+    main_layout->addWidget(inner);
 
     this->setLayout(main_layout);
 
@@ -254,12 +255,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->scene->setVisible(true);
     d->editor->setVisible(true);
     d->stack->setVisible(false);
-
-    int wl = 300;
-    int wr = 300;
-    int wc = parent->size().width() - wl - wr;
-
-    d->inner->setSizes(QList<int>() << wl << wc << wr);
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)

@@ -29,8 +29,6 @@ class dtkDistributor;
 
 class dtkRecentFilesMenu;
 
-class dtkSplitter;
-
 class dtkComposerViewManager;
 class dtkPlotViewSettings;
 
@@ -64,9 +62,6 @@ public:
 public:
     dtkComposerViewManager *view_manager;
     dtkPlotViewSettings *plot_view_settings;
-
-public:
-    dtkSplitter *inner;
 
 public:
     QMenu *composition_menu;

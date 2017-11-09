@@ -42,6 +42,9 @@
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkImageAccumulate.h>
+#include <vtkImageActor.h>
+#include <vtkImageMapToColors.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorVolumePrivate
@@ -61,6 +64,10 @@ public:
     vtkSmartPointer<vtkPiecewiseFunction> opacityTransferFunction;
     vtkSmartPointer<vtkSmartVolumeMapper> mapper;
 
+    vtkSmartPointer<vtkImageActor> planes[3];
+    int plane_index[3];
+    vtkSmartPointer<vtkImageMapToColors> colors;
+
     vtkSmartPointer<vtkScalarBarActor> scalarBar;
 
     vtkSmartPointer<vtkOutlineCornerFilter> outline_corner;
@@ -76,11 +83,38 @@ public:
     vtkSmartPointer<vtkActor> outline_contour_actor;
 
 public:
+void computeHistogram();
+
+public:
+double range_min;
+double range_max;
+
+QList<int> histo;
+
+public:
     vtkImageResize *filter;
 
 public:
     bool scalarbar_state;
 };
+
+void gnomonActorVolumePrivate::computeHistogram()
+{
+    const int bins = 100;
+
+    vtkSmartPointer<vtkImageAccumulate> histogram = vtkSmartPointer<vtkImageAccumulate>::New();
+
+    histogram->SetInputData(volume);
+    histogram->SetComponentSpacing( (range_max- range_min)/(double)bins, 0, 0);
+    histogram->SetComponentExtent( 0, bins-1, 0, 0, 0, 0);
+    histogram->SetComponentOrigin( range_min, 0, 0);
+    histogram->SetIgnoreZero(1);
+    histogram->Update();
+
+    for(int i=0; i< bins; ++i) {
+        histo.append(histogram->GetOutput()->GetPointData()->GetScalars()->GetTuple1(i));
+    }
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorVolume
@@ -98,6 +132,7 @@ void gnomonActorVolume::setVolume(vtkImageData *volume)
 void gnomonActorVolume::setInteractor(void *interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+
 }
 
 void gnomonActorVolume::update(void)
@@ -111,12 +146,16 @@ void gnomonActorVolume::update(void)
     if(!d->mapper)
         d->mapper = vtkSmartVolumeMapper::New();
 
-    d->mapper->SetRequestedRenderModeToGPU();
+    d->mapper->SetRequestedRenderMode(vtkSmartVolumeMapper::DefaultRenderMode);
     d->mapper->SetInputData(d->volume);
     d->mapper->Modified();
     d->mapper->Update();
 
-    double valuesRange[2]; d->volume->GetPointData()->GetScalars()->GetRange(valuesRange);
+    double valuesRange[2];
+    d->volume->GetPointData()->GetScalars()->GetRange(valuesRange);
+
+    d->range_min = valuesRange[0];
+    d->range_max = valuesRange[1];
 
     double min = valuesRange[0];
     double max = valuesRange[1];
@@ -135,9 +174,9 @@ void gnomonActorVolume::update(void)
     if(!d->opacityTransferFunction) {
         d->opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
         d->opacityTransferFunction->RemoveAllPoints();
-        d->opacityTransferFunction->AddPoint(min, 0.5);
-        d->opacityTransferFunction->AddPoint(mid, 0.5);
-        d->opacityTransferFunction->AddPoint(max, 0.5);
+        d->opacityTransferFunction->AddPoint(min, 0.1);
+        d->opacityTransferFunction->AddPoint(mid, 0.1);
+        d->opacityTransferFunction->AddPoint(max, 0.1);
     }
     d->opacityTransferFunction->Modified();
 
@@ -156,6 +195,41 @@ void gnomonActorVolume::update(void)
         this->AddPart(d->vol);
     }
     d->vol->Modified();
+
+    if (!d->colors) {
+        d->colors = vtkSmartPointer<vtkImageMapToColors>::New();
+        d->colors->SetInputData(d->volume);
+        d->colors->SetLookupTable(d->colorFunction);
+        d->colors->Update();
+    }
+
+    int index = 0;
+    int x_min, x_max, y_min, y_max, z_min, z_max;
+    double voxeslize[3];
+    d->volume->GetExtent(x_min, x_max, y_min, y_max, z_min, z_max);
+    d->volume->GetSpacing(voxeslize);
+    for (int i = 0; i < 3; ++i) {
+
+        if(!d->planes[i]) {
+            d->planes[i] = vtkSmartPointer<vtkImageActor>::New();
+            // d->planes[i]->SetInteractor(d->interactor);
+            index = d->volume->GetDimensions()[i]/2;
+            d->plane_index[i] = index;
+        }
+        else index = d->plane_index[i];
+
+        d->planes[i]->SetInputData(d->colors->GetOutput());
+
+        if (i == 0) {
+            d->planes[i]->SetDisplayExtent(index, index, y_min, y_max, z_min, z_max);
+        } else if (i == 1) {
+            d->planes[i]->SetDisplayExtent(x_min, x_max, index, index, z_min, z_max);
+        } else if (i ==2) {
+            d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, index, index);
+        }
+        this->AddPart(d->planes[i]);
+    }
+
 
     { // Building corner outline actor
 
@@ -234,6 +308,8 @@ void gnomonActorVolume::update(void)
     this->show();
 
     d->interactor->Render();
+
+    d->computeHistogram();
 }
 
 void gnomonActorVolume::showScalarBarTitle(bool show)
@@ -336,7 +412,20 @@ void *gnomonActorVolume::volumeProperty(void)
 {
     return d->volProperty;
 }
+double gnomonActorVolume::rangeMin() const
+{
+    return d->range_min;
+}
 
+double gnomonActorVolume::rangeMax() const
+{
+    return d->range_max;
+}
+
+const QList<int>& gnomonActorVolume::histogram() const
+{
+    return d->histo;
+}
 void gnomonActorVolume::setColorTransferFunction(vtkColorTransferFunction *func)
 {
     d->colorFunction = func;
@@ -357,6 +446,11 @@ gnomonActorVolume::gnomonActorVolume(void) : gnomonActor(), d(new gnomonActorVol
     d->scalarBar = NULL;
     d->scalarbar_state = false;
     d->mapper = NULL;
+
+    for (int i = 0; i < 3; ++i) {
+        d->planes[i] = NULL;
+        d->plane_index[i] = 0;
+    }
 }
 
 gnomonActorVolume::~gnomonActorVolume(void)
