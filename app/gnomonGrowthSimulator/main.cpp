@@ -23,12 +23,14 @@
 
 #include <dtkImaging>
 
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <QVTKOpenGLWidget.h>
 
 #include "gnomonGrowthSimulatorMainWindow.h"
 
 int main(int argc, char *argv[])
 {
+    vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
     dtkApplication *application = dtkApplication::create(argc, argv);

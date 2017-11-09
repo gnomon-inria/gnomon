@@ -108,12 +108,10 @@ void gnomonActorVolume::update(void)
     if (!d->interactor)
         return;
 
-    qDebug() << Q_FUNC_INFO;
-
     if(!d->mapper)
         d->mapper = vtkSmartVolumeMapper::New();
 
-    d->mapper->SetRequestedRenderModeToGPU();
+    d->mapper->SetRequestedRenderMode(vtkSmartVolumeMapper::DefaultRenderMode);
     d->mapper->SetInputData(d->volume);
     d->mapper->Modified();
     d->mapper->Update();
@@ -123,8 +121,6 @@ void gnomonActorVolume::update(void)
     double min = valuesRange[0];
     double max = valuesRange[1];
     double mid = (min + max)/2.;
-
-    qDebug() << Q_FUNC_INFO << min << max << mid;
 
     if(!d->colorFunction) {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
@@ -154,7 +150,6 @@ void gnomonActorVolume::update(void)
     d->volProperty->Modified();
 
     if(!d->vol) {
-        qDebug() << Q_FUNC_INFO << 2;
         d->vol = vtkVolume::New();
         d->vol->SetMapper(d->mapper);
         d->vol->SetProperty(d->volProperty);
