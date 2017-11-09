@@ -34,6 +34,18 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorVolume.h
   gnomonClutEditor
   gnomonClutEditor.h
+  gnomonInspector
+  gnomonInspector.h
+  gnomonInspectorImage
+  gnomonInspectorImage.h
+  gnomonInspectorMain
+  gnomonInspectorMain.h
+  gnomonInspectorViewTree
+  gnomonInspectorViewTree.h
+  gnomonInspectorViewWidget
+  gnomonInspectorViewWidget.h
+  gnomonInspectorVolume
+  gnomonInspectorVolume.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -48,6 +60,12 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorMeshCellGraph.cpp
   gnomonActorVolume.cpp
   gnomonClutEditor.cpp
+  gnomonInspector.cpp
+  gnomonInspectorImage.cpp
+  gnomonInspectorMain.cpp
+  gnomonInspectorViewTree.cpp
+  gnomonInspectorViewWidget.cpp
+  gnomonInspectorVolume.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 

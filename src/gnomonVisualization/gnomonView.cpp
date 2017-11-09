@@ -17,6 +17,7 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
 
@@ -43,11 +44,17 @@
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
+#include <QVTKOpenGLWidget.h>
 
 // #include <vtkGenericOpenGLRenderWindow.h>
 // #include <QVTKOpenGLWidget.h>
 #include <vtkRenderWindow.h>
 #include <QVTKWidget.h>
+
+#include <QWidget>
+
+#include "gnomonInspectorViewTree.h"
+#include "gnomonInspectorMain.h"
 
 class gnomonViewPrivate
 {
@@ -57,6 +64,7 @@ public:
     vtkRenderWindow *window;
     QVTKWidget *widget;
     vtkRenderer *renderer;
+    QWidget *current_inspector;
 
 public:
     gnomonViewManager *manager;
@@ -67,6 +75,11 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d = new gnomonViewPrivate;
 
     d->manager = new gnomonViewManager;
+
+    gnomonInspectorViewTree *inspector= d->manager->inspectorTree();
+    inspector->setView(this);
+
+    d->current_inspector = d->manager->inspectorTree();
 
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(0.2, 0.2, 0.2);
@@ -87,6 +100,10 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     this->setLayout(layout);
 
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
+
+    connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
+    connect(d->manager, SIGNAL(selected(QWidget *)), this, SLOT(onInspectorSelected(QWidget *)));
+
     connect(d->manager, SIGNAL(inserted(gnomonCellComplex *)), this, SLOT(onInserted(gnomonCellComplex *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellGraph *)), this, SLOT(onInserted(gnomonCellGraph *)));
 }
@@ -109,6 +126,11 @@ gnomonViewManager *gnomonView::manager(void)
 QWidget *gnomonView::widget(void)
 {
     return d->widget;
+}
+
+QWidget *gnomonView::inspector()
+{
+    return d->manager->inspectorMain();
 }
 
 void gnomonView::addCellComplex(gnomonCellComplex &cell)
@@ -235,6 +257,15 @@ void gnomonView::onInserted(vtkImageData *image)
     d->renderer->AddActor(actor);
 }
 
+void gnomonView::onInserted(vtkPolyData *mesh)
+{
+    gnomonActorMesh *actor = dynamic_cast<gnomonActorMesh *>(d->manager->actor(mesh));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setMesh(mesh);
+
+    d->renderer->AddActor(actor);
+}
+
 void gnomonView::onInserted(gnomonCellGraph *cellgraph)
 {
     gnomonActorMeshCellGraph *actor = dynamic_cast<gnomonActorMeshCellGraph *>(d->manager->actor(cellgraph));
@@ -251,6 +282,13 @@ void gnomonView::onInserted(gnomonCellComplex *cellcomplex)
     actor->setCellComplex(cellcomplex);
 
     d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInspectorSelected(QWidget *inspector)
+{
+    d->current_inspector = inspector;
+    d->current_inspector->show();
+    this->update();
 }
 
 //

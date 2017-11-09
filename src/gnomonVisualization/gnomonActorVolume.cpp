@@ -42,6 +42,7 @@
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkImageAccumulate.h>
 #include <vtkImageActor.h>
 #include <vtkImageMapToColors.h>
 
@@ -82,11 +83,38 @@ public:
     vtkSmartPointer<vtkActor> outline_contour_actor;
 
 public:
+void computeHistogram();
+
+public:
+double range_min;
+double range_max;
+
+QList<int> histo;
+
+public:
     vtkImageResize *filter;
 
 public:
     bool scalarbar_state;
 };
+
+void gnomonActorVolumePrivate::computeHistogram()
+{
+    const int bins = 100;
+
+    vtkSmartPointer<vtkImageAccumulate> histogram = vtkSmartPointer<vtkImageAccumulate>::New();
+
+    histogram->SetInputData(volume);
+    histogram->SetComponentSpacing( (range_max- range_min)/(double)bins, 0, 0);
+    histogram->SetComponentExtent( 0, bins-1, 0, 0, 0, 0);
+    histogram->SetComponentOrigin( range_min, 0, 0);
+    histogram->SetIgnoreZero(1);
+    histogram->Update();
+
+    for(int i=0; i< bins; ++i) {
+        histo.append(histogram->GetOutput()->GetPointData()->GetScalars()->GetTuple1(i));
+    }
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorVolume
@@ -104,7 +132,7 @@ void gnomonActorVolume::setVolume(vtkImageData *volume)
 void gnomonActorVolume::setInteractor(void *interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
-    
+
 }
 
 void gnomonActorVolume::update(void)
@@ -123,7 +151,11 @@ void gnomonActorVolume::update(void)
     d->mapper->Modified();
     d->mapper->Update();
 
-    double valuesRange[2]; d->volume->GetPointData()->GetScalars()->GetRange(valuesRange);
+    double valuesRange[2];
+    d->volume->GetPointData()->GetScalars()->GetRange(valuesRange);
+
+    d->range_min = valuesRange[0];
+    d->range_max = valuesRange[1];
 
     double min = valuesRange[0];
     double max = valuesRange[1];
@@ -276,6 +308,8 @@ void gnomonActorVolume::update(void)
     this->show();
 
     d->interactor->Render();
+
+    d->computeHistogram();
 }
 
 void gnomonActorVolume::showScalarBarTitle(bool show)
@@ -378,7 +412,20 @@ void *gnomonActorVolume::volumeProperty(void)
 {
     return d->volProperty;
 }
+double gnomonActorVolume::rangeMin() const
+{
+    return d->range_min;
+}
 
+double gnomonActorVolume::rangeMax() const
+{
+    return d->range_max;
+}
+
+const QList<int>& gnomonActorVolume::histogram() const
+{
+    return d->histo;
+}
 void gnomonActorVolume::setColorTransferFunction(vtkColorTransferFunction *func)
 {
     d->colorFunction = func;
