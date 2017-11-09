@@ -1,10 +1,10 @@
 {
-    "title" : "gnomonView",
+    "title" : "Gnomon Tissue View",
     "kind" : "view",
     "type" : "gnomonView",
     "tags" : ["gnomon", "view"],
-    "description" : "<h3>Gnomon Cell View</h3>
+    "description" : "<h3>Gnomon Tissue View</h3>
     				 <p>View tissue images, graphs & complexes in 3D</p>",
     "width" : "300",
-    "inputs" : ["image","cell graph"]
+    "inputs" : ["image","cell complex","cell graph"]
 }

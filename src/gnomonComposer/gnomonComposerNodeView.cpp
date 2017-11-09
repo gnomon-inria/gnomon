@@ -20,6 +20,7 @@
 #include <dtkLog>
 
 #include <dtkImaging>
+#include <gnomonCellComplex>
 #include <gnomonCellGraph>
 
 // /////////////////////////////////////////////////////////////////
@@ -33,6 +34,7 @@ public:
 
 public:
     dtkComposerTransmitterReceiver<dtkImage *> image_receiver;
+    dtkComposerTransmitterReceiver<gnomonCellComplex *> cellcomplex_receiver;
     dtkComposerTransmitterReceiver<gnomonCellGraph *> cellgraph_receiver;
 };
 
@@ -47,6 +49,7 @@ gnomonComposerNodeView::gnomonComposerNodeView(void) : dtkComposerNodeLeaf()
     d = new gnomonComposerNodeViewPrivate;
 
     this->appendReceiver(&(d->image_receiver));
+    this->appendReceiver(&(d->cellcomplex_receiver));
     this->appendReceiver(&(d->cellgraph_receiver));
 }
 
@@ -80,6 +83,14 @@ void gnomonComposerNodeView::run(void)
 
         vtkImageData *data = static_cast<vtkImageData *>(converter->output());
 
+        d->view->manager()->insert(data);
+    }
+
+    if (!d->cellcomplex_receiver.isEmpty()) {
+
+        gnomonCellComplex *data = d->cellcomplex_receiver.data();
+        qDebug()<<"Node Get Cell Complex";
+        
         d->view->manager()->insert(data);
     }
 
