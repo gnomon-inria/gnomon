@@ -33,7 +33,6 @@
 #include <vtkImageData.h>
 #include <vtkIntArray.h>
 #include <vtkCellData.h>
-// #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -44,17 +43,18 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 
-// #include <QVTKOpenGLWidget.h>
-#include <vtkRenderWindow.h>
-#include <QVTKWidget.h>
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <QVTKOpenGLWidget.h>
+// #include <vtkRenderWindow.h>
+// #include <QVTKWidget.h>
 
 class gnomonViewPrivate
 {
 public:
-    // vtkGenericOpenGLRenderWindow *window;
-    // QVTKOpenGLWidget *widget;
-    vtkRenderWindow *window;
-    QVTKWidget *widget;
+    vtkGenericOpenGLRenderWindow *window;
+    QVTKOpenGLWidget *widget;
+    // vtkRenderWindow *window;
+    // QVTKWidget *widget;
     vtkRenderer *renderer;
 
 public:
@@ -70,12 +70,12 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(0.2, 0.2, 0.2);
 
-    // d->window = vtkGenericOpenGLRenderWindow::New();
-    d->window = vtkRenderWindow::New();
+    d->window = vtkGenericOpenGLRenderWindow::New();
+    // d->window = vtkRenderWindow::New();
     d->window->AddRenderer(d->renderer);
 
-    // d->widget = new QVTKOpenGLWidget(this);
-    d->widget = new QVTKWidget(this);
+    d->widget = new QVTKOpenGLWidget(this);
+    // d->widget = new QVTKWidget(this);
     d->widget->SetRenderWindow(d->window);
 
     QVBoxLayout *layout = new QVBoxLayout;
