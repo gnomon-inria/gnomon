@@ -46,7 +46,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+## #################################################################
+## Load project .cmake files first
+## #################################################################
+
+#set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_ROOT}/Modules")
 
 ## #################################################################
 ## Install prefix
@@ -82,6 +86,30 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
+# need of SSL_VERSION for Omero (except MacOSX)
+if(NOT APPLE)
+  find_package(OpenSSL)
+endif()
+
+#set(Ice_DEBUG true)
+#set(Ice_VERSION 3.6.4)
+#find_package(Ice ${Ice_VERSION} COMPONENTS Ice IceUtil Glacier2 IceXML)
+find_package(Ice COMPONENTS Ice IceUtil Glacier2 IceXML)
+find_package(omero-ice)
+find_package(omero-client)
+
+if(Ice_FOUND)
+  include_directories(${Ice_INCLUDE_DIRS})
+endif()
+
+if (OMERO_CLIENT_FOUND)
+  include_directories(${OMERO_CLIENT_INCLUDE_DIR})
+endif()
+
+if (OMERO_ICE_FOUND)
+  include_directories(${OMERO_ICE_INCLUDE_DIR})
+endif()
+
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
 
 find_package(dtk REQUIRED)
@@ -107,6 +135,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 

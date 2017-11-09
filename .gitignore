@@ -35,6 +35,7 @@ build
 ## ###################################################################
 
 src/gnomonCore/gnomonCore.i
+src/gnomonOmero/gnomonOmeroConfig.h
 
 ######################################################################
 ### .gitignore ends here
