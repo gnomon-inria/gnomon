@@ -21,6 +21,7 @@ public:
 
 public:
   QString description(void);
+  QString pixel_type(void);
   int number_of_channels(void);
   int number_of_timepoints(void);
   double dim_x(void);
@@ -30,6 +31,7 @@ public:
   double pixel_size_y(void);
   double pixel_size_z(void);
 
+
 public:
   gnomonOmeroType::type type(void);
   int long id(void);
@@ -37,7 +39,7 @@ public:
   QString name(void);
 
 public:
-  dtkImage data(void);
+  dtkImage *data(void);
 
 private:
   class gnomonOmeroImagePrivate *e;

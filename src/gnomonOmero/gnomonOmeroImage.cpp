@@ -14,13 +14,12 @@ class gnomonOmeroImagePrivate
 {
 public:
   omero::model::ImagePtr ref2omero;
-  omero::model::PixelsTypePtr pixel_type;
 
 public:
   int number_of_channels, number_of_timepoints;
   double pixel_size_x, pixel_size_y, pixel_size_z;
   double dim_x, dim_y, dim_z;
-  QString description;
+  QString description, pixel_type;
   omero::RStringPtr owner;
 };
 
@@ -29,6 +28,7 @@ gnomonOmeroImage::gnomonOmeroImage(void) : gnomonOmeroObject()
   d->type = gnomonOmeroType::image;
   e = new gnomonOmeroImagePrivate();
   e->description = "none" ;
+  e->pixel_type = "none" ;
   e->number_of_channels =0;
   e->number_of_timepoints =0;
   e->dim_x = 0;
@@ -55,7 +55,7 @@ gnomonOmeroImage::gnomonOmeroImage(omero::model::ImagePtr img) : gnomonOmeroObje
 
   if(e->ref2omero->getPrimaryPixels()) {
 
-    e->pixel_type = e->ref2omero->getPrimaryPixels()->getPixelsType();
+    e->pixel_type = e->ref2omero->getPrimaryPixels()->getPixelsType()->getValue();
 
     e->number_of_channels = e->ref2omero->getPrimaryPixels()->getSizeC()->getValue();
     e->number_of_timepoints = e->ref2omero->getPrimaryPixels()->getSizeT()->getValue();
@@ -96,7 +96,9 @@ QStringList gnomonOmeroImage::details(void)
   QStringList list;
   QString item;
 
-  item = "description : " + e->description ;
+  item = "description : " + e->description;
+  list << item;
+  item = "type pixel : " +  e->pixel_type;
   list << item;
   item = "nb channels : " + QString::number(e->number_of_channels);
   list << item;
@@ -112,7 +114,7 @@ QStringList gnomonOmeroImage::details(void)
   list << item;
   item = "pixel size y: " + QString::number(e->pixel_size_y) ;
   list << item;
-  item = "pixel size z: " + QString::number(e->pixel_size_x) ;
+  item = "pixel size z: " + QString::number(e->pixel_size_z) ;
   list << item;
 
   return list;
@@ -129,6 +131,11 @@ QString gnomonOmeroImage::name(void)
 QString gnomonOmeroImage::description(void)
 {
   return e->description;
+}
+
+QString gnomonOmeroImage::pixel_type(void)
+{
+  return e->pixel_type;
 }
 
 int gnomonOmeroImage::number_of_channels(void)
@@ -173,8 +180,9 @@ double gnomonOmeroImage::pixel_size_z(void)
 
 }
 
-dtkImage gnomonOmeroImage::data(void)
+dtkImage *gnomonOmeroImage::data(void)
 {
+  //dtkImage::fromRawData(3,QMetaType::UChar, e->dim_x, e->dim_y, e->dim_z, e->pixel_size_x, e->pixel_size_y, e->pixel_size_z, e->rawData);
 
-
+  return Q_NULLPTR ;
 }
