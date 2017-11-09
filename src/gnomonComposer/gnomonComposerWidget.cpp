@@ -131,6 +131,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     d->nodes = new dtkComposerNodeFactoryView(this);
     d->nodes->setFactory(d->composer->factory());
+    d->nodes->setDoom();
 
     connect(d->composer->scene(), SIGNAL(flagged(dtkComposerSceneNode *)), this, SLOT(onComposerNodeFlagged(dtkComposerSceneNode *)));
 
