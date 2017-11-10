@@ -18,10 +18,13 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <vtkImageData.h>
+class vtkImageData;
 
 class GNOMONVISUALIZATION_EXPORT gnomonActorImage : public gnomonActor
 {
+ public:
+    vtkTypeMacro(gnomonActorImage, vtkAssembly);
+
 protected:
      gnomonActorImage(void);
     ~gnomonActorImage(void);
@@ -29,9 +32,6 @@ protected:
 private:
     gnomonActorImage(const gnomonActorImage&) = delete;
     void operator = (const gnomonActorImage&) = delete;
-
-public:
-    vtkTypeMacro(gnomonActorImage, vtkAssembly);
 
 public:
     static gnomonActorImage *New(void);

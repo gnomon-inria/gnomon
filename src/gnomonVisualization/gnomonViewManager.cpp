@@ -26,7 +26,7 @@
 #include "gnomonInspectorViewWidget.h"
 #include "gnomonInspectorMain.h"
 #include "gnomonInspectorVolume.h"
-#include "gnomonInspectorClipPlanes.h"
+#include "gnomonInspectorSlicePlanes.h"
 #include "gnomonInspectorCellGraph.h"
 
 #include "gnomonClutEditor.h"
@@ -114,7 +114,7 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     // ///////////////////////////////////////////////////////////////////
     gnomonActorVolume *actor = gnomonActorVolume::New();
     actor->setVolume(volume);
-
+    getchar();
     d->volumes.insert(volume, actor);
 
     // ///////////////////////////////////////////////////////////////////
@@ -123,6 +123,7 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     gnomonInspectorVolume *volume_inspector = new gnomonInspectorVolume();
 
     volume_inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+    qWarning() << actor->histogram();
     volume_inspector->editor()->setHistogram(actor->histogram());
 
     connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
@@ -130,7 +131,9 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
             actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(volume_inspector->editor()->opacityTransferFunction()));
         });
 
-    gnomonInspectorClipPlanes *clip_planes_inspector = new gnomonInspectorClipPlanes();
+    gnomonInspectorSlicePlanes *clip_planes_inspector = new gnomonInspectorSlicePlanes();
+
+    connect(clip_planes_inspector, &gnomonInspectorSlicePlanes::opacityChanged, [=] {actor->setPlanesOpacity(clip_planes_inspector->opacity());});
 
     QList< gnomonInspectorImage * > volumes_inspectors;
     volumes_inspectors.append(volume_inspector);
@@ -211,7 +214,6 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
 
     connect(cellgraph_inspector->editor(), &gnomonClutEditor::updated, [=] () {
             actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
-            // actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(cellgraph_inspector->editor()->opacityTransferFunction()));
         });
 
     QList< gnomonInspectorCellGraph * > cellgraphs_inspectors;
