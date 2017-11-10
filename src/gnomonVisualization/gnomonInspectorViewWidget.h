@@ -16,15 +16,16 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QStackedWidget>
+#include <QScrollArea>
 
 class gnomonActor;
 class gnomonInspectorViewWidgetPrivate;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewWidget : public QStackedWidget {
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewWidget : public QScrollArea {
+
     Q_OBJECT
  public:
-    gnomonInspectorViewWidget();
+    gnomonInspectorViewWidget(QWidget *parent = nullptr);
     ~gnomonInspectorViewWidget();
 
  public slots:

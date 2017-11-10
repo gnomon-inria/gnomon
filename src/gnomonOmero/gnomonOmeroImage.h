@@ -2,6 +2,7 @@
 
 #include <gnomonOmeroObject>
 #include <omero/model/Image.h>
+
 #include <QtCore>
 #include <dtkCore>
 #include <dtkImaging>

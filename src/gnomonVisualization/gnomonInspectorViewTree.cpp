@@ -95,7 +95,8 @@ void gnomonInspectorViewTree::insert(vtkPolyData *mesh)
     d->mesh_items.insert(item, mesh);
     ++d->next_mesh_id;
 
-    if(gnomonActor *actor = d->view->manager()->actor(mesh)) {
+    gnomonActor *actor = d->view->manager()->actor(mesh);
+    if(actor != nullptr) {
         item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
     } else {
         item->setCheckState(2, Qt::Unchecked);
@@ -131,14 +132,12 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
     if(!d->view)
         return;
 
-    // if(column == 2) {
-
+    if(column == 2) {
         gnomonActor *actor = nullptr;
 
         if(d->mesh_items.keys().contains(item)) {
             actor = d->view->manager()->actor(d->mesh_items.value(item));
         }
-
 
         if(d->volume_items.keys().contains(item)) {
             actor = d->view->manager()->actor(d->volume_items.value(item));
@@ -156,7 +155,7 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
         emit checked(actor, (item->checkState(2) == Qt::Checked));
 
         d->view->update();
-    // }
+    }
 }
 
 void gnomonInspectorViewTree::onItemSelected(void)

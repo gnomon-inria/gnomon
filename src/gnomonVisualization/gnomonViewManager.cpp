@@ -230,10 +230,10 @@ void gnomonViewManager::onMeshSelected(vtkPolyData *mesh)
 
 gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerPrivate)
 {
-    d->inspector_tree = new gnomonInspectorViewTree();
-    d->inspector_widget = new gnomonInspectorViewWidget();
-
     d->inspector_main = new gnomonInspectorMain();
+    d->inspector_tree = new gnomonInspectorViewTree(d->inspector_main);
+    d->inspector_widget = new gnomonInspectorViewWidget(d->inspector_main);
+
     d->inspector_main->addWidget(d->inspector_tree);
     d->inspector_main->addWidget(d->inspector_widget);
 
