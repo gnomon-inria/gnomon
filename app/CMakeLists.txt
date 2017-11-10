@@ -13,7 +13,10 @@
 ### Code:
 
 add_subdirectory(gnomonGrowthSimulator)
-#add_subdirectory(gnomonOmeroClient)
+
+if(OMERO_ICE_FOUND AND OMERO_CLIENT_FOUND)
+  add_subdirectory(gnomonOmeroClient)
+endif(OMERO_ICE_FOUND AND OMERO_CLIENT_FOUND)
 
 ######################################################################
 ### CMakeLists.txt ends here

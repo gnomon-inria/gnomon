@@ -1,3 +1,17 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonInspectorMain.h"
 
 // ///////////////////////////////////////////////////////////////////
@@ -15,10 +29,13 @@ class gnomonInspectorMainPrivate
 
 gnomonInspectorMain::gnomonInspectorMain() : QSplitter(Qt::Vertical), d(new gnomonInspectorMainPrivate)
 {
-
+    this->setHandleWidth(2);
 }
 
-gnomonInspectorMain::~gnomonInspectorMain()
+gnomonInspectorMain::~gnomonInspectorMain(void)
 {
 
 }
+
+//
+// gnomonInspectorMain.cpp ends here

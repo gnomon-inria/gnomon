@@ -1,0 +1,22 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#define GNOMON_GIT_BRANCH "@GNOMON_GIT_BRANCH@"
+#define GNOMON_GIT_COMMIT "@GNOMON_GIT_COMMIT@"
+#define GNOMON_GIT_UPDATES "@GNOMON_GIT_UPDATES@"
+
+//
+// gnomonConfig.h.in ends here

@@ -37,26 +37,28 @@ public:
 
     void setView(gnomonView *view);
 
- public:
+public:
     void insert(vtkPolyData *mesh);
     void insert(vtkImageData *volume);
     void insert(gnomonCellComplex *complex);
     void insert(gnomonCellGraph *graph);
 
- signals:
+signals:
     void checked(gnomonActor *, bool);
 
     void selected(vtkPolyData *mesh);
     void selected(vtkImageData *volume);
     void selected(gnomonCellComplex *complex);
     void selected(gnomonCellGraph *graph);
+=======
+>>>>>>> develop
 
 private slots:
    void onItemClicked(QTreeWidgetItem *item, int column);
    void onItemSelected(void);
 
- private:
-    gnomonInspectorViewTreePrivate *d;
+private:
+   gnomonInspectorViewTreePrivate *d;
 };
 
 //
