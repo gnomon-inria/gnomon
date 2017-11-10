@@ -26,7 +26,7 @@ namespace gnomonCore {
 
     GNOMONCORE_EXPORT dtkCoreLayerManager& manager(void);
 
-    DTKIMAGING_EXPORT void activateObjectManager(void);
+    GNOMONCORE_EXPORT void activateObjectManager(void);
 
     GNOMONCORE_EXPORT void   initialize(const QString& path = QString());
     GNOMONCORE_EXPORT void uninitialize(void);

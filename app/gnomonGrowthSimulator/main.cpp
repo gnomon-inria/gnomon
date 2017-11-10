@@ -22,6 +22,7 @@
 #include <dtkWidgets>
 
 #include <dtkImaging>
+#include <gnomonCore>
 
 #include <vtkGenericOpenGLRenderWindow.h>
 
@@ -66,12 +67,11 @@ int main(int argc, char *argv[])
     dtkComposer::extension::initialize();
 
     // ///////////////////////////////////////////////////////////////////
-    // Prepare layers
+    // Activate object manager
     // ///////////////////////////////////////////////////////////////////
 
-    dtkImaging::setVerboseLoading(false);
     dtkImaging::activateObjectManager();
-    dtkImaging::initialize();
+    gnomonCore::activateObjectManager();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window
