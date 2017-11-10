@@ -54,7 +54,6 @@ public slots:
 public:
     void *colorTransferFunction(void);
     void *opacityTransferFunction(void);
-    void *planesOpacity(void);
 
     void *mapper(void);
     void *vol(void);
@@ -69,7 +68,6 @@ public:
 public:
     void setColorTransferFunction(vtkColorTransferFunction *);
     void setOpacityTransferFunction(vtkPiecewiseFunction *);
-    void setPlanesOpacity(double);
 
 protected:
      gnomonActorVolume(void);
