@@ -17,6 +17,7 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorImage.h"
 #include "gnomonActorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
@@ -81,8 +82,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     d = new gnomonViewPrivate;
 
-    d->manager = new gnomonViewManager;
-
+    d->manager = new gnomonViewManager();
     gnomonInspectorViewTree *inspector= d->manager->inspectorTree();
     inspector->setView(this);
 
@@ -106,14 +106,17 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     this->setLayout(layout);
 
-    connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
+    d->manager->interactor = d->widget->GetInteractor();
 
+    connect(d->manager, SIGNAL(inserted(gnomonActorVolume *)), this, SLOT(onInserted(gnomonActorVolume *)));
+    connect(d->manager, SIGNAL(inserted(gnomonActorImage *)), this, SLOT(onInserted(gnomonActorImage *)));
     connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
-    connect(d->manager, SIGNAL(selected(QWidget *)), this, SLOT(onInspectorSelected(QWidget *)));
-
+    connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellComplex *)), this, SLOT(onInserted(gnomonCellComplex *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellGraph *)), this, SLOT(onInserted(gnomonCellGraph *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellImage *)), this, SLOT(onInserted(gnomonCellImage *)));
+
+    connect(d->manager, SIGNAL(selected(QWidget *)), this, SLOT(onInspectorSelected(QWidget *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -256,13 +259,16 @@ void gnomonView::addCellGraph(gnomonCellGraph &graph)
     return;
 }
 
-void gnomonView::onInserted(vtkImageData *image)
+void gnomonView::onInserted(gnomonActorImage *image)
 {
-    gnomonActorVolume *actor = dynamic_cast<gnomonActorVolume *>(d->manager->actor(image));
-    actor->setInteractor(d->widget->GetInteractor());
-    actor->setVolume(image);
+    qWarning() << Q_FUNC_INFO;
+    d->renderer->AddActor(image);
+}
 
-    d->renderer->AddActor(actor);
+void gnomonView::onInserted(gnomonActorVolume *volume)
+{
+    qWarning() << Q_FUNC_INFO;
+    d->renderer->AddActor(volume);
 }
 
 void gnomonView::onInserted(vtkPolyData *mesh)
@@ -270,6 +276,16 @@ void gnomonView::onInserted(vtkPolyData *mesh)
     gnomonActorMesh *actor = dynamic_cast<gnomonActorMesh *>(d->manager->actor(mesh));
     actor->setInteractor(d->widget->GetInteractor());
     actor->setMesh(mesh);
+
+    d->renderer->AddActor(actor);
+}
+
+void gnomonView::onInserted(vtkImageData *image)
+{
+    qWarning() << Q_FUNC_INFO;
+    gnomonActorImage *actor = dynamic_cast<gnomonActorImage *>(d->manager->actor(image));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setImage(image);
 
     d->renderer->AddActor(actor);
 }
