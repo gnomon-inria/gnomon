@@ -25,17 +25,22 @@ class gnomonActorMeshCellComplex;
 class gnomonActorMeshCellGraph;
 class gnomonActorMeshCellImage;
 class gnomonActorVolume;
+class gnomonActorImage;
 
 class gnomonCellComplex;
 class gnomonCellGraph;
+class gnomonCellImage;
+
 class vtkImageData;
 class vtkPolyData;
+class vtkRenderWindowInteractor;
 
 class gnomonInspectorViewTree;
 class gnomonInspectorViewWidget;
 class gnomonInspectorMain;
 
 class gnomonInspectorImage;
+class gnomonInspectorVolume;
 class gnomonInspectorCellGraph;
 
 class QWidget;
@@ -43,17 +48,19 @@ class QWidget;
 class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
 {
     Q_OBJECT
+ public :
+    vtkRenderWindowInteractor *interactor;
 
 public:
     gnomonActor *actor(vtkPolyData *mesh);
-    gnomonActor *actor(vtkImageData *volume);
+    gnomonActor *actor(vtkImageData *image);
     gnomonActor *actor(gnomonCellComplex *cellcomplex);
     gnomonActor *actor(gnomonCellGraph *cellgraph);
     gnomonActor *actor(gnomonCellImage *cellimage);
 
 public:
     gnomonActor *insert(vtkPolyData *mesh);
-    gnomonActor *insert(vtkImageData *volume);
+    gnomonActor *insert(vtkImageData *image);
     gnomonActor *insert(gnomonCellComplex *cellcomplex);
     gnomonActor *insert(gnomonCellGraph *cellgraph);
     gnomonActor *insert(gnomonCellImage *cellimage);
@@ -77,6 +84,8 @@ public:
     QList<gnomonCellImage *> cellimages(void);
 
 signals:
+    void inserted(gnomonActorImage *image);
+    void inserted(gnomonActorVolume *volume);
     void inserted(vtkPolyData *mesh);
     void inserted(vtkImageData *volume);
     void inserted(gnomonCellComplex *cellcomplex);
@@ -102,11 +111,12 @@ public slots:
  protected slots:
     void onMeshSelected(vtkPolyData *mesh);
     void onVolumeSelected(gnomonActorVolume *volume);
-    void onCellGraphSelected(gnomonActorMeshCellGraph *volume);
+    void onImageSelected(gnomonActorImage *image);
+    void onCellGraphSelected(gnomonActorMeshCellGraph *graph);
 
+    void onInspectorVolumeSelected(gnomonInspectorVolume *inspector);
     void onInspectorImageSelected(gnomonInspectorImage *inspector);
     void onInspectorCellGraphSelected(gnomonInspectorCellGraph *inspector);
-
 private:
      gnomonViewManager(void);
     ~gnomonViewManager(void);
