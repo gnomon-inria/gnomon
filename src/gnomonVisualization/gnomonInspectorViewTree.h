@@ -26,10 +26,12 @@ class gnomonCellGraph;
 class gnomonView;
 class gnomonActor;
 class gnomonActorVolume;
+class gnomonActorImage;
 class gnomonActorMeshCellGraph;
 
 class gnomonInspectorViewTreePrivate;
 class gnomonInspectorImage;
+class gnomonInspectorVolume;
 class gnomonInspectorCellGraph;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewTree : public QTreeWidget {
@@ -45,6 +47,9 @@ public:
     void insert(vtkPolyData *mesh);
 
     QTreeWidgetItem *insert(gnomonActorVolume *volume_actor);
+    QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorVolume *inspector_volume);
+
+    QTreeWidgetItem *insert(gnomonActorImage *image_actor);
     QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorImage *inspector_image);
 
     void insert(gnomonCellComplex *complex);
@@ -58,6 +63,8 @@ signals:
 
     void selected(vtkPolyData *mesh);
     void selected(gnomonActorVolume *volume);
+    void selected(gnomonActorImage *image);
+    void selected(gnomonInspectorVolume *volume);
     void selected(gnomonInspectorImage *image);
     void selected(gnomonCellComplex *complex);
     void selected(gnomonActorMeshCellGraph *cellgraph);
