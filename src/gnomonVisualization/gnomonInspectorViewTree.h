@@ -34,25 +34,22 @@ public:
 
     void setView(gnomonView *view);
 
- public:
+public:
     void insert(vtkPolyData *mesh);
     void insert(vtkImageData *volume);
 
- signals:
+signals:
     void checked(gnomonActor *, bool);
 
     void selected(vtkPolyData *mesh);
     void selected(vtkImageData *volume);
 
-public slots:
-
-
 private slots:
    void onItemClicked(QTreeWidgetItem *item, int column);
    void onItemSelected(void);
 
- private:
-    gnomonInspectorViewTreePrivate *d;
+private:
+   gnomonInspectorViewTreePrivate *d;
 };
 
 //

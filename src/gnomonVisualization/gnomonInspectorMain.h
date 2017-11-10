@@ -20,13 +20,15 @@
 
 class gnomonInspectorMainPrivate;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorMain : public QSplitter {
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorMain : public QSplitter
+{
     Q_OBJECT
- public:
-    gnomonInspectorMain();
-    ~gnomonInspectorMain();
 
  public:
+     gnomonInspectorMain();
+    ~gnomonInspectorMain();
+
+public:
     gnomonInspectorMainPrivate *d;
 };
 

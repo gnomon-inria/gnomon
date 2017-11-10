@@ -21,17 +21,18 @@
 class gnomonActor;
 class gnomonInspectorViewWidgetPrivate;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewWidget : public QScrollArea {
-
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewWidget : public QScrollArea
+{
     Q_OBJECT
- public:
-    gnomonInspectorViewWidget(QWidget *parent = nullptr);
+
+public:
+     gnomonInspectorViewWidget(QWidget *parent = nullptr);
     ~gnomonInspectorViewWidget();
 
- public slots:
+public slots:
     void setActor(gnomonActor *actor, bool enabled);
 
- public:
+public:
     gnomonInspectorViewWidgetPrivate *d;
 };
 
