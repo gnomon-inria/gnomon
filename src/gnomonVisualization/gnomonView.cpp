@@ -20,9 +20,12 @@
 #include "gnomonActorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
+#include "gnomonActorMeshCellImage.h"
 
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
+#include "gnomonCellImage.h"
+
 
 #include <gnomonStyle>
 
@@ -266,6 +269,15 @@ void gnomonView::onInserted(vtkPolyData *mesh)
     d->renderer->AddActor(actor);
 }
 
+void gnomonView::onInserted(gnomonCellComplex *cellcomplex)
+{
+    gnomonActorMeshCellComplex *actor = dynamic_cast<gnomonActorMeshCellComplex *>(d->manager->actor(cellcomplex));
+    actor->setInteractor(d->widget->GetInteractor());
+    actor->setCellComplex(cellcomplex);
+
+    d->renderer->AddActor(actor);
+}
+
 void gnomonView::onInserted(gnomonCellGraph *cellgraph)
 {
     gnomonActorMeshCellGraph *actor = dynamic_cast<gnomonActorMeshCellGraph *>(d->manager->actor(cellgraph));
@@ -275,14 +287,15 @@ void gnomonView::onInserted(gnomonCellGraph *cellgraph)
     d->renderer->AddActor(actor);
 }
 
-void gnomonView::onInserted(gnomonCellComplex *cellcomplex)
+void gnomonView::onInserted(gnomonCellImage *cellimage)
 {
-    gnomonActorMeshCellComplex *actor = dynamic_cast<gnomonActorMeshCellComplex *>(d->manager->actor(cellcomplex));
+    gnomonActorMeshCellImage *actor = dynamic_cast<gnomonActorMeshCellImage *>(d->manager->actor(cellimage));
     actor->setInteractor(d->widget->GetInteractor());
-    actor->setCellComplex(cellcomplex);
+    actor->setCellImage(cellimage);
 
     d->renderer->AddActor(actor);
 }
+
 
 void gnomonView::onInspectorSelected(QWidget *inspector)
 {
