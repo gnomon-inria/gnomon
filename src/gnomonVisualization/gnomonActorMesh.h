@@ -32,6 +32,9 @@ public:
 public:
     void setInteractor(void *interactor) override;
     void setMesh(vtkPolyData *mesh);
+    
+    virtual void hide(void);
+    virtual void show(void);
 
 public slots:
     void update(void) override;

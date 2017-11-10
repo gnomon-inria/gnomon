@@ -85,6 +85,18 @@ void gnomonActorMesh::update(void)
     d->interactor->Render();
 }
 
+void gnomonActorMesh::hide(void)
+{
+    this->VisibilityOff();
+    d->interactor->Render();
+}
+
+void gnomonActorMesh::show(void)
+{
+    this->VisibilityOn();
+    d->interactor->Render();
+}
+
 gnomonActorMesh::gnomonActorMesh(void) : gnomonActor(), d(new gnomonActorMeshPrivate)
 {
     d->mesh = Q_NULLPTR;
