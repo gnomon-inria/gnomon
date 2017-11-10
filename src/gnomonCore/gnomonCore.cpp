@@ -21,6 +21,11 @@ namespace gnomonCore {
 
 DTK_DEFINE_LAYER_MANAGER;
 
+void activateObjectManager(void)
+{
+    manager().setObjectManager(dtkObjectManager::instance());
+}
+
 void initialize(const QString& path)
 {
     QString realpath = path;
