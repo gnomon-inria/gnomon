@@ -133,13 +133,16 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *volume_actor
     if(d->volume_items.values().contains(volume_actor))
         return nullptr;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Volume " + QString::number(d->next_volume_id) << "Volume");
-    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+    QTreeWidgetItem *item = new QTreeWidgetItem((QTreeWidget*)0, QStringList() << "Volume " + QString::number(d->next_volume_id) << "Volume");
+
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
 
     d->volume_items.insert(item, volume_actor);
     ++d->next_volume_id;
 
     item->setCheckState(2, volume_actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+    this->addTopLevelItem(item);
 
     return item;
 }
@@ -148,29 +151,24 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *volume_actor
 QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnomonInspectorVolume *inspector_volume)
 {
     if(!parent) {
-        qWarning() << Q_FUNC_INFO << __LINE__;
         return nullptr;
     }
 
     if(!inspector_volume) {
-        qWarning() << Q_FUNC_INFO << __LINE__;
         return nullptr;
     }
 
     if(!d->volume_items.keys().contains(parent)) {
-        qWarning() << Q_FUNC_INFO << __LINE__;
         return nullptr;
     }
 
     if(d->volume_inspector_items.values().contains(inspector_volume)) {
-        qWarning() << Q_FUNC_INFO << __LINE__;
         return nullptr;
     }
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Inspector " + QString::number(d->next_inspector_volume_id) << "Inspector");
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent, QStringList() << "Inspector " + QString::number(d->next_inspector_volume_id) << "Inspector");
 
     parent->addChild(item);
-    qWarning() << Q_FUNC_INFO << __LINE__;
 
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 

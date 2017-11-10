@@ -110,6 +110,7 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     actor->setVolume(volume);
 
     d->volumes.insert(volume, actor);
+
     // ///////////////////////////////////////////////////////////////////
     // Inspectors are created here
     // ///////////////////////////////////////////////////////////////////
@@ -125,9 +126,7 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     d->volumes_inspectors.insert(actor, volumes_inspectors);
 
     QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
-    qWarning() << tree_item;
-    qWarning() << Q_FUNC_INFO;
-    qWarning() << d->inspector_tree->addChild(tree_item, volume_inspector);
+    d->inspector_tree->addChild(tree_item, volume_inspector);
 
     emit inserted(volume);
 
