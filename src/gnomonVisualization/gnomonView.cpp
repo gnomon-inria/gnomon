@@ -62,11 +62,11 @@
 class gnomonViewPrivate
 {
 public:
-    vtkGenericOpenGLRenderWindow *window;
-    // vtkRenderWindow *window;
+    // vtkGenericOpenGLRenderWindow *window;
+    vtkRenderWindow *window;
     vtkRenderer *renderer;
-    QVTKOpenGLWidget *widget;
-    // QVTKWidget *widget;
+    // QVTKOpenGLWidget *widget;
+    QVTKWidget *widget;
 
 public:
     QWidget *current_inspector;
@@ -91,12 +91,12 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
-    d->window = vtkGenericOpenGLRenderWindow::New();
-    // d->window = vtkRenderWindow::New();
+    // d->window = vtkGenericOpenGLRenderWindow::New();
+    d->window = vtkRenderWindow::New();
     d->window->AddRenderer(d->renderer);
 
-    d->widget = new QVTKOpenGLWidget(this);
-    // d->widget = new QVTKWidget(this);
+    // d->widget = new QVTKOpenGLWidget(this);
+    d->widget = new QVTKWidget(this);
     d->widget->SetRenderWindow(d->window);
 
     QVBoxLayout *layout = new QVBoxLayout;

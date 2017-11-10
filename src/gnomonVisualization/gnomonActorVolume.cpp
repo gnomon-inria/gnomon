@@ -230,6 +230,7 @@ void gnomonActorVolume::update(void)
                 d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, index, index);
             }
             d->planes[i]->Update();
+            d->planes[i]->SetVisibility(0);
             this->AddPart(d->planes[i]);
         }
 
