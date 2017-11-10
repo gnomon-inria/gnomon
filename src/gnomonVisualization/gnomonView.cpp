@@ -48,10 +48,8 @@
 #include <vtkSphereSource.h>
 #include <QVTKOpenGLWidget.h>
 
-// #include <vtkGenericOpenGLRenderWindow.h>
-// #include <QVTKOpenGLWidget.h>
-#include <vtkRenderWindow.h>
-#include <QVTKWidget.h>
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <QVTKOpenGLWidget.h>
 
 #include <QWidget>
 
@@ -61,11 +59,11 @@
 class gnomonViewPrivate
 {
 public:
-    // vtkGenericOpenGLRenderWindow *window;
-    // QVTKOpenGLWidget *widget;
-    vtkRenderWindow *window;
-    QVTKWidget *widget;
+    vtkGenericOpenGLRenderWindow *window;
     vtkRenderer *renderer;
+    QVTKOpenGLWidget *widget;
+
+public:
     QWidget *current_inspector;
 
 public:
@@ -88,12 +86,10 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d->renderer = vtkRenderer::New();
     d->renderer->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
-    // d->window = vtkGenericOpenGLRenderWindow::New();
-    d->window = vtkRenderWindow::New();
+    d->window = vtkGenericOpenGLRenderWindow::New();
     d->window->AddRenderer(d->renderer);
 
-    // d->widget = new QVTKOpenGLWidget(this);
-    d->widget = new QVTKWidget(this);
+    d->widget = new QVTKOpenGLWidget(this);
     d->widget->SetRenderWindow(d->window);
 
     QVBoxLayout *layout = new QVBoxLayout;
