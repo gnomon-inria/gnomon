@@ -21,6 +21,7 @@
 #include <vtkCommand.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkColorTransferFunction.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 
@@ -70,9 +71,21 @@ void gnomonActorMesh::update(void)
     if(!d->interactor)
         return;
 
+    if(!d->colorFunction) {
+        d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+        d->colorFunction->SetColorSpaceToRGB();
+        d->colorFunction->RemoveAllPoints();
+        d->colorFunction->AddRGBPoint(0.0, 0.0, 0.0, 1.0);
+        d->colorFunction->AddRGBPoint(0.5, 0.0, 1.0, 0.0);
+        d->colorFunction->AddRGBPoint(1.0, 1.0, 0.0, 0.0);
+        d->colorFunction->ClampingOn();
+    }
+    d->colorFunction->Modified();
+
     if(!d->mapper) {
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         d->mapper->SetInputData(d->mesh);
+        d->mapper->SetLookupTable(d->colorFunction);
     }
 
     if(!d->actor) {
@@ -95,6 +108,12 @@ void gnomonActorMesh::show(void)
 {
     this->VisibilityOn();
     d->interactor->Render();
+}
+
+void gnomonActorMesh::setColorTransferFunction(vtkColorTransferFunction *func)
+{
+    d->colorFunction = func;
+    this->update();
 }
 
 gnomonActorMesh::gnomonActorMesh(void) : gnomonActor(), d(new gnomonActorMeshPrivate)

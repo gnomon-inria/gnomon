@@ -24,6 +24,7 @@
 #include <vtkCommand.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkColorTransferFunction.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
@@ -48,6 +49,10 @@ public:
     vtkSmartPointer<vtkGlyph3D> point_glyph;
     vtkSmartPointer<vtkPolyDataMapper> point_mapper;
     vtkSmartPointer<vtkActor> point_actor;
+
+public:
+    double range_min;
+    double range_max;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -89,7 +94,7 @@ void gnomonActorMeshCellGraph::update(void)
         long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
         vertexPoint[vertexId] = vtkId;
         polydataPointData->InsertValue(vtkId,vertexId);
-        qDebug()<<vtkId<<":"<<vertexId<<" ("<<positions_x[vertexId].value<double>()<<","<<positions_y[vertexId].value<double>()<<","<<positions_z[vertexId].value<double>()<<")";
+        // qDebug()<<vtkId<<":"<<vertexId<<" ("<<positions_x[vertexId].value<double>()<<","<<positions_y[vertexId].value<double>()<<","<<positions_z[vertexId].value<double>()<<")";
     }
 
     QList<long> edges = dd->cellgraph->edgeIds();
@@ -118,6 +123,7 @@ void gnomonActorMeshCellGraph::update(void)
         d->actor->SetMapper(d->mapper);
         this->AddPart(d->actor);
     }
+    d->actor->Modified();
 
 
     if (!dd->point_mesh) {
@@ -142,21 +148,57 @@ void gnomonActorMeshCellGraph::update(void)
         dd->point_glyph->SetInputData(dd->point_mesh);
         dd->point_glyph->Update();
     }
+    dd->point_glyph->Modified();
+
+    double valuesRange[2];
+    dd->point_mesh->GetPointData()->GetScalars()->GetRange(valuesRange);
+
+    dd->range_min = valuesRange[0];
+    dd->range_max = valuesRange[1];
+
+    double min = valuesRange[0];
+    double max = valuesRange[1];
+    double mid = (min + max)/2.;
+
+    if(!d->colorFunction) {
+        d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+        d->colorFunction->SetColorSpaceToRGB();
+        d->colorFunction->RemoveAllPoints();
+        d->colorFunction->AddRGBPoint(min, 0.0, 0.0, 1.0);
+        d->colorFunction->AddRGBPoint(mid, 0.0, 1.0, 0.0);
+        d->colorFunction->AddRGBPoint(max, 1.0, 0.0, 0.0);
+        d->colorFunction->ClampingOn();
+    }
+    d->colorFunction->Modified();
 
     if (!dd->point_mapper) {
         dd->point_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         dd->point_mapper->SetInputData(dd->point_glyph->GetOutput());
         dd->point_mapper->SetScalarRange(0, dd->cellgraph->vertexCount()-1);
     }
+    dd->point_mapper->SetLookupTable(d->colorFunction);
+    dd->point_mapper->Modified();
 
     if(!dd->point_actor) {
         dd->point_actor = vtkSmartPointer<vtkActor>::New();
         dd->point_actor ->SetMapper(dd->point_mapper);
         this->AddPart(dd->point_actor);
     }
+    dd->point_actor->Modified();
 
     d->interactor->Render();
 }
+
+double gnomonActorMeshCellGraph::rangeMin() const
+{
+    return dd->range_min;
+}
+
+double gnomonActorMeshCellGraph::rangeMax() const
+{
+    return dd->range_max;
+}
+
 
 gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellGraphPrivate)
 {

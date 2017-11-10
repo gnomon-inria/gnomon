@@ -416,6 +416,7 @@ void *gnomonActorVolume::volumeProperty(void)
 {
     return d->volProperty;
 }
+
 double gnomonActorVolume::rangeMin() const
 {
     return d->range_min;
@@ -430,6 +431,7 @@ const QList<int>& gnomonActorVolume::histogram() const
 {
     return d->histo;
 }
+
 void gnomonActorVolume::setColorTransferFunction(vtkColorTransferFunction *func)
 {
     d->colorFunction = func;

@@ -47,6 +47,7 @@ public:
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
     QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
     QHash<gnomonActorMeshCellGraph *, QList< gnomonInspectorCellGraph * > > cellgraphs_inspectors;
+    QHash<gnomonInspectorCellGraph *, gnomonActorMeshCellGraph *> cellgraphs_inspector_actors;
     QHash<gnomonCellImage *, gnomonActor *> cellimages;
 };
 
@@ -117,6 +118,9 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
     // Inspectors are created here
     // ///////////////////////////////////////////////////////////////////
     gnomonInspectorVolume *volume_inspector = new gnomonInspectorVolume();
+    
+    volume_inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+    volume_inspector->editor()->setHistogram(actor->histogram());
 
     connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
             actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
@@ -196,14 +200,17 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
     // ///////////////////////////////////////////////////////////////////
     gnomonInspectorCellGraph *cellgraph_inspector = new gnomonInspectorCellGraph();
 
+    cellgraph_inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+
     connect(cellgraph_inspector->editor(), &gnomonClutEditor::updated, [=] () {
-            // actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
+            actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
             // actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(cellgraph_inspector->editor()->opacityTransferFunction()));
         });
 
     QList< gnomonInspectorCellGraph * > cellgraphs_inspectors;
     cellgraphs_inspectors.append(cellgraph_inspector);
     d->cellgraphs_inspectors.insert(actor, cellgraphs_inspectors);
+    d->cellgraphs_inspector_actors.insert(cellgraph_inspector,actor);
 
     QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
     qWarning() << tree_item;
@@ -336,6 +343,9 @@ void gnomonViewManager::onInspectorCellGraphSelected(gnomonInspectorCellGraph *i
 {
     d->inspector_widget->setInspector(inspector, true);
 
+    gnomonActorMeshCellGraph *actor = d->cellgraphs_inspector_actors[inspector]; 
+    inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+
     emit selected(d->inspector_widget);
     //to implement
 }
@@ -355,6 +365,7 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
 
     connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
     connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorVolume *)), this, SLOT(onInspectorVolumeSelected(gnomonInspectorVolume *)));
+    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorCellGraph *)), this, SLOT(onInspectorCellGraphSelected(gnomonInspectorCellGraph *)));
 }
 
 gnomonViewManager::~gnomonViewManager(void)
