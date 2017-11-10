@@ -38,6 +38,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonClutEditor.h
   gnomonInspector
   gnomonInspector.h
+  gnomonInspectorCellGraph
+  gnomonInspectorCellGraph.h
   gnomonInspectorImage
   gnomonInspectorImage.h
   gnomonInspectorMain
@@ -66,6 +68,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorVolume.cpp
   gnomonClutEditor.cpp
   gnomonInspector.cpp
+  gnomonInspectorCellGraph.cpp
   gnomonInspectorImage.cpp
   gnomonInspectorMesh.cpp
   gnomonInspectorMain.cpp

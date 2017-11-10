@@ -18,6 +18,8 @@
 #include "gnomonActor.h"
 #include "gnomonViewManager.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorMeshCellGraph.h"
+
 
 #include <QtCore>
 #include <QtWidgets>
@@ -39,14 +41,16 @@ public:
     QHash<QTreeWidgetItem *, gnomonActorVolume *> volume_items;
     QHash<QTreeWidgetItem *, gnomonInspectorVolume *> volume_inspector_items;
     QHash<QTreeWidgetItem *, gnomonCellComplex *> complex_items;
-    QHash<QTreeWidgetItem *, gnomonCellGraph *> graph_items;
+    QHash<QTreeWidgetItem *, gnomonActorMeshCellGraph *> cellgraph_items;
+    QHash<QTreeWidgetItem *, gnomonInspectorCellGraph *> cellgraph_inspector_items;
 
 public:
     std::size_t next_mesh_id;
     std::size_t next_volume_id;
     std::size_t next_inspector_volume_id;
     std::size_t next_complex_id;
-    std::size_t next_graph_id;
+    std::size_t next_cellgraph_id;
+    std::size_t next_inspector_cellgraph_id;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -59,7 +63,8 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
     d->next_volume_id = 0;
     d->next_inspector_volume_id = 0;
     d->next_mesh_id = 0;
-    d->next_graph_id = 0;
+    d->next_cellgraph_id = 0;
+    d->next_inspector_cellgraph_id = 0;
     d->next_complex_id = 0;
 
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -85,7 +90,7 @@ gnomonInspectorViewTree::~gnomonInspectorViewTree()
     for(auto item : d->complex_items.keys()) {
         delete item;
     }
-    for(auto item : d->graph_items.keys()) {
+    for(auto item : d->cellgraph_items.keys()) {
         delete item;
     }
 }
@@ -179,6 +184,65 @@ QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnom
     return item;
 }
 
+/*Returns nullptr if actor is nullptr or if already inserted */
+QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellgraph_actor)
+{
+    if(!cellgraph_actor) {
+        qDebug() << Q_FUNC_INFO << "cellgraph_actor is NULL";
+        return nullptr;
+    }
+
+    if(d->cellgraph_items.values().contains(cellgraph_actor))
+        return nullptr;
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "CellGraph " + QString::number(d->next_cellgraph_id) << "CellGraph");
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+
+    d->cellgraph_items.insert(item, cellgraph_actor);
+    ++d->next_cellgraph_id;
+
+    item->setCheckState(2, cellgraph_actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+    return item;
+}
+
+/*Returns nullptr if actor is nullptr or if already inserted */
+QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnomonInspectorCellGraph *inspector_cellgraph)
+{
+    if(!parent) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    if(!inspector_cellgraph) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    if(!d->cellgraph_items.keys().contains(parent)) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    if(d->cellgraph_inspector_items.values().contains(inspector_cellgraph)) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Inspector " + QString::number(d->next_inspector_cellgraph_id) << "Inspector");
+
+    parent->addChild(item);
+    qWarning() << Q_FUNC_INFO << __LINE__;
+
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+    d->cellgraph_inspector_items.insert(item, inspector_cellgraph);
+
+    ++d->next_cellgraph_id;
+
+    return item;
+}
+
 void gnomonInspectorViewTree::insert(gnomonCellComplex *complex)
 {
     if(!complex) {
@@ -202,28 +266,28 @@ void gnomonInspectorViewTree::insert(gnomonCellComplex *complex)
     }
 }
 
-void gnomonInspectorViewTree::insert(gnomonCellGraph *graph)
-{
-    if(!graph) {
-        qDebug() << Q_FUNC_INFO << "graph is NULL";
-        return;
-    }
+// void gnomonInspectorViewTree::insert(gnomonCellGraph *graph)
+// {
+//     if(!graph) {
+//         qDebug() << Q_FUNC_INFO << "graph is NULL";
+//         return;
+//     }
 
-    if(d->graph_items.values().contains(graph))
-        return;
+//     if(d->graph_items.values().contains(graph))
+//         return;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Graph " + QString::number(d->next_graph_id) << "Graph");
-    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+//     QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Graph " + QString::number(d->next_graph_id) << "Graph");
+//     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 
-    d->graph_items.insert(item, graph);
-    ++d->next_graph_id;
+//     d->graph_items.insert(item, graph);
+//     ++d->next_graph_id;
 
-    if(gnomonActor *actor = d->view->manager()->actor(graph)) {
-        item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
-    } else {
-        item->setCheckState(2, Qt::Unchecked);
-    }
-}
+//     if(gnomonActor *actor = d->view->manager()->actor(graph)) {
+//         item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+//     } else {
+//         item->setCheckState(2, Qt::Unchecked);
+//     }
+// }
 
 void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
 {
@@ -245,8 +309,8 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
             actor = d->view->manager()->actor(d->complex_items.value(item));
         }
 
-        if(d->graph_items.keys().contains(item)) {
-            actor = d->view->manager()->actor(d->graph_items.value(item));
+        if(d->cellgraph_items.keys().contains(item)) {
+            actor = d->cellgraph_items.value(item);
         }
 
         if(!actor)
@@ -275,11 +339,14 @@ void gnomonInspectorViewTree::onItemSelected(void)
     if(d->complex_items.keys().contains(this->currentItem())) {
         emit selected(d->complex_items.value(this->currentItem()));
     }
-    if(d->graph_items.keys().contains(this->currentItem())) {
-        emit selected(d->graph_items.value(this->currentItem()));
+    if(d->cellgraph_items.keys().contains(this->currentItem())) {
+        emit selected(d->cellgraph_items.value(this->currentItem()));
     }
     if(d->volume_inspector_items.keys().contains(this->currentItem())) {
         emit selected(d->volume_inspector_items.value(this->currentItem()));
+    }
+    if(d->cellgraph_inspector_items.keys().contains(this->currentItem())) {
+        emit selected(d->cellgraph_inspector_items.value(this->currentItem()));
     }
 }
 

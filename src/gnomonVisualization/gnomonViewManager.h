@@ -36,6 +36,7 @@ class gnomonInspectorViewWidget;
 class gnomonInspectorMain;
 
 class gnomonInspectorVolume;
+class gnomonInspectorCellGraph;
 
 class QWidget;
 
@@ -101,8 +102,10 @@ public slots:
  protected slots:
     void onMeshSelected(vtkPolyData *mesh);
     void onVolumeSelected(gnomonActorVolume *volume);
+    void onCellGraphSelected(gnomonActorMeshCellGraph *volume);
 
     void onInspectorVolumeSelected(gnomonInspectorVolume *inspector);
+    void onInspectorCellGraphSelected(gnomonInspectorCellGraph *inspector);
 
 private:
      gnomonViewManager(void);

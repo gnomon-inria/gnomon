@@ -25,6 +25,7 @@
 #include "gnomonInspectorViewWidget.h"
 #include "gnomonInspectorMain.h"
 #include "gnomonInspectorVolume.h"
+#include "gnomonInspectorCellGraph.h"
 #include "gnomonClutEditor.h"
 #include <gnomonCellComplex.h>
 #include <gnomonCellGraph.h>
@@ -45,6 +46,7 @@ public:
     QHash<gnomonActorVolume *, QList< gnomonInspectorVolume * > > volumes_inspectors;
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
     QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
+    QHash<gnomonActorMeshCellGraph *, QList< gnomonInspectorCellGraph * > > cellgraphs_inspectors;
     QHash<gnomonCellImage *, gnomonActor *> cellimages;
 };
 
@@ -189,7 +191,25 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
 
     d->cellgraphs.insert(cellgraph, actor);
 
-    d->inspector_tree->insert(cellgraph);
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created here
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorCellGraph *cellgraph_inspector = new gnomonInspectorCellGraph();
+
+    connect(cellgraph_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            // actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
+            // actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(cellgraph_inspector->editor()->opacityTransferFunction()));
+        });
+
+    QList< gnomonInspectorCellGraph * > cellgraphs_inspectors;
+    cellgraphs_inspectors.append(cellgraph_inspector);
+    d->cellgraphs_inspectors.insert(actor, cellgraphs_inspectors);
+
+    QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
+    qWarning() << tree_item;
+    qWarning() << Q_FUNC_INFO;
+    qWarning() << d->inspector_tree->addChild(tree_item, cellgraph_inspector);
+
 
     emit inserted(cellgraph);
 
@@ -301,6 +321,22 @@ void gnomonViewManager::onInspectorVolumeSelected(gnomonInspectorVolume *inspect
 
 void gnomonViewManager::onMeshSelected(vtkPolyData *mesh)
 {
+    //to implement
+}
+
+void gnomonViewManager::onCellGraphSelected(gnomonActorMeshCellGraph *cellgraph)
+{
+    d->inspector_widget->setActor(cellgraph, true);
+
+    emit selected(d->inspector_widget);
+    //to implement
+}
+
+void gnomonViewManager::onInspectorCellGraphSelected(gnomonInspectorCellGraph *inspector)
+{
+    d->inspector_widget->setInspector(inspector, true);
+
+    emit selected(d->inspector_widget);
     //to implement
 }
 
