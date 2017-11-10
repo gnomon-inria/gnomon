@@ -29,7 +29,7 @@ public:
 // gnomonInspectorVolume
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspectorImage(), d(new gnomonInspectorVolumePrivate)
+gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspector(), d(new gnomonInspectorVolumePrivate)
 {
     d->editor = new gnomonClutEditor();
 

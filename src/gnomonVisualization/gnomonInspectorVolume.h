@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "gnomonInspectorImage.h"
+#include "gnomonInspector.h"
 
 #include <vtkObject.h>
 
@@ -22,7 +22,7 @@
 
 class gnomonClutEditor;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public gnomonInspectorImage
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public gnomonInspector
 {
 public:
      gnomonInspectorVolume(void);
