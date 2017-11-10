@@ -129,12 +129,10 @@ gnomonActor *gnomonViewManager::actor(gnomonCellComplex *cellcomplex)
 
 gnomonActor *gnomonViewManager::insert(gnomonCellComplex *cellcomplex)
 {
-    qDebug()<<"View Manager Cell Complex Create";
     gnomonActorMeshCellComplex *actor = gnomonActorMeshCellComplex::New();
     actor->setCellComplex(cellcomplex);
 
     d->cellcomplexes.insert(cellcomplex, actor);
-    qDebug()<<"View Manager Cell Complex Emit";
 
     emit inserted(cellcomplex);
 

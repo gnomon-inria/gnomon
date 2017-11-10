@@ -109,6 +109,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     connect(d->manager, SIGNAL(inserted(gnomonCellComplex *)), this, SLOT(onInserted(gnomonCellComplex *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellGraph *)), this, SLOT(onInserted(gnomonCellGraph *)));
+    connect(d->manager, SIGNAL(inserted(gnomonCellImage *)), this, SLOT(onInserted(gnomonCellImage *)));
 }
 
 gnomonView::~gnomonView(void)

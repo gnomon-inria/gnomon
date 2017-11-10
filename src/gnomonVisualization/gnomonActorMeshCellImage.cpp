@@ -127,7 +127,8 @@ void gnomonActorMeshCellImage::update(void)
 
     // QMap<long, QMap<long,long> > cellVertexPoints;
 
-    if (!dd->cellimage->hasCellProperty("volume")) {
+    QStringList cellProperties = dd->cellimage->cellPropertyNames();
+    if (!cellProperties.contains("volume")) {
         dd->cellimage->computeCellProperty("volume");
     }
 
@@ -146,6 +147,8 @@ void gnomonActorMeshCellImage::update(void)
             contour->SetValue(0,cellId);
             contour->Update();
 
+            // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
+
             int smooth_iterations = int(dd->smoothingFactor*8);
 
             vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoother = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
@@ -159,7 +162,8 @@ void gnomonActorMeshCellImage::update(void)
             smoother->NormalizeCoordinatesOn();
             smoother->Update();
 
-            int divisions = int(pow(cellVolumes[cellId].value<double>(),1/3.)*dd->resolutionFactor);
+            // int divisions = int(pow(cellVolumes[cellId].value<double>(),1/3.)*dd->resolutionFactor);
+            int divisions = 5.*dd->resolutionFactor;
 
             vtkSmartPointer<vtkQuadricClustering> decimate = vtkSmartPointer<vtkQuadricClustering>::New();
             decimate->SetInputData(smoother->GetOutput());
@@ -173,37 +177,8 @@ void gnomonActorMeshCellImage::update(void)
             for (int vtkId=0;vtkId<dd->cell_mesh[cellId]->GetNumberOfCells();vtkId++) {
                 cellPolydataFaceData->InsertValue(vtkId,cellId);
             }
-
-            // dd->cell_mesh[cellId] = vtkSmartPointer<vtkPolyData>::New();
-
-            // vtkSmartPointer<vtkPoints> cellPolydataPoints = vtkSmartPointer<vtkPoints>::New();
-            // QList<long> cellVertices = dd->cellimage->incidentElementIds(3,cellId,0);
-            // cellVertexPoints[cellId] = QMap<long,long>();
-
-            // for (const auto& vertexId : cellVertices) {
-            //     double x = cell_centers_x[cellId].value<double>() + dd->cellScaleFactor * (positions_x[vertexId].value<double>() - cell_centers_x[cellId].value<double>());
-            //     double y = cell_centers_y[cellId].value<double>() + dd->cellScaleFactor * (positions_y[vertexId].value<double>() - cell_centers_y[cellId].value<double>());
-            //     double z = cell_centers_z[cellId].value<double>() + dd->cellScaleFactor * (positions_z[vertexId].value<double>() - cell_centers_z[cellId].value<double>());
-            //     long vtkId = cellPolydataPoints->InsertNextPoint(x,y,z);
-            //     cellVertexPoints[cellId][vertexId] = vtkId;
-            // }
-
-            // vtkSmartPointer<vtkCellArray> cellPolydataFaces = vtkSmartPointer<vtkCellArray>::New();
-            // vtkSmartPointer<vtkDoubleArray> cellPolydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
-
-            // QList<long> cellFaces = dd->cellimage->incidentElementIds(3,cellId,2);
-            // for (const auto& faceId : cellFaces) {
-            //     QList<long> faceVertices = dd->cellimage->orientedFaceVertexIds(faceId);
-            //     long vtkId = cellPolydataFaces->InsertNextCell(faceVertices.size());
-            //     for (const auto& v : faceVertices) {
-            //         cellPolydataFaces->InsertCellPoint(cellVertexPoints[cellId][v]);
-            //     }
-            //     cellPolydataFaceData->InsertValue(vtkId,cellId);
-            // }
-
-            // dd->cell_mesh[cellId]->SetPoints(cellPolydataPoints);
-            // dd->cell_mesh[cellId]->SetPolys(cellPolydataFaces);
-            // dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
+            
+            dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
         }
 
         if (!dd->cell_mapper.contains(cellId)) {
