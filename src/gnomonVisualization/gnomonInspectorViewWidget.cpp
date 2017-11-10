@@ -18,6 +18,7 @@
 #include "gnomonActorMesh.h"
 #include "gnomonActorVolume.h"
 
+#include "gnomonInspector.h"
 #include "gnomonInspectorVolume.h"
 #include "gnomonInspectorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
@@ -40,7 +41,11 @@
 class gnomonInspectorViewWidgetPrivate
 {
 public:
+    QStackedWidget *stacked_widget;
+
+public:
     QHash<gnomonActor *, QWidget *> widgets;
+    QList<gnomonInspector *> inspector_widgets;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -49,11 +54,13 @@ public:
 
 gnomonInspectorViewWidget::gnomonInspectorViewWidget(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorViewWidgetPrivate)
 {
+    d->stacked_widget = new QStackedWidget();
     this->setWidgetResizable(true);
 }
 
 gnomonInspectorViewWidget::~gnomonInspectorViewWidget()
 {
+    delete d->stacked_widget;
     delete d;
 }
 
@@ -114,6 +121,26 @@ void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
         volume_inspector->setEnabled(enabled);
         return;
     }
+}
+
+void gnomonInspectorViewWidget::setInspector(gnomonInspector *inspector, bool enabled)
+{
+    if(inspector == nullptr) {
+        return;
+    }
+
+    if(d->inspector_widgets.contains(inspector)) {
+        this->setWidget(inspector);
+        inspector->setEnabled(enabled);
+        return;
+    }
+
+    QWidget *widget = nullptr;
+
+    d->inspector_widgets.append(inspector);
+    this->setWidget(inspector);
+    inspector->setEnabled(enabled);
+    return;
 }
 
 //

@@ -19,10 +19,12 @@
 #include "gnomonActorVolume.h"
 
 #include "gnomonViewManager.h"
+#include "gnomonInspector.h"
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorViewWidget.h"
 #include "gnomonInspectorMain.h"
-
+#include "gnomonInspectorVolume.h"
+#include "gnomonClutEditor.h"
 #include <gnomonCellComplex.h>
 #include <gnomonCellGraph.h>
 
@@ -39,6 +41,7 @@ public:
 public:
     QHash<vtkPolyData *, gnomonActor *> meshes;
     QHash<vtkImageData *, gnomonActor *> volumes;
+    QHash<gnomonActorVolume *, QList< gnomonInspectorVolume * > > volumes_inspectors;
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
     QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
 };
@@ -67,6 +70,9 @@ gnomonActor *gnomonViewManager::insert(vtkPolyData *mesh)
 {
     gnomonActorMesh *actor = gnomonActorMesh::New();
     actor->setMesh(mesh);
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created here
+    // ///////////////////////////////////////////////////////////////////
 
     d->meshes.insert(mesh, actor);
 
@@ -95,12 +101,31 @@ gnomonActor *gnomonViewManager::actor(vtkImageData *volume)
 
 gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
 {
+    // ///////////////////////////////////////////////////////////////////
+    // Actor is created here
+    // ///////////////////////////////////////////////////////////////////
     gnomonActorVolume *actor = gnomonActorVolume::New();
     actor->setVolume(volume);
 
     d->volumes.insert(volume, actor);
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created here
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorVolume *volume_inspector = new gnomonInspectorVolume();
 
-    d->inspector_tree->insert(volume);
+    connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
+            actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(volume_inspector->editor()->opacityTransferFunction()));
+        });
+
+    QList< gnomonInspectorVolume * > volumes_inspectors;
+    volumes_inspectors.append(volume_inspector);
+    d->volumes_inspectors.insert(actor, volumes_inspectors);
+
+    QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
+    qWarning() << tree_item;
+    qWarning() << Q_FUNC_INFO;
+    qWarning() << d->inspector_tree->addChild(tree_item, volume_inspector);
 
     emit inserted(volume);
 
@@ -118,7 +143,6 @@ QList<vtkImageData *> gnomonViewManager::volumes(void)
 {
     return d->volumes.keys();
 }
-
 
 gnomonActor *gnomonViewManager::actor(gnomonCellComplex *cellcomplex)
 {
@@ -215,9 +239,17 @@ void gnomonViewManager::update(void)
 // ///////////////////////////////////////////////////////////////////
 // Protected slots
 // ///////////////////////////////////////////////////////////////////
-void gnomonViewManager::onVolumeSelected(vtkImageData *volume)
+void gnomonViewManager::onVolumeSelected(gnomonActorVolume *volume)
 {
-    d->inspector_widget->setActor(actor(volume), true);
+    d->inspector_widget->setActor(volume, true);
+
+    emit selected(d->inspector_widget);
+    //to implement
+}
+
+void gnomonViewManager::onInspectorVolumeSelected(gnomonInspectorVolume *inspector)
+{
+    d->inspector_widget->setInspector(inspector, true);
 
     emit selected(d->inspector_widget);
     //to implement
@@ -242,7 +274,7 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
     d->inspector_main->addWidget(d->inspector_widget);
 
     connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
-    connect(d->inspector_tree, SIGNAL(selected(vtkImageData *)), this, SLOT(onVolumeSelected(vtkImageData *)));
+    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorVolume *)), this, SLOT(onInspectorVolumeSelected(gnomonInspectorVolume *)));
 }
 
 gnomonViewManager::~gnomonViewManager(void)

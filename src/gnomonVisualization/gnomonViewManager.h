@@ -33,6 +33,9 @@ class vtkPolyData;
 class gnomonInspectorViewTree;
 class gnomonInspectorViewWidget;
 class gnomonInspectorMain;
+
+class gnomonInspectorVolume;
+
 class QWidget;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
@@ -90,7 +93,9 @@ public slots:
 
  protected slots:
     void onMeshSelected(vtkPolyData *mesh);
-    void onVolumeSelected(vtkImageData *volume);
+    void onVolumeSelected(gnomonActorVolume *volume);
+
+    void onInspectorVolumeSelected(gnomonInspectorVolume *inspector);
 
 private:
      gnomonViewManager(void);

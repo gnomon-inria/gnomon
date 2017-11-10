@@ -14,9 +14,10 @@
 
 #include "gnomonInspectorViewTree.h"
 
-#include "gnomonView"
-#include "gnomonActor"
-#include "gnomonViewManager"
+#include "gnomonView.h"
+#include "gnomonActor.h"
+#include "gnomonViewManager.h"
+#include "gnomonActorVolume.h"
 
 #include <QtCore>
 #include <QtWidgets>
@@ -35,13 +36,15 @@ public:
 
 public:
     QHash<QTreeWidgetItem *, vtkPolyData *> mesh_items;
-    QHash<QTreeWidgetItem *, vtkImageData *> volume_items;
+    QHash<QTreeWidgetItem *, gnomonActorVolume *> volume_items;
+    QHash<QTreeWidgetItem *, gnomonInspectorVolume *> volume_inspector_items;
     QHash<QTreeWidgetItem *, gnomonCellComplex *> complex_items;
     QHash<QTreeWidgetItem *, gnomonCellGraph *> graph_items;
 
 public:
     std::size_t next_mesh_id;
     std::size_t next_volume_id;
+    std::size_t next_inspector_volume_id;
     std::size_t next_complex_id;
     std::size_t next_graph_id;
 };
@@ -54,6 +57,7 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
 {
     d->view = nullptr;
     d->next_volume_id = 0;
+    d->next_inspector_volume_id = 0;
     d->next_mesh_id = 0;
     d->next_graph_id = 0;
     d->next_complex_id = 0;
@@ -72,10 +76,10 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
 
 gnomonInspectorViewTree::~gnomonInspectorViewTree()
 {
-    for(auto item : d->mesh_items.keys())
+    for(auto item : d->mesh_items.keys()) {
         delete item;
-
-    for(auto item : d->volume_items.keys())
+    }
+    for(auto item : d->volume_items.keys()) {
         delete item;
     }
     for(auto item : d->complex_items.keys()) {
@@ -84,8 +88,6 @@ gnomonInspectorViewTree::~gnomonInspectorViewTree()
     for(auto item : d->graph_items.keys()) {
         delete item;
     }
-=======
->>>>>>> develop
 }
 
 void gnomonInspectorViewTree::setView(gnomonView *view)
@@ -120,27 +122,63 @@ void gnomonInspectorViewTree::insert(vtkPolyData *mesh)
     }
 }
 
-void gnomonInspectorViewTree::insert(vtkImageData *volume)
+/*Returns nullptr if actor is nullptr or if already inserted */
+QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *volume_actor)
 {
-    if(!volume) {
-        qDebug() << Q_FUNC_INFO << "volume is NULL";
-        return;
+    if(!volume_actor) {
+        qDebug() << Q_FUNC_INFO << "volume_actor is NULL";
+        return nullptr;
     }
 
-    if(d->volume_items.values().contains(volume))
-        return;
+    if(d->volume_items.values().contains(volume_actor))
+        return nullptr;
 
     QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Volume " + QString::number(d->next_volume_id) << "Volume");
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 
-    d->volume_items.insert(item, volume);
+    d->volume_items.insert(item, volume_actor);
     ++d->next_volume_id;
 
-    if(gnomonActor *actor = d->view->manager()->actor(volume)) {
-        item->setCheckState(2, actor->isVisible() ? Qt::Checked : Qt::Unchecked);
-    } else {
-        item->setCheckState(2, Qt::Unchecked);
+    item->setCheckState(2, volume_actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+    return item;
+}
+
+/*Returns nullptr if actor is nullptr or if already inserted */
+QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnomonInspectorVolume *inspector_volume)
+{
+    if(!parent) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
     }
+
+    if(!inspector_volume) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    if(!d->volume_items.keys().contains(parent)) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    if(d->volume_inspector_items.values().contains(inspector_volume)) {
+        qWarning() << Q_FUNC_INFO << __LINE__;
+        return nullptr;
+    }
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Inspector " + QString::number(d->next_inspector_volume_id) << "Inspector");
+
+    parent->addChild(item);
+    qWarning() << Q_FUNC_INFO << __LINE__;
+
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+    d->volume_inspector_items.insert(item, inspector_volume);
+
+    ++d->next_volume_id;
+
+    return item;
 }
 
 void gnomonInspectorViewTree::insert(gnomonCellComplex *complex)
@@ -202,7 +240,7 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
         }
 
         if(d->volume_items.keys().contains(item)) {
-            actor = d->view->manager()->actor(d->volume_items.value(item));
+            actor = d->volume_items.value(item);
         }
 
         if(d->complex_items.keys().contains(item)) {
@@ -241,6 +279,9 @@ void gnomonInspectorViewTree::onItemSelected(void)
     }
     if(d->graph_items.keys().contains(this->currentItem())) {
         emit selected(d->graph_items.value(this->currentItem()));
+    }
+    if(d->volume_inspector_items.keys().contains(this->currentItem())) {
+        emit selected(d->volume_inspector_items.value(this->currentItem()));
     }
 }
 
