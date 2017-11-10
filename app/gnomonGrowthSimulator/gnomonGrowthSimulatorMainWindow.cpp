@@ -222,6 +222,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->editor->setFont(d->font_source_code_pro->font(12));
 
     d->interpreter_widget = new dtkInterpreter;
+    d->interpreter_widget->setFont(d->font_source_code_pro->font(12));
 
 #if defined(DTK_BUILD_WRAPPERS)
     d->interpreter = new dtkScriptInterpreterPython;
@@ -230,6 +231,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
 #endif
 
     d->editor_splitter = new QSplitter(this);
+    d->editor_splitter->setHandleWidth(2);
     d->editor_splitter->addWidget(d->editor);
     d->editor_splitter->addWidget(d->interpreter_widget);
 
@@ -354,6 +356,8 @@ void gnomonGrowthSimulatorMainWindow::addEditor(QWidget *editor)
     d->interpreter_widget->hide();
     d->interpreter_widget->deleteLater();
     d->interpreter_widget = Q_NULLPTR;
+
+    editor->setStyleSheet(gnomonStyleSheet());
 
     d->editor_splitter->addWidget(editor);
 }

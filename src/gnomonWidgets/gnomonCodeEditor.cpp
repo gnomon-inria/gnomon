@@ -13,6 +13,7 @@
 // Code:
 
 #include <gnomonCore>
+#include <gnomonStyle>
 
 #include "gnomonCodeEditor.h"
 
@@ -492,7 +493,7 @@ void gnomonCodeEditor::highlightCurrentLine(void)
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
+        QColor lineColor = QColor(GNOMON_STYLE_LIGHTBLACK);
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -507,8 +508,8 @@ void gnomonCodeEditor::highlightCurrentLine(void)
 void gnomonCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     QPainter painter(d->line_number_area);
-    painter.fillRect(event->rect(), Qt::lightGray);
 
+    painter.fillRect(event->rect(), QColor(GNOMON_STYLE_BACKGROUNDCOLOR));
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -518,9 +519,8 @@ void gnomonCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, d->line_number_area->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
+            painter.setPen(QColor(GNOMON_STYLE_FOREGROUNDCOLOR));
+            painter.drawText(0, top, d->line_number_area->width(), fontMetrics().height(), Qt::AlignRight, number);
         }
 
         block = block.next();
@@ -557,21 +557,12 @@ gnomonCodeEditorSyntaxHighlighter::gnomonCodeEditorSyntaxHighlighter(QTextDocume
 {
     d = new gnomonCodeEditorSyntaxHighlighterPrivate;
 
-    // Declare some useful regular expressions.
-
     d->comment_re = QRegularExpression("^[[:blank:]]*#");
-
     d->word_re = QRegularExpression("([a-zA-Z_][a-zA-Z0-9_]+)");
-
     d->defclass_re = QRegularExpression("^[[:blank:]]*(def|class)[[:blank:]]+([a-zA-Z_][a-zA-Z0-9_]+)");
-
     d->number_re = QRegularExpression("[+-]?([0-9]*[.])?[0-9]+");
 
-    // Declare list of braces, operators, keywords, builtins, etc.
-
     d->braces = "{}[]()";
-
-    // We assume that operator == appears before operator = and that operator ** appears before operator * and so on.
 
     d->operators << "===";
     d->operators << "==";
@@ -598,27 +589,17 @@ gnomonCodeEditorSyntaxHighlighter::gnomonCodeEditorSyntaxHighlighter(QTextDocume
         }
     };
 
-    add_from_list( s_python_keywords, d->keywords );
-    add_from_list( s_python_builtins, d->builtins );
+    add_from_list(s_python_keywords, d->keywords);
+    add_from_list(s_python_builtins, d->builtins);
 
-    // Declare how detected entities should be formatted.
-
-    d->keyword_format.setForeground(Qt::blue);
-
-    d->operator_format.setForeground(Qt::red);
-
-    //d->builtin_format.setFontWeight(QFont::Bold);
-
-    d->comment_format.setForeground(Qt::darkGreen);
+    d->keyword_format.setForeground(QColor(GNOMON_STYLE_BLUE));
+    d->operator_format.setForeground(QColor(GNOMON_STYLE_RED));
+    d->comment_format.setForeground(QColor(GNOMON_STYLE_GREEN));
     d->comment_format.setFontItalic(true);
-
     d->defclass_format.setFontWeight(QFont::Bold);
-
-    d->brace_format.setForeground(Qt::darkGray);
-
-    d->string_format.setForeground(Qt::magenta);
-
-    d->number_format.setForeground(Qt::magenta);
+    d->brace_format.setForeground(QColor(GNOMON_STYLE_FOREGROUNDCOLOR));
+    d->string_format.setForeground(QColor(GNOMON_STYLE_LIGHTMAGENTA));
+    d->number_format.setForeground(QColor(GNOMON_STYLE_LIGHTMAGENTA));
 }
 
 gnomonCodeEditorSyntaxHighlighter::~gnomonCodeEditorSyntaxHighlighter(void)
@@ -631,8 +612,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
     QRegularExpressionMatch match;
     QRegularExpressionMatchIterator it;
 
-    // Highlight comments.
-
     match = d->comment_re.match(text);
 
     if(match.hasMatch())
@@ -641,8 +620,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
     }
     else
     {
-        // Highlight keywords and builtins.
-
         it = d->word_re.globalMatch(text);
 
         while(it.hasNext())
@@ -665,8 +642,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
             }
         }
 
-        // Highlight names of functions and classes.
-
         it = d->defclass_re.globalMatch(text);
 
         while(it.hasNext())
@@ -682,8 +657,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
             setFormat(start, length, d->defclass_format);
         }
 
-        // Highlight braces.
-
         for(int i = 0; i < text.size(); i++)
         {
             if(d->braces.contains(text.at(i)))
@@ -691,8 +664,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
                 setFormat(i, 1, d->brace_format);
             }
         }
-
-        // Highlight operators.
 
         for(QString oper : d->operators)
         {
@@ -703,8 +674,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
                 j += oper.size();
             }
         }
-
-        // Highlight number litterals.
 
         it = d->number_re.globalMatch(text);
 
@@ -720,8 +689,6 @@ void gnomonCodeEditorSyntaxHighlighter::highlightBlock(const QString& text)
 
             setFormat(start, length, d->number_format);
         }
-
-        // Highlight string litterals.
 
         {
             const QString species_of_quotes = "\"'";
