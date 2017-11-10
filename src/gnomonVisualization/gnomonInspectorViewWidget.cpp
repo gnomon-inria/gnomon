@@ -51,6 +51,7 @@ public:
 gnomonInspectorViewWidget::gnomonInspectorViewWidget(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorViewWidgetPrivate)
 {
     this->setWidgetResizable(true);
+    this->setMinimumHeight(400);
 }
 
 gnomonInspectorViewWidget::~gnomonInspectorViewWidget()

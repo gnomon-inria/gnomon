@@ -30,7 +30,10 @@
 #include "gnomonInspectorSlicePlanes.h"
 #include "gnomonInspectorCellGraph.h"
 
+#include "gnomonStringEditor.h"
 #include "gnomonClutEditor.h"
+#include "gnomonDoubleRangeEditor.h"
+
 #include <gnomonCellComplex.h>
 #include <gnomonCellGraph.h>
 
@@ -38,6 +41,7 @@
 #include <vtkPolyData.h>
 
 #include <vtkRenderWindowInteractor.h>
+#include <cmath>
 
 class gnomonViewManagerPrivate
 {
@@ -226,15 +230,49 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
             actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
         });
 
+    QStringList vertexProperties = cellgraph->vertexPropertyNames();
+    vertexProperties.insert(0,"");
+    cellgraph_inspector->vertexPropertyEditor()->setList(vertexProperties);
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::vertexPropertyUpdated, [=] () { actor->setVertexProperty(cellgraph_inspector->vertexProperty()); });
+
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::vertexSizeUpdated, [=] () { actor->setVertexSize(cellgraph_inspector->vertexSize()); });
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::edgeOpacityUpdated, [=] () { actor->setEdgeOpacity(cellgraph_inspector->edgeOpacity()); });
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::edgeLinewidthUpdated, [=] () { actor->setEdgeLinewidth(cellgraph_inspector->edgeLinewidth()); });
+
+
+
+    QMap<QString, void(gnomonInspectorCellGraph::*)(void)> sliceSignals;
+    sliceSignals["x"] = &gnomonInspectorCellGraph::xSliceUpdated;
+    sliceSignals["y"] = &gnomonInspectorCellGraph::ySliceUpdated;
+    sliceSignals["z"] = &gnomonInspectorCellGraph::zSliceUpdated;
+
+    for (const auto& dim : sliceSignals.keys()) {
+        QString barycenterProp("barycenter_");
+        barycenterProp.append(dim);
+        QMap<long, QVariant> positions = cellgraph->vertexProperty(barycenterProp);
+        QList<double> points;
+        for (const auto& vertexId : cellgraph->vertexIds()) {
+            points<<positions[vertexId].value<double>();
+        }
+        double pointMin = floor(*std::min_element(points.begin(),points.end()));
+        double pointMax = ceil(*std::max_element(points.begin(),points.end()));
+        cellgraph_inspector->sliceEditor(dim)->setRange(pointMin,pointMax);
+        cellgraph_inspector->sliceEditor(dim)->setValueMin(pointMin);
+        cellgraph_inspector->sliceEditor(dim)->setValueMax(pointMax);
+        connect(cellgraph_inspector, sliceSignals[dim], [=] () { actor->setSlice(dim,cellgraph_inspector->slice(dim)); });
+    }
+
+
     QList< gnomonInspectorCellGraph * > cellgraphs_inspectors;
     cellgraphs_inspectors.append(cellgraph_inspector);
     d->cellgraphs_inspectors.insert(actor, cellgraphs_inspectors);
     d->cellgraphs_inspector_actors.insert(cellgraph_inspector,actor);
 
     QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
-    qWarning() << tree_item;
-    qWarning() << Q_FUNC_INFO;
-    qWarning() << d->inspector_tree->addChild(tree_item, cellgraph_inspector);
+    // qWarning() << tree_item;
+    // qWarning() << Q_FUNC_INFO;
+    // qWarning() << d->inspector_tree->addChild(tree_item, cellgraph_inspector);
+    d->inspector_tree->addChild(tree_item, cellgraph_inspector);
 
 
     emit inserted(cellgraph);
