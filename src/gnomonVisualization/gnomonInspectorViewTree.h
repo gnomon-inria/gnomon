@@ -26,9 +26,11 @@ class gnomonCellGraph;
 class gnomonView;
 class gnomonActor;
 class gnomonActorVolume;
+class gnomonActorMeshCellGraph;
 
 class gnomonInspectorViewTreePrivate;
 class gnomonInspectorVolume;
+class gnomonInspectorCellGraph;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewTree : public QTreeWidget {
     Q_OBJECT
@@ -46,7 +48,10 @@ public:
     QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorVolume *inspector_volume);
 
     void insert(gnomonCellComplex *complex);
-    void insert(gnomonCellGraph *graph);
+
+    QTreeWidgetItem *insert(gnomonActorMeshCellGraph *cellgraph_actor);
+    QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorCellGraph *inspector_cellgraph);
+
 
 signals:
     void checked(gnomonActor *, bool);
@@ -55,7 +60,8 @@ signals:
     void selected(gnomonActorVolume *volume);
     void selected(gnomonInspectorVolume *volume);
     void selected(gnomonCellComplex *complex);
-    void selected(gnomonCellGraph *graph);
+    void selected(gnomonActorMeshCellGraph *cellgraph);
+    void selected(gnomonInspectorCellGraph *cellgraph);
 
 private slots:
    void onItemClicked(QTreeWidgetItem *item, int column);

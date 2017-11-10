@@ -218,19 +218,22 @@ void gnomonActorVolume::update(void)
             // d->planes[i]->SetInteractor(d->interactor);
             index = d->volume->GetDimensions()[i]/2;
             d->plane_index[i] = index;
-        }
-        else index = d->plane_index[i];
+            // else index = d->plane_index[i];
 
-        d->planes[i]->SetInputData(d->colors->GetOutput());
+            d->planes[i]->SetInputData(d->colors->GetOutput());
 
-        if (i == 0) {
-            d->planes[i]->SetDisplayExtent(index, index, y_min, y_max, z_min, z_max);
-        } else if (i == 1) {
-            d->planes[i]->SetDisplayExtent(x_min, x_max, index, index, z_min, z_max);
-        } else if (i ==2) {
-            d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, index, index);
+            if (i == 0) {
+                d->planes[i]->SetDisplayExtent(index, index, y_min, y_max, z_min, z_max);
+            } else if (i == 1) {
+                d->planes[i]->SetDisplayExtent(x_min, x_max, index, index, z_min, z_max);
+            } else if (i ==2) {
+                d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, index, index);
+            }
+            d->planes[i]->Update();
+            this->AddPart(d->planes[i]);
         }
-        this->AddPart(d->planes[i]);
+
+        d->planes[i]->Modified();
     }
 
 
