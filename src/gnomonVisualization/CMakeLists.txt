@@ -30,6 +30,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorMeshCellComplex.h
   gnomonActorMeshCellGraph
   gnomonActorMeshCellGraph.h
+  gnomonActorMeshCellImage
+  gnomonActorMeshCellImage.h
   gnomonActorVolume
   gnomonActorVolume.h
   gnomonClutEditor
@@ -58,6 +60,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
   gnomonActorMeshCellGraph.cpp
+  gnomonActorMeshCellImage.cpp
   gnomonActorVolume.cpp
   gnomonClutEditor.cpp
   gnomonInspector.cpp
@@ -101,6 +104,7 @@ qt5_use_modules(${PROJECT_NAME} Gui)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
+target_link_libraries(${PROJECT_NAME} dtkImaging)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
 target_link_libraries(${PROJECT_NAME} gnomonStyle)

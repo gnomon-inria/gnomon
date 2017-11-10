@@ -28,6 +28,7 @@ class vtkPolyData;
 
 class gnomonCellComplex;
 class gnomonCellGraph;
+class gnomonCellImage;
 
 class gnomonViewManager;
 class gnomonViewPrivate;
@@ -58,6 +59,7 @@ public slots:
     void onInserted(vtkPolyData *mesh);
     void onInserted(gnomonCellComplex *cellcomplex);
     void onInserted(gnomonCellGraph *cellgraph);
+    void onInserted(gnomonCellImage *cellimage);
 
     void onInspectorSelected(QWidget *inspector);
 

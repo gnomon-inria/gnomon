@@ -36,7 +36,7 @@ public:
 
 public:
     virtual void setImage(dtkImage *image) = 0;
-    virtual const dtkImage& image(void) const = 0;
+    virtual dtkImage* image(void) const = 0;
 
     virtual QList<long> cellIds(void) const = 0;
     virtual long cellCount(void) const = 0;
