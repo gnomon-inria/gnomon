@@ -128,6 +128,7 @@ endif()
 
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomon)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonStyle)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)

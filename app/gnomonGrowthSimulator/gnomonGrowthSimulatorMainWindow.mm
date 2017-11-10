@@ -22,7 +22,9 @@ void gnomonGrowthSimulatorMainWindow::initialize(void)
     NSView *view = (NSView *)(this->winId());
 
     NSWindow *window = [view window];
-    window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
+    window.titlebarAppearsTransparent = true;
+    window.titleVisibility = NSWindowTitleHidden;
+    window.styleMask |= NSWindowStyleMaskFullSizeContentView;
 #endif
 }
 

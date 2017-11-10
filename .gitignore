@@ -34,6 +34,8 @@ build
 ## Generated files
 ## ###################################################################
 
+src/gnomon/gnomonConfig.h
+
 src/gnomonCore/gnomonCore.i
 
 src/gnomonStyle/gnomonStyle.qss

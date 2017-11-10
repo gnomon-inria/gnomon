@@ -15,44 +15,84 @@
 
 /* Code: */
 
-QLineEdit {
-    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
-    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+/* *****************************************************************
+;; QWidgets
+;; ******************************************************************/
 
-    border: 1px solid "@GNOMON_STYLE_BORDERCOLOR@";
+QLineEdit {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
     border-radius: 4px;
 }
 
 QFrame {
-    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
-    background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
+}
+
+QHeaderView::section {
+    background-color: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    border: none;
 }
 
 QPlainTextEdit {
-    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
-    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
 }
 
 QPushButton, QToolButton {
-    color: "@GNOMON_STYLE_FOREGROUNDCOLOR@";
-    background: "@GNOMON_STYLE_BACKGROUNDCOLOR@";
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
 
-    border: 1px solid "@GNOMON_STYLE_BORDERCOLOR@";
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
     border-radius: 4px;
 }
 
-QToolBar::left {
-    background: "@GNOMON_STYLE_BACKGROUNDALTCOLOR@";
+QSplitter::handle:horizontal {
+    background-color: @GNOMON_STYLE_BORDERALTCOLOR@
 }
 
-QToolBar::handle {
+QSplitter::handle:vertical {
+    background-color: @GNOMON_STYLE_BORDERALTCOLOR@
+}
+
+QStatusBar {
+    background: "#2e333c";
+
+    margin: 0px;
+    padding: 0px;
+
+    border-top: 1px solid @GNOMON_STYLE_BORDERALTCOLOR@;
+}
+
+QStatusBar::item {
+    margin: 0;
+    padding: 0;
+}
+
+QStatusBar QLabel {
+    background: "#2e333c";
+}
+
+/* *****************************************************************
+;; gnomonGrowthSimulator
+;; ******************************************************************/
+
+gnomonGrowthSimulatorMainWindowSidePane
+{
+    border-right: 2px solid @GNOMON_STYLE_BORDERALTCOLOR@;
+}
+
+gnomonGrowthSimulatorMainWindowSidePane QPushButton
+{
     background: none;
-    image: none;
-}
-
-QToolBar QToolButton {
-    background: transparent;
     border: none;
+
+    height: 32;
+    width: 32;
 }
 
 /* gnomonStyle.qss.in ends here */
