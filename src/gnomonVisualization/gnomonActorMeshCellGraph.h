@@ -36,6 +36,10 @@ public:
 public slots:
     void update(void) override;
 
+public:
+    double rangeMin() const;
+    double rangeMax() const;
+
 protected:
      gnomonActorMeshCellGraph(void);
     ~gnomonActorMeshCellGraph(void);
