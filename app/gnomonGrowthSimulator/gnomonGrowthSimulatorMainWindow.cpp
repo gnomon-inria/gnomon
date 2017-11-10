@@ -289,6 +289,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     inner->setHandleWidth(2);
     inner->addWidget(d->view_manager);
     inner->addWidget(d->editors);
+    inner->setSizes(QList<int>() << this->size().height() / 3.0 << this->size().height() / 7.0);
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
