@@ -21,9 +21,6 @@
 #include <dtkComposer>
 #include <dtkWidgets>
 
-#include <dtkImaging>
-#include <gnomonCore>
-
 #include <vtkGenericOpenGLRenderWindow.h>
 
 #include <QVTKOpenGLWidget.h>
@@ -64,14 +61,8 @@ int main(int argc, char *argv[])
     // ///////////////////////////////////////////////////////////////////
 
     dtkComposer::node::initialize();
+    dtkComposer::extension::activateObjectManager();
     dtkComposer::extension::initialize();
-
-    // ///////////////////////////////////////////////////////////////////
-    // Activate object manager
-    // ///////////////////////////////////////////////////////////////////
-
-    // dtkImaging::activateObjectManager();
-    // gnomonCore::activateObjectManager();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window
