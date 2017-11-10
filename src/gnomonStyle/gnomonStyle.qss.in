@@ -60,7 +60,7 @@ QSplitter::handle:vertical {
 }
 
 QStatusBar {
-    background: "#2e333c";
+    background: @GNOMON_STYLE_STATUSBAR@;
 
     margin: 0px;
     padding: 0px;
@@ -74,7 +74,7 @@ QStatusBar::item {
 }
 
 QStatusBar QLabel {
-    background: "#2e333c";
+    background: @GNOMON_STYLE_STATUSBAR@;
 }
 
 /* *****************************************************************

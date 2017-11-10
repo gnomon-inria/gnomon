@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
     // Activate object manager
     // ///////////////////////////////////////////////////////////////////
 
-    dtkImaging::activateObjectManager();
-    gnomonCore::activateObjectManager();
+    // dtkImaging::activateObjectManager();
+    // gnomonCore::activateObjectManager();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window
