@@ -21,8 +21,6 @@
 #include <dtkComposer>
 #include <dtkWidgets>
 
-#include <dtkImaging>
-
 #include <vtkGenericOpenGLRenderWindow.h>
 
 #include <QVTKOpenGLWidget.h>
@@ -63,14 +61,8 @@ int main(int argc, char *argv[])
     // ///////////////////////////////////////////////////////////////////
 
     dtkComposer::node::initialize();
+    dtkComposer::extension::activateObjectManager();
     dtkComposer::extension::initialize();
-
-    // ///////////////////////////////////////////////////////////////////
-    // Prepare layers
-    // ///////////////////////////////////////////////////////////////////
-
-    dtkImaging::setVerboseLoading(false);
-    dtkImaging::initialize();
 
     // ///////////////////////////////////////////////////////////////////
     // Main window

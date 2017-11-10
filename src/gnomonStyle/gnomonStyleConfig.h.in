@@ -1,0 +1,20 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#define GNOMON_STYLE QString("@GNOMON_STYLE@")
+
+//
+// gnomonStyleConfig.h.in ends here
