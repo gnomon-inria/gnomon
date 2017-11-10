@@ -339,6 +339,10 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     this->statusBar()->addPermanentWidget(git_branch);
     this->statusBar()->addPermanentWidget(git_commit);
     this->statusBar()->addPermanentWidget(git_updates);
+
+    if (d->interpreter) {
+        d->interpreter->init();
+    }
 }
 
 gnomonGrowthSimulatorMainWindow::~gnomonGrowthSimulatorMainWindow(void)
