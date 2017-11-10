@@ -41,11 +41,7 @@
 class gnomonInspectorViewWidgetPrivate
 {
 public:
-    QStackedWidget *stacked_widget;
-
-public:
-    QHash<gnomonActor *, QWidget *> widgets;
-    QList<gnomonInspector *> inspector_widgets;
+    QObject * inspector_parent;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -54,73 +50,12 @@ public:
 
 gnomonInspectorViewWidget::gnomonInspectorViewWidget(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorViewWidgetPrivate)
 {
-    d->stacked_widget = new QStackedWidget();
     this->setWidgetResizable(true);
 }
 
 gnomonInspectorViewWidget::~gnomonInspectorViewWidget()
 {
-    delete d->stacked_widget;
     delete d;
-}
-
-void gnomonInspectorViewWidget::setActor(gnomonActor *actor, bool enabled)
-{
-    if(actor == nullptr) {
-        return;
-    }
-
-    if(d->widgets.keys().contains(actor)) {
-        this->setWidget(d->widgets.value(actor));
-        d->widgets.value(actor)->setEnabled(enabled);
-        return;
-    }
-
-    QWidget *widget = nullptr;
-
-    if (gnomonActorMesh *mesh_actor = dynamic_cast<gnomonActorMesh *>(actor)) {
-        QWidget *mesh_inspector = new gnomonInspectorMesh();
-        d->widgets.insert(mesh_actor, mesh_inspector);
-        this->setWidget(mesh_inspector);
-        mesh_inspector->setEnabled(enabled);
-        return;
-    }
-
-    if (gnomonActorMeshCellComplex *complex_actor = dynamic_cast<gnomonActorMeshCellComplex *>(actor)) {
-        QWidget *complex_inspector = new gnomonInspectorMesh();
-        d->widgets.insert(complex_actor, complex_inspector);
-        d->stacked_widget->addWidget(complex_inspector);
-        d->stacked_widget->setCurrentWidget(complex_inspector);
-        complex_inspector->setEnabled(enabled);
-        return;
-    }
-
-    if (gnomonActorMeshCellGraph *graph_actor = dynamic_cast<gnomonActorMeshCellGraph *>(actor)) {
-        QWidget *graph_inspector = new gnomonInspectorMesh();
-        d->widgets.insert(graph_actor, graph_inspector);
-        d->stacked_widget->addWidget(graph_inspector);
-        d->stacked_widget->setCurrentWidget(graph_inspector);
-        graph_inspector->setEnabled(enabled);
-        return;
-    }
-
-    if (gnomonActorVolume *volume_actor = dynamic_cast<gnomonActorVolume *>(actor)) {
-
-        gnomonInspectorVolume *volume_inspector = new gnomonInspectorVolume();
-
-        volume_inspector->editor()->setHistogram(volume_actor->histogram());
-        volume_inspector->editor()->setRange(volume_actor->rangeMin(), volume_actor->rangeMax());
-        connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
-                volume_actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
-                volume_actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(volume_inspector->editor()->opacityTransferFunction()));
-        });
-
-        d->widgets.insert(volume_actor, volume_inspector);
-
-        this->setWidget(volume_inspector);
-        volume_inspector->setEnabled(enabled);
-        return;
-    }
 }
 
 void gnomonInspectorViewWidget::setInspector(gnomonInspector *inspector, bool enabled)
@@ -129,17 +64,10 @@ void gnomonInspectorViewWidget::setInspector(gnomonInspector *inspector, bool en
         return;
     }
 
-    if(d->inspector_widgets.contains(inspector)) {
-        this->setWidget(inspector);
-        inspector->setEnabled(enabled);
-        return;
-    }
-
-    QWidget *widget = nullptr;
-
-    d->inspector_widgets.append(inspector);
+    this->takeWidget();
     this->setWidget(inspector);
     inspector->setEnabled(enabled);
+
     return;
 }
 

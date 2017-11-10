@@ -23,7 +23,7 @@
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorImage : public gnomonInspector
 {
 protected:
-     gnomonInspectorImage(void);
+    gnomonInspectorImage(void);
     ~gnomonInspectorImage(void);
 
 private:

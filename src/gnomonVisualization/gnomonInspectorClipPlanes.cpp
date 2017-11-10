@@ -12,24 +12,24 @@
 
 // Code:
 
-#include "gnomonInspectorVolume.h"
+#include "gnomonInspectorClipPlanes.h"
 #include "gnomonClutEditor.h"
 
 // /////////////////////////////////////////////////////////////////
-// gnomonInspectorVolumePrivate
+// gnomonInspectorClipPlanesPrivate
 // /////////////////////////////////////////////////////////////////
 
-class gnomonInspectorVolumePrivate
+class gnomonInspectorClipPlanesPrivate
 {
 public:
     gnomonClutEditor *editor;
 };
 
 // /////////////////////////////////////////////////////////////////
-// gnomonInspectorVolume
+// gnomonInspectorClipPlanes
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspectorImage(), d(new gnomonInspectorVolumePrivate)
+gnomonInspectorClipPlanes::gnomonInspectorClipPlanes(void) : gnomonInspectorImage(), d(new gnomonInspectorClipPlanesPrivate)
 {
     d->editor = new gnomonClutEditor();
 
@@ -44,7 +44,7 @@ gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspectorImage(), d(n
 //
 // ///////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::~gnomonInspectorVolume(void)
+gnomonInspectorClipPlanes::~gnomonInspectorClipPlanes(void)
 {
     delete d->editor;
     delete d;
@@ -52,10 +52,10 @@ gnomonInspectorVolume::~gnomonInspectorVolume(void)
     d = NULL;
 }
 
-gnomonClutEditor *gnomonInspectorVolume::editor(void) const
+gnomonClutEditor *gnomonInspectorClipPlanes::editor(void) const
 {
     return d->editor;
 }
 
 //
-// gnomonInspectorVolume.cpp ends here
+// gnomonInspectorClipPlanes.cpp ends here

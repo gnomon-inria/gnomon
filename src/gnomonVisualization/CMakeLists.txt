@@ -40,6 +40,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspector.h
   gnomonInspectorCellGraph
   gnomonInspectorCellGraph.h
+  gnomonInspectorClipPlanes
+  gnomonInspectorClipPlanes.h
   gnomonInspectorImage
   gnomonInspectorImage.h
   gnomonInspectorMain
@@ -69,6 +71,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonClutEditor.cpp
   gnomonInspector.cpp
   gnomonInspectorCellGraph.cpp
+  gnomonInspectorClipPlanes.cpp
   gnomonInspectorImage.cpp
   gnomonInspectorMesh.cpp
   gnomonInspectorMain.cpp

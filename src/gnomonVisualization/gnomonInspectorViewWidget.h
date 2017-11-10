@@ -32,8 +32,6 @@ public:
     ~gnomonInspectorViewWidget();
 
 public slots:
-    void setActor(gnomonActor *actor, bool enabled);
-
     void setInspector(gnomonInspector *inspector, bool enabled);
 
 public:
