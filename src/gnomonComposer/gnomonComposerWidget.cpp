@@ -16,6 +16,7 @@
 #include "gnomonComposerWidget_p.h"
 
 #include <gnomonCore>
+#include <gnomonStyle>
 
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
@@ -27,7 +28,6 @@
 #include <dtkComposer/dtkComposerNodeFactory.h>
 #include <dtkComposer/dtkComposerNodeFactoryView.h>
 #include <dtkComposer/dtkComposerGraph.h>
-#include <dtkComposer/dtkComposerGraphView.h>
 #include <dtkComposer/dtkComposerScene.h>
 #include <dtkComposer/dtkComposerSceneModel.h>
 #include <dtkComposer/dtkComposerSceneNodeEditor.h>
@@ -35,7 +35,6 @@
 #include <dtkComposer/dtkComposerStack.h>
 #include <dtkComposer/dtkComposerStackView.h>
 #include <dtkComposer/dtkComposerView.h>
-#include <dtkComposer/dtkComposerViewManager.h>
 #include <dtkComposer/dtkComposerViewController.h>
 
 #include <dtkCore/dtkCore.h>
@@ -49,7 +48,6 @@
 #include <dtkWidgets/dtkScreenMenu.h>
 #include <dtkWidgets/dtkRecentFilesMenu.h>
 #include <dtkWidgets/dtkSpacer.h>
-#include <dtkWidgets/dtkSplitter.h>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -64,11 +62,14 @@ bool gnomonComposerWidgetPrivate::maySave(void)
         return true;
 
     if (q->isWindowModified()) {
-        QMessageBox::StandardButton ret = QMessageBox::warning(q,
-            q->tr("VisualProgramming"),
-            q->tr("The composition has been modified.\n Do you want to save your changes?"),
-            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-            QMessageBox::Save);
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("gnomon");
+        msgBox.setText("The composition has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        msgBox.setStyleSheet("");
+        int ret = msgBox.exec();
 
         if (ret == QMessageBox::Save)
             return q->compositionSave();
@@ -111,6 +112,9 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     // -- Elements
 
     d->composer = new dtkComposerWidget;
+    d->composer->view()->setBackgroundBrush(QColor(GNOMON_STYLE_BACKGROUNDCOLOR));
+
+    d->composer->compass()->setBackgroundBrush(QColor(GNOMON_STYLE_BACKGROUNDALTCOLOR));
 
     d->controls = nullptr;
 
@@ -131,17 +135,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     d->nodes = new dtkComposerNodeFactoryView(this);
     d->nodes->setFactory(d->composer->factory());
-
-    d->graph = new dtkComposerGraphView(this);
-    d->graph->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
-    d->graph->setGraph (d->composer->graph());
-    d->graph->setVisible(false);
-
-    d->log_view = new dtkWidgetsLogView(this);
-    d->log_view->setVisible(false);
-
-    d->view_manager = new dtkComposerViewManager;
-    d->view_manager->setVisible(false);
+    d->nodes->setDoom();
 
     connect(d->composer->scene(), SIGNAL(flagged(dtkComposerSceneNode *)), this, SLOT(onComposerNodeFlagged(dtkComposerSceneNode *)));
 
@@ -169,7 +163,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // -- Menus
 
-    QMenuBar *menu_bar = new QMenuBar();
+    QMenuBar *menu_bar = new QMenuBar(0);
 
     d->recent_compositions_menu = new dtkRecentFilesMenu("Open recent...", this);
 
@@ -225,12 +219,8 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // -- Layout
 
-    dtkSplitter *left = new dtkSplitter(this);
-    left->setOrientation(Qt::Vertical);
-    left->addWidget(d->nodes);
-    left->addWidget(d->view_manager);
-
-    dtkSplitter *right = new dtkSplitter(this);
+    QSplitter *right = new QSplitter(this);
+    right->setHandleWidth(2);
     right->setOrientation(Qt::Vertical);
     right->addWidget(d->scene);
     right->addWidget(d->editor);
@@ -242,30 +232,21 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
                     << this->size().height()/4
                     << this->size().height()/4);
 
-    d->inner = new dtkSplitter(this);
-    d->inner->setOrientation(Qt::Horizontal);
-    d->inner->addWidget(left);
-    d->inner->addWidget(d->graph);
-    d->inner->addWidget(d->composer);
-    d->inner->addWidget(right);
+    int wl = 300;
+    int wr = 300;
+    int wc = parent->size().width() - wl - wr;
 
-    QHBoxLayout *b_layout = new QHBoxLayout;
-    b_layout->setContentsMargins(0, 0, 0, 0);
-    b_layout->setSpacing(0);
-    b_layout->addWidget(d->log_view);
-
-    QWidget *bottom = new QWidget(this);
-    bottom->setLayout(b_layout);
-
-    dtkSplitter *central = new dtkSplitter(this);
-    central->setOrientation(Qt::Vertical);
-    central->addWidget(d->inner);
-    central->addWidget(bottom);
+    QSplitter *inner = new QSplitter(this);
+    inner->setHandleWidth(2);
+    inner->setOrientation(Qt::Horizontal);
+    inner->addWidget(d->nodes);
+    inner->addWidget(d->composer);
+    inner->addWidget(right);
+    inner->setSizes(QList<int>() << wl << wc << wr);
 
     QVBoxLayout* main_layout = new QVBoxLayout;
     main_layout->setContentsMargins(0, 0, 0, 0);
-    main_layout->addWidget(menu_bar);
-    main_layout->addWidget(central);
+    main_layout->addWidget(inner);
 
     this->setLayout(main_layout);
 
@@ -279,16 +260,6 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     d->scene->setVisible(true);
     d->editor->setVisible(true);
     d->stack->setVisible(false);
-    d->view_manager->setVisible(false);
-
-    d->graph->setVisible(false);
-    d->log_view->setVisible(false);
-
-    int wl = qMin(d->nodes->size().width(), 300);
-    int wr = qMax(d->stack->size().width(), 300);
-    int wc = parent->size().width() - wl - wr;
-
-    d->inner->setSizes(QList<int>() << wl << 0 << wc << wr);
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)
@@ -309,7 +280,7 @@ bool gnomonComposerWidget::compositionOpen(void)
     settings.endGroup();
 
     QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), path, QString("dtk composition (*.dtk)"));
-    dialog->setStyleSheet("background-color: none ; color: none;");
+    dialog->setStyleSheet("");
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setFileMode(QFileDialog::AnyFile);
     dialog->open(this, SLOT(compositionOpen(const QString&)));
@@ -371,7 +342,7 @@ bool gnomonComposerWidget::compositionSaveAs(void)
     nameFilters << "Binary composition (*.dtk)";
 
     QFileDialog dialog(this, "Save composition as ...", path, QString("dtk composition (*.dtk)"));
-    dialog.setStyleSheet("background-color: none ; color: none;");
+    dialog.setStyleSheet("");
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setConfirmOverwrite(true);
     dialog.setFileMode(QFileDialog::AnyFile);
@@ -424,7 +395,7 @@ bool gnomonComposerWidget::compositionInsert(void)
     settings.endGroup();
 
     QFileDialog *dialog = new QFileDialog(this, tr("Insert composition"), path, QString("dtk composition (*.dtk)"));
-    dialog->setStyleSheet("background-color: none ; color: none;");
+    dialog->setStyleSheet("");
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setFileMode(QFileDialog::AnyFile);
     dialog->open(this, SLOT(compositionInsert(const QString&)));
