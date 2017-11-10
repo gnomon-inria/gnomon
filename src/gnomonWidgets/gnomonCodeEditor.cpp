@@ -519,7 +519,7 @@ void gnomonCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(QColor(GNOMON_STYLE_FOREGROUNDCOLOR));
+            painter.setPen(QColor("#444444"));
             painter.drawText(0, top, d->line_number_area->width(), fontMetrics().height(), Qt::AlignRight, number);
         }
 
