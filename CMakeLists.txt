@@ -111,6 +111,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
 find_package(dtk REQUIRED)
 find_package(dtkImaging REQUIRED)
 
+
 include_directories(${dtk_INCLUDE_DIRS})
 include_directories(${dtkImaging_INCLUDE_DIRS})
 
@@ -120,6 +121,10 @@ if(NOT VTK_FOUND)
   message(WARNING "VTK_DIR not found")
 else()
   include(${VTK_USE_FILE})
+endif()
+
+if(DTK_BUILD_WRAPPERS)
+  include(dtkWrap)
 endif()
 
 ## #################################################################

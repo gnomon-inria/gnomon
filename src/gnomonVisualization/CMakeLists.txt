@@ -30,6 +30,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorMeshCellComplex.h
   gnomonActorMeshCellGraph
   gnomonActorMeshCellGraph.h
+  gnomonActorMeshCellImage
+  gnomonActorMeshCellImage.h
   gnomonActorVolume
   gnomonActorVolume.h
   gnomonClutEditor
@@ -60,6 +62,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
   gnomonActorMeshCellGraph.cpp
+  gnomonActorMeshCellImage.cpp
   gnomonActorVolume.cpp
   gnomonClutEditor.cpp
   gnomonInspector.cpp
@@ -81,8 +84,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${dtk_MODULE_PATH})
 set(${PROJECT_NAME}_SOURCES_WRAP)
 
 if(DTK_BUILD_WRAPPERS)
-
-  include(dtkWrap)
 
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
@@ -106,6 +107,7 @@ qt5_use_modules(${PROJECT_NAME} Gui)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
+target_link_libraries(${PROJECT_NAME} dtkImaging)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
 target_link_libraries(${PROJECT_NAME} gnomonStyle)

@@ -23,6 +23,7 @@ class gnomonActor;
 class gnomonActorMesh;
 class gnomonActorMeshCellComplex;
 class gnomonActorMeshCellGraph;
+class gnomonActorMeshCellImage;
 class gnomonActorVolume;
 
 class gnomonCellComplex;
@@ -47,18 +48,21 @@ public:
     gnomonActor *actor(vtkImageData *volume);
     gnomonActor *actor(gnomonCellComplex *cellcomplex);
     gnomonActor *actor(gnomonCellGraph *cellgraph);
+    gnomonActor *actor(gnomonCellImage *cellimage);
 
 public:
     gnomonActor *insert(vtkPolyData *mesh);
     gnomonActor *insert(vtkImageData *volume);
     gnomonActor *insert(gnomonCellComplex *cellcomplex);
     gnomonActor *insert(gnomonCellGraph *cellgraph);
+    gnomonActor *insert(gnomonCellImage *cellimage);
 
 public:
     void remove(vtkPolyData *mesh);
     void remove(vtkImageData *volume);
     void remove(gnomonCellComplex *cellcomplex);
     void remove(gnomonCellGraph *cellgraph);
+    void remove(gnomonCellImage *cellimage);
 
     gnomonInspectorViewTree *inspectorTree(void);
     gnomonInspectorViewWidget *inspectorWidget(void);
@@ -69,18 +73,21 @@ public:
     QList<vtkImageData *> volumes(void);
     QList<gnomonCellComplex *> cellcomplexes(void);
     QList<gnomonCellGraph *> cellgraphs(void);
+    QList<gnomonCellImage *> cellimages(void);
 
 signals:
     void inserted(vtkPolyData *mesh);
     void inserted(vtkImageData *volume);
     void inserted(gnomonCellComplex *cellcomplex);
     void inserted(gnomonCellGraph *cellgraph);
+    void inserted(gnomonCellImage *cellimage);
 
 signals:
     void removed(vtkPolyData *mesh);
     void removed(vtkImageData *volume);
     void removed(gnomonCellComplex *cellcomplex);
     void removed(gnomonCellGraph *cellgraph);
+    void removed(gnomonCellImage *cellimage);
 
  signals:
     void selected(QWidget *inspector);

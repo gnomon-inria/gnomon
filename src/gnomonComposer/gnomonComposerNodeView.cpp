@@ -22,6 +22,7 @@
 #include <dtkImaging>
 #include <gnomonCellComplex>
 #include <gnomonCellGraph>
+#include <gnomonCellImage>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerNodeViewPrivate
@@ -36,6 +37,7 @@ public:
     dtkComposerTransmitterReceiver<dtkImage *> image_receiver;
     dtkComposerTransmitterReceiver<gnomonCellComplex *> cellcomplex_receiver;
     dtkComposerTransmitterReceiver<gnomonCellGraph *> cellgraph_receiver;
+    dtkComposerTransmitterReceiver<gnomonCellImage *> cellimage_receiver;
 };
 
 gnomonView *gnomonComposerNodeViewPrivate::view = Q_NULLPTR;
@@ -51,6 +53,7 @@ gnomonComposerNodeView::gnomonComposerNodeView(void) : dtkComposerNodeLeaf()
     this->appendReceiver(&(d->image_receiver));
     this->appendReceiver(&(d->cellcomplex_receiver));
     this->appendReceiver(&(d->cellgraph_receiver));
+    this->appendReceiver(&(d->cellimage_receiver));
 }
 
 gnomonComposerNodeView::~gnomonComposerNodeView(void)
@@ -89,7 +92,6 @@ void gnomonComposerNodeView::run(void)
     if (!d->cellcomplex_receiver.isEmpty()) {
 
         gnomonCellComplex *data = d->cellcomplex_receiver.data();
-        qDebug()<<"Node Get Cell Complex";
         
         d->view->manager()->insert(data);
     }
@@ -97,6 +99,13 @@ void gnomonComposerNodeView::run(void)
     if (!d->cellgraph_receiver.isEmpty()) {
 
         gnomonCellGraph *data = d->cellgraph_receiver.data();
+        
+        d->view->manager()->insert(data);
+    }
+
+    if (!d->cellimage_receiver.isEmpty()) {
+
+        gnomonCellImage *data = d->cellimage_receiver.data();
         
         d->view->manager()->insert(data);
     }

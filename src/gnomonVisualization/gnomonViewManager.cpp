@@ -16,6 +16,7 @@
 #include "gnomonActorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
+#include "gnomonActorMeshCellImage.h"
 #include "gnomonActorVolume.h"
 
 #include "gnomonViewManager.h"
@@ -44,6 +45,7 @@ public:
     QHash<gnomonActorVolume *, QList< gnomonInspectorVolume * > > volumes_inspectors;
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
     QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
+    QHash<gnomonCellImage *, gnomonActor *> cellimages;
 };
 
 gnomonInspectorViewTree *gnomonViewManager::inspectorTree(void)
@@ -151,12 +153,10 @@ gnomonActor *gnomonViewManager::actor(gnomonCellComplex *cellcomplex)
 
 gnomonActor *gnomonViewManager::insert(gnomonCellComplex *cellcomplex)
 {
-    qDebug()<<"View Manager Cell Complex Create";
     gnomonActorMeshCellComplex *actor = gnomonActorMeshCellComplex::New();
     actor->setCellComplex(cellcomplex);
 
     d->cellcomplexes.insert(cellcomplex, actor);
-    qDebug()<<"View Manager Cell Complex Emit";
 
     d->inspector_tree->insert(cellcomplex);
 
@@ -210,6 +210,36 @@ QList<gnomonCellGraph *> gnomonViewManager::cellgraphs(void)
 }
 
 
+gnomonActor *gnomonViewManager::actor(gnomonCellImage *cellimage)
+{
+    return d->cellimages.value(cellimage, NULL);
+}
+
+gnomonActor *gnomonViewManager::insert(gnomonCellImage *cellimage)
+{
+    gnomonActorMeshCellImage *actor = gnomonActorMeshCellImage::New();
+    actor->setCellImage(cellimage);
+
+    d->cellimages.insert(cellimage, actor);
+
+    emit inserted(cellimage);
+
+    return actor;
+}
+
+void gnomonViewManager::remove(gnomonCellImage *cellimage)
+{
+    d->cellimages.remove(cellimage);
+
+    emit removed(cellimage);
+}
+
+QList<gnomonCellImage *> gnomonViewManager::cellimages(void)
+{
+    return d->cellimages.keys();
+}
+
+
 void gnomonViewManager::clear(void)
 {
     qDeleteAll(d->meshes.values());
@@ -223,6 +253,9 @@ void gnomonViewManager::clear(void)
 
     qDeleteAll(d->cellgraphs.values());
     d->cellgraphs.clear();
+
+    qDeleteAll(d->cellimages.values());
+    d->cellimages.clear();
 }
 
 void gnomonViewManager::update(void)
@@ -232,6 +265,18 @@ void gnomonViewManager::update(void)
     }
 
     for (auto actor : d->volumes) {
+        actor->update();
+    }
+
+    for (auto actor : d->cellcomplexes) {
+        actor->update();
+    }
+
+    for (auto actor : d->cellgraphs) {
+        actor->update();
+    }
+
+    for (auto actor : d->cellimages) {
         actor->update();
     }
 }
