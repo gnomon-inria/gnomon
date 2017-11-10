@@ -41,6 +41,9 @@ void gnomonComposerExtensionPlugin::initialize(void)
     bool verbose = dtkComposer::extension::pluginManager().verboseLoading();
     gnomonCore::setVerboseLoading(verbose);
     extension->extend(&(dtkComposer::node::factory()));
+    if (dtkComposer::extension::isObjectManagerActive()) {
+        gnomonCore::activateObjectManager();
+    }
     gnomonCore::initialize();
 }
 
