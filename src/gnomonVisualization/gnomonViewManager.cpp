@@ -162,6 +162,15 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
     connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::zPlanePosChanged,
             [=] () { actor_image->setZPlanePos(slice_planes_inspector->zPlanePos());
             });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::xPlaneOpacityChanged,
+            [=] () { actor_image->setXPlaneOpacity(slice_planes_inspector->xPlaneOpacity());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::yPlaneOpacityChanged,
+            [=] () { actor_image->setYPlaneOpacity(slice_planes_inspector->yPlaneOpacity());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::zPlaneOpacityChanged,
+            [=] () { actor_image->setZPlaneOpacity(slice_planes_inspector->zPlaneOpacity());
+            });
 
     QList< gnomonInspectorImage * > images_inspectors;
     images_inspectors.append(slice_planes_inspector);

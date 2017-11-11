@@ -65,6 +65,10 @@ public:
     void setYPlanePos(int);
     void setZPlanePos(int);
 
+    void setXPlaneOpacity(double);
+    void setYPlaneOpacity(double);
+    void setZPlaneOpacity(double);
+
 public:
     vtkImageData *image(void);
 

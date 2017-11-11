@@ -49,6 +49,8 @@ public:
     vtkSmartPointer<vtkImageActor> planes[3];
     bool plane_states[3];
     double plane_positions[3];
+    double plane_opacities[3];
+
     // ///////////////////////////////////////////////////////////////
     vtkSmartPointer<vtkImageMapToColors> colors;
     // ///////////////////////////////////////////////////////////////////
@@ -77,6 +79,7 @@ gnomonActorImage::gnomonActorImage(void) : gnomonActor(), d(new gnomonActorImage
         d->planes[i] = NULL;
         d->plane_states[i] = false;
         d->plane_positions[i] = 0.5;
+        d->plane_opacities[i] = 1.;
     }
 }
 
@@ -172,6 +175,24 @@ void gnomonActorImage::setZPlanePos(int pos)
     this->update();
 }
 
+void gnomonActorImage::setXPlaneOpacity(double opacity)
+{
+    d->plane_opacities[0] = opacity;
+    this->update();
+}
+
+void gnomonActorImage::setYPlaneOpacity(double opacity)
+{
+    d->plane_opacities[1] = opacity;
+    this->update();
+}
+
+void gnomonActorImage::setZPlaneOpacity(double opacity)
+{
+    d->plane_opacities[2] = opacity;
+    this->update();
+}
+
 void gnomonActorImage::showPlaneX(bool value)
 {
     d->planes[0]->SetVisibility(value);
@@ -219,6 +240,7 @@ void gnomonActorImage::update(void)
     }
     d->colors->SetLookupTable(d->colorFunction);
     d->colors->Update();
+
     int x_min, x_max, y_min, y_max, z_min, z_max;
     double voxeslize[3];
     d->image->GetExtent(x_min, x_max, y_min, y_max, z_min, z_max);
@@ -239,6 +261,7 @@ void gnomonActorImage::update(void)
         } else if (i ==2) {
             d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, pos, pos);
         }
+        d->planes[i]->SetOpacity(d->plane_opacities[i]);
         d->planes[i]->Update();
         this->AddPart(d->planes[i]);
 
