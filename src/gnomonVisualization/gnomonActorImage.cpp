@@ -283,7 +283,6 @@ void gnomonActorImage::update(void)
     }
 
     this->showScalarBarTitle(true);
-    this->show();
 
     d->interactor->Render();
 }
