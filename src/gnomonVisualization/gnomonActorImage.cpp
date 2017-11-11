@@ -212,10 +212,11 @@ void gnomonActorImage::update(void)
 {
     if(!d->image)
         return;
+
     if(!d->interactor)
         return;
-    double valuesRange[2];
-    d->image->GetPointData()->GetScalars()->GetRange(valuesRange);
+
+    double valuesRange[2]; d->image->GetPointData()->GetScalars()->GetRange(valuesRange);
 
     double min = valuesRange[0];
     double max = valuesRange[1];
@@ -242,9 +243,12 @@ void gnomonActorImage::update(void)
     d->colors->Update();
 
     int x_min, x_max, y_min, y_max, z_min, z_max;
+
     double voxeslize[3];
+
     d->image->GetExtent(x_min, x_max, y_min, y_max, z_min, z_max);
     d->image->GetSpacing(voxeslize);
+
     for (int i = 0; i < 3; ++i) {
 
         if(!d->planes[i]) {
@@ -253,8 +257,10 @@ void gnomonActorImage::update(void)
         }
 
         int pos = (int)((d->image->GetDimensions()[i] - 1) * d->plane_positions[i] / 100);
+
         d->planes[i]->SetInputData(d->colors->GetOutput());
         d->plane_states[i] = true;
+
         if (i == 0) {
             d->planes[i]->SetDisplayExtent(pos, pos, y_min, y_max, z_min, z_max);
         } else if (i == 1) {
@@ -262,9 +268,9 @@ void gnomonActorImage::update(void)
         } else if (i ==2) {
             d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, pos, pos);
         }
+
         d->planes[i]->SetOpacity(d->plane_opacities[i]);
         d->planes[i]->Update();
-
         d->planes[i]->Modified();
     }
 
@@ -272,7 +278,6 @@ void gnomonActorImage::update(void)
         d->scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
         d->scalarBar->SetWidth(0.07);
         d->scalarBar->SetHeight(0.7);
-        d->scalarBar->SetLookupTable(d->colorFunction);
         d->scalarBar->SetVisibility(1);
         d->scalarBar->DragableOn();
         d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
@@ -281,6 +286,9 @@ void gnomonActorImage::update(void)
         vtkRenderer *renderer = d->interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer();
         renderer->AddActor2D(d->scalarBar);
     }
+    d->scalarBar->SetLookupTable(d->colorFunction);
+    d->scalarBar->Modified();
+    d->scalarBar->SetVisibility(1);
 
     this->showScalarBarTitle(true);
 
@@ -290,6 +298,7 @@ void gnomonActorImage::update(void)
 void gnomonActorImage::setColorTransferFunction(vtkColorTransferFunction *func)
 {
     d->colorFunction = func;
+
     this->update();
 }
 
