@@ -35,11 +35,31 @@ private:
     void operator = (const gnomonInspectorSlicePlanes&) = delete;
 
  public:
-    double opacity();
-    void setOpacity(double);
+    double xPlaneOpacity(void);
+    double yPlaneOpacity(void);
+    double zPlaneOpacity(void);
+
+    void setXPlaneOpacity(double);
+    void setYPlaneOpacity(double);
+    void setZPlaneOpacity(double);
+
+ public:
+    double xPlanePos(void);
+    double yPlanePos(void);
+    double zPlanePos(void);
+
+    void setXPlanePos(double);
+    void setYPlanePos(double);
+    void setZPlanePos(double);
 
  signals:
-    void opacityChanged(double);
+    void xPlanePosChanged();
+    void yPlanePosChanged();
+    void zPlanePosChanged();
+
+    void xPlaneOpacityChanged();
+    void yPlaneOpacityChanged();
+    void zPlaneOpacityChanged();
 
  private:
     class gnomonInspectorSlicePlanesPrivate *d;

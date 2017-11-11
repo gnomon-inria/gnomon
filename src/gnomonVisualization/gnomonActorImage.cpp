@@ -48,7 +48,7 @@ public:
 
     vtkSmartPointer<vtkImageActor> planes[3];
     bool plane_states[3];
-
+    double plane_positions[3];
     // ///////////////////////////////////////////////////////////////
     vtkSmartPointer<vtkImageMapToColors> colors;
     // ///////////////////////////////////////////////////////////////////
@@ -76,6 +76,7 @@ gnomonActorImage::gnomonActorImage(void) : gnomonActor(), d(new gnomonActorImage
     for (int i = 0; i < 3; ++i) {
         d->planes[i] = NULL;
         d->plane_states[i] = false;
+        d->plane_positions[i] = 0.5;
     }
 }
 
@@ -150,6 +151,27 @@ void gnomonActorImage::setScalarBarOrientationToVertical(bool value)
     }
 }
 
+/*An int between 0 and 1000 */
+void gnomonActorImage::setXPlanePos(int pos)
+{
+    d->plane_positions[0] = pos;
+    this->update();
+}
+
+/*An int between 0 and 1000 */
+void gnomonActorImage::setYPlanePos(int pos)
+{
+    d->plane_positions[1] = pos;
+    this->update();
+}
+
+/*An int between 0 and 1000 */
+void gnomonActorImage::setZPlanePos(int pos)
+{
+    d->plane_positions[2] = pos;
+    this->update();
+}
+
 void gnomonActorImage::showPlaneX(bool value)
 {
     d->planes[0]->SetVisibility(value);
@@ -195,8 +217,8 @@ void gnomonActorImage::update(void)
         d->colors->SetLookupTable(d->colorFunction);
         d->colors->Update();
     }
-
-    int index = 0;
+    d->colors->SetLookupTable(d->colorFunction);
+    d->colors->Update();
     int x_min, x_max, y_min, y_max, z_min, z_max;
     double voxeslize[3];
     d->image->GetExtent(x_min, x_max, y_min, y_max, z_min, z_max);
@@ -205,20 +227,20 @@ void gnomonActorImage::update(void)
 
         if(!d->planes[i]) {
             d->planes[i] = vtkSmartPointer<vtkImageActor>::New();
-            index = d->image->GetDimensions()[i]/2;
-
-            d->planes[i]->SetInputData(d->colors->GetOutput());
-            d->plane_states[i] = true;
-            if (i == 0) {
-                d->planes[i]->SetDisplayExtent(index, index, y_min, y_max, z_min, z_max);
-            } else if (i == 1) {
-                d->planes[i]->SetDisplayExtent(x_min, x_max, index, index, z_min, z_max);
-            } else if (i ==2) {
-                d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, index, index);
-            }
-            d->planes[i]->Update();
-            this->AddPart(d->planes[i]);
         }
+
+        int pos = std::min(d->image->GetDimensions()[i], (int)(d->image->GetDimensions()[i] * d->plane_positions[i] / 100));
+        d->planes[i]->SetInputData(d->colors->GetOutput());
+        d->plane_states[i] = true;
+        if (i == 0) {
+            d->planes[i]->SetDisplayExtent(pos, pos, y_min, y_max, z_min, z_max);
+        } else if (i == 1) {
+            d->planes[i]->SetDisplayExtent(x_min, x_max, pos, pos, z_min, z_max);
+        } else if (i ==2) {
+            d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, pos, pos);
+        }
+        d->planes[i]->Update();
+        this->AddPart(d->planes[i]);
 
         d->planes[i]->Modified();
     }
@@ -241,6 +263,18 @@ void gnomonActorImage::update(void)
     this->show();
 
     d->interactor->Render();
+}
+
+void gnomonActorImage::setColorTransferFunction(vtkColorTransferFunction *func)
+{
+    qWarning() << "colorTransferFunction ajusted";
+    d->colorFunction = func;
+    this->update();
+}
+
+void *gnomonActorImage::colorTransferFunction(void)
+{
+    return d->colorFunction;
 }
 
 void gnomonActorImage::showScalarBarTitle(bool show)

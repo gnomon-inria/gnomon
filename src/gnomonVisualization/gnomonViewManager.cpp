@@ -144,13 +144,24 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
             actor_volume->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
             actor_volume->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(volume_inspector->editor()->opacityTransferFunction()));
         });
-
+    connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            actor_image->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
+        });
     QList< gnomonInspectorVolume * > volumes_inspectors;
     volumes_inspectors.append(volume_inspector);
     d->inspector_tree->addChild(actor_volume_item, volume_inspector);
 
     // ///////////////////////////////////////////////////////////////////
     gnomonInspectorSlicePlanes *slice_planes_inspector = new gnomonInspectorSlicePlanes();
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::xPlanePosChanged,
+            [=] () { actor_image->setXPlanePos(slice_planes_inspector->xPlanePos());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::yPlanePosChanged,
+            [=] () { actor_image->setYPlanePos(slice_planes_inspector->yPlanePos());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::zPlanePosChanged,
+            [=] () { actor_image->setZPlanePos(slice_planes_inspector->zPlanePos());
+            });
 
     QList< gnomonInspectorImage * > images_inspectors;
     images_inspectors.append(slice_planes_inspector);

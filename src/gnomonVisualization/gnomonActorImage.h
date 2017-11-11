@@ -19,6 +19,7 @@
 #include <gnomonVisualizationExport.h>
 
 class vtkImageData;
+class vtkColorTransferFunction;
 
 class GNOMONVISUALIZATION_EXPORT gnomonActorImage : public gnomonActor
 {
@@ -54,7 +55,15 @@ public:
 
     void setScalarBarOrientationToVertical(bool value);
 
+    void *colorTransferFunction(void);
+
+    void setColorTransferFunction(vtkColorTransferFunction *);
+
     void update(void) override;
+
+    void setXPlanePos(int);
+    void setYPlanePos(int);
+    void setZPlanePos(int);
 
 public:
     vtkImageData *image(void);
