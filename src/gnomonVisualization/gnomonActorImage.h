@@ -18,10 +18,14 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <vtkImageData.h>
+class vtkImageData;
+class vtkColorTransferFunction;
 
 class GNOMONVISUALIZATION_EXPORT gnomonActorImage : public gnomonActor
 {
+ public:
+    vtkTypeMacro(gnomonActorImage, vtkAssembly);
+
 protected:
      gnomonActorImage(void);
     ~gnomonActorImage(void);
@@ -29,9 +33,6 @@ protected:
 private:
     gnomonActorImage(const gnomonActorImage&) = delete;
     void operator = (const gnomonActorImage&) = delete;
-
-public:
-    vtkTypeMacro(gnomonActorImage, vtkAssembly);
 
 public:
     static gnomonActorImage *New(void);
@@ -54,7 +55,19 @@ public:
 
     void setScalarBarOrientationToVertical(bool value);
 
+    void *colorTransferFunction(void);
+
+    void setColorTransferFunction(vtkColorTransferFunction *);
+
     void update(void) override;
+
+    void setXPlanePos(int);
+    void setYPlanePos(int);
+    void setZPlanePos(int);
+
+    void setXPlaneOpacity(double);
+    void setYPlaneOpacity(double);
+    void setZPlaneOpacity(double);
 
 public:
     vtkImageData *image(void);

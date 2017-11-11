@@ -35,6 +35,9 @@ class gnomonViewPrivate;
 
 class gnomonInspector;
 
+class gnomonActorImage;
+class gnomonActorVolume;
+
 class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
 {
     Q_OBJECT
@@ -55,6 +58,8 @@ public:
     QWidget *inspector(void) override;
 
 public slots:
+    void onInserted(gnomonActorImage *image);
+    void onInserted(gnomonActorVolume *volume);
     void onInserted(vtkImageData *image);
     void onInserted(vtkPolyData *mesh);
     void onInserted(gnomonCellComplex *cellcomplex);

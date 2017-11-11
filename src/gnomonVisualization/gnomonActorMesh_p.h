@@ -34,5 +34,7 @@ public:
     vtkSmartPointer<vtkPolyDataMapper> mapper;
     vtkSmartPointer<vtkActor> actor;
 
+    vtkSmartPointer<vtkColorTransferFunction> colorFunction;
+
     vtkRenderWindowInteractor *interactor;
 };

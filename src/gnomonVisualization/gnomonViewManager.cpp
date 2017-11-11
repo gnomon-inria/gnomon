@@ -18,11 +18,21 @@
 #include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorMeshCellImage.h"
 #include "gnomonActorVolume.h"
+#include "gnomonActorImage.h"
 
 #include "gnomonViewManager.h"
+#include "gnomonInspector.h"
+#include "gnomonInspectorImage.h"
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorViewWidget.h"
 #include "gnomonInspectorMain.h"
+#include "gnomonInspectorVolume.h"
+#include "gnomonInspectorSlicePlanes.h"
+#include "gnomonInspectorCellGraph.h"
+
+#include "gnomonStringEditor.h"
+#include "gnomonClutEditor.h"
+#include "gnomonDoubleRangeEditor.h"
 
 #include <gnomonCellComplex.h>
 #include <gnomonCellGraph.h>
@@ -30,8 +40,11 @@
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
 
+#include <cmath>
+
 class gnomonViewManagerPrivate
 {
+
 public:
     gnomonInspectorViewTree *inspector_tree;
     gnomonInspectorViewWidget *inspector_widget;
@@ -40,8 +53,12 @@ public:
 public:
     QHash<vtkPolyData *, gnomonActor *> meshes;
     QHash<vtkImageData *, gnomonActor *> volumes;
+    QHash<vtkImageData *, gnomonActor *> images;
+    QHash<gnomonActorVolume *, QList< gnomonInspectorImage * > > volumes_inspectors;
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
     QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
+    QHash<gnomonActorMeshCellGraph *, QList< gnomonInspectorCellGraph * > > cellgraphs_inspectors;
+    QHash<gnomonInspectorCellGraph *, gnomonActorMeshCellGraph *> cellgraphs_inspector_actors;
     QHash<gnomonCellImage *, gnomonActor *> cellimages;
 };
 
@@ -69,6 +86,9 @@ gnomonActor *gnomonViewManager::insert(vtkPolyData *mesh)
 {
     gnomonActorMesh *actor = gnomonActorMesh::New();
     actor->setMesh(mesh);
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created here
+    // ///////////////////////////////////////////////////////////////////
 
     d->meshes.insert(mesh, actor);
 
@@ -95,18 +115,68 @@ gnomonActor *gnomonViewManager::actor(vtkImageData *volume)
     return d->volumes.value(volume, NULL);
 }
 
-gnomonActor *gnomonViewManager::insert(vtkImageData *volume)
+gnomonActor *gnomonViewManager::insert(vtkImageData *image)
 {
-    gnomonActorVolume *actor = gnomonActorVolume::New();
-    actor->setVolume(volume);
+    // ///////////////////////////////////////////////////////////////////
+    // Actors are created here
+    // ///////////////////////////////////////////////////////////////////
+    gnomonActorVolume *actor_volume = gnomonActorVolume::New();
+    actor_volume->setVolume(image);
+    d->volumes.insert(image, actor_volume);
+    QTreeWidgetItem *actor_volume_item = d->inspector_tree->insert(actor_volume);
+    emit inserted(actor_volume);
 
-    d->volumes.insert(volume, actor);
+    gnomonActorImage *actor_image = gnomonActorImage::New();
+    actor_image->setImage(image);
+    //Replaces other insert ... TODO
+    d->volumes.insert(image, actor_image);
+    QTreeWidgetItem *actor_image_item = d->inspector_tree->insert(actor_image);
+    emit inserted(actor_image);
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created and connected to actors here
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorVolume *volume_inspector = new gnomonInspectorVolume();
 
-    d->inspector_tree->insert(volume);
+    volume_inspector->editor()->setRange(actor_volume->rangeMin(), actor_volume->rangeMax());
+    volume_inspector->editor()->setHistogram(actor_volume->histogram());
+    connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            actor_volume->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
+            actor_volume->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(volume_inspector->editor()->opacityTransferFunction()));
+        });
+    connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            actor_image->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
+        });
+    QList< gnomonInspectorVolume * > volumes_inspectors;
+    volumes_inspectors.append(volume_inspector);
+    d->inspector_tree->addChild(actor_volume_item, volume_inspector);
 
-    emit inserted(volume);
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorSlicePlanes *slice_planes_inspector = new gnomonInspectorSlicePlanes();
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::xPlanePosChanged,
+            [=] () { actor_image->setXPlanePos(slice_planes_inspector->xPlanePos());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::yPlanePosChanged,
+            [=] () { actor_image->setYPlanePos(slice_planes_inspector->yPlanePos());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::zPlanePosChanged,
+            [=] () { actor_image->setZPlanePos(slice_planes_inspector->zPlanePos());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::xPlaneOpacityChanged,
+            [=] () { actor_image->setXPlaneOpacity(slice_planes_inspector->xPlaneOpacity());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::yPlaneOpacityChanged,
+            [=] () { actor_image->setYPlaneOpacity(slice_planes_inspector->yPlaneOpacity());
+            });
+    connect(slice_planes_inspector, &gnomonInspectorSlicePlanes::zPlaneOpacityChanged,
+            [=] () { actor_image->setZPlaneOpacity(slice_planes_inspector->zPlaneOpacity());
+            });
 
-    return actor;
+    QList< gnomonInspectorImage * > images_inspectors;
+    images_inspectors.append(slice_planes_inspector);
+    d->inspector_tree->addChild(actor_image_item, slice_planes_inspector);
+
+    //TODO what to return ????
+    return actor_volume;
 }
 
 void gnomonViewManager::remove(vtkImageData *volume)
@@ -121,7 +191,6 @@ QList<vtkImageData *> gnomonViewManager::volumes(void)
     return d->volumes.keys();
 }
 
-
 gnomonActor *gnomonViewManager::actor(gnomonCellComplex *cellcomplex)
 {
     return d->cellcomplexes.value(cellcomplex, NULL);
@@ -133,6 +202,8 @@ gnomonActor *gnomonViewManager::insert(gnomonCellComplex *cellcomplex)
     actor->setCellComplex(cellcomplex);
 
     d->cellcomplexes.insert(cellcomplex, actor);
+
+    d->inspector_tree->insert(cellcomplex);
 
     emit inserted(cellcomplex);
 
@@ -163,6 +234,59 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
     actor->setCellGraph(cellgraph);
 
     d->cellgraphs.insert(cellgraph, actor);
+
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created here
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorCellGraph *cellgraph_inspector = new gnomonInspectorCellGraph();
+
+    cellgraph_inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+
+    connect(cellgraph_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
+        });
+
+    QStringList vertexProperties = cellgraph->vertexPropertyNames();
+    vertexProperties.insert(0,"");
+    cellgraph_inspector->vertexPropertyEditor()->setList(vertexProperties);
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::vertexPropertyUpdated, [=] () { actor->setVertexProperty(cellgraph_inspector->vertexProperty()); });
+
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::vertexSizeUpdated, [=] () { actor->setVertexSize(cellgraph_inspector->vertexSize()); });
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::edgeOpacityUpdated, [=] () { actor->setEdgeOpacity(cellgraph_inspector->edgeOpacity()); });
+    connect(cellgraph_inspector, &gnomonInspectorCellGraph::edgeLinewidthUpdated, [=] () { actor->setEdgeLinewidth(cellgraph_inspector->edgeLinewidth()); });
+
+
+
+    QMap<QString, void(gnomonInspectorCellGraph::*)(void)> sliceSignals;
+    sliceSignals["x"] = &gnomonInspectorCellGraph::xSliceUpdated;
+    sliceSignals["y"] = &gnomonInspectorCellGraph::ySliceUpdated;
+    sliceSignals["z"] = &gnomonInspectorCellGraph::zSliceUpdated;
+
+    for (const auto& dim : sliceSignals.keys()) {
+        QString barycenterProp("barycenter_");
+        barycenterProp.append(dim);
+        QMap<long, QVariant> positions = cellgraph->vertexProperty(barycenterProp);
+        QList<double> points;
+        for (const auto& vertexId : cellgraph->vertexIds()) {
+            points<<positions[vertexId].value<double>();
+        }
+        double pointMin = floor(*std::min_element(points.begin(),points.end()));
+        double pointMax = ceil(*std::max_element(points.begin(),points.end()));
+        cellgraph_inspector->sliceEditor(dim)->setRange(pointMin,pointMax);
+        cellgraph_inspector->sliceEditor(dim)->setValueMin(pointMin);
+        cellgraph_inspector->sliceEditor(dim)->setValueMax(pointMax);
+        connect(cellgraph_inspector, sliceSignals[dim], [=] () { actor->setSlice(dim,cellgraph_inspector->slice(dim)); });
+    }
+
+
+    QList< gnomonInspectorCellGraph * > cellgraphs_inspectors;
+    cellgraphs_inspectors.append(cellgraph_inspector);
+    d->cellgraphs_inspectors.insert(actor, cellgraphs_inspectors);
+    d->cellgraphs_inspector_actors.insert(cellgraph_inspector,actor);
+
+    QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
+    d->inspector_tree->addChild(tree_item, cellgraph_inspector);
+
 
     emit inserted(cellgraph);
 
@@ -220,6 +344,9 @@ void gnomonViewManager::clear(void)
     qDeleteAll(d->volumes.values());
     d->volumes.clear();
 
+    qDeleteAll(d->images.values());
+    d->images.clear();
+
     qDeleteAll(d->cellcomplexes.values());
     d->cellcomplexes.clear();
 
@@ -256,16 +383,51 @@ void gnomonViewManager::update(void)
 // ///////////////////////////////////////////////////////////////////
 // Protected slots
 // ///////////////////////////////////////////////////////////////////
-void gnomonViewManager::onVolumeSelected(vtkImageData *volume)
-{
-    d->inspector_widget->setActor(actor(volume), true);
 
-    emit selected(d->inspector_widget);
+void gnomonViewManager::onVolumeSelected(gnomonActorVolume *volume)
+{
+    //to implement
+}
+
+void gnomonViewManager::onImageSelected(gnomonActorImage *image)
+{
     //to implement
 }
 
 void gnomonViewManager::onMeshSelected(vtkPolyData *mesh)
 {
+    //to implement
+}
+
+void gnomonViewManager::onCellGraphSelected(gnomonActorMeshCellGraph *graph)
+{
+    //to implement
+}
+
+void gnomonViewManager::onInspectorImageSelected(gnomonInspectorImage *inspector)
+{
+    d->inspector_widget->setInspector(inspector, true);
+
+    emit selected(d->inspector_widget);
+    //to implement
+}
+
+void gnomonViewManager::onInspectorVolumeSelected(gnomonInspectorVolume *inspector)
+{
+    d->inspector_widget->setInspector(inspector, true);
+
+    emit selected(d->inspector_widget);
+    //to implement
+}
+
+void gnomonViewManager::onInspectorCellGraphSelected(gnomonInspectorCellGraph *inspector)
+{
+    d->inspector_widget->setInspector(inspector, true);
+
+    gnomonActorMeshCellGraph *actor = d->cellgraphs_inspector_actors[inspector];
+    inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+
+    emit selected(d->inspector_widget);
     //to implement
 }
 
@@ -283,7 +445,9 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
     d->inspector_main->addWidget(d->inspector_widget);
 
     connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
-    connect(d->inspector_tree, SIGNAL(selected(vtkImageData *)), this, SLOT(onVolumeSelected(vtkImageData *)));
+    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorImage *)), this, SLOT(onInspectorImageSelected(gnomonInspectorImage *)));
+    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorVolume *)), this, SLOT(onInspectorVolumeSelected(gnomonInspectorVolume *)));
+    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorCellGraph *)), this, SLOT(onInspectorCellGraphSelected(gnomonInspectorCellGraph *)));
 }
 
 gnomonViewManager::~gnomonViewManager(void)
