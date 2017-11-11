@@ -54,6 +54,7 @@ public slots:
 public:
     void *colorTransferFunction(void);
     void *opacityTransferFunction(void);
+
     void *mapper(void);
     void *vol(void);
     void *volumeProperty(void);
