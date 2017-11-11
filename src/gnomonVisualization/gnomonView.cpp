@@ -282,7 +282,6 @@ void gnomonView::onInserted(vtkPolyData *mesh)
 
 void gnomonView::onInserted(vtkImageData *image)
 {
-    qWarning() << Q_FUNC_INFO;
     gnomonActorImage *actor = dynamic_cast<gnomonActorImage *>(d->manager->actor(image));
     actor->setInteractor(d->widget->GetInteractor());
     actor->setImage(image);

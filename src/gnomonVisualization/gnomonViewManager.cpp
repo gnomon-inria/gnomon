@@ -138,7 +138,6 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
     gnomonInspectorVolume *volume_inspector = new gnomonInspectorVolume();
 
     volume_inspector->editor()->setRange(actor_volume->rangeMin(), actor_volume->rangeMax());
-    qWarning() << actor_volume->histogram();
     volume_inspector->editor()->setHistogram(actor_volume->histogram());
     connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
             actor_volume->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
@@ -286,9 +285,6 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
     d->cellgraphs_inspector_actors.insert(cellgraph_inspector,actor);
 
     QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
-    // qWarning() << tree_item;
-    // qWarning() << Q_FUNC_INFO;
-    // qWarning() << d->inspector_tree->addChild(tree_item, cellgraph_inspector);
     d->inspector_tree->addChild(tree_item, cellgraph_inspector);
 
 

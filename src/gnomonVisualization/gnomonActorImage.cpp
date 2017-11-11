@@ -290,7 +290,6 @@ void gnomonActorImage::update(void)
 
 void gnomonActorImage::setColorTransferFunction(vtkColorTransferFunction *func)
 {
-    qWarning() << "colorTransferFunction ajusted";
     d->colorFunction = func;
     this->update();
 }
