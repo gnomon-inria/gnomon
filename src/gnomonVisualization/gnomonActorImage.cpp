@@ -32,6 +32,7 @@
 #include <vtkScalarsToColors.h>
 #include <vtkSmartPointer.h>
 #include <vtkTextProperty.h>
+#include <vtkImageActor.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorImagePrivate
@@ -42,10 +43,15 @@ class gnomonActorImagePrivate
 public:
     vtkImageData *image;
 
+    //TODO Iteractor is not used
     vtkRenderWindowInteractor *interactor;
 
-    vtkSmartPointer<vtkImagePlaneWidget> planes[3];
+    vtkSmartPointer<vtkImageActor> planes[3];
     bool plane_states[3];
+
+    // ///////////////////////////////////////////////////////////////
+    vtkSmartPointer<vtkImageMapToColors> colors;
+    // ///////////////////////////////////////////////////////////////////
 
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
 
@@ -98,9 +104,9 @@ void gnomonActorImage::setInteractor(void *interactor)
 
 void gnomonActorImage::show(void)
 {
-    showPlaneX(d->plane_states[0]);
-    showPlaneY(d->plane_states[1]);
-    showPlaneZ(d->plane_states[2]);
+    showPlaneX(true);
+    showPlaneY(true);
+    showPlaneZ(true);
     showScalarBar(d->scalarbar_state);
     d->interactor->Render();
 }
@@ -121,6 +127,7 @@ void gnomonActorImage::hide(void)
     d->plane_states[1] = state_y;
     d->plane_states[2] = state_z;
     d->scalarbar_state = state_scalarbar;
+    d->interactor->Render();
 }
 
 void gnomonActorImage::setScalarBarOrientationToVertical(bool value)
@@ -145,49 +152,25 @@ void gnomonActorImage::setScalarBarOrientationToVertical(bool value)
 
 void gnomonActorImage::showPlaneX(bool value)
 {
-    d->plane_states[0] = value;
-
-    if (d->planes[0]) {
-        if (value)
-            d->planes[0]->On();
-        else
-            d->planes[0]->Off();
-    }
+    d->planes[0]->SetVisibility(value);
 }
 
 void gnomonActorImage::showPlaneY(bool value)
 {
-    d->plane_states[1] = value;
-
-    if (d->planes[1]) {
-        if (value)
-            d->planes[1]->On();
-        else
-            d->planes[1]->Off();
-    }
+    d->planes[1]->SetVisibility(value);
 }
 
 void gnomonActorImage::showPlaneZ(bool value)
 {
-    d->plane_states[2] = value;
-
-    if (d->planes[2]) {
-        if (value)
-            d->planes[2]->On();
-        else
-            d->planes[2]->Off();
-    }
+    d->planes[2]->SetVisibility(value);
 }
 
 void gnomonActorImage::update(void)
 {
-    qWarning() << Q_FUNC_INFO << __LINE__;
     if(!d->image)
         return;
-    qWarning() << Q_FUNC_INFO << __LINE__;
     if(!d->interactor)
         return;
-    qWarning() << Q_FUNC_INFO << __LINE__;
     double valuesRange[2];
     d->image->GetPointData()->GetScalars()->GetRange(valuesRange);
 
@@ -206,24 +189,38 @@ void gnomonActorImage::update(void)
         d->colorFunction->AddRGBPoint(max, 1.0, 0.0, 0.0);
     }
 
-    int index = 0;
+    if (!d->colors) {
+        d->colors = vtkSmartPointer<vtkImageMapToColors>::New();
+        d->colors->SetInputData(d->image);
+        d->colors->SetLookupTable(d->colorFunction);
+        d->colors->Update();
+    }
 
+    int index = 0;
+    int x_min, x_max, y_min, y_max, z_min, z_max;
+    double voxeslize[3];
+    d->image->GetExtent(x_min, x_max, y_min, y_max, z_min, z_max);
+    d->image->GetSpacing(voxeslize);
     for (int i = 0; i < 3; ++i) {
 
         if(!d->planes[i]) {
-            d->planes[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
-            d->planes[i]->SetInteractor(d->interactor);
+            d->planes[i] = vtkSmartPointer<vtkImageActor>::New();
             index = d->image->GetDimensions()[i]/2;
-        } else {
-            index = d->planes[i]->GetSliceIndex();
+
+            d->planes[i]->SetInputData(d->colors->GetOutput());
+            d->plane_states[i] = true;
+            if (i == 0) {
+                d->planes[i]->SetDisplayExtent(index, index, y_min, y_max, z_min, z_max);
+            } else if (i == 1) {
+                d->planes[i]->SetDisplayExtent(x_min, x_max, index, index, z_min, z_max);
+            } else if (i ==2) {
+                d->planes[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, index, index);
+            }
+            d->planes[i]->Update();
+            this->AddPart(d->planes[i]);
         }
-        d->planes[i]->SetInputData(d->image);
-        d->planes[i]->SetPlaneOrientation(i);
-        d->planes[i]->GetColorMap()->SetLookupTable(d->colorFunction);
-        d->planes[i]->PlaceWidget();
-        d->planes[i]->SetSliceIndex(index);
-        d->planes[i]->On();
-        d->planes[i]->InteractionOn();
+
+        d->planes[i]->Modified();
     }
 
     if(!d->scalarBar) {

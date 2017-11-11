@@ -349,6 +349,10 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
             actor = d->volume_items.value(item);
         }
 
+        if(d->image_items.keys().contains(item)) {
+            actor = d->image_items.value(item);
+        }
+
         if(d->complex_items.keys().contains(item)) {
             actor = d->view->manager()->actor(d->complex_items.value(item));
         }
