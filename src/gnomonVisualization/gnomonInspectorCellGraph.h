@@ -16,8 +16,6 @@
 
 #include "gnomonInspector.h"
 
-#include <vtkObject.h>
-
 #include <gnomonVisualizationExport.h>
 
 class gnomonClutEditor;
@@ -27,9 +25,9 @@ class gnomonDoubleRangeEditor;
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorCellGraph : public gnomonInspector
 {
     Q_OBJECT
-    
+
 public:
-     gnomonInspectorCellGraph(void);
+     gnomonInspectorCellGraph(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorCellGraph(void);
 
 private:

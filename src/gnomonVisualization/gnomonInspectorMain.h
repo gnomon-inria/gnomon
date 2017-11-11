@@ -24,9 +24,9 @@ class GNOMONVISUALIZATION_EXPORT gnomonInspectorMain : public QSplitter
 {
     Q_OBJECT
 
- public:
-     gnomonInspectorMain();
-    ~gnomonInspectorMain();
+public:
+     gnomonInspectorMain(QWidget *parent = Q_NULLPTR);
+    ~gnomonInspectorMain(void);
 
 public:
     gnomonInspectorMainPrivate *d;

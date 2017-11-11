@@ -16,6 +16,8 @@
 
 #include "gnomonInspector.h"
 
+#include <QtGui>
+
 #include <vtkObject.h>
 
 #include <gnomonVisualizationExport.h>
@@ -25,7 +27,7 @@ class gnomonMeshEditor;
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorMesh : public gnomonInspector
 {
 public:
-     gnomonInspectorMesh(void);
+     gnomonInspectorMesh(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorMesh(void);
 
 private:

@@ -16,8 +16,6 @@
 
 #include "gnomonInspector.h"
 
-#include <vtkObject.h>
-
 #include <gnomonVisualizationExport.h>
 
 class gnomonClutEditor;
@@ -25,7 +23,7 @@ class gnomonClutEditor;
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public gnomonInspector
 {
 public:
-     gnomonInspectorVolume(void);
+     gnomonInspectorVolume(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorVolume(void);
 
 private:

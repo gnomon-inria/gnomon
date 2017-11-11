@@ -16,8 +16,6 @@
 
 #include "gnomonInspectorImage.h"
 
-#include <vtkObject.h>
-
 #include <gnomonVisualizationExport.h>
 
 class gnomonClutEditor;
@@ -25,7 +23,7 @@ class gnomonClutEditor;
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorImageProperties : public gnomonInspectorImage
 {
 public:
-     gnomonInspectorImageProperties(void);
+     gnomonInspectorImageProperties(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorImageProperties(void);
 
 private:

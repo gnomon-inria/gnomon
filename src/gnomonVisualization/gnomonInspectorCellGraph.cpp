@@ -18,8 +18,6 @@
 #include "gnomonDoubleRangeEditor.h"
 #include "gnomonStringEditor.h"
 
-
-
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorCellGraphPrivate
 // /////////////////////////////////////////////////////////////////
@@ -42,36 +40,36 @@ public:
 // gnomonInspectorCellGraph
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorCellGraph::gnomonInspectorCellGraph(void) : gnomonInspector(), d(new gnomonInspectorCellGraphPrivate)
+gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorCellGraphPrivate)
 {
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-
-    d->vertexPropertyEditor = new gnomonStringEditor();
+    d->vertexPropertyEditor = new gnomonStringEditor(this);
     d->vertexPropertyEditor->setName("Property Name");
     connect(d->vertexPropertyEditor, &gnomonStringEditor::valueChanged, this, &gnomonInspectorCellGraph::vertexPropertyUpdated);
-    layout->addWidget(d->vertexPropertyEditor);
 
-    d->vertexSizeEditor = new gnomonDoubleEditor();
+    d->vertexSizeEditor = new gnomonDoubleEditor(this);
     d->vertexSizeEditor->setName("Vertex Size");
     d->vertexSizeEditor->setRange(0,10);
     d->vertexSizeEditor->setValue(1);
     connect(d->vertexSizeEditor, &gnomonDoubleEditor::valueChanged, this, &gnomonInspectorCellGraph::vertexSizeUpdated);
-    layout->addWidget(d->vertexSizeEditor);
 
-    d->edgeOpacityEditor = new gnomonDoubleEditor();
+    d->edgeOpacityEditor = new gnomonDoubleEditor(this);
     d->edgeOpacityEditor->setName("Edge Opacity");
     d->edgeOpacityEditor->setRange(0,1);
     d->edgeOpacityEditor->setValue(0.5);
     connect(d->edgeOpacityEditor, &gnomonDoubleEditor::valueChanged, this, &gnomonInspectorCellGraph::edgeOpacityUpdated);
-    layout->addWidget(d->edgeOpacityEditor);
 
-    d->edgeLinewidthEditor = new gnomonDoubleEditor();
+    d->edgeLinewidthEditor = new gnomonDoubleEditor(this);
     d->edgeLinewidthEditor->setName("Edge Linewidth");
     d->edgeLinewidthEditor->setRange(0,10);
     d->edgeLinewidthEditor->setValue(2);
     connect(d->edgeLinewidthEditor, &gnomonDoubleEditor::valueChanged, this, &gnomonInspectorCellGraph::edgeLinewidthUpdated);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(d->vertexPropertyEditor);
+    layout->addWidget(d->vertexSizeEditor);
+    layout->addWidget(d->edgeOpacityEditor);
     layout->addWidget(d->edgeLinewidthEditor);
 
     QMap<QString, void(gnomonInspectorCellGraph::*)(void)> sliceSignals;
@@ -89,14 +87,9 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(void) : gnomonInspector(), d(
         layout->addWidget(d->sliceEditors[dim]);
     }
 
-
-
-
-    d->editor = new gnomonClutEditor();
-    // layout->addWidget(d->editor);
+    d->editor = new gnomonClutEditor(this);
 
     this->setLayout(layout);
-
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -105,15 +98,9 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(void) : gnomonInspector(), d(
 
 gnomonInspectorCellGraph::~gnomonInspectorCellGraph(void)
 {
-    delete d->editor;
-    delete d->vertexPropertyEditor;
-    delete d->vertexSizeEditor;
-    delete d->edgeOpacityEditor;
-    delete d->edgeLinewidthEditor;
-
-    for (const auto& dim : d->sliceEditors.keys()) {
+    for (const auto& dim : d->sliceEditors.keys())
         delete d->sliceEditors[dim];
-    }
+
     delete d;
 
     d = NULL;
@@ -158,5 +145,6 @@ const QList<double>& gnomonInspectorCellGraph::slice(const QString& dim) const
 {
     return d->sliceEditors[dim]->value();
 }
+
 //
 // gnomonInspectorCellGraph.cpp ends here

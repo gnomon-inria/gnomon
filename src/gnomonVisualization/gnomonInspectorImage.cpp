@@ -28,7 +28,7 @@ public:
 // gnomonInspectorImage
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorImage::gnomonInspectorImage(void) : gnomonInspector(), d(new gnomonInspectorImagePrivate)
+gnomonInspectorImage::gnomonInspectorImage(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorImagePrivate)
 {
 
 }

@@ -16,17 +16,13 @@
 
 #include "gnomonActor.h"
 #include "gnomonActorMesh.h"
+#include "gnomonActorMeshCellComplex.h"
+#include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorVolume.h"
-
 #include "gnomonInspector.h"
 #include "gnomonInspectorVolume.h"
 #include "gnomonInspectorMesh.h"
-#include "gnomonActorMeshCellComplex.h"
-#include "gnomonActorMeshCellGraph.h"
-
 #include "gnomonClutEditor.h"
-
-#include <QStackedWidget>
 
 #include <vtkImageData.h>
 #include <vtkPointData.h>
@@ -41,7 +37,7 @@
 class gnomonInspectorViewWidgetPrivate
 {
 public:
-    QObject * inspector_parent;
+    QObject *inspector_parent;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -61,13 +57,13 @@ gnomonInspectorViewWidget::~gnomonInspectorViewWidget()
 
 void gnomonInspectorViewWidget::setInspector(gnomonInspector *inspector, bool enabled)
 {
-    if(inspector == nullptr) {
+    if(inspector == nullptr)
         return;
-    }
+
+    inspector->setEnabled(enabled);
 
     this->takeWidget();
     this->setWidget(inspector);
-    inspector->setEnabled(enabled);
 
     return;
 }

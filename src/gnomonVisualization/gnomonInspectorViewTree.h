@@ -16,14 +16,15 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QTreeWidget>
+#include <QtGui>
+#include <QtWidgets>
 
 class vtkPolyData;
 class vtkImageData;
+
 class gnomonCellComplex;
 class gnomonCellGraph;
 
-class gnomonView;
 class gnomonActor;
 class gnomonActorVolume;
 class gnomonActorImage;
@@ -34,11 +35,14 @@ class gnomonInspectorImage;
 class gnomonInspectorVolume;
 class gnomonInspectorCellGraph;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewTree : public QTreeWidget {
+class gnomonView;
+
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewTree : public QTreeWidget
+{
     Q_OBJECT
 
 public:
-     gnomonInspectorViewTree(QWidget *parent = 0);
+     gnomonInspectorViewTree(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorViewTree(void);
 
     void setView(gnomonView *view);
@@ -56,7 +60,6 @@ public:
 
     QTreeWidgetItem *insert(gnomonActorMeshCellGraph *cellgraph_actor);
     QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorCellGraph *inspector_cellgraph);
-
 
 signals:
     void checked(gnomonActor *, bool);

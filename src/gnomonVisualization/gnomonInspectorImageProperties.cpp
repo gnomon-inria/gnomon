@@ -13,7 +13,6 @@
 // Code:
 
 #include "gnomonInspectorImageProperties.h"
-#include "gnomonClutEditor.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorImagePropertiesPrivate
@@ -21,18 +20,20 @@
 
 class gnomonInspectorImagePropertiesPrivate
 {
+public:
+
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorImageProperties
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorImageProperties::gnomonInspectorImageProperties(void) : gnomonInspectorImage(), d(new gnomonInspectorImagePropertiesPrivate)
+gnomonInspectorImageProperties::gnomonInspectorImageProperties(QWidget *parent) : gnomonInspectorImage(parent), d(new gnomonInspectorImagePropertiesPrivate)
 {
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    // layout->addWidget(d->editor);
+
     this->setLayout(layout);
 }
 

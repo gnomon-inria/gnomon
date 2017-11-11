@@ -20,7 +20,6 @@
 
 #include "gnomonActor.h"
 
-
 class vtkColorTransferFunction;
 class vtkPolyData;
 
@@ -34,9 +33,9 @@ public:
 public:
     void setInteractor(void *interactor) override;
     void setMesh(vtkPolyData *mesh);
-    
-    virtual void hide(void);
-    virtual void show(void);
+
+    virtual void hide(void) override;
+    virtual void show(void) override;
 
 public:
     void setColorTransferFunction(vtkColorTransferFunction *);

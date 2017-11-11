@@ -14,6 +14,11 @@
 
 #include "gnomonInspector.h"
 
+gnomonInspector::gnomonInspector(QWidget *parent) : QFrame(parent)
+{
+
+}
+
 gnomonInspector::~gnomonInspector(void)
 {
     this->SetReferenceCount(0);

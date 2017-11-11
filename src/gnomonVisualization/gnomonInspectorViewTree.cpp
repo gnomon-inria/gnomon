@@ -14,13 +14,12 @@
 
 #include "gnomonInspectorViewTree.h"
 
-#include "gnomonView.h"
 #include "gnomonActor.h"
-#include "gnomonViewManager.h"
 #include "gnomonActorVolume.h"
 #include "gnomonActorImage.h"
 #include "gnomonActorMeshCellGraph.h"
-
+#include "gnomonView.h"
+#include "gnomonViewManager.h"
 
 #include <QtCore>
 #include <QtWidgets>
@@ -46,10 +45,8 @@ public:
     QHash<QTreeWidgetItem *, gnomonInspectorCellGraph *> inspector_cellgraph_items;
     QHash<QTreeWidgetItem *, gnomonInspectorImage *> inspector_image_items;
 
-
     QHash<QTreeWidgetItem *, gnomonCellComplex *> complex_items;
     QHash<QTreeWidgetItem *, vtkPolyData *> mesh_items;
-
 
 public:
     std::size_t next_image_id;
@@ -90,23 +87,9 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
     connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this, SLOT(onItemClicked(QTreeWidgetItem *, int)));
 }
 
-gnomonInspectorViewTree::~gnomonInspectorViewTree()
+gnomonInspectorViewTree::~gnomonInspectorViewTree(void)
 {
-    for(auto item : d->cellgraph_items.keys()) {
-        delete item;
-    }
-    for(auto item : d->complex_items.keys()) {
-        delete item;
-    }
-    for(auto item : d->image_items.keys()) {
-        delete item;
-    }
-    for(auto item : d->mesh_items.keys()) {
-        delete item;
-    }
-    for(auto item : d->volume_items.keys()) {
-        delete item;
-    }
+    delete d;
 }
 
 void gnomonInspectorViewTree::setView(gnomonView *view)
@@ -125,7 +108,7 @@ void gnomonInspectorViewTree::insert(vtkPolyData *mesh)
         return;
     }
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Mesh " + d->next_mesh_id << "Mesh");
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Mesh " << QString::number(int(d->next_mesh_id)) << "Mesh");
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 
     d->mesh_items.insert(item, mesh);
@@ -141,7 +124,6 @@ void gnomonInspectorViewTree::insert(vtkPolyData *mesh)
     }
 }
 
-/*Returns nullptr if actor is nullptr or if already inserted */
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *volume_actor)
 {
     if(!volume_actor) {
@@ -152,7 +134,7 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *volume_actor
     if(d->volume_items.values().contains(volume_actor))
         return nullptr;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem((QTreeWidget*)0, QStringList() << "Volume " + QString::number(d->next_volume_id) << "Volume");
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Volume " + QString::number(d->next_volume_id) << "Volume");
 
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
 
@@ -166,7 +148,6 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *volume_actor
     return item;
 }
 
-/*Returns nullptr if actor is nullptr or if already inserted */
 QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnomonInspectorVolume *inspector_volume)
 {
     if(!parent) {
@@ -208,7 +189,7 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorImage *image_actor)
     if(d->image_items.values().contains(image_actor))
         return nullptr;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem((QTreeWidget*)0, QStringList() << "Image " + QString::number(d->next_image_id) << "Image");
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Image " + QString::number(d->next_image_id) << "Image");
 
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
 
@@ -224,21 +205,17 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorImage *image_actor)
 
 QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnomonInspectorImage *inspector_image)
 {
-    if(!parent) {
+    if(!parent)
         return nullptr;
-    }
 
-    if(!inspector_image) {
+    if(!inspector_image)
         return nullptr;
-    }
 
-    if(!d->image_items.keys().contains(parent)) {
+    if(!d->image_items.keys().contains(parent))
         return nullptr;
-    }
 
-    if(d->inspector_image_items.values().contains(inspector_image)) {
+    if(d->inspector_image_items.values().contains(inspector_image))
         return nullptr;
-    }
 
     QTreeWidgetItem *item = new QTreeWidgetItem(parent, QStringList() << "Inspector " + QString::number(d->next_inspector_image_id) << "Inspector");
 
@@ -253,7 +230,6 @@ QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnom
     return item;
 }
 
-/*Returns nullptr if actor is nullptr or if already inserted */
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellgraph_actor)
 {
     if(!cellgraph_actor) {
@@ -264,7 +240,7 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellg
     if(d->cellgraph_items.values().contains(cellgraph_actor))
         return nullptr;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem((QTreeWidget*)0, QStringList() << "CellGraph " + QString::number(d->next_cellgraph_id) << "CellGraph");
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "CellGraph " + QString::number(d->next_cellgraph_id) << "CellGraph");
 
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
 
@@ -278,24 +254,19 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellg
     return item;
 }
 
-/*Returns nullptr if actor is nullptr or if already inserted */
 QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnomonInspectorCellGraph *inspector_cellgraph)
 {
-    if(!parent) {
+    if(!parent)
         return nullptr;
-    }
 
-    if(!inspector_cellgraph) {
+    if(!inspector_cellgraph)
         return nullptr;
-    }
 
-    if(!d->cellgraph_items.keys().contains(parent)) {
+    if(!d->cellgraph_items.keys().contains(parent))
         return nullptr;
-    }
 
-    if(d->inspector_cellgraph_items.values().contains(inspector_cellgraph)) {
+    if(d->inspector_cellgraph_items.values().contains(inspector_cellgraph))
         return nullptr;
-    }
 
     QTreeWidgetItem *item = new QTreeWidgetItem(parent, QStringList() << "Inspector " + QString::number(d->next_inspector_cellgraph_id) << "Inspector");
 
@@ -341,34 +312,28 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
     if(column == 2) {
         gnomonActor *actor = nullptr;
 
-        if(d->mesh_items.keys().contains(item)) {
+        if(d->mesh_items.keys().contains(item))
             actor = d->view->manager()->actor(d->mesh_items.value(item));
-        }
 
-        if(d->volume_items.keys().contains(item)) {
+        if(d->volume_items.keys().contains(item))
             actor = d->volume_items.value(item);
-        }
 
-        if(d->image_items.keys().contains(item)) {
+        if(d->image_items.keys().contains(item))
             actor = d->image_items.value(item);
-        }
 
-        if(d->complex_items.keys().contains(item)) {
+        if(d->complex_items.keys().contains(item))
             actor = d->view->manager()->actor(d->complex_items.value(item));
-        }
 
-        if(d->cellgraph_items.keys().contains(item)) {
+        if(d->cellgraph_items.keys().contains(item))
             actor = d->cellgraph_items.value(item);
-        }
 
         if(!actor)
             return;
 
         if (item->checkState(2) == Qt::Checked)
             actor->show();
-        else {
+        else
             actor->hide();
-        }
 
         emit checked(actor, (item->checkState(2) == Qt::Checked));
 
@@ -378,30 +343,29 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
 
 void gnomonInspectorViewTree::onItemSelected(void)
 {
-    if(d->mesh_items.keys().contains(this->currentItem())) {
+    if(d->mesh_items.keys().contains(this->currentItem()))
         emit selected(d->mesh_items.value(this->currentItem()));
-    }
-    if(d->volume_items.keys().contains(this->currentItem())) {
+
+    if(d->volume_items.keys().contains(this->currentItem()))
         emit selected(d->volume_items.value(this->currentItem()));
-    }
-    if(d->image_items.keys().contains(this->currentItem())) {
+
+    if(d->image_items.keys().contains(this->currentItem()))
         emit selected(d->volume_items.value(this->currentItem()));
-    }
-    if(d->complex_items.keys().contains(this->currentItem())) {
+
+    if(d->complex_items.keys().contains(this->currentItem()))
         emit selected(d->complex_items.value(this->currentItem()));
-    }
-    if(d->cellgraph_items.keys().contains(this->currentItem())) {
+
+    if(d->cellgraph_items.keys().contains(this->currentItem()))
         emit selected(d->cellgraph_items.value(this->currentItem()));
-    }
-    if(d->inspector_image_items.keys().contains(this->currentItem())) {
+
+    if(d->inspector_image_items.keys().contains(this->currentItem()))
         emit selected(d->inspector_image_items.value(this->currentItem()));
-    }
-    if(d->inspector_cellgraph_items.keys().contains(this->currentItem())) {
+
+    if(d->inspector_cellgraph_items.keys().contains(this->currentItem()))
         emit selected(d->inspector_cellgraph_items.value(this->currentItem()));
-    }
-    if(d->inspector_volume_items.keys().contains(this->currentItem())) {
+
+    if(d->inspector_volume_items.keys().contains(this->currentItem()))
         emit selected(d->inspector_volume_items.value(this->currentItem()));
-    }
 }
 
 //

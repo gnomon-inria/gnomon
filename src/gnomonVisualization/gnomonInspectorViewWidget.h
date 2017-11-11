@@ -16,11 +16,10 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QScrollArea>
+#include <QtWidgets>
 
 class gnomonActor;
 class gnomonInspector;
-
 class gnomonInspectorViewWidgetPrivate;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewWidget : public QScrollArea

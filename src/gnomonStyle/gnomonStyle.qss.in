@@ -92,6 +92,18 @@ QHeaderView::section {
     border: none;
 }
 
+QListView::item {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+}
+
+QListView::item:!active {
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+}
+
+QListView::item:active {
+    background: @GNOMON_STYLE_ACCENTCOLOR@;
+}
+
 QListView::indicator:checked {
     image: url(":gnomonStyle/gnomonStyleCheckBox-checked.png");
 }
@@ -115,10 +127,34 @@ QPlainTextEdit {
 
 QPushButton, QToolButton {
     color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+
     background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
 
     border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
     border-radius: 4px;
+}
+
+QSpinBox, QDoubleSpinBox {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+
+    padding-right: 15px;
+}
+
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
+    image: url(":gnomonStyle/gnomonStyleSpinBoxUpArrow.png");
+    width: 4px;
+    height: 4px;
+}
+
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
+    image: url(":gnomonStyle/gnomonStyleSpinBoxDownArrow.png");
+    width: 4px;
+    height: 4px;
 }
 
 QSplitter::handle:horizontal {
@@ -145,6 +181,13 @@ QStatusBar::item {
 
 QStatusBar QLabel {
     background: @GNOMON_STYLE_STATUSBAR@;
+}
+
+QTreeView QHeaderView::section {
+    border: none;
+    border-bottom: 1px solid @GNOMON_STYLE_BORDERALTCOLOR@;
+
+    padding: 4px;
 }
 
 QTreeView::indicator:checked {

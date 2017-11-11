@@ -20,6 +20,7 @@
 
 class gnomonInspectorMainPrivate
 {
+public:
 
 };
 
@@ -27,7 +28,7 @@ class gnomonInspectorMainPrivate
 // gnomonInspectorViewWidget
 // ///////////////////////////////////////////////////////////////////
 
-gnomonInspectorMain::gnomonInspectorMain() : QSplitter(Qt::Vertical), d(new gnomonInspectorMainPrivate)
+gnomonInspectorMain::gnomonInspectorMain(QWidget *parent) : QSplitter(Qt::Vertical, parent), d(new gnomonInspectorMainPrivate)
 {
     this->setHandleWidth(2);
 }

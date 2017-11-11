@@ -29,14 +29,15 @@ public:
 // gnomonInspectorVolume
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspector(), d(new gnomonInspectorVolumePrivate)
+gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorVolumePrivate)
 {
-    d->editor = new gnomonClutEditor();
+    d->editor = new gnomonClutEditor(this);
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->editor);
+
     this->setLayout(layout);
 }
 
@@ -46,7 +47,6 @@ gnomonInspectorVolume::gnomonInspectorVolume(void) : gnomonInspector(), d(new gn
 
 gnomonInspectorVolume::~gnomonInspectorVolume(void)
 {
-    delete d->editor;
     delete d;
 
     d = NULL;

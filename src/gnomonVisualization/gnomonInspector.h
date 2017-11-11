@@ -15,15 +15,16 @@
 #pragma once
 
 #include <QtCore>
-#include <QWidget>
+#include <QtWidgets>
 
 #include <gnomonVisualizationExport.h>
 
 #include <vtkAssembly.h>
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspector : public QWidget, public vtkAssembly
+class GNOMONVISUALIZATION_EXPORT gnomonInspector : public QFrame, public vtkAssembly
 {
 public:
+             gnomonInspector(QWidget *parent = Q_NULLPTR);
     virtual ~gnomonInspector(void);
 
 public:

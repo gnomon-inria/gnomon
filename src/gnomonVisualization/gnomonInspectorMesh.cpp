@@ -28,12 +28,12 @@ public:
 // gnomonInspectorMesh
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorMesh::gnomonInspectorMesh(void) : gnomonInspector(), d(new gnomonInspectorMeshPrivate)
+gnomonInspectorMesh::gnomonInspectorMesh(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorMeshPrivate)
 {
-
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+
     this->setLayout(layout);
 }
 

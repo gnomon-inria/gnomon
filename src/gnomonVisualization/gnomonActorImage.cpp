@@ -79,7 +79,7 @@ gnomonActorImage::gnomonActorImage(void) : gnomonActor(), d(new gnomonActorImage
         d->planes[i] = NULL;
         d->plane_states[i] = false;
         d->plane_positions[i] = 0.5;
-        d->plane_opacities[i] = 1.;
+        d->plane_opacities[i] = 0.5;
     }
 }
 
@@ -247,9 +247,8 @@ void gnomonActorImage::update(void)
     d->image->GetSpacing(voxeslize);
     for (int i = 0; i < 3; ++i) {
 
-        if(!d->planes[i]) {
+        if(!d->planes[i])
             d->planes[i] = vtkSmartPointer<vtkImageActor>::New();
-        }
 
         int pos = std::min(d->image->GetDimensions()[i], (int)(d->image->GetDimensions()[i] * d->plane_positions[i] / 100));
         d->planes[i]->SetInputData(d->colors->GetOutput());
