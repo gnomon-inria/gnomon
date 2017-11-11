@@ -80,11 +80,10 @@ gnomonActorImage::~gnomonActorImage(void)
     d = NULL;
 }
 
+/*need to call update to render */
 void gnomonActorImage::setImage(vtkImageData *image)
 {
     d->image = image;
-
-    this->update();
 }
 
 vtkImageData *gnomonActorImage::image(void)
@@ -103,6 +102,7 @@ void gnomonActorImage::show(void)
     showPlaneY(d->plane_states[1]);
     showPlaneZ(d->plane_states[2]);
     showScalarBar(d->scalarbar_state);
+    d->interactor->Render();
 }
 
 void gnomonActorImage::hide(void)
@@ -181,16 +181,19 @@ void gnomonActorImage::showPlaneZ(bool value)
 
 void gnomonActorImage::update(void)
 {
+    qWarning() << Q_FUNC_INFO << __LINE__;
     if(!d->image)
         return;
-
+    qWarning() << Q_FUNC_INFO << __LINE__;
     if(!d->interactor)
         return;
-
-    double valuesRange[2]; d->image->GetPointData()->GetScalars()->GetRange(valuesRange);
+    qWarning() << Q_FUNC_INFO << __LINE__;
+    double valuesRange[2];
+    d->image->GetPointData()->GetScalars()->GetRange(valuesRange);
 
     double min = valuesRange[0];
     double max = valuesRange[1];
+
     double mid = (min + max)/2.;
 
     if(!d->colorFunction) {

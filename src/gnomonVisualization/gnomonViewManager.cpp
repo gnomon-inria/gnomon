@@ -40,7 +40,6 @@
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
 
-#include <vtkRenderWindowInteractor.h>
 #include <cmath>
 
 class gnomonViewManagerPrivate
@@ -122,14 +121,12 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
     // Actors are created here
     // ///////////////////////////////////////////////////////////////////
     gnomonActorVolume *actor_volume = gnomonActorVolume::New();
-    actor_volume->setInteractor(interactor);
     actor_volume->setVolume(image);
     d->volumes.insert(image, actor_volume);
     QTreeWidgetItem *actor_volume_item = d->inspector_tree->insert(actor_volume);
     emit inserted(actor_volume);
 
     gnomonActorImage *actor_image = gnomonActorImage::New();
-    actor_image->setInteractor(interactor);
     actor_image->setImage(image);
     //Replaces other insert ... TODO
     d->volumes.insert(image, actor_image);

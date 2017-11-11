@@ -106,8 +106,6 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     this->setLayout(layout);
 
-    d->manager->interactor = d->widget->GetInteractor();
-
     connect(d->manager, SIGNAL(inserted(gnomonActorVolume *)), this, SLOT(onInserted(gnomonActorVolume *)));
     connect(d->manager, SIGNAL(inserted(gnomonActorImage *)), this, SLOT(onInserted(gnomonActorImage *)));
     connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
@@ -261,13 +259,15 @@ void gnomonView::addCellGraph(gnomonCellGraph &graph)
 
 void gnomonView::onInserted(gnomonActorImage *image)
 {
-    qWarning() << Q_FUNC_INFO;
+    image->setInteractor(d->widget->GetInteractor());
+    image->update();
     d->renderer->AddActor(image);
 }
 
 void gnomonView::onInserted(gnomonActorVolume *volume)
 {
-    qWarning() << Q_FUNC_INFO;
+    volume->setInteractor(d->widget->GetInteractor());
+    volume->update();
     d->renderer->AddActor(volume);
 }
 

@@ -48,8 +48,6 @@ class QWidget;
 class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
 {
     Q_OBJECT
- public :
-    vtkRenderWindowInteractor *interactor;
 
 public:
     gnomonActor *actor(vtkPolyData *mesh);
