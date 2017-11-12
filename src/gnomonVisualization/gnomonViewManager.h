@@ -19,13 +19,22 @@
 #include <QtCore>
 #include <QWidget>
 
+class gnomonInspectorMain;
+class gnomonInspectorViewTree;
+class gnomonInspectorViewWidget;
+
 class gnomonActor;
+class gnomonActorImage;
 class gnomonActorMesh;
 class gnomonActorMeshCellComplex;
 class gnomonActorMeshCellGraph;
 class gnomonActorMeshCellImage;
 class gnomonActorVolume;
-class gnomonActorImage;
+class gnomonActorScalarBar;
+
+class gnomonInspectorImage;
+class gnomonInspectorVolume;
+class gnomonInspectorCellGraph;
 
 class gnomonCellComplex;
 class gnomonCellGraph;
@@ -33,15 +42,8 @@ class gnomonCellImage;
 
 class vtkImageData;
 class vtkPolyData;
+
 class vtkRenderWindowInteractor;
-
-class gnomonInspectorViewTree;
-class gnomonInspectorViewWidget;
-class gnomonInspectorMain;
-
-class gnomonInspectorImage;
-class gnomonInspectorVolume;
-class gnomonInspectorCellGraph;
 
 class QWidget;
 
@@ -70,20 +72,21 @@ public:
     void remove(gnomonCellGraph *cellgraph);
     void remove(gnomonCellImage *cellimage);
 
-    gnomonInspectorViewTree *inspectorTree(void);
+    gnomonInspectorViewTree   *inspectorTree(void);
     gnomonInspectorViewWidget *inspectorWidget(void);
-    gnomonInspectorMain *inspectorMain(void);
+    gnomonInspectorMain       *inspectorMain(void);
 
 public:
-    QList<vtkPolyData *> meshes(void);
-    QList<vtkImageData *> volumes(void);
+    QList<vtkPolyData *>       meshes(void);
+    QList<vtkImageData *>      volumes(void);
     QList<gnomonCellComplex *> cellcomplexes(void);
-    QList<gnomonCellGraph *> cellgraphs(void);
-    QList<gnomonCellImage *> cellimages(void);
+    QList<gnomonCellGraph *>   cellgraphs(void);
+    QList<gnomonCellImage *>   cellimages(void);
 
 signals:
     void inserted(gnomonActorImage *image);
     void inserted(gnomonActorVolume *volume);
+    void inserted(gnomonActorScalarBar *scalar_bar);
     void inserted(vtkPolyData *mesh);
     void inserted(vtkImageData *volume);
     void inserted(gnomonCellComplex *cellcomplex);
@@ -107,14 +110,16 @@ public slots:
     void update(void);
 
  protected slots:
-    void onMeshSelected(vtkPolyData *mesh);
     void onVolumeSelected(gnomonActorVolume *volume);
     void onImageSelected(gnomonActorImage *image);
+    void onScalarBarSelected(gnomonActorScalarBar *scalar_bar);
     void onCellGraphSelected(gnomonActorMeshCellGraph *graph);
 
     void onInspectorVolumeSelected(gnomonInspectorVolume *inspector);
     void onInspectorImageSelected(gnomonInspectorImage *inspector);
     void onInspectorCellGraphSelected(gnomonInspectorCellGraph *inspector);
+
+    void onMeshSelected(vtkPolyData *mesh);
 private:
      gnomonViewManager(void);
     ~gnomonViewManager(void);
