@@ -66,8 +66,6 @@ public:
 
     vtkSmartPointer<vtkImageMapToColors> colors;
 
-    vtkSmartPointer<vtkScalarBarActor> scalarBar;
-
     vtkSmartPointer<vtkOutlineCornerFilter> outline_corner;
     vtkSmartPointer<vtkOutlineFilter> outline_box;
     vtkSmartPointer<vtkOutlineFilter> outline_contour;
@@ -91,9 +89,6 @@ public:
 
 public:
     vtkImageResize *filter;
-
-public:
-    bool scalarbar_state;
 };
 
 void gnomonActorVolumePrivate::computeHistogram()
@@ -272,67 +267,19 @@ void gnomonActorVolume::update(void)
         }
     }
 
-    if(!d->scalarBar) {
-        d->scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-        d->scalarBar->SetWidth(0.07);
-        d->scalarBar->SetHeight(0.7);
-        d->scalarBar->SetLookupTable(d->colorFunction);
-
-        vtkRenderer *renderer = d->interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer();
-        renderer->AddActor2D(d->scalarBar);
-    }
-
-    this->showScalarBarTitle(true);
-
     d->interactor->Render();
-}
-
-void gnomonActorVolume::showScalarBarTitle(bool show)
-{
-    if (!d->scalarBar)
-        return;
-
-    if (show) {
-        d->scalarBar->SetTitle("Scalars");
-        d->scalarBar->GetTitleTextProperty()->SetOpacity(1);
-    } else
-        d->scalarBar->GetTitleTextProperty()->SetOpacity(0);
 }
 
 void gnomonActorVolume::show()
 {
     this->VisibilityOn();
-    showScalarBar(d->scalarbar_state);
     d->interactor->Render();
 }
 
 void gnomonActorVolume::hide()
 {
     this->VisibilityOff();
-    bool state_scalarbar = d->scalarbar_state;
-    showScalarBar(false);
-    d->scalarbar_state = state_scalarbar;
     d->interactor->Render();
-}
-
-void gnomonActorVolume::setScalarBarOrientationToVertical(bool value)
-{
-    if (d->scalarBar) {
-        if (value) {
-            d->scalarBar->SetOrientationToVertical();
-            d->scalarBar->SetWidth(0.08);
-            d->scalarBar->SetHeight(0.6);
-            d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-            d->scalarBar->GetPositionCoordinate()->SetValue(0.85, 0.05);
-        } else {
-            d->scalarBar->SetOrientationToHorizontal();
-            d->scalarBar->SetWidth(0.6);
-            d->scalarBar->SetHeight(0.08);
-            d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-            d->scalarBar->GetPositionCoordinate()->SetValue(0.2, 0.05);
-        }
-        d->scalarBar->SetTextPositionToPrecedeScalarBar();
-    }
 }
 
 void gnomonActorVolume::outlineNone(void)
@@ -420,8 +367,6 @@ gnomonActorVolume::gnomonActorVolume(void) : gnomonActor(), d(new gnomonActorVol
     d->volume = NULL;
     d->interactor = NULL;
     d->filter = NULL;
-    d->scalarBar = NULL;
-    d->scalarbar_state = false;
     d->mapper = NULL;
 }
 
@@ -430,14 +375,6 @@ gnomonActorVolume::~gnomonActorVolume(void)
     delete d;
 
     d = NULL;
-}
-
-void gnomonActorVolume::showScalarBar(bool show)
-{
-    d->scalarbar_state = show;
-
-    if (d->scalarBar)
-        d->scalarBar->SetVisibility(show);
 }
 
 //
