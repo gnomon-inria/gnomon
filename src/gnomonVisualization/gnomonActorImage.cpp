@@ -10,7 +10,7 @@
 //
 //
 
-n// Code:
+// Code:
 
 #include "gnomonActorImage.h"
 
