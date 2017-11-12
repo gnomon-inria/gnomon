@@ -14,10 +14,10 @@ channels:
 dependencies:
   - python=2.7
   - ipython-qtconsole
-  - jinja2
   - numpy
   - scipy
   - matplotlib
+  - sip
   - pandas
   - zeroc-ice
 ```
