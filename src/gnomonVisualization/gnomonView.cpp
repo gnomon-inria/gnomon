@@ -27,7 +27,6 @@
 #include "gnomonCellGraph.h"
 #include "gnomonCellImage.h"
 
-
 #include <gnomonStyle>
 
 #include <dtkWidgets>
@@ -60,14 +59,47 @@
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorMain.h"
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonViewWidget
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewWidget : public QVTKOpenGLWidget
+{
+    Q_OBJECT
+
+public:
+    gnomonViewWidget(QWidget *parent = Q_NULLPTR) : QVTKOpenGLWidget(parent)
+    {
+
+    }
+
+    ~gnomonViewWidget(void)
+    {
+
+    }
+
+signals:
+    void focused(void);
+
+private:
+    void mousePressEvent(QMouseEvent *event)
+    {
+        QVTKOpenGLWidget::mousePressEvent(event);
+
+        emit focused();
+    }
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonViewPrivate
+// ///////////////////////////////////////////////////////////////////
+
 class gnomonViewPrivate
 {
 public:
     vtkGenericOpenGLRenderWindow *window;
-    // vtkRenderWindow *window;
     vtkRenderer *renderer;
-    QVTKOpenGLWidget *widget;
-    // QVTKWidget *widget;
+    gnomonViewWidget *widget;
 
 public:
     QWidget *current_inspector;
@@ -76,6 +108,10 @@ public:
     gnomonViewManager *manager;
 };
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonView
+// ///////////////////////////////////////////////////////////////////
+
 gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 {
     QColor background_color = QColor(GNOMON_STYLE_BACKGROUNDCOLOR);
@@ -83,6 +119,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d = new gnomonViewPrivate;
 
     d->manager = new gnomonViewManager();
+
     gnomonInspectorViewTree *inspector= d->manager->inspectorTree();
     inspector->setView(this);
 
@@ -92,11 +129,9 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     d->renderer->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
     d->window = vtkGenericOpenGLRenderWindow::New();
-    // d->window = vtkRenderWindow::New();
     d->window->AddRenderer(d->renderer);
 
-    d->widget = new QVTKOpenGLWidget(this);
-    // d->widget = new QVTKWidget(this);
+    d->widget = new gnomonViewWidget(this);
     d->widget->SetRenderWindow(d->window);
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -113,8 +148,9 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
     connect(d->manager, SIGNAL(inserted(gnomonCellComplex *)), this, SLOT(onInserted(gnomonCellComplex *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellGraph *)), this, SLOT(onInserted(gnomonCellGraph *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellImage *)), this, SLOT(onInserted(gnomonCellImage *)));
-
     connect(d->manager, SIGNAL(selected(QWidget *)), this, SLOT(onInspectorSelected(QWidget *)));
+
+    connect(d->widget, SIGNAL(focused()), this, SIGNAL(focused()));
 }
 
 gnomonView::~gnomonView(void)
@@ -316,13 +352,26 @@ void gnomonView::onInserted(gnomonCellImage *cellimage)
     d->renderer->AddActor(actor);
 }
 
-
 void gnomonView::onInspectorSelected(QWidget *inspector)
 {
     d->current_inspector = inspector;
     d->current_inspector->show();
+
     this->update();
 }
+
+void gnomonView::mousePressEvent(QMouseEvent *event)
+{
+    qDebug() << Q_FUNC_INFO;
+
+    gnomonView::mousePressEvent(event);
+
+    emit focused();
+}
+
+// ///////////////////////////////////////////////////////////////////
+
+#include "gnomonView.moc"
 
 //
 // gnomonView.cpp ends here

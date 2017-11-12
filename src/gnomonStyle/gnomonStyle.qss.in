@@ -91,6 +91,7 @@ QHeaderView::section {
     background-color: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
     color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
     border: none;
+    padding: 4px;
 }
 
 QListView::item {
