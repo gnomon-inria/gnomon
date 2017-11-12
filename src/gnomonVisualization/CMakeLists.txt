@@ -34,6 +34,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorMeshCellImage.h
   gnomonActorVolume
   gnomonActorVolume.h
+  gnomonActorScalarBar
+  gnomonActorScalarBar.h
   gnomonClutEditor
   gnomonClutEditor.h
   gnomonDoubleEditor.h
@@ -73,6 +75,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorMeshCellGraph.cpp
   gnomonActorMeshCellImage.cpp
   gnomonActorVolume.cpp
+  gnomonActorScalarBar.cpp
   gnomonClutEditor.cpp
   gnomonStringEditor.cpp
   gnomonDoubleEditor.cpp
