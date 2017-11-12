@@ -14,6 +14,8 @@
 
 #include "gnomonClutEditor.h"
 
+#include <gnomonStyle>
+
 #include <QtXml>
 
 #include <vtkColorTransferFunction.h>
@@ -146,6 +148,7 @@ QColor gnomonClutEditorInterpolatorRGB::interpolate(gnomonClutEditorVertex *vert
 // ///////////////////////////////////////////////////////////////////
 // gnomonClutEditorHistogram
 // ///////////////////////////////////////////////////////////////////
+
 class gnomonClutEditorHistogram: public QGraphicsItem
 {
 public:
@@ -181,9 +184,6 @@ void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogr
         this->normalizedHistogram.clear();
 
     double max = 0;
-
-    // remove noise
-    //this->normalizedHistogram.append(0.0);
 
     for(int i = 0; i < histogram.count(); ++i) {
         if (histogram.at(i) < 0) {
@@ -420,32 +420,6 @@ void gnomonClutEditorTable::paint(QPainter *painter, const QStyleOptionGraphicsI
         QColor color = vertex->color(); color.setAlpha(128);
 
         linearGradient.setColorAt(position, color);
-
-        /*
-        if(!vertices.indexOf(vertex))
-            continue;
-
-        gnomonClutEditorVertex *start = vertices.at(vertices.indexOf(vertex) - 1);
-        gnomonClutEditorVertex *stop = vertex;
-
-        qreal sampling = 100;
-
-        for(int i = 0; i < (int)sampling; i++) {
-
-            qreal p    = start->pos().x() + (((stop->pos().x() - start->pos().x()) / sampling) * i);
-            qreal pmin = start->pos().x();
-            qreal pmax = stop->pos().x();
-
-            qreal hmin = start->color().hueF();
-            qreal hmax = stop->color().hueF();
-
-            qreal h = ((hmax-hmin)/(pmax-pmin)) * (p-pmin) + (hmin);
-            qreal s = vertex->color().saturationF();
-            qreal v = vertex->color().valueF();
-
-            linearGradient.setColorAt((p-xmin)/(xmax-xmin), QColor::fromHsvF(h, s, v, 0.5));
-        }
-        */
     }
 
     {
@@ -733,26 +707,44 @@ gnomonClutEditor::gnomonClutEditor(QWidget *parent) : QWidget(parent), d(new gno
 
     // --
 
+    QPalette palette ;
+    palette.setBrush(QPalette::Background, Qt::transparent);
+
     d->button_log = new QCheckBox("Logarithmic scale");
-    d->button_log->setStyleSheet("background: transparent;");
+    d->button_log->setPalette(palette);
+    d->button_log->setAutoFillBackground(false);
+    d->button_log->setStyleSheet(gnomonStyleSheet());
 
     d->button_apply = new QCheckBox("Applied");
-    d->button_apply->setStyleSheet("background: transparent;");
+    d->button_apply->setPalette(palette);
+    d->button_apply->setAutoFillBackground(false);
+    d->button_apply->setStyleSheet(gnomonStyleSheet());
 
     d->label_value = new QLineEdit("v:");
+    d->label_value->setStyleSheet(gnomonStyleSheet());
+
     d->label_alpha = new QLineEdit("α:");
+    d->label_alpha->setStyleSheet(gnomonStyleSheet());
 
     d->button_auto = new QPushButton("Interpolate");
-    // d->button_auto->setStyleSheet("background: transparent;");
+    d->button_auto->setPalette(palette);
+    d->button_auto->setAutoFillBackground(false);
+    d->button_auto->setStyleSheet(gnomonStyleSheet());
 
     d->button_color = new QPushButton("Color");
-    // d->button_color->setStyleSheet("background: transparent;");
+    d->button_color->setPalette(palette);
+    d->button_color->setAutoFillBackground(false);
+    d->button_color->setStyleSheet(gnomonStyleSheet());
 
     d->button_export = new QPushButton("Export");
-    // d->button_export->setStyleSheet("background: transparent;");
+    d->button_export->setPalette(palette);
+    d->button_export->setAutoFillBackground(false);
+    d->button_export->setStyleSheet(gnomonStyleSheet());
 
     d->button_import = new QPushButton("Import");
-    // d->button_import->setStyleSheet("background: transparent;");
+    d->button_import->setPalette(palette);
+    d->button_import->setAutoFillBackground(false);
+    d->button_import->setStyleSheet(gnomonStyleSheet());
 
     // --
 

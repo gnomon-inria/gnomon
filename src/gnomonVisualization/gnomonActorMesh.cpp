@@ -44,7 +44,6 @@ public:
     }
 };
 
-
 // /////////////////////////////////////////////////////////////////
 // gnomonActorMesh
 // /////////////////////////////////////////////////////////////////
@@ -101,18 +100,21 @@ void gnomonActorMesh::update(void)
 void gnomonActorMesh::hide(void)
 {
     this->VisibilityOff();
+
     d->interactor->Render();
 }
 
 void gnomonActorMesh::show(void)
 {
     this->VisibilityOn();
+
     d->interactor->Render();
 }
 
 void gnomonActorMesh::setColorTransferFunction(vtkColorTransferFunction *func)
 {
     d->colorFunction = func;
+
     this->update();
 }
 

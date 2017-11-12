@@ -46,6 +46,9 @@ public:
      gnomonView(QWidget *parent = Q_NULLPTR);
     ~gnomonView(void);
 
+signals:
+    void focused(void);
+
 public:
     void addCellComplex(gnomonCellComplex&);
     void addCellGraph(gnomonCellGraph&);
@@ -66,7 +69,11 @@ public slots:
     void onInserted(gnomonCellGraph *cellgraph);
     void onInserted(gnomonCellImage *cellimage);
 
+public slots:
     void onInspectorSelected(QWidget *inspector);
+
+protected:
+    void mousePressEvent(QMouseEvent *) override;
 
 private:
     gnomonViewPrivate *d;

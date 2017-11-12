@@ -13,7 +13,6 @@
 // Code:
 
 #include "gnomonInspectorCellGraph.h"
-#include "gnomonClutEditor.h"
 #include "gnomonDoubleEditor.h"
 #include "gnomonDoubleRangeEditor.h"
 #include "gnomonStringEditor.h"
@@ -25,8 +24,6 @@
 class gnomonInspectorCellGraphPrivate
 {
 public:
-    gnomonClutEditor *editor;
-
     gnomonStringEditor *vertexPropertyEditor;
 
     gnomonDoubleEditor *vertexSizeEditor;
@@ -87,8 +84,6 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : gnomonInsp
         layout->addWidget(d->sliceEditors[dim]);
     }
 
-    d->editor = new gnomonClutEditor(this);
-
     this->setLayout(layout);
 }
 
@@ -109,11 +104,6 @@ gnomonInspectorCellGraph::~gnomonInspectorCellGraph(void)
 gnomonStringEditor *gnomonInspectorCellGraph::vertexPropertyEditor(void) const
 {
     return d->vertexPropertyEditor;
-}
-
-gnomonClutEditor *gnomonInspectorCellGraph::editor(void) const
-{
-    return d->editor;
 }
 
 gnomonDoubleRangeEditor *gnomonInspectorCellGraph::sliceEditor(const QString& dim) const

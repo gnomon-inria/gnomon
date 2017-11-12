@@ -9,9 +9,5 @@
     <file>gnomonStyleCheckBox-checked@2x.png</file>
     <file>gnomonStyleComboBoxDownArrow.png</file>
     <file>gnomonStyleComboBoxDownArrow@2x.png</file>
-    <file>gnomonStyleSpinBoxUpArrow.png</file>
-    <file>gnomonStyleSpinBoxUpArrow@2x.png</file>
-    <file>gnomonStyleSpinBoxDownArrow.png</file>
-    <file>gnomonStyleSpinBoxDownArrow@2x.png</file>
   </qresource>
 </RCC>

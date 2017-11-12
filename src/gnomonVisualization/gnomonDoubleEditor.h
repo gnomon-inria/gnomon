@@ -46,6 +46,5 @@ private:
     class gnomonDoubleEditorPrivate *d;
 };
 
-
 //
 // gnomonDoubleEditor.h ends here

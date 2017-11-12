@@ -17,9 +17,15 @@
 %module gnomoncore
 
 %include "@dtk_WRAP_BASE@"
+
+
 %import "@dtk_WRAP_CORE@"
+%import "@dtkImaging_WRAP_CORE@"
+
 
 %{
+
+#include <dtkImaging>
 
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonAbstractCellComplexData.h>

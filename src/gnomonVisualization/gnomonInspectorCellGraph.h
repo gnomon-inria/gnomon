@@ -18,7 +18,6 @@
 
 #include <gnomonVisualizationExport.h>
 
-class gnomonClutEditor;
 class gnomonStringEditor;
 class gnomonDoubleRangeEditor;
 
@@ -37,7 +36,6 @@ private:
 public:
     gnomonStringEditor *vertexPropertyEditor(void) const;
     gnomonDoubleRangeEditor *sliceEditor(const QString& dim = "x") const;
-    gnomonClutEditor *editor(void) const;
 
 public:
 	const QString& vertexProperty(void) const;

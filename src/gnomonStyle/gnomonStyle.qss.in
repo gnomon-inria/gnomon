@@ -20,6 +20,7 @@
 ;; ******************************************************************/
 
 QCheckBox, QListWidget QCheckBox {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
     spacing: 5px;
 }
 
@@ -90,6 +91,7 @@ QHeaderView::section {
     background-color: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
     color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
     border: none;
+    padding: 4px;
 }
 
 QListView::item {
@@ -143,18 +145,6 @@ QSpinBox, QDoubleSpinBox {
     border-radius: 2px;
 
     padding-right: 15px;
-}
-
-QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
-    image: url(":gnomonStyle/gnomonStyleSpinBoxUpArrow.png");
-    width: 4px;
-    height: 4px;
-}
-
-QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
-    image: url(":gnomonStyle/gnomonStyleSpinBoxDownArrow.png");
-    width: 4px;
-    height: 4px;
 }
 
 QSplitter::handle:horizontal {
