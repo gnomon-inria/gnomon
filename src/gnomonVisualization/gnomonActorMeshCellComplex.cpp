@@ -41,7 +41,7 @@
 class gnomonActorMeshCellComplexPrivate
 {
 public:
-    gnomonCellComplex *cellcomplex; 
+    gnomonCellComplex *cellcomplex;
 
     vtkSmartPointer<vtkSphereSource> sphere;
 
@@ -52,9 +52,10 @@ public:
 
     double cellScaleFactor;
 
-    QMap<long, vtkSmartPointer<vtkPolyData> > cell_mesh;
-    QMap<long, vtkSmartPointer<vtkPolyDataMapper> > cell_mapper;
-    QMap<long, vtkSmartPointer<vtkActor> > cell_actor;
+    QMap<long, vtkSmartPointer<vtkPolyData>> cell_mesh;
+    QMap<long, vtkSmartPointer<vtkPolyDataMapper>> cell_mapper;
+    QMap<long, vtkSmartPointer<vtkActor>> cell_actor;
+
     vtkSmartPointer<vtkAssembly> cell_assembly;
 };
 
@@ -63,7 +64,6 @@ public:
 // /////////////////////////////////////////////////////////////////
 
 vtkStandardNewMacro(gnomonActorMeshCellComplex);
-
 
 void gnomonActorMeshCellComplex::setCellComplex(gnomonCellComplex *cellcomplex)
 {
@@ -74,7 +74,6 @@ void gnomonActorMeshCellComplex::setCellComplex(gnomonCellComplex *cellcomplex)
 
 void gnomonActorMeshCellComplex::update(void)
 {
-
     if(!dd->cellcomplex)
         return;
 
@@ -88,7 +87,6 @@ void gnomonActorMeshCellComplex::update(void)
 
     vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
     vtkSmartPointer<vtkDoubleArray> polydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
-
 
     QMap<long, QVariant> positions_x = dd->cellcomplex->elementProperty(0,"barycenter_x");
     QMap<long, QVariant> positions_y = dd->cellcomplex->elementProperty(0,"barycenter_y");
@@ -104,24 +102,7 @@ void gnomonActorMeshCellComplex::update(void)
         polydataPointData->InsertValue(vtkId,vertexId);
     }
 
-    // if (!d->mesh) {
-    //     d->mesh = vtkSmartPointer<vtkPolyData>::New();
-    //     d->mesh->SetPoints(polydataPoints);
-    //     d->mesh->SetLines(polydataLines);
-    // }
-
-    // if (!d->mapper) {
-    //     d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    //     d->mapper->SetInputData(d->mesh);
-    // }
-
-    // if(!d->actor) {
-    //     d->actor = vtkSmartPointer<vtkActor>::New();
-    //     d->actor->SetMapper(d->mapper);
-    //     this->AddPart(d->actor);
-    // }
-
-    if (!dd->point_mesh) {
+    if(!dd->point_mesh) {
         dd->point_mesh = vtkSmartPointer<vtkPolyData>::New();
         dd->point_mesh->SetPoints(polydataPoints);
         dd->point_mesh->GetPointData()->SetScalars(polydataPointData);
@@ -135,7 +116,7 @@ void gnomonActorMeshCellComplex::update(void)
         dd->sphere->Update();
     }
 
-    if (!dd->point_glyph) {
+    if(!dd->point_glyph) {
         dd->point_glyph = vtkSmartPointer<vtkGlyph3D>::New();
         dd->point_glyph->SetScaleModeToDataScalingOff();
         dd->point_glyph->SetColorModeToColorByScalar();
@@ -144,7 +125,7 @@ void gnomonActorMeshCellComplex::update(void)
         dd->point_glyph->Update();
     }
 
-    if (!dd->point_mapper) {
+    if(!dd->point_mapper) {
         dd->point_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         dd->point_mapper->SetInputData(dd->point_glyph->GetOutput());
         dd->point_mapper->SetScalarRange(0, dd->cellcomplex->elementCount(0)-1);
@@ -157,7 +138,6 @@ void gnomonActorMeshCellComplex::update(void)
         this->AddPart(dd->point_actor);
     }
 
-
     QList<long> faces = dd->cellcomplex->elementIds(2);
 
     for (const auto& faceId : faces) {
@@ -169,7 +149,7 @@ void gnomonActorMeshCellComplex::update(void)
         polydataFaceData->InsertValue(vtkId,faceId);
     }
 
-    if (!d->mesh) {
+    if(!d->mesh) {
         d->mesh = vtkSmartPointer<vtkPolyData>::New();
         d->mesh->SetPoints(polydataPoints);
         d->mesh->SetPolys(polydataFaces);
@@ -188,7 +168,6 @@ void gnomonActorMeshCellComplex::update(void)
         d->actor->SetVisibility(0);
         this->AddPart(d->actor);
     }
-
 
     QMap<long, QMap<long,long> > cellVertexPoints;
 
@@ -233,19 +212,19 @@ void gnomonActorMeshCellComplex::update(void)
             dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
         }
 
-        if (!dd->cell_mapper.contains(cellId)) {
+        if(!dd->cell_mapper.contains(cellId)) {
             dd->cell_mapper[cellId] = vtkSmartPointer<vtkPolyDataMapper>::New();
             dd->cell_mapper[cellId]->SetInputData(dd->cell_mesh[cellId]);
             dd->cell_mapper[cellId]->SetScalarRange(0, dd->cellcomplex->elementCount(3)-1);
         }
 
-        if (!dd->cell_actor.contains(cellId)) {
+        if(!dd->cell_actor.contains(cellId)) {
             dd->cell_actor[cellId] = vtkSmartPointer<vtkActor>::New();
             dd->cell_actor[cellId]->SetMapper(dd->cell_mapper[cellId]);
         }
     }
 
-    if (!dd->cell_assembly) {
+    if(!dd->cell_assembly) {
         dd->cell_assembly = vtkSmartPointer<vtkAssembly>::New();
         for (const auto& cellId : cells) {
             dd->cell_assembly->AddPart(dd->cell_actor[cellId]);

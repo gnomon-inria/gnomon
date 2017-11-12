@@ -12,12 +12,12 @@
 
 // Code:
 
-
 #pragma once
 
 #include <gnomonVisualizationExport.h>
 
 #include <vtkActor.h>
+#include <vtkColorTransferFunction.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>

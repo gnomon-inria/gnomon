@@ -742,17 +742,16 @@ gnomonClutEditor::gnomonClutEditor(QWidget *parent) : QWidget(parent), d(new gno
     d->label_value = new QLineEdit("v:");
     d->label_alpha = new QLineEdit("α:");
 
+    QPalette palette ;
+    palette.setBrush(QPalette::Background, Qt::transparent);
+
     d->button_auto = new QPushButton("Interpolate");
-    // d->button_auto->setStyleSheet("background: transparent;");
+    d->button_auto->setPalette(palette);
+    d->button_auto->setAutoFillBackground(false);
 
     d->button_color = new QPushButton("Color");
-    // d->button_color->setStyleSheet("background: transparent;");
-
     d->button_export = new QPushButton("Export");
-    // d->button_export->setStyleSheet("background: transparent;");
-
     d->button_import = new QPushButton("Import");
-    // d->button_import->setStyleSheet("background: transparent;");
 
     // --
 

@@ -235,16 +235,7 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
 
     d->cellgraphs.insert(cellgraph, actor);
 
-    // ///////////////////////////////////////////////////////////////////
-    // Inspectors are created here
-    // ///////////////////////////////////////////////////////////////////
     gnomonInspectorCellGraph *cellgraph_inspector = new gnomonInspectorCellGraph();
-
-    cellgraph_inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
-
-    connect(cellgraph_inspector->editor(), &gnomonClutEditor::updated, [=] () {
-            actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(cellgraph_inspector->editor()->colorTransferFunction()));
-        });
 
     QStringList vertexProperties = cellgraph->vertexPropertyNames();
     vertexProperties.insert(0,"");
@@ -254,8 +245,6 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
     connect(cellgraph_inspector, &gnomonInspectorCellGraph::vertexSizeUpdated, [=] () { actor->setVertexSize(cellgraph_inspector->vertexSize()); });
     connect(cellgraph_inspector, &gnomonInspectorCellGraph::edgeOpacityUpdated, [=] () { actor->setEdgeOpacity(cellgraph_inspector->edgeOpacity()); });
     connect(cellgraph_inspector, &gnomonInspectorCellGraph::edgeLinewidthUpdated, [=] () { actor->setEdgeLinewidth(cellgraph_inspector->edgeLinewidth()); });
-
-
 
     QMap<QString, void(gnomonInspectorCellGraph::*)(void)> sliceSignals;
     sliceSignals["x"] = &gnomonInspectorCellGraph::xSliceUpdated;
@@ -278,7 +267,6 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
         connect(cellgraph_inspector, sliceSignals[dim], [=] () { actor->setSlice(dim,cellgraph_inspector->slice(dim)); });
     }
 
-
     QList< gnomonInspectorCellGraph * > cellgraphs_inspectors;
     cellgraphs_inspectors.append(cellgraph_inspector);
     d->cellgraphs_inspectors.insert(actor, cellgraphs_inspectors);
@@ -286,7 +274,6 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *cellgraph)
 
     QTreeWidgetItem *tree_item = d->inspector_tree->insert(actor);
     d->inspector_tree->addChild(tree_item, cellgraph_inspector);
-
 
     emit inserted(cellgraph);
 
@@ -304,7 +291,6 @@ QList<gnomonCellGraph *> gnomonViewManager::cellgraphs(void)
 {
     return d->cellgraphs.keys();
 }
-
 
 gnomonActor *gnomonViewManager::actor(gnomonCellImage *cellimage)
 {
@@ -334,7 +320,6 @@ QList<gnomonCellImage *> gnomonViewManager::cellimages(void)
 {
     return d->cellimages.keys();
 }
-
 
 void gnomonViewManager::clear(void)
 {
@@ -425,7 +410,6 @@ void gnomonViewManager::onInspectorCellGraphSelected(gnomonInspectorCellGraph *i
     d->inspector_widget->setInspector(inspector, true);
 
     gnomonActorMeshCellGraph *actor = d->cellgraphs_inspector_actors[inspector];
-    inspector->editor()->setRange(actor->rangeMin(), actor->rangeMax());
 
     emit selected(d->inspector_widget);
     //to implement
@@ -453,6 +437,7 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
 gnomonViewManager::~gnomonViewManager(void)
 {
     this->clear();
+
     delete d->inspector_tree;
     delete d->inspector_widget;
     delete d;

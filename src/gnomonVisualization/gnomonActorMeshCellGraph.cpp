@@ -42,7 +42,7 @@
 class gnomonActorMeshCellGraphPrivate
 {
 public:
-    gnomonCellGraph *cellgraph; 
+    gnomonCellGraph *cellgraph;
 
     vtkSmartPointer<vtkSphereSource> sphere;
 
@@ -61,7 +61,7 @@ public:
     double edgeOpacity;
     double edgeLinewidth;
 
-    QMap<QString,QList<double> > slice;
+    QMap<QString,QList<double>> slice;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -69,7 +69,6 @@ public:
 // /////////////////////////////////////////////////////////////////
 
 vtkStandardNewMacro(gnomonActorMeshCellGraph);
-
 
 void gnomonActorMeshCellGraph::update(void)
 {
@@ -108,7 +107,6 @@ void gnomonActorMeshCellGraph::update(void)
     QMap<long,long> vertexPoint;
 
     QList<long> vertices = dd->cellgraph->vertexIds();
-
 
     QMap<long, double> vertexScalarProperty;
     for (const auto& vertexId : vertices) {
@@ -174,7 +172,6 @@ void gnomonActorMeshCellGraph::update(void)
     d->actor->GetProperty()->SetLineWidth(dd->edgeLinewidth);
     d->actor->Modified();
 
-
     if (!dd->point_mesh) {
         dd->point_mesh = vtkSmartPointer<vtkPolyData>::New();
     }
@@ -199,9 +196,6 @@ void gnomonActorMeshCellGraph::update(void)
     }
     dd->point_glyph->Update();
 
-    // double valuesRange[2];
-    // dd->point_mesh->GetPointData()->GetScalars()->GetRange(valuesRange);
-
     QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
     auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
     dd->range_min = *(mm.first);
@@ -221,8 +215,6 @@ void gnomonActorMeshCellGraph::update(void)
     d->colorFunction->AddRGBPoint(mid, 0.0, 1.0, 0.0);
     d->colorFunction->AddRGBPoint(max, 1.0, 0.0, 0.0);
     d->colorFunction->ClampingOn();
-    // double colorRange[2];
-    // d->colorFunction->GetRange(colorRange);
     d->colorFunction->Modified();
 
     if (!dd->point_mapper) {
