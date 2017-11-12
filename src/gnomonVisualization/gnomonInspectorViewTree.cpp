@@ -17,6 +17,7 @@
 #include "gnomonActor.h"
 #include "gnomonActorVolume.h"
 #include "gnomonActorImage.h"
+#include "gnomonActorScalarBar.h"
 #include "gnomonActorMeshCellGraph.h"
 #include "gnomonView.h"
 #include "gnomonViewManager.h"
@@ -40,6 +41,7 @@ public:
     QHash<QTreeWidgetItem *, gnomonActorVolume *> volume_items;
     QHash<QTreeWidgetItem *, gnomonActorImage *> image_items;
     QHash<QTreeWidgetItem *, gnomonActorMeshCellGraph *> cellgraph_items;
+    QHash<QTreeWidgetItem *, gnomonActorScalarBar *> scalar_bar_items;
 
     QHash<QTreeWidgetItem *, gnomonInspectorVolume *> inspector_volume_items;
     QHash<QTreeWidgetItem *, gnomonInspectorCellGraph *> inspector_cellgraph_items;
@@ -57,6 +59,7 @@ public:
     std::size_t next_complex_id;
     std::size_t next_mesh_id;
     std::size_t next_volume_id;
+    std::size_t next_scalar_bar_id;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -72,8 +75,9 @@ gnomonInspectorViewTree::gnomonInspectorViewTree(QWidget *parent) : QTreeWidget(
     d->next_inspector_volume_id = 0;
     d->next_cellgraph_id = 0;
     d->next_complex_id = 0;
-    d->next_volume_id = 0;
     d->next_mesh_id = 0;
+    d->next_volume_id = 0;
+    d->next_scalar_bar_id = 0;
 
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
     this->setCursor(Qt::ArrowCursor);
@@ -230,6 +234,30 @@ QTreeWidgetItem *gnomonInspectorViewTree::addChild(QTreeWidgetItem *parent, gnom
     return item;
 }
 
+QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorScalarBar *scalar_bar_actor)
+{
+    if(!scalar_bar_actor) {
+        qDebug() << Q_FUNC_INFO << "scalar_bar_actor is NULL";
+        return nullptr;
+    }
+
+    if(d->scalar_bar_items.values().contains(scalar_bar_actor))
+        return nullptr;
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this, QStringList() << "Scalar bar " + QString::number(d->next_scalar_bar_id) << "Scalar bar");
+
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
+
+    d->scalar_bar_items.insert(item, scalar_bar_actor);
+    ++d->next_scalar_bar_id;
+
+    item->setCheckState(2, scalar_bar_actor->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+    this->addTopLevelItem(item);
+
+    return item;
+}
+
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellgraph_actor)
 {
     if(!cellgraph_actor) {
@@ -321,6 +349,9 @@ void gnomonInspectorViewTree::onItemClicked(QTreeWidgetItem *item, int column)
         if(d->image_items.keys().contains(item))
             actor = d->image_items.value(item);
 
+        if(d->scalar_bar_items.keys().contains(item))
+            actor = d->scalar_bar_items.value(item);
+
         if(d->complex_items.keys().contains(item))
             actor = d->view->manager()->actor(d->complex_items.value(item));
 
@@ -351,6 +382,9 @@ void gnomonInspectorViewTree::onItemSelected(void)
 
     if(d->image_items.keys().contains(this->currentItem()))
         emit selected(d->volume_items.value(this->currentItem()));
+
+    if(d->scalar_bar_items.keys().contains(this->currentItem()))
+        emit selected(d->scalar_bar_items.value(this->currentItem()));
 
     if(d->complex_items.keys().contains(this->currentItem()))
         emit selected(d->complex_items.value(this->currentItem()));

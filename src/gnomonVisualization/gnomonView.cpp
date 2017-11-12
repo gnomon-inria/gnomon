@@ -13,19 +13,24 @@
 // Code:
 
 #include "gnomonView.h"
+
 #include "gnomonViewManager.h"
 
+#include "gnomonInspectorViewTree.h"
+#include "gnomonInspectorMain.h"
+
 #include "gnomonActor.h"
-#include "gnomonActorVolume.h"
 #include "gnomonActorImage.h"
 #include "gnomonActorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorMeshCellImage.h"
+#include "gnomonActorVolume.h"
+#include "gnomonActorScalarBar.h"
 
-#include "gnomonCellComplex.h"
-#include "gnomonCellGraph.h"
-#include "gnomonCellImage.h"
+#include <gnomonCellComplex>
+#include <gnomonCellGraph>
+#include <gnomonCellImage>
 
 #include <gnomonStyle>
 
@@ -55,9 +60,6 @@
 #include <QVTKOpenGLWidget.h>
 
 #include <QWidget>
-
-#include "gnomonInspectorViewTree.h"
-#include "gnomonInspectorMain.h"
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewWidget
@@ -143,6 +145,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     connect(d->manager, SIGNAL(inserted(gnomonActorVolume *)), this, SLOT(onInserted(gnomonActorVolume *)));
     connect(d->manager, SIGNAL(inserted(gnomonActorImage *)), this, SLOT(onInserted(gnomonActorImage *)));
+    connect(d->manager, SIGNAL(inserted(gnomonActorScalarBar *)), this, SLOT(onInserted(gnomonActorScalarBar *)));
     connect(d->manager, SIGNAL(inserted(vtkPolyData *)), this, SLOT(onInserted(vtkPolyData *)));
     connect(d->manager, SIGNAL(inserted(vtkImageData *)), this, SLOT(onInserted(vtkImageData *)));
     connect(d->manager, SIGNAL(inserted(gnomonCellComplex *)), this, SLOT(onInserted(gnomonCellComplex *)));
@@ -305,6 +308,13 @@ void gnomonView::onInserted(gnomonActorVolume *volume)
     volume->setInteractor(d->widget->GetInteractor());
     volume->update();
     d->renderer->AddActor(volume);
+}
+
+void gnomonView::onInserted(gnomonActorScalarBar *scalar_bar)
+{
+    scalar_bar->setInteractor(d->widget->GetInteractor());
+    scalar_bar->update();
+    d->renderer->AddActor(scalar_bar);
 }
 
 void gnomonView::onInserted(vtkPolyData *mesh)

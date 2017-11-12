@@ -37,6 +37,7 @@ class gnomonInspector;
 
 class gnomonActorImage;
 class gnomonActorVolume;
+class gnomonActorScalarBar;
 
 class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
 {
@@ -63,6 +64,7 @@ public:
 public slots:
     void onInserted(gnomonActorImage *image);
     void onInserted(gnomonActorVolume *volume);
+    void onInserted(gnomonActorScalarBar *scalar_bar);
     void onInserted(vtkImageData *image);
     void onInserted(vtkPolyData *mesh);
     void onInserted(gnomonCellComplex *cellcomplex);
