@@ -35,11 +35,6 @@ public:
     void setInteractor(void *interactor) override;
     void setVolume(vtkImageData *volume);
 
-public:
-    void showScalarBar(bool show);
-    void showScalarBarTitle(bool show);
-    void setScalarBarOrientationToVertical(bool value);
-
 public slots:
     void update(void) override;
     void show(void) override;
@@ -54,9 +49,16 @@ public slots:
 public:
     void *colorTransferFunction(void);
     void *opacityTransferFunction(void);
+
     void *mapper(void);
     void *vol(void);
     void *volumeProperty(void);
+
+ public:
+    double rangeMin() const;
+    double rangeMax() const;
+
+    const QList<int>& histogram() const;
 
 public:
     void setColorTransferFunction(vtkColorTransferFunction *);

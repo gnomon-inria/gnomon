@@ -23,6 +23,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractCellGraphFromImage
   gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellComplexFromImage
+  gnomonAbstractCellComplexFromImage.h
+  gnomonAbstractCellImageFromImage
+  gnomonAbstractCellImageFromImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
   gnomonCore
@@ -50,6 +54,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractCellGraphFromImage.cpp
+  gnomonAbstractCellComplexFromImage.cpp
+  gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellComplexReader.cpp)
 
 ## #################################################################
@@ -62,13 +68,11 @@ set(${PROJECT_NAME}_SOURCES_WRAP)
 
 if(DTK_BUILD_WRAPPERS)
 
-  include(dtkWrap)
-
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
   if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i ${${PROJECT_NAME}_WRAP_DEPENDS})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i.in ${CMAKE_BINARY_DIR}/gnomonCore.i @ONLY)
+    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_BINARY_DIR}/gnomonCore.i "${${PROJECT_NAME}_WRAP_DEPENDS}" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS}")
   endif()
 endif()
 
@@ -91,8 +95,9 @@ target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
+target_link_libraries(${PROJECT_NAME} dtkImaging)
 
-target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 if(DTK_BUILD_WRAPPERS)
 
@@ -134,7 +139,7 @@ set(PROJECT_NAME_HEADERS
 
 set(${PROJECT_NAME}_MODULES)
 
-if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
+if(DTK_BUILD_WRAPPERS)
 
   if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
 
@@ -170,7 +175,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
 
   endif(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
 
-endif(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
+endif(DTK_BUILD_WRAPPERS)
 
 ## ###################################################################
 ## Install rules - files

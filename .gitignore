@@ -34,7 +34,17 @@ build
 ## Generated files
 ## ###################################################################
 
-src/tissueCore/tissueCore.i
+src/gnomon/gnomonConfig.h
+
+src/gnomonCore/gnomonCore.i
+
+src/gnomonVisualization/gnomonVisualization.i
+
+src/gnomonStyle/gnomonStyle.qss
+src/gnomonStyle/gnomonStyleConfig.h
+src/gnomonStyle/gnomonStyleValues.h
+
+src/gnomonOmero/gnomonOmeroConfig.h
 
 ######################################################################
 ### .gitignore ends here

@@ -38,17 +38,15 @@ set(${PROJECT_NAME}_SOURCES_WRAP)
 
 if(DTK_BUILD_WRAPPERS)
 
-  include(dtkWrap)
-
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
   if (DTK_WRAPPING_PYTHON)
 
-    if(DTK_PYTHON_WRAPPER MATCHES "SWIG" OR DTK_PYTHON_WRAPPER MATCHES "BOTH")
+    if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
 
     endif()
 
-    if(DTK_PYTHON_WRAPPER MATCHES "SIP" OR DTK_PYTHON_WRAPPER MATCHES "BOTH")
+    if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
       set(${PROJECT_NAME}_SIP_WRAPPERS sip${PROJECT_NAME}gnomonGrowthSimulatorMainWindow.cpp)
 
@@ -81,6 +79,7 @@ target_link_libraries(${PROJECT_NAME}_backend dtkWidgets)
 target_link_libraries(${PROJECT_NAME}_backend dtkComposer)
 
 target_link_libraries(${PROJECT_NAME}_backend gnomonCore)
+target_link_libraries(${PROJECT_NAME}_backend gnomonStyle)
 target_link_libraries(${PROJECT_NAME}_backend gnomonComposer)
 target_link_libraries(${PROJECT_NAME}_backend gnomonFonts)
 target_link_libraries(${PROJECT_NAME}_backend gnomonWidgets)

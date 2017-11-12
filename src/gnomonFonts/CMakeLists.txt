@@ -20,13 +20,28 @@ project(gnomonFonts)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonFonts
-  gnomonFontAwesome.h)
+  gnomonFontAllTheIcons.h
+  gnomonFontAwesome.h
+  gnomonFontFileIcons.h
+  gnomonFontOcticon.h
+  gnomonFontSourceCodePro.h
+  gnomonFontSourceSansPro.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonFontAwesome.cpp)
+  gnomonFontAllTheIcons.cpp
+  gnomonFontAwesome.cpp
+  gnomonFontFileIcons.cpp
+  gnomonFontOcticon.cpp
+  gnomonFontSourceCodePro.cpp
+  gnomonFontSourceSansPro.cpp)
 
 set(${PROJECT_NAME}_SOURCES_RCC
-  gnomonFontAwesome.qrc)
+  gnomonFontAllTheIcons.qrc
+  gnomonFontAwesome.qrc
+  gnomonFontFileIcons.qrc
+  gnomonFontOcticon.qrc
+  gnomonFontSourceCodePro.qrc
+  gnomonFontSourceSansPro.qrc)
 
 ## #################################################################
 ## Build rules

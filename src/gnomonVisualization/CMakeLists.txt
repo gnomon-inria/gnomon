@@ -25,10 +25,42 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorImage.h
   gnomonActorMesh
   gnomonActorMesh.h
+  gnomonActorMesh_p.h
+  gnomonActorMeshCellComplex
+  gnomonActorMeshCellComplex.h
+  gnomonActorMeshCellGraph
+  gnomonActorMeshCellGraph.h
+  gnomonActorMeshCellImage
+  gnomonActorMeshCellImage.h
   gnomonActorVolume
   gnomonActorVolume.h
+  gnomonActorScalarBar
+  gnomonActorScalarBar.h
   gnomonClutEditor
   gnomonClutEditor.h
+  gnomonDoubleEditor.h
+  gnomonStringEditor.h
+  gnomonDoubleRangeEditor.h
+  gnomonInspector
+  gnomonInspector.h
+  gnomonInspectorCellGraph
+  gnomonInspectorCellGraph.h
+  gnomonInspectorSlicePlanes
+  gnomonInspectorSlicePlanes.h
+  gnomonInspectorImage
+  gnomonInspectorImage.h
+  gnomonInspectorImageProperties
+  gnomonInspectorImageProperties.h
+  gnomonInspectorMain
+  gnomonInspectorMain.h
+  gnomonInspectorMesh
+  gnomonInspectorMesh.h
+  gnomonInspectorViewTree
+  gnomonInspectorViewTree.h
+  gnomonInspectorViewWidget
+  gnomonInspectorViewWidget.h
+  gnomonInspectorVolume
+  gnomonInspectorVolume.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -39,8 +71,25 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActorImage.cpp
   gnomonActorMesh.cpp
+  gnomonActorMeshCellComplex.cpp
+  gnomonActorMeshCellGraph.cpp
+  gnomonActorMeshCellImage.cpp
   gnomonActorVolume.cpp
+  gnomonActorScalarBar.cpp
   gnomonClutEditor.cpp
+  gnomonStringEditor.cpp
+  gnomonDoubleEditor.cpp
+  gnomonDoubleRangeEditor.cpp
+  gnomonInspector.cpp
+  gnomonInspectorCellGraph.cpp
+  gnomonInspectorSlicePlanes.cpp
+  gnomonInspectorImage.cpp
+  gnomonInspectorImageProperties.cpp
+  gnomonInspectorMesh.cpp
+  gnomonInspectorMain.cpp
+  gnomonInspectorViewTree.cpp
+  gnomonInspectorViewWidget.cpp
+  gnomonInspectorVolume.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 
@@ -54,13 +103,11 @@ set(${PROJECT_NAME}_SOURCES_WRAP)
 
 if(DTK_BUILD_WRAPPERS)
 
-  include(dtkWrap)
-
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
   if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonVisualization.i.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonVisualization.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonvisualization python ${CMAKE_CURRENT_SOURCE_DIR}/gnomonVisualization.i ${${PROJECT_NAME}_WRAP_DEPENDS})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonVisualization.i.in ${CMAKE_BINARY_DIR}/gnomonVisualization.i @ONLY)
+    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonvisualization python ${CMAKE_BINARY_DIR}/gnomonVisualization.i "" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/")
   endif()
 endif()
 
@@ -78,6 +125,10 @@ qt5_use_modules(${PROJECT_NAME} Gui)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
+target_link_libraries(${PROJECT_NAME} dtkImaging)
+
+target_link_libraries(${PROJECT_NAME} gnomonCore)
+target_link_libraries(${PROJECT_NAME} gnomonStyle)
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 

@@ -17,9 +17,15 @@
 %module gnomoncore
 
 %include "@dtk_WRAP_BASE@"
+
+
 %import "@dtk_WRAP_CORE@"
+%import "@dtkImaging_WRAP_CORE@"
+
 
 %{
+
+#include <dtkImaging>
 
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonAbstractCellComplexData.h>
@@ -29,6 +35,8 @@
 #include <gnomonCore/gnomonAbstractCellGraphData.h>
 #include <gnomonCore/gnomonCellGraph.h>
 #include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+#include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
+#include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexReader.h>
 
 %}
@@ -51,6 +59,10 @@
 %include <gnomonCore/gnomonAbstractCellGraphData.h>
 %include <gnomonCore/gnomonCellGraph.h>
 %include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+%include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
+%include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexReader.h>
+
+%include "@dtk_WRAP_QVARIANT@"
 
 /* gnomonCore.i ends here */

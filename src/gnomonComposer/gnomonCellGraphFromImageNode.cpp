@@ -25,12 +25,12 @@ class gnomonCellGraphFromImageNodePrivate
 {
 public:
     dtkComposerTransmitterReceiver<dtkImage *> image_in;
-	dtkComposerTransmitterReceiver<bool> use_margins;
-	dtkComposerTransmitterReceiver<float> min_contact_area;
-	dtkComposerTransmitterReceiver<long> background_label;
-	dtkComposerTransmitterReceiver<QStringList> property_names;
+    dtkComposerTransmitterReceiver<bool> use_margins;
+    dtkComposerTransmitterReceiver<float> min_contact_area;
+    dtkComposerTransmitterReceiver<long> background_label;
+    dtkComposerTransmitterReceiver<QStringList> property_names;
 
-	dtkComposerTransmitterEmitter<gnomonCellGraph *> graph_out;
+    dtkComposerTransmitterEmitter<gnomonCellGraph *> graph_out;
 };
 
 
@@ -66,13 +66,26 @@ void gnomonCellGraphFromImageNode::run(void)
             dtkError() << Q_FUNC_INFO << "No Graph from Image found. Aborting.";
             return;
         }
+
         graphFromImage->setImage(d->image_in.data());
-        graphFromImage->setUseMargins(d->use_margins.data());
-        graphFromImage->setMinContactArea(d->min_contact_area.data());
-        graphFromImage->setBackgroundLabel(d->background_label.data());
-        graphFromImage->setPredefinedProperties(d->property_names.data());
+
+        if(!d->use_margins.isEmpty()) {
+            graphFromImage->setUseMargins(d->use_margins.data());
+        }
+        if(!d->min_contact_area.isEmpty()) {
+            graphFromImage->setMinContactArea(d->min_contact_area.data());
+        }
+        if(!d->background_label.isEmpty()) {
+            graphFromImage->setBackgroundLabel(d->background_label.data());
+        }
+        if(!d->property_names.isEmpty()) {
+            graphFromImage->setPredefinedProperties(d->property_names.data());
+        }
 
         graphFromImage->run();
+
+        gnomonCellGraph *cellgraph = graphFromImage->computedGraph();
+
 
         d->graph_out.setData(graphFromImage->computedGraph());
     }

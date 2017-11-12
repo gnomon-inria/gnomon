@@ -46,7 +46,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+## #################################################################
+## Load project .cmake files first
+## #################################################################
+
+# set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_ROOT}/Modules")
 
 ## #################################################################
 ## Install prefix
@@ -82,10 +86,31 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
+if(NOT APPLE)
+  find_package(OpenSSL)
+endif()
+
+find_package(Ice COMPONENTS Ice IceUtil Glacier2 IceXML QUIET)
+find_package(omero-ice QUIET)
+find_package(omero-client QUIET)
+
+if(Ice_FOUND)
+  include_directories(${Ice_INCLUDE_DIRS})
+endif()
+
+if (OMERO_CLIENT_FOUND)
+  include_directories(${OMERO_CLIENT_INCLUDE_DIR})
+endif()
+
+if (OMERO_ICE_FOUND)
+  include_directories(${OMERO_ICE_INCLUDE_DIR})
+endif()
+
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
 
 find_package(dtk REQUIRED)
 find_package(dtkImaging REQUIRED)
+
 
 include_directories(${dtk_INCLUDE_DIRS})
 include_directories(${dtkImaging_INCLUDE_DIRS})
@@ -98,15 +123,22 @@ else()
   include(${VTK_USE_FILE})
 endif()
 
+if(DTK_BUILD_WRAPPERS)
+  include(dtkWrap)
+endif()
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
 
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomon)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonStyle)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 
@@ -147,6 +179,7 @@ mark_as_advanced(${PROJECT_NAME}_VERSION_MAJOR)
 mark_as_advanced(${PROJECT_NAME}_VERSION_MINOR)
 mark_as_advanced(${PROJECT_NAME}_VERSION_BUILD)
 
+mark_as_advanced(Qt5_DIR)
 mark_as_advanced(Qt5Concurrent_DIR)
 mark_as_advanced(Qt5Core_DIR)
 mark_as_advanced(Qt5Declarative_DIR)
@@ -160,6 +193,8 @@ mark_as_advanced(Qt5Test_DIR)
 mark_as_advanced(Qt5Widgets_DIR)
 mark_as_advanced(Qt5Xml_DIR)
 mark_as_advanced(Qt5Sql_DIR)
+mark_as_advanced(Qt5OpenGL_DIR)
+mark_as_advanced(Qt5Svg_DIR)
 
 mark_as_advanced(CMAKE_AR)
 mark_as_advanced(CMAKE_BUILD_TYPE)
@@ -167,6 +202,61 @@ mark_as_advanced(CMAKE_INSTALL_PREFIX)
 mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
 mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
 mark_as_advanced(CMAKE_OSX_SYSROOT)
+
+mark_as_advanced(Ice_DB_ARCHIVE_EXECUTABLE)
+mark_as_advanced(Ice_DB_CHECKPOINT_EXECUTABLE)
+mark_as_advanced(Ice_DB_DEADLOCK_EXECUTABLE)
+mark_as_advanced(Ice_DB_DUMP_EXECUTABLE)
+mark_as_advanced(Ice_DB_HOTBACKUP_EXECUTABLE)
+mark_as_advanced(Ice_DB_LOAD_EXECUTABLE)
+mark_as_advanced(Ice_DB_LOG_VERIFY_EXECUTABLE)
+mark_as_advanced(Ice_DB_PRINTLOG_EXECUTABLE)
+mark_as_advanced(Ice_DB_RECOVER_EXECUTABLE)
+mark_as_advanced(Ice_DB_STAT_EXECUTABLE)
+mark_as_advanced(Ice_DB_TUNER_EXECUTABLE)
+mark_as_advanced(Ice_DB_UPGRADE_EXECUTABLE)
+mark_as_advanced(Ice_DB_VERIFY_EXECUTABLE)
+mark_as_advanced(Ice_DUMPDB_EXECUTABLE)
+mark_as_advanced(Ice_GLACIER2ROUTER_EXECUTABLE)
+mark_as_advanced(Ice_GLACIER2_LIBRARY_DEBUG)
+mark_as_advanced(Ice_GLACIER2_LIBRARY_RELEASE)
+mark_as_advanced(Ice_ICEBOXADMIN_EXECUTABLE)
+mark_as_advanced(Ice_ICEBOXD_EXECUTABLE)
+mark_as_advanced(Ice_ICEBOXNET_EXECUTABLE)
+mark_as_advanced(Ice_ICEBOX_EXECUTABLE)
+mark_as_advanced(Ice_ICEGRIDADMIN_EXECUTABLE)
+mark_as_advanced(Ice_ICEGRIDNODED_EXECUTABLE)
+mark_as_advanced(Ice_ICEGRIDNODE_EXECUTABLE)
+mark_as_advanced(Ice_ICEGRIDREGISTRYD_EXECUTABLE)
+mark_as_advanced(Ice_ICEGRIDREGISTRY_EXECUTABLE)
+mark_as_advanced(Ice_ICEPATCH2CALC_EXECUTABLE)
+mark_as_advanced(Ice_ICEPATCH2CLIENT_EXECUTABLE)
+mark_as_advanced(Ice_ICEPATCH2SERVER_EXECUTABLE)
+mark_as_advanced(Ice_ICESERVICEINSTALL_EXECUTABLE)
+mark_as_advanced(Ice_ICESTORMADMIN_EXECUTABLE)
+mark_as_advanced(Ice_ICESTORMMIGRATE_EXECUTABLE)
+mark_as_advanced(Ice_ICEUTIL_LIBRARY_DEBUG)
+mark_as_advanced(Ice_ICEUTIL_LIBRARY_RELEASE)
+mark_as_advanced(Ice_ICEXML_LIBRARY_DEBUG)
+mark_as_advanced(Ice_ICEXML_LIBRARY_RELEASE)
+mark_as_advanced(Ice_ICE_LIBRARY_DEBUG)
+mark_as_advanced(Ice_ICE_LIBRARY_RELEASE)
+mark_as_advanced(Ice_INCLUDE_DIR)
+mark_as_advanced(Ice_SLICE2CPP_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2CS_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2FREEZEJ_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2FREEZE_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2HTML_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2JAVA_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2JS_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2PHP_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2PY_EXECUTABLE)
+mark_as_advanced(Ice_SLICE2RB_EXECUTABLE)
+mark_as_advanced(Ice_SLICE_DIR)
+mark_as_advanced(Ice_TRANSFORMDB_EXECUTABLE)
+
+mark_as_advanced(omero-client_DIR)
+mark_as_advanced(omero-ice_DIR)
 
 ## ###################################################################
 ## Packaging
