@@ -117,7 +117,8 @@ void gnomonActorScalarBar::update(void)
 
     d->scalarBar->SetLookupTable(d->colorFunction);
 
-    d->interactor->Render();
+    d->scalarBar->SetTitle("Scalars");
+    d->scalarBar->GetTitleTextProperty()->SetOpacity(1);
 }
 
 void gnomonActorScalarBar::showTitle(bool show)
