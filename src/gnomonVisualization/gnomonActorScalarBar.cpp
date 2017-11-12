@@ -53,9 +53,6 @@ public:
     vtkSmartPointer<vtkSmartVolumeMapper> mapper;
 
     vtkSmartPointer<vtkScalarBarActor> scalarBar;
-
-public:
-    bool scalarbar_state;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -139,15 +136,16 @@ void gnomonActorScalarBar::show()
 {
     if (d->scalarBar)
        d->scalarBar->SetVisibility(true);
+    this->showTitle(true);
     d->interactor->Render();
 }
 
 void gnomonActorScalarBar::hide()
 {
     if (d->scalarBar) {
-        qWarning() << "visibility set to false";
         d->scalarBar->SetVisibility(false);
     }
+    this->showTitle(false);
    d->interactor->Render();
 }
 
@@ -186,7 +184,6 @@ gnomonActorScalarBar::gnomonActorScalarBar(void) : gnomonActor(), d(new gnomonAc
 {
     d->interactor = NULL;
     d->scalarBar = NULL;
-    d->scalarbar_state = false;
 }
 
 gnomonActorScalarBar::~gnomonActorScalarBar(void)
@@ -195,14 +192,6 @@ gnomonActorScalarBar::~gnomonActorScalarBar(void)
 
     d = NULL;
 }
-
-// void gnomonActorScalarBar::show(bool show)
-// {
-//     d->scalarbar_state = show;
-
-//     if (d->scalarBar)
-//         d->scalarBar->SetVisibility(show);
-// }
 
 //
 // gnomonActorScalarBar.cpp ends here
