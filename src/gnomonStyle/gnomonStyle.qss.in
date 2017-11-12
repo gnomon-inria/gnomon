@@ -20,6 +20,7 @@
 ;; ******************************************************************/
 
 QCheckBox, QListWidget QCheckBox {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
     spacing: 5px;
 }
 
@@ -144,18 +145,6 @@ QSpinBox, QDoubleSpinBox {
 
     padding-right: 15px;
 }
-
-/* QSpinBox::up-arrow, QDoubleSpinBox::up-arrow { */
-/*     image: url(":gnomonStyle/gnomonStyleSpinBoxUpArrow.png"); */
-/*     width: 4px; */
-/*     height: 4px; */
-/* } */
-
-/* QSpinBox::down-arrow, QDoubleSpinBox::down-arrow { */
-/*     image: url(":gnomonStyle/gnomonStyleSpinBoxDownArrow.png"); */
-/*     width: 4px; */
-/*     height: 4px; */
-/* } */
 
 QSplitter::handle:horizontal {
     background-color: @GNOMON_STYLE_BORDERALTCOLOR@
