@@ -170,17 +170,19 @@ public:
 
 gnomonClutEditorHistogram::gnomonClutEditorHistogram(QGraphicsItem *parent) : QGraphicsItem(parent)
 {
+
 }
 
 gnomonClutEditorHistogram::~gnomonClutEditorHistogram()
 {
+
 }
 
 void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogram)
 {
     static const double epsilon = 1e-6;
 
-    if ( this->normalizedHistogram.count() != 0 )
+    if (this->normalizedHistogram.count() != 0)
         this->normalizedHistogram.clear();
 
     double max = 0;
@@ -196,7 +198,7 @@ void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogr
         }
     }
 
-    if ( max < epsilon ) {
+    if (max < epsilon) {
         qDebug() << Q_FUNC_INFO << "histogram is null" ;
         return;
     }
@@ -205,7 +207,6 @@ void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogr
         this->normalizedHistogram.replace(i, this->normalizedHistogram.at(i) / max);
     }
 }
-
 
 QRectF gnomonClutEditorHistogram::boundingRect(void) const
 {

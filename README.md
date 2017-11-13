@@ -83,6 +83,7 @@ cd build
 
 Compile after defining `cmake` options using arguments parsing (`cmake` options can also be defined using `ccmake ..` to access CMake curse interface):
 ``` shell
+source activate gnomon
 cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
 make -j4
 ```
@@ -106,6 +107,7 @@ Compile `vt` library as follow (dependency with 'lemon' & 'vtk'):
 cd morpheme-privat/vt
 mkdir build
 cd build
+source activate gnomon
 cmake ..
 make -j4
 ```
@@ -115,6 +117,7 @@ make -j4
 ### OpenAlea CellComplex
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone https://github.com/gcerutti/cellcomplex.git openalea-cellcomplex
 cd openalea-cellcomplex
@@ -127,6 +130,7 @@ python setup.py develop
 ### OpenAlea DracoStem
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone https://github.com/gcerutti/draco_stem.git openalea-draco-stem
 cd openalea-draco-stem
@@ -139,6 +143,7 @@ python setup.py develop
 ### OpenAlea TimageTK
 
 ``` shell
+source activate gnomon
 brew install scons
 touch $HOME/.profile
 cd $HOME/Development
@@ -151,6 +156,7 @@ python setup.py develop
 ### OpenAlea TissueAnalysis
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone https://github.com/gcerutti/tissue_analysis.git openalea-tissue-analysis
 cd openalea-tissue-analysis
@@ -176,6 +182,7 @@ To enable both SIP and SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPE
 ### dtk
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone https://github.com/d-tk/dtk.git
 cd dtk
@@ -189,6 +196,7 @@ make -j4
 ### dtk-imaging
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone https://github.com/d-tk/dtk-imaging.git
 cd dtk-imaging
@@ -202,6 +210,7 @@ make -j4
 ### dtk-plugins-imaging
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone https://github.com/d-tk/dtk-plugins-imaging.git
 cd dtk-plugins-imaging
@@ -219,6 +228,7 @@ make -j4
 To select light or dark theme for gnomon set the compilation flag ` -DGNOME_STYLE="ONELIGHT"|"ONEDARK"`.
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon.git
 cd gnomon
@@ -232,6 +242,7 @@ make -j4
 ### gnomon-plugins
 
 ``` shell
+source activate gnomon
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-plugins.git
 cd gnomon-plugins
@@ -311,18 +322,20 @@ Omero depens on ICE (https://zeroc.com/products/ice)
 
 For some linux flavors, need to recompile from source https://github.com/zeroc-ice/ice
 
-'''
+``` shell
+$ source activate gnomon
 $ git clone -b 3.7 https://github.com/zeroc-ice/ice.git
 $ make
 $ make install
-'''
+```
+
 which will install the libs in /opt/Ice-3.7.0
 
 For macOSX:
 
-'''
+``` shell
 $ brew install zeroc-ice/tap/ice
-'''
+```
 
 Omero will be installed from the sources:
 http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
@@ -334,13 +347,13 @@ Prérequisite:
 
 WARNING: omero-5.2.7 DOES NOT BUILD with java9 !!!!!
 
-'''
+``` shell
+$ source activate gnomon
 $ wget http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
 $ unzip openmicroscopy-5.2.7.zip
 $ cd openmicroscopy-5.2.7
 $ ./build.py build-cpp
-$
-'''
+```
 
 The compilation is done in: openmicroscopy-5.2.7/target/OMERO.cpp-5.2.7-ice36-Mac OS X-10.12.6-x86_64
 
