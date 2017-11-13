@@ -132,7 +132,8 @@ void gnomonActorScalarBar::update(void)
 
     d->scalarBar->SetLookupTable(d->colorFunction);
 
-    d->interactor->Render();
+    d->scalarBar->SetTitle("Scalars");
+    d->scalarBar->GetTitleTextProperty()->SetOpacity(1);
 }
 
 void gnomonActorScalarBar::showTitle(bool show)
@@ -157,8 +158,11 @@ void gnomonActorScalarBar::show(void)
 
 void gnomonActorScalarBar::hide(void)
 {
+
     if (d->scalarBar)
         d->scalarBar->SetVisibility(false);
+
+    this->showTitle(false);
 
     d->interactor->Render();
 }
@@ -199,6 +203,7 @@ gnomonActorScalarBar::gnomonActorScalarBar(void) : gnomonActor(), d(new gnomonAc
 {
     d->interactor = NULL;
     d->scalarBar = NULL;
+
     d->scalarbar_state = false;
     d->font_source_sans_pro = new gnomonFontSourceSansPro(this);
     d->font_source_sans_pro->initFontSourceSansPro();
