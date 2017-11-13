@@ -499,12 +499,12 @@ python setup.py --prefix=$CONDA_ENV_PATH
 
 **Optional - Conda environment**
 
-TimageTK automatically set the right path to its libraries to your `~/.bashrc`, thus making them accessible system-wide.
+For Linux, TimageTK automatically set the right path to its libraries to your `~/.bashrc`, thus making them accessible system-wide.
 
-To isolate the TimageTK library to the `gnomon` conda environment only add these lines to conda `activate` file (should be in `$HOME/miniconda2/bin`):
+To isolate the TimageTK library to the `gnomon` conda environment, remove them from the `~/.bashrc` file and add these lines to conda `activate` file (should be in `$HOME/miniconda2/bin`):
 ```shell
 if [[ "$@" == "gnomon" ]]; then
-    $timagetk_path=$HOME/Projects/dtk-gnomon/timagetk
+    $timagetk_path=$HOME/Development/timagetk
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${timagetk_path}/timagetk/build-scons/lib
 fi
 ```
