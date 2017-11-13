@@ -151,6 +151,8 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
 
     volume_inspector->editor()->setRange(actor_volume->rangeMin(), actor_volume->rangeMax());
     volume_inspector->editor()->setHistogram(actor_volume->histogram());
+    volume_inspector->editor()->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(actor_volume->opacityTransferFunction()));
+    volume_inspector->editor()->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(actor_volume->colorTransferFunction()));
     connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
             actor_volume->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
             actor_volume->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(volume_inspector->editor()->opacityTransferFunction()));
