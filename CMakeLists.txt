@@ -111,7 +111,6 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
 find_package(dtk REQUIRED)
 find_package(dtkImaging REQUIRED)
 
-
 include_directories(${dtk_INCLUDE_DIRS})
 include_directories(${dtkImaging_INCLUDE_DIRS})
 

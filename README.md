@@ -110,6 +110,56 @@ cmake ..
 make -j4
 ```
 
+## OpenAlea legacy [REQUIRED]
+
+### OpenAlea CellComplex
+
+``` shell
+cd $HOME/Development
+git clone https://github.com/gcerutti/cellcomplex.git openalea-cellcomplex
+cd openalea-cellcomplex
+git branch feature/standalone origin/feature/standalone
+git checkout feature/standalone
+git pull origin feature/standalone
+python setup.py develop
+```
+
+### OpenAlea DracoStem
+
+``` shell
+cd $HOME/Development
+git clone https://github.com/gcerutti/draco_stem.git openalea-draco-stem
+cd openalea-draco-stem
+git branch feature/standalone origin/feature/standalone
+git checkout feature/standalone
+git pull origin feature/standalone
+python setup.py develop
+```
+
+### OpenAlea TimageTK
+
+``` shell
+brew install scons
+touch $HOME/.profile
+cd $HOME/Development
+git clone https://github.com/gcerutti/timagetk.git openalea-timagetk
+cd openalea-timagetk
+git pull origin master
+python setup.py develop
+```
+
+### OpenAlea TissueAnalysis
+
+``` shell
+cd $HOME/Development
+git clone https://github.com/gcerutti/tissue_analysis.git openalea-tissue-analysis
+cd openalea-tissue-analysis
+git branch feature/standalone origin/feature/standalone
+git checkout feature/standalone
+git pull origin feature/standalone
+python setup.py develop
+```
+
 ## Get dtk and its applicative layers
 
 ### Compilation options:
@@ -323,72 +373,8 @@ brew link ice
 # Special directive compilation
 
 ## macOSX
+
 ...
 
 ## linux
 export ICE_HOME=/opt/Ice-6.4.2
-
-## Optionals
-
-TimageTK and tissue_analysis are pure python packages, to install them uses the `setup.py` with the following option depending on the type of install you would like:
-
-  * System-wide install:
-``` shell
-python setup.py install
-```
-
-  * User specific install:
-``` shell
-python setup.py install --user
-```
-
-  * System-wide "developer install":
-``` shell
-python setup.py develop
-```
-
-  * User specific "developer install":
-``` shell
-python setup.py develop --user
-```
-
-  * Conda / VirtualEnv install:
-If you are working under Conda or VirtualEnv activate the environment first, then use the `-prefix=` option to specify installation path.
-Example here with a conda environment named `gnomon`:
-``` shell
-source activate gnomon
-cd $HOME/Development/timagetk
-python setup.py --prefix=$CONDA_ENV_PATH
-```
-
-### TimageTK, the image toolkit
-
-Clone TimageTK source code:
-
-``` shell
-cd $HOME/Development/
-git clone https://github.com/VirtualPlants/timagetk.git
-```
-
-Install it under the Conda environment (here named `gnomon`):
-``` shell
-source activate gnomon
-cd timagetk
-python setup.py --prefix=$CONDA_ENV_PATH
-```
-
-### tissue_analysis, the cell quantification toolkit
-
-Clone tissue_analysis source code:
-
-``` shell
-cd $HOME/Development/
-git clone https://github.com/VirtualPlants/tissue_analysis.git
-```
-
-Install it under the Conda environment (here named `gnomon`):
-``` shell
-source activate gnomon
-cd tissue_analysis
-python setup.py --prefix=$CONDA_ENV_PATH
-```
