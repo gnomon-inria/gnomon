@@ -35,11 +35,6 @@ public:
     void setInteractor(void *interactor) override;
     void setVolume(vtkImageData *volume);
 
-public:
-    void showScalarBar(bool show);
-    void showScalarBarTitle(bool show);
-    void setScalarBarOrientationToVertical(bool value);
-
 public slots:
     void update(void) override;
     void show(void) override;

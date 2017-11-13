@@ -28,8 +28,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRendererCollection.h>
-#include <vtkScalarBarActor.h>
-#include <vtkScalarsToColors.h>
 #include <vtkSmartPointer.h>
 #include <vtkTextProperty.h>
 #include <vtkImageActor.h>
@@ -56,9 +54,6 @@ public:
     // ///////////////////////////////////////////////////////////////////
 
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
-
-    bool scalarbar_state;
-    vtkSmartPointer<vtkScalarBarActor> scalarBar;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -72,8 +67,6 @@ gnomonActorImage::gnomonActorImage(void) : gnomonActor(), d(new gnomonActorImage
     d->image = NULL;
     d->interactor = NULL;
     d->colorFunction = NULL;
-    d->scalarBar = NULL;
-    d->scalarbar_state = false;
 
     for (int i = 0; i < 3; ++i) {
         d->planes[i] = NULL;
@@ -111,7 +104,6 @@ void gnomonActorImage::show(void)
     showPlaneX(true);
     showPlaneY(true);
     showPlaneZ(true);
-    showScalarBar(d->scalarbar_state);
     d->interactor->Render();
 }
 
@@ -120,38 +112,15 @@ void gnomonActorImage::hide(void)
     bool state_x = d->plane_states[0];
     bool state_y = d->plane_states[1];
     bool state_z = d->plane_states[2];
-    bool state_scalarbar = d->scalarbar_state;
 
     showPlaneX(false);
     showPlaneY(false);
     showPlaneZ(false);
-    showScalarBar(false);
 
     d->plane_states[0] = state_x;
     d->plane_states[1] = state_y;
     d->plane_states[2] = state_z;
-    d->scalarbar_state = state_scalarbar;
     d->interactor->Render();
-}
-
-void gnomonActorImage::setScalarBarOrientationToVertical(bool value)
-{
-    if (d->scalarBar) {
-        if (value) {
-            d->scalarBar->SetOrientationToVertical();
-            d->scalarBar->SetWidth(0.08);
-            d->scalarBar->SetHeight(0.6);
-            d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-            d->scalarBar->GetPositionCoordinate()->SetValue(0.85, 0.05);
-        } else {
-            d->scalarBar->SetOrientationToHorizontal();
-            d->scalarBar->SetWidth(0.6);
-            d->scalarBar->SetHeight(0.08);
-            d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-            d->scalarBar->GetPositionCoordinate()->SetValue(0.2, 0.05);
-        }
-        d->scalarBar->SetTextPositionToPrecedeScalarBar();
-    }
 }
 
 /*An int between 0 and 1000 */
@@ -274,24 +243,6 @@ void gnomonActorImage::update(void)
         d->planes[i]->Modified();
     }
 
-    if(!d->scalarBar) {
-        d->scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-        d->scalarBar->SetWidth(0.07);
-        d->scalarBar->SetHeight(0.7);
-        d->scalarBar->SetVisibility(1);
-        d->scalarBar->DragableOn();
-        d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-        d->scalarBar->GetPositionCoordinate()->SetValue(0.1, 0.1);
-
-        vtkRenderer *renderer = d->interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer();
-        renderer->AddActor2D(d->scalarBar);
-    }
-    d->scalarBar->SetLookupTable(d->colorFunction);
-    d->scalarBar->Modified();
-    d->scalarBar->SetVisibility(1);
-
-    this->showScalarBarTitle(true);
-
     d->interactor->Render();
 }
 
@@ -305,26 +256,6 @@ void gnomonActorImage::setColorTransferFunction(vtkColorTransferFunction *func)
 void *gnomonActorImage::colorTransferFunction(void)
 {
     return d->colorFunction;
-}
-
-void gnomonActorImage::showScalarBarTitle(bool show)
-{
-    if (!d->scalarBar)
-        return;
-
-    if (show) {
-        d->scalarBar->SetTitle("Scalars");
-        d->scalarBar->GetTitleTextProperty()->SetOpacity(1);
-    } else
-        d->scalarBar->GetTitleTextProperty()->SetOpacity(0);
-}
-
-void gnomonActorImage::showScalarBar(bool show)
-{
-    d->scalarbar_state = show;
-
-    if (d->scalarBar)
-        d->scalarBar->SetVisibility(show);
 }
 
 //

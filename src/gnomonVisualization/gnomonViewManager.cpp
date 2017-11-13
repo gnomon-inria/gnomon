@@ -12,23 +12,26 @@
 
 // Code:
 
+#include "gnomonViewManager.h"
+
 #include "gnomonActor.h"
+#include "gnomonActorImage.h"
+#include "gnomonActorVolume.h"
 #include "gnomonActorMesh.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorMeshCellImage.h"
-#include "gnomonActorVolume.h"
-#include "gnomonActorImage.h"
+#include "gnomonActorScalarBar.h"
 
-#include "gnomonViewManager.h"
+
 #include "gnomonInspector.h"
+#include "gnomonInspectorCellGraph.h"
 #include "gnomonInspectorImage.h"
+#include "gnomonInspectorMain.h"
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorViewWidget.h"
-#include "gnomonInspectorMain.h"
 #include "gnomonInspectorVolume.h"
 #include "gnomonInspectorSlicePlanes.h"
-#include "gnomonInspectorCellGraph.h"
 
 #include "gnomonStringEditor.h"
 #include "gnomonClutEditor.h"
@@ -46,20 +49,21 @@ class gnomonViewManagerPrivate
 {
 
 public:
-    gnomonInspectorViewTree *inspector_tree;
+    gnomonInspectorViewTree   *inspector_tree;
     gnomonInspectorViewWidget *inspector_widget;
-    gnomonInspectorMain *inspector_main;
+    gnomonInspectorMain       *inspector_main;
 
 public:
-    QHash<vtkPolyData *, gnomonActor *> meshes;
-    QHash<vtkImageData *, gnomonActor *> volumes;
-    QHash<vtkImageData *, gnomonActor *> images;
-    QHash<gnomonActorVolume *, QList< gnomonInspectorImage * > > volumes_inspectors;
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
-    QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
+    QHash<gnomonCellGraph *, gnomonActor *>   cellgraphs;
+    QHash<gnomonCellImage *, gnomonActor *>   cellimages;
+    QHash<vtkImageData *, gnomonActor *>      images;
+    QHash<vtkPolyData *, gnomonActor *>       meshes;
+    QHash<vtkImageData *, gnomonActor *>      volumes;
+    QHash<vtkImageData *, gnomonActor *>      scalar_bars;
     QHash<gnomonActorMeshCellGraph *, QList< gnomonInspectorCellGraph * > > cellgraphs_inspectors;
+    QHash<gnomonActorVolume *, QList< gnomonInspectorImage * > > volumes_inspectors;
     QHash<gnomonInspectorCellGraph *, gnomonActorMeshCellGraph *> cellgraphs_inspector_actors;
-    QHash<gnomonCellImage *, gnomonActor *> cellimages;
 };
 
 gnomonInspectorViewTree *gnomonViewManager::inspectorTree(void)
@@ -129,9 +133,17 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
     gnomonActorImage *actor_image = gnomonActorImage::New();
     actor_image->setImage(image);
     //Replaces other insert ... TODO
-    d->volumes.insert(image, actor_image);
+    d->images.insert(image, actor_image);
     QTreeWidgetItem *actor_image_item = d->inspector_tree->insert(actor_image);
     emit inserted(actor_image);
+
+    gnomonActorScalarBar *actor_scalar_bar = gnomonActorScalarBar::New();
+    actor_scalar_bar->setData(image);
+    //Replaces other insert ... TODO
+    d->scalar_bars.insert(image, actor_scalar_bar);
+    QTreeWidgetItem *actor_sclar_bar_item = d->inspector_tree->insert(actor_scalar_bar);
+    emit inserted(actor_scalar_bar);
+
     // ///////////////////////////////////////////////////////////////////
     // Inspectors are created and connected to actors here
     // ///////////////////////////////////////////////////////////////////
@@ -146,6 +158,10 @@ gnomonActor *gnomonViewManager::insert(vtkImageData *image)
     connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
             actor_image->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
         });
+     connect(volume_inspector->editor(), &gnomonClutEditor::updated, [=] () {
+            actor_scalar_bar->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(volume_inspector->editor()->colorTransferFunction()));
+        });
+
     QList< gnomonInspectorVolume * > volumes_inspectors;
     volumes_inspectors.append(volume_inspector);
     d->inspector_tree->addChild(actor_volume_item, volume_inspector);
@@ -332,6 +348,9 @@ void gnomonViewManager::clear(void)
     qDeleteAll(d->images.values());
     d->images.clear();
 
+    qDeleteAll(d->scalar_bars.values());
+    d->scalar_bars.clear();
+
     qDeleteAll(d->cellcomplexes.values());
     d->cellcomplexes.clear();
 
@@ -344,14 +363,6 @@ void gnomonViewManager::clear(void)
 
 void gnomonViewManager::update(void)
 {
-    for(auto actor : d->meshes) {
-        actor->update();
-    }
-
-    for (auto actor : d->volumes) {
-        actor->update();
-    }
-
     for (auto actor : d->cellcomplexes) {
         actor->update();
     }
@@ -361,6 +372,22 @@ void gnomonViewManager::update(void)
     }
 
     for (auto actor : d->cellimages) {
+        actor->update();
+    }
+
+    for (auto actor : d->images) {
+        actor->update();
+    }
+
+    for(auto actor : d->meshes) {
+        actor->update();
+    }
+
+    for (auto actor : d->volumes) {
+        actor->update();
+    }
+
+    for (auto actor : d->scalar_bars) {
         actor->update();
     }
 }
@@ -375,6 +402,11 @@ void gnomonViewManager::onVolumeSelected(gnomonActorVolume *volume)
 }
 
 void gnomonViewManager::onImageSelected(gnomonActorImage *image)
+{
+    //to implement
+}
+
+void gnomonViewManager::onScalarBarSelected(gnomonActorScalarBar *scalar_bar)
 {
     //to implement
 }
@@ -428,10 +460,10 @@ gnomonViewManager::gnomonViewManager(void) : QObject(), d(new gnomonViewManagerP
     d->inspector_main->addWidget(d->inspector_tree);
     d->inspector_main->addWidget(d->inspector_widget);
 
-    connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
+    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorCellGraph *)), this, SLOT(onInspectorCellGraphSelected(gnomonInspectorCellGraph *)));
     connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorImage *)), this, SLOT(onInspectorImageSelected(gnomonInspectorImage *)));
     connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorVolume *)), this, SLOT(onInspectorVolumeSelected(gnomonInspectorVolume *)));
-    connect(d->inspector_tree, SIGNAL(selected(gnomonInspectorCellGraph *)), this, SLOT(onInspectorCellGraphSelected(gnomonInspectorCellGraph *)));
+    connect(d->inspector_tree, SIGNAL(selected(vtkPolyData *)), this, SLOT(onMeshSelected(vtkPolyData *)));
 }
 
 gnomonViewManager::~gnomonViewManager(void)

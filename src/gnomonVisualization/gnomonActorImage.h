@@ -42,18 +42,12 @@ public:
     void setImage(vtkImageData *image);
 
 public:
-    void showScalarBarTitle(bool show);
-
     void showPlaneX(bool value);
     void showPlaneY(bool value);
     void showPlaneZ(bool value);
 
     void show(void) override;
     void hide(void) override;
-
-    void showScalarBar(bool show);
-
-    void setScalarBarOrientationToVertical(bool value);
 
     void *colorTransferFunction(void);
 

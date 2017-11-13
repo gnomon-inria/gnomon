@@ -14,12 +14,20 @@ channels:
 dependencies:
   - python=2.7
   - ipython-qtconsole
-  - jinja2
   - numpy
   - scipy
   - matplotlib
+  - sip
   - pandas
   - zeroc-ice
+```
+To create the conda environment using the previous recipe saved under `gnomon.yml`:
+```shell
+conda env create -f gnomon.yml
+```
+To activate the conda environment:
+``` shell
+source activate gnomon
 ```
 
 Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
@@ -199,7 +207,19 @@ For MacOs users, in every cmake configurations that follow, one has to add the f
 -DPYTHON_INCLUDE_DIR=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7
 ```
 
+### Compilation options:
+
+#### Python wrapping:
+To enable python wrapping use compilation flag: ` -DDTK_WRAPPING_PYTHON=ON`
+
+To enable SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SWIG`
+
+To enable SIP wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SIP`
+
+To enable both SIP and SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SWIG_AND_SIP`
+
 ### dtk
+
 
 ``` shell
 cd $HOME/Development
@@ -254,6 +274,8 @@ make -j4
 ## Get gnomon & gnomon-plugins
 
 ### gnomon
+
+To select light or dark theme for gnomon set the compilation flag ` -DGNOME_STYLE=ONELIGHT|ONEDARK`.
 
 ``` shell
 cd $HOME/Development
@@ -319,6 +341,13 @@ Edit `gnomon-core.ini` file and add the following lines:
 ``` shell
 [gnomon-core]
 plugins=$HOME/Development/gnomon-plugins/build/lib
+```
+
+**Optional: Enable jupyter console by default in Gnomon** (instead of python)
+Add to `dtk-scripts.ini`:
+``` shell
+[init]
+script=$HOME/Development/gnomon-scripts/create_jupyter_console.py
 ```
 
 ## Launch gnomonGrowthSimulator
