@@ -135,6 +135,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     d->widget = new gnomonViewWidget(this);
     d->widget->SetRenderWindow(d->window);
+    d->widget->setEnableHiDPI(true);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
