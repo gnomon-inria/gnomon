@@ -14,6 +14,9 @@
 
 #include "gnomonActorScalarBar.h"
 
+#include <gnomonFonts>
+#include <gnomonStyle>
+
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkActor.h>
 #include <vtkProperty.h>
@@ -56,6 +59,9 @@ public:
 
 public:
     bool scalarbar_state;
+
+public:
+    gnomonFontSourceSansPro *font_source_sans_pro;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -111,8 +117,14 @@ void gnomonActorScalarBar::update(void)
 
     if(!d->scalarBar) {
         d->scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-        d->scalarBar->SetWidth(0.07);
+        d->scalarBar->SetWidth(0.035);
         d->scalarBar->SetHeight(0.7);
+        d->scalarBar->GetAnnotationTextProperty()->SetFontFamilyAsString(qPrintable(d->font_source_sans_pro->fontName()));
+        d->scalarBar->GetAnnotationTextProperty()->SetFontSize(11);
+        d->scalarBar->GetLabelTextProperty()->SetFontFamilyAsString(qPrintable(d->font_source_sans_pro->fontName()));
+        d->scalarBar->GetLabelTextProperty()->SetFontSize(11);
+        d->scalarBar->GetTitleTextProperty()->SetFontFamilyAsString(qPrintable(d->font_source_sans_pro->fontName()));
+        d->scalarBar->GetTitleTextProperty()->SetFontSize(11);
 
         vtkRenderer *renderer = d->interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer();
         renderer->AddActor2D(d->scalarBar);
@@ -135,20 +147,20 @@ void gnomonActorScalarBar::showTitle(bool show)
         d->scalarBar->GetTitleTextProperty()->SetOpacity(0);
 }
 
-void gnomonActorScalarBar::show()
+void gnomonActorScalarBar::show(void)
 {
-    if (d->scalarBar)
+    if(d->scalarBar)
        d->scalarBar->SetVisibility(true);
+
     d->interactor->Render();
 }
 
-void gnomonActorScalarBar::hide()
+void gnomonActorScalarBar::hide(void)
 {
-    if (d->scalarBar) {
-        qWarning() << "visibility set to false";
+    if (d->scalarBar)
         d->scalarBar->SetVisibility(false);
-    }
-   d->interactor->Render();
+
+    d->interactor->Render();
 }
 
 void gnomonActorScalarBar::setOrientationToVertical(bool value)
@@ -156,14 +168,14 @@ void gnomonActorScalarBar::setOrientationToVertical(bool value)
     if (d->scalarBar) {
         if (value) {
             d->scalarBar->SetOrientationToVertical();
-            d->scalarBar->SetWidth(0.08);
-            d->scalarBar->SetHeight(0.6);
+            d->scalarBar->SetWidth(0.035);
+            d->scalarBar->SetHeight(0.7);
             d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-            d->scalarBar->GetPositionCoordinate()->SetValue(0.85, 0.05);
+            d->scalarBar->GetPositionCoordinate()->SetValue(0.7, 0.035);
         } else {
             d->scalarBar->SetOrientationToHorizontal();
-            d->scalarBar->SetWidth(0.6);
-            d->scalarBar->SetHeight(0.08);
+            d->scalarBar->SetWidth(0.7);
+            d->scalarBar->SetHeight(0.035);
             d->scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
             d->scalarBar->GetPositionCoordinate()->SetValue(0.2, 0.05);
         }
@@ -179,6 +191,7 @@ void *gnomonActorScalarBar::colorTransferFunction(void)
 void gnomonActorScalarBar::setColorTransferFunction(vtkColorTransferFunction *func)
 {
     d->colorFunction = func;
+
     this->update();
 }
 
@@ -187,6 +200,8 @@ gnomonActorScalarBar::gnomonActorScalarBar(void) : gnomonActor(), d(new gnomonAc
     d->interactor = NULL;
     d->scalarBar = NULL;
     d->scalarbar_state = false;
+    d->font_source_sans_pro = new gnomonFontSourceSansPro(this);
+    d->font_source_sans_pro->initFontSourceSansPro();
 }
 
 gnomonActorScalarBar::~gnomonActorScalarBar(void)
@@ -195,14 +210,6 @@ gnomonActorScalarBar::~gnomonActorScalarBar(void)
 
     d = NULL;
 }
-
-// void gnomonActorScalarBar::show(bool show)
-// {
-//     d->scalarbar_state = show;
-
-//     if (d->scalarBar)
-//         d->scalarBar->SetVisibility(show);
-// }
 
 //
 // gnomonActorScalarBar.cpp ends here
