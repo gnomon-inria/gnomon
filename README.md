@@ -2,8 +2,20 @@
 
 For sake of clarity, let's consider that all the programs are installed under `$HOME/Development` folder.
 
-
 ## Pre-requisites stuff
+
+### Install conda
+
+``` shell
+cd ~/Downloads
+brew install wget
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
+chmod u+x Miniconda2-latest-MacOSX-x86_64.sh
+./Miniconda2-latest-MacOSX-x86_64.sh
+# install in $HOME/.conda
+```
+
+Then, make sure to have conda in your PATH environment variable, before any folder containing `qmake`.
 
 ### Using Conda environment:
 If you want to use a Conda environment, here named `gnomon` (or a VirtualEnv), create it using the following recipe (for VirtualEnv install dependencies):
@@ -41,13 +53,9 @@ sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
 ```
 
-### MacOS config
-???
-
 ### CMake 3.9 version
 
-Uninstall previous version if older.
-Check that `libncurses5-dev` or equivalent is installed, then do the following:
+Uninstall previous version if older. Check that `libncurses5-dev` or equivalent is installed, then do the following:
 
 ``` shell
 cd $HOME/Development
@@ -60,81 +68,9 @@ sudo make install
 sudo updatedb
 ```
 
-### Qt5 installation on ubuntu
-
-Download and install the latest release of Qt5 (here 5.9.2):
-``` shell
-cd $HOME/Development
-wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-chmod +x qt-unified-linux-x64-online.run
-./qt-unified-linux-x64-online.run
-```
-
-In the dialog tool, select `$HOME/Development/Qt` as the place to install Qt.
-In this folder, one has to create a conf file for qtchooser as follows:
-
-``` shell
-cd $HOME/Development/Qt
-echo "$HOME/Development/Qt/5.9.2/gcc_64/bin
-$HOME/Development/Qt/5.9.2/gcc_64" > qt592.conf
-```
-
-To enable Qt5 and define environment variables, add the following lines to the `~/.bashrc` file:
-
-``` shell
-## #################################################################
-## Qt selection
-## #################################################################
-
-export QT_SELECT=qt592
-export Qt5_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5'
-export Qt5Core_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Core'
-export Qt5Concurrent_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Concurrent'
-export Qt5Gui_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Gui'
-export Qt5Widgets_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Widgets'
-export Qt5Test_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Test'
-export Qt5OpenGL_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5OpenGL'
-export Qt5PrintSupport_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5PrintSupport'
-export Qt5Xml_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Xml'
-export Qt5SerialBus_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5SerialBus'
-export Qt5Network_DIR='$HOME/Development/5.9.2/gcc_64/lib/cmake/Qt5Network'
-```
-
-It remains to set this config as the default one for qtchooser.
-One has to create as sudoer a symbolic link to qt592.conf file into `/usr/lib/x86_64-linux-gnu/qtchooser`.
-
-### Qt5 wrapping
-
-#### Qt objects within Python environnement using sip.
-
-Uninstall already existing version of sip if its version is less than 4.19 ("sip -V" to check the version), otherwise skip to PyQt5 installation.
-Since the latest sip version of some packages managers is not up to date with the latest PyQt5, you can install them by hand from the sources.
-
-Dowload and install sip :
-``` shell
-cd $HOME/Development
-wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.5/sip-4.19.5.tar.gz
-tar -zxvf sip-4.19.5.tar.gz
-cd sip-4.19.5
-python2.7 configure.py
-sudo make install
-```
-
-Make sure that the folder containing the qmake executable of the Qt librairies you have installed is the only folder containing a qmake executable, namely "$HOME/Development/Qt/5.9.2/gcc_64/bin". You can prepend it to your PATH, modify your .bashrc by adding : PATH=$HOME/Development/Qt/5.9.2/gcc_64/bin:$PATH to it.
-
-Download and install PyQt5 :
-``` shell
-cd $HOME/Development
-wget https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.9.1/PyQt5_gpl-5.9.1.tar.gz
-tar -zxvf PyQt5_gpl-5.9.1.tar.gz
-cd PyQt5_gpl-5.9.1
-python2.7 configure.py
-sudo make install
-```
-
 #### Qt objects within Python environnement using SWIG.
 
-Install swig development packages with RPM.
+Install swig development packages with RPM. On mac, use `brew install swig`
 
 ### VTK8 installation
 
@@ -159,7 +95,6 @@ make -j4
 ```
 
 ### Morpheme 'vt' installation
-<!-- Why not use the one packaged with timagetk ?! -->
 
 Start by cloning the Morpheme source code, replacing `mylogin` with you INRIA forge login:
 ``` shell
@@ -181,31 +116,8 @@ cd build
 cmake ..
 make -j4
 ```
-<!-- Compilation flags to be defined -->
-<!-- LOG: ccmake .. -->
-<!-- GNU CXX COMPILER
-
- WARNING, lemon was NOT found
-
- WARNING, tracker will NOT be built
-
- WARNING, vtk was either not found or too old
-
- WARNING, library ' libfilters' building will NOT be complete
-
- WARNING, executables ' extraction_arbre' and 'classification' will NOT be
- built -->
-
 
 ## Get dtk and its applicative layers
-
-### MacOS case
-
-For MacOs users, in every cmake configurations that follow, one has to add the following cmake option:
-
-``` shell
--DPYTHON_INCLUDE_DIR=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7
-```
 
 ### Compilation options:
 
@@ -219,7 +131,6 @@ To enable SIP wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SIP`
 To enable both SIP and SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SWIG_AND_SIP`
 
 ### dtk
-
 
 ``` shell
 cd $HOME/Development
@@ -258,24 +169,11 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Developmen
 make -j4
 ```
 
-### dtk-discrete-geometry
-
-``` shell
-cd $HOME/Development
-git clone https://github.com/d-tk/dtk-discrete-geometry.git
-cd dtk-discrete-geometry
-git checkout develop
-mkdir build
-cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Development/dtk-imaging/build -DDTKDISCRETEGEOMETRY_USES_DTKIMAGING=ON
-make -j4
-```
-
 ## Get gnomon & gnomon-plugins
 
 ### gnomon
 
-To select light or dark theme for gnomon set the compilation flag ` -DGNOME_STYLE=ONELIGHT|ONEDARK`.
+To select light or dark theme for gnomon set the compilation flag ` -DGNOME_STYLE="ONELIGHT"|"ONEDARK"`.
 
 ``` shell
 cd $HOME/Development
@@ -287,7 +185,6 @@ cd build
 cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Development/dtk-imaging/build -DdtkDiscreteGeometry_DIR=$HOME/Development/dtk-discrete-geometry/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build
 make -j4
 ```
-
 
 ### gnomon-plugins
 
@@ -344,6 +241,7 @@ plugins=$HOME/Development/gnomon-plugins/build/lib
 ```
 
 **Optional: Enable jupyter console by default in Gnomon** (instead of python)
+
 Add to `dtk-scripts.ini`:
 ``` shell
 [init]
@@ -361,7 +259,7 @@ cd $HOME/Development/gnomon/build
 
 Then in the research field, one can look for gnomon and check that at least one node from gnomon is available. One can then drag and drop it into the composer. Eventually, one can select the node and check in th left panel whether an implementation is available.
 
-## omero layer
+## Omero layer
 
 We need to install omero C++ and zeroc-ice. Omero MUST be at the same level than the server. At the moment,
 the version is 5.2.7
@@ -403,7 +301,6 @@ $
 
 The compilation is done in: openmicroscopy-5.2.7/target/OMERO.cpp-5.2.7-ice36-Mac OS X-10.12.6-x86_64
 
-
 ## install an old version of ice
 
 ### find the git tag
@@ -430,8 +327,7 @@ brew unlink ice@3.6
 brew link ice
 '''
 
-
-# special directive compilation
+# Special directive compilation
 
 ## macOSX
 ...
@@ -472,7 +368,6 @@ cd $HOME/Development/timagetk
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
 
-
 ### TimageTK, the image toolkit
 
 Clone TimageTK source code:
@@ -488,7 +383,6 @@ source activate gnomon
 cd timagetk
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
-
 
 ### tissue_analysis, the cell quantification toolkit
 
