@@ -53,19 +53,12 @@ sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
 ```
 
-### CMake 3.9 version
-
-Uninstall previous version if older. Check that `libncurses5-dev` or equivalent is installed, then do the following:
+### CMake
 
 ``` shell
-cd $HOME/Development
-wget https://cmake.org/files/v3.9/cmake-3.9.4.tar.gz
-tar -zxvf cmake-3.9.4.tar.gz
-cd cmake-3.9.4/
-./configure
-make -j4
-sudo make install
-sudo updatedb
+apt install cmake # ubuntu
+dnf install cmake # fedora
+brew install cmake # mac
 ```
 
 #### Qt objects within Python environnement using SWIG.
