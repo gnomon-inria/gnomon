@@ -56,7 +56,7 @@ sudo apt install mesa-common-dev
 ### CMake
 
 ``` shell
-apt install cmake # ubuntu
+apt install cmake cmake-curses-gui # ubuntu
 dnf install cmake # fedora
 brew install cmake # mac
 ```
