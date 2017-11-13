@@ -856,7 +856,7 @@ void gnomonClutEditor::updateTable(void) {
         d->colorTransferFunction->GetNodeValue(i, &vtk_vertex[0]);
         d->colorTransferFunction->GetColor(vtk_vertex[0], &vtk_color[0]);
         alpha = d->opacityTransferFunction->GetValue(vtk_vertex[0]);
-        gnomonClutEditorVertex *new_vertex = new gnomonClutEditorVertex(gnomonClutEditorMap(QPointF(vtk_vertex[0], alpha / 100), d->min, d->max, this->width(), 100, d->button_log->isChecked()), QColor(vtk_color[0] *255, vtk_color[1] * 255, vtk_color[2] * 255));
+        gnomonClutEditorVertex *new_vertex = new gnomonClutEditorVertex(gnomonClutEditorMap(QPointF(vtk_vertex[0], alpha), d->min, d->max, this->width(), 100, d->button_log->isChecked()), QColor(vtk_color[0] *255, vtk_color[1] * 255, vtk_color[2] * 255));
         d->table->addVertex(new_vertex);
         connect(new_vertex, SIGNAL(moved(const QPointF&)), d->scene, SIGNAL(moved(const QPointF&)));
     }
@@ -995,7 +995,7 @@ void gnomonClutEditor::onApply(void)
     d->colorTransferFunction->RemoveAllPoints();
 
     d->colorTransferFunction->AddRGBPoint(
-            d->min,
+            gnomonClutEditorMapInv(QPointF(d->min, 0.0), d->min, d->max, this->width(), 100, d->button_log->isChecked()).x(),
             d->table->vertices.first()->color().redF(),
             d->table->vertices.first()->color().greenF(),
             d->table->vertices.first()->color().blueF());
@@ -1013,7 +1013,7 @@ void gnomonClutEditor::onApply(void)
     }
 
     d->colorTransferFunction->AddRGBPoint(
-            d->max,
+            gnomonClutEditorMapInv(QPointF(d->max, 0.0), d->min, d->max, this->width(), 100, d->button_log->isChecked()).x(),
             d->table->vertices.first()->color().redF(),
             d->table->vertices.first()->color().greenF(),
             d->table->vertices.first()->color().blueF());

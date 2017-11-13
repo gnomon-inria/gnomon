@@ -175,9 +175,9 @@ void gnomonActorVolume::update(void)
     if(!d->opacityTransferFunction) {
         d->opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
         d->opacityTransferFunction->RemoveAllPoints();
-        d->opacityTransferFunction->AddPoint(min, 0.1);
-        d->opacityTransferFunction->AddPoint(mid, 0.1);
-        d->opacityTransferFunction->AddPoint(max, 0.1);
+        d->opacityTransferFunction->AddPoint(min, 0.5);
+        d->opacityTransferFunction->AddPoint(mid, 0.5);
+        d->opacityTransferFunction->AddPoint(max, 0.5);
     }
     d->opacityTransferFunction->Modified();
 
