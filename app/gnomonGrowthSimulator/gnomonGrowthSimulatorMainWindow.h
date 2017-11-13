@@ -16,6 +16,8 @@
 
 #include <QtWidgets>
 
+class dtkViewManager;
+
 class gnomonGrowthSimulatorMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -37,6 +39,9 @@ public:
     {
         return dynamic_cast<gnomonGrowthSimulatorMainWindow *>(widget);
     }
+
+public:
+    dtkViewManager *manager(void);
 
 private:
     class gnomonGrowthSimulatorMainWindowPrivate *d;
