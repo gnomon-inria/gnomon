@@ -21,6 +21,14 @@ dependencies:
   - pandas
   - zeroc-ice
 ```
+To create the conda environment using the previous recipe saved under `gnomon.yml`:
+```shell
+conda env create -f gnomon.yml
+```
+To activate the conda environment:
+``` shell
+source activate gnomon
+```
 
 Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
 
