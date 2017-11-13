@@ -196,6 +196,14 @@ make -j4
  WARNING, executables ' extraction_arbre' and 'classification' will NOT be
  built -->
 
+To add the binaries path to `$PATH` environnement variables using `activate` script from conda:
+```shell
+echo "# Extra PATH export for 'gnomon' environment:
+if [[ "$@" == "gnomon" ]]; then
+    export PATH=$PATH:$HOME/Development/morpheme-privat/vt/build/bin
+fi
+" >> $HOME/miniconda2/bin/activate
+```
 
 ## Get dtk and its applicative layers
 
@@ -489,6 +497,17 @@ cd timagetk
 python setup.py --prefix=$CONDA_ENV_PATH
 ```
 
+**Optional - Conda environment**
+
+TimageTK automatically set the right path to its libraries to your `~/.bashrc`, thus making them accessible system-wide.
+
+To isolate the TimageTK library to the `gnomon` conda environment only add these lines to conda `activate` file (should be in `$HOME/miniconda2/bin`):
+```shell
+if [[ "$@" == "gnomon" ]]; then
+    $timagetk_path=$HOME/Projects/dtk-gnomon/timagetk
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${timagetk_path}/timagetk/build-scons/lib
+fi
+```
 
 ### tissue_analysis, the cell quantification toolkit
 
