@@ -126,12 +126,12 @@ public:
 QColor gnomonClutEditorInterpolatorRGB::interpolate(gnomonClutEditorVertex *vertex) const
 {
     if(!this->start) {
-        qDebug() << "No start value set for interpolation";
+        qDebug() << Q_FUNC_INFO << "No start value set for interpolation";
         return vertex->color();
     }
 
     if(!this->stop) {
-        qDebug() << "No stop value set for interpolation";
+        qDebug() << Q_FUNC_INFO << "No stop value set for interpolation";
         return vertex->color();
     }
 
@@ -217,11 +217,11 @@ void gnomonClutEditorHistogram::paint(QPainter *painter, const QStyleOptionGraph
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if ( this->normalizedHistogram.isEmpty() )
+    if (this->normalizedHistogram.isEmpty())
         return;
-    if ( this->boundingRect().isEmpty() ) {
+
+    if (this->boundingRect().isEmpty())
         return;
-    }
 
     painter->setPen(Qt::darkGray);
     painter->setBrush(Qt::lightGray);
@@ -230,7 +230,7 @@ void gnomonClutEditorHistogram::paint(QPainter *painter, const QStyleOptionGraph
     qreal p_h = this->boundingRect().height();
     qreal b_w = p_w / this->normalizedHistogram.count();
 
-    for( int i = 0 ; i < this->normalizedHistogram.count() ; ++i ) {
+    for(int i = 0 ; i < this->normalizedHistogram.count() ; ++i) {
         qreal v = this->normalizedHistogram.at(i) * 0.95 ;
         qreal x = i * b_w;
         qreal y = ( 1.0 - v ) * p_h;
@@ -407,8 +407,8 @@ void gnomonClutEditorTable::paint(QPainter *painter, const QStyleOptionGraphicsI
 
     QLinearGradient linearGradient(xmin, 0, xmax, 0);
     {
-        QColor c = vertices.first()->color(); c.setAlpha(128);
-        linearGradient.setColorAt(0.0, c);
+        QColor color = vertices.first()->color(); color.setAlpha(128);
+        linearGradient.setColorAt(0.0, color);
     }
 
     foreach(gnomonClutEditorVertex *vertex, vertices) {
@@ -423,8 +423,8 @@ void gnomonClutEditorTable::paint(QPainter *painter, const QStyleOptionGraphicsI
     }
 
     {
-        QColor c = vertices.last()->color(); c.setAlpha(128);
-        linearGradient.setColorAt(1.0, c);
+        QColor color = vertices.last()->color(); color.setAlpha(128);
+        linearGradient.setColorAt(1.0, color);
     }
 
     painter->setPen(pen);
@@ -673,6 +673,7 @@ public:
 gnomonClutEditor::gnomonClutEditor(QWidget *parent) : QWidget(parent), d(new gnomonClutEditorPrivate)
 {
     this->setMinimumSize(QSize(800, 145));
+
     d->min = 100.0;
     d->max = 200.0;
 
@@ -831,9 +832,8 @@ void gnomonClutEditor::setRange(double min, double max)
 
 void gnomonClutEditor::setHistogram(const Histogram& histogram)
 {
-    if ( ! d->histogram ) {
-        d->histogram = new gnomonClutEditorHistogram( d->bg );
-    }
+    if(!d->histogram)
+        d->histogram = new gnomonClutEditorHistogram(d->bg);
 
     d->histogram->setup(histogram);
 }
@@ -950,7 +950,7 @@ QSize gnomonClutEditor::sizeHint(void) const
 
 void gnomonClutEditor::onApply(void)
 {
-    if (!d->table->vertices.count())
+    if(!d->table->vertices.count())
         return;
 
     if(!d->colorTransferFunction)
@@ -1039,21 +1039,21 @@ void gnomonClutEditor::onColorAuto(void)
     QList<QGraphicsItem *> selection = d->scene->selectedItems();
 
     if(selection.count() != 1) {
-        qDebug() << "Choose only one vertex for automatic color determination";
+        qDebug() << Q_FUNC_INFO << "Choose only one vertex for automatic color determination";
         return;
     }
 
     gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(selection.first());
 
     if(!vertex) {
-        qDebug() << "Choose only one vertex for automatic color determination";
+        qDebug() << Q_FUNC_INFO << "Choose only one vertex for automatic color determination";
         return;
     }
 
     QList<gnomonClutEditorVertex *> vertices = d->table->vertices;
 
     if(vertices.indexOf(vertex) == 0 || vertices.indexOf(vertex) == vertices.count()-1) {
-        qDebug() << "Selected vertex must be surrounded by two other vertices";
+        qDebug() << Q_FUNC_INFO << "Selected vertex must be surrounded by two other vertices";
         return;
     }
 
@@ -1096,10 +1096,9 @@ void gnomonClutEditor::onColorChoose(void)
     QColorDialog dialog(this);
     dialog.setCurrentColor(selection.first()->color());
 
-    if(dialog.exec()) {
+    if(dialog.exec())
         foreach(gnomonClutEditorVertex *vertex, selection)
             vertex->setColor(dialog.selectedColor());
-    }
 
     if(d->button_apply->isChecked())
         this->onApply();
@@ -1113,7 +1112,6 @@ void gnomonClutEditor::onSelectionChanged(void)
         d->label_value->setText("--");
         d->label_alpha->setText("--");
     } else {
-
         if(gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(selection.first()))
             this->onVertexMoved(vertex->scenePos());
     }
@@ -1185,7 +1183,7 @@ QPointF gnomonClutEditorMap(QPointF vertex, qreal min, qreal max, int width, int
 
 QPointF gnomonClutEditorMapInv(QPointF vertex, qreal min, qreal max, int width, int height, bool logScale)
 {
-    qreal x = vertex.x()/double(width) * (max-min) + min;
+    qreal x = vertex.x()/double(width) * (max - min) + min;
     qreal y = vertex.y()/double(height) * -1.0 ;
 
     if (logScale)
