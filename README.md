@@ -19,11 +19,15 @@ chmod u+x Miniconda2-latest-MacOSX-x86_64.sh
 Then, make sure to have conda in your PATH environment variable, before any folder containing `qmake`.
 
 #### Linux:
+Install `wget` if necessary:
 ``` shell
 sudo apt install wget
-wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh
-chmod u+x Miniconda-latest-Linux-x86_64.sh
-./Miniconda-latest-Linux-x86_64.sh
+```
+Install Miniconda:
+``` shell
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+chmod u+x Miniconda2-latest-Linux-x86_64.sh
+./Miniconda2-latest-Linux-x86_64.sh
 # install conda in $HOME/miniconda2
 ```
 Make sure to reply 'yes' when asking if conda should be add to `PATH` environment variables to your `~/.bashrc`.
