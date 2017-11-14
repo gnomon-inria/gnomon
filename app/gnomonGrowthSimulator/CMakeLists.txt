@@ -61,12 +61,7 @@ endif()
 ## Build rules
 ## #################################################################
 
-add_library(${PROJECT_NAME}_backend SHARED
-  ${${PROJECT_NAME}_SOURCES_WRAP}
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_HEADERS})
-
-add_executable(${PROJECT_NAME}
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
 qt5_use_modules(${PROJECT_NAME}_backend Core)
@@ -87,6 +82,24 @@ target_link_libraries(${PROJECT_NAME}_backend gnomonWidgets)
 target_link_libraries(${PROJECT_NAME}_backend ${VTK_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_backend)
+
+## #################################################################
+## Bundle setup
+## #################################################################
+
+if(APPLE)
+  set(MACOSX_BUNDLE_GUI_IDENTIFIER "fr.inria.gnomon")
+  set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
+  set(MACOSX_BUNDLE_ICON_FILE ${PROJECT_NAME})
+  set(MACOSX_BUNDLE_ICON_NAME ${PROJECT_NAME})
+  set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gnomom_VERSIOM}")
+  set(MACOSX_BUNDLE_VERSION "${gnomom_VERSIOM}")
+  set(MACOSX_BUNDLE_LONG_VERSION_STRING Version "${gnomom_VERSION}")
+  set(${PROJECT_NAME}_RESOURCE_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.app/Contents/Resources)
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${${PROJECT_NAME}_RESOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} ARGS -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.icns ${${PROJECT_NAME}_RESOURCE_DIR})
+endif(APPLE)
 
 ## #################################################################
 ## Handling of generated script modules
