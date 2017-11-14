@@ -61,6 +61,11 @@ endif()
 ## Build rules
 ## #################################################################
 
+add_library(${PROJECT_NAME}_backend SHARED
+  ${${PROJECT_NAME}_HEADERS}
+  ${${PROJECT_NAME}_SOURCES}
+  ${${PROJECT_NAME}_SOURCES_WRAP})
+
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
