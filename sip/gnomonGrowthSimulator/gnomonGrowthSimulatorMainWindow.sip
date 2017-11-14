@@ -3,6 +3,8 @@ class gnomonGrowthSimulatorMainWindow : public QMainWindow
 %TypeHeaderCode
 #include "gnomonGrowthSimulatorMainWindow.h"
 
+#include <dtkViewManager.h>
+
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
@@ -13,4 +15,7 @@ public:
 
 public:
     static gnomonGrowthSimulatorMainWindow *downcast(QWidget *widget);
+
+public:
+    dtkViewManager *manager();
 };

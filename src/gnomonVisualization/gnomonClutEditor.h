@@ -101,6 +101,9 @@ private:
 // gnomonClutEditor
 // /////////////////////////////////////////////////////////////////
 
+class vtkColorTransferFunction;
+class vtkPiecewiseFunction;
+
 class GNOMONVISUALIZATION_EXPORT gnomonClutEditor : public QWidget
 {
     Q_OBJECT
@@ -120,6 +123,9 @@ public:
 
     void   *colorTransferFunction(void);
     void *opacityTransferFunction(void);
+
+    void setColorTransferFunction(vtkColorTransferFunction *color_transfer_function);
+    void setOpacityTransferFunction(vtkPiecewiseFunction *opacity_transfer_function);
 
     void setRange(double min, double max);
 
@@ -146,6 +152,9 @@ protected slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+
+ private:
+    void updateTable(void);
 
 private:
     class gnomonClutEditorPrivate *d;

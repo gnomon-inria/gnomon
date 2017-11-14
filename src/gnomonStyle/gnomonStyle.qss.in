@@ -136,6 +136,68 @@ QPushButton, QToolButton {
     border-radius: 4px;
 }
 
+QScrollBar:horizontal {
+    background: transparent;
+    height: 6px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: @GNOMON_STYLE_CURSORCOLOR@;
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+    min-height: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+    height: 0px;
+}
+
+QScrollBar::sub-line:horizontal {
+    height: 0px;
+}
+
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+    width: 0px;
+    height: 0px;
+    background: none;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+QScrollBar:vertical {
+    background: #000000;
+    width: 6px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: @GNOMON_STYLE_CURSORCOLOR@;
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+    min-height: 20px;
+}
+
+QScrollBar::add-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    width: 0px;
+    height: 0px;
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
 QSpinBox, QDoubleSpinBox {
     color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
 

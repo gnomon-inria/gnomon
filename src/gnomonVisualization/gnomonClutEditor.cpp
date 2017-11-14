@@ -126,12 +126,12 @@ public:
 QColor gnomonClutEditorInterpolatorRGB::interpolate(gnomonClutEditorVertex *vertex) const
 {
     if(!this->start) {
-        qDebug() << "No start value set for interpolation";
+        qDebug() << Q_FUNC_INFO << "No start value set for interpolation";
         return vertex->color();
     }
 
     if(!this->stop) {
-        qDebug() << "No stop value set for interpolation";
+        qDebug() << Q_FUNC_INFO << "No stop value set for interpolation";
         return vertex->color();
     }
 
@@ -170,17 +170,19 @@ public:
 
 gnomonClutEditorHistogram::gnomonClutEditorHistogram(QGraphicsItem *parent) : QGraphicsItem(parent)
 {
+
 }
 
 gnomonClutEditorHistogram::~gnomonClutEditorHistogram()
 {
+
 }
 
 void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogram)
 {
     static const double epsilon = 1e-6;
 
-    if ( this->normalizedHistogram.count() != 0 )
+    if (this->normalizedHistogram.count() != 0)
         this->normalizedHistogram.clear();
 
     double max = 0;
@@ -196,7 +198,7 @@ void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogr
         }
     }
 
-    if ( max < epsilon ) {
+    if (max < epsilon) {
         qDebug() << Q_FUNC_INFO << "histogram is null" ;
         return;
     }
@@ -205,7 +207,6 @@ void gnomonClutEditorHistogram::setup(const gnomonClutEditor::Histogram &histogr
         this->normalizedHistogram.replace(i, this->normalizedHistogram.at(i) / max);
     }
 }
-
 
 QRectF gnomonClutEditorHistogram::boundingRect(void) const
 {
@@ -217,11 +218,11 @@ void gnomonClutEditorHistogram::paint(QPainter *painter, const QStyleOptionGraph
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if ( this->normalizedHistogram.isEmpty() )
+    if (this->normalizedHistogram.isEmpty())
         return;
-    if ( this->boundingRect().isEmpty() ) {
+
+    if (this->boundingRect().isEmpty())
         return;
-    }
 
     painter->setPen(Qt::darkGray);
     painter->setBrush(Qt::lightGray);
@@ -230,7 +231,7 @@ void gnomonClutEditorHistogram::paint(QPainter *painter, const QStyleOptionGraph
     qreal p_h = this->boundingRect().height();
     qreal b_w = p_w / this->normalizedHistogram.count();
 
-    for( int i = 0 ; i < this->normalizedHistogram.count() ; ++i ) {
+    for(int i = 0 ; i < this->normalizedHistogram.count() ; ++i) {
         qreal v = this->normalizedHistogram.at(i) * 0.95 ;
         qreal x = i * b_w;
         qreal y = ( 1.0 - v ) * p_h;
@@ -407,11 +408,11 @@ void gnomonClutEditorTable::paint(QPainter *painter, const QStyleOptionGraphicsI
 
     QLinearGradient linearGradient(xmin, 0, xmax, 0);
     {
-        QColor c = vertices.first()->color(); c.setAlpha(128);
-        linearGradient.setColorAt(0.0, c);
+        QColor color = vertices.first()->color(); color.setAlpha(128);
+        linearGradient.setColorAt(0.0, color);
     }
 
-    foreach(gnomonClutEditorVertex *vertex, vertices) {
+    for(gnomonClutEditorVertex *vertex : vertices) {
         qreal position;
         position = (vertex->pos().x()-xmin)/(xmax-xmin);
         position = qMax(0.0, position);
@@ -423,8 +424,8 @@ void gnomonClutEditorTable::paint(QPainter *painter, const QStyleOptionGraphicsI
     }
 
     {
-        QColor c = vertices.last()->color(); c.setAlpha(128);
-        linearGradient.setColorAt(1.0, c);
+        QColor color = vertices.last()->color(); color.setAlpha(128);
+        linearGradient.setColorAt(1.0, color);
     }
 
     painter->setPen(pen);
@@ -441,7 +442,7 @@ QRectF gnomonClutEditorTable::boundingRect(void) const
     xmin = ymin = INT_MAX;
     xmax = ymax = INT_MIN;
 
-    foreach(gnomonClutEditorVertex *vertex, vertices) {
+    for(gnomonClutEditorVertex *vertex : vertices) {
         if(vertex->x() < xmin) xmin = vertex->x();
         if(vertex->x() > xmax) xmax = vertex->x();
         if(vertex->y() < ymin) ymin = vertex->y();
@@ -523,7 +524,7 @@ void gnomonClutEditorScene::addItem(QGraphicsItem *item)
 void gnomonClutEditorScene::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete) {
-        foreach(QGraphicsItem *item, this->selectedItems()) {
+        for(QGraphicsItem *item : this->selectedItems()) {
             if(gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(item)) {
                 d->table->removeVertex(vertex);
                 d->table->update();
@@ -565,7 +566,7 @@ void gnomonClutEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
     QPointF delta = event->scenePos() - event->lastScenePos();
 
-    foreach(QGraphicsItem *item, this->selectedItems()) {
+    for(QGraphicsItem *item : this->selectedItems()) {
 
         if(gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(item)) {
 
@@ -673,6 +674,7 @@ public:
 gnomonClutEditor::gnomonClutEditor(QWidget *parent) : QWidget(parent), d(new gnomonClutEditorPrivate)
 {
     this->setMinimumSize(QSize(800, 145));
+
     d->min = 100.0;
     d->max = 200.0;
 
@@ -818,11 +820,47 @@ void *gnomonClutEditor::colorTransferFunction(void)
     return d->colorTransferFunction;
 }
 
+void gnomonClutEditor::setColorTransferFunction(vtkColorTransferFunction *color_transfer_function)
+{
+    d->colorTransferFunction = color_transfer_function;
+    if(!d->opacityTransferFunction)
+        return;
+
+    this->updateTable();
+}
+
 void *gnomonClutEditor::opacityTransferFunction(void)
 {
     return d->opacityTransferFunction;
 }
 
+void gnomonClutEditor::setOpacityTransferFunction(vtkPiecewiseFunction *opacity_transfer_function)
+{
+    d->opacityTransferFunction = opacity_transfer_function;
+    this->updateTable();
+}
+
+void gnomonClutEditor::updateTable(void) {
+    if(!d->colorTransferFunction || !d->opacityTransferFunction)
+        return;
+    for(gnomonClutEditorVertex *vertex : d->table->vertices) {
+        d->table->removeVertex(vertex);
+        d->scene->removeItem(vertex);
+        delete vertex;
+    }
+    int size = d->colorTransferFunction->GetSize();
+    double *vtk_vertex = new double[2];
+    double *vtk_color = new double[3];
+    double alpha = 0;
+    for(int i = 0; i < size; ++i) {
+        d->colorTransferFunction->GetNodeValue(i, &vtk_vertex[0]);
+        d->colorTransferFunction->GetColor(vtk_vertex[0], &vtk_color[0]);
+        alpha = d->opacityTransferFunction->GetValue(vtk_vertex[0]);
+        gnomonClutEditorVertex *new_vertex = new gnomonClutEditorVertex(gnomonClutEditorMap(QPointF(vtk_vertex[0], alpha), d->min, d->max, this->width(), 100, d->button_log->isChecked()), QColor(vtk_color[0] *255, vtk_color[1] * 255, vtk_color[2] * 255));
+        d->table->addVertex(new_vertex);
+        connect(new_vertex, SIGNAL(moved(const QPointF&)), d->scene, SIGNAL(moved(const QPointF&)));
+    }
+}
 void gnomonClutEditor::setRange(double min, double max)
 {
     d->min = min;
@@ -831,9 +869,8 @@ void gnomonClutEditor::setRange(double min, double max)
 
 void gnomonClutEditor::setHistogram(const Histogram& histogram)
 {
-    if ( ! d->histogram ) {
-        d->histogram = new gnomonClutEditorHistogram( d->bg );
-    }
+    if(!d->histogram)
+        d->histogram = new gnomonClutEditorHistogram(d->bg);
 
     d->histogram->setup(histogram);
 }
@@ -856,7 +893,7 @@ void gnomonClutEditor::importClut(void)
 
     file.close();
 
-    foreach(gnomonClutEditorVertex *vertex, d->table->vertices) {
+    for(gnomonClutEditorVertex *vertex : d->table->vertices) {
         d->table->removeVertex(vertex);
         d->scene->removeItem(vertex);
         delete vertex;
@@ -907,8 +944,7 @@ void gnomonClutEditor::exportClut(void)
     root.setAttribute("log", d->button_log->isChecked() ? "1" : "0");
     document.appendChild(root);
 
-    foreach(gnomonClutEditorVertex *vertex, d->table->vertices) {
-
+    for(gnomonClutEditorVertex *vertex : d->table->vertices) {
         QPointF mapped = gnomonClutEditorMapInv(vertex->scenePos(), d->min, d->max, this->width(), 100, d->button_log->isChecked());
 
         QDomElement element = document.createElement("vertex");
@@ -950,7 +986,7 @@ QSize gnomonClutEditor::sizeHint(void) const
 
 void gnomonClutEditor::onApply(void)
 {
-    if (!d->table->vertices.count())
+    if(!d->table->vertices.count())
         return;
 
     if(!d->colorTransferFunction)
@@ -959,7 +995,7 @@ void gnomonClutEditor::onApply(void)
     d->colorTransferFunction->RemoveAllPoints();
 
     d->colorTransferFunction->AddRGBPoint(
-            d->min,
+            gnomonClutEditorMapInv(QPointF(d->min, 0.0), d->min, d->max, this->width(), 100, d->button_log->isChecked()).x(),
             d->table->vertices.first()->color().redF(),
             d->table->vertices.first()->color().greenF(),
             d->table->vertices.first()->color().blueF());
@@ -977,7 +1013,7 @@ void gnomonClutEditor::onApply(void)
     }
 
     d->colorTransferFunction->AddRGBPoint(
-            d->max,
+            gnomonClutEditorMapInv(QPointF(d->max, 0.0), d->min, d->max, this->width(), 100, d->button_log->isChecked()).x(),
             d->table->vertices.first()->color().redF(),
             d->table->vertices.first()->color().greenF(),
             d->table->vertices.first()->color().blueF());
@@ -991,8 +1027,7 @@ void gnomonClutEditor::onApply(void)
             d->min,
             gnomonClutEditorMapInv(d->table->vertices.first()->scenePos(), d->min, d->max, this->width(), 100, d->button_log->isChecked()).y());
 
-    foreach(gnomonClutEditorVertex *vertex, d->table->vertices) {
-
+    for(gnomonClutEditorVertex *vertex : d->table->vertices) {
         d->opacityTransferFunction->AddPoint(
              gnomonClutEditorMapInv(vertex->scenePos(), d->min, d->max, this->width(), 100, d->button_log->isChecked()).x(),
              gnomonClutEditorMapInv(vertex->scenePos(), d->min, d->max, this->width(), 100, d->button_log->isChecked()).y());
@@ -1039,21 +1074,21 @@ void gnomonClutEditor::onColorAuto(void)
     QList<QGraphicsItem *> selection = d->scene->selectedItems();
 
     if(selection.count() != 1) {
-        qDebug() << "Choose only one vertex for automatic color determination";
+        qDebug() << Q_FUNC_INFO << "Choose only one vertex for automatic color determination";
         return;
     }
 
     gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(selection.first());
 
     if(!vertex) {
-        qDebug() << "Choose only one vertex for automatic color determination";
+        qDebug() << Q_FUNC_INFO << "Choose only one vertex for automatic color determination";
         return;
     }
 
     QList<gnomonClutEditorVertex *> vertices = d->table->vertices;
 
     if(vertices.indexOf(vertex) == 0 || vertices.indexOf(vertex) == vertices.count()-1) {
-        qDebug() << "Selected vertex must be surrounded by two other vertices";
+        qDebug() << Q_FUNC_INFO << "Selected vertex must be surrounded by two other vertices";
         return;
     }
 
@@ -1086,7 +1121,7 @@ void gnomonClutEditor::onColorChoose(void)
 {
     QList<gnomonClutEditorVertex *> selection;
 
-    foreach(QGraphicsItem *item,d->scene->selectedItems())
+    for(QGraphicsItem *item : d->scene->selectedItems())
         if(gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(item))
             selection << vertex;
 
@@ -1096,10 +1131,9 @@ void gnomonClutEditor::onColorChoose(void)
     QColorDialog dialog(this);
     dialog.setCurrentColor(selection.first()->color());
 
-    if(dialog.exec()) {
-        foreach(gnomonClutEditorVertex *vertex, selection)
+    if(dialog.exec())
+        for(gnomonClutEditorVertex * vertex: selection)
             vertex->setColor(dialog.selectedColor());
-    }
 
     if(d->button_apply->isChecked())
         this->onApply();
@@ -1113,7 +1147,6 @@ void gnomonClutEditor::onSelectionChanged(void)
         d->label_value->setText("--");
         d->label_alpha->setText("--");
     } else {
-
         if(gnomonClutEditorVertex *vertex = dynamic_cast<gnomonClutEditorVertex *>(selection.first()))
             this->onVertexMoved(vertex->scenePos());
     }
@@ -1143,7 +1176,7 @@ void gnomonClutEditor::resizeEvent(QResizeEvent *event)
     if(event->size().height() < 150)
         return;
 
-    foreach(gnomonClutEditorVertex *vertex, d->table->vertices)
+    for(gnomonClutEditorVertex *vertex : d->table->vertices)
         vertex->setPos(
             gnomonClutEditorMap(
                 gnomonClutEditorMapInv(
@@ -1185,7 +1218,7 @@ QPointF gnomonClutEditorMap(QPointF vertex, qreal min, qreal max, int width, int
 
 QPointF gnomonClutEditorMapInv(QPointF vertex, qreal min, qreal max, int width, int height, bool logScale)
 {
-    qreal x = vertex.x()/double(width) * (max-min) + min;
+    qreal x = vertex.x()/double(width) * (max - min) + min;
     qreal y = vertex.y()/double(height) * -1.0 ;
 
     if (logScale)

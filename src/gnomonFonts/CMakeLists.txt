@@ -73,10 +73,21 @@ set(${PROJECT_NAME}_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
 ## ###################################################################
+## Install rules - files
+## ###################################################################
+
+install(FILES ${${PROJECT_NAME}_HEADERS}
+  DESTINATION include/gnomon
+  COMPONENT gnomon-fonts)
+
+## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT gnomon-fonts
+         EXPORT gnomonDepends)
 
 ######################################################################
 ### CMakeLists.txt ends here

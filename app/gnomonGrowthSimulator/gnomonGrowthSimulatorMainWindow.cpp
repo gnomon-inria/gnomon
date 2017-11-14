@@ -367,6 +367,11 @@ void gnomonGrowthSimulatorMainWindow::addEditor(QWidget *editor)
     d->editor_splitter->addWidget(editor);
 }
 
+dtkViewManager *gnomonGrowthSimulatorMainWindow::manager(void)
+{
+    return d->view_manager;
+}
+
 #include "gnomonGrowthSimulatorMainWindow.moc"
 
 //
