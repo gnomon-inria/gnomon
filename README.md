@@ -6,16 +6,32 @@ For sake of clarity, let's consider that all the programs are installed under `$
 
 ### Install conda
 
+#### MacOS X:
 ``` shell
 cd ~/Downloads
 brew install wget
 wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
 chmod u+x Miniconda2-latest-MacOSX-x86_64.sh
 ./Miniconda2-latest-MacOSX-x86_64.sh
-# install in $HOME/.conda
+# install conda in $HOME/.conda
 ```
 
 Then, make sure to have conda in your PATH environment variable, before any folder containing `qmake`.
+
+#### Linux:
+``` shell
+sudo apt install wget
+wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh
+chmod u+x Miniconda-latest-Linux-x86_64.sh
+./Miniconda-latest-Linux-x86_64.sh
+# install conda in $HOME/miniconda2
+```
+Make sure to reply 'yes' when asking if conda should be add to `PATH` environment variables to your `~/.bashrc`.
+
+Reload the `~/.bashrc` to enable conda or open a new terminal:
+``` shell
+source ~/.bashrc
+```
 
 ### Using Conda environment:
 If you want to use a Conda environment, here named `gnomon` (or a VirtualEnv), create it using the following recipe (for VirtualEnv install dependencies):
@@ -387,7 +403,6 @@ cd build
 cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Development/dtk-imaging/build -DdtkDiscreteGeometry_DIR=$HOME/Development/dtk-discrete-geometry/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build
 make -j4
 ```
-
 
 ### gnomon-plugins
 
