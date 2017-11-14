@@ -43,6 +43,7 @@
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
 
+#include <dtkImaging>
 #include <cmath>
 
 class gnomonViewManagerPrivate
@@ -117,6 +118,23 @@ QList<vtkPolyData *> gnomonViewManager::meshes(void)
 gnomonActor *gnomonViewManager::actor(vtkImageData *volume)
 {
     return d->volumes.value(volume, NULL);
+}
+
+gnomonActor *gnomonViewManager::insert(dtkImage *image)
+{
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    if (!converter) {
+        qWarning() << "can't create vtk converter!";
+        return nullptr;
+    }
+    converter->setInput(image);
+    converter->convert();
+    vtkImageData *vtk_image = static_cast<vtkImageData*>(converter->output());
+    if (!vtk_image) {
+        qWarning() << "can't convert image to vtkImageData !";
+        return nullptr;
+    }
+    return this->insert(vtk_image);
 }
 
 gnomonActor *gnomonViewManager::insert(vtkImageData *image)
