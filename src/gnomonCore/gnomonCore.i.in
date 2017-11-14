@@ -48,6 +48,27 @@
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
+%extend QVariant {
+    void setValue(gnomonCellComplex *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    void setValue(gnomonCellImage *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    void setValue(gnomonCellGraph *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonCellComplex* tognomonCellComplex() const {
+        return $self->value<gnomonCellComplex *>();
+    }
+    gnomonCellImage* tognomonCellImage() const {
+        return $self->value<gnomonCellImage *>();
+    }
+    gnomonCellGraph* tognomonCellGraph() const {
+        return $self->value<gnomonCellGraph *>();
+    }
+ }
+
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
