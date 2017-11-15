@@ -42,6 +42,7 @@ class gnomonCellImage;
 
 class vtkImageData;
 class vtkPolyData;
+class dtkImage;
 
 class vtkRenderWindowInteractor;
 
@@ -61,6 +62,7 @@ public:
 public:
     gnomonActor *insert(vtkPolyData *mesh);
     gnomonActor *insert(vtkImageData *image);
+    gnomonActor *insert(dtkImage *image);
     gnomonActor *insert(gnomonCellComplex *cellcomplex);
     gnomonActor *insert(gnomonCellGraph *cellgraph);
     gnomonActor *insert(gnomonCellImage *cellimage);
