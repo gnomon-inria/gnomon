@@ -52,7 +52,7 @@ protected:
     void mousePressEvent(QMouseEvent *) override;
 
  private slots:
-    void onInsertedActor(gnomonActor *);
+    void onInserted(gnomonActor *);
 
 private:
     gnomonViewPrivate *d;

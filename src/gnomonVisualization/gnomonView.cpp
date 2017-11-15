@@ -131,7 +131,7 @@ gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
 
     connect(d->widget, SIGNAL(focused()), this, SIGNAL(focused()));
 
-    connect(d->manager, SIGNAL(inserted(gnomonActor *)), this, SLOT(onInsertedActor(gnomonActor *)));
+    connect(d->manager, SIGNAL(inserted(gnomonActor *)), this, SLOT(onInserted(gnomonActor *)));
 }
 
 gnomonView::~gnomonView(void)
@@ -167,7 +167,7 @@ void gnomonView::mousePressEvent(QMouseEvent *event)
     emit focused();
 }
 
-void gnomonView::onInsertedActor(gnomonActor *actor)
+void gnomonView::onInserted(gnomonActor *actor)
 {
     actor->setInteractor(d->widget->GetInteractor());
     actor->update();
