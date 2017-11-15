@@ -13,6 +13,9 @@
 // Code:
 
 #include "gnomonInspectorCellGraph.h"
+
+#include "gnomonActorMeshCellGraph.h"
+
 #include "gnomonDoubleEditor.h"
 #include "gnomonDoubleRangeEditor.h"
 #include "gnomonStringEditor.h"
@@ -37,7 +40,7 @@ public:
 // gnomonInspectorCellGraph
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorCellGraphPrivate)
+gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QWidget(parent), d(new gnomonInspectorCellGraphPrivate)
 {
     d->vertexPropertyEditor = new gnomonStringEditor(this);
     d->vertexPropertyEditor->setName("Property Name");
@@ -99,6 +102,39 @@ gnomonInspectorCellGraph::~gnomonInspectorCellGraph(void)
     delete d;
 
     d = NULL;
+}
+
+void gnomonInspectorCellGraph::setActor(gnomonActorMeshCellGraph *actor) const
+{
+    //TODO
+    // QStringList vertexProperties = cellgraph->vertexPropertyNames();
+    // vertexProperties.insert(0,"");
+    // cellgraph_inspector->vertexPropertyEditor()->setList(vertexProperties);
+    connect(this, &gnomonInspectorCellGraph::vertexPropertyUpdated, [=] () { actor->setVertexProperty(this->vertexProperty()); });
+    connect(this, &gnomonInspectorCellGraph::vertexSizeUpdated, [=] () { actor->setVertexSize(this->vertexSize()); });
+    connect(this, &gnomonInspectorCellGraph::edgeOpacityUpdated, [=] () { actor->setEdgeOpacity(this->edgeOpacity()); });
+    connect(this, &gnomonInspectorCellGraph::edgeLinewidthUpdated, [=] () { actor->setEdgeLinewidth(this->edgeLinewidth()); });
+
+    // QMap<QString, void(gnomonInspectorCellGraph::*)(void)> sliceSignals;
+    // sliceSignals["x"] = &gnomonInspectorCellGraph::xSliceUpdated;
+    // sliceSignals["y"] = &gnomonInspectorCellGraph::ySliceUpdated;
+    // sliceSignals["z"] = &gnomonInspectorCellGraph::zSliceUpdated;
+
+    // for (const auto& dim : sliceSignals.keys()) {
+    //     QString barycenterProp("barycenter_");
+    //     barycenterProp.append(dim);
+    //     QMap<long, QVariant> positions = cellgraph->vertexProperty(barycenterProp);
+    //     QList<double> points;
+    //     for (const auto& vertexId : cellgraph->vertexIds()) {
+    //         points<<positions[vertexId].value<double>();
+    //     }
+    //     double pointMin = floor(*std::min_element(points.begin(),points.end()));
+    //     double pointMax = ceil(*std::max_element(points.begin(),points.end()));
+    //     cellgraph_inspector->sliceEditor(dim)->setRange(pointMin,pointMax);
+    //     cellgraph_inspector->sliceEditor(dim)->setValueMin(pointMin);
+    //     cellgraph_inspector->sliceEditor(dim)->setValueMax(pointMax);
+    //     connect(cellgraph_inspector, sliceSignals[dim], [=] () { actor->setSlice(dim,cellgraph_inspector->slice(dim)); });
+    // }
 }
 
 gnomonStringEditor *gnomonInspectorCellGraph::vertexPropertyEditor(void) const

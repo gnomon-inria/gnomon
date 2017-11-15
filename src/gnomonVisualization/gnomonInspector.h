@@ -14,26 +14,37 @@
 
 #pragma once
 
-#include <QtCore>
-#include <QtWidgets>
-
 #include <gnomonVisualizationExport.h>
 
-#include <vtkAssembly.h>
+#include <QSplitter>
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspector : public QFrame, public vtkAssembly
+class gnomonInspectorPrivate;
+class gnomonInspectorViewTree;
+
+class gnomonActorMeshCellComplex;
+class gnomonActorMeshCellGraph;
+class gnomonActorMeshCellImage;
+class gnomonActorVolume;
+
+class GNOMONVISUALIZATION_EXPORT gnomonInspector : public QSplitter
 {
-public:
-             gnomonInspector(QWidget *parent = Q_NULLPTR);
-    virtual ~gnomonInspector(void);
+    Q_OBJECT
 
 public:
-    virtual bool isVisible(void);
+     gnomonInspector(QWidget *parent = Q_NULLPTR);
+    ~gnomonInspector(void);
 
-public slots:
-    virtual void hide(void);
-    virtual void show(void);
+ public:
+    gnomonInspectorViewTree *tree(void);
 
+ public slots:
+    void onActorMeshCellComplexSelected(gnomonActorMeshCellComplex *actor);
+    void onActorMeshCellGraphSelected(gnomonActorMeshCellGraph *actor);
+    void onActorMeshCellImageSelected(gnomonActorMeshCellImage *actor);
+    void onActorVolumeSelected(gnomonActorVolume *actor);
+
+public:
+    gnomonInspectorPrivate *d;
 };
 
 //

@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonInspectorImage.h"
+#include <QDebug>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorImagePrivate
@@ -28,7 +29,7 @@ public:
 // gnomonInspectorImage
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorImage::gnomonInspectorImage(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorImagePrivate)
+gnomonInspectorImage::gnomonInspectorImage(QWidget *parent) : QWidget(parent), d(new gnomonInspectorImagePrivate)
 {
 
 }
@@ -44,5 +45,9 @@ gnomonInspectorImage::~gnomonInspectorImage(void)
     d = NULL;
 }
 
+void gnomonInspectorImage::setActor(gnomonActorImage *actor) const
+{
+    qDebug() << Q_FUNC_INFO << " TO IMPLEMENT";
+}
 //
 // gnomonInspectorImage.cpp ends here

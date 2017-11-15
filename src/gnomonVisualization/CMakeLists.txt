@@ -51,8 +51,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspectorImage.h
   gnomonInspectorImageProperties
   gnomonInspectorImageProperties.h
-  gnomonInspectorMain
-  gnomonInspectorMain.h
   gnomonInspectorMesh
   gnomonInspectorMesh.h
   gnomonInspectorViewTree
@@ -86,7 +84,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspectorImage.cpp
   gnomonInspectorImageProperties.cpp
   gnomonInspectorMesh.cpp
-  gnomonInspectorMain.cpp
   gnomonInspectorViewTree.cpp
   gnomonInspectorViewWidget.cpp
   gnomonInspectorVolume.cpp

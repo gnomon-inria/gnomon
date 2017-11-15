@@ -13,11 +13,15 @@
 // Code:
 
 #include "gnomonInspectorVolume.h"
+
 #include "gnomonClutEditor.h"
+
+#include "gnomonActorVolume.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorVolumePrivate
 // /////////////////////////////////////////////////////////////////
+class gnomonActorVolume;
 
 class gnomonInspectorVolumePrivate
 {
@@ -34,7 +38,7 @@ public:
 // gnomonInspectorVolume
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorVolumePrivate)
+gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : QWidget(parent), d(new gnomonInspectorVolumePrivate)
 {
     d->editor = new gnomonClutEditor();
 
@@ -72,5 +76,16 @@ gnomonClutEditor *gnomonInspectorVolume::editor(void) const
     return d->editor;
 }
 
+void gnomonInspectorVolume::setActor(gnomonActorVolume *actor) const
+{
+    this->editor()->setRange(actor->rangeMin(), actor->rangeMax());
+    this->editor()->setHistogram(actor->histogram());
+    this->editor()->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(actor->opacityTransferFunction()));
+    this->editor()->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(actor->colorTransferFunction()));
+    connect(this->editor(), &gnomonClutEditor::updated, [=] () {
+            actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(this->editor()->colorTransferFunction()));
+            actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(this->editor()->opacityTransferFunction()));
+        });
+}
 //
 // gnomonInspectorVolume.cpp ends here

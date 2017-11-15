@@ -14,29 +14,78 @@
 
 #include "gnomonInspector.h"
 
-gnomonInspector::gnomonInspector(QWidget *parent) : QFrame(parent)
-{
+#include "gnomonInspectorViewTree.h"
+#include "gnomonInspectorViewWidget.h"
 
+// #include "gnomonInspectorCellComplex.h"
+#include "gnomonInspectorCellGraph.h"
+// #include "gnomonInspectorCellImage.h"
+#include "gnomonInspectorVolume.h"
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonInspectorViewWidgetPrivate
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonInspectorPrivate
+{
+public:
+    gnomonInspectorViewTree *tree;
+    gnomonInspectorViewWidget *widget;
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonInspectorViewWidget
+// ///////////////////////////////////////////////////////////////////
+
+gnomonInspector::gnomonInspector(QWidget *parent) : QSplitter(Qt::Vertical, parent), d(new gnomonInspectorPrivate)
+{
+    this->setHandleWidth(2);
+    d->tree = new gnomonInspectorViewTree(this);
+    d->widget = new gnomonInspectorViewWidget(this);
+
+    this->addWidget(d->tree);
+    this->addWidget(d->widget);
+
+    connect(d->tree, SIGNAL(selected(gnomonActorMeshCellComplex *)), this, SLOT(onActorMeshCellComplexSelected(gnomonActorMeshCellComplex *)));
+    connect(d->tree, SIGNAL(selected(gnomonActorMeshCellGraph *)), this, SLOT(onActorMeshCellGraphSelected(gnomonActorMeshCellGraph *)));
+    connect(d->tree, SIGNAL(selected(gnomonActorMeshCellImage *)), this, SLOT(onActorMeshCellImageSelected(gnomonActorMeshCellImage *)));
+    connect(d->tree, SIGNAL(selected(gnomonActorVolume *)), this, SLOT(onActorVolumeSelected(gnomonActorVolume *)));
 }
 
 gnomonInspector::~gnomonInspector(void)
 {
-    this->SetReferenceCount(0);
+
 }
 
-bool gnomonInspector::isVisible(void)
+gnomonInspectorViewTree *gnomonInspector::tree(void)
 {
-    return (bool)(this->GetVisibility());
+    return d->tree;
 }
 
-void gnomonInspector::hide(void)
+void gnomonInspector::onActorMeshCellComplexSelected(gnomonActorMeshCellComplex *actor)
 {
-    this->VisibilityOff();
+    qDebug() << Q_FUNC_INFO << " TO IMPLEMENT";
 }
 
-void gnomonInspector::show(void)
+void gnomonInspector::onActorMeshCellGraphSelected(gnomonActorMeshCellGraph *actor)
 {
-    this->VisibilityOn();
+    qDebug() << Q_FUNC_INFO << " TO IMPLEMENT";
+}
+
+void gnomonInspector::onActorMeshCellImageSelected(gnomonActorMeshCellImage *actor)
+{
+    qDebug() << Q_FUNC_INFO << " TO IMPLEMENT";
+}
+
+void gnomonInspector::onActorVolumeSelected(gnomonActorVolume *actor)
+{
+    // ///////////////////////////////////////////////////////////////////
+    // Inspectors are created and connected to actors here
+    // ///////////////////////////////////////////////////////////////////
+    gnomonInspectorVolume *inspector = new gnomonInspectorVolume();
+    inspector->setActor(actor);
+
+    d->widget->setInspector(inspector);
 }
 
 //
