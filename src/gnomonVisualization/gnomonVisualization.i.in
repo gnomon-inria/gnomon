@@ -1,27 +1,30 @@
-/* Version: $Id$
- *
- */
+// Version: $Id$
+//
+//
 
-/* Commentary:
- *
- */
+// Commentary:
+//
+//
 
-/* Change Log:
- *
- */
+// Change Log:
+//
+//
 
-/* Code: */
+// Code:
 
 #pragma once
 
 %module gnomonvisualization
 
 %include "@dtk_WRAP_BASE@"
+
 %import "@dtk_WRAP_CORE@"
+%import "@dtk_WRAP_WIDGETS@"
 
 %{
 
 #include <gnomonVisualization/gnomonView.h>
+#include <gnomonVisualization/gnomonViewManager.h>
 
 %}
 
@@ -37,5 +40,7 @@
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonVisualization/gnomonView.h>
+%include <gnomonVisualization/gnomonViewManager.h>
 
-/* gnomonVisualization.i ends here */
+//
+// gnomonVisualization.i.in ends here
