@@ -15,15 +15,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLongVersionString</key>
-	<string>@gomon_VERSION@</string>
+	<string>@gnomon_VERSION@</string>
 	<key>CFBundleName</key>
 	<string>@PROJECT_NAME@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>@gomon_VERSION@</string>
+	<string>@gnomon_VERSION@</string>
 	<key>CFBundleVersion</key>
-	<string>@gomon_VERSION@</string>
+	<string>@gnomon_VERSION@</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
