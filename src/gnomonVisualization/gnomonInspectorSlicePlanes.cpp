@@ -14,6 +14,8 @@
 
 #include "gnomonInspectorSlicePlanes.h"
 
+#include "gnomonActorImage.h"
+
 #include <QtGui>
 #include <QtWidgets>
 
@@ -130,32 +132,54 @@ gnomonInspectorSlicePlanes::gnomonInspectorSlicePlanes(QWidget *parent) : gnomon
     d->z_plane_opacity_sb->setValue(0.5);
 }
 
-double gnomonInspectorSlicePlanes::xPlaneOpacity(void)
+void gnomonInspectorSlicePlanes::setActor(gnomonActorImage *actor)
+{
+    connect(this, &gnomonInspectorSlicePlanes::xPlanePosChanged,
+            [=] () { actor->setXPlanePos(this->xPlanePos());
+            });
+    connect(this, &gnomonInspectorSlicePlanes::yPlanePosChanged,
+            [=] () { actor->setYPlanePos(this->yPlanePos());
+            });
+    connect(this, &gnomonInspectorSlicePlanes::zPlanePosChanged,
+            [=] () { actor->setZPlanePos(this->zPlanePos());
+            });
+    connect(this, &gnomonInspectorSlicePlanes::xPlaneOpacityChanged,
+            [=] () { actor->setXPlaneOpacity(this->xPlaneOpacity());
+            });
+    connect(this, &gnomonInspectorSlicePlanes::yPlaneOpacityChanged,
+            [=] () { actor->setYPlaneOpacity(this->yPlaneOpacity());
+            });
+    connect(this, &gnomonInspectorSlicePlanes::zPlaneOpacityChanged,
+            [=] () { actor->setZPlaneOpacity(this->zPlaneOpacity());
+            });
+}
+
+double gnomonInspectorSlicePlanes::xPlaneOpacity(void) const
 {
     return d->x_plane_opacity_sb->value();
 }
 
-double gnomonInspectorSlicePlanes::yPlaneOpacity(void)
+double gnomonInspectorSlicePlanes::yPlaneOpacity(void) const
 {
     return d->y_plane_opacity_sb->value();
 }
 
-double gnomonInspectorSlicePlanes::zPlaneOpacity(void)
+double gnomonInspectorSlicePlanes::zPlaneOpacity(void) const
 {
     return d->z_plane_opacity_sb->value();
 }
 
-double gnomonInspectorSlicePlanes::xPlanePos(void)
+double gnomonInspectorSlicePlanes::xPlanePos(void) const
 {
     return d->x_plane_pos_sd->value();
 }
 
-double gnomonInspectorSlicePlanes::yPlanePos(void)
+double gnomonInspectorSlicePlanes::yPlanePos(void) const
 {
     return d->y_plane_pos_sd->value();
 }
 
-double gnomonInspectorSlicePlanes::zPlanePos(void)
+double gnomonInspectorSlicePlanes::zPlanePos(void) const
 {
     return d->z_plane_pos_sd->value();
 }

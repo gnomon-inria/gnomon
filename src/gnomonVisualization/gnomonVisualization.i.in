@@ -23,6 +23,10 @@
 
 %{
 
+#include <gnomonVisualization/gnomonActor.h>
+#include <gnomonVisualization/gnomonActorImage.h>
+#include <gnomonVisualization/gnomonActorScalarBar.h>
+#include <gnomonVisualization/gnomonActorVolume.h>
 #include <gnomonVisualization/gnomonView.h>
 #include <gnomonVisualization/gnomonViewManager.h>
 
@@ -34,6 +38,12 @@
 
 #undef  GNOMONVISUALIZATION_EXPORT
 #define GNOMONVISUALIZATION_EXPORT
+
+// ///////////////////////////////////////////////////////////////////
+// Ignore rules
+// ///////////////////////////////////////////////////////////////////
+
+%ignore onInserted;
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input

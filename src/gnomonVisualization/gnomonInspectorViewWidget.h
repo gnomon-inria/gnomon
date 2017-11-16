@@ -31,7 +31,7 @@ public:
     ~gnomonInspectorViewWidget();
 
 public slots:
-    void setInspector(gnomonInspector *inspector, bool enabled);
+    void setInspector(QWidget *inspector);
 
 public:
     gnomonInspectorViewWidgetPrivate *d;

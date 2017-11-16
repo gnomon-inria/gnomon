@@ -14,17 +14,22 @@
 
 #pragma once
 
-#include "gnomonInspector.h"
-
-#include <vtkObject.h>
-
 #include <gnomonVisualizationExport.h>
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorImage : public gnomonInspector
+#include <QWidget>
+
+class gnomonActorImage;
+
+class gnomonInspectorImagePrivate;
+
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorImage : public QWidget
 {
-protected:
+public:
      gnomonInspectorImage(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorImage(void);
+
+ public:
+    void setActor(gnomonActorImage *actor) const;
 
 private:
     gnomonInspectorImage(const gnomonInspectorImage&) = delete;

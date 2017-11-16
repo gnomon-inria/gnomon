@@ -14,14 +14,15 @@
 
 #pragma once
 
-#include "gnomonInspector.h"
-
 #include <gnomonVisualizationExport.h>
 
-class gnomonStringEditor;
-class gnomonDoubleRangeEditor;
+#include <QtWidgets>
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorCellGraph : public gnomonInspector
+class gnomonActorMeshCellGraph;
+class gnomonDoubleRangeEditor;
+class gnomonStringEditor;
+
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorCellGraph : public QFrame
 {
     Q_OBJECT
 
@@ -29,9 +30,8 @@ public:
      gnomonInspectorCellGraph(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorCellGraph(void);
 
-private:
-    gnomonInspectorCellGraph(const gnomonInspectorCellGraph&) = delete;
-    void operator = (const gnomonInspectorCellGraph&) = delete;
+ public:
+    void setActor(gnomonActorMeshCellGraph *actor) const;
 
 public:
     gnomonStringEditor *vertexPropertyEditor(void) const;
@@ -52,6 +52,10 @@ signals:
 	void xSliceUpdated(void);
 	void ySliceUpdated(void);
 	void zSliceUpdated(void);
+
+private:
+    gnomonInspectorCellGraph(const gnomonInspectorCellGraph&) = delete;
+    void operator = (const gnomonInspectorCellGraph&) = delete;
 
  private:
     class gnomonInspectorCellGraphPrivate *d;

@@ -14,24 +14,29 @@
 
 #pragma once
 
-#include "gnomonInspector.h"
-
 #include <gnomonVisualizationExport.h>
 
-class gnomonClutEditor;
+#include <QtWidgets>
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public gnomonInspector
+class gnomonActorVolume;
+class gnomonClutEditor;
+class gnomonInspectorVolumePrivate;
+
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public QScrollArea
 {
 public:
      gnomonInspectorVolume(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorVolume(void);
 
+ public:
+    void setActor(gnomonActorVolume *actor) const;
+
+ public:
+    gnomonClutEditor *editor(void) const;
+
 private:
     gnomonInspectorVolume(const gnomonInspectorVolume&) = delete;
     void operator = (const gnomonInspectorVolume&) = delete;
-
-public:
-    gnomonClutEditor *editor(void) const;
 
  private:
     class gnomonInspectorVolumePrivate *d;

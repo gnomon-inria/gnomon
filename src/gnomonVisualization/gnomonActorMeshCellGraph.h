@@ -31,8 +31,12 @@ public:
     static gnomonActorMeshCellGraph *New(void);
 
 public:
+    gnomonCellGraph *cellGraph(void);
+
+public:
 	void setCellGraph(gnomonCellGraph *cellgraph);
 
+public:
     void setVertexProperty(const QString& propertyName);
     void setVertexSize(double radius);
     void setEdgeOpacity(double opacity);
@@ -43,8 +47,8 @@ public slots:
     void update(void) override;
 
 public:
-    double rangeMin() const;
-    double rangeMax() const;
+    double rangeMin(void) const;
+    double rangeMax(void) const;
 
 protected:
      gnomonActorMeshCellGraph(void);
@@ -57,7 +61,6 @@ private:
 private:
 	class gnomonActorMeshCellGraphPrivate *dd;
 };
-
 
 //
 // gnomonActorMeshCellGraph.h ends here

@@ -19,6 +19,7 @@
 #include <gnomonVisualizationExport.h>
 
 class gnomonClutEditor;
+class gnomonActorImage;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorSlicePlanes : public gnomonInspectorImage
 {
@@ -32,19 +33,22 @@ private:
     gnomonInspectorSlicePlanes(const gnomonInspectorSlicePlanes&) = delete;
     void operator = (const gnomonInspectorSlicePlanes&) = delete;
 
+ public:
+    void setActor(gnomonActorImage *actor_image);
+
 public:
-    double xPlaneOpacity(void);
-    double yPlaneOpacity(void);
-    double zPlaneOpacity(void);
+    double xPlaneOpacity(void) const;
+    double yPlaneOpacity(void) const;
+    double zPlaneOpacity(void) const;
 
     void setXPlaneOpacity(double);
     void setYPlaneOpacity(double);
     void setZPlaneOpacity(double);
 
 public:
-    double xPlanePos(void);
-    double yPlanePos(void);
-    double zPlanePos(void);
+    double xPlanePos(void) const;
+    double yPlanePos(void) const;
+    double zPlanePos(void) const;
 
     void setXPlanePos(double);
     void setYPlanePos(double);
