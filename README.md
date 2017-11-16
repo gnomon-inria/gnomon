@@ -293,6 +293,9 @@ plugins=$HOME/Development/gnomon-plugins/build/lib
 
 Add to `dtk-scripts.ini`:
 ``` shell
+[modules]
+path=$HOME/Development/dtk/build-conda/modules:$HOME/Development/dtk/build-conda/lib:$HOME/Development/dtk-imaging/build-conda/modules:$HOME/Development/dtk-plugins-imaging/build-conda/modules:$HOME/Development/dtk-plugins-imaging/src/Python:$HOME/Development/gnomon/build-conda/modules:$HOME/Development/gnomon/build-conda/lib:$HOME/Development/gnomon-plugins/src/Python
+
 [init]
 script=$HOME/Development/gnomon-scripts/create_jupyter_console.py
 ```
