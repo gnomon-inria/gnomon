@@ -70,6 +70,11 @@ public:
 
 vtkStandardNewMacro(gnomonActorMeshCellGraph);
 
+gnomonCellGraph *gnomonActorMeshCellGraph::cellGraph(void)
+{
+    return dd->cellgraph;
+}
+
 void gnomonActorMeshCellGraph::update(void)
 {
     if(!dd->cellgraph)
@@ -268,8 +273,10 @@ void gnomonActorMeshCellGraph::setEdgeLinewidth(double linewidth)
 
 void gnomonActorMeshCellGraph::setSlice(const QString& dim, const QList<double>& slice)
 {
-    qDebug()<<dim<<dd->slice[dim]<<"->"<<slice;
+    qDebug() << dim << dd->slice[dim] << "->" <<slice;
+
     dd->slice[dim] = slice;
+
     this->update();
 }
 

@@ -30,11 +30,11 @@ public:
 
 gnomonInspectorImageProperties::gnomonInspectorImageProperties(QWidget *parent) : gnomonInspectorImage(parent), d(new gnomonInspectorImagePropertiesPrivate)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
+    // QVBoxLayout *layout = new QVBoxLayout;
+    // layout->setContentsMargins(0, 0, 0, 0);
+    // layout->setSpacing(0);
 
-    this->setLayout(layout);
+    // this->setLayout(layout);
 }
 
 // ///////////////////////////////////////////////////////////////////

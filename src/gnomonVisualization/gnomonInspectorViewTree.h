@@ -19,24 +19,16 @@
 #include <QtGui>
 #include <QtWidgets>
 
-class vtkPolyData;
-class vtkImageData;
-
-class gnomonCellComplex;
-class gnomonCellGraph;
-
 class gnomonActor;
-class gnomonActorImage;
-class gnomonActorMeshCellGraph;
-class gnomonActorVolume;
-class gnomonActorScalarBar;
 
-class gnomonInspectorViewTreePrivate;
-class gnomonInspectorImage;
-class gnomonInspectorVolume;
-class gnomonInspectorCellGraph;
+class gnomonActorMeshCellComplex;
+class gnomonActorMeshCellGraph;
+class gnomonActorMeshCellImage;
+class gnomonActorVolume;
 
 class gnomonView;
+
+class gnomonInspectorViewTreePrivate;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorViewTree : public QTreeWidget
 {
@@ -46,36 +38,19 @@ public:
      gnomonInspectorViewTree(QWidget *parent = Q_NULLPTR);
     ~gnomonInspectorViewTree(void);
 
-    void setView(gnomonView *view);
-
 public:
-    void insert(vtkPolyData *mesh);
-
-    QTreeWidgetItem *insert(gnomonActorVolume *actor_volume);
-    QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorVolume *inspector_volume);
-
-    QTreeWidgetItem *insert(gnomonActorImage *actor_image);
-    QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorImage *inspector_image);
-
-    QTreeWidgetItem *insert(gnomonActorScalarBar *actor_scalar_bar);
-
-    void insert(gnomonCellComplex *complex);
-
-    QTreeWidgetItem *insert(gnomonActorMeshCellGraph *cellgraph_actor);
-    QTreeWidgetItem *addChild(QTreeWidgetItem *parent, gnomonInspectorCellGraph *inspector_cellgraph);
+    QTreeWidgetItem *insert(gnomonActorMeshCellComplex *);
+    QTreeWidgetItem *insert(gnomonActorMeshCellGraph *);
+    QTreeWidgetItem *insert(gnomonActorMeshCellImage *);
+    QTreeWidgetItem *insert(gnomonActorVolume *);
 
 signals:
     void checked(gnomonActor *, bool);
 
-    void selected(vtkPolyData *mesh);
-    void selected(gnomonActorVolume *volume);
-    void selected(gnomonActorImage *image);
-    void selected(gnomonActorScalarBar *scalar_bar);
-    void selected(gnomonInspectorVolume *volume);
-    void selected(gnomonInspectorImage *image);
-    void selected(gnomonCellComplex *complex);
-    void selected(gnomonActorMeshCellGraph *cellgraph);
-    void selected(gnomonInspectorCellGraph *cellgraph);
+    void selected(gnomonActorVolume *);
+    void selected(gnomonActorMeshCellComplex *);
+    void selected(gnomonActorMeshCellGraph *);
+    void selected(gnomonActorMeshCellImage *);
 
 private slots:
    void onItemClicked(QTreeWidgetItem *item, int column);

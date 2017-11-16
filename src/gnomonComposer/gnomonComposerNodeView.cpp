@@ -14,12 +14,13 @@
 
 #include "gnomonComposerNodeView.h"
 
-#include <gnomonVisualization>
+#include <gnomonView>
+#include <gnomonViewManager>
 
 #include <dtkWidgets>
 #include <dtkLog>
 
-#include <dtkImaging>
+#include <dtkImage>
 #include <gnomonCellComplex>
 #include <gnomonCellGraph>
 #include <gnomonCellImage>
@@ -72,19 +73,7 @@ void gnomonComposerNodeView::run(void)
 
     if(!d->image_receiver.isEmpty()) {
 
-        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-
-        if(!converter)
-            return;
-
-        dtkImage *image = d->image_receiver.data();
-
-        converter->setInput(image);
-
-        if(!converter->convert())
-            return;
-
-        vtkImageData *data = static_cast<vtkImageData *>(converter->output());
+        dtkImage *data = d->image_receiver.data();
 
         d->view->manager()->insert(data);
     }
@@ -92,21 +81,21 @@ void gnomonComposerNodeView::run(void)
     if (!d->cellcomplex_receiver.isEmpty()) {
 
         gnomonCellComplex *data = d->cellcomplex_receiver.data();
-        
+
         d->view->manager()->insert(data);
     }
 
     if (!d->cellgraph_receiver.isEmpty()) {
 
         gnomonCellGraph *data = d->cellgraph_receiver.data();
-        
+
         d->view->manager()->insert(data);
     }
 
     if (!d->cellimage_receiver.isEmpty()) {
 
         gnomonCellImage *data = d->cellimage_receiver.data();
-        
+
         d->view->manager()->insert(data);
     }
 }

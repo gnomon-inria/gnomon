@@ -12,12 +12,15 @@
 
 // Code:
 
-#include "gnomonInspectorVolume.h"
+#include "gnomonActorVolume.h"
 #include "gnomonClutEditor.h"
+#include "gnomonInspectorVolume.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorVolumePrivate
 // /////////////////////////////////////////////////////////////////
+
+class gnomonActorVolume;
 
 class gnomonInspectorVolumePrivate
 {
@@ -29,16 +32,14 @@ public:
 // gnomonInspectorVolume
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorVolumePrivate)
+gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorVolumePrivate)
 {
     d->editor = new gnomonClutEditor(this);
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d->editor);
-
-    this->setLayout(layout);
+    this->setAlignment(Qt::AlignTop);
+    this->setFrameShape(QFrame::NoFrame);
+    this->setWidgetResizable(true);
+    this->setWidget(d->editor);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -57,5 +58,16 @@ gnomonClutEditor *gnomonInspectorVolume::editor(void) const
     return d->editor;
 }
 
+void gnomonInspectorVolume::setActor(gnomonActorVolume *actor) const
+{
+    d->editor->setRange(actor->rangeMin(), actor->rangeMax());
+    d->editor->setHistogram(actor->histogram());
+    d->editor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(actor->opacityTransferFunction()));
+    d->editor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(actor->colorTransferFunction()));
+    connect(d->editor, &gnomonClutEditor::updated, [=] () {
+        actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(d->editor->colorTransferFunction()));
+        actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(d->editor->opacityTransferFunction()));
+    });
+}
 //
 // gnomonInspectorVolume.cpp ends here
