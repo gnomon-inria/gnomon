@@ -23,12 +23,10 @@
 
 #include <gnomonVisualizationExport.h>
 
+class gnomonActor;
+class gnomonInspector;
 class gnomonViewManager;
 class gnomonViewPrivate;
-
-class gnomonInspector;
-
-class gnomonActor;
 
 class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
 {
@@ -51,7 +49,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *) override;
 
- private slots:
+private slots:
     void onInserted(gnomonActor *);
 
 private:

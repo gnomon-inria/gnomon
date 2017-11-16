@@ -19,18 +19,16 @@
 #include <QtCore>
 #include <QWidget>
 
-class gnomonInspector;
-
+class dtkImage;
 class gnomonActor;
 class gnomonActorMeshCellComplex;
 class gnomonActorMeshCellGraph;
 class gnomonActorMeshCellImage;
 class gnomonActorVolume;
-
-class dtkImage;
 class gnomonCellComplex;
 class gnomonCellGraph;
 class gnomonCellImage;
+class gnomonInspector;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewManager : public QObject
 {
@@ -58,10 +56,10 @@ public:
     gnomonInspector *inspector(void);
 
 public:
-    QList<dtkImage *>          images(void);
+    QList<dtkImage *> images(void);
     QList<gnomonCellComplex *> cellcomplexes(void);
-    QList<gnomonCellGraph *>   cellgraphs(void);
-    QList<gnomonCellImage *>   cellimages(void);
+    QList<gnomonCellGraph *> cellgraphs(void);
+    QList<gnomonCellImage *> cellimages(void);
 
 signals:
     void inserted(dtkImage *);

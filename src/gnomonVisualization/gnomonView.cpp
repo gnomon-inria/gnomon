@@ -12,23 +12,21 @@
 
 // Code:
 
-#include "gnomonView.h"
-
-#include "gnomonViewManager.h"
-
-#include "gnomonInspectorViewTree.h"
-#include "gnomonInspector.h"
-
 #include "gnomonActor.h"
-
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorMeshCellImage.h"
 #include "gnomonActorVolume.h"
+#include "gnomonInspectorViewTree.h"
+#include "gnomonInspector.h"
+#include "gnomonView.h"
+#include "gnomonViewManager.h"
 
 #include <gnomonStyle>
 
 #include <dtkWidgets>
+
+#include <QtWidgets>
 
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -48,11 +46,9 @@
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
-
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <QVTKOpenGLWidget.h>
 
-#include <QWidget>
+#include <QVTKOpenGLWidget.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewWidget
