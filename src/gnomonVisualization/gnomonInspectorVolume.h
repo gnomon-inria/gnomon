@@ -16,15 +16,13 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QWidget>
+#include <QtWidgets>
 
 class gnomonActorVolume;
-
 class gnomonClutEditor;
-
 class gnomonInspectorVolumePrivate;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public QWidget
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorVolume : public QScrollArea
 {
 public:
      gnomonInspectorVolume(QWidget *parent = Q_NULLPTR);

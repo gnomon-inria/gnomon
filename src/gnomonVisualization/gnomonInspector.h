@@ -18,13 +18,12 @@
 
 #include <QSplitter>
 
-class gnomonInspectorPrivate;
-class gnomonInspectorViewTree;
-
 class gnomonActorMeshCellComplex;
 class gnomonActorMeshCellGraph;
 class gnomonActorMeshCellImage;
 class gnomonActorVolume;
+class gnomonInspectorPrivate;
+class gnomonInspectorViewTree;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspector : public QSplitter
 {

@@ -12,36 +12,33 @@
 
 // Code:
 
-#include "gnomonViewManager.h"
-
-#include "gnomonInspector.h"
-#include "gnomonInspectorViewTree.h"
-
 #include "gnomonActor.h"
-
-#include "gnomonActorVolume.h"
 #include "gnomonActorMeshCellComplex.h"
 #include "gnomonActorMeshCellGraph.h"
 #include "gnomonActorMeshCellImage.h"
+#include "gnomonActorVolume.h"
+#include "gnomonInspector.h"
+#include "gnomonInspectorViewTree.h"
+#include "gnomonViewManager.h"
 
 #include <gnomonCellComplex.h>
 #include <gnomonCellGraph.h>
 
-#include <vtkImageData.h>
-
 #include <dtkImaging>
+
+#include <vtkImageData.h>
 
 class gnomonViewManagerPrivate
 {
 
 public:
-    gnomonInspector       *inspector;
+    gnomonInspector *inspector;
 
 public:
-    QHash<dtkImage *, gnomonActor *>      images;
+    QHash<dtkImage *, gnomonActor *> images;
     QHash<gnomonCellComplex *, gnomonActor *> cellcomplexes;
-    QHash<gnomonCellGraph *, gnomonActor *>   cellgraphs;
-    QHash<gnomonCellImage *, gnomonActor *>   cellimages;
+    QHash<gnomonCellGraph *, gnomonActor *> cellgraphs;
+    QHash<gnomonCellImage *, gnomonActor *> cellimages;
 };
 
 gnomonActor *gnomonViewManager::actor(dtkImage *data)
@@ -72,22 +69,27 @@ gnomonInspector *gnomonViewManager::inspector(void)
 gnomonActor *gnomonViewManager::insert(dtkImage *data)
 {
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+
     if (!converter) {
         qWarning() << "can't create vtk converter!";
         return nullptr;
     }
     converter->setInput(data);
     converter->convert();
-    vtkImageData *vtk_image = static_cast<vtkImageData*>(converter->output());
-    if (!vtk_image) {
+
+    vtkImageData *image = static_cast<vtkImageData*>(converter->output());
+
+    if(!image) {
         qWarning() << "Can't convert image to vtkImageData !";
         return nullptr;
     }
 
     gnomonActorVolume *actor = gnomonActorVolume::New();
-    actor->setVolume(vtk_image);
+    actor->setVolume(image);
+
     d->inspector->tree()->insert(actor);
     d->images.insert(data, actor);
+
     emit inserted(data);
     emit inserted(actor);
 
@@ -98,8 +100,11 @@ gnomonActor *gnomonViewManager::insert(gnomonCellComplex *data)
 {
     gnomonActorMeshCellComplex *actor = gnomonActorMeshCellComplex::New();
     actor->setCellComplex(data);
+
     d->inspector->tree()->insert(actor);
+
     d->cellcomplexes.insert(data, actor);
+
     emit inserted(data);
     emit inserted(actor);
 
@@ -110,8 +115,11 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *data)
 {
     gnomonActorMeshCellGraph *actor = gnomonActorMeshCellGraph::New();
     actor->setCellGraph(data);
+
     d->inspector->tree()->insert(actor);
+
     d->cellgraphs.insert(data, actor);
+
     emit inserted(data);
     emit inserted(actor);
 
@@ -122,8 +130,11 @@ gnomonActor *gnomonViewManager::insert(gnomonCellImage *data)
 {
     gnomonActorMeshCellImage *actor = gnomonActorMeshCellImage::New();
     actor->setCellImage(data);
+
     d->inspector->tree()->insert(actor);
+
     d->cellimages.insert(data, actor);
+
     emit inserted(data);
     emit inserted(actor);
 
@@ -181,59 +192,29 @@ QList<gnomonCellImage *> gnomonViewManager::cellimages(void)
 void gnomonViewManager::clear(void)
 {
     qDeleteAll(d->images.values());
-    d->images.clear();
-
     qDeleteAll(d->cellcomplexes.values());
-    d->cellcomplexes.clear();
-
     qDeleteAll(d->cellgraphs.values());
-    d->cellgraphs.clear();
-
     qDeleteAll(d->cellimages.values());
+
+    d->images.clear();
+    d->cellcomplexes.clear();
+    d->cellgraphs.clear();
     d->cellimages.clear();
 }
 
 void gnomonViewManager::update(void)
 {
-    for (auto actor : d->images) {
+    for (auto actor : d->images)
         actor->update();
-    }
 
-    for (auto actor : d->cellcomplexes) {
+    for (auto actor : d->cellcomplexes)
         actor->update();
-    }
 
-    for (auto actor : d->cellgraphs) {
+    for (auto actor : d->cellgraphs)
         actor->update();
-    }
 
-    for (auto actor : d->cellimages) {
+    for (auto actor : d->cellimages)
         actor->update();
-    }
-}
-
-// ///////////////////////////////////////////////////////////////////
-// Protected slots
-// ///////////////////////////////////////////////////////////////////
-
-void gnomonViewManager::onActorVolumeSelected(gnomonActorVolume *actor)
-{
-    //to implement
-}
-
-void gnomonViewManager::onActorCellComplexSelected(gnomonActorMeshCellComplex *actor)
-{
-    //to implement
-}
-
-void gnomonViewManager::onActorCellGraphSelected(gnomonActorMeshCellGraph *actor)
-{
-    //to implement
-}
-
-void gnomonViewManager::onActorCellImageSelected(gnomonActorMeshCellImage *actor)
-{
-    //to implement
 }
 
 // ///////////////////////////////////////////////////////////////////

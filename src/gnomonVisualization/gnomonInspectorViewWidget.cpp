@@ -20,6 +20,7 @@
 
 class gnomonInspectorViewWidgetPrivate
 {
+public:
 
 };
 
@@ -29,11 +30,12 @@ class gnomonInspectorViewWidgetPrivate
 
 gnomonInspectorViewWidget::gnomonInspectorViewWidget(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorViewWidgetPrivate)
 {
+    this->setFrameShape(QFrame::NoFrame);
     this->setWidgetResizable(true);
     this->setMinimumHeight(200);
 }
 
-gnomonInspectorViewWidget::~gnomonInspectorViewWidget()
+gnomonInspectorViewWidget::~gnomonInspectorViewWidget(void)
 {
     delete d;
 }

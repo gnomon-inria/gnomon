@@ -13,13 +13,11 @@
 // Code:
 
 #include "gnomonInspector.h"
-
+// #include "gnomonInspectorCellComplex.h"
+// #include "gnomonInspectorCellImage.h"
+#include "gnomonInspectorCellGraph.h"
 #include "gnomonInspectorViewTree.h"
 #include "gnomonInspectorViewWidget.h"
-
-// #include "gnomonInspectorCellComplex.h"
-#include "gnomonInspectorCellGraph.h"
-// #include "gnomonInspectorCellImage.h"
 #include "gnomonInspectorVolume.h"
 
 // ///////////////////////////////////////////////////////////////////
@@ -40,6 +38,7 @@ public:
 gnomonInspector::gnomonInspector(QWidget *parent) : QSplitter(Qt::Vertical, parent), d(new gnomonInspectorPrivate)
 {
     this->setHandleWidth(2);
+
     d->tree = new gnomonInspectorViewTree(this);
     d->widget = new gnomonInspectorViewWidget(this);
 
@@ -69,7 +68,10 @@ void gnomonInspector::onActorMeshCellComplexSelected(gnomonActorMeshCellComplex 
 
 void gnomonInspector::onActorMeshCellGraphSelected(gnomonActorMeshCellGraph *actor)
 {
-    qDebug() << Q_FUNC_INFO << " TO IMPLEMENT";
+    gnomonInspectorCellGraph *inspector = new gnomonInspectorCellGraph(this);
+    inspector->setActor(actor);
+
+    d->widget->setInspector(inspector);
 }
 
 void gnomonInspector::onActorMeshCellImageSelected(gnomonActorMeshCellImage *actor)
@@ -79,10 +81,7 @@ void gnomonInspector::onActorMeshCellImageSelected(gnomonActorMeshCellImage *act
 
 void gnomonInspector::onActorVolumeSelected(gnomonActorVolume *actor)
 {
-    // ///////////////////////////////////////////////////////////////////
-    // Inspectors are created and connected to actors here
-    // ///////////////////////////////////////////////////////////////////
-    gnomonInspectorVolume *inspector = new gnomonInspectorVolume();
+    gnomonInspectorVolume *inspector = new gnomonInspectorVolume(this);
     inspector->setActor(actor);
 
     d->widget->setInspector(inspector);

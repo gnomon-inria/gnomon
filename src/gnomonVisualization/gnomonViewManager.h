@@ -82,14 +82,6 @@ public slots:
 public slots:
     void update(void);
 
- protected slots:
-    void onActorVolumeSelected(gnomonActorVolume *);
-    void onActorCellComplexSelected(gnomonActorMeshCellComplex *);
-    void onActorCellGraphSelected(gnomonActorMeshCellGraph *);
-    void onActorCellImageSelected(gnomonActorMeshCellImage *);
-
-
-
 private:
      gnomonViewManager(void);
     ~gnomonViewManager(void);

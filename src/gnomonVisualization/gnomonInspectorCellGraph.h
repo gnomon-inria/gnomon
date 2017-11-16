@@ -16,14 +16,13 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QWidget>
+#include <QtWidgets>
 
 class gnomonActorMeshCellGraph;
-
-class gnomonStringEditor;
 class gnomonDoubleRangeEditor;
+class gnomonStringEditor;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInspectorCellGraph : public QWidget
+class GNOMONVISUALIZATION_EXPORT gnomonInspectorCellGraph : public QFrame
 {
     Q_OBJECT
 

@@ -12,52 +12,34 @@
 
 // Code:
 
-#include "gnomonInspectorVolume.h"
-
-#include "gnomonClutEditor.h"
-
 #include "gnomonActorVolume.h"
+#include "gnomonClutEditor.h"
+#include "gnomonInspectorVolume.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorVolumePrivate
 // /////////////////////////////////////////////////////////////////
+
 class gnomonActorVolume;
 
 class gnomonInspectorVolumePrivate
 {
 public:
     gnomonClutEditor *editor;
-
-public:
-    QPushButton *editor_bt;
-    QComboBox *clut_cb;
-
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorVolume
 // /////////////////////////////////////////////////////////////////
 
-gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : QWidget(parent), d(new gnomonInspectorVolumePrivate)
+gnomonInspectorVolume::gnomonInspectorVolume(QWidget *parent) : QScrollArea(parent), d(new gnomonInspectorVolumePrivate)
 {
-    d->editor = new gnomonClutEditor();
+    d->editor = new gnomonClutEditor(this);
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    d->editor_bt = new QPushButton(this);
-    d->editor_bt->setText("Editor");
-    d->clut_cb = new QComboBox(this);
-    d->clut_cb->addItem("Clut 1");
-    d->clut_cb->addItem("Clut 2");
-    d->clut_cb->addItem("Clut 3");
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    QHBoxLayout * hlayout = new QHBoxLayout;
-    hlayout->addWidget(d->clut_cb);
-    hlayout->addWidget(d->editor_bt);
-    layout->addLayout(hlayout);
-    this->setLayout(layout);
-
-    connect(d->editor_bt, &QPushButton::clicked, [=]() {d->editor->show();});
+    this->setAlignment(Qt::AlignTop);
+    this->setFrameShape(QFrame::NoFrame);
+    this->setWidgetResizable(true);
+    this->setWidget(d->editor);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -78,14 +60,14 @@ gnomonClutEditor *gnomonInspectorVolume::editor(void) const
 
 void gnomonInspectorVolume::setActor(gnomonActorVolume *actor) const
 {
-    this->editor()->setRange(actor->rangeMin(), actor->rangeMax());
-    this->editor()->setHistogram(actor->histogram());
-    this->editor()->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(actor->opacityTransferFunction()));
-    this->editor()->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(actor->colorTransferFunction()));
-    connect(this->editor(), &gnomonClutEditor::updated, [=] () {
-            actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(this->editor()->colorTransferFunction()));
-            actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(this->editor()->opacityTransferFunction()));
-        });
+    d->editor->setRange(actor->rangeMin(), actor->rangeMax());
+    d->editor->setHistogram(actor->histogram());
+    d->editor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(actor->opacityTransferFunction()));
+    d->editor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(actor->colorTransferFunction()));
+    connect(d->editor, &gnomonClutEditor::updated, [=] () {
+        actor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(d->editor->colorTransferFunction()));
+        actor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(d->editor->opacityTransferFunction()));
+    });
 }
 //
 // gnomonInspectorVolume.cpp ends here

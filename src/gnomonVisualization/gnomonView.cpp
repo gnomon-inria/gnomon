@@ -90,10 +90,10 @@ class gnomonViewPrivate
 public:
     vtkGenericOpenGLRenderWindow *window;
     vtkRenderer *renderer;
-    gnomonViewWidget *widget;
 
 public:
     gnomonViewManager *manager;
+    gnomonViewWidget *widget;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -156,8 +156,6 @@ QWidget *gnomonView::inspector(void)
 
 void gnomonView::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << Q_FUNC_INFO;
-
     gnomonView::mousePressEvent(event);
 
     emit focused();
@@ -167,6 +165,7 @@ void gnomonView::onInserted(gnomonActor *actor)
 {
     actor->setInteractor(d->widget->GetInteractor());
     actor->update();
+
     d->renderer->AddActor(actor);
 }
 
