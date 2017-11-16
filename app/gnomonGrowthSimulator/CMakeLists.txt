@@ -66,7 +66,6 @@ add_library(${PROJECT_NAME}_backend SHARED
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_SOURCES_WRAP})
 
-
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
@@ -94,17 +93,16 @@ target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_backend)
 ## #################################################################
 
 if(APPLE)
-  set(MACOSX_BUNDLE_GUI_IDENTIFIER "fr.inria.gnomon")
-  set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
-  set(MACOSX_BUNDLE_ICON_FILE ${PROJECT_NAME})
-  set(MACOSX_BUNDLE_ICON_NAME ${PROJECT_NAME})
-  set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gnomom_VERSIOM}")
-  set(MACOSX_BUNDLE_VERSION "${gnomom_VERSIOM}")
-  set(MACOSX_BUNDLE_LONG_VERSION_STRING Version "${gnomom_VERSION}")
   set(${PROJECT_NAME}_RESOURCE_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.app/Contents/Resources)
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${${PROJECT_NAME}_RESOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} ARGS -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.icns ${${PROJECT_NAME}_RESOURCE_DIR})
+endif(APPLE)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.plist.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.plist)
+
+if(APPLE)
+  set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.plist)
 endif(APPLE)
 
 ## #################################################################
