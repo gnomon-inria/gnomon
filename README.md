@@ -422,6 +422,30 @@ cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gn
 make -j4
 ```
 
+### gnomon-scripts
+
+``` shell
+source activate gnomon
+cd $HOME/Development
+git clone git@gitlab.inria.fr:gnomon/gnomon-scripts.git
+```
+
+### gnomon-compositions
+
+``` shell
+source activate gnomon
+cd $HOME/Development
+git clone git@gitlab.inria.fr:gnomon/gnomon-compositions.git
+```
+
+### gnomon-data
+
+``` shell
+source activate gnomon
+cd $HOME/Development
+git clone git@gitlab.inria.fr:gnomon/gnomon-data.git
+```
+
 ## Configuration
 
 In the `$HOME/.config` folder, one has to create a folder `inria`, then one has to set several files:
@@ -529,34 +553,29 @@ The compilation is done in: openmicroscopy-5.2.7/target/OMERO.cpp-5.2.7-ice36-Ma
 ## install an old version of ice
 
 ### find the git tag
-'''
+
+``` shell
 cd "$(brew --repo homebrew/core)"
 git log master -- Formula/ice.rb
- -> search for the specifiec version you need ( here <= 3.6.3 )
-'''
+# search for the specifiec version you need ( here <= 3.6.3 )
+```
 
 ###  checkout the specific version
-'''
+
+``` shell
 cd "$(brew --repo homebrew/core)" && git checkout a2abaa62e3575aca4ffcb337ca00a9aa6ddccd4b
 HOMEBREW_NO_AUTO_UPDATE=1 brew install ice
-'''
+```
 
 ### do back to master
-'''
+
+``` shell
 git -C "$(brew --repo homebrew/core)" checkout master
-'''
+```
 
 ### link to the ice version you want to use
-'''
+
+``` shell
 brew unlink ice@3.6
 brew link ice
-'''
-
-# Special directive compilation
-
-## macOSX
-
-...
-
-## linux
-export ICE_HOME=/opt/Ice-6.4.2
+```
