@@ -57,6 +57,7 @@ public:
     double range_max;
 
     QString vertexPropertyName;
+    QList<double> vertexPropertyRange;
 
     double vertexSize;
     double edgeOpacity;
@@ -209,7 +210,10 @@ void gnomonActorMeshCellGraph::update(void)
 
     double min = dd->range_min;
     double max = dd->range_max;
-    double mid = (min + max)/2.;
+
+    if (dd->vertexPropertyRange.size() == 0) {
+        dd->vertexPropertyRange<<min<<max;
+    }
 
     if(!d->colorFunction) {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
@@ -218,7 +222,7 @@ void gnomonActorMeshCellGraph::update(void)
 
     d->colorFunction->RemoveAllPoints();
     for (const auto& val : dd->colormap.keys()) {
-        double node = val*max + (1-val)*min;
+        double node = val*dd->vertexPropertyRange[1] + (1-val)*dd->vertexPropertyRange[0];
         d->colorFunction->AddRGBPoint(node, dd->colormap[val].red()/255., dd->colormap[val].green()/255., dd->colormap[val].blue()/255.);
     }    
     d->colorFunction->ClampingOn();
@@ -265,6 +269,12 @@ void gnomonActorMeshCellGraph::setColorMap(const QMap<double, QColor>& colormap)
 void gnomonActorMeshCellGraph::setVertexProperty(const QString& propertyName)
 {
     dd->vertexPropertyName = propertyName;
+    this->update();
+}
+
+void gnomonActorMeshCellGraph::setVertexPropertyRange(const QList<double>& range)
+{
+    dd->vertexPropertyRange = range;
     this->update();
 }
 
@@ -315,8 +325,11 @@ gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd
     dd->slice["y"] = QList<double>();
     dd->slice["z"] = QList<double>();
 
-    dd->colormap[0] = Qt::black;
-    dd->colormap[1] = Qt::white;
+    dd->vertexPropertyRange = QList<double>();
+
+    dd->colormap[0] = Qt::blue;
+    dd->colormap[0.5] = Qt::green;
+    dd->colormap[1] = Qt::red;
 }
 
 gnomonActorMeshCellGraph::~gnomonActorMeshCellGraph(void)

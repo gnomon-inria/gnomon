@@ -43,6 +43,7 @@ public:
 public:
     void setColorMap(const QMap<double, QColor>& colormap);
     void setVertexProperty(const QString& propertyName);
+    void setVertexPropertyRange(const QList<double>& range);
     void setVertexSize(double radius);
     void setEdgeOpacity(double opacity);
     void setEdgeLinewidth(double linewidth);

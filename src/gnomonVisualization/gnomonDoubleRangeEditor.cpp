@@ -132,11 +132,15 @@ void gnomonDoubleRangeEditor::setRange(double min, double max)
     d->min = min;
     d->max = max;
 
-    d->spinbox_valueMin->setRange(d->min,d->valueMax);
-    d->spinbox_valueMax->setRange(d->valueMin,d->max);
 
     int dec = floor(-log10((d->max-d->min)/100.));
     double step = pow(10.,-dec);
+
+    d->min = floor(min/step)*step;
+    d->max = ceil(max/step)*step;
+
+    d->spinbox_valueMin->setRange(d->min,d->valueMax-step);
+    d->spinbox_valueMax->setRange(d->valueMin+step,d->max);
 
     d->spinbox_valueMin->setDecimals(dec);
     d->spinbox_valueMin->setSingleStep(step);
