@@ -38,6 +38,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorScalarBar.h
   gnomonClutEditor
   gnomonClutEditor.h
+  gnomonColorMapEditor.h
   gnomonDoubleEditor.h
   gnomonStringEditor.h
   gnomonDoubleRangeEditor.h
@@ -75,6 +76,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorVolume.cpp
   gnomonActorScalarBar.cpp
   gnomonClutEditor.cpp
+  gnomonColorMapEditor.cpp
   gnomonStringEditor.cpp
   gnomonDoubleEditor.cpp
   gnomonDoubleRangeEditor.cpp

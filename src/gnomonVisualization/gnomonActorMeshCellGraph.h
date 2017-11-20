@@ -21,6 +21,9 @@
 #include "gnomonActor.h"
 #include "gnomonActorMesh.h"
 
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+
 class gnomonCellGraph;
 
 class GNOMONVISUALIZATION_EXPORT gnomonActorMeshCellGraph : public gnomonActorMesh
@@ -32,11 +35,13 @@ public:
 
 public:
     gnomonCellGraph *cellGraph(void);
+    const QMap<double, QColor>& colormap(void) const;
 
 public:
 	void setCellGraph(gnomonCellGraph *cellgraph);
 
 public:
+    void setColorMap(const QMap<double, QColor>& colormap);
     void setVertexProperty(const QString& propertyName);
     void setVertexSize(double radius);
     void setEdgeOpacity(double opacity);

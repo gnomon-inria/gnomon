@@ -51,6 +51,7 @@ public:
     vtkSmartPointer<vtkPolyDataMapper> point_mapper;
     vtkSmartPointer<vtkActor> point_actor;
 
+
 public:
     double range_min;
     double range_max;
@@ -60,6 +61,8 @@ public:
     double vertexSize;
     double edgeOpacity;
     double edgeLinewidth;
+
+    QMap<double, QColor> colormap;
 
     QMap<QString,QList<double>> slice;
 };
@@ -121,8 +124,6 @@ void gnomonActorMeshCellGraph::update(void)
             vertexScalarProperty[vertexId] = vertexId;
         }
     }
-
-    qDebug()<<dd->slice["x"]<<dd->slice["y"]<<dd->slice["z"];
 
     for (const auto& vertexId : vertices) {
         double x = positions_x[vertexId].value<double>();
@@ -209,18 +210,20 @@ void gnomonActorMeshCellGraph::update(void)
     double min = dd->range_min;
     double max = dd->range_max;
     double mid = (min + max)/2.;
-    qDebug()<<min<<mid<<max;
 
     if(!d->colorFunction) {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
-        d->colorFunction->SetColorSpaceToHSV();
+        d->colorFunction->SetColorSpaceToRGB();
     }
+
     d->colorFunction->RemoveAllPoints();
-    d->colorFunction->AddRGBPoint(min, 0.0, 0.0, 1.0);
-    d->colorFunction->AddRGBPoint(mid, 0.0, 1.0, 0.0);
-    d->colorFunction->AddRGBPoint(max, 1.0, 0.0, 0.0);
+    for (const auto& val : dd->colormap.keys()) {
+        double node = val*max + (1-val)*min;
+        d->colorFunction->AddRGBPoint(node, dd->colormap[val].red()/255., dd->colormap[val].green()/255., dd->colormap[val].blue()/255.);
+    }    
     d->colorFunction->ClampingOn();
     d->colorFunction->Modified();
+
 
     if (!dd->point_mapper) {
         dd->point_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -240,10 +243,22 @@ void gnomonActorMeshCellGraph::update(void)
     d->interactor->Render();
 }
 
+
+const QMap<double, QColor>& gnomonActorMeshCellGraph::colormap(void) const
+{
+    return dd->colormap;
+}
+
 void gnomonActorMeshCellGraph::setCellGraph(gnomonCellGraph *cellgraph)
 {
     dd->cellgraph = cellgraph;
 
+    this->update();
+}
+
+void gnomonActorMeshCellGraph::setColorMap(const QMap<double, QColor>& colormap)
+{
+    dd->colormap = colormap;
     this->update();
 }
 
@@ -273,10 +288,7 @@ void gnomonActorMeshCellGraph::setEdgeLinewidth(double linewidth)
 
 void gnomonActorMeshCellGraph::setSlice(const QString& dim, const QList<double>& slice)
 {
-    qDebug() << dim << dd->slice[dim] << "->" <<slice;
-
     dd->slice[dim] = slice;
-
     this->update();
 }
 
@@ -302,6 +314,9 @@ gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd
     dd->slice["x"] = QList<double>();
     dd->slice["y"] = QList<double>();
     dd->slice["z"] = QList<double>();
+
+    dd->colormap[0] = Qt::black;
+    dd->colormap[1] = Qt::white;
 }
 
 gnomonActorMeshCellGraph::~gnomonActorMeshCellGraph(void)

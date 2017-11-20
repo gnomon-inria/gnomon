@@ -17,6 +17,8 @@
 #include "gnomonDoubleRangeEditor.h"
 #include "gnomonInspectorCellGraph.h"
 #include "gnomonStringEditor.h"
+#include "gnomonClutEditor.h"
+#include "gnomonColorMapEditor.h"
 
 #include <gnomonCore>
 
@@ -31,6 +33,9 @@ public:
     gnomonDoubleEditor *edgeOpacityEditor;
     gnomonDoubleEditor *edgeLinewidthEditor;
     gnomonStringEditor *vertexPropertyEditor;
+
+    // gnomonClutEditor *colorEditor;
+    gnomonColorMapEditor *colorEditor;
 
 public:
     QMap<QString, gnomonDoubleRangeEditor *> sliceEditors;
@@ -49,6 +54,11 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QFrame(par
     d->vertexPropertyEditor->setName("Property Name");
 
     connect(d->vertexPropertyEditor, &gnomonStringEditor::valueChanged, this, &gnomonInspectorCellGraph::vertexPropertyUpdated);
+
+    // d->colorEditor = new gnomonClutEditor(this);
+    d->colorEditor = new gnomonColorMapEditor(this);
+    d->colorEditor->setName("Color Map");
+
 
     d->vertexSizeEditor = new gnomonDoubleEditor(this);
     d->vertexSizeEditor->setName("Vertex Size");
@@ -72,8 +82,9 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QFrame(par
     connect(d->edgeLinewidthEditor, &gnomonDoubleEditor::valueChanged, this, &gnomonInspectorCellGraph::edgeLinewidthUpdated);
 
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(10, 10, 0, 0);
     layout->addWidget(d->vertexPropertyEditor);
+    layout->addWidget(d->colorEditor);
     layout->addWidget(d->vertexSizeEditor);
     layout->addWidget(d->edgeOpacityEditor);
     layout->addWidget(d->edgeLinewidthEditor);
@@ -116,6 +127,13 @@ void gnomonInspectorCellGraph::setActor(gnomonActorMeshCellGraph *actor) const
 
     d->vertexPropertyEditor->setList(vertexProperties);
 
+    // d->colorEditor->setOpacityTransferFunction(static_cast<vtkPiecewiseFunction *>(actor->opacityTransferFunction()));
+    // d->colorEditor->setColorTransferFunction(static_cast<vtkColorTransferFunction *>(actor->colorTransferFunction()));
+    d->colorEditor->setValue(actor->colormap());
+    // qDebug()<<actor->colorTransferFunction();
+    
+    connect(d->colorEditor, &gnomonColorMapEditor::valueChanged, [=] () { actor->setColorMap(d->colorEditor->value()); });
+
     connect(this, &gnomonInspectorCellGraph::vertexPropertyUpdated, [=] () { actor->setVertexProperty(this->vertexProperty()); });
     connect(this, &gnomonInspectorCellGraph::vertexSizeUpdated, [=] () { actor->setVertexSize(this->vertexSize()); });
     connect(this, &gnomonInspectorCellGraph::edgeOpacityUpdated, [=] () { actor->setEdgeOpacity(this->edgeOpacity()); });
@@ -149,6 +167,12 @@ gnomonDoubleRangeEditor *gnomonInspectorCellGraph::sliceEditor(const QString& di
 {
     return d->sliceEditors[dim];
 }
+
+gnomonColorMapEditor *gnomonInspectorCellGraph::colorEditor(void) const
+{
+    return d->colorEditor;
+}
+
 
 const QString& gnomonInspectorCellGraph::vertexProperty(void) const
 {

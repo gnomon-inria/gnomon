@@ -21,6 +21,7 @@
 class gnomonActorMeshCellGraph;
 class gnomonDoubleRangeEditor;
 class gnomonStringEditor;
+class gnomonColorMapEditor;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInspectorCellGraph : public QFrame
 {
@@ -36,6 +37,7 @@ public:
 public:
     gnomonStringEditor *vertexPropertyEditor(void) const;
     gnomonDoubleRangeEditor *sliceEditor(const QString& dim = "x") const;
+    gnomonColorMapEditor *colorEditor(void) const;
 
 public:
 	const QString& vertexProperty(void) const;
