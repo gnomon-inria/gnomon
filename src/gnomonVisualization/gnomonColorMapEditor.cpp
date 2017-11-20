@@ -127,8 +127,6 @@ public:
 
 gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d(new gnomonColorMapEditorPrivate)
 {
-    // this->setMinimumSize(QSize(800, 145));
-
     d->value[0] = Qt::black;
     d->value[1] = Qt::white;
     d->name = "";
@@ -142,6 +140,7 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
 
     d->colormap_widget = new QWidget();
     QHBoxLayout *colormap_layout = new QHBoxLayout(d->colormap_widget);
+    colormap_layout->setContentsMargins(0, 0, 0, 0);
 
     QPalette palette ;
     palette.setBrush(QPalette::Background, Qt::transparent);
@@ -150,6 +149,7 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
     d->button_import->setPalette(palette);
     d->button_import->setAutoFillBackground(false);
     d->button_import->setStyleSheet(gnomonStyleSheet());
+    d->button_import->setFixedWidth(120);
     colormap_layout->addWidget(d->button_import);
 
     d->colormap_table = new gnomonColorMapTable();
@@ -163,7 +163,6 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
 
 
     connect(d->button_import, SIGNAL(clicked()), this, SLOT(importColorMap()));
-    // connect(d->combobox_value, static_cast<void(QComboBox::*)(const QString&)>(&QComboBox::currentTextChanged), this, &gnomonColorMapEditor::valueChanged);
 }
 
 gnomonColorMapEditor::~gnomonColorMapEditor(void)

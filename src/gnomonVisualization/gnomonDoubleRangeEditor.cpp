@@ -65,6 +65,7 @@ gnomonDoubleRangeEditor::gnomonDoubleRangeEditor(QWidget *parent) : QWidget(pare
 
     d->spinbox_widget = new QWidget();
     QHBoxLayout *spin_layout = new QHBoxLayout(d->spinbox_widget);
+    spin_layout->setContentsMargins(0, 0, 0, 0);
 
     d->spinbox_valueMin->setDecimals(dec);
     d->spinbox_valueMin->setSingleStep(step);
