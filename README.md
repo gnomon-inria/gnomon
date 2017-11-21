@@ -330,7 +330,7 @@ In order to check the validity of the installation, one can launch gnomonGrowthS
 
 ``` shell
 cd $HOME/Development/gnomon/build
-./bin/gnomonGrowthSimulator
+./bin/gnomonGrowthSimulator.app/Contents/MacOS/gnomonGrowthSimulator
 ```
 
 Then in the research field, one can look for gnomon and check that at least one node from gnomon is available. One can then drag and drop it into the composer. Eventually, one can select the node and check in th left panel whether an implementation is available.
