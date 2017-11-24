@@ -34,6 +34,7 @@ public:
  public:
     void setActor(gnomonActorMeshCellGraph *actor) const;
     void updateVertexPropertyRange(gnomonActorMeshCellGraph *actor) const;
+    void updateFilterPropertyRange(gnomonActorMeshCellGraph *actor) const;
 
 private:
     gnomonInspectorCellGraph(const gnomonInspectorCellGraph&) = delete;

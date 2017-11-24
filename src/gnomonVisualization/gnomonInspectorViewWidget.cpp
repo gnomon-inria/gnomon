@@ -32,7 +32,7 @@ gnomonInspectorViewWidget::gnomonInspectorViewWidget(QWidget *parent) : QScrollA
 {
     this->setFrameShape(QFrame::NoFrame);
     this->setWidgetResizable(true);
-    this->setMinimumHeight(200);
+    this->setMinimumHeight(300);
 }
 
 gnomonInspectorViewWidget::~gnomonInspectorViewWidget(void)

@@ -48,6 +48,8 @@ public:
     void setEdgeOpacity(double opacity);
     void setEdgeLinewidth(double linewidth);
     void setSlice(const QString& dim, const QList<double>& slice);
+    void setFilterProperty(const QString& propertyName);
+    void setFilterPropertyRange(const QList<double>& range);
 
 public slots:
     void update(void) override;
@@ -55,6 +57,9 @@ public slots:
 public:
     double rangeMin(void) const;
     double rangeMax(void) const;
+
+    double filterRangeMin(void) const;
+    double filterRangeMax(void) const;
 
 protected:
      gnomonActorMeshCellGraph(void);

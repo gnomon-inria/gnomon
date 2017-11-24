@@ -31,8 +31,12 @@ public:
     gnomonDoubleEditor *vertexSizeEditor;
     gnomonDoubleEditor *edgeOpacityEditor;
     gnomonDoubleEditor *edgeLinewidthEditor;
+
     gnomonStringEditor *vertexPropertyEditor;
     gnomonDoubleRangeEditor *vertexPropertyRangeEditor;
+
+    gnomonStringEditor *filterPropertyEditor;
+    gnomonDoubleRangeEditor *filterPropertyRangeEditor;
 
     gnomonColorMapEditor *colorEditor;
 
@@ -71,6 +75,12 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QFrame(par
     d->edgeLinewidthEditor->setRange(0,10);
     d->edgeLinewidthEditor->setValue(2);
 
+    d->filterPropertyEditor = new gnomonStringEditor(this);
+    d->filterPropertyEditor->setName("Filter Property Name");
+
+    d->filterPropertyRangeEditor = new gnomonDoubleRangeEditor(this);
+    d->filterPropertyRangeEditor->setName("Filter Property Range");
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(d->vertexPropertyEditor);
@@ -87,6 +97,9 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QFrame(par
         d->sliceEditors[dim]->setName(sliceName);
         layout->addWidget(d->sliceEditors[dim]);
     }
+    
+    layout->addWidget(d->filterPropertyEditor);
+    layout->addWidget(d->filterPropertyRangeEditor);
 
     this->setLayout(layout);
 }
@@ -142,6 +155,15 @@ void gnomonInspectorCellGraph::setActor(gnomonActorMeshCellGraph *actor) const
         connect(d->sliceEditors[dim], &gnomonDoubleRangeEditor::valueMinChanged, [=] () { actor->setSlice(dim, d->sliceEditors[dim]->value()); });
         connect(d->sliceEditors[dim], &gnomonDoubleRangeEditor::valueMaxChanged, [=] () { actor->setSlice(dim, d->sliceEditors[dim]->value()); });
     }
+
+    d->filterPropertyEditor->setList(vertexProperties);
+    connect(d->filterPropertyEditor, &gnomonStringEditor::valueChanged, [=] () { actor->setFilterProperty(d->filterPropertyEditor->value()); });
+    connect(d->filterPropertyEditor, &gnomonStringEditor::valueChanged, [=] () { this->updateFilterPropertyRange(actor); });
+
+    connect(d->filterPropertyRangeEditor, &gnomonDoubleRangeEditor::valueMinChanged, [=] () { actor->setFilterPropertyRange(d->filterPropertyRangeEditor->value()); });
+    connect(d->filterPropertyRangeEditor, &gnomonDoubleRangeEditor::valueMaxChanged, [=] () { actor->setFilterPropertyRange(d->filterPropertyRangeEditor->value()); });
+
+    this->updateFilterPropertyRange(actor);
 }
 
 void gnomonInspectorCellGraph::updateVertexPropertyRange(gnomonActorMeshCellGraph *actor) const
@@ -149,6 +171,13 @@ void gnomonInspectorCellGraph::updateVertexPropertyRange(gnomonActorMeshCellGrap
     d->vertexPropertyRangeEditor->setRange(actor->rangeMin(),actor->rangeMax());
     d->vertexPropertyRangeEditor->setValueMin(actor->rangeMin());
     d->vertexPropertyRangeEditor->setValueMax(actor->rangeMax());
+}
+
+void gnomonInspectorCellGraph::updateFilterPropertyRange(gnomonActorMeshCellGraph *actor) const
+{
+    d->filterPropertyRangeEditor->setRange(actor->filterRangeMin(),actor->filterRangeMax());
+    d->filterPropertyRangeEditor->setValueMin(actor->filterRangeMin());
+    d->filterPropertyRangeEditor->setValueMax(actor->filterRangeMax());
 }
 
 //
