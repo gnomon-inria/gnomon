@@ -18,6 +18,7 @@
 
 #include <vtkActor.h>
 #include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
@@ -35,6 +36,7 @@ public:
     vtkSmartPointer<vtkActor> actor;
 
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
+    vtkSmartPointer<vtkPiecewiseFunction> opacityTransferFunction;
 
     vtkRenderWindowInteractor *interactor;
 };

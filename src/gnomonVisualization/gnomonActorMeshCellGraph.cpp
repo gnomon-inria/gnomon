@@ -51,17 +51,26 @@ public:
     vtkSmartPointer<vtkPolyDataMapper> point_mapper;
     vtkSmartPointer<vtkActor> point_actor;
 
+
 public:
-    double range_min;
-    double range_max;
 
     QString vertexPropertyName;
+    double range_min;
+    double range_max;
+    QList<double> vertexPropertyRange;
 
     double vertexSize;
     double edgeOpacity;
     double edgeLinewidth;
 
+    QMap<double, QColor> colormap;
+
     QMap<QString,QList<double>> slice;
+
+    QString filterPropertyName;
+    double filter_range_min;
+    double filter_range_max;
+    QList<double> filterPropertyRange;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -122,16 +131,41 @@ void gnomonActorMeshCellGraph::update(void)
         }
     }
 
-    qDebug()<<dd->slice["x"]<<dd->slice["y"]<<dd->slice["z"];
+    QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
+    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
+    dd->range_min = *(mm.first);
+    dd->range_max = *(mm.second);
+    if (dd->vertexPropertyRange.size() == 0) {
+        dd->vertexPropertyRange<<dd->range_min<<dd->range_max;
+    }
+
+    QMap<long, double> filterScalarProperty;
+    for (const auto& vertexId : vertices) {
+        if (dd->cellgraph->vertexPropertyNames().contains(dd->filterPropertyName)) {
+            filterScalarProperty[vertexId] = dd->cellgraph->vertexProperty(dd->filterPropertyName)[vertexId].value<double>();
+        } else {
+            filterScalarProperty[vertexId] = vertexId;
+        }
+    }
+
+    QList<double> filterScalarPropertyValues = filterScalarProperty.values();
+    auto filter_mm = std::minmax_element(filterScalarPropertyValues.begin(),filterScalarPropertyValues.end());
+    dd->filter_range_min = *(filter_mm.first);
+    dd->filter_range_max = *(filter_mm.second);
+    if (dd->filterPropertyRange.size() == 0) {
+        dd->filterPropertyRange<<dd->range_min<<dd->range_max;
+    }
 
     for (const auto& vertexId : vertices) {
         double x = positions_x[vertexId].value<double>();
         double y = positions_y[vertexId].value<double>();
         double z = positions_z[vertexId].value<double>();
+        double filter = filterScalarProperty[vertexId];
         bool vertexDisplay = true;
         vertexDisplay = vertexDisplay&&(x>=dd->slice["x"][0])&&(x<=dd->slice["x"][1]);
         vertexDisplay = vertexDisplay&&(y>=dd->slice["y"][0])&&(y<=dd->slice["y"][1]);
         vertexDisplay = vertexDisplay&&(z>=dd->slice["z"][0])&&(z<=dd->slice["z"][1]);
+        vertexDisplay = vertexDisplay&&(filter>=dd->filterPropertyRange[0])&&(filter<=dd->filterPropertyRange[1]);
         if (vertexDisplay) {
             long vtkId = polydataPoints->InsertNextPoint(x,y,z);
             vertexPoint[vertexId] = vtkId;
@@ -201,26 +235,20 @@ void gnomonActorMeshCellGraph::update(void)
     }
     dd->point_glyph->Update();
 
-    QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
-    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
-    dd->range_min = *(mm.first);
-    dd->range_max = *(mm.second);
-
-    double min = dd->range_min;
-    double max = dd->range_max;
-    double mid = (min + max)/2.;
-    qDebug()<<min<<mid<<max;
 
     if(!d->colorFunction) {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
-        d->colorFunction->SetColorSpaceToHSV();
+        d->colorFunction->SetColorSpaceToRGB();
     }
+
     d->colorFunction->RemoveAllPoints();
-    d->colorFunction->AddRGBPoint(min, 0.0, 0.0, 1.0);
-    d->colorFunction->AddRGBPoint(mid, 0.0, 1.0, 0.0);
-    d->colorFunction->AddRGBPoint(max, 1.0, 0.0, 0.0);
+    for (const auto& val : dd->colormap.keys()) {
+        double node = val*dd->vertexPropertyRange[1] + (1-val)*dd->vertexPropertyRange[0];
+        d->colorFunction->AddRGBPoint(node, dd->colormap[val].red()/255., dd->colormap[val].green()/255., dd->colormap[val].blue()/255.);
+    }    
     d->colorFunction->ClampingOn();
     d->colorFunction->Modified();
+
 
     if (!dd->point_mapper) {
         dd->point_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -240,6 +268,12 @@ void gnomonActorMeshCellGraph::update(void)
     d->interactor->Render();
 }
 
+
+const QMap<double, QColor>& gnomonActorMeshCellGraph::colormap(void) const
+{
+    return dd->colormap;
+}
+
 void gnomonActorMeshCellGraph::setCellGraph(gnomonCellGraph *cellgraph)
 {
     dd->cellgraph = cellgraph;
@@ -247,9 +281,33 @@ void gnomonActorMeshCellGraph::setCellGraph(gnomonCellGraph *cellgraph)
     this->update();
 }
 
+void gnomonActorMeshCellGraph::setColorMap(const QMap<double, QColor>& colormap)
+{
+    dd->colormap = colormap;
+    this->update();
+}
+
 void gnomonActorMeshCellGraph::setVertexProperty(const QString& propertyName)
 {
     dd->vertexPropertyName = propertyName;
+    this->update();
+}
+
+void gnomonActorMeshCellGraph::setVertexPropertyRange(const QList<double>& range)
+{
+    dd->vertexPropertyRange = range;
+    this->update();
+}
+
+void gnomonActorMeshCellGraph::setFilterProperty(const QString& propertyName)
+{
+    dd->filterPropertyName = propertyName;
+    this->update();
+}
+
+void gnomonActorMeshCellGraph::setFilterPropertyRange(const QList<double>& range)
+{
+    dd->filterPropertyRange = range;
     this->update();
 }
 
@@ -273,10 +331,7 @@ void gnomonActorMeshCellGraph::setEdgeLinewidth(double linewidth)
 
 void gnomonActorMeshCellGraph::setSlice(const QString& dim, const QList<double>& slice)
 {
-    qDebug() << dim << dd->slice[dim] << "->" <<slice;
-
     dd->slice[dim] = slice;
-
     this->update();
 }
 
@@ -290,11 +345,24 @@ double gnomonActorMeshCellGraph::rangeMax() const
     return dd->range_max;
 }
 
+double gnomonActorMeshCellGraph::filterRangeMin() const
+{
+    return dd->filter_range_min;
+}
+
+double gnomonActorMeshCellGraph::filterRangeMax() const
+{
+    return dd->filter_range_max;
+}
+
 
 gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellGraphPrivate)
 {
     dd->cellgraph = Q_NULLPTR;
+
     dd->vertexPropertyName = "";
+    dd->vertexPropertyRange = QList<double>();
+
     dd->vertexSize = 1.0;
     dd->edgeOpacity = 0.5;
     dd->edgeLinewidth = 2.0;
@@ -302,6 +370,13 @@ gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd
     dd->slice["x"] = QList<double>();
     dd->slice["y"] = QList<double>();
     dd->slice["z"] = QList<double>();
+
+    dd->filterPropertyName = "";
+    dd->filterPropertyRange = QList<double>();
+
+    dd->colormap[0] = Qt::blue;
+    dd->colormap[0.5] = Qt::green;
+    dd->colormap[1] = Qt::red;
 }
 
 gnomonActorMeshCellGraph::~gnomonActorMeshCellGraph(void)
