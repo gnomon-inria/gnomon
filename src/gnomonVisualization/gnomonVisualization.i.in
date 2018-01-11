@@ -16,10 +16,10 @@
 
 %module gnomonvisualization
 
-%include "@dtk_WRAP_BASE@"
+%include <dtk_base.i>
 
-%import "@dtk_WRAP_CORE@"
-%import "@dtk_WRAP_WIDGETS@"
+%import <dtkCore.i>
+%import <dtkWidgets.i>
 
 %{
 

@@ -100,7 +100,7 @@ if (OMERO_ICE_FOUND)
   include_directories(${OMERO_ICE_INCLUDE_DIR})
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent)
 
 find_package(dtk REQUIRED)
 find_package(dtkImaging REQUIRED)

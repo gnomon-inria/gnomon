@@ -72,7 +72,7 @@ if(DTK_BUILD_WRAPPERS)
 
   if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i.in ${CMAKE_BINARY_DIR}/gnomonCore.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_BINARY_DIR}/gnomonCore.i "${${PROJECT_NAME}_WRAP_DEPENDS}" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS}")
+    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_BINARY_DIR}/gnomonCore.i "${${PROJECT_NAME}_WRAP_DEPENDS}" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS};${dtk_WRAP_PREFIX}/dtkBase;${dtk_WRAP_PREFIX}/dtkCore;${dtk_WRAP_PREFIX}/QtCore;${dtkImaging_WRAP_PREFIX}/dtkImagingCore/;${CMAKE_SOURCE_DIR}/src")
   endif()
 endif()
 
@@ -95,16 +95,14 @@ target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
-target_link_libraries(${PROJECT_NAME} dtkImaging)
 
-#target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 if(DTK_BUILD_WRAPPERS)
-
   if(DTK_WRAPPING_PYTHON)
       target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
-  endif()
-
+  endif(DTK_WRAPPING_PYTHON)
 endif(DTK_BUILD_WRAPPERS)
 
 # #################################################################

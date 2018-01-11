@@ -69,7 +69,9 @@ qt5_use_modules(${PROJECT_NAME} Xml)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkComposer)
-target_link_libraries(${PROJECT_NAME} dtkImaging)
+
+target_link_libraries(${PROJECT_NAME} dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
 target_link_libraries(${PROJECT_NAME} gnomonVisualization)

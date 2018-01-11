@@ -16,10 +16,11 @@
 
 %module(directors="1") gnomoncore
 
-%include "@dtk_WRAP_BASE@"
+%include <dtk_base.i>
 
-%import "@dtk_WRAP_CORE@"
-%import "@dtkImaging_WRAP_CORE@"
+%import <dtkCore.i>
+
+%import <dtkImagingCore.i>
 
 %{
 
