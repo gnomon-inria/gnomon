@@ -290,7 +290,6 @@ double gnomonActorMeshCellGraph::rangeMax() const
     return dd->range_max;
 }
 
-
 gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellGraphPrivate)
 {
     dd->cellgraph = Q_NULLPTR;

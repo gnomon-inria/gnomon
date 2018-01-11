@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonDoubleEditor.h"
+
 #include <cmath>
 
 class gnomonDoubleEditorPrivate
@@ -32,7 +33,6 @@ public:
 
 gnomonDoubleEditor::gnomonDoubleEditor(QWidget *parent) : QWidget(parent), d(new gnomonDoubleEditorPrivate)
 {
-    // this->setMinimumSize(QSize(800, 145));
     d->min = 0;
     d->max = 1;
 
