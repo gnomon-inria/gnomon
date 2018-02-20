@@ -52,6 +52,9 @@ if(DTK_BUILD_WRAPPERS)
 
       dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonGrowthSimulator "${CMAKE_SOURCE_DIR}/sip/gnomonGrowthSimulator/gnomonGrowthSimulatormod.sip" "${${PROJECT_NAME}_SIP_WRAPPERS}" ${${PROJECT_NAME}_WRAP_DEPENDS})
 
+      set_property(SOURCE sipgnomonGrowthSimulatorcmodule.cpp PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonGrowthSimulatorgnomonGrowthSimulatorMainWindow.cpp PROPERTY SKIP_AUTOMOC ON)
+
     endif()
 
   endif()
