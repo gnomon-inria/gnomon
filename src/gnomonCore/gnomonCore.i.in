@@ -92,7 +92,7 @@
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexReader.h>
 
-%include "@dtk_WRAP_QVARIANT@"
+%include <QVariant.i>
 
 //
 // gnomonCore.i.in ends here
