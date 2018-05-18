@@ -24,7 +24,7 @@
 
 %{
 
-#include <dtkImaging>
+#include <dtkImagingCore>
 
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonAbstractCellComplexData.h>

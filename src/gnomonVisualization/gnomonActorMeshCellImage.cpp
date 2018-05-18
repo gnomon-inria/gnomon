@@ -18,7 +18,7 @@
 
 #include <gnomonCellImage.h>
 
-#include <dtkImaging>
+#include <dtkImagingCore>
 
 #include <QtWidgets>
 
@@ -47,7 +47,7 @@
 class gnomonActorMeshCellImagePrivate
 {
 public:
-    gnomonCellImage *cellimage; 
+    gnomonCellImage *cellimage;
 
     double cellScaleFactor;
     double smoothingFactor;
@@ -139,7 +139,7 @@ void gnomonActorMeshCellImage::update(void)
     for (const auto& cellId : cells) {
 
         if (!dd->cell_mesh.contains(cellId)) {
-            
+
             vtkSmartPointer<vtkDiscreteMarchingCubes>contour = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
             contour->SetInputData(volume);
             contour->ComputeNormalsOn();
@@ -177,7 +177,7 @@ void gnomonActorMeshCellImage::update(void)
             for (int vtkId=0;vtkId<dd->cell_mesh[cellId]->GetNumberOfCells();vtkId++) {
                 cellPolydataFaceData->InsertValue(vtkId,cellId);
             }
-            
+
             dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
         }
 

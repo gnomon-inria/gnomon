@@ -24,7 +24,7 @@
 #include <gnomonCellComplex.h>
 #include <gnomonCellGraph.h>
 
-#include <dtkImaging>
+#include <dtkImagingCore>
 
 #include <vtkImageData.h>
 

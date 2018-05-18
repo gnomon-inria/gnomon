@@ -5,7 +5,7 @@
 
 #include <QtCore>
 #include <dtkCore>
-#include <dtkImaging>
+#include <dtkImagingCore>
 
 class gnomonOmeroImage : public gnomonOmeroObject
 {
