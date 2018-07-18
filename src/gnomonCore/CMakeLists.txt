@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCore.h
   gnomonCoreSettings
   gnomonCoreSettings.h
+  gnomonDataManager
+  gnomonDataManager.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonAbstractCellComplexData
@@ -49,6 +51,7 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
   gnomonCoreSettings.cpp
+  gnomonDataManager.cpp
   gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellGraphData.cpp
