@@ -250,14 +250,17 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->side_pane->addAction(d->font_awesome->icon(fa::play), this, [=] () {
         if (d->editors->currentIndex() == 0) {
             d->composer->composerWidget()->run();
-        } else {
+        }
+#if defined(DTK_BUILD_WRAPPERS)
+        else {
             int stat;
             if (d->interpreter_widget)
                 d->interpreter_widget->output(d->interpreter->interpret(d->editor->toPlainText(), &stat));
             else
                 d->interpreter->interpret(d->editor->toPlainText(), &stat);
         }
-    });
+#endif
+        });
 
     d->side_pane->addAction(d->font_awesome->icon(fa::filetext), this, [=] () {
         if (d->editors->currentIndex() == 0) {
@@ -340,9 +343,11 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     this->statusBar()->addPermanentWidget(git_commit);
     this->statusBar()->addPermanentWidget(git_updates);
 
+#if defined(DTK_BUILD_WRAPPERS)
     if (d->interpreter) {
         d->interpreter->init();
     }
+#endif
 }
 
 gnomonGrowthSimulatorMainWindow::~gnomonGrowthSimulatorMainWindow(void)
