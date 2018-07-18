@@ -71,6 +71,14 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## ###################################################################
+## Test setup
+## ###################################################################
+
+include(CTest)
+
+enable_testing()
+
+## ###################################################################
 ## Dependencies - cmake
 ## ###################################################################
 
@@ -100,7 +108,7 @@ if (OMERO_ICE_FOUND)
   include_directories(${OMERO_ICE_INCLUDE_DIR})
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtk REQUIRED)
 find_package(dtkImaging REQUIRED)
@@ -140,6 +148,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 ## ###################################################################
 
 add_subdirectory(src)
+add_subdirectory(tst)
 add_subdirectory(app)
 
 ## ###################################################################
