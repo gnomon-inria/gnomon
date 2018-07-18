@@ -33,6 +33,7 @@
 #include <gnomonCore/gnomonCellImage.h>
 #include <gnomonCore/gnomonAbstractCellGraphData.h>
 #include <gnomonCore/gnomonCellGraph.h>
+#include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
 #include <gnomonCore/gnomonAbstractCellImageFromImage.h>
@@ -87,6 +88,7 @@
 %include <gnomonCore/gnomonCellImage.h>
 %include <gnomonCore/gnomonAbstractCellGraphData.h>
 %include <gnomonCore/gnomonCellGraph.h>
+%include <gnomonCore/gnomonDataManager.h>
 %include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
