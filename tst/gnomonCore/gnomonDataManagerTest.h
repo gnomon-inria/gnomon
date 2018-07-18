@@ -15,6 +15,8 @@ private slots:
     void init(void);
 
 private slots:
+    void getExistingImageTest(void);
+    void getNonExistingImageTest(void);
 
 private slots:
     void cleanupTestCase(void);
