@@ -3,7 +3,7 @@
 
 class gnomonFileSystemFormReaderPrivate {
 public:
-    gnomonTime::Mode time_mode;
+    gnomonTime::Mode time_mode = gnomonTime::Mode::Unknown;
 
     QMap<gnomonTime, QString> files_paths;
 };
