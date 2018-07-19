@@ -25,10 +25,10 @@ gnomonTime::gnomonTime(unsigned long timeStamp, Mode timeMode)
     this->timeMode = timeMode;
 }
 
-gnomonTime::gnomonTime(const gnomonTime& time)
+gnomonTime::gnomonTime(const gnomonTime& o)
 {
-    this->timeStamp = time.timeStamp;
-    this->timeMode = time.timeMode;
+    this->timeStamp = o.timeStamp;
+    this->timeMode = o.timeMode;
 }
 
 gnomonTime& gnomonTime::operator = (const gnomonTime& time)
@@ -38,7 +38,7 @@ gnomonTime& gnomonTime::operator = (const gnomonTime& time)
     return *this;
 }
 
-unsigned long gnomonTime::getTimeStamp()
+unsigned long gnomonTime::getTimeStamp() const
 {
 	return this->timeStamp;
 }
@@ -48,7 +48,7 @@ void gnomonTime::setTimeStamp(unsigned long timeStamp)
 	this->timeStamp = timeStamp;
 }
 
-gnomonTime::Mode gnomonTime::getMode()
+gnomonTime::Mode gnomonTime::getMode() const
 {
 	return this->timeMode;
 }
@@ -56,6 +56,23 @@ gnomonTime::Mode gnomonTime::getMode()
 void gnomonTime::setMode(Mode timeMode=ArbitraryTime)
 {
     this->timeMode = timeMode;
+}
+
+
+
+bool operator == (const gnomonTime& time1, const gnomonTime& time2)
+{
+	return time1.getTimeStamp()==time2.getTimeStamp();
+}
+
+bool operator != (const gnomonTime& time1, const gnomonTime& time2)
+{
+	return time1.getTimeStamp()!=time2.getTimeStamp();
+}
+
+bool operator < (const gnomonTime& time1, const gnomonTime& time2)
+{
+    return time1.getTimeStamp()<time2.getTimeStamp();
 }
 
 

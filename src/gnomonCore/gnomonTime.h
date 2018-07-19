@@ -38,19 +38,22 @@ protected:
 
 public:
      gnomonTime(unsigned long timeStamp=0, Mode timeMode=ArbitraryTime);
-     gnomonTime(const gnomonTime& time);
+     gnomonTime(const gnomonTime& o);
     ~gnomonTime() {};
 
 public:
 	gnomonTime& operator = (const gnomonTime& time);
-
 public:
-    unsigned long getTimeStamp();
+    unsigned long getTimeStamp() const;
     void setTimeStamp(unsigned long timeStamp);
 
-    Mode getMode();
+    Mode getMode() const;
     void setMode(Mode);
 };
+
+bool operator == (const gnomonTime& time1, const gnomonTime& time2);
+bool operator != (const gnomonTime& time1, const gnomonTime& time2);
+bool operator < (const gnomonTime& time1, const gnomonTime& time2);
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery

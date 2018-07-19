@@ -21,6 +21,7 @@
 #include <dtkCore>
 
 #include <gnomonTime.h>
+#include <gnomonAbstractForm.h>
 
 // ///////////////////////////////////////////////////////////////////
 //

@@ -21,9 +21,7 @@
 #include <dtkCore>
 
 #include <gnomonTime.h>
-
 #include <gnomonAbstractDynamicForm.h>
-
 #include <gnomonAbstractForm.h>
 
 
@@ -31,20 +29,25 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonDiscreteDynamicForm: gnomonAbstractDynamicForm
+class GNOMONCORE_EXPORT gnomonDiscreteDynamicForm : gnomonAbstractDynamicForm
 {
-protected:
-    QMap<gnomonTime, gnomonAbstractForm> forms;
-    gnomonTime initialTime;
 
 public:
      gnomonDiscreteDynamicForm(void);
-    ~gnomonDiscreteDynamicForm(void) {};
+     gnomonDiscreteDynamicForm(const gnomonDiscreteDynamicForm& o);
+    ~gnomonDiscreteDynamicForm(void);
+
+    gnomonAbstractDynamicForm* clone(void) const { return new gnomonDiscreteDynamicForm(*this); };
 
 public:
+	gnomonAbstractForm* atTime(gnomonTime t);
     void appendForm(gnomonAbstractForm* form, gnomonTime t);
-    gnomonDiscreteDynamicForm dropForm(gnomonTime t);
+    void dropForm(gnomonTime t);
     void setInitialTime(gnomonTime initialTime);
+
+private:
+    class gnomonDiscreteDynamicFormPrivate *d;
+
 };
 
 // ///////////////////////////////////////////////////////////////////
