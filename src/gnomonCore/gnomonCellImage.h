@@ -17,10 +17,11 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractCellImageData.h"
+#include "gnomonAbstractForm.h"
 
 #include <QtCore>
 
-class GNOMONCORE_EXPORT gnomonCellImage
+class GNOMONCORE_EXPORT gnomonCellImage : gnomonAbstractForm
 {
 protected:
     gnomonAbstractCellImageData *m_data;

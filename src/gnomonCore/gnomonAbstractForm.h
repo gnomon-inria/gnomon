@@ -17,43 +17,35 @@
 #include <gnomonCoreExport.h>
 
 #include <QtCore>
-
 #include <dtkCore>
-
-#include <gnomonTime.h>
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
+class GNOMONCORE_EXPORT gnomonAbstractForm
 {
 public:
-             gnomonAbstractDynamicForm(void) = default;
-    virtual ~gnomonAbstractDynamicForm(void) {};
-
-public:
-    virtual void setInitialTime(gnomonTime T_i) = 0;
-    virtual gnomonAbstractForm* atTime(gnomonTime t) = 0;
-    
+             gnomonAbstractForm(void) = default;
+    virtual ~gnomonAbstractForm(void) {};
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractDynamicForm *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractDynamicForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDynamicForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDynamicForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractForm *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractForm, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDynamicForm, GNOMONCORE_EXPORT, dynamicForm);
+    DTK_DECLARE_CONCEPT(gnomonAbstractForm, GNOMONCORE_EXPORT, form);
 }
 
 //
-// gnomonAbstractDynamicForm.h ends here
+// gnomonAbstractForm.h ends here

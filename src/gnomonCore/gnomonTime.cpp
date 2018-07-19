@@ -25,6 +25,12 @@ gnomonTime::gnomonTime(unsigned long timeStamp, Mode timeMode)
     this->timeMode = timeMode;
 }
 
+gnomonTime::gnomonTime(const gnomonTime& time)
+{
+    this->timeStamp = time.timeStamp;
+    this->timeMode = time.timeMode;
+}
+
 unsigned long gnomonTime::getTimeStamp()
 {
 	return this->timeStamp;
