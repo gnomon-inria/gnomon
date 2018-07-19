@@ -27,19 +27,25 @@
 class GNOMONCORE_EXPORT gnomonTime
 {
 public:
-    
     enum Mode {
         DateTime,
         ArbitraryTime
     };
 
-     gnomonTime(unsigned long timeStamp=0, Mode mode=ArbitraryTime) = default;
+public:
+     gnomonTime(unsigned long timeStamp=0, Mode timeMode=ArbitraryTime);
     ~gnomonTime() {};
 
+protected:
+	unsigned long timeStamp;
+	Mode timeMode;
+
 public:
-    void setMode(Mode) = 0;
+    unsigned long getTimeStamp();
+    void setTimeStamp(unsigned long timeStamp);
 
-
+    Mode getMode();
+    void setMode(Mode);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -56,7 +62,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonTime, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonTime, GNOMONCORE_EXPORT, cellgraphdata);
+    DTK_DECLARE_CONCEPT(gnomonTime, GNOMONCORE_EXPORT, time);
 }
 
 //

@@ -20,6 +20,8 @@
 
 #include <dtkCore>
 
+#include <gnomonTime.h>
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -34,7 +36,7 @@ public:
 
 public:
     virtual void setInitialTime(gnomonTime T_i) = 0;
-    virtual gnomonAbstractStaticForm* atTime(gnomonTime t) = 0;
+    // virtual gnomonAbstractStaticForm* atTime(gnomonTime t) = 0;
     
 };
 
