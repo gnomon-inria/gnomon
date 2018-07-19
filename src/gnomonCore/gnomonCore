@@ -12,3 +12,7 @@
 #include "gnomonAbstractCellImageData.h"
 #include "gnomonAbstractCellImageFromImage.h"
 #include "gnomonAbstractTissueGrowthModel.h"
+#include "gnomonTime.h"
+#include "gnomonAbstractForm.h"
+#include "gnomonAbstractDynamicForm.h"
+#include "gnomonDiscreteDynamicForm.h"
