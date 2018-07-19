@@ -17,7 +17,6 @@
 #include <gnomonCoreExport.h>
 
 #include <QtCore>
-
 #include <dtkCore>
 
 // ///////////////////////////////////////////////////////////////////
@@ -55,22 +54,13 @@ bool operator == (const gnomonTime& time1, const gnomonTime& time2);
 bool operator != (const gnomonTime& time1, const gnomonTime& time2);
 bool operator < (const gnomonTime& time1, const gnomonTime& time2);
 
+
 // ///////////////////////////////////////////////////////////////////
-// Give the concept the plugin machinery
+// Ensure QVariant compatibility
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonTime *)
-DTK_DECLARE_PLUGIN        (gnomonTime, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonTime, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonTime, GNOMONCORE_EXPORT)
+Q_DECLARE_METATYPE(gnomonTime)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonTime, GNOMONCORE_EXPORT, time);
-}
 
 //
 // gnomonTime.h ends here

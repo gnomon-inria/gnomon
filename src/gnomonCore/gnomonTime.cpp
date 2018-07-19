@@ -76,14 +76,7 @@ bool operator < (const gnomonTime& time1, const gnomonTime& time2)
 }
 
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonTime, time, gnomonCore);
-}
 
 //
-// gnomonCellComplexData.cpp ends here
+// gnomonTime.cpp ends here
 
