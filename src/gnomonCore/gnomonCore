@@ -3,6 +3,7 @@
 #include "gnomonCellComplex.h"
 #include "gnomonCellGraph.h"
 #include "gnomonCellImage.h"
+#include "gnomonDataManager.h"
 #include "gnomonAbstractCellComplexData.h"
 #include "gnomonAbstractCellComplexFromImage.h"
 #include "gnomonAbstractCellComplexReader.h"
