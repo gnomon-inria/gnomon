@@ -48,7 +48,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellGraphData
   gnomonAbstractCellGraphData.h
   gnomonTime.h
-  gnomonAbstractDynamicForm.h)
+  gnomonAbstractDynamicForm.h
+  gnomonAbstractStaticForm.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
