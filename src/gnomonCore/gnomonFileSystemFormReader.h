@@ -19,7 +19,7 @@
 #include <QtCore>
 
 #include "gnomonTime.h"
-#include "gnomonAbstractDynamicForm.h"
+#include "gnomonAbstractForm.h"
 
 #pragma message "will inherit gnomonAbstractFormReader"
 class GNOMONCORE_EXPORT gnomonFileSystemFormReader
@@ -29,7 +29,7 @@ public:
     virtual ~gnomonFileSystemFormReader(void);
 
 #pragma message "Possibly add also a specific read for a specific type of data at a given time"
-    gnomonAbstractDynamicFormPtr read(const gnomonTime&);
+    gnomonAbstractFormPtr read(const gnomonTime&);
 
     gnomonTime::Mode timeMode(void);
 

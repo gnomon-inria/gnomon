@@ -1,4 +1,5 @@
 #include "gnomonFileSystemFormReader.h"
+#include "gnomonIntensityImage.h"
 
 class gnomonFileSystemFormReaderPrivate {
 public:
@@ -73,7 +74,7 @@ gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& param
             continue;
         }
 #pragma message "a QFile could be created at this point and stored in the map"
-        d->files_paths[gnomonTime(line_split[0].toULong(), d->time_mode)] = file_info.dir().toString() + QString("/") + line_split[1];
+        d->files_paths[gnomonTime(line_split[0].toULong(), d->time_mode)] = file_info.dir().absolutePath() + QString("/") + line_split[1];
     }
 
 }
@@ -86,12 +87,19 @@ gnomonFileSystemFormReader::~gnomonFileSystemFormReader(void)
 gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
 {
     if(time.getMode() != d->time_mode) {
-        qWarning() << Q_FUNC_INFO << "The time mode do not match the underlying dyform time mode";
-        return false;
+        qWarning() << Q_FUNC_INFO << "The time mode does not match the underlying dyform time mode";
+        return gnomonAbstractFormPtr();
     }
 
+    if(!d->files_paths.contains(time)) {
+        qWarning() << Q_FUNC_INFO << "The requested time is not available";
+        return gnomonAbstractFormPtr();
+    }
 
+#pragma message "The type of the form should be specified in the dyform file"
+    gnomonAbstractFormPtr form = gnomonAbstractFormPtr(new gnomonIntensityImage);
 
+    return form;
 }
 
 gnomonTime::Mode gnomonFileSystemFormReader::timeMode(void)

@@ -39,6 +39,11 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellComplex.h
   gnomonAbstractCellComplexData
   gnomonAbstractCellComplexData.h
+  gnomonAbstractIntensityImageData
+  gnomonAbstractIntensityImageData.h
+  gnomonIntensityImage
+  gnomonIntensityImage.h
+  gnomonCellImage.h
   gnomonCellImage
   gnomonCellImage.h
   gnomonAbstractCellImageData
@@ -47,8 +52,11 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellGraph.h
   gnomonAbstractCellGraphData
   gnomonAbstractCellGraphData.h
+  gnomonTime
   gnomonTime.h
+  gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
+  gnomonAbstractForm
   gnomonAbstractForm.h
   gnomonFileSystemFormReader.h)
 
@@ -58,6 +66,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDataManager.cpp
   gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellImageData.cpp
+  gnomonAbstractIntensityImageData.cpp
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractCellGraphFromImage.cpp
@@ -65,7 +74,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellComplexReader.cpp
   gnomonTime.cpp
-  gnomonFileSystemFormReader.cpp)
+  gnomonFileSystemFormReader.cpp
+  gnomonDiscreteDynamicForm.cpp)
 
 ## #################################################################
 ## Wrapping
@@ -135,8 +145,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVER
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export")
 
-set(PROJECT_NAME_HEADERS
-   ${PROJECT_NAME_HEADERS}
+set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
