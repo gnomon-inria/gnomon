@@ -31,6 +31,13 @@ gnomonTime::gnomonTime(const gnomonTime& time)
     this->timeMode = time.timeMode;
 }
 
+gnomonTime& gnomonTime::operator = (const gnomonTime& time)
+{
+    this->timeStamp = time.timeStamp;
+    this->timeMode = time.timeMode;
+    return *this;
+}
+
 unsigned long gnomonTime::getTimeStamp()
 {
 	return this->timeStamp;

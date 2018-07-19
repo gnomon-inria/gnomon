@@ -32,14 +32,17 @@ public:
         ArbitraryTime
     };
 
+protected:
+	unsigned long timeStamp;
+	Mode timeMode;
+
 public:
      gnomonTime(unsigned long timeStamp=0, Mode timeMode=ArbitraryTime);
      gnomonTime(const gnomonTime& time);
     ~gnomonTime() {};
 
-protected:
-	unsigned long timeStamp;
-	Mode timeMode;
+public:
+	gnomonTime& operator = (const gnomonTime& time);
 
 public:
     unsigned long getTimeStamp();
