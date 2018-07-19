@@ -17,6 +17,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractCellComplexData.h"
+#include "gnomonAbstractForm.h"
 
 #include <QtCore>
 
@@ -24,7 +25,7 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonCellComplex
+class GNOMONCORE_EXPORT gnomonCellComplex : gnomonAbstractForm
 {
 protected:
     gnomonAbstractCellComplexData *m_data;
