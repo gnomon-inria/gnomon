@@ -82,81 +82,73 @@ cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -D
 make -j4
 ```
 
-### Morpheme 'vt' installation
-
-Start by cloning the Morpheme source code, replacing `mylogin` with you INRIA forge login:
-``` shell
-cd $HOME/Development
-git clone git+ssh://mylogin@scm.gforge.inria.fr/gitroot/morpheme-privat/morpheme-privat.git
-```
-
-Checkout the first tagged release (for timagetk) named "timagetkRelease1.0.0":
-``` shell
-git branch openalea_wrapper_v1.7 origin/openalea_wrapper_v1.7
-git checkout openalea_wrapper_v1.7
-```
-
-Compile `vt` library as follow (dependency with 'lemon' & 'vtk'):
-``` shell
-cd morpheme-privat/vt
-mkdir build
-cd build
-source activate gnomon
-cmake ..
-make -j4
-```
-
 ## OpenAlea legacy [REQUIRED]
+Before installing the following sources, do not forget to activate the conda environment:
+```shell
+source activate gnomon
+```
 
 ### OpenAlea CellComplex
 
 ``` shell
-source activate gnomon
 cd $HOME/Development
+# Clone the sources:
 git clone https://github.com/gcerutti/cellcomplex.git openalea-cellcomplex
+# Checkout the proper branch:
 cd openalea-cellcomplex
 git branch feature/standalone origin/feature/standalone
 git checkout feature/standalone
 git pull origin feature/standalone
+# Install in develop mode:
 python setup.py develop
 ```
 
 ### OpenAlea DracoStem
 
 ``` shell
-source activate gnomon
 cd $HOME/Development
+# Clone the sources:
 git clone https://github.com/gcerutti/draco_stem.git openalea-draco-stem
+# Checkout the proper branch:
 cd openalea-draco-stem
 git branch feature/standalone origin/feature/standalone
 git checkout feature/standalone
 git pull origin feature/standalone
+# Install in develop mode:
 python setup.py develop
 ```
 
 ### OpenAlea TimageTK
+You will need `scons` to compile parts of the sources.
+On MacOS: `brew install scons`.
+On Ubuntu: `sudo apt install scons`.
+
+Create a `.profile` file in your home folder (why?):
+`touch $HOME/.profile`.
 
 ``` shell
-source activate gnomon
-brew install scons
-touch $HOME/.profile
 cd $HOME/Development
+# Clone the sources:
 git clone https://github.com/gcerutti/timagetk.git openalea-timagetk
+# Checkout the proper branch:
 cd openalea-timagetk
 git pull origin master
+# Install in develop mode:
 python setup.py develop
 ```
 
 ### OpenAlea TissueAnalysis
 
 ``` shell
-source activate gnomon
 cd $HOME/Development
+# Clone the sources:
 git clone https://github.com/gcerutti/tissue_analysis.git openalea-tissue-analysis
+# Checkout the proper branch:
 cd openalea-tissue-analysis
 git branch feature/standalone origin/feature/standalone
 git checkout feature/standalone
 git pull origin feature/standalone
+# Install in develop mode:
 python setup.py develop
 ```
 
