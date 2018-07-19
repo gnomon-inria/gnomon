@@ -38,6 +38,10 @@
 #include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
 #include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexReader.h>
+#include <gnomonCore/gnomonTime.h>
+#include <gnomonCore/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonDiscreteDynamicForm.h>
 
 %}
 
@@ -54,20 +58,29 @@
     void setValue(gnomonCellComplex *value) {
         $self->setValue(dtkMetaType::variantFromValue(value));
     }
-    void setValue(gnomonCellImage *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
-    }
-    void setValue(gnomonCellGraph *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
-    }
     gnomonCellComplex* tognomonCellComplex() const {
         return $self->value<gnomonCellComplex *>();
+    }
+
+    void setValue(gnomonCellImage *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
     }
     gnomonCellImage* tognomonCellImage() const {
         return $self->value<gnomonCellImage *>();
     }
+
+    void setValue(gnomonCellGraph *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
     gnomonCellGraph* tognomonCellGraph() const {
         return $self->value<gnomonCellGraph *>();
+    }
+
+    void setValue(gnomonDiscreteDynamicForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
+        return $self->value<gnomonDiscreteDynamicForm *>();
     }
  }
 
@@ -93,6 +106,10 @@
 %include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexReader.h>
+%include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonDiscreteDynamicForm.h>
 
 %include <QVariant.i>
 

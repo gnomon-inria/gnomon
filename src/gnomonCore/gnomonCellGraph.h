@@ -25,7 +25,7 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonCellGraph : gnomonAbstractForm
+class GNOMONCORE_EXPORT gnomonCellGraph : public gnomonAbstractForm
 {
 protected:
     gnomonAbstractCellGraphData *m_data;

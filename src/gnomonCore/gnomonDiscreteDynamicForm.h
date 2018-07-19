@@ -29,7 +29,7 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonDiscreteDynamicForm : gnomonAbstractDynamicForm
+class GNOMONCORE_EXPORT gnomonDiscreteDynamicForm : public gnomonAbstractDynamicForm
 {
 
 public:

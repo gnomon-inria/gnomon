@@ -12,12 +12,14 @@
 
 // Code:
 
+#include <dtkCore>
+
 #include "gnomonCore.h"
 #include "gnomonAbstractDynamicForm.h"
 
-namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractDynamicForm, dynamicForm, gnomonCore);
-}
+// namespace gnomonCore {
+//     DTK_DEFINE_CONCEPT(gnomonAbstractDynamicForm, dynamicForm, gnomonCore);
+// }
 
 
 //
