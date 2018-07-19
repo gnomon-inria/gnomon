@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-class GNOMONCORE_EXPORT gnomonCellImage : gnomonAbstractForm
+class GNOMONCORE_EXPORT gnomonCellImage : public gnomonAbstractForm
 {
 protected:
     gnomonAbstractCellImageData *m_data;

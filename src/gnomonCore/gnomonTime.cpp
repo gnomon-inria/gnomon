@@ -25,13 +25,20 @@ gnomonTime::gnomonTime(unsigned long timeStamp, Mode timeMode)
     this->timeMode = timeMode;
 }
 
-gnomonTime::gnomonTime(const gnomonTime& time)
+gnomonTime::gnomonTime(const gnomonTime& o)
+{
+    this->timeStamp = o.timeStamp;
+    this->timeMode = o.timeMode;
+}
+
+gnomonTime& gnomonTime::operator = (const gnomonTime& time)
 {
     this->timeStamp = time.timeStamp;
     this->timeMode = time.timeMode;
+    return *this;
 }
 
-unsigned long gnomonTime::getTimeStamp()
+unsigned long gnomonTime::getTimeStamp() const
 {
 	return this->timeStamp;
 }
@@ -41,7 +48,7 @@ void gnomonTime::setTimeStamp(unsigned long timeStamp)
 	this->timeStamp = timeStamp;
 }
 
-gnomonTime::Mode gnomonTime::getMode()
+gnomonTime::Mode gnomonTime::getMode() const
 {
 	return this->timeMode;
 }
@@ -52,14 +59,24 @@ void gnomonTime::setMode(Mode timeMode=ArbitraryTime)
 }
 
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
 
-namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonTime, time, gnomonCore);
+bool operator == (const gnomonTime& time1, const gnomonTime& time2)
+{
+	return time1.getTimeStamp()==time2.getTimeStamp();
 }
 
+bool operator != (const gnomonTime& time1, const gnomonTime& time2)
+{
+	return time1.getTimeStamp()!=time2.getTimeStamp();
+}
+
+bool operator < (const gnomonTime& time1, const gnomonTime& time2)
+{
+    return time1.getTimeStamp()<time2.getTimeStamp();
+}
+
+
+
 //
-// gnomonCellComplexData.cpp ends here
+// gnomonTime.cpp ends here
 
