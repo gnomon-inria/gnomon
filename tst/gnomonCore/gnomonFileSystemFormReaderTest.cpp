@@ -42,11 +42,15 @@ void gnomonFileSystemFormReaderTestCase::init(void)
     gnomonFileSystemFormReader wrong_reader(wrong_parameters);
 
     QVERIFY(wrong_reader.timeMode() == gnomonTime::Mode::Unknown);
-
 }
 
 void gnomonFileSystemFormReaderTestCase::read(void)
 {
+    gnomonTime time(0, gnomonTime::ArbitraryTime);
+    QVERIFY(d->reader->read(time));
+
+    gnomonTime wrong_time(0, gnomonTime::DateTime);
+    QVERIFY(!d->reader->read(wrong_time));
 
 }
 

@@ -34,9 +34,9 @@ public:
     };
 
 public:
-     gnomonTime(unsigned long timeStamp=0, Mode timeMode=ArbitraryTime);
+     gnomonTime(unsigned long timeStamp = 0, Mode timeMode = ArbitraryTime);
      gnomonTime(const gnomonTime& time);
-    ~gnomonTime() {};
+     ~gnomonTime() {};
 
 protected:
 	unsigned long timeStamp;

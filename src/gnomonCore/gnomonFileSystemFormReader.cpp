@@ -3,6 +3,8 @@
 class gnomonFileSystemFormReaderPrivate {
 public:
     gnomonTime::Mode time_mode;
+
+    QMap<gnomonTime, QString> files_paths;
 };
 
 gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
@@ -20,6 +22,8 @@ gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& param
     }
 
     QFile file(configuration_file_path);
+
+    QFileInfo file_info(file);
     QIODevice *in = &file;
 
     QIODevice::OpenMode mode = QIODevice::ReadOnly;
@@ -58,14 +62,18 @@ gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& param
         d->time_mode = gnomonTime::Mode::DateTime;
     } else {
         qWarning() << Q_FUNC_INFO << "The time mode :" << line_split[1] << "present in the configuration file does not match any of the available modes";
-            return;
+        return;
     }
 
     while (!in->atEnd()) {
         line = in->readLine().trimmed();
-        std::istringstream lin(line.toStdString());
-
-
+        line_split = line.split(re);
+        if(line_split.size() != 2) {
+            qWarning() << Q_FUNC_INFO << "One of the entry of the dyform file doesn't match the POC format : \'time path\'";
+            continue;
+        }
+#pragma message "a QFile could be created at this point and stored in the map"
+        d->files_paths[gnomonTime(line_split[0].toULong(), d->time_mode)] = file_info.dir().toString() + QString("/") + line_split[1];
     }
 
 }
@@ -75,12 +83,14 @@ gnomonFileSystemFormReader::~gnomonFileSystemFormReader(void)
     delete d;
 }
 
-void gnomonFileSystemFormReader::read(const gnomonTime& time)
+gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
 {
     if(time.getMode() != d->time_mode) {
         qWarning() << Q_FUNC_INFO << "The time mode do not match the underlying dyform time mode";
-        return;
+        return false;
     }
+
+
 
 }
 

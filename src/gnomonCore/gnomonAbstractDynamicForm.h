@@ -25,7 +25,7 @@
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
-
+class gnomonAbstractForm;
 class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
 {
 public:
@@ -35,8 +35,10 @@ public:
 public:
     virtual void setInitialTime(gnomonTime T_i) = 0;
     virtual gnomonAbstractForm* atTime(gnomonTime t) = 0;
-    
+
 };
+
+typedef QSharedPointer<gnomonAbstractDynamicForm> gnomonAbstractDynamicFormPtr;
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
