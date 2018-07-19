@@ -26,7 +26,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposer
   gnomonComposerNodeView
   gnomonComposerNodeView.h
-  gnomonComposerWidget
   gnomonComposerWidget_p.h
   gnomonComposerWidget.h
   gnomonCellGraphFromImageNode.h
