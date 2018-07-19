@@ -129,7 +129,7 @@ Create a `.profile` file in your home folder (why?):
 ``` shell
 cd $HOME/Development
 # Clone the sources:
-git clone https://github.com/gcerutti/timagetk.git openalea-timagetk
+git clone git@gitlab.inria.fr:mosaic/timagetk.git openalea-timagetk
 # Checkout the proper branch:
 cd openalea-timagetk
 git pull origin master
@@ -142,7 +142,7 @@ python setup.py develop
 ``` shell
 cd $HOME/Development
 # Clone the sources:
-git clone https://github.com/gcerutti/tissue_analysis.git openalea-tissue-analysis
+git clone git@gitlab.inria.fr:mosaic/tissue_analysis.git openalea-tissue-analysis
 # Checkout the proper branch:
 cd openalea-tissue-analysis
 git branch feature/standalone origin/feature/standalone
@@ -171,7 +171,7 @@ To enable both SIP and SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPE
 ``` shell
 source activate gnomon
 cd $HOME/Development
-git clone https://github.com/d-tk/dtk.git
+git clone git@gitlab.inria.fr:dtk/dtk.git
 cd dtk
 git checkout develop
 mkdir build
@@ -185,7 +185,7 @@ make -j4
 ``` shell
 source activate gnomon
 cd $HOME/Development
-git clone https://github.com/d-tk/dtk-imaging.git
+git clone git@gitlab.inria.fr:dtk/dtk-imaging.git
 cd dtk-imaging
 git checkout develop
 mkdir build
@@ -199,7 +199,7 @@ make -j4
 ``` shell
 source activate gnomon
 cd $HOME/Development
-git clone https://github.com/d-tk/dtk-plugins-imaging.git
+git clone git@gitlab.inria.fr:dtk/dtk-plugins-imaging.git
 cd dtk-plugins-imaging
 git checkout develop
 mkdir build
