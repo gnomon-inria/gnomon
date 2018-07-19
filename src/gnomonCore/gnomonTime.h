@@ -28,6 +28,7 @@ class GNOMONCORE_EXPORT gnomonTime
 {
 public:
     enum Mode {
+        Unknown,
         DateTime,
         ArbitraryTime
     };
@@ -42,10 +43,10 @@ protected:
 	Mode timeMode;
 
 public:
-    unsigned long getTimeStamp();
+    unsigned long getTimeStamp() const;
     void setTimeStamp(unsigned long timeStamp);
 
-    Mode getMode();
+    Mode getMode() const;
     void setMode(Mode);
 };
 

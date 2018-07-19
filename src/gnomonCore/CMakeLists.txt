@@ -49,7 +49,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellGraphData.h
   gnomonTime.h
   gnomonAbstractDynamicForm.h
-  gnomonAbstractForm.h)
+  gnomonAbstractForm.h
+  gnomonFileSystemFormReader.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
@@ -63,7 +64,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellComplexFromImage.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellComplexReader.cpp
-  gnomonTime.cpp)
+  gnomonTime.cpp
+  gnomonFileSystemFormReader.cpp)
 
 ## #################################################################
 ## Wrapping

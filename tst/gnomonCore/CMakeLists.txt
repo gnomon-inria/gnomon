@@ -11,10 +11,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonDataManagerTest.h)
+  gnomonDataManagerTest.h
+  gnomonFileSystemFormReaderTest.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonDataManagerTest.cpp)
+  gnomonDataManagerTest.cpp
+  gnomonFileSystemFormReaderTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -47,3 +49,4 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## ###################################################################
 
 add_test(gnomonDataManagerTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDataManagerTest)
+add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)

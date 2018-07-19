@@ -31,7 +31,7 @@ gnomonTime::gnomonTime(const gnomonTime& time)
     this->timeMode = time.timeMode;
 }
 
-unsigned long gnomonTime::getTimeStamp()
+unsigned long gnomonTime::getTimeStamp() const
 {
 	return this->timeStamp;
 }
@@ -41,7 +41,7 @@ void gnomonTime::setTimeStamp(unsigned long timeStamp)
 	this->timeStamp = timeStamp;
 }
 
-gnomonTime::Mode gnomonTime::getMode()
+gnomonTime::Mode gnomonTime::getMode() const
 {
 	return this->timeMode;
 }
@@ -62,4 +62,3 @@ namespace gnomonCore {
 
 //
 // gnomonCellComplexData.cpp ends here
-

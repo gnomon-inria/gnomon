@@ -1,0 +1,90 @@
+#include "gnomonFileSystemFormReader.h"
+
+class gnomonFileSystemFormReaderPrivate {
+public:
+    gnomonTime::Mode time_mode;
+};
+
+gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
+{
+    if(!parameters.contains("configuration_file_path")) {
+        qWarning() << Q_FUNC_INFO << "The configuration file path could not be infered from the parameters";
+        return;
+    }
+
+    QString configuration_file_path = parameters["configuration_file_path"].toString();
+
+    if (QFileInfo(configuration_file_path).suffix() != "dyform") {
+        qWarning() << Q_FUNC_INFO << "The file doesn't match the required file format : dyform";
+        return;
+    }
+
+    QFile file(configuration_file_path);
+    QIODevice *in = &file;
+
+    QIODevice::OpenMode mode = QIODevice::ReadOnly;
+    mode |= QIODevice::Text;
+
+    // to avoid troubles with floats separators ('.' and not ',')
+    QLocale::setDefault(QLocale::c());
+#if defined (Q_OS_UNIX) && !defined(Q_OS_MAC)
+    setlocale(LC_NUMERIC, "C");
+#endif
+
+    if (!in->open(mode)) {
+        qWarning() << Q_FUNC_INFO << "The file could not be found, please verify the path";
+        return;
+    }
+
+    QString line = in->readLine().trimmed();
+    QRegExp re = QRegExp("\\s+");
+
+    if(line.isEmpty()) {
+        return;
+    }
+
+    QStringList line_split = line.split(re);
+
+    if(line_split.size() != 2 || line_split[0] != "Mode") {
+        qWarning() << Q_FUNC_INFO << "The first line of the file must contains : \"Mode \'timeMode\'\" ";
+        return;
+    }
+
+    QString time_mode = line_split[1];
+
+    if(time_mode == "ArbitraryTime") {
+        d->time_mode = gnomonTime::Mode::ArbitraryTime;
+    } else if(time_mode == "DateTime") {
+        d->time_mode = gnomonTime::Mode::DateTime;
+    } else {
+        qWarning() << Q_FUNC_INFO << "The time mode :" << line_split[1] << "present in the configuration file does not match any of the available modes";
+            return;
+    }
+
+    while (!in->atEnd()) {
+        line = in->readLine().trimmed();
+        std::istringstream lin(line.toStdString());
+
+
+    }
+
+}
+
+gnomonFileSystemFormReader::~gnomonFileSystemFormReader(void)
+{
+    delete d;
+}
+
+void gnomonFileSystemFormReader::read(const gnomonTime& time)
+{
+    if(time.getMode() != d->time_mode) {
+        qWarning() << Q_FUNC_INFO << "The time mode do not match the underlying dyform time mode";
+        return;
+    }
+
+}
+
+gnomonTime::Mode gnomonFileSystemFormReader::timeMode(void)
+{
+    return d->time_mode;
+}
