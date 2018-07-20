@@ -38,16 +38,20 @@ void gnomonFileSystemFormReaderTestCase::initTestCase(void)
 
 void gnomonFileSystemFormReaderTestCase::init(void)
 {
-    QVariantHash parameters;
+    // QVariantHash parameters;
     QString configuration_file_path = QFINDTESTDATA("../resources/test.dyform");
-    parameters["configuration_file_path"] = configuration_file_path;
+    // parameters["configuration_file_path"] = configuration_file_path;
 
-    d->reader = new gnomonFileSystemFormReader(parameters);
+    // d->reader = new gnomonFileSystemFormReader(parameters);
+    d->reader = new gnomonFileSystemFormReader(configuration_file_path);
 
     QVERIFY(d->reader->timeMode() == gnomonTime::Mode::ArbitraryTime);
 
-    QVariantHash wrong_parameters;
-    gnomonFileSystemFormReader wrong_reader(wrong_parameters);
+    // QVariantHash wrong_parameters;
+    QString wrong_configuration_file_path = QFINDTESTDATA("../resources/wrong_test.dyform");
+
+    // gnomonFileSystemFormReader wrong_reader(wrong_parameters);
+    gnomonFileSystemFormReader wrong_reader(wrong_configuration_file_path);
 
     QVERIFY(wrong_reader.timeMode() == gnomonTime::Mode::Unknown);
 }
@@ -56,7 +60,8 @@ void gnomonFileSystemFormReaderTestCase::read(void)
 {
     gnomonTime time(0, gnomonTime::ArbitraryTime);
 
-    gnomonIntensityImagePtr form = d->reader->read(time).staticCast<gnomonIntensityImage>();;
+    // gnomonIntensityImage* form = d->reader->read(time).staticCast<gnomonIntensityImage>();
+    gnomonIntensityImage* form = (gnomonIntensityImage *) d->reader->read(time);
     QVERIFY(form);
 
     QVERIFY(form->data()->dim() == 3);
@@ -65,7 +70,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
     QVERIFY(form->data()->zDim() == 3);
 
     time = gnomonTime(1, gnomonTime::ArbitraryTime);
-    form = d->reader->read(time).staticCast<gnomonIntensityImage>();;
+    form = (gnomonIntensityImage *) d->reader->read(time);
     QVERIFY(form);
 
     QVERIFY(form->data()->dim() == 3);
@@ -74,7 +79,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
     QVERIFY(form->data()->zDim() == 3);
 
     gnomonTime wrong_time(2, gnomonTime::ArbitraryTime);
-    gnomonAbstractFormPtr wrong_form = d->reader->read(wrong_time);
+    gnomonAbstractForm* wrong_form = d->reader->read(wrong_time);
     QVERIFY(!wrong_form);
 
     wrong_time = gnomonTime(0, gnomonTime::DateTime);

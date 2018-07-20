@@ -10,14 +10,16 @@ public:
     QMap<gnomonTime, QString> files_paths;
 };
 
-gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
+#pragma message "Make it possible to have more parameters than just a file path"
+// gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
+gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QString& configuration_file_path) : d(new gnomonFileSystemFormReaderPrivate)
 {
-    if(!parameters.contains("configuration_file_path")) {
-        qWarning() << Q_FUNC_INFO << "The configuration file path could not be infered from the parameters";
-        return;
-    }
+    // if(!parameters.contains("configuration_file_path")) {
+    //     qWarning() << Q_FUNC_INFO << "The configuration file path could not be infered from the parameters";
+    //     return;
+    // }
 
-    QString configuration_file_path = parameters["configuration_file_path"].toString();
+    // QString configuration_file_path = parameters["configuration_file_path"].toString();
 
     if (QFileInfo(configuration_file_path).suffix() != "dyform") {
         qWarning() << Q_FUNC_INFO << "The file doesn't match the required file format : dyform";
@@ -86,37 +88,43 @@ gnomonFileSystemFormReader::~gnomonFileSystemFormReader(void)
     delete d;
 }
 
-gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
+gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
+// gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
 {
     if(time.getMode() != d->time_mode) {
         qWarning() << Q_FUNC_INFO << "The time mode does not match the underlying dyform time mode";
-        return gnomonAbstractFormPtr();
+        // return gnomonAbstractFormPtr();
+        return NULL;
     }
 
     if(!d->files_paths.contains(time)) {
         qWarning() << Q_FUNC_INFO << "The requested time is not available";
-        return gnomonAbstractFormPtr();
+        // return gnomonAbstractFormPtr();
+        return NULL;
     }
 
 #pragma message "The type of the form should be specified in the dyform file"
     dtkImageReader *image_reader = dtkImaging::reader::pluginFactory().create("dtkVtkImageReader");
     if(!image_reader) {
         qWarning() << Q_FUNC_INFO << "The vtkImageReader plugin could lot be loaded, make sure you have compiled the VTK plugins and added them the the dtkImaging plugins path";
-        return gnomonAbstractFormPtr();
+        // return gnomonAbstractFormPtr();
+        return NULL;
     }
 
     dtkImage *dtk_image = image_reader->read(d->files_paths[time]);
     if(!dtk_image) {
         qWarning() << Q_FUNC_INFO << "The image could not be properly read.";
-        return gnomonAbstractFormPtr();
+        // return gnomonAbstractFormPtr();
+        return NULL;
     }
 
     gnomonIntensityImage *image= new gnomonIntensityImage();
     image->setData(dtk_image);
 
-    gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
+    // gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
 
-    return form;
+    return image;
+    // return form;
 }
 
 gnomonTime::Mode gnomonFileSystemFormReader::timeMode(void)

@@ -25,11 +25,14 @@
 class GNOMONCORE_EXPORT gnomonFileSystemFormReader
 {
 public:
-    gnomonFileSystemFormReader(const QVariantHash&);
+#pragma message "Make it possible to have more parameters than just a file path"
+    // gnomonFileSystemFormReader(const QVariantHash&);
+    gnomonFileSystemFormReader(const QString&);
     virtual ~gnomonFileSystemFormReader(void);
 
 #pragma message "Possibly add also a specific read for a specific type of data at a given time"
-    gnomonAbstractFormPtr read(const gnomonTime&);
+    gnomonAbstractForm * read(const gnomonTime&);
+    // gnomonAbstractFormPtr read(const gnomonTime&);
 
     gnomonTime::Mode timeMode(void);
 
