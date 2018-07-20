@@ -52,7 +52,9 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
-  gnomonAbstractForm.h)
+  gnomonAbstractForm.h
+  gnomonDiscreteDynamicForm
+  gnomonDiscreteDynamicForm.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
