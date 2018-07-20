@@ -4,6 +4,7 @@
 #include <gnomonTest>
 
 #include <dtkCore>
+#include <dtkImagingCore>
 
 #include <gnomonFileSystemFormReader.h>
 #include <gnomonTime.h>
@@ -26,6 +27,7 @@ gnomonFileSystemFormReaderTestCase::~gnomonFileSystemFormReaderTestCase(void)
 
 void gnomonFileSystemFormReaderTestCase::initTestCase(void)
 {
+    dtkImaging::initialize();
 }
 
 void gnomonFileSystemFormReaderTestCase::init(void)
@@ -47,10 +49,14 @@ void gnomonFileSystemFormReaderTestCase::init(void)
 void gnomonFileSystemFormReaderTestCase::read(void)
 {
     gnomonTime time(0, gnomonTime::ArbitraryTime);
-    QVERIFY(d->reader->read(time));
+
+    gnomonAbstractFormPtr form = d->reader->read(time);
+    QVERIFY(form);
 
     gnomonTime wrong_time(0, gnomonTime::DateTime);
-    QVERIFY(!d->reader->read(wrong_time));
+
+    gnomonAbstractFormPtr wrong_form = d->reader->read(wrong_time);
+    QVERIFY(!wrong_form);
 
 }
 

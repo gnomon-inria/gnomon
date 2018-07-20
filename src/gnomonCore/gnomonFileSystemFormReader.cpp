@@ -1,6 +1,8 @@
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonIntensityImage.h"
 
+#include <dtkImagingCore>
+
 class gnomonFileSystemFormReaderPrivate {
 public:
     gnomonTime::Mode time_mode = gnomonTime::Mode::Unknown;
@@ -97,7 +99,22 @@ gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
     }
 
 #pragma message "The type of the form should be specified in the dyform file"
-    gnomonAbstractFormPtr form = gnomonAbstractFormPtr(new gnomonIntensityImage);
+    dtkImageReader *image_reader = dtkImaging::reader::pluginFactory().create("dtkVtkImageReader");
+    if(!image_reader) {
+        qWarning() << Q_FUNC_INFO << "The vtkImageReader plugin could lot be loaded, make sure you have compiled the VTK plugins and added them the the dtkImaging plugins path";
+        return gnomonAbstractFormPtr();
+    }
+
+    dtkImage *dtk_image = image_reader->read(d->files_paths[time]);
+    if(!dtk_image) {
+        qWarning() << Q_FUNC_INFO << "The image could not be properly read.";
+        return gnomonAbstractFormPtr();
+    }
+
+    gnomonIntensityImage *image= new gnomonIntensityImage;
+    image->setImage(dtk_image);
+
+    gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
 
     return form;
 }
