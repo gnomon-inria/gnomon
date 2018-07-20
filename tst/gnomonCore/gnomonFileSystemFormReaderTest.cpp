@@ -5,6 +5,7 @@
 
 #include <dtkCore>
 #include <dtkImagingCore>
+#include <dtkLogger>
 
 #include <gnomonFileSystemFormReader.h>
 #include <gnomonTime.h>
@@ -28,6 +29,9 @@ gnomonFileSystemFormReaderTestCase::~gnomonFileSystemFormReaderTestCase(void)
 
 void gnomonFileSystemFormReaderTestCase::initTestCase(void)
 {
+    dtkLogger::instance().attachConsole();
+    dtkLogger::instance().setLevel(dtkLog::Trace);
+
     dtkImaging::initialize();
 }
 
