@@ -60,18 +60,15 @@ add_library(${PROJECT_NAME}Extension SHARED
 set_target_properties(${PROJECT_NAME}Extension PROPERTIES CXX_VISIBILITY_PRESET hidden)
 set_target_properties(${PROJECT_NAME}Extension PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
 set_target_properties(${PROJECT_NAME}Extension PROPERTIES MACOSX_RPATH 0)
-set_target_properties(${PROJECT_NAME}Extension PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-set_target_properties(${PROJECT_NAME}Extension PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+set_target_properties(${PROJECT_NAME}Extension PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/plugins/dtkComposer")
+set_target_properties(${PROJECT_NAME}Extension PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/plugins/dtkComposer;${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
 ## #################################################################
 ## Export header file
 ## #################################################################
 
-generate_export_header(${PROJECT_NAME}Extension EXPORT_FILE_NAME "${PROJECT_NAME}ExtensionExport.h")
-
-add_custom_command(TARGET ${PROJECT_NAME}Extension PRE_BUILD
-   COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ExtensionExport.h" "${CMAKE_BINARY_DIR}"
-   COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ExtensionExport.h" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ExtensionExport")
+generate_export_header(${PROJECT_NAME}Extension EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ExtensionExport.h")
+generate_export_header(${PROJECT_NAME}Extension EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ExtensionExport")
 
 set(${PROJECT_NAME}_EXTENSION_HEADERS
   ${${PROJECT_NAME}_EXTENSION_HEADERS}
