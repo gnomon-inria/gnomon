@@ -111,8 +111,8 @@ gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
         return gnomonAbstractFormPtr();
     }
 
-    gnomonIntensityImage *image= new gnomonIntensityImage;
-    image->setImage(dtk_image);
+    gnomonIntensityImage *image= new gnomonIntensityImage();
+    image->setData(dtk_image);
 
     gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
 

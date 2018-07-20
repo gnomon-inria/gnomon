@@ -16,20 +16,20 @@
 
 #include <gnomonCoreExport.h>
 
-#include "gnomonAbstractIntensityImageData.h"
 #include "gnomonAbstractForm.h"
 
 #include <QtCore>
+#include <dtkImage>
 
 class GNOMONCORE_EXPORT gnomonIntensityImage : public gnomonAbstractForm
 {
 protected:
-    gnomonAbstractIntensityImageData *m_data;
+    dtkImage *m_data;
 
 public:
     explicit gnomonIntensityImage(void) : m_data(nullptr) {}
-    explicit gnomonIntensityImage(gnomonAbstractIntensityImageData *data) : m_data(data) {}
-    gnomonIntensityImage(const gnomonIntensityImage& o) : m_data(o.m_data->clone()) {}
+    explicit gnomonIntensityImage(dtkImage *data) : m_data(data) {}
+    gnomonIntensityImage(const gnomonIntensityImage& o) : m_data(new dtkImage(*o.m_data)) {}
 
     ~gnomonIntensityImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
@@ -41,7 +41,7 @@ public:
                 delete m_data;
             }
             if(o.m_data != nullptr) {
-                m_data = o.m_data->clone();
+                m_data = new dtkImage(*o.m_data);
             } else {
                 m_data = nullptr;
             }
@@ -50,16 +50,13 @@ public:
     }
 
 public:
-    const gnomonAbstractIntensityImageData *data(void) const { return m_data; }
-          gnomonAbstractIntensityImageData *data(void)       { return m_data; }
+    const dtkImage *data(void) const { return m_data; }
+          dtkImage *data(void)       { return m_data; }
 
-    void setData(gnomonAbstractIntensityImageData* data) { m_data = data; }
-
-public:
-    virtual void setImage(dtkImage *image) { return m_data->setImage(image); }
-    virtual dtkImage* image(void) const { return m_data->image(); }
+    void setData(dtkImage* data) { m_data = data; }
 };
 
+typedef QSharedPointer<gnomonIntensityImage> gnomonIntensityImagePtr;
 
 // ///////////////////////////////////////////////////////////////////
 

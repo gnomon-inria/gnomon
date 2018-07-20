@@ -8,6 +8,7 @@
 
 #include <gnomonFileSystemFormReader.h>
 #include <gnomonTime.h>
+#include <gnomonIntensityImage.h>
 
 class gnomonFileSystemFormReaderTestCasePrivate
 {
@@ -50,13 +51,31 @@ void gnomonFileSystemFormReaderTestCase::read(void)
 {
     gnomonTime time(0, gnomonTime::ArbitraryTime);
 
-    gnomonAbstractFormPtr form = d->reader->read(time);
+    gnomonIntensityImagePtr form = d->reader->read(time).staticCast<gnomonIntensityImage>();;
     QVERIFY(form);
 
-    gnomonTime wrong_time(0, gnomonTime::DateTime);
+    QVERIFY(form->data()->dim() == 3);
+    QVERIFY(form->data()->xDim() == 7);
+    QVERIFY(form->data()->yDim() == 5);
+    QVERIFY(form->data()->zDim() == 3);
 
+    time = gnomonTime(1, gnomonTime::ArbitraryTime);
+    form = d->reader->read(time).staticCast<gnomonIntensityImage>();;
+    QVERIFY(form);
+
+    QVERIFY(form->data()->dim() == 3);
+    QVERIFY(form->data()->xDim() == 7);
+    QVERIFY(form->data()->yDim() == 5);
+    QVERIFY(form->data()->zDim() == 3);
+
+    gnomonTime wrong_time(2, gnomonTime::ArbitraryTime);
     gnomonAbstractFormPtr wrong_form = d->reader->read(wrong_time);
     QVERIFY(!wrong_form);
+
+    wrong_time = gnomonTime(0, gnomonTime::DateTime);
+    wrong_form = d->reader->read(wrong_time);
+    QVERIFY(!wrong_form);
+
 
 }
 
