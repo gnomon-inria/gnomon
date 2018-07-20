@@ -27,27 +27,29 @@ class GNOMONCORE_EXPORT gnomonTime
 {
 public:
     enum Mode {
+        Unknown,
         DateTime,
         ArbitraryTime
     };
 
-protected:
-	unsigned long timeStamp;
-	Mode timeMode;
-
 public:
-     gnomonTime(unsigned long timeStamp=0, Mode timeMode=ArbitraryTime);
-     gnomonTime(const gnomonTime& o);
+     gnomonTime(unsigned long timeStamp = 0, Mode timeMode = ArbitraryTime);
+     gnomonTime(const gnomonTime&);
     ~gnomonTime() {};
 
 public:
 	gnomonTime& operator = (const gnomonTime& time);
+
 public:
     unsigned long getTimeStamp() const;
     void setTimeStamp(unsigned long timeStamp);
 
     Mode getMode() const;
     void setMode(Mode);
+
+protected:
+	unsigned long timeStamp;
+	Mode timeMode;
 };
 
 bool operator == (const gnomonTime& time1, const gnomonTime& time2);

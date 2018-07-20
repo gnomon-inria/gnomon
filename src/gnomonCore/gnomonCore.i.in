@@ -27,6 +27,7 @@
 #include <dtkImagingCore>
 
 #include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexData.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonAbstractCellImageData.h>
@@ -42,6 +43,7 @@
 #include <gnomonCore/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
+#include <gnomonFileSystemFormReader.h>
 
 %}
 
@@ -95,6 +97,11 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+%include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonDiscreteDynamicForm.h>
+%include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonAbstractCellImageData.h>
@@ -106,10 +113,7 @@
 %include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexReader.h>
-%include <gnomonCore/gnomonTime.h>
-%include <gnomonCore/gnomonAbstractForm.h>
-%include <gnomonCore/gnomonAbstractDynamicForm.h>
-%include <gnomonCore/gnomonDiscreteDynamicForm.h>
+%include <gnomonCore/gnomonFileSystemFormReader.h>
 
 %include <QVariant.i>
 

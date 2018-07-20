@@ -59,7 +59,6 @@ void gnomonTime::setMode(Mode timeMode=ArbitraryTime)
 }
 
 
-
 bool operator == (const gnomonTime& time1, const gnomonTime& time2)
 {
 	return time1.getTimeStamp()==time2.getTimeStamp();
@@ -75,8 +74,5 @@ bool operator < (const gnomonTime& time1, const gnomonTime& time2)
     return time1.getTimeStamp()<time2.getTimeStamp();
 }
 
-
-
 //
 // gnomonTime.cpp ends here
-

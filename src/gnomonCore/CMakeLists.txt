@@ -39,6 +39,11 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellComplex.h
   gnomonAbstractCellComplexData
   gnomonAbstractCellComplexData.h
+  gnomonAbstractIntensityImageData
+  gnomonAbstractIntensityImageData.h
+  gnomonIntensityImage
+  gnomonIntensityImage.h
+  gnomonCellImage.h
   gnomonCellImage
   gnomonCellImage.h
   gnomonAbstractCellImageData
@@ -53,6 +58,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonFileSystemFormReader.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h)
 
@@ -62,6 +68,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDataManager.cpp
   gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellImageData.cpp
+  gnomonAbstractIntensityImageData.cpp
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractCellGraphFromImage.cpp
@@ -69,6 +76,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellComplexReader.cpp
   gnomonTime.cpp
+  gnomonFileSystemFormReader.cpp
   gnomonDiscreteDynamicForm.cpp)
 
 ## #################################################################
