@@ -27,8 +27,6 @@ public:
 
 gnomonDiscreteDynamicForm::gnomonDiscreteDynamicForm(void)
 {
-	d->forms = QMap<gnomonTime, gnomonAbstractForm*>();
-	d->initialTime = gnomonTime();
 }
 
 gnomonDiscreteDynamicForm::gnomonDiscreteDynamicForm(const gnomonDiscreteDynamicForm& o) : d(new gnomonDiscreteDynamicFormPrivate)
