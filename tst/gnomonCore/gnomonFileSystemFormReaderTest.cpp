@@ -30,7 +30,6 @@ gnomonFileSystemFormReaderTestCase::~gnomonFileSystemFormReaderTestCase(void)
 void gnomonFileSystemFormReaderTestCase::initTestCase(void)
 {
     dtkLogger::instance().attachConsole();
-    dtkLogger::instance().setLevel("trace");
     dtkImaging::setVerboseLoading(true);
 
     dtkImaging::initialize();
