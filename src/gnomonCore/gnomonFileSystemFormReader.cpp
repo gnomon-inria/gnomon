@@ -115,6 +115,7 @@ gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
     if(!dtk_image) {
         qWarning() << Q_FUNC_INFO << "The image could not be properly read.";
         // return gnomonAbstractFormPtr();
+        delete image_reader;
         return NULL;
     }
 
@@ -123,6 +124,7 @@ gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
 
     // gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
 
+    delete image_reader;
     return image;
     // return form;
 }

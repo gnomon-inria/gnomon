@@ -53,6 +53,7 @@ void gnomonFileSystemFormReaderTestCase::init(void)
     gnomonFileSystemFormReader wrong_reader(wrong_configuration_file_path);
 
     QVERIFY(wrong_reader.timeMode() == gnomonTime::Mode::Unknown);
+
 }
 
 void gnomonFileSystemFormReaderTestCase::read(void)
@@ -69,6 +70,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
     QVERIFY(form->data()->zDim() == 3);
 
     time = gnomonTime(1, gnomonTime::ArbitraryTime);
+    delete form;
     form = (gnomonIntensityImage *) d->reader->read(time);
     QVERIFY(form);
 
@@ -77,6 +79,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
     QVERIFY(form->data()->yDim() == 5);
     QVERIFY(form->data()->zDim() == 3);
 
+    delete form;
     gnomonTime wrong_time(2, gnomonTime::ArbitraryTime);
     gnomonAbstractForm* wrong_form = d->reader->read(wrong_time);
     QVERIFY(!wrong_form);
@@ -90,7 +93,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
 
 void gnomonFileSystemFormReaderTestCase::cleanup(void)
 {
-
+    delete d->reader;
 }
 
 void gnomonFileSystemFormReaderTestCase::cleanupTestCase(void)
