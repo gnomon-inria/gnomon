@@ -12,11 +12,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonDataManagerTest.h
+  gnomonExpansionSphereModelTest.h
   gnomonFileSystemFormReaderTest.h
   gnomonDiscreteDynamicFormTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonDataManagerTest.cpp
+  gnomonExpansionSphereModelTest.cpp
   gnomonFileSystemFormReaderTest.cpp
   gnomonDiscreteDynamicFormTest.cpp)
 

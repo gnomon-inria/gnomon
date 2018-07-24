@@ -40,27 +40,36 @@ gnomonDiscreteDynamicForm::~gnomonDiscreteDynamicForm(void)
 	delete d;
 }
 
+
+void gnomonDiscreteDynamicForm::setInitialTime(gnomonTime initialTime)
+{
+	d->initialTime = initialTime;
+}
+
 gnomonAbstractForm* gnomonDiscreteDynamicForm::atTime(gnomonTime t)
 {
 	// Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
-	return d->forms[t];
+    if(!d->forms.contains(t))
+        d->forms.insert(t, d->forms.last()->clone());
+
+    return d->forms[t];
 }
 
-void gnomonDiscreteDynamicForm::appendForm(gnomonAbstractForm* form, gnomonTime t)
+void gnomonDiscreteDynamicForm::insert(gnomonAbstractForm* form, gnomonTime t)
 {
 	// Q_ASSERT_X(!d->forms.contains(t), "appendForm", "Invalid time position : the form is already defined at this time");
 	d->forms[t] = form;
 }
 
-void gnomonDiscreteDynamicForm::dropForm(gnomonTime t)
+void gnomonDiscreteDynamicForm::drop(gnomonTime t)
 {
 	// Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
 	d->forms.remove(t);
 }
 
-void gnomonDiscreteDynamicForm::setInitialTime(gnomonTime initialTime)
+QList<gnomonTime> gnomonDiscreteDynamicForm::availableTimes(void)
 {
-	d->initialTime = initialTime;
+    return d->forms.keys();
 }
 
 // /////////////////////////////////////////////////////////////////
