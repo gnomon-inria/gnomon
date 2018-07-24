@@ -64,7 +64,9 @@ set(${PROJECT_NAME}_HEADERS
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTime
-  gnomonTime.h)
+  gnomonTime.h
+  gnomonWallContext
+  gnomonWallContext.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellComplexData.cpp
@@ -84,7 +86,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonExpansionSphereModel.cpp
   gnomonFileSystemFormReader.cpp
   gnomonSphereForm.cpp
-  gnomonTime.cpp)
+  gnomonTime.cpp
+  gnomonWallContext.cpp)
 
 ## #################################################################
 ## Wrapping

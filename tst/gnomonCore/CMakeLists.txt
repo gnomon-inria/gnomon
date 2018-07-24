@@ -14,13 +14,15 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDataManagerTest.h
   gnomonDiscreteDynamicFormTest.h
   gnomonExpansionSphereModelTest.h
-  gnomonFileSystemFormReaderTest.h)
+  gnomonFileSystemFormReaderTest.h
+  gnomonWallContextTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonDataManagerTest.cpp
   gnomonDiscreteDynamicFormTest.cpp
   gnomonExpansionSphereModelTest.cpp
-  gnomonFileSystemFormReaderTest.cpp)
+  gnomonFileSystemFormReaderTest.cpp
+  gnomonWallContextTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -56,3 +58,4 @@ add_test(gnomonDataManagerTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_N
 add_test(gnomonExpansionSphereModelTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonExpansionSphereModelTest)
 add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
 add_test(gnomonDiscreteDynamicFormTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDiscreteDynamicFormTest)
+add_test(gnomonWallContextTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonWallContextTest)

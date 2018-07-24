@@ -35,11 +35,12 @@ public:
 
 public:
     void setForm(gnomonAbstractDynamicForm *dynamic_form) { this->dynamic_form = dynamic_form;}
-
+    void setContext(gnomonAbstractModel *c) { this->context = c;}
     virtual void run(const gnomonTime&, unsigned long) = 0;
 
 protected:
     class gnomonAbstractDynamicForm *dynamic_form = nullptr;
+    class gnomonAbstractModel * context;
 };
 
 typedef QSharedPointer<gnomonAbstractModel> gnomonAbstractModelPtr;
