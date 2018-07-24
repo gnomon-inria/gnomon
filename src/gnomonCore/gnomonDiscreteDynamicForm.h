@@ -40,10 +40,13 @@ public:
     gnomonAbstractDynamicForm* clone(void) const { return new gnomonDiscreteDynamicForm(*this); };
 
 public:
-	gnomonAbstractForm* atTime(gnomonTime t);
-    void appendForm(gnomonAbstractForm* form, gnomonTime t);
-    void dropForm(gnomonTime t);
-    void setInitialTime(gnomonTime initialTime);
+    void setInitialTime(gnomonTime initialTime) override;
+	gnomonAbstractForm* atTime(gnomonTime t) override;
+
+    void insert(gnomonAbstractForm* form, gnomonTime t) override;
+    void drop(gnomonTime t) override;
+
+    QList<gnomonTime> availableTimes(void) override;
 
 private:
     class gnomonDiscreteDynamicFormPrivate *d;

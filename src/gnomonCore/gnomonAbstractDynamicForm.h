@@ -36,6 +36,10 @@ public:
     virtual void setInitialTime(gnomonTime T_i) = 0;
     virtual gnomonAbstractForm* atTime(gnomonTime t) = 0;
 
+    virtual void insert(gnomonAbstractForm* form, gnomonTime t) = 0;
+    virtual void drop(gnomonTime t) = 0;
+
+    virtual QList<gnomonTime> availableTimes(void) = 0;
 };
 
 typedef QSharedPointer<gnomonAbstractDynamicForm> gnomonAbstractDynamicFormPtr;

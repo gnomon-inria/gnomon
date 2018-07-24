@@ -46,6 +46,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellImage.h
   gnomonCellImage
   gnomonCellImage.h
+  gnomonExpansionSphereModel.h
   gnomonAbstractCellImageData
   gnomonAbstractCellImageData.h
   gnomonCellGraph
@@ -58,9 +59,11 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonAbstractModel.h
   gnomonFileSystemFormReader.h
   gnomonDiscreteDynamicForm
-  gnomonDiscreteDynamicForm.h)
+  gnomonDiscreteDynamicForm.h
+  gnomonSphereForm.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
@@ -75,6 +78,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellComplexFromImage.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellComplexReader.cpp
+  gnomonExpansionSphereModel.cpp
+  gnomonSphereForm.cpp
   gnomonTime.cpp
   gnomonFileSystemFormReader.cpp
   gnomonDiscreteDynamicForm.cpp)

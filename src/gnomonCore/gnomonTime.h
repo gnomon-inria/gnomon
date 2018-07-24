@@ -52,9 +52,11 @@ protected:
 	Mode timeMode;
 };
 
-bool operator == (const gnomonTime& time1, const gnomonTime& time2);
-bool operator != (const gnomonTime& time1, const gnomonTime& time2);
-bool operator < (const gnomonTime& time1, const gnomonTime& time2);
+GNOMONCORE_EXPORT bool operator == (const gnomonTime& time1, const gnomonTime& time2);
+GNOMONCORE_EXPORT bool operator != (const gnomonTime& time1, const gnomonTime& time2);
+GNOMONCORE_EXPORT bool operator < (const gnomonTime& time1, const gnomonTime& time2);
+
+GNOMONCORE_EXPORT gnomonTime operator + (const gnomonTime& time, unsigned long delta_time);
 
 
 // ///////////////////////////////////////////////////////////////////
