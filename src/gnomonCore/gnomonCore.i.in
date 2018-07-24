@@ -43,6 +43,7 @@
 #include <gnomonCore/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
+#include <gnomonCore/gnomonAbstractModel.h>
 #include <gnomonFileSystemFormReader.h>
 
 %}
@@ -101,6 +102,7 @@
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonDiscreteDynamicForm.h>
+%include <gnomonCore/gnomonAbstractModel.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonCellComplex.h>
