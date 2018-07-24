@@ -31,7 +31,10 @@ public:
     explicit gnomonCellImage(gnomonAbstractCellImageData *data) : m_data(data) {}
     gnomonCellImage(const gnomonCellImage& o) : m_data(o.m_data->clone()) {}
 
+    gnomonAbstractForm *clone(void) { return new gnomonCellImage(*this); };
+
     ~gnomonCellImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+
 
 public:
     gnomonCellImage& operator = (const gnomonCellImage& o)
@@ -48,7 +51,7 @@ public:
         }
         return *this;
     }
-    
+
 public:
     const gnomonAbstractCellImageData *data(void) const { return m_data; }
           gnomonAbstractCellImageData *data(void)       { return m_data; }

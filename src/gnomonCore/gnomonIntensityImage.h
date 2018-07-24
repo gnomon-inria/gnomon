@@ -31,6 +31,8 @@ public:
     explicit gnomonIntensityImage(dtkImage *data) : m_data(data) {}
     gnomonIntensityImage(const gnomonIntensityImage& o) : m_data(new dtkImage(*o.m_data)) {}
 
+    gnomonAbstractForm *clone(void) { return new gnomonIntensityImage(*this); }
+
     ~gnomonIntensityImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:

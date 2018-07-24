@@ -28,6 +28,10 @@ class GNOMONCORE_EXPORT gnomonAbstractForm
 public:
              gnomonAbstractForm(void) = default;
     virtual ~gnomonAbstractForm(void) {};
+
+public:
+    virtual gnomonAbstractForm *clone(void) = 0;
+
 };
 
 typedef QSharedPointer<gnomonAbstractForm> gnomonAbstractFormPtr;

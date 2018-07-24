@@ -74,5 +74,10 @@ bool operator < (const gnomonTime& time1, const gnomonTime& time2)
     return time1.getTimeStamp()<time2.getTimeStamp();
 }
 
+gnomonTime operator + (const gnomonTime& time, unsigned long delta_time)
+{
+    return gnomonTime(time.getTimeStamp() + delta_time, time.getMode());
+}
+
 //
 // gnomonTime.cpp ends here
