@@ -78,7 +78,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellComplexFromImage.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellComplexReader.cpp
-  gnomonAbstractModel.cpp
   gnomonExpansionSphereModel.cpp
   gnomonSphereForm.cpp
   gnomonTime.cpp

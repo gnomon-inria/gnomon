@@ -34,7 +34,7 @@ public:
     virtual ~gnomonAbstractModel(void) {};
 
 public:
-    void setForm(gnomonAbstractDynamicForm *);
+    void setForm(gnomonAbstractDynamicForm *dynamic_form) { this->dynamic_form = dynamic_form;}
 
     virtual void run(const gnomonTime&, unsigned long) = 0;
 

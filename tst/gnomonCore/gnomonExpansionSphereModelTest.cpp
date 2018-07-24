@@ -46,10 +46,18 @@ void gnomonExpansionSphereModelTestCase::sphereExpansionTest(void)
 
     gnomonAbstractDynamicForm *dynamic_form = new gnomonDiscreteDynamicForm;
 
-    gnomonTime time(0., gnomonTime::Mode::ArbitraryTime);
+    gnomonTime time(1, gnomonTime::Mode::ArbitraryTime);
 
     dynamic_form->insert(sphere_t, time);
 
+    gnomonExpansionSphereModel model;
+    model.setExpansionRate(1.2);
+    model.setForm(dynamic_form);
+    unsigned int delta_time = 10;
+    model.run(time, delta_time);
+
+    QVERIFY(dynamic_form->availableTimes().size() == 2);
+    QVERIFY(static_cast<gnomonSphereForm *>(dynamic_form->atTime(time + delta_time))->radius() == 13.);
 }
 
 void gnomonExpansionSphereModelTestCase::cleanup(void)

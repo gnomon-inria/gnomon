@@ -23,7 +23,7 @@ void gnomonExpansionSphereModel::run(const gnomonTime& time, unsigned long delta
 {
     Q_ASSERT(gnomonAbstractModel::dynamic_form);
 
-    gnomonAbstractForm *form_t = gnomonAbstractModel::dynamic_form->atTime(time);
+    gnomonAbstractForm *form_t = dynamic_form->atTime(time);
 
     Q_ASSERT(form_t);
 

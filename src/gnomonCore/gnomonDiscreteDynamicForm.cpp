@@ -25,30 +25,30 @@ public:
 };
 
 
-gnomonDiscreteDynamicForm::gnomonDiscreteDynamicForm(void)
+gnomonDiscreteDynamicForm::gnomonDiscreteDynamicForm(void) : d(new gnomonDiscreteDynamicFormPrivate)
 {
 }
 
 gnomonDiscreteDynamicForm::gnomonDiscreteDynamicForm(const gnomonDiscreteDynamicForm& o) : d(new gnomonDiscreteDynamicFormPrivate)
 {
-	d->forms = o.d->forms;
-	d->initialTime = o.d->initialTime;
+    d->forms = o.d->forms;
+    d->initialTime = o.d->initialTime;
 }
 
 gnomonDiscreteDynamicForm::~gnomonDiscreteDynamicForm(void)
 {
-	delete d;
+    delete d;
 }
 
 
 void gnomonDiscreteDynamicForm::setInitialTime(gnomonTime initialTime)
 {
-	d->initialTime = initialTime;
+    d->initialTime = initialTime;
 }
 
 gnomonAbstractForm* gnomonDiscreteDynamicForm::atTime(gnomonTime t)
 {
-	// Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
+    // Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
     if(!d->forms.contains(t))
         d->forms.insert(t, d->forms.last()->clone());
 
@@ -57,14 +57,14 @@ gnomonAbstractForm* gnomonDiscreteDynamicForm::atTime(gnomonTime t)
 
 void gnomonDiscreteDynamicForm::insert(gnomonAbstractForm* form, gnomonTime t)
 {
-	// Q_ASSERT_X(!d->forms.contains(t), "appendForm", "Invalid time position : the form is already defined at this time");
-	d->forms[t] = form;
+    // Q_ASSERT_X(!d->forms.contains(t), "appendForm", "Invalid time position : the form is already defined at this time");
+    d->forms[t] = form;
 }
 
 void gnomonDiscreteDynamicForm::drop(gnomonTime t)
 {
-	// Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
-	d->forms.remove(t);
+    // Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
+    d->forms.remove(t);
 }
 
 QList<gnomonTime> gnomonDiscreteDynamicForm::availableTimes(void)
