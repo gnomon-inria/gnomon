@@ -4,7 +4,6 @@
 #include <gnomonTest>
 
 #include <dtkCore>
-#include <dtkImagingCore>
 #include <dtkLog>
 
 #include <gnomonExpansionSphereModel.h>
@@ -30,9 +29,6 @@ void gnomonExpansionSphereModelTestCase::initTestCase(void)
 {
     dtkLogger::instance().attachConsole();
     dtkLogger::instance().setLevel("trace");
-    dtkImaging::setVerboseLoading(true);
-
-    dtkImaging::initialize();
 }
 
 void gnomonExpansionSphereModelTestCase::init(void)
