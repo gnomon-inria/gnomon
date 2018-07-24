@@ -12,6 +12,17 @@
 
 # Code:
 
+import sys
+from PyQt5.QtCore import QSettings
+
+settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
+settings.beginGroup("modules");
+paths = settings.value("path")
+settings.endGroup()
+
+for path in paths.split(":"):
+    sys.path.append(path)
+    
 from gnomoncore import gnomonAbstractModel, gnomonAbstractForm
 from gnomoncore import gnomonTime
 
@@ -55,7 +66,7 @@ class SphereGrowthModel(gnomonAbstractModel):
 
         self.growth_rate = 1.
 
-        self.next_sphere = None
+        self.next_sphere = None 
         # self.next_dynamic_form = None
         self.next_time = None
 
@@ -107,7 +118,6 @@ class TestSphereModel:
 
     def tearDown(self):
         pass
-
 
     def test_gnomonAbstractModel_run(self):
         self.model.run()

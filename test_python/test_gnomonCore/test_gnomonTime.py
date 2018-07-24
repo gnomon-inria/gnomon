@@ -12,6 +12,17 @@
 
 # Code:
 
+import sys
+from PyQt5.QtCore import QSettings
+
+settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
+settings.beginGroup("modules");
+paths = settings.value("path")
+settings.endGroup()
+
+for path in paths.split(":"):
+    sys.path.append(path)
+    
 from gnomoncore import gnomonTime
 
 def test_gnomonTime():
@@ -29,7 +40,7 @@ def test_gnomonTime():
 
     assert t0.getTimeStamp() == 0
     
-    assert t0 < t1
+    assert t0.getTimeStamp() < t1.getTimeStamp()
 
 #
 # test_gnomonTime.py ends here.

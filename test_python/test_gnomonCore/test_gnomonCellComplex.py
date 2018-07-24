@@ -12,9 +12,23 @@
 
 # Code:
 
+import sys
+from PyQt5.QtCore import QSettings
+
+settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
+settings.beginGroup("modules");
+paths = settings.value("path")
+settings.endGroup()
+
+for path in paths.split(":"):
+    sys.path.append(path)
+
+
+import gnomoncore
 from gnomoncore import gnomonCellComplex
-from gnomonCellComplexDataPropertyTopomesh import gnomonCellComplexDataPropertyTopomesh
 from vplants.cellcomplex.property_topomesh.property_topomesh_creation import triangle_topomesh
+
+import gnomonCellComplexDataPropertyTopomesh
 
 
 class TestGnomonCellComplex:
@@ -27,7 +41,7 @@ class TestGnomonCellComplex:
         self.nbr_elements_topomesh = {dimension: len(list(self.topomesh.wisps(dimension))) for dimension in range(4)}
 
         self.c_cplx = gnomonCellComplex()
-        self.c_cplx_data = gnomonCellComplexDataPropertyTopomesh().from_property_topomesh(self.topomesh)
+        self.c_cplx_data = gnomoncore.cellcomplexdata_pluginFactory().create("gnomonCellComplexDataPropertyTopomesh").from_property_topomesh(self.topomesh)
         self.c_cplx.setData(self.c_cplx_data)
 
 
