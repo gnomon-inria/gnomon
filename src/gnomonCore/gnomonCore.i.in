@@ -41,6 +41,7 @@
 #include <gnomonCore/gnomonAbstractCellComplexReader.h>
 #include <gnomonCore/gnomonTime.h>
 #include <gnomonCore/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
 #include <gnomonCore/gnomonAbstractModel.h>
@@ -49,6 +50,7 @@
 %}
 
 %feature("director");
+%feature("autodoc","1");
 
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
@@ -103,6 +105,7 @@
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonDiscreteDynamicForm.h>
 %include <gnomonCore/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonCellComplex.h>

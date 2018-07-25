@@ -82,6 +82,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonSphereForm.cpp
   gnomonTime.cpp
   gnomonFileSystemFormReader.cpp
+  gnomonAbstractForm.cpp
   gnomonDiscreteDynamicForm.cpp)
 
 ## #################################################################
