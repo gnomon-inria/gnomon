@@ -12,6 +12,7 @@
 
 # Code:
 
+import unittest
 import sys
 from PyQt5.QtCore import QSettings
 
@@ -25,7 +26,7 @@ for path in paths.split(":"):
     
 from gnomoncore import gnomonTime
 
-class TestGnomonTime:
+class TestGnomonTime(unittest.TestCase):
     '''
     Tests the gnomonTime class.
     '''

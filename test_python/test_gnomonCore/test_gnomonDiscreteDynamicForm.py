@@ -12,6 +12,7 @@
 
 # Code:
 
+import unittest
 import sys
 from PyQt5.QtCore import QSettings
 
@@ -53,7 +54,7 @@ from gnomoncore import gnomonDiscreteDynamicForm, gnomonTime, gnomonAbstractForm
 
 
 
-class TestDynamicSphere():
+class TestDynamicSphere(unittest.TestCase):
     '''
     Tests the gnomonDiscreteDynamicForm class.
     '''

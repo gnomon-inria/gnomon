@@ -12,6 +12,7 @@
 
 # Code:
 
+import unittest
 import sys
 from PyQt5.QtCore import QSettings
 
@@ -105,7 +106,7 @@ class SphereGrowthModel(gnomonAbstractModel):
         self.next_time = gnomonTime(self.time.getTimeStamp()+self.dt.getTimeStamp())
 
 
-class TestSphereModel:
+class TestSphereModel(unittest.TestCase):
 
     def setUp(self):
         initial_sphere = Sphere(1)
