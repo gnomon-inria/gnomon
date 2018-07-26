@@ -177,7 +177,7 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
         COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomonvisualization.py ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
         COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}")
 
-      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomonvizualization.py)
+      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomonvisualization.py)
 
       if(APPLE)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
@@ -219,6 +219,17 @@ install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT gnomon-visualization
          EXPORT gnomonDepends)
+
+## ###################################################################
+## Install rules - modules
+## ###################################################################
+
+if(SWIG_FOUND)
+  if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
+    install(FILES ${CMAKE_BINARY_DIR}/gnomonVisualization.i DESTINATION wrp/gnomonVisualization/)
+  endif()
+endif()
 
 ######################################################################
 ### CMakeLists.txt ends here

@@ -218,5 +218,16 @@ install(TARGETS ${PROJECT_NAME}
       COMPONENT gnomon-core
          EXPORT gnomonDepends)
 
+## ###################################################################
+## Install rules - modules
+## ###################################################################
+
+if(SWIG_FOUND)
+  if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
+    install(FILES ${CMAKE_BINARY_DIR}/gnomonCore.i DESTINATION wrp/gnomonCore/)
+  endif()
+endif()
+
 ######################################################################
 ### CMakeLists.txt ends here
