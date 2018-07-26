@@ -144,7 +144,9 @@ endif(DTK_BUILD_WRAPPERS AND SIP_FOUND)
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}
+   BUNDLE DESTINATION bin
+  RUNTIME DESTINATION bin)
 
 ## ###################################################################
 ## Install rules - modules
@@ -152,7 +154,7 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 
 if(SWIG_FOUND)
   if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
-    install(TARGETS ${PROJECT_NAME}_backend DESTINATION lib)
+    install(TARGETS ${PROJECT_NAME}_backend DESTINATION ${CMAKE_INSTALL_LIBDIR})
     install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
   endif()
 endif()
