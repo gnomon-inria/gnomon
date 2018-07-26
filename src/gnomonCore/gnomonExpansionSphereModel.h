@@ -4,24 +4,16 @@
 
 #include "gnomonAbstractModel.h"
 
-#include <QtCore>
 #include <dtkCore>
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonAbstractDynamicForm;
-class gnomonTime;
 
 class GNOMONCORE_EXPORT gnomonExpansionSphereModel : public gnomonAbstractModel
 {
 public:
-             gnomonExpansionSphereModel(void);
-    virtual ~gnomonExpansionSphereModel(void);
+    gnomonExpansionSphereModel(void);
+    ~gnomonExpansionSphereModel(void);
 
 public:
-    void run(const gnomonTime&, unsigned long) override;
+    void run(std::size_t time, std::size_t dt) override;
 
 public:
     void setExpansionRate(double expansion_rate);
@@ -31,13 +23,6 @@ private:
     class gnomonExpansionSphereModelPrivate *d;
 };
 
-typedef QSharedPointer<gnomonExpansionSphereModel> gnomonExpansionSphereModelPtr;
-
-// ///////////////////////////////////////////////////////////////////
-// Give the concept the plugin machinery
-// ///////////////////////////////////////////////////////////////////
-
 DTK_DECLARE_OBJECT        (gnomonExpansionSphereModel *)
-
 //
 // gnomonExpansionSphereModel.h ends here

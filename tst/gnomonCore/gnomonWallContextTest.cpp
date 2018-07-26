@@ -33,7 +33,7 @@ void gnomonWallContextTestCase::init(void)
 
 void gnomonWallContextTestCase::sphereExpansionTest(void)
 {
-    gnomonWallContext context;
+    gnomonWall context;
     gnomonTime time_t1(4, gnomonTime::Mode::ArbitraryTime);
     context.setTimeT1(time_t1);
     context.setWallPosition0(3., 'x');

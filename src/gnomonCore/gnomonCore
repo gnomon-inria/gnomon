@@ -17,3 +17,5 @@
 #include "gnomonAbstractDynamicForm.h"
 #include "gnomonDiscreteDynamicForm.h"
 #include "gnomonFileSystemFormReader.h"
+#include "gnomonAbstractSystemScenario.h"
+#include "gnomonSystem.h"

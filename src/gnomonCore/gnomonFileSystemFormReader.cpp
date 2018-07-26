@@ -10,7 +10,7 @@ public:
     QMap<gnomonTime, QString> files_paths;
 };
 
-#pragma message "Make it possible to have more parameters than just a file path"
+//#pragma message "Make it possible to have more parameters than just a file path"
 // gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
 gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QString& configuration_file_path) : d(new gnomonFileSystemFormReaderPrivate)
 {
@@ -77,7 +77,7 @@ gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QString& configurat
             qWarning() << Q_FUNC_INFO << "One of the entry of the dyform file doesn't match the POC format : \'time path\'";
             continue;
         }
-#pragma message "a QFile could be created at this point and stored in the map"
+        //#pragma message "a QFile could be created at this point and stored in the map"
         d->files_paths[gnomonTime(line_split[0].toULong(), d->time_mode)] = file_info.dir().absolutePath() + QString("/") + line_split[1];
     }
 
@@ -103,7 +103,7 @@ gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
         return NULL;
     }
 
-#pragma message "The type of the form should be specified in the dyform file"
+    //#pragma message "The type of the form should be specified in the dyform file"
     dtkImageReader *image_reader = dtkImaging::reader::pluginFactory().create("dtkVtkImageReader");
     if(!image_reader) {
         qWarning() << Q_FUNC_INFO << "The vtkImageReader plugin could lot be loaded, make sure you have compiled the VTK plugins and added them the the dtkImaging plugins path";
