@@ -36,6 +36,7 @@ class TestGnomonTime(unittest.TestCase):
 
     def test_gnomonTime_timestamp(self):
         assert self.t0.getTimeStamp() == 0
+        assert self.t1.getTimeStamp() == 1
         assert self.t0.getTimeStamp() < self.t1.getTimeStamp()
 
 #
