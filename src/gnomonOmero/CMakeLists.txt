@@ -44,24 +44,6 @@ set(${PROJECT_NAME}_SOURCES
 )
 
 ## #################################################################
-## Wrapping
-## #################################################################
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${dtk_MODULE_PATH})
-
-set(${PROJECT_NAME}_SOURCES_WRAP)
-
-if(DTK_BUILD_WRAPPERS)
-
-  set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
-
-  if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmero.i.in ${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmero.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_CURRENT_SOURCE_DIR}/gnomonOmero.i ${${PROJECT_NAME}_WRAP_DEPENDS})
-  endif()
-endif()
-
-## #################################################################
 ## Build rules
 ## #################################################################
 
@@ -97,14 +79,6 @@ target_link_libraries(${PROJECT_NAME} ${OMERO_CLIENT_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${OMERO_ICE_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${Ice_LIBRARIES})
 
-if(DTK_BUILD_WRAPPERS)
-
-  if(DTK_WRAPPING_PYTHON)
-      target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
-  endif()
-
-endif(DTK_BUILD_WRAPPERS)
-
 ## #################################################################
 ## Export header file
 ## #################################################################
@@ -117,45 +91,6 @@ set(PROJECT_NAME_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
-## #################################################################
-## Handling of generated script modules
-## #################################################################
-
-set(${PROJECT_NAME}_MODULES)
-
-if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
-
-  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
-
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      DEPENDS ${PROJECT_SOURCE_DIR}/gnomonOmero.i
-      COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-      COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomoncore.py ${CMAKE_BINARY_DIR}/modules
-      COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
-
-    set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/gnomoncore.py)
-
-    if(APPLE)
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/gnomonOmero.i
-        COMMAND ln -sf ../lib/libgnomonOmero.dylib _gnomoncore.so
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
-
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomoncore.so)
-    endif(APPLE)
-
-    if(UNIX AND NOT APPLE)
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/gnomonOmero.i
-        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libgnomonOmero.so _gnomoncore.so
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
-
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomoncore.so)
-    endif(UNIX AND NOT APPLE)
-
-  endif(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND )
-
-endif(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
 
 ## ###################################################################
 ## Install rules - files
