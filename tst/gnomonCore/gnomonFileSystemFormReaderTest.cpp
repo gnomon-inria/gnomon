@@ -32,7 +32,9 @@ void gnomonFileSystemFormReaderTestCase::initTestCase(void)
     dtkLogger::instance().attachConsole();
     dtkImaging::setVerboseLoading(true);
 
+    dtkImaging::setAutoLoading(false);
     dtkImaging::initialize();
+    dtkImaging::manager().pluginManagers()["dtkImageReader"]->loadFromName("dtkVtkImageReader");
 }
 
 void gnomonFileSystemFormReaderTestCase::init(void)
