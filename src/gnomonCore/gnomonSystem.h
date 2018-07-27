@@ -25,7 +25,7 @@ class gnomonAbstractSystemScenario;
 class GNOMONCORE_EXPORT gnomonSystem
 {
 public:
-    using scenario_t = std::function<void(std::size_t, std::size_t)>;
+    typedef std::function<void(std::size_t, std::size_t)> scenario_t;
 
 public:
     gnomonSystem(void);
