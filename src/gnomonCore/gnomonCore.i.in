@@ -41,10 +41,12 @@
 #include <gnomonCore/gnomonCellImage.h>
 #include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
+#include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonSphereForm.h>
+#include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
-#include <gnomonFileSystemFormReader.h>
+#include <gnomonCore/gnomonWallForm.h>
 
 %}
 
@@ -86,6 +88,20 @@
     gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
         return $self->value<gnomonDiscreteDynamicForm *>();
     }
+
+    void setValue(gnomonSphereForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonSphereForm* tognomonSphereForm() const {
+        return $self->value<gnomonSphereForm *>();
+    }
+
+    void setValue(gnomonWallForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonWallForm* tognomonWallForm() const {
+        return $self->value<gnomonWallForm *>();
+    }
  }
 
 
@@ -116,7 +132,9 @@
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonSphereForm.h>
+%include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonWallForm.h>
 %include <QVariant.i>
 
 //

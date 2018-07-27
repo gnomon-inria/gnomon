@@ -84,7 +84,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCoreSettings.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
-  gnomonExpansionSphereModel.cpp
   gnomonFileSystemFormReader.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
