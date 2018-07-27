@@ -34,6 +34,7 @@ protected:
 public:
     virtual QString name(void) const { return "NONAME";};
     virtual void render(void) {};
+
 };
 
 // ///////////////////////////////////////////////////////////////////

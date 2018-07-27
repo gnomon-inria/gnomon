@@ -15,16 +15,14 @@ void gnomonSphereForm::render(void)
 
 }
 
-const double *gnomonSphereForm::center(void) const
+const gnomon::vec3_t gnomonSphereForm::center(void) const
 {
     return m_center;
 }
 
-void gnomonSphereForm::setCenter(double *center)
+void gnomonSphereForm::setCenter(gnomon::vec3_t center)
 {
-    this->m_center[0] = center[0];
-    this->m_center[1] = center[1];
-    this->m_center[2] = center[2];
+    this->m_center = center;
 }
 
 

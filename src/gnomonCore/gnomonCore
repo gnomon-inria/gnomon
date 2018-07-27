@@ -19,3 +19,4 @@
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonAbstractSystemScenario.h"
 #include "gnomonSystem.h"
+#include "gnomonTypeDef.h"

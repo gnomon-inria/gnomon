@@ -26,17 +26,15 @@ public:
 
         sphere.setRadius(sphere.radius() + growth_rate*dt);
         if(std::abs(sphere.center()[0] - wall.position()[0]) <= sphere.radius() ) {
-            double new_center[3];
-            new_center[1] = sphere.center()[1];
-            new_center[2] = sphere.center()[2];
+            gnomon::vec3_t new_center =  sphere.center();
             new_center[0] = sphere.center()[0] > wall.position()[0] ? wall.position()[0] + sphere.radius() : wall.position()[0] - sphere.radius();
             sphere.setCenter(new_center);
         }
     }
 
 public:
-    double wall_pos0[3] = {2., 0., 0.};
-    double wall_pos1[3] = {4., 0., 0.};
+    gnomon::vec3_t wall_pos0 = {2., 0., 0.};
+    gnomon::vec3_t wall_pos1 = {4., 0., 0.};
     std::size_t time_1 = 10;
     double growth_rate = 1.;
     double growth_rate_decay = 0.99;
@@ -82,8 +80,8 @@ void gnomonSystemScenarioTestCase::sphereExpansionLambdaTest(void)
     gnomonSphereForm sphere;
     gnomonWallForm wall;
 
-    double wall_pos0[3] = {2., 0., 0.};
-    double wall_pos1[3] = {4., 0., 0.};
+    gnomon::vec3_t wall_pos0 = {2., 0., 0.};
+    gnomon::vec3_t wall_pos1 = {4., 0., 0.};
     std::size_t time_1 = 10;
     double growth_rate = 1.;
     double growth_rate_decay = 0.99;
@@ -99,9 +97,7 @@ void gnomonSystemScenarioTestCase::sphereExpansionLambdaTest(void)
 
         sphere.setRadius(sphere.radius() + growth_rate*dt);
         if(std::abs(sphere.center()[0] - wall.position()[0]) <= sphere.radius() ) {
-            double new_center[3];
-            new_center[1] = sphere.center()[1];
-            new_center[2] = sphere.center()[2];
+            gnomon::vec3_t new_center =  sphere.center();
             new_center[0] = sphere.center()[0] > wall.position()[0] ? wall.position()[0] + sphere.radius() : wall.position()[0] - sphere.radius();
             sphere.setCenter(new_center);
         }

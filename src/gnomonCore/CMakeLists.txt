@@ -62,6 +62,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonSphereForm
   gnomonSphereForm.h
+  gnomonTypeDef
+  gnomonTypeDef.h
   gnomonTime
   gnomonTime.h
   gnomonWallForm

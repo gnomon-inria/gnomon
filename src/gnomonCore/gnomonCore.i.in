@@ -16,6 +16,8 @@
 
 %module(directors="1") gnomoncore
 
+%include "std_array.i"
+
 %include <dtk_base.i>
 
 %import <dtkCore.i>
@@ -47,6 +49,7 @@
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
+#include <gnomonCore/gnomonTypeDef.h>
 #include <gnomonCore/gnomonWallForm.h>
 
 %}
@@ -136,8 +139,13 @@
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonTypeDef.h>
 %include <gnomonCore/gnomonWallForm.h>
 %include <QVariant.i>
+
+namespace std {
+    %template(vec3_t) array<double, 3>;
+}
 
 //
 // gnomonCore.i.in ends here

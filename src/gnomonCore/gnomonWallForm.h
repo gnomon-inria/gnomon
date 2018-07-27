@@ -3,6 +3,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractForm.h"
+#include "gnomonTypeDef.h"
 
 #include <dtkCore>
 
@@ -18,13 +19,13 @@ public:
     ~gnomonWallForm(void);
 
 public:
-    void setNormal(double *);
-    void setPosition(double *);
+    void setNormal(gnomon::vec3_t);
+    void setPosition(gnomon::vec3_t);
 
 public:
     QString name(void) const override ;
-    const double *normal(void) const;
-    const double *position(void) const;
+    const gnomon::vec3_t normal(void) const;
+    const gnomon::vec3_t position(void) const;
 
 
 private:

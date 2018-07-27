@@ -2,8 +2,8 @@
 
 class gnomonWallFormPrivate {
 public:
-    double position[3] = {0., 0., 0.};
-    double normal[3] = {1., 0., 0.};
+    gnomon::vec3_t position = {0., 0., 0.};
+    gnomon::vec3_t normal = {1., 0., 0.};
 };
 
 gnomonWallForm::gnomonWallForm(void) : d(new gnomonWallFormPrivate)
@@ -16,14 +16,12 @@ gnomonWallForm::~gnomonWallForm(void)
     delete d;
 }
 
-void gnomonWallForm::setNormal(double *normal)
+void gnomonWallForm::setNormal(gnomon::vec3_t normal)
 {
-    d->normal[0] = normal[0];
-    d->normal[1] = normal[1];
-    d->normal[1] = normal[2];
+    d->normal = normal;
 }
 
-const double * gnomonWallForm::normal(void) const
+const gnomon::vec3_t gnomonWallForm::normal(void) const
 {
     return d->normal;
 }
@@ -33,14 +31,12 @@ QString gnomonWallForm::name(void) const
     return "gnomonWallForm";
 }
 
-void gnomonWallForm::setPosition(double *position)
+void gnomonWallForm::setPosition(gnomon::vec3_t position)
 {
-    d->position[0] = position[0];
-    d->position[1] = position[1];
-    d->position[1] = position[2];
+    d->position = position;
 }
 
-const double * gnomonWallForm::position(void) const
+const gnomon::vec3_t gnomonWallForm::position(void) const
 {
     return d->position;
 }

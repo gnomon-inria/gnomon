@@ -3,7 +3,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractForm.h"
-
+#include "gnomonTypeDef.h"
 #include <dtkCore>
 
 class gnomonAbstractForm;
@@ -20,13 +20,13 @@ public:
     void render(void) override;
 
 public:
-    const double *center(void) const;
+    const gnomon::vec3_t center(void) const;
     double radius(void) const;
-    void setCenter(double *);
+    void setCenter(gnomon::vec3_t);
     void setRadius(double);
 
 private:
-    double m_center[3] = {0., 0., 0.};
+    gnomon::vec3_t m_center = {0., 0., 0.};
     double m_radius = 1.;
 };
 
