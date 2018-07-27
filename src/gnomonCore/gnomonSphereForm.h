@@ -10,9 +10,14 @@ class gnomonAbstractForm;
 
 class GNOMONCORE_EXPORT gnomonSphereForm : public gnomonAbstractForm
 {
+
 public:
-    gnomonSphereForm(void) = default;
+    gnomonSphereForm(void);
     ~gnomonSphereForm(void) = default;
+
+public:
+    QString name(void) const override;
+    void render(void) override;
 
 public:
     const double *center(void) const;

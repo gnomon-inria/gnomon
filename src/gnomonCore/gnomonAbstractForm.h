@@ -16,7 +16,6 @@
 
 #include <gnomonCoreExport>
 
-#include <QtCore>
 #include <dtkCore>
 
 // ///////////////////////////////////////////////////////////////////
@@ -28,9 +27,14 @@ class GNOMONCORE_EXPORT gnomonAbstractForm
 public:
              gnomonAbstractForm(void) = default;
     virtual ~gnomonAbstractForm(void) = default;
-};
 
-using gnomonAbstractFormPtr = QSharedPointer<gnomonAbstractForm>;
+protected:
+    void record(void);
+
+public:
+    virtual QString name(void) const { return "NONAME";};
+    virtual void render(void) {};
+};
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery

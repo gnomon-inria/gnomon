@@ -8,7 +8,7 @@ public:
 
 gnomonWallForm::gnomonWallForm(void) : d(new gnomonWallFormPrivate)
 {
-
+    this->record();
 }
 
 gnomonWallForm::~gnomonWallForm(void)
@@ -26,6 +26,11 @@ void gnomonWallForm::setNormal(double *normal)
 const double * gnomonWallForm::normal(void) const
 {
     return d->normal;
+}
+
+QString gnomonWallForm::name(void) const
+{
+    return "gnomonWallForm";
 }
 
 void gnomonWallForm::setPosition(double *position)

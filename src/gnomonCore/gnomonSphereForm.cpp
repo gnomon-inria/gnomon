@@ -1,5 +1,19 @@
 #include "gnomonSphereForm.h"
 
+gnomonSphereForm::gnomonSphereForm(void)
+{
+    this->record();
+}
+
+QString gnomonSphereForm::name(void) const
+{
+    return "gnomonSphereForm";
+}
+
+void gnomonSphereForm::render(void)
+{
+
+}
 
 const double *gnomonSphereForm::center(void) const
 {
