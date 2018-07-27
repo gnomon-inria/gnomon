@@ -47,7 +47,7 @@ class SphereGrowthModel(gnomonAbstractModel):
 
     def __init__(self):
         # super(gnomonAbstractModel, self).__init__()
-        
+
         self.sphere = None
         # self.dynamic_form = None
 
@@ -56,7 +56,7 @@ class SphereGrowthModel(gnomonAbstractModel):
 
         self.growth_rate = 1.
 
-        self.next_sphere = None 
+        self.next_sphere = None
         # self.next_dynamic_form = None
         self.next_time = None
 
@@ -123,9 +123,3 @@ class TestSphereModel(unittest.TestCase):
 
         assert self.model.nextTime().getTimeStamp() == 10
         assert self.model.nextForm().radius == 10
-
-        
-
-
-
-    
