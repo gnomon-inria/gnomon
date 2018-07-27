@@ -19,71 +19,72 @@ project(gnomonCore)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonAbstractTissueGrowthModel
-  gnomonAbstractTissueGrowthModel.h
-  gnomonAbstractCellGraphFromImage
-  gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellComplexData
+  gnomonAbstractCellComplexData.h
   gnomonAbstractCellComplexFromImage
   gnomonAbstractCellComplexFromImage.h
-  gnomonAbstractCellImageFromImage
-  gnomonAbstractCellImageFromImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
+  gnomonAbstractCellGraphData
+  gnomonAbstractCellGraphData.h
+  gnomonAbstractCellGraphFromImage
+  gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellImageData
+  gnomonAbstractCellImageData.h
+  gnomonAbstractCellImageFromImage
+  gnomonAbstractCellImageFromImage.h
+  gnomonAbstractDynamicForm
+  gnomonAbstractDynamicForm.h
+  gnomonAbstractForm
+  gnomonAbstractForm.h
+  gnomonAbstractIntensityImageData
+  gnomonAbstractIntensityImageData.h
+  gnomonAbstractModel
+  gnomonAbstractModel.h
+  gnomonAbstractTissueGrowthModel
+  gnomonAbstractTissueGrowthModel.h
+  gnomonCellComplex
+  gnomonCellComplex.h
+  gnomonCellGraph
+  gnomonCellGraph.h
+  gnomonCellImage
+  gnomonCellImage.h
   gnomonCore
   gnomonCore.h
   gnomonCoreSettings
   gnomonCoreSettings.h
   gnomonDataManager
   gnomonDataManager.h
-  gnomonCellComplex
-  gnomonCellComplex.h
-  gnomonAbstractCellComplexData
-  gnomonAbstractCellComplexData.h
-  gnomonAbstractIntensityImageData
-  gnomonAbstractIntensityImageData.h
-  gnomonIntensityImage
-  gnomonIntensityImage.h
-  gnomonCellImage.h
-  gnomonCellImage
-  gnomonCellImage.h
-  gnomonExpansionSphereModel.h
-  gnomonAbstractCellImageData
-  gnomonAbstractCellImageData.h
-  gnomonCellGraph
-  gnomonCellGraph.h
-  gnomonAbstractCellGraphData
-  gnomonAbstractCellGraphData.h
-  gnomonTime
-  gnomonTime.h
-  gnomonAbstractDynamicForm
-  gnomonAbstractDynamicForm.h
-  gnomonAbstractForm
-  gnomonAbstractForm.h
-  gnomonAbstractModel.h
-  gnomonFileSystemFormReader.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
-  gnomonSphereForm.h)
+  gnomonExpansionSphereModel.h
+  gnomonFileSystemFormReader.h
+  gnomonIntensityImage
+  gnomonIntensityImage.h
+  gnomonSphereForm
+  gnomonSphereForm.h
+  gnomonTime
+  gnomonTime.h)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractCellComplexData.cpp
+  gnomonAbstractCellComplexFromImage.cpp
+  gnomonAbstractCellComplexReader.cpp
+  gnomonAbstractCellGraphData.cpp
+  gnomonAbstractCellGraphFromImage.cpp
+  gnomonAbstractCellImageData.cpp
+  gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractForm.cpp
+  gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonDataManager.cpp
-  gnomonAbstractCellComplexData.cpp
-  gnomonAbstractCellImageData.cpp
-  gnomonAbstractIntensityImageData.cpp
-  gnomonAbstractCellGraphData.cpp
-  gnomonAbstractTissueGrowthModel.cpp
-  gnomonAbstractCellGraphFromImage.cpp
-  gnomonAbstractCellComplexFromImage.cpp
-  gnomonAbstractCellImageFromImage.cpp
-  gnomonAbstractCellComplexReader.cpp
+  gnomonDiscreteDynamicForm.cpp
   gnomonExpansionSphereModel.cpp
-  gnomonSphereForm.cpp
-  gnomonTime.cpp
   gnomonFileSystemFormReader.cpp
-  gnomonAbstractForm.cpp
-  gnomonDiscreteDynamicForm.cpp)
+  gnomonSphereForm.cpp
+  gnomonTime.cpp)
 
 ## #################################################################
 ## Wrapping
