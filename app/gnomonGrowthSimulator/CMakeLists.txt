@@ -117,25 +117,25 @@ set(${PROJECT_NAME}_MODULES)
 if(DTK_BUILD_WRAPPERS AND SIP_FOUND)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
       DEPENDS ${CMAKE_SOURCE_DIR}/sip/${PROJECT_NAME}/${PROJECT_NAME}mod.sip
-      COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-      COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
+      COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
+      COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}")
 
     if(APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${CMAKE_SOURCE_DIR}/sip/${PROJECT_NAME}/${PROJECT_NAME}mod.sip
-        COMMAND ln -sf ../lib/lib${PROJECT_NAME}_backend.dylib ${PROJECT_NAME}.so
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+        COMMAND ln -sf ../../lib${PROJECT_NAME}_backend.dylib ${PROJECT_NAME}.so
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
 
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/${PROJECT_NAME}.so)
+      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/${PROJECT_NAME}.so)
     endif(APPLE)
 
     if(UNIX AND NOT APPLE)
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${CMAKE_SOURCE_DIR}/sip/${PROJECT_NAME}/${PROJECT_NAME}mod.sip
-        COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/lib${PROJECT_NAME}_backend.so ${PROJECT_NAME}.so
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+        COMMAND ln -fs ../../lib${PROJECT_NAME}_backend.so ${PROJECT_NAME}.so
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
 
-      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/${PROJECT_NAME}.so)
+      set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/${PROJECT_NAME}.so)
     endif(UNIX AND NOT APPLE)
 
 endif(DTK_BUILD_WRAPPERS AND SIP_FOUND)
@@ -144,7 +144,20 @@ endif(DTK_BUILD_WRAPPERS AND SIP_FOUND)
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}
+   BUNDLE DESTINATION bin
+  RUNTIME DESTINATION bin)
+
+## ###################################################################
+## Install rules - modules
+## ###################################################################
+
+if(SWIG_FOUND)
+  if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    install(TARGETS ${PROJECT_NAME}_backend DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
+  endif()
+endif()
 
 ######################################################################
 ### CMakeLists.txt ends here

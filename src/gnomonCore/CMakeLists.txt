@@ -19,65 +19,72 @@ project(gnomonCore)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonAbstractTissueGrowthModel
-  gnomonAbstractTissueGrowthModel.h
-  gnomonAbstractCellGraphFromImage
-  gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellComplexData
+  gnomonAbstractCellComplexData.h
   gnomonAbstractCellComplexFromImage
   gnomonAbstractCellComplexFromImage.h
-  gnomonAbstractCellImageFromImage
-  gnomonAbstractCellImageFromImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
+  gnomonAbstractCellGraphData
+  gnomonAbstractCellGraphData.h
+  gnomonAbstractCellGraphFromImage
+  gnomonAbstractCellGraphFromImage.h
+  gnomonAbstractCellImageData
+  gnomonAbstractCellImageData.h
+  gnomonAbstractCellImageFromImage
+  gnomonAbstractCellImageFromImage.h
+  gnomonAbstractDynamicForm
+  gnomonAbstractDynamicForm.h
+  gnomonAbstractForm
+  gnomonAbstractForm.h
+  gnomonAbstractIntensityImageData
+  gnomonAbstractIntensityImageData.h
+  gnomonAbstractModel
+  gnomonAbstractModel.h
+  gnomonAbstractTissueGrowthModel
+  gnomonAbstractTissueGrowthModel.h
+  gnomonCellComplex
+  gnomonCellComplex.h
+  gnomonCellGraph
+  gnomonCellGraph.h
+  gnomonCellImage
+  gnomonCellImage.h
   gnomonCore
   gnomonCore.h
   gnomonCoreSettings
   gnomonCoreSettings.h
   gnomonDataManager
   gnomonDataManager.h
-  gnomonCellComplex
-  gnomonCellComplex.h
-  gnomonAbstractCellComplexData
-  gnomonAbstractCellComplexData.h
-  gnomonAbstractIntensityImageData
-  gnomonAbstractIntensityImageData.h
+  gnomonDiscreteDynamicForm
+  gnomonDiscreteDynamicForm.h
+  gnomonExpansionSphereModel.h
+  gnomonFileSystemFormReader.h
   gnomonIntensityImage
   gnomonIntensityImage.h
-  gnomonCellImage.h
-  gnomonCellImage
-  gnomonCellImage.h
-  gnomonAbstractCellImageData
-  gnomonAbstractCellImageData.h
-  gnomonCellGraph
-  gnomonCellGraph.h
-  gnomonAbstractCellGraphData
-  gnomonAbstractCellGraphData.h
+  gnomonSphereForm
+  gnomonSphereForm.h
   gnomonTime
-  gnomonTime.h
-  gnomonAbstractDynamicForm
-  gnomonAbstractDynamicForm.h
-  gnomonAbstractForm
-  gnomonAbstractForm.h
-  gnomonFileSystemFormReader.h
-  gnomonDiscreteDynamicForm
-  gnomonDiscreteDynamicForm.h)
+  gnomonTime.h)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractCellComplexData.cpp
+  gnomonAbstractCellComplexFromImage.cpp
+  gnomonAbstractCellComplexReader.cpp
+  gnomonAbstractCellGraphData.cpp
+  gnomonAbstractCellGraphFromImage.cpp
+  gnomonAbstractCellImageData.cpp
+  gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractForm.cpp
+  gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonDataManager.cpp
-  gnomonAbstractCellComplexData.cpp
-  gnomonAbstractCellImageData.cpp
-  gnomonAbstractIntensityImageData.cpp
-  gnomonAbstractCellGraphData.cpp
-  gnomonAbstractTissueGrowthModel.cpp
-  gnomonAbstractCellGraphFromImage.cpp
-  gnomonAbstractCellComplexFromImage.cpp
-  gnomonAbstractCellImageFromImage.cpp
-  gnomonAbstractCellComplexReader.cpp
-  gnomonTime.cpp
+  gnomonDiscreteDynamicForm.cpp
+  gnomonExpansionSphereModel.cpp
   gnomonFileSystemFormReader.cpp
-  gnomonDiscreteDynamicForm.cpp)
+  gnomonSphereForm.cpp
+  gnomonTime.cpp)
 
 ## #################################################################
 ## Wrapping
@@ -166,28 +173,28 @@ if(DTK_BUILD_WRAPPERS)
 
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${PROJECT_SOURCE_DIR}/gnomonCore.i
-        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomoncore.py ${CMAKE_BINARY_DIR}/modules
-        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
+        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomoncore.py ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
+        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}")
 
-      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/gnomoncore.py)
+      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomoncore.py)
 
       if(APPLE)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
           DEPENDS ${PROJECT_SOURCE_DIR}/gnomonCore.i
-          COMMAND ln -sf ../lib/libgnomonCore.dylib _gnomoncore.so
-          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+          COMMAND ln -sf ../../libgnomonCore.dylib _gnomoncore.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
 
-        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomoncore.so)
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomoncore.so)
       endif(APPLE)
 
       if(UNIX AND NOT APPLE)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
           DEPENDS ${PROJECT_SOURCE_DIR}/gnomonCore.i
-          COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libgnomonCore.so _gnomoncore.so
-          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+          COMMAND ln -fs ../../libgnomonCore.so _gnomoncore.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
 
-        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomoncore.so)
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomoncore.so)
       endif(UNIX AND NOT APPLE)
 
     endif()
@@ -212,6 +219,17 @@ install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT gnomon-core
          EXPORT gnomonDepends)
+
+## ###################################################################
+## Install rules - modules
+## ###################################################################
+
+if(SWIG_FOUND)
+  if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
+    install(FILES ${CMAKE_BINARY_DIR}/gnomonCore.i DESTINATION wrp/gnomonCore/)
+  endif()
+endif()
 
 ######################################################################
 ### CMakeLists.txt ends here

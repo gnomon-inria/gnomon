@@ -25,29 +25,31 @@
 %{
 
 #include <dtkImagingCore>
-
-#include <gnomonCore/gnomonCore.h>
-#include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexData.h>
-#include <gnomonCore/gnomonCellComplex.h>
-#include <gnomonCore/gnomonAbstractCellImageData.h>
-#include <gnomonCore/gnomonCellImage.h>
-#include <gnomonCore/gnomonAbstractCellGraphData.h>
-#include <gnomonCore/gnomonCellGraph.h>
-#include <gnomonCore/gnomonDataManager.h>
-#include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
-#include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexReader.h>
-#include <gnomonCore/gnomonTime.h>
-#include <gnomonCore/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonAbstractCellGraphData.h>
+#include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+#include <gnomonCore/gnomonAbstractCellImageData.h>
+#include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonCellComplex.h>
+#include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonCellGraph.h>
+#include <gnomonCore/gnomonCellImage.h>
+#include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
+#include <gnomonCore/gnomonIntensityImage.h>
+#include <gnomonCore/gnomonSphereForm.h>
+#include <gnomonCore/gnomonTime.h>
 #include <gnomonFileSystemFormReader.h>
 
 %}
 
 %feature("director");
+%feature("autodoc","1");
 
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
@@ -96,25 +98,25 @@
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
-
-%include <gnomonCore/gnomonTime.h>
-%include <gnomonCore/gnomonAbstractForm.h>
-%include <gnomonCore/gnomonAbstractDynamicForm.h>
-%include <gnomonCore/gnomonDiscreteDynamicForm.h>
-%include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexData.h>
-%include <gnomonCore/gnomonCellComplex.h>
-%include <gnomonCore/gnomonAbstractCellImageData.h>
-%include <gnomonCore/gnomonCellImage.h>
-%include <gnomonCore/gnomonAbstractCellGraphData.h>
-%include <gnomonCore/gnomonCellGraph.h>
-%include <gnomonCore/gnomonDataManager.h>
-%include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
-%include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexReader.h>
+%include <gnomonCore/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+%include <gnomonCore/gnomonAbstractCellImageData.h>
+%include <gnomonCore/gnomonAbstractCellImageFromImage.h>
+%include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonCellComplex.h>
+%include <gnomonCore/gnomonCellGraph.h>
+%include <gnomonCore/gnomonCellImage.h>
+%include <gnomonCore/gnomonDataManager.h>
+%include <gnomonCore/gnomonDiscreteDynamicForm.h>
 %include <gnomonCore/gnomonFileSystemFormReader.h>
-
+%include <gnomonCore/gnomonIntensityImage.h>
+%include <gnomonCore/gnomonSphereForm.h>
+%include <gnomonCore/gnomonTime.h>
 %include <QVariant.i>
 
 //

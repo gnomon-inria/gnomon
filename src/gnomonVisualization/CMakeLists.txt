@@ -173,28 +173,28 @@ if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
     if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         DEPENDS ${PROJECT_SOURCE_DIR}/gnomonVisualization.i
-        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/modules
-        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomonvisualization.py ${CMAKE_BINARY_DIR}/modules
-        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/modules")
+        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomonvisualization.py ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
+        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}")
 
-      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/modules/gnomonvizualization.py)
+      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomonvisualization.py)
 
       if(APPLE)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
           DEPENDS ${PROJECT_SOURCE_DIR}/gnomonVisualization.i
-          COMMAND ln -sf ../lib/libgnomonVisualization.dylib _gnomonvisualization.so
-          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+          COMMAND ln -sf ../../libgnomonVisualization.dylib _gnomonvisualization.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
 
-        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomonvisualization.so)
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomonvisualization.so)
       endif(APPLE)
 
       if(UNIX AND NOT APPLE)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
           DEPENDS ${PROJECT_SOURCE_DIR}/gnomonVisualization.i
-          COMMAND ln -fs ../${CMAKE_INSTALL_LIBDIR}/libgnomonVisualization.so _gnomonvisualization.so
-          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+          COMMAND ln -fs ../../libgnomonVisualization.so _gnomonvisualization.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
 
-        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/modules/_gnomonvisualization.so)
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomonvisualization.so)
       endif(UNIX AND NOT APPLE)
 
     endif()
@@ -219,6 +219,17 @@ install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT gnomon-visualization
          EXPORT gnomonDepends)
+
+## ###################################################################
+## Install rules - modules
+## ###################################################################
+
+if(SWIG_FOUND)
+  if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
+    install(FILES ${CMAKE_BINARY_DIR}/gnomonVisualization.i DESTINATION wrp/gnomonVisualization/)
+  endif()
+endif()
 
 ######################################################################
 ### CMakeLists.txt ends here
