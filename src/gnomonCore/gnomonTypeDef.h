@@ -16,7 +16,7 @@
 
 #include <QtCore>
 
-#include <vector>
+#include <array>
 #include <functional>
 
 namespace gnomon {
