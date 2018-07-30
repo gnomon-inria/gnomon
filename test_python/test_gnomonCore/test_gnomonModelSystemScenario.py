@@ -49,7 +49,6 @@ class gnomonWallMotionModel(gnomonAbstractModel):
 class gnomonSphereExpansionModel(gnomonAbstractModel):
     def __init__(self):
         self.sphere = None
-        self.wall = None
         self.growth_rate = 1.
         self.growth_rate_decay = 0.99
 
@@ -61,19 +60,12 @@ class gnomonSphereExpansionModel(gnomonAbstractModel):
 
     def step(self, time, dt):
         self.growth_rate *= self.growth_rate_decay
+        self.sphere.setRadius(self.sphere.radius() + self.growth_rate*dt)
 
-        self.sphere.setRadius(self.sphere.radius() + self.growth_rate * dt)
-        if(abs(self.sphere.center()[0] - self.wall.x) <= self.sphere.radius()):
-            new_center = self.sphere.center()
-            if(self.sphere.center()[0] > self.wall.x):
-                new_center[0] = self.wall.x + self.sphere.radius()
-            else:
-                new_center[0] = self.wall.x - self.sphere.radius()
-            self.sphere.setCenter(new_center)
 
-class sphereExpansionScenario(gnomonAbstractSystemScenario):
+class sphereExpansionAgainstWallScenario(gnomonAbstractSystemScenario):
     def __init__(self, sphere=None, wall=None):
-        super(sphereExpansionScenario, self).__init__()
+        super(sphereExpansionAgainstWallScenario, self).__init__()
         self.sphere = sphere
         self.wall = wall
 
@@ -81,12 +73,19 @@ class sphereExpansionScenario(gnomonAbstractSystemScenario):
         self.wall_model.setWall(self.wall)
 
         self.sphere_model = gnomonSphereExpansionModel()
-        self.sphere_model.setWall(self.wall)
         self.sphere_model.setSphere(self.sphere)
 
     def step(self, time, dt):
         self.wall_model.step(time,dt)
         self.sphere_model.step(time,dt)
+
+        if(abs(self.sphere.center()[0] - self.wall.x) <= self.sphere.radius() ):
+            new_center = self.sphere.center()
+            if(self.sphere.center()[0] > self.wall.x):
+                new_center[0] = self.wall.x + self.sphere.radius()
+            else:
+                new_center[0] = self.wall.x - self.sphere.radius()
+            self.sphere.setCenter(new_center)
 
 
 class TestModelSystemScenario(unittest.TestCase):
@@ -96,7 +95,7 @@ class TestModelSystemScenario(unittest.TestCase):
         self.sphere.setRadius(1)
 
         self.wall = gnomonWallForm()
-        self.system_scenario = sphereExpansionScenario(self.sphere, self.wall)
+        self.system_scenario = sphereExpansionAgainstWallScenario(self.sphere, self.wall)
 
     def tearDown(self):
         pass
