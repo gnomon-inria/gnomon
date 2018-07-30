@@ -13,7 +13,11 @@
 # Code:
 
 import unittest
-from gnomoncore import *
+from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
+from gnomoncore import gnomonSphereForm, gnomonWallForm
+
+# AaAaargh!
+from gnomoncore import vec3_t
 
 class sphereExpansionScenario(gnomonAbstractSystemScenario):
     def __init__(self, sphere=None, wall=None):
