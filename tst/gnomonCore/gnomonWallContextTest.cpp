@@ -41,13 +41,13 @@ void gnomonWallContextTestCase::sphereExpansionTest(void)
 
     unsigned int delta_time = 1;
     gnomonTime time(1, gnomonTime::Mode::ArbitraryTime);
-    context.run(time, delta_time);
+    context.step(time, delta_time);
 
     QVERIFY(context.wallCoord() == 3);
     QVERIFY(context.wallAxis() == 'x');
 
     delta_time = 6;
-    context.run(time, delta_time);
+    context.step(time, delta_time);
 
     QVERIFY(context.wallCoord() == 4);
     QVERIFY(context.wallAxis() == 'y');

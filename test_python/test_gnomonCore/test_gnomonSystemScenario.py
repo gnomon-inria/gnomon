@@ -30,7 +30,7 @@ class sphereExpansionScenario(gnomonAbstractSystemScenario):
         self.growth_rate_decay = 0.99
         self.time_1 = 10
 
-    def run(self, time, dt):
+    def step(self, time, dt):
         if(time < self.time_1):
             self.wall.setPosition(self.wall_pos0)
         else:
@@ -63,7 +63,7 @@ class TestSystemScenario(unittest.TestCase):
         system = gnomonSystem(self.system_scenario)
         dt = 1
         for t in xrange(0, 20):
-            system.run(t, dt)
+            system.step(t, dt)
 
         eps = 1e-4
         assert abs(self.sphere.radius() - 19.0272) < eps

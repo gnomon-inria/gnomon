@@ -81,7 +81,7 @@ class SphereGrowthModel(gnomonAbstractModel):
     def nextTime(self):
         return self.next_time
 
-    def run(self):
+    def step(self):
         sphere = self.sphere
         # sphere = self.dynamic_form.atTime(self.time)
         next_radius = sphere.radius+self.growth_rate*self.dt.getTimeStamp()
@@ -109,17 +109,17 @@ class TestSphereModel(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_gnomonAbstractModel_run(self):
-        self.model.run()
+    def test_gnomonAbstractModel_step(self):
+        self.model.step()
         assert self.model.nextTime().getTimeStamp() == 2
         assert self.model.nextForm().radius == 2
 
     def test_gnomonAbstractModel_loop(self):
-        self.model.run()
+        self.model.step()
         for step in xrange(8):
             self.model.setForm(self.model.nextForm())
             self.model.setTime(self.model.nextTime())
-            self.model.run()
+            self.model.step()
 
         assert self.model.nextTime().getTimeStamp() == 10
         assert self.model.nextForm().radius == 10

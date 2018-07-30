@@ -30,7 +30,7 @@ public:
     virtual ~gnomonAbstractSystemScenario(void) = default;
 
 public:
-    virtual void run(std::size_t time, std::size_t dt) = 0;
+    virtual void step(std::size_t time, std::size_t dt) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

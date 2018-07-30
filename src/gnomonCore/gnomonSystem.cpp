@@ -28,7 +28,7 @@ gnomonSystem::gnomonSystem(gnomonAbstractSystemScenario * system_scenario): d(ne
 {
     using std::placeholders::_1;
     using std::placeholders::_2;
-    d->scenario = std::bind(&gnomonAbstractSystemScenario::run, system_scenario, _1, _2);
+    d->scenario = std::bind(&gnomonAbstractSystemScenario::step, system_scenario, _1, _2);
 }
 
 gnomonSystem::gnomonSystem(const scenario_t& scenario): d(new gnomonSystemPrivate)
@@ -61,7 +61,7 @@ void gnomonSystem::setScenario(gnomonAbstractSystemScenario *system_scenario)
 {
     using std::placeholders::_1;
     using std::placeholders::_2;
-    d->scenario = std::bind(&gnomonAbstractSystemScenario::run, system_scenario, _1, _2);
+    d->scenario = std::bind(&gnomonAbstractSystemScenario::step, system_scenario, _1, _2);
 }
 
 void gnomonSystem::setScenario(const scenario_t& scenario)
@@ -69,7 +69,7 @@ void gnomonSystem::setScenario(const scenario_t& scenario)
     d->scenario = scenario;
 }
 
-void gnomonSystem::run(std::size_t time, std::size_t dt)
+void gnomonSystem::step(std::size_t time, std::size_t dt)
 {
     d->scenario(time, dt);
 }

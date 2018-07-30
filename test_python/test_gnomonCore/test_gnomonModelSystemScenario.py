@@ -40,7 +40,7 @@ class gnomonWallMotionModel(gnomonAbstractModel):
     def setWall(self, wall):
         self.wall = wall
 
-    def run(self, time, dt):
+    def step(self, time, dt):
         if(time < self.time_1):
             self.wall.x = self.wall_x_0
         else:
@@ -60,7 +60,7 @@ class gnomonSphereExpansionModel(gnomonAbstractModel):
     def setWall(self, wall):
         self.wall = wall
 
-    def run(self, time, dt):
+    def step(self, time, dt):
         self.growth_rate *= self.growth_rate_decay
 
         self.sphere.setRadius(self.sphere.radius() + self.growth_rate*dt)
@@ -86,9 +86,9 @@ class sphereExpansionScenario(gnomonAbstractSystemScenario):
         self.sphere_model.setWall(self.wall)
         self.sphere_model.setSphere(self.sphere)
 
-    def run(self, time, dt):
-        self.wall_model.run(time,dt)
-        self.sphere_model.run(time,dt)
+    def step(self, time, dt):
+        self.wall_model.step(time,dt)
+        self.sphere_model.step(time,dt)
 
 
 class TestModelSystemScenario(unittest.TestCase):
@@ -107,7 +107,7 @@ class TestModelSystemScenario(unittest.TestCase):
         system = gnomonSystem(self.system_scenario)
         dt = 1
         for t in xrange(0, 20):
-            system.run(t, dt)
+            system.step(t, dt)
 
         eps = 1e-4
         assert abs(self.sphere.radius() - 19.0272) < eps

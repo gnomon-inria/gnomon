@@ -14,7 +14,7 @@ class gnomonSphereExpansionScenario : public gnomonAbstractSystemScenario
 {
 
 public:
-    void run(std::size_t time, std::size_t dt) override
+    void step(std::size_t time, std::size_t dt) override
     {
         if(time < time_1) {
             wall.setPosition(wall_pos0);
@@ -61,7 +61,7 @@ void gnomonSystemScenarioTestCase::sphereExpansionClassTest(void)
     std::size_t dt = 1;
     gnomonSystem system(&scenario);
     for(std::size_t t = 0; t < time_max; t += dt) {
-        system.run(t, dt);
+        system.step(t, dt);
     }
 
     double eps = 1e-4;
@@ -107,7 +107,7 @@ void gnomonSystemScenarioTestCase::sphereExpansionLambdaTest(void)
     std::size_t dt = 1;
     gnomonSystem system(system_scenario_func);
     for(std::size_t t = 0; t < time_max; t += dt) {
-        system.run(t, dt);
+        system.step(t, dt);
     }
 
     double eps = 1e-4;

@@ -42,7 +42,7 @@ public:
     void setScenario(gnomonAbstractSystemScenario *);
     void setScenario(const scenario_t&);
 
-    void run(std::size_t time, std::size_t dt);
+    void step(std::size_t time, std::size_t dt);
 
 private:
     class gnomonSystemPrivate *d;
