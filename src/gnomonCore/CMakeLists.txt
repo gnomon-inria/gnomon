@@ -39,6 +39,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractForm.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
+  gnomonAbstractMeshData
+  gnomonAbstractMeshData.h
   gnomonAbstractModel
   gnomonAbstractModel.h
   gnomonAbstractTissueGrowthModel
@@ -62,6 +64,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormVisitor.h
   gnomonIntensityImage
   gnomonIntensityImage.h
+  gnomonMesh
+  gnomonMesh.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTypeDef
@@ -79,6 +83,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractMeshData.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractModel.cpp
