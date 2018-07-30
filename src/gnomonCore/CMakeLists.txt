@@ -136,6 +136,8 @@ if(DTK_BUILD_WRAPPERS)
   endif(DTK_WRAPPING_PYTHON)
 endif(DTK_BUILD_WRAPPERS)
 
+target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
+
 # #################################################################
 ## Target properties
 ## #################################################################

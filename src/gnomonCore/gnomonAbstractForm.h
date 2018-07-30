@@ -32,6 +32,13 @@ public:
 public:
     virtual gnomonAbstractForm *clone(void) = 0;
 
+public:
+    virtual void render(void);
+    void attachRenderer(class vtkRenderer *);
+
+public:
+    class vtkRenderer* renderer = nullptr;
+
 };
 
 typedef QSharedPointer<gnomonAbstractForm> gnomonAbstractFormPtr;

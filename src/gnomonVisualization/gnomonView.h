@@ -46,6 +46,9 @@ public:
     QWidget *widget(void) override;
     QWidget *inspector(void) override;
 
+    class vtkRenderer *renderer(void);
+    class vtkRenderWindowInteractor *interactor(void);
+
 protected:
     void mousePressEvent(QMouseEvent *) override;
 

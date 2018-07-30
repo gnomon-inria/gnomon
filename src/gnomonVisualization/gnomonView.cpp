@@ -154,6 +154,16 @@ QWidget *gnomonView::inspector(void)
     return d->manager->inspector();
 }
 
+vtkRenderer *gnomonView::renderer(void)
+{
+    return d->renderer;
+}
+
+vtkRenderWindowInteractor *gnomonView::interactor(void)
+{
+    return d->widget->GetInteractor();
+}
+
 void gnomonView::mousePressEvent(QMouseEvent *event)
 {
     gnomonView::mousePressEvent(event);
