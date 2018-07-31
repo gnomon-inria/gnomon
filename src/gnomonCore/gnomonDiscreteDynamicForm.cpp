@@ -49,8 +49,8 @@ void gnomonDiscreteDynamicForm::setInitialTime(gnomonTime initialTime)
 gnomonAbstractForm* gnomonDiscreteDynamicForm::atTime(gnomonTime t)
 {
     // Q_ASSERT_X(d->forms.contains(t), "atTime", "Invalid time position : the form is not defined at this time");
-    if(!d->forms.contains(t))
-        d->forms.insert(t, d->forms.last()->clone());
+    //if(!d->forms.contains(t))
+    //    d->forms.insert(t, d->forms.last()->clone());
 
     return d->forms[t];
 }

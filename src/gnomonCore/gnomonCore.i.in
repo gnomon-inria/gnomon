@@ -16,6 +16,8 @@
 
 %module(directors="1") gnomoncore
 
+%include "std_array.i"
+
 %include <dtk_base.i>
 
 %import <dtkCore.i>
@@ -35,16 +37,20 @@
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonCellGraph.h>
 #include <gnomonCore/gnomonCellImage.h>
 #include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
+#include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonSphereForm.h>
+#include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
-#include <gnomonFileSystemFormReader.h>
+#include <gnomonCore/gnomonTypeDef.h>
+#include <gnomonCore/gnomonWallForm.h>
 
 %}
 
@@ -120,6 +126,20 @@
     gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
         return $self->value<gnomonDiscreteDynamicForm *>();
     }
+
+    void setValue(gnomonSphereForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonSphereForm* tognomonSphereForm() const {
+        return $self->value<gnomonSphereForm *>();
+    }
+
+    void setValue(gnomonWallForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonWallForm* tognomonWallForm() const {
+        return $self->value<gnomonWallForm *>();
+    }
  }
 
 
@@ -142,6 +162,7 @@
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>
 %include <gnomonCore/gnomonCellImage.h>
@@ -150,8 +171,15 @@
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonSphereForm.h>
+%include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonTypeDef.h>
+%include <gnomonCore/gnomonWallForm.h>
 %include <QVariant.i>
+
+namespace std {
+    %template(vec3_t) array<double, 3>;
+}
 
 //
 // gnomonCore.i.in ends here

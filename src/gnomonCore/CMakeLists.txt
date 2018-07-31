@@ -57,14 +57,17 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDataManager.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
-  gnomonExpansionSphereModel.h
   gnomonFileSystemFormReader.h
   gnomonIntensityImage
   gnomonIntensityImage.h
   gnomonSphereForm
   gnomonSphereForm.h
+  gnomonTypeDef
+  gnomonTypeDef.h
   gnomonTime
-  gnomonTime.h)
+  gnomonTime.h
+  gnomonWallForm
+  gnomonWallForm.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellComplexData.cpp
@@ -74,17 +77,20 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
+  gnomonAbstractModel.cpp
   gnomonAbstractIntensityImageData.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
-  gnomonExpansionSphereModel.cpp
   gnomonFileSystemFormReader.cpp
   gnomonSphereForm.cpp
-  gnomonTime.cpp)
+  gnomonSystem.cpp
+  gnomonTime.cpp
+  gnomonWallForm.cpp)
 
 ## #################################################################
 ## Wrapping

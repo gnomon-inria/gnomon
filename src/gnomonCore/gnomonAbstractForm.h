@@ -14,9 +14,8 @@
 
 #pragma once
 
-#include <gnomonCoreExport.h>
+#include <gnomonCoreExport>
 
-#include <QtCore>
 #include <dtkCore>
 
 // ///////////////////////////////////////////////////////////////////
@@ -27,10 +26,13 @@ class GNOMONCORE_EXPORT gnomonAbstractForm
 {
 public:
              gnomonAbstractForm(void) = default;
-    virtual ~gnomonAbstractForm(void) {};
+    virtual ~gnomonAbstractForm(void) = default;
+
+protected:
+    void record(void);
 
 public:
-    virtual gnomonAbstractForm *clone(void) = 0;
+    virtual QString name(void) const { return "NONAME";};
 
 public:
     virtual void render(void);
@@ -41,24 +43,22 @@ public:
 
 };
 
-typedef QSharedPointer<gnomonAbstractForm> gnomonAbstractFormPtr;
-
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT        (gnomonAbstractForm *)
-// DTK_DECLARE_PLUGIN        (gnomonAbstractForm, GNOMONCORE_EXPORT)
-// DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
-// DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN        (gnomonAbstractForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractForm, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
-// namespace gnomonCore {
-//     DTK_DECLARE_CONCEPT(gnomonAbstractForm, GNOMONCORE_EXPORT, form);
-// }
+namespace gnomonCore {
+    DTK_DECLARE_CONCEPT(gnomonAbstractForm, GNOMONCORE_EXPORT, abstractForm);
+}
 
 //
 // gnomonAbstractForm.h ends here
