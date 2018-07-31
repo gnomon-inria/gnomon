@@ -338,10 +338,13 @@ cd $HOME/Development/gnomon/build
 
 Then in the research field, one can look for gnomon and check that at least one node from gnomon is available. One can then drag and drop it into the composer. Eventually, one can select the node and check in th left panel whether an implementation is available.
 
-## Omero layer
+## Omero layer 5.2.7 (server = tissuelab.inria.fr)
+
+WARNING: this section should be removed/rewritten then gnomon.inria.fr will be
+installed. See next section.
 
 We need to install omero C++ and zeroc-ice. Omero MUST be at the same level than the server. At the moment,
-the version is 5.2.7
+the version is 5.2.7 omn tissuelab.inria.fr
 
 Omero depens on ICE (https://zeroc.com/products/ice)
 
@@ -362,6 +365,7 @@ For macOSX:
 $ brew install zeroc-ice/tap/ice
 ```
 
+
 Omero will be installed from the sources:
 http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
 
@@ -381,6 +385,31 @@ $ ./build.py build-cpp
 ```
 
 The compilation is done in: openmicroscopy-5.2.7/target/OMERO.cpp-5.2.7-ice36-Mac OS X-10.12.6-x86_64
+The omero-client_DIR and omero-ice_DIR looks like:
+~/Development/openmicroscopy-5.2.7/target/OMERO.cpp-5.2.7-ice36-Mac OS
+X-10.12.6-x86_64/lib/cmake
+
+
+## Omero layer 5.4.7 (server = gnomon.inria.fr)
+
+The new server is running omero-5.4.7 on gnomon.inria.fr
+
+Only tested on macOSX (10.13)
+
+* get the sources from
+  http://downloads.openmicroscopy.org/omero/5.4.7/artifacts/openmicroscopy-5.4.7.zip
+* cd ~/Development/openmiscroscopy-5.4.7
+* mkdir build INSTALL
+* cd build
+* cmake ..
+  -DCMAKE_INSTALL_PREFIX:PATH=$HOME/Developement/openmicroscopy-5.4.7/INSTALL
+* make
+* make install
+
+
+In order to compile gnomon with openmicroscopy layer, do:
+
+* cmake -Domero-ice_DIR:PATH=$HOME/Development/openmicroscopy-5.4.7/INSTALL/lib/cmake  -Domero-client_DIR:PATH=$HOME/Development/openmicroscopy-5.4.7/INSTALL/lib/cmake -DVTK_DIR:PATH=$HOME/Development/VTK-8.0.0/build ..
 
 ## Ice install
 
