@@ -16,14 +16,6 @@
 
 #include "gnomonCore.h"
 
-void gnomonAbstractForm::render(void) {
-    qWarning() << "This class doesnt implement a rendering concept";
-}
-
-void gnomonAbstractForm::attachRenderer(vtkRenderer *renderer) {
-    this->renderer = renderer;
-}
-
 void gnomonAbstractForm::record(void)
 {
     static int counter = 0;

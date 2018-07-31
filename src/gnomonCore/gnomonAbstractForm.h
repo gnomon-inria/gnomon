@@ -28,19 +28,14 @@ public:
              gnomonAbstractForm(void) = default;
     virtual ~gnomonAbstractForm(void) = default;
 
+public:
+    virtual void accept(class gnomonFormVisitor *) {};
+
 protected:
     void record(void);
 
 public:
     virtual QString name(void) const { return "NONAME";};
-
-public:
-    virtual void render(void);
-    void attachRenderer(class vtkRenderer *);
-
-public:
-    class vtkRenderer* renderer = nullptr;
-
 };
 
 // ///////////////////////////////////////////////////////////////////
