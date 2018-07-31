@@ -2,15 +2,31 @@
 
 gnomonSphereForm::gnomonSphereForm(void)
 {
-
+    this->record();
 }
 
-gnomonSphereForm::~gnomonSphereForm(void)
+QString gnomonSphereForm::name(void) const
+{
+    return "gnomonSphereForm";
+}
+
+void gnomonSphereForm::render(void)
 {
 
 }
 
-double gnomonSphereForm::radius(void)
+const gnomon::vec3_t gnomonSphereForm::center(void) const
+{
+    return m_center;
+}
+
+void gnomonSphereForm::setCenter(gnomon::vec3_t center)
+{
+    this->m_center = center;
+}
+
+
+double gnomonSphereForm::radius(void) const
 {
     return m_radius;
 }

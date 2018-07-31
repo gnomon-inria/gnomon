@@ -67,7 +67,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## ###################################################################
@@ -150,7 +150,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
 add_subdirectory(src)
 add_subdirectory(tst)
 add_subdirectory(app)
-
+add_subdirectory(test_python)
 ## ###################################################################
 ## Exporting
 ## ###################################################################

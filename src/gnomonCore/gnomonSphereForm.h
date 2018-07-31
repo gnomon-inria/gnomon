@@ -3,40 +3,34 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractForm.h"
-
-#include <QtCore>
+#include "gnomonTypeDef.h"
 #include <dtkCore>
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
 
 class gnomonAbstractForm;
 
 class GNOMONCORE_EXPORT gnomonSphereForm : public gnomonAbstractForm
 {
-public:
-             gnomonSphereForm(void);
-    virtual ~gnomonSphereForm(void);
-
-    gnomonSphereForm(const gnomonSphereForm& other) : m_radius(other.m_radius) {}
-    gnomonAbstractForm *clone(void) { return new gnomonSphereForm(*this); }
 
 public:
-    double radius(void);
-    void setRadius(double radius);
+    gnomonSphereForm(void);
+    ~gnomonSphereForm(void) = default;
+
+public:
+    QString name(void) const override;
+    void render(void) override;
+
+public:
+    const gnomon::vec3_t center(void) const;
+    double radius(void) const;
+    void setCenter(gnomon::vec3_t);
+    void setRadius(double);
 
 private:
+    gnomon::vec3_t m_center = {0., 0., 0.};
     double m_radius = 1.;
 };
 
-typedef QSharedPointer<gnomonSphereForm> gnomonSphereFormPtr;
-
-// ///////////////////////////////////////////////////////////////////
-// Give the concept the plugin machinery
-// ///////////////////////////////////////////////////////////////////
-
-DTK_DECLARE_OBJECT        (gnomonSphereForm *)
+DTK_DECLARE_OBJECT(gnomonSphereForm *)
 
 //
 // gnomonSphereForm.h ends here

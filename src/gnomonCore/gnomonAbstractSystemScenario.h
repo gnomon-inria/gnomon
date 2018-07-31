@@ -18,41 +18,37 @@
 
 #include <dtkCore>
 
+#include <cstddef>
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractForm
+class GNOMONCORE_EXPORT gnomonAbstractSystemScenario
 {
 public:
-             gnomonAbstractForm(void) = default;
-    virtual ~gnomonAbstractForm(void) = default;
-
-protected:
-    void record(void);
+    virtual ~gnomonAbstractSystemScenario(void) = default;
 
 public:
-    virtual QString name(void) const { return "NONAME";};
-    virtual void render(void) {};
-
+    virtual void step(std::size_t time, std::size_t dt) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractForm *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractForm, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractSystemScenario *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractForm, GNOMONCORE_EXPORT, abstractForm);
+    DTK_DECLARE_CONCEPT(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT, abstractSystemScenario);
 }
 
 //
-// gnomonAbstractForm.h ends here
+// gnomonAbstractSystemScenario.h ends here

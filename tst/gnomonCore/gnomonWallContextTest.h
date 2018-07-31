@@ -2,13 +2,13 @@
 
 #include <QtCore>
 
-class gnomonExpansionSphereModelTestCase : public QObject
+class gnomonWallContextTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-    gnomonExpansionSphereModelTestCase(void);
-    ~gnomonExpansionSphereModelTestCase(void);
+    gnomonWallContextTestCase(void);
+    ~gnomonWallContextTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -20,7 +20,4 @@ private slots:
 private slots:
     void cleanupTestCase(void);
     void cleanup(void);
-
-private:
-    class gnomonExpansionSphereModelTestCasePrivate *d;
 };
