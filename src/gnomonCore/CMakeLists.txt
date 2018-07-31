@@ -58,6 +58,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
   gnomonFileSystemFormReader.h
+  gnomonFormVisitor
+  gnomonFormVisitor.h
   gnomonIntensityImage
   gnomonIntensityImage.h
   gnomonSphereForm
@@ -87,6 +89,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
   gnomonFileSystemFormReader.cpp
+  gnomonFormVisitor.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp
@@ -141,8 +144,6 @@ if(DTK_BUILD_WRAPPERS)
       target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
   endif(DTK_WRAPPING_PYTHON)
 endif(DTK_BUILD_WRAPPERS)
-
-target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 # #################################################################
 ## Target properties
