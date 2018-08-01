@@ -31,6 +31,7 @@ public:
 
 public:
     virtual void step(std::size_t time, std::size_t dt) = 0;
+    virtual void reset(void) {qWarning() << Q_FUNC_INFO << "reset is not implemented";};
 };
 
 // ///////////////////////////////////////////////////////////////////
