@@ -17,7 +17,6 @@ public:
 
 public:
     QString name(void) const override;
-    void render(void) override;
 
 public:
     const gnomon::vec3_t center(void) const;

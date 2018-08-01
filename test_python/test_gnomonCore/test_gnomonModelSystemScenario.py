@@ -46,7 +46,6 @@ class gnomonWallMotionModel(gnomonAbstractModel):
         else:
             self.wall.x = self.wall_x_1
 
-
 class gnomonSphereExpansionModel(gnomonAbstractModel):
     def __init__(self):
         self.sphere = None
@@ -63,15 +62,14 @@ class gnomonSphereExpansionModel(gnomonAbstractModel):
     def step(self, time, dt):
         self.growth_rate *= self.growth_rate_decay
 
-        self.sphere.setRadius(self.sphere.radius() + self.growth_rate*dt)
-        if(abs(self.sphere.center()[0] - self.wall.x) <= self.sphere.radius() ):
+        self.sphere.setRadius(self.sphere.radius() + self.growth_rate * dt)
+        if(abs(self.sphere.center()[0] - self.wall.x) <= self.sphere.radius()):
             new_center = self.sphere.center()
             if(self.sphere.center()[0] > self.wall.x):
                 new_center[0] = self.wall.x + self.sphere.radius()
             else:
                 new_center[0] = self.wall.x - self.sphere.radius()
             self.sphere.setCenter(new_center)
-
 
 class sphereExpansionScenario(gnomonAbstractSystemScenario):
     def __init__(self, sphere=None, wall=None):
@@ -113,5 +111,3 @@ class TestModelSystemScenario(unittest.TestCase):
         assert abs(self.sphere.radius() - 19.0272) < eps
         assert abs(self.sphere.center()[0] + 15.0272) < eps
         assert abs(self.wall.x - 4.) < eps
-
-

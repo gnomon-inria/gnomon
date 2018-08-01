@@ -10,11 +10,6 @@ QString gnomonSphereForm::name(void) const
     return "gnomonSphereForm";
 }
 
-void gnomonSphereForm::render(void)
-{
-
-}
-
 const gnomon::vec3_t gnomonSphereForm::center(void) const
 {
     return m_center;
