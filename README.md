@@ -24,16 +24,16 @@ First clone gnomon-recipes:
 ``` shell
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-recipes.git
-cd gnomon-recipes/environments
+cd gnomon-recipes/environment
 ```
 
 To create the conda environment using the previous recipe saved under `gnomon.yml`:
 ```shell
-conda env create -f gnomon.yml
+conda env create -f gnomon-1.x.x.yml
 ```
 To activate the conda environment:
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 ```
 
 Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
@@ -77,7 +77,7 @@ cd build
 
 Compile after defining `cmake` options using arguments parsing (`cmake` options can also be defined using `ccmake ..` to access CMake curse interface):
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
 make -j4
 ```
@@ -85,7 +85,7 @@ make -j4
 ## OpenAlea legacy [REQUIRED]
 Before installing the following sources, do not forget to activate the conda environment:
 ```shell
-source activate gnomon
+source activate gnomon-1.x.x
 ```
 
 ### OpenAlea CellComplex
@@ -169,7 +169,7 @@ To enable both SIP and SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPE
 ### dtk
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:dtk/dtk.git
 cd dtk
@@ -183,7 +183,7 @@ make -j4
 ### dtk-imaging
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:dtk/dtk-imaging.git
 cd dtk-imaging
@@ -197,7 +197,7 @@ make -j4
 ### dtk-plugins-imaging
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:dtk/dtk-plugins-imaging.git
 cd dtk-plugins-imaging
@@ -215,7 +215,7 @@ make -j4
 To select light or dark theme for gnomon set the compilation flag ` -DGNOME_STYLE="ONELIGHT"|"ONEDARK"`.
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon.git
 cd gnomon
@@ -229,7 +229,7 @@ make -j4
 ### gnomon-plugins
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-plugins.git
 cd gnomon-plugins
@@ -243,7 +243,7 @@ make -j4
 ### gnomon-scripts
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-scripts.git
 ```
@@ -251,7 +251,7 @@ git clone git@gitlab.inria.fr:gnomon/gnomon-scripts.git
 ### gnomon-compositions
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-compositions.git
 ```
@@ -259,7 +259,7 @@ git clone git@gitlab.inria.fr:gnomon/gnomon-compositions.git
 ### gnomon-data
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-data.git
 ```
@@ -351,7 +351,7 @@ Omero depens on ICE (https://zeroc.com/products/ice)
 For some linux flavors, need to recompile from source https://github.com/zeroc-ice/ice
 
 ``` shell
-$ source activate gnomon
+$ source activate gnomon-1.x.x
 $ git clone -b 3.7 https://github.com/zeroc-ice/ice.git
 $ make
 $ make install
@@ -377,7 +377,7 @@ Prérequisite:
 WARNING: omero-5.2.7 DOES NOT BUILD with java9 !!!!!
 
 ``` shell
-$ source activate gnomon
+$ source activate gnomon-1.x.x
 $ wget http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
 $ unzip openmicroscopy-5.2.7.zip
 $ cd openmicroscopy-5.2.7
