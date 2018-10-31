@@ -78,7 +78,7 @@ cd build
 Compile after defining `cmake` options using arguments parsing (`cmake` options can also be defined using `ccmake ..` to access CMake curse interface):
 ``` shell
 source activate gnomon-1.x.x
-cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
+cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON -DVTK_WRAP_PYTHON=ON
 make -j4
 ```
 
