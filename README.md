@@ -186,10 +186,11 @@ In the `$HOME/.config` folder, one has to create a folder `inria`, then one has 
 ``` shell
 touch dtk-composer.ini
 touch dtk-imaging.ini
+touch dtk-script.ini
 touch gnomon-core.ini
 ```
 
-### gnomon config
+### Gnomon config
 
 Edit `gnomon-core.ini` file and add the following lines:
 
@@ -200,7 +201,7 @@ plugins=$HOME/Development/gnomon-plugins/build/lib
 
 **Optional: Enable jupyter console by default in Gnomon** (instead of python)
 
-You need to add some Configuration lines to `dtk-script.ini`.
+You need to add some configuration lines to `dtk-script.ini`.
 
 If using an install from sources:
 ``` shell
