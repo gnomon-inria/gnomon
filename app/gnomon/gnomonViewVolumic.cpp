@@ -16,6 +16,8 @@
 
 #include <gnomonStyle>
 
+#include <gnomonAbstractImageSeriesReader.h>
+
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -63,6 +65,9 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
 
 public:
+    gnomonAbstractImageSeriesReader *image_reader = nullptr;
+
+public:
     QSlider *slider;
 };
 
@@ -108,6 +113,11 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonViewVolumicPrivate;
     d->q = this;
+
+    d->image_reader = dtkImaging::imageSeriesReader::pluginFactory().create("gnomonImageSeriesReader");
+    if(!d->image_reader) {
+        qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
+    }
 
     d->slider = new QSlider(this);
     d->slider->setOrientation(Qt::Vertical);
@@ -179,6 +189,9 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     qDebug() << Q_FUNC_INFO << "Importing" << path;
+
+    d->image_reader->setPath(path);
+    d->view->setImage(d->image_reader->next());
 
     event->accept();
 }
