@@ -38,6 +38,7 @@
 #include <gnomonCore/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonAbstractImageSeriesReader.h>
 #include <gnomonCore/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonAbstractMultiChannelImageData.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCore.h>
@@ -48,6 +49,7 @@
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonIntensityImage.h>
+#include <gnomonCore/gnomonMultiChannelImage.h>
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
@@ -131,6 +133,7 @@
 %include <gnomonCore/gnomonAbstractImageSeriesReader.h>
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonAbstractMultiChannelImageData.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>
@@ -140,6 +143,7 @@
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonIntensityImage.h>
+%include <gnomonCore/gnomonMultiChannelImage.h>
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
