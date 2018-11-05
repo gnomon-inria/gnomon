@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonAbstractImageReader.h"
+#include "gnomonAbstractImageSeriesReader.h"
 
 #include "gnomonCore.h"
 
@@ -21,7 +21,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImageReader, imageSeriesReader, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractImageSeriesReader, imageSeriesReader, gnomonCore);
 }
 
 //
