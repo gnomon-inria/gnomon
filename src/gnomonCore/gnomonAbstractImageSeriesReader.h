@@ -33,6 +33,9 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
+    virtual void run(void) = 0;
+
+public:
     virtual vtkImageData *at(double t) = 0;
     virtual vtkImageData *next(void) = 0;
 };
