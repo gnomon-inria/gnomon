@@ -15,6 +15,7 @@
 #include "gnomonFinder.h"
 #include "gnomonMainWindow.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonToolBar.h"
 
 #include <gnomonStyle>
 
@@ -27,6 +28,19 @@ public:
 
 public:
     gnomonViewVolumic *view;
+
+public:
+    gnomonToolBar *menu;
+
+public:
+    QFrame *browse_workspace;
+    QFrame *fusion_workspace;
+    QFrame *segmtt_workspace;
+    QFrame *prepro_workspace;
+    QFrame *regist_workspace;
+
+public:
+    QStackedWidget *stack;
 };
 
 gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
@@ -42,6 +56,10 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
     d->toolbar->setFixedHeight(32);
+
+    d->view = new gnomonViewVolumic(this);
+
+    d->menu = new gnomonToolBar(this);
 
     QWidget *main = new QWidget(this);
 
@@ -60,13 +78,44 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     QWidget *finder = new QWidget(this);
     finder->setLayout(finder_layout);
 
-    d->view = new gnomonViewVolumic(this);
+    QHBoxLayout *browser_layout = new QHBoxLayout;
+    browser_layout->setContentsMargins(0, 0, 0, 0);
+    browser_layout->setSpacing(0);
+    browser_layout->addWidget(finder);
+    browser_layout->addWidget(d->view);
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    d->browse_workspace = new QFrame(this);
+    d->browse_workspace->setLayout(browser_layout);
+
+    d->fusion_workspace = new QFrame(this);
+    d->fusion_workspace->setStyleSheet("background: red;");
+
+    d->segmtt_workspace = new QFrame(this);
+    d->segmtt_workspace->setStyleSheet("background: green;");
+
+    d->prepro_workspace = new QFrame(this);
+    d->prepro_workspace->setStyleSheet("background: blue;");
+
+    d->regist_workspace = new QFrame(this);
+    d->regist_workspace->setStyleSheet("background: cyan;");
+
+    // --
+
+    d->stack = new QStackedWidget(this);
+    d->stack->addWidget(d->browse_workspace);
+    d->stack->addWidget(d->fusion_workspace);
+    d->stack->addWidget(d->segmtt_workspace);
+    d->stack->addWidget(d->prepro_workspace);
+    d->stack->addWidget(d->regist_workspace);
+    d->stack->setCurrentWidget(d->browse_workspace);
+
+    // --
+
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(finder);
-    layout->addWidget(d->view);
+    layout->addWidget(d->stack);
+    layout->addWidget(d->menu);
 
     QWidget *central = new QWidget(this);
     central->setLayout(layout);
@@ -77,10 +126,12 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->path, SIGNAL(changed(QString)), d->finder,  SLOT(setPath(QString)));
     connect(d->path, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
 
-    connect (d->toolbar, SIGNAL(changed(QString)), d->finder, SLOT(setPath(QString)));
-    connect (d->toolbar, SIGNAL(changed(QString)), d->path,   SLOT(setPath(QString)));
-    connect (d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
-    connect (d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
+    connect(d->toolbar, SIGNAL(changed(QString)), d->finder, SLOT(setPath(QString)));
+    connect(d->toolbar, SIGNAL(changed(QString)), d->path,   SLOT(setPath(QString)));
+    connect(d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
+    connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
+
+    connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
 
     this->setCentralWidget(central);
     this->setStyleSheet(gnomonStyleSheet());
