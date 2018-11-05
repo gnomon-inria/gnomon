@@ -33,7 +33,7 @@ public:
     gnomonToolBar *menu;
 
 public:
-    QFrame *browse_workspace;
+    QSplitter *browse_workspace;
     QFrame *fusion_workspace;
     QFrame *segmtt_workspace;
     QFrame *prepro_workspace;
@@ -48,6 +48,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d = new gnomonMainWindowPrivate;
 
     d->finder = new gnomonFinder(this);
+    d->finder->switchToTreeView();
 
     d->path = new gnomonFinderPathBar(this);
     d->path->setPath(QDir::currentPath());
@@ -78,14 +79,9 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     QWidget *finder = new QWidget(this);
     finder->setLayout(finder_layout);
 
-    QHBoxLayout *browser_layout = new QHBoxLayout;
-    browser_layout->setContentsMargins(0, 0, 0, 0);
-    browser_layout->setSpacing(0);
-    browser_layout->addWidget(finder);
-    browser_layout->addWidget(d->view);
-
-    d->browse_workspace = new QFrame(this);
-    d->browse_workspace->setLayout(browser_layout);
+    d->browse_workspace = new QSplitter(this);
+    d->browse_workspace->addWidget(finder);
+    d->browse_workspace->addWidget(d->view);
 
     d->fusion_workspace = new QFrame(this);
     d->fusion_workspace->setStyleSheet("background: red;");
