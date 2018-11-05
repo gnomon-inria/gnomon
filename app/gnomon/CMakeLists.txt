@@ -20,11 +20,13 @@ project(gnomon)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonFinder.h
-  gnomonMainWindow.h)
+  gnomonMainWindow.h
+  gnomonViewVolumic.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
-  gnomonMainWindow.cpp)
+  gnomonMainWindow.cpp
+  gnomonViewVolumic.cpp)
 
 ## #################################################################
 ## Build rules

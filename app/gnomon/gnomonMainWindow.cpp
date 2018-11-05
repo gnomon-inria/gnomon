@@ -14,14 +14,17 @@
 
 #include "gnomonFinder.h"
 #include "gnomonMainWindow.h"
+#include "gnomonViewVolumic.h"
 
 class gnomonMainWindowPrivate
 {
 public:
     gnomonFinder *finder;
     gnomonFinderPathBar *path;
-    gnomonFinderSideView *side;
     gnomonFinderToolBar *toolbar;
+
+public:
+    gnomonViewVolumic *view;
 };
 
 gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
@@ -33,8 +36,6 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d->path = new gnomonFinderPathBar(this);
     d->path->setPath(QDir::currentPath());
     d->path->setFixedHeight(32);
-
-//    d->side = new gnomonFinderSideView(this);
 
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
@@ -48,40 +49,38 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     toolbar_layout->addWidget(d->toolbar);
     toolbar_layout->addWidget(d->path);
 
-    QVBoxLayout *main_layout = new QVBoxLayout(main);
-    main_layout->setContentsMargins(0, 0, 0, 0);
-    main_layout->setSpacing(0);
-    main_layout->addLayout(toolbar_layout);
-    main_layout->addWidget(d->finder);
+    QVBoxLayout *finder_layout = new QVBoxLayout;
+    finder_layout->setContentsMargins(0, 0, 0, 0);
+    finder_layout->setSpacing(0);
+    finder_layout->addLayout(toolbar_layout);
+    finder_layout->addWidget(d->finder);
 
-    QWidget *central = new QWidget(this);
+    QWidget *finder = new QWidget(this);
+    finder->setLayout(finder_layout);
 
-    QHBoxLayout *layout= new QHBoxLayout(central);
+    d->view = new gnomonViewVolumic(this);
+
+    QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-  //  layout->addWidget(d->side);
-    layout->addWidget(main);
+    layout->addWidget(finder);
+    layout->addWidget(d->view);
 
-    this->setCentralWidget(central);
+    QWidget *central = new QWidget(this);
+    central->setLayout(layout);
 
     connect(d->finder, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
-    // connect(d->finder, SIGNAL(changed(QString)), d->side,    SLOT(setPath(QString)));
     connect(d->finder, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
 
     connect(d->path, SIGNAL(changed(QString)), d->finder,  SLOT(setPath(QString)));
-    // connect(d->path, SIGNAL(changed(QString)), d->side,    SLOT(setPath(QString)));
     connect(d->path, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
-
-    // connect(d->side, SIGNAL(changed(QString)), d->finder,  SLOT(setPath(QString)));
-    // connect(d->side, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
-    // connect(d->side, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
-
-    // connect(d->finder, SIGNAL(bookmarked(QString)), d->side, SLOT(addBookmark(QString)));
 
     connect (d->toolbar, SIGNAL(changed(QString)), d->finder, SLOT(setPath(QString)));
     connect (d->toolbar, SIGNAL(changed(QString)), d->path,   SLOT(setPath(QString)));
     connect (d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
     connect (d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
+
+    this->setCentralWidget(central);
 }
 
 gnomonMainWindow::~gnomonMainWindow(void)
