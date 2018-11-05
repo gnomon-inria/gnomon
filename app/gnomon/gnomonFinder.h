@@ -22,7 +22,7 @@
 
 class gnomonFinderToolBarPrivate;
 
-class gnomonFinderToolBar : public QToolBar
+class gnomonFinderToolBar : public QFrame
 {
     Q_OBJECT
 
@@ -30,23 +30,22 @@ public:
      gnomonFinderToolBar(QWidget *parent = 0);
     ~gnomonFinderToolBar(void);
 
-     QSize sizeHint (void) const;
+public:
+     QSize sizeHint(void) const;
 
 signals:
     void changed(const QString& path);
-    void listView (void);
-    void treeView (void);
+    void listView(void);
+    void treeView(void);
     void showHiddenFiles(bool);
 
 public slots:
     void setPath(const QString& path);
-    void onPrev (void);
-    void onNext (void);
+    void onPrev(void);
+    void onNext(void);
     void onListView(void);
     void onTreeView(void);
     void onShowHiddenFiles(bool);
-
-protected:
 
 private:
     gnomonFinderToolBarPrivate *d;
@@ -247,9 +246,9 @@ signals:
     void fileDoubleClicked(const QString &filename);
     void fileClicked(const QFileInfo &info);
     void selectionChanged(const QStringList& paths);
-    void nothingSelected();
-    void listView (void);
-    void treeView (void);
+    void nothingSelected(void);
+    void listView(void);
+    void treeView(void);
     void showHiddenFiles(bool);
 
 public slots:
@@ -257,8 +256,9 @@ public slots:
     void switchToListView(void);
     void switchToTreeView(void);
     void onShowHiddenFiles(bool);
-    void switchShowHiddenFiles();
+    void switchShowHiddenFiles(void);
 
+public slots:
     void onBookmarkSelectedItemsRequested(void);
 
 protected slots:

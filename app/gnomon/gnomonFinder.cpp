@@ -42,7 +42,7 @@ public:
     gnomonFontAwesome *font_awesome;
 };
 
-gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QToolBar(parent), d(new gnomonFinderToolBarPrivate)
+gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QFrame(parent), d(new gnomonFinderToolBarPrivate)
 {
     d->font_awesome = new gnomonFontAwesome(this);
     d->font_awesome->initFontAwesome();
@@ -87,11 +87,12 @@ gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QToolBar(parent), d(
     viewButtonGroup->addButton(d->listViewButton);
     viewButtonGroup->addButton(d->treeViewButton);
 
-    this->addWidget(d->prevButton);
-    this->addWidget(d->nextButton);
-    this->addWidget(d->treeViewButton);
-    this->addWidget(d->listViewButton);
-    this->addWidget(d->showHiddenFilesButton);
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->addWidget(d->prevButton);
+    layout->addWidget(d->nextButton);
+    layout->addWidget(d->treeViewButton);
+    layout->addWidget(d->listViewButton);
+    layout->addWidget(d->showHiddenFilesButton);
 
     connect(d->prevButton, SIGNAL(clicked()), this, SLOT(onPrev()));
     connect(d->nextButton, SIGNAL(clicked()), this, SLOT(onNext()));
@@ -100,6 +101,8 @@ gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QToolBar(parent), d(
     connect(d->treeViewButton, SIGNAL(clicked()), this, SIGNAL(treeView()));
 
     connect(d->showHiddenFilesButton, SIGNAL(toggled(bool)), this, SIGNAL(showHiddenFiles(bool)));
+
+    this->setFixedHeight(56);
 }
 
 gnomonFinderToolBar::~gnomonFinderToolBar(void)
@@ -111,10 +114,7 @@ gnomonFinderToolBar::~gnomonFinderToolBar(void)
 
 QSize gnomonFinderToolBar::sizeHint(void) const
 {
-    QSize size = QToolBar::sizeHint();
-    size.setHeight(23);
-
-    return size;
+    return QSize(100, 48);
 }
 
 void gnomonFinderToolBar::setPath(const QString &path)

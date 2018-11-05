@@ -56,7 +56,6 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
-    d->toolbar->setFixedHeight(32);
 
     d->view = new gnomonViewVolumic(this);
 

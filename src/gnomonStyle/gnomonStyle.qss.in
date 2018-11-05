@@ -94,25 +94,25 @@ QHeaderView::section {
     padding: 4px;
 }
 
-QListView::item {
-    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
-}
+/* QListView::item { */
+/*     color: @GNOMON_STYLE_FOREGROUNDCOLOR@; */
+/* } */
 
-QListView::item:!active {
-    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
-}
+/* QListView::item:!active { */
+/*     background: @GNOMON_STYLE_BACKGROUNDCOLOR@; */
+/* } */
 
-QListView::item:active {
-    background: @GNOMON_STYLE_ACCENTCOLOR@;
-}
+/* QListView::item:active { */
+/*     background: @GNOMON_STYLE_ACCENTCOLOR@; */
+/* } */
 
-QListView::indicator:checked {
-    image: url(":gnomonStyle/gnomonStyleCheckBox-checked.png");
-}
+/* QListView::indicator:checked { */
+/*     image: url(":gnomonStyle/gnomonStyleCheckBox-checked.png"); */
+/* } */
 
-QListView::indicator:unchecked {
-    image: url(":gnomonStyle/gnomonStyleCheckBox.png");
-}
+/* QListView::indicator:unchecked { */
+/*     image: url(":gnomonStyle/gnomonStyleCheckBox.png"); */
+/* } */
 
 QMenu {
     margin-top: 0px;
@@ -168,7 +168,6 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 }
 
 QScrollBar:vertical {
-    background: #000000;
     width: 6px;
     margin: 0px 0px 0px 0px;
 }
