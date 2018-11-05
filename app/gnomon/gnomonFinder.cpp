@@ -14,6 +14,9 @@
 
 #include "gnomonFinder.h"
 
+#include <gnomonFonts>
+#include <gnomonStyle>
+
 #ifdef Q_WS_WIN
 #include <qt_windows.h>
 #endif
@@ -35,63 +38,68 @@ public:
 
     QLinkedList<QString> pathList;
     QLinkedList<QString>::iterator iterator;
+
+    gnomonFontAwesome *font_awesome;
 };
 
 gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QToolBar(parent), d(new gnomonFinderToolBarPrivate)
 {
-    d->prevButton = new QToolButton (this);
-    d->prevButton->setArrowType (Qt::LeftArrow);
-    d->prevButton->setEnabled (0);
+    d->font_awesome = new gnomonFontAwesome(this);
+    d->font_awesome->initFontAwesome();
+    d->font_awesome->setDefaultOption("color", QColor(GNOMON_STYLE_ACCENTCOLOR));
+
+    d->prevButton = new QToolButton(this);
+    d->prevButton->setArrowType(Qt::LeftArrow);
+    d->prevButton->setEnabled(0);
     d->prevButton->setIconSize(QSize(16, 16));
     d->prevButton->setToolTip(tr("Back"));
 
-    d->nextButton = new QToolButton (this);
-    d->nextButton->setArrowType (Qt::RightArrow);
-    d->nextButton->setEnabled (0);
+    d->nextButton = new QToolButton(this);
+    d->nextButton->setArrowType(Qt::RightArrow);
+    d->nextButton->setEnabled(0);
     d->nextButton->setIconSize(QSize(16, 16));
     d->nextButton->setToolTip(tr("Next"));
 
-    d->listViewButton = new QToolButton (this);
+    d->listViewButton = new QToolButton(this);
     d->listViewButton->setCheckable(true);
-    d->listViewButton->setChecked (true);
-    // d->listViewButton->setIcon(QIcon(":dtkGui/pixmaps/dtk-view-list.png"));
+    d->listViewButton->setChecked(true);
+    d->listViewButton->setIcon(d->font_awesome->icon(fa::th));
     d->listViewButton->setIconSize(QSize(16, 16));
     d->listViewButton->setToolTip(tr("Icon view"));
 
-    d->treeViewButton = new QToolButton (this);
+    d->treeViewButton = new QToolButton(this);
     d->treeViewButton->setCheckable(true);
-    // d->treeViewButton->setIcon(QIcon(":dtkGui/pixmaps/dtk-view-tree.png"));
+    d->treeViewButton->setIcon(d->font_awesome->icon(fa::list));
     d->treeViewButton->setIconSize(QSize(16, 16));
     d->treeViewButton->setToolTip(tr("List view"));
 
-    d->showHiddenFilesButton = new QToolButton (this);
+    d->showHiddenFilesButton = new QToolButton(this);
     d->showHiddenFilesButton->setCheckable(true);
-    // d->showHiddenFilesButton->setIcon(QIcon(":dtkGui/pixmaps/hidden-folder.png"));
+    d->showHiddenFilesButton->setIcon(d->font_awesome->icon(fa::eye));
     d->showHiddenFilesButton->setIconSize(QSize(16, 16));
     d->showHiddenFilesButton->setToolTip(tr("Show/Hide hidden files"));
-    //By default the showHiddenFilesButton is enabled in MacOS
 #ifdef Q_WS_MAC
     d->showHiddenFilesButton->setChecked(Qt::Checked);
 #endif
 
-    QButtonGroup *viewButtonGroup = new QButtonGroup (this);
-    viewButtonGroup->setExclusive (true);
-    viewButtonGroup->addButton ( d->listViewButton );
-    viewButtonGroup->addButton ( d->treeViewButton );
+    QButtonGroup *viewButtonGroup = new QButtonGroup(this);
+    viewButtonGroup->setExclusive(true);
+    viewButtonGroup->addButton(d->listViewButton);
+    viewButtonGroup->addButton(d->treeViewButton);
 
-    this->addWidget (d->prevButton);
-    this->addWidget (d->nextButton);
-    this->addWidget (d->treeViewButton);
-    this->addWidget (d->listViewButton);
-    this->addWidget (d->showHiddenFilesButton);
+    this->addWidget(d->prevButton);
+    this->addWidget(d->nextButton);
+    this->addWidget(d->treeViewButton);
+    this->addWidget(d->listViewButton);
+    this->addWidget(d->showHiddenFilesButton);
 
-    connect (d->prevButton, SIGNAL (clicked()), this, SLOT (onPrev()));
-    connect (d->nextButton, SIGNAL (clicked()), this, SLOT (onNext()));
+    connect(d->prevButton, SIGNAL(clicked()), this, SLOT(onPrev()));
+    connect(d->nextButton, SIGNAL(clicked()), this, SLOT(onNext()));
 
-    connect (d->listViewButton, SIGNAL (clicked()), this, SIGNAL (listView()));
-    connect (d->treeViewButton, SIGNAL (clicked()), this, SIGNAL (treeView()));
+    connect(d->listViewButton, SIGNAL(clicked()), this, SIGNAL(listView()));
+    connect(d->treeViewButton, SIGNAL(clicked()), this, SIGNAL(treeView()));
 
-    connect (d->showHiddenFilesButton, SIGNAL(toggled(bool)), this, SIGNAL(showHiddenFiles(bool)));
+    connect(d->showHiddenFilesButton, SIGNAL(toggled(bool)), this, SIGNAL(showHiddenFiles(bool)));
 }
 
 gnomonFinderToolBar::~gnomonFinderToolBar(void)
@@ -101,53 +109,54 @@ gnomonFinderToolBar::~gnomonFinderToolBar(void)
     d = NULL;
 }
 
-QSize gnomonFinderToolBar::sizeHint (void) const
+QSize gnomonFinderToolBar::sizeHint(void) const
 {
     QSize size = QToolBar::sizeHint();
     size.setHeight(23);
+
     return size;
 }
 
-void gnomonFinderToolBar::setPath (const QString &path)
+void gnomonFinderToolBar::setPath(const QString &path)
 {
-    if (d->pathList.count()) {
-        if (d->iterator!=d->pathList.end())
+    if(d->pathList.count()) {
+        if(d->iterator!=d->pathList.end())
             d->pathList.erase(d->pathList.begin(), d->iterator);
     }
 
-    d->pathList.prepend (path);
+    d->pathList.prepend(path);
     d->iterator = d->pathList.begin();
 
-    if (d->pathList.count()>1)
+    if(d->pathList.count()>1)
         d->prevButton->setEnabled(1);
     else
         d->prevButton->setEnabled(0);
 
-    d->nextButton->setEnabled (0);
+    d->nextButton->setEnabled(0);
 }
 
-void gnomonFinderToolBar::onNext (void)
+void gnomonFinderToolBar::onNext(void)
 {
-    if (d->iterator!=d->pathList.begin()) {
-        emit ( changed (*(--d->iterator)) );
-        d->prevButton->setEnabled (1);
-        if (d->iterator==d->pathList.begin())
-            d->nextButton->setEnabled (0);
+    if(d->iterator!=d->pathList.begin()) {
+        emit( changed(*(--d->iterator)) );
+        d->prevButton->setEnabled(1);
+        if(d->iterator==d->pathList.begin())
+            d->nextButton->setEnabled(0);
     }
     else
-        d->nextButton->setEnabled (0);
+        d->nextButton->setEnabled(0);
 }
 
-void gnomonFinderToolBar::onPrev (void)
+void gnomonFinderToolBar::onPrev(void)
 {
-    if (d->iterator!=--d->pathList.end()) {
-        emit ( changed (*(++d->iterator)) );
+    if(d->iterator!=--d->pathList.end()) {
+        emit( changed(*(++d->iterator)) );
         d->nextButton->setEnabled(1);
-        if (d->iterator==(--d->pathList.end()))
-            d->prevButton->setEnabled (0);
+        if(d->iterator==(--d->pathList.end()))
+            d->prevButton->setEnabled(0);
     }
     else
-        d->prevButton->setEnabled (0);
+        d->prevButton->setEnabled(0);
 }
 
 void gnomonFinderToolBar::onTreeView(void)
@@ -238,7 +247,7 @@ void gnomonFinderSideView::populate(void)
     foreach(QFileInfo info, driveList) {
 
         QString dlabel = this->driveLabel( info.absoluteFilePath() );
-        QTreeWidgetItem *item = new QTreeWidgetItem(item1, QStringList() << (dlabel.isEmpty() ? "HD" : dlabel));
+        QTreeWidgetItem *item = new QTreeWidgetItem(item1, QStringList() <<(dlabel.isEmpty() ? "HD" : dlabel));
         item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
         // item->setData(0, Qt::FontRole, itemFont);
         item->setData(0, Qt::UserRole, info.absoluteFilePath());
@@ -283,7 +292,7 @@ void gnomonFinderSideView::populate(void)
 
         QFileInfo info(path);
 
-        if (info.exists()) {
+        if(info.exists()) {
             QTreeWidgetItem *item = new QTreeWidgetItem(item3, QStringList() << info.baseName());
             item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
             // item->setData(0, Qt::FontRole, itemFont);
@@ -312,13 +321,13 @@ int gnomonFinderSideView::headerFontSize(void) const
 
 QSize gnomonFinderSideView::sizeHint(void) const
 {
-    return QSize (-1, -1);
+    return QSize(-1, -1);
 }
 
 void gnomonFinderSideView::setPath(const QString& path)
 {
     foreach(QTreeWidgetItem *item, d->items)
-        if (item->data(0, Qt::UserRole).toString() == path)
+        if(item->data(0, Qt::UserRole).toString() == path)
             item->setSelected(true);
         else
             item->setSelected(false);
@@ -384,7 +393,7 @@ void gnomonFinderSideView::onContextMenu(const QPoint& position)
 
     QMenu menu; menu.addAction("Remove bookmark");
 
-    if (menu.exec(this->mapToGlobal(position)))
+    if(menu.exec(this->mapToGlobal(position)))
         this->removeBookmark(bookmark);
 }
 
@@ -458,7 +467,7 @@ QString gnomonFinderSideView::driveLabel(QString drive)
     QString vName = QString::fromAscii(szVolumeName) ;
     vName.trimmed();
     drive.remove("\\");
-    vName += " ("+drive+")";
+    vName += "("+drive+")";
     return vName;
 #endif
 
@@ -511,9 +520,9 @@ gnomonFinderPathBar::~gnomonFinderPathBar(void)
     d = NULL;
 }
 
-QSize gnomonFinderPathBar::sizeHint (void) const
+QSize gnomonFinderPathBar::sizeHint(void) const
 {
-    return QSize (-1, 23);
+    return QSize(-1, 23);
 }
 
 void gnomonFinderPathBar::setPath(const QString &path)
@@ -529,7 +538,7 @@ void gnomonFinderPathBar::setPath(const QString &path)
 
         gnomonFinderPathBarItem *item = new gnomonFinderPathBarItem;
         item->text = dir.dirName().isEmpty() ? dir.absolutePath() : dir.dirName();
-        if (!dir.entryInfoList(QStringList() << ".").isEmpty())
+        if(!dir.entryInfoList(QStringList() << ".").isEmpty())
             item->icon = provider.icon(dir.entryInfoList(QStringList() << ".").first());
         item->dir = dir;
         d->items.prepend(item);
@@ -559,7 +568,7 @@ void gnomonFinderPathBar::paintEvent(QPaintEvent *event)
     QRect rect = this->rect();
 
     int x = 10;
-    int y = (rect.height()-16)/2;
+    int y =(rect.height()-16)/2;
 
     QPainter painter(this);
 
@@ -646,8 +655,6 @@ QString gnomonFinderListView::selectedPath() const
     return this->selectedPaths()[0];
 }
 
-/** Returns the currently selected paths. */
-
 QStringList gnomonFinderListView::selectedPaths() const
 {
     if(!selectedIndexes().count())
@@ -666,11 +673,6 @@ QStringList gnomonFinderListView::selectedPaths() const
         return QStringList();
 }
 
-/**
- * Set the allowance of file bookmarking.
- * @param isAllowed - whether is allowed to bookmark files
- **/
-
 void gnomonFinderListView::allowFileBookmarking(bool isAllowed)
 {
     d->allowFileBookmarking = isAllowed;
@@ -686,17 +688,17 @@ void gnomonFinderListView::updateContextMenu(const QPoint& point)
         if(!d->allowFileBookmarking) {
             bool removed = false;
             QString selectedPath = this->selectedPath();
-            if (!selectedPath.isEmpty())
+            if(!selectedPath.isEmpty())
             {
                 QFileInfo fileInfo = QFileInfo(selectedPath);
-                if (fileInfo.isFile())
+                if(fileInfo.isFile())
                 {
                     d->menu->removeAction(d->bookmarkAction);
                     removed = true;
                 }
             }
 
-            if (!removed)
+            if(!removed)
             {
                 if(d->menu->actions().size() > 0)
                     d->menu->insertAction(d->menu->actions()[0], d->bookmarkAction);
@@ -705,8 +707,7 @@ void gnomonFinderListView::updateContextMenu(const QPoint& point)
             }
         }
 
-        //Add custom actions
-        for (int i = 0; i < d->customActions.size(); i++) {
+        for(int i = 0; i < d->customActions.size(); i++) {
             d->menu->addAction(d->customActions.value(i));
         }
 
@@ -714,8 +715,7 @@ void gnomonFinderListView::updateContextMenu(const QPoint& point)
 
     }
 
-    //By default add default action
-    for (int i = 0; i < d->defaultActions.size(); i++) {
+    for(int i = 0; i < d->defaultActions.size(); i++) {
         d->menu->addAction(d->defaultActions.value(i));
     }
 
@@ -735,7 +735,7 @@ void gnomonFinderListView::onBookmarkSelectedItemsRequested(void)
 
 void gnomonFinderListView::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Up && (event->modifiers() & Qt::ControlModifier)) {
+    if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
             QDir dir = QDir(model->filePath(this->rootIndex()));
             dir.cdUp();
@@ -746,7 +746,7 @@ void gnomonFinderListView::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    if(event->key() == Qt::Key_Down && (event->modifiers() & Qt::ControlModifier)) {
+    if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
 
             if(!this->selectionModel()->selectedIndexes().count())
@@ -786,10 +786,10 @@ void gnomonFinderListView::startDrag(Qt::DropActions supportedActions)
 {
     QModelIndexList indexes = selectedIndexes();
 
-    if (indexes.count() > 0) {
+    if(indexes.count() > 0) {
 
         QMimeData *data = model()->mimeData(indexes);
-        if (!data)
+        if(!data)
             return;
 
         QFileIconProvider provider;
@@ -862,8 +862,6 @@ void gnomonFinderTreeView::addDefaultContextMenuAction(QAction *action)
     d->defaultActions.append(action);
 }
 
-/** Returns the currently selected path, or the first one if more than one item is selected. */
-
 QString gnomonFinderTreeView::selectedPath() const
 {
     if(!selectedIndexes().count())
@@ -872,16 +870,10 @@ QString gnomonFinderTreeView::selectedPath() const
     return this->selectedPaths()[0];
 }
 
-/** Returns the currently selected paths. */
-
 QStringList gnomonFinderTreeView::selectedPaths() const
 {
     if(!selectedIndexes().count())
         return QStringList();
-
-    // the treeview considers each cell as a selected item
-    // hence we will need to group items by row
-    // or take one item per row
 
     QList<int> alreadyReadRows;
 
@@ -891,7 +883,7 @@ QStringList gnomonFinderTreeView::selectedPaths() const
 
         foreach(QModelIndex index, selectedIndexes())
         {
-            if (!alreadyReadRows.contains(index.row()))
+            if(!alreadyReadRows.contains(index.row()))
             {
                 selectedPaths << model->filePath(index);
                 alreadyReadRows << index.row();
@@ -903,11 +895,6 @@ QStringList gnomonFinderTreeView::selectedPaths() const
     else
         return QStringList();
 }
-
-/**
- * Set the allowance of file bookmarking.
- * @param isAllowed - whether is allowed to bookmark files
- **/
 
 void gnomonFinderTreeView::allowFileBookmarking(bool isAllowed)
 {
@@ -924,16 +911,16 @@ void gnomonFinderTreeView::updateContextMenu(const QPoint& point)
         if(!d->allowFileBookmarking) {
             bool removed = false;
             QString selectedPath = this->selectedPath();
-            if (!selectedPath.isEmpty())
+            if(!selectedPath.isEmpty())
             {
                 QFileInfo fileInfo = QFileInfo(selectedPath);
-                if (fileInfo.isFile())
+                if(fileInfo.isFile())
                 {
                     d->menu->removeAction(d->bookmarkAction);
                     removed = true;
                 }
             }
-            if (!removed)
+            if(!removed)
             {
                 if(d->menu->actions().size() > 0)
                     d->menu->insertAction(d->menu->actions()[0], d->bookmarkAction);
@@ -942,8 +929,7 @@ void gnomonFinderTreeView::updateContextMenu(const QPoint& point)
             }
         }
 
-        //Add custom actions
-        for (int i = 0; i < d->customActions.size(); i++) {
+        for(int i = 0; i < d->customActions.size(); i++) {
             d->menu->addAction(d->customActions.value(i));
         }
 
@@ -951,8 +937,7 @@ void gnomonFinderTreeView::updateContextMenu(const QPoint& point)
 
     }
 
-    //By default add default action
-    for (int i = 0; i < d->defaultActions.size(); i++) {
+    for(int i = 0; i < d->defaultActions.size(); i++) {
         d->menu->addAction(d->defaultActions.value(i));
     }
 
@@ -971,7 +956,7 @@ void gnomonFinderTreeView::onBookmarkSelectedItemsRequested(void)
 
 void gnomonFinderTreeView::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Up && (event->modifiers() & Qt::ControlModifier)) {
+    if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
             QDir dir = QDir(model->filePath(this->rootIndex()));
             dir.cdUp();
@@ -982,7 +967,7 @@ void gnomonFinderTreeView::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    if(event->key() == Qt::Key_Down && (event->modifiers() & Qt::ControlModifier)) {
+    if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
 
             if(!this->selectionModel()->selectedIndexes().count())
@@ -1022,10 +1007,10 @@ void gnomonFinderTreeView::startDrag(Qt::DropActions supportedActions)
 {
     QModelIndexList indexes = selectedIndexes();
 
-    if (indexes.count() > 0) {
+    if(indexes.count() > 0) {
 
         QMimeData *data = model()->mimeData(indexes);
-        if (!data)
+        if(!data)
             return;
 
         QFileIconProvider provider;
@@ -1072,7 +1057,6 @@ gnomonFinder::gnomonFinder(QWidget *parent) : QWidget(parent), d(new gnomonFinde
     d->model = new QFileSystemModel(this);
     d->model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     d->hiddenFilesShown = false;
-    //By default the showHiddenFilesButton is enabled in MacOS
 #ifdef Q_WS_MAC
     d->hiddenFilesShown = true;
     d->model->setFilter(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot);
@@ -1097,7 +1081,6 @@ gnomonFinder::gnomonFinder(QWidget *parent) : QWidget(parent), d(new gnomonFinde
     // d->listviewAction->setIcon(QIcon(":dtkGui/pixmaps/dtk-view-tree.png"));
     d->showHideAction = new QAction(tr("Show hidden files"), this);
 
-    //By default the showHiddenFilesButton is enabled in MacOS
 #ifdef Q_WS_MAC
     d->showHideAction->setText(tr("Hide hidden files"));
 #endif
@@ -1168,8 +1151,6 @@ void gnomonFinder::addContextMenuAction(QAction *action)
     d->tree->addContextMenuAction(action);
 }
 
-/** Returns the currently selected path, or the first one if more than one item is selected. */
-
 QString gnomonFinder::selectedPath(void) const
 {
     if(d->stack->currentIndex() == 0)
@@ -1181,8 +1162,6 @@ QString gnomonFinder::selectedPath(void) const
     return QString();
 }
 
-/** Returns the currently selected paths. */
-
 QStringList gnomonFinder::selectedPaths() const
 {
     if(d->stack->currentIndex() == 0)
@@ -1193,10 +1172,6 @@ QStringList gnomonFinder::selectedPaths() const
 
     return QStringList();
 }
-/**
- * Set the allowance of file bookmarking.
- * @param isAllowed - whether is allowed to bookmark files
- **/
 
 void gnomonFinder::allowFileBookmarking(bool isAllowed)
 {
@@ -1204,13 +1179,11 @@ void gnomonFinder::allowFileBookmarking(bool isAllowed)
     d->tree->allowFileBookmarking(isAllowed);
 }
 
-/** Set whether multiple files can be selected at the same time. */
-
 void gnomonFinder::allowMultipleSelection(bool isAllowed)
 {
     d->isAllowedMultipleSelection = isAllowed;
 
-    if (isAllowed)
+    if(isAllowed)
     {
         d->list->setSelectionMode(QAbstractItemView::ExtendedSelection);
         d->tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -1247,7 +1220,7 @@ void gnomonFinder::switchToTreeView(void)
 
 void gnomonFinder::onShowHiddenFiles(bool show)
 {
-    if (show) {
+    if(show) {
         d->hiddenFilesShown = true;
         d->showHideAction->setText(tr("Hide hidden files"));
         d->model->setFilter(QDir::Hidden | QDir::AllEntries | QDir::NoDotAndDotDot);
@@ -1259,7 +1232,7 @@ void gnomonFinder::onShowHiddenFiles(bool show)
     }
 }
 
-void gnomonFinder::switchShowHiddenFiles()
+void gnomonFinder::switchShowHiddenFiles(void)
 {
 //    this->onShowHiddenFiles(!d->hiddenFilesShown);
     emit showHiddenFiles(!d->hiddenFilesShown);
@@ -1289,8 +1262,6 @@ void gnomonFinder::onIndexDoubleClicked(QModelIndex index)
     emit nothingSelected();
 }
 
-/** Bookmarks the currently selected item(s). */
-
 void gnomonFinder::onBookmarkSelectedItemsRequested(void)
 {
     if(d->stack->currentIndex() == 0)
@@ -1312,15 +1283,12 @@ void gnomonFinder::emitSelectedItems()
 
     emit selectionChanged(selectedPaths);
 
-    if (!selectedPaths.size())
+    if(!selectedPaths.size())
         emit nothingSelected();
 }
 
 void gnomonFinder::onSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
-    // note that only the recently selected items are in the "selected" variable
-    // items previously selected are not
-
     emitSelectedItems();
 }
 

@@ -61,10 +61,7 @@ class gnomonFinderSideViewPrivate;
 class gnomonFinderSideView : public QTreeWidget
 {
     Q_OBJECT
-
-    Q_PROPERTY(int   headerFontSize
-               READ  headerFontSize
-               WRITE setHeaderFontSize)
+    Q_PROPERTY(int headerFontSize READ headerFontSize WRITE setHeaderFontSize)
 
 public:
      gnomonFinderSideView(QWidget *parent = 0);
@@ -117,7 +114,7 @@ public:
      gnomonFinderPathBar(QWidget *parent = 0);
     ~gnomonFinderPathBar(void);
 
-     QSize sizeHint (void) const;
+     QSize sizeHint(void) const;
 
 signals:
     void changed(const QString& path);
@@ -151,9 +148,9 @@ public:
 
     void addDefaultContextMenuAction(QAction *action);
 
-    QString selectedPath() const;
+    QString selectedPath(void) const;
 
-    QStringList selectedPaths() const;
+    QStringList selectedPaths(void) const;
 
     void allowFileBookmarking(bool isAllowed);
 
@@ -190,15 +187,15 @@ public:
      gnomonFinderTreeView(QWidget *parent = 0);
     ~gnomonFinderTreeView(void);
 
-    int	sizeHintForColumn(int column) const;
+    int sizeHintForColumn(int column) const;
 
     void addContextMenuAction(QAction *action);
 
     void addDefaultContextMenuAction(QAction *action);
 
-    QString selectedPath() const;
+    QString selectedPath(void) const;
 
-    QStringList selectedPaths() const;
+    QStringList selectedPaths(void) const;
 
     void allowFileBookmarking(bool isAllowed);
 
@@ -216,7 +213,7 @@ protected:
      void keyPressEvent(QKeyEvent *event);
      void mouseDoubleClickEvent(QMouseEvent *event);
      void startDrag(Qt::DropActions supportedActions);
-     void resizeEvent(QResizeEvent * event);
+     void resizeEvent(QResizeEvent *event);
 
 private:
      gnomonFinderTreeViewPrivate *d;
@@ -238,12 +235,10 @@ public:
 
     void addContextMenuAction(QAction *action);
 
-    QString selectedPath() const;
-
-    QStringList selectedPaths() const;
+    QString selectedPath(void) const;
+    QStringList selectedPaths(void) const;
 
     void allowFileBookmarking(bool isAllowed);
-
     void allowMultipleSelection(bool isAllowed);
 
 signals:
