@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-#include <QtCore>
+class vtkImageData;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -27,19 +27,15 @@
 class GNOMONCORE_EXPORT gnomonAbstractImageSeriesReader
 {
 public:
-    virtual ~gnomonAbstractImageSeriesReader(void) {};
+    virtual ~gnomonAbstractImageSeriesReader(void) = default;
 
 public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    vtkImage atTime(double t) = 0;
-    vtkImage next() = 0;
-
-public:
-    QList<double> times() = 0;
-
- };
+    virtual vtkImageData *at(double t) = 0;
+    virtual vtkImageData *next(void) = 0;
+};
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
