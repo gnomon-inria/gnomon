@@ -315,7 +315,7 @@ If using an install from sources:
 path=$HOME/Development/dtk/build/modules:$HOME/Development/dtk/build/lib:$HOME/Development/dtk-imaging/build/modules:$HOME/Development/dtk-plugins-imaging/build/modules:$HOME/Development/dtk-plugins-imaging/src/Python:$HOME/Development/gnomon/build/modules:$HOME/Development/gnomon/build-conda/lib:$HOME/Development/gnomon-plugins/src/Python
 
 [init]
-script=$HOME/Development/gnomon-scripts/create_jupyter_console.py
+script=$HOME/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
 ```
 
 If using an install from Conda:
