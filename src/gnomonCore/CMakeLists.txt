@@ -37,6 +37,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonAbstractImageSeriesReader
+  gnomonAbstractImageSeriesReader.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
   gnomonAbstractModel
@@ -79,6 +81,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractImageSeriesReader.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractModel.cpp
