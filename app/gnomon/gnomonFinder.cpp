@@ -646,8 +646,6 @@ QString gnomonFinderListView::selectedPath() const
     return this->selectedPaths()[0];
 }
 
-/** Returns the currently selected paths. */
-
 QStringList gnomonFinderListView::selectedPaths() const
 {
     if(!selectedIndexes().count())
@@ -665,11 +663,6 @@ QStringList gnomonFinderListView::selectedPaths() const
     else
         return QStringList();
 }
-
-/**
- * Set the allowance of file bookmarking.
- * @param isAllowed - whether is allowed to bookmark files
- **/
 
 void gnomonFinderListView::allowFileBookmarking(bool isAllowed)
 {
@@ -705,7 +698,6 @@ void gnomonFinderListView::updateContextMenu(const QPoint& point)
             }
         }
 
-        //Add custom actions
         for (int i = 0; i < d->customActions.size(); i++) {
             d->menu->addAction(d->customActions.value(i));
         }
@@ -714,7 +706,6 @@ void gnomonFinderListView::updateContextMenu(const QPoint& point)
 
     }
 
-    //By default add default action
     for (int i = 0; i < d->defaultActions.size(); i++) {
         d->menu->addAction(d->defaultActions.value(i));
     }
@@ -862,8 +853,6 @@ void gnomonFinderTreeView::addDefaultContextMenuAction(QAction *action)
     d->defaultActions.append(action);
 }
 
-/** Returns the currently selected path, or the first one if more than one item is selected. */
-
 QString gnomonFinderTreeView::selectedPath() const
 {
     if(!selectedIndexes().count())
@@ -872,16 +861,10 @@ QString gnomonFinderTreeView::selectedPath() const
     return this->selectedPaths()[0];
 }
 
-/** Returns the currently selected paths. */
-
 QStringList gnomonFinderTreeView::selectedPaths() const
 {
     if(!selectedIndexes().count())
         return QStringList();
-
-    // the treeview considers each cell as a selected item
-    // hence we will need to group items by row
-    // or take one item per row
 
     QList<int> alreadyReadRows;
 
@@ -903,11 +886,6 @@ QStringList gnomonFinderTreeView::selectedPaths() const
     else
         return QStringList();
 }
-
-/**
- * Set the allowance of file bookmarking.
- * @param isAllowed - whether is allowed to bookmark files
- **/
 
 void gnomonFinderTreeView::allowFileBookmarking(bool isAllowed)
 {
@@ -942,7 +920,6 @@ void gnomonFinderTreeView::updateContextMenu(const QPoint& point)
             }
         }
 
-        //Add custom actions
         for (int i = 0; i < d->customActions.size(); i++) {
             d->menu->addAction(d->customActions.value(i));
         }
@@ -951,7 +928,6 @@ void gnomonFinderTreeView::updateContextMenu(const QPoint& point)
 
     }
 
-    //By default add default action
     for (int i = 0; i < d->defaultActions.size(); i++) {
         d->menu->addAction(d->defaultActions.value(i));
     }
@@ -1072,7 +1048,6 @@ gnomonFinder::gnomonFinder(QWidget *parent) : QWidget(parent), d(new gnomonFinde
     d->model = new QFileSystemModel(this);
     d->model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     d->hiddenFilesShown = false;
-    //By default the showHiddenFilesButton is enabled in MacOS
 #ifdef Q_WS_MAC
     d->hiddenFilesShown = true;
     d->model->setFilter(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot);
@@ -1097,7 +1072,6 @@ gnomonFinder::gnomonFinder(QWidget *parent) : QWidget(parent), d(new gnomonFinde
     // d->listviewAction->setIcon(QIcon(":dtkGui/pixmaps/dtk-view-tree.png"));
     d->showHideAction = new QAction(tr("Show hidden files"), this);
 
-    //By default the showHiddenFilesButton is enabled in MacOS
 #ifdef Q_WS_MAC
     d->showHideAction->setText(tr("Hide hidden files"));
 #endif
@@ -1168,8 +1142,6 @@ void gnomonFinder::addContextMenuAction(QAction *action)
     d->tree->addContextMenuAction(action);
 }
 
-/** Returns the currently selected path, or the first one if more than one item is selected. */
-
 QString gnomonFinder::selectedPath(void) const
 {
     if(d->stack->currentIndex() == 0)
@@ -1181,8 +1153,6 @@ QString gnomonFinder::selectedPath(void) const
     return QString();
 }
 
-/** Returns the currently selected paths. */
-
 QStringList gnomonFinder::selectedPaths() const
 {
     if(d->stack->currentIndex() == 0)
@@ -1193,18 +1163,12 @@ QStringList gnomonFinder::selectedPaths() const
 
     return QStringList();
 }
-/**
- * Set the allowance of file bookmarking.
- * @param isAllowed - whether is allowed to bookmark files
- **/
 
 void gnomonFinder::allowFileBookmarking(bool isAllowed)
 {
     d->list->allowFileBookmarking(isAllowed);
     d->tree->allowFileBookmarking(isAllowed);
 }
-
-/** Set whether multiple files can be selected at the same time. */
 
 void gnomonFinder::allowMultipleSelection(bool isAllowed)
 {
@@ -1259,7 +1223,7 @@ void gnomonFinder::onShowHiddenFiles(bool show)
     }
 }
 
-void gnomonFinder::switchShowHiddenFiles()
+void gnomonFinder::switchShowHiddenFiles(void)
 {
 //    this->onShowHiddenFiles(!d->hiddenFilesShown);
     emit showHiddenFiles(!d->hiddenFilesShown);
@@ -1289,8 +1253,6 @@ void gnomonFinder::onIndexDoubleClicked(QModelIndex index)
     emit nothingSelected();
 }
 
-/** Bookmarks the currently selected item(s). */
-
 void gnomonFinder::onBookmarkSelectedItemsRequested(void)
 {
     if(d->stack->currentIndex() == 0)
@@ -1318,9 +1280,6 @@ void gnomonFinder::emitSelectedItems()
 
 void gnomonFinder::onSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
-    // note that only the recently selected items are in the "selected" variable
-    // items previously selected are not
-
     emitSelectedItems();
 }
 
