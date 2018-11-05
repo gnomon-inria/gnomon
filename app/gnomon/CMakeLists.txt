@@ -19,14 +19,12 @@ project(gnomon)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonFinder.h
   gnomonMainWindow.h)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonFinder.cpp
   gnomonMainWindow.cpp)
-
-# if(APPLE)
-#   set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES} gnomonGrowthSimulatorMainWindow.mm)
-# endif(APPLE)
 
 ## #################################################################
 ## Build rules

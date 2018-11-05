@@ -20,6 +20,8 @@
 
 #include <QVTKOpenGLWidget.h>
 
+#include "gnomonMainWindow.h"
+
 int main(int argc, char **argv)
 {
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
@@ -34,7 +36,7 @@ int main(int argc, char **argv)
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
 
-    QFrame *window = new QFrame;
+    gnomonMainWindow *window = new gnomonMainWindow;
     window->show();
     window->raise();
 
