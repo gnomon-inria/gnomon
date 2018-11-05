@@ -34,6 +34,12 @@ public:
 public slots:
     void onSliceChanged(int);
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *);
+    void dragLeaveEvent(QDragLeaveEvent *);
+    void dragMoveEvent(QDragMoveEvent *);
+    void dropEvent(QDropEvent *);
+
 private:
     class gnomonViewVolumicPrivate *d;
 };

@@ -133,6 +133,8 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     layout->setSpacing(0);
     layout->addWidget(d->slider);
     layout->addWidget(d);
+
+    this->setAcceptDrops(true);
 }
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
@@ -150,6 +152,35 @@ void gnomonViewVolumic::setImage(vtkSmartPointer<vtkImageData> image)
 void gnomonViewVolumic::onSliceChanged(int slice)
 {
     d->slider->setValue(slice);
+}
+
+void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasText()) {
+        event->accept();
+        return;
+    }
+
+    event->ignore();
+}
+
+void gnomonViewVolumic::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
+}
+
+void gnomonViewVolumic::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->accept();
+}
+
+void gnomonViewVolumic::dropEvent(QDropEvent *event)
+{
+    QString path = event->mimeData()->text();
+
+    qDebug() << Q_FUNC_INFO << "Importing" << path;
+
+    event->accept();
 }
 
 // ///////////////////////////////////////////////////////////////////
