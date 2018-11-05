@@ -14,6 +14,8 @@
 
 #include "gnomonViewVolumic.h"
 
+#include <gnomonStyle>
+
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -66,8 +68,10 @@ public:
 
 gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
 {
+    QColor background_color = QColor(GNOMON_STYLE_BACKGROUNDCOLOR);
+
     this->renderer = vtkSmartPointer<vtkRenderer>::New();
-    this->renderer->SetBackground(0.290, 0.295, 0.300);
+    this->renderer->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
     this->window = vtkGenericOpenGLRenderWindow::New();
     this->window->AddRenderer(this->renderer);

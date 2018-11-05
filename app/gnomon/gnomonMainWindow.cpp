@@ -16,6 +16,8 @@
 #include "gnomonMainWindow.h"
 #include "gnomonViewVolumic.h"
 
+#include <gnomonStyle>
+
 class gnomonMainWindowPrivate
 {
 public:
@@ -81,6 +83,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect (d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
     this->setCentralWidget(central);
+    this->setStyleSheet(gnomonStyleSheet());
 }
 
 gnomonMainWindow::~gnomonMainWindow(void)

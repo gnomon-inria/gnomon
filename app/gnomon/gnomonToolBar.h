@@ -25,6 +25,9 @@ public:
 signals:
     void indexChanged(int);
 
+public:
+    QSize sizeHint(void) const;
+
 private:
     class gnomonToolBarPrivate *d;
 };
