@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-class vtkImageData;
+class dtkImage;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -36,8 +36,8 @@ public:
     virtual void run(void) = 0;
 
 public:
-    virtual vtkImageData *at(double t) = 0;
-    virtual vtkImageData *next(void) = 0;
+    virtual dtkImage *at(double t) = 0;
+    virtual dtkImage *next(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

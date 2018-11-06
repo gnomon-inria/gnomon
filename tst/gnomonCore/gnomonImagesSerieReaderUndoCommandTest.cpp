@@ -8,6 +8,8 @@
 
 #include <dtkScript>
 
+#include <dtkImage>
+
 class gnomonImagesSerieReaderUndoCommandTestCasePrivate
 {
 public:
@@ -53,6 +55,8 @@ void gnomonImagesSerieReaderUndoCommandTestCase::redo(void)
     command->setPath(image_file_path);
 
     d->undo_command->redo();
+
+    dtkImage *image = command->at(0);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::undo(void)

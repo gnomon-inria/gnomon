@@ -35,6 +35,8 @@
 
 #include <QVTKOpenGLWidget.h>
 
+#include <dtkImagingCore>
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -203,10 +205,16 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     // Use gnomonCommand<gnomonAbstractImageSeriesReader>
     // ///////////////////////////////////////////////////////////////
 
-    d->image_reader->setPath(path);
+    d->image_reader->setPath(path.remove("file://"));
     d->image_reader->run();
-    this->setImage(d->image_reader->next());
 
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(d->image_reader->next());
+    converter->convert();
+
+    this->setImage(static_cast<vtkImageData *>(converter->output()));
+
+    delete converter;
     // ///////////////////////////////////////////////////////////////
 
     event->accept();

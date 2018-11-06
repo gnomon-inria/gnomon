@@ -5,12 +5,14 @@ gnomonImagesSerieReaderUndoCommand::gnomonImagesSerieReaderUndoCommand(const QSt
     gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command = gnomonCore::imagesSerieReader::pluginFactory().create(key);
 }
 
-void gnomonImagesSerieReaderUndoCommand::redo(void) {
+void gnomonImagesSerieReaderUndoCommand::redo(void)
+{
     Q_ASSERT(gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command);
 
     gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command->run();
 }
 
-void gnomonImagesSerieReaderUndoCommand::undo(void) {
+void gnomonImagesSerieReaderUndoCommand::undo(void)
+{
     qWarning() << "Does nothing";
 }

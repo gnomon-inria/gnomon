@@ -23,6 +23,8 @@
 
 #include "gnomonMainWindow.h"
 
+#include <dtkImagingCore>
+
 int main(int argc, char **argv)
 {
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
@@ -36,6 +38,7 @@ int main(int argc, char **argv)
     application.setApplicationVersion("0.1.0");
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
+    dtkImaging::initialize();
 
     dtkScriptInterpreterPython *interpreter = new dtkScriptInterpreterPython;
 
