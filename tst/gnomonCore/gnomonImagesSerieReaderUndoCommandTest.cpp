@@ -49,7 +49,7 @@ void gnomonImagesSerieReaderUndoCommandTestCase::getCommand(void)
 void gnomonImagesSerieReaderUndoCommandTestCase::redo(void)
 {
     gnomonAbstractImagesSerieReader *command = d->undo_command->getCommand();
-    QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
+    QString image_file_path = QFINDTESTDATA("../resources/rect_t0.inr");
     command->setPath(image_file_path);
 
     d->undo_command->redo();
