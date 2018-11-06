@@ -46,6 +46,12 @@ class gnomonImageManagerPrivate : public QScrollArea
 public:
      gnomonImageManagerPrivate(QWidget *parent = nullptr);
     ~gnomonImageManagerPrivate(void);
+
+public:
+    gnomonImageManagerItem *create(gnomonImageManager::Image);
+
+public:
+    QHash<gnomonImageManagerItem *, gnomonImageManager::Image> images;
 };
 
 gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollArea(parent)
@@ -56,6 +62,13 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
 gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 {
 
+}
+
+gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image)
+{
+    Q_UNUSED(image);
+
+    return new gnomonImageManagerItem(this);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -72,6 +85,11 @@ gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 gnomonImageManager::~gnomonImageManager(void)
 {
     delete d;
+}
+
+void gnomonImageManager::addImage(gnomonImageManager::Image image)
+{
+    d->images.insert(d->create(image), image);
 }
 
 // ///////////////////////////////////////////////////////////////////
