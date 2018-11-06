@@ -47,6 +47,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractMultiChannelImageData.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
+  gnomonAbstractUndoCommand
+  gnomonAbstractUndoCommand.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellGraph
@@ -64,6 +66,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
+  gnomonImagesSerieReaderUndoCommand
+  gnomonImagesSerieReaderUndoCommand.h
   gnomonIntensityImage
   gnomonIntensityImage.h
   gnomonMultiChannelImage
@@ -98,6 +102,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDiscreteDynamicForm.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonImagesSerieReaderUndoCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp

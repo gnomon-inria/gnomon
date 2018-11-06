@@ -35,6 +35,8 @@
 
 #include <QVTKOpenGLWidget.h>
 
+#include <dtkImagingCore>
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -114,7 +116,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    d->image_reader = gnomonCore::imageSeriesReader::pluginFactory().create("gnomonImagesSerieReader");
+    d->image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
 
     if(!d->image_reader) {
         qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
@@ -204,10 +206,16 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     // Use gnomonCommand<gnomonAbstractImageSeriesReader>
     // ///////////////////////////////////////////////////////////////
 
-    d->image_reader->setPath(path);
+    d->image_reader->setPath(path.remove("file://"));
     d->image_reader->run();
-    this->setImage(d->image_reader->next());
 
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(d->image_reader->next());
+    converter->convert();
+
+    this->setImage(static_cast<vtkImageData *>(converter->output()));
+
+    delete converter;
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
