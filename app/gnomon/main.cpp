@@ -50,6 +50,7 @@ int main(int argc, char **argv)
 
     int status = application.exec();
 
+    delete interpreter;
     delete window;
 
     return status;
