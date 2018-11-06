@@ -154,7 +154,8 @@ target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 if(DTK_BUILD_WRAPPERS)
   if(DTK_WRAPPING_PYTHON)
-      target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} vtkWrappingPythonCore)
   endif(DTK_WRAPPING_PYTHON)
 endif(DTK_BUILD_WRAPPERS)
 

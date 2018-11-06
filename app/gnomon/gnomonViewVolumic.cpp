@@ -67,10 +67,10 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
 
 public:
-    gnomonAbstractImagesSerieReader *image_reader = nullptr;
+    QSlider *slider;
 
 public:
-    QSlider *slider;
+    gnomonAbstractImagesSerieReader *image_reader = nullptr;
 };
 
 gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
@@ -158,7 +158,7 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
     delete d;
 }
 
-void gnomonViewVolumic::setImage(vtkSmartPointer<vtkImageData> image)
+void gnomonViewVolumic::setImage(vtkImageData *image)
 {
     double bounds[6]; image->GetBounds(bounds);
 
@@ -202,8 +202,6 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    qDebug() << Q_FUNC_INFO << "Importing" << path;
-
     // ///////////////////////////////////////////////////////////////
     // Use gnomonCommand<gnomonAbstractImageSeriesReader>
     // ///////////////////////////////////////////////////////////////
@@ -223,6 +221,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     this->setImage(static_cast<vtkImageData *>(converter->output()));
 
     delete converter;
+
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
