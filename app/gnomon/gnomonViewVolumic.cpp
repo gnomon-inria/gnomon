@@ -114,7 +114,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    d->image_reader = gnomonCore::imageSeriesReader::pluginFactory().create("gnomonImagesSerieReader");
+    d->image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
     if(!d->image_reader) {
         qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
     }

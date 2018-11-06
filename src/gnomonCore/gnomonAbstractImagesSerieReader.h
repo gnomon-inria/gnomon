@@ -54,7 +54,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT, imageSeriesReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT, imagesSerieReader);
 }
 
 //
