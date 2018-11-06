@@ -57,6 +57,10 @@ void gnomonImagesSerieReaderUndoCommandTestCase::redo(void)
     d->undo_command->redo();
 
     dtkImage *image = command->at(0);
+
+    QVERIFY(image->xDim() == 7);
+    QVERIFY(image->yDim() == 5);
+    QVERIFY(image->zDim() == 3);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::undo(void)
