@@ -20,12 +20,14 @@ project(gnomon)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonFinder.h
+  gnomonImageManager.h
   gnomonMainWindow.h
   gnomonToolBar.h
   gnomonViewVolumic.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
+  gnomonImageManager.cpp
   gnomonMainWindow.cpp
   gnomonToolBar.cpp
   gnomonViewVolumic.cpp)
