@@ -31,6 +31,9 @@ public:
      gnomonImageManager(QWidget *parent = nullptr);
     ~gnomonImageManager(void);
 
+public:
+    QSize sizeHint(void) const;
+
 public slots:
     void addImage(Image);
 

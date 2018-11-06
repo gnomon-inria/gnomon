@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonFinder.h"
+#include "gnomonImageManager.h"
 #include "gnomonMainWindow.h"
 #include "gnomonViewVolumic.h"
 #include "gnomonToolBar.h"
@@ -27,7 +28,12 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    gnomonViewVolumic *view;
+    gnomonViewVolumic *browse_view;
+    gnomonViewVolumic *fusion_view_1;
+    gnomonViewVolumic *fusion_view_2;
+    gnomonViewVolumic *fusion_view_3;
+    gnomonViewVolumic *fusion_view_4;
+    gnomonViewVolumic *fusion_view_t;
 
 public:
     gnomonToolBar *menu;
@@ -41,6 +47,9 @@ public:
 
 public:
     QStackedWidget *stack;
+
+public:
+    gnomonImageManager *manager;
 };
 
 gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
@@ -57,9 +66,11 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
 
-    d->view = new gnomonViewVolumic(this);
+    d->browse_view = new gnomonViewVolumic(this);
 
     d->menu = new gnomonToolBar(this);
+
+    d->manager = new gnomonImageManager(this);
 
     QWidget *main = new QWidget(this);
 
@@ -80,10 +91,34 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     d->browse_workspace = new QSplitter(this);
     d->browse_workspace->addWidget(finder);
-    d->browse_workspace->addWidget(d->view);
+    d->browse_workspace->addWidget(d->browse_view);
+
+    d->fusion_view_1 = new gnomonViewVolumic(this);
+    d->fusion_view_1->setStyleSheet("gnomonViewVolumic { border: 1px solid red; } QSlider { border: none; }");
+
+    d->fusion_view_2 = new gnomonViewVolumic(this);
+    d->fusion_view_2->setStyleSheet("gnomonViewVolumic { border: 1px solid green; } QSlider { border: none; }");
+
+    d->fusion_view_3 = new gnomonViewVolumic(this);
+    d->fusion_view_3->setStyleSheet("gnomonViewVolumic { border: 1px solid blue; } QSlider { border: none; }");
+
+    d->fusion_view_4 = new gnomonViewVolumic(this);
+    d->fusion_view_4->setStyleSheet("gnomonViewVolumic { border: 1px solid cyan; } QSlider { border: none; }");
+
+    d->fusion_view_t = new gnomonViewVolumic(this);
+    d->fusion_view_t->setStyleSheet("gnomonViewVolumic { border: 1px solid yellow; } QSlider { border: none; }");
+
+    QGridLayout *fusion_layout = new QGridLayout;
+    fusion_layout->setContentsMargins(0, 0, 0, 0);
+    fusion_layout->setSpacing(1);
+    fusion_layout->addWidget(d->fusion_view_1, 0, 0);
+    fusion_layout->addWidget(d->fusion_view_2, 0, 1);
+    fusion_layout->addWidget(d->fusion_view_3, 1, 0);
+    fusion_layout->addWidget(d->fusion_view_4, 1, 1);
+    fusion_layout->addWidget(d->fusion_view_t, 0, 2, -1, -1);
 
     d->fusion_workspace = new QFrame(this);
-    d->fusion_workspace->setStyleSheet("background: red;");
+    d->fusion_workspace->setLayout(fusion_layout);
 
     d->segmtt_workspace = new QFrame(this);
     d->segmtt_workspace->setStyleSheet("background: green;");
@@ -109,6 +144,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+    layout->addWidget(d->manager);
     layout->addWidget(d->stack);
     layout->addWidget(d->menu);
 
