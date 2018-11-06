@@ -115,6 +115,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->q = this;
 
     d->image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
+
     if(!d->image_reader) {
         qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
     }
@@ -154,8 +155,7 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 
 void gnomonViewVolumic::setImage(vtkSmartPointer<vtkImageData> image)
 {
-    double bounds[6];
-    image->GetBounds(bounds);
+    double bounds[6]; image->GetBounds(bounds);
 
     d->viewer->SetSlice((bounds[5] - bounds[4]) / 2);
     d->viewer->SetInputData(image);
@@ -199,13 +199,15 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 
     qDebug() << Q_FUNC_INFO << "Importing" << path;
 
-// ///////////////////////////////////////////////////////////////////
-// Use gnomonCommand<gnomonAbstractImageSeriesReader>
-// ///////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////
+    // Use gnomonCommand<gnomonAbstractImageSeriesReader>
+    // ///////////////////////////////////////////////////////////////
+
     d->image_reader->setPath(path);
     d->image_reader->run();
     this->setImage(d->image_reader->next());
-// ///////////////////////////////////////////////////////////////////
+
+    // ///////////////////////////////////////////////////////////////
 
     event->accept();
 }
