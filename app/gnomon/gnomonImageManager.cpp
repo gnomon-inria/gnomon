@@ -23,13 +23,13 @@ class gnomonImageManagerItem : public QLabel
     Q_OBJECT
 
 public:
-     gnomonImageManagerItem(QWidget *parent = nullptr);
+     gnomonImageManagerItem(const QPixmap& thumbnail, QWidget *parent = nullptr);
     ~gnomonImageManagerItem(void);
 };
 
-gnomonImageManagerItem::gnomonImageManagerItem(QWidget *parent) : QLabel(parent)
+gnomonImageManagerItem::gnomonImageManagerItem(const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
 {
-
+    this->setPixmap(thumbnail.scaled(100, 100));
 }
 
 gnomonImageManagerItem::~gnomonImageManagerItem(void)
@@ -66,9 +66,29 @@ gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 
 gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image)
 {
-    Q_UNUSED(image);
+    if(!image)
+        return nullptr;
 
-    return new gnomonImageManagerItem(this);
+    int w = image->GetDimensions()[0];
+    int h = image->GetDimensions()[1];
+    int d = image->GetDimensions()[2];
+
+    QImage i(w, h, QImage::Format_RGB32);
+
+    QRgb *b = reinterpret_cast<QRgb *>(i.bits()) + w * (h - 1);
+
+    unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer());
+
+    for(int r = 0; r < h; r++) {
+        for(int c = 0; c < w; c++) {
+            *(b) = QColor(p[0], p[1], p[2]).rgb();
+            p += image->GetNumberOfScalarComponents();
+        }
+
+        b -= w * 2;
+    }
+
+    return new gnomonImageManagerItem(QPixmap::fromImage(i), this);
 }
 
 // ///////////////////////////////////////////////////////////////////
