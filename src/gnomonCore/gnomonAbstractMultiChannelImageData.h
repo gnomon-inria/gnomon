@@ -35,7 +35,7 @@ public:
     virtual gnomonAbstractMultiChannelImageData* clone(void) const = 0;
 
 public:
-    virtual QList<QString> channelNames(void) = 0;
+    virtual QStringList channelNames(void) = 0;
 
     virtual void addChannelImage(const QString& channelName, vtkImageData *image) = 0;
     virtual vtkImageData* channelImage(const QString& channelName) const = 0;
