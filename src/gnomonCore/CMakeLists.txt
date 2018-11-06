@@ -45,6 +45,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractModel.h
   gnomonAbstractMultiChannelImageData
   gnomonAbstractMultiChannelImageData.h
+  gnomonAbstractMultiChannelImageReader
+  gnomonAbstractMultiChannelImageReader.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractUndoCommand
@@ -95,6 +97,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractModel.cpp
   gnomonAbstractIntensityImageData.cpp
   gnomonAbstractMultiChannelImageData.cpp
+  gnomonAbstractMultiChannelImageReader.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
