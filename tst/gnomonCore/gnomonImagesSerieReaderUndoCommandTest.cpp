@@ -4,11 +4,12 @@
 #include <gnomonTest>
 
 #include "gnomonImagesSerieReaderUndoCommand.h"
+#include "gnomonAbstractImagesSerieReader.h"
 
 class gnomonImagesSerieReaderUndoCommandTestCasePrivate
 {
 public:
-    gnomonImagesSerieReaderUndoCommand *command = nullptr;
+    gnomonImagesSerieReaderUndoCommand *undo_command = nullptr;
 };
 
 gnomonImagesSerieReaderUndoCommandTestCase::gnomonImagesSerieReaderUndoCommandTestCase(void) : d(new gnomonImagesSerieReaderUndoCommandTestCasePrivate)
@@ -26,23 +27,25 @@ void gnomonImagesSerieReaderUndoCommandTestCase::initTestCase(void)
 
 void gnomonImagesSerieReaderUndoCommandTestCase::init(void)
 {
-    d->command = new gnomonImagesSerieReaderUndoCommand();
+    d->undo_command = new gnomonImagesSerieReaderUndoCommand("gnomonImagesSerieReader");
+    qDebug() << "d->undo_command" << d->undo_command;
+    Q_ASSERT(d->undo_command);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::redo(void)
 {
-    d->command->redo();
+    d->undo_command->redo();
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::undo(void)
 {
-    d->command->undo();
+    d->undo_command->undo();
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::cleanup(void)
 {
-    delete d->command;
-    d->command = nullptr;
+    delete d->undo_command;
+    d->undo_command = nullptr;
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::cleanupTestCase(void)

@@ -30,7 +30,7 @@ public:
     virtual void undo(void) = 0;
 
 protected:
-    T* command;
+    T* command = nullptr;
 };
 
 //
