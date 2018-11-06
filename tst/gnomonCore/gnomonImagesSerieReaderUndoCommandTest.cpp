@@ -4,7 +4,6 @@
 #include <gnomonTest>
 
 #include "gnomonImagesSerieReaderUndoCommand.h"
-#include "gnomonAbstractImagesSerieReader.h"
 
 #include <dtkScript>
 
@@ -41,22 +40,14 @@ void gnomonImagesSerieReaderUndoCommandTestCase::init(void)
     Q_ASSERT(d->undo_command);
 }
 
-
-void gnomonImagesSerieReaderUndoCommandTestCase::getCommand(void)
-{
-    gnomonAbstractImagesSerieReader *command = d->undo_command->getCommand();
-    QVERIFY(command);
-}
-
 void gnomonImagesSerieReaderUndoCommandTestCase::redo(void)
 {
-    gnomonAbstractImagesSerieReader *command = d->undo_command->getCommand();
-    QString image_file_path = QFINDTESTDATA("../resources/rect_t0.inr");
-    command->setPath(image_file_path);
+   QString image_file_path = QFINDTESTDATA("../resources/rect_t0.inr");
+    d->undo_command->setPath(image_file_path);
 
     d->undo_command->redo();
 
-    dtkImage *image = command->at(0);
+    dtkImage *image = d->undo_command->at(0);
 
     QVERIFY(image->xDim() == 7);
     QVERIFY(image->yDim() == 5);

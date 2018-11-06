@@ -46,7 +46,6 @@ int main(int argc, char **argv)
     int stat;
     interpreter->interpret(command, &stat);
 
-
     gnomonMainWindow *window = new gnomonMainWindow;
     window->show();
     window->raise();

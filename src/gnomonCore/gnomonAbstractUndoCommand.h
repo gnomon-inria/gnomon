@@ -26,9 +26,6 @@ public:
     virtual ~gnomonAbstractUndoCommand(void) = default;
 
 public:
-    T* getCommand(void) {return command;}
-
-public:
     virtual void redo(void) = 0;
     virtual void undo(void) = 0;
 
