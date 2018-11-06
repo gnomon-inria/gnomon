@@ -14,13 +14,15 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDataManagerTest.h
   gnomonDiscreteDynamicFormTest.h
   gnomonFileSystemFormReaderTest.h
-  gnomonSystemScenarioTest.h)
+  gnomonSystemScenarioTest.h
+  gnomonImagesSerieReaderUndoCommandTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonDataManagerTest.cpp
   gnomonDiscreteDynamicFormTest.cpp
   gnomonFileSystemFormReaderTest.cpp
-  gnomonSystemScenarioTest.cpp)
+  gnomonSystemScenarioTest.cpp
+  gnomonImagesSerieReaderUndoCommandTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -56,3 +58,4 @@ add_test(gnomonDataManagerTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_N
 add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)
 add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
 add_test(gnomonDiscreteDynamicFormTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDiscreteDynamicFormTest)
+add_test(gnomonImagesSerieReaderUndoCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesSerieReaderUndoCommandTest)

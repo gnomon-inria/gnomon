@@ -21,7 +21,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImagesSerieReader, imageSeriesReader, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractImagesSerieReader, imagesSerieReader, gnomonCore);
 }
 
 //
