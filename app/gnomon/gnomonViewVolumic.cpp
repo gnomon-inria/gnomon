@@ -67,9 +67,6 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
 
 public:
-    gnomonAbstractImagesSerieReader *image_reader = nullptr;
-
-public:
     QSlider *slider;
 };
 
@@ -116,12 +113,6 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    d->image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
-
-    if(!d->image_reader) {
-        qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
-    }
-
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
     d->slider->setOrientation(Qt::Vertical);
@@ -156,7 +147,7 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
     delete d;
 }
 
-void gnomonViewVolumic::setImage(vtkSmartPointer<vtkImageData> image)
+void gnomonViewVolumic::setImage(vtkImageData *image)
 {
     double bounds[6]; image->GetBounds(bounds);
 
@@ -200,22 +191,29 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    qDebug() << Q_FUNC_INFO << "Importing" << path;
-
     // ///////////////////////////////////////////////////////////////
     // Use gnomonCommand<gnomonAbstractImageSeriesReader>
     // ///////////////////////////////////////////////////////////////
 
-    d->image_reader->setPath(path.remove("file://"));
-    d->image_reader->run();
+    gnomonAbstractImagesSerieReader *image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
+
+    if(!image_reader) {
+        qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
+        return;
+    }
+
+    image_reader->setPath(path.remove("file://"));
+    image_reader->run();
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(d->image_reader->next());
+    converter->setInput(image_reader->next());
     converter->convert();
 
     this->setImage(static_cast<vtkImageData *>(converter->output()));
 
+    delete image_reader;
     delete converter;
+
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
