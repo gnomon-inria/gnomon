@@ -72,8 +72,6 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     d->manager = new gnomonImageManager(this);
 
-    QWidget *main = new QWidget(this);
-
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
     toolbar_layout->setSpacing(0);
