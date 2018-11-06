@@ -285,4 +285,18 @@ gnomonGrowthSimulatorMainWindowSidePane QPushButton
     width: 32;
 }
 
+/* *****************************************************************
+;; gnomon
+;; ******************************************************************/
+
+QScrollArea
+{
+    background: transparent;
+}
+
+QScrollArea > QWidget > QWidget
+{
+    background: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
+}
+
 /* gnomonStyle.qss.in ends here */

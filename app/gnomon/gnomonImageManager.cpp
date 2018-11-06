@@ -52,11 +52,20 @@ public:
 
 public:
     QHash<gnomonImageManagerItem *, gnomonImageManager::Image> images;
+
+public:
+    QWidget *contents;
 };
 
 gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollArea(parent)
 {
+    this->contents = new QWidget(this);
 
+    QHBoxLayout *layout = new QHBoxLayout(this->contents);
+
+    this->setFrameShape(QFrame::NoFrame);
+    this->setWidget(this->contents);
+    this->setWidgetResizable(true);
 }
 
 gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
@@ -100,6 +109,11 @@ gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
     d = new gnomonImageManagerPrivate;
 
     QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(d);
+
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 gnomonImageManager::~gnomonImageManager(void)
@@ -107,9 +121,17 @@ gnomonImageManager::~gnomonImageManager(void)
     delete d;
 }
 
+QSize gnomonImageManager::sizeHint(void) const
+{
+    return QSize(200, 140);
+}
+
 void gnomonImageManager::addImage(gnomonImageManager::Image image)
 {
-    d->images.insert(d->create(image), image);
+    gnomonImageManagerItem *item = d->create(image);
+
+    d->images.insert(item, image);
+    d->contents->layout()->addWidget(item);
 }
 
 // ///////////////////////////////////////////////////////////////////

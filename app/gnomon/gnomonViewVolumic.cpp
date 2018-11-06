@@ -123,6 +123,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     }
 
     d->slider = new QSlider(this);
+    d->slider->setObjectName("prout");
     d->slider->setOrientation(Qt::Vertical);
     d->slider->setMinimum(0);
     d->slider->setMaximum(1);
