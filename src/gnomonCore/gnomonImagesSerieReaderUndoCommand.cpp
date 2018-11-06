@@ -38,10 +38,10 @@ void gnomonImagesSerieReaderUndoCommand::setPath(const QString& path)
 
 dtkImage *gnomonImagesSerieReaderUndoCommand::at(double t)
 {
-    gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command->at(t);
+    return gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command->at(t);
 }
 
 dtkImage *gnomonImagesSerieReaderUndoCommand::next(void)
 {
-    gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command->next();
+    return gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command->next();
 }
