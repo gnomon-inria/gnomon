@@ -16,6 +16,8 @@
 
 #include <gnomonStyle>
 
+#include <gnomonAbstractImagesSerieReader.h>
+
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -61,6 +63,9 @@ public:
 
 public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
+
+public:
+    gnomonAbstractImagesSerieReader *image_reader = nullptr;
 
 public:
     QSlider *slider;
@@ -109,6 +114,11 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
+    d->image_reader = gnomonCore::imageSeriesReader::pluginFactory().create("gnomonImagesSerieReader");
+    if(!d->image_reader) {
+        qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
+    }
+
     d->slider = new QSlider(this);
     d->slider->setOrientation(Qt::Vertical);
     d->slider->setMinimum(0);
@@ -144,7 +154,16 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 
 void gnomonViewVolumic::setImage(vtkSmartPointer<vtkImageData> image)
 {
+    double bounds[6];
+    image->GetBounds(bounds);
+
+    d->viewer->SetSlice((bounds[5] - bounds[4]) / 2);
     d->viewer->SetInputData(image);
+
+    d->slider->setMaximum(bounds[5] - bounds[4]);
+    d->slider->blockSignals(true);
+    d->slider->setValue((bounds[5] - bounds[4]) / 2);
+    d->slider->blockSignals(false);
 
     d->renderer->ResetCamera();
 }
@@ -179,6 +198,14 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     qDebug() << Q_FUNC_INFO << "Importing" << path;
+
+// ///////////////////////////////////////////////////////////////////
+// Use gnomonCommand<gnomonAbstractImageSeriesReader>
+// ///////////////////////////////////////////////////////////////////
+    d->image_reader->setPath(path);
+    d->image_reader->run();
+    this->setImage(d->image_reader->next());
+// ///////////////////////////////////////////////////////////////////
 
     event->accept();
 }
