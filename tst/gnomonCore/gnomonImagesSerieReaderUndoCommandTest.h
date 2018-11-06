@@ -15,6 +15,7 @@ private slots:
     void init(void);
 
 private slots:
+    void getCommand(void);
     void redo(void);
     void undo(void);
 

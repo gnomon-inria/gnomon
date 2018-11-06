@@ -36,8 +36,14 @@ void gnomonImagesSerieReaderUndoCommandTestCase::initTestCase(void)
 void gnomonImagesSerieReaderUndoCommandTestCase::init(void)
 {
     d->undo_command = new gnomonImagesSerieReaderUndoCommand("gnomonImagesSerieReader");
-    qDebug() << "d->undo_command" << d->undo_command;
     Q_ASSERT(d->undo_command);
+}
+
+
+void gnomonImagesSerieReaderUndoCommandTestCase::getCommand(void)
+{
+    gnomonAbstractImagesSerieReader *command = d->undo_command->getCommand();
+    QVERIFY(command);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::redo(void)
