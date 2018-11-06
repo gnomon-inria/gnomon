@@ -6,6 +6,8 @@
 #include "gnomonImagesSerieReaderUndoCommand.h"
 #include "gnomonAbstractImagesSerieReader.h"
 
+#include <dtkScript>
+
 class gnomonImagesSerieReaderUndoCommandTestCasePrivate
 {
 public:
@@ -23,6 +25,11 @@ gnomonImagesSerieReaderUndoCommandTestCase::~gnomonImagesSerieReaderUndoCommandT
 
 void gnomonImagesSerieReaderUndoCommandTestCase::initTestCase(void)
 {
+    dtkScriptInterpreterPython *interpreter = new dtkScriptInterpreterPython;
+
+    QString command = "import gnomonImagesSerieReader";
+    int stat;
+    interpreter->interpret(command, &stat);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::init(void)
