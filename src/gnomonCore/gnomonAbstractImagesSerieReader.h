@@ -24,10 +24,10 @@ class vtkImageData;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImageSeriesReader
+class GNOMONCORE_EXPORT gnomonAbstractImagesSerieReader
 {
 public:
-    virtual ~gnomonAbstractImageSeriesReader(void) = default;
+    virtual ~gnomonAbstractImagesSerieReader(void) = default;
 
 public:
     virtual void setPath(const QString& path) = 0;
@@ -44,17 +44,17 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImageSeriesReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImageSeriesReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageSeriesReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageSeriesReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieReader *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImageSeriesReader, GNOMONCORE_EXPORT, imageSeriesReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT, imageSeriesReader);
 }
 
 //
