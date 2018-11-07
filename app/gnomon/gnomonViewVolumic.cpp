@@ -232,7 +232,7 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 }
 
 void gnomonViewVolumic::setImage(dtkImage *i)
-{
+{    
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(i);
     converter->convert();
@@ -292,7 +292,8 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 
     if(path.startsWith(":")) {
 
-        this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
+        this->d->image = gnomonImageManager::instance()->get(path.remove(":").toInt());
+        this->setImage(this->d->image);
 
     } else {
 

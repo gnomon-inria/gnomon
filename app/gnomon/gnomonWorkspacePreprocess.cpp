@@ -73,7 +73,6 @@ void gnomonWorkspacePreprocess::apply(void)
 
     image_filter_command->setImage(d->source->image());
     image_filter_command->redo();
-
     dtkImage *img = image_filter_command->next();
 
     if (!img) {
