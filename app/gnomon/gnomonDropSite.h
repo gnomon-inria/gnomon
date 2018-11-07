@@ -30,6 +30,12 @@ public:
 public:
     int index(void);
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *);
+    void dragLeaveEvent(QDragLeaveEvent *);
+    void dragMoveEvent(QDragMoveEvent *);
+    void dropEvent(QDropEvent *);
+
 private:
     class gnomonDropSitePrivate *d;
 };

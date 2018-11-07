@@ -24,6 +24,9 @@ public:
      gnomonWorkspaceFusion(QWidget *parent = nullptr);
     ~gnomonWorkspaceFusion(void);
 
+public slots:
+    void apply(void);
+
 private:
     class gnomonWorkspaceFusionPrivate *d;
 };

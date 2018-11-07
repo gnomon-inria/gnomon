@@ -17,6 +17,8 @@
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 
+#include <dtkImagingCore>
+
 #include <QtWidgets>
 
 class gnomonWorkspacePreprocessPrivate
@@ -61,8 +63,7 @@ gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
 
 void gnomonWorkspacePreprocess::apply(void)
 {
-    vtkImageData *source = d->source->image();
-    d->target->setImage(source);
+    dtkImage *source = d->source->image();
 
     qDebug() << Q_FUNC_INFO;
 }

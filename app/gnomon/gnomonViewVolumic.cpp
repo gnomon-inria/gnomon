@@ -153,7 +153,7 @@ public:
     gnomonViewVolumicOverlay *renderer3D_button = nullptr;
 
 public:
-    vtkSmartPointer<vtkImageData> image;
+    dtkImage *image = nullptr;
 
 public:
     QSlider *slider;
@@ -249,7 +249,7 @@ void gnomonViewVolumicPrivate::disableInteractor(void)
 
 void gnomonViewVolumicPrivate::exportToManager(void)
 {
-    if(!this->image.Get())
+    if(!this->image)
         return;
 
     gnomonImageManager::instance()->addImage(this->image);
@@ -317,9 +317,17 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
     delete d;
 }
 
-void gnomonViewVolumic::setImage(vtkImageData *image)
+void gnomonViewVolumic::setImage(dtkImage *i)
 {
     // 2D
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(i);
+    converter->convert();
+
+    vtkImageData *image = static_cast<vtkImageData *>(converter->output());
+
+    delete converter;
+
     double bounds[6]; image->GetBounds(bounds);
 
     d->viewer->SetSlice((bounds[5] - bounds[4]) / 2);
@@ -352,13 +360,11 @@ void gnomonViewVolumic::setImage(vtkImageData *image)
     d->renderer3D->ResetCamera();
 
     d->GetInteractor()->Render();
-
-    d->image = image;
 }
 
-vtkImageData *gnomonViewVolumic::image(void)
+dtkImage *gnomonViewVolumic::image(void)
 {
-    return d->image.Get();
+    return d->image;
 }
 
 void gnomonViewVolumic::onSliceChanged(int slice)
@@ -399,20 +405,15 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         d->image_reader_command->setPath(path.remove("file://"));
         d->image_reader_command->redo();
 
-        dtkImage *img = d->image_reader_command->next();
+        d->image = d->image_reader_command->next();
 
-        if (!img) {
+        if (!d->image) {
             qDebug() << Q_FUNC_INFO << "Resulting image is void.";
             event->ignore();
             return;
         }
 
-        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-        converter->setInput(img);
-        converter->convert();
-        this->setImage(static_cast<vtkImageData *>(converter->output()));
-
-        delete converter;
+        this->setImage(d->image);
     }
 
     // ///////////////////////////////////////////////////////////////

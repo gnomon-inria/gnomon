@@ -44,10 +44,10 @@
 #include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonAbstractForm.h>
-#include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 #include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 #include <gnomonCore/gnomonAbstractModel.h>
 #include <gnomonCore/gnomonAbstractMultiChannelImageData.h>
+#include <gnomonCore/gnomonAbstractMultiChannelImageReader.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCore.h>
@@ -173,11 +173,11 @@
 %include <gnomonCore/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
-%include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 %include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractModel.h>
 %include <gnomonCore/gnomonAbstractMultiChannelImageData.h>
+%include <gnomonCore/gnomonAbstractMultiChannelImageReader.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>

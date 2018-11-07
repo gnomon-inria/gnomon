@@ -14,6 +14,8 @@
 
 #include "gnomonImageManager.h"
 
+#include <dtkImagingCore>
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManagerItem
 // ///////////////////////////////////////////////////////////////////
@@ -98,9 +100,17 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
     if(!image)
         return nullptr;
 
-    int w = image->GetDimensions()[0];
-    int h = image->GetDimensions()[1];
-    int d = image->GetDimensions()[2];
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(image);
+    converter->convert();
+
+    vtkImageData *o = static_cast<vtkImageData *>(converter->output());
+
+    delete converter;
+
+    int w = o->GetDimensions()[0];
+    int h = o->GetDimensions()[1];
+    int d = o->GetDimensions()[2];
 
     QImage i(w, h, QImage::Format_RGB32);
 
@@ -109,7 +119,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
     int z = d/2;
     for(int c = 0; c < w; ++c) {
         for(int r = 0; r < h; ++r) {
-            unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer(r, w-c-1, z));
+            unsigned char *p = reinterpret_cast<unsigned char *>(o->GetScalarPointer(r, w-c-1, z));
             *(b) = QColor(p[0], p[0], p[0]).rgb();
             ++b;
         }
@@ -148,6 +158,11 @@ void gnomonImageManager::addImage(gnomonImageManager::Image image)
 gnomonImageManager::Image gnomonImageManager::get(int index)
 {
     return d->images.values().at(index);
+}
+
+QPixmap gnomonImageManager::thumbnail(int index)
+{
+    return *(d->images.keys().at(index)->pixmap());
 }
 
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)

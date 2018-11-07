@@ -20,12 +20,14 @@
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 
+class dtkImage;
+
 class gnomonImageManager : public QFrame
 {
     Q_OBJECT
 
 public:
-    using Image = vtkSmartPointer<vtkImageData>;
+    using Image = dtkImage *;
 
 public:
     static gnomonImageManager *instance(void);
@@ -38,6 +40,9 @@ public slots:
 
 public:
     Image get(int index);
+
+public:
+    QPixmap thumbnail(int index);
 
 protected:
      gnomonImageManager(QWidget *parent = nullptr);
