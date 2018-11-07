@@ -14,13 +14,13 @@
 
 #pragma once
 
-class vtkImageData;
-
 #include <QtCore>
 
 #include <dtkCore>
 
 #include <gnomonCoreExport.h>
+
+class dtkImage;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -35,10 +35,11 @@ public:
     virtual gnomonAbstractMultiChannelImageData* clone(void) const = 0;
 
 public:
+    virtual int channelCount(void) = 0;
     virtual QStringList channelNames(void) = 0;
 
-    virtual void addChannelImage(const QString& channelName, vtkImageData *image) = 0;
-    virtual vtkImageData* channelImage(const QString& channelName) const = 0;
+    virtual void addChannelImage(const QString& channelName, dtkImage *image) = 0;
+    virtual dtkImage* channelImage(const QString& channelName) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMultiChannelImageData, GNOMONCORE_EXPOR
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMultiChannelImageData, GNOMONCORE_EXPORT, multichannelimagedata);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMultiChannelImageData, GNOMONCORE_EXPORT, multiChannelImageData);
 }
 
 // gnomonAbstractMultiChannelImageData.h ends here
