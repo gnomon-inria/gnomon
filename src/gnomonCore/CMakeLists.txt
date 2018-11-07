@@ -74,6 +74,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMultiChannelImage
   gnomonMultiChannelImage.h
+  gnomonMultiChannelImageReaderCommand
+  gnomonMultiChannelImageReaderCommand.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTypeDef
@@ -106,6 +108,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonImagesSerieReaderCommand.cpp
+  gnomonMultiChannelImageReaderCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp

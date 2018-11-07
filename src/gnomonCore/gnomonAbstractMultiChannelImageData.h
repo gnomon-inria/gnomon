@@ -56,7 +56,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMultiChannelImageData, GNOMONCORE_EXPOR
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMultiChannelImageData, GNOMONCORE_EXPORT, multichannelimagedata);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMultiChannelImageData, GNOMONCORE_EXPORT, multiChannelImageData);
 }
 
 // gnomonAbstractMultiChannelImageData.h ends here

@@ -16,7 +16,7 @@
 #include "gnomonAbstractMultiChannelImageReader.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMultiChannelImageReader, multichannelimageReader, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractMultiChannelImageReader, multiChannelImageReader, gnomonCore);
 }
 
 

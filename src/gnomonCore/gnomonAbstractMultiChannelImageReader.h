@@ -46,7 +46,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMultiChannelImageReader, GNOMONCORE_EXP
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMultiChannelImageReader, GNOMONCORE_EXPORT, multichannelimageReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMultiChannelImageReader, GNOMONCORE_EXPORT, multiChannelImageReader);
 }
 
 //
