@@ -1,5 +1,7 @@
 #include "gnomonImagesSerieReaderUndoCommand.h"
 
+#include <dtkScript>
+
 class gnomonImagesSerieReaderUndoCommandPrivate
 {
 public:
@@ -8,6 +10,15 @@ public:
 
 gnomonImagesSerieReaderUndoCommand::gnomonImagesSerieReaderUndoCommand(const QString& key) : d(new gnomonImagesSerieReaderUndoCommandPrivate)
 {
+    dtkScriptInterpreterPython *interpreter = dtkScriptInterpreterPython::instance();
+
+    QString command = "import gnomonImagesSerieReader";
+
+    int stat;
+    interpreter->interpret(command, &stat);
+
+    Q_ASSERT(stat == 0);
+
     gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command = gnomonCore::imagesSerieReader::pluginFactory().create(key);
 
     Q_ASSERT(gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command);

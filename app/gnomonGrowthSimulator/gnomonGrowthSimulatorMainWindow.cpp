@@ -225,7 +225,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->interpreter_widget->setFont(d->font_source_code_pro->font(12));
 
 #if defined(DTK_BUILD_WRAPPERS)
-    d->interpreter = new dtkScriptInterpreterPython;
+    d->interpreter = dtkScriptInterpreterPython::instance();
 
     d->interpreter_widget->registerInterpreter(d->interpreter);
 #endif

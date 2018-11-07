@@ -16,7 +16,7 @@
 
 #include <gnomonStyle>
 
-#include <gnomonAbstractImagesSerieReader.h>
+#include <gnomonImagesSerieReaderUndoCommand.h>
 
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
@@ -67,7 +67,7 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
 
 public:
-    gnomonAbstractImagesSerieReader *image_reader = nullptr;
+    gnomonImagesSerieReaderUndoCommand *image_reader_command = nullptr;
 
 public:
     QSlider *slider;
@@ -116,11 +116,9 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    d->image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
+    d->image_reader_command = new gnomonImagesSerieReaderUndoCommand("gnomonImagesSerieReader");
 
-    if(!d->image_reader) {
-        qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
-    }
+    Q_ASSERT(d->image_reader_command);
 
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
@@ -206,11 +204,12 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     // Use gnomonCommand<gnomonAbstractImageSeriesReader>
     // ///////////////////////////////////////////////////////////////
 
-    d->image_reader->setPath(path.remove("file://"));
-    d->image_reader->run();
+    d->image_reader_command->setPath(path.remove("file://"));
+
+    d->image_reader_command->redo();
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(d->image_reader->next());
+    converter->setInput(d->image_reader_command->next());
     converter->convert();
 
     this->setImage(static_cast<vtkImageData *>(converter->output()));
