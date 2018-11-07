@@ -16,9 +16,7 @@
 
 #include <QtWidgets>
 
-#include <vtkColorTransferFunction.h>
-#include <vtkImageData.h>
-#include <vtkSmartPointer.h>
+class dtkImage;
 
 class gnomonViewVolumic : public QFrame
 {
@@ -29,10 +27,10 @@ public:
     ~gnomonViewVolumic(void);
 
 public:
-    void setImage(vtkImageData *);
+    void setImage(dtkImage *);
 
 public:
-    vtkImageData *image(void);
+    dtkImage *image(void);
 
 public slots:
     void onSliceChanged(int);
