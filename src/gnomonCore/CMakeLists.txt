@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
+  gnomonAbstractCellImageFromMultiChannelImage
+  gnomonAbstractCellImageFromMultiChannelImage.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
@@ -93,6 +95,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractCellImageFromMultiChannelImage.cpp
 # gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractSystemScenario.cpp
