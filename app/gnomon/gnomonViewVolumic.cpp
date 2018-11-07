@@ -330,14 +330,14 @@ void gnomonViewVolumic::setImage(dtkImage *i)
 
     delete converter;
 
-    double bounds[6]; image->GetBounds(bounds);
+    int z = image->GetDimensions()[2];
 
-    d->viewer->SetSlice((bounds[5] - bounds[4]) / 2);
+    d->viewer->SetSlice(z/2);
     d->viewer->SetInputData(image);
 
-    d->slider->setMaximum(bounds[5] - bounds[4]);
+    d->slider->setMaximum(z);
     d->slider->blockSignals(true);
-    d->slider->setValue((bounds[5] - bounds[4]) / 2);
+    d->slider->setValue(z/2);
     d->slider->blockSignals(false);
 
     // 3D
