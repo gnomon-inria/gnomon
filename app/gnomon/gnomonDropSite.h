@@ -16,24 +16,19 @@
 
 #include <QtWidgets>
 
-class dtkImage;
-
-class gnomonViewVolumic : public QFrame
+class gnomonDropSite : public QFrame
 {
     Q_OBJECT
 
 public:
-     gnomonViewVolumic(QWidget *parent = nullptr);
-    ~gnomonViewVolumic(void);
+     gnomonDropSite(QWidget *parent = nullptr);
+    ~gnomonDropSite(void);
 
 public:
-    void setImage(dtkImage *);
+    QSize sizeHint(void) const;
 
 public:
-    dtkImage *image(void);
-
-public slots:
-    void onSliceChanged(int);
+    int index(void);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
@@ -42,8 +37,8 @@ protected:
     void dropEvent(QDropEvent *);
 
 private:
-    class gnomonViewVolumicPrivate *d;
+    class gnomonDropSitePrivate *d;
 };
 
 //
-// gnomonViewVolumic.h ends here
+// gnomonDropSite.h ends here

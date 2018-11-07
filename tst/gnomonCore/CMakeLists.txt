@@ -14,17 +14,19 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDataManagerTest.h
   gnomonDiscreteDynamicFormTest.h
   gnomonFileSystemFormReaderTest.h
-  gnomonSystemScenarioTest.h
   gnomonImagesFusionCommandTest.h
-  gnomonImagesSerieReaderCommandTest.h)
+  gnomonImagesSerieReaderCommandTest.h
+  gnomonMultiChannelImageReaderCommandTest.h
+  gnomonSystemScenarioTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonDataManagerTest.cpp
   gnomonDiscreteDynamicFormTest.cpp
   gnomonFileSystemFormReaderTest.cpp
-  gnomonSystemScenarioTest.cpp
   gnomonImagesFusionCommandTest.cpp
-  gnomonImagesSerieReaderCommandTest.cpp)
+  gnomonImagesSerieReaderCommandTest.cpp
+  gnomonMultiChannelImageReaderCommandTest.cpp
+  gnomonSystemScenarioTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -57,8 +59,9 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## ###################################################################
 
 add_test(gnomonDataManagerTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDataManagerTest)
-add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)
-add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
 add_test(gnomonDiscreteDynamicFormTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDiscreteDynamicFormTest)
+add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
 add_test(gnomonImagesFusionCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesFusionCommandTest)
 add_test(gnomonImagesSerieReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesSerieReaderCommandTest)
+add_test(gnomonMultiChannelImageReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonMultiChannelImageReaderCommandTest)
+add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)

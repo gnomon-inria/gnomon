@@ -22,7 +22,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMultiChannelImageData, multichannelimagedata, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractMultiChannelImageData, multiChannelImageData, gnomonCore);
 }
 
 //
