@@ -13,7 +13,6 @@
 class gnomonImagesSerieReaderUndoCommandTestCasePrivate
 {
 public:
-    dtkScriptInterpreterPython *interpreter = nullptr;
     gnomonImagesSerieReaderUndoCommand *undo_command = nullptr;
 };
 
@@ -28,11 +27,9 @@ gnomonImagesSerieReaderUndoCommandTestCase::~gnomonImagesSerieReaderUndoCommandT
 
 void gnomonImagesSerieReaderUndoCommandTestCase::initTestCase(void)
 {
-    d->interpreter = new dtkScriptInterpreterPython;
-
     QString command = "import gnomonImagesSerieReader";
     int stat;
-    d->interpreter->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::init(void)
@@ -72,7 +69,6 @@ void gnomonImagesSerieReaderUndoCommandTestCase::cleanup(void)
 
 void gnomonImagesSerieReaderUndoCommandTestCase::cleanupTestCase(void)
 {
-    delete d->interpreter;
 }
 
 GNOMONTEST_MAIN_NOGUI(gnomonImagesSerieReaderUndoCommandTest, gnomonImagesSerieReaderUndoCommandTestCase);
