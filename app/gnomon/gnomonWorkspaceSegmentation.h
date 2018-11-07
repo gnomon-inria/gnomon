@@ -24,6 +24,9 @@ public:
      gnomonWorkspaceSegmentation(QWidget *parent = nullptr);
     ~gnomonWorkspaceSegmentation(void);
 
+public slots:
+    void apply(void);
+
 private:
     class gnomonWorkspaceSegmentationPrivate *d;
 };
