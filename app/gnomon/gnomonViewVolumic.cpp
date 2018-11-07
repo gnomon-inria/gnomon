@@ -65,9 +65,11 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *paren
 {
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    this->font->setProperty("color", QColor("#ffffff"));
+    this->font->setDefaultOption("color", QColor("#ffffff"));
 
     this->setPixmap(this->font->icon(icon).pixmap(32, 32));
+
+    this->setStyleSheet("background: none;");
 }
 
 gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
@@ -176,7 +178,7 @@ QSize gnomonViewVolumicPrivate::sizeHint(void) const
 
 void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
 {
-    this->export_button->move(event->size().width() - 10 - this->export_button->width(), 10);
+    this->export_button->move(event->size().width() - 40, 10);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -277,32 +279,30 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    // ///////////////////////////////////////////////////////////////
-    // Use gnomonCommand<gnomonAbstractImageSeriesReader>
-    // ///////////////////////////////////////////////////////////////
+    if(path.startsWith(":")) {
 
-    d->image_reader_command->setPath(path.remove("file://"));
+        this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
 
-    d->image_reader_command->redo();
+    } else {
 
-    dtkImage *img = d->image_reader_command->next();
-    if (!img) {
-        qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-        event->ignore();
-        return;
+        d->image_reader_command->setPath(path.remove("file://"));
+        d->image_reader_command->redo();
+
+        dtkImage *img = d->image_reader_command->next();
+
+        if (!img) {
+            qDebug() << Q_FUNC_INFO << "Resulting image is void.";
+            event->ignore();
+            return;
+        }
+
+        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+        converter->setInput(img);
+        converter->convert();
+        this->setImage(static_cast<vtkImageData *>(converter->output()));
+
+        delete converter;
     }
-
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-
-    Q_ASSERT(converter);
-
-    converter->setInput(img);
-
-    converter->convert();
-
-    this->setImage(static_cast<vtkImageData *>(converter->output()));
-
-    delete converter;
 
     // ///////////////////////////////////////////////////////////////
 

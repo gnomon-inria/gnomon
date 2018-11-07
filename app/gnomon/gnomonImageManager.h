@@ -25,7 +25,7 @@ class gnomonImageManager : public QFrame
     Q_OBJECT
 
 public:
-    typedef vtkSmartPointer<vtkImageData> Image;
+    using Image = vtkSmartPointer<vtkImageData>;
 
 public:
     static gnomonImageManager *instance(void);
@@ -35,6 +35,9 @@ public:
 
 public slots:
     void addImage(Image);
+
+public:
+    Image get(int index);
 
 protected:
      gnomonImageManager(QWidget *parent = nullptr);
