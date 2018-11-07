@@ -44,6 +44,8 @@ void gnomonImagesSerieFilterCommand::undo(void)
 
 void gnomonImagesSerieFilterCommand::setImage(dtkImage* image)
 {
+    std::cout << "setting image..." << std::endl;
+    std::cout << image << std::endl;
     d->image = image;
 }
 

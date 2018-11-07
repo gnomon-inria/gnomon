@@ -19,6 +19,10 @@
 
 #include <gnomonImagesSerieFilterCommand.h>
 
+#include <dtkImagingCore>
+
+#include <vtkImageData.h>
+
 #include <QtWidgets>
 
 class gnomonWorkspacePreprocessPrivate
@@ -70,22 +74,14 @@ void gnomonWorkspacePreprocess::apply(void)
     image_filter_command->setImage(d->source->image());
     image_filter_command->redo();
 
-    dtkImage *img = image_reader_command->next();
+    dtkImage *img = image_filter_command->next();
 
     if (!img) {
         qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-        event->ignore();
         return;
     }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(img);
-    converter->convert();
-    d->target->setImage(static_cast<vtkImageData *>(converter->output()));
-
-    delete converter;
-
-    qDebug() << Q_FUNC_INFO;
+    d->target->setImage(img);
 }
 
 //

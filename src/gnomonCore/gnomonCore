@@ -11,7 +11,7 @@
 #include "gnomonAbstractCellGraphFromImage.h"
 #include "gnomonAbstractCellImageData.h"
 #include "gnomonAbstractCellImageFromImage.h"
-#include "gnomonAbstractImagesSerieFilter.h"
+// #include "gnomonAbstractImagesSerieFilter.h"
 #include "gnomonAbstractImagesSerieReader.h"
 #include "gnomonAbstractTissueGrowthModel.h"
 #include "gnomonTime.h"
