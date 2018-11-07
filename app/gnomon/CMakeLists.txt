@@ -25,7 +25,12 @@ set(${PROJECT_NAME}_HEADERS
   gnomonOverlayPane.h
   gnomonOverlayPaneItem.h
   gnomonToolBar.h
-  gnomonViewVolumic.h)
+  gnomonViewVolumic.h
+  gnomonWorkspaceBrowser.h
+  gnomonWorkspaceFusion.h
+  gnomonWorkspaceSegmentation.h
+  gnomonWorkspacePreprocess.h
+  gnomonWorkspaceRegistration.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
@@ -34,7 +39,12 @@ set(${PROJECT_NAME}_SOURCES
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp
-  gnomonViewVolumic.cpp)
+  gnomonViewVolumic.cpp
+  gnomonWorkspaceBrowser.cpp
+  gnomonWorkspaceFusion.cpp
+  gnomonWorkspaceSegmentation.cpp
+  gnomonWorkspacePreprocess.cpp
+  gnomonWorkspaceRegistration.cpp)
 
 ## #################################################################
 ## Build rules
