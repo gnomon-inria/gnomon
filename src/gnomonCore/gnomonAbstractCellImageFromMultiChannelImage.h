@@ -35,6 +35,11 @@ public:
 public:
     virtual gnomonCellImage *segmentedImage(void) = 0;
 
+public:
+	virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+	virtual const QMap<QString, QVariant>& parameters(void) const = 0;
+	virtual       QMap<QString, QVariant>& parameters(void) = 0;
+
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromMultiChannelImage *)
