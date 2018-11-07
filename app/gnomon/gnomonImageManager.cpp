@@ -62,6 +62,7 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     this->contents = new QWidget(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this->contents);
+    layout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
 
     this->setFrameShape(QFrame::NoFrame);
     this->setWidget(this->contents);
@@ -84,17 +85,19 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
 
     QImage i(w, h, QImage::Format_RGB32);
 
-    QRgb *b = reinterpret_cast<QRgb *>(i.bits()) + w * (h - 1);
+    QRgb *b = reinterpret_cast<QRgb *>(i.bits());
 
     unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer());
 
+    // p += d/2 * w * h * image->GetNumberOfScalarComponents();
+
     for(int r = 0; r < h; r++) {
         for(int c = 0; c < w; c++) {
-            *(b) = QColor(p[0], p[1], p[2]).rgb();
+            *(b) = QColor(p[0], p[0], p[0]).rgb();
             p += image->GetNumberOfScalarComponents();
         }
 
-        b -= w * 2;
+        b++;
     }
 
     return new gnomonImageManagerItem(QPixmap::fromImage(i), this);
@@ -103,6 +106,27 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManager
 // ///////////////////////////////////////////////////////////////////
+
+gnomonImageManager *gnomonImageManager::instance(void)
+{
+    if(!s_instance)
+        s_instance = new gnomonImageManager;
+
+    return s_instance;
+}
+
+QSize gnomonImageManager::sizeHint(void) const
+{
+    return QSize(200, 140);
+}
+
+void gnomonImageManager::addImage(gnomonImageManager::Image image)
+{
+    gnomonImageManagerItem *item = d->create(image);
+
+    d->images.insert(item, image);
+    d->contents->layout()->addWidget(item);
+}
 
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 {
@@ -121,18 +145,7 @@ gnomonImageManager::~gnomonImageManager(void)
     delete d;
 }
 
-QSize gnomonImageManager::sizeHint(void) const
-{
-    return QSize(200, 140);
-}
-
-void gnomonImageManager::addImage(gnomonImageManager::Image image)
-{
-    gnomonImageManagerItem *item = d->create(image);
-
-    d->images.insert(item, image);
-    d->contents->layout()->addWidget(item);
-}
+gnomonImageManager *gnomonImageManager::s_instance = nullptr;
 
 // ///////////////////////////////////////////////////////////////////
 

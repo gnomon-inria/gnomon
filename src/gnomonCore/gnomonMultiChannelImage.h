@@ -62,8 +62,8 @@ public:
 
 public:
     virtual int channelCount(void) { return m_data->channelCount(); }
-    virtual QList<QString> channelNames(void) { return m_data->channelNames(); }
-    
+    virtual QStringList channelNames(void) { return m_data->channelNames(); }
+
     virtual void addChannelImage(const QString& channelName, vtkImageData *image) { return m_data->addChannelImage(channelName, image); }
     virtual vtkImageData* channelImage(const QString& channelName) const { return m_data->channelImage(channelName); }
 };
