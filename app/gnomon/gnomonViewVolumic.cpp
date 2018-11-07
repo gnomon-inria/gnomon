@@ -16,7 +16,7 @@
 
 #include <gnomonStyle>
 
-#include <gnomonImagesSerieReaderUndoCommand.h>
+#include <gnomonImagesSerieReaderCommand.h>
 
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
@@ -67,7 +67,7 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
 
 public:
-    gnomonImagesSerieReaderUndoCommand *image_reader_command = nullptr;
+    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
 
 public:
     QSlider *slider;
@@ -116,7 +116,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    d->image_reader_command = new gnomonImagesSerieReaderUndoCommand("gnomonImagesSerieReader");
+    d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
 
     Q_ASSERT(d->image_reader_command);
 

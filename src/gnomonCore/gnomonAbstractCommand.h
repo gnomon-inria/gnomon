@@ -19,19 +19,19 @@
 #include <QUndoCommand>
 
 template<typename T>
-class gnomonAbstractUndoCommand : public QUndoCommand
+class gnomonAbstractCommand : public QUndoCommand
 {
 public:
-    gnomonAbstractUndoCommand(void) = default;
-    virtual ~gnomonAbstractUndoCommand(void) = default;
+    gnomonAbstractCommand(void) = default;
+    virtual ~gnomonAbstractCommand(void) = default;
 
 public:
     virtual void redo(void) = 0;
     virtual void undo(void) = 0;
 
 protected:
-    T* command = nullptr;
+    T* action = nullptr;
 };
 
 //
-// gnomonAbstractUndoCommand.h ends here
+// gnomonAbstractCommand.h ends here

@@ -2,13 +2,13 @@
 
 #include <QtCore>
 
-class gnomonImagesSerieReaderUndoCommandTestCase : public QObject
+class gnomonImagesSerieReaderCommandTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-    gnomonImagesSerieReaderUndoCommandTestCase(void);
-    ~gnomonImagesSerieReaderUndoCommandTestCase(void);
+    gnomonImagesSerieReaderCommandTestCase(void);
+    ~gnomonImagesSerieReaderCommandTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -23,5 +23,5 @@ private slots:
     void cleanup(void);
 
 private:
-    class gnomonImagesSerieReaderUndoCommandTestCasePrivate *d;
+    class gnomonImagesSerieReaderCommandTestCasePrivate *d;
 };
