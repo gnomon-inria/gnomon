@@ -19,6 +19,7 @@ project(gnomon)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonDropSite.h
   gnomonFinder.h
   gnomonImageManager.h
   gnomonMainWindow.h
@@ -33,6 +34,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceRegistration.h)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonDropSite.cpp
   gnomonFinder.cpp
   gnomonImageManager.cpp
   gnomonMainWindow.cpp
