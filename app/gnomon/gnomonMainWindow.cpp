@@ -34,6 +34,7 @@ public:
     gnomonViewVolumic *fusion_view_3;
     gnomonViewVolumic *fusion_view_4;
     gnomonViewVolumic *fusion_view_t;
+    gnomonViewVolumic *prepro_view;
 
 public:
     gnomonToolBar *menu;
@@ -42,11 +43,14 @@ public:
     QSplitter *browse_workspace;
     QFrame *fusion_workspace;
     QFrame *segmtt_workspace;
-    QFrame *prepro_workspace;
+    QSplitter *prepro_workspace;
     QFrame *regist_workspace;
 
 public:
     QStackedWidget *stack;
+
+public:
+    QComboBox *prepro_box;
 
 public:
     gnomonImageManager *manager;
@@ -121,8 +125,16 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d->segmtt_workspace = new QFrame(this);
     d->segmtt_workspace->setStyleSheet("background: green;");
 
-    d->prepro_workspace = new QFrame(this);
-    d->prepro_workspace->setStyleSheet("background: blue;");
+    d->prepro_view = new gnomonViewVolumic(this);
+
+    d->prepro_box = new QComboBox(this);
+    d->prepro_box->addItem("a");
+    d->prepro_box->addItem("b");
+
+    d->prepro_workspace = new QSplitter(this);
+    d->prepro_workspace->addWidget(d->prepro_box);
+    d->prepro_workspace->addWidget(d->prepro_view);
+
 
     d->regist_workspace = new QFrame(this);
     d->regist_workspace->setStyleSheet("background: cyan;");
