@@ -22,6 +22,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFinder.h
   gnomonImageManager.h
   gnomonMainWindow.h
+  gnomonOverlayPane.h
+  gnomonOverlayPaneItem.h
   gnomonToolBar.h
   gnomonViewVolumic.h)
 
@@ -29,6 +31,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
   gnomonImageManager.cpp
   gnomonMainWindow.cpp
+  gnomonOverlayPane.cpp
+  gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp
   gnomonViewVolumic.cpp)
 
