@@ -24,38 +24,37 @@ class dtkImage;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesSerieReader
+class GNOMONCORE_EXPORT gnomonAbstractImagesFusion
 {
 public:
-    virtual ~gnomonAbstractImagesSerieReader(void) = default;
+    virtual ~gnomonAbstractImagesFusion(void) = default;
 
 public:
-    virtual void setPath(const QString& path) = 0;
+    virtual void addImage(dtkImage *image) = 0;
 
 public:
     virtual void run(void) = 0;
 
 public:
-    virtual dtkImage *at(double t) = 0;
-    virtual dtkImage *next(void) = 0;
+    virtual dtkImage *output() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesFusion *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT, imagesSerieReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT, imagesFusion);
 }
 
 //
-// gnomonAbstractImagesSerieReader.h ends here
+// gnomonAbstractImagesFusion.h ends here
