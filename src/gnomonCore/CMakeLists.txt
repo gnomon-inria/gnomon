@@ -68,6 +68,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
+  gnomonImagesFusionCommand
+  gnomonImagesFusionCommand.h
   gnomonImagesSerieReaderCommand
   gnomonImagesSerieReaderCommand.h
   gnomonIntensityImage
@@ -105,6 +107,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDiscreteDynamicForm.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonImagesFusionCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp

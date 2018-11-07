@@ -31,6 +31,7 @@ public:
 
 public:
     virtual void addImage(dtkImage *image) = 0;
+    virtual void removeImages(void) = 0;
 
 public:
     virtual void run(void) = 0;
