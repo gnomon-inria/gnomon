@@ -15,7 +15,6 @@
 #include <QtWidgets>
 
 #include <dtkLog>
-#include <dtkScript>
 
 #include <vtkGenericOpenGLRenderWindow.h>
 
@@ -39,10 +38,6 @@ int main(int argc, char **argv)
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
     dtkImaging::initialize();
-
-    QString command = "import gnomonImagesSerieReader";
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
     gnomonMainWindow *window = new gnomonMainWindow;
     window->show();
