@@ -12,9 +12,11 @@
 
 // Code:
 
+#include "gnomonImageManager.h"
 #include "gnomonViewVolumic.h"
 
 #include <gnomonStyle>
+#include <gnomonFonts>
 
 #include <gnomonImagesSerieReaderCommand.h>
 
@@ -38,6 +40,47 @@
 #include <dtkImagingCore>
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonViewVolumicOverlay
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewVolumicOverlay : public QLabel
+{
+    Q_OBJECT
+
+public:
+     gnomonViewVolumicOverlay(fa::icon, QWidget *parent = nullptr);
+    ~gnomonViewVolumicOverlay(void);
+
+signals:
+    void clicked(void);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+private:
+    gnomonFontAwesome *font;
+};
+
+gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *parent) : QLabel(parent)
+{
+    this->font = new gnomonFontAwesome(this);
+    this->font->initFontAwesome();
+    this->font->setProperty("color", QColor("#ffffff"));
+
+    this->setPixmap(this->font->icon(icon).pixmap(32, 32));
+}
+
+gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
+{
+
+}
+
+void gnomonViewVolumicOverlay::mousePressEvent(QMouseEvent *)
+{
+    emit clicked();
+}
+
+// ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
@@ -53,8 +96,14 @@ public slots:
     void enableInteractor(void);
     void disableInteractor(void);
 
+public slots:
+    void exportToManager(void);
+
 public:
     QSize sizeHint(void) const;
+
+protected:
+    void resizeEvent(QResizeEvent *);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -68,6 +117,12 @@ public:
 
 public:
     gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
+
+public:
+    gnomonViewVolumicOverlay *export_button;
+
+public:
+    vtkSmartPointer<vtkImageData> image;
 
 public:
     QSlider *slider;
@@ -85,6 +140,10 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
     this->SetRenderWindow(this->window);
     this->setEnableHiDPI(true);
+
+    this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, this);
+
+    connect(this->export_button, SIGNAL(clicked()), this, SLOT(exportToManager()));
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
@@ -102,9 +161,22 @@ void gnomonViewVolumicPrivate::disableInteractor(void)
     this->GetInteractor()->Disable();
 }
 
+void gnomonViewVolumicPrivate::exportToManager(void)
+{
+    if(!this->image.Get())
+        return;
+
+    gnomonImageManager::instance()->addImage(this->image);
+}
+
 QSize gnomonViewVolumicPrivate::sizeHint(void) const
 {
     return QSize(800, 600);
+}
+
+void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
+{
+    this->export_button->move(event->size().width() - 10 - this->export_button->width(), 10);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -170,6 +242,10 @@ void gnomonViewVolumic::setImage(vtkImageData *image)
     d->slider->blockSignals(false);
 
     d->renderer->ResetCamera();
+
+    d->GetInteractor()->Render();
+
+    d->image = image;
 }
 
 void gnomonViewVolumic::onSliceChanged(int slice)
