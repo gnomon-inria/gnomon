@@ -14,6 +14,8 @@
 
 #include "gnomonImageManager.h"
 
+#include <dtkImagingCore>
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManagerItem
 // ///////////////////////////////////////////////////////////////////
@@ -25,6 +27,12 @@ class gnomonImageManagerItem : public QLabel
 public:
      gnomonImageManagerItem(const QPixmap& thumbnail, QWidget *parent = nullptr);
     ~gnomonImageManagerItem(void);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+public:
+    int id;
 };
 
 gnomonImageManagerItem::gnomonImageManagerItem(const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
@@ -35,6 +43,19 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QPixmap& thumbnail, QWidget
 gnomonImageManagerItem::~gnomonImageManagerItem(void)
 {
 
+}
+
+void gnomonImageManagerItem::mousePressEvent(QMouseEvent *)
+{
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setText(QString(":%1").arg(this->id));
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(*(this->pixmap()));
+    drag->setHotSpot(QPoint(drag->pixmap().width()/2, drag->pixmap().height()/2));
+
+    Qt::DropAction dropAction = drag->exec();
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -79,25 +100,29 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
     if(!image)
         return nullptr;
 
-    int w = image->GetDimensions()[0];
-    int h = image->GetDimensions()[1];
-    int d = image->GetDimensions()[2];
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(image);
+    converter->convert();
+
+    vtkImageData *o = static_cast<vtkImageData *>(converter->output());
+
+    delete converter;
+
+    int w = o->GetDimensions()[0];
+    int h = o->GetDimensions()[1];
+    int d = o->GetDimensions()[2];
 
     QImage i(w, h, QImage::Format_RGB32);
 
     QRgb *b = reinterpret_cast<QRgb *>(i.bits());
 
-    unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer());
-
-    // p += d/2 * w * h * image->GetNumberOfScalarComponents();
-
-    for(int r = 0; r < h; r++) {
-        for(int c = 0; c < w; c++) {
+    int z = d/2;
+    for(int c = 0; c < w; ++c) {
+        for(int r = 0; r < h; ++r) {
+            unsigned char *p = reinterpret_cast<unsigned char *>(o->GetScalarPointer(r, w-c-1, z));
             *(b) = QColor(p[0], p[0], p[0]).rgb();
-            p += image->GetNumberOfScalarComponents();
+            ++b;
         }
-
-        b++;
     }
 
     return new gnomonImageManagerItem(QPixmap::fromImage(i), this);
@@ -126,6 +151,13 @@ void gnomonImageManager::addImage(gnomonImageManager::Image image)
 
     d->images.insert(item, image);
     d->contents->layout()->addWidget(item);
+
+    item->id = d->images.values().indexOf(image);
+}
+
+gnomonImageManager::Image gnomonImageManager::get(int index)
+{
+    return d->images.values().at(index);
 }
 
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)

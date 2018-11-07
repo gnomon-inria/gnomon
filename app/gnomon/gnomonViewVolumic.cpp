@@ -65,9 +65,11 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *paren
 {
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    this->font->setProperty("color", QColor("#ffffff"));
+    this->font->setDefaultOption("color", QColor("#ffffff"));
 
     this->setPixmap(this->font->icon(icon).pixmap(32, 32));
+
+    this->setStyleSheet("background: none;");
 }
 
 gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
@@ -122,7 +124,7 @@ public:
     gnomonViewVolumicOverlay *export_button;
 
 public:
-    vtkSmartPointer<vtkImageData> image;
+    dtkImage *image = nullptr;
 
 public:
     QSlider *slider;
@@ -163,7 +165,7 @@ void gnomonViewVolumicPrivate::disableInteractor(void)
 
 void gnomonViewVolumicPrivate::exportToManager(void)
 {
-    if(!this->image.Get())
+    if(!this->image)
         return;
 
     gnomonImageManager::instance()->addImage(this->image);
@@ -176,7 +178,7 @@ QSize gnomonViewVolumicPrivate::sizeHint(void) const
 
 void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
 {
-    this->export_button->move(event->size().width() - 10 - this->export_button->width(), 10);
+    this->export_button->move(event->size().width() - 40, 10);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -229,8 +231,16 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
     delete d;
 }
 
-void gnomonViewVolumic::setImage(vtkImageData *image)
+void gnomonViewVolumic::setImage(dtkImage *i)
 {
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(i);
+    converter->convert();
+
+    vtkImageData *image = static_cast<vtkImageData *>(converter->output());
+
+    delete converter;
+
     double bounds[6]; image->GetBounds(bounds);
 
     d->viewer->SetSlice((bounds[5] - bounds[4]) / 2);
@@ -244,8 +254,11 @@ void gnomonViewVolumic::setImage(vtkImageData *image)
     d->renderer->ResetCamera();
 
     d->GetInteractor()->Render();
+}
 
-    d->image = image;
+dtkImage *gnomonViewVolumic::image(void)
+{
+    return d->image;
 }
 
 void gnomonViewVolumic::onSliceChanged(int slice)
@@ -277,32 +290,25 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    // ///////////////////////////////////////////////////////////////
-    // Use gnomonCommand<gnomonAbstractImageSeriesReader>
-    // ///////////////////////////////////////////////////////////////
+    if(path.startsWith(":")) {
 
-    d->image_reader_command->setPath(path.remove("file://"));
+        this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
 
-    d->image_reader_command->redo();
+    } else {
 
-    dtkImage *img = d->image_reader_command->next();
-    if (!img) {
-        qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-        event->ignore();
-        return;
+        d->image_reader_command->setPath(path.remove("file://"));
+        d->image_reader_command->redo();
+
+        d->image = d->image_reader_command->next();
+
+        if (!d->image) {
+            qDebug() << Q_FUNC_INFO << "Resulting image is void.";
+            event->ignore();
+            return;
+        }
+
+        this->setImage(d->image);
     }
-
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-
-    Q_ASSERT(converter);
-
-    converter->setInput(img);
-
-    converter->convert();
-
-    this->setImage(static_cast<vtkImageData *>(converter->output()));
-
-    delete converter;
 
     // ///////////////////////////////////////////////////////////////
 
