@@ -28,8 +28,7 @@ public:
     typedef vtkSmartPointer<vtkImageData> Image;
 
 public:
-     gnomonImageManager(QWidget *parent = nullptr);
-    ~gnomonImageManager(void);
+    static gnomonImageManager *instance(void);
 
 public:
     QSize sizeHint(void) const;
@@ -37,8 +36,15 @@ public:
 public slots:
     void addImage(Image);
 
+protected:
+     gnomonImageManager(QWidget *parent = nullptr);
+    ~gnomonImageManager(void);
+
 private:
     class gnomonImageManagerPrivate *d;
+
+private:
+    static gnomonImageManager *s_instance;
 };
 
 //

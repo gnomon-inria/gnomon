@@ -70,7 +70,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     d->menu = new gnomonToolBar(this);
 
-    d->manager = new gnomonImageManager(this);
+    d->manager = gnomonImageManager::instance();
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
