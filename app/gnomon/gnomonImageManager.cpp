@@ -87,17 +87,13 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
 
     QRgb *b = reinterpret_cast<QRgb *>(i.bits());
 
-    unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer());
-
-    // p += d/2 * w * h * image->GetNumberOfScalarComponents();
-
-    for(int r = 0; r < h; r++) {
-        for(int c = 0; c < w; c++) {
+    int z = d/2;
+        for(int c = 0; c < w; ++c) {
+    for(int r = 0; r < h; ++r) {
+            unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer(r, c, z));
             *(b) = QColor(p[0], p[0], p[0]).rgb();
-            p += image->GetNumberOfScalarComponents();
+            ++b;
         }
-
-        b++;
     }
 
     return new gnomonImageManagerItem(QPixmap::fromImage(i), this);
