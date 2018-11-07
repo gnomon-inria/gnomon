@@ -26,11 +26,9 @@ gnomonImagesSerieReaderUndoCommandTestCase::~gnomonImagesSerieReaderUndoCommandT
 
 void gnomonImagesSerieReaderUndoCommandTestCase::initTestCase(void)
 {
-    dtkScriptInterpreterPython *interpreter = dtkScriptInterpreterPython::instance();
-
     QString command = "import gnomonImagesSerieReader";
     int stat;
-    interpreter->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 }
 
 void gnomonImagesSerieReaderUndoCommandTestCase::init(void)

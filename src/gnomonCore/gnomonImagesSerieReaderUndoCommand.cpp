@@ -10,14 +10,13 @@ public:
 
 gnomonImagesSerieReaderUndoCommand::gnomonImagesSerieReaderUndoCommand(const QString& key) : d(new gnomonImagesSerieReaderUndoCommandPrivate)
 {
-    dtkScriptInterpreterPython *interpreter = dtkScriptInterpreterPython::instance();
-
-    QString command = "import gnomonImagesSerieReader";
+    QString command = "import " + key;
 
     int stat;
-    interpreter->interpret(command, &stat);
 
-    Q_ASSERT(stat == 0);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command = gnomonCore::imagesSerieReader::pluginFactory().create(key);
 
@@ -39,7 +38,6 @@ void gnomonImagesSerieReaderUndoCommand::redo(void)
 void gnomonImagesSerieReaderUndoCommand::undo(void)
 {
     gnomonAbstractUndoCommand<gnomonAbstractImagesSerieReader>::command->setPath("");
-    qWarning() << "Does nothing";
 }
 
 void gnomonImagesSerieReaderUndoCommand::setPath(const QString& path)

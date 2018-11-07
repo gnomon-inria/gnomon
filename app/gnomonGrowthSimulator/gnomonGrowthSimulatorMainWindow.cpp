@@ -149,10 +149,6 @@ public:
 public:
     dtkInterpreter *interpreter_widget;
 
-#if defined(DTK_BUILD_WRAPPERS)
-    dtkScriptInterpreterPython *interpreter;
-#endif
-
 public:
     dtkViewManager *view_manager;
 
@@ -225,9 +221,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     d->interpreter_widget->setFont(d->font_source_code_pro->font(12));
 
 #if defined(DTK_BUILD_WRAPPERS)
-    d->interpreter = dtkScriptInterpreterPython::instance();
-
-    d->interpreter_widget->registerInterpreter(d->interpreter);
+    d->interpreter_widget->registerInterpreter(dtkScriptInterpreterPython::instance());
 #endif
 
     d->editor_splitter = new QSplitter(this);
@@ -255,9 +249,9 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
         else {
             int stat;
             if (d->interpreter_widget)
-                d->interpreter_widget->output(d->interpreter->interpret(d->editor->toPlainText(), &stat));
+                d->interpreter_widget->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
             else
-                d->interpreter->interpret(d->editor->toPlainText(), &stat);
+                dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
         }
 #endif
         });
@@ -344,9 +338,7 @@ gnomonGrowthSimulatorMainWindow::gnomonGrowthSimulatorMainWindow(QWidget *parent
     this->statusBar()->addPermanentWidget(git_updates);
 
 #if defined(DTK_BUILD_WRAPPERS)
-    if (d->interpreter) {
-        d->interpreter->init();
-    }
+    dtkScriptInterpreterPython::instance()->init();
 #endif
 }
 

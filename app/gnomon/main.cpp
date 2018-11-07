@@ -15,7 +15,6 @@
 #include <QtWidgets>
 
 #include <dtkLog>
-#include <dtkScript>
 
 #include <vtkGenericOpenGLRenderWindow.h>
 
