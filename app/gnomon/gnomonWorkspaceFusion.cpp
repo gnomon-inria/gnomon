@@ -48,7 +48,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : QWidget(parent)
 
     gnomonOverlayPaneItem *pane_item_inputs = new gnomonOverlayPaneItem;
     pane_item_inputs->setTitle("Inputs");
-    
+
     gnomonOverlayPane *pane = new gnomonOverlayPane(this);
     pane->addWidget(pane_item_inputs);
     pane->toggle();
