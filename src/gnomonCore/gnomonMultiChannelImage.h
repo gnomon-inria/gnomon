@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-class vtkImageData;
+class dtkImage;
 
 class GNOMONCORE_EXPORT gnomonMultiChannelImage : public gnomonAbstractForm
 {
@@ -61,10 +61,11 @@ public:
 
 
 public:
+    virtual int channelCount(void) { return m_data->channelCount(); }
     virtual QStringList channelNames(void) { return m_data->channelNames(); }
 
-    virtual void addChannelImage(const QString& channelName, vtkImageData *image) { return m_data->addChannelImage(channelName, image); }
-    virtual vtkImageData* channelImage(const QString& channelName) const { return m_data->channelImage(channelName); }
+    virtual void addChannelImage(const QString& channelName, dtkImage *image) { return m_data->addChannelImage(channelName, image); }
+    virtual dtkImage* channelImage(const QString& channelName) const { return m_data->channelImage(channelName); }
 };
 
 // ///////////////////////////////////////////////////////////////////

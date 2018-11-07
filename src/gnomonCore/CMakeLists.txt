@@ -47,6 +47,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractModel.h
   gnomonAbstractMultiChannelImageData
   gnomonAbstractMultiChannelImageData.h
+  gnomonAbstractMultiChannelImageReader
+  gnomonAbstractMultiChannelImageReader.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractCommand
@@ -76,6 +78,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMultiChannelImage
   gnomonMultiChannelImage.h
+  gnomonMultiChannelImageReaderCommand
+  gnomonMultiChannelImageReaderCommand.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTypeDef
@@ -100,6 +104,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractModel.cpp
   gnomonAbstractIntensityImageData.cpp
   gnomonAbstractMultiChannelImageData.cpp
+  gnomonAbstractMultiChannelImageReader.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
@@ -109,6 +114,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFormVisitor.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
+  gnomonMultiChannelImageReaderCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp

@@ -41,6 +41,9 @@ public slots:
 public:
     Image get(int index);
 
+public:
+    QPixmap thumbnail(int index);
+
 protected:
      gnomonImageManager(QWidget *parent = nullptr);
     ~gnomonImageManager(void);
