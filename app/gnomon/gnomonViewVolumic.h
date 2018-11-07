@@ -31,6 +31,9 @@ public:
 public:
     void setImage(vtkImageData *);
 
+public:
+    vtkImageData *image(void);
+
 public slots:
     void onSliceChanged(int);
 

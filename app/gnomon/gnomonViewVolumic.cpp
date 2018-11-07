@@ -250,6 +250,11 @@ void gnomonViewVolumic::setImage(vtkImageData *image)
     d->image = image;
 }
 
+vtkImageData *gnomonViewVolumic::image(void)
+{
+    return d->image.Get();
+}
+
 void gnomonViewVolumic::onSliceChanged(int slice)
 {
     d->slider->setValue(slice);
