@@ -107,9 +107,9 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
     QRgb *b = reinterpret_cast<QRgb *>(i.bits());
 
     int z = d/2;
-        for(int c = 0; c < w; ++c) {
-    for(int r = 0; r < h; ++r) {
-            unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer(r, c, z));
+    for(int c = 0; c < w; ++c) {
+        for(int r = 0; r < h; ++r) {
+            unsigned char *p = reinterpret_cast<unsigned char *>(image->GetScalarPointer(r, w-c-1, z));
             *(b) = QColor(p[0], p[0], p[0]).rgb();
             ++b;
         }
