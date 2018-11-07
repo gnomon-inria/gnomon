@@ -101,15 +101,15 @@
         qDebug("Fail to convert to vtkImageData*");
     }
 }
+
 %typemap(directorout) vtkImageData* {
 
-    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
+    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
 
     if ( $result == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
     }
 }
-
 
 %extend QVariant {
     void setValue(gnomonCellComplex *value) {
