@@ -132,6 +132,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d->prepro_box->addItem("b");
 
     d->prepro_workspace = new QSplitter(this);
+    d->prepro_workspace->setOrientation(Qt::Vertical);
     d->prepro_workspace->addWidget(d->prepro_box);
     d->prepro_workspace->addWidget(d->prepro_view);
 
