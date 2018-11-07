@@ -36,6 +36,9 @@ public:
 public slots:
     void addImage(Image);
 
+public:
+    Image get(int index);
+
 protected:
      gnomonImageManager(QWidget *parent = nullptr);
     ~gnomonImageManager(void);

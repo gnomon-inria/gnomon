@@ -277,32 +277,30 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    // ///////////////////////////////////////////////////////////////
-    // Use gnomonCommand<gnomonAbstractImageSeriesReader>
-    // ///////////////////////////////////////////////////////////////
+    if(path.startsWith(":")) {
 
-    d->image_reader_command->setPath(path.remove("file://"));
+        this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
 
-    d->image_reader_command->redo();
+    } else {
 
-    dtkImage *img = d->image_reader_command->next();
-    if (!img) {
-        qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-        event->ignore();
-        return;
+        d->image_reader_command->setPath(path.remove("file://"));
+        d->image_reader_command->redo();
+
+        dtkImage *img = d->image_reader_command->next();
+
+        if (!img) {
+            qDebug() << Q_FUNC_INFO << "Resulting image is void.";
+            event->ignore();
+            return;
+        }
+
+        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+        converter->setInput(img);
+        converter->convert();
+        this->setImage(static_cast<vtkImageData *>(converter->output()));
+
+        delete converter;
     }
-
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-
-    Q_ASSERT(converter);
-
-    converter->setInput(img);
-
-    converter->convert();
-
-    this->setImage(static_cast<vtkImageData *>(converter->output()));
-
-    delete converter;
 
     // ///////////////////////////////////////////////////////////////
 
