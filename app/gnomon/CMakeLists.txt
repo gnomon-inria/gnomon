@@ -52,6 +52,8 @@ target_link_libraries(${PROJECT_NAME}_backend dtkScript)
 target_link_libraries(${PROJECT_NAME}_backend dtkWidgets)
 target_link_libraries(${PROJECT_NAME}_backend dtkComposer)
 
+target_link_libraries(${PROJECT_NAME}_backend dtkImagingCore)
+
 target_link_libraries(${PROJECT_NAME}_backend gnomonCore)
 target_link_libraries(${PROJECT_NAME}_backend gnomonStyle)
 target_link_libraries(${PROJECT_NAME}_backend gnomonComposer)

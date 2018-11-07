@@ -29,7 +29,7 @@ public:
     ~gnomonViewVolumic(void);
 
 public:
-    void setImage(vtkSmartPointer<vtkImageData>);
+    void setImage(vtkImageData *);
 
 public slots:
     void onSliceChanged(int);
