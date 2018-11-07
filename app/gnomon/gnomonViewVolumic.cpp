@@ -65,9 +65,11 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *paren
 {
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    this->font->setProperty("color", QColor("#ffffff"));
+    this->font->setDefaultOption("color", QColor("#ffffff"));
 
     this->setPixmap(this->font->icon(icon).pixmap(32, 32));
+
+    this->setStyleSheet("background: none;");
 }
 
 gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
@@ -176,7 +178,7 @@ QSize gnomonViewVolumicPrivate::sizeHint(void) const
 
 void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
 {
-    this->export_button->move(event->size().width() - 10 - this->export_button->width(), 10);
+    this->export_button->move(event->size().width() - 40, 10);
 }
 
 // ///////////////////////////////////////////////////////////////////
