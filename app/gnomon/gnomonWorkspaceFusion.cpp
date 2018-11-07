@@ -46,7 +46,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : QWidget(parent)
     fusion_layout->addWidget(d->fusion_view_4, 1, 1);
     fusion_layout->addWidget(d->fusion_view_t, 0, 2, -1, -1);
 
-    gnomonOverlayPaneItem *pane_item_inputs = new gnomonOverlayPaneItem(pane);
+    gnomonOverlayPaneItem *pane_item_inputs = new gnomonOverlayPaneItem();
 
     gnomonOverlayPane *pane = new gnomonOverlayPane(this);
     pane->addWidget(pane_item_inputs);
