@@ -6,7 +6,7 @@
 #include "gnomonMultiChannelImage.h"
 #include "gnomonMultiChannelImageReaderCommand.h"
 
-#include <vtkImageData.h>
+#include <dtkImage>
 
 #include <dtkScript>
 
@@ -47,8 +47,9 @@ void gnomonMultiChannelImageReaderCommandTestCase::redo(void)
    QStringList true_list = {"ChS1_EYFP", "Ch1_EBFP", "Ch2_PI", "Ch2_mCherry", "ChS1_EGFP"};
 
    QCOMPARE(image->channelNames(), true_list);
-   //qDebug() << image->channelImage("ChS1_EYFP")->GetNumberOfPoints();
-   //qDebug() << image->channelImage("ChS1_EYFP")->GetNumberOfCells();
+   QCOMPARE(image->channelImage("ChS1_EYFP")->xDim(), 101);
+   QCOMPARE(image->channelImage("ChS1_EYFP")->yDim(), 101);
+   QCOMPARE(image->channelImage("ChS1_EYFP")->zDim(), 20);
 }
 
 void gnomonMultiChannelImageReaderCommandTestCase::undo(void)
