@@ -16,7 +16,7 @@
 
 #include <gnomonStyle>
 
-#include <gnomonAbstractImagesSerieReader.h>
+#include <gnomonImagesSerieReaderCommand.h>
 
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
@@ -67,10 +67,10 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
 
 public:
-    QSlider *slider;
+    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
 
 public:
-    gnomonAbstractImagesSerieReader *image_reader = nullptr;
+    QSlider *slider;
 };
 
 gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
@@ -116,10 +116,9 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    d->image_reader = gnomonCore::imagesSerieReader::pluginFactory().create("gnomonImagesSerieReader");
-    if(!d->image_reader) {
-        qCritical() << Q_FUNC_INFO << "imageSeriesReader Plugin could not be created";
-    }
+    d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+
+    Q_ASSERT(d->image_reader_command);
 
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
@@ -152,8 +151,8 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
 {
-    if (d->image_reader)
-        delete d->image_reader;
+    if (d->image_reader_command)
+        delete d->image_reader_command;
 
     delete d;
 }
@@ -205,9 +204,12 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     // ///////////////////////////////////////////////////////////////
     // Use gnomonCommand<gnomonAbstractImageSeriesReader>
     // ///////////////////////////////////////////////////////////////
-    d->image_reader->setPath(path.remove("file://"));
-    d->image_reader->run();
-    dtkImage *img = d->image_reader->next();
+
+    d->image_reader_command->setPath(path.remove("file://"));
+
+    d->image_reader_command->redo();
+
+    dtkImage *img = d->image_reader_command->next();
     if (!img) {
         qDebug() << Q_FUNC_INFO << "Resulting image is void.";
         event->ignore();
@@ -215,7 +217,11 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     }
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+
+    Q_ASSERT(converter);
+
     converter->setInput(img);
+
     converter->convert();
 
     this->setImage(static_cast<vtkImageData *>(converter->output()));
