@@ -24,6 +24,9 @@ public:
      gnomonWorkspacePreprocess(QWidget *parent = nullptr);
     ~gnomonWorkspacePreprocess(void);
 
+public slots:
+    void apply(void);
+
 private:
     class gnomonWorkspacePreprocessPrivate *d;
 };
