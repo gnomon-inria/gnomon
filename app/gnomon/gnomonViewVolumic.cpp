@@ -233,6 +233,8 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 
 void gnomonViewVolumic::setImage(dtkImage *i)
 {    
+    d->image = i;
+
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(i);
     converter->convert();
@@ -292,23 +294,22 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 
     if(path.startsWith(":")) {
 
-        this->d->image = gnomonImageManager::instance()->get(path.remove(":").toInt());
-        this->setImage(this->d->image);
+        this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
 
     } else {
 
         d->image_reader_command->setPath(path.remove("file://"));
         d->image_reader_command->redo();
 
-        d->image = d->image_reader_command->next();
+        dtkImage *img = d->image_reader_command->next();
 
-        if (!d->image) {
+        if (!img) {
             qDebug() << Q_FUNC_INFO << "Resulting image is void.";
             event->ignore();
             return;
         }
 
-        this->setImage(d->image);
+        this->setImage(img);
     }
 
     // ///////////////////////////////////////////////////////////////
