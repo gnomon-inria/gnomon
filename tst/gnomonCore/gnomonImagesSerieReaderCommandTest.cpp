@@ -27,6 +27,7 @@ gnomonImagesSerieReaderCommandTestCase::~gnomonImagesSerieReaderCommandTestCase(
 
 void gnomonImagesSerieReaderCommandTestCase::initTestCase(void)
 {
+    dtkScriptInterpreterPython::instance()->init();
 }
 
 void gnomonImagesSerieReaderCommandTestCase::init(void)
@@ -85,6 +86,8 @@ void gnomonImagesSerieReaderCommandTestCase::cleanup(void)
 
     delete d->undo_command_czi;
     d->undo_command_czi = nullptr;
+
+    //dtkScriptInterpreterPython::instance()->release();
 }
 
 void gnomonImagesSerieReaderCommandTestCase::cleanupTestCase(void)
