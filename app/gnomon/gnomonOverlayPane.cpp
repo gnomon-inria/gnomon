@@ -14,6 +14,65 @@
 
 #include "gnomonOverlayPane.h"
 
+#include <gnomonFonts>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonOverlayPaneToggle : public QLabel
+{
+    Q_OBJECT
+
+public:
+     gnomonOverlayPaneToggle(QWidget *parent = nullptr);
+    ~gnomonOverlayPaneToggle(void);
+
+signals:
+    void toggle(void);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+private:
+    gnomonFontAwesome *font;
+
+private:
+    bool toggled = true;
+};
+
+gnomonOverlayPaneToggle::gnomonOverlayPaneToggle(QWidget *parent) : QLabel(parent)
+{
+    this->font = new gnomonFontAwesome(this);
+    this->font->initFontAwesome();
+    this->font->setDefaultOption("color", QColor("#ffffff"));
+
+    this->setAlignment(Qt::AlignCenter);
+    this->setPixmap(this->font->icon(fa::chevronright).pixmap(16, 16));
+    this->setFixedWidth(20);
+    this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+}
+
+gnomonOverlayPaneToggle::~gnomonOverlayPaneToggle(void)
+{
+
+}
+
+void gnomonOverlayPaneToggle::mousePressEvent(QMouseEvent *)
+{
+    this->toggled = !this->toggled;
+
+    this->font->setDefaultOption("color", QColor("#ffffff"));
+
+    this->setPixmap(this->font->icon(this->toggled ? fa::chevronright : fa::chevronleft).pixmap(16, 16));
+
+    emit toggle();
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
 class gnomonOverlayPanePrivate
 {
 public:
@@ -24,11 +83,18 @@ public:
     bool deactivate = false;
 
 public:
+    gnomonOverlayPaneToggle *toggle;
+
+public:
     QVBoxLayout *layout;
 
 public:
     QPropertyAnimation *animation;
 };
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonOverlayPane::gnomonOverlayPane(QWidget *parent) : QFrame(parent)
 {
@@ -43,20 +109,26 @@ gnomonOverlayPane::gnomonOverlayPane(QWidget *parent) : QFrame(parent)
     d->layout->setAlignment(Qt::AlignTop);
     d->layout->setContentsMargins(0, 0, 0, 0);
 
+    d->toggle = new gnomonOverlayPaneToggle(this);
+
     QWidget *widget = new QWidget(this);
     widget->setLayout(d->layout);
 
     QScrollArea *scroll = new QScrollArea(this);
+    scroll->setAlignment(Qt::AlignTop);
     scroll->setWidgetResizable(true);
     scroll->setWidget(widget);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setAlignment(Qt::AlignTop);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(d->toggle);
     layout->addWidget(scroll);
 
     this->setAttribute(Qt::WA_NoSystemBackground);
     this->setAttribute(Qt::WA_TranslucentBackground);
+
+    connect(d->toggle, SIGNAL(toggle()), this, SLOT(toggle()));
 }
 
 gnomonOverlayPane::~gnomonOverlayPane(void)
@@ -83,8 +155,8 @@ void gnomonOverlayPane::toggle(void)
     if (d->deactivate)
         return;
 
-    qlonglong stt = d->on ? 300 :   0;
-    qlonglong end = d->on ?   0 : 300;
+    qlonglong stt = d->on ? 320 :  30;
+    qlonglong end = d->on ?  30 : 320;
 
     if (d->animation->state() == QAbstractAnimation::Running) {
         d->animation->stop();
@@ -149,7 +221,13 @@ void gnomonOverlayPane::clear(void)
     }
 }
 
+// ///////////////////////////////////////////////////////////////////
+
 QColor gnomonOverlayPane::color = QColor("#242525");
+
+// ///////////////////////////////////////////////////////////////////
+
+#include "gnomonOverlayPane.moc"
 
 //
 // gnomonOverlayPane.cpp ends here
