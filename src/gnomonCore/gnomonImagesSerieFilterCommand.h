@@ -14,6 +14,7 @@ public:
 
 public:
     void setImage(dtkImage *image);
+    double time(void);
     dtkImage *at(double t);
     dtkImage *next(void);
 

@@ -45,6 +45,11 @@ void gnomonImagesSerieReaderCommand::setPath(const QString& path)
     d->path = path;
 }
 
+double gnomonImagesSerieReaderCommand::time(void)
+{
+    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->time();
+}
+
 dtkImage *gnomonImagesSerieReaderCommand::at(double t, const QString& channel)
 {
     return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->at(t, channel);

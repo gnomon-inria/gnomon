@@ -37,6 +37,10 @@ public slots:
 
 public slots:
     void onSliceChanged(int);
+    void onChannelChanged(const QString&);
+
+signals:
+    void channelsChanged(QStringList);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
