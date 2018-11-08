@@ -90,8 +90,6 @@ gnomonGridLayout::gnomonGridLayout(QWidget *parent) : QGridLayout(parent)
 
 gnomonGridLayout::~gnomonGridLayout(void)
 {
-    qDeleteAll(d->views);
-
     delete d->button;
     delete d;
 }
@@ -124,14 +122,8 @@ void gnomonGridLayout::update(void)
     int j;
 
     for(i = 0; c < C && i < n; i++)
-        for(j = 0; c < C && j < n; j++) {
-            qDebug() << Q_FUNC_INFO << "addWidget(" << c << "," << i << "," << j << ")";
+        for(j = 0; c < C && j < n; j++)
             this->addWidget(d->views.at(c++), i, j);
-        }
-
-    qDebug() << Q_FUNC_INFO << "n =" << n;
-    qDebug() << Q_FUNC_INFO << "c =" << c << "C =" << C;
-    qDebug() << Q_FUNC_INFO << "i =" << i << "j =" << j;
 
     i--;
 

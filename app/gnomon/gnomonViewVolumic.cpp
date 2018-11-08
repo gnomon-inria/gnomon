@@ -14,11 +14,18 @@
 
 #include "gnomonImageManager.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonToolBar.h"
+#include "gnomonWorkspaceBrowser.h"
+#include "gnomonWorkspaceFusion.h"
+#include "gnomonWorkspaceSegmentation.h"
+#include "gnomonWorkspacePreprocess.h"
+
+#include <gnomonCore/gnomonImagesSerieReaderCommand.h>
 
 #include <gnomonStyle>
 #include <gnomonFonts>
 
-#include <gnomonImagesSerieReaderCommand.h>
+#include <dtkImagingCore>
 
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
@@ -27,6 +34,8 @@
 #include <vtkImageViewer2.h>
 #include <vtkImageMapToColors.h>
 #include <vtkImageMapToWindowLevelColors.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkInteractorStyleImage.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -35,13 +44,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkVolume.h>
-#include <QVTKOpenGLWidget.h>
-
 #include <QVTKInteractor.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkInteractorStyleImage.h>
-
-#include <dtkImagingCore>
+#include <QVTKOpenGLWidget.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewVolumicOverlay
@@ -53,9 +57,12 @@ class gnomonViewVolumicOverlay : public QLabel
 
 public:
      gnomonViewVolumicOverlay(fa::icon, QWidget *parent = nullptr);
+     gnomonViewVolumicOverlay(const QString& path, QWidget *parent = nullptr);
     ~gnomonViewVolumicOverlay(void);
 
     void changeColor(const QColor&);
+    void changePath(const QString&);
+
     QColor defaultColor(void);
 
 signals:
@@ -85,6 +92,13 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *paren
     this->setStyleSheet("background: none;");
 }
 
+gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path, QWidget *parent) : QLabel(parent)
+{
+    this->setPixmap(QPixmap(path));
+
+    this->setStyleSheet("background: none;");
+}
+
 gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
 {
 
@@ -103,6 +117,11 @@ void gnomonViewVolumicOverlay::changeColor(const QColor& color)
     this->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
 }
 
+void gnomonViewVolumicOverlay::changePath(const QString& path)
+{
+    this->setPixmap(QPixmap(path));
+}
+
 QColor gnomonViewVolumicOverlay::defaultColor(void)
 {
     return this->default_color;
@@ -115,6 +134,13 @@ QColor gnomonViewVolumicOverlay::defaultColor(void)
 class gnomonViewVolumicPrivate : public QVTKOpenGLWidget
 {
     Q_OBJECT
+
+public:
+    enum Orientation {
+        SLICE_ORIENTATION_XY = 2,
+        SLICE_ORIENTATION_XZ = 1,
+        SLICE_ORIENTATION_YZ = 0
+    };
 
 public:
      gnomonViewVolumicPrivate(QWidget *parent = Q_NULLPTR);
@@ -132,6 +158,12 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *);
+
+public:
+    Orientation orientation(void);
+
+public:
+    void setSliceOrientation(Orientation orientation);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -154,6 +186,9 @@ public:
     gnomonViewVolumicOverlay *export_button = nullptr;
     gnomonViewVolumicOverlay *renderer2D_button = nullptr;
     gnomonViewVolumicOverlay *renderer3D_button = nullptr;
+    gnomonViewVolumicOverlay *renderer2D_XY = nullptr;
+    gnomonViewVolumicOverlay *renderer2D_XZ = nullptr;
+    gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
 
 public:
     dtkImage *image = nullptr;
@@ -183,55 +218,88 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->renderer2D_button = new gnomonViewVolumicOverlay(fa::square, this);
     this->renderer3D_button = new gnomonViewVolumicOverlay(fa::cube, this);
     this->renderer3D_button->changeColor(Qt::gray);
+    this->renderer2D_XY = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XY.png", this);
+    this->renderer2D_XZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XZ-off.png", this);
+    this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ-off.png", this);
 
     connect(this->export_button, SIGNAL(clicked()), this, SLOT(exportToManager()));
 
     connect(this->renderer2D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
-            this->renderer2D_button->setEnabled(false);
-            this->renderer2D_button->changeColor(Qt::white);
-            this->renderer3D_button->setEnabled(true);
-            this->renderer3D_button->changeColor(Qt::gray);
 
-            this->renderer3D->DrawOff();
-            this->renderer3D->InteractiveOff();
+        this->renderer2D_button->setEnabled(false);
+        this->renderer2D_button->changeColor(Qt::white);
+        this->renderer3D_button->setEnabled(true);
+        this->renderer3D_button->changeColor(Qt::gray);
 
-            vtkSmartPointer<QVTKInteractor> interactor = vtkSmartPointer<QVTKInteractor>::New();
-            interactor->SetRenderWindow(this->RenderWindow);
+        this->renderer2D_XY->setVisible(true);
+        this->renderer2D_XZ->setVisible(true);
+        this->renderer2D_YZ->setVisible(true);
 
-            vtkSmartPointer<vtkInteractorStyleImage> style = vtkSmartPointer<vtkInteractorStyleImage>::New();
-            interactor->SetInteractorStyle(style);
+        this->renderer3D->DrawOff();
+        this->renderer3D->InteractiveOff();
 
-            this->renderer2D->InteractiveOn();
-            this->renderer2D->DrawOn();
+        vtkSmartPointer<QVTKInteractor> interactor = vtkSmartPointer<QVTKInteractor>::New();
+        interactor->SetRenderWindow(this->RenderWindow);
 
-            this->slider->setValue(this->slider->value());
+        vtkSmartPointer<vtkInteractorStyleImage> style = vtkSmartPointer<vtkInteractorStyleImage>::New();
+        interactor->SetInteractorStyle(style);
 
-            this->slider->setValue(this->slider->value() + 1);
-            this->slider->setValue(this->slider->value() - 1);
+        this->renderer2D->InteractiveOn();
+        this->renderer2D->DrawOn();
+
+        this->slider->setValue(this->slider->value());
+
+        this->slider->setValue(this->slider->value() + 1);
+        this->slider->setValue(this->slider->value() - 1);
     });
 
     connect(this->renderer3D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
-            this->renderer2D_button->setEnabled(true);
-            this->renderer2D_button->changeColor(Qt::gray);
-            this->renderer3D_button->setEnabled(false);
-            this->renderer3D_button->changeColor(Qt::white);
 
-            this->renderer2D->DrawOff();
-            this->renderer2D->InteractiveOff();
+        this->renderer2D_button->setEnabled(true);
+        this->renderer2D_button->changeColor(Qt::gray);
+        this->renderer3D_button->setEnabled(false);
+        this->renderer3D_button->changeColor(Qt::white);
 
-            vtkSmartPointer<QVTKInteractor> interactor = vtkSmartPointer<QVTKInteractor>::New();
-            interactor->SetRenderWindow(this->RenderWindow);
+        this->renderer2D_XY->setVisible(false);
+        this->renderer2D_XZ->setVisible(false);
+        this->renderer2D_YZ->setVisible(false);
 
-            vtkSmartPointer<vtkInteractorStyleTrackballCamera> style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-            interactor->SetInteractorStyle(style);
+        this->renderer2D->DrawOff();
+        this->renderer2D->InteractiveOff();
 
-            this->renderer3D->InteractiveOn();
-            this->renderer3D->DrawOn();
+        vtkSmartPointer<QVTKInteractor> interactor = vtkSmartPointer<QVTKInteractor>::New();
+        interactor->SetRenderWindow(this->RenderWindow);
 
-            this->slider->setValue(this->slider->value() + 1);
-            this->slider->setValue(this->slider->value() - 1);
-        });
+        vtkSmartPointer<vtkInteractorStyleTrackballCamera> style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+        interactor->SetInteractorStyle(style);
 
+        this->renderer3D->InteractiveOn();
+        this->renderer3D->DrawOn();
+
+        this->slider->setValue(this->slider->value() + 1);
+        this->slider->setValue(this->slider->value() - 1);
+    });
+
+    connect(this->renderer2D_XY, &gnomonViewVolumicOverlay::clicked, [this] () {
+
+        this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY.png");
+        this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
+        this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
+    });
+
+    connect(this->renderer2D_XZ, &gnomonViewVolumicOverlay::clicked, [this] () {
+
+        this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
+        this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ.png");
+        this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
+    });
+
+    connect(this->renderer2D_YZ, &gnomonViewVolumicOverlay::clicked, [this] () {
+
+        this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
+        this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
+        this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ.png");
+    });
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
@@ -254,7 +322,23 @@ void gnomonViewVolumicPrivate::exportToManager(void)
     if(!this->image)
         return;
 
-    gnomonImageManager::instance()->addImage(this->image);
+    QWidget *parent = this->parentWidget();
+
+    while(!dynamic_cast< QStackedWidget *>(parent))
+        parent = parent->parentWidget();
+
+    QStackedWidget *stack = dynamic_cast< QStackedWidget * >(parent);
+
+    if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::browser_color);
+    else if(gnomonWorkspaceFusion* workspace = dynamic_cast<gnomonWorkspaceFusion *>(stack->currentWidget()))
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::fusion_color);
+    else if(gnomonWorkspaceSegmentation* workspace = dynamic_cast<gnomonWorkspaceSegmentation *>(stack->currentWidget()))
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::segmentation_color);
+    else if(gnomonWorkspacePreprocess* workspace = dynamic_cast<gnomonWorkspacePreprocess *>(stack->currentWidget()))
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::preprocess_color);
+    else
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::registration_color);
 }
 
 QSize gnomonViewVolumicPrivate::sizeHint(void) const
@@ -267,6 +351,40 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->export_button->move(event->size().width() - 40, 10);
     this->renderer2D_button->move(10, 10);
     this->renderer3D_button->move(50, 10);
+    this->renderer2D_XY->move(10,  50);
+    this->renderer2D_XZ->move(10,  90);
+    this->renderer2D_YZ->move(10, 130);
+}
+
+gnomonViewVolumicPrivate::Orientation gnomonViewVolumicPrivate::orientation(void)
+{
+    switch(this->viewer->GetSliceOrientation()) {
+    case 2:
+        return SLICE_ORIENTATION_XY;
+    case 1:
+        return SLICE_ORIENTATION_XZ;
+    case 0:
+        return SLICE_ORIENTATION_YZ;
+    default:
+        return SLICE_ORIENTATION_XY;
+    }
+}
+
+void gnomonViewVolumicPrivate::setSliceOrientation(Orientation orientation)
+{
+    switch(orientation) {
+    case SLICE_ORIENTATION_YZ:
+        this->viewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_YZ);
+        break;
+    case SLICE_ORIENTATION_XZ:
+        this->viewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_XZ);
+        break;
+    case SLICE_ORIENTATION_XY:
+        this->viewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_XY);
+        break;
+    default:
+        break;
+    };
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -285,6 +403,16 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->slider->setMaximum(1);
     d->slider->setValue(0);
 
+    vtkImageData *dummy = vtkImageData::New();
+    dummy->SetDimensions(1, 1, 1);
+    dummy->SetSpacing(1, 1, 1);
+#if VTK_MAJOR_VERSION <= 5
+    dummy->SetNumberOfScalarComponents(1);
+    dummy->SetScalarTypeToUnsignedChar();
+#else
+    dummy->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+#endif
+
     d->viewer = vtkSmartPointer<vtkResliceImageViewer>::New();
     d->viewer->SetSliceOrientationToXY();
     d->viewer->SetRenderWindow(d->window);
@@ -292,6 +420,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->viewer->SetupInteractor(d->GetInteractor());
     d->viewer->SetResliceModeToAxisAligned();
     d->viewer->GetWindowLevel()->SetOutputFormatToRGB();
+    d->viewer->SetInputData(dummy);
 
     connect(d->slider, &QSlider::valueChanged, [=] (int value) {
         d->viewer->SetSlice(value);

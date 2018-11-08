@@ -68,7 +68,7 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QFrame(par
     d->edgeOpacityEditor = new gnomonDoubleEditor(this);
     d->edgeOpacityEditor->setName("Edge Opacity");
     d->edgeOpacityEditor->setRange(0,1);
-    d->edgeOpacityEditor->setValue(0.5);
+    d->edgeOpacityEditor->setValue(0.25);
 
     d->edgeLinewidthEditor = new gnomonDoubleEditor(this);
     d->edgeLinewidthEditor->setName("Edge Linewidth");

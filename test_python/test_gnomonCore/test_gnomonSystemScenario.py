@@ -13,6 +13,17 @@
 # Code:
 
 import unittest
+import sys
+from PyQt5.QtCore import QSettings
+
+settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
+settings.beginGroup("modules");
+paths = settings.value("path")
+settings.endGroup()
+
+for path in paths.split(":"):
+    sys.path.append(path)
+    
 from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
 from gnomoncore import gnomonSphereForm, gnomonWallForm
 
@@ -26,9 +37,9 @@ class sphereExpansionScenario(gnomonAbstractSystemScenario):
         self.wall = wall
         self.wall_pos0 = vec3_t([2., 0., 0.])
         self.wall_pos1 = vec3_t([4., 0., 0.])
+        self.time_1 = 10
         self.growth_rate = 1.
         self.growth_rate_decay = 0.99
-        self.time_1 = 10
 
     def step(self, time, dt):
         if(time < self.time_1):

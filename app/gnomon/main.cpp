@@ -22,6 +22,8 @@
 
 #include "gnomonMainWindow.h"
 
+#include <dtkScript>
+
 #include <dtkImagingCore>
 
 int main(int argc, char **argv)
@@ -31,21 +33,26 @@ int main(int argc, char **argv)
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
     QApplication application(argc, argv);
-    application.setApplicationName("gnomon Growth Simulator");
+    application.setApplicationName("gnomon");
     application.setOrganizationName("inria");
     application.setOrganizationDomain("fr");
     application.setApplicationVersion("0.1.0");
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
     dtkImaging::initialize();
+    dtkScriptInterpreterPython::instance()->init();
 
     gnomonMainWindow *window = new gnomonMainWindow;
+    window->setWindowTitle("gnomon");
     window->show();
     window->raise();
 
     int status = application.exec();
 
     delete window;
+
+    dtkImaging::uninitialize();
+    dtkScriptInterpreterPython::instance()->release();
 
     return status;
 }

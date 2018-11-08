@@ -50,13 +50,19 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspaceRegistration.cpp)
 
+set(${PROJECT_NAME}_SOURCES_QRC
+  gnomon.qrc)
+
 ## #################################################################
 ## Build rules
 ## #################################################################
 
+qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
+
 add_library(${PROJECT_NAME}_backend SHARED
   ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES})
+  ${${PROJECT_NAME}_SOURCES}
+  ${${PROJECT_NAME}_SOURCES_RCC})
 
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
