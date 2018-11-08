@@ -71,7 +71,7 @@ void gnomonWorkspacePreprocess::apply(void)
 
     Q_ASSERT(image_filter_command);
 
-    image_filter_command->setImage(d->source->image());
+    image_filter_command->setImage(d->source->image().data());
     image_filter_command->redo();
     dtkImage *img = image_filter_command->next();
 
@@ -80,7 +80,7 @@ void gnomonWorkspacePreprocess::apply(void)
         return;
     }
 
-    d->target->setImage(img);
+    d->target->setImage(dtkImagePtr(new dtkImage(*img)));
 }
 
 //

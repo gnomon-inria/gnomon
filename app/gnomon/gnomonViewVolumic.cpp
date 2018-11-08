@@ -278,7 +278,7 @@ public:
     gnomonViewVolumicOverlay *picker = nullptr;
 
 public:
-    dtkImage *image = nullptr;
+    dtkImagePtr image;
 
 public:
     QSlider *slider;
@@ -705,7 +705,7 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
     delete d;
 }
 
-void gnomonViewVolumic::setImage(dtkImage *i)
+void gnomonViewVolumic::setImage(dtkImagePtr i)
 {
     d->points->Reset();
 
@@ -720,7 +720,7 @@ void gnomonViewVolumic::setImage(dtkImage *i)
     // 2D
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(i);
+    converter->setInput(i.data());
     converter->convert();
 
     vtkImageData *image = static_cast<vtkImageData *>(converter->output());
@@ -824,7 +824,7 @@ void gnomonViewVolumic::setImage(dtkImage *i)
     this->render();
 }
 
-dtkImage *gnomonViewVolumic::image(void)
+dtkImagePtr gnomonViewVolumic::image(void)
 {
     return d->image;
 }
@@ -851,7 +851,7 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel)
         qWarning() << Q_FUNC_INFO << "Resulting image is void.";
         return;
     }
-    this->setImage(img);
+    this->setImage(dtkImagePtr(new dtkImage(*img)));
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)
@@ -880,6 +880,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 
     if(path.startsWith(":")) {
         this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
+
     } else {
         gnomonImagesSerieReaderCommand *command = nullptr;
 
@@ -898,7 +899,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         if(command) {
             command->setPath(path.remove("file://"));
             command->redo();
-            dtkImage *img = command->next();
+            dtkImagePtr img = dtkImagePtr(new dtkImage(*command->next()));
 
             if (!img) {
                 qWarning() << Q_FUNC_INFO << "Resulting image is void.";

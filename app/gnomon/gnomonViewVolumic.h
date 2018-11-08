@@ -17,6 +17,7 @@
 #include <QtWidgets>
 
 class dtkImage;
+using dtkImagePtr = QSharedPointer<dtkImage>;
 
 class gnomonViewVolumic : public QFrame
 {
@@ -27,10 +28,10 @@ public:
     ~gnomonViewVolumic(void);
 
 public:
-    void setImage(dtkImage *);
+    void setImage(dtkImagePtr);
 
 public:
-    dtkImage *image(void);
+    dtkImagePtr image(void);
 
 public slots:
     void render(void);

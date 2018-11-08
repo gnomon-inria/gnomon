@@ -115,7 +115,7 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 
 void gnomonWorkspaceSegmentation::apply(void)
 {
-    dtkImage *source = d->source->image();
+    dtkImagePtr source = d->source->image();
 
     qDebug() << Q_FUNC_INFO;
 }

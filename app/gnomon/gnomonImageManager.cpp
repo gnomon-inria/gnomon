@@ -143,10 +143,10 @@ public:
     ~gnomonImageManagerPrivate(void);
 
 public:
-    gnomonImageManagerItem *create(gnomonImageManager::Image, const QColor&);
+    gnomonImageManagerItem *create(dtkImagePtr, const QColor&);
 
 public:
-    QHash<gnomonImageManagerItem *, gnomonImageManager::Image> images;
+    QHash<gnomonImageManagerItem *, dtkImagePtr> images;
 
 public:
     QWidget *contents;
@@ -169,13 +169,13 @@ gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 
 }
 
-gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image, const QColor& color)
+gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, const QColor& color)
 {
     if(!image)
         return nullptr;
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(image);
+    converter->setInput(image.data());
     converter->convert();
 
     vtkImageData *o = static_cast<vtkImageData *>(converter->output());
@@ -227,7 +227,7 @@ QSize gnomonImageManager::sizeHint(void) const
     return QSize(200, 140);
 }
 
-void gnomonImageManager::addImage(gnomonImageManager::Image image, const QColor& color)
+void gnomonImageManager::addImage(dtkImagePtr image, const QColor& color)
 {
     gnomonImageManagerItem *item = d->create(image, color);
 
@@ -237,9 +237,9 @@ void gnomonImageManager::addImage(gnomonImageManager::Image image, const QColor&
     item->id = d->images.values().indexOf(image);
 }
 
-gnomonImageManager::Image gnomonImageManager::get(int index)
+dtkImagePtr gnomonImageManager::get(int index)
 {
-    return d->images.values().at(index);
+    return (d->images.values().at(index));
 }
 
 QPixmap gnomonImageManager::thumbnail(int index)
