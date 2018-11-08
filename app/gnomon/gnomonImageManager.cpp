@@ -149,8 +149,13 @@ public:
     QHash<gnomonImageManagerItem *, dtkImagePtr> images;
 
 public:
+    static int item_counter;
+
+public:
     QWidget *contents;
 };
+
+int gnomonImageManagerPrivate::item_counter = 0;
 
 gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollArea(parent)
 {
@@ -230,21 +235,30 @@ QSize gnomonImageManager::sizeHint(void) const
 void gnomonImageManager::addImage(dtkImagePtr image, const QColor& color)
 {
     gnomonImageManagerItem *item = d->create(image, color);
+    item->id = d->item_counter++;
 
     d->images.insert(item, image);
     d->contents->layout()->addWidget(item);
-
-    item->id = d->images.values().indexOf(image);
 }
 
 dtkImagePtr gnomonImageManager::get(int index)
 {
-    return (d->images.values().at(index));
+    for (auto it = d->images.begin(); it != d->images.end(); ++it) {
+        if (index == it.key()->id) {
+            return *it;
+        }
+    }
+    return dtkImagePtr();
 }
 
 QPixmap gnomonImageManager::thumbnail(int index)
 {
-    return *(d->images.keys().at(index)->pixmap());
+    for (auto it = d->images.begin(); it != d->images.end(); ++it) {
+        if (index == it.key()->id) {
+            return *(it.key()->pixmap());
+        }
+    }
+    return QPixmap();
 }
 
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
