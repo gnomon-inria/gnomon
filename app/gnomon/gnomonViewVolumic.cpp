@@ -29,6 +29,7 @@
 
 #include <vtkActor.h>
 #include <vtkContourFilter.h>
+#include <vtkDataArray.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageData.h>
 #include <vtkImagePlaneWidget.h>
@@ -37,6 +38,8 @@
 #include <vtkImageMapToWindowLevelColors.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkPointData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -46,6 +49,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkVolume.h>
+#include <vtkVolumeProperty.h>
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
 
@@ -654,8 +658,22 @@ void gnomonViewVolumic::setImage(dtkImage *i)
     if(!d->volume)
         d->volume = vtkSmartPointer<vtkVolume>::New();
 
+    double bounds[2];
+
+    image->GetPointData()->GetScalars()->GetRange(bounds);
+
+    vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    opacity->AddPoint(   bounds[0],                0.00);
+    opacity->AddPoint(1*(bounds[1]-bounds[0])/2/4, 0.00);
+    opacity->AddPoint(   bounds[1],                1.00);
+
+    vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
+    property->SetScalarOpacity(opacity);
+    property->ShadeOff();
+    property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+
     d->volume->SetMapper(d->volume_mapper);
-    // d->volume->SetProperty(d->volume_property);
+    d->volume->SetProperty(property);
     d->volume->Modified();
     d->volume->Update();
 
