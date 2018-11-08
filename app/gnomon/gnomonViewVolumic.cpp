@@ -308,6 +308,16 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->slider->setMaximum(1);
     d->slider->setValue(0);
 
+    vtkImageData *dummy = vtkImageData::New();
+    dummy->SetDimensions(1, 1, 1);
+    dummy->SetSpacing(1, 1, 1);
+#if VTK_MAJOR_VERSION <= 5
+    dummy->SetNumberOfScalarComponents(1);
+    dummy->SetScalarTypeToUnsignedChar();
+#else
+    dummy->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+#endif
+
     d->viewer = vtkSmartPointer<vtkResliceImageViewer>::New();
     d->viewer->SetSliceOrientationToXY();
     d->viewer->SetRenderWindow(d->window);
@@ -315,6 +325,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->viewer->SetupInteractor(d->GetInteractor());
     d->viewer->SetResliceModeToAxisAligned();
     d->viewer->GetWindowLevel()->SetOutputFormatToRGB();
+    d->viewer->SetInputData(dummy);
 
     connect(d->slider, &QSlider::valueChanged, [=] (int value) {
         d->viewer->SetSlice(value);

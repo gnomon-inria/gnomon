@@ -319,4 +319,9 @@ gnomonToolBar
     border-top: 1px solid #333333;
 }
 
+gnomonFinder
+{
+    border-top: 1px solid #333333;
+}
+
 /* gnomonStyle.qss.in ends here */

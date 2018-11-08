@@ -88,6 +88,7 @@ gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QFrame(parent), d(ne
     viewButtonGroup->addButton(d->treeViewButton);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(10, 0, 10, 0);
     layout->addWidget(d->prevButton);
     layout->addWidget(d->nextButton);
     layout->addWidget(d->treeViewButton);
@@ -102,7 +103,7 @@ gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QFrame(parent), d(ne
 
     connect(d->showHiddenFilesButton, SIGNAL(toggled(bool)), this, SIGNAL(showHiddenFiles(bool)));
 
-    this->setFixedHeight(56);
+    this->setFixedHeight(36);
 }
 
 gnomonFinderToolBar::~gnomonFinderToolBar(void)
@@ -1052,7 +1053,7 @@ public:
     QStackedWidget *stack;
 };
 
-gnomonFinder::gnomonFinder(QWidget *parent) : QWidget(parent), d(new gnomonFinderPrivate)
+gnomonFinder::gnomonFinder(QWidget *parent) : QFrame(parent), d(new gnomonFinderPrivate)
 {
     d->model = new QFileSystemModel(this);
     d->model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
