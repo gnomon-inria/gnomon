@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonDropSite.h"
+#include "gnomonImageManager.h"
 
 class gnomonDropSitePrivate
 {
@@ -32,6 +33,7 @@ gnomonDropSite::gnomonDropSite(QWidget *parent) : QFrame(parent)
     layout->setAlignment(Qt::AlignCenter);
     layout->addWidget(d->label);
 
+    this->setAcceptDrops(true);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
@@ -52,6 +54,8 @@ int gnomonDropSite::index(void)
 
 void gnomonDropSite::dragEnterEvent(QDragEnterEvent *event)
 {
+    qDebug() << Q_FUNC_INFO;
+
     if (event->mimeData()->hasText()) {
         event->accept();
         return;
@@ -74,12 +78,16 @@ void gnomonDropSite::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
+    qDebug() << Q_FUNC_INFO << path;
+
     if(!path.startsWith(":"))
         return;
 
     d->index = path.remove(":").toInt();
 
-    d->label->setPixmap(*dynamic_cast<QLabel *>(event->source())->pixmap());
+    d->label->setPixmap(gnomonImageManager::instance()->thumbnail(d->index));
+
+    qDebug() << Q_FUNC_INFO << "done";
 }
 
 //

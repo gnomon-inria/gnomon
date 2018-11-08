@@ -25,6 +25,18 @@ public:
 signals:
     void indexChanged(int);
 
+signals:
+    void createFusion(void);
+    void createSegmentation(void);
+    void createPreprocess(void);
+    void createRegistration(void);
+
+public slots:
+    void onCreateFusion(void);
+    void onCreateSegmentation(void);
+    void onCreatePreprocess(void);
+    void onCreateRegistration(void);
+
 public:
     QSize sizeHint(void) const;
 

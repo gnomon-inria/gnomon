@@ -160,6 +160,11 @@ gnomonImageManager::Image gnomonImageManager::get(int index)
     return d->images.values().at(index);
 }
 
+QPixmap gnomonImageManager::thumbnail(int index)
+{
+    return *(d->images.keys().at(index)->pixmap());
+}
+
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonImageManagerPrivate;
