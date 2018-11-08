@@ -90,8 +90,6 @@ gnomonGridLayout::gnomonGridLayout(QWidget *parent) : QGridLayout(parent)
 
 gnomonGridLayout::~gnomonGridLayout(void)
 {
-    qDeleteAll(d->views);
-
     delete d->button;
     delete d;
 }

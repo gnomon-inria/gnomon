@@ -24,6 +24,10 @@ public:
      gnomonWorkspaceBrowser(QWidget *parent = nullptr);
     ~gnomonWorkspaceBrowser(void);
 
+public slots:
+    void replaceChannels(QStringList);
+    void replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item);
+
 private:
     class gnomonWorkspaceBrowserPrivate *d;
 };

@@ -22,6 +22,8 @@
 
 #include "gnomonMainWindow.h"
 
+#include <dtkScript>
+
 #include <dtkImagingCore>
 
 int main(int argc, char **argv)
@@ -38,6 +40,7 @@ int main(int argc, char **argv)
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
     dtkImaging::initialize();
+    dtkScriptInterpreterPython::instance()->init();
 
     gnomonMainWindow *window = new gnomonMainWindow;
     window->setWindowTitle("gnomon");
@@ -47,6 +50,9 @@ int main(int argc, char **argv)
     int status = application.exec();
 
     delete window;
+
+    dtkImaging::uninitialize();
+    dtkScriptInterpreterPython::instance()->release();
 
     return status;
 }

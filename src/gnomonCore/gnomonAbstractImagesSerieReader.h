@@ -36,6 +36,7 @@ public:
     virtual void run(void) = 0;
 
 public:
+    virtual double time(void) = 0;
     virtual dtkImage *at(double t, const QString& channel = "") = 0;
     virtual dtkImage *next(void) = 0;
     virtual QStringList channels(void) = 0;
