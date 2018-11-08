@@ -43,6 +43,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractImagesSerieReader.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
+  gnomonAbstractMeshData
+  gnomonAbstractMeshData.h
   gnomonAbstractModel
   gnomonAbstractModel.h
   gnomonAbstractTissueGrowthModel
@@ -72,6 +74,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImagesSerieReaderCommand.h
   gnomonIntensityImage
   gnomonIntensityImage.h
+  gnomonMesh
+  gnomonMesh.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTypeDef
@@ -91,6 +95,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
+  gnomonAbstractMeshData.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractModel.cpp
