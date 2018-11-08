@@ -40,6 +40,13 @@ public slots:
 public:
     QSize sizeHint(void) const;
 
+public:
+    static QColor browser_color;
+    static QColor fusion_color;
+    static QColor segmentation_color;
+    static QColor preprocess_color;
+    static QColor registration_color;
+
 private:
     class gnomonToolBarPrivate *d;
 };

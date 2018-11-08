@@ -176,6 +176,7 @@ void gnomonActorMeshCellGraph::update(void)
 
     QList<long> edges = dd->cellgraph->edgeIds();
 
+    vtkSmartPointer<vtkDoubleArray> polydataCellData = vtkSmartPointer<vtkDoubleArray>::New();
     for (const auto& edgeId : edges) {
         QList<long> edgeVertices = dd->cellgraph->edgeVertexIds(edgeId);
         bool edgeDisplay = true;
@@ -184,6 +185,7 @@ void gnomonActorMeshCellGraph::update(void)
         }
         if (edgeDisplay) {
             long vtkId = polydataLines->InsertNextCell(edgeVertices.size());
+            polydataCellData->InsertValue(vtkId,0);
             for (const auto& v : edgeVertices) {
                 polydataLines->InsertCellPoint(vertexPoint[v]);
             }
@@ -195,12 +197,24 @@ void gnomonActorMeshCellGraph::update(void)
     }
     d->mesh->SetPoints(polydataPoints);
     d->mesh->SetLines(polydataLines);
+    d->mesh->GetCellData()->SetScalars(polydataCellData);
     d->mesh->Modified();
 
     if (!d->mapper) {
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        // d->mapper->SetScalarRange(0, 1);
         d->mapper->SetInputData(d->mesh);
     }
+
+    vtkSmartPointer<vtkColorTransferFunction> colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+    colorFunction->SetColorSpaceToRGB();
+    colorFunction->RemoveAllPoints();
+    colorFunction->AddRGBPoint(0, 0, 0, 0);
+    colorFunction->AddRGBPoint(1, 0, 0, 0);
+    colorFunction->ClampingOn();
+    colorFunction->Modified();
+    d->mapper->SetLookupTable(colorFunction);
+    d->mapper->Update();
 
     if(!d->actor) {
         d->actor = vtkSmartPointer<vtkActor>::New();
@@ -363,7 +377,7 @@ gnomonActorMeshCellGraph::gnomonActorMeshCellGraph(void) : gnomonActorMesh(), dd
     dd->vertexPropertyRange = QList<double>();
 
     dd->vertexSize = 1.0;
-    dd->edgeOpacity = 0.5;
+    dd->edgeOpacity = 0.25;
     dd->edgeLinewidth = 2.0;
 
     dd->slice["x"] = QList<double>();
