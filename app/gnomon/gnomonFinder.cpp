@@ -121,11 +121,12 @@ QSize gnomonFinderToolBar::sizeHint(void) const
 void gnomonFinderToolBar::setPath(const QString &path)
 {
     if(d->pathList.count()) {
-        if(d->iterator!=d->pathList.end())
+        if(d->iterator != d->pathList.end())
             d->pathList.erase(d->pathList.begin(), d->iterator);
     }
 
     d->pathList.prepend(path);
+
     d->iterator = d->pathList.begin();
 
     if(d->pathList.count()>1)
@@ -138,26 +139,26 @@ void gnomonFinderToolBar::setPath(const QString &path)
 
 void gnomonFinderToolBar::onNext(void)
 {
-    if(d->iterator!=d->pathList.begin()) {
-        emit( changed(*(--d->iterator)) );
+    if(d->iterator != d->pathList.begin()) {
+        emit(changed(*(--d->iterator)));
         d->prevButton->setEnabled(1);
-        if(d->iterator==d->pathList.begin())
+        if (d->iterator == d->pathList.begin())
             d->nextButton->setEnabled(0);
-    }
-    else
+    } else {
         d->nextButton->setEnabled(0);
+    }
 }
 
 void gnomonFinderToolBar::onPrev(void)
 {
     if(d->iterator!=--d->pathList.end()) {
-        emit( changed(*(++d->iterator)) );
+        emit(changed(*(++d->iterator)));
         d->nextButton->setEnabled(1);
-        if(d->iterator==(--d->pathList.end()))
+        if (d->iterator == (--d->pathList.end()))
             d->prevButton->setEnabled(0);
-    }
-    else
+    } else {
         d->prevButton->setEnabled(0);
+    }
 }
 
 void gnomonFinderToolBar::onTreeView(void)
@@ -1039,22 +1040,55 @@ void gnomonFinderTreeView::resizeEvent(QResizeEvent *event)
 class gnomonFinderPrivate
 {
 public:
+    void setup(void);
+    void setdw(void);
+
+public:
     QFileSystemModel *model;
+
+public:
     bool isAllowedMultipleSelection;
     bool hiddenFilesShown;
 
-    QAction * iconviewAction;
-    QAction * listviewAction;
-    QAction * showHideAction;
+public:
+    QAction *iconviewAction;
+    QAction *listviewAction;
+    QAction *showHideAction;
 
+public:
     gnomonFinderListView *list;
     gnomonFinderTreeView *tree;
 
+public:
     QStackedWidget *stack;
+
+public:
+    QString path;
+
+public:
+    gnomonFinder *q = nullptr;
 };
+
+void gnomonFinderPrivate::setup(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    q->setPath(settings.value("path").toString());
+}
+
+void gnomonFinderPrivate::setdw(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    settings.setValue("path", this->path);
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonFinder::gnomonFinder(QWidget *parent) : QFrame(parent), d(new gnomonFinderPrivate)
 {
+    d->q = this;
+
     d->model = new QFileSystemModel(this);
     d->model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     d->hiddenFilesShown = false;
@@ -1137,10 +1171,14 @@ gnomonFinder::gnomonFinder(QWidget *parent) : QFrame(parent), d(new gnomonFinder
 
     connect(switchToListViewAction, SIGNAL(triggered()), this, SLOT(switchToListView()));
     connect(switchToTreeViewAction, SIGNAL(triggered()), this, SLOT(switchToTreeView()));
+
+    d->setup();
 }
 
 gnomonFinder::~gnomonFinder(void)
 {
+    d->setdw();
+
     delete d;
 
     d = NULL;
@@ -1198,6 +1236,8 @@ void gnomonFinder::allowMultipleSelection(bool isAllowed)
 
 void gnomonFinder::setPath(const QString& path)
 {
+    d->path = path;
+
     if(sender() != d->list)
         d->list->setRootIndex(d->model->index(path));
 
@@ -1208,14 +1248,18 @@ void gnomonFinder::setPath(const QString& path)
 void gnomonFinder::switchToListView(void)
 {
     emit listView();
+
     d->stack->setCurrentIndex(0);
+
     emitSelectedItems();
 }
 
 void gnomonFinder::switchToTreeView(void)
 {
     emit treeView();
+
     d->stack->setCurrentIndex(1);
+
     emitSelectedItems();
 }
 
@@ -1254,6 +1298,8 @@ void gnomonFinder::onIndexDoubleClicked(QModelIndex index)
 
         d->list->setRootIndex(idx);
         d->tree->setRootIndex(idx);
+
+        d->path = d->model->filePath(index);
 
         emit changed(selection.absoluteFilePath());
     }
