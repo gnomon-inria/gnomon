@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonDropSite.h"
+#include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
@@ -21,11 +21,10 @@
 class gnomonWorkspaceFusionPrivate
 {
 public:
-    gnomonViewVolumic *fusion_view_1;
-    gnomonViewVolumic *fusion_view_2;
-    gnomonViewVolumic *fusion_view_3;
-    gnomonViewVolumic *fusion_view_4;
-    gnomonViewVolumic *fusion_view_t;
+    gnomonGridLayout *layout;
+
+public:
+    gnomonViewVolumic *target;
 
 public:
     QSpinBox *iterations_box;
@@ -35,20 +34,10 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : QWidget(parent)
 {
     d = new gnomonWorkspaceFusionPrivate;
 
-    d->fusion_view_1 = new gnomonViewVolumic(this);
-    d->fusion_view_2 = new gnomonViewVolumic(this);
-    d->fusion_view_3 = new gnomonViewVolumic(this);
-    d->fusion_view_4 = new gnomonViewVolumic(this);
-    d->fusion_view_t = new gnomonViewVolumic(this);
+    d->layout = new gnomonGridLayout;
 
-    QGridLayout *fusion_layout = new QGridLayout;
-    fusion_layout->setContentsMargins(0, 0, 0, 0);
-    fusion_layout->setSpacing(1);
-    fusion_layout->addWidget(d->fusion_view_1, 0, 0);
-    fusion_layout->addWidget(d->fusion_view_2, 0, 1);
-    fusion_layout->addWidget(d->fusion_view_3, 1, 0);
-    fusion_layout->addWidget(d->fusion_view_4, 1, 1);
-    fusion_layout->addWidget(d->fusion_view_t, 0, 2, -1, -1);
+    d->target = new gnomonViewVolumic(this);
+    d->target->setMinimumWidth(250);
 
     d->iterations_box = new QSpinBox(this);
     d->iterations_box->setMinimum(1);
@@ -76,10 +65,17 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : QWidget(parent)
     pane->addWidget(pane_item_apply);
     pane->toggle();
 
+    QWidget *dummy = new QWidget(this);
+    dummy->setLayout(d->layout);
+
+    QSplitter *splitter = new QSplitter(this);
+    splitter->addWidget(dummy);
+    splitter->addWidget(d->target);
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addLayout(fusion_layout);
+    layout->addWidget(splitter);
     layout->addWidget(pane);
 
     connect(apply, SIGNAL(clicked()), this, SLOT(apply()));

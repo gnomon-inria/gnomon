@@ -24,6 +24,9 @@ public:
      gnomonWorkspaceRegistration(QWidget *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
 
+public slots:
+    void apply(void);
+
 private:
     class gnomonWorkspaceRegistrationPrivate *d;
 };

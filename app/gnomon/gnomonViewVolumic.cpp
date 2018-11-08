@@ -78,12 +78,14 @@ private:
 gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *parent) : QLabel(parent)
 {
     this->default_color = QColor("#ffffff");
+
     this->icon = icon;
+
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
     this->font->setDefaultOption("color", this->default_color);
 
-    this->setPixmap(this->font->icon(icon).pixmap(32, 32));
+    this->setPixmap(this->font->icon(icon).pixmap(24, 24));
 
     this->setStyleSheet("background: none;");
 }
@@ -103,7 +105,7 @@ void gnomonViewVolumicOverlay::changeColor(const QColor& color)
 {
     this->font->setDefaultOption("color", color);
 
-    this->setPixmap(this->font->icon(this->icon).pixmap(32, 32));
+    this->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
 }
 
 QColor gnomonViewVolumicOverlay::defaultColor(void)
@@ -150,7 +152,8 @@ public:
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
 
 public:
-    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
+    gnomonImagesSerieReaderCommand *image_reader_command_inr = nullptr;
+    gnomonImagesSerieReaderCommand *image_reader_command_czi = nullptr;
 
 public:
     gnomonViewVolumicOverlay *export_button = nullptr;
@@ -184,15 +187,15 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, this);
     this->renderer2D_button = new gnomonViewVolumicOverlay(fa::square, this);
     this->renderer3D_button = new gnomonViewVolumicOverlay(fa::cube, this);
-    this->renderer3D_button->changeColor("grey");
+    this->renderer3D_button->changeColor(Qt::gray);
 
     connect(this->export_button, SIGNAL(clicked()), this, SLOT(exportToManager()));
 
     connect(this->renderer2D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
             this->renderer2D_button->setEnabled(false);
-            this->renderer2D_button->changeColor(this->renderer2D_button->defaultColor());
+            this->renderer2D_button->changeColor(Qt::white);
             this->renderer3D_button->setEnabled(true);
-            this->renderer3D_button->changeColor("grey");
+            this->renderer3D_button->changeColor(Qt::gray);
 
             this->renderer3D->DrawOff();
             this->renderer3D->InteractiveOff();
@@ -214,10 +217,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
     connect(this->renderer3D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
             this->renderer2D_button->setEnabled(true);
-            this->renderer2D_button->changeColor("grey");
+            this->renderer2D_button->changeColor(Qt::gray);
             this->renderer3D_button->setEnabled(false);
-            this->renderer3D_button->changeColor(this->renderer3D_button->defaultColor());
-
+            this->renderer3D_button->changeColor(Qt::white);
 
             this->renderer2D->DrawOff();
             this->renderer2D->InteractiveOff();
@@ -283,8 +285,8 @@ QSize gnomonViewVolumicPrivate::sizeHint(void) const
 void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
 {
     this->export_button->move(event->size().width() - 40, 10);
-    this->renderer2D_button->move(40, 10);
-    this->renderer3D_button->move(80, 10);
+    this->renderer2D_button->move(10, 10);
+    this->renderer3D_button->move(50, 10);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -295,10 +297,6 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonViewVolumicPrivate;
     d->q = this;
-
-    d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-
-    Q_ASSERT(d->image_reader_command);
 
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
@@ -331,17 +329,21 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
 {
-    if (d->image_reader_command)
-        delete d->image_reader_command;
+    if (d->image_reader_command_inr)
+        delete d->image_reader_command_inr;
+
+    if (d->image_reader_command_czi)
+        delete d->image_reader_command_czi;
 
     delete d;
 }
 
 void gnomonViewVolumic::setImage(dtkImage *i)
-{    
+{
     d->image = i;
 
     // 2D
+
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(i);
     converter->convert();
@@ -350,26 +352,28 @@ void gnomonViewVolumic::setImage(dtkImage *i)
 
     delete converter;
 
-    double bounds[6]; image->GetBounds(bounds);
+    int z = image->GetDimensions()[2];
 
-    d->viewer->SetSlice((bounds[5] - bounds[4]) / 2);
+    d->viewer->SetSlice(z/2);
     d->viewer->SetInputData(image);
 
-    d->slider->setMaximum(bounds[5] - bounds[4]);
+    d->slider->setMaximum(z);
     d->slider->blockSignals(true);
-    d->slider->setValue((bounds[5] - bounds[4]) / 2);
+    d->slider->setValue(z/2);
     d->slider->blockSignals(false);
 
     // 3D
 
-    if(!d->volume_mapper) d->volume_mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+    if(!d->volume_mapper)
+        d->volume_mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
 
     d->volume_mapper->SetInputData(image);
     d->volume_mapper->SetRequestedRenderMode(vtkSmartVolumeMapper::DefaultRenderMode);
     d->volume_mapper->Modified();
     d->volume_mapper->Update();
 
-    if(!d->volume) d->volume = vtkSmartPointer<vtkVolume>::New();
+    if(!d->volume)
+        d->volume = vtkSmartPointer<vtkVolume>::New();
 
     d->volume->SetMapper(d->volume_mapper);
     // d->volume->SetProperty(d->volume_property);
@@ -419,23 +423,37 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-
         this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
-
     } else {
+        gnomonImagesSerieReaderCommand *command = nullptr;
 
-        d->image_reader_command->setPath(path.remove("file://"));
-        d->image_reader_command->redo();
-
-        dtkImage *img = d->image_reader_command->next();
-
-        if (!img) {
-            qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-            event->ignore();
-            return;
+        if(path.endsWith("inr") || path.endsWith("inr.gz")) {
+            if(!d->image_reader_command_inr)
+                d->image_reader_command_inr = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+            command = d->image_reader_command_inr;
         }
 
-        this->setImage(img);
+        if(path.endsWith("czi")) {
+            if(!d->image_reader_command_czi)
+                d->image_reader_command_czi = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
+            command = d->image_reader_command_czi;
+        }
+
+        if(command) {
+            command->setPath(path.remove("file://"));
+            command->redo();
+            dtkImage *img = command->next();
+
+            if (!img) {
+                qWarning() << Q_FUNC_INFO << "Resulting image is void.";
+                event->ignore();
+                return;
+            }
+
+            this->setImage(img);
+        } else {
+            qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
+        }
     }
 
     // ///////////////////////////////////////////////////////////////
