@@ -282,11 +282,11 @@ void gnomonToolBar::onCreateRegistration(void)
 
 // ///////////////////////////////////////////////////////////////////
 
-QColor gnomonToolBar::browser_color = QColor("#006391");
-QColor gnomonToolBar::fusion_color = QColor("#603582");
-QColor gnomonToolBar::segmentation_color = QColor("#a50021");
-QColor gnomonToolBar::preprocess_color = QColor("#a02f00");
-QColor gnomonToolBar::registration_color = QColor("#84c848");
+QColor gnomonToolBar::browser_color = QColor("#ff3b30");
+QColor gnomonToolBar::fusion_color = QColor("#ff9500");
+QColor gnomonToolBar::registration_color = QColor("#ffcc00");
+QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
+QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
 
 // ///////////////////////////////////////////////////////////////////
 
