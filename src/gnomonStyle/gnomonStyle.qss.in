@@ -301,12 +301,22 @@ QScrollArea > QWidget > QWidget
 
 gnomonOverlayPaneItemHeader
 {
-    background: #000022;
+    background: #000011;
 }
 
 gnomonOverlayPaneItemHeader > QFrame
 {
     background: none;
+}
+
+gnomonImageManager
+{
+    border: 1px solid #333333;
+}
+
+gnomonToolBar
+{
+    border-top: 1px solid #333333;
 }
 
 /* gnomonStyle.qss.in ends here */

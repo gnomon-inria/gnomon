@@ -43,13 +43,13 @@ private:
 
 gnomonImageManagerItemButton::gnomonImageManagerItemButton(const QColor& color, QWidget *parent) : QLabel(parent)
 {
-    this->font = new gnomonFontAwesome(this); 
+    this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
     this->font->setDefaultOption("color", color);
 
     this->setPixmap(this->font->icon(fa::times).pixmap(16, 16));
 
-    this->setStyleSheet("background: none;");
+    this->setStyleSheet("background: none; border: none;");
 }
 
 gnomonImageManagerItemButton::~gnomonImageManagerItemButton(void)
@@ -97,6 +97,7 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixma
     this->button->setVisible(false);
 
     this->setPixmap(thumbnail.scaled(100, 100));
+    this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
 
     connect(this->button, SIGNAL(clicked()), this, SIGNAL(destroy()));
 

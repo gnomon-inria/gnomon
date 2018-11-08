@@ -155,8 +155,8 @@ void gnomonOverlayPane::toggle(void)
     if (d->deactivate)
         return;
 
-    qlonglong stt = d->on ? 320 :  30;
-    qlonglong end = d->on ?  30 : 320;
+    qlonglong stt = d->on ? 320 :  20;
+    qlonglong end = d->on ?  20 : 320;
 
     if (d->animation->state() == QAbstractAnimation::Running) {
         d->animation->stop();
