@@ -14,7 +14,54 @@
 
 #include "gnomonImageManager.h"
 
+#include <gnomonFonts>
+
 #include <dtkImagingCore>
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonImageManagerItemButton
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonImageManagerItemButton : public QLabel
+{
+    Q_OBJECT
+
+public:
+     gnomonImageManagerItemButton(const QColor& color, QWidget *parent = nullptr);
+    ~gnomonImageManagerItemButton(void);
+
+signals:
+    void clicked(void);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+private:
+    gnomonFontAwesome *font;
+};
+
+
+gnomonImageManagerItemButton::gnomonImageManagerItemButton(const QColor& color, QWidget *parent) : QLabel(parent)
+{
+    this->font = new gnomonFontAwesome(this); 
+    this->font->initFontAwesome();
+    this->font->setDefaultOption("color", color);
+
+    this->setPixmap(this->font->icon(fa::times).pixmap(16, 16));
+
+    this->setStyleSheet("background: none;");
+}
+
+gnomonImageManagerItemButton::~gnomonImageManagerItemButton(void)
+{
+
+}
+
+
+void gnomonImageManagerItemButton::mousePressEvent(QMouseEvent *)
+{
+    emit clicked();
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManagerItem
@@ -25,24 +72,50 @@ class gnomonImageManagerItem : public QLabel
     Q_OBJECT
 
 public:
-     gnomonImageManagerItem(const QPixmap& thumbnail, QWidget *parent = nullptr);
+     gnomonImageManagerItem(const QColor&, const QPixmap& thumbnail, QWidget *parent = nullptr);
     ~gnomonImageManagerItem(void);
 
+signals:
+    void destroy(void);
+
 protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
     void mousePressEvent(QMouseEvent *);
 
 public:
     int id;
+
+public:
+    gnomonImageManagerItemButton *button;
 };
 
-gnomonImageManagerItem::gnomonImageManagerItem(const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
+gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
 {
+    this->button = new gnomonImageManagerItemButton(color, this);
+    this->button->move(79, 5);
+    this->button->setVisible(false);
+
     this->setPixmap(thumbnail.scaled(100, 100));
+
+    connect(this->button, SIGNAL(clicked()), this, SIGNAL(destroy()));
+
+    this->setMouseTracking(true);
 }
 
 gnomonImageManagerItem::~gnomonImageManagerItem(void)
 {
 
+}
+
+void gnomonImageManagerItem::enterEvent(QEvent *)
+{
+    this->button->setVisible(true);
+}
+
+void gnomonImageManagerItem::leaveEvent(QEvent *)
+{
+    this->button->setVisible(false);
 }
 
 void gnomonImageManagerItem::mousePressEvent(QMouseEvent *)
@@ -69,7 +142,7 @@ public:
     ~gnomonImageManagerPrivate(void);
 
 public:
-    gnomonImageManagerItem *create(gnomonImageManager::Image);
+    gnomonImageManagerItem *create(gnomonImageManager::Image, const QColor&);
 
 public:
     QHash<gnomonImageManagerItem *, gnomonImageManager::Image> images;
@@ -95,7 +168,7 @@ gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 
 }
 
-gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image)
+gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image, const QColor& color)
 {
     if(!image)
         return nullptr;
@@ -125,7 +198,15 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
         }
     }
 
-    return new gnomonImageManagerItem(QPixmap::fromImage(i), this);
+    gnomonImageManagerItem *item = new gnomonImageManagerItem(color, QPixmap::fromImage(i), this);
+
+    connect(item, &gnomonImageManagerItem::destroy, [=] () {
+        this->contents->layout()->removeWidget(item);
+        this->images.remove(item);
+        delete item;
+    });
+
+    return item;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -145,9 +226,9 @@ QSize gnomonImageManager::sizeHint(void) const
     return QSize(200, 140);
 }
 
-void gnomonImageManager::addImage(gnomonImageManager::Image image)
+void gnomonImageManager::addImage(gnomonImageManager::Image image, const QColor& color)
 {
-    gnomonImageManagerItem *item = d->create(image);
+    gnomonImageManagerItem *item = d->create(image, color);
 
     d->images.insert(item, image);
     d->contents->layout()->addWidget(item);
