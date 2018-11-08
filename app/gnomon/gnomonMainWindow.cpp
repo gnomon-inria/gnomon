@@ -23,8 +23,16 @@
 
 #include <gnomonStyle>
 
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
 class gnomonMainWindowPrivate
 {
+public:
+    void setdw(void);
+    void setup(void);
+
 public:
     gnomonToolBar *menu;
 
@@ -33,11 +41,33 @@ public:
 
 public:
     gnomonImageManager *manager;
+
+public:
+    gnomonMainWindow *q;
 };
+
+void gnomonMainWindowPrivate::setup(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    q->move(settings.value("position").toPoint());
+    q->resize(settings.value("size",QSize(1024,320)).toSize());
+}
+
+void gnomonMainWindowPrivate::setdw(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    settings.setValue("position", q->pos());
+    settings.setValue("size", q->size());
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     d = new gnomonMainWindowPrivate;
+    d->q = this;
 
     d->manager = gnomonImageManager::instance();
 
@@ -85,10 +115,14 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     this->setCentralWidget(central);
     this->setStyleSheet(gnomonStyleSheet());
+
+    d->setup();
 }
 
 gnomonMainWindow::~gnomonMainWindow(void)
 {
+    d->setdw();
+
     delete d;
 }
 

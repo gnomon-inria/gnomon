@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
     QApplication application(argc, argv);
-    application.setApplicationName("gnomon Growth Simulator");
+    application.setApplicationName("gnomon");
     application.setOrganizationName("inria");
     application.setOrganizationDomain("fr");
     application.setApplicationVersion("0.1.0");
@@ -40,6 +40,7 @@ int main(int argc, char **argv)
     dtkImaging::initialize();
 
     gnomonMainWindow *window = new gnomonMainWindow;
+    window->setWindowTitle("gnomon");
     window->show();
     window->raise();
 
