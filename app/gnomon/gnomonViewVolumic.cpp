@@ -28,9 +28,12 @@
 #include <dtkImagingCore>
 
 #include <vtkActor.h>
+#include <vtkCellPicker.h>
 #include <vtkContourFilter.h>
 #include <vtkDataArray.h>
+#include <vtkDataSetMapper.h>
 #include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkGlyph3D.h>
 #include <vtkImageData.h>
 #include <vtkImagePlaneWidget.h>
 #include <vtkImageViewer2.h>
@@ -38,18 +41,23 @@
 #include <vtkImageMapToWindowLevelColors.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPointData.h>
+#include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkResliceImageViewer.h>
 #include <vtkSmartPointer.h>
 #include <vtkSmartVolumeMapper.h>
+#include <vtkSphereSource.h>
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
+
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
 
@@ -137,6 +145,64 @@ QColor gnomonViewVolumicOverlay::defaultColor(void)
 }
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonViewVolumicInteractorImage
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewVolumicInteractorImage : public vtkInteractorStyleImage
+{
+public:
+    static gnomonViewVolumicInteractorImage *New(void);
+
+public:
+    virtual void OnLeftButtonDown(void) override
+    {
+        vtkInteractorStyleImage::OnLeftButtonDown();
+
+        if(!this->picker)
+            return;
+
+        if(!this->picker->on)
+            return;
+
+        if(!this->image)
+            return;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        picker->SetTolerance(0.0005);
+        picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        if(picker->GetCellId() == -1)
+            return;
+
+        double *picked = picker->GetPickPosition();
+
+        this->points->InsertNextPoint(picked[0], picked[1], picked[2]);
+
+        this->mesh->SetPoints(this->points);
+        this->mesh->Modified();
+
+        this->glyphs->SetInputData(this->mesh);
+        this->glyphs->Update();
+
+        this->q->render();
+    }
+
+public:
+    gnomonViewVolumic *q = nullptr;
+    gnomonViewVolumicOverlay *picker = nullptr;
+
+public:
+    vtkSmartPointer<vtkImageData> image = nullptr;
+    vtkSmartPointer<vtkPoints> points = nullptr;
+    vtkSmartPointer<vtkPolyData> mesh = nullptr;
+    vtkSmartPointer<vtkGlyph3D> glyphs = nullptr;
+};
+
+vtkStandardNewMacro(gnomonViewVolumicInteractorImage);
+
+// ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
@@ -191,6 +257,14 @@ public:
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
 
 public:
+    vtkSmartPointer<vtkPoints> points;
+    vtkSmartPointer<vtkPolyData> mesh;
+    vtkSmartPointer<vtkGlyph3D> glyphs;
+
+public:
+    gnomonViewVolumicInteractorImage *image_interactor = nullptr;
+
+public:
     gnomonImagesSerieReaderCommand *image_reader_command_inr = nullptr;
     gnomonImagesSerieReaderCommand *image_reader_command_czi = nullptr;
 
@@ -201,6 +275,7 @@ public:
     gnomonViewVolumicOverlay *renderer2D_XY = nullptr;
     gnomonViewVolumicOverlay *renderer2D_XZ = nullptr;
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
+    gnomonViewVolumicOverlay *picker = nullptr;
 
 public:
     dtkImage *image = nullptr;
@@ -241,6 +316,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->renderer2D_XZ->on = false;
     this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ-off.png", this);
     this->renderer2D_YZ->on = false;
+    this->picker = new gnomonViewVolumicOverlay(fa::crosshairs, this);
+    this->picker->changeColor(Qt::gray);
+    this->picker->on = false;
 
     vtkImageData *dummy = vtkImageData::New();
     dummy->SetDimensions(1, 1, 1);
@@ -273,6 +351,44 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         planeWidget[i]->GetPlaneProperty()->SetColor(color);
     }
 
+    this->points = vtkSmartPointer<vtkPoints>::New();
+    this->points->Allocate(100);
+
+    this->mesh = vtkSmartPointer<vtkPolyData>::New();
+
+    vtkSmartPointer<vtkSphereSource> sphere_source = vtkSmartPointer<vtkSphereSource>::New();
+    sphere_source->SetRadius(1.0);
+    sphere_source->SetPhiResolution(16);
+    sphere_source->SetThetaResolution(16);
+    sphere_source->Update();
+
+    this->glyphs = vtkSmartPointer<vtkGlyph3D>::New();
+    this->glyphs->SetSourceData(sphere_source->GetOutput());
+    this->glyphs->SetInputData(this->mesh);
+
+    vtkSmartPointer<vtkPolyDataMapper> glyph_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    glyph_mapper->SetInputConnection(this->glyphs->GetOutputPort());
+
+    vtkSmartPointer<vtkActor> glyph_actor = vtkSmartPointer<vtkActor>::New();
+    glyph_actor->SetMapper(glyph_mapper);
+    glyph_actor->GetProperty()->SetColor(1.0, 0.0, 0.5);
+
+    this->renderer2D->AddActor(glyph_actor);
+    this->renderer3D->AddActor(glyph_actor);
+
+    // ///////////////////////////////////////////////////////////////////
+
+    this->image_interactor = gnomonViewVolumicInteractorImage::New();
+    this->image_interactor->SetDefaultRenderer(this->renderer2D);
+    this->image_interactor->picker = this->picker;
+    this->image_interactor->points = this->points;
+    this->image_interactor->mesh = this->mesh;
+    this->image_interactor->glyphs = this->glyphs;
+
+    this->GetInteractor()->SetInteractorStyle(this->image_interactor);
+
+    // ///////////////////////////////////////////////////////////////////
+
     connect(this->export_button, SIGNAL(clicked()), this, SLOT(exportToManager()));
 
     connect(this->renderer2D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
@@ -289,9 +405,7 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->renderer3D->DrawOff();
         this->renderer3D->InteractiveOff();
 
-        vtkSmartPointer<vtkInteractorStyleImage> style = vtkSmartPointer<vtkInteractorStyleImage>::New();
-
-        this->GetInteractor()->SetInteractorStyle(style);
+        this->GetInteractor()->SetInteractorStyle(this->image_interactor);
 
         this->renderer2D->InteractiveOn();
         this->renderer2D->DrawOn();
@@ -431,11 +545,23 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->slider->setValue(this->c_x);
         this->slider->blockSignals(false);
     });
+
+    connect(this->picker, &gnomonViewVolumicOverlay::clicked, [=] () {
+
+        this->picker->on = !this->picker->on;
+
+        if (this->picker->on)
+            this->picker->changeColor(Qt::white);
+        else
+            this->picker->changeColor(Qt::gray);
+
+        q->setCursor(this->picker->on ? Qt::CrossCursor : Qt::ArrowCursor);
+    });
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
 {
-
+    this->image_interactor->Delete();
 }
 
 void gnomonViewVolumicPrivate::enableInteractor(void)
@@ -485,6 +611,7 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XY->move(10,  50);
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
+    this->picker->move(90, 10);
 }
 
 gnomonViewVolumicPrivate::Orientation gnomonViewVolumicPrivate::orientation(void)
@@ -526,6 +653,8 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonViewVolumicPrivate;
     d->q = this;
+
+    d->image_interactor->q = this;
 
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
@@ -578,6 +707,14 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 
 void gnomonViewVolumic::setImage(dtkImage *i)
 {
+    d->points->Reset();
+
+    d->mesh->SetPoints(d->points);
+    d->mesh->Modified();
+
+    d->glyphs->SetInputData(d->mesh);
+    d->glyphs->Update();
+
     d->image = i;
 
     // 2D
@@ -589,6 +726,8 @@ void gnomonViewVolumic::setImage(dtkImage *i)
     vtkImageData *image = static_cast<vtkImageData *>(converter->output());
 
     delete converter;
+
+    d->image_interactor->image = image;
 
     d->x = image->GetDimensions()[0];
     d->y = image->GetDimensions()[1];
