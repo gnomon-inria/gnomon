@@ -176,8 +176,8 @@ void gnomonToolBarPrivate::onItemClicked(int index)
 {
     q->emit indexChanged(index);
 
-    for(gnomonToolBarItem *item : items)
-        item->setStyleSheet(QString("color: %1;").arg(sender() == item ? "#ffffff" : "#777777"));
+    // for(gnomonToolBarItem *item : items)
+        // item->setStyleSheet(QString("color: %1;").arg(sender() == item ? "#ffffff" : "#777777"));
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -190,7 +190,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     d->q = this;
 
     gnomonToolBarItem *item = new gnomonToolBarItem("Browse", this);
-    item->setStyleSheet("color: #ffffff;");
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(browser_color.red()).arg(browser_color.green()).arg(browser_color.blue()));
 
     gnomonToolBarButton *button = new gnomonToolBarButton(this);
 
@@ -223,6 +223,7 @@ QSize gnomonToolBar::sizeHint(void) const
 void gnomonToolBar::onCreateFusion(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Fusion", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(fusion_color.red()).arg(fusion_color.green()).arg(fusion_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -237,6 +238,7 @@ void gnomonToolBar::onCreateFusion(void)
 void gnomonToolBar::onCreateSegmentation(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Segmentation", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(segmentation_color.red()).arg(segmentation_color.green()).arg(segmentation_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -251,6 +253,7 @@ void gnomonToolBar::onCreateSegmentation(void)
 void gnomonToolBar::onCreatePreprocess(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Preprocess", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(preprocess_color.red()).arg(preprocess_color.green()).arg(preprocess_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -265,6 +268,7 @@ void gnomonToolBar::onCreatePreprocess(void)
 void gnomonToolBar::onCreateRegistration(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Registration", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(registration_color.red()).arg(registration_color.green()).arg(registration_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -275,6 +279,14 @@ void gnomonToolBar::onCreateRegistration(void)
 
     emit createRegistration();
 }
+
+// ///////////////////////////////////////////////////////////////////
+
+QColor gnomonToolBar::browser_color = QColor("#006391");
+QColor gnomonToolBar::fusion_color = QColor("#603582");
+QColor gnomonToolBar::segmentation_color = QColor("#a50021");
+QColor gnomonToolBar::preprocess_color = QColor("#a02f00");
+QColor gnomonToolBar::registration_color = QColor("#84c848");
 
 // ///////////////////////////////////////////////////////////////////
 

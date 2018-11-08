@@ -254,6 +254,8 @@ void gnomonViewVolumicPrivate::disableInteractor(void)
     this->GetInteractor()->Disable();
 }
 
+#include "gnomonToolBar.h"
+
 void gnomonViewVolumicPrivate::exportToManager(void)
 {
     if(!this->image)
@@ -264,16 +266,17 @@ void gnomonViewVolumicPrivate::exportToManager(void)
     { parent = parent->parentWidget(); }
 
     QStackedWidget *stack = dynamic_cast< QStackedWidget * >(parent);
+
     if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
-    { gnomonImageManager::instance()->addImage(this->image, Qt::black); }
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::browser_color);
     else if(gnomonWorkspaceFusion* workspace = dynamic_cast<gnomonWorkspaceFusion *>(stack->currentWidget()))
-    { gnomonImageManager::instance()->addImage(this->image, Qt::red); }
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::fusion_color);
     else if(gnomonWorkspaceSegmentation* workspace = dynamic_cast<gnomonWorkspaceSegmentation *>(stack->currentWidget()))
-    { gnomonImageManager::instance()->addImage(this->image, Qt::green); }
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::segmentation_color);
     else if(gnomonWorkspacePreprocess* workspace = dynamic_cast<gnomonWorkspacePreprocess *>(stack->currentWidget()))
-    { gnomonImageManager::instance()->addImage(this->image, Qt::blue); }
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::preprocess_color);
     else
-    { gnomonImageManager::instance()->addImage(this->image, Qt::white); }
+        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::registration_color);
 
 }
 
