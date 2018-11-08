@@ -47,15 +47,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
     d->toolbar->setPath(QDir::currentPath());
 
     d->browse_view = new gnomonViewVolumic(this);
+
     connect(d->browse_view, &gnomonViewVolumic::channelsChanged, this, &gnomonWorkspaceBrowser::replaceChannels);
-    ///////////////////
 
     d->channels_list = new QListWidget();
 
     connect(d->channels_list, &QListWidget::currentItemChanged, this, &gnomonWorkspaceBrowser::replaceChannel);
-    // ;[=] (QListWidgetItem *current_item, QListWidgetItem *previous_item) {
-    //     emit channelChanged(current_item->text());
-    // });
 
     QFormLayout *pane_item_channels_layout = new QFormLayout;
     pane_item_channels_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
@@ -68,9 +65,6 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
 
     gnomonOverlayPane *pane = new gnomonOverlayPane(this);
     pane->addWidget(pane_item_channels);
-    pane->toggle();
-
-    //////////////////:
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
