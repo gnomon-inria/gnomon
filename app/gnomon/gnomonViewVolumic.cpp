@@ -28,6 +28,7 @@
 #include <dtkImagingCore>
 
 #include <vtkActor.h>
+#include <vtkCellPicker.h>
 #include <vtkContourFilter.h>
 #include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
@@ -43,7 +44,6 @@
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPointData.h>
-#include <vtkPointPicker.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -60,35 +60,6 @@
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonViewVolumicInteractorImage
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonViewVolumicInteractorImage : public vtkInteractorStyleImage
-{
-public:
-    static gnomonViewVolumicInteractorImage *New(void);
-
-// public:
-//     vtkTypeMacro(gnomonViewVolumicInteractorImage, vtkInteractorStyleIamge);
-
-public:
-    virtual void OnLeftButtonDown(void) override
-    {
-        std::cout << "Picking pixel: " << this->Interactor->GetEventPosition()[0] << " " << this->Interactor->GetEventPosition()[1] << std::endl;
-
-        this->Interactor->GetPicker()->Pick(this->Interactor->GetEventPosition()[0], this->Interactor->GetEventPosition()[1], 0, this->Interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer());
-
-        double picked[3];this->Interactor->GetPicker()->GetPickPosition(picked);
-
-        std::cout << "Picked value: " << picked[0] << " " << picked[1] << " " << picked[2] << std::endl;
-
-        vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
-    }
-};
-
-vtkStandardNewMacro(gnomonViewVolumicInteractorImage);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewVolumicOverlay
@@ -174,6 +145,64 @@ QColor gnomonViewVolumicOverlay::defaultColor(void)
 }
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonViewVolumicInteractorImage
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewVolumicInteractorImage : public vtkInteractorStyleImage
+{
+public:
+    static gnomonViewVolumicInteractorImage *New(void);
+
+public:
+    virtual void OnLeftButtonDown(void) override
+    {
+        vtkInteractorStyleImage::OnLeftButtonDown();
+
+        if(!this->picker)
+            return;
+
+        if(!this->picker->on)
+            return;
+
+        if(!this->image)
+            return;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        picker->SetTolerance(0.0005);
+        picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        if(picker->GetCellId() == -1)
+            return;
+
+        double *picked = picker->GetPickPosition();
+
+        this->points->InsertNextPoint(picked[0], picked[1], picked[2]);
+
+        this->mesh->SetPoints(this->points);
+        this->mesh->Modified();
+
+        this->glyphs->SetInputData(this->mesh);
+        this->glyphs->Update();
+
+        this->q->render();
+    }
+
+public:
+    gnomonViewVolumic *q = nullptr;
+    gnomonViewVolumicOverlay *picker = nullptr;
+
+public:
+    vtkImageData *image = nullptr;
+    vtkPoints *points = nullptr;
+    vtkPolyData *mesh = nullptr;
+    vtkGlyph3D *glyphs = nullptr;
+};
+
+vtkStandardNewMacro(gnomonViewVolumicInteractorImage);
+
+// ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
@@ -231,6 +260,9 @@ public:
     vtkSmartPointer<vtkPoints> points;
     vtkSmartPointer<vtkPolyData> mesh;
     vtkSmartPointer<vtkGlyph3D> glyphs;
+
+public:
+    gnomonViewVolumicInteractorImage *image_interactor = nullptr;
 
 public:
     gnomonImagesSerieReaderCommand *image_reader_command_inr = nullptr;
@@ -320,17 +352,19 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     }
 
     this->points = vtkSmartPointer<vtkPoints>::New();
+    this->points->Allocate(100);
 
     this->mesh = vtkSmartPointer<vtkPolyData>::New();
 
     vtkSmartPointer<vtkSphereSource> sphere_source = vtkSmartPointer<vtkSphereSource>::New();
-    sphere_source->SetRadius(0.025);
+    sphere_source->SetRadius(1.0);
     sphere_source->SetPhiResolution(16);
     sphere_source->SetThetaResolution(16);
     sphere_source->Update();
 
     this->glyphs = vtkSmartPointer<vtkGlyph3D>::New();
     this->glyphs->SetSourceData(sphere_source->GetOutput());
+    this->glyphs->SetInputData(this->mesh);
 
     vtkSmartPointer<vtkPolyDataMapper> glyph_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     glyph_mapper->SetInputConnection(this->glyphs->GetOutputPort());
@@ -341,6 +375,19 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
     this->renderer2D->AddActor(glyph_actor);
     this->renderer3D->AddActor(glyph_actor);
+
+    // ///////////////////////////////////////////////////////////////////
+
+    this->image_interactor = gnomonViewVolumicInteractorImage::New();
+    this->image_interactor->SetDefaultRenderer(this->renderer2D);
+    this->image_interactor->picker = this->picker;
+    this->image_interactor->points = this->points;
+    this->image_interactor->mesh = this->mesh;
+    this->image_interactor->glyphs = this->glyphs;
+
+    this->GetInteractor()->SetInteractorStyle(this->image_interactor);
+
+    // ///////////////////////////////////////////////////////////////////
 
     connect(this->export_button, SIGNAL(clicked()), this, SLOT(exportToManager()));
 
@@ -358,9 +405,7 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->renderer3D->DrawOff();
         this->renderer3D->InteractiveOff();
 
-        vtkSmartPointer<vtkInteractorStyleImage> style = vtkSmartPointer<vtkInteractorStyleImage>::New();
-
-        this->GetInteractor()->SetInteractorStyle(style);
+        this->GetInteractor()->SetInteractorStyle(this->image_interactor);
 
         this->renderer2D->InteractiveOn();
         this->renderer2D->DrawOn();
@@ -509,12 +554,14 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
             this->picker->changeColor(Qt::white);
         else
             this->picker->changeColor(Qt::gray);
+
+        q->setCursor(this->picker->on ? Qt::CrossCursor : Qt::ArrowCursor);
     });
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
 {
-
+    this->image_interactor->Delete();
 }
 
 void gnomonViewVolumicPrivate::enableInteractor(void)
@@ -607,6 +654,8 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
+    d->image_interactor->q = this;
+
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
     d->slider->setOrientation(Qt::Vertical);
@@ -669,6 +718,8 @@ void gnomonViewVolumic::setImage(dtkImage *i)
     vtkImageData *image = static_cast<vtkImageData *>(converter->output());
 
     delete converter;
+
+    d->image_interactor->image = image;
 
     d->x = image->GetDimensions()[0];
     d->y = image->GetDimensions()[1];
