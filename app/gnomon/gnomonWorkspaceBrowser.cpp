@@ -105,8 +105,6 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
 
 void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
 {
-    qDebug() << "Ouh yeeeey";
-    qDebug() << channels_list;
     d->channels_list->clear();
     d->channels_list->addItems(channels_list);
 }
