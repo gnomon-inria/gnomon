@@ -33,8 +33,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
-  gnomonAbstractCellImageFromMultiChannelImage
-  gnomonAbstractCellImageFromMultiChannelImage.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm

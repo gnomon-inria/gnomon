@@ -36,9 +36,13 @@ public:
 
     virtual void setPredefinedProperties(const QStringList& names) = 0;
 
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+
     // Outputs
 public:
     virtual gnomonCellImage *computedImage(void) const = 0;
+    virtual const QMap<QString, QVariant>& parameters(void) const = 0;
+    virtual       QMap<QString, QVariant>& parameters(void) = 0;
 
 public:
     virtual void run(void) = 0;
