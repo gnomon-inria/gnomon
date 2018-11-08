@@ -429,8 +429,9 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-
+            emit channelsChanged(command->channels());
             this->setImage(img);
+
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }
