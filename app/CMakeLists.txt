@@ -12,6 +12,7 @@
 ##
 ### Code:
 
+add_subdirectory(gnomon)
 add_subdirectory(gnomonGrowthSimulator)
 
 if(OMERO_ICE_FOUND AND OMERO_CLIENT_FOUND)

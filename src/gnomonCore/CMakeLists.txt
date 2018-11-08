@@ -37,6 +37,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonAbstractImagesSerieFilter
+  gnomonAbstractImagesSerieFilter.h
+  gnomonAbstractImagesSerieReader
+  gnomonAbstractImagesSerieReader.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
   gnomonAbstractMeshData
@@ -45,6 +49,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractModel.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
+  gnomonAbstractCommand
+  gnomonAbstractCommand.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellGraph
@@ -62,6 +68,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
+  gnomonImagesSerieFilterCommand
+  gnomonImagesSerieFilterCommand.h
+  gnomonImagesSerieReaderCommand
+  gnomonImagesSerieReaderCommand.h
   gnomonIntensityImage
   gnomonIntensityImage.h
   gnomonMesh
@@ -83,6 +93,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractImagesSerieFilter.cpp
+  gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractMeshData.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
@@ -95,6 +107,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDiscreteDynamicForm.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonImagesSerieFilterCommand.cpp
+  gnomonImagesSerieReaderCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp
@@ -146,7 +160,8 @@ target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 if(DTK_BUILD_WRAPPERS)
   if(DTK_WRAPPING_PYTHON)
-      target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} vtkWrappingPythonCore)
   endif(DTK_WRAPPING_PYTHON)
 endif(DTK_BUILD_WRAPPERS)
 

@@ -4,42 +4,6 @@ For sake of clarity, let's consider that all the programs are installed under `$
 
 ## Pre-requisites stuff
 
-### Install conda
-
-``` shell
-cd ~/Downloads
-brew install wget
-wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
-chmod u+x Miniconda2-latest-MacOSX-x86_64.sh
-./Miniconda2-latest-MacOSX-x86_64.sh
-# install in $HOME/.conda
-```
-
-Then, make sure to have conda in your PATH environment variable, before any folder containing `qmake`.
-
-### Using Conda environment:
-
-First clone gnomon-recipes:
-
-``` shell
-cd $HOME/Development
-git clone git@gitlab.inria.fr:gnomon/gnomon-recipes.git
-cd gnomon-recipes/environments
-```
-
-To create the conda environment using the previous recipe saved under `gnomon.yml`:
-```shell
-conda env create -f gnomon.yml
-```
-To activate the conda environment:
-``` shell
-source activate gnomon
-```
-
-Inside this environment install dtk, its applicative layers, gnomon and its plugins by cloning the source code.
-
-Pre-requisites might be installed outside the environment.
-
 ### OpenGL Stuff (at least for ubuntu)
 
 ``` shell
@@ -55,37 +19,44 @@ dnf install cmake # fedora
 brew install cmake # mac
 ```
 
-#### Qt objects within Python environnement using SWIG.
+### Install Conda
 
-Install swig development packages with RPM. On mac, use `brew install swig`
+``` shell
+cd ~/Downloads
+brew install wget
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
+chmod u+x Miniconda2-latest-MacOSX-x86_64.sh
+./Miniconda2-latest-MacOSX-x86_64.sh
+# install in $HOME/.conda
+```
 
-### VTK8 installation
+Then, make sure to have conda in your PATH environment variable, before any folder containing `qmake`.
 
-Starts by downloading the sources for VTK8 (here 8.0.1):
+### Create Conda environment:
+
+First clone gnomon-recipes:
+
 ``` shell
 cd $HOME/Development
-wget http://www.vtk.org/files/release/8.0/VTK-8.0.1.tar.gz
+git clone git@gitlab.inria.fr:gnomon/gnomon-recipes.git
+cd gnomon-recipes/environment
 ```
 
-Unzip and create the `build` directory:
+To create the conda environment :
+```shell
+conda env create -f gnomon-1.x.x.yml
+```
+To activate the conda environment:
 ``` shell
-tar -zxvf VTK-8.0.1.tar.gz
-cd VTK-8.0.1/
-mkdir build
-cd build
+source activate gnomon-1.x.x
 ```
 
-Compile after defining `cmake` options using arguments parsing (`cmake` options can also be defined using `ccmake ..` to access CMake curse interface):
-``` shell
-source activate gnomon
-cmake .. -DVTK_Group_Qt=ON -DVTK_QT_VERSION=5 -DVTK_RENDERING_BACKEND=OpenGL2 -DModule_vtkGUISupportQtOpenGL=ON
-make -j4
-```
+This environment installation / upgrade will pull for you : dtk, dtk-imaging, dtk-imaging-plugins (and its dependencies : itk, vtk...).
 
 ## OpenAlea legacy [REQUIRED]
 Before installing the following sources, do not forget to activate the conda environment:
 ```shell
-source activate gnomon
+source activate gnomon-1.x.x
 ```
 
 ### OpenAlea CellComplex
@@ -152,62 +123,6 @@ git pull origin feature/standalone
 python setup.py develop
 ```
 
-## Get dtk and its applicative layers
-
-### Compilation options:
-
-#### Python wrapping:
-
-To enable python wrapping use compilation flag: ` -DDTK_WRAPPING_PYTHON=ON`
-
-To enable SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SWIG`
-
-To enable SIP wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SIP`
-
-To enable both SIP and SWIG wrapping use compilation flag: ` -DDTK_PYTHON_WRAPPER=SWIG_AND_SIP`
-
-### dtk
-
-``` shell
-source activate gnomon
-cd $HOME/Development
-git clone git@gitlab.inria.fr:dtk/dtk.git
-cd dtk
-git checkout develop
-mkdir build
-cd build
-cmake .. -DDTK_WRAPPING_PYTHON=ON -DDTK_BUILD_COMPOSER=ON -DDTK_BUILD_DISTRIBUTED=ON -DDTK_BUILD_SCRIPT=ON -DDTK_BUILD_WIDGETS=ON -DDTK_BUILD_WRAPPERS=ON -DDTK_BUILD_SUPPORT_COMPOSER=OFF -DDTK_PYTHON_WRAPPER=SWIG_AND_SIP -DDTK_BUILD_SUPPORT_CONTAINER=OFF -DDTK_BUILD_SUPPORT_CORE=OFF -DDTK_BUILD_SUPPORT_GUI=OFF -DDTK_BUILD_SUPPORT_MATH=OFF
-make -j4
-```
-
-### dtk-imaging
-
-``` shell
-source activate gnomon
-cd $HOME/Development
-git clone git@gitlab.inria.fr:dtk/dtk-imaging.git
-cd dtk-imaging
-git checkout develop
-mkdir build
-cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build
-make -j4
-```
-
-### dtk-plugins-imaging
-
-``` shell
-source activate gnomon
-cd $HOME/Development
-git clone git@gitlab.inria.fr:dtk/dtk-plugins-imaging.git
-cd dtk-plugins-imaging
-git checkout develop
-mkdir build
-cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Development/dtk-imaging/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build
-make -j4
-```
-
 ## Get gnomon & gnomon-plugins
 
 ### gnomon
@@ -215,35 +130,35 @@ make -j4
 To select light or dark theme for gnomon set the compilation flag ` -DGNOME_STYLE="ONELIGHT"|"ONEDARK"`.
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon.git
 cd gnomon
 git checkout develop
 mkdir build
 cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -DdtkImaging_DIR=$HOME/Development/dtk-imaging/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build -DGNOMON_STYLE:STRING=ONEDARK
+cmake .. -DGNOMON_STYLE:STRING=ONEDARK
 make -j4
 ```
 
 ### gnomon-plugins
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-plugins.git
 cd gnomon-plugins
 git checkout develop
 mkdir build
 cd build
-cmake .. -Ddtk_DIR=$HOME/Development/dtk/build -Dgnomon_DIR=$HOME/Development/gnomon/build -DVTK_DIR=$HOME/Development/VTK-8.0.1/build
+cmake .. -Dgnomon_DIR=$HOME/Development/gnomon/build
 make -j4
 ```
 
 ### gnomon-scripts
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-scripts.git
 ```
@@ -251,7 +166,7 @@ git clone git@gitlab.inria.fr:gnomon/gnomon-scripts.git
 ### gnomon-compositions
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-compositions.git
 ```
@@ -259,7 +174,7 @@ git clone git@gitlab.inria.fr:gnomon/gnomon-compositions.git
 ### gnomon-data
 
 ``` shell
-source activate gnomon
+source activate gnomon-1.x.x
 cd $HOME/Development
 git clone git@gitlab.inria.fr:gnomon/gnomon-data.git
 ```
@@ -271,32 +186,11 @@ In the `$HOME/.config` folder, one has to create a folder `inria`, then one has 
 ``` shell
 touch dtk-composer.ini
 touch dtk-imaging.ini
+touch dtk-script.ini
 touch gnomon-core.ini
 ```
 
-### Composer config
-
-Edit `dtk-composer.ini` file and add the following lines:
-
-``` shell
-[extension]
-plugins=$HOME/Development/dtk-imaging/build/plugins:$HOME/Development/dtk-discrete-geometry/build/plugins:$HOME/Development/gnomon/build/plugins
-```
-
-This will enable the composer embedded into gnomon application to find node extensions provided by gnomon, dtk-imaging and dtk-discrete-geometry.
-
-### dtk-imaging config
-
-Edit `dtk-imaging.ini` file and add the following lines:
-
-``` shell
-[imaging]
-plugins=$HOME/Development/dtk-plugins-imaging/build/lib
-```
-
-This will tell to dtk-imaging layer where are the plugins that implements its abstractions.
-
-### gnomon config
+### Gnomon config
 
 Edit `gnomon-core.ini` file and add the following lines:
 
@@ -307,24 +201,24 @@ plugins=$HOME/Development/gnomon-plugins/build/lib
 
 **Optional: Enable jupyter console by default in Gnomon** (instead of python)
 
-You need to add some Configuration lines to `dtk-script.ini`.
+You need to add some configuration lines to `dtk-script.ini`.
 
 If using an install from sources:
 ``` shell
 [modules]
-path=$HOME/Development/dtk/build/modules:$HOME/Development/dtk/build/lib:$HOME/Development/dtk-imaging/build/modules:$HOME/Development/dtk-plugins-imaging/build/modules:$HOME/Development/dtk-plugins-imaging/src/Python:$HOME/Development/gnomon/build/modules:$HOME/Development/gnomon/build-conda/lib:$HOME/Development/gnomon-plugins/src/Python
+path=$HOME/Development/gnomon/build/lib/python2.7/site-packages/:$HOME/Development/gnomon-plugins/src/Python/
 
 [init]
-script=$HOME/Development/gnomon-scripts/create_jupyter_console.py
+script=$HOME/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
 ```
 
-If using an install from Conda:
+If using a Gnomon install from Conda:
 ``` shell
 [modules]
-path=$HOME/Development/dtk/build-conda/modules:$HOME/Development/dtk/build/lib:$HOME/Development/dtk-imaging/build/modules:$HOME/Development/dtk-plugins-imaging/build/modules:$HOME/Development/dtk-plugins-imaging/src/Python:$HOME/Development/gnomon/build/modules:$HOME/Development/gnomon/build-conda/lib:$HOME/Development/gnomon-plugins/src/Python
+path=$HOME/Development/gnomon/build-conda/lib/python2.7/site-packages/:$HOME/Development/gnomon-plugins/src/Python
 
 [init]
-script=$HOME/Development/gnomon-scripts/create_jupyter_console.py
+script=$HOME/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
 ```
 
 ## Launch gnomonGrowthSimulator
@@ -351,7 +245,7 @@ Omero depens on ICE (https://zeroc.com/products/ice)
 For some linux flavors, need to recompile from source https://github.com/zeroc-ice/ice
 
 ``` shell
-$ source activate gnomon
+$ source activate gnomon-1.x.x
 $ git clone -b 3.7 https://github.com/zeroc-ice/ice.git
 $ make
 $ make install
@@ -377,7 +271,7 @@ Prérequisite:
 WARNING: omero-5.2.7 DOES NOT BUILD with java9 !!!!!
 
 ``` shell
-$ source activate gnomon
+$ source activate gnomon-1.x.x
 $ wget http://downloads.openmicroscopy.org/omero/5.2.7/artifacts/openmicroscopy-5.2.7.zip
 $ unzip openmicroscopy-5.2.7.zip
 $ cd openmicroscopy-5.2.7
