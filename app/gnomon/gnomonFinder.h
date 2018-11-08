@@ -224,7 +224,7 @@ private:
 
 class gnomonFinderPrivate;
 
-class gnomonFinder : public QWidget
+class gnomonFinder : public QFrame
 {
     Q_OBJECT
 
