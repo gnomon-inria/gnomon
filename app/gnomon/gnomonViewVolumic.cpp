@@ -147,7 +147,8 @@ public:
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
 
 public:
-    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
+    gnomonImagesSerieReaderCommand *image_reader_command_inr = nullptr;
+    gnomonImagesSerieReaderCommand *image_reader_command_czi = nullptr;
 
 public:
     gnomonViewVolumicOverlay *export_button = nullptr;
@@ -277,8 +278,6 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
-    Q_ASSERT(d->image_reader_command);
-
     d->slider = new QSlider(this);
     d->slider->setObjectName("prout");
     d->slider->setOrientation(Qt::Vertical);
@@ -310,8 +309,11 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
 {
-    if (d->image_reader_command)
-        delete d->image_reader_command;
+    if (d->image_reader_command_inr)
+        delete d->image_reader_command_inr;
+
+    if (d->image_reader_command_czi)
+        delete d->image_reader_command_czi;
 
     delete d;
 }
@@ -401,25 +403,37 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-
         this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
-
     } else {
+        gnomonImagesSerieReaderCommand *command = nullptr;
 
-        if(!d->image_reader_command)
-            d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-        d->image_reader_command->setPath(path.remove("file://"));
-        d->image_reader_command->redo();
-
-        dtkImage *img = d->image_reader_command->next();
-
-        if (!img) {
-            qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-            event->ignore();
-            return;
+        if(path.endsWith("inr") || path.endsWith("inr.gz")) {
+            if(!d->image_reader_command_inr)
+                d->image_reader_command_inr = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+            command = d->image_reader_command_inr;
         }
 
-        this->setImage(img);
+        if(path.endsWith("czi")) {
+            if(!d->image_reader_command_czi)
+                d->image_reader_command_czi = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
+            command = d->image_reader_command_czi;
+        }
+
+        if(command) {
+            command->setPath(path.remove("file://"));
+            command->redo();
+            dtkImage *img = command->next();
+
+            if (!img) {
+                qWarning() << Q_FUNC_INFO << "Resulting image is void.";
+                event->ignore();
+                return;
+            }
+
+            this->setImage(img);
+        } else {
+            qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
+        }
     }
 
     // ///////////////////////////////////////////////////////////////

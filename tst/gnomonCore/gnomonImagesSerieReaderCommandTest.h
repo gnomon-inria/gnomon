@@ -15,8 +15,10 @@ private slots:
     void init(void);
 
 private slots:
-    void redo(void);
-    void undo(void);
+    void redoInr(void);
+    void undoInr(void);
+    void redoCzi(void);
+    void undoCzi(void);
 
 private slots:
     void cleanupTestCase(void);
