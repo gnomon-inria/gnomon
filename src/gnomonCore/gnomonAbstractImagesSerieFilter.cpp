@@ -12,8 +12,7 @@
 
 // Code:
 
-#include "gnomonCore.h"
-#include "gnomonAbstractMultiChannelImageData.h"
+#include "gnomonAbstractImagesSerieFilter.h"
 
 #include "gnomonCore.h"
 
@@ -22,8 +21,8 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMultiChannelImageData, multiChannelImageData, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractImagesSerieFilter, imagesSerieFilter, gnomonCore);
 }
 
 //
-// gnomonMultiChannelImageData.cpp ends here
+// gnomonAbstractImagesSerieFilter.cpp ends here

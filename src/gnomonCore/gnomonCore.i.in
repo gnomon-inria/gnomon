@@ -45,11 +45,9 @@
 #include <gnomonCore/gnomonAbstractCellImageFromMultiChannelImage.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 #include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 #include <gnomonCore/gnomonAbstractModel.h>
-#include <gnomonCore/gnomonAbstractMultiChannelImageData.h>
-#include <gnomonCore/gnomonAbstractMultiChannelImageFilter.h>
-#include <gnomonCore/gnomonAbstractMultiChannelImageReader.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCore.h>
@@ -60,7 +58,6 @@
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonIntensityImage.h>
-#include <gnomonCore/gnomonMultiChannelImage.h>
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
@@ -103,15 +100,15 @@
         qDebug("Fail to convert to vtkImageData*");
     }
 }
+
 %typemap(directorout) vtkImageData* {
 
-    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
+    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
 
     if ( $result == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
     }
 }
-
 
 %extend QVariant {
     void setValue(gnomonCellComplex *value) {
@@ -176,12 +173,10 @@
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellImageFromMultiChannelImage.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 %include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractModel.h>
-%include <gnomonCore/gnomonAbstractMultiChannelImageData.h>
-%include <gnomonCore/gnomonAbstractMultiChannelImageFilter.h>
-%include <gnomonCore/gnomonAbstractMultiChannelImageReader.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>
@@ -191,7 +186,6 @@
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonIntensityImage.h>
-%include <gnomonCore/gnomonMultiChannelImage.h>
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>

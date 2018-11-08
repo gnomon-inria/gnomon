@@ -39,20 +39,14 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
-# gnomonAbstractImagesSerieFilter
-# gnomonAbstractImagesSerieFilter.h
+  gnomonAbstractImagesSerieFilter
+  gnomonAbstractImagesSerieFilter.h
   gnomonAbstractImagesSerieReader
   gnomonAbstractImagesSerieReader.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
   gnomonAbstractModel
   gnomonAbstractModel.h
-  gnomonAbstractMultiChannelImageData
-  gnomonAbstractMultiChannelImageData.h
-  gnomonAbstractMultiChannelImageFilter
-  gnomonAbstractMultiChannelImageFilter.h
-  gnomonAbstractMultiChannelImageReader
-  gnomonAbstractMultiChannelImageReader.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractCommand
@@ -74,16 +68,12 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
-# gnomonImagesSerieFilterCommand
-# gnomonImagesSerieFilterCommand.h
+  gnomonImagesSerieFilterCommand
+  gnomonImagesSerieFilterCommand.h
   gnomonImagesSerieReaderCommand
   gnomonImagesSerieReaderCommand.h
   gnomonIntensityImage
   gnomonIntensityImage.h
-  gnomonMultiChannelImage
-  gnomonMultiChannelImage.h
-  gnomonMultiChannelImageReaderCommand
-  gnomonMultiChannelImageReaderCommand.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTypeDef
@@ -101,16 +91,12 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
-  gnomonAbstractCellImageFromMultiChannelImage.cpp
-# gnomonAbstractImagesSerieFilter.cpp
+  gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractModel.cpp
   gnomonAbstractIntensityImageData.cpp
-  gnomonAbstractMultiChannelImageData.cpp
-  gnomonAbstractMultiChannelImageFilter.cpp
-  gnomonAbstractMultiChannelImageReader.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
@@ -118,9 +104,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDiscreteDynamicForm.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
-# gnomonImagesSerieFilterCommand.cpp
+  gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
-  gnomonMultiChannelImageReaderCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp

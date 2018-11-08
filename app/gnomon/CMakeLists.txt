@@ -21,6 +21,7 @@ project(gnomon)
 set(${PROJECT_NAME}_HEADERS
   gnomonDropSite.h
   gnomonFinder.h
+  gnomonGridLayout.h
   gnomonImageManager.h
   gnomonMainWindow.h
   gnomonOverlayPane.h
@@ -36,6 +37,7 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonDropSite.cpp
   gnomonFinder.cpp
+  gnomonGridLayout.cpp
   gnomonImageManager.cpp
   gnomonMainWindow.cpp
   gnomonOverlayPane.cpp
