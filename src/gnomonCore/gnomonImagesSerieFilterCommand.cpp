@@ -47,6 +47,11 @@ void gnomonImagesSerieFilterCommand::setImage(dtkImage* image)
     d->image = image;
 }
 
+double gnomonImagesSerieFilterCommand::time(void)
+{
+    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->time();
+}
+
 dtkImage *gnomonImagesSerieFilterCommand::at(double t)
 {
     return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->at(t);

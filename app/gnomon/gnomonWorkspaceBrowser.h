@@ -26,9 +26,7 @@ public:
 
 public slots:
     void replaceChannels(QStringList);
-
-signals:
-    void channelChanged(QString);
+    void replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

@@ -378,6 +378,19 @@ void gnomonViewVolumic::onSliceChanged(int slice)
     d->slider->setValue(slice);
 }
 
+void gnomonViewVolumic::onChannelChanged(const QString& channel)
+{
+    if(!d->image_reader_command_czi) {
+        return;
+    }
+    dtkImage *img = d->image_reader_command_czi->at(d->image_reader_command_czi->time(), channel);
+    if (!img) {
+        qWarning() << Q_FUNC_INFO << "Resulting image is void.";
+        return;
+    }
+    this->setImage(img);
+}
+
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasText()) {

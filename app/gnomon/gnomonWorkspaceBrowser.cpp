@@ -52,9 +52,10 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
 
     d->channels_list = new QListWidget();
 
-    connect(d->channels_list, &QListWidget::currentItemChanged, [=] (QListWidgetItem *current_item, QListWidgetItem *previous_item) {
-        emit channelChanged(current_item->text());
-    });
+    connect(d->channels_list, &QListWidget::currentItemChanged, this, &gnomonWorkspaceBrowser::replaceChannel);
+    // ;[=] (QListWidgetItem *current_item, QListWidgetItem *previous_item) {
+    //     emit channelChanged(current_item->text());
+    // });
 
     QFormLayout *pane_item_channels_layout = new QFormLayout;
     pane_item_channels_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
@@ -108,6 +109,11 @@ void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
     qDebug() << channels_list;
     d->channels_list->clear();
     d->channels_list->addItems(channels_list);
+}
+
+void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item)
+{
+    d->browse_view->onChannelChanged(current_item->text());
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
