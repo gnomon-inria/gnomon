@@ -29,6 +29,8 @@ public:
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(parent)
 {
+    setObjectName(QString("Browser"));
+    
     d = new gnomonWorkspaceBrowserPrivate;
 
     d->finder = new gnomonFinder(this);

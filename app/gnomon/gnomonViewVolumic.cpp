@@ -15,6 +15,11 @@
 #include "gnomonImageManager.h"
 #include "gnomonViewVolumic.h"
 
+#include "gnomonWorkspaceBrowser.h"
+#include "gnomonWorkspaceFusion.h"
+#include "gnomonWorkspaceSegmentation.h"
+#include "gnomonWorkspacePreprocess.h"
+
 #include <gnomonStyle>
 #include <gnomonFonts>
 
@@ -252,7 +257,22 @@ void gnomonViewVolumicPrivate::exportToManager(void)
     if(!this->image)
         return;
 
-    gnomonImageManager::instance()->addImage(this->image);
+    QWidget *parent = this->parentWidget();
+    while(!dynamic_cast< QStackedWidget *>(parent))
+    { parent = parent->parentWidget(); }
+
+    QStackedWidget *stack = dynamic_cast< QStackedWidget * >(parent);
+    if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
+    { gnomonImageManager::instance()->addImage(this->image, Qt::black); }
+    else if(gnomonWorkspaceFusion* workspace = dynamic_cast<gnomonWorkspaceFusion *>(stack->currentWidget()))
+    { gnomonImageManager::instance()->addImage(this->image, Qt::red); }
+    else if(gnomonWorkspaceSegmentation* workspace = dynamic_cast<gnomonWorkspaceSegmentation *>(stack->currentWidget()))
+    { gnomonImageManager::instance()->addImage(this->image, Qt::green); }
+    else if(gnomonWorkspacePreprocess* workspace = dynamic_cast<gnomonWorkspacePreprocess *>(stack->currentWidget()))
+    { gnomonImageManager::instance()->addImage(this->image, Qt::blue); }
+    else
+    { gnomonImageManager::instance()->addImage(this->image, Qt::white); }
+
 }
 
 QSize gnomonViewVolumicPrivate::sizeHint(void) const

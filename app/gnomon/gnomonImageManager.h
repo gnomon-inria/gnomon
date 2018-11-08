@@ -36,7 +36,7 @@ public:
     QSize sizeHint(void) const;
 
 public slots:
-    void addImage(Image);
+    void addImage(Image, Qt::GlobalColor);
 
 public:
     Image get(int index);

@@ -69,7 +69,7 @@ public:
     ~gnomonImageManagerPrivate(void);
 
 public:
-    gnomonImageManagerItem *create(gnomonImageManager::Image);
+    gnomonImageManagerItem *create(gnomonImageManager::Image, Qt::GlobalColor);
 
 public:
     QHash<gnomonImageManagerItem *, gnomonImageManager::Image> images;
@@ -95,7 +95,7 @@ gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 
 }
 
-gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image)
+gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image, Qt::GlobalColor color)
 {
     if(!image)
         return nullptr;
@@ -124,6 +124,15 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Im
             ++b;
         }
     }
+    
+    double ratio = 20.;
+    int margin = 5;
+
+    QPainter painter(&i);
+    painter.setBrush(color);
+    painter.setPen(QPen(color, 3.0));
+    painter.drawRoundedRect(margin, margin, w/ratio, h/ratio, 5, 5);      
+    painter.end();
 
     return new gnomonImageManagerItem(QPixmap::fromImage(i), this);
 }
@@ -145,9 +154,9 @@ QSize gnomonImageManager::sizeHint(void) const
     return QSize(200, 140);
 }
 
-void gnomonImageManager::addImage(gnomonImageManager::Image image)
+void gnomonImageManager::addImage(gnomonImageManager::Image image, Qt::GlobalColor color)
 {
-    gnomonImageManagerItem *item = d->create(image);
+    gnomonImageManagerItem *item = d->create(image, color);
 
     d->images.insert(item, image);
     d->contents->layout()->addWidget(item);
