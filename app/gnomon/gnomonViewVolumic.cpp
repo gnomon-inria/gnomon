@@ -247,10 +247,7 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->renderer2D->InteractiveOn();
         this->renderer2D->DrawOn();
 
-        this->slider->setValue(this->slider->value());
-
-        this->slider->setValue(this->slider->value() + 1);
-        this->slider->setValue(this->slider->value() - 1);
+        q->render();
     });
 
     connect(this->renderer3D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
@@ -276,29 +273,34 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->renderer3D->InteractiveOn();
         this->renderer3D->DrawOn();
 
-        this->slider->setValue(this->slider->value() + 1);
-        this->slider->setValue(this->slider->value() - 1);
+        q->render();
     });
 
-    connect(this->renderer2D_XY, &gnomonViewVolumicOverlay::clicked, [this] () {
+    connect(this->renderer2D_XY, &gnomonViewVolumicOverlay::clicked, [=] () {
 
         this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY.png");
         this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
         this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
+
+        this->setSliceOrientation(SLICE_ORIENTATION_XY);
     });
 
-    connect(this->renderer2D_XZ, &gnomonViewVolumicOverlay::clicked, [this] () {
+    connect(this->renderer2D_XZ, &gnomonViewVolumicOverlay::clicked, [=] () {
 
         this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
         this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ.png");
         this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
+
+        this->setSliceOrientation(SLICE_ORIENTATION_XZ);
     });
 
-    connect(this->renderer2D_YZ, &gnomonViewVolumicOverlay::clicked, [this] () {
+    connect(this->renderer2D_YZ, &gnomonViewVolumicOverlay::clicked, [=] () {
 
         this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
         this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
         this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ.png");
+
+        this->setSliceOrientation(SLICE_ORIENTATION_YZ);
     });
 }
 
@@ -500,6 +502,11 @@ void gnomonViewVolumic::setImage(dtkImage *i)
 dtkImage *gnomonViewVolumic::image(void)
 {
     return d->image;
+}
+
+void gnomonViewVolumic::render(void)
+{
+    d->GetInteractor()->Render();
 }
 
 void gnomonViewVolumic::onSliceChanged(int slice)

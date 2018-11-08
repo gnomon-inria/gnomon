@@ -33,6 +33,9 @@ public:
     dtkImage *image(void);
 
 public slots:
+    void render(void);
+
+public slots:
     void onSliceChanged(int);
 
 protected:
