@@ -77,6 +77,7 @@ class gnomonOverlayPanePrivate
 {
 public:
     int width;
+    int size = 320;
 
 public:
     bool on = false;
@@ -129,6 +130,10 @@ gnomonOverlayPane::gnomonOverlayPane(QWidget *parent) : QFrame(parent)
     this->setAttribute(Qt::WA_TranslucentBackground);
 
     connect(d->toggle, SIGNAL(toggle()), this, SLOT(toggle()));
+
+    if(qApp->screens().first()->size().width() > 2000) {
+        d->size = 620;
+    }
 }
 
 gnomonOverlayPane::~gnomonOverlayPane(void)
@@ -155,8 +160,8 @@ void gnomonOverlayPane::toggle(void)
     if (d->deactivate)
         return;
 
-    qlonglong stt = d->on ? 320 :  20;
-    qlonglong end = d->on ?  20 : 320;
+    qlonglong stt = d->on ? d->size :  20;
+    qlonglong end = d->on ?  20     : d->size;
 
     if (d->animation->state() == QAbstractAnimation::Running) {
         d->animation->stop();
