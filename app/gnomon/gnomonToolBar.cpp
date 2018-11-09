@@ -17,6 +17,86 @@
 #include <gnomonFonts>
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonToolBarButton
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonToolBarButton : public QLabel
+{
+    Q_OBJECT
+
+public:
+     gnomonToolBarButton(QWidget *parent = nullptr);
+    ~gnomonToolBarButton(void);
+
+signals:
+    void createFusion(void);
+    void createSegmentation(void);
+    void createPreprocess(void);
+    void createRegistration(void);
+
+public slots:
+    void create(QAction *);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+private:
+    gnomonFontAwesome *font;
+
+private:
+    QMenu *menu;
+    QAction *action_fusion;
+    QAction *action_segmentation;
+    QAction *action_preprocess;
+    QAction *action_registration;
+};
+
+gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
+{
+    this->font = new gnomonFontAwesome(this);
+    this->font->initFontAwesome();
+    this->font->setDefaultOption("color", QColor("#ffffff"));
+
+    this->setAlignment(Qt::AlignCenter);
+    this->setPixmap(this->font->icon(fa::plussquare).pixmap(32, 32));
+    this->setFixedWidth(32);
+
+    this->menu = new QMenu(this);
+
+    this->action_fusion       = this->menu->addAction("Fusion");
+    this->action_segmentation = this->menu->addAction("Segmentation");
+    this->action_preprocess   = this->menu->addAction("Preprocess");
+    this->action_registration = this->menu->addAction("Registration");
+
+    connect(this->menu, SIGNAL(triggered(QAction *)), this, SLOT(create(QAction *)));
+}
+
+gnomonToolBarButton::~gnomonToolBarButton(void)
+{
+
+}
+
+void gnomonToolBarButton::create(QAction *action)
+{
+    if(action == this->action_fusion)
+        emit createFusion();
+
+    if(action == this->action_segmentation)
+        emit createSegmentation();
+
+    if(action == this->action_preprocess)
+        emit createPreprocess();
+
+    if(action == this->action_registration)
+        emit createRegistration();
+}
+
+void gnomonToolBarButton::mousePressEvent(QMouseEvent *event)
+{
+    this->menu->exec(event->globalPos());
+}
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonToolBarItem
 // ///////////////////////////////////////////////////////////////////
 
@@ -26,17 +106,24 @@ class gnomonToolBarItem : public QLabel
 
 public:
     gnomonToolBarItem(const QString& label, QWidget *parent) : QLabel(label, parent) {
+        static int id = 0;
+
+        this->index = id++;
+
         this->setAlignment(Qt::AlignCenter);
         this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
     };
 
 signals:
-    void clicked(void);
+    void clicked(int);
 
 protected:
     void mousePressEvent(QMouseEvent *) {
-        emit clicked();
+        emit clicked(this->index);
     }
+
+private:
+    int index = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -49,6 +136,7 @@ public:
     gnomonToolBarSeparator(QWidget *parent) : QLabel(parent) {
         this->font = new gnomonFontAwesome(this);
         this->font->initFontAwesome();
+        this->font->setDefaultOption("color", QColor("#777777"));
 
         this->setAlignment(Qt::AlignCenter);
         this->setPixmap(this->font->icon(fa::chevronright).pixmap(32, 32));
@@ -71,38 +159,33 @@ public:
     gnomonToolBar *q;
 
 public:
-    gnomonToolBarItem *browse_workspace;
-    gnomonToolBarItem *fusion_workspace;
-    gnomonToolBarItem *segmtt_workspace;
-    gnomonToolBarItem *prepro_workspace;
-    gnomonToolBarItem *regist_workspace;
+    QList<gnomonToolBarItem *> items;
+
+public:
+    gnomonToolBarButton *button;
+
+public:
+    QHBoxLayout *layout;
 
 public slots:
-    void onItemClicked(void);
+    void onItemClicked(int);
 };
 
-void gnomonToolBarPrivate::onItemClicked(void)
+void gnomonToolBarPrivate::onItemClicked(int index)
 {
-    if(sender() == this->browse_workspace)
-        q->emit indexChanged(0);
+    q->emit indexChanged(index);
 
-    if(sender() == this->fusion_workspace)
-        q->emit indexChanged(1);
-
-    if(sender() == this->segmtt_workspace)
-        q->emit indexChanged(2);
-
-    if(sender() == this->prepro_workspace)
-        q->emit indexChanged(3);
-
-    if(sender() == this->regist_workspace)
-        q->emit indexChanged(4);
-
-    this->browse_workspace->setStyleSheet(QString("color: %1;").arg(sender() == this->browse_workspace ? "#ffffff" : "#777777"));
-    this->fusion_workspace->setStyleSheet(QString("color: %1;").arg(sender() == this->fusion_workspace ? "#ffffff" : "#777777"));
-    this->segmtt_workspace->setStyleSheet(QString("color: %1;").arg(sender() == this->segmtt_workspace ? "#ffffff" : "#777777"));
-    this->prepro_workspace->setStyleSheet(QString("color: %1;").arg(sender() == this->prepro_workspace ? "#ffffff" : "#777777"));
-    this->regist_workspace->setStyleSheet(QString("color: %1;").arg(sender() == this->regist_workspace ? "#ffffff" : "#777777"));
+    for(gnomonToolBarItem *item : items)
+        if(item->text() == "Fusion")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::fusion_color.red()).arg(gnomonToolBar::fusion_color.green()).arg(gnomonToolBar::fusion_color.blue()));
+        else if(item->text() == "Segmentation")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
+        else if(item->text() == "Preprocess")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
+        else if(item->text() == "Registration")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
+        else if(item->text() == "Browse")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::browser_color.red()).arg(gnomonToolBar::browser_color.green()).arg(gnomonToolBar::browser_color.blue()));
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -114,32 +197,23 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     d = new gnomonToolBarPrivate;
     d->q = this;
 
-    d->browse_workspace = new gnomonToolBarItem("Browse", this);
-    d->fusion_workspace = new gnomonToolBarItem("Fusion", this);
-    d->fusion_workspace->setStyleSheet("color: #777777");
-    d->segmtt_workspace = new gnomonToolBarItem("Segmentation", this);
-    d->segmtt_workspace->setStyleSheet("color: #777777");
-    d->prepro_workspace = new gnomonToolBarItem("Preprocess", this);
-    d->prepro_workspace->setStyleSheet("color: #777777");
-    d->regist_workspace = new gnomonToolBarItem("Registering", this);
-    d->regist_workspace->setStyleSheet("color: #777777");
+    gnomonToolBarItem *item = new gnomonToolBarItem("Browse", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(browser_color.red()).arg(browser_color.green()).arg(browser_color.blue()));
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(d->browse_workspace);
-    layout->addWidget(new gnomonToolBarSeparator(this));
-    layout->addWidget(d->fusion_workspace);
-    layout->addWidget(new gnomonToolBarSeparator(this));
-    layout->addWidget(d->segmtt_workspace);
-    layout->addWidget(new gnomonToolBarSeparator(this));
-    layout->addWidget(d->prepro_workspace);
-    layout->addWidget(new gnomonToolBarSeparator(this));
-    layout->addWidget(d->regist_workspace);
+    gnomonToolBarButton *button = new gnomonToolBarButton(this);
 
-    connect(d->browse_workspace, SIGNAL(clicked()), d, SLOT(onItemClicked()));
-    connect(d->fusion_workspace, SIGNAL(clicked()), d, SLOT(onItemClicked()));
-    connect(d->segmtt_workspace, SIGNAL(clicked()), d, SLOT(onItemClicked()));
-    connect(d->prepro_workspace, SIGNAL(clicked()), d, SLOT(onItemClicked()));
-    connect(d->regist_workspace, SIGNAL(clicked()), d, SLOT(onItemClicked()));
+    d->layout = new QHBoxLayout(this);
+    d->layout->addWidget(item);
+    d->layout->addWidget(button);
+
+    d->items << item;
+
+    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+
+    connect(button, SIGNAL(createFusion()), this, SLOT(onCreateFusion()));
+    connect(button, SIGNAL(createSegmentation()), this, SLOT(onCreateSegmentation()));
+    connect(button, SIGNAL(createPreprocess()), this, SLOT(onCreatePreprocess()));
+    connect(button, SIGNAL(createRegistration()), this, SLOT(onCreateRegistration()));
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
@@ -153,6 +227,74 @@ QSize gnomonToolBar::sizeHint(void) const
 {
     return QSize(200, 24);
 }
+
+void gnomonToolBar::onCreateFusion(void)
+{
+    gnomonToolBarItem *item = new gnomonToolBarItem("Fusion", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(fusion_color.red()).arg(fusion_color.green()).arg(fusion_color.blue()));
+
+    d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
+    d->layout->insertWidget(d->layout->count()-1, item);
+
+    d->items << item;
+
+    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+
+    emit createFusion();
+}
+
+void gnomonToolBar::onCreateSegmentation(void)
+{
+    gnomonToolBarItem *item = new gnomonToolBarItem("Segmentation", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(segmentation_color.red()).arg(segmentation_color.green()).arg(segmentation_color.blue()));
+
+    d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
+    d->layout->insertWidget(d->layout->count()-1, item);
+
+    d->items << item;
+
+    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+
+    emit createSegmentation();
+}
+
+void gnomonToolBar::onCreatePreprocess(void)
+{
+    gnomonToolBarItem *item = new gnomonToolBarItem("Preprocess", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(preprocess_color.red()).arg(preprocess_color.green()).arg(preprocess_color.blue()));
+
+    d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
+    d->layout->insertWidget(d->layout->count()-1, item);
+
+    d->items << item;
+
+    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+
+    emit createPreprocess();
+}
+
+void gnomonToolBar::onCreateRegistration(void)
+{
+    gnomonToolBarItem *item = new gnomonToolBarItem("Registration", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(registration_color.red()).arg(registration_color.green()).arg(registration_color.blue()));
+
+    d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
+    d->layout->insertWidget(d->layout->count()-1, item);
+
+    d->items << item;
+
+    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+
+    emit createRegistration();
+}
+
+// ///////////////////////////////////////////////////////////////////
+
+QColor gnomonToolBar::browser_color = QColor("#ff3b30");
+QColor gnomonToolBar::fusion_color = QColor("#ff9500");
+QColor gnomonToolBar::registration_color = QColor("#ffcc00");
+QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
+QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
 
 // ///////////////////////////////////////////////////////////////////
 

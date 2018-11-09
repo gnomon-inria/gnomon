@@ -23,8 +23,16 @@
 
 #include <gnomonStyle>
 
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
 class gnomonMainWindowPrivate
 {
+public:
+    void setdw(void);
+    void setup(void);
+
 public:
     gnomonToolBar *menu;
 
@@ -33,20 +41,38 @@ public:
 
 public:
     gnomonImageManager *manager;
+
+public:
+    gnomonMainWindow *q;
 };
+
+void gnomonMainWindowPrivate::setup(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    q->move(settings.value("position").toPoint());
+    q->resize(settings.value("size",QSize(1024,320)).toSize());
+}
+
+void gnomonMainWindowPrivate::setdw(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    settings.setValue("position", q->pos());
+    settings.setValue("size", q->size());
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     d = new gnomonMainWindowPrivate;
+    d->q = this;
 
     d->manager = gnomonImageManager::instance();
 
     d->stack = new QStackedWidget(this);
     d->stack->addWidget(new gnomonWorkspaceBrowser(this));
-    d->stack->addWidget(new gnomonWorkspaceFusion(this));
-    d->stack->addWidget(new gnomonWorkspaceSegmentation(this));
-    d->stack->addWidget(new gnomonWorkspacePreprocess(this));
-    d->stack->addWidget(new gnomonWorkspaceRegistration(this));
     d->stack->setCurrentIndex(0);
 
     d->menu = new gnomonToolBar(this);
@@ -63,12 +89,40 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
 
+    connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {
+        int index = d->stack->currentIndex();
+        d->stack->addWidget(new gnomonWorkspaceFusion(this));
+        d->stack->setCurrentIndex(index);
+    });
+
+    connect(d->menu, &gnomonToolBar::createSegmentation, [=] (void) {
+        int index = d->stack->currentIndex();
+        d->stack->addWidget(new gnomonWorkspaceSegmentation(this));
+        d->stack->setCurrentIndex(index);
+    });
+
+    connect(d->menu, &gnomonToolBar::createPreprocess, [=] (void) {
+        int index = d->stack->currentIndex();
+        d->stack->addWidget(new gnomonWorkspacePreprocess(this));
+        d->stack->setCurrentIndex(index);
+    });
+
+    connect(d->menu, &gnomonToolBar::createRegistration, [=] (void) {
+        int index = d->stack->currentIndex();
+        d->stack->addWidget(new gnomonWorkspaceRegistration(this));
+        d->stack->setCurrentIndex(index);
+    });
+
     this->setCentralWidget(central);
     this->setStyleSheet(gnomonStyleSheet());
+
+    d->setup();
 }
 
 gnomonMainWindow::~gnomonMainWindow(void)
 {
+    d->setdw();
+
     delete d;
 }
 

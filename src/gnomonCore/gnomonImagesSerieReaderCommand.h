@@ -14,8 +14,10 @@ public:
 
 public:
     void setPath(const QString& path);
-    dtkImage *at(double t);
+    double time(void);
+    dtkImage *at(double t, const QString& channel = "");
     dtkImage *next(void);
+    QStringList channels(void);
 
 private:
     class gnomonImagesSerieReaderCommandPrivate *d;

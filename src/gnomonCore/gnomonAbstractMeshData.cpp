@@ -13,17 +13,15 @@
 // Code:
 
 #include "gnomonCore.h"
-#include "gnomonAbstractMultiChannelImageData.h"
-
-#include "gnomonCore.h"
+#include "gnomonAbstractMeshData.h"
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMultiChannelImageData, multiChannelImageData, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractMeshData, meshdata, gnomonCore);
 }
 
 //
-// gnomonMultiChannelImageData.cpp ends here
+// gnomonAbstractMeshData.cpp ends here

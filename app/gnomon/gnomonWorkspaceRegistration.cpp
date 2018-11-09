@@ -87,5 +87,10 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
     delete d;
 }
 
+void gnomonWorkspaceRegistration::apply(void)
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
 //
 // gnomonWorkspaceRegistration.cpp ends here

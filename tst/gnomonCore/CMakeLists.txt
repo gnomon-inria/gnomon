@@ -16,7 +16,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReaderTest.h
   gnomonImagesFusionCommandTest.h
   gnomonImagesSerieReaderCommandTest.h
-  gnomonMultiChannelImageReaderCommandTest.h
   gnomonSystemScenarioTest.h)
 
 set(${PROJECT_NAME}_SOURCES
@@ -25,7 +24,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFileSystemFormReaderTest.cpp
   gnomonImagesFusionCommandTest.cpp
   gnomonImagesSerieReaderCommandTest.cpp
-  gnomonMultiChannelImageReaderCommandTest.cpp
   gnomonSystemScenarioTest.cpp)
 
 ## ###################################################################
@@ -63,5 +61,4 @@ add_test(gnomonDiscreteDynamicFormTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${P
 add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
 add_test(gnomonImagesFusionCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesFusionCommandTest)
 add_test(gnomonImagesSerieReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesSerieReaderCommandTest)
-add_test(gnomonMultiChannelImageReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonMultiChannelImageReaderCommandTest)
 add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)

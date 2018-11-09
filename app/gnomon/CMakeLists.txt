@@ -21,6 +21,7 @@ project(gnomon)
 set(${PROJECT_NAME}_HEADERS
   gnomonDropSite.h
   gnomonFinder.h
+  gnomonGridLayout.h
   gnomonImageManager.h
   gnomonMainWindow.h
   gnomonOverlayPane.h
@@ -36,6 +37,7 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonDropSite.cpp
   gnomonFinder.cpp
+  gnomonGridLayout.cpp
   gnomonImageManager.cpp
   gnomonMainWindow.cpp
   gnomonOverlayPane.cpp
@@ -48,13 +50,19 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspaceRegistration.cpp)
 
+set(${PROJECT_NAME}_SOURCES_QRC
+  gnomon.qrc)
+
 ## #################################################################
 ## Build rules
 ## #################################################################
 
+qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
+
 add_library(${PROJECT_NAME}_backend SHARED
   ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES})
+  ${${PROJECT_NAME}_SOURCES}
+  ${${PROJECT_NAME}_SOURCES_RCC})
 
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)

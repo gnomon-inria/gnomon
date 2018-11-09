@@ -14,6 +14,8 @@
 
 #include "gnomonFinder.h"
 #include "gnomonWorkspaceBrowser.h"
+#include "gnomonOverlayPane.h"
+#include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
 
 class gnomonWorkspaceBrowserPrivate
@@ -25,6 +27,9 @@ public:
 
 public:
     gnomonViewVolumic *browse_view;
+
+public:
+    QListWidget *channels_list = nullptr;
 };
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(parent)
@@ -42,6 +47,25 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
     d->toolbar->setPath(QDir::currentPath());
 
     d->browse_view = new gnomonViewVolumic(this);
+
+    connect(d->browse_view, &gnomonViewVolumic::channelsChanged, this, &gnomonWorkspaceBrowser::replaceChannels);
+
+    d->channels_list = new QListWidget();
+
+    connect(d->channels_list, &QListWidget::currentItemChanged, this, &gnomonWorkspaceBrowser::replaceChannel);
+
+    QFormLayout *pane_item_channels_layout = new QFormLayout;
+    pane_item_channels_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    pane_item_channels_layout->addRow(d->channels_list);
+
+    gnomonOverlayPaneItem *pane_item_channels = new gnomonOverlayPaneItem;
+    pane_item_channels->setTitle("Channels");
+    pane_item_channels->addLayout(pane_item_channels_layout);
+    pane_item_channels->toggle();
+
+    gnomonOverlayPane *pane = new gnomonOverlayPane(this);
+    pane->addWidget(pane_item_channels);
+    pane->toggle();
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
@@ -71,6 +95,18 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
 
     this->addWidget(finder);
     this->addWidget(d->browse_view);
+    this->addWidget(pane);
+}
+
+void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
+{
+    d->channels_list->clear();
+    d->channels_list->addItems(channels_list);
+}
+
+void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item)
+{
+    d->browse_view->onChannelChanged(current_item->text());
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
