@@ -35,7 +35,7 @@ public:
 
 gnomonCellImageFromImageNode::gnomonCellImageFromImageNode(void) : dtkComposerNodeObject<gnomonAbstractCellImageFromImage>(), d(new gnomonCellImageFromImageNodePrivate())
 {
-    this->setFactory(gnomonCore::cellimageFromImage::pluginFactory());
+    this->setFactory(gnomonCore::cellImageFromImage::pluginFactory());
 
     this->appendReceiver(&d->image_in);
     this->appendReceiver(&d->use_margins);

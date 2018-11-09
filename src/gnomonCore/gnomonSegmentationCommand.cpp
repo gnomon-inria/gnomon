@@ -23,7 +23,7 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action = gnomonCore::cellimageFromImage::pluginFactory().create(key);
+    gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
 
     Q_ASSERT(gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action);
 }
