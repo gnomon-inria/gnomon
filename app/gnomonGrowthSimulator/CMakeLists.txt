@@ -144,6 +144,13 @@ endif(DTK_BUILD_WRAPPERS AND SIP_FOUND)
 ## Install rules - targets
 ## ###################################################################
 
+install(TARGETS ${PROJECT_NAME}_backend
+  EXPORT gnomonDepends
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  )
+
 install(TARGETS ${PROJECT_NAME}
    BUNDLE DESTINATION bin
   RUNTIME DESTINATION bin)
