@@ -34,13 +34,11 @@ public:
     gnomonSegmentationCommand *segmentation = nullptr;
 
 public:
-    QSlider *slider_1;
-    QSlider *slider_2;
-    QSlider *slider_3;
-    QSlider *slider_4;
-
-public:
-    QSpinBox *box;
+    QDoubleSpinBox *box_h_min;
+    QDoubleSpinBox *box_gaussian_sigma;
+    QDoubleSpinBox *box_seg_gaussian_sigma;
+    QDoubleSpinBox *box_vol_threshold;
+    QDoubleSpinBox *box_background_level;
 };
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWidget(parent)
@@ -50,42 +48,38 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWid
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
 
-    d->slider_1 = new QSlider(this);
-    d->slider_1->setOrientation(Qt::Horizontal);
-    d->slider_1->setMinimum(1);
-    d->slider_1->setMaximum(255);
-    d->slider_1->setValue(2);
+    d->box_h_min = new QDoubleSpinBox(this);
+    d->box_h_min->setMinimum(1.);
+    d->box_h_min->setMaximum(255.);
+    d->box_h_min->setValue(2.);
 
-    d->slider_2 = new QSlider(this);
-    d->slider_2->setOrientation(Qt::Horizontal);
-    d->slider_2->setMinimum(0);
-    d->slider_2->setMaximum(255);
-    d->slider_2->setValue(0.5);
+    d->box_gaussian_sigma = new QDoubleSpinBox(this);
+    d->box_gaussian_sigma->setMinimum(0.);
+    d->box_gaussian_sigma->setMaximum(255.);
+    d->box_gaussian_sigma->setValue(0.5);
 
-    d->slider_3 = new QSlider(this);
-    d->slider_3->setOrientation(Qt::Horizontal);
-    d->slider_3->setMinimum(1);
-    d->slider_3->setMaximum(255);
-    d->slider_3->setValue(0.25);
+    d->box_seg_gaussian_sigma = new QDoubleSpinBox(this);
+    d->box_seg_gaussian_sigma->setMinimum(1.);
+    d->box_seg_gaussian_sigma->setMaximum(255.);
+    d->box_seg_gaussian_sigma->setValue(0.25);
 
-    d->slider_4 = new QSlider(this);
-    d->slider_4->setOrientation(Qt::Horizontal);
-    d->slider_4->setMinimum(0);
-    d->slider_4->setMaximum(10000);
-    d->slider_4->setValue(1000);
+    d->box_vol_threshold = new QDoubleSpinBox(this);
+    d->box_vol_threshold->setMinimum(0.);
+    d->box_vol_threshold->setMaximum(10000.);
+    d->box_vol_threshold->setValue(1000.);
 
-    d->box = new QSpinBox(this);
-    d->box->setMinimum(0);
-    d->box->setMaximum(1000);
-    d->box->setValue(1);
+    d->box_background_level = new QDoubleSpinBox(this);
+    d->box_background_level->setMinimum(0.);
+    d->box_background_level->setMaximum(1000.);
+    d->box_background_level->setValue(1.);
 
     QFormLayout *pane_item_params_layout = new QFormLayout;
     pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    pane_item_params_layout->addRow("h_min", d->slider_1);
-    pane_item_params_layout->addRow("Gaussian Sigma", d->slider_2);
-    pane_item_params_layout->addRow("Segmentation Gaussian Sigma", d->slider_3);
-    pane_item_params_layout->addRow("Volume Threshold", d->slider_4);
-    pane_item_params_layout->addRow("Background Label", d->box);
+    pane_item_params_layout->addRow("h_min", d->box_h_min);
+    pane_item_params_layout->addRow("Gaussian Sigma", d->box_gaussian_sigma);
+    pane_item_params_layout->addRow("Segmentation Gaussian Sigma", d->box_seg_gaussian_sigma);
+    pane_item_params_layout->addRow("Volume Threshold", d->box_vol_threshold);
+    pane_item_params_layout->addRow("Background Label", d->box_background_level);
 
     gnomonOverlayPaneItem *pane_item_parameters = new gnomonOverlayPaneItem;
     pane_item_parameters->setTitle("Parameters");
@@ -128,11 +122,11 @@ void gnomonWorkspaceSegmentation::apply(void)
         d->segmentation = new gnomonSegmentationCommand("gnomonCellImageFromTimagetkSegmentation");
 
     d->segmentation->setImage(d->source->image().data());
-    d->segmentation->setParameter("h_min", d->slider_1->value());
-    d->segmentation->setParameter("gaussian_sigma", d->slider_2->value());
-    d->segmentation->setParameter("segmentation_gaussian_sigma", d->slider_3->value());
-    d->segmentation->setParameter("volume_threshold", d->slider_4->value());
-    d->segmentation->setParameter("background_label", d->box->value());
+    d->segmentation->setParameter("h_min", d->box_h_min->value());
+    d->segmentation->setParameter("gaussian_sigma", d->box_gaussian_sigma->value());
+    d->segmentation->setParameter("segmentation_gaussian_sigma", d->box_seg_gaussian_sigma->value());
+    d->segmentation->setParameter("volume_threshold", d->box_vol_threshold->value());
+    d->segmentation->setParameter("background_label", d->box_background_level->value());
 
     d->segmentation->redo();
 

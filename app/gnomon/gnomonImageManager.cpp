@@ -18,6 +18,9 @@
 
 #include <dtkImagingCore>
 
+#include <vtkDataArray.h>
+#include <vtkPointData.h>
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManagerItemButton
 // ///////////////////////////////////////////////////////////////////
@@ -187,6 +190,10 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
 
     delete converter;
 
+    double range[2];
+    o->GetPointData()->GetScalars()->GetRange(range);
+    double max = range[1];
+
     int w = o->GetDimensions()[0];
     int h = o->GetDimensions()[1];
     int d = o->GetDimensions()[2];
@@ -198,8 +205,26 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
     int z = d/2;
     for(int c = 0; c < w; ++c) {
         for(int r = 0; r < h; ++r) {
-            unsigned char *p = reinterpret_cast<unsigned char *>(o->GetScalarPointer(r, w-c-1, z));
-            *(b) = QColor(p[0], p[0], p[0]).rgb();
+            double v;
+
+            switch(image->storageType()) {
+             case QMetaType::UChar:
+                 v = reinterpret_cast<unsigned char *>(o->GetScalarPointer(r, w-c-1, z))[0];
+                 break;
+
+            case QMetaType::UShort:
+                v = reinterpret_cast<unsigned short *>(o->GetScalarPointer(r, w-c-1, z))[0];
+                break;
+
+            default:
+                v = 0;
+                qWarning() << Q_FUNC_INFO << "not implemented for " << image->storageType();
+                break;
+            }
+
+            v *= (255./max);
+
+            *(b) = QColor(v, v, v).rgb();
             ++b;
         }
     }
