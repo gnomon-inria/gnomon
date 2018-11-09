@@ -34,11 +34,11 @@ public:
     gnomonSegmentationCommand *segmentation = nullptr;
 
 public:
-    QSpinBox *box_h_min;
-    QSpinBox *box_gaussian_sigma;
-    QSpinBox *box_seg_gaussian_sigma;
-    QSpinBox *box_vol_threshold;
-    QSpinBox *box_background_level;
+    QDoubleSpinBox *box_h_min;
+    QDoubleSpinBox *box_gaussian_sigma;
+    QDoubleSpinBox *box_seg_gaussian_sigma;
+    QDoubleSpinBox *box_vol_threshold;
+    QDoubleSpinBox *box_background_level;
 };
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWidget(parent)
@@ -48,30 +48,30 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWid
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
 
-    d->box_h_min = new QSpinBox(this);
-    d->box_h_min->setMinimum(1);
-    d->box_h_min->setMaximum(255);
-    d->box_h_min->setValue(2);
+    d->box_h_min = new QDoubleSpinBox(this);
+    d->box_h_min->setMinimum(1.);
+    d->box_h_min->setMaximum(255.);
+    d->box_h_min->setValue(2.);
 
-    d->box_gaussian_sigma = new QSpinBox(this);
-    d->box_gaussian_sigma->setMinimum(0);
-    d->box_gaussian_sigma->setMaximum(255);
+    d->box_gaussian_sigma = new QDoubleSpinBox(this);
+    d->box_gaussian_sigma->setMinimum(0.);
+    d->box_gaussian_sigma->setMaximum(255.);
     d->box_gaussian_sigma->setValue(0.5);
 
-    d->box_seg_gaussian_sigma = new QSpinBox(this);
-    d->box_seg_gaussian_sigma->setMinimum(1);
-    d->box_seg_gaussian_sigma->setMaximum(255);
+    d->box_seg_gaussian_sigma = new QDoubleSpinBox(this);
+    d->box_seg_gaussian_sigma->setMinimum(1.);
+    d->box_seg_gaussian_sigma->setMaximum(255.);
     d->box_seg_gaussian_sigma->setValue(0.25);
 
-    d->box_vol_threshold = new QSpinBox(this);
-    d->box_vol_threshold->setMinimum(0);
-    d->box_vol_threshold->setMaximum(10000);
-    d->box_vol_threshold->setValue(1000);
+    d->box_vol_threshold = new QDoubleSpinBox(this);
+    d->box_vol_threshold->setMinimum(0.);
+    d->box_vol_threshold->setMaximum(10000.);
+    d->box_vol_threshold->setValue(1000.);
 
-    d->box_background_level = new QSpinBox(this);
-    d->box_background_level->setMinimum(0);
-    d->box_background_level->setMaximum(1000);
-    d->box_background_level->setValue(1);
+    d->box_background_level = new QDoubleSpinBox(this);
+    d->box_background_level->setMinimum(0.);
+    d->box_background_level->setMaximum(1000.);
+    d->box_background_level->setValue(1.);
 
     QFormLayout *pane_item_params_layout = new QFormLayout;
     pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
