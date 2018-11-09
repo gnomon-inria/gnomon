@@ -47,6 +47,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractMeshData.h
   gnomonAbstractModel
   gnomonAbstractModel.h
+  gnomonAbstractSystemScenario
+  gnomonAbstractSystemScenario.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractCommand
@@ -78,6 +80,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonMesh.h
   gnomonSphereForm
   gnomonSphereForm.h
+  gnomonSystem
+  gnomonSystem.h
   gnomonTypeDef
   gnomonTypeDef.h
   gnomonTime
