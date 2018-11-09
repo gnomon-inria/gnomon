@@ -111,7 +111,8 @@ void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
 
 void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item)
 {
-    d->browse_view->onChannelChanged(current_item->text());
+    if(current_item)
+        d->browse_view->onChannelChanged(current_item->text());
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
