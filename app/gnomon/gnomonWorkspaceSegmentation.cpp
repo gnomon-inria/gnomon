@@ -17,6 +17,9 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceSegmentation.h"
 
+#include <gnomonCellImage.h>
+#include <gnomonSegmentationCommand.h>
+
 #include <dtkImagingCore>
 
 #include <QtWidgets>
@@ -26,6 +29,9 @@ class gnomonWorkspaceSegmentationPrivate
 public:
     gnomonViewVolumic *source;
     gnomonViewVolumic *target;
+
+public:
+    gnomonSegmentationCommand *segmentation = nullptr;
 
 public:
     QSlider *slider_1;
@@ -54,13 +60,13 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWid
     d->slider_2->setOrientation(Qt::Horizontal);
     d->slider_2->setMinimum(0);
     d->slider_2->setMaximum(255);
-    d->slider_2->setValue(0);
+    d->slider_2->setValue(0.5);
 
     d->slider_3 = new QSlider(this);
     d->slider_3->setOrientation(Qt::Horizontal);
     d->slider_3->setMinimum(1);
     d->slider_3->setMaximum(255);
-    d->slider_3->setValue(0);
+    d->slider_3->setValue(0.25);
 
     d->slider_4 = new QSlider(this);
     d->slider_4->setOrientation(Qt::Horizontal);
@@ -110,14 +116,27 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWid
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 {
+    if(d->segmentation)
+        delete d->segmentation;
+
     delete d;
 }
 
 void gnomonWorkspaceSegmentation::apply(void)
 {
-    dtkImagePtr source = d->source->image();
+    if(!d->segmentation)
+        d->segmentation = new gnomonSegmentationCommand("gnomonCellImageFromTimagetkSegmentation");
 
-    qDebug() << Q_FUNC_INFO;
+    d->segmentation->setImage(d->source->image().data());
+    d->segmentation->setParameter("h_min", d->slider_1->value());
+    d->segmentation->setParameter("gaussian_sigma", d->slider_2->value());
+    d->segmentation->setParameter("segmentation_gaussian_sigma", d->slider_3->value());
+    d->segmentation->setParameter("volume_threshold", d->slider_4->value());
+    d->segmentation->setParameter("background_label", d->box->value());
+
+    d->segmentation->redo();
+
+    d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage())));
 }
 
 //
