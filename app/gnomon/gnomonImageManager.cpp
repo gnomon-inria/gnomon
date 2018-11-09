@@ -143,14 +143,19 @@ public:
     ~gnomonImageManagerPrivate(void);
 
 public:
-    gnomonImageManagerItem *create(gnomonImageManager::Image, const QColor&);
+    gnomonImageManagerItem *create(dtkImagePtr, const QColor&);
 
 public:
-    QHash<gnomonImageManagerItem *, gnomonImageManager::Image> images;
+    QHash<gnomonImageManagerItem *, dtkImagePtr> images;
+
+public:
+    static int item_counter;
 
 public:
     QWidget *contents;
 };
+
+int gnomonImageManagerPrivate::item_counter = 0;
 
 gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollArea(parent)
 {
@@ -169,13 +174,13 @@ gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 
 }
 
-gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImageManager::Image image, const QColor& color)
+gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, const QColor& color)
 {
     if(!image)
         return nullptr;
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(image);
+    converter->setInput(image.data());
     converter->convert();
 
     vtkImageData *o = static_cast<vtkImageData *>(converter->output());
@@ -227,24 +232,33 @@ QSize gnomonImageManager::sizeHint(void) const
     return QSize(200, 140);
 }
 
-void gnomonImageManager::addImage(gnomonImageManager::Image image, const QColor& color)
+void gnomonImageManager::addImage(dtkImagePtr image, const QColor& color)
 {
     gnomonImageManagerItem *item = d->create(image, color);
+    item->id = d->item_counter++;
 
     d->images.insert(item, image);
     d->contents->layout()->addWidget(item);
-
-    item->id = d->images.values().indexOf(image);
 }
 
-gnomonImageManager::Image gnomonImageManager::get(int index)
+dtkImagePtr gnomonImageManager::get(int index)
 {
-    return d->images.values().at(index);
+    for (auto it = d->images.begin(); it != d->images.end(); ++it) {
+        if (index == it.key()->id) {
+            return *it;
+        }
+    }
+    return dtkImagePtr();
 }
 
 QPixmap gnomonImageManager::thumbnail(int index)
 {
-    return *(d->images.keys().at(index)->pixmap());
+    for (auto it = d->images.begin(); it != d->images.end(); ++it) {
+        if (index == it.key()->id) {
+            return *(it.key()->pixmap());
+        }
+    }
+    return QPixmap();
 }
 
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)

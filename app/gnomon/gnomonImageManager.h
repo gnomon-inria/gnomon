@@ -21,13 +21,11 @@
 #include <vtkSmartPointer.h>
 
 class dtkImage;
+using dtkImagePtr = QSharedPointer<dtkImage>;
 
 class gnomonImageManager : public QFrame
 {
     Q_OBJECT
-
-public:
-    using Image = dtkImage *;
 
 public:
     static gnomonImageManager *instance(void);
@@ -36,10 +34,10 @@ public:
     QSize sizeHint(void) const;
 
 public slots:
-    void addImage(Image, const QColor&);
+    void addImage(dtkImagePtr, const QColor&);
 
 public:
-    Image get(int index);
+    dtkImagePtr get(int index);
 
 public:
     QPixmap thumbnail(int index);

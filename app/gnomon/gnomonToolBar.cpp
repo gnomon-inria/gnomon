@@ -112,7 +112,6 @@ public:
 
         this->setAlignment(Qt::AlignCenter);
         this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-        this->setStyleSheet("color: #777777;");
     };
 
 signals:
@@ -176,8 +175,17 @@ void gnomonToolBarPrivate::onItemClicked(int index)
 {
     q->emit indexChanged(index);
 
-    // for(gnomonToolBarItem *item : items)
-        // item->setStyleSheet(QString("color: %1;").arg(sender() == item ? "#ffffff" : "#777777"));
+    for(gnomonToolBarItem *item : items)
+        if(item->text() == "Fusion")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::fusion_color.red()).arg(gnomonToolBar::fusion_color.green()).arg(gnomonToolBar::fusion_color.blue()));
+        else if(item->text() == "Segmentation")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
+        else if(item->text() == "Preprocess")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
+        else if(item->text() == "Registration")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
+        else if(item->text() == "Browse")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(sender() == item ? "24" : "12").arg(sender() == item ? "bold" : "normal").arg(gnomonToolBar::browser_color.red()).arg(gnomonToolBar::browser_color.green()).arg(gnomonToolBar::browser_color.blue()));
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -190,7 +198,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     d->q = this;
 
     gnomonToolBarItem *item = new gnomonToolBarItem("Browse", this);
-    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(browser_color.red()).arg(browser_color.green()).arg(browser_color.blue()));
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(browser_color.red()).arg(browser_color.green()).arg(browser_color.blue()));
 
     gnomonToolBarButton *button = new gnomonToolBarButton(this);
 
@@ -223,7 +231,7 @@ QSize gnomonToolBar::sizeHint(void) const
 void gnomonToolBar::onCreateFusion(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Fusion", this);
-    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(fusion_color.red()).arg(fusion_color.green()).arg(fusion_color.blue()));
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(fusion_color.red()).arg(fusion_color.green()).arg(fusion_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -238,7 +246,7 @@ void gnomonToolBar::onCreateFusion(void)
 void gnomonToolBar::onCreateSegmentation(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Segmentation", this);
-    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(segmentation_color.red()).arg(segmentation_color.green()).arg(segmentation_color.blue()));
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(segmentation_color.red()).arg(segmentation_color.green()).arg(segmentation_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -253,7 +261,7 @@ void gnomonToolBar::onCreateSegmentation(void)
 void gnomonToolBar::onCreatePreprocess(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Preprocess", this);
-    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(preprocess_color.red()).arg(preprocess_color.green()).arg(preprocess_color.blue()));
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(preprocess_color.red()).arg(preprocess_color.green()).arg(preprocess_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -268,7 +276,7 @@ void gnomonToolBar::onCreatePreprocess(void)
 void gnomonToolBar::onCreateRegistration(void)
 {
     gnomonToolBarItem *item = new gnomonToolBarItem("Registration", this);
-    item->setStyleSheet(QString("color: rgb(%1,%2,%3)").arg(registration_color.red()).arg(registration_color.green()).arg(registration_color.blue()));
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(registration_color.red()).arg(registration_color.green()).arg(registration_color.blue()));
 
     d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
     d->layout->insertWidget(d->layout->count()-1, item);
@@ -282,11 +290,11 @@ void gnomonToolBar::onCreateRegistration(void)
 
 // ///////////////////////////////////////////////////////////////////
 
-QColor gnomonToolBar::browser_color = QColor("#006391");
-QColor gnomonToolBar::fusion_color = QColor("#603582");
-QColor gnomonToolBar::segmentation_color = QColor("#a50021");
-QColor gnomonToolBar::preprocess_color = QColor("#a02f00");
-QColor gnomonToolBar::registration_color = QColor("#84c848");
+QColor gnomonToolBar::browser_color = QColor("#ff3b30");
+QColor gnomonToolBar::fusion_color = QColor("#ff9500");
+QColor gnomonToolBar::registration_color = QColor("#ffcc00");
+QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
+QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
 
 // ///////////////////////////////////////////////////////////////////
 
