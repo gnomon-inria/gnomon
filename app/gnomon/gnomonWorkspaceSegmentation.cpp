@@ -124,12 +124,10 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 
 void gnomonWorkspaceSegmentation::apply(void)
 {
-    dtkImagePtr source = d->source->image();
-
     if(!d->segmentation)
         d->segmentation = new gnomonSegmentationCommand("gnomonCellImageFromTimagetkSegmentation");
 
-    d->segmentation->setImage(source);
+    d->segmentation->setImage(d->source->image().data());
     d->segmentation->setParameter("h_min", d->slider_1->value());
     d->segmentation->setParameter("gaussian_sigma", d->slider_2->value());
     d->segmentation->setParameter("segmentation_gaussian_sigma", d->slider_3->value());
@@ -138,7 +136,7 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->segmentation->redo();
 
-    d->target->setImage(d->segmentation->computedImage());
+    d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage())));
 }
 
 //
