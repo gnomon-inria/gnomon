@@ -192,6 +192,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
 
     double range[2];
     o->GetPointData()->GetScalars()->GetRange(range);
+    double min = range[0];
     double max = range[1];
 
     int w = o->GetDimensions()[0];
@@ -222,7 +223,8 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
                 break;
             }
 
-            v *= (255./max);
+            v -= min;
+            v *= (255./(max-min));
 
             *(b) = QColor(v, v, v).rgb();
             ++b;
