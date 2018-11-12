@@ -41,6 +41,10 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : QWidget(
 
     QPushButton *button = new QPushButton("Apply", this);
 
+    QComboBox *combo_box = new QComboBox(this);
+    combo_box->addItem("a");
+    combo_box->addItem("b");
+
     gnomonOverlayPaneItem *item = new gnomonOverlayPaneItem(this);
     item->setTitle("Normalization");
     item->addWidget(button);
