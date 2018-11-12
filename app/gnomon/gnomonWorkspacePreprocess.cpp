@@ -36,7 +36,7 @@ public:
     QDoubleSpinBox *box_pc_max;
 };
 
-gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : QWidget(parent)
+gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspacePreprocessPrivate;
 

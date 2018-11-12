@@ -30,7 +30,7 @@ public:
     QComboBox *box;
 };
 
-gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : QWidget(parent)
+gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspaceRegistrationPrivate;
 
