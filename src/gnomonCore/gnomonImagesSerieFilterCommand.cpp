@@ -7,6 +7,9 @@
 class gnomonImagesSerieFilterCommandPrivate
 {
 public:
+    QMap<QString, QVariant> parameters;
+
+public:
     dtkImage* image;
 };
 
@@ -45,6 +48,11 @@ void gnomonImagesSerieFilterCommand::undo(void)
 void gnomonImagesSerieFilterCommand::setImage(dtkImage* image)
 {
     d->image = image;
+}
+
+void gnomonImagesSerieFilterCommand::setParameter(const QString& param_name, const QVariant& param_value)
+{
+    d->parameters[param_name] = param_value;
 }
 
 double gnomonImagesSerieFilterCommand::time(void)
