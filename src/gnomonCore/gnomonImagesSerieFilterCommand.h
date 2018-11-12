@@ -14,6 +14,9 @@ public:
 
 public:
     void setImage(dtkImage *image);
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue);
+
+public:
     double time(void);
     dtkImage *at(double t);
     dtkImage *next(void);
