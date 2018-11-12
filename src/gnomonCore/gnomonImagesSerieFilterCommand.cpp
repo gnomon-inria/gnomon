@@ -62,6 +62,11 @@ void gnomonImagesSerieFilterCommand::setParameter(const QString& param_name, con
     d->parameters[param_name] = param_value;
 }
 
+QMap<QString, QVariant> gnomonImagesSerieFilterCommand::parameters(void) const
+{
+    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->parameters();
+}
+
 double gnomonImagesSerieFilterCommand::time(void)
 {
     return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->time();

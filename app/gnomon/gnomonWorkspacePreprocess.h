@@ -26,6 +26,7 @@ public:
 
 public slots:
     void apply(void);
+    void configure(const QString& text);
 
 private:
     class gnomonWorkspacePreprocessPrivate *d;

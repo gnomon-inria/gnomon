@@ -32,6 +32,7 @@ public:
 public:
     virtual void setImage(dtkImage *image) = 0;
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+    virtual QMap<QString, QVariant> parameters(void) const = 0;
 
 public:
     virtual void run(void) = 0;
