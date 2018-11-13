@@ -40,12 +40,6 @@ public:
 
 public:
     QFormLayout *pane_item_params_layout;
-// public:
-//     QDoubleSpinBox *box_pc_min;
-//     QDoubleSpinBox *box_pc_max;
-
-// public:
-//     QFormLayout *pane_item_params_layout;
 };
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate()
@@ -65,23 +59,12 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : QWidget(
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
 
-    d->image_filter_command = new gnomonImagesSerieFilterCommand("gnomonImagesSerieFilter");   
-
-    // d->box_pc_min = new QDoubleSpinBox(this);
-    // d->box_pc_min->setMinimum(1);
-    // d->box_pc_min->setMaximum(100);
-    // d->box_pc_min->setValue(2);
-
-    // d->box_pc_max = new QDoubleSpinBox(this);
-    // d->box_pc_max->setMinimum(1);
-    // d->box_pc_max->setMaximum(100);
-    // d->box_pc_max->setValue(99);
+    d->image_filter_command = new gnomonImagesSerieFilterCommand("xSliceContrastStretch");   
 
     QComboBox *combo_box = new QComboBox(this);
     QStringList combo_box_keys = gnomonCore::imagesSerieFilter::pluginFactory().keys();
     for (QStringList::iterator it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it)
     { combo_box->addItem(*it); }
-    combo_box->addItem("a");
 
     connect(combo_box, SIGNAL(currentIndexChanged(QString)), this, SLOT(configure(QString)));
 
@@ -132,8 +115,12 @@ void gnomonWorkspacePreprocess::apply(void)
     Q_ASSERT(d->image_filter_command);
 
     d->image_filter_command->setImage(d->source->image().data());
+
     // d->image_filter_command->setParameter("pc_min", d->box_pc_min->value());
     // d->image_filter_command->setParameter("pc_max", d->box_pc_max->value());
+
+    // foreach(QString key, d->parameters.keys())
+    // { d->image_filter_command->setParameter(key, d->parameters[key]); }
 
     d->image_filter_command->redo();
     dtkImage *img = d->image_filter_command->next();
@@ -146,43 +133,40 @@ void gnomonWorkspacePreprocess::apply(void)
     d->target->setImage(dtkImagePtr(new dtkImage(*img)));
 }
 
-void gnomonWorkspacePreprocess::configure(const QString& text)
+void gnomonWorkspacePreprocess::configure(const QString& algorithm)
 {
-    // qDebug() << "delete";
-    // if(d->image_filter_command)
-    //     delete d->image_filter_command;
-    qDebug() << "configure";
     for(int row = 0, max_row = d->pane_item_params_layout->count(); row < max_row; ++row)
     {
         QLayoutItem *forDeletion = d->pane_item_params_layout->takeAt(0);
+        forDeletion->widget()->disconnect();
         delete forDeletion->widget();
         delete forDeletion;
     }
-    if(text == "gnomonImagesSerieFilter")
-    {
-        d->image_filter_command = new gnomonImagesSerieFilterCommand("gnomonImagesSerieFilter"); 
-        QMap<QString, QVariant> parameters = d->image_filter_command->parameters();
-        foreach(QString key, parameters.keys())
-        { 
-            QWidget *widget;
-            int type = parameters[key].type();
-            if (type == QMetaType::Int ||
-                // type == QMetaType::Uint ||
-                type == QMetaType::Long ||
-                type == QMetaType::ULong ||
-                type == QMetaType::LongLong ||
-                type == QMetaType::ULongLong) {
-            } else if (type == QMetaType::Float ||
-                       type == QMetaType::Double) {
-                widget = new QDoubleSpinBox(this);
-                static_cast< QDoubleSpinBox* >(widget)->setValue(parameters[key].value<double>());
-            } else if (type == QMetaType::QString) {
-            } else if (type == QMetaType::Bool) {
-            }
-            d->pane_item_params_layout->addRow(key, widget);
-        }  
-        d->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    }
+    d->image_filter_command = new gnomonImagesSerieFilterCommand(algorithm); 
+    QMap<QString, QVariant> parameters = d->image_filter_command->parameters();
+    for(QMap<QString, QVariant>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
+    { 
+        QWidget *widget;
+        QString key = it.key();
+        int type = it.value().type();
+        if (type == QMetaType::Int ||
+            // type == QMetaType::Uint ||
+            type == QMetaType::Long ||
+            type == QMetaType::ULong ||
+            type == QMetaType::LongLong ||
+            type == QMetaType::ULongLong) {
+        } else if (type == QMetaType::Float ||
+                   type == QMetaType::Double) {
+            widget = new QDoubleSpinBox(this);
+            static_cast< QDoubleSpinBox* >(widget)->setValue(it.value().value<double>());
+            connect(static_cast< QDoubleSpinBox* >(widget), QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+                    [=](double value){ d->image_filter_command->setParameter(key, value); });
+        } else if (type == QMetaType::QString) {
+        } else if (type == QMetaType::Bool) {
+        }
+        d->pane_item_params_layout->addRow(it.key(), widget);
+    }  
+    d->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 }
 
 //
