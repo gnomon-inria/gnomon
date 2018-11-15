@@ -28,6 +28,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonOverlayPaneItem.h
   gnomonToolBar.h
   gnomonViewVolumic.h
+  gnomonWorkspace.h
   gnomonWorkspaceBrowser.h
   gnomonWorkspaceFusion.h
   gnomonWorkspaceSegmentation.h
@@ -44,6 +45,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp
   gnomonViewVolumic.cpp
+  gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceSegmentation.cpp

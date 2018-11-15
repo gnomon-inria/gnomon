@@ -20,6 +20,7 @@
 #include <gnomonImagesSerieFilterCommand.h>
 
 #include <dtkImagingCore>
+#include <dtkScript>
 
 #include <vtkImageData.h>
 
@@ -44,22 +45,25 @@ public:
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate()
 {
+    this->image_filter_command = nullptr;
 }
 
 gnomonWorkspacePreprocessPrivate::~gnomonWorkspacePreprocessPrivate()
 {
-    if(image_filter_command)
-        delete image_filter_command;  
+    if(this->image_filter_command)
+        delete this->image_filter_command;
 }
 
-gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : QWidget(parent)
+gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWorkspace(parent)
 {
+    int stat;
+
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesSerieFilter", &stat);
+
     d = new gnomonWorkspacePreprocessPrivate;
 
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
-
-    d->image_filter_command = new gnomonImagesSerieFilterCommand("xSliceContrastStretch");   
 
     QComboBox *combo_box = new QComboBox(this);
     QStringList combo_box_keys = gnomonCore::imagesSerieFilter::pluginFactory().keys();
@@ -116,12 +120,6 @@ void gnomonWorkspacePreprocess::apply(void)
 
     d->image_filter_command->setImage(d->source->image().data());
 
-    // d->image_filter_command->setParameter("pc_min", d->box_pc_min->value());
-    // d->image_filter_command->setParameter("pc_max", d->box_pc_max->value());
-
-    // foreach(QString key, d->parameters.keys())
-    // { d->image_filter_command->setParameter(key, d->parameters[key]); }
-
     d->image_filter_command->redo();
     dtkImage *img = d->image_filter_command->next();
 
@@ -142,6 +140,8 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
         delete forDeletion->widget();
         delete forDeletion;
     }
+    if(d->image_filter_command)
+        delete d->image_filter_command;
     d->image_filter_command = new gnomonImagesSerieFilterCommand(algorithm); 
     QMap<QString, QVariant> parameters = d->image_filter_command->parameters();
     for(QMap<QString, QVariant>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
@@ -155,6 +155,10 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
             type == QMetaType::ULong ||
             type == QMetaType::LongLong ||
             type == QMetaType::ULongLong) {
+            widget = new QSpinBox(this);
+            static_cast< QSpinBox* >(widget)->setValue(it.value().value<int>());
+            connect(static_cast< QSpinBox* >(widget), QOverload<int>::of(&QSpinBox::valueChanged),
+                    [=](int value){ d->image_filter_command->setParameter(key, value); });
         } else if (type == QMetaType::Float ||
                    type == QMetaType::Double) {
             widget = new QDoubleSpinBox(this);
@@ -162,7 +166,18 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
             connect(static_cast< QDoubleSpinBox* >(widget), QOverload<double>::of(&QDoubleSpinBox::valueChanged),
                     [=](double value){ d->image_filter_command->setParameter(key, value); });
         } else if (type == QMetaType::QString) {
+            widget = new QLineEdit(this);
+            static_cast< QLineEdit* >(widget)->setText(it.value().value<QString>());
+            connect(static_cast< QLineEdit* >(widget), &QLineEdit::textChanged,
+                    [=](QString value){ d->image_filter_command->setParameter(key, value); });
         } else if (type == QMetaType::Bool) {
+            widget = new QCheckBox(this);
+            if(it.value().value<bool>())
+                static_cast< QCheckBox* >(widget)->setCheckState(Qt::Checked);
+            else
+                static_cast< QCheckBox* >(widget)->setCheckState(Qt::Unchecked);
+            connect(static_cast< QCheckBox* >(widget), &QCheckBox::stateChanged,
+                    [=](int value){ d->image_filter_command->setParameter(key, value > Qt::Unchecked); });
         }
         d->pane_item_params_layout->addRow(it.key(), widget);
     }  

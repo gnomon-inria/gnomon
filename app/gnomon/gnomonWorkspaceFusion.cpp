@@ -30,7 +30,7 @@ public:
     QSpinBox *iterations_box;
 };
 
-gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : QWidget(parent)
+gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspaceFusionPrivate;
 

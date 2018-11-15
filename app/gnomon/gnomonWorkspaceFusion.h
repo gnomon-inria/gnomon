@@ -14,15 +14,21 @@
 
 #pragma once
 
+#include "gnomonWorkspace.h"
+
 #include <QtWidgets>
 
-class gnomonWorkspaceFusion : public QWidget
+class gnomonWorkspaceFusion : public gnomonWorkspace
 {
     Q_OBJECT
 
 public:
      gnomonWorkspaceFusion(QWidget *parent = nullptr);
     ~gnomonWorkspaceFusion(void);
+
+public:
+    void enter(void) override {}
+    void leave(void) override {}
 
 public slots:
     void apply(void);
