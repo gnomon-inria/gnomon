@@ -4,9 +4,9 @@
 class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand<gnomonAbstractCellImageFromImage>
 {
 public:
-    gnomonSegmentationCommand() = delete;
-    gnomonSegmentationCommand(const QString&);
-    virtual ~gnomonSegmentationCommand();
+     gnomonSegmentationCommand(void) = delete;
+     gnomonSegmentationCommand(const QString&);
+    ~gnomonSegmentationCommand(void);
 
 public:
     void redo(void) override;
@@ -17,7 +17,10 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue);
 
 public:
-    dtkImage *computedImage();
+    dtkImage *computedImage(void) const;
+
+protected:
+    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
 
 private:
     class gnomonSegmentationCommandPrivate *d;

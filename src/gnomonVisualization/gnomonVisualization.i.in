@@ -49,28 +49,32 @@
 
     PyImport_ImportModule("vtk");
 
-    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkObjectBase*)$1 );
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
 }
 
 %typemap(in) vtkRenderer* {
 
-    $1 = (vtkRenderer*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkRenderer" );
+    $1 = (vtkRenderer *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderer");
 
-    if ( $1 == NULL ) { SWIG_fail; }
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
 }
 
 %typemap(out) vtkRenderWindowInteractor* {
 
     PyImport_ImportModule("vtk");
 
-    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkObjectBase*)$1 );
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
 }
 
 %typemap(in) vtkRenderWindowInteractor* {
 
-    $1 = (vtkRenderWindowInteractor*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkRenderWindowInteractor" );
+    $1 = (vtkRenderWindowInteractor *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderWindowInteractor");
 
-    if ( $1 == NULL ) { SWIG_fail; }
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
 }
 
 // /////////////////////////////////////////////////////////////////
