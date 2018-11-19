@@ -82,19 +82,19 @@ void gnomonColorMapTable::paintEvent(QPaintEvent* event)
     QLinearGradient linearGradient(x, y, x + lx, y);
 
     if (color_points.keys().first() > 0) {
-        QColor color = color_points[color_points.keys().first()]; 
+        QColor color = color_points[color_points.keys().first()];
         color.setAlpha(255);
         linearGradient.setColorAt(0.0, color);
     }
 
     for (const auto& val : color_points.keys()) {
-        QColor color = color_points[val]; 
+        QColor color = color_points[val];
         color.setAlpha(255);
         linearGradient.setColorAt(val, color);
     }
 
     if (color_points.keys().last()<1) {
-        QColor color = color_points[color_points.keys().last()]; 
+        QColor color = color_points[color_points.keys().last()];
         color.setAlpha(255);
         linearGradient.setColorAt(1.0, color);
     }
@@ -232,10 +232,11 @@ void gnomonColorMapEditor::importColorMap(void)
 
             qreal v = e.attribute("v").toDouble();
             qreal a = e.attribute("a").toDouble();
+
             int r = e.attribute("r").toInt();
             int g = e.attribute("g").toInt();
             int b = e.attribute("b").toInt();
-           
+
             double val = (v-min)/(max-min);
             colormap[val] = QColor(r,g,b);
         }
