@@ -886,7 +886,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     } else {
         gnomonImagesSerieReaderCommand *command = nullptr;
 
-        if(path.endsWith("inr") || path.endsWith("inr.gz")) {
+        if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha")) {
             if(!d->image_reader_command_inr)
                 d->image_reader_command_inr = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
             command = d->image_reader_command_inr;
