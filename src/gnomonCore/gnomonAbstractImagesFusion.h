@@ -30,6 +30,9 @@ public:
     virtual ~gnomonAbstractImagesFusion(void) = default;
 
 public:
+    virtual void setParameters(const QMap<QString, double>&) = 0;
+
+public:
     virtual void addImage(dtkImage *image) = 0;
     virtual void removeImages(void) = 0;
 
