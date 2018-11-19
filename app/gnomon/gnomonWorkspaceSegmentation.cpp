@@ -49,7 +49,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     d->target = new gnomonViewVolumic(this);
 
     d->box_h_min = new QDoubleSpinBox(this);
-    d->box_h_min->setMinimum(1.);
+    d->box_h_min->setMinimum(0.);
     d->box_h_min->setMaximum(255.);
     d->box_h_min->setValue(2.);
 
