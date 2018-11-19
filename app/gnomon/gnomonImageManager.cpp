@@ -218,8 +218,8 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
     double min = range[0];
     double max = range[1];
 
-    int w = o->GetDimensions()[0];
-    int h = o->GetDimensions()[1];
+    int w = o->GetDimensions()[1];
+    int h = o->GetDimensions()[0];
     int d = o->GetDimensions()[2];
 
     QImage i(w, h, QImage::Format_RGB32);
