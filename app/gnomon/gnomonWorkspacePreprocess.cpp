@@ -142,10 +142,10 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
     }
     if(d->image_filter_command)
         delete d->image_filter_command;
-    d->image_filter_command = new gnomonImagesSerieFilterCommand(algorithm); 
+    d->image_filter_command = new gnomonImagesSerieFilterCommand(algorithm);
     QMap<QString, QVariant> parameters = d->image_filter_command->parameters();
     for(QMap<QString, QVariant>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
-    { 
+    {
         QWidget *widget;
         QString key = it.key();
         int type = it.value().type();
@@ -157,13 +157,13 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
             type == QMetaType::ULongLong) {
             widget = new QSpinBox(this);
             static_cast< QSpinBox* >(widget)->setValue(it.value().value<int>());
-            connect(static_cast< QSpinBox* >(widget), QOverload<int>::of(&QSpinBox::valueChanged),
+            connect(static_cast< QSpinBox* >(widget), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [=](int value){ d->image_filter_command->setParameter(key, value); });
         } else if (type == QMetaType::Float ||
                    type == QMetaType::Double) {
             widget = new QDoubleSpinBox(this);
             static_cast< QDoubleSpinBox* >(widget)->setValue(it.value().value<double>());
-            connect(static_cast< QDoubleSpinBox* >(widget), QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            connect(static_cast< QDoubleSpinBox* >(widget), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [=](double value){ d->image_filter_command->setParameter(key, value); });
         } else if (type == QMetaType::QString) {
             widget = new QLineEdit(this);
@@ -180,7 +180,7 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
                     [=](int value){ d->image_filter_command->setParameter(key, value > Qt::Unchecked); });
         }
         d->pane_item_params_layout->addRow(it.key(), widget);
-    }  
+    }
     d->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 }
 
