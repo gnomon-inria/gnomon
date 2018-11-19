@@ -147,7 +147,7 @@ void gnomonActorMeshCellImage::update(void)
             contour->SetValue(0,cellId);
             contour->Update();
 
-            // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
+            qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
 
             int smooth_iterations = int(dd->smoothingFactor*8);
 
@@ -208,9 +208,9 @@ gnomonActorMeshCellImage::gnomonActorMeshCellImage(void) : gnomonActorMesh(), dd
 {
     dd->cellimage = Q_NULLPTR;
 
-    dd->cellScaleFactor = 0.99;
+    dd->cellScaleFactor = 0.9;
     dd->smoothingFactor = 1.0;
-    dd->resolutionFactor = 1.0;
+    dd->resolutionFactor = 2.0;
 }
 
 gnomonActorMeshCellImage::~gnomonActorMeshCellImage(void)

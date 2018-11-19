@@ -20,6 +20,8 @@
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspacePreprocess.h"
 
+#include "gnomonActorMeshCellImage.h"
+
 #include <gnomonCore/gnomonImagesSerieReaderCommand.h>
 
 #include <gnomonStyle>
@@ -279,6 +281,10 @@ public:
 
 public:
     dtkImagePtr image;
+
+public:
+    gnomonCellImagePtr cellimage;
+    gnomonActorMeshCellImage *actor;
 
 public:
     QSlider *slider;
@@ -705,6 +711,37 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
         delete d->image_reader_command_czi;
 
     delete d;
+}
+
+void gnomonViewVolumic::setCellImage(gnomonCellImagePtr i)
+{
+    d->points->Reset();
+
+    d->mesh->SetPoints(d->points);
+    d->mesh->Modified();
+
+    d->glyphs->SetInputData(d->mesh);
+    d->glyphs->Update();
+
+    d->cellimage = i;
+
+    d->actor = gnomonActorMeshCellImage::New();
+    d->actor->setCellImage(d->cellimage.data());
+
+    d->actor->setInteractor(d->GetInteractor());
+    d->actor->update();
+    qWarning()<<"--> Updated CellImage actor";
+
+    d->renderer3D->AddActor(d->actor);
+
+    d->planeWidget[0]->Off();
+    d->planeWidget[1]->Off();
+    d->planeWidget[2]->Off();
+
+    // for(int i = 0; i < 3; i++) {
+    //     d->planeWidget[i]->SetVisibility(false);
+    // }
+
 }
 
 void gnomonViewVolumic::setImage(dtkImagePtr i)

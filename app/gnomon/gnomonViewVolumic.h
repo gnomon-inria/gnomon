@@ -19,6 +19,9 @@
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
+class gnomonCellImage;
+using gnomonCellImagePtr = QSharedPointer<gnomonCellImage>;
+
 class gnomonViewVolumic : public QFrame
 {
     Q_OBJECT
@@ -29,6 +32,7 @@ public:
 
 public:
     void setImage(dtkImagePtr);
+    void setCellImage(gnomonCellImagePtr);
 
 public:
     dtkImagePtr image(void);

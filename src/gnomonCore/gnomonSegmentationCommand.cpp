@@ -61,7 +61,7 @@ void gnomonSegmentationCommand::setParameter(const QString& param_name, const QV
     d->parameters[param_name] = param_value;
 }
 
-dtkImage *gnomonSegmentationCommand::computedImage(void) const
+gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
 {
-    return this->action->computedImage()->image();
+    return this->action->computedImage();
 }
