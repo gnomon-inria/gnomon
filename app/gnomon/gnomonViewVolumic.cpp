@@ -612,6 +612,8 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
     this->picker->move(90, 10);
+
+    QVTKOpenGLWidget::resizeEvent(event);
 }
 
 gnomonViewVolumicPrivate::Orientation gnomonViewVolumicPrivate::orientation(void)

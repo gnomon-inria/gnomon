@@ -90,27 +90,39 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
 
     connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {
-        int index = d->stack->currentIndex();
-        d->stack->addWidget(new gnomonWorkspaceFusion(this));
-        d->stack->setCurrentIndex(index);
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceFusion(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
     });
 
     connect(d->menu, &gnomonToolBar::createSegmentation, [=] (void) {
-        int index = d->stack->currentIndex();
-        d->stack->addWidget(new gnomonWorkspaceSegmentation(this));
-        d->stack->setCurrentIndex(index);
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceSegmentation(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
     });
 
     connect(d->menu, &gnomonToolBar::createPreprocess, [=] (void) {
-        int index = d->stack->currentIndex();
-        d->stack->addWidget(new gnomonWorkspacePreprocess(this));
-        d->stack->setCurrentIndex(index);
+
+        gnomonWorkspace *workspace = new gnomonWorkspacePreprocess(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
     });
 
     connect(d->menu, &gnomonToolBar::createRegistration, [=] (void) {
-        int index = d->stack->currentIndex();
-        d->stack->addWidget(new gnomonWorkspaceRegistration(this));
-        d->stack->setCurrentIndex(index);
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceRegistration(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
     });
 
     this->setCentralWidget(central);

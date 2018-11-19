@@ -41,7 +41,7 @@ public:
     QDoubleSpinBox *box_background_level;
 };
 
-gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : QWidget(parent)
+gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspaceSegmentationPrivate;
 

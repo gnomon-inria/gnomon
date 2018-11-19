@@ -32,7 +32,7 @@ public:
     QListWidget *channels_list = nullptr;
 };
 
-gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(parent)
+gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspaceBrowserPrivate;
 
@@ -93,9 +93,15 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : QSplitter(pare
     connect(d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
     connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
-    this->addWidget(finder);
-    this->addWidget(d->browse_view);
-    this->addWidget(pane);
+    QSplitter *splitter = new QSplitter(this);
+    splitter->addWidget(finder);
+    splitter->addWidget(d->browse_view);
+    splitter->addWidget(pane);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(splitter);
 }
 
 void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
