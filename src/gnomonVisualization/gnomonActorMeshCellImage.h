@@ -35,6 +35,7 @@ public:
 
 public slots:
     void update(void) override;
+    void modified(void);
 
 protected:
      gnomonActorMeshCellImage(void);

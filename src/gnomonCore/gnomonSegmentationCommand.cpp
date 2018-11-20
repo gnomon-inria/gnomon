@@ -66,7 +66,7 @@ QMap<QString, QVariant> gnomonSegmentationCommand::parameters(void) const
     return gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->parameters();
 }
 
-dtkImage *gnomonSegmentationCommand::computedImage(void) const
+gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
 {
-    return this->action->computedImage()->image();
+    return this->action->computedImage();
 }

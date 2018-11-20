@@ -32,7 +32,9 @@ public:
 
 public slots:
     void apply(void);
+
     void configure(const QString& text);
+    void computeCells(void);
 
 private:
     class gnomonWorkspaceSegmentationPrivate *d;

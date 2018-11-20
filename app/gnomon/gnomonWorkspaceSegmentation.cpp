@@ -18,6 +18,7 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate.h"
 
+#include <gnomonActorMeshCellImage.h>
 #include <gnomonCellImage.h>
 #include <gnomonSegmentationCommand.h>
 
@@ -26,7 +27,14 @@
 
 #include <QtWidgets>
 
+<<<<<<< HEAD
 class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >
+=======
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+
+class gnomonWorkspaceSegmentationPrivate
+>>>>>>> develop
 {
 
 public:
@@ -41,15 +49,8 @@ public:
     gnomonViewVolumic *source;
     gnomonViewVolumic *target;
 
-// public:
-//     gnomonSegmentationCommand *segmentation = nullptr;
-
-// public:
-//     QDoubleSpinBox *box_h_min;
-//     QDoubleSpinBox *box_gaussian_sigma;
-//     QDoubleSpinBox *box_seg_gaussian_sigma;
-//     QDoubleSpinBox *box_vol_threshold;
-//     QDoubleSpinBox *box_background_level;
+    gnomonCellImage *cellimage = nullptr;
+    gnomonActorMeshCellImage *actor = nullptr;
 };
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >()
@@ -79,14 +80,25 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
 
+    QPushButton *cell_button = new QPushButton("Compute cells", this);
+
+    gnomonOverlayPaneItem *visu_item = new gnomonOverlayPaneItem(this);
+    visu_item->setTitle("Segmentation");
+    visu_item->addWidget(cell_button);
+    visu_item->toggle();
+
+    gnomonOverlayPane *pane = d->pane(this)
+    pane->addWidget(visu_item);
+    pane->toggle();
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    layout->addWidget(d->pane(this));
+    layout->addWidget(pane);
 
-    // connect(button, SIGNAL(clicked()), this, SLOT(apply()));
+    connect(cell_button, SIGNAL(clicked()), this, SLOT(computeCells()));
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
@@ -118,7 +130,20 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->command->redo();
 
-    d->target->setImage(dtkImagePtr(new dtkImage(*d->command->computedImage())));
+    d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage()->image())));
+}
+
+void gnomonWorkspaceSegmentation::computeCells(void)
+{
+    if(!d->actor)
+        d->actor = gnomonActorMeshCellImage::New();
+
+    d->actor->setCellImage((gnomonCellImage *)d->segmentation->computedImage()->clone());
+    d->actor->setInteractor(d->target->interactor());
+    d->actor->update();
+
+    d->target->renderer3D()->AddActor(d->actor);
+    d->target->render();
 }
 
 //

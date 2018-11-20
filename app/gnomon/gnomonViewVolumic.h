@@ -19,6 +19,9 @@
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
+class vtkRenderer;
+class vtkRenderWindowInteractor;
+
 class gnomonViewVolumic : public QFrame
 {
     Q_OBJECT
@@ -32,6 +35,13 @@ public:
 
 public:
     dtkImagePtr image(void);
+
+public:
+    vtkRenderer *renderer2D(void);
+    vtkRenderer *renderer3D(void);
+
+public:
+    vtkRenderWindowInteractor *interactor(void);
 
 public slots:
     void render(void);
