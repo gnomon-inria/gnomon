@@ -80,6 +80,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMesh
   gnomonMesh.h
+  gnomonParameter
+  gnomonParameter.h
   gnomonSegmentationCommand
   gnomonSegmentationCommand.h
   gnomonSphereForm
@@ -118,6 +120,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFormVisitor.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
+  gnomonParameter.cpp
   gnomonSegmentationCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
