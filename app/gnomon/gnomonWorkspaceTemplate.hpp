@@ -31,45 +31,13 @@ void gnomonWorkspaceTemplatePrivate< T >::configure(QWidget* parent, const QStri
     }
     if(this->command)
         delete this->command;
-    this->command = new T(algorithm); 
-    QMap<QString, QVariant> parameters = this->command->parameters();
-    for(QMap<QString, QVariant>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
+    this->command = new T(algorithm);
+    QMap<QString, gnomonParameter*> parameters = this->command->parameters();
+    for(QMap<QString, gnomonParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
     { 
-        QWidget *widget;
-        QString key = it.key();
-        int type = it.value().type();
-        if (type == QMetaType::Int ||
-            // type == QMetaType::Uint ||
-            type == QMetaType::Long ||
-            type == QMetaType::ULong ||
-            type == QMetaType::LongLong ||
-            type == QMetaType::ULongLong) {
-            widget = new QSpinBox(parent);
-            static_cast< QSpinBox* >(widget)->setValue(it.value().value<int>());
-            parent->connect(static_cast< QSpinBox* >(widget), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-                    [=](int value){ this->command->setParameter(key, value); });
-        } else if (type == QMetaType::Float ||
-                   type == QMetaType::Double) {
-            widget = new QDoubleSpinBox(parent);
-            static_cast< QDoubleSpinBox* >(widget)->setValue(it.value().value<double>());
-            parent->connect(static_cast< QDoubleSpinBox* >(widget),  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-                    [=](double value){ this->command->setParameter(key, value); });
-        } else if (type == QMetaType::QString) {
-            widget = new QLineEdit(parent);
-            static_cast< QLineEdit* >(widget)->setText(it.value().value<QString>());
-            parent->connect(static_cast< QLineEdit* >(widget), &QLineEdit::textChanged,
-                    [=](QString value){ this->command->setParameter(key, value); });
-        } else if (type == QMetaType::Bool) {
-            widget = new QCheckBox(parent);
-            if(it.value().value<bool>())
-                static_cast< QCheckBox* >(widget)->setCheckState(Qt::Checked);
-            else
-                static_cast< QCheckBox* >(widget)->setCheckState(Qt::Unchecked);
-            parent->connect(static_cast< QCheckBox* >(widget), &QCheckBox::stateChanged,
-                    [=](int value){ this->command->setParameter(key, value > Qt::Unchecked); });
-        }
+        QWidget* widget = it.value()->connect(parent); 
         this->pane_item_params_layout->addRow(it.key(), widget);
-    }  
+    }
     this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 }
 

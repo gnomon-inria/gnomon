@@ -18,7 +18,7 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate.h"
 
-#include <gnomonImagesSerieFilterCommand.h>
+#include <gnomonImagesSerieFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>

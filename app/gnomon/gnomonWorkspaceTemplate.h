@@ -14,6 +14,11 @@
 
 #pragma once
 
+#include "gnomonOverlayPane.h"
+#include "gnomonOverlayPaneItem.h"
+
+#include <gnomonParameter>
+
 #include <QString>
 #include <QtWidgets>
 

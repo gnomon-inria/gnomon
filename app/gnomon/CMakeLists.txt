@@ -31,6 +31,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspace.h
   gnomonWorkspaceBrowser.h
   gnomonWorkspaceFusion.h
+  gnomonWorkspaceTemplate.h
+  gnomonWorkspaceTemplate.hpp
   gnomonWorkspaceSegmentation.h
   gnomonWorkspacePreprocess.h
   gnomonWorkspaceRegistration.h)

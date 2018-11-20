@@ -38,9 +38,6 @@ void gnomonSegmentationCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->setImage(d->image);
-    for (auto it = d->parameters.cbegin(); it != d->parameters.cend(); ++it) {
-        this->action->setParameter(it.key(), *it);
-    }
     this->action->run();
 }
 
@@ -56,12 +53,7 @@ void gnomonSegmentationCommand::setImage(dtkImage* image)
     d->image = image;
 }
 
-void gnomonSegmentationCommand::setParameter(const QString& param_name, const QVariant& param_value)
-{
-    d->parameters[param_name] = param_value;
-}
-
-QMap<QString, QVariant> gnomonSegmentationCommand::parameters(void) const
+QMap<QString, gnomonParameter*> gnomonSegmentationCommand::parameters(void) const
 {
     return gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->parameters();
 }
