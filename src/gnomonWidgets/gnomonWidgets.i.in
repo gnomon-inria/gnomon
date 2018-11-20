@@ -23,7 +23,7 @@
 
 %{
 
-#include <gnomonVisualization/gnomonViewVolumic.h>
+#include <gnomonWidgets/gnomonViewVolumic.h>
 
 %}
 
@@ -83,7 +83,7 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <gnomonVisualization/gnomonViewVolumic.h>
+%include <gnomonWidgets/gnomonViewVolumic.h>
 
 //
 // gnomonVisualization.i.in ends here
