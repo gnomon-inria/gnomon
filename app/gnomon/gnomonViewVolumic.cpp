@@ -34,7 +34,9 @@
 #include <vtkDataSetMapper.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkGlyph3D.h>
+#include <vtkImageBlend.h>
 #include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
 #include <vtkImagePlaneWidget.h>
 #include <vtkImageViewer2.h>
 #include <vtkImageMapToColors.h>
@@ -262,6 +264,9 @@ public:
     vtkSmartPointer<vtkGlyph3D> glyphs;
 
 public:
+    vtkSmartPointer<vtkImageBlend> blender = nullptr;
+
+public:
     gnomonViewVolumicInteractorImage *image_interactor = nullptr;
 
 public:
@@ -282,6 +287,9 @@ public:
 
 public:
     QSlider *slider;
+
+public:
+    QSlider *opacity;
 
 public:
     int x = 0, c_x = 0;
@@ -329,6 +337,8 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 #else
     dummy->AllocateScalars(VTK_UNSIGNED_CHAR,1);
 #endif
+
+    this->blender = vtkSmartPointer<vtkImageBlend>::New();
 
     this->viewer = vtkSmartPointer<vtkResliceImageViewer>::New();
     this->viewer->SetSliceOrientationToXY();
@@ -612,6 +622,7 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
     this->picker->move(90, 10);
+    this->opacity->move(30, event->size().height() - 30);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -694,6 +705,27 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     layout->addWidget(d);
 
     this->setAcceptDrops(true);
+
+    d->opacity = new QSlider(this);
+    d->opacity->setOrientation(Qt::Horizontal);
+    d->opacity->setMinimum(0);
+    d->opacity->setMaximum(100);
+    d->opacity->setValue(50);
+    d->opacity->setFixedWidth(200);
+    d->opacity->setVisible(false);
+
+    connect(d->opacity, &QSlider::valueChanged, [=] (int value) {
+
+        double v = double(value) / 100.0;
+
+        d->blender->SetOpacity(0,     v);
+        d->blender->SetOpacity(1, 1 - v);
+        d->blender->Update();
+
+        d->viewer->SetInputData(d->blender->GetOutput());
+
+        this->render();
+    });
 }
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
@@ -739,7 +771,21 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     d->c_y = d->y/2;
     d->c_z = d->z/2;
 
-    d->viewer->SetInputData(image);
+    // ///////////////////////////////////////////////////////////////////
+    //
+    // ///////////////////////////////////////////////////////////////////
+
+    d->blender->AddInputData(image);
+
+    d->blender->SetOpacity(0, 0.5);
+    d->blender->SetOpacity(1, 0.5);
+    d->blender->Update();
+
+    d->viewer->SetInputData(d->blender->GetOutput());
+
+    d->opacity->setVisible(d->blender->GetNumberOfInputs() > 1);
+
+    // ///////////////////////////////////////////////////////////////////
 
     // 3D
 
