@@ -41,6 +41,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractImagesSerieFilter.h
   gnomonAbstractImagesSerieReader
   gnomonAbstractImagesSerieReader.h
+  gnomonAbstractImagesSerieWriter
+  gnomonAbstractImagesSerieWriter.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
   gnomonAbstractMeshData
@@ -101,6 +103,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
+  gnomonAbstractImagesSerieWriter.cpp
   gnomonAbstractMeshData.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp

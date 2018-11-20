@@ -1,12 +1,28 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractCellImageFromImage.h"
+
+class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand<gnomonAbstractCellImageFromImage>
 {
 public:
-    gnomonSegmentationCommand() = delete;
-    gnomonSegmentationCommand(const QString&);
-    virtual ~gnomonSegmentationCommand();
+     gnomonSegmentationCommand(void) = delete;
+     gnomonSegmentationCommand(const QString&);
+    ~gnomonSegmentationCommand(void);
 
 public:
     void redo(void) override;
@@ -17,8 +33,14 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue);
 
 public:
-    dtkImage *computedImage();
+    gnomonCellImage *computedImage(void) const;
+
+protected:
+    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
 
 private:
     class gnomonSegmentationCommandPrivate *d;
 };
+
+//
+// gnomonSegmentationCommand.h ends here

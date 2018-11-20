@@ -11,7 +11,7 @@ public:
     QMap<QString, QVariant> parameters;
 
 public:
-    dtkImage* image;
+    dtkImage *image;
 };
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
@@ -23,33 +23,32 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
+    this->action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
 
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action);
+    Q_ASSERT(this->action);
 }
 
-gnomonSegmentationCommand::~gnomonSegmentationCommand()
+gnomonSegmentationCommand::~gnomonSegmentationCommand(void)
 {
     delete d;
 }
 
 void gnomonSegmentationCommand::redo(void)
 {
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action);
-    gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->setImage(d->image);
+    Q_ASSERT(this->action);
 
-    QMap<QString, QVariant>::const_iterator i = d->parameters.constBegin();
-    while (i != d->parameters.constEnd()) {
-        gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->setParameter(i.key(), i.value());
-        ++i;
+    this->action->setImage(d->image);
+    for (auto it = d->parameters.cbegin(); it != d->parameters.cend(); ++it) {
+        this->action->setParameter(it.key(), *it);
     }
-
-    gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->run();
+    this->action->run();
 }
 
 void gnomonSegmentationCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->setImage(nullptr);
+    Q_ASSERT(this->action);
+
+    this->action->setImage(nullptr);
 }
 
 void gnomonSegmentationCommand::setImage(dtkImage* image)
@@ -62,7 +61,7 @@ void gnomonSegmentationCommand::setParameter(const QString& param_name, const QV
     d->parameters[param_name] = param_value;
 }
 
-dtkImage *gnomonSegmentationCommand::computedImage(void)
+gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
 {
-    return gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->computedImage()->image();
+    return this->action->computedImage();
 }

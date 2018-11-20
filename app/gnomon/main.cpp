@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     application.setApplicationName("gnomon");
     application.setOrganizationName("inria");
     application.setOrganizationDomain("fr");
-    application.setApplicationVersion("0.1.0");
+    application.setApplicationVersion("0.9.0");
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
     dtkImaging::initialize();

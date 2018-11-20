@@ -32,6 +32,7 @@ public:
 
 public slots:
     void apply(void);
+    void computeCells(void);
 
 private:
     class gnomonWorkspaceSegmentationPrivate *d;
