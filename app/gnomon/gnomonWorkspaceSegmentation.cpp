@@ -17,12 +17,16 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceSegmentation.h"
 
+#include <gnomonActorMeshCellImage.h>
 #include <gnomonCellImage.h>
 #include <gnomonSegmentationCommand.h>
 
 #include <dtkImagingCore>
 
 #include <QtWidgets>
+
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 
 class gnomonWorkspaceSegmentationPrivate
 {
@@ -32,6 +36,10 @@ public:
 
 public:
     gnomonSegmentationCommand *segmentation = nullptr;
+
+public:
+    gnomonCellImage *cellimage = nullptr;
+    gnomonActorMeshCellImage *actor = nullptr;
 
 public:
     QDoubleSpinBox *box_h_min;
@@ -130,9 +138,15 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->segmentation->redo();
 
-    // d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage())));
-    // d->target->setCellImage(gnomonCellImagePtr(new gnomonCellImage(*d->segmentation->computedImage())));
-    d->target->setCellImage(gnomonCellImagePtr((gnomonCellImage *) d->segmentation->computedImage()->clone()));
+    if(!d->actor)
+        d->actor = gnomonActorMeshCellImage::New();
+
+    d->actor->setCellImage((gnomonCellImage *)d->segmentation->computedImage()->clone());
+    d->actor->setInteractor(d->target->interactor());
+    d->actor->update();
+
+    d->target->renderer3D()->AddActor(d->actor);
+    d->target->render();
 }
 
 //

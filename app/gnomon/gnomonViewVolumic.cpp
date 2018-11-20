@@ -20,8 +20,6 @@
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspacePreprocess.h"
 
-#include "gnomonActorMeshCellImage.h"
-
 #include <gnomonCore/gnomonImagesSerieReaderCommand.h>
 
 #include <gnomonStyle>
@@ -281,10 +279,6 @@ public:
 
 public:
     dtkImagePtr image;
-
-public:
-    gnomonCellImagePtr cellimage;
-    gnomonActorMeshCellImage *actor;
 
 public:
     QSlider *slider;
@@ -713,43 +707,6 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
     delete d;
 }
 
-void gnomonViewVolumic::setCellImage(gnomonCellImagePtr i)
-{
-    d->points->Reset();
-
-    d->mesh->SetPoints(d->points);
-    d->mesh->Modified();
-
-    d->glyphs->SetInputData(d->mesh);
-    d->glyphs->Update();
-
-    d->cellimage = i;
-    
-    if(!d->actor)
-        d->actor = gnomonActorMeshCellImage::New();
-
-    // d->renderer3D->RemoveActor(d->actor);
-    
-    d->actor->setCellImage(d->cellimage.data());
-    d->actor->setInteractor(d->GetInteractor());
-    d->actor->update();
-    qWarning()<<"--> Updated CellImage actor";
-
-    d->renderer3D->AddActor(d->actor);
-
-    d->planeWidget[0]->Off();
-    d->planeWidget[1]->Off();
-    d->planeWidget[2]->Off();
-
-    // for(int i = 0; i < 3; i++) {
-    //     d->planeWidget[i]->VisibilityOff();
-    // }
-
-    d->renderer3D->ResetCamera();
-
-    this->render();
-}
-
 void gnomonViewVolumic::setImage(dtkImagePtr i)
 {
     d->points->Reset();
@@ -872,6 +829,21 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
 dtkImagePtr gnomonViewVolumic::image(void)
 {
     return d->image;
+}
+
+vtkRenderWindowInteractor *gnomonViewVolumic::interactor(void)
+{
+    return d->GetInteractor();
+}
+
+vtkRenderer *gnomonViewVolumic::renderer2D(void)
+{
+    return d->renderer2D;
+}
+
+vtkRenderer *gnomonViewVolumic::renderer3D(void)
+{
+    return d->renderer3D;
 }
 
 void gnomonViewVolumic::render(void)
