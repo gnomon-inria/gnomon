@@ -14,23 +14,21 @@
 
 #pragma once
 
-#include <gnomonCoreExport>
-
 #include <QUndoCommand>
 
 template<typename T>
 class gnomonAbstractCommand : public QUndoCommand
 {
 public:
-             gnomonAbstractCommand(void) = default;
-    virtual ~gnomonAbstractCommand(void);
+     gnomonAbstractCommand(void) = default;
+    ~gnomonAbstractCommand(void);
 
 public:
     virtual void redo(void) = 0;
     virtual void undo(void) = 0;
 
 protected:
-    T* action = nullptr;
+    T *action = nullptr;
 };
 
 // ///////////////////////////////////////////////////////////////////

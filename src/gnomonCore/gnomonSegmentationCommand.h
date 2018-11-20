@@ -31,16 +31,15 @@ public:
 public:
     void setImage(dtkImage *image);
     void setParameter(const QString& parameterName, const QVariant& parameterValue);
-    virtual QMap<QString, QVariant> parameters(void) const;
 
 public:
-    gnomonCellImage *computedImage(void) const;
+    const QMap<QString, QVariant>& parameters(void) const;
 
-protected:
-    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
+    gnomonCellImage *computedImage(void) const;
 
 private:
     class gnomonSegmentationCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
 };
 
 //

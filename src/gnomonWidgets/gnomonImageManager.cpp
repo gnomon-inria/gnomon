@@ -203,7 +203,7 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     QString command = "import " + plugin_save;
     int stat;
     dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-    this->writer =  gnomonCore::imagesSerieWriter::pluginFactory().create(plugin_save);
+    this->writer = gnomonCore::imagesSerieWriter::pluginFactory().create(plugin_save);
 
     if(!this->writer) {
         qWarning() << "cannot create plugin " << plugin_save << " you won't be able to save images!!";
