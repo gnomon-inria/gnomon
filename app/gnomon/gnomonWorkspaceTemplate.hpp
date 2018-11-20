@@ -46,13 +46,13 @@ void gnomonWorkspaceTemplatePrivate< T >::configure(QWidget* parent, const QStri
             type == QMetaType::ULongLong) {
             widget = new QSpinBox(parent);
             static_cast< QSpinBox* >(widget)->setValue(it.value().value<int>());
-            parent->connect(static_cast< QSpinBox* >(widget), QOverload<int>::of(&QSpinBox::valueChanged),
+            parent->connect(static_cast< QSpinBox* >(widget), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [=](int value){ this->command->setParameter(key, value); });
         } else if (type == QMetaType::Float ||
                    type == QMetaType::Double) {
             widget = new QDoubleSpinBox(parent);
             static_cast< QDoubleSpinBox* >(widget)->setValue(it.value().value<double>());
-            parent->connect(static_cast< QDoubleSpinBox* >(widget), QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            parent->connect(static_cast< QDoubleSpinBox* >(widget),  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [=](double value){ this->command->setParameter(key, value); });
         } else if (type == QMetaType::QString) {
             widget = new QLineEdit(parent);
