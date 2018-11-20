@@ -51,7 +51,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexFromImage, GNOMONCORE_EXPORT
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexFromImage, GNOMONCORE_EXPORT, cellcomplexFromImage);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexFromImage, GNOMONCORE_EXPORT, cellComplexFromImage);
 }
 
 //

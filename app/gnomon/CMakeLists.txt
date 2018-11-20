@@ -19,40 +19,10 @@ project(gnomon)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonDropSite.h
-  gnomonFinder.h
-  gnomonGridLayout.h
-  gnomonImageManager.h
-  gnomonMainWindow.h
-  gnomonOverlayPane.h
-  gnomonOverlayPaneItem.h
-  gnomonToolBar.h
-  gnomonViewVolumic.h
-  gnomonWorkspace.h
-  gnomonWorkspaceBrowser.h
-  gnomonWorkspaceFusion.h
-  gnomonWorkspaceTemplate.h
-  gnomonWorkspaceTemplate.hpp
-  gnomonWorkspaceSegmentation.h
-  gnomonWorkspacePreprocess.h
-  gnomonWorkspaceRegistration.h)
+  gnomonMainWindow.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonDropSite.cpp
-  gnomonFinder.cpp
-  gnomonGridLayout.cpp
-  gnomonImageManager.cpp
-  gnomonMainWindow.cpp
-  gnomonOverlayPane.cpp
-  gnomonOverlayPaneItem.cpp
-  gnomonToolBar.cpp
-  gnomonViewVolumic.cpp
-  gnomonWorkspace.cpp
-  gnomonWorkspaceBrowser.cpp
-  gnomonWorkspaceFusion.cpp
-  gnomonWorkspaceSegmentation.cpp
-  gnomonWorkspacePreprocess.cpp
-  gnomonWorkspaceRegistration.cpp)
+  gnomonMainWindow.cpp)
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomon.qrc)

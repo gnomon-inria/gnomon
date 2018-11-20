@@ -70,7 +70,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageData, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageData, GNOMONCORE_EXPORT, cellimagedata);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageData, GNOMONCORE_EXPORT, cellImageData);
 }
 
 // gnomonAbstractCellImageData.h ends here
