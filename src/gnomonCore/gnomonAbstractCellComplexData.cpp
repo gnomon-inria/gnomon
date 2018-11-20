@@ -22,7 +22,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellComplexData, cellcomplexdata, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractCellComplexData, cellComplexData, gnomonCore);
 }
 
 //
