@@ -18,17 +18,31 @@
 #include "gnomonViewVolumic.h"
 #include "gnomonWorkspaceFusion.h"
 
+#include <gnomonImagesFusionCommand>
+
+#include <dtkImagingCore>
+#include <dtkScript>
+
 class gnomonWorkspaceFusionPrivate
 {
+public:
+    QString workspace() const override;
+    QStringList keys() const override;
+
 public:
     gnomonGridLayout *layout;
 
 public:
     gnomonViewVolumic *target;
-
-public:
-    QSpinBox *iterations_box;
 };
+
+QString gnomonWorkspaceFusionPrivate::workspace() const
+{ return "Fusion"; }
+
+QStringList gnomonWorkspaceFusionPrivate::keys() const
+{
+    return gnomonCore::imagesFusion::pluginFactory().keys();
+}
 
 gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(parent)
 {
@@ -39,31 +53,31 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d->target = new gnomonViewVolumic(this);
     d->target->setMinimumWidth(250);
 
-    d->iterations_box = new QSpinBox(this);
-    d->iterations_box->setMinimum(1);
-    d->iterations_box->setMaximum(10);
-    d->iterations_box->setValue(5);
+    // d->iterations_box = new QSpinBox(this);
+    // d->iterations_box->setMinimum(1);
+    // d->iterations_box->setMaximum(10);
+    // d->iterations_box->setValue(5);
 
-    QFormLayout *pane_item_params_layout = new QFormLayout;
-    pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    pane_item_params_layout->addRow("Iterations", d->iterations_box);
+    // QFormLayout *pane_item_params_layout = new QFormLayout;
+    // pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    // pane_item_params_layout->addRow("Iterations", d->iterations_box);
 
-    gnomonOverlayPaneItem *pane_item_inputs = new gnomonOverlayPaneItem;
-    pane_item_inputs->setTitle("Parameters");
-    pane_item_inputs->addLayout(pane_item_params_layout);
-    pane_item_inputs->toggle();
+    // gnomonOverlayPaneItem *pane_item_inputs = new gnomonOverlayPaneItem;
+    // pane_item_inputs->setTitle("Parameters");
+    // pane_item_inputs->addLayout(pane_item_params_layout);
+    // pane_item_inputs->toggle();
 
-    QPushButton *apply = new QPushButton("Apply", this);
+    // QPushButton *apply = new QPushButton("Apply", this);
 
-    gnomonOverlayPaneItem *pane_item_apply = new gnomonOverlayPaneItem;
-    pane_item_apply->setTitle("Fusion");
-    pane_item_apply->addWidget(apply);
-    pane_item_apply->toggle();
+    // gnomonOverlayPaneItem *pane_item_apply = new gnomonOverlayPaneItem;
+    // pane_item_apply->setTitle("Fusion");
+    // pane_item_apply->addWidget(apply);
+    // pane_item_apply->toggle();
 
-    gnomonOverlayPane *pane = new gnomonOverlayPane(this);
-    pane->addWidget(pane_item_inputs);
-    pane->addWidget(pane_item_apply);
-    pane->toggle();
+    // gnomonOverlayPane *pane = new gnomonOverlayPane(this);
+    // pane->addWidget(pane_item_inputs);
+    // pane->addWidget(pane_item_apply);
+    // pane->toggle();
 
     QWidget *dummy = new QWidget(this);
     dummy->setLayout(d->layout);
@@ -76,9 +90,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
-    layout->addWidget(pane);
-
-    connect(apply, SIGNAL(clicked()), this, SLOT(apply()));
+    layout->addWidget(d->pane(this));
 }
 
 gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
@@ -89,6 +101,11 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 void gnomonWorkspaceFusion::apply(void)
 {
     qDebug() << Q_FUNC_INFO;
+}
+
+void gnomonWorkspacePreprocess::configure(const QString& algorithm)
+{
+    d->configure(this, algorithm);
 }
 
 //

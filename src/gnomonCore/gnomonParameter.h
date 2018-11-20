@@ -23,9 +23,6 @@ class gnomonParameter: public QObject
 
 public:
     virtual QWidget *connect(QWidget* parent) = 0;
-
-signals:
-    void valueChanged(QVariant value);
 };
 
 class gnomonSpinBoxParameterPrivate;
