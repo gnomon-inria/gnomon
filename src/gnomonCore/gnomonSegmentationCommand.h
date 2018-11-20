@@ -15,6 +15,7 @@ public:
 public:
     void setImage(dtkImage *image);
     void setParameter(const QString& parameterName, const QVariant& parameterValue);
+    virtual QMap<QString, QVariant> parameters(void) const;
 
 public:
     dtkImage *computedImage(void) const;
