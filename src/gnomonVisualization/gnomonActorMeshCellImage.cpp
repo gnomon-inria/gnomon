@@ -23,8 +23,10 @@
 #include <QtWidgets>
 
 #include <vtkActor.h>
+#include <vtkAppendPolyData.h>
 #include <vtkAssembly.h>
 #include <vtkCommand.h>
+#include <vtkCleanPolyData.h>
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -54,9 +56,9 @@ public:
     double resolutionFactor;
 
     QMap<long, vtkSmartPointer<vtkPolyData> > cell_mesh;
-    QMap<long, vtkSmartPointer<vtkPolyDataMapper> > cell_mapper;
-    QMap<long, vtkSmartPointer<vtkActor> > cell_actor;
-    vtkSmartPointer<vtkAssembly> cell_assembly;
+    vtkSmartPointer<vtkPolyDataMapper> mapper;
+
+    bool modified;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -70,7 +72,13 @@ void gnomonActorMeshCellImage::setCellImage(gnomonCellImage *cellimage)
 {
     dd->cellimage = cellimage;
 
+    this->modified();
     this->update();
+}
+
+void gnomonActorMeshCellImage::modified(void)
+{
+    dd->modified = true;
 }
 
 void gnomonActorMeshCellImage::update(void)
@@ -138,7 +146,7 @@ void gnomonActorMeshCellImage::update(void)
 
     for (const auto& cellId : cells) {
 
-        if (!dd->cell_mesh.contains(cellId)) {
+        if ((!dd->cell_mesh.contains(cellId)) | (dd->modified)) {
 
             vtkSmartPointer<vtkDiscreteMarchingCubes>contour = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
             contour->SetInputData(volume);
@@ -180,28 +188,34 @@ void gnomonActorMeshCellImage::update(void)
 
             dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
         }
-
-        if (!dd->cell_mapper.contains(cellId)) {
-            dd->cell_mapper[cellId] = vtkSmartPointer<vtkPolyDataMapper>::New();
-            dd->cell_mapper[cellId]->SetInputData(dd->cell_mesh[cellId]);
-            dd->cell_mapper[cellId]->SetScalarRange(0, dd->cellimage->cellCount()-1);
-        }
-
-        if (!dd->cell_actor.contains(cellId)) {
-            dd->cell_actor[cellId] = vtkSmartPointer<vtkActor>::New();
-            dd->cell_actor[cellId]->SetMapper(dd->cell_mapper[cellId]);
-        }
     }
 
-    if (!dd->cell_assembly) {
-        dd->cell_assembly = vtkSmartPointer<vtkAssembly>::New();
-        for (const auto& cellId : cells) {
-            dd->cell_assembly->AddPart(dd->cell_actor[cellId]);
-        }
-        this->AddPart(dd->cell_assembly);
+    vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
+    for (const auto& cellId : cells)
+        appender->AddInputData(dd->cell_mesh[cellId]);
+
+    vtkSmartPointer<vtkCleanPolyData> cleaner = vtkSmartPointer<vtkCleanPolyData>::New();
+    cleaner->SetInputConnection(appender->GetOutputPort());
+    cleaner->Update();
+
+    d->mesh = cleaner->GetOutput();
+
+    if (!d->mapper) {
+        d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        d->mapper->SetScalarRange(0, dd->cellimage->cellCount()-1);
     }
+    d->mapper->SetInputData(d->mesh);
+
+    if(!d->actor) {
+        d->actor = vtkSmartPointer<vtkActor>::New();
+        d->actor->SetMapper(d->mapper);
+        this->AddPart(d->actor);
+    }
+    d->actor->Modified();
 
     d->interactor->Render();
+    
+    dd->modified = false;
 }
 
 gnomonActorMeshCellImage::gnomonActorMeshCellImage(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellImagePrivate)

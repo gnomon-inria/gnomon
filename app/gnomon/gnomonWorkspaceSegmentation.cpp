@@ -132,7 +132,7 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     // d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage())));
     // d->target->setCellImage(gnomonCellImagePtr(new gnomonCellImage(*d->segmentation->computedImage())));
-    d->target->setCellImage(gnomonCellImagePtr(d->segmentation->computedImage()));
+    d->target->setCellImage(gnomonCellImagePtr((gnomonCellImage *) d->segmentation->computedImage()->clone()));
 }
 
 //

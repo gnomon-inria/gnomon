@@ -724,10 +724,13 @@ void gnomonViewVolumic::setCellImage(gnomonCellImagePtr i)
     d->glyphs->Update();
 
     d->cellimage = i;
+    
+    if(!d->actor)
+        d->actor = gnomonActorMeshCellImage::New();
 
-    d->actor = gnomonActorMeshCellImage::New();
+    // d->renderer3D->RemoveActor(d->actor);
+    
     d->actor->setCellImage(d->cellimage.data());
-
     d->actor->setInteractor(d->GetInteractor());
     d->actor->update();
     qWarning()<<"--> Updated CellImage actor";
@@ -739,9 +742,12 @@ void gnomonViewVolumic::setCellImage(gnomonCellImagePtr i)
     d->planeWidget[2]->Off();
 
     // for(int i = 0; i < 3; i++) {
-    //     d->planeWidget[i]->SetVisibility(false);
+    //     d->planeWidget[i]->VisibilityOff();
     // }
 
+    d->renderer3D->ResetCamera();
+
+    this->render();
 }
 
 void gnomonViewVolumic::setImage(dtkImagePtr i)
