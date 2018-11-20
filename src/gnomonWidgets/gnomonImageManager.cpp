@@ -171,6 +171,9 @@ public:
     ~gnomonImageManagerPrivate(void);
 
 public:
+    QSize sizeHint(void) const;
+
+public:
     gnomonImageManagerItem *create(dtkImagePtr, const QColor&);
 
 public:
@@ -196,7 +199,7 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     this->contents = new QWidget(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this->contents);
-    layout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     this->setFrameShape(QFrame::NoFrame);
     this->setWidget(this->contents);
@@ -214,11 +217,18 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     if(!this->writer) {
         qWarning() << "cannot create plugin " << plugin_save << " you won't be able to save images!!";
     }
+
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 {
 
+}
+
+QSize gnomonImageManagerPrivate::sizeHint(void) const
+{
+    return QSize(200, 130);
 }
 
 gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, const QColor& color)
@@ -319,11 +329,6 @@ gnomonImageManager *gnomonImageManager::instance(void)
     return s_instance;
 }
 
-QSize gnomonImageManager::sizeHint(void) const
-{
-    return QSize(200, 140);
-}
-
 void gnomonImageManager::addImage(dtkImagePtr image, const QColor& color)
 {
     gnomonImageManagerItem *item = d->create(image, color);
@@ -357,10 +362,15 @@ gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonImageManagerPrivate;
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 10);
-    layout->setSpacing(0);
-    layout->addWidget(d);
+    QHBoxLayout *t_layout = new QHBoxLayout;
+    t_layout->setContentsMargins(0, 0, 0, 0);
+    t_layout->setSpacing(0);
+    t_layout->addWidget(d);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setAlignment(Qt::AlignTop);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addLayout(t_layout);
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -370,6 +380,11 @@ gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 gnomonImageManager::~gnomonImageManager(void)
 {
     delete d;
+}
+
+QSize gnomonImageManager::sizeHint(void) const
+{
+    return QSize(200, 140);
 }
 
 void gnomonImageManager::enterEvent(QEvent *)
@@ -391,6 +406,9 @@ void gnomonImageManager::mousePressEvent(QMouseEvent *event)
     QRect handle = QRect(this->size().width() / 2 - 100, this->size().height() - 10, 200, 10);
 
     if (handle.contains(event->pos())) {
+
+        qDebug() << Q_FUNC_INFO << this->size().height();
+
         if(this->size().height() < 150)
             emit expand();
         else
@@ -404,6 +422,8 @@ void gnomonImageManager::paintEvent(QPaintEvent *event)
 
     if(!d->inside)
         return;
+
+    qDebug() << Q_FUNC_INFO << event->rect();
 
     QPainter painter(this);
     painter.setBrush(Qt::white);
