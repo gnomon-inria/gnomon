@@ -10,7 +10,7 @@ public:
 
 gnomonImagesSerieReaderCommand::gnomonImagesSerieReaderCommand(const QString& key) : d(new gnomonImagesSerieReaderCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "import gnomonImagesSerieReader";
 
     int stat;
 
