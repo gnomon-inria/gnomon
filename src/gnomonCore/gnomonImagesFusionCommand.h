@@ -13,6 +13,8 @@ public:
     void undo(void) override;
 
 public:
+    void setParameters(const QMap<QString, QVariant>&);
+    void setParameter(const QString& parameterName, const QVariant& parameterValue);
     void addImage(dtkImage *);
     dtkImage *output(void);
 
