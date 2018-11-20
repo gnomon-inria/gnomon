@@ -123,33 +123,33 @@ touch gnomon-core.ini
 
 ### Gnomon config
 
-Edit `gnomon-core.ini` file and add the following lines:
+Edit `gnomon-core.ini` file and add the following lines replacing `<$HOME>` by the **real path**:
 
 ``` shell
 [gnomon-core]
-plugins=$HOME/Development/gnomon-plugins/build/lib
+plugins=<$HOME>/Development/gnomon-plugins/build/lib
 ```
 
 **Optional: Enable jupyter console by default in Gnomon** (instead of python)
 
 You need to add some configuration lines to `dtk-script.ini`.
 
-If using an install from sources:
+If using an install from sources (still replacing `<$HOME>` by the **real path**):
 ``` shell
 [modules]
-path=$HOME/Development/gnomon/build/lib/python2.7/site-packages/:$HOME/Development/gnomon-plugins/src/Python/
+path=<$HOME>/Development/gnomon/build/lib/python2.7/site-packages/:<$HOME>/Development/gnomon-plugins/src/Python/
 
 [init]
-script=$HOME/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
+script=<$HOME>/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
 ```
 
-If using a Gnomon install from Conda:
+If using a Gnomon install from Conda  (still replacing `<$HOME>` by the **real path**):
 ``` shell
 [modules]
-path=$HOME/Development/gnomon/build-conda/lib/python2.7/site-packages/:$HOME/Development/gnomon-plugins/src/Python
+path=<$HOME>/Development/gnomon/build-conda/lib/python2.7/site-packages/:<$HOME>/Development/gnomon-plugins/src/Python
 
 [init]
-script=$HOME/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
+script=<$HOME>/Development/gnomon-scripts/1.x.x/create_jupyter_console.py
 ```
 
 ## Launch gnomonGrowthSimulator
