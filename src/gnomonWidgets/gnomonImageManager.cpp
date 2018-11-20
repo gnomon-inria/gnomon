@@ -286,7 +286,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
 
                 QString export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"),
                                                                         path,
-                                                                        tr("Images (*.inr.gz)"));
+                                                                        tr("Images (*.inr.gz *.inr *.tif)"));
 
                 if(!export_file_path.isEmpty()) {
                     settings.beginGroup("general");
