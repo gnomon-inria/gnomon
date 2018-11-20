@@ -622,6 +622,8 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
             if (this->image)
                 q->setImage(this->image);
+
+            this->blender->RemoveAllInputs();
         }
     });
 }
