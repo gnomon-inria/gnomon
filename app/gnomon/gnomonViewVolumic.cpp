@@ -831,6 +831,21 @@ dtkImagePtr gnomonViewVolumic::image(void)
     return d->image;
 }
 
+vtkRenderWindowInteractor *gnomonViewVolumic::interactor(void)
+{
+    return d->GetInteractor();
+}
+
+vtkRenderer *gnomonViewVolumic::renderer2D(void)
+{
+    return d->renderer2D;
+}
+
+vtkRenderer *gnomonViewVolumic::renderer3D(void)
+{
+    return d->renderer3D;
+}
+
 void gnomonViewVolumic::render(void)
 {
     d->slider->setValue(d->slider->value()+1);
