@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
+  gnomonAbstractCommand
+  gnomonAbstractCommand.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
@@ -47,14 +49,14 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractIntensityImageData.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
+  gnomonAbstractMeshModel
+  gnomonAbstractMeshModel.h
   gnomonAbstractModel
   gnomonAbstractModel.h
   gnomonAbstractSystemScenario
   gnomonAbstractSystemScenario.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
-  gnomonAbstractCommand
-  gnomonAbstractCommand.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellGraph
@@ -101,14 +103,15 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractForm.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
-  gnomonAbstractMeshData.cpp
-  gnomonAbstractSystemScenario.cpp
-  gnomonAbstractForm.cpp
-  gnomonAbstractModel.cpp
   gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractMeshData.cpp
+  gnomonAbstractMeshModel.cpp
+  gnomonAbstractModel.cpp
+  gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
