@@ -40,7 +40,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT, cellcomplexReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT, cellComplexReader);
 }
 
 //

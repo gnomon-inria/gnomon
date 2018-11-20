@@ -110,7 +110,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshData, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshData, GNOMONCORE_EXPORT, meshdata);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMeshData, GNOMONCORE_EXPORT, meshData);
 }
 
 //
