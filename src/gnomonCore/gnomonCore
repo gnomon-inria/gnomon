@@ -13,6 +13,7 @@
 #include "gnomonAbstractCellImageFromImage.h"
 // #include "gnomonAbstractImagesSerieFilter.h"
 #include "gnomonAbstractImagesSerieReader.h"
+#include "gnomonAbstractImagesSerieWriter.h"
 #include "gnomonAbstractTissueGrowthModel.h"
 #include "gnomonTime.h"
 #include "gnomonAbstractForm.h"

@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     application->setApplicationName("gnomon Growth Simulator");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
-    application->setApplicationVersion("0.1.0");
+    application->setApplicationVersion("0.9.0");
 
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon Growth Simulator application.");
