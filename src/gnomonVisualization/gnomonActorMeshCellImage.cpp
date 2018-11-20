@@ -41,6 +41,8 @@
 #include <vtkDiscreteMarchingCubes.h>
 #include <vtkWindowedSincPolyDataFilter.h>
 #include <vtkQuadricClustering.h>
+#include <vtkCenterOfMass.h>
+#include <vtkImageResample.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorMeshCellImagePrivate
@@ -52,6 +54,7 @@ public:
     gnomonCellImage *cellimage;
 
     double cellScaleFactor;
+    double resamplingFactor;
     double smoothingFactor;
     double resolutionFactor;
 
@@ -100,40 +103,12 @@ void gnomonActorMeshCellImage::update(void)
 
     vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
 
-
-    // QList<long> faces = dd->cellimage->elementIds(2);
-
-    // for (const auto& faceId : faces) {
-    //     QList<long> faceVertices = dd->cellimage->orientedFaceVertexIds(faceId);
-    //     long vtkId = polydataFaces->InsertNextCell(faceVertices.size());
-    //     for (const auto& v : faceVertices) {
-    //         polydataFaces->InsertCellPoint(vertexPoint[v]);
-    //     }
-    //     polydataFaceData->InsertValue(vtkId,faceId);
-    // }
-
-    // if (!d->mesh) {
-    //     d->mesh = vtkSmartPointer<vtkPolyData>::New();
-    //     d->mesh->SetPoints(polydataPoints);
-    //     d->mesh->SetPolys(polydataFaces);
-    //     d->mesh->GetCellData()->SetScalars(polydataFaceData);
-    // }
-
-    // if (!d->mapper) {
-    //     d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    //     d->mapper->SetInputData(d->mesh);
-    //     d->mapper->SetScalarRange(0, dd->cellimage->elementCount(2)-1);
-    // }
-
-    // if(!d->actor) {
-    //     d->actor = vtkSmartPointer<vtkActor>::New();
-    //     d->actor->SetMapper(d->mapper);
-    //     d->actor->SetVisibility(0);
-    //     this->AddPart(d->actor);
-    // }
-
-
-    // QMap<long, QMap<long,long> > cellVertexPoints;
+    vtkSmartPointer<vtkImageResample> resample = vtkSmartPointer<vtkImageResample>::New();
+    resample->SetInputData(volume);
+    // resample->SetOutputSpacing(dd->resamplingVoxelsize,dd->resamplingVoxelsize,dd->resamplingVoxelsize);
+    resample->SetMagnificationFactors(1./dd->resamplingFactor,1./dd->resamplingFactor,1./dd->resamplingFactor);
+    resample->SetInterpolationModeToNearestNeighbor();
+    resample->Update();
 
     QStringList cellProperties = dd->cellimage->cellPropertyNames();
     if (!cellProperties.contains("volume")) {
@@ -149,50 +124,71 @@ void gnomonActorMeshCellImage::update(void)
         if ((!dd->cell_mesh.contains(cellId)) | (dd->modified)) {
 
             vtkSmartPointer<vtkDiscreteMarchingCubes>contour = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
-            contour->SetInputData(volume);
+            // contour->SetInputData(volume);
+            contour->SetInputData(resample->GetOutput());
             contour->ComputeNormalsOn();
             contour->ComputeGradientsOn();
             contour->SetValue(0,cellId);
             contour->Update();
 
-            qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
+            // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
 
-            int smooth_iterations = int(dd->smoothingFactor*8);
+            if (contour->GetOutput()->GetNumberOfCells()>0)
+            { 
+                int smooth_iterations = int(dd->smoothingFactor*8);
 
-            vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoother = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
-            smoother->SetInputData(contour->GetOutput());
-            smoother->BoundarySmoothingOn();
-            smoother->FeatureEdgeSmoothingOn();
-            smoother->SetFeatureAngle(120.0);
-            smoother->SetPassBand(0.01);
-            smoother->SetNumberOfIterations(smooth_iterations);
-            smoother->NonManifoldSmoothingOn();
-            smoother->NormalizeCoordinatesOn();
-            smoother->Update();
+                vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoother = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
+                smoother->SetInputData(contour->GetOutput());
+                smoother->BoundarySmoothingOn();
+                smoother->FeatureEdgeSmoothingOn();
+                smoother->SetFeatureAngle(120.0);
+                smoother->SetPassBand(0.01);
+                smoother->SetNumberOfIterations(smooth_iterations);
+                smoother->NonManifoldSmoothingOn();
+                smoother->NormalizeCoordinatesOn();
+                smoother->Update();
 
-            // int divisions = int(pow(cellVolumes[cellId].value<double>(),1/3.)*dd->resolutionFactor);
-            int divisions = 5.*dd->resolutionFactor;
+                // int divisions = int(pow(cellVolumes[cellId].value<double>(),1/3.)*dd->resolutionFactor);
+                int divisions = 5.*dd->resolutionFactor;
 
-            vtkSmartPointer<vtkQuadricClustering> decimate = vtkSmartPointer<vtkQuadricClustering>::New();
-            decimate->SetInputData(smoother->GetOutput());
-            decimate->SetNumberOfDivisions(divisions,divisions,divisions);
-            decimate->SetFeaturePointsAngle(120.0);
-            decimate->Update();
+                vtkSmartPointer<vtkQuadricClustering> decimate = vtkSmartPointer<vtkQuadricClustering>::New();
+                decimate->SetInputData(smoother->GetOutput());
+                decimate->SetNumberOfDivisions(divisions,divisions,divisions);
+                decimate->SetFeaturePointsAngle(120.0);
+                decimate->Update();
 
-            dd->cell_mesh[cellId] = decimate->GetOutput();
+                dd->cell_mesh[cellId] = decimate->GetOutput();
+     
+                double center[3];
+                vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter = vtkSmartPointer<vtkCenterOfMass>::New();
+                centerOfMassFilter->SetInputData(dd->cell_mesh[cellId]);
+                centerOfMassFilter->SetUseScalarsAsWeights(false);
+                centerOfMassFilter->Update();
+                centerOfMassFilter->GetCenter(center);
 
-            vtkSmartPointer<vtkDoubleArray> cellPolydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
-            for (int vtkId=0;vtkId<dd->cell_mesh[cellId]->GetNumberOfCells();vtkId++) {
-                cellPolydataFaceData->InsertValue(vtkId,cellId);
+                for (int vtkId=0;vtkId<dd->cell_mesh[cellId]->GetNumberOfPoints();vtkId++) {
+                    double point[3];
+                    dd->cell_mesh[cellId]->GetPoints()->GetPoint(vtkId,point);
+                    for (int i=0;i<3;i++)
+                        point[i] = center[i] + dd->cellScaleFactor*(point[i]-center[i]);
+                    dd->cell_mesh[cellId]->GetPoints()->SetPoint(vtkId,point);
+                }
+
+                vtkSmartPointer<vtkDoubleArray> cellPolydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
+                for (int vtkId=0;vtkId<dd->cell_mesh[cellId]->GetNumberOfCells();vtkId++) {
+                    cellPolydataFaceData->InsertValue(vtkId,cellId);
+                }
+                dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
+
+                dd->cell_mesh[cellId] = dd->cell_mesh[cellId];
             }
-
-            dd->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
         }
     }
 
     vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
     for (const auto& cellId : cells)
-        appender->AddInputData(dd->cell_mesh[cellId]);
+        if (dd->cell_mesh.contains(cellId))
+            appender->AddInputData(dd->cell_mesh[cellId]);
 
     vtkSmartPointer<vtkCleanPolyData> cleaner = vtkSmartPointer<vtkCleanPolyData>::New();
     cleaner->SetInputConnection(appender->GetOutputPort());
@@ -222,9 +218,10 @@ gnomonActorMeshCellImage::gnomonActorMeshCellImage(void) : gnomonActorMesh(), dd
 {
     dd->cellimage = Q_NULLPTR;
 
-    dd->cellScaleFactor = 0.9;
-    dd->smoothingFactor = 1.0;
-    dd->resolutionFactor = 2.0;
+    dd->cellScaleFactor = 0.95;
+    dd->resamplingFactor = 3.;
+    dd->smoothingFactor = 1.;
+    dd->resolutionFactor = 4.;
 }
 
 gnomonActorMeshCellImage::~gnomonActorMeshCellImage(void)
