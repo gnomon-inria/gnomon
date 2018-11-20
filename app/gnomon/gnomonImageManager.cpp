@@ -107,7 +107,7 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixma
     this->button_save->move(5, 5);
     this->button_save->setVisible(false);
 
-    this->setPixmap(thumbnail.scaled(100, 100));
+    this->setPixmap(thumbnail.scaled(100, 100, Qt::KeepAspectRatio));
     this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
 
     connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
@@ -222,7 +222,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
     int h = o->GetDimensions()[0];
     int d = o->GetDimensions()[2];
 
-    QImage i(w, h, QImage::Format_RGB32);
+    QImage i(h, w, QImage::Format_RGB32);
 
     QRgb *b = reinterpret_cast<QRgb *>(i.bits());
 
