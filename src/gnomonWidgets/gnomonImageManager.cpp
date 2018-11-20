@@ -407,8 +407,6 @@ void gnomonImageManager::mousePressEvent(QMouseEvent *event)
 
     if (handle.contains(event->pos())) {
 
-        qDebug() << Q_FUNC_INFO << this->size().height();
-
         if(this->size().height() < 150)
             emit expand();
         else
@@ -422,8 +420,6 @@ void gnomonImageManager::paintEvent(QPaintEvent *event)
 
     if(!d->inside)
         return;
-
-    qDebug() << Q_FUNC_INFO << event->rect();
 
     QPainter painter(this);
     painter.setBrush(Qt::white);
