@@ -1,0 +1,53 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonInspectorImage.h"
+#include <QDebug>
+
+// /////////////////////////////////////////////////////////////////
+// gnomonInspectorImagePrivate
+// /////////////////////////////////////////////////////////////////
+
+class gnomonInspectorImagePrivate
+{
+public:
+
+};
+
+// /////////////////////////////////////////////////////////////////
+// gnomonInspectorImage
+// /////////////////////////////////////////////////////////////////
+
+gnomonInspectorImage::gnomonInspectorImage(QWidget *parent) : QWidget(parent), d(new gnomonInspectorImagePrivate)
+{
+
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+gnomonInspectorImage::~gnomonInspectorImage(void)
+{
+    delete d;
+
+    d = NULL;
+}
+
+void gnomonInspectorImage::setActor(gnomonActorImage *actor) const
+{
+    qDebug() << Q_FUNC_INFO << " TO IMPLEMENT";
+}
+//
+// gnomonInspectorImage.cpp ends here

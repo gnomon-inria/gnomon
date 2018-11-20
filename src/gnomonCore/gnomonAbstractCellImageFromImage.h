@@ -1,0 +1,64 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <QtCore>
+
+#include <gnomonCoreExport.h> // enables the visibility of the concept
+
+#include <dtkCore>
+
+class dtkImage;
+class gnomonCellImage;
+
+class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public QRunnable
+{
+
+    //Inputs
+public:
+    virtual void setImage(dtkImage *image) = 0;
+
+    virtual void setUseMargins(bool use_margins) = 0;
+
+    virtual void setBackgroundLabel(long label) = 0;
+
+    virtual void setPredefinedProperties(const QStringList& names) = 0;
+
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+
+    // Outputs
+public:
+    virtual gnomonCellImage *computedImage(void) const = 0;
+    virtual const QMap<QString, QVariant>& parameters(void) const = 0;
+    virtual       QMap<QString, QVariant>& parameters(void) = 0;
+
+public:
+    virtual void run(void) = 0;
+
+};
+
+DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)
+
+DTK_DECLARE_PLUGIN(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT)
+
+
+namespace gnomonCore {
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT, cellImageFromImage);
+}
+
+//
+// gnomonAbstractCellImageFromImage.h ends here

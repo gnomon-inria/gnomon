@@ -1,0 +1,327 @@
+/*
+;; Version: $Id$
+;;
+*/
+
+/*
+;; Commentary:
+;;
+*/
+
+/*
+;; Change Log:
+;;
+*/
+
+/* Code: */
+
+/* *****************************************************************
+;; QtWidgets
+;; ******************************************************************/
+
+QCheckBox, QListWidget QCheckBox {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(":gnomonStyle/gnomonStyleCheckBox.png");
+}
+
+QCheckBox::indicator:checked {
+    image: url(":gnomonStyle/gnomonStyleCheckBox-checked.png");
+}
+
+QComboBox {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+}
+
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: @GNOMON_STYLE_BORDERCOLOR@;
+    border-left-style: solid;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+QComboBox::down-arrow {
+    width: 8px;
+    image: url(":gnomonStyle/gnomonStyleComboBoxDownArrow.png");
+}
+
+QComboBox QListView {
+    background-color: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+    border-top: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-bottom: none;
+}
+
+QLineEdit {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+}
+
+QFrame {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
+}
+
+QHeaderView::section {
+    background-color: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    border: none;
+    padding: 4px;
+}
+
+/* QListView::item { */
+/*     color: @GNOMON_STYLE_FOREGROUNDCOLOR@; */
+/* } */
+
+/* QListView::item:!active { */
+/*     background: @GNOMON_STYLE_BACKGROUNDCOLOR@; */
+/* } */
+
+/* QListView::item:active { */
+/*     background: @GNOMON_STYLE_ACCENTCOLOR@; */
+/* } */
+
+/* QListView::indicator:checked { */
+/*     image: url(":gnomonStyle/gnomonStyleCheckBox-checked.png"); */
+/* } */
+
+/* QListView::indicator:unchecked { */
+/*     image: url(":gnomonStyle/gnomonStyleCheckBox.png"); */
+/* } */
+
+QMenu {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+}
+
+QPlainTextEdit {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+}
+
+QPushButton, QToolButton {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 4px;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 6px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: @GNOMON_STYLE_CURSORCOLOR@;
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+    min-height: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+    height: 0px;
+}
+
+QScrollBar::sub-line:horizontal {
+    height: 0px;
+}
+
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+    width: 0px;
+    height: 0px;
+    background: none;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+QScrollBar:vertical {
+    width: 6px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: @GNOMON_STYLE_CURSORCOLOR@;
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+    min-height: 20px;
+}
+
+QScrollBar::add-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    width: 0px;
+    height: 0px;
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QSpinBox, QDoubleSpinBox {
+    color: @GNOMON_STYLE_FOREGROUNDCOLOR@;
+
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
+
+    border: 1px solid @GNOMON_STYLE_BORDERCOLOR@;
+    border-radius: 2px;
+
+    padding-right: 15px;
+}
+
+QSplitter::handle:horizontal {
+    background-color: @GNOMON_STYLE_BORDERALTCOLOR@
+}
+
+QSplitter::handle:vertical {
+    background-color: @GNOMON_STYLE_BORDERALTCOLOR@
+}
+
+QStatusBar {
+    background: @GNOMON_STYLE_STATUSBAR@;
+
+    margin: 0px;
+    padding: 0px;
+
+    border-top: 1px solid @GNOMON_STYLE_BORDERALTCOLOR@;
+}
+
+QStatusBar::item {
+    margin: 0;
+    padding: 0;
+}
+
+QStatusBar QLabel {
+    background: @GNOMON_STYLE_STATUSBAR@;
+}
+
+QTreeView QHeaderView::section {
+    border: none;
+    border-bottom: 1px solid @GNOMON_STYLE_BORDERALTCOLOR@;
+
+    padding: 4px;
+}
+
+QTreeView::indicator:checked {
+    image: url(":gnomonStyle/gnomonStyleCheckBox-checked.png");
+}
+
+QTreeView::indicator:unchecked {
+    image: url(":gnomonStyle/gnomonStyleCheckBox.png");
+}
+
+/* *****************************************************************
+;; dtkWidgets
+;; ******************************************************************/
+
+QFrame#dtkViewLayoutItemFooterFocused {
+    background: none;
+    background-color: @GNOMON_STYLE_ACCENTCOLOR@;
+}
+
+/* *****************************************************************
+;; dtkComposer
+;; ******************************************************************/
+
+dtkComposerSceneNodeEditorList
+{
+    border: 1px solid @GNOMON_STYLE_BORDERALTCOLOR@
+}
+
+/* *****************************************************************
+;; gnomonGrowthSimulator
+;; ******************************************************************/
+
+gnomonGrowthSimulatorMainWindowSidePane
+{
+    border-right: 2px solid @GNOMON_STYLE_BORDERALTCOLOR@;
+}
+
+gnomonGrowthSimulatorMainWindowSidePane QPushButton
+{
+    background: none;
+    border: none;
+
+    height: 32;
+    width: 32;
+}
+
+/* *****************************************************************
+;; gnomon
+;; ******************************************************************/
+
+QScrollArea
+{
+    background: transparent;
+}
+
+QScrollArea > QWidget > QWidget
+{
+    background: @GNOMON_STYLE_BACKGROUNDALTCOLOR@;
+}
+
+gnomonOverlayPaneItemHeader
+{
+    background: #000011;
+}
+
+gnomonOverlayPaneItemHeader > QFrame
+{
+    background: none;
+}
+
+gnomonImageManager
+{
+    border: 1px solid #333333;
+}
+
+gnomonToolBar
+{
+    border-top: 1px solid #333333;
+}
+
+gnomonFinder
+{
+    border-top: 1px solid #333333;
+}
+
+/* gnomonStyle.qss.in ends here */

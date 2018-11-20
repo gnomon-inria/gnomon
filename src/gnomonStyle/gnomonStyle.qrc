@@ -1,0 +1,13 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="gnomonStyle">
+    <file>gnomonStyle.qss</file>
+
+    <file>gnomonStyleCheckBox.png</file>
+    <file>gnomonStyleCheckBox@2x.png</file>
+    <file>gnomonStyleCheckBox-checked.png</file>
+    <file>gnomonStyleCheckBox-checked@2x.png</file>
+    <file>gnomonStyleComboBoxDownArrow.png</file>
+    <file>gnomonStyleComboBoxDownArrow@2x.png</file>
+  </qresource>
+</RCC>

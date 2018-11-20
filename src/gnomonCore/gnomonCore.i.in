@@ -1,0 +1,205 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+%module(directors="1") gnomoncore
+
+%include "std_array.i"
+
+%include <dtk_base.i>
+
+%import <dtkCore.i>
+
+%import <dtkImagingCore.i>
+
+%{
+
+// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
+// with SWIG's preprocessor macro
+#if PY_VERSION_HEX < 0x3020000
+#ifdef Py_hash_t
+#undef Py_hash_t
+#endif
+#endif
+
+#include <dtkImagingCore>
+#include <gnomonCore/gnomonAbstractCellComplexData.h>
+#include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
+#include <gnomonCore/gnomonAbstractCellComplexReader.h>
+#include <gnomonCore/gnomonAbstractCellGraphData.h>
+#include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+#include <gnomonCore/gnomonAbstractCellImageData.h>
+#include <gnomonCore/gnomonAbstractCellImageFromImage.h>
+#include <gnomonCore/gnomonAbstractMeshData.h>
+#include <gnomonCore/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
+#include <gnomonCore/gnomonAbstractImagesSerieReader.h>
+#include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
+#include <gnomonCore/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonAbstractSystemScenario.h>
+#include <gnomonCore/gnomonCellComplex.h>
+#include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonCellGraph.h>
+#include <gnomonCore/gnomonCellImage.h>
+#include <gnomonCore/gnomonDataManager.h>
+#include <gnomonCore/gnomonDiscreteDynamicForm.h>
+#include <gnomonCore/gnomonFileSystemFormReader.h>
+#include <gnomonCore/gnomonFormVisitor.h>
+#include <gnomonCore/gnomonIntensityImage.h>
+#include <gnomonCore/gnomonMesh.h>
+#include <gnomonCore/gnomonSphereForm.h>
+#include <gnomonCore/gnomonSystem.h>
+#include <gnomonCore/gnomonTime.h>
+#include <gnomonCore/gnomonTypeDef.h>
+#include <gnomonCore/gnomonWallForm.h>
+#include <vtkPythonUtil.h>
+#include <vtkImageData.h>
+
+%}
+
+%feature("director");
+%feature("autodoc","1");
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMONCORE_EXPORT
+#define GNOMONCORE_EXPORT
+
+%typemap(out) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(directorin) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $input = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(in) vtkImageData* {
+
+    $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
+
+    if ( $1 == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
+%typemap(directorout) vtkImageData* {
+
+    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
+
+    if ( $result == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
+%extend QVariant {
+    void setValue(gnomonCellComplex *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonCellComplex* tognomonCellComplex() const {
+        return $self->value<gnomonCellComplex *>();
+    }
+
+    void setValue(gnomonCellImage *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonCellImage* tognomonCellImage() const {
+        return $self->value<gnomonCellImage *>();
+    }
+
+    void setValue(gnomonCellGraph *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonCellGraph* tognomonCellGraph() const {
+        return $self->value<gnomonCellGraph *>();
+    }
+
+    void setValue(gnomonDiscreteDynamicForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
+        return $self->value<gnomonDiscreteDynamicForm *>();
+    }
+
+    void setValue(gnomonSphereForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonSphereForm* tognomonSphereForm() const {
+        return $self->value<gnomonSphereForm *>();
+    }
+
+    void setValue(gnomonWallForm *value) {
+        $self->setValue(dtkMetaType::variantFromValue(value));
+    }
+    gnomonWallForm* tognomonWallForm() const {
+        return $self->value<gnomonWallForm *>();
+    }
+ }
+
+
+%pythoncode %{
+    def world():
+        import dtkcore
+        return dtkcore.dtkObjectManager_instance()
+%}
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+%include <gnomonCore/gnomonAbstractCellComplexData.h>
+%include <gnomonCore/gnomonAbstractCellComplexFromImage.h>
+%include <gnomonCore/gnomonAbstractCellComplexReader.h>
+%include <gnomonCore/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
+%include <gnomonCore/gnomonAbstractCellImageData.h>
+%include <gnomonCore/gnomonAbstractCellImageFromImage.h>
+%include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
+%include <gnomonCore/gnomonAbstractImagesSerieReader.h>
+%include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
+%include <gnomonCore/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonAbstractMeshData.h>
+%include <gnomonCore/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonAbstractSystemScenario.h>
+%include <gnomonCore/gnomonCellComplex.h>
+%include <gnomonCore/gnomonCellGraph.h>
+%include <gnomonCore/gnomonCellImage.h>
+%include <gnomonCore/gnomonDataManager.h>
+%include <gnomonCore/gnomonDiscreteDynamicForm.h>
+%include <gnomonCore/gnomonFileSystemFormReader.h>
+%include <gnomonCore/gnomonFormVisitor.h>
+%include <gnomonCore/gnomonIntensityImage.h>
+%include <gnomonCore/gnomonMesh.h>
+%include <gnomonCore/gnomonSphereForm.h>
+%include <gnomonCore/gnomonSystem.h>
+%include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonTypeDef.h>
+%include <gnomonCore/gnomonWallForm.h>
+%include <QVariant.i>
+
+namespace std {
+    %template(vec3_t) array<double, 3>;
+}
+
+//
+// gnomonCore.i.in ends here

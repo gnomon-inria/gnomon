@@ -1,0 +1,1 @@
+#include "gnomonInspectorViewWidget.h"

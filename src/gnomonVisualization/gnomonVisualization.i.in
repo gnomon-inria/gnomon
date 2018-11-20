@@ -1,0 +1,101 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+%module gnomonvisualization
+
+%include <dtk_base.i>
+
+%import <dtkCore.i>
+%import <dtkWidgets.i>
+
+%{
+
+#include <gnomonVisualization/gnomonActor.h>
+#include <gnomonVisualization/gnomonActorImage.h>
+#include <gnomonVisualization/gnomonActorScalarBar.h>
+#include <gnomonVisualization/gnomonActorVolume.h>
+#include <gnomonVisualization/gnomonView.h>
+#include <gnomonVisualization/gnomonViewManager.h>
+
+%}
+
+%{
+// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
+// with SWIG's preprocessor macro
+#if PY_VERSION_HEX < 0x3020000
+#ifdef Py_hash_t
+#undef Py_hash_t
+#endif
+#endif
+
+#include <vtkPythonUtil.h>
+
+%}
+
+%typemap(out) vtkRenderer* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
+}
+
+%typemap(in) vtkRenderer* {
+
+    $1 = (vtkRenderer *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderer");
+
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
+}
+
+%typemap(out) vtkRenderWindowInteractor* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
+}
+
+%typemap(in) vtkRenderWindowInteractor* {
+
+    $1 = (vtkRenderWindowInteractor *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderWindowInteractor");
+
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
+}
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMONVISUALIZATION_EXPORT
+#define GNOMONVISUALIZATION_EXPORT
+
+// ///////////////////////////////////////////////////////////////////
+// Ignore rules
+// ///////////////////////////////////////////////////////////////////
+
+%ignore onInserted;
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+
+%include <gnomonVisualization/gnomonView.h>
+%include <gnomonVisualization/gnomonViewManager.h>
+
+//
+// gnomonVisualization.i.in ends here
