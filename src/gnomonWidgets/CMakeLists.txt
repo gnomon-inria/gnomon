@@ -21,23 +21,60 @@ project(gnomonWidgets)
 set(${PROJECT_NAME}_HEADERS
   gnomonCodeEditor
   gnomonCodeEditor.h
-  gnomonWidgets)
+  gnomonDropSite.h
+  gnomonFinder.h
+  gnomonGridLayout.h
+  gnomonImageManager.h
+  gnomonOverlayPane.h
+  gnomonOverlayPaneItem.h
+  gnomonToolBar.h
+  gnomonViewVolumic.h
+  gnomonWidgets
+  gnomonWorkspace.h
+  gnomonWorkspaceBrowser.h
+  gnomonWorkspaceFusion.h
+  gnomonWorkspaceSegmentation.h
+  gnomonWorkspacePreprocess.h
+  gnomonWorkspaceRegistration.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonCodeEditor.cpp)
+  gnomonCodeEditor.cpp
+  gnomonDropSite.cpp
+  gnomonFinder.cpp
+  gnomonGridLayout.cpp
+  gnomonImageManager.cpp
+  gnomonOverlayPane.cpp
+  gnomonOverlayPaneItem.cpp
+  gnomonToolBar.cpp
+  gnomonViewVolumic.cpp
+  gnomonWorkspace.cpp
+  gnomonWorkspaceBrowser.cpp
+  gnomonWorkspaceFusion.cpp
+  gnomonWorkspaceSegmentation.cpp
+  gnomonWorkspacePreprocess.cpp
+  gnomonWorkspaceRegistration.cpp)
+
+set(${PROJECT_NAME}_SOURCES_QRC
+  gnomonWidgets.qrc)
 
 ## #################################################################
 ## Build rules
 ## #################################################################
 
+qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
+
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_HEADERS})
+  ${${PROJECT_NAME}_HEADERS}
+  ${${PROJECT_NAME}_SOURCES_RCC})
 
 qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
+target_link_libraries(${PROJECT_NAME} gnomonVisualization)
+
+target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 ## #################################################################
 ## Export header file
