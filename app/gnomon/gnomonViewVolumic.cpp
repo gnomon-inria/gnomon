@@ -35,6 +35,7 @@
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkGlyph3D.h>
 #include <vtkImageBlend.h>
+#include <vtkImageCast.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 #include <vtkImagePlaneWidget.h>
@@ -839,15 +840,18 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
 
         d->blending_list->addItem(label);
 
-        d->blender->AddInputData(image);
+        vtkSmartPointer<vtkImageCast> caster = vtkSmartPointer<vtkImageCast>::New();
+        caster->SetInputData(image);
+        caster->SetOutputScalarTypeToUnsignedShort();
+        caster->Update();
+
+        d->blender->AddInputData(caster->GetOutput());
 
         d->blender->SetOpacity(0, 0.5);
         d->blender->SetOpacity(1, 0.5);
         d->blender->Update();
 
         d->viewer->SetInputData(d->blender->GetOutput());
-
-        d->opacity->setVisible(d->blender->GetNumberOfInputs() > 1);
 
     } else {
 
