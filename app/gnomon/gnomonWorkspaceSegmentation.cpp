@@ -27,14 +27,10 @@
 
 #include <QtWidgets>
 
-<<<<<<< HEAD
-class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >
-=======
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-class gnomonWorkspaceSegmentationPrivate
->>>>>>> develop
+class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >
 {
 
 public:
@@ -87,7 +83,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     visu_item->addWidget(cell_button);
     visu_item->toggle();
 
-    gnomonOverlayPane *pane = d->pane(this)
+    gnomonOverlayPane *pane = d->pane(this);
     pane->addWidget(visu_item);
     pane->toggle();
 
@@ -130,7 +126,7 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->command->redo();
 
-    d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage()->image())));
+    d->target->setImage(dtkImagePtr(new dtkImage(*d->command->computedImage()->image())));
 }
 
 void gnomonWorkspaceSegmentation::computeCells(void)
@@ -138,7 +134,7 @@ void gnomonWorkspaceSegmentation::computeCells(void)
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
 
-    d->actor->setCellImage((gnomonCellImage *)d->segmentation->computedImage()->clone());
+    d->actor->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
     d->actor->setInteractor(d->target->interactor());
     d->actor->update();
 
