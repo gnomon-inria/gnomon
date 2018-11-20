@@ -95,6 +95,8 @@ public:
 public:
     gnomonImageManagerItemButton *button_destroy;
     gnomonImageManagerItemButton *button_save;
+    QPixmap thumbnail;
+    QPixmap transparent_thumbnail;
 };
 
 gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
@@ -108,6 +110,17 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixma
     this->button_save->setVisible(false);
 
     this->setPixmap(thumbnail.scaled(100, 100));
+    this->thumbnail = *this->pixmap();
+
+    this->transparent_thumbnail = *this->pixmap();
+    this->transparent_thumbnail.fill();
+
+    QPainter painter;
+    painter.begin(&transparent_thumbnail);
+    painter.setOpacity(0.5);
+    painter.drawPixmap(0, 0, *this->pixmap());
+    painter.end();
+
     this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
 
     connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
@@ -125,12 +138,14 @@ void gnomonImageManagerItem::enterEvent(QEvent *)
 {
     this->button_destroy->setVisible(true);
     this->button_save->setVisible(true);
+    this->setPixmap(this->transparent_thumbnail);
 }
 
 void gnomonImageManagerItem::leaveEvent(QEvent *)
 {
     this->button_destroy->setVisible(false);
     this->button_save->setVisible(false);
+    this->setPixmap(this->thumbnail);
 }
 
 void gnomonImageManagerItem::mousePressEvent(QMouseEvent *)
