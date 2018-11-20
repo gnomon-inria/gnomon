@@ -19,7 +19,6 @@
 %include <dtk_base.i>
 
 %import <dtkCore.i>
-%import <dtkWidgets.i>
 
 %{
 
