@@ -94,16 +94,24 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     pane_item_parameters->addLayout(pane_item_params_layout);
     pane_item_parameters->toggle();
 
-    QPushButton *button = new QPushButton("Apply", this);
+    QPushButton *apply_button = new QPushButton("Apply", this);
 
-    gnomonOverlayPaneItem *item = new gnomonOverlayPaneItem(this);
-    item->setTitle("Segmentation");
-    item->addWidget(button);
-    item->toggle();
+    gnomonOverlayPaneItem *apply_item = new gnomonOverlayPaneItem(this);
+    apply_item->setTitle("Segmentation");
+    apply_item->addWidget(apply_button);
+    apply_item->toggle();
+
+    QPushButton *cell_button = new QPushButton("Compute cells", this);
+
+    gnomonOverlayPaneItem *visu_item = new gnomonOverlayPaneItem(this);
+    visu_item->setTitle("Segmentation");
+    visu_item->addWidget(cell_button);
+    visu_item->toggle();
 
     gnomonOverlayPane *pane = new gnomonOverlayPane(this);
     pane->addWidget(pane_item_parameters);
-    pane->addWidget(item);
+    pane->addWidget(apply_item);
+    pane->addWidget(visu_item);
     pane->toggle();
 
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -113,7 +121,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(d->target);
     layout->addWidget(pane);
 
-    connect(button, SIGNAL(clicked()), this, SLOT(apply()));
+    connect(apply_button, SIGNAL(clicked()), this, SLOT(apply()));
+    connect(cell_button, SIGNAL(clicked()), this, SLOT(computeCells()));
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
@@ -138,6 +147,11 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->segmentation->redo();
 
+    d->target->setImage(dtkImagePtr(new dtkImage(*d->segmentation->computedImage()->image())));
+}
+
+void gnomonWorkspaceSegmentation::computeCells(void)
+{
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
 

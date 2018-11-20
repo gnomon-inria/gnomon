@@ -1,3 +1,17 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractCellImageFromImage.h"
 
@@ -27,3 +41,6 @@ protected:
 private:
     class gnomonSegmentationCommandPrivate *d;
 };
+
+//
+// gnomonSegmentationCommand.h ends here
