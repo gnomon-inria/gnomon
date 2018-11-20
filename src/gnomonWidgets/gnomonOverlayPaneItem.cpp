@@ -25,7 +25,7 @@ class gnomonOverlayPaneItemHeader : public QFrame
     Q_OBJECT
 
 public:
-     gnomonOverlayPaneItemHeader(QWidget *parent = Q_NULLPTR);
+     gnomonOverlayPaneItemHeader(QWidget *parent = nullptr);
     ~gnomonOverlayPaneItemHeader(void);
 
 public:
@@ -127,7 +127,7 @@ class gnomonOverlayPaneItemFooter : public QFrame
     Q_OBJECT
 
 public:
-     gnomonOverlayPaneItemFooter(QWidget *parent = Q_NULLPTR);
+     gnomonOverlayPaneItemFooter(QWidget *parent = nullptr);
     ~gnomonOverlayPaneItemFooter(void);
 
 public slots:

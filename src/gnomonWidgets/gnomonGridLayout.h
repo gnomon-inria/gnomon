@@ -14,11 +14,13 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
 class gnomonViewVolumic;
 
-class gnomonGridLayout : public QGridLayout
+class GNOMONWIDGETS_EXPORT gnomonGridLayout : public QGridLayout
 {
     Q_OBJECT
 

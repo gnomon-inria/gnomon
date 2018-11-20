@@ -21,6 +21,7 @@
 #include <dtkImagingCore>
 
 #include <vtkDataArray.h>
+#include <vtkImageData.h>
 #include <vtkPointData.h>
 
 // ///////////////////////////////////////////////////////////////////
@@ -32,7 +33,7 @@ class gnomonImageManagerItemButton : public QLabel
     Q_OBJECT
 
 public:
-    gnomonImageManagerItemButton(const QColor& color, int icon, QWidget *parent = nullptr);
+     gnomonImageManagerItemButton(const QColor& color, int icon, QWidget *parent = nullptr);
     ~gnomonImageManagerItemButton(void);
 
 signals:

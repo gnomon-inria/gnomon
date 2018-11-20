@@ -14,16 +14,15 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtCore>
 #include <QtWidgets>
-
-#include <vtkImageData.h>
-#include <vtkSmartPointer.h>
 
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
-class gnomonImageManager : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonImageManager : public QFrame
 {
     Q_OBJECT
 

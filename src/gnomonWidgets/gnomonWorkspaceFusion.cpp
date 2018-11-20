@@ -12,11 +12,12 @@
 
 // Code:
 
+#include "gnomonWorkspaceFusion.h"
+
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
-#include "gnomonWorkspaceFusion.h"
 
 class gnomonWorkspaceFusionPrivate
 {
