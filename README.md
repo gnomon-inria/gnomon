@@ -9,6 +9,7 @@ For sake of clarity, let's consider that all the programs are installed under `$
 ``` shell
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
+sudo apt install uuid-dev
 ```
 
 ### CMake

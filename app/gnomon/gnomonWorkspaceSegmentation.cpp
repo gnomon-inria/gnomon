@@ -85,7 +85,6 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
 
     gnomonOverlayPane *pane = d->pane(this);
     pane->addWidget(visu_item);
-    pane->toggle();
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -99,9 +98,6 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 {
-    // if(d->command)
-    //     delete d->command;
-
     delete d;
 }
 
@@ -114,16 +110,7 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
-    // if(!d->command)
-    //     d->command = new gnomonSegmentationCommand("gnomonCellImageFromTimagetkSegmentation");
-
     d->command->setImage(d->source->image().data());
-    // d->command->setParameter("h_min", d->box_h_min->value());
-    // d->command->setParameter("gaussian_sigma", d->box_gaussian_sigma->value());
-    // d->command->setParameter("segmentation_gaussian_sigma", d->box_seg_gaussian_sigma->value());
-    // d->command->setParameter("volume_threshold", d->box_vol_threshold->value());
-    // d->command->setParameter("background_label", d->box_background_level->value());
-
     d->command->redo();
 
     d->target->setImage(dtkImagePtr(new dtkImage(*d->command->computedImage()->image())));
