@@ -64,6 +64,31 @@
 #include <QVTKOpenGLWidget.h>
 
 // ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewVolumicList : public QListWidget
+{
+    Q_OBJECT
+
+public:
+     gnomonViewVolumicList(QWidget *parent = nullptr);
+    ~gnomonViewVolumicList(void);
+
+public:
+};
+
+gnomonViewVolumicList::gnomonViewVolumicList(QWidget *parent) : QListWidget(parent)
+{
+    this->setContentsMargins(0, 0, 0, 0);
+}
+
+gnomonViewVolumicList::~gnomonViewVolumicList(void)
+{
+
+}
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonViewVolumicOverlay
 // ///////////////////////////////////////////////////////////////////
 
@@ -281,6 +306,10 @@ public:
     gnomonViewVolumicOverlay *renderer2D_XZ = nullptr;
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
+    gnomonViewVolumicOverlay *blending = nullptr;
+
+public:
+    gnomonViewVolumicList *blending_list = nullptr;
 
 public:
     dtkImagePtr image;
@@ -327,6 +356,13 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->picker = new gnomonViewVolumicOverlay(fa::crosshairs, this);
     this->picker->changeColor(Qt::gray);
     this->picker->on = false;
+    this->blending = new gnomonViewVolumicOverlay(fa::adjust, this);
+    this->blending->changeColor(Qt::gray);
+    this->blending->on = false;
+
+    this->blending_list = new gnomonViewVolumicList(this);
+    this->blending_list->resize(200, 100);
+    this->blending_list->setVisible(false);
 
     vtkImageData *dummy = vtkImageData::New();
     dummy->SetDimensions(1, 1, 1);
@@ -567,6 +603,26 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
         q->setCursor(this->picker->on ? Qt::CrossCursor : Qt::ArrowCursor);
     });
+
+    connect(this->blending, &gnomonViewVolumicOverlay::clicked, [=] () {
+
+        this->blending->on = !this->blending->on;
+
+        if (this->blending->on)
+            this->blending->changeColor(Qt::white);
+        else
+            this->blending->changeColor(Qt::gray);
+
+        this->opacity->setVisible(this->blending->on);
+        this->blending_list->setVisible(this->blending->on);
+
+        if(!this->blending->on) {
+            this->blending_list->clear();
+
+            if (this->image)
+                q->setImage(this->image);
+        }
+    });
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
@@ -622,7 +678,9 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
     this->picker->move(90, 10);
-    this->opacity->move(30, event->size().height() - 30);
+    this->blending->move(130, 10);
+    this->opacity->move(event->size().width() - 200 + 5, event->size().height() - 100 - 10 - 30);
+    this->blending_list->move(event->size().width() - 200 - 10, event->size().height() - 100 - 10);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -775,15 +833,26 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     //
     // ///////////////////////////////////////////////////////////////////
 
-    d->blender->AddInputData(image);
+    if (d->blending->on) {
 
-    d->blender->SetOpacity(0, 0.5);
-    d->blender->SetOpacity(1, 0.5);
-    d->blender->Update();
+        QString label = QString("Layer %1").arg(d->blender->GetNumberOfInputs());
 
-    d->viewer->SetInputData(d->blender->GetOutput());
+        d->blending_list->addItem(label);
 
-    d->opacity->setVisible(d->blender->GetNumberOfInputs() > 1);
+        d->blender->AddInputData(image);
+
+        d->blender->SetOpacity(0, 0.5);
+        d->blender->SetOpacity(1, 0.5);
+        d->blender->Update();
+
+        d->viewer->SetInputData(d->blender->GetOutput());
+
+        d->opacity->setVisible(d->blender->GetNumberOfInputs() > 1);
+
+    } else {
+
+        d->viewer->SetInputData(image);
+    }
 
     // ///////////////////////////////////////////////////////////////////
 
