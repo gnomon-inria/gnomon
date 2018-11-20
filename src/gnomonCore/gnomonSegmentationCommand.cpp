@@ -61,6 +61,11 @@ void gnomonSegmentationCommand::setParameter(const QString& param_name, const QV
     d->parameters[param_name] = param_value;
 }
 
+QMap<QString, QVariant> gnomonSegmentationCommand::parameters(void) const
+{
+    return gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->parameters();
+}
+
 gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
 {
     return this->action->computedImage();

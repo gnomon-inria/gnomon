@@ -15,7 +15,7 @@ public:
 
 gnomonImagesSerieFilterCommand::gnomonImagesSerieFilterCommand(const QString& key) : d(new gnomonImagesSerieFilterCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "from gnomonImagesSerieFilter import " + key;
 
     int stat;
 
@@ -60,6 +60,11 @@ void gnomonImagesSerieFilterCommand::setImage(dtkImage* image)
 void gnomonImagesSerieFilterCommand::setParameter(const QString& param_name, const QVariant& param_value)
 {
     d->parameters[param_name] = param_value;
+}
+
+QMap<QString, QVariant> gnomonImagesSerieFilterCommand::parameters(void) const
+{
+    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->parameters();
 }
 
 double gnomonImagesSerieFilterCommand::time(void)
