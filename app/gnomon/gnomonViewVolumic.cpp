@@ -34,7 +34,10 @@
 #include <vtkDataSetMapper.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkGlyph3D.h>
+#include <vtkImageBlend.h>
+#include <vtkImageCast.h>
 #include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
 #include <vtkImagePlaneWidget.h>
 #include <vtkImageViewer2.h>
 #include <vtkImageMapToColors.h>
@@ -60,6 +63,31 @@
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewVolumicList : public QListWidget
+{
+    Q_OBJECT
+
+public:
+     gnomonViewVolumicList(QWidget *parent = nullptr);
+    ~gnomonViewVolumicList(void);
+
+public:
+};
+
+gnomonViewVolumicList::gnomonViewVolumicList(QWidget *parent) : QListWidget(parent)
+{
+    this->setContentsMargins(0, 0, 0, 0);
+}
+
+gnomonViewVolumicList::~gnomonViewVolumicList(void)
+{
+
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewVolumicOverlay
@@ -262,6 +290,9 @@ public:
     vtkSmartPointer<vtkGlyph3D> glyphs;
 
 public:
+    vtkSmartPointer<vtkImageBlend> blender = nullptr;
+
+public:
     gnomonViewVolumicInteractorImage *image_interactor = nullptr;
 
 public:
@@ -276,12 +307,19 @@ public:
     gnomonViewVolumicOverlay *renderer2D_XZ = nullptr;
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
+    gnomonViewVolumicOverlay *blending = nullptr;
+
+public:
+    gnomonViewVolumicList *blending_list = nullptr;
 
 public:
     dtkImagePtr image;
 
 public:
     QSlider *slider;
+
+public:
+    QSlider *opacity;
 
 public:
     int x = 0, c_x = 0;
@@ -319,6 +357,13 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->picker = new gnomonViewVolumicOverlay(fa::crosshairs, this);
     this->picker->changeColor(Qt::gray);
     this->picker->on = false;
+    this->blending = new gnomonViewVolumicOverlay(fa::adjust, this);
+    this->blending->changeColor(Qt::gray);
+    this->blending->on = false;
+
+    this->blending_list = new gnomonViewVolumicList(this);
+    this->blending_list->resize(200, 100);
+    this->blending_list->setVisible(false);
 
     vtkImageData *dummy = vtkImageData::New();
     dummy->SetDimensions(1, 1, 1);
@@ -329,6 +374,8 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 #else
     dummy->AllocateScalars(VTK_UNSIGNED_CHAR,1);
 #endif
+
+    this->blender = vtkSmartPointer<vtkImageBlend>::New();
 
     this->viewer = vtkSmartPointer<vtkResliceImageViewer>::New();
     this->viewer->SetSliceOrientationToXY();
@@ -557,6 +604,28 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
         q->setCursor(this->picker->on ? Qt::CrossCursor : Qt::ArrowCursor);
     });
+
+    connect(this->blending, &gnomonViewVolumicOverlay::clicked, [=] () {
+
+        this->blending->on = !this->blending->on;
+
+        if (this->blending->on)
+            this->blending->changeColor(Qt::white);
+        else
+            this->blending->changeColor(Qt::gray);
+
+        this->opacity->setVisible(this->blending->on);
+        this->blending_list->setVisible(this->blending->on);
+
+        if(!this->blending->on) {
+            this->blending_list->clear();
+
+            if (this->image)
+                q->setImage(this->image);
+
+            this->blender->RemoveAllInputs();
+        }
+    });
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
@@ -612,6 +681,9 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
     this->picker->move(90, 10);
+    this->blending->move(130, 10);
+    this->opacity->move(event->size().width() - 200 + 5, event->size().height() - 100 - 10 - 30);
+    this->blending_list->move(event->size().width() - 200 - 10, event->size().height() - 100 - 10);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -694,6 +766,27 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     layout->addWidget(d);
 
     this->setAcceptDrops(true);
+
+    d->opacity = new QSlider(this);
+    d->opacity->setOrientation(Qt::Horizontal);
+    d->opacity->setMinimum(0);
+    d->opacity->setMaximum(100);
+    d->opacity->setValue(50);
+    d->opacity->setFixedWidth(200);
+    d->opacity->setVisible(false);
+
+    connect(d->opacity, &QSlider::valueChanged, [=] (int value) {
+
+        double v = double(value) / 100.0;
+
+        d->blender->SetOpacity(0,     v);
+        d->blender->SetOpacity(1, 1 - v);
+        d->blender->Update();
+
+        d->viewer->SetInputData(d->blender->GetOutput());
+
+        this->render();
+    });
 }
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
@@ -739,7 +832,35 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     d->c_y = d->y/2;
     d->c_z = d->z/2;
 
-    d->viewer->SetInputData(image);
+    // ///////////////////////////////////////////////////////////////////
+    //
+    // ///////////////////////////////////////////////////////////////////
+
+    if (d->blending->on) {
+
+        QString label = QString("Layer %1").arg(d->blender->GetNumberOfInputs());
+
+        d->blending_list->addItem(label);
+
+        vtkSmartPointer<vtkImageCast> caster = vtkSmartPointer<vtkImageCast>::New();
+        caster->SetInputData(image);
+        caster->SetOutputScalarTypeToUnsignedShort();
+        caster->Update();
+
+        d->blender->AddInputData(caster->GetOutput());
+
+        d->blender->SetOpacity(0, 0.5);
+        d->blender->SetOpacity(1, 0.5);
+        d->blender->Update();
+
+        d->viewer->SetInputData(d->blender->GetOutput());
+
+    } else {
+
+        d->viewer->SetInputData(image);
+    }
+
+    // ///////////////////////////////////////////////////////////////////
 
     // 3D
 
