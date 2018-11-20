@@ -16,7 +16,7 @@ public:
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "import gnomonCellImageFromImage";
     int stat;
 
     dtkScriptInterpreterPython::instance()->interpret(command, &stat);
