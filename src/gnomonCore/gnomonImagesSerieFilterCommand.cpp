@@ -15,7 +15,7 @@ public:
 
 gnomonImagesSerieFilterCommand::gnomonImagesSerieFilterCommand(const QString& key) : d(new gnomonImagesSerieFilterCommandPrivate)
 {
-    QString command = "from gnomonImagesSerieFilter import " + key;
+    QString command = "import gnomonImagesSerieFilter";
 
     int stat;
 
@@ -43,7 +43,7 @@ void gnomonImagesSerieFilterCommand::redo(void)
         gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->setParameter(i.key(), i.value());
         ++i;
     }
-    
+
     gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->run();
 }
 
