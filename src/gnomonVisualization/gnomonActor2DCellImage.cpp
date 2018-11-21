@@ -29,6 +29,7 @@
 #include <vtkPlane.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 
@@ -116,17 +117,17 @@ void gnomonActor2DCellImage::update(void)
         vtkSmartPointer<vtkPlane> topPlane = vtkSmartPointer<vtkPlane>::New();
         if (i==0)
         {
-            topPlane->SetOrigin((c_x+0.1)*v_x, 0, 0);
+            topPlane->SetOrigin((c_x+0.5)*v_x, 0, 0);
             topPlane->SetNormal(1, 0, 0);
         }
         else if (i==1)
         {
-            topPlane->SetOrigin(0, (c_y+0.1)*v_y, 0);
+            topPlane->SetOrigin(0, (c_y+0.5)*v_y, 0);
             topPlane->SetNormal(0, 1, 0);
         }
         else
         {
-            topPlane->SetOrigin(0, 0, (c_z+0.1)*v_z);
+            topPlane->SetOrigin(0, 0, (c_z+0.5)*v_z);
             topPlane->SetNormal(0, 0, 1);
         }
 
@@ -140,17 +141,17 @@ void gnomonActor2DCellImage::update(void)
         vtkSmartPointer<vtkPlane> bottomPlane = vtkSmartPointer<vtkPlane>::New();
         if (i==0)
         {
-            bottomPlane->SetOrigin((c_x-0.1)*v_x, 0, 0);
+            bottomPlane->SetOrigin((c_x-0.5)*v_x, 0, 0);
             bottomPlane->SetNormal(1, 0, 0);
         }
         else if (i==1)
         {
-            bottomPlane->SetOrigin(0, (c_y-0.1)*v_y, 0);
+            bottomPlane->SetOrigin(0, (c_y-0.5)*v_y, 0);
             bottomPlane->SetNormal(0, 1, 0);
         }
         else
         {
-            bottomPlane->SetOrigin(0, 0, (c_z-0.1)*v_z);
+            bottomPlane->SetOrigin(0, 0, (c_z-0.5)*v_z);
             bottomPlane->SetNormal(0, 0, 1);
         }
 
@@ -174,6 +175,9 @@ void gnomonActor2DCellImage::update(void)
             d->sliceActors[i]->SetMapper(d->sliceMappers[i]);
             this->AddPart(d->sliceActors[i]);
         }
+        d->sliceActors[i]->GetProperty()->SetOpacity(0.9);
+        d->sliceActors[i]->GetProperty()->SetLineWidth(2.);
+        d->sliceActors[i]->Modified();
     }
     
     d->modified = false;
