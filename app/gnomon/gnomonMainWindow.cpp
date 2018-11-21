@@ -11,14 +11,15 @@
 
 // Code:
 
-#include "gnomonImageManager.h"
-#include "gnomonMainWindow.h"
-#include "gnomonToolBar.h"
-#include "gnomonWorkspaceBrowser.h"
-#include "gnomonWorkspaceFusion.h"
-#include "gnomonWorkspaceSegmentation.h"
-#include "gnomonWorkspacePreprocess.h"
-#include "gnomonWorkspaceRegistration.h"
+#include <gnomonImageManager.h>
+#include <gnomonMainWindow.h>
+#include <gnomonToolBar.h>
+#include <gnomonWorkspaceBrowser.h>
+#include <gnomonWorkspaceFusion.h>
+#include <gnomonWorkspaceSegmentation.h>
+#include <gnomonWorkspacePreprocess.h>
+#include <gnomonWorkspaceRegistration.h>
+#include <gnomonWorkspaceSimulation.h>
 
 #include <gnomonStyle>
 
@@ -123,6 +124,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->addWidget(workspace);
         d->stack->setCurrentWidget(workspace);
     });
+
+    connect(d->menu, &gnomonToolBar::createSimulation, [=] (void) {
+
+            gnomonWorkspace *workspace = new gnomonWorkspaceSimulation(this);
+            workspace->enter();
+
+            d->stack->addWidget(workspace);
+            d->stack->setCurrentWidget(workspace);
+        });
 
     static int l_h = 0;
 
