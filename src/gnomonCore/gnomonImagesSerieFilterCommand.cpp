@@ -10,7 +10,7 @@ public:
     QMap<QString, QVariant> parameters;
 
 public:
-    dtkImage* image;
+    dtkImage* image = nullptr;
 };
 
 gnomonImagesSerieFilterCommand::gnomonImagesSerieFilterCommand(const QString& key) : d(new gnomonImagesSerieFilterCommandPrivate)
@@ -23,50 +23,50 @@ gnomonImagesSerieFilterCommand::gnomonImagesSerieFilterCommand(const QString& ke
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action = gnomonCore::imagesSerieFilter::pluginFactory().create(key);
+    this->action = gnomonCore::imagesSerieFilter::pluginFactory().create(key);
 
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action);
+    Q_ASSERT(this->action);
 }
 
-gnomonImagesSerieFilterCommand::~gnomonImagesSerieFilterCommand()
+gnomonImagesSerieFilterCommand::~gnomonImagesSerieFilterCommand(void)
 {
     delete d;
 }
 
 void gnomonImagesSerieFilterCommand::redo(void)
 {
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action);
-    gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->setImage(d->image);
+    Q_ASSERT(this->action);
+    this->action->setImage(d->image);
 
     gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->run();
 }
 
 void gnomonImagesSerieFilterCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->setImage(nullptr);
+    this->action->setImage(nullptr);
 }
 
-void gnomonImagesSerieFilterCommand::setImage(dtkImage* image)
+void gnomonImagesSerieFilterCommand::setImage(dtkImage *image)
 {
     d->image = image;
 }
 
 QMap<QString, gnomonParameter*> gnomonImagesSerieFilterCommand::parameters(void) const
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->parameters();
+    return this->action->parameters();
 }
 
 double gnomonImagesSerieFilterCommand::time(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->time();
+    return this->action->time();
 }
 
 dtkImage *gnomonImagesSerieFilterCommand::at(double t)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->at(t);
+    return this->action->at(t);
 }
 
 dtkImage *gnomonImagesSerieFilterCommand::next(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->next();
+    return this->action->next();
 }

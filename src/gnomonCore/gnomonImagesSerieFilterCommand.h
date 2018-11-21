@@ -4,9 +4,9 @@
 class GNOMONCORE_EXPORT gnomonImagesSerieFilterCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>
 {
 public:
-    gnomonImagesSerieFilterCommand() = delete;
-    gnomonImagesSerieFilterCommand(const QString&);
-    virtual ~gnomonImagesSerieFilterCommand();
+     gnomonImagesSerieFilterCommand(void) = delete;
+     gnomonImagesSerieFilterCommand(const QString&);
+    ~gnomonImagesSerieFilterCommand(void);
 
 public:
     void redo(void) override;
@@ -24,4 +24,5 @@ public:
 
 private:
     class gnomonImagesSerieFilterCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action;
 };

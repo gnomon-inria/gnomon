@@ -12,11 +12,13 @@
 
 // Code:
 
+#include "gnomonWorkspaceFusion.h"
+
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
-#include "gnomonWorkspaceFusion.h"
+#include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonImagesFusionCommand>
 
@@ -74,10 +76,16 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 
 void gnomonWorkspaceFusion::apply(void)
 {
-    qDebug() << Q_FUNC_INFO;
+    if(d->layout->views().isEmpty()) return;
+
+    for(gnomonViewVolumic *view : d->layout->views()) {
+        d->command->addImage(view->image().data());
+    }
+    d->command->redo();
+    d->target->setImage(dtkImagePtr(d->command->output()));
 }
 
-void gnomonWorkspacePreprocess::configure(const QString& algorithm)
+void gnomonWorkspaceFusion::configure(const QString& algorithm)
 {
     d->configure(this, algorithm);
 }

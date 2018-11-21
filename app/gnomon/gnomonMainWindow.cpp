@@ -125,6 +125,48 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->setCurrentWidget(workspace);
     });
 
+    static int l_h = 0;
+
+    connect(d->manager, &gnomonImageManager::expand, [=] (void) {
+
+        int m_h = d->manager->height();
+        int s_h = d->stack->height();
+
+        l_h = s_h;
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(d->stack->height());
+        animation->setEndValue(0);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->manager->setFixedHeight(m_h + s_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(d->manager, &gnomonImageManager::shrink, [=] (void) {
+
+        int m_h = d->manager->height();
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(0);
+        animation->setEndValue(l_h);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->manager->setFixedHeight(m_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+    });
+
     this->setCentralWidget(central);
     this->setStyleSheet(gnomonStyleSheet());
 

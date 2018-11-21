@@ -14,15 +14,17 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
-class gnomonOverlayPane : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonOverlayPane : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
 
 public:
-     gnomonOverlayPane(QWidget *parent = Q_NULLPTR);
+     gnomonOverlayPane(QWidget *parent = nullptr);
     ~gnomonOverlayPane(void);
 
 signals:

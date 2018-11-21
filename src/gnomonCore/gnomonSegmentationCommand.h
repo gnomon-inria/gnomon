@@ -36,11 +36,9 @@ public:
 public:
     gnomonCellImage *computedImage(void) const;
 
-protected:
-    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
-
 private:
     class gnomonSegmentationCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
 };
 
 //

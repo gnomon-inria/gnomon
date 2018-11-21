@@ -1,6 +1,6 @@
 #include "gnomonSegmentationCommand.h"
 
-#include <gnomonCellImage>
+#include "gnomonCellImage.h"
 
 #include <dtkScript>
 #include <dtkImagingCore>
@@ -11,10 +11,11 @@ public:
     QMap<QString, QVariant> parameters;
 
 public:
-    dtkImage *image;
+    dtkImage *image = nullptr;
+    gnomonCellImage *computed_image = nullptr;
 };
 
-gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
+gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : gnomonAbstractCommand<gnomonAbstractCellImageFromImage>(), d(new gnomonSegmentationCommandPrivate)
 {
     QString command = "import gnomonCellImageFromImage";
     int stat;
@@ -30,6 +31,9 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new
 
 gnomonSegmentationCommand::~gnomonSegmentationCommand(void)
 {
+    if (d->computed_image)
+        delete d->computed_image;
+
     delete d;
 }
 
@@ -39,6 +43,7 @@ void gnomonSegmentationCommand::redo(void)
 
     this->action->setImage(d->image);
     this->action->run();
+    d->computed_image = this->action->computedImage();
 }
 
 void gnomonSegmentationCommand::undo(void)
@@ -60,5 +65,5 @@ QMap<QString, gnomonParameter*> gnomonSegmentationCommand::parameters(void) cons
 
 gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
 {
-    return this->action->computedImage();
+    return d->computed_image;
 }

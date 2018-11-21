@@ -135,7 +135,7 @@ QWidget* gnomonLineEditParameter::connect(QWidget *parent)
     QLineEdit *widget = new QLineEdit(parent);
     parent->connect(widget, &QLineEdit::textChanged,
                     [=](QString value) { d->value = value; } );
-    widget->->setText(d->value);
+    widget->setText(d->value);
     return widget;
 }
 

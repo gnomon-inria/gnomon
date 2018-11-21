@@ -37,6 +37,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonAbstractImagesFusion
+  gnomonAbstractImagesFusion.h
   gnomonAbstractImagesSerieFilter
   gnomonAbstractImagesSerieFilter.h
   gnomonAbstractImagesSerieReader
@@ -72,6 +74,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
+  gnomonImagesFusionCommand
+  gnomonImagesFusionCommand.h
   gnomonImagesSerieFilterCommand
   gnomonImagesSerieFilterCommand.h
   gnomonImagesSerieReaderCommand
@@ -103,6 +107,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractImagesFusion.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
@@ -118,6 +123,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDiscreteDynamicForm.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonImagesFusionCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonParameter.cpp
