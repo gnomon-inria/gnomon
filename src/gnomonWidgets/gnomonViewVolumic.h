@@ -30,6 +30,14 @@ public:
      gnomonViewVolumic(QWidget *parent = nullptr);
     ~gnomonViewVolumic(void);
 
+signals:
+    void   linking(void);
+    void unlinking(void);
+
+public slots:
+    void   link(gnomonViewVolumic *other);
+    void unlink(void);
+
 public:
     void setImage(dtkImagePtr);
 

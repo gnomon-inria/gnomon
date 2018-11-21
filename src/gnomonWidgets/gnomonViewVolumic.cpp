@@ -116,7 +116,7 @@ protected:
 public:
     bool on = false;
 
-private:
+public:
     gnomonFontAwesome *font;
     fa::icon           icon;
     QColor             default_color;
@@ -308,9 +308,15 @@ public:
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
     gnomonViewVolumicOverlay *blending = nullptr;
+    gnomonViewVolumicOverlay *sync = nullptr;
 
 public:
     gnomonViewVolumicList *blending_list = nullptr;
+
+public:
+    int syncing_count = 0;
+    QTimer *syncing_timer = nullptr;
+    bool synced = false;
 
 public:
     dtkImagePtr image;
@@ -360,6 +366,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->blending = new gnomonViewVolumicOverlay(fa::adjust, this);
     this->blending->changeColor(Qt::gray);
     this->blending->on = false;
+    this->sync = new gnomonViewVolumicOverlay(fa::unlock, this);
+    this->sync->changeColor(Qt::gray);
+    this->sync->on = false;
 
     this->blending_list = new gnomonViewVolumicList(this);
     this->blending_list->resize(200, 100);
@@ -626,6 +635,40 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
             this->blender->RemoveAllInputs();
         }
     });
+
+    connect(this->sync, &gnomonViewVolumicOverlay::clicked, [=] () {
+
+        this->sync->on = !this->sync->on;
+
+        if (this->sync->on) {
+            qDebug() << Q_FUNC_INFO << "Linking";
+            emit q->linking();
+        } else {
+            qDebug() << Q_FUNC_INFO << "Unlinking";
+            emit q->unlinking();
+        }
+
+        if (this->sync->on)
+            this->sync->changeColor(Qt::white);
+        else
+            this->sync->changeColor(Qt::gray);
+
+        if (this->sync->on && !this->synced) {
+            this->syncing_count = 0;
+            if(!this->syncing_timer)
+                this->syncing_timer = new QTimer(this);
+            connect(this->syncing_timer, &QTimer::timeout, [=] () {
+                this->sync->changeColor(this->syncing_count++ % 2 ? Qt::white : Qt::gray);
+                this->sync->update();
+                if (this->syncing_count == 11) {
+                    this->sync->on = false;
+                    this->syncing_timer->stop();
+                    emit q->unlinking();
+                }
+            });
+            this->syncing_timer->start(500);
+        }
+    });
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
@@ -682,6 +725,7 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_YZ->move(10, 130);
     this->picker->move(90, 10);
     this->blending->move(130, 10);
+    this->sync->move(event->size().width() - 90, 10);
     this->opacity->move(event->size().width() - 200 + 5, event->size().height() - 100 - 10 - 30);
     this->blending_list->move(event->size().width() - 200 - 10, event->size().height() - 100 - 10);
 
@@ -798,6 +842,35 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
         delete d->image_reader_command_czi;
 
     delete d;
+}
+
+void gnomonViewVolumic::link(gnomonViewVolumic *other)
+{
+    qDebug() << Q_FUNC_INFO << "Linking" << this << "with" << other;
+
+    if (d->syncing_timer)
+        d->syncing_timer->stop();
+
+    qDebug() << Q_FUNC_INFO << 1;
+
+    d->sync->on = true;
+    d->sync->icon = fa::lock;
+    d->sync->changeColor(Qt::white);
+
+    d->synced = true;
+
+    qDebug() << Q_FUNC_INFO << "Done";
+}
+
+void gnomonViewVolumic::unlink(void)
+{
+    qDebug() << Q_FUNC_INFO << "Unlinking" << this;
+
+    d->sync->on = false;
+    d->sync->icon = fa::unlock;
+    d->sync->changeColor(Qt::gray);
+
+    d->synced = false;
 }
 
 void gnomonViewVolumic::setImage(dtkImagePtr i)

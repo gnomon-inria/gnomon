@@ -29,6 +29,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonOverlayPaneItem.h
   gnomonToolBar.h
   gnomonViewVolumic.h
+  gnomonViewVolumicPool.h
   gnomonWidgets
   gnomonWorkspace.h
   gnomonWorkspaceBrowser.h
@@ -47,6 +48,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp
   gnomonViewVolumic.cpp
+  gnomonViewVolumicPool.cpp
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceFusion.cpp

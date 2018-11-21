@@ -14,6 +14,7 @@
 
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonViewVolumicPool.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate.h"
@@ -45,25 +46,39 @@ public:
     gnomonViewVolumic *source;
     gnomonViewVolumic *target;
 
+public:
+    gnomonViewVolumicPool *pool;
+
+public:
     gnomonCellImage *cellimage = nullptr;
+
+public:
     gnomonActorMeshCellImage *actor = nullptr;
 };
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >()
 {
+
 }
 
 gnomonWorkspaceSegmentationPrivate::~gnomonWorkspaceSegmentationPrivate()
 {
+
 }
 
 QString gnomonWorkspaceSegmentationPrivate::workspace() const
-{ return "Segmentation"; }
+{
+    return "Segmentation";
+}
 
 QStringList gnomonWorkspaceSegmentationPrivate::keys() const
 {
     return gnomonCore::cellImageFromImage::pluginFactory().keys();
 }
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnomonWorkspace(parent)
 {
@@ -75,6 +90,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
 
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
+
+    d->pool = new gnomonViewVolumicPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     QPushButton *cell_button = new QPushButton("Compute cells", this);
 
