@@ -203,8 +203,8 @@ gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new
 
     d->cellScaleFactor = 0.95;
     d->resamplingFactor = 3.;
-    d->smoothingFactor = 1.;
-    d->resolutionFactor = 4.;
+    d->smoothingFactor = 0.5;
+    d->resolutionFactor = 2.;
 }
 
 gnomonPolyDataCellImage::~gnomonPolyDataCellImage(void)

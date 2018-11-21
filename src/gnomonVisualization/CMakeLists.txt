@@ -21,6 +21,8 @@ project(gnomonVisualization)
 set(${PROJECT_NAME}_HEADERS
   gnomonActor
   gnomonActor.h
+  gnomonActor2DCellImage
+  gnomonActor2DCellImage.h
   gnomonActorImage
   gnomonActorImage.h
   gnomonActorMesh
@@ -72,6 +74,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
+  gnomonActor2DCellImage.cpp
   gnomonActorImage.cpp
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp

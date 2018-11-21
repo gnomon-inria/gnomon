@@ -18,6 +18,7 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate.h"
 
+#include <gnomonActor2DCellImage.h>
 #include <gnomonActorMeshCellImage.h>
 #include <gnomonCellImage.h>
 #include <gnomonSegmentationCommand.h>
@@ -47,6 +48,7 @@ public:
 
     gnomonCellImage *cellimage = nullptr;
     gnomonActorMeshCellImage *actor = nullptr;
+    gnomonActor2DCellImage *actor2D = nullptr;
 };
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >()
@@ -122,8 +124,13 @@ void gnomonWorkspaceSegmentation::computeCells(void)
         d->actor = gnomonActorMeshCellImage::New();
     d->actor->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
     d->actor->update();
-    
     d->target->renderer3D()->AddActor(d->actor);
+    
+    if(!d->actor2D)
+        d->actor2D = gnomonActor2DCellImage::New();
+    d->actor2D->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
+    d->actor2D->update();
+    d->target->renderer2D()->AddActor(d->actor2D);
 
 
     d->target->render();
