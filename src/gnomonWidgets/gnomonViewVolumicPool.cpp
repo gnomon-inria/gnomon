@@ -53,14 +53,15 @@ void gnomonViewVolumicPoolPrivate::linking(void)
 
 void gnomonViewVolumicPoolPrivate::unlinking(void)
 {
-    if (this->source == dynamic_cast<gnomonViewVolumic *>(sender())) {
+    if (this->source) {
         this->source->unlink();
         this->source = nullptr;
     }
 
-    if (this->target == dynamic_cast<gnomonViewVolumic *>(sender()))
+    if (this->target) {
         this->target->unlink();
         this->target = nullptr;
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////

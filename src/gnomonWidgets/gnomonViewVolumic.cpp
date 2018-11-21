@@ -640,13 +640,10 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
         this->sync->on = !this->sync->on;
 
-        if (this->sync->on) {
-            qDebug() << Q_FUNC_INFO << "Linking";
+        if (this->sync->on)
             emit q->linking();
-        } else {
-            qDebug() << Q_FUNC_INFO << "Unlinking";
+        else
             emit q->unlinking();
-        }
 
         if (this->sync->on)
             this->sync->changeColor(Qt::white);
@@ -663,6 +660,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
                 if (this->syncing_count == 11) {
                     this->sync->on = false;
                     this->syncing_timer->stop();
+                    this->syncing_timer->disconnect();
+                    delete this->syncing_timer;
+                    this->syncing_timer = nullptr;
                     emit q->unlinking();
                 }
             });
@@ -846,25 +846,24 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 
 void gnomonViewVolumic::link(gnomonViewVolumic *other)
 {
-    qDebug() << Q_FUNC_INFO << "Linking" << this << "with" << other;
-
     if (d->syncing_timer)
         d->syncing_timer->stop();
-
-    qDebug() << Q_FUNC_INFO << 1;
 
     d->sync->on = true;
     d->sync->icon = fa::lock;
     d->sync->changeColor(Qt::white);
 
     d->synced = true;
-
-    qDebug() << Q_FUNC_INFO << "Done";
 }
 
 void gnomonViewVolumic::unlink(void)
 {
-    qDebug() << Q_FUNC_INFO << "Unlinking" << this;
+    if (d->syncing_timer) {
+        d->syncing_timer->stop();
+        d->syncing_timer->disconnect();
+        delete d->syncing_timer;
+        d->syncing_timer = nullptr;
+    }
 
     d->sync->on = false;
     d->sync->icon = fa::unlock;
