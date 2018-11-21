@@ -93,7 +93,7 @@ class gnomonLineEditParameter : public gnomonParameter
         gnomonLineEditParameterPrivate *d;
 };
 
-/* class gnomonComboBoxParameterPrivate;
+ class gnomonComboBoxParameterPrivate;
 
 class gnomonComboBoxParameter : public gnomonParameter
 {
@@ -104,10 +104,11 @@ class gnomonComboBoxParameter : public gnomonParameter
         QWidget *connect(QWidget *parent);
 
         QString value() const;
-        
+        void setValue(const QString&);
+
     private:
         gnomonComboBoxParameterPrivate *d;
-}; */
+}; 
 
 //
 // gnomonParameter.h ends here

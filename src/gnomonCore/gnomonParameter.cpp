@@ -27,6 +27,7 @@ gnomonSpinBoxParameter::gnomonSpinBoxParameter(int value, int min, int max, cons
 QWidget* gnomonSpinBoxParameter::connect(QWidget *parent)
 {
     QSpinBox *widget = new QSpinBox(parent);
+    widget->setToolTip(d->doc);
     widget->setMinimum(d->min);
     widget->setMaximum(d->max);
     parent->connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
@@ -70,6 +71,7 @@ gnomonDoubleSpinBoxParameter::gnomonDoubleSpinBoxParameter(double value, double 
 QWidget* gnomonDoubleSpinBoxParameter::connect(QWidget *parent)
 {
     QDoubleSpinBox *widget = new QDoubleSpinBox(parent);
+    widget->setToolTip(d->doc);
     widget->setMinimum(d->min);
     widget->setMaximum(d->max);
     widget->setDecimals(d->decimals);
@@ -108,6 +110,7 @@ gnomonCheckBoxParameter::gnomonCheckBoxParameter(bool value, const QString& doc)
 QWidget* gnomonCheckBoxParameter::connect(QWidget *parent)
 {
     QCheckBox *widget = new QCheckBox(parent);
+    widget->setToolTip(d->doc);
     parent->connect(widget, &QCheckBox::stateChanged,
                     [=](bool value) { d->value = value; } );
     if(d->value) {
@@ -146,6 +149,7 @@ gnomonLineEditParameter::gnomonLineEditParameter(const QString& value, const QSt
 QWidget* gnomonLineEditParameter::connect(QWidget *parent)
 {
     QLineEdit *widget = new QLineEdit(parent);
+    widget->setToolTip(d->doc);
     parent->connect(widget, &QLineEdit::textChanged,
                     [=](QString value) { d->value = value; } );
     widget->setText(d->value);
@@ -156,4 +160,44 @@ QString gnomonLineEditParameter::value(void) const
 { return d->value; }
 
 void gnomonLineEditParameter::setValue(const QString& value)
+{ d->value = value; }
+
+class gnomonComboBoxParameterPrivate
+{
+    public:
+        gnomonComboBoxParameterPrivate(const QString&, const QStringList&, const QString&);
+
+    public:
+        QString value;
+        QStringList values;
+        QString doc;
+};
+
+gnomonComboBoxParameterPrivate::gnomonComboBoxParameterPrivate(const QString& value, const QStringList& values, const QString& doc)
+{
+    this->value = value;
+    this->values = values;
+}
+
+gnomonComboBoxParameter::gnomonComboBoxParameter(const QString& value, const QStringList& values, const QString& doc) : d(new gnomonComboBoxParameterPrivate(value, values, doc))
+{
+}
+
+QWidget* gnomonComboBoxParameter::connect(QWidget *parent)
+{
+    QComboBox *widget = new QComboBox(parent);
+    widget->setToolTip(d->doc);
+    for (auto it = d->values.begin(), it_end = d->values.end(); it != it_end; ++it) {
+        widget->addItem(*it);
+    }
+    parent->connect(widget, static_cast<void (QComboBox::*)(const QString&)>(&QComboBox::currentIndexChanged),
+                    [=](QString value) { d->value = value; } );
+    widget->setCurrentText(d->value);
+    return widget;
+}
+
+QString gnomonComboBoxParameter::value(void) const
+{ return d->value; }
+
+void gnomonComboBoxParameter::setValue(const QString& value)
 { d->value = value; }
