@@ -14,9 +14,11 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
-class gnomonDropSite : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonDropSite : public QFrame
 {
     Q_OBJECT
 

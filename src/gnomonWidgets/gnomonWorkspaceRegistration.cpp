@@ -12,10 +12,11 @@
 
 // Code:
 
+#include "gnomonWorkspaceRegistration.h"
+
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
-#include "gnomonWorkspaceRegistration.h"
 
 class gnomonWorkspaceRegistrationPrivate
 {

@@ -13,45 +13,46 @@
 // Code:
 
 #include "gnomonWorkspacePreprocess.h"
+
 #include "gnomonViewVolumic.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonWorkspaceTemplate.h"
+#include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonImagesSerieFilterCommand.h>
 
 #include <dtkImagingCore>
 #include <dtkScript>
 
-#include <vtkImageData.h>
-
-class gnomonWorkspacePreprocessPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >
+class gnomonWorkspacePreprocessPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImagesSerieFilterCommand>
 {
 public:
-    gnomonWorkspacePreprocessPrivate();
-    virtual ~gnomonWorkspacePreprocessPrivate();
+     gnomonWorkspacePreprocessPrivate(void);
+    ~gnomonWorkspacePreprocessPrivate(void);
 
 public:
-    QString workspace() const override;
-    QStringList keys() const override;
+    QString workspace(void) const override;
+    QStringList keys(void) const override;
 
 public:
-    gnomonViewVolumic *source;
-    gnomonViewVolumic *target;
+    gnomonViewVolumic *source = nullptr;
+    gnomonViewVolumic *target = nullptr;
 };
 
-gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate() : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
+gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
 {
 }
 
-gnomonWorkspacePreprocessPrivate::~gnomonWorkspacePreprocessPrivate()
+gnomonWorkspacePreprocessPrivate::~gnomonWorkspacePreprocessPrivate(void)
 {
 }
 
-QString gnomonWorkspacePreprocessPrivate::workspace() const
-{ return "Preprocess"; }
+QString gnomonWorkspacePreprocessPrivate::workspace(void) const
+{
+    return "Preprocess";
+}
 
-QStringList gnomonWorkspacePreprocessPrivate::keys() const
+QStringList gnomonWorkspacePreprocessPrivate::keys(void) const
 {
     return gnomonCore::imagesSerieFilter::pluginFactory().keys();
 }
