@@ -20,14 +20,14 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonAbstractFemSolver>
-#include <gnomonImagesSerieFilterCommand>
+#include <gnomonFemSolverCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
 
 #include <vtkImageData.h>
 
-class gnomonWorkspaceSimulationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >
+class gnomonWorkspaceSimulationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >
 {
 public:
     gnomonWorkspaceSimulationPrivate();
@@ -42,7 +42,7 @@ public:
     gnomonViewVolumic *target;
 };
 
-gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
+gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >()
 {
 }
 
@@ -62,7 +62,7 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWo
 {
     int stat;
 
-    //dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesSerieFilter", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonFemSolver", &stat);
 
     d = new gnomonWorkspaceSimulationPrivate;
 
@@ -89,7 +89,7 @@ void gnomonWorkspaceSimulation::apply(void)
 
 void gnomonWorkspaceSimulation::configure(const QString& algorithm)
 {
-    //d->configure(this, algorithm);
+    d->configure(this, algorithm);
 }
 
 //

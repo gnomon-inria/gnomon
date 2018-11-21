@@ -73,6 +73,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDataManager.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
+  gnomonFemSolverCommand
+  gnomonFemSolverCommand.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
@@ -122,6 +124,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCoreSettings.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
+  gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonImagesFusionCommand.cpp
