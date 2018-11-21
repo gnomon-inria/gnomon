@@ -16,7 +16,8 @@
 #include "gnomonViewVolumic.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonWorkspaceTemplate.h"
+
+#include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonImagesSerieFilterCommand.h>
 

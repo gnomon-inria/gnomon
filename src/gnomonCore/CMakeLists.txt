@@ -107,12 +107,9 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
-<<<<<<< HEAD
   gnomonAbstractFemSolver.cpp
   gnomonAbstractForm.cpp
-=======
   gnomonAbstractImagesFusion.cpp
->>>>>>> develop
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
