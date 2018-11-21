@@ -224,6 +224,7 @@ public:
 
             this->renderer2D->AddActor(actor);
             this->renderer3D->AddActor(actor);
+            qDebug() << "added actors";
         }
 
         this->q->render();
@@ -962,6 +963,27 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel)
         return;
     }
     this->setImage(dtkImagePtr(new dtkImage(*img)));
+}
+
+void gnomonViewVolumic::addLandmark(double x, double y, double z)
+{
+    if(QObject::sender() == this) return;
+
+    vtkSmartPointer<vtkSphereSource> sphere_source =
+        vtkSmartPointer<vtkSphereSource>::New();
+    sphere_source->SetCenter(x, y, z);
+    sphere_source->SetRadius(5.0);
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(sphere_source->GetOutputPort());
+
+    vtkSmartPointer<vtkActor> actor =
+        vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
+
+    d->renderer2D->AddActor(actor);
+    d->renderer3D->AddActor(actor);
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)

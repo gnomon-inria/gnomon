@@ -96,7 +96,7 @@ gnomonGridLayout::~gnomonGridLayout(void)
 
 void gnomonGridLayout::addView(void)
 {
-    d->views << new gnomonViewVolumic;;
+    d->views << new gnomonViewVolumic;
 
     this->update();
 }

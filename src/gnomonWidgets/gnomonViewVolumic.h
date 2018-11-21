@@ -51,9 +51,11 @@ public slots:
 public slots:
     void onSliceChanged(int);
     void onChannelChanged(const QString&);
+    void addLandmark(double, double, double);
 
 signals:
     void channelsChanged(QStringList);
+    void landmarktAdded(double, double, double);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
