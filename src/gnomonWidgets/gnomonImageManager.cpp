@@ -21,6 +21,7 @@
 #include <dtkImagingCore>
 
 #include <vtkDataArray.h>
+#include <vtkImageData.h>
 #include <vtkPointData.h>
 
 // ///////////////////////////////////////////////////////////////////

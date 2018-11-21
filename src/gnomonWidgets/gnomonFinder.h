@@ -12,6 +12,8 @@
 
 // Code:
 
+#include <gnomonWidgetsExport>
+
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
@@ -20,9 +22,7 @@
 // gnomonFinderToolBar
 // /////////////////////////////////////////////////////////////////
 
-class gnomonFinderToolBarPrivate;
-
-class gnomonFinderToolBar : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonFinderToolBar : public QFrame
 {
     Q_OBJECT
 
@@ -48,16 +48,14 @@ public slots:
     void onShowHiddenFiles(bool);
 
 private:
-    gnomonFinderToolBarPrivate *d;
+    class gnomonFinderToolBarPrivate *d;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonFinderSideView
 // /////////////////////////////////////////////////////////////////
 
-class gnomonFinderSideViewPrivate;
-
-class gnomonFinderSideView : public QTreeWidget
+class GNOMONWIDGETS_EXPORT gnomonFinderSideView : public QTreeWidget
 {
     Q_OBJECT
     Q_PROPERTY(int headerFontSize READ headerFontSize WRITE setHeaderFontSize)
@@ -96,16 +94,14 @@ protected:
     QString driveLabel(QString drive);
 
 private:
-    gnomonFinderSideViewPrivate *d;
+    class gnomonFinderSideViewPrivate *d;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonFinderPathBar
 // /////////////////////////////////////////////////////////////////
 
-class gnomonFinderPathBarPrivate;
-
-class gnomonFinderPathBar : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonFinderPathBar : public QFrame
 {
     Q_OBJECT
 
@@ -126,16 +122,14 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    gnomonFinderPathBarPrivate *d;
+    class gnomonFinderPathBarPrivate *d;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonFinderListView
 // /////////////////////////////////////////////////////////////////
 
-class gnomonFinderListViewPrivate;
-
-class gnomonFinderListView : public QListView
+class GNOMONWIDGETS_EXPORT gnomonFinderListView : public QListView
 {
     Q_OBJECT
 
@@ -169,16 +163,14 @@ protected:
      void startDrag(Qt::DropActions supportedActions);
 
 private:
-     gnomonFinderListViewPrivate *d;
+    class  gnomonFinderListViewPrivate *d;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonFinderTreeView
 // /////////////////////////////////////////////////////////////////
 
-class gnomonFinderTreeViewPrivate;
-
-class gnomonFinderTreeView : public QTreeView
+class GNOMONWIDGETS_EXPORT gnomonFinderTreeView : public QTreeView
 {
     Q_OBJECT
 
@@ -215,16 +207,14 @@ protected:
      void resizeEvent(QResizeEvent *event);
 
 private:
-     gnomonFinderTreeViewPrivate *d;
+     class gnomonFinderTreeViewPrivate *d;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonFinder
 // /////////////////////////////////////////////////////////////////
 
-class gnomonFinderPrivate;
-
-class gnomonFinder : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonFinder : public QFrame
 {
     Q_OBJECT
 
@@ -268,7 +258,7 @@ protected slots:
     void emitSelectedItems();
 
 private:
-    gnomonFinderPrivate *d;
+    class gnomonFinderPrivate *d;
 };
 
 //

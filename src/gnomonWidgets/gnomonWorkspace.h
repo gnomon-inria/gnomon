@@ -14,22 +14,21 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
-class gnomonWorkspace : public QWidget
+class GNOMONWIDGETS_EXPORT gnomonWorkspace : public QWidget
 {
     Q_OBJECT
 
 public:
      gnomonWorkspace(QWidget *parent = nullptr);
-    ~gnomonWorkspace(void);
+    ~gnomonWorkspace(void) = default;
 
 public:
     virtual void enter(void) = 0;
     virtual void leave(void) = 0;
-
-private:
-    class gnomonWorkspacePrivate *d;
 };
 
 //

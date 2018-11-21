@@ -14,14 +14,16 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
-class gnomonOverlayPaneItem : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonOverlayPaneItem : public QFrame
 {
     Q_OBJECT
 
 public:
-     gnomonOverlayPaneItem(QWidget *parent = Q_NULLPTR);
+     gnomonOverlayPaneItem(QWidget *parent = nullptr);
     ~gnomonOverlayPaneItem(void);
 
 public slots:

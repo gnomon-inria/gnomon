@@ -12,9 +12,13 @@
 
 // Code:
 
+#pragma once
+
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
-class gnomonToolBar : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonToolBar : public QFrame
 {
     Q_OBJECT
 

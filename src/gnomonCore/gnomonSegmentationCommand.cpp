@@ -1,6 +1,6 @@
 #include "gnomonSegmentationCommand.h"
 
-#include <gnomonCellImage>
+#include "gnomonCellImage.h"
 
 #include <dtkScript>
 #include <dtkImagingCore>
@@ -11,10 +11,11 @@ public:
     QMap<QString, QVariant> parameters;
 
 public:
-    dtkImage *image;
+    dtkImage *image = nullptr;
+    gnomonCellImage *computed_image = nullptr;
 };
 
-gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
+gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : gnomonAbstractCommand<gnomonAbstractCellImageFromImage>(), d(new gnomonSegmentationCommandPrivate)
 {
     QString command = "import gnomonCellImageFromImage";
     int stat;
@@ -30,6 +31,9 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new
 
 gnomonSegmentationCommand::~gnomonSegmentationCommand(void)
 {
+    if (d->computed_image)
+        delete d->computed_image;
+
     delete d;
 }
 
@@ -42,6 +46,7 @@ void gnomonSegmentationCommand::redo(void)
         this->action->setParameter(it.key(), *it);
     }
     this->action->run();
+    d->computed_image = this->action->computedImage();
 }
 
 void gnomonSegmentationCommand::undo(void)
@@ -61,12 +66,12 @@ void gnomonSegmentationCommand::setParameter(const QString& param_name, const QV
     d->parameters[param_name] = param_value;
 }
 
-QMap<QString, QVariant> gnomonSegmentationCommand::parameters(void) const
+const QMap<QString, QVariant>& gnomonSegmentationCommand::parameters(void) const
 {
     return gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action->parameters();
 }
 
 gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
 {
-    return this->action->computedImage();
+    return d->computed_image;
 }

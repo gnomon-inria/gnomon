@@ -12,8 +12,9 @@
 
 // Code:
 
-#include "gnomonFinder.h"
 #include "gnomonWorkspaceBrowser.h"
+
+#include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"

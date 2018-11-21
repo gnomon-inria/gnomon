@@ -14,11 +14,11 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include "gnomonWorkspace.h"
 
-#include <QtWidgets>
-
-class gnomonWorkspaceRegistration : public gnomonWorkspace
+class GNOMONWIDGETS_EXPORT gnomonWorkspaceRegistration : public gnomonWorkspace
 {
     Q_OBJECT
 
