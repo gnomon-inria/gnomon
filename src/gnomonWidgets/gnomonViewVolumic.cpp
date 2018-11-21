@@ -33,7 +33,6 @@
 #include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkGlyph3D.h>
 #include <vtkImageBlend.h>
 #include <vtkImageCast.h>
 #include <vtkImageData.h>
@@ -204,15 +203,28 @@ public:
         if(picker->GetCellId() == -1)
             return;
 
-        double *picked = picker->GetPickPosition();
+        if(picker->GetActor()) {
+            this->renderer3D->RemoveActor(picker->GetActor());
+            this->renderer2D->RemoveActor(picker->GetActor());
+        } else {
+            double *picked = picker->GetPickPosition();
 
-        this->points->InsertNextPoint(picked[0], picked[1], picked[2]);
+            vtkSmartPointer<vtkSphereSource> sphere_source =
+                vtkSmartPointer<vtkSphereSource>::New();
+            sphere_source->SetCenter(picked[0], picked[1], picked[2]);
+            sphere_source->SetRadius(5.0);
 
-        this->mesh->SetPoints(this->points);
-        this->mesh->Modified();
+            vtkSmartPointer<vtkPolyDataMapper> mapper =
+                vtkSmartPointer<vtkPolyDataMapper>::New();
+            mapper->SetInputConnection(sphere_source->GetOutputPort());
 
-        this->glyphs->SetInputData(this->mesh);
-        this->glyphs->Update();
+            vtkSmartPointer<vtkActor> actor =
+                vtkSmartPointer<vtkActor>::New();
+            actor->SetMapper(mapper);
+
+            this->renderer2D->AddActor(actor);
+            this->renderer3D->AddActor(actor);
+        }
 
         this->q->render();
     }
@@ -220,12 +232,11 @@ public:
 public:
     gnomonViewVolumic *q = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
+    vtkRenderer *renderer2D = nullptr;
+    vtkRenderer *renderer3D = nullptr;
 
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
-    vtkSmartPointer<vtkPoints> points = nullptr;
-    vtkSmartPointer<vtkPolyData> mesh = nullptr;
-    vtkSmartPointer<vtkGlyph3D> glyphs = nullptr;
 };
 
 vtkStandardNewMacro(gnomonViewVolumicInteractorImage);
@@ -283,11 +294,6 @@ public:
     vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
-
-public:
-    vtkSmartPointer<vtkPoints> points;
-    vtkSmartPointer<vtkPolyData> mesh;
-    vtkSmartPointer<vtkGlyph3D> glyphs;
 
 public:
     vtkSmartPointer<vtkImageBlend> blender = nullptr;
@@ -398,39 +404,13 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         planeWidget[i]->GetPlaneProperty()->SetColor(color);
     }
 
-    this->points = vtkSmartPointer<vtkPoints>::New();
-    this->points->Allocate(100);
-
-    this->mesh = vtkSmartPointer<vtkPolyData>::New();
-
-    vtkSmartPointer<vtkSphereSource> sphere_source = vtkSmartPointer<vtkSphereSource>::New();
-    sphere_source->SetRadius(1.0);
-    sphere_source->SetPhiResolution(16);
-    sphere_source->SetThetaResolution(16);
-    sphere_source->Update();
-
-    this->glyphs = vtkSmartPointer<vtkGlyph3D>::New();
-    this->glyphs->SetSourceData(sphere_source->GetOutput());
-    this->glyphs->SetInputData(this->mesh);
-
-    vtkSmartPointer<vtkPolyDataMapper> glyph_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    glyph_mapper->SetInputConnection(this->glyphs->GetOutputPort());
-
-    vtkSmartPointer<vtkActor> glyph_actor = vtkSmartPointer<vtkActor>::New();
-    glyph_actor->SetMapper(glyph_mapper);
-    glyph_actor->GetProperty()->SetColor(1.0, 0.0, 0.5);
-
-    this->renderer2D->AddActor(glyph_actor);
-    this->renderer3D->AddActor(glyph_actor);
-
     // ///////////////////////////////////////////////////////////////////
 
     this->image_interactor = gnomonViewVolumicInteractorImage::New();
     this->image_interactor->SetDefaultRenderer(this->renderer2D);
     this->image_interactor->picker = this->picker;
-    this->image_interactor->points = this->points;
-    this->image_interactor->mesh = this->mesh;
-    this->image_interactor->glyphs = this->glyphs;
+    this->image_interactor->renderer2D = this->renderer2D;
+    this->image_interactor->renderer3D = this->renderer3D;
 
     this->GetInteractor()->SetInteractorStyle(this->image_interactor);
 
@@ -802,14 +782,6 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
 
 void gnomonViewVolumic::setImage(dtkImagePtr i)
 {
-    d->points->Reset();
-
-    d->mesh->SetPoints(d->points);
-    d->mesh->Modified();
-
-    d->glyphs->SetInputData(d->mesh);
-    d->glyphs->Update();
-
     d->image = i;
 
     // 2D
