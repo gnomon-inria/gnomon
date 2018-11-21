@@ -19,7 +19,8 @@
 
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesSerieFilterCommand.h>
+#include <gnomonAbstractFemSolver>
+#include <gnomonImagesSerieFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -54,7 +55,7 @@ QString gnomonWorkspaceSimulationPrivate::workspace() const
 
 QStringList gnomonWorkspaceSimulationPrivate::keys() const
 {
-    return gnomonCore::imagesSerieFilter::pluginFactory().keys();
+    return gnomonCore::femSolver::pluginFactory().keys();
 }
 
 gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWorkspace(parent)
