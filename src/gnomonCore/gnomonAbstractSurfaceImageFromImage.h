@@ -41,7 +41,6 @@ public:
     virtual dtkImage *computed3DSurfaceImage(void) const = 0;
     virtual dtkImage *computed2DSurfaceImage(void) const = 0;
     virtual const QMap<QString, QVariant>& parameters(void) const = 0;
-    virtual       QMap<QString, QVariant>& parameters(void) = 0;
 
 public:
     virtual void run(void) = 0;
