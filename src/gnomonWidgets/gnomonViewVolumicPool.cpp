@@ -53,15 +53,14 @@ void gnomonViewVolumicPoolPrivate::linking(void)
 
 void gnomonViewVolumicPoolPrivate::unlinking(void)
 {
-    if (this->source) {
-        this->source->unlink();
-        this->source = nullptr;
-    }
+    if (this->source)
+        this->source->unlink(this->target);
 
-    if (this->target) {
-        this->target->unlink();
-        this->target = nullptr;
-    }
+    if (this->target)
+        this->target->unlink(this->source);
+
+    this->source = nullptr;
+    this->target = nullptr;
 }
 
 // ///////////////////////////////////////////////////////////////////
