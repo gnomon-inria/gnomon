@@ -181,8 +181,20 @@ public:
     static gnomonViewVolumicInteractorImage *New(void);
 
 public:
+    virtual void OnMouseMove(void) override
+        {
+            if(this->move) {
+
+                return;
+            }
+
+            vtkInteractorStyleImage::OnMouseMove();
+
+        }
+
     virtual void OnLeftButtonDown(void) override
     {
+        qDebug() << "left button down";
         vtkInteractorStyleImage::OnLeftButtonDown();
 
         if(!this->picker)
@@ -200,19 +212,17 @@ public:
         picker->SetTolerance(0.0005);
         picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
-        if(picker->GetCellId() == -1)
-            return;
+        if(picker->GetCellId() == -1) return;
+
+        double *picked = picker->GetPickPosition();
 
         if(picker->GetActor()) {
-            this->renderer3D->RemoveActor(picker->GetActor());
-            this->renderer2D->RemoveActor(picker->GetActor());
+            this->move = true;
+            this->move_actor = picker->GetActor();
         } else {
-            double *picked = picker->GetPickPosition();
-
             vtkSmartPointer<vtkSphereSource> sphere_source =
                 vtkSmartPointer<vtkSphereSource>::New();
-            sphere_source->SetCenter(picked[0], picked[1], picked[2]);
-            sphere_source->SetRadius(5.0);
+            sphere_source->SetRadius(3.0);
 
             vtkSmartPointer<vtkPolyDataMapper> mapper =
                 vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -221,6 +231,7 @@ public:
             vtkSmartPointer<vtkActor> actor =
                 vtkSmartPointer<vtkActor>::New();
             actor->SetMapper(mapper);
+            actor->SetPosition(picked[0], picked[1], picked[2]);
 
             this->renderer2D->AddActor(actor);
             this->renderer3D->AddActor(actor);
@@ -230,11 +241,77 @@ public:
         this->q->render();
     }
 
+    virtual void OnLeftButtonUp(void) override
+    {
+        qDebug() << "left button up";
+        vtkInteractorStyleImage::OnLeftButtonUp();
+
+        if(!this->picker)
+            return;
+
+        if(!this->picker->on)
+            return;
+
+        if(!this->image)
+            return;
+
+        if(!move_actor) return;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        picker->SetTolerance(0.0005);
+        picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        if(picker->GetCellId() == -1) return;
+
+        double *picked = picker->GetPickPosition();
+        this->move_actor->SetPosition(picked[0], picked[1], picked[2]);
+
+        this->move_actor = nullptr;
+        this->move = false;
+
+        this->q->render();
+    }
+
+    virtual void OnMiddleButtonDown() override
+    {
+        qDebug() << "middle button down";
+        vtkInteractorStyleImage::OnMiddleButtonDown();
+
+        if(!this->picker)
+            return;
+
+        if(!this->picker->on)
+            return;
+
+        if(!this->image)
+            return;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        picker->SetTolerance(0.0005);
+        picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        if(picker->GetCellId() == -1) return;
+
+        if(!picker->GetActor()) return;
+
+        this->renderer3D->RemoveActor(picker->GetActor());
+        this->renderer2D->RemoveActor(picker->GetActor());
+
+        this->q->render();
+    }
+
 public:
     gnomonViewVolumic *q = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
     vtkRenderer *renderer2D = nullptr;
     vtkRenderer *renderer3D = nullptr;
+
+    vtkActor *move_actor = nullptr;
+    bool move = false;
 
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
