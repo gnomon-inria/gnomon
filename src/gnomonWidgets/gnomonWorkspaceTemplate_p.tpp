@@ -29,13 +29,17 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
 
     if (this->command)
         delete this->command;
-    this->command = new T(algorithm);
-    QMap<QString, gnomonParameter*> parameters = this->command->parameters();
-    for(QMap<QString, gnomonParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
-    { 
-        QWidget* widget = it.value()->connect(parent); 
+    if(!algorithm.isEmpty())
+    {
+        this->command = new T(algorithm);
+        QMap<QString, gnomonParameter*> parameters = this->command->parameters();
+        for(QMap<QString, gnomonParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
+        { 
+            QWidget* widget = it.value()->connect(parent); 
+            this->pane_item_params_layout->addRow(it.key(), widget);
+        }
+        this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     }
-    this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 }
 
 template <typename T>

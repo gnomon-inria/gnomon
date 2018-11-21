@@ -11,7 +11,7 @@ public:
 
 gnomonImagesFusionCommand::gnomonImagesFusionCommand(const QString& key) : d(new gnomonImagesFusionCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "import gnomonImagesFusion";
 
     int stat;
 

@@ -27,6 +27,7 @@ gnomonSpinBoxParameter::gnomonSpinBoxParameter(int value, int min, int max, cons
 QWidget* gnomonSpinBoxParameter::connect(QWidget *parent)
 {
     QSpinBox *widget = new QSpinBox(parent);
+    qDebug() << widget;
     widget->setMinimum(d->min);
     widget->setMaximum(d->max);
     parent->connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),

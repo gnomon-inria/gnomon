@@ -48,6 +48,10 @@ QStringList gnomonWorkspaceFusionPrivate::keys() const
 
 gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(parent)
 {
+    int stat;
+
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesFusion", &stat);
+
     d = new gnomonWorkspaceFusionPrivate;
 
     d->layout = new gnomonGridLayout;
