@@ -31,6 +31,7 @@ gnomonImagesFusionCommand::~gnomonImagesFusionCommand()
 
 void gnomonImagesFusionCommand::redo(void)
 {
+    qDebug() << "Test";
     Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesFusion>::action);
 
     for(auto& image : d->images) {

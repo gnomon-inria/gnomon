@@ -16,6 +16,7 @@ public:
     void setImage(dtkImage *image);
 
     virtual QMap<QString, gnomonParameter*> parameters(void) const;
+    virtual void setParameter(const QString&, const QVariant&);
 
 public:
     double time(void);
