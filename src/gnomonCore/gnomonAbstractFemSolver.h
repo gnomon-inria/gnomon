@@ -28,7 +28,7 @@
 class gnomonMesh;
 
 
-class GNOMONCORE_EXPORT gnomonAbstractMeshModel : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractFemSolver : public QRunnable
 {
 
 // model Inputs
@@ -55,11 +55,11 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT(gnomonAbstractMeshModel *)
+DTK_DECLARE_OBJECT(gnomonAbstractFemSolver *)
 
-DTK_DECLARE_PLUGIN(gnomonAbstractMeshModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshModel, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
 
 
 // /////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshModel, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomon {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshModel, GNOMONCORE_EXPORT, meshModel);
+    DTK_DECLARE_CONCEPT(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, meshModel);
 }
 
 
