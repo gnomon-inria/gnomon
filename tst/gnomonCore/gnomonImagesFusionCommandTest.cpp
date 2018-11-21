@@ -28,6 +28,7 @@ gnomonImagesFusionCommandTestCase::~gnomonImagesFusionCommandTestCase(void)
 
 void gnomonImagesFusionCommandTestCase::initTestCase(void)
 {
+    dtkScriptInterpreterPython::instance()->init();
 }
 
 void gnomonImagesFusionCommandTestCase::init(void)
