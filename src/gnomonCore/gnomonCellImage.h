@@ -56,7 +56,13 @@ public:
     const gnomonAbstractCellImageData *data(void) const { return m_data; }
           gnomonAbstractCellImageData *data(void)       { return m_data; }
 
-    void setData(gnomonAbstractCellImageData* data) { m_data = data; }
+    void setData(gnomonAbstractCellImageData* data)
+    {
+        if (m_data) {
+            delete m_data;
+        }
+        m_data = data;
+    }
 
 public:
     virtual void setImage(dtkImage *image) { return m_data->setImage(image); }

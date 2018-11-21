@@ -12,11 +12,14 @@
 
 // Code:
 
+#include "gnomonWorkspaceFusion.h"
+
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
-#include "gnomonWorkspaceFusion.h"
+
+#include <gnomonImagesFusionCommand>
 
 class gnomonWorkspaceFusionPrivate
 {
@@ -25,6 +28,9 @@ public:
 
 public:
     gnomonViewVolumic *target;
+
+public:
+    gnomonImagesFusionCommand *images_fusion_command = nullptr;
 
 public:
     QSpinBox *iterations_box;
@@ -40,7 +46,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d->target->setMinimumWidth(250);
 
     d->iterations_box = new QSpinBox(this);
-    d->iterations_box->setMinimum(1);
+    d->iterations_box->setMinimum(0);
     d->iterations_box->setMaximum(10);
     d->iterations_box->setValue(5);
 
@@ -88,7 +94,16 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 
 void gnomonWorkspaceFusion::apply(void)
 {
-    qDebug() << Q_FUNC_INFO;
+    d->images_fusion_command = new gnomonImagesFusionCommand("gnomonImagesFusion");
+    d->images_fusion_command->setParameter("nb_iterations", d->iterations_box->value());
+
+    if(d->layout->views().isEmpty()) return;
+
+    for(gnomonViewVolumic *view : d->layout->views()) {
+        d->images_fusion_command->addImage(view->image().data());
+    }
+    d->images_fusion_command->redo();
+    d->target->setImage(dtkImagePtr(d->images_fusion_command->output()));
 }
 
 //

@@ -13,11 +13,12 @@
 // Code:
 
 #include "gnomonWorkspaceSegmentation.h"
+
 #include "gnomonViewVolumic.h"
 #include "gnomonViewVolumicPool.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonWorkspaceTemplate.h"
+#include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonActorMeshCellImage.h>
 #include <gnomonCellImage.h>
@@ -29,22 +30,21 @@
 #include <QtWidgets>
 
 #include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
 
-class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >
+class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>
 {
 
 public:
-    gnomonWorkspaceSegmentationPrivate();
-    virtual ~gnomonWorkspaceSegmentationPrivate();
+     gnomonWorkspaceSegmentationPrivate(void);
+    ~gnomonWorkspaceSegmentationPrivate(void);
 
 public:
-    QString workspace() const override;
-    QStringList keys() const override;
+    QString workspace(void) const override;
+    QStringList keys(void) const override;
 
 public:
-    gnomonViewVolumic *source;
-    gnomonViewVolumic *target;
+    gnomonViewVolumic *source = nullptr;
+    gnomonViewVolumic *target = nullptr;
 
 public:
     gnomonViewVolumicPool *pool;
@@ -56,22 +56,22 @@ public:
     gnomonActorMeshCellImage *actor = nullptr;
 };
 
-gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonSegmentationCommand >()
+gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>()
 {
 
 }
 
-gnomonWorkspaceSegmentationPrivate::~gnomonWorkspaceSegmentationPrivate()
+gnomonWorkspaceSegmentationPrivate::~gnomonWorkspaceSegmentationPrivate(void)
 {
 
 }
 
-QString gnomonWorkspaceSegmentationPrivate::workspace() const
+QString gnomonWorkspaceSegmentationPrivate::workspace(void) const
 {
     return "Segmentation";
 }
 
-QStringList gnomonWorkspaceSegmentationPrivate::keys() const
+QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 {
     return gnomonCore::cellImageFromImage::pluginFactory().keys();
 }

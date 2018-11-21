@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <QtWidgets>
 
 class dtkImage;
@@ -22,7 +24,7 @@ using dtkImagePtr = QSharedPointer<dtkImage>;
 class vtkRenderer;
 class vtkRenderWindowInteractor;
 
-class gnomonViewVolumic : public QFrame
+class GNOMONWIDGETS_EXPORT gnomonViewVolumic : public QFrame
 {
     Q_OBJECT
 

@@ -21,22 +21,38 @@ project(gnomonWidgets)
 set(${PROJECT_NAME}_HEADERS
   gnomonCodeEditor
   gnomonCodeEditor.h
+  gnomonDropSite
   gnomonDropSite.h
+  gnomonFinder
   gnomonFinder.h
+  gnomonGridLayout
   gnomonGridLayout.h
+  gnomonImageManager
   gnomonImageManager.h
+  gnomonOverlayPane
   gnomonOverlayPane.h
+  gnomonOverlayPaneItem
   gnomonOverlayPaneItem.h
+  gnomonToolBar
   gnomonToolBar.h
+  gnomonViewVolumic
   gnomonViewVolumic.h
   gnomonViewVolumicPool.h
   gnomonWidgets
+  gnomonWorkspace
   gnomonWorkspace.h
+  gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
+  gnomonWorkspaceFusion
   gnomonWorkspaceFusion.h
-  gnomonWorkspaceSegmentation.h
+  gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
-  gnomonWorkspaceRegistration.h)
+  gnomonWorkspaceRegistration
+  gnomonWorkspaceRegistration.h
+  gnomonWorkspaceSegmentation
+  gnomonWorkspaceSegmentation.h
+  gnomonWorkspaceTemplate_p.h
+  gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonCodeEditor.cpp

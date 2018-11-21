@@ -55,7 +55,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT, graphFromImage);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT, cellGraphFromImage);
 }
 
 //

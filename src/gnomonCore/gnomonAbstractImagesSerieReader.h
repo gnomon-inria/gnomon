@@ -61,4 +61,4 @@ namespace gnomonCore {
 }
 
 //
-// gnomonAbstractImageReader.h ends here
+// gnomonAbstractImagesSerieReader.h ends here

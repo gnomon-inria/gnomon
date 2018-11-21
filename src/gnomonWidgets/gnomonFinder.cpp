@@ -110,7 +110,7 @@ gnomonFinderToolBar::~gnomonFinderToolBar(void)
 {
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 QSize gnomonFinderToolBar::sizeHint(void) const
@@ -213,7 +213,7 @@ gnomonFinderSideView::~gnomonFinderSideView(void)
 {
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 void gnomonFinderSideView::populate(void)
@@ -246,7 +246,7 @@ void gnomonFinderSideView::populate(void)
     driveList = QDir::drives();
 #endif
 
-    foreach(QFileInfo info, driveList) {
+    for(QFileInfo info : driveList) {
 
         QString dlabel = this->driveLabel( info.absoluteFilePath() );
         QTreeWidgetItem *item = new QTreeWidgetItem(item1, QStringList() <<(dlabel.isEmpty() ? "HD" : dlabel));
@@ -290,7 +290,7 @@ void gnomonFinderSideView::populate(void)
 
     QSettings settings; QStringList bookmarks = settings.value("gnomonFinderBookmarks").toStringList();
 
-    foreach(QString path, bookmarks) {
+    for(QString path : bookmarks) {
 
         QFileInfo info(path);
 
@@ -328,7 +328,7 @@ QSize gnomonFinderSideView::sizeHint(void) const
 
 void gnomonFinderSideView::setPath(const QString& path)
 {
-    foreach(QTreeWidgetItem *item, d->items)
+    for(QTreeWidgetItem *item : d->items)
         if(item->data(0, Qt::UserRole).toString() == path)
             item->setSelected(true);
         else
@@ -514,12 +514,12 @@ gnomonFinderPathBar::gnomonFinderPathBar(QWidget *parent) : QFrame(parent), d(ne
 
 gnomonFinderPathBar::~gnomonFinderPathBar(void)
 {
-    foreach(gnomonFinderPathBarItem *item, d->items)
+    for(gnomonFinderPathBarItem *item : d->items)
         delete item;
 
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 QSize gnomonFinderPathBar::sizeHint(void) const
@@ -530,7 +530,7 @@ QSize gnomonFinderPathBar::sizeHint(void) const
 void gnomonFinderPathBar::setPath(const QString &path)
 {
     d->path = path;
-    foreach(gnomonFinderPathBarItem *item, d->items)
+    for(gnomonFinderPathBarItem *item : d->items)
         delete item;
     d->items.clear();
 
@@ -552,7 +552,7 @@ void gnomonFinderPathBar::setPath(const QString &path)
 
 void gnomonFinderPathBar::mousePressEvent(QMouseEvent *event)
 {
-    foreach(gnomonFinderPathBarItem *item, d->items) {
+    for(gnomonFinderPathBarItem *item : d->items) {
         if(item->rect.contains(event->x(), event->y())) {
             // setPath will delete the items. Store the string so that it is still valid afterwards.
             QString path(item->dir.absolutePath());
@@ -574,7 +574,7 @@ void gnomonFinderPathBar::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
-    foreach(gnomonFinderPathBarItem *item, d->items) {
+    for(gnomonFinderPathBarItem *item : d->items) {
         painter.drawPixmap(x, y, item->icon.pixmap(16, 16));
         painter.drawText(x + 16 + 4, y + 14, item->text);
 
@@ -634,7 +634,7 @@ gnomonFinderListView::~gnomonFinderListView(void)
 {
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 void gnomonFinderListView::addContextMenuAction(QAction *action)
@@ -666,7 +666,7 @@ QStringList gnomonFinderListView::selectedPaths() const
     {
         QStringList selectedPaths = *(new QStringList());
 
-        foreach(QModelIndex index, selectedIndexes())
+        for(QModelIndex index : selectedIndexes())
             selectedPaths << model->filePath(index);
 
         return selectedPaths;
@@ -731,7 +731,7 @@ void gnomonFinderListView::onBookmarkSelectedItemsRequested(void)
     if(!selectedIndexes().count())
         return;
 
-    foreach(QString path, this->selectedPaths())
+    for(QString path : this->selectedPaths())
         emit bookmarked(path);
 }
 
@@ -843,12 +843,12 @@ gnomonFinderTreeView::~gnomonFinderTreeView(void)
 {
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 int gnomonFinderTreeView::sizeHintForColumn(int column) const
 {
-    if(column == 1)
+    if (column == 1)
         return 400;
 
     return 100;
@@ -866,7 +866,7 @@ void gnomonFinderTreeView::addDefaultContextMenuAction(QAction *action)
 
 QString gnomonFinderTreeView::selectedPath() const
 {
-    if(!selectedIndexes().count())
+    if (!selectedIndexes().count())
         return QString();
 
     return this->selectedPaths()[0];
@@ -874,28 +874,26 @@ QString gnomonFinderTreeView::selectedPath() const
 
 QStringList gnomonFinderTreeView::selectedPaths() const
 {
-    if(!selectedIndexes().count())
+    if (!selectedIndexes().count())
         return QStringList();
 
     QList<int> alreadyReadRows;
 
-    if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model()))
-    {
+    if (QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
         QStringList selectedPaths = *(new QStringList());
 
-        foreach(QModelIndex index, selectedIndexes())
-        {
-            if(!alreadyReadRows.contains(index.row()))
-            {
+        for(QModelIndex index : selectedIndexes()) {
+            if(!alreadyReadRows.contains(index.row())) {
                 selectedPaths << model->filePath(index);
                 alreadyReadRows << index.row();
             }
         }
 
         return selectedPaths;
-    }
-    else
+
+    } else {
         return QStringList();
+    }
 }
 
 void gnomonFinderTreeView::allowFileBookmarking(bool isAllowed)
@@ -952,7 +950,7 @@ void gnomonFinderTreeView::onBookmarkSelectedItemsRequested(void)
     if(!selectedIndexes().count())
         return;
 
-    foreach(QString path, this->selectedPaths())
+    for(QString path : this->selectedPaths())
         emit bookmarked(path);
 }
 
@@ -1181,7 +1179,7 @@ gnomonFinder::~gnomonFinder(void)
 
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 void gnomonFinder::addContextMenuAction(QAction *action)
