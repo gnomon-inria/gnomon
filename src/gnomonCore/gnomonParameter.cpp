@@ -27,7 +27,6 @@ gnomonSpinBoxParameter::gnomonSpinBoxParameter(int value, int min, int max, cons
 QWidget* gnomonSpinBoxParameter::connect(QWidget *parent)
 {
     QSpinBox *widget = new QSpinBox(parent);
-    qDebug() << widget;
     widget->setMinimum(d->min);
     widget->setMaximum(d->max);
     parent->connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
@@ -36,30 +35,35 @@ QWidget* gnomonSpinBoxParameter::connect(QWidget *parent)
     return widget;
 }
 
-int gnomonSpinBoxParameter::value() const
+int gnomonSpinBoxParameter::value(void) const
 { return d->value; }
+
+void gnomonSpinBoxParameter::setValue(int value)
+{ d->value = value; }
 
 class gnomonDoubleSpinBoxParameterPrivate
 {
     public:
-        gnomonDoubleSpinBoxParameterPrivate(double, double, double, const QString&);
+        gnomonDoubleSpinBoxParameterPrivate(double, double, double, int, const QString&);
 
     public:
         double value;
         double min;
         double max;
+        int decimals;
         QString doc;
 };
 
-gnomonDoubleSpinBoxParameterPrivate::gnomonDoubleSpinBoxParameterPrivate(double value, double min, double max, const QString& doc)
+gnomonDoubleSpinBoxParameterPrivate::gnomonDoubleSpinBoxParameterPrivate(double value, double min, double max, int decimals, const QString& doc)
 {
     this->value = value;
     this->min = min;
     this->max = max;
+    this->decimals = decimals;
     this->doc = doc;
 }
 
-gnomonDoubleSpinBoxParameter::gnomonDoubleSpinBoxParameter(double value, double min, double max, const QString& doc) : d(new gnomonDoubleSpinBoxParameterPrivate(value, min, max, doc))
+gnomonDoubleSpinBoxParameter::gnomonDoubleSpinBoxParameter(double value, double min, double max, int decimals, const QString& doc) : d(new gnomonDoubleSpinBoxParameterPrivate(value, min, max, decimals, doc))
 {
 }
 
@@ -68,14 +72,19 @@ QWidget* gnomonDoubleSpinBoxParameter::connect(QWidget *parent)
     QDoubleSpinBox *widget = new QDoubleSpinBox(parent);
     widget->setMinimum(d->min);
     widget->setMaximum(d->max);
+    widget->setDecimals(d->decimals);
+    widget->setSingleStep(pow(10, -d->decimals));
     parent->connect(widget, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [=](int value) { d->value = value; } );
     widget->setValue(d->value);
     return widget;
 }
 
-double gnomonDoubleSpinBoxParameter::value() const
+double gnomonDoubleSpinBoxParameter::value(void) const
 { return d->value; }
+
+void gnomonDoubleSpinBoxParameter::setValue(double value)
+{ d->value = value; }
 
 class gnomonCheckBoxParameterPrivate
 {
@@ -109,8 +118,11 @@ QWidget* gnomonCheckBoxParameter::connect(QWidget *parent)
     return widget;
 }
 
-bool gnomonCheckBoxParameter::value() const
+bool gnomonCheckBoxParameter::value(void) const
 { return d->value; }
+
+void gnomonCheckBoxParameter::setValue(bool value)
+{ d->value = value; }
 
 class gnomonLineEditParameterPrivate
 {
@@ -140,5 +152,8 @@ QWidget* gnomonLineEditParameter::connect(QWidget *parent)
     return widget;
 }
 
-QString gnomonLineEditParameter::value() const
+QString gnomonLineEditParameter::value(void) const
 { return d->value; }
+
+void gnomonLineEditParameter::setValue(const QString& value)
+{ d->value = value; }

@@ -35,7 +35,8 @@ class gnomonSpinBoxParameter : public gnomonParameter
     public:
         QWidget *connect(QWidget *parent);
 
-        int value() const;
+        int value(void) const;
+        void setValue(int);
         
     private:
         gnomonSpinBoxParameterPrivate *d;
@@ -46,13 +47,14 @@ class gnomonDoubleSpinBoxParameterPrivate;
 class gnomonDoubleSpinBoxParameter : public gnomonParameter
 {
     public:
-        gnomonDoubleSpinBoxParameter(double, double, double, const QString&);
+        gnomonDoubleSpinBoxParameter(double, double, double, int, const QString&);
 
     public:
         QWidget *connect(QWidget *parent);
 
         double value() const;
-        
+        void setValue(double);
+
     private:
         gnomonDoubleSpinBoxParameterPrivate *d;
 };
@@ -68,7 +70,8 @@ class gnomonCheckBoxParameter : public gnomonParameter
         QWidget *connect(QWidget *parent);
 
         bool value() const;
-        
+        void setValue(bool);
+
     private:
         gnomonCheckBoxParameterPrivate *d;
 };
@@ -84,6 +87,7 @@ class gnomonLineEditParameter : public gnomonParameter
         QWidget *connect(QWidget *parent);
 
         QString value() const;
+        void setValue(const QString&);
         
     private:
         gnomonLineEditParameterPrivate *d;
