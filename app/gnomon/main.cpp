@@ -26,6 +26,20 @@
 
 #include <dtkImagingCore>
 
+QString gnomonReadFile(const QString& path)
+{
+    QFile file(path);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return QString();
+
+    QString contents = file.readAll();
+
+    file.close();
+
+    return contents;
+}
+
 int main(int argc, char **argv)
 {
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
@@ -36,11 +50,14 @@ int main(int argc, char **argv)
     application.setApplicationName("gnomon");
     application.setOrganizationName("inria");
     application.setOrganizationDomain("fr");
-    application.setApplicationVersion("0.1.0");
+    application.setApplicationVersion("0.9.0");
+
+    int stat;
 
     dtkLogger::instance().setLevel(dtkLog::Level::Info);
     dtkImaging::initialize();
     dtkScriptInterpreterPython::instance()->init();
+    dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
 
     gnomonMainWindow *window = new gnomonMainWindow;
     window->setWindowTitle("gnomon");

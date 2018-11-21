@@ -16,7 +16,7 @@
 #include "gnomonAbstractCellImageData.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellImageData, cellimagedata, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractCellImageData, cellImageData, gnomonCore);
 }
 
 // gnomonAbstractCellImageData.cpp ends here

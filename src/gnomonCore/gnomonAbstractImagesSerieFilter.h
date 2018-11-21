@@ -37,6 +37,8 @@ public:
     virtual void run(void) = 0;
 
 public:
+    virtual QMap<QString, QVariant> parameters(void) const = 0;
+
     virtual double time(void) = 0;
     virtual dtkImage *at(double t) = 0;
     virtual dtkImage *next(void) = 0;

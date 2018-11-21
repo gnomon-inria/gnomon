@@ -1,5 +1,21 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractCellImageFromImage.h"
+
+class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand<gnomonAbstractCellImageFromImage>
 {
@@ -17,11 +33,14 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue);
 
 public:
-    dtkImage *computedImage(void) const;
+    const QMap<QString, QVariant>& parameters(void) const;
 
-protected:
-    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
+    gnomonCellImage *computedImage(void) const;
 
 private:
     class gnomonSegmentationCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
 };
+
+//
+// gnomonSegmentationCommand.h ends here

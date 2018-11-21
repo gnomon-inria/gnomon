@@ -31,7 +31,7 @@ public:
 
 gnomonCellComplexReaderNode::gnomonCellComplexReaderNode(void) : dtkComposerNodeObject<gnomonAbstractCellComplexReader>(), d(new gnomonCellComplexReaderNodePrivate())
 {
-    this->setFactory(gnomonCore::cellcomplexReader::pluginFactory());
+    this->setFactory(gnomonCore::cellComplexReader::pluginFactory());
 
     this->appendReceiver(&d->path_in);
 

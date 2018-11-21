@@ -164,7 +164,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT, cellgraphdata);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT, cellGraphData);
 }
 
 //
