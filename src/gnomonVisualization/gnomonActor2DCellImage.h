@@ -54,6 +54,10 @@ public slots:
     void update(void);
     void modified(void);
 
+public slots:
+    void setSliceOrientation(int);
+    void setSlice(int);
+
 public:
      gnomonActor2DCellImage(void);
     ~gnomonActor2DCellImage(void);

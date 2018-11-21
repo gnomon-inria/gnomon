@@ -55,6 +55,10 @@ public slots:
 signals:
     void channelsChanged(QStringList);
 
+signals:
+    void sliceOrientationChanged(int);
+    void sliceChanged(int);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dragLeaveEvent(QDragLeaveEvent *);

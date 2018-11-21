@@ -325,6 +325,9 @@ public:
     int x = 0, c_x = 0;
     int y = 0, c_y = 0;
     int z = 0, c_z = 0;
+
+signals:
+    void sliceOrientationChanged(int);
 };
 
 gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
@@ -707,12 +710,15 @@ void gnomonViewVolumicPrivate::setSliceOrientation(Orientation orientation)
     switch(orientation) {
     case SLICE_ORIENTATION_YZ:
         this->viewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_YZ);
+        emit sliceOrientationChanged(SLICE_ORIENTATION_YZ);
         break;
     case SLICE_ORIENTATION_XZ:
         this->viewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_XZ);
+        emit sliceOrientationChanged(SLICE_ORIENTATION_XZ);
         break;
     case SLICE_ORIENTATION_XY:
         this->viewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_XY);
+        emit sliceOrientationChanged(SLICE_ORIENTATION_XY);
         break;
     default:
         break;
@@ -757,7 +763,12 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
         }
 
         d->GetInteractor()->Render();
+
+        emit sliceChanged(value);
     });
+
+    // connect(d, static_cast<void(gnomonViewVolumicPrivate::*)(int)>(&gnomonViewVolumicPrivate::sliceOrientationChanged), this, &gnomonViewVolumic::sliceOrientationChanged);
+    connect(d, &gnomonViewVolumicPrivate::sliceOrientationChanged, this, &gnomonViewVolumic::sliceOrientationChanged);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

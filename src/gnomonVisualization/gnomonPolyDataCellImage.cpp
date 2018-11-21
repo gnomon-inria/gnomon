@@ -39,7 +39,7 @@
 #include <vtkPointData.h>
 #include <vtkDiscreteMarchingCubes.h>
 #include <vtkWindowedSincPolyDataFilter.h>
-#include <vtkQuadricClustering.h>
+#include <vtkQuadricDecimation.h>
 #include <vtkCenterOfMass.h>
 #include <vtkImageResample.h>
 
@@ -53,9 +53,9 @@ public:
     gnomonCellImage *cellimage;
 
     double cellScaleFactor;
-    double resamplingFactor;
+    double resamplingSpacing;
     double smoothingFactor;
-    double resolutionFactor;
+    double decimationFactor;
 
     QMap<long, vtkSmartPointer<vtkPolyData> > cell_mesh;
     vtkSmartPointer<vtkPolyData> mesh;
@@ -99,10 +99,19 @@ void gnomonPolyDataCellImage::update(void)
 
     vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
 
+    float v_x = volume->GetSpacing()[0];
+    float v_y = volume->GetSpacing()[1];
+    float v_z = volume->GetSpacing()[2];
+
+    float r_x = floor(d->resamplingSpacing/v_x);
+    float r_y = floor(d->resamplingSpacing/v_y);
+    float r_z = floor(d->resamplingSpacing/v_z);
+
     vtkSmartPointer<vtkImageResample> resample = vtkSmartPointer<vtkImageResample>::New();
     resample->SetInputData(volume);
     // resample->SetOutputSpacing(d->resamplingVoxelsize,d->resamplingVoxelsize,d->resamplingVoxelsize);
-    resample->SetMagnificationFactors(1./d->resamplingFactor,1./d->resamplingFactor,1./d->resamplingFactor);
+    qDebug()<<"Resample :"<<r_x<<r_y<<r_z;
+    resample->SetMagnificationFactors(1/r_x,1/r_y,1/r_z);
     resample->SetInterpolationModeToNearestNeighbor();
     resample->Update();
 
@@ -125,7 +134,8 @@ void gnomonPolyDataCellImage::update(void)
             contour->ComputeGradientsOn();
             contour->SetValue(0,cellId);
             contour->Update();
-
+            qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
+ 
 
             if (contour->GetOutput()->GetNumberOfCells()>0)
             { 
@@ -143,12 +153,13 @@ void gnomonPolyDataCellImage::update(void)
                 smoother->Update();
 
                 // int divisions = int(pow(cellVolumes[cellId].value<double>(),1/3.)*d->resolutionFactor);
-                int divisions = 5.*d->resolutionFactor;
+                // int divisions = 5.*d->resolutionFactor;
 
-                vtkSmartPointer<vtkQuadricClustering> decimate = vtkSmartPointer<vtkQuadricClustering>::New();
+                vtkSmartPointer<vtkQuadricDecimation> decimate = vtkSmartPointer<vtkQuadricDecimation>::New();
                 decimate->SetInputData(smoother->GetOutput());
-                decimate->SetNumberOfDivisions(divisions,divisions,divisions);
-                decimate->SetFeaturePointsAngle(120.0);
+                // decimate->SetFeaturePointsAngle(120.0);
+                decimate->VolumePreservationOff();
+                decimate->SetTargetReduction(1. - 1/d->decimationFactor);
                 decimate->Update();
 
                 d->cell_mesh[cellId] = decimate->GetOutput();
@@ -201,10 +212,10 @@ gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new
 {
     d->cellimage = Q_NULLPTR;
 
-    d->cellScaleFactor = 0.95;
-    d->resamplingFactor = 3.;
-    d->smoothingFactor = 0.5;
-    d->resolutionFactor = 2.;
+    d->cellScaleFactor = 1.;
+    d->resamplingSpacing = 1.5;
+    d->smoothingFactor = 1.;
+    d->decimationFactor = 1.;
 }
 
 gnomonPolyDataCellImage::~gnomonPolyDataCellImage(void)

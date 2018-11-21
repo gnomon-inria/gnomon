@@ -125,15 +125,15 @@ void gnomonWorkspaceSegmentation::computeCells(void)
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
     d->actor->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
-    d->actor->update();
     d->target->renderer3D()->AddActor(d->actor);
     
     if(!d->actor2D)
         d->actor2D = gnomonActor2DCellImage::New();
     d->actor2D->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
-    d->actor2D->update();
     d->target->renderer2D()->AddActor(d->actor2D);
 
+    connect(d->target, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {d->actor2D->setSliceOrientation(value);});
+    connect(d->target, &gnomonViewVolumic::sliceChanged, [=] (int value) {d->actor2D->setSlice(value);});
 
     d->target->render();
 }
