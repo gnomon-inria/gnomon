@@ -120,12 +120,12 @@ void gnomonWorkspaceSegmentation::computeCells(void)
 {
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
-
     d->actor->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
-    d->actor->setInteractor(d->target->interactor());
     d->actor->update();
-
+    
     d->target->renderer3D()->AddActor(d->actor);
+
+
     d->target->render();
 }
 

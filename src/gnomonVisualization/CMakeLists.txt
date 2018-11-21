@@ -60,6 +60,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspectorViewWidget.h
   gnomonInspectorVolume
   gnomonInspectorVolume.h
+  gnomonPolyData
+  gnomonPolyData.h
+  gnomonPolyDataCellImage
+  gnomonPolyDataCellImage.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -89,6 +93,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspectorViewTree.cpp
   gnomonInspectorViewWidget.cpp
   gnomonInspectorVolume.cpp
+  gnomonPolyData.cpp
+  gnomonPolyDataCellImage.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 
