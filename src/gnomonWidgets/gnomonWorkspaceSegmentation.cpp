@@ -129,11 +129,17 @@ void gnomonWorkspaceSegmentation::computeCells(void)
     
     if(!d->actor2D)
         d->actor2D = gnomonActor2DCellImage::New();
+    d->actor2D->setInteractor(d->target->interactor());
     d->actor2D->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
     d->target->renderer2D()->AddActor(d->actor2D);
 
-    connect(d->target, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {d->actor2D->setSliceOrientation(value);});
-    connect(d->target, &gnomonViewVolumic::sliceChanged, [=] (int value) {d->actor2D->setSlice(value);});
+    connect(d->target, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {
+        d->actor2D->setSliceOrientation(value);
+    });
+
+    connect(d->target, &gnomonViewVolumic::sliceChanged, [=] (int value) {
+        d->actor2D->setSlice(value);
+    });
 
     d->target->render();
 }

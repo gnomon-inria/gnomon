@@ -51,7 +51,8 @@ public:
     QMap<int, vtkSmartPointer<vtkActor> > sliceActors;
 
 public:
-    float v_x=0, v_y=0, v_z=0;
+    int dimension[3];
+    double spacing[3];
 
 public:
     int orientation;
@@ -62,6 +63,7 @@ public:
 
 public:
     void updateVisibility(void);
+    void updateSlice(int orientation);
 };
 
 void gnomonActor2DCellImagePrivate::updateVisibility(void)
@@ -73,6 +75,73 @@ void gnomonActor2DCellImagePrivate::updateVisibility(void)
         else
             this->sliceActors[i]->VisibilityOff();
     }
+}
+
+void gnomonActor2DCellImagePrivate::updateSlice(int orientation)
+{
+    vtkSmartPointer<vtkPlane> topPlane = vtkSmartPointer<vtkPlane>::New();
+    if (orientation==0)
+    {
+        topPlane->SetOrigin((this->slicePositions[0]+0.1)*this->spacing[0], 0, 0);
+        topPlane->SetNormal(1, 0, 0);
+    }
+    else if (orientation==1)
+    {
+        topPlane->SetOrigin(0, (this->slicePositions[1]+0.1)*this->spacing[1], 0);
+        topPlane->SetNormal(0, 1, 0);
+    }
+    else
+    {
+        topPlane->SetOrigin(0, 0, (this->slicePositions[2]+0.1)*this->spacing[2]);
+        topPlane->SetNormal(0, 0, 1);
+    }
+
+    vtkSmartPointer<vtkClipPolyData> topClipper = vtkSmartPointer<vtkClipPolyData>::New();
+    topClipper->SetInputData(this->polydata);
+    topClipper->SetClipFunction(topPlane);
+    topClipper->SetValue(0);
+    topClipper->InsideOutOn();
+    topClipper->GenerateClippedOutputOn();
+
+    vtkSmartPointer<vtkPlane> bottomPlane = vtkSmartPointer<vtkPlane>::New();
+    if (orientation==0)
+    {
+        bottomPlane->SetOrigin((this->slicePositions[0]-0.1)*this->spacing[0], 0, 0);
+        bottomPlane->SetNormal(1, 0, 0);
+    }
+    else if (orientation==1)
+    {
+        bottomPlane->SetOrigin(0, (this->slicePositions[1]-0.1)*this->spacing[1], 0);
+        bottomPlane->SetNormal(0, 1, 0);
+    }
+    else
+    {
+        bottomPlane->SetOrigin(0, 0, (this->slicePositions[2]-0.1)*this->spacing[2]);
+        bottomPlane->SetNormal(0, 0, 1);
+    }
+
+    vtkSmartPointer<vtkClipPolyData> bottomClipper = vtkSmartPointer<vtkClipPolyData>::New();
+    bottomClipper->SetInputConnection(topClipper->GetOutputPort());
+    bottomClipper->SetClipFunction(bottomPlane);
+    bottomClipper->SetValue(0);
+    // bottomClipper->InsideOutOn();
+    bottomClipper->GenerateClippedOutputOn();
+    bottomClipper->Update();
+
+    if (!this->sliceMappers.contains(orientation)) {
+        this->sliceMappers[orientation] = vtkSmartPointer<vtkPolyDataMapper>::New();
+        this->sliceMappers[orientation]->SetScalarRange(0, this->cellimage->cellCount()-1);
+    }
+    this->sliceMappers[orientation]->SetInputConnection(bottomClipper->GetOutputPort());
+    this->sliceMappers[orientation]->Update();
+
+    if(!this->sliceActors.contains(orientation)) {
+        this->sliceActors[orientation] = vtkSmartPointer<vtkActor>::New();
+        this->sliceActors[orientation]->SetMapper(this->sliceMappers[orientation]);
+    }
+    this->sliceActors[orientation]->GetProperty()->SetOpacity(0.9);
+    this->sliceActors[orientation]->GetProperty()->SetLineWidth(2.);
+    this->sliceActors[orientation]->Modified();
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -108,6 +177,7 @@ void gnomonActor2DCellImage::update(void)
         d->polydata = gnomonPolyDataCellImage::New();
     
     if (d->modified)
+    {
         d->polydata->setCellImage(d->cellimage);
 
         dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
@@ -120,81 +190,22 @@ void gnomonActor2DCellImage::update(void)
             return;
 
         vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
-        d->v_x = volume->GetSpacing()[0];
-        d->v_y = volume->GetSpacing()[1];
-        d->v_z = volume->GetSpacing()[2];
-    
-    float c_x = d->slicePositions[0];
-    float c_y = d->slicePositions[1];
-    float c_z = d->slicePositions[2];
+        volume->GetDimensions(d->dimension);
+        volume->GetSpacing(d->spacing);
+        d->slicePositions[0] = d->dimension[0]/2;
+        d->slicePositions[1] = d->dimension[1]/2;
+        d->slicePositions[2] = d->dimension[2]/2;
+    }
 
     for (int i=0;i<3;i++)
     {
-        vtkSmartPointer<vtkPlane> topPlane = vtkSmartPointer<vtkPlane>::New();
-        if (i==0)
-        {
-            topPlane->SetOrigin((c_x+0.1)*d->v_x, 0, 0);
-            topPlane->SetNormal(1, 0, 0);
-        }
-        else if (i==1)
-        {
-            topPlane->SetOrigin(0, (c_y+0.1)*d->v_y, 0);
-            topPlane->SetNormal(0, 1, 0);
-        }
-        else
-        {
-            topPlane->SetOrigin(0, 0, (c_z+0.1)*d->v_z);
-            topPlane->SetNormal(0, 0, 1);
-        }
-
-        vtkSmartPointer<vtkClipPolyData> topClipper = vtkSmartPointer<vtkClipPolyData>::New();
-        topClipper->SetInputData(d->polydata);
-        topClipper->SetClipFunction(topPlane);
-        topClipper->SetValue(0);
-        topClipper->InsideOutOn();
-        topClipper->GenerateClippedOutputOn();
-
-        vtkSmartPointer<vtkPlane> bottomPlane = vtkSmartPointer<vtkPlane>::New();
-        if (i==0)
-        {
-            bottomPlane->SetOrigin((c_x-0.1)*d->v_x, 0, 0);
-            bottomPlane->SetNormal(1, 0, 0);
-        }
-        else if (i==1)
-        {
-            bottomPlane->SetOrigin(0, (c_y-0.1)*d->v_y, 0);
-            bottomPlane->SetNormal(0, 1, 0);
-        }
-        else
-        {
-            bottomPlane->SetOrigin(0, 0, (c_z-0.1)*d->v_z);
-            bottomPlane->SetNormal(0, 0, 1);
-        }
-
-        vtkSmartPointer<vtkClipPolyData> bottomClipper = vtkSmartPointer<vtkClipPolyData>::New();
-        bottomClipper->SetInputConnection(topClipper->GetOutputPort());
-        bottomClipper->SetClipFunction(bottomPlane);
-        bottomClipper->SetValue(0);
-        // bottomClipper->InsideOutOn();
-        bottomClipper->GenerateClippedOutputOn();
-        bottomClipper->Update();
-
-        if (!d->sliceMappers.contains(i)) {
-            d->sliceMappers[i] = vtkSmartPointer<vtkPolyDataMapper>::New();
-            d->sliceMappers[i]->SetScalarRange(0, d->cellimage->cellCount()-1);
-        }
-        d->sliceMappers[i]->SetInputConnection(bottomClipper->GetOutputPort());
-        d->sliceMappers[i]->Update();
-
-        if(!d->sliceActors.contains(i)) {
-            d->sliceActors[i] = vtkSmartPointer<vtkActor>::New();
-            d->sliceActors[i]->SetMapper(d->sliceMappers[i]);
-            this->AddPart(d->sliceActors[i]);
-        }
-        d->sliceActors[i]->GetProperty()->SetOpacity(0.9);
-        d->sliceActors[i]->GetProperty()->SetLineWidth(2.);
-        d->sliceActors[i]->Modified();
+        d->updateSlice(i);
+        this->AddPart(d->sliceActors[i]);
     }
+
+    d->updateVisibility();
+
+    d->interactor->Render();
 
     d->modified = false;
 }
@@ -202,14 +213,12 @@ void gnomonActor2DCellImage::update(void)
 void gnomonActor2DCellImage::hide(void)
 {
     this->VisibilityOff();
-
     d->interactor->Render();
 }
 
 void gnomonActor2DCellImage::show(void)
 {
     this->VisibilityOn();
-
     d->interactor->Render();
 }
 
@@ -217,17 +226,21 @@ void gnomonActor2DCellImage::setSliceOrientation(int orientation)
 {
     d->orientation = orientation;
     d->updateVisibility();
+    d->interactor->Render();
 }
 
 void gnomonActor2DCellImage::setSlice(int position)
 {
     d->slicePositions[d->orientation] = position;
-    this->update();
+    d->updateSlice(d->orientation);
+    d->interactor->Render();
 }
 
 gnomonActor2DCellImage::gnomonActor2DCellImage(void) : d(new gnomonActor2DCellImagePrivate)
 {
+    d->interactor = Q_NULLPTR;
     d->cellimage = Q_NULLPTR;
+
     d->orientation = 2;
     d->slicePositions[0] = 0;
     d->slicePositions[1] = 0;
