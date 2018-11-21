@@ -14,17 +14,15 @@
 
 #pragma once
 
-#include <QtWidgets>
+#include <gnomonWidgetsExport>
 
-class gnomonCodeEditorLineNumberArea;
-class gnomonCodeEditorSyntaxHighlighter;
-class gnomonCodeEditorPrivate;
+#include <QtWidgets>
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonCodeEditor : public QPlainTextEdit
+class GNOMONWIDGETS_EXPORT gnomonCodeEditor : public QPlainTextEdit
 {
     Q_OBJECT
 
@@ -61,14 +59,14 @@ private slots:
     void insertCompletion(QString);
 
 private:
-    gnomonCodeEditorPrivate* d;
+    class gnomonCodeEditorPrivate *d;
 };
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonCodeEditorLineNumberArea : public QWidget
+class GNOMONWIDGETS_EXPORT gnomonCodeEditorLineNumberArea : public QWidget
 {
 public:
     gnomonCodeEditorLineNumberArea(gnomonCodeEditor *editor) : QWidget(editor) {
@@ -92,19 +90,17 @@ private:
 //
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonCodeEditorSyntaxHighlighterPrivate;
-
-class gnomonCodeEditorSyntaxHighlighter : public QSyntaxHighlighter
+class GNOMONWIDGETS_EXPORT gnomonCodeEditorSyntaxHighlighter : public QSyntaxHighlighter
 {
 public:
      gnomonCodeEditorSyntaxHighlighter(QTextDocument *document);
-    ~gnomonCodeEditorSyntaxHighlighter();
+    ~gnomonCodeEditorSyntaxHighlighter(void);
 
 public:
     void highlightBlock(const QString& text);
 
 protected:
-    gnomonCodeEditorSyntaxHighlighterPrivate *d;
+    class gnomonCodeEditorSyntaxHighlighterPrivate *d;
 };
 
 //
