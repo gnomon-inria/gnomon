@@ -57,5 +57,53 @@ class gnomonDoubleSpinBoxParameter : public gnomonParameter
         gnomonDoubleSpinBoxParameterPrivate *d;
 };
 
+class gnomonCheckBoxParameterPrivate;
+
+class gnomonCheckBoxParameter : public gnomonParameter
+{
+    public:
+        gnomonCheckBoxParameter(bool, const QString&);
+
+    public:
+        QWidget *connect(QWidget *parent);
+
+        bool value() const;
+        
+    private:
+        gnomonCheckBoxParameterPrivate *d;
+};
+
+class gnomonLineEditParameterPrivate;
+
+class gnomonLineEditParameter : public gnomonParameter
+{
+    public:
+        gnomonLineEditParameter(const QString&, const QString&);
+
+    public:
+        QWidget *connect(QWidget *parent);
+
+        QString value() const;
+        
+    private:
+        gnomonLineEditParameterPrivate *d;
+};
+
+/* class gnomonComboBoxParameterPrivate;
+
+class gnomonComboBoxParameter : public gnomonParameter
+{
+    public:
+        gnomonComboBoxParameter(const QString&, const QStringList&, const QString&);
+
+    public:
+        QWidget *connect(QWidget *parent);
+
+        QString value() const;
+        
+    private:
+        gnomonComboBoxParameterPrivate *d;
+}; */
+
 //
 // gnomonParameter.h ends here

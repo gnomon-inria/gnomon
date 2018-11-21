@@ -75,3 +75,69 @@ QWidget* gnomonDoubleSpinBoxParameter::connect(QWidget *parent)
 
 double gnomonDoubleSpinBoxParameter::value() const
 { return d->value; }
+
+class gnomonCheckBoxParameterPrivate
+{
+    public:
+        gnomonCheckBoxParameterPrivate(bool, const QString&);
+
+    public:
+        bool value;
+        QString doc;
+};
+
+gnomonCheckBoxParameterPrivate::gnomonCheckBoxParameterPrivate(bool value, const QString& doc)
+{
+    this->value = value;
+}
+
+gnomonCheckBoxParameter::gnomonCheckBoxParameter(bool value, const QString& doc) : d(new gnomonCheckBoxParameterPrivate(value, doc))
+{
+}
+
+QWidget* gnomonCheckBoxParameter::connect(QWidget *parent)
+{
+    QCheckBox *widget = new QCheckBox(parent);
+    parent->connect(widget, &QCheckBox::stateChanged,
+                    [=](bool value) { d->value = value; } );
+    if(d->value) {
+        widget->setCheckState(Qt::Checked);
+    } else {
+        widget->setCheckState(Qt::Unchecked);
+    }
+    return widget;
+}
+
+bool gnomonCheckBoxParameter::value() const
+{ return d->value; }
+
+class gnomonLineEditParameterPrivate
+{
+    public:
+        gnomonLineEditParameterPrivate(const QString&, const QString&);
+
+    public:
+        QString value;
+        QString doc;
+};
+
+gnomonLineEditParameterPrivate::gnomonLineEditParameterPrivate(const QString& value, const QString& doc)
+{
+    this->value = value;
+}
+
+gnomonLineEditParameter::gnomonLineEditParameter(const QString& value, const QString& doc) : d(new gnomonLineEditParameterPrivate(value, doc))
+{
+}
+
+QWidget* gnomonLineEditParameter::connect(QWidget *parent)
+{
+    QLineEdit *widget = new QLineEdit(parent);
+    parent->connect(widget, &QLineEdit::textChanged,
+                    [=](QString value) { d->value = value; } );
+    widget->->setText(d->value);
+    return widget;
+}
+
+QString gnomonLineEditParameter::value() const
+{ return d->value; }
