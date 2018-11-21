@@ -67,11 +67,11 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomon {
-    DTK_DECLARE_CONCEPT(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, meshModel);
+    DTK_DECLARE_CONCEPT(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, femSolver);
 }
 
 
 
 
 
-// dtkAbstractWatershedFilter.h ends here
+// gnomonAbstractFemSolver.h ends here

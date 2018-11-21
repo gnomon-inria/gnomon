@@ -13,15 +13,15 @@
 // Code:
 
 #include "gnomonCore.h"
-#include "gnomonAbstractMeshModel.h"
+#include "gnomonAbstractFemSolver.h"
 
 
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshModel, meshModel, gnomonCore)
+    DTK_DEFINE_CONCEPT(gnomonAbstractFemSolver, femSolver, gnomonCore)
 }
 
 
 
 
-// dtkAbstractWatershedFilter.h ends here
+// gnomonAbstractFemSolver.cpp ends here
