@@ -29,6 +29,10 @@ class GNOMONWIDGETS_EXPORT gnomonImageManager : public QFrame
 public:
     static gnomonImageManager *instance(void);
 
+signals:
+    void shrink(void);
+    void expand(void);
+
 public:
     QSize sizeHint(void) const;
 
@@ -44,6 +48,16 @@ public:
 protected:
      gnomonImageManager(QWidget *parent = nullptr);
     ~gnomonImageManager(void);
+
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+protected:
+    void paintEvent(QPaintEvent *);
 
 private:
     class gnomonImageManagerPrivate *d;

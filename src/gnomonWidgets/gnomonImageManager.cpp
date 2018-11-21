@@ -46,7 +46,6 @@ private:
     gnomonFontAwesome *font;
 };
 
-
 gnomonImageManagerItemButton::gnomonImageManagerItemButton(const QColor& color, int icon, QWidget *parent) : QLabel(parent)
 {
     this->font = new gnomonFontAwesome(this);
@@ -173,14 +172,22 @@ public:
     ~gnomonImageManagerPrivate(void);
 
 public:
+    QSize sizeHint(void) const;
+
+public:
     gnomonImageManagerItem *create(dtkImagePtr, const QColor&);
 
 public:
     QHash<gnomonImageManagerItem *, dtkImagePtr> images;
+
+public:
     gnomonAbstractImagesSerieWriter *writer;
 
 public:
     static int item_counter;
+
+public:
+    bool inside = false;
 
 public:
     QWidget *contents;
@@ -193,7 +200,7 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     this->contents = new QWidget(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this->contents);
-    layout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     this->setFrameShape(QFrame::NoFrame);
     this->setWidget(this->contents);
@@ -201,19 +208,28 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
 
     QString plugin_save = "gnomonImagesSerieWriter";
     QString command = "import " + plugin_save;
+
     int stat;
+
     dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-    this->writer = gnomonCore::imagesSerieWriter::pluginFactory().create(plugin_save);
+
+    this->writer =  gnomonCore::imagesSerieWriter::pluginFactory().create(plugin_save);
 
     if(!this->writer) {
         qWarning() << "cannot create plugin " << plugin_save << " you won't be able to save images!!";
     }
 
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 gnomonImageManagerPrivate::~gnomonImageManagerPrivate(void)
 {
 
+}
+
+QSize gnomonImageManagerPrivate::sizeHint(void) const
+{
+    return QSize(200, 130);
 }
 
 gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, const QColor& color)
@@ -279,26 +295,24 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
     });
 
     connect(item, &gnomonImageManagerItem::save, [=] () {
-            if(this->writer) {
-                QSettings settings("inria", "gnomon");
-                settings.beginGroup("General");
-                QString path = settings.value("last_saved_file", QDir::homePath()).toString();
-                settings.endGroup();
+       if(this->writer) {
+           QSettings settings("inria", "gnomon");
+           settings.beginGroup("General");
+           QString path = settings.value("last_saved_file", QDir::homePath()).toString();
+           settings.endGroup();
 
-                QString export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"),
-                                                                        path,
-                                                                        tr("Images (*.inr.gz *.inr *.tif)"));
+           QString export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"), path, tr("Images (*.inr.gz *.inr *.tif)"));
 
-                if(!export_file_path.isEmpty()) {
-                    settings.beginGroup("general");
-                    settings.setValue("last_saved_file", export_file_path);
-                    settings.endGroup();
+           if(!export_file_path.isEmpty()) {
+               settings.beginGroup("general");
+               settings.setValue("last_saved_file", export_file_path);
+               settings.endGroup();
 
-                    this->writer->setImage(this->images[item].data());
-                    this->writer->setPath(export_file_path);
-                    this->writer->run();
-                }
-            }
+               this->writer->setImage(this->images[item].data());
+               this->writer->setPath(export_file_path);
+               this->writer->run();
+           }
+       }
     });
 
     return item;
@@ -314,11 +328,6 @@ gnomonImageManager *gnomonImageManager::instance(void)
         s_instance = new gnomonImageManager;
 
     return s_instance;
-}
-
-QSize gnomonImageManager::sizeHint(void) const
-{
-    return QSize(200, 140);
 }
 
 void gnomonImageManager::addImage(dtkImagePtr image, const QColor& color)
@@ -354,17 +363,68 @@ gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonImageManagerPrivate;
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QHBoxLayout *t_layout = new QHBoxLayout;
+    t_layout->setContentsMargins(0, 0, 0, 0);
+    t_layout->setSpacing(0);
+    t_layout->addWidget(d);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d);
+    layout->addLayout(t_layout);
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    this->setMouseTracking(true);
 }
 
 gnomonImageManager::~gnomonImageManager(void)
 {
     delete d;
+}
+
+QSize gnomonImageManager::sizeHint(void) const
+{
+    return QSize(200, 140);
+}
+
+void gnomonImageManager::enterEvent(QEvent *)
+{
+    d->inside = true;
+
+    this->update();
+}
+
+void gnomonImageManager::leaveEvent(QEvent *)
+{
+    d->inside = false;
+
+    this->update();
+}
+
+void gnomonImageManager::mousePressEvent(QMouseEvent *event)
+{
+    QRect handle = QRect(this->size().width() / 2 - 100, this->size().height() - 10, 200, 10);
+
+    if (handle.contains(event->pos())) {
+
+        if(this->size().height() < 150)
+            emit expand();
+        else
+            emit shrink();
+    }
+}
+
+void gnomonImageManager::paintEvent(QPaintEvent *event)
+{
+    QFrame::paintEvent(event);
+
+    if(!d->inside)
+        return;
+
+    QPainter painter(this);
+    painter.setBrush(Qt::white);
+    painter.drawRoundedRect(event->rect().width() / 2 - 100, event->rect().height() - 10, 200, 6, 3, 3);
 }
 
 gnomonImageManager *gnomonImageManager::s_instance = nullptr;
