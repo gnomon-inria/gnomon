@@ -33,6 +33,8 @@ public:
 
     virtual QMap<QString, gnomonParameter*> parameters(void) const;
 
+    virtual void setParameter(const QString&, const QVariant&);
+
 public:
     gnomonCellImage *computedImage(void) const;
 

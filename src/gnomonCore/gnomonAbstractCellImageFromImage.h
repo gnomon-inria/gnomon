@@ -33,6 +33,8 @@ public:
 
     virtual QMap<QString, gnomonParameter*> parameters(void) = 0;
 
+    virtual void setParameter(const QString&, QVariant) = 0;
+
     virtual void setUseMargins(bool use_margins) = 0;
 
     virtual void setBackgroundLabel(long label) = 0;

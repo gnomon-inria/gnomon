@@ -29,17 +29,17 @@ class gnomonSpinBoxParameterPrivate;
 
 class gnomonSpinBoxParameter : public gnomonParameter
 {
-    public:
-        gnomonSpinBoxParameter(int, int, int, const QString&);
+public:
+    gnomonSpinBoxParameter(int, int, int, const QString&);
 
-    public:
-        QWidget *connect(QWidget *parent);
+public:
+    QWidget *connect(QWidget *parent);
 
-        int value(void) const;
-        void setValue(int);
-        
-    private:
-        gnomonSpinBoxParameterPrivate *d;
+    int value(void) const;
+    void setValue(int);
+    
+private:
+    gnomonSpinBoxParameterPrivate *d;
 };
 
 class gnomonDoubleSpinBoxParameterPrivate;

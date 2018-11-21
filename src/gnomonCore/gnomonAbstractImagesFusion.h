@@ -32,6 +32,7 @@ public:
 
 public:
     virtual QMap<QString, gnomonParameter*> parameters(void) const = 0;
+    virtual void setParameter(const QString&, const QVariant&) = 0;
 
 public:
     virtual void addImage(dtkImage *image) = 0;

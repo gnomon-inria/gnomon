@@ -55,6 +55,11 @@ QMap<QString, gnomonParameter*> gnomonImagesFusionCommand::parameters(void) cons
     return this->action->parameters();
 }
 
+void gnomonImagesFusionCommand::setParameter(const QString& parameter, const QVariant& value)
+{
+    this->action->setParameter(parameter, value);
+}
+
 dtkImage *gnomonImagesFusionCommand::output(void)
 {
     return gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->output();
