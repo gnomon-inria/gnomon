@@ -36,7 +36,7 @@ void gnomonSegmentationCommandTestCase::init(void)
     d->command_czi_reader = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
     Q_ASSERT(d->command_czi_reader);
 
-    d->command_segmentation = new gnomonSegmentationCommand("gnomonCellImageFromTimagetkSegmentation");
+    d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentation");
     Q_ASSERT(d->command_segmentation);
 }
 
