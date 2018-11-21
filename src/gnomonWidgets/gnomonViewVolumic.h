@@ -73,6 +73,7 @@ public slots:
     void render(void);
 
 public slots:
+    void applyLut(double, double, double, double, double, double);
     void onSliceChanged(int);
     void onChannelChanged(const QString&);
 

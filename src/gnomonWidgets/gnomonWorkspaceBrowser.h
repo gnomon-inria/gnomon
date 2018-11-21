@@ -31,6 +31,7 @@ public:
     void leave(void) override {};
 
 public slots:
+    void applyLut(void);
     void replaceChannels(QStringList);
     void replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item);
 
