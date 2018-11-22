@@ -944,19 +944,16 @@ void gnomonViewVolumic::sliceChange(int value)
 
     if (d->renderer2D_XY->on) {
         d->planeWidget[2]->SetSliceIndex(value);
-        oldValue = d->c_z;
         d->c_z = value;
     }
 
     if (d->renderer2D_XZ->on) {
         d->planeWidget[1]->SetSliceIndex(value);
-        oldValue = d->c_y;
         d->c_y = value;
     }
 
     if (d->renderer2D_YZ->on) {
         d->planeWidget[0]->SetSliceIndex(value);
-        oldValue = d->c_y;
         d->c_x = value;
     }
 
