@@ -1,0 +1,14 @@
+image: registry.gitlab.inria.fr/dtk/dtk/conda
+
+pages:
+  script:
+  - cd doc
+  - conda update --all
+  - conda install -c sphinx make
+  - make html
+  - mv build/html ../public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
