@@ -22,7 +22,7 @@
 
 #include <gnomonActorMeshCellImage.h>
 #include <gnomonCellImage.h>
-#include <gnomonSegmentationCommand.h>
+#include <gnomonSegmentationCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
