@@ -37,6 +37,8 @@ signals:
     void unlinking(void);
 
 signals:
+    void switchedTo3D  (void);
+    void switchedTo2D  (void);
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
@@ -46,6 +48,8 @@ public slots:
     void unlink(gnomonViewVolumic *other);
 
 public slots:
+    void switchTo3D  (void);
+    void switchTo2D  (void);
     void switchTo2DXY(void);
     void switchTo2DXZ(void);
     void switchTo2DYZ(void);
