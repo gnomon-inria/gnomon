@@ -285,8 +285,6 @@ public:
     vtkSmartPointer<vtkImageViewer2> viewer = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
-    vtkSmartPointer<vtkDataSetMapper> blender_mapper = nullptr;
-    vtkSmartPointer<vtkActor> blender_actor = nullptr;
 
 public:
     vtkSmartPointer<vtkPoints> points;
@@ -295,9 +293,6 @@ public:
 
 public:
     vtkSmartPointer<vtkImageBlend> blender = nullptr;
-
-public:
-    vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
 
 public:
     gnomonViewVolumicInteractorImage *image_interactor = nullptr;
@@ -1032,7 +1027,7 @@ void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& sour
 
         image_color = vtkSmartPointer<vtkImageMapToColors>::New();
         image_color->SetLookupTable(color_function);
-        image_color->SetOutputFormatToRGB();
+        image_color->SetOutputFormatToRGBA();
         image_color->SetInputData(image);
         image_color->Update();
     }
