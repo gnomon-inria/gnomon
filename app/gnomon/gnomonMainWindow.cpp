@@ -109,6 +109,16 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
                                                  });
 
     connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
+    connect(d->menu, &gnomonToolBar::indexDeleted, [=] (int index) {
+            QWidget * widget = d->stack->widget(index);
+            if (d->stack->currentIndex() == index) {
+                d->menu->setCurrentIndex(0);
+            }
+            if (widget) {
+                d->stack->removeWidget(widget);
+                delete widget;
+            }
+        } );
 
     connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {
 

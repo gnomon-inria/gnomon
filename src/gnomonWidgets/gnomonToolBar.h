@@ -28,6 +28,7 @@ public:
 
 signals:
     void indexChanged(int);
+    void indexDeleted(int);
 
 signals:
     void createFusion(void);

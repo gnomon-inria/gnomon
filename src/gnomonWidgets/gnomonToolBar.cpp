@@ -204,6 +204,9 @@ public:
 public slots:
     void onItemClicked(int);
 
+signals:
+    void indexDeleted(int);
+
 public:
     void createWorkspace(const QColor &, const QString &);
 };
@@ -227,6 +230,7 @@ void gnomonToolBarPrivate::createWorkspace(const QColor & color, const QString& 
                                                    this->layout->removeWidget(item);
                                                    delete item;
                                                    delete separator;
+                                                   emit indexDeleted(index);
                                                  } );
 
     this->onItemClicked(this->items.count()-1);
@@ -264,6 +268,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     d->items << item;
 
     connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+    connect(d, SIGNAL(indexDeleted(int)), this, SIGNAL(indexDeleted(int)));
 
     connect(button, SIGNAL(createFusion()), this, SLOT(onCreateFusion()));
     connect(button, SIGNAL(createSegmentation()), this, SLOT(onCreateSegmentation()));
