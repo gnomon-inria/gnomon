@@ -1008,28 +1008,14 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
     image_color->SetLookupTable(hueLut);
     image_color->SetOutputFormatToRGBA();
+    image_color->SetLookupTable(hueLut);
+    image_color->SetInputData(image);
+    image_color->Update();
 
     if (d->blending->on) {
-
         QString label = QString("Layer %1").arg(d->blender->GetNumberOfInputs());
 
         d->blending_list->addItem(label);
-
-        /*
-        vtkSmartPointer<vtkImageCast> caster = vtkSmartPointer<vtkImageCast>::New();
-
-        caster->SetInputData(image);
-        caster->SetOutputScalarTypeToUnsignedShort();
-        caster->Update();
-
-        double bounds_caster[2];
-        caster->GetOutput()->GetPointData()->GetScalars()->GetRange(bounds_caster);
-        hueLut->SetTableRange (bounds_caster);
-        hueLut->Build();
-        */
-        image_color->SetLookupTable(hueLut);
-        image_color->SetInputData(image);
-        image_color->Update();
 
         d->blender->AddInputData(image_color->GetOutput());
         d->blender->SetOpacity(0, 0.5);
@@ -1039,8 +1025,6 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
         d->viewer->SetInputData(d->blender->GetOutput());
 
     } else {
-        image_color->SetInputData(image);
-        image_color->Update();
         d->viewer->SetInputData(image_color->GetOutput());
     }
 
@@ -1188,15 +1172,7 @@ void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
     image_color->Update();
 
     if(d->blending->on) {
-        /*
-        vtkSmartPointer<vtkImageCast> caster = vtkSmartPointer<vtkImageCast>::New();
-        caster->SetInputData(image_color->GetOutput());
-        caster->SetOutputScalarTypeToUnsignedShort();
-        caster->Update();
-        */
-
         d->blender->ReplaceNthInputConnection(d->blender->GetNumberOfInputs()-1, image_color->GetOutputPort());
-        //d->blender->SetInputData(d->blender->GetNumberOfInputs()-1 ,caster->GetOutput());
         d->blender->Update();
     }
     else {
@@ -1226,8 +1202,19 @@ void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
     this->render();
 }
 
-void gnomonViewVolumic::onChannelChanged(const QString& channel)
+void gnomonViewVolumic::onChannelChanged(const QString& channel,
+                                         double lut_hue_min, double lut_hue_max,
+                                         double lut_sat_min, double lut_sat_max,
+                                         double lut_val_min, double lut_val_max)
 {
+
+    d->lut_hue_min = lut_hue_min;
+    d->lut_hue_max = lut_hue_max;
+    d->lut_sat_min = lut_sat_min;
+    d->lut_sat_max = lut_sat_max;
+    d->lut_val_min = lut_val_min;
+    d->lut_val_max = lut_val_max;
+
     if(!d->image_reader_command_czi) {
         return;
     }

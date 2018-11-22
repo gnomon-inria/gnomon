@@ -76,7 +76,9 @@ public slots:
 public slots:
     void applyLut(double, double, double, double, double, double);
     void onSliceChanged(int);
-    void onChannelChanged(const QString&);
+    void onChannelChanged(const QString&, double lut_hue_min, double lut_hue_max,
+                                         double lut_sat_min, double lut_sat_max,
+                                         double lut_val_min, double lut_val_max);
 
 signals:
     void channelsChanged(QStringList);
