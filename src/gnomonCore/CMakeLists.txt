@@ -78,6 +78,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormVisitor.h
   gnomonImagesFusionCommand
   gnomonImagesFusionCommand.h
+  gnomonImagesRegistrationCommand
+  gnomonImagesRegistrationCommand.h
   gnomonImagesSerieFilterCommand
   gnomonImagesSerieFilterCommand.h
   gnomonImagesSerieReaderCommand
@@ -127,6 +129,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonImagesFusionCommand.cpp
+  gnomonImagesRegistrationCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonParameter.cpp
