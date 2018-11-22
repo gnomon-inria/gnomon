@@ -84,6 +84,7 @@ void gnomonWorkspaceFusion::apply(void)
 
     for(gnomonViewVolumic *view : d->layout->views()) {
         d->command->addImage(view->image().data());
+        qDebug() << view->landmarks();
     }
     d->command->redo();
     d->target->setImage(dtkImagePtr(d->command->output()));

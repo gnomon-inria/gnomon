@@ -65,6 +65,9 @@ public:
     dtkImagePtr image(void);
 
 public:
+    QVector<QVector3D> landmarks(void);
+
+public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
 

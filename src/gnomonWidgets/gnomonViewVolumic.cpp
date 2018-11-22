@@ -12,13 +12,13 @@
 
 // Code:
 
-#include <gnomonImageManager.h>
-#include <gnomonViewVolumic.h>
-#include <gnomonToolBar.h>
-#include <gnomonWorkspaceBrowser.h>
-#include <gnomonWorkspaceFusion.h>
-#include <gnomonWorkspaceSegmentation.h>
-#include <gnomonWorkspacePreprocess.h>
+#include "gnomonImageManager.h"
+#include "gnomonViewVolumic.h"
+#include "gnomonToolBar.h"
+#include "gnomonWorkspaceBrowser.h"
+#include "gnomonWorkspaceFusion.h"
+#include "gnomonWorkspaceSegmentation.h"
+#include "gnomonWorkspacePreprocess.h"
 
 #include <gnomonCore/gnomonImagesSerieReaderCommand.h>
 
@@ -1128,6 +1128,23 @@ dtkImagePtr gnomonViewVolumic::image(void)
     return d->image;
 }
 
+QVector<QVector3D> gnomonViewVolumic::landmarks(void)
+{
+    QVector<QVector3D> landmarks;
+    vtkActorCollection* actors_collection_2d =  d->renderer2D->GetActors();
+
+    actors_collection_2d->InitTraversal();
+    for(std::size_t i = 0; i < actors_collection_2d->GetNumberOfItems(); ++i) {
+        gnomonLandmark *landmark = dynamic_cast<gnomonLandmark *>(actors_collection_2d->GetNextActor());
+        if(!landmark) continue;
+
+        double *p = landmark->GetPosition();
+
+        landmarks << QVector3D(p[0], p[1], p[2]);
+    }
+    return landmarks;
+}
+
 vtkRenderWindowInteractor *gnomonViewVolumic::interactor(void)
 {
     return d->GetInteractor();
@@ -1178,7 +1195,6 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
 
     vtkSmartPointer<vtkSphereSource> sphere_source =
         vtkSmartPointer<vtkSphereSource>::New();
-    sphere_source->SetCenter(x, y, z);
     sphere_source->SetRadius(5.0);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -1189,6 +1205,7 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
         vtkSmartPointer<gnomonLandmark>::New();
     actor->setId(id);
     actor->SetMapper(mapper);
+    actor->SetPosition(x, y, z);
 
     actor->GetProperty()->SetColor((id % 2 != 0) ? double(id % 51) / 50. : double(50 - id % 51) / 50., (id % 3 == 0) ? double(id % 51) / 50. : double(50 - id % 51) / 50, (id % 4 == 0) ? double(id % 51) / 50. : double(50 - id % 51) / 50.);
 
@@ -1204,8 +1221,6 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
 
 void gnomonViewVolumic::removeLandmark(std::size_t id)
 {
-    qDebug() << this;
-    qDebug() << "Trying to remove actor" << id;
     vtkActorCollection* actors_collection_2d =  d->renderer2D->GetActors();
     vtkActorCollection* actors_collection_3d =  d->renderer3D->GetActors();
 
@@ -1216,6 +1231,7 @@ void gnomonViewVolumic::removeLandmark(std::size_t id)
 
         if(landmark->id() == id) {
             d->renderer2D->RemoveActor(landmark);
+            break;
         }
     }
 
@@ -1226,6 +1242,7 @@ void gnomonViewVolumic::removeLandmark(std::size_t id)
 
         if(landmark->id() == id) {
             d->renderer3D->RemoveActor(landmark);
+            break;
         }
     }
 
