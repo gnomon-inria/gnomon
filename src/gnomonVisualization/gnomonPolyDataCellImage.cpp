@@ -110,7 +110,6 @@ void gnomonPolyDataCellImage::update(void)
     vtkSmartPointer<vtkImageResample> resample = vtkSmartPointer<vtkImageResample>::New();
     resample->SetInputData(volume);
     // resample->SetOutputSpacing(d->resamplingVoxelsize,d->resamplingVoxelsize,d->resamplingVoxelsize);
-    qDebug()<<"Resample :"<<r_x<<r_y<<r_z;
     resample->SetMagnificationFactors(1/r_x,1/r_y,1/r_z);
     resample->SetInterpolationModeToNearestNeighbor();
     resample->Update();
@@ -122,11 +121,13 @@ void gnomonPolyDataCellImage::update(void)
 
     QMap<long, QVariant> cellVolumes = d->cellimage->cellProperty("volume");
 
-    QList<long> cells = d->cellimage->cellIds();
+    if (d->modified)
+        d->cell_mesh.clear();
 
+    QList<long> cells = d->cellimage->cellIds();
     for (const auto& cellId : cells) {
 
-        if ((!d->cell_mesh.contains(cellId)) | (d->modified)) {
+        if (!d->cell_mesh.contains(cellId)) {
 
             vtkSmartPointer<vtkDiscreteMarchingCubes>contour = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
             contour->SetInputData(resample->GetOutput());
@@ -134,7 +135,7 @@ void gnomonPolyDataCellImage::update(void)
             contour->ComputeGradientsOn();
             contour->SetValue(0,cellId);
             contour->Update();
-            qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
+            // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
  
 
             if (contour->GetOutput()->GetNumberOfCells()>0)

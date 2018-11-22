@@ -20,6 +20,7 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
+#include <gnomonPolyDataCellImage.h>
 #include <gnomonActor2DCellImage.h>
 #include <gnomonActorMeshCellImage.h>
 #include <gnomonCellImage.h>
@@ -30,6 +31,7 @@
 
 #include <QtWidgets>
 
+#include <vtkImageData.h>
 #include <vtkRenderer.h>
 
 class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>
@@ -54,6 +56,7 @@ public:
     gnomonCellImage *cellimage = nullptr;
 
 public:
+    gnomonPolyDataCellImage *polydata = nullptr;
     gnomonActorMeshCellImage *actor = nullptr;
     gnomonActor2DCellImage *actor2D = nullptr;
 };
@@ -139,15 +142,31 @@ void gnomonWorkspaceSegmentation::apply(void)
 
 void gnomonWorkspaceSegmentation::computeCells(void)
 {
+    if(!d->polydata)
+        d->polydata = gnomonPolyDataCellImage::New();
+    d->polydata->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
+
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    if(!converter)
+        return;
+
+    dtkImage *image = d->command->computedImage()->image();
+    converter->setInput(image);
+    if(!converter->convert())
+        return;
+    vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
+
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
-    d->actor->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
+    d->actor->setPolyData(d->polydata);
     d->target->renderer3D()->AddActor(d->actor);
     
     if(!d->actor2D)
         d->actor2D = gnomonActor2DCellImage::New();
     d->actor2D->setInteractor(d->target->interactor());
-    d->actor2D->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
+    d->actor2D->setDimensions(volume->GetDimensions());
+    d->actor2D->setSpacing(volume->GetSpacing());
+    d->actor2D->setPolyData(d->polydata);
     d->target->renderer2D()->AddActor(d->actor2D);
 
     connect(d->target, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {

@@ -33,7 +33,7 @@
 // gnomonActor2DCellImage
 // /////////////////////////////////////////////////////////////////
 
-class gnomonCellImage;
+class gnomonPolyDataCellImage;
 
 class GNOMONVISUALIZATION_EXPORT gnomonActor2DCellImage : public gnomonActor
 {
@@ -48,7 +48,11 @@ public:
     virtual void show(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellimage);
+	void setPolyData(gnomonPolyDataCellImage *polydata);
+
+    void setDimensions(int value[3]);
+    void setSpacing(double value[3]);
+    void setSlicePositions(int value[3]);
 
 public slots:
     void update(void);

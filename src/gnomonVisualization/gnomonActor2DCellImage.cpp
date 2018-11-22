@@ -22,8 +22,10 @@
 #include <QtWidgets>
 
 #include <vtkActor.h>
-#include <vtkCommand.h>
+#include <vtkCellData.h>
 #include <vtkClipPolydata.h>
+#include <vtkCommand.h>
+#include <vtkDoubleArray.h>
 #include <vtkImageData.h>
 #include <vtkIntersectionPolyDataFilter.h>
 #include <vtkPlane.h>
@@ -43,8 +45,6 @@ class gnomonActor2DCellImagePrivate
 {
 public:
     vtkRenderWindowInteractor *interactor;
-
-    gnomonCellImage *cellimage;
 
     vtkSmartPointer<gnomonPolyDataCellImage> polydata;
     QMap<int, vtkSmartPointer<vtkPolyDataMapper> > sliceMappers;
@@ -101,7 +101,7 @@ void gnomonActor2DCellImagePrivate::updateSlice(int orientation)
     topClipper->SetClipFunction(topPlane);
     topClipper->SetValue(0);
     topClipper->InsideOutOn();
-    topClipper->GenerateClippedOutputOn();
+    topClipper->Update();
 
     vtkSmartPointer<vtkPlane> bottomPlane = vtkSmartPointer<vtkPlane>::New();
     if (orientation==0)
@@ -124,14 +124,13 @@ void gnomonActor2DCellImagePrivate::updateSlice(int orientation)
     bottomClipper->SetInputConnection(topClipper->GetOutputPort());
     bottomClipper->SetClipFunction(bottomPlane);
     bottomClipper->SetValue(0);
-    // bottomClipper->InsideOutOn();
-    bottomClipper->GenerateClippedOutputOn();
     bottomClipper->Update();
 
     if (!this->sliceMappers.contains(orientation)) {
         this->sliceMappers[orientation] = vtkSmartPointer<vtkPolyDataMapper>::New();
-        this->sliceMappers[orientation]->SetScalarRange(0, this->cellimage->cellCount()-1);
     }
+    vtkSmartPointer<vtkDoubleArray> cellData = (vtkDoubleArray *) this->polydata->GetCellData()->GetArray(0);
+    this->sliceMappers[orientation]->SetScalarRange(cellData->GetRange());
     this->sliceMappers[orientation]->SetInputConnection(bottomClipper->GetOutputPort());
     this->sliceMappers[orientation]->Update();
 
@@ -156,12 +155,31 @@ void gnomonActor2DCellImage::setInteractor(void *interactor)
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }
 
-void gnomonActor2DCellImage::setCellImage(gnomonCellImage *cellimage)
+void gnomonActor2DCellImage::setPolyData(gnomonPolyDataCellImage *polydata)
 {
-    d->cellimage = cellimage;
-
+    d->polydata = polydata;
     this->modified();
     this->update();
+}
+
+void gnomonActor2DCellImage::setDimensions(int value[3])
+{   
+    for(int i=0;i<3;i++)
+        d->dimension[i] = value[i];
+    this->modified();
+}
+
+void gnomonActor2DCellImage::setSpacing(double value[3])
+{
+    for(int i=0;i<3;i++)
+        d->spacing[i] = value[i];
+    this->modified();
+}
+
+void gnomonActor2DCellImage::setSlicePositions(int value[3])
+{
+    for(int i=0;i<3;i++)
+        d->slicePositions[i] = value[i];
 }
 
 void gnomonActor2DCellImage::modified(void)
@@ -171,28 +189,11 @@ void gnomonActor2DCellImage::modified(void)
 
 void gnomonActor2DCellImage::update(void)
 {
-    if(!d->cellimage)
-        return;
-
     if(!d->polydata)
-        d->polydata = gnomonPolyDataCellImage::New();
+        return;
     
     if (d->modified)
     {
-        d->polydata->setCellImage(d->cellimage);
-
-        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-        if(!converter)
-            return;
-
-        dtkImage *image = d->cellimage->image();
-        converter->setInput(image);
-        if(!converter->convert())
-            return;
-
-        vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
-        volume->GetDimensions(d->dimension);
-        volume->GetSpacing(d->spacing);
         d->slicePositions[0] = d->dimension[0]/2;
         d->slicePositions[1] = d->dimension[1]/2;
         d->slicePositions[2] = d->dimension[2]/2;
@@ -200,8 +201,9 @@ void gnomonActor2DCellImage::update(void)
 
     for (int i=0;i<3;i++)
     {
-        d->updateSlice(i);
-        this->AddPart(d->sliceActors[i]);
+        d->updateSlice(i);   
+        if (this->GetNumberOfPaths()<=i)
+            this->AddPart(d->sliceActors[i]); 
     }
 
     d->updateVisibility();
@@ -240,7 +242,7 @@ void gnomonActor2DCellImage::setSlice(int position)
 gnomonActor2DCellImage::gnomonActor2DCellImage(void) : d(new gnomonActor2DCellImagePrivate)
 {
     d->interactor = Q_NULLPTR;
-    d->cellimage = Q_NULLPTR;
+    d->polydata = Q_NULLPTR;
 
     d->orientation = 2;
     d->slicePositions[0] = 0;

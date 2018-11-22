@@ -25,7 +25,9 @@
 #include <QtWidgets>
 
 #include <vtkActor.h>
+#include <vtkCellData.h>
 #include <vtkCommand.h>
+#include <vtkDoubleArray.h>
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -41,8 +43,6 @@
 class gnomonActorMeshCellImagePrivate
 {
 public:
-    gnomonCellImage *cellimage;
-
     vtkSmartPointer<gnomonPolyDataCellImage> polydata;
     vtkSmartPointer<vtkPolyDataMapper> mapper;
 
@@ -56,9 +56,9 @@ public:
 vtkStandardNewMacro(gnomonActorMeshCellImage);
 
 
-void gnomonActorMeshCellImage::setCellImage(gnomonCellImage *cellimage)
+void gnomonActorMeshCellImage::setPolyData(gnomonPolyDataCellImage *polydata)
 {
-    dd->cellimage = cellimage;
+    dd->polydata = polydata;
 
     this->modified();
     this->update();
@@ -71,18 +71,14 @@ void gnomonActorMeshCellImage::modified(void)
 
 void gnomonActorMeshCellImage::update(void)
 {
-    if(!dd->cellimage)
-        return;
-
     if(!dd->polydata)
-        dd->polydata = gnomonPolyDataCellImage::New();
-    dd->polydata->setCellImage(dd->cellimage);
-    dd->polydata->update();
+        return;
 
     if (!d->mapper) {
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        d->mapper->SetScalarRange(0, dd->cellimage->cellCount()-1);
     }
+    vtkSmartPointer<vtkDoubleArray> cellData = (vtkDoubleArray *) dd->polydata->GetCellData()->GetArray(0);
+    d->mapper->SetScalarRange(cellData->GetRange());
     d->mapper->SetInputData(dd->polydata);
     d->mapper->Update();
 
@@ -98,7 +94,7 @@ void gnomonActorMeshCellImage::update(void)
 
 gnomonActorMeshCellImage::gnomonActorMeshCellImage(void) : gnomonActorMesh(), dd(new gnomonActorMeshCellImagePrivate)
 {
-    dd->cellimage = Q_NULLPTR;
+    dd->polydata = Q_NULLPTR;
 }
 
 gnomonActorMeshCellImage::~gnomonActorMeshCellImage(void)
