@@ -108,9 +108,6 @@ class gnomonToolBarItem : public QLabel
 
 public:
     gnomonToolBarItem(const QColor& color, const QString& label, QWidget *parent) : QLabel(label, parent) {
-        static int id = 0;
-
-        this->index = id++;
         m_color = color;
 
         this->button_destroy = new gnomonItemButton(color, fa::times, this);
@@ -127,7 +124,7 @@ public:
     };
 
 signals:
-    void clicked(int);
+    void clicked(void);
     void destroy(void);
 
 public:
@@ -138,7 +135,7 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent *) {
-        emit clicked(this->index);
+        emit clicked();
     }
 
 void enterEvent(QEvent *)
@@ -152,7 +149,6 @@ void leaveEvent(QEvent *)
 }
 
 private:
-    int index = 0;
     QColor m_color;
 };
 
@@ -221,7 +217,10 @@ void gnomonToolBarPrivate::createWorkspace(const QColor & color, const QString& 
     this->items << item;
     this->separators << separator;
 
-    connect(item, SIGNAL(clicked(int)), this, SLOT(onItemClicked(int)));
+    connect(item, &gnomonToolBarItem::clicked, [=] () {
+                                                   int index =  this->items.indexOf(item);
+                                                   this->onItemClicked(index);
+        });
     connect(item, &gnomonToolBarItem::destroy, [=] () {
                                                    int index =  this->items.indexOf(item);
                                                    this->items.takeAt(index);
