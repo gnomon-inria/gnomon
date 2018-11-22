@@ -137,7 +137,6 @@ qt5_use_modules(${PROJECT_NAME} Widgets)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)

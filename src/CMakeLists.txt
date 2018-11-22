@@ -27,9 +27,9 @@ if(OMERO_ICE_FOUND AND OMERO_CLIENT_FOUND)
 #  add_subdirectory(gnomonOmero)
 endif()
 
-if(DTK_BUILD_COMPOSER)
+if(DTK_BUILD_COMPOSER AND GNOMON_BUILD_COMPOSER)
   add_subdirectory(gnomonComposer)
-endif(DTK_BUILD_COMPOSER)
+endif(DTK_BUILD_COMPOSER AND GNOMON_BUILD_COMPOSER)
 
 ## #################################################################
 ## Targets
@@ -43,9 +43,9 @@ set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonFonts)
 set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonVisualization)
 set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonWidgets)
 
-if(DTK_BUILD_COMPOSER)
-  set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonComposer)
-endif(DTK_BUILD_COMPOSER)
+if(DTK_BUILD_COMPOSER AND GNOMON_BUILD_COMPOSER)
+   set(GNOMON_TARGETS ${GNOMON_TARGETS} gnomonComposer)
+endif(DTK_BUILD_COMPOSER AND GNOMON_BUILD_COMPOSER)
 
 ## #################################################################
 ## Target export

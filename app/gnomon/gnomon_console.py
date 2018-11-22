@@ -14,8 +14,6 @@
 
 import gnomoncore
 
-from gnomonGrowthSimulator import *
-
 try:
     import qtconsole
 except:
