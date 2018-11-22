@@ -39,6 +39,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractForm.h
   gnomonAbstractImagesFusion
   gnomonAbstractImagesFusion.h
+  gnomonAbstractImagesRegistration
+  gnomonAbstractImagesRegistration.h
   gnomonAbstractImagesSerieFilter
   gnomonAbstractImagesSerieFilter.h
   gnomonAbstractImagesSerieReader
@@ -108,6 +110,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractImagesFusion.cpp
+  gnomonAbstractImagesRegistration.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
