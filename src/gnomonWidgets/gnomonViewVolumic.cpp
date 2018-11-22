@@ -1190,6 +1190,8 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
     actor->setId(id);
     actor->SetMapper(mapper);
 
+    actor->GetProperty()->SetColor((id % 2 != 0) ? double(id % 51) / 50. : double(50 - id % 51) / 50., (id % 3 == 0) ? double(id % 51) / 50. : double(50 - id % 51) / 50, (id % 4 == 0) ? double(id % 51) / 50. : double(50 - id % 51) / 50.);
+
     d->renderer2D->AddActor(actor);
     d->renderer3D->AddActor(actor);
 
