@@ -28,6 +28,7 @@ public:
 
 signals:
     void indexChanged(int);
+    void indexDeleted(int);
 
 signals:
     void createFusion(void);
@@ -40,6 +41,10 @@ public slots:
     void onCreateSegmentation(void);
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
+
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
 
  public:
     void setCurrentIndex(int);

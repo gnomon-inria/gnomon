@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonImageManager.h"
+#include "gnomonItemButton.h"
 
 #include <gnomonFonts>
 #include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
@@ -24,49 +25,6 @@
 #include <vtkImageData.h>
 #include <vtkPointData.h>
 
-// ///////////////////////////////////////////////////////////////////
-// gnomonImageManagerItemButton
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonImageManagerItemButton : public QLabel
-{
-    Q_OBJECT
-
-public:
-     gnomonImageManagerItemButton(const QColor& color, int icon, QWidget *parent = nullptr);
-    ~gnomonImageManagerItemButton(void);
-
-signals:
-    void clicked(void);
-
-protected:
-    void mousePressEvent(QMouseEvent *);
-
-private:
-    gnomonFontAwesome *font;
-};
-
-gnomonImageManagerItemButton::gnomonImageManagerItemButton(const QColor& color, int icon, QWidget *parent) : QLabel(parent)
-{
-    this->font = new gnomonFontAwesome(this);
-    this->font->initFontAwesome();
-    this->font->setDefaultOption("color", color);
-
-    this->setPixmap(this->font->icon(icon).pixmap(16, 16));
-
-    this->setStyleSheet("background: none; border: none;");
-}
-
-gnomonImageManagerItemButton::~gnomonImageManagerItemButton(void)
-{
-
-}
-
-
-void gnomonImageManagerItemButton::mousePressEvent(QMouseEvent *)
-{
-    emit clicked();
-}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManagerItem
@@ -93,19 +51,19 @@ public:
     int id;
 
 public:
-    gnomonImageManagerItemButton *button_destroy;
-    gnomonImageManagerItemButton *button_save;
+    gnomonItemButton *button_destroy;
+    gnomonItemButton *button_save;
     QPixmap thumbnail;
     QPixmap transparent_thumbnail;
 };
 
 gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
 {
-    this->button_destroy = new gnomonImageManagerItemButton(color, fa::times, this);
+    this->button_destroy = new gnomonItemButton(color, fa::times, this);
     this->button_destroy->move(79, 5);
     this->button_destroy->setVisible(false);
 
-    this->button_save = new gnomonImageManagerItemButton(color, fa::save, this);
+    this->button_save = new gnomonItemButton(color, fa::save, this);
     this->button_save->move(5, 5);
     this->button_save->setVisible(false);
 
