@@ -85,7 +85,6 @@ gnomonGridLayout::gnomonGridLayout(QWidget *parent) : QGridLayout(parent)
     this->setContentsMargins(0, 0, 0, 0);
     this->setSpacing(0);
     this->addWidget(d->button);
-    this->addView();
 }
 
 gnomonGridLayout::~gnomonGridLayout(void)

@@ -55,6 +55,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d = new gnomonWorkspaceFusionPrivate;
 
     d->layout = new gnomonGridLayout;
+    d->layout->addView();
 
     d->target = new gnomonViewVolumic(this);
     d->target->setMinimumWidth(250);
