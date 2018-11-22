@@ -32,6 +32,30 @@ public:
      gnomonViewVolumic(QWidget *parent = nullptr);
     ~gnomonViewVolumic(void);
 
+signals:
+    void   linking(void);
+    void unlinking(void);
+
+signals:
+    void switchedTo2DXY(void);
+    void switchedTo2DXZ(void);
+    void switchedTo2DYZ(void);
+
+signals:
+    void sliceChanged(int);
+
+public slots:
+    void   link(gnomonViewVolumic *other);
+    void unlink(gnomonViewVolumic *other);
+
+public slots:
+    void switchTo2DXY(void);
+    void switchTo2DXZ(void);
+    void switchTo2DYZ(void);
+
+public slots:
+    void sliceChange(int);
+
 public:
     void setImage(dtkImagePtr);
 
