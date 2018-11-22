@@ -119,7 +119,6 @@ public:
         this->setMouseTracking(true);
         this->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(color.red()).arg(color.green()).arg(color.blue()));
 
-        this->setMouseTracking(true);
         connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
     };
 
