@@ -32,6 +32,7 @@ public:
 
 public slots:
     void applyLut(void);
+    void displayChannels(void);
     void replaceChannels(QStringList);
     void replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item);
 

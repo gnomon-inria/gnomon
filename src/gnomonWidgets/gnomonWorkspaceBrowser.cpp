@@ -38,7 +38,7 @@ public:
     QLineEdit *lut_val_min;
     QLineEdit *lut_val_max;
 
-    //QMap<QString, QVector<double> >channels_lut;
+    QMap<QString, std::tuple<double, double, double, double, double, double> >channels_lut;
 };
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
@@ -62,6 +62,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     d->channels_list = new QListWidget();
 
     connect(d->channels_list, &QListWidget::currentItemChanged, this, &gnomonWorkspaceBrowser::replaceChannel);
+    connect(d->channels_list, &QListWidget::itemChanged, this, &gnomonWorkspaceBrowser::displayChannels);
 
     QFormLayout *pane_item_channels_layout = new QFormLayout;
     pane_item_channels_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
@@ -145,6 +146,12 @@ void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
 {
     d->channels_list->clear();
     d->channels_list->addItems(channels_list);
+
+    for(int i=0; i < d->channels_list->count(); ++i)
+    {
+        d->channels_list->item(i)->setFlags(d->channels_list->item(i)->flags() | Qt::ItemIsUserCheckable);
+        d->channels_list->item(i)->setCheckState(Qt::Unchecked);
+    }
 }
 
 void gnomonWorkspaceBrowser::applyLut(void)
@@ -155,8 +162,13 @@ void gnomonWorkspaceBrowser::applyLut(void)
         channel_name = d->channels_list->currentItem()->text();
     }
 
-    //d->channels_lut[channel_name] = QPair<double, double>(d->lut_hue_min->text().toDouble(),
-    //                                                      d->lut_hue_min->text().toDouble());
+    d->channels_lut[channel_name] = std::make_tuple(d->lut_hue_min->text().toDouble(),
+                                                    d->lut_hue_max->text().toDouble(),
+                                                    d->lut_sat_min->text().toDouble(),
+                                                    d->lut_sat_max->text().toDouble(),
+                                                    d->lut_val_min->text().toDouble(),
+                                                    d->lut_val_max->text().toDouble());
+
     d->browse_view->applyLut(d->lut_hue_min->text().toDouble(),
                              d->lut_hue_max->text().toDouble(),
                              d->lut_sat_min->text().toDouble(),
@@ -168,20 +180,67 @@ void gnomonWorkspaceBrowser::applyLut(void)
 void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item)
 {
     if(current_item) {
+        qDebug() << "current" << current_item->text();
+        current_item->setCheckState(Qt::Checked);
         //save old values
-        /*
-        if(previous_item)
-            d->channels_lut[previous_item->text()] = QPair<double, double>(d->lut_hue_min->text().toDouble(),
-                                                                           d->lut_hue_max->text().toDouble());
+        if(previous_item) {
+            qDebug() << "previous" << previous_item->text();
+            current_item->setCheckState(Qt::Unchecked);
+            d->channels_lut[previous_item->text()] = std::make_tuple(d->lut_hue_min->text().toDouble(),
+                                                                     d->lut_hue_max->text().toDouble(),
+                                                                     d->lut_sat_min->text().toDouble(),
+                                                                     d->lut_sat_max->text().toDouble(),
+                                                                     d->lut_val_min->text().toDouble(),
+                                                                     d->lut_val_max->text().toDouble());
+        }
+
         //set current value
         if(d->channels_lut.contains(current_item->text())) {
-            d->lut_hue_min->setText(QString::number(d->channels_lut[previous_item->text()].first));
-            d->lut_hue_max->setText(QString::number(d->channels_lut[previous_item->text()].second));
+            auto saved_lut = d->channels_lut[current_item->text()];
+            d->lut_hue_min->setText(QString::number(std::get<0>(saved_lut)));
+            d->lut_hue_max->setText(QString::number(std::get<1>(saved_lut)));
+            d->lut_sat_min->setText(QString::number(std::get<2>(saved_lut)));
+            d->lut_sat_max->setText(QString::number(std::get<3>(saved_lut)));
+            d->lut_val_min->setText(QString::number(std::get<4>(saved_lut)));
+            d->lut_val_max->setText(QString::number(std::get<5>(saved_lut)));
         }
-        */
 
-        d->browse_view->onChannelChanged(current_item->text());
+        this->displayChannels();
     }
+}
+
+void gnomonWorkspaceBrowser::displayChannels(void)
+{
+    //count the number of channels ticked
+    int nb_channels_ticked = 0;
+    for(int i=0; i < d->channels_list->count(); ++i) {
+        if(d->channels_list->item(i)->checkState() == Qt::Checked)
+            ++nb_channels_ticked;
+    }
+
+    qDebug() << "nb channels ticked" << nb_channels_ticked;
+
+    switch(nb_channels_ticked) {
+    case 0:
+        d->browse_view->setBlending(false);
+        if(d->channels_list->currentItem())
+            d->browse_view->onChannelChanged(d->channels_list->currentItem()->text());
+        break;
+
+    case 1:
+        d->browse_view->setBlending(false);
+        if(d->channels_list->currentItem())
+            d->browse_view->onChannelChanged(d->channels_list->currentItem()->text());
+        break;
+
+    default:
+        d->browse_view->setBlending(true);
+        for(int i=0; i < d->channels_list->count(); ++i) {
+            if(d->channels_list->item(i)->checkState() == Qt::Checked)
+                d->browse_view->onChannelChanged(d->channels_list->item(i)->text());
+        }
+    }
+
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)

@@ -57,6 +57,7 @@ public slots:
     void sliceChange(int);
 
 public:
+    void setBlending(bool);
     void setImage(dtkImagePtr);
 
 public:

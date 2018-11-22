@@ -57,7 +57,6 @@
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkResliceImageViewer.h>
 #include <vtkSmartPointer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkSphereSource.h>
@@ -283,7 +282,7 @@ public:
     vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
 
 public:
-    vtkSmartPointer<vtkResliceImageViewer> viewer = nullptr;
+    vtkSmartPointer<vtkImageViewer2> viewer = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
     vtkSmartPointer<vtkDataSetMapper> blender_mapper = nullptr;
@@ -386,10 +385,10 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     dummy->SetDimensions(1, 1, 1);
     dummy->SetSpacing(1, 1, 1);
 #if VTK_MAJOR_VERSION <= 5
-    dummy->SetNumberOfScalarComponents(1);
+    dummy->SetNumberOfScalarComponents(4);
     dummy->SetScalarTypeToUnsignedChar();
 #else
-    dummy->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+    dummy->AllocateScalars(VTK_UNSIGNED_CHAR,4);
 #endif
 
     this->blender = vtkSmartPointer<vtkImageBlend>::New();
@@ -401,12 +400,11 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     //this->blender_actor->SetMapper(this->blender_mapper);
     //this->renderer2D->AddActor(this->blender_actor);
 
-    this->viewer = vtkSmartPointer<vtkResliceImageViewer>::New();
+    this->viewer = vtkSmartPointer<vtkImageViewer2>::New();
     this->viewer->SetSliceOrientationToXY();
     this->viewer->SetRenderWindow(this->window);
     this->viewer->SetRenderer(this->renderer2D);
     this->viewer->SetupInteractor(this->GetInteractor());
-    this->viewer->SetResliceModeToAxisAligned();
     this->viewer->GetWindowLevel()->SetOutputFormatToRGB();
     this->viewer->SetInputData(dummy);
 
@@ -944,6 +942,23 @@ void gnomonViewVolumic::sliceChange(int value)
     // emit sliceChanged(value);
 }
 
+void gnomonViewVolumic::setBlending(bool blend)
+{
+    d->blending->on = blend;
+    if(blend) {
+        d->blending->changeColor(Qt::white);
+    } else {
+        d->blending->changeColor(Qt::gray);
+        if(d->image)
+            this->setImage(d->image);
+    }
+
+    d->opacity->setVisible(blend);
+    d->blending_list->setVisible(blend);
+    d->blending_list->clear();
+    d->blender->RemoveAllInputs();
+}
+
 void gnomonViewVolumic::setImage(dtkImagePtr i)
 {
     d->points->Reset();
@@ -988,18 +1003,11 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     hueLut->SetHueRange (d->lut_hue_min, d->lut_hue_max);
     hueLut->SetSaturationRange (d->lut_sat_min, d->lut_sat_max);
     hueLut->SetValueRange (d->lut_val_min, d->lut_val_max);
-    hueLut->Build(); //effective built
+    hueLut->Build();
 
     vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
     image_color->SetLookupTable(hueLut);
-    image_color->SetInputData(image);
-    image_color->SetOutputFormatToRGB();
-    image_color->Update();
-
-    double bb[2];
-    qDebug() << "img bounds" << bounds[0] << bounds[1];
-    image_color->GetOutput()->GetPointData()->GetScalars()->GetRange(bb);
-    qDebug() << "img bounds" << bb[0] << bb[1];
+    image_color->SetOutputFormatToRGBA();
 
     if (d->blending->on) {
 
@@ -1007,18 +1015,23 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
 
         d->blending_list->addItem(label);
 
+        /*
         vtkSmartPointer<vtkImageCast> caster = vtkSmartPointer<vtkImageCast>::New();
-        //caster->SetInputData(image);
-        caster->SetInputData(image_color->GetOutput());
+
+        caster->SetInputData(image);
         caster->SetOutputScalarTypeToUnsignedShort();
         caster->Update();
 
-        double bounds_temp[2];
-        caster->GetOutput()->GetPointData()->GetScalars()->GetRange(bounds_temp);
-        qDebug() << "caster bounds" << bounds_temp[0] << bounds_temp[1];
+        double bounds_caster[2];
+        caster->GetOutput()->GetPointData()->GetScalars()->GetRange(bounds_caster);
+        hueLut->SetTableRange (bounds_caster);
+        hueLut->Build();
+        */
+        image_color->SetLookupTable(hueLut);
+        image_color->SetInputData(image);
+        image_color->Update();
 
-        d->blender->AddInputData(caster->GetOutput());
-
+        d->blender->AddInputData(image_color->GetOutput());
         d->blender->SetOpacity(0, 0.5);
         d->blender->SetOpacity(1, 0.5);
         d->blender->Update();
@@ -1026,6 +1039,8 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
         d->viewer->SetInputData(d->blender->GetOutput());
 
     } else {
+        image_color->SetInputData(image);
+        image_color->Update();
         d->viewer->SetInputData(image_color->GetOutput());
     }
 
@@ -1089,6 +1104,7 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     if(!d->volume)
         d->volume = vtkSmartPointer<vtkVolume>::New();
 
+    image->GetPointData()->GetScalars()->GetRange(bounds);
     vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
     opacity->AddPoint(   bounds[0],                0.00);
     opacity->AddPoint(1*(bounds[1]-bounds[0])/2/4, 0.00);
@@ -1159,24 +1175,54 @@ void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
     d->image_interactor->image->GetPointData()->GetScalars()->GetRange(bounds);
 
     vtkSmartPointer<vtkLookupTable> hueLut = vtkSmartPointer<vtkLookupTable>::New();
-    hueLut->SetTableRange (bounds[0], bounds[1]);
+    hueLut->SetTableRange (bounds);
     hueLut->SetHueRange (d->lut_hue_min, d->lut_hue_max);
     hueLut->SetSaturationRange (d->lut_sat_min, d->lut_sat_max);
     hueLut->SetValueRange (d->lut_val_min, d->lut_val_max);
-    hueLut->Build(); //effective built
+    hueLut->Build();
+
+    vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
+    image_color->SetLookupTable(hueLut);
+    image_color->SetOutputFormatToRGBA();
+    image_color->SetInputData( d->image_interactor->image);
+    image_color->Update();
 
     if(d->blending->on) {
-        //TODO
-        qDebug() << Q_FUNC_INFO << "TODO";
+        /*
+        vtkSmartPointer<vtkImageCast> caster = vtkSmartPointer<vtkImageCast>::New();
+        caster->SetInputData(image_color->GetOutput());
+        caster->SetOutputScalarTypeToUnsignedShort();
+        caster->Update();
+        */
+
+        d->blender->ReplaceNthInputConnection(d->blender->GetNumberOfInputs()-1, image_color->GetOutputPort());
+        //d->blender->SetInputData(d->blender->GetNumberOfInputs()-1 ,caster->GetOutput());
+        d->blender->Update();
     }
     else {
-        vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
-        image_color->SetLookupTable(hueLut);
-        image_color->SetInputData(d->image_interactor->image);
-        image_color->SetOutputFormatToRGB();
-        image_color->Update();
         d->viewer->SetInputData(image_color->GetOutput());
+        /*
+        d->volume_mapper->SetInputData(image_color->GetOutput());
+        image_color->GetOutput()->GetPointData()->GetScalars()->GetRange(bounds);
+
+        vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+        opacity->AddPoint(   bounds[0],                0.00);
+        opacity->AddPoint(1*(bounds[1]-bounds[0])/2/4, 0.00);
+        opacity->AddPoint(   bounds[1],                1.00);
+
+        vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
+        property->SetScalarOpacity(opacity);
+        //property->SetLookUpTable(hueLut);
+        property->ShadeOff();
+        property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+
+        d->volume->SetMapper(d->volume_mapper);
+        d->volume->SetProperty(property);
+        d->volume->Modified();
+        d->volume->Update();
+        */
     }
+
     this->render();
 }
 
