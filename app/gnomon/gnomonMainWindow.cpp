@@ -87,6 +87,27 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     QWidget *central = new QWidget(this);
     central->setLayout(layout);
 
+    QAction *nextTabAction = new QAction("Switch to next workspace", this);
+    QAction *prevTabAction = new QAction("Switch to previous workspace", this);
+
+    nextTabAction->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_PageDown);
+    prevTabAction->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_PageUp);
+
+    this->addAction(nextTabAction);
+    this->addAction(prevTabAction);
+
+    connect(nextTabAction, &QAction::triggered, [=] (void) {
+                                                   int count = d->stack->count();
+                                                   int index = (d->stack->currentIndex()+1) % count ;
+                                                   d->menu->setCurrentIndex(index);
+                                               });
+
+    connect(prevTabAction, &QAction::triggered,  [=] (void) {
+                                                     int count = d->stack->count();
+                                                     int index = (d->stack->currentIndex()+count-1) % count;
+                                                     d->menu->setCurrentIndex(index);
+                                                 });
+
     connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
 
     connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {

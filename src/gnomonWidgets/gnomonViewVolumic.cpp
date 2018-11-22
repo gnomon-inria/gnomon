@@ -28,6 +28,7 @@
 #include <dtkImagingCore>
 
 #include <vtkActor.h>
+#include <vtkCamera.h>
 #include <vtkCellPicker.h>
 #include <vtkContourFilter.h>
 #include <vtkDataArray.h>
@@ -116,7 +117,7 @@ protected:
 public:
     bool on = false;
 
-private:
+public:
     gnomonFontAwesome *font;
     fa::icon           icon;
     QColor             default_color;
@@ -308,9 +309,15 @@ public:
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
     gnomonViewVolumicOverlay *blending = nullptr;
+    gnomonViewVolumicOverlay *sync = nullptr;
 
 public:
     gnomonViewVolumicList *blending_list = nullptr;
+
+public:
+    int syncing_count = 0;
+    QTimer *syncing_timer = nullptr;
+    bool synced = false;
 
 public:
     dtkImagePtr image;
@@ -360,6 +367,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->blending = new gnomonViewVolumicOverlay(fa::adjust, this);
     this->blending->changeColor(Qt::gray);
     this->blending->on = false;
+    this->sync = new gnomonViewVolumicOverlay(fa::unlock, this);
+    this->sync->changeColor(Qt::gray);
+    this->sync->on = false;
 
     this->blending_list = new gnomonViewVolumicList(this);
     this->blending_list->resize(200, 100);
@@ -396,6 +406,7 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         planeWidget[i]->SetPlaneOrientation(i);
         planeWidget[i]->RestrictPlaneToVolumeOn();
         planeWidget[i]->GetPlaneProperty()->SetColor(color);
+        planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
     }
 
     this->points = vtkSmartPointer<vtkPoints>::New();
@@ -438,161 +449,6 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
     connect(this->export_button, SIGNAL(clicked()), this, SLOT(exportToManager()));
 
-    connect(this->renderer2D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
-
-        this->renderer2D_button->setEnabled(false);
-        this->renderer2D_button->changeColor(Qt::white);
-        this->renderer3D_button->setEnabled(true);
-        this->renderer3D_button->changeColor(Qt::gray);
-
-        this->renderer2D_XY->setVisible(true);
-        this->renderer2D_XZ->setVisible(true);
-        this->renderer2D_YZ->setVisible(true);
-
-        this->renderer3D->DrawOff();
-        this->renderer3D->InteractiveOff();
-
-        this->GetInteractor()->SetInteractorStyle(this->image_interactor);
-
-        this->renderer2D->InteractiveOn();
-        this->renderer2D->DrawOn();
-
-        this->slider->setEnabled(true);
-
-        this->planeWidget[0]->Off();
-        this->planeWidget[1]->Off();
-        this->planeWidget[2]->Off();
-
-        if (this->renderer2D_XY->on) {
-            this->viewer->SetSlice(this->c_z);
-            this->planeWidget[0]->On();
-            this->planeWidget[1]->On();
-            this->planeWidget[2]->Off();
-        }
-
-        if (this->renderer2D_XZ->on) {
-            this->viewer->SetSlice(this->c_y);
-            this->planeWidget[0]->On();
-            this->planeWidget[1]->Off();
-            this->planeWidget[2]->On();
-        }
-
-        if (this->renderer2D_YZ->on) {
-            this->viewer->SetSlice(this->c_x);
-            this->planeWidget[0]->Off();
-            this->planeWidget[1]->On();
-            this->planeWidget[2]->On();
-        }
-
-        q->render();
-    });
-
-    connect(this->renderer3D_button, &gnomonViewVolumicOverlay::clicked, [this] () {
-
-        this->renderer2D_button->setEnabled(true);
-        this->renderer2D_button->changeColor(Qt::gray);
-        this->renderer3D_button->setEnabled(false);
-        this->renderer3D_button->changeColor(Qt::white);
-
-        this->renderer2D_XY->setVisible(false);
-        this->renderer2D_XZ->setVisible(false);
-        this->renderer2D_YZ->setVisible(false);
-
-        this->renderer2D->DrawOff();
-        this->renderer2D->InteractiveOff();
-
-        vtkSmartPointer<vtkInteractorStyleTrackballCamera> style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-
-        this->GetInteractor()->SetInteractorStyle(style);
-
-        this->renderer3D->InteractiveOn();
-        this->renderer3D->DrawOn();
-
-        this->slider->setEnabled(false);
-
-        this->planeWidget[0]->Off();
-        this->planeWidget[1]->Off();
-        this->planeWidget[2]->Off();
-
-        this->planeWidget[0]->On();
-        this->planeWidget[1]->On();
-        this->planeWidget[2]->On();
-
-        q->render();
-    });
-
-    connect(this->renderer2D_XY, &gnomonViewVolumicOverlay::clicked, [=] () {
-
-        this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY.png");
-        this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
-        this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
-
-        this->renderer2D_XY->on = true;
-        this->renderer2D_XZ->on = false;
-        this->renderer2D_YZ->on = false;
-
-        this->setSliceOrientation(SLICE_ORIENTATION_XY);
-
-        this->viewer->SetSlice(this->c_z);
-
-        this->planeWidget[0]->On();
-        this->planeWidget[1]->On();
-        this->planeWidget[2]->Off();
-
-        this->slider->blockSignals(true);
-        this->slider->setMaximum(this->z);
-        this->slider->setValue(this->c_z);
-        this->slider->blockSignals(false);
-    });
-
-    connect(this->renderer2D_XZ, &gnomonViewVolumicOverlay::clicked, [=] () {
-
-        this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
-        this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ.png");
-        this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
-
-        this->renderer2D_XY->on = false;
-        this->renderer2D_XZ->on = true;
-        this->renderer2D_YZ->on = false;
-
-        this->setSliceOrientation(SLICE_ORIENTATION_XZ);
-
-        this->viewer->SetSlice(this->c_y);
-
-        this->planeWidget[0]->On();
-        this->planeWidget[1]->Off();
-        this->planeWidget[2]->On();
-
-        this->slider->blockSignals(true);
-        this->slider->setMaximum(this->y);
-        this->slider->setValue(this->c_y);
-        this->slider->blockSignals(false);
-    });
-
-    connect(this->renderer2D_YZ, &gnomonViewVolumicOverlay::clicked, [=] () {
-
-        this->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
-        this->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
-        this->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ.png");
-
-        this->renderer2D_XY->on = false;
-        this->renderer2D_XZ->on = false;
-        this->renderer2D_YZ->on = true;
-
-        this->setSliceOrientation(SLICE_ORIENTATION_YZ);
-
-        this->viewer->SetSlice(this->c_x);
-
-        this->planeWidget[0]->Off();
-        this->planeWidget[1]->On();
-        this->planeWidget[2]->On();
-
-        this->slider->blockSignals(true);
-        this->slider->setMaximum(this->x);
-        this->slider->setValue(this->c_x);
-        this->slider->blockSignals(false);
-    });
-
     connect(this->picker, &gnomonViewVolumicOverlay::clicked, [=] () {
 
         this->picker->on = !this->picker->on;
@@ -624,6 +480,40 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
                 q->setImage(this->image);
 
             this->blender->RemoveAllInputs();
+        }
+    });
+
+    connect(this->sync, &gnomonViewVolumicOverlay::clicked, [=] () {
+
+        this->sync->on = !this->sync->on;
+
+        if (this->sync->on)
+            emit q->linking();
+        else
+            emit q->unlinking();
+
+        if (this->sync->on)
+            this->sync->changeColor(Qt::white);
+        else
+            this->sync->changeColor(Qt::gray);
+
+        if (this->sync->on && !this->synced) {
+            this->syncing_count = 0;
+            if(!this->syncing_timer)
+                this->syncing_timer = new QTimer(this);
+            connect(this->syncing_timer, &QTimer::timeout, [=] () {
+                this->sync->changeColor(this->syncing_count++ % 2 ? Qt::white : Qt::gray);
+                this->sync->update();
+                if (this->syncing_count == 11) {
+                    this->sync->on = false;
+                    this->syncing_timer->stop();
+                    this->syncing_timer->disconnect();
+                    delete this->syncing_timer;
+                    this->syncing_timer = nullptr;
+                    emit q->unlinking();
+                }
+            });
+            this->syncing_timer->start(500);
         }
     });
 }
@@ -682,6 +572,7 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_YZ->move(10, 130);
     this->picker->move(90, 10);
     this->blending->move(130, 10);
+    this->sync->move(event->size().width() - 90, 10);
     this->opacity->move(event->size().width() - 200 + 5, event->size().height() - 100 - 10 - 30);
     this->blending_list->move(event->size().width() - 200 - 10, event->size().height() - 100 - 10);
 
@@ -728,6 +619,12 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d = new gnomonViewVolumicPrivate;
     d->q = this;
 
+    connect(d->renderer2D_button, SIGNAL(clicked()), this, SLOT(switchTo2D()));
+    connect(d->renderer3D_button, SIGNAL(clicked()), this, SLOT(switchTo3D()));
+    connect(d->renderer2D_XY, SIGNAL(clicked()), this, SLOT(switchTo2DXY()));
+    connect(d->renderer2D_XZ, SIGNAL(clicked()), this, SLOT(switchTo2DXZ()));
+    connect(d->renderer2D_YZ, SIGNAL(clicked()), this, SLOT(switchTo2DYZ()));
+
     d->image_interactor->q = this;
 
     d->slider = new QSlider(this);
@@ -737,27 +634,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->slider->setMaximum(1);
     d->slider->setValue(0);
 
-    connect(d->slider, &QSlider::valueChanged, [=] (int value) {
-
-        d->viewer->SetSlice(value);
-
-        if (d->renderer2D_XY->on) {
-            d->planeWidget[2]->SetSliceIndex(value);
-            d->c_z = value;
-        }
-
-        if (d->renderer2D_XZ->on) {
-            d->planeWidget[1]->SetSliceIndex(value);
-            d->c_y = value;
-        }
-
-        if (d->renderer2D_YZ->on) {
-            d->planeWidget[0]->SetSliceIndex(value);
-            d->c_x = value;
-        }
-
-        d->GetInteractor()->Render();
-    });
+    connect(d->slider, SIGNAL(valueChanged(int)), this, SLOT(sliceChange(int)));
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -798,6 +675,285 @@ gnomonViewVolumic::~gnomonViewVolumic(void)
         delete d->image_reader_command_czi;
 
     delete d;
+}
+
+void gnomonViewVolumic::link(gnomonViewVolumic *other)
+{
+    if (d->syncing_timer)
+        d->syncing_timer->stop();
+
+    d->sync->on = true;
+    d->sync->icon = fa::lock;
+    d->sync->changeColor(Qt::white);
+
+    d->synced = true;
+
+    // ///////////////////////////////////////////////////////////////
+
+    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
+
+    other->d->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewVolumic::render);
+
+    connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
+    connect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
+    connect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
+    connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+    connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+}
+
+void gnomonViewVolumic::unlink(gnomonViewVolumic *other)
+{
+    if (d->syncing_timer) {
+        d->syncing_timer->stop();
+        d->syncing_timer->disconnect();
+        delete d->syncing_timer;
+        d->syncing_timer = nullptr;
+    }
+
+    d->sync->on = false;
+    d->sync->icon = fa::unlock;
+    d->sync->changeColor(Qt::gray);
+
+    d->synced = false;
+
+    // ///////////////////////////////////////////////////////////////
+
+    vtkSmartPointer<vtkCamera> camera2D = vtkCamera::New();
+    camera2D->ShallowCopy(d->renderer2D->GetActiveCamera());
+
+    vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
+    camera3D->ShallowCopy(d->renderer2D->GetActiveCamera());
+
+    d->renderer2D->SetActiveCamera(camera2D);
+    d->renderer3D->SetActiveCamera(camera3D);
+
+    // ///////////////////////////////////////////////////////////////
+
+    disconnect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
+    disconnect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
+    disconnect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
+    disconnect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+    disconnect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+}
+
+void gnomonViewVolumic::switchTo3D(void)
+{
+    if (d->renderer3D_button->on)
+        return;
+
+    d->renderer2D_button->on = false;
+    d->renderer2D_button->setEnabled(true);
+    d->renderer2D_button->changeColor(Qt::gray);
+
+    d->renderer3D_button->on = true;
+    d->renderer3D_button->setEnabled(false);
+    d->renderer3D_button->changeColor(Qt::white);
+
+    d->renderer2D_XY->setVisible(false);
+    d->renderer2D_XZ->setVisible(false);
+    d->renderer2D_YZ->setVisible(false);
+
+    d->renderer2D->DrawOff();
+    d->renderer2D->InteractiveOff();
+
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+
+    d->GetInteractor()->SetInteractorStyle(style);
+
+    d->renderer3D->InteractiveOn();
+    d->renderer3D->DrawOn();
+
+    d->slider->setEnabled(false);
+
+    d->planeWidget[0]->Off();
+    d->planeWidget[1]->Off();
+    d->planeWidget[2]->Off();
+
+    d->planeWidget[0]->On();
+    d->planeWidget[1]->On();
+    d->planeWidget[2]->On();
+
+    this->render();
+
+    emit switchedTo3D();
+}
+
+void gnomonViewVolumic::switchTo2D(void)
+{
+    if (d->renderer2D_button->on)
+        return;
+
+    d->renderer2D_button->on = true;
+    d->renderer2D_button->setEnabled(false);
+    d->renderer2D_button->changeColor(Qt::white);
+
+    d->renderer3D_button->on = false;
+    d->renderer3D_button->setEnabled(true);
+    d->renderer3D_button->changeColor(Qt::gray);
+
+    d->renderer2D_XY->setVisible(true);
+    d->renderer2D_XZ->setVisible(true);
+    d->renderer2D_YZ->setVisible(true);
+
+    d->renderer3D->DrawOff();
+    d->renderer3D->InteractiveOff();
+
+    d->GetInteractor()->SetInteractorStyle(d->image_interactor);
+
+    d->renderer2D->InteractiveOn();
+    d->renderer2D->DrawOn();
+
+    d->slider->setEnabled(true);
+
+    d->planeWidget[0]->Off();
+    d->planeWidget[1]->Off();
+    d->planeWidget[2]->Off();
+
+    if (d->renderer2D_XY->on) {
+        d->viewer->SetSlice(d->c_z);
+        d->planeWidget[0]->On();
+        d->planeWidget[1]->On();
+        d->planeWidget[2]->Off();
+    }
+
+    if (d->renderer2D_XZ->on) {
+        d->viewer->SetSlice(d->c_y);
+        d->planeWidget[0]->On();
+        d->planeWidget[1]->Off();
+        d->planeWidget[2]->On();
+    }
+
+    if (d->renderer2D_YZ->on) {
+        d->viewer->SetSlice(d->c_x);
+        d->planeWidget[0]->Off();
+        d->planeWidget[1]->On();
+        d->planeWidget[2]->On();
+    }
+
+    this->render();
+
+    emit switchedTo2D();
+}
+
+void gnomonViewVolumic::switchTo2DXY(void)
+{
+    if (d->renderer2D_XY->on)
+        return;
+
+    d->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY.png");
+    d->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
+    d->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
+
+    d->renderer2D_XY->on = true;
+    d->renderer2D_XZ->on = false;
+    d->renderer2D_YZ->on = false;
+
+    d->setSliceOrientation(gnomonViewVolumicPrivate::SLICE_ORIENTATION_XY);
+
+    d->viewer->SetSlice(d->c_z);
+
+    d->planeWidget[0]->On();
+    d->planeWidget[1]->On();
+    d->planeWidget[2]->Off();
+
+    d->slider->blockSignals(true);
+    d->slider->setMaximum(d->z);
+    d->slider->setValue(d->c_z);
+    d->slider->blockSignals(false);
+
+    emit switchedTo2DXY();
+}
+
+void gnomonViewVolumic::switchTo2DXZ(void)
+{
+    if (d->renderer2D_XZ->on)
+        return;
+
+    d->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
+    d->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ.png");
+    d->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
+
+    d->renderer2D_XY->on = false;
+    d->renderer2D_XZ->on = true;
+    d->renderer2D_YZ->on = false;
+
+    d->setSliceOrientation(gnomonViewVolumicPrivate::SLICE_ORIENTATION_XZ);
+
+    d->viewer->SetSlice(d->c_y);
+
+    d->planeWidget[0]->On();
+    d->planeWidget[1]->Off();
+    d->planeWidget[2]->On();
+
+    d->slider->blockSignals(true);
+    d->slider->setMaximum(d->y);
+    d->slider->setValue(d->c_y);
+    d->slider->blockSignals(false);
+
+    emit switchedTo2DXZ();
+}
+
+void gnomonViewVolumic::switchTo2DYZ(void)
+{
+    if (d->renderer2D_YZ->on)
+        return;
+
+    d->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
+    d->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
+    d->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ.png");
+
+    d->renderer2D_XY->on = false;
+    d->renderer2D_XZ->on = false;
+    d->renderer2D_YZ->on = true;
+
+    d->setSliceOrientation(gnomonViewVolumicPrivate::SLICE_ORIENTATION_YZ);
+
+    d->viewer->SetSlice(d->c_x);
+
+    d->planeWidget[0]->Off();
+    d->planeWidget[1]->On();
+    d->planeWidget[2]->On();
+
+    d->slider->blockSignals(true);
+    d->slider->setMaximum(d->x);
+    d->slider->setValue(d->c_x);
+    d->slider->blockSignals(false);
+
+    emit switchedTo2DYZ();
+}
+
+void gnomonViewVolumic::sliceChange(int value)
+{
+    if (d->viewer->GetSlice() == value)
+        return;
+
+    d->viewer->SetSlice(value);
+
+    if (d->renderer2D_XY->on) {
+        d->planeWidget[2]->SetSliceIndex(value);
+        d->c_z = value;
+    }
+
+    if (d->renderer2D_XZ->on) {
+        d->planeWidget[1]->SetSliceIndex(value);
+        d->c_y = value;
+    }
+
+    if (d->renderer2D_YZ->on) {
+        d->planeWidget[0]->SetSliceIndex(value);
+        d->c_x = value;
+    }
+
+    d->GetInteractor()->Render();
+
+    d->slider->blockSignals(true);
+    d->slider->setValue(value);
+    d->slider->blockSignals(false);
+
+    emit sliceChanged(value);
 }
 
 void gnomonViewVolumic::setImage(dtkImagePtr i)
@@ -969,8 +1125,6 @@ vtkRenderer *gnomonViewVolumic::renderer3D(void)
 
 void gnomonViewVolumic::render(void)
 {
-    d->slider->setValue(d->slider->value()+1);
-    d->slider->setValue(d->slider->value()-1);
     d->GetInteractor()->Render();
 }
 

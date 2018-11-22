@@ -88,6 +88,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMesh
   gnomonMesh.h
+  gnomonParameter
+  gnomonParameter.h
   gnomonSegmentationCommand
   gnomonSegmentationCommand.h
   gnomonSphereForm
@@ -130,6 +132,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImagesFusionCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
+  gnomonParameter.cpp
   gnomonSegmentationCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
@@ -178,7 +181,6 @@ target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 if(DTK_BUILD_WRAPPERS)
   if(DTK_WRAPPING_PYTHON)

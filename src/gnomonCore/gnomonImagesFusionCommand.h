@@ -13,9 +13,12 @@ public:
     void undo(void) override;
 
 public:
-    void setParameters(const QMap<QString, QVariant>&);
-    void setParameter(const QString& parameterName, const QVariant& parameterValue);
     void addImage(dtkImage *);
+
+    virtual QMap<QString, gnomonParameter*> parameters(void) const;
+
+    virtual void setParameter(const QString&, const QVariant&);
+
     dtkImage *output(void);
 
 private:
