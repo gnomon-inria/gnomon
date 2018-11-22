@@ -406,6 +406,7 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         planeWidget[i]->SetPlaneOrientation(i);
         planeWidget[i]->RestrictPlaneToVolumeOn();
         planeWidget[i]->GetPlaneProperty()->SetColor(color);
+        planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
     }
 
     this->points = vtkSmartPointer<vtkPoints>::New();
@@ -926,14 +927,10 @@ void gnomonViewVolumic::switchTo2DYZ(void)
 
 void gnomonViewVolumic::sliceChange(int value)
 {
-    qDebug() << Q_FUNC_INFO << 0 << this << d->viewer->GetSlice() << value;
-
     if (d->viewer->GetSlice() == value)
         return;
 
     d->viewer->SetSlice(value);
-
-    qDebug() << Q_FUNC_INFO << 1 << this << d->viewer->GetSlice() << value;
 
     if (d->renderer2D_XY->on) {
         d->planeWidget[2]->SetSliceIndex(value);
@@ -952,7 +949,9 @@ void gnomonViewVolumic::sliceChange(int value)
 
     d->GetInteractor()->Render();
 
-    qDebug() << Q_FUNC_INFO << 2 << this << d->viewer->GetSlice() << value;
+    d->slider->blockSignals(true);
+    d->slider->setValue(value);
+    d->slider->blockSignals(false);
 
     emit sliceChanged(value);
 }
@@ -1126,8 +1125,6 @@ vtkRenderer *gnomonViewVolumic::renderer3D(void)
 
 void gnomonViewVolumic::render(void)
 {
-    d->slider->setValue(d->slider->value()+1);
-    d->slider->setValue(d->slider->value()-1);
     d->GetInteractor()->Render();
 }
 
