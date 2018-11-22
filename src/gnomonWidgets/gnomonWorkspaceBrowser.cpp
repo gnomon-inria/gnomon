@@ -14,6 +14,8 @@
 
 #include "gnomonWorkspaceBrowser.h"
 
+#include <gnomonVisualization/gnomonColorMapEditor.h>
+
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
@@ -30,16 +32,11 @@ public:
     gnomonViewVolumic *browse_view;
 
 public:
+    gnomonColorMapEditor *color_map_editor;
     gnomonOverlayPaneItem *pane_item_channels_lut = nullptr;
     QListWidget *channels_list = nullptr;
-    QLineEdit *lut_hue_min;
-    QLineEdit *lut_hue_max;
-    QLineEdit *lut_sat_min;
-    QLineEdit *lut_sat_max;
-    QLineEdit *lut_val_min;
-    QLineEdit *lut_val_max;
 
-    QMap<QString, std::tuple<double, double, double, double, double, double> >channels_lut;
+    QMap<QString, QMap<double, QColor> >channels_lut;
 };
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
@@ -74,31 +71,26 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     pane_item_channels->addLayout(pane_item_channels_layout);
     pane_item_channels->toggle();
 
-    d->lut_hue_min = new QLineEdit("0.");
-    d->lut_hue_max = new QLineEdit("0.5");
-    d->lut_sat_min = new QLineEdit("1.");
-    d->lut_sat_max = new QLineEdit("1.");
-    d->lut_val_min = new QLineEdit("0.");
-    d->lut_val_max = new QLineEdit("1.");
-    connect(d->lut_hue_min, &QLineEdit::textEdited, this, &gnomonWorkspaceBrowser::applyLut);
-    connect(d->lut_hue_max, &QLineEdit::textEdited, this, &gnomonWorkspaceBrowser::applyLut);
-    connect(d->lut_sat_min, &QLineEdit::textEdited, this, &gnomonWorkspaceBrowser::applyLut);
-    connect(d->lut_sat_max, &QLineEdit::textEdited, this, &gnomonWorkspaceBrowser::applyLut);
-    connect(d->lut_val_min, &QLineEdit::textEdited, this, &gnomonWorkspaceBrowser::applyLut);
-    connect(d->lut_val_max, &QLineEdit::textEdited, this, &gnomonWorkspaceBrowser::applyLut);
 
-    QFormLayout *pane_item_channels_lut_layout = new QFormLayout;
-    pane_item_channels_lut_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    pane_item_channels_lut_layout->addRow(QString("lut_hue_min : "), d->lut_hue_min);
-    pane_item_channels_lut_layout->addRow(QString("lut_hue_max : "), d->lut_hue_max);
-    pane_item_channels_lut_layout->addRow(QString("lut_sat_min : "), d->lut_sat_min);
-    pane_item_channels_lut_layout->addRow(QString("lut_sat_max : "), d->lut_sat_max);
-    pane_item_channels_lut_layout->addRow(QString("lut_val_min : "), d->lut_val_min);
-    pane_item_channels_lut_layout->addRow(QString("lut_val_max : "), d->lut_val_max);
+    d->color_map_editor = new gnomonColorMapEditor(this);
+    QPushButton * color_map_button = new QPushButton("Apply", this);
+    connect(color_map_button, &QPushButton::clicked, [=](void) {
+            QMap<double, QColor> source = d->color_map_editor->value();
+
+            //if we are editing a single channel image
+            QString channel_name = "default";
+            if(d->channels_list->currentItem()) {
+                channel_name = d->channels_list->currentItem()->text();
+            }
+
+            d->channels_lut[channel_name] = source;
+            d->browse_view->applyLut(source);
+        });
 
     d->pane_item_channels_lut = new gnomonOverlayPaneItem;
     d->pane_item_channels_lut->setTitle("Channels Lookuptable");
-    d->pane_item_channels_lut->addLayout(pane_item_channels_lut_layout);
+    d->pane_item_channels_lut->addWidget(d->color_map_editor);
+    d->pane_item_channels_lut->addWidget(color_map_button);
     d->pane_item_channels_lut->toggle();
 
     gnomonOverlayPane *pane = new gnomonOverlayPane(this);
@@ -155,28 +147,6 @@ void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
     }
 }
 
-void gnomonWorkspaceBrowser::applyLut(void)
-{
-    //if we are editing a single channel image
-    QString channel_name = "default";
-    if(d->channels_list->currentItem()) {
-        channel_name = d->channels_list->currentItem()->text();
-    }
-
-    d->channels_lut[channel_name] = std::make_tuple(d->lut_hue_min->text().toDouble(),
-                                                    d->lut_hue_max->text().toDouble(),
-                                                    d->lut_sat_min->text().toDouble(),
-                                                    d->lut_sat_max->text().toDouble(),
-                                                    d->lut_val_min->text().toDouble(),
-                                                    d->lut_val_max->text().toDouble());
-
-    d->browse_view->applyLut(d->lut_hue_min->text().toDouble(),
-                             d->lut_hue_max->text().toDouble(),
-                             d->lut_sat_min->text().toDouble(),
-                             d->lut_sat_max->text().toDouble(),
-                             d->lut_val_min->text().toDouble(),
-                             d->lut_val_max->text().toDouble());
-}
 
 void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item)
 {
@@ -187,23 +157,12 @@ void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QList
         //save old values
         if(previous_item) {
             current_item->setCheckState(Qt::Unchecked);
-            d->channels_lut[previous_item->text()] = std::make_tuple(d->lut_hue_min->text().toDouble(),
-                                                                     d->lut_hue_max->text().toDouble(),
-                                                                     d->lut_sat_min->text().toDouble(),
-                                                                     d->lut_sat_max->text().toDouble(),
-                                                                     d->lut_val_min->text().toDouble(),
-                                                                     d->lut_val_max->text().toDouble());
+            d->channels_lut[previous_item->text()] = d->color_map_editor->value();
         }
 
         //set current value
         if(d->channels_lut.contains(current_item->text())) {
-            auto saved_lut = d->channels_lut[current_item->text()];
-            d->lut_hue_min->setText(QString::number(std::get<0>(saved_lut)));
-            d->lut_hue_max->setText(QString::number(std::get<1>(saved_lut)));
-            d->lut_sat_min->setText(QString::number(std::get<2>(saved_lut)));
-            d->lut_sat_max->setText(QString::number(std::get<3>(saved_lut)));
-            d->lut_val_min->setText(QString::number(std::get<4>(saved_lut)));
-            d->lut_val_max->setText(QString::number(std::get<5>(saved_lut)));
+            d->color_map_editor->setValue(d->channels_lut[current_item->text()]);
         }
 
         this->displayChannels();
@@ -224,24 +183,14 @@ void gnomonWorkspaceBrowser::displayChannels(void)
         d->browse_view->setBlending(false);
         if(d->channels_list->currentItem())
             d->browse_view->onChannelChanged(d->channels_list->currentItem()->text(),
-                                             d->lut_hue_min->text().toDouble(),
-                                             d->lut_hue_max->text().toDouble(),
-                                             d->lut_sat_min->text().toDouble(),
-                                             d->lut_sat_max->text().toDouble(),
-                                             d->lut_val_min->text().toDouble(),
-                                             d->lut_val_max->text().toDouble());
+                                             d->color_map_editor->value());
         break;
 
     case 1:
         d->browse_view->setBlending(false);
         if(d->channels_list->currentItem())
             d->browse_view->onChannelChanged(d->channels_list->currentItem()->text(),
-                                             d->lut_hue_min->text().toDouble(),
-                                             d->lut_hue_max->text().toDouble(),
-                                             d->lut_sat_min->text().toDouble(),
-                                             d->lut_sat_max->text().toDouble(),
-                                             d->lut_val_min->text().toDouble(),
-                                             d->lut_val_max->text().toDouble());
+                                             d->color_map_editor->value());
         break;
 
     default:
@@ -249,23 +198,12 @@ void gnomonWorkspaceBrowser::displayChannels(void)
         for(int i=0; i < d->channels_list->count(); ++i) {
             if(d->channels_list->item(i)->checkState() == Qt::Checked) {
                 if(d->channels_lut.contains(d->channels_list->item(i)->text())) {
-                    auto saved_lut = d->channels_lut[d->channels_list->item(i)->text()];
                     d->browse_view->onChannelChanged(d->channels_list->item(i)->text(),
-                                                     std::get<0>(saved_lut),
-                                                     std::get<1>(saved_lut),
-                                                     std::get<2>(saved_lut),
-                                                     std::get<3>(saved_lut),
-                                                     std::get<4>(saved_lut),
-                                                     std::get<5>(saved_lut));
+                                                     d->channels_lut[d->channels_list->item(i)->text()]);
                 }
                 else {
                     d->browse_view->onChannelChanged(d->channels_list->item(i)->text(),
-                                                     d->lut_hue_min->text().toDouble(),
-                                                     d->lut_hue_max->text().toDouble(),
-                                                     d->lut_sat_min->text().toDouble(),
-                                                     d->lut_sat_max->text().toDouble(),
-                                                     d->lut_val_min->text().toDouble(),
-                                                     d->lut_val_max->text().toDouble());
+                                                     d->color_map_editor->value());
                 }
             }
         }

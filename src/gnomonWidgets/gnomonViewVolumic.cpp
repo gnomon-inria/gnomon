@@ -297,6 +297,9 @@ public:
     vtkSmartPointer<vtkImageBlend> blender = nullptr;
 
 public:
+    vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
+
+public:
     gnomonViewVolumicInteractorImage *image_interactor = nullptr;
 
 public:
@@ -335,9 +338,6 @@ public:
     int x = 0, c_x = 0;
     int y = 0, c_y = 0;
     int z = 0, c_z = 0;
-    double lut_hue_min = 0., lut_hue_max = 0.5;
-    double lut_sat_min = 1., lut_sat_max = 1.;
-    double lut_val_min = 0., lut_val_max = 1.;
 };
 
 gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
@@ -392,13 +392,6 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 #endif
 
     this->blender = vtkSmartPointer<vtkImageBlend>::New();
-
-    //this->blender_mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    //this->blender_mapper->SetInputConnection(this->blender->GetOutputPort());
-
-    //this->blender_actor =  vtkSmartPointer<vtkActor>::New();
-    //this->blender_actor->SetMapper(this->blender_mapper);
-    //this->renderer2D->AddActor(this->blender_actor);
 
     this->viewer = vtkSmartPointer<vtkImageViewer2>::New();
     this->viewer->SetSliceOrientationToXY();
@@ -985,7 +978,7 @@ void gnomonViewVolumic::setBlending(bool blend)
     d->blender->RemoveAllInputs();
 }
 
-void gnomonViewVolumic::setImage(dtkImagePtr i)
+void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& source)
 {
     d->points->Reset();
 
@@ -1021,29 +1014,39 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     //
     // ///////////////////////////////////////////////////////////////////
 
+    vtkSmartPointer<vtkImageMapToColors> image_color =nullptr;
     double bounds[2];
-    image->GetPointData()->GetScalars()->GetRange(bounds);
+    if(!source.empty()) {
+        image->GetPointData()->GetScalars()->GetRange(bounds);
 
-    vtkSmartPointer<vtkLookupTable> hueLut = vtkSmartPointer<vtkLookupTable>::New();
-    hueLut->SetTableRange (bounds);
-    hueLut->SetHueRange (d->lut_hue_min, d->lut_hue_max);
-    hueLut->SetSaturationRange (d->lut_sat_min, d->lut_sat_max);
-    hueLut->SetValueRange (d->lut_val_min, d->lut_val_max);
-    hueLut->Build();
+        vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
+        //color_function->RemoveAllPoints();
 
-    vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
-    image_color->SetLookupTable(hueLut);
-    image_color->SetOutputFormatToRGBA();
-    image_color->SetLookupTable(hueLut);
-    image_color->SetInputData(image);
-    image_color->Update();
+        for (const auto& val : source.keys()) {
+            double node = val*bounds[1] + (1-val)*bounds[0];
+            color_function->AddRGBPoint(node, source[val].red()/255.,  source[val].green()/255.,  source[val].blue()/255.);
+        }
+
+        color_function->ClampingOn();
+        color_function->Modified();
+
+        image_color = vtkSmartPointer<vtkImageMapToColors>::New();
+        image_color->SetLookupTable(color_function);
+        image_color->SetOutputFormatToRGBA();
+        image_color->SetInputData(image);
+        image_color->Update();
+    }
 
     if (d->blending->on) {
         QString label = QString("Layer %1").arg(d->blender->GetNumberOfInputs());
 
         d->blending_list->addItem(label);
 
-        d->blender->AddInputData(image_color->GetOutput());
+        if(source.empty())
+            d->blender->AddInputData(image);
+        else
+            d->blender->AddInputData(image_color->GetOutput());
+
         d->blender->SetOpacity(0, 0.5);
         d->blender->SetOpacity(1, 0.5);
         d->blender->Update();
@@ -1051,7 +1054,10 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
         d->viewer->SetInputData(d->blender->GetOutput());
 
     } else {
-        d->viewer->SetInputData(image_color->GetOutput());
+        if(source.empty())
+            d->viewer->SetInputData(image);
+        else
+            d->viewer->SetInputData(image_color->GetOutput());
     }
 
     // ///////////////////////////////////////////////////////////////////
@@ -1168,29 +1174,25 @@ void gnomonViewVolumic::onSliceChanged(int slice)
     d->slider->setValue(slice);
 }
 
-void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
-                                 double lut_sat_min, double lut_sat_max,
-                                 double lut_val_min, double lut_val_max)
+void gnomonViewVolumic::applyLut(const QMap<double, QColor>& source)
 {
-    d->lut_hue_min = lut_hue_min;
-    d->lut_hue_max = lut_hue_max;
-    d->lut_sat_min = lut_sat_min;
-    d->lut_sat_max = lut_sat_max;
-    d->lut_val_min = lut_val_min;
-    d->lut_val_max = lut_val_max;
+
+    vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
+    //color_function->RemoveAllPoints();
 
     double bounds[2];
     d->image_interactor->image->GetPointData()->GetScalars()->GetRange(bounds);
 
-    vtkSmartPointer<vtkLookupTable> hueLut = vtkSmartPointer<vtkLookupTable>::New();
-    hueLut->SetTableRange (bounds);
-    hueLut->SetHueRange (d->lut_hue_min, d->lut_hue_max);
-    hueLut->SetSaturationRange (d->lut_sat_min, d->lut_sat_max);
-    hueLut->SetValueRange (d->lut_val_min, d->lut_val_max);
-    hueLut->Build();
+    for (const auto& val : source.keys()) {
+        double node = val*bounds[1] + (1-val)*bounds[0];
+        color_function->AddRGBPoint(node, source[val].red()/255.,  source[val].green()/255.,  source[val].blue()/255.);
+    }
+
+    color_function->ClampingOn();
+    color_function->Modified();
 
     vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
-    image_color->SetLookupTable(hueLut);
+    image_color->SetLookupTable(color_function);
     image_color->SetOutputFormatToRGBA();
     image_color->SetInputData( d->image_interactor->image);
     image_color->Update();
@@ -1201,8 +1203,8 @@ void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
     }
     else {
         d->viewer->SetInputData(image_color->GetOutput());
-        /*
-        d->volume_mapper->SetInputData(image_color->GetOutput());
+
+        d->volume_mapper->SetInputData(d->image_interactor->image);
         image_color->GetOutput()->GetPointData()->GetScalars()->GetRange(bounds);
 
         vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
@@ -1212,7 +1214,7 @@ void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
 
         vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
         property->SetScalarOpacity(opacity);
-        //property->SetLookUpTable(hueLut);
+        property->SetColor(color_function);
         property->ShadeOff();
         property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
 
@@ -1220,24 +1222,14 @@ void gnomonViewVolumic::applyLut(double lut_hue_min, double lut_hue_max,
         d->volume->SetProperty(property);
         d->volume->Modified();
         d->volume->Update();
-        */
     }
 
     this->render();
 }
 
 void gnomonViewVolumic::onChannelChanged(const QString& channel,
-                                         double lut_hue_min, double lut_hue_max,
-                                         double lut_sat_min, double lut_sat_max,
-                                         double lut_val_min, double lut_val_max)
+                                         const QMap<double, QColor>& source)
 {
-
-    d->lut_hue_min = lut_hue_min;
-    d->lut_hue_max = lut_hue_max;
-    d->lut_sat_min = lut_sat_min;
-    d->lut_sat_max = lut_sat_max;
-    d->lut_val_min = lut_val_min;
-    d->lut_val_max = lut_val_max;
 
     if(!d->image_reader_command_czi) {
         return;
@@ -1248,7 +1240,7 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel,
         return;
     }
 
-    this->setImage(dtkImagePtr(new dtkImage(*img)));
+    this->setImage(dtkImagePtr(new dtkImage(*img)), source);
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)

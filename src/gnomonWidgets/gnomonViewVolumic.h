@@ -62,7 +62,7 @@ public slots:
 
 public:
     void setBlending(bool);
-    void setImage(dtkImagePtr);
+    void setImage(dtkImagePtr, const QMap<double, QColor>& = QMap<double, QColor>());
 
 public:
     dtkImagePtr image(void);
@@ -78,11 +78,9 @@ public slots:
     void render(void);
 
 public slots:
-    void applyLut(double, double, double, double, double, double);
+    void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
-    void onChannelChanged(const QString&, double lut_hue_min, double lut_hue_max,
-                                         double lut_sat_min, double lut_sat_max,
-                                         double lut_val_min, double lut_val_max);
+    void onChannelChanged(const QString&, const QMap<double, QColor>&);
 
 signals:
     void channelsChanged(QStringList);
