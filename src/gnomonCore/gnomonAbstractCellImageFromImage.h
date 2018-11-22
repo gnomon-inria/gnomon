@@ -21,6 +21,7 @@
 #include <dtkCore>
 
 class dtkImage;
+class gnomonParameter;
 class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public QRunnable
@@ -30,19 +31,19 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public QRunnable
 public:
     virtual void setImage(dtkImage *image) = 0;
 
+    virtual QMap<QString, gnomonParameter*> parameters(void) = 0;
+
+    virtual void setParameter(const QString&, QVariant) = 0;
+
     virtual void setUseMargins(bool use_margins) = 0;
 
     virtual void setBackgroundLabel(long label) = 0;
 
     virtual void setPredefinedProperties(const QStringList& names) = 0;
 
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
-
     // Outputs
 public:
     virtual gnomonCellImage *computedImage(void) const = 0;
-    virtual const QMap<QString, QVariant>& parameters(void) const = 0;
-    virtual       QMap<QString, QVariant>& parameters(void) = 0;
 
 public:
     virtual void run(void) = 0;

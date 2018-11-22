@@ -14,14 +14,14 @@ public:
 
 public:
     void setImage(dtkImage *image);
-    void setParameter(const QString& parameterName, const QVariant& parameterValue);
+
+    virtual QMap<QString, gnomonParameter*> parameters(void) const;
+    virtual void setParameter(const QString&, const QVariant&);
 
 public:
     double time(void);
     dtkImage *at(double t);
     dtkImage *next(void);
-
-    QMap<QString, QVariant> parameters(void) const;
 
 private:
     class gnomonImagesSerieFilterCommandPrivate *d;

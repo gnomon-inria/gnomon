@@ -43,6 +43,9 @@ public slots:
     void onCreateRegistration(void);
     void onCreateSimulation(void);
 
+ public:
+    void setCurrentIndex(int);
+
 public:
     QSize sizeHint(void) const;
 

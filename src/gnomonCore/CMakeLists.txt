@@ -73,6 +73,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDataManager.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
+  gnomonFemSolverCommand
+  gnomonFemSolverCommand.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
@@ -86,6 +88,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMesh
   gnomonMesh.h
+  gnomonParameter
+  gnomonParameter.h
   gnomonSegmentationCommand
   gnomonSegmentationCommand.h
   gnomonSphereForm
@@ -122,11 +126,13 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCoreSettings.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
+  gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonImagesFusionCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
+  gnomonParameter.cpp
   gnomonSegmentationCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp
@@ -175,7 +181,6 @@ target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 if(DTK_BUILD_WRAPPERS)
   if(DTK_WRAPPING_PYTHON)

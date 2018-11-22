@@ -62,6 +62,7 @@
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonMesh.h>
+#include <gnomonCore/gnomonParameter.h>
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
@@ -111,6 +112,113 @@
 
     if ( $result == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
+%typemap(in) QMap<QString, gnomonParameter*> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            gnomonParameter* v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonParameter, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonParameter *>(s_v);
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonParameter*> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, gnomonParameter*>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<QString, gnomonParameter*>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            gnomonParameter* v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonParameter, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonParameter *>(s_v);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonParameter*> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<QString, gnomonParameter*>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<QString, gnomonParameter*> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            gnomonParameter* v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonParameter, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonParameter *>(s_v);
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonParameter*> is returned.");
+    }
+}
+
+%typemap(directorout) const QMap<QString, gnomonParameter*>& {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        $result = new QMap<QString, gnomonParameter*>();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            gnomonParameter* v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonParameter, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonParameter *>(s_v);
+            $result->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonParameter*> is returned.");
+    }
+}
+
+%typemap(directorout) QMap<QString, gnomonParameter*>& {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        $result = new QMap<QString, gnomonParameter*>();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            gnomonParameter* v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonParameter, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonParameter *>(s_v);
+            $result->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonParameter*> is returned.");
     }
 }
 
@@ -176,6 +284,7 @@
 %include <gnomonCore/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 %include <gnomonCore/gnomonAbstractImagesSerieReader.h>
@@ -194,6 +303,7 @@
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonMesh.h>
+%include <gnomonCore/gnomonParameter.h>
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
