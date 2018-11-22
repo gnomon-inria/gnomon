@@ -139,6 +139,7 @@ void gnomonActor2DCellImagePrivate::updateSlice(int orientation)
         this->sliceActors[orientation] = vtkSmartPointer<vtkActor>::New();
         this->sliceActors[orientation]->SetMapper(this->sliceMappers[orientation]);
     }
+    this->sliceActors[orientation]->GetProperty()->SetRepresentationToWireframe();
     this->sliceActors[orientation]->GetProperty()->SetOpacity(0.9);
     this->sliceActors[orientation]->GetProperty()->SetLineWidth(2.);
     this->sliceActors[orientation]->Modified();
