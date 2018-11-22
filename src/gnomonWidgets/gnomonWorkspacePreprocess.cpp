@@ -14,12 +14,12 @@
 
 #include "gnomonWorkspacePreprocess.h"
 
-#include "gnomonViewVolumic.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonViewVolumic.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesSerieFilterCommand.h>
+#include <gnomonImagesSerieFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
