@@ -266,7 +266,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
 
     d->items << item;
 
-    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+    connect(item, &gnomonToolBarItem::clicked, [=] () { d->onItemClicked(0); });
     connect(d, SIGNAL(indexDeleted(int)), this, SIGNAL(indexDeleted(int)));
 
     connect(button, SIGNAL(createFusion()), this, SLOT(onCreateFusion()));
