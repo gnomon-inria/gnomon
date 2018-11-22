@@ -355,15 +355,7 @@ void gnomonToolBar::onCreateRegistration(void)
 
 void gnomonToolBar::onCreateSimulation(void)
 {
-    gnomonToolBarItem *item = new gnomonToolBarItem("Simulation", this);
-    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(simulation_color.red()).arg(simulation_color.green()).arg(simulation_color.blue()));
-
-    d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
-    d->layout->insertWidget(d->layout->count()-1, item);
-
-    d->items << item;
-
-    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+    d->createWorkspace(simulation_color, "Simulation");
 
     emit createSimulation();
 }
