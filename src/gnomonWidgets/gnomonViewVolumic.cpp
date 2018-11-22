@@ -1014,12 +1014,12 @@ void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& sour
     //
     // ///////////////////////////////////////////////////////////////////
 
+    vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
     vtkSmartPointer<vtkImageMapToColors> image_color =nullptr;
     double bounds[2];
     if(!source.empty()) {
         image->GetPointData()->GetScalars()->GetRange(bounds);
-
-        vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
+        color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
         //color_function->RemoveAllPoints();
 
         for (const auto& val : source.keys()) {
@@ -1032,7 +1032,7 @@ void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& sour
 
         image_color = vtkSmartPointer<vtkImageMapToColors>::New();
         image_color->SetLookupTable(color_function);
-        image_color->SetOutputFormatToRGBA();
+        image_color->SetOutputFormatToRGB();
         image_color->SetInputData(image);
         image_color->Update();
     }
@@ -1128,6 +1128,10 @@ void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& sour
 
     vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
     property->SetScalarOpacity(opacity);
+
+    if(color_function)
+        property->SetColor(color_function);
+
     property->ShadeOff();
     property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
 
@@ -1205,11 +1209,11 @@ void gnomonViewVolumic::applyLut(const QMap<double, QColor>& source)
         d->viewer->SetInputData(image_color->GetOutput());
 
         d->volume_mapper->SetInputData(d->image_interactor->image);
-        image_color->GetOutput()->GetPointData()->GetScalars()->GetRange(bounds);
+        d->image_interactor->image->GetPointData()->GetScalars()->GetRange(bounds);
 
         vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
         opacity->AddPoint(   bounds[0],                0.00);
-        opacity->AddPoint(1*(bounds[1]-bounds[0])/2/4, 0.00);
+        opacity->AddPoint(1*(bounds[1]-bounds[0])/8,   0.00);
         opacity->AddPoint(   bounds[1],                1.00);
 
         vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
