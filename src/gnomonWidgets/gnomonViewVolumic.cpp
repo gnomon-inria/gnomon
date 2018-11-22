@@ -196,7 +196,6 @@ public:
 
     virtual void OnLeftButtonDown(void) override
     {
-        qDebug() << "left button down";
         vtkInteractorStyleImage::OnLeftButtonDown();
 
         if(!this->picker)
@@ -225,8 +224,6 @@ public:
             std::size_t id = q->addLandmark(this->landmark_id, picked[0], picked[1], picked[2]);
 
             emit q->landmarkAdded(id, picked[0], picked[1], picked[2]);
-
-            qDebug() << "added actors";
         }
 
         this->q->render();
@@ -234,7 +231,6 @@ public:
 
     virtual void OnLeftButtonUp(void) override
     {
-        qDebug() << "left button up";
         vtkInteractorStyleImage::OnLeftButtonUp();
 
         if(!this->picker)
@@ -267,7 +263,6 @@ public:
 
     virtual void OnMiddleButtonDown() override
     {
-        qDebug() << "middle button down";
         vtkInteractorStyleImage::OnMiddleButtonDown();
 
         if(!this->picker)
@@ -303,8 +298,6 @@ public:
 public:
     gnomonViewVolumic *q = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
-    vtkRenderer *renderer2D = nullptr;
-    vtkRenderer *renderer3D = nullptr;
 
     vtkActor *move_actor = nullptr;
     bool move = false;
@@ -493,8 +486,6 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->image_interactor = gnomonViewVolumicInteractorImage::New();
     this->image_interactor->SetDefaultRenderer(this->renderer2D);
     this->image_interactor->picker = this->picker;
-    this->image_interactor->renderer2D = this->renderer2D;
-    this->image_interactor->renderer3D = this->renderer3D;
 
     this->GetInteractor()->SetInteractorStyle(this->image_interactor);
 
@@ -1187,8 +1178,6 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel)
 
 std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, double z)
 {
-    qDebug() << this << "addLandmark";
-
     Q_ASSERT(id == d->image_interactor->landmark_id);
 
     Q_ASSERT(QObject::sender() != this);
