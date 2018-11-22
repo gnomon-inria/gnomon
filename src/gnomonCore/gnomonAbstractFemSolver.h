@@ -35,8 +35,7 @@ public:
 // model Output
 public:
     virtual gnomonMesh *updatedMesh(void) const = 0;
-    virtual const QMap<QString, QVariant>& parameters(void) const = 0;
-    virtual       QMap<QString, QVariant>& parameters(void) = 0;
+    virtual QMap<QString, QVariant> parameters(void) const = 0;
 
 public:
     virtual void run(void) = 0;
