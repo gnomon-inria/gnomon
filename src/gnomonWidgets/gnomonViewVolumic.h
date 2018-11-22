@@ -41,9 +41,6 @@ signals:
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
 
-signals:
-    void sliceChanged(int);
-
 public slots:
     void   link(gnomonViewVolumic *other);
     void unlink(gnomonViewVolumic *other);
