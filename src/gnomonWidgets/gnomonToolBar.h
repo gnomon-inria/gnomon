@@ -41,6 +41,10 @@ public slots:
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
 
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
  public:
     void setCurrentIndex(int);
 
