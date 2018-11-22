@@ -14,9 +14,7 @@ public:
 
 public:
     void setPath(const QString& path);
-    double time(void);
-    dtkImage *at(double t, const QString& channel = "");
-    dtkImage *next(void);
+    dtkImage *image(const QString& channel = "");
     QStringList channels(void);
 
 private:

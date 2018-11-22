@@ -45,19 +45,9 @@ void gnomonImagesSerieReaderCommand::setPath(const QString& path)
     d->path = path;
 }
 
-double gnomonImagesSerieReaderCommand::time(void)
+dtkImage *gnomonImagesSerieReaderCommand::image(const QString& channel)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->time();
-}
-
-dtkImage *gnomonImagesSerieReaderCommand::at(double t, const QString& channel)
-{
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->at(t, channel);
-}
-
-dtkImage *gnomonImagesSerieReaderCommand::next(void)
-{
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->next();
+    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->image(channel);
 }
 
 QStringList gnomonImagesSerieReaderCommand::channels(void)

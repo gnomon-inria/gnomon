@@ -47,8 +47,8 @@ void gnomonSegmentationCommandTestCase::redo(void)
     d->command_czi_reader->setPath(image_file_path);
     d->command_czi_reader->redo();
 
-    qDebug() << "d->command_czi_reader->at(0, \"Ch2_PI\")" << d->command_czi_reader->at(0, "Ch2_PI");
-    d->command_segmentation->setImage(d->command_czi_reader->at(0, "Ch2_PI"));
+    qDebug() << "d->command_czi_reader->image(\"Ch2_PI\")" << d->command_czi_reader->image("Ch2_PI");
+    d->command_segmentation->setImage(d->command_czi_reader->image("Ch2_PI"));
 
     QMap<QString, gnomonParameter*> parameters = d->command_segmentation->parameters();
     d->command_segmentation->setParameter("hmin", 1500.);

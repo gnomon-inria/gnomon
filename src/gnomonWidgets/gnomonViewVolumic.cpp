@@ -296,9 +296,8 @@ public:
 public:
     gnomonViewVolumicInteractorImage *image_interactor = nullptr;
 
-public:
-    gnomonImagesSerieReaderCommand *image_reader_command_inr = nullptr;
-    gnomonImagesSerieReaderCommand *image_reader_command_czi = nullptr;
+// public:
+//     gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
 
 public:
     gnomonViewVolumicOverlay *export_button = nullptr;
@@ -320,6 +319,7 @@ public:
     bool synced = false;
 
 public:
+    gnomonImagesSeriePtr images_serie;
     dtkImagePtr image;
 
 public:
@@ -619,7 +619,7 @@ void gnomonViewVolumicPrivate::disableInteractor(void)
 
 void gnomonViewVolumicPrivate::exportToManager(void)
 {
-    if(!this->image)
+    if(!this->images_serie)
         return;
 
     QWidget *parent = this->parentWidget();
@@ -630,15 +630,15 @@ void gnomonViewVolumicPrivate::exportToManager(void)
     QStackedWidget *stack = dynamic_cast< QStackedWidget * >(parent);
 
     if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::browser_color);
+        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::browser_color);
     else if(gnomonWorkspaceFusion* workspace = dynamic_cast<gnomonWorkspaceFusion *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::fusion_color);
+        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::fusion_color);
     else if(gnomonWorkspaceSegmentation* workspace = dynamic_cast<gnomonWorkspaceSegmentation *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::segmentation_color);
+        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::segmentation_color);
     else if(gnomonWorkspacePreprocess* workspace = dynamic_cast<gnomonWorkspacePreprocess *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::preprocess_color);
+        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::preprocess_color);
     else
-        gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::registration_color);
+        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::registration_color);
 }
 
 QSize gnomonViewVolumicPrivate::sizeHint(void) const
@@ -750,11 +750,8 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
 {
-    if (d->image_reader_command_inr)
-        delete d->image_reader_command_inr;
-
-    if (d->image_reader_command_czi)
-        delete d->image_reader_command_czi;
+    // if (d->image_reader_command)
+    //     delete d->image_reader_command;
 
     delete d;
 }
@@ -930,8 +927,16 @@ void gnomonViewVolumic::sliceChange(int value)
     // emit sliceChanged(value);
 }
 
+void gnomonViewVolumic::setImagesSerie(gnomonImagesSeriePtr images_serie)
+{
+    d->images_serie = images_serie;
+    // setImage(dtkImagePtr(d->images_serie->image()));
+    setImage(d->images_serie->image());
+}
+
 void gnomonViewVolumic::setImage(dtkImagePtr i)
 {
+    qDebug() << i;
     d->points->Reset();
 
     d->mesh->SetPoints(d->points);
@@ -945,7 +950,8 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     // 2D
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(i.data());
+    // converter->setInput(i.data()); TODO
+    converter->setInput(i);
     converter->convert();
 
     vtkImageData *image = static_cast<vtkImageData *>(converter->output());
@@ -1111,15 +1117,28 @@ void gnomonViewVolumic::onSliceChanged(int slice)
 
 void gnomonViewVolumic::onChannelChanged(const QString& channel)
 {
-    if(!d->image_reader_command_czi) {
+    if(!d->images_serie) {
         return;
     }
-    dtkImage *img = d->image_reader_command_czi->at(d->image_reader_command_czi->time(), channel);
+    d->images_serie->setChannel(channel);
+    qDebug() << d->images_serie->channel();
+    dtkImage *img = d->images_serie->image();
+    qDebug() << img;
     if (!img) {
         qWarning() << Q_FUNC_INFO << "Resulting image is void.";
         return;
     }
-    this->setImage(dtkImagePtr(new dtkImage(*img)));
+    this->setImage(img);
+    // this->setImage(dtkImagePtr(new dtkImage(*img)));
+    // if(!d->image_reader_command) {
+    //     return;
+    // }
+    // dtkImage *img = d->image_reader_command->image(channel);
+    // if (!img) {
+    //     qWarning() << Q_FUNC_INFO << "Resulting image is void.";
+    //     return;
+    // }
+    // this->setImage(dtkImagePtr(new dtkImage(*img)));
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)
@@ -1147,35 +1166,46 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
-
+        gnomonImagesSeriePtr images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
+        emit channelsChanged(images_serie->channels());
+        this->setImagesSerie(images_serie);
     } else {
-        gnomonImagesSerieReaderCommand *command = nullptr;
-
-        if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif")) {
-            if(!d->image_reader_command_inr)
-                d->image_reader_command_inr = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-            command = d->image_reader_command_inr;
+        gnomonImagesSerieReaderCommand * command;
+        if (path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif")) {
+            // if(d->image_reader_command)
+            //     delete d->image_reader_command;
+            // d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+            command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
         }
 
-        if(path.endsWith("czi")) {
-            if(!d->image_reader_command_czi)
-                d->image_reader_command_czi = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-            command = d->image_reader_command_czi;
+        if (path.endsWith("czi")) {
+            // if(d->image_reader_command)
+            //     delete d->image_reader_command;
+            // d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
+            command = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
         }
 
-        if(command) {
+        if (command) {
             command->setPath(path.remove("file://"));
             command->redo();
-            dtkImagePtr img = dtkImagePtr(new dtkImage(*command->next()));
-
-            if (!img) {
-                qWarning() << Q_FUNC_INFO << "Resulting image is void.";
-                event->ignore();
-                return;
+            gnomonImagesSeriePtr images_serie = gnomonImagesSeriePtr(new gnomonImagesSerie());
+            QStringList channels = command->channels();
+            for (auto it = channels.begin(), it_end = channels.end(); it != it_end; ++it) {
+                images_serie->setChannel(*it);
+                images_serie->setImage(new dtkImage(*command->image(*it)));
             }
-            emit channelsChanged(command->channels());
-            this->setImage(img);
+            qDebug() << images_serie->channel();
+            qDebug() << images_serie->channels();
+            emit channelsChanged(images_serie->channels());
+            this->setImagesSerie(images_serie);
+            // dtkImagePtr img = dtkImagePtr(new dtkImage(*d->image_reader_command->image()));
+            // if (!img) {
+            //     qWarning() << Q_FUNC_INFO << "Resulting image is void.";
+            //     event->ignore();
+            //     return;
+            // }
+            // emit channelsChanged(d->image_reader_command->channels());
+            // this->setImage(img);
 
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;

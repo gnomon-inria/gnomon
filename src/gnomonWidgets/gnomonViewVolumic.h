@@ -16,10 +16,14 @@
 
 #include <gnomonWidgetsExport>
 
+#include <gnomonCore/gnomonImagesSerie>
+
 #include <QtWidgets>
 
 class dtkImage;
-using dtkImagePtr = QSharedPointer<dtkImage>;
+using dtkImagePtr = dtkImage*;
+
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class vtkRenderer;
 class vtkRenderWindowInteractor;
@@ -57,7 +61,8 @@ public slots:
     void sliceChange(int);
 
 public:
-    void setImage(dtkImagePtr);
+    void setImagesSerie(gnomonImagesSeriePtr);
+    void setImage(dtkImage*);
 
 public:
     dtkImagePtr image(void);

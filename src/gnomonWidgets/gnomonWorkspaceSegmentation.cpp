@@ -129,7 +129,8 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
-    d->command->setImage(d->source->image().data());
+    // d->command->setImage(d->source->image().data()); TODO
+    d->command->setImage(d->source->image());
     d->command->redo();
 
     d->target->setImage(dtkImagePtr(new dtkImage(*d->command->computedImage()->image())));

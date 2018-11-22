@@ -46,7 +46,7 @@ void gnomonImagesSerieReaderCommandTestCase::redoInr(void)
 
     d->undo_command_inr->redo();
 
-    dtkImage *image = d->undo_command_inr->at(0);
+    dtkImage *image = d->undo_command_inr->image();
 
     QVERIFY(image->xDim() == 7);
     QVERIFY(image->yDim() == 5);
@@ -68,9 +68,9 @@ void gnomonImagesSerieReaderCommandTestCase::redoCzi(void)
    QStringList true_list = {"ChS1_EYFP", "Ch1_EBFP", "Ch2_PI", "Ch2_mCherry", "ChS1_EGFP"};
 
    QCOMPARE(d->undo_command_czi->channels(), true_list);
-   QCOMPARE(d->undo_command_czi->at(0, "ChS1_EYFP")->xDim(), 101);
-   QCOMPARE(d->undo_command_czi->at(0, "ChS1_EYFP")->yDim(), 101);
-   QCOMPARE(d->undo_command_czi->at(0, "ChS1_EYFP")->zDim(), 20);
+   QCOMPARE(d->undo_command_czi->image("ChS1_EYFP")->xDim(), 101);
+   QCOMPARE(d->undo_command_czi->image("ChS1_EYFP")->yDim(), 101);
+   QCOMPARE(d->undo_command_czi->image("ChS1_EYFP")->zDim(), 20);
 }
 
 void gnomonImagesSerieReaderCommandTestCase::undoCzi(void)

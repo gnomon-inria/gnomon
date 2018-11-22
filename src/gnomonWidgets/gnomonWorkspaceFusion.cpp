@@ -83,7 +83,8 @@ void gnomonWorkspaceFusion::apply(void)
     if(d->layout->views().isEmpty()) return;
 
     for(gnomonViewVolumic *view : d->layout->views()) {
-        d->command->addImage(view->image().data());
+        // d->command->addImage(view->image().data()); TODO
+        d->command->addImage(view->image());
     }
     d->command->redo();
     d->target->setImage(dtkImagePtr(d->command->output()));

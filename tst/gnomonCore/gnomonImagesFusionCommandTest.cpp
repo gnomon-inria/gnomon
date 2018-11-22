@@ -45,17 +45,17 @@ void gnomonImagesFusionCommandTestCase::redo(void)
     QString image_0_file_path = QFINDTESTDATA("../resources/time_0_cut_resampled.inr");
     d->serie_reader_command->setPath(image_0_file_path);
     d->serie_reader_command->redo();
-    dtkImage *image_0 = d->serie_reader_command->at(0);
+    dtkImage *image_0 = d->serie_reader_command->image();
 
     QString image_1_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated1_resampled.inr");
     d->serie_reader_command->setPath(image_1_file_path);
     d->serie_reader_command->redo();
-    dtkImage *image_1 = d->serie_reader_command->at(0);
+    dtkImage *image_1 = d->serie_reader_command->image();
 
     QString image_2_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated2_resampled.inr");
     d->serie_reader_command->setPath(image_2_file_path);
     d->serie_reader_command->redo();
-    dtkImage *image_2 = d->serie_reader_command->at(0);
+    dtkImage *image_2 = d->serie_reader_command->image();
 
 
     d->fusion_command->addImage(image_0);

@@ -50,6 +50,7 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
         combo_box->addItem(*it);
     }
+    combo_box->model()->sort(0);
 
     parent->connect(combo_box, SIGNAL(currentIndexChanged(QString)), parent, SLOT(configure(QString)));
 
