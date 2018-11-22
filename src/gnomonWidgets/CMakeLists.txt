@@ -71,6 +71,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceSegmentation.cpp
+  gnomonWorkspaceSimulation.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspaceRegistration.cpp)
 

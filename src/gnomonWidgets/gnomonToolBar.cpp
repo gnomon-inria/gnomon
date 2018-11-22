@@ -35,6 +35,7 @@ signals:
     void createSegmentation(void);
     void createPreprocess(void);
     void createRegistration(void);
+    void createSimulation(void);
 
 public slots:
     void create(QAction *);
@@ -51,6 +52,7 @@ private:
     QAction *action_segmentation;
     QAction *action_preprocess;
     QAction *action_registration;
+    QAction *action_simulation;
 };
 
 gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
@@ -69,6 +71,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_segmentation = this->menu->addAction("Segmentation");
     this->action_preprocess   = this->menu->addAction("Preprocess");
     this->action_registration = this->menu->addAction("Registration");
+    this->action_simulation   = this->menu->addAction("Simulation");
 
     connect(this->menu, SIGNAL(triggered(QAction *)), this, SLOT(create(QAction *)));
 }
@@ -91,6 +94,9 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_registration)
         emit createRegistration();
+
+    if(action == this->action_simulation)
+        emit createSimulation();
 }
 
 void gnomonToolBarButton::mousePressEvent(QMouseEvent *event)
@@ -241,8 +247,18 @@ void gnomonToolBarPrivate::onItemClicked(int index)
 
     for(gnomonToolBarItem *item : items) {
         int current_index = items.indexOf(item);
-        item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(item->color().red()).arg(item->color().green()).arg(item->color().blue()));
-
+        if(item->text() == "Fusion")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::fusion_color.red()).arg(gnomonToolBar::fusion_color.green()).arg(gnomonToolBar::fusion_color.blue()));
+        else if(item->text() == "Segmentation")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
+        else if(item->text() == "Preprocess")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
+        else if(item->text() == "Registration")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
+        else if(item->text() == "Browse")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::browser_color.red()).arg(gnomonToolBar::browser_color.green()).arg(gnomonToolBar::browser_color.blue()));
+        else if(item->text() == "Simulation")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::simulation_color.red()).arg(gnomonToolBar::simulation_color.green()).arg(gnomonToolBar::simulation_color.blue()));
     }
 }
 
@@ -272,6 +288,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     connect(button, SIGNAL(createSegmentation()), this, SLOT(onCreateSegmentation()));
     connect(button, SIGNAL(createPreprocess()), this, SLOT(onCreatePreprocess()));
     connect(button, SIGNAL(createRegistration()), this, SLOT(onCreateRegistration()));
+    connect(button, SIGNAL(createSimulation()), this, SLOT(onCreateSimulation()));
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setMouseTracking(true);
@@ -336,6 +353,21 @@ void gnomonToolBar::onCreateRegistration(void)
     emit createRegistration();
 }
 
+void gnomonToolBar::onCreateSimulation(void)
+{
+    gnomonToolBarItem *item = new gnomonToolBarItem("Simulation", this);
+    item->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(simulation_color.red()).arg(simulation_color.green()).arg(simulation_color.blue()));
+
+    d->layout->insertWidget(d->layout->count()-1, new gnomonToolBarSeparator(this));
+    d->layout->insertWidget(d->layout->count()-1, item);
+
+    d->items << item;
+
+    connect(item, SIGNAL(clicked(int)), d, SLOT(onItemClicked(int)));
+
+    emit createSimulation();
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 QColor gnomonToolBar::browser_color = QColor("#ff3b30");
@@ -343,6 +375,7 @@ QColor gnomonToolBar::fusion_color = QColor("#ff9500");
 QColor gnomonToolBar::registration_color = QColor("#ffcc00");
 QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
 QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
+QColor gnomonToolBar::simulation_color = QColor("#5ac8fa");
 
 // ///////////////////////////////////////////////////////////////////
 
