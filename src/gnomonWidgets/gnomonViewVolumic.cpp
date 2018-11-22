@@ -12,13 +12,13 @@
 
 // Code:
 
-#include "gnomonImageManager.h"
-#include "gnomonViewVolumic.h"
-#include "gnomonToolBar.h"
-#include "gnomonWorkspaceBrowser.h"
-#include "gnomonWorkspaceFusion.h"
-#include "gnomonWorkspaceSegmentation.h"
-#include "gnomonWorkspacePreprocess.h"
+#include <gnomonImageManager.h>
+#include <gnomonViewVolumic.h>
+#include <gnomonToolBar.h>
+#include <gnomonWorkspaceBrowser.h>
+#include <gnomonWorkspaceFusion.h>
+#include <gnomonWorkspaceSegmentation.h>
+#include <gnomonWorkspacePreprocess.h>
 
 #include <gnomonCore/gnomonImagesSerieReaderCommand.h>
 
@@ -26,6 +26,8 @@
 #include <gnomonFonts>
 
 #include <dtkImagingCore>
+
+#include "gnomonLandmark.h"
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -185,7 +187,6 @@ public:
     virtual void OnMouseMove(void) override
         {
             if(this->move) {
-
                 return;
             }
 
@@ -221,21 +222,10 @@ public:
             this->move = true;
             this->move_actor = picker->GetActor();
         } else {
-            vtkSmartPointer<vtkSphereSource> sphere_source =
-                vtkSmartPointer<vtkSphereSource>::New();
-            sphere_source->SetRadius(3.0);
+            std::size_t id = q->addLandmark(this->landmark_id, picked[0], picked[1], picked[2]);
 
-            vtkSmartPointer<vtkPolyDataMapper> mapper =
-                vtkSmartPointer<vtkPolyDataMapper>::New();
-            mapper->SetInputConnection(sphere_source->GetOutputPort());
+            emit q->landmarkAdded(id, picked[0], picked[1], picked[2]);
 
-            vtkSmartPointer<vtkActor> actor =
-                vtkSmartPointer<vtkActor>::New();
-            actor->SetMapper(mapper);
-            actor->SetPosition(picked[0], picked[1], picked[2]);
-
-            this->renderer2D->AddActor(actor);
-            this->renderer3D->AddActor(actor);
             qDebug() << "added actors";
         }
 
@@ -299,8 +289,13 @@ public:
 
         if(!picker->GetActor()) return;
 
-        this->renderer3D->RemoveActor(picker->GetActor());
-        this->renderer2D->RemoveActor(picker->GetActor());
+        double *p = picker->GetActor()->GetPosition();
+
+        gnomonLandmark *landmark = static_cast<gnomonLandmark *>(picker->GetActor());
+
+        q->removeLandmark(landmark->id());
+
+        emit q->landmarkRemoved(landmark->id());
 
         this->q->render();
     }
@@ -313,6 +308,7 @@ public:
 
     vtkActor *move_actor = nullptr;
     bool move = false;
+    std::size_t landmark_id = 0;
 
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
@@ -1172,9 +1168,13 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel)
     this->setImage(dtkImagePtr(new dtkImage(*img)));
 }
 
-void gnomonViewVolumic::addLandmark(double x, double y, double z)
+std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, double z)
 {
-    if(QObject::sender() == this) return;
+    qDebug() << this << "addLandmark";
+
+    Q_ASSERT(id == d->image_interactor->landmark_id);
+
+    Q_ASSERT(QObject::sender() != this);
 
     vtkSmartPointer<vtkSphereSource> sphere_source =
         vtkSmartPointer<vtkSphereSource>::New();
@@ -1185,12 +1185,49 @@ void gnomonViewVolumic::addLandmark(double x, double y, double z)
         vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(sphere_source->GetOutputPort());
 
-    vtkSmartPointer<vtkActor> actor =
-        vtkSmartPointer<vtkActor>::New();
+    vtkSmartPointer<gnomonLandmark> actor =
+        vtkSmartPointer<gnomonLandmark>::New();
+    actor->setId(id);
     actor->SetMapper(mapper);
 
     d->renderer2D->AddActor(actor);
     d->renderer3D->AddActor(actor);
+
+    d->GetInteractor()->Render();
+
+    ++d->image_interactor->landmark_id;
+
+    return id;
+}
+
+void gnomonViewVolumic::removeLandmark(std::size_t id)
+{
+    qDebug() << this;
+    qDebug() << "Trying to remove actor" << id;
+    vtkActorCollection* actors_collection_2d =  d->renderer2D->GetActors();
+    vtkActorCollection* actors_collection_3d =  d->renderer3D->GetActors();
+
+    actors_collection_2d->InitTraversal();
+    for(std::size_t i = 0; i < actors_collection_2d->GetNumberOfItems(); ++i) {
+        gnomonLandmark *landmark = dynamic_cast<gnomonLandmark *>(actors_collection_2d->GetNextActor());
+        if(!landmark) continue;
+
+        if(landmark->id() == id) {
+            d->renderer2D->RemoveActor(landmark);
+        }
+    }
+
+    actors_collection_3d->InitTraversal();
+    for(std::size_t i = 0; i < actors_collection_3d->GetNumberOfItems(); ++i) {
+        gnomonLandmark *landmark = dynamic_cast<gnomonLandmark *>(actors_collection_3d->GetNextActor());
+        if(!landmark) continue;
+
+        if(landmark->id() == id) {
+            d->renderer3D->RemoveActor(landmark);
+        }
+    }
+
+    d->GetInteractor()->Render();
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)

@@ -18,6 +18,8 @@
 
 #include <QtWidgets>
 
+class gnomonLandmark;
+
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
@@ -75,11 +77,13 @@ public slots:
 public slots:
     void onSliceChanged(int);
     void onChannelChanged(const QString&);
-    void addLandmark(double, double, double);
+    std::size_t addLandmark(std::size_t, double, double, double);
+    void removeLandmark(std::size_t);
 
 signals:
     void channelsChanged(QStringList);
-    void landmarktAdded(double, double, double);
+    void landmarkAdded(std::size_t, double, double, double);
+    void landmarkRemoved(std::size_t id);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
