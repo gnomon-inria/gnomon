@@ -41,6 +41,9 @@ public slots:
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
 
+ public:
+    void setCurrentIndex(int);
+
 public:
     QSize sizeHint(void) const;
 

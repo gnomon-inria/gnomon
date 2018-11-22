@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <gnomonParameter>
+
 #include <QtCore>
 #include <QtWidgets>
 
