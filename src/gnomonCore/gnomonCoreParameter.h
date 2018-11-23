@@ -162,6 +162,7 @@ private:
 class GNOMONCORE_EXPORT gnomonCoreParameterStringList : public gnomonCoreParameter
 {
 public:
+     gnomonCoreParameterStringList(const QString& value, const QStringList& values, const QString& doc = QString());
      gnomonCoreParameterStringList(const QStringList& values, const QString& doc = QString());
     ~gnomonCoreParameterStringList(void) = default;
 

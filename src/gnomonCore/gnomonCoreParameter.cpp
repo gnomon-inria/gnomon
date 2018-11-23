@@ -67,6 +67,13 @@ void gnomonCoreParameterString::setValue(const QString& s)
 // gnomonCoreParameterStringList
 // ///////////////////////////////////////////////////////////////////
 
+
+gnomonCoreParameterStringList::gnomonCoreParameterStringList(const QString& value, const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
+{
+    Q_ASSERT(m_values.contains(value));
+    this->setCurrentIndex(m_values.indexOf(value));
+}
+
 gnomonCoreParameterStringList::gnomonCoreParameterStringList(const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
 {
 }
