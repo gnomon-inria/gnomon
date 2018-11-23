@@ -19,7 +19,7 @@
 #include <gnomonCoreExport>
 
 class gnomonMesh;
-class gnomonParameter;
+class gnomonCoreParameter;
 
 //  ///////////////////////////////////////////////////////////////////
 //
@@ -27,22 +27,17 @@ class gnomonParameter;
 
 class GNOMONCORE_EXPORT gnomonAbstractFemSolver : public QRunnable
 {
-
-// model Inputs
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
-	virtual void setMesh(gnomonMesh *mesh)     = 0;
+	virtual void setMesh(gnomonMesh *mesh) = 0;
 
-// model Output
 public:
     virtual gnomonMesh *updatedMesh(void) const = 0;
 
-    virtual QMap<QString, gnomonParameter*> parameters(void) const = 0;
-
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 
 public:
     virtual void run(void) = 0;
-
 };
 
 // ///////////////////////////////////////////////////////////////////

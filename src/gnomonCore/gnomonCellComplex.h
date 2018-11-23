@@ -90,8 +90,7 @@ public:
     QStringList elementPropertyNames(int dimension) const { return m_data->elementPropertyNames(dimension); }
     bool hasElementProperty(int dimension, const QString& propertyName) const { return m_data->hasElementProperty(dimension, propertyName); }
 
-    const QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName) const { return m_data->elementProperty(dimension, propertyName); }
-          QMap<long, QVariant>& elementProperty(int dimension, const QString& propertyName)       { return m_data->elementProperty(dimension, propertyName); }
+    QMap<long, QVariant> elementProperty(int dimension, const QString& propertyName) const { return m_data->elementProperty(dimension, propertyName); }
 
 public:
     void addElementProperty(int dimension, const QString& propertyName) { m_data->addElementProperty(dimension, propertyName); }

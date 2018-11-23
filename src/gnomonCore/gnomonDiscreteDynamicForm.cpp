@@ -55,6 +55,17 @@ gnomonAbstractForm* gnomonDiscreteDynamicForm::atTime(gnomonTime t)
     return d->forms[t];
 }
 
+gnomonDiscreteDynamicForm& gnomonDiscreteDynamicForm::operator = (const gnomonDiscreteDynamicForm& o)
+{
+    if (this == &o)
+        return *this;
+
+    d->forms = o.d->forms;
+    d->initialTime = o.d->initialTime;
+
+    return (*this);
+}
+
 void gnomonDiscreteDynamicForm::insert(gnomonAbstractForm* form, gnomonTime t)
 {
     // Q_ASSERT_X(!d->forms.contains(t), "appendForm", "Invalid time position : the form is already defined at this time");

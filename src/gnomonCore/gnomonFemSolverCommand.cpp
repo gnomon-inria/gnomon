@@ -52,11 +52,6 @@ void gnomonFemSolverCommand::setMesh(gnomonMesh *mesh)
     d->mesh = mesh;
 }
 
-QMap<QString, gnomonParameter*> gnomonFemSolverCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
 void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
@@ -65,4 +60,9 @@ void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVaria
 gnomonMesh *gnomonFemSolverCommand::updatedMesh(void)
 {
     return this->action->updatedMesh();
+}
+
+QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) const
+{
+    return this->action->parameters();
 }
