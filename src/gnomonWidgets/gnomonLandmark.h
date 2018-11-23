@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gnomonWidgetsExport>
+
 #include <vtkSmartPointer.h>
 #include <vtkRenderer.h>
 #include <vtkObjectFactory.h>
@@ -7,70 +9,33 @@
 #include <vtkProperty.h>
 #include <vtkTexture.h>
 
-class gnomonLandmark : public vtkActor
+class GNOMONWIDGETS_EXPORT gnomonLandmark : public vtkActor
 {
 public:
     vtkTypeMacro(gnomonLandmark, vtkActor);
 
     static gnomonLandmark *New();
 
-    virtual int RenderOpaqueGeometry(vtkViewport *viewport) {
-        if (!this->Mapper) return 0;
+    virtual int RenderOpaqueGeometry(vtkViewport *viewport) override;
 
-        if (this->GetIsOpaque()) {
-            vtkRenderer *ren = static_cast<vtkRenderer *>(viewport);
-            this->Render(ren);
-            return 1;
-        }
-        return 0;
-    }
-
-    virtual void Render(vtkRenderer *ren){
-        this->Property->Render(this, ren);
-        this->device->SetProperty (this->Property);
-        this->Property->Render(this, ren);
-        if (this->BackfaceProperty) {
-            this->BackfaceProperty->BackfaceRender(this, ren);
-            this->device->SetBackfaceProperty(this->BackfaceProperty);
-        }
-        if (this->Texture) {
-            this->Texture->Render(ren);
-        }
-        this->ComputeMatrix();
-        this->device->SetUserMatrix(this->Matrix);
-        this->device->Render(ren,this->Mapper);
-    }
-
-    void ShallowCopy(vtkProp *prop) {
-        gnomonLandmark *f = gnomonLandmark::SafeDownCast(prop);
-        this->vtkActor::ShallowCopy(prop);
-    }
-public:
-gnomonLandmark(std::size_t id) : vtkActor(), m_id(id) { };
+    void ShallowCopy(vtkProp *prop) override;
 
 public:
-    std::size_t id(void) const
-    {
-        return m_id;
-    }
+    gnomonLandmark(std::size_t id);
 
-    void setId(std::size_t id)
-    {
-        m_id = id;
-    }
+public:
+    std::size_t id(void) const;
+
+    void setId(std::size_t id);
 
 protected:
     vtkActor* device = nullptr;
 
-gnomonLandmark() : m_id(0) {
-        this->device = vtkActor::New();
-    }
-
-    ~gnomonLandmark() {
-        this->device->Delete();
-    }
+    gnomonLandmark();
+    ~gnomonLandmark();
 
 private:
+    virtual void render(vtkRenderer *ren);
     std::size_t m_id;
 };
 
