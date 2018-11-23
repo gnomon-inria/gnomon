@@ -20,15 +20,19 @@
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspacePreprocess.h"
 
+#include <gnomonCore/gnomonAbstractCommand.h>
 #include <gnomonCore/gnomonImagesSerieReaderCommand.h>
+#include <gnomonCore/gnomonMeshReaderCommand.h>
 
 #include <gnomonStyle>
 #include <gnomonFonts>
 
 #include <dtkImagingCore>
+#include <gnomonCore/gnomonMesh>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
+#include <vtkCellArray.h>
 #include <vtkCellPicker.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkContourFilter.h>
@@ -49,6 +53,7 @@
 #include <vtkLookupTable.h>
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
+#include <vtkPoints.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -300,6 +305,7 @@ public:
 public:
     gnomonImagesSerieReaderCommand *image_reader_command_inr = nullptr;
     gnomonImagesSerieReaderCommand *image_reader_command_czi = nullptr;
+    gnomonMeshReaderCommand *mesh_reader_command = nullptr;
 
 public:
     gnomonViewVolumicOverlay *export_button = nullptr;
@@ -1272,32 +1278,96 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         this->setImage(gnomonImageManager::instance()->get(path.remove(":").toInt()));
 
     } else {
-        gnomonImagesSerieReaderCommand *command = nullptr;
+        gnomonImagesSerieReaderCommand *imageCommand = nullptr;
+        gnomonMeshReaderCommand *meshCommand = nullptr;
+
 
         if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif")) {
             if(!d->image_reader_command_inr)
                 d->image_reader_command_inr = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-            command = d->image_reader_command_inr;
+            imageCommand = d->image_reader_command_inr;
         }
 
         if(path.endsWith("czi")) {
             if(!d->image_reader_command_czi)
                 d->image_reader_command_czi = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-            command = d->image_reader_command_czi;
+            imageCommand = d->image_reader_command_czi;
         }
 
-        if(command) {
-            command->setPath(path.remove("file://"));
-            command->redo();
-            dtkImagePtr img = dtkImagePtr(new dtkImage(*command->next()));
+        if(path.endsWith("ply")) {
+            if(!d->mesh_reader_command)
+                d->mesh_reader_command = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
+            meshCommand = d->mesh_reader_command;
+        }
+
+
+        if(imageCommand) {
+            imageCommand->setPath(path.remove("file://"));
+            imageCommand->redo();
+
+            dtkImagePtr img = dtkImagePtr(new dtkImage(*imageCommand->next()));
 
             if (!img) {
                 qWarning() << Q_FUNC_INFO << "Resulting image is void.";
                 event->ignore();
                 return;
             }
-            emit channelsChanged(command->channels());
+            emit channelsChanged(imageCommand->channels());
             this->setImage(img);
+        }
+        else if(meshCommand)
+        {
+            meshCommand->setPath(path.remove("file://"));
+            meshCommand->redo();
+
+            gnomonMesh *mesh = (gnomonMesh *) meshCommand->mesh()->clone();
+            if (!mesh) {
+                qWarning() << Q_FUNC_INFO << "Resulting mesh is void.";
+                event->ignore();
+                return;
+            }
+            qDebug()<<"Add Mesh!";
+            // this->setMesh(mesh);
+
+            vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+            vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+            vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
+
+            QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
+            QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
+            QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
+    
+            QMap<long,long> vertexPoint;
+
+            QList<long> vertices = mesh->vertexIds();
+
+            for (const auto& vertexId : vertices) {
+                long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
+                vertexPoint[vertexId] = vtkId;
+            }
+
+            polydata->SetPoints(polydataPoints);
+            
+            QList<long> triangles = mesh->triangleIds();
+
+            for (const auto& triangleId : triangles) {
+                QList<long> triangleVertices = mesh->triangleVertexIds(triangleId);
+                long vtkId = polydataFaces->InsertNextCell(triangleVertices.size());
+                for (const auto& v : triangleVertices) {
+                    polydataFaces->InsertCellPoint(vertexPoint[v]);
+                }
+            }
+
+            polydata->SetPolys(polydataFaces);
+
+            vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+            mapper->SetInputData(polydata);
+
+            vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+            actor->SetMapper(mapper);
+
+            d->renderer3D->AddActor(actor);
+            this->render();
 
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;

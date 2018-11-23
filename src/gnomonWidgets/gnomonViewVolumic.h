@@ -21,6 +21,9 @@
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
+class gnomonMesh;
+using gnomonMeshPtr = QSharedPointer<gnomonMesh>;
+
 class vtkRenderer;
 class vtkRenderWindowInteractor;
 
