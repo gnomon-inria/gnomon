@@ -14,34 +14,10 @@ public:
 
     static gnomonLandmark *New();
 
-    virtual void ReleaseGraphicsResources(vtkWindow *window) {
-        this->device->ReleaseGraphicsResources(window);
-        this->Superclass::ReleaseGraphicsResources(window);
-    }
-
     virtual int RenderOpaqueGeometry(vtkViewport *viewport) {
-        if ( ! this->Mapper ) {
-            return 0;
-        }
-        if (!this->Property) {
-            this->GetProperty();
-        }
-        if (this->GetIsOpaque()) {
-            vtkRenderer *ren = static_cast<vtkRenderer *>(viewport);
-            this->Render(ren);
-            return 1;
-        }
-        return 0;
-    }
+        if (!this->Mapper) return 0;
 
-    virtual int RenderTranslucentPolygonalGeometry(vtkViewport *viewport){
-        if ( ! this->Mapper ) {
-            return 0;
-        }
-        if (!this->Property) {
-            this->GetProperty();
-        }
-        if (!this->GetIsOpaque()) {
+        if (this->GetIsOpaque()) {
             vtkRenderer *ren = static_cast<vtkRenderer *>(viewport);
             this->Render(ren);
             return 1;
