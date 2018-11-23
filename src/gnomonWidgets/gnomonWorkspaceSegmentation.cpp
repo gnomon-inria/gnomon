@@ -59,6 +59,10 @@ public:
     gnomonPolyDataCellImage *polydata = nullptr;
     gnomonActorMeshCellImage *actor = nullptr;
     gnomonActor2DCellImage *actor2D = nullptr;
+
+public:
+    QMetaObject::Connection c_o;
+    QMetaObject::Connection c_s;
 };
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>()
@@ -134,6 +138,27 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
+    if (d->actor) {
+        d->target->renderer3D()->RemoveActor(d->actor);
+        d->actor->Delete();
+        d->actor = nullptr;
+    }
+
+    if (d->actor2D) {
+        d->target->disconnect(d->c_o);
+        d->target->disconnect(d->c_s);
+        d->target->renderer2D()->RemoveActor(d->actor2D);
+        d->actor2D->Delete();
+        d->actor2D = nullptr;
+    }
+
+    if (d->polydata) {
+        d->polydata->Delete();
+        d->polydata = nullptr;
+    }
+
+    d->target->render();
+
     d->command->setImage(d->source->image().data());
     d->command->redo();
 
@@ -144,6 +169,7 @@ void gnomonWorkspaceSegmentation::computeCells(void)
 {
     if(!d->polydata)
         d->polydata = gnomonPolyDataCellImage::New();
+
     d->polydata->setCellImage((gnomonCellImage *)d->command->computedImage()->clone());
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
@@ -152,28 +178,32 @@ void gnomonWorkspaceSegmentation::computeCells(void)
 
     dtkImage *image = d->command->computedImage()->image();
     converter->setInput(image);
+
     if(!converter->convert())
         return;
+
     vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
 
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
     d->actor->setPolyData(d->polydata);
+
     d->target->renderer3D()->AddActor(d->actor);
-    
+
     if(!d->actor2D)
         d->actor2D = gnomonActor2DCellImage::New();
     d->actor2D->setInteractor(d->target->interactor());
     d->actor2D->setDimensions(volume->GetDimensions());
     d->actor2D->setSpacing(volume->GetSpacing());
     d->actor2D->setPolyData(d->polydata);
+
     d->target->renderer2D()->AddActor(d->actor2D);
 
-    connect(d->target, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {
+    d->c_o = connect(d->target, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {
         d->actor2D->setSliceOrientation(value);
     });
 
-    connect(d->target, &gnomonViewVolumic::sliceChanged, [=] (int value) {
+    d->c_s = connect(d->target, &gnomonViewVolumic::sliceChanged, [=] (int value) {
         d->actor2D->setSlice(value);
     });
 
