@@ -38,5 +38,3 @@ private:
     virtual void render(vtkRenderer *ren);
     std::size_t m_id;
 };
-
-vtkStandardNewMacro(gnomonLandmark)

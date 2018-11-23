@@ -58,3 +58,5 @@ gnomonLandmark::~gnomonLandmark()
 {
     this->device->Delete();
 }
+
+vtkStandardNewMacro(gnomonLandmark)
