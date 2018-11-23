@@ -52,18 +52,28 @@ public:
          m_min(min),
          m_max(max) {}
 
+    gnomonCoreParameterNumeric(T val, T min, T max, int accuracy, const QString& doc = QString()) :
+         gnomonCoreParameter(doc),
+         m_value(val),
+         m_min(min),
+         m_max(max),
+         m_accuracy(accuracy) {}
+
     ~gnomonCoreParameterNumeric(void) = default;
 
     T value(void) const { return m_value; }
     T min(void) const { return m_min; }
     T max(void) const { return m_max; }
+    int accuracy(void) { return m_accuracy; }
 
     void setValue(T val) { m_value = val; }
     void setMinimumValue(T min) { m_min = min; }
     void setMaximumValue(T max) { m_max = max; }
+    void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
 private:
     T m_value = T(0);
+    int m_accuracy = 2;
     T m_min = std::numeric_limits<T>::min();
     T m_max = std::numeric_limits<T>::max();
 };
