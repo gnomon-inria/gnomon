@@ -273,13 +273,13 @@ namespace std {
     %template(vec3_t) array<double, 3>;
 }
 
-%template(gnomonCoreParameterShort)  gnomonCoreParameterNumeric<short>;
-%template(gnomonCoreParameterUShort) gnomonCoreParameterNumeric<unsigned short>;
-%template(gnomonCoreParameterInt)    gnomonCoreParameterNumeric<int>;
-%template(gnomonCoreParameterUInt)   gnomonCoreParameterNumeric<unsigned int>;
-%template(gnomonCoreParameterLong)   gnomonCoreParameterNumeric<long>;
-%template(gnomonCoreParameterULong)  gnomonCoreParameterNumeric<unsigned long>;
-%template(gnomonCoreParameterDouble) gnomonCoreParameterNumeric<double>;
+%template(ParameterShort)  gnomonCoreParameterNumeric<short>;
+%template(ParameterUShort) gnomonCoreParameterNumeric<unsigned short>;
+%template(ParameterInt)    gnomonCoreParameterNumeric<int>;
+%template(ParameterUInt)   gnomonCoreParameterNumeric<unsigned int>;
+%template(ParameterLong)   gnomonCoreParameterNumeric<long>;
+%template(ParameterULong)  gnomonCoreParameterNumeric<unsigned long>;
+%template(ParameterDouble) gnomonCoreParameterNumeric<double>;
 
 //
 // gnomonCore.i.in ends here
