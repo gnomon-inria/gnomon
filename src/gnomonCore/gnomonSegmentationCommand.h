@@ -30,12 +30,10 @@ public:
 
 public:
     void setImage(dtkImage *image);
-
-    virtual QMap<QString, gnomonParameter*> parameters(void) const;
-
-    virtual void setParameter(const QString&, const QVariant&);
+    void setParameter(const QString&, const QVariant&);
 
 public:
+    QMap<QString, gnomonCoreParameter *> parameters(void) const;
     gnomonCellImage *computedImage(void) const;
 
 private:

@@ -20,9 +20,10 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonActorMeshCellImage.h>
-#include <gnomonCellImage.h>
-#include <gnomonSegmentationCommand>
+#include <gnomonVisualization/gnomonActorMeshCellImage.h>
+
+#include <gnomonCore/gnomonCellImage.h>
+#include <gnomonCore/gnomonSegmentationCommand.h>
 
 #include <dtkImagingCore>
 #include <dtkScript>
