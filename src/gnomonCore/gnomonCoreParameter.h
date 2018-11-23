@@ -22,24 +22,42 @@
 // gnomonCoreParameter
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonCoreParameter
+class GNOMONCORE_EXPORT gnomonCoreParameter : public QObject
 {
+    Q_OBJECT
+
 public:
              gnomonCoreParameter(const QString& doc);
     virtual ~gnomonCoreParameter(void) = default;
 
     QString doc(void) const;
 
+    virtual QString type(void) const = 0;
+
 protected:
     QString m_doc;
 };
+
+// QDebug& operator<<(QDebug& stream, const gnomonCoreParameter& parameter)
+// {
+//     stream << parameter.type();
+
+//     return stream;
+// }
+
+// QDebug& operator<<(QDebug& stream,       gnomonCoreParameter *parameter)
+// {
+//     stream << parameter->type();
+
+//     return stream;
+// }
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterNumeric
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
-class gnomonCoreParameterNumeric : public gnomonCoreParameter
+class GNOMONCORE_EXPORT gnomonCoreParameterNumeric : public gnomonCoreParameter
 {
 public:
      gnomonCoreParameterNumeric(T val, const QString& doc = QString()) :
@@ -71,6 +89,11 @@ public:
     void setMaximumValue(T max) { m_max = max; }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
+    QString type(void) const
+    {
+        return QMetaType::typeName(qMetaTypeId<T>());
+    }
+
 private:
     T m_value = T(0);
     int m_accuracy = 2;
@@ -100,6 +123,11 @@ public:
 
     void setValue(bool);
 
+    QString type(void) const
+    {
+        return "bool";
+    }
+
 private:
     bool m_value = false;
 };
@@ -117,6 +145,11 @@ public:
     QString value(void) const;
 
     void setValue(const QString&);
+
+    QString type(void) const
+    {
+        return "string";
+    }
 
 private:
     QString m_s;
@@ -141,6 +174,11 @@ public:
     void addValue(const QString&);
     void removeValue(const QString&);
 
+    QString type(void) const
+    {
+        return "stringlist";
+    }
+
 private:
     int m_current_index = 0;
     QStringList m_values;
@@ -159,6 +197,11 @@ public:
     QVariant value(void) const;
 
     void setValue(const QVariant&);
+
+    QString type(void) const
+    {
+        return "variant";
+    }
 
 private:
     QVariant m_v;
