@@ -187,7 +187,7 @@ public:
 public:
     virtual void OnMouseMove(void) override
         {
-            if(this->move) {
+            if(this->move_actor) {
                 return;
             }
 
@@ -219,7 +219,6 @@ public:
         double *picked = picker->GetPickPosition();
 
         if(picker->GetActor()) {
-            this->move = true;
             this->move_actor = picker->GetActor();
         } else {
             std::size_t id = q->addLandmark(this->landmark_id, picked[0], picked[1], picked[2]);
@@ -257,7 +256,6 @@ public:
         this->move_actor->SetPosition(picked[0], picked[1], picked[2]);
 
         this->move_actor = nullptr;
-        this->move = false;
 
         this->q->render();
     }
@@ -301,7 +299,6 @@ public:
     gnomonViewVolumicOverlay *picker = nullptr;
 
     vtkActor *move_actor = nullptr;
-    bool move = false;
     std::size_t landmark_id = 0;
 
 public:
