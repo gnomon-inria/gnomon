@@ -29,6 +29,9 @@ public:
 public:
     virtual void enter(void) = 0;
     virtual void leave(void) = 0;
+
+public slots:
+    virtual void apply(void) = 0;
 };
 
 //
