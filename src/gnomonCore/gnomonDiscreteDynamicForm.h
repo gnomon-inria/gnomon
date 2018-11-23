@@ -37,6 +37,10 @@ public:
      gnomonDiscreteDynamicForm(const gnomonDiscreteDynamicForm& o);
     ~gnomonDiscreteDynamicForm(void);
 
+public:
+    gnomonDiscreteDynamicForm& operator = (const gnomonDiscreteDynamicForm& o);
+
+public:
     gnomonAbstractDynamicForm* clone(void) const { return new gnomonDiscreteDynamicForm(*this); };
 
 public:

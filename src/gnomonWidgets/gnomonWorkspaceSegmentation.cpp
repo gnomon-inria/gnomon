@@ -20,11 +20,12 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonPolyDataCellImage.h>
-#include <gnomonActor2DCellImage.h>
-#include <gnomonActorMeshCellImage.h>
-#include <gnomonCellImage.h>
-#include <gnomonSegmentationCommand>
+#include <gnomonVisualization/gnomonPolyDataCellImage.h>
+#include <gnomonVisualization/gnomonActor2DCellImage.h>
+#include <gnomonVisualization/gnomonActorMeshCellImage.h>
+
+#include <gnomonCore/gnomonCellImage.h>
+#include <gnomonCore/gnomonSegmentationCommand.h>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -50,7 +51,7 @@ public:
     gnomonViewVolumic *target = nullptr;
 
 public:
-    gnomonViewVolumicPool *pool;
+    gnomonViewVolumicPool *pool = nullptr;
 
 public:
     gnomonCellImage *cellimage = nullptr;
@@ -121,7 +122,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(d->target);
     layout->addWidget(pane);
 
-    connect(cell_button, SIGNAL(clicked()), this, SLOT(computeCells()));
+    connect(cell_button, &QPushButton::clicked, [=]() {
+                                                    this->setCursor(Qt::BusyCursor);
+                                                    this->computeCells();
+                                                    this->setCursor(Qt::BusyCursor);});
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)

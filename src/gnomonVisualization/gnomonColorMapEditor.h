@@ -20,8 +20,6 @@
 
 #include <gnomonVisualizationExport.h>
 
-
-
 // /////////////////////////////////////////////////////////////////
 // gnomonColorMapEditor
 // /////////////////////////////////////////////////////////////////
@@ -44,12 +42,11 @@ signals:
     void valueChanged(const QMap<double, QColor>& val);
 
 public slots:
-    void importColorMap(void);
+    void importColorMap(const QString& clut);
 
 private:
     class gnomonColorMapEditorPrivate *d;
 };
-
 
 //
 // gnomonColorMapEditor.h ends here

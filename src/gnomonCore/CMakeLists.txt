@@ -33,8 +33,12 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
+  gnomonAbstractCommand
+  gnomonAbstractCommand.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
+  gnomonAbstractFemSolver
+  gnomonAbstractFemSolver.h
   gnomonAbstractForm
   gnomonAbstractForm.h
   gnomonAbstractImagesFusion
@@ -55,8 +59,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractSystemScenario.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
-  gnomonAbstractCommand
-  gnomonAbstractCommand.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellGraph
@@ -65,12 +67,16 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellImage.h
   gnomonCore
   gnomonCore.h
+  gnomonCoreParameter
+  gnomonCoreParameter.h
   gnomonCoreSettings
   gnomonCoreSettings.h
   gnomonDataManager
   gnomonDataManager.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
+  gnomonFemSolverCommand
+  gnomonFemSolverCommand.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
@@ -84,8 +90,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMesh
   gnomonMesh.h
-  gnomonParameter
-  gnomonParameter.h
   gnomonSegmentationCommand
   gnomonSegmentationCommand.h
   gnomonSphereForm
@@ -107,26 +111,28 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractFemSolver.cpp
+  gnomonAbstractForm.cpp
   gnomonAbstractImagesFusion.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
-  gnomonAbstractMeshData.cpp
-  gnomonAbstractSystemScenario.cpp
-  gnomonAbstractForm.cpp
-  gnomonAbstractModel.cpp
   gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractMeshData.cpp
+  gnomonAbstractModel.cpp
+  gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
+  gnomonCoreParameter.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
+  gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonImagesFusionCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
-  gnomonParameter.cpp
   gnomonSegmentationCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp

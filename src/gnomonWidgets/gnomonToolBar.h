@@ -28,20 +28,27 @@ public:
 
 signals:
     void indexChanged(int);
+    void indexDeleted(int);
 
 signals:
     void createFusion(void);
     void createSegmentation(void);
     void createPreprocess(void);
     void createRegistration(void);
+    void createSimulation(void);
 
 public slots:
     void onCreateFusion(void);
     void onCreateSegmentation(void);
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
+    void onCreateSimulation(void);
 
- public:
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
+public:
     void setCurrentIndex(int);
 
 public:
@@ -53,6 +60,7 @@ public:
     static QColor segmentation_color;
     static QColor preprocess_color;
     static QColor registration_color;
+    static QColor simulation_color;
 
 private:
     class gnomonToolBarPrivate *d;

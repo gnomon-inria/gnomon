@@ -58,7 +58,8 @@ public slots:
     void sliceChange(int);
 
 public:
-    void setImage(dtkImagePtr);
+    void setBlending(bool);
+    void setImage(dtkImagePtr, const QMap<double, QColor>& = grey_colormap);
 
 public:
     dtkImagePtr image(void);
@@ -74,8 +75,9 @@ public slots:
     void render(void);
 
 public slots:
+    void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
-    void onChannelChanged(const QString&);
+    void onChannelChanged(const QString&, const QMap<double, QColor>&);
 
 signals:
     void channelsChanged(QStringList);
@@ -83,6 +85,9 @@ signals:
 signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
+
+public:
+    static QMap<double, QColor> grey_colormap;
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
