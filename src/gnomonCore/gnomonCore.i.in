@@ -231,6 +231,11 @@
         return dtkcore.dtkObjectManager_instance()
 %}
 
+%rename(ParameterBool)       gnomonCoreParameterBool;
+%rename(ParameterString)     gnomonCoreParameterString;
+%rename(ParameterStringList) gnomonCoreParameterStringList;
+%rename(ParameterVariant)    gnomonCoreParameterVariant;
+
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
