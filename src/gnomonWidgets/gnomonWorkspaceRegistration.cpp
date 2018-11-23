@@ -83,17 +83,23 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 
 void gnomonWorkspaceRegistration::apply(void)
 {
+    Q_ASSERT(d->command);
+
     if(d->sources_layout->views().isEmpty()) return;
 
+    d->command->undo();
     for(gnomonViewVolumic *view : d->sources_layout->views()) {
         d->command->addImage(view->image().data());
     }
     d->command->redo();
+
+    d->targets_layout->removeAllViews();
     for(gnomonViewVolumic *view : d->sources_layout->views()) {
         d->targets_layout->addView();
     }
+
     for(gnomonViewVolumic *view : d->targets_layout->views()) {
-       view->setImage(dtkImagePtr(d->command->next()));
+        view->setImage(dtkImagePtr(new dtkImage(*d->command->next())));
     }
 }
 

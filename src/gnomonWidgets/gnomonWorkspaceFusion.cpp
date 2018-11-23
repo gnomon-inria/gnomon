@@ -83,11 +83,13 @@ void gnomonWorkspaceFusion::apply(void)
 {
     if(d->layout->views().isEmpty()) return;
 
+    d->command->undo();
     for(gnomonViewVolumic *view : d->layout->views()) {
         d->command->addImage(view->image().data());
     }
     d->command->redo();
-    d->target->setImage(dtkImagePtr(d->command->output()));
+    
+    d->target->setImage(dtkImagePtr(new dtkImage(*d->command->output())));
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

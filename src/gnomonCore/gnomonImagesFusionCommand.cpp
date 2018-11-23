@@ -42,6 +42,7 @@ void gnomonImagesFusionCommand::redo(void)
 
 void gnomonImagesFusionCommand::undo(void)
 {
+    d->images.clear();
     gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->removeImages();
 }
 

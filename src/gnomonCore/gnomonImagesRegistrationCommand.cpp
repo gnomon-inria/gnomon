@@ -42,6 +42,7 @@ void gnomonImagesRegistrationCommand::redo(void)
 
 void gnomonImagesRegistrationCommand::undo(void)
 {
+    d->images.clear();
     gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->removeImages();
 }
 

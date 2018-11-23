@@ -105,6 +105,12 @@ QList<gnomonViewVolumic *> gnomonGridLayout::views(void)
     return d->views;
 }
 
+void gnomonGridLayout::removeAllViews(void)
+{
+    d->views.clear();
+    this->update();
+} 
+
 void gnomonGridLayout::clear(void)
 {
     QLayoutItem *child; while ((child = this->takeAt(0)) != 0);
