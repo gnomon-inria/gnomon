@@ -59,6 +59,7 @@
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
+#include <gnomonCore/gnomonImagesSerie.h>
 #include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonMesh.h>
 #include <gnomonCore/gnomonParameter.h>
@@ -298,6 +299,7 @@
 %include <gnomonCore/gnomonDiscreteDynamicForm.h>
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
+%include <gnomonCore/gnomonImagesSerie.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonMesh.h>
 %include <gnomonCore/gnomonParameter.h>

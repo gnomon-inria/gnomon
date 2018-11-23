@@ -66,6 +66,7 @@ public:
 
 public:
     dtkImagePtr image(void);
+    gnomonImagesSeriePtr imagesSerie(void);
 
 public:
     vtkRenderer *renderer2D(void);

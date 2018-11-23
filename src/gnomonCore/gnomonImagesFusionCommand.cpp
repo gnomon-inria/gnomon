@@ -5,8 +5,7 @@
 class gnomonImagesFusionCommandPrivate
 {
 public:
-    QVector<dtkImage *> images;
-    QMap<QString, QVariant> parameters;
+    QVector<gnomonImagesSerie *> images_series;
 };
 
 gnomonImagesFusionCommand::gnomonImagesFusionCommand(const QString& key) : d(new gnomonImagesFusionCommandPrivate)
@@ -33,8 +32,8 @@ void gnomonImagesFusionCommand::redo(void)
 {
     Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesFusion>::action);
 
-    for(auto& image : d->images) {
-        gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->addImage(image);
+    for(auto& images_serie : d->images_series) {
+        gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->addImagesSerie(images_serie);
     };
 
     gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->run();
@@ -42,12 +41,12 @@ void gnomonImagesFusionCommand::redo(void)
 
 void gnomonImagesFusionCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->removeImages();
+    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->removeImagesSeries();
 }
 
-void gnomonImagesFusionCommand::addImage(dtkImage *image)
+void gnomonImagesFusionCommand::addImagesSerie(gnomonImagesSerie *images_serie)
 {
-    d->images.push_back(image);
+    d->images_series.push_back(images_serie);
 }
 
 QMap<QString, gnomonParameter*> gnomonImagesFusionCommand::parameters(void) const
@@ -60,7 +59,7 @@ void gnomonImagesFusionCommand::setParameter(const QString& parameter, const QVa
     this->action->setParameter(parameter, value);
 }
 
-dtkImage *gnomonImagesFusionCommand::output(void)
+gnomonImagesSerie *gnomonImagesFusionCommand::output(void)
 {
     return gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->output();
 }

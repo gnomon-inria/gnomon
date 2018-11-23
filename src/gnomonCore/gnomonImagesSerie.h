@@ -37,7 +37,7 @@ public:
     size_t times(void) const;   
 
 public:
-    const QString& channel(void) const;
+    QString channel(void) const;
     void setChannel(const QString&);
     const QStringList& channels(void) const;
 

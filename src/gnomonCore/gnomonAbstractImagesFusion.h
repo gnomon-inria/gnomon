@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-class dtkImage;
+class gnomonImagesSerie;
 class gnomonParameter;
 
 // ///////////////////////////////////////////////////////////////////
@@ -35,14 +35,14 @@ public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
 
 public:
-    virtual void addImage(dtkImage *image) = 0;
-    virtual void removeImages(void) = 0;
+    virtual void addImagesSerie(gnomonImagesSerie *) = 0;
+    virtual void removeImagesSeries(void) = 0;
 
 public:
     virtual void run(void) = 0;
 
 public:
-    virtual dtkImage *output() = 0;
+    virtual gnomonImagesSerie *output() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

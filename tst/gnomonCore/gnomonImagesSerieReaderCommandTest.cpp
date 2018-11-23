@@ -3,6 +3,7 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
+#include "gnomonImagesSerie.h"
 #include "gnomonImagesSerieReaderCommand.h"
 
 #include <dtkScript>
@@ -12,8 +13,7 @@
 class gnomonImagesSerieReaderCommandTestCasePrivate
 {
 public:
-    gnomonImagesSerieReaderCommand *undo_command_inr = nullptr;
-    gnomonImagesSerieReaderCommand *undo_command_czi = nullptr;
+    gnomonImagesSerieReaderCommand *command = nullptr;
 };
 
 gnomonImagesSerieReaderCommandTestCase::gnomonImagesSerieReaderCommandTestCase(void) : d(new gnomonImagesSerieReaderCommandTestCasePrivate)
@@ -32,62 +32,70 @@ void gnomonImagesSerieReaderCommandTestCase::initTestCase(void)
 
 void gnomonImagesSerieReaderCommandTestCase::init(void)
 {
-    d->undo_command_inr = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-    Q_ASSERT(d->undo_command_inr);
-
-    d->undo_command_czi = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-    Q_ASSERT(d->undo_command_czi);
+    d->command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+    Q_ASSERT(d->command);
 }
 
-void gnomonImagesSerieReaderCommandTestCase::redoInr(void)
+void gnomonImagesSerieReaderCommandTestCase::readInr(void)
 {
-   QString image_file_path = QFINDTESTDATA("../resources/rect_t0.inr");
-    d->undo_command_inr->setPath(image_file_path);
+    QString image_file_path = QFINDTESTDATA("../resources/rect_t0.inr");
+    d->command->setPath(image_file_path);
 
-    d->undo_command_inr->redo();
+    d->command->redo();
 
-    dtkImage *image = d->undo_command_inr->image();
+    gnomonImagesSerie *images_serie = d->command->imagesSerie();
+
+    QVERIFY(images_serie->times() == 1);
+
+    dtkImage* image = images_serie->image();
 
     QVERIFY(image->xDim() == 7);
     QVERIFY(image->yDim() == 5);
     QVERIFY(image->zDim() == 3);
+
+    d->command->undo();
+
+    delete images_serie;
 }
 
-void gnomonImagesSerieReaderCommandTestCase::undoInr(void)
+void gnomonImagesSerieReaderCommandTestCase::readCzi(void)
 {
-    d->undo_command_inr->undo();
+    QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
+
+    d->command->setPath(image_file_path);
+
+    d->command->redo();
+
+    gnomonImagesSerie *images_serie = d->command->imagesSerie();
+
+    QVERIFY(images_serie->times() == 1);
+
+    QStringList true_list = {"ChS1_EYFP", "Ch1_EBFP", "Ch2_PI", "Ch2_mCherry", "ChS1_EGFP"};
+
+    QCOMPARE(images_serie->channels(), true_list);
+
+    dtkImage* image = nullptr;
+
+    for(auto& channel : images_serie->channels())
+    {
+      images_serie->setChannel(channel);
+      image = images_serie->image();
+
+      QVERIFY(images_serie->channel() == channel);
+      QVERIFY(image->xDim() == 101);
+      QVERIFY(image->yDim() == 101);
+      QVERIFY(image->zDim() == 20);
+    }
+
+    d->command->undo();
+
+    delete images_serie;
 }
-
-void gnomonImagesSerieReaderCommandTestCase::redoCzi(void)
-{
-   QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
-   d->undo_command_czi->setPath(image_file_path);
-
-   d->undo_command_czi->redo();
-
-   QStringList true_list = {"ChS1_EYFP", "Ch1_EBFP", "Ch2_PI", "Ch2_mCherry", "ChS1_EGFP"};
-
-   QCOMPARE(d->undo_command_czi->channels(), true_list);
-   QCOMPARE(d->undo_command_czi->image("ChS1_EYFP")->xDim(), 101);
-   QCOMPARE(d->undo_command_czi->image("ChS1_EYFP")->yDim(), 101);
-   QCOMPARE(d->undo_command_czi->image("ChS1_EYFP")->zDim(), 20);
-}
-
-void gnomonImagesSerieReaderCommandTestCase::undoCzi(void)
-{
-    d->undo_command_czi->undo();
-}
-
 
 void gnomonImagesSerieReaderCommandTestCase::cleanup(void)
 {
-    delete d->undo_command_inr;
-    d->undo_command_inr = nullptr;
-
-    delete d->undo_command_czi;
-    d->undo_command_czi = nullptr;
-
-    //dtkScriptInterpreterPython::instance()->release();
+    delete d->command;
+    d->command = nullptr;
 }
 
 void gnomonImagesSerieReaderCommandTestCase::cleanupTestCase(void)

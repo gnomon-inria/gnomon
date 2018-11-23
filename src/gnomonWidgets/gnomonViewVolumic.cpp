@@ -20,7 +20,7 @@
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspacePreprocess.h"
 
-#include <gnomonCore/gnomonImagesSerieReaderCommand.h>
+#include <gnomonCore/gnomonImagesSerieReaderCommand>
 
 #include <gnomonStyle>
 #include <gnomonFonts>
@@ -296,9 +296,6 @@ public:
 public:
     gnomonViewVolumicInteractorImage *image_interactor = nullptr;
 
-// public:
-//     gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
-
 public:
     gnomonViewVolumicOverlay *export_button = nullptr;
     gnomonViewVolumicOverlay *renderer2D_button = nullptr;
@@ -320,7 +317,6 @@ public:
 
 public:
     gnomonImagesSeriePtr images_serie;
-    dtkImagePtr image;
 
 public:
     QSlider *slider;
@@ -560,8 +556,8 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         if(!this->blending->on) {
             this->blending_list->clear();
 
-            if (this->image)
-                q->setImage(this->image);
+            if (this->images_serie->image())
+                q->setImage(this->images_serie->image());
 
             this->blender->RemoveAllInputs();
         }
@@ -750,9 +746,6 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
 gnomonViewVolumic::~gnomonViewVolumic(void)
 {
-    // if (d->image_reader_command)
-    //     delete d->image_reader_command;
-
     delete d;
 }
 
@@ -930,13 +923,11 @@ void gnomonViewVolumic::sliceChange(int value)
 void gnomonViewVolumic::setImagesSerie(gnomonImagesSeriePtr images_serie)
 {
     d->images_serie = images_serie;
-    // setImage(dtkImagePtr(d->images_serie->image()));
     setImage(d->images_serie->image());
 }
 
-void gnomonViewVolumic::setImage(dtkImagePtr i)
+void gnomonViewVolumic::setImage(dtkImage *i)
 {
-    qDebug() << i;
     d->points->Reset();
 
     d->mesh->SetPoints(d->points);
@@ -945,12 +936,9 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     d->glyphs->SetInputData(d->mesh);
     d->glyphs->Update();
 
-    d->image = i;
-
     // 2D
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    // converter->setInput(i.data()); TODO
     converter->setInput(i);
     converter->convert();
 
@@ -994,6 +982,7 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     } else {
 
         d->viewer->SetInputData(image);
+
     }
 
     // ///////////////////////////////////////////////////////////////////
@@ -1083,9 +1072,14 @@ void gnomonViewVolumic::setImage(dtkImagePtr i)
     this->render();
 }
 
-dtkImagePtr gnomonViewVolumic::image(void)
+dtkImage *gnomonViewVolumic::image(void)
 {
-    return d->image;
+    return d->images_serie->image();
+}
+
+gnomonImagesSeriePtr gnomonViewVolumic::imagesSerie(void)
+{
+    return d->images_serie;
 }
 
 vtkRenderWindowInteractor *gnomonViewVolumic::interactor(void)
@@ -1120,25 +1114,14 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel)
     if(!d->images_serie) {
         return;
     }
+    qDebug() << "channel: " << channel;
     d->images_serie->setChannel(channel);
-    qDebug() << d->images_serie->channel();
     dtkImage *img = d->images_serie->image();
-    qDebug() << img;
     if (!img) {
         qWarning() << Q_FUNC_INFO << "Resulting image is void.";
         return;
     }
     this->setImage(img);
-    // this->setImage(dtkImagePtr(new dtkImage(*img)));
-    // if(!d->image_reader_command) {
-    //     return;
-    // }
-    // dtkImage *img = d->image_reader_command->image(channel);
-    // if (!img) {
-    //     qWarning() << Q_FUNC_INFO << "Resulting image is void.";
-    //     return;
-    // }
-    // this->setImage(dtkImagePtr(new dtkImage(*img)));
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)
@@ -1170,46 +1153,19 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         emit channelsChanged(images_serie->channels());
         this->setImagesSerie(images_serie);
     } else {
-        gnomonImagesSerieReaderCommand * command;
-        if (path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif")) {
-            // if(d->image_reader_command)
-            //     delete d->image_reader_command;
-            // d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-            command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-        }
-
-        if (path.endsWith("czi")) {
-            // if(d->image_reader_command)
-            //     delete d->image_reader_command;
-            // d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-            command = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-        }
+        gnomonImagesSerieReaderCommand * command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
 
         if (command) {
             command->setPath(path.remove("file://"));
             command->redo();
-            gnomonImagesSeriePtr images_serie = gnomonImagesSeriePtr(new gnomonImagesSerie());
-            QStringList channels = command->channels();
-            for (auto it = channels.begin(), it_end = channels.end(); it != it_end; ++it) {
-                images_serie->setChannel(*it);
-                images_serie->setImage(new dtkImage(*command->image(*it)));
-            }
-            qDebug() << images_serie->channel();
-            qDebug() << images_serie->channels();
+            gnomonImagesSeriePtr images_serie = gnomonImagesSeriePtr(new gnomonImagesSerie(*command->imagesSerie()));
             emit channelsChanged(images_serie->channels());
             this->setImagesSerie(images_serie);
-            // dtkImagePtr img = dtkImagePtr(new dtkImage(*d->image_reader_command->image()));
-            // if (!img) {
-            //     qWarning() << Q_FUNC_INFO << "Resulting image is void.";
-            //     event->ignore();
-            //     return;
-            // }
-            // emit channelsChanged(d->image_reader_command->channels());
-            // this->setImage(img);
-
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }
+
+        delete command;
     }
 
     // ///////////////////////////////////////////////////////////////

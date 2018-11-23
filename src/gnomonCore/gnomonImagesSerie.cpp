@@ -31,13 +31,18 @@ public:
 
 gnomonImagesSeriePrivate::gnomonImagesSeriePrivate()
 {
-    time = 0;
-    channel = "";
-    images.clear();
+    this->time = 0;
+    this->channel = "";
+    this->images.clear();
 }
 
 gnomonImagesSeriePrivate::~gnomonImagesSeriePrivate()
 {
+    for (auto& image : this->images)
+    {
+        qDeleteAll(image.begin(), image.end());
+        image.clear();
+    }
     images.clear();
 }
 
@@ -96,7 +101,7 @@ size_t gnomonImagesSerie::times(void) const
     return d->images.size();
 }
 
-const QString& gnomonImagesSerie::channel(void) const
+QString gnomonImagesSerie::channel(void) const
 {
     return d->channel;
 }

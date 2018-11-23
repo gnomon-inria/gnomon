@@ -13,13 +13,13 @@ public:
     void undo(void) override;
 
 public:
-    void addImage(dtkImage *);
+    void addImagesSerie(gnomonImagesSerie *);
 
     virtual QMap<QString, gnomonParameter*> parameters(void) const;
 
     virtual void setParameter(const QString&, const QVariant&);
 
-    dtkImage *output(void);
+    gnomonImagesSerie *output(void);
 
 private:
     class gnomonImagesFusionCommandPrivate *d;

@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-class dtkImage;
+class gnomonImagesSerie;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -34,11 +34,7 @@ public:
 
 public:
     virtual void run(void) = 0;
-    virtual dtkImage *image(const QString& channel = "") = 0;
-
-public:
-    virtual QStringList channels(void) = 0;
-    // TODO add if needed -> virtual void addChannel(const QString& channel_name, dtkImage *image);
+    virtual gnomonImagesSerie *imagesSerie() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
