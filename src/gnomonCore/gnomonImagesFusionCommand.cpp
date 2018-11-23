@@ -6,7 +6,6 @@ class gnomonImagesFusionCommandPrivate
 {
 public:
     QVector<dtkImage *> images;
-    QMap<QString, QVariant> parameters;
 };
 
 gnomonImagesFusionCommand::gnomonImagesFusionCommand(const QString& key) : d(new gnomonImagesFusionCommandPrivate)
@@ -19,30 +18,30 @@ gnomonImagesFusionCommand::gnomonImagesFusionCommand(const QString& key) : d(new
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action = gnomonCore::imagesFusion::pluginFactory().create(key);
+    this->action = gnomonCore::imagesFusion::pluginFactory().create(key);
 
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesFusion>::action);
+    Q_ASSERT(this->action);
 }
 
-gnomonImagesFusionCommand::~gnomonImagesFusionCommand()
+gnomonImagesFusionCommand::~gnomonImagesFusionCommand(void)
 {
     delete d;
 }
 
 void gnomonImagesFusionCommand::redo(void)
 {
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesFusion>::action);
+    Q_ASSERT(this->action);
 
     for(auto& image : d->images) {
-        gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->addImage(image);
+        this->action->addImage(image);
     };
 
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->run();
+    this->action->run();
 }
 
 void gnomonImagesFusionCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->removeImages();
+    this->action->removeImages();
 }
 
 void gnomonImagesFusionCommand::addImage(dtkImage *image)
@@ -50,17 +49,17 @@ void gnomonImagesFusionCommand::addImage(dtkImage *image)
     d->images.push_back(image);
 }
 
-QMap<QString, gnomonParameter*> gnomonImagesFusionCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
 void gnomonImagesFusionCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
 }
 
+QMap<QString, gnomonCoreParameter *> gnomonImagesFusionCommand::parameters(void) const
+{
+    return this->action->parameters();
+}
+
 dtkImage *gnomonImagesFusionCommand::output(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->output();
+    return this->action->output();
 }

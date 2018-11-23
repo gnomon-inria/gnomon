@@ -50,7 +50,7 @@ void gnomonSegmentationCommandTestCase::redo(void)
     qDebug() << "d->command_czi_reader->at(0, \"Ch2_PI\")" << d->command_czi_reader->at(0, "Ch2_PI");
     d->command_segmentation->setImage(d->command_czi_reader->at(0, "Ch2_PI"));
 
-    QMap<QString, gnomonParameter*> parameters = d->command_segmentation->parameters();
+    QMap<QString, gnomonCoreParameter *> parameters = d->command_segmentation->parameters();
     d->command_segmentation->setParameter("hmin", 1500.);
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);
     d->command_segmentation->setParameter("segmentation_gaussian_sigma", 0.25);

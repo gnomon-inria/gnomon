@@ -169,6 +169,10 @@ void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QList
     }
 }
 
+void gnomonWorkspaceBrowser::apply(void)
+{
+}
+
 void gnomonWorkspaceBrowser::displayChannels(void)
 {
     //count the number of channels ticked
