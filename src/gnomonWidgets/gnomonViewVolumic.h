@@ -37,6 +37,8 @@ signals:
     void unlinking(void);
 
 signals:
+    void switchedTo3D  (void);
+    void switchedTo2D  (void);
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
@@ -49,6 +51,8 @@ public slots:
     void unlink(gnomonViewVolumic *other);
 
 public slots:
+    void switchTo3D  (void);
+    void switchTo2D  (void);
     void switchTo2DXY(void);
     void switchTo2DXZ(void);
     void switchTo2DYZ(void);
@@ -57,7 +61,8 @@ public slots:
     void sliceChange(int);
 
 public:
-    void setImage(dtkImagePtr);
+    void setBlending(bool);
+    void setImage(dtkImagePtr, const QMap<double, QColor>& = QMap<double, QColor>());
 
 public:
     dtkImagePtr image(void);
@@ -73,8 +78,9 @@ public slots:
     void render(void);
 
 public slots:
+    void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
-    void onChannelChanged(const QString&);
+    void onChannelChanged(const QString&, const QMap<double, QColor>&);
 
 signals:
     void channelsChanged(QStringList);

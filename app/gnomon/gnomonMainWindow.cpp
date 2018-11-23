@@ -1,4 +1,3 @@
-// Version: $Id$
 //
 //
 
@@ -12,14 +11,15 @@
 
 // Code:
 
-#include "gnomonImageManager.h"
-#include "gnomonMainWindow.h"
-#include "gnomonToolBar.h"
-#include "gnomonWorkspaceBrowser.h"
-#include "gnomonWorkspaceFusion.h"
-#include "gnomonWorkspaceSegmentation.h"
-#include "gnomonWorkspacePreprocess.h"
-#include "gnomonWorkspaceRegistration.h"
+#include <gnomonImageManager.h>
+#include <gnomonMainWindow.h>
+#include <gnomonToolBar.h>
+#include <gnomonWorkspaceBrowser.h>
+#include <gnomonWorkspaceFusion.h>
+#include <gnomonWorkspaceSegmentation.h>
+#include <gnomonWorkspacePreprocess.h>
+#include <gnomonWorkspaceRegistration.h>
+#include <gnomonWorkspaceSimulation.h>
 
 #include <gnomonStyle>
 
@@ -110,6 +110,17 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
 
+    connect(d->menu, &gnomonToolBar::indexDeleted, [=] (int index) {
+            QWidget * widget = d->stack->widget(index);
+            if (d->stack->currentIndex() == index) {
+                d->menu->setCurrentIndex(0);
+            }
+            if (widget) {
+                d->stack->removeWidget(widget);
+                delete widget;
+            }
+        } );
+
     connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceFusion(this);
@@ -145,6 +156,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->addWidget(workspace);
         d->stack->setCurrentWidget(workspace);
     });
+
+    connect(d->menu, &gnomonToolBar::createSimulation, [=] (void) {
+
+            gnomonWorkspace *workspace = new gnomonWorkspaceSimulation(this);
+            workspace->enter();
+
+            d->stack->addWidget(workspace);
+            d->stack->setCurrentWidget(workspace);
+        });
 
     static int l_h = 0;
 
