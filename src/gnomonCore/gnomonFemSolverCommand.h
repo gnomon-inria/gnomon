@@ -16,12 +16,9 @@ public:
 
 public:
     void setMesh(gnomonMesh *mesh);
-    
-    virtual QMap<QString, gnomonParameter*> parameters(void) const;
+    void setParameter(const QString&, const QVariant&);
 
-    virtual void setParameter(const QString&, const QVariant&);
-
-public:
+    QMap<QString, gnomonCoreParameter *> parameters(void) const;
     gnomonMesh *updatedMesh(void);
 
 private:

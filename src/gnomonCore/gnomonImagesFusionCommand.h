@@ -4,9 +4,9 @@
 class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand<gnomonAbstractImagesFusion>
 {
 public:
-    gnomonImagesFusionCommand() = delete;
-    gnomonImagesFusionCommand(const QString&);
-    virtual ~gnomonImagesFusionCommand();
+     gnomonImagesFusionCommand(void) = delete;
+     gnomonImagesFusionCommand(const QString&);
+    ~gnomonImagesFusionCommand(void);
 
 public:
     void redo(void) override;
@@ -14,12 +14,11 @@ public:
 
 public:
     void addImage(dtkImage *);
+    void setParameter(const QString&, const QVariant&);
 
-    virtual QMap<QString, gnomonParameter*> parameters(void) const;
-
-    virtual void setParameter(const QString&, const QVariant&);
-
+public:
     dtkImage *output(void);
+    QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
 private:
     class gnomonImagesFusionCommandPrivate *d;

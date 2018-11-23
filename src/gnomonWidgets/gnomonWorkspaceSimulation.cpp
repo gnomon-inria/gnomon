@@ -38,8 +38,8 @@ public:
     QStringList keys() const override;
 
 public:
-    gnomonViewVolumic *source;
-    gnomonViewVolumic *target;
+    gnomonViewVolumic *source = nullptr;
+    gnomonViewVolumic *target = nullptr;
 };
 
 gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >()
