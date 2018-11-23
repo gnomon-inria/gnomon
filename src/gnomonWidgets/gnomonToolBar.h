@@ -48,7 +48,7 @@ protected:
     void enterEvent(QEvent *);
     void leaveEvent(QEvent *);
 
- public:
+public:
     void setCurrentIndex(int);
 
 public:

@@ -58,6 +58,11 @@ void gnomonImagesSerieFilterCommand::setParameter(const QString& parameter, cons
     this->action->setParameter(parameter, value);
 }
 
+gnomonImagesSerie *gnomonImagesSerieFilterCommand::input(void)
+{
+    return this->action->input();
+}
+
 gnomonImagesSerie *gnomonImagesSerieFilterCommand::output(void)
 {
     return this->action->output();

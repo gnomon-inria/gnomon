@@ -14,6 +14,7 @@ public:
 
 public:
     void setInput(gnomonImagesSerie *images_serie);
+    gnomonImagesSerie *input(void);
 
     gnomonImagesSerie *output(void);
 

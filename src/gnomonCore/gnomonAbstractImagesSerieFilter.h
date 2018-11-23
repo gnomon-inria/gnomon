@@ -32,6 +32,7 @@ public:
 
 public:
     virtual void setInput(gnomonImagesSerie *images_serie) = 0;
+    virtual gnomonImagesSerie *input() = 0;
 
     virtual gnomonImagesSerie *output() = 0;
 

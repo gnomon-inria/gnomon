@@ -23,6 +23,7 @@
 #include "gnomonMainWindow.h"
 
 #include <dtkScript>
+#include <dtkWidgets>
 
 #include <dtkImagingCore>
 
@@ -46,25 +47,40 @@ int main(int argc, char **argv)
 
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
-    QApplication application(argc, argv);
-    application.setApplicationName("gnomon");
-    application.setOrganizationName("inria");
-    application.setOrganizationDomain("fr");
-    application.setApplicationVersion("0.9.0");
+    dtkApplication *application = dtkApplication::create(argc, argv);
+    application->setApplicationName("gnomon");
+    application->setOrganizationName("inria");
+    application->setOrganizationDomain("fr");
+    application->setApplicationVersion("0.9.0");
+
+    QCommandLineParser *parser = application->parser();
+    parser->setApplicationDescription("gnomon application.");
+
+    QCommandLineOption jupyterOption("jupyter", QCoreApplication::translate("main", "start jupyter console"));
+    parser->addOption(jupyterOption);
+
+    application->initialize();
+
+    QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
+
+    if (parser->isSet(verboseOption)) {
+        dtkImaging::setVerboseLoading(true);;
+    }
 
     int stat;
 
-    dtkLogger::instance().setLevel(dtkLog::Level::Info);
     dtkImaging::initialize();
     dtkScriptInterpreterPython::instance()->init();
-    dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
+    if (parser->isSet(jupyterOption)) {
+        dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
+    }
 
     gnomonMainWindow *window = new gnomonMainWindow;
     window->setWindowTitle("gnomon");
     window->show();
     window->raise();
 
-    int status = application.exec();
+    int status = application->exec();
 
     delete window;
 

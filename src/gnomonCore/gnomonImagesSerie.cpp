@@ -44,11 +44,12 @@ gnomonImagesSeriePrivate::gnomonImagesSeriePrivate(const gnomonImagesSeriePrivat
     this->time = d.time;
     this->channel = d.channel;
     this->images.resize(d.images.size());
-    for (auto& image : this->images)
+    for (size_t index = 0, max_index = d.images.size(); index < max_index; ++index)
     {
-        for (QMap<QString, dtkImage*>::const_iterator it = image.begin(), it_end = image.end(); it != it_end; ++it)
+        this->images[index] = QMap<QString, dtkImage*>();
+        for (QMap<QString, dtkImage*>::const_iterator it = d.images[index].begin(), it_end = d.images[index].end(); it != it_end; ++it)
         {
-            image.insert(it.key(), new dtkImage(*it.value()));
+            this->images[index].insert(it.key(), new dtkImage(*it.value()));
         }
     }
 }

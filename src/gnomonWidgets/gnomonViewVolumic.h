@@ -70,7 +70,7 @@ public slots:
 public:
     void setImage(dtkImage*, const QMap<double, QColor>& = QMap<double, QColor>());
     void setBlending(bool);
-    void setImagesSerie(gnomonImagesSeriePtr, const QMap<double, QColor>& = QMap<double, QColor>());
+    void setImagesSerie(gnomonImagesSeriePtr, const QMap<double, QColor>& = grey_colormap);
 
 public:
     dtkImage* image(void);
@@ -94,6 +94,9 @@ public slots:
 
 signals:
     void channelsChanged(QStringList);
+
+public:
+    static QMap<double, QColor> grey_colormap;
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);

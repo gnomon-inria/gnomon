@@ -614,6 +614,11 @@ void gnomonViewVolumicPrivate::setSliceOrientation(Orientation orientation)
 // gnomonViewVolumic
 // ///////////////////////////////////////////////////////////////////
 
+QMap<double, QColor> gnomonViewVolumic::grey_colormap = QMap<double, QColor>({
+        {0., QColor(0, 0, 0, 255)},
+        {1., QColor(255, 255, 255, 255)} });
+
+
 gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonViewVolumicPrivate;
@@ -1043,35 +1048,30 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
     vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
     vtkSmartPointer<vtkImageMapToColors> image_color =nullptr;
     double bounds[2];
-    if(!source.empty()) {
-        image->GetPointData()->GetScalars()->GetRange(bounds);
-        color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
-        //color_function->RemoveAllPoints();
+    image->GetPointData()->GetScalars()->GetRange(bounds);
+    color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
+    //color_function->RemoveAllPoints();
 
-        for (const auto& val : source.keys()) {
-            double node = val*bounds[1] + (1-val)*bounds[0];
-            color_function->AddRGBPoint(node, source[val].red()/255.,  source[val].green()/255.,  source[val].blue()/255.);
-        }
-
-        color_function->ClampingOn();
-        color_function->Modified();
-
-        image_color = vtkSmartPointer<vtkImageMapToColors>::New();
-        image_color->SetLookupTable(color_function);
-        image_color->SetOutputFormatToRGBA();
-        image_color->SetInputData(image);
-        image_color->Update();
+    for (const auto& val : source.keys()) {
+        double node = val*bounds[1] + (1-val)*bounds[0];
+        color_function->AddRGBPoint(node, source[val].red()/255.,  source[val].green()/255.,  source[val].blue()/255.);
     }
+
+    color_function->ClampingOn();
+    color_function->Modified();
+
+    image_color = vtkSmartPointer<vtkImageMapToColors>::New();
+    image_color->SetLookupTable(color_function);
+    image_color->SetOutputFormatToRGBA();
+    image_color->SetInputData(image);
+    image_color->Update();
 
     if (d->blending->on) {
         QString label = QString("Layer %1").arg(d->blender->GetNumberOfInputs());
 
         d->blending_list->addItem(label);
 
-        if(source.empty())
-            d->blender->AddInputData(image);
-        else
-            d->blender->AddInputData(image_color->GetOutput());
+        d->blender->AddInputData(image_color->GetOutput());
 
         d->blender->SetOpacity(0, 0.5);
         d->blender->SetOpacity(1, 0.5);
@@ -1080,12 +1080,7 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
         d->viewer->SetInputData(d->blender->GetOutput());
 
     } else {
-
-        if(source.empty())
-            d->viewer->SetInputData(image);
-        else
-            d->viewer->SetInputData(image_color->GetOutput());
-
+        d->viewer->SetInputData(image_color->GetOutput());
     }
 
     // ///////////////////////////////////////////////////////////////////
@@ -1156,10 +1151,7 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
 
     vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
     property->SetScalarOpacity(opacity);
-
-    if(color_function)
-        property->SetColor(color_function);
-
+    property->SetColor(color_function);
     property->ShadeOff();
     property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
 
@@ -1222,7 +1214,6 @@ void gnomonViewVolumic::applyLut(const QMap<double, QColor>& source)
         return;
 
     vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
-    //color_function->RemoveAllPoints();
 
     double bounds[2];
     d->image_interactor->image->GetPointData()->GetScalars()->GetRange(bounds);
