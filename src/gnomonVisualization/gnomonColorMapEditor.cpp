@@ -18,7 +18,6 @@
 #include <QtXml>
 #include <gnomonStyle>
 
-
 // /////////////////////////////////////////////////////////////////
 // gnomonColorMapTable
 // /////////////////////////////////////////////////////////////////
@@ -118,10 +117,7 @@ public:
     QMap<double, QColor> value;
 
 public:
-    QLabel *label_name;
-
-    QWidget * colormap_widget;
-    QPushButton *button_import;
+    QComboBox *colormap_box;
     gnomonColorMapTable *colormap_table;
 };
 
@@ -131,38 +127,78 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
     d->value[1] = Qt::white;
     d->name = "";
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-
-    d->label_name = new QLabel(d->name);
-    layout->addWidget(d->label_name);
-
-    d->colormap_widget = new QWidget();
-    QHBoxLayout *colormap_layout = new QHBoxLayout(d->colormap_widget);
-    colormap_layout->setContentsMargins(0, 0, 0, 0);
-
     QPalette palette ;
     palette.setBrush(QPalette::Background, Qt::transparent);
 
-    d->button_import = new QPushButton("Import");
-    d->button_import->setPalette(palette);
-    d->button_import->setAutoFillBackground(false);
-    d->button_import->setStyleSheet(gnomonStyleSheet());
-    d->button_import->setFixedWidth(120);
-    colormap_layout->addWidget(d->button_import);
+    d->colormap_box = new QComboBox(this);
+
+    d->colormap_box->addItem("0CMY_cyan.clut");
+    d->colormap_box->addItem("0CMY_magenta.clut");
+    d->colormap_box->addItem("0CMY_yellow.clut");
+    d->colormap_box->addItem("0RGB_blue.clut");
+    d->colormap_box->addItem("0RGB_green.clut");
+    d->colormap_box->addItem("0RGB_red.clut");
+    d->colormap_box->addItem("1Flashy_blue.clut");
+    d->colormap_box->addItem("1Flashy_green.clut");
+    d->colormap_box->addItem("1Flashy_orange.clut");
+    d->colormap_box->addItem("1Flashy_purple.clut");
+    d->colormap_box->addItem("1Flashy_red.clut");
+    d->colormap_box->addItem("1Flashy_turquoise.clut");
+    d->colormap_box->addItem("acidity.clut");
+    d->colormap_box->addItem("atmosphere.clut");
+    d->colormap_box->addItem("Blues.clut");
+    d->colormap_box->addItem("bone.clut");
+    d->colormap_box->addItem("BrBG.clut");
+    d->colormap_box->addItem("bronze.clut");
+    d->colormap_box->addItem("BuGn.clut");
+    d->colormap_box->addItem("BuGrRd.clut");
+    d->colormap_box->addItem("chestnut.clut");
+    d->colormap_box->addItem("cold.clut");
+    d->colormap_box->addItem("curvature.clut");
+    d->colormap_box->addItem("density.clut");
+    d->colormap_box->addItem("geo_jet.clut");
+    d->colormap_box->addItem("glasbey.clut");
+    d->colormap_box->addItem("GnBu.clut");
+    d->colormap_box->addItem("Greens.clut");
+    d->colormap_box->addItem("grey.clut");
+    d->colormap_box->addItem("Greys.clut");
+    d->colormap_box->addItem("hot.clut");
+    d->colormap_box->addItem("inferno.clut");
+    d->colormap_box->addItem("jet.clut");
+    d->colormap_box->addItem("leaf.clut");
+    d->colormap_box->addItem("morocco.clut");
+    d->colormap_box->addItem("ocean.clut");
+    d->colormap_box->addItem("Oranges.clut");
+    d->colormap_box->addItem("PiYG.clut");
+    d->colormap_box->addItem("primordia_jet.clut");
+    d->colormap_box->addItem("PuBu.clut");
+    d->colormap_box->addItem("PuBuGn.clut");
+    d->colormap_box->addItem("PuOr.clut");
+    d->colormap_box->addItem("PuRd.clut");
+    d->colormap_box->addItem("Purples.clut");
+    d->colormap_box->addItem("quercus.clut");
+    d->colormap_box->addItem("RdBu.clut");
+    d->colormap_box->addItem("RdYlBu.clut");
+    d->colormap_box->addItem("RdYlGn.clut");
+    d->colormap_box->addItem("Reds.clut");
+    d->colormap_box->addItem("temperature.clut");
+    d->colormap_box->addItem("tourmaline.clut");
+    d->colormap_box->addItem("viridis.clut");
+    d->colormap_box->addItem("wine.clut");
+    d->colormap_box->addItem("YlGn.clut");
+    d->colormap_box->addItem("YlOrBr.clut");
 
     d->colormap_table = new gnomonColorMapTable();
-    d->colormap_table->setMinimumHeight(20);
+    d->colormap_table->setFixedHeight(40);
     d->colormap_table->setMinimumWidth(120);
-    colormap_layout->addWidget(d->colormap_table);
 
-    layout->addWidget(d->colormap_widget);
-
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(d->colormap_box);
+    layout->addWidget(d->colormap_table);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
-    connect(d->button_import, SIGNAL(clicked()), this, SLOT(importColorMap()));
+    connect(d->colormap_box, SIGNAL(currentTextChanged(const QString&)), this, SLOT(importColorMap(const QString&)));
 }
 
 gnomonColorMapEditor::~gnomonColorMapEditor(void)
@@ -185,7 +221,6 @@ const QMap<double, QColor>& gnomonColorMapEditor::value(void) const
 void gnomonColorMapEditor::setName(const QString& name)
 {
     d->name = name;
-    d->label_name->setText(d->name);
 }
 
 void gnomonColorMapEditor::setValue(const QMap<double, QColor>& value)
@@ -200,9 +235,9 @@ void gnomonColorMapEditor::setValue(const QMap<double, QColor>& value)
     emit valueChanged(d->value);
 }
 
-void gnomonColorMapEditor::importColorMap(void)
+void gnomonColorMapEditor::importColorMap(const QString& clut)
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Import color lookup table");
+    QString fileName = QString(":gnomon/cluts/%1").arg(clut);
 
     QDomDocument doc("clut");
 

@@ -63,7 +63,8 @@ public slots:
     void sliceChange(int);
 
 public:
-    void setImage(dtkImagePtr);
+    void setBlending(bool);
+    void setImage(dtkImagePtr, const QMap<double, QColor>& = QMap<double, QColor>());
 
 public:
     dtkImagePtr image(void);
@@ -82,8 +83,9 @@ public slots:
     void render(void);
 
 public slots:
+    void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
-    void onChannelChanged(const QString&);
+    void onChannelChanged(const QString&, const QMap<double, QColor>&);
     std::size_t addLandmark(std::size_t, double, double, double);
     void removeLandmark(std::size_t);
 
