@@ -20,7 +20,8 @@
 #include "gnomonViewVolumic.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonImagesSerie>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -86,7 +87,7 @@ void gnomonWorkspaceFusion::apply(void)
         d->command->addImagesSerie(view->imagesSerie().data());
     }
     d->command->redo();
-    d->target->setImage(dtkImagePtr(d->command->output()));
+    d->target->setImage(d->command->output()->image());
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

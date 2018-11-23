@@ -133,7 +133,7 @@ void gnomonWorkspaceSegmentation::apply(void)
     d->command->setImage(d->source->image());
     d->command->redo();
 
-    d->target->setImage(dtkImagePtr(new dtkImage(*d->command->computedImage()->image())));
+    d->target->setImage(d->command->computedImage()->image());
 }
 
 void gnomonWorkspaceSegmentation::computeCells(void)

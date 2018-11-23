@@ -13,15 +13,12 @@ public:
     void undo(void) override;
 
 public:
-    void setImage(dtkImage *image);
+    void setInput(gnomonImagesSerie *images_serie);
+
+    gnomonImagesSerie *output(void);
 
     virtual QMap<QString, gnomonParameter*> parameters(void) const;
     virtual void setParameter(const QString&, const QVariant&);
-
-public:
-    double time(void);
-    dtkImage *at(double t);
-    dtkImage *next(void);
 
 private:
     class gnomonImagesSerieFilterCommandPrivate *d;

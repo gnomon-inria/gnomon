@@ -44,6 +44,7 @@
 #include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractMeshData.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonAbstractFemSolver.h>
 #include <gnomonCore/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonAbstractImagesFusion.h>
 #include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
@@ -284,10 +285,12 @@
 %include <gnomonCore/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 %include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 %include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
+%include <gnomonCore/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonAbstractModel.h>

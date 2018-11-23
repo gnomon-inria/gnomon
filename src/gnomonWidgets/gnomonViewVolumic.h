@@ -16,13 +16,10 @@
 
 #include <gnomonWidgetsExport>
 
-#include <gnomonCore/gnomonImagesSerie>
-
 #include <QtWidgets>
 
 class dtkImage;
-using dtkImagePtr = dtkImage*;
-
+class gnomonImagesSerie;
 using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class vtkRenderer;
@@ -41,6 +38,8 @@ signals:
     void unlinking(void);
 
 signals:
+    void switchedTo3D  (void);
+    void switchedTo2D  (void);
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
@@ -48,11 +47,16 @@ signals:
 signals:
     void sliceChanged(int);
 
+signals:
+    void timeChanged(int);
+
 public slots:
     void   link(gnomonViewVolumic *other);
     void unlink(gnomonViewVolumic *other);
 
 public slots:
+    void switchTo3D  (void);
+    void switchTo2D  (void);
     void switchTo2DXY(void);
     void switchTo2DXZ(void);
     void switchTo2DYZ(void);
@@ -60,12 +64,16 @@ public slots:
 public slots:
     void sliceChange(int);
 
-public:
-    void setImagesSerie(gnomonImagesSeriePtr);
-    void setImage(dtkImage*);
+public slots:
+    void timeChange(int);
 
 public:
-    dtkImagePtr image(void);
+    void setImage(dtkImage*, const QMap<double, QColor>& = QMap<double, QColor>());
+    void setBlending(bool);
+    void setImagesSerie(gnomonImagesSeriePtr, const QMap<double, QColor>& = QMap<double, QColor>());
+
+public:
+    dtkImage* image(void);
     gnomonImagesSeriePtr imagesSerie(void);
 
 public:
@@ -79,8 +87,10 @@ public slots:
     void render(void);
 
 public slots:
+    void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
-    void onChannelChanged(const QString&);
+    void onTimeChanged(int);
+    void onChannelChanged(const QString&, const QMap<double, QColor>&);
 
 signals:
     void channelsChanged(QStringList);

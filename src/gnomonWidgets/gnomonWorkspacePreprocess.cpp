@@ -85,18 +85,11 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    // d->command->setImage(d->source->image().data()); TODO
-    d->command->setImage(d->source->image());
+    d->command->setInput(d->source->imagesSerie().data());
 
     d->command->redo();
-    dtkImage *img = d->command->next();
 
-    if (!img) {
-        qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-        return;
-    }
-
-    d->target->setImage(dtkImagePtr(new dtkImage(*img)));
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)

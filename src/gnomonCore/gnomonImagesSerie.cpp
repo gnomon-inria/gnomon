@@ -14,10 +14,13 @@
 
 #include "gnomonImagesSerie.h"
 
+#include <dtkImagingCore>
+
 class gnomonImagesSeriePrivate
 {
 public:
              gnomonImagesSeriePrivate();
+             gnomonImagesSeriePrivate(const gnomonImagesSeriePrivate&);
     virtual ~gnomonImagesSeriePrivate();
 
 public:
@@ -36,6 +39,20 @@ gnomonImagesSeriePrivate::gnomonImagesSeriePrivate()
     this->images.clear();
 }
 
+gnomonImagesSeriePrivate::gnomonImagesSeriePrivate(const gnomonImagesSeriePrivate& d)
+{
+    this->time = d.time;
+    this->channel = d.channel;
+    this->images.resize(d.images.size());
+    for (auto& image : this->images)
+    {
+        for (QMap<QString, dtkImage*>::const_iterator it = image.begin(), it_end = image.end(); it != it_end; ++it)
+        {
+            image.insert(it.key(), new dtkImage(*it.value()));
+        }
+    }
+}
+
 gnomonImagesSeriePrivate::~gnomonImagesSeriePrivate()
 {
     for (auto& image : this->images)
@@ -47,6 +64,10 @@ gnomonImagesSeriePrivate::~gnomonImagesSeriePrivate()
 }
 
 gnomonImagesSerie::gnomonImagesSerie() : d(new gnomonImagesSeriePrivate)
+{
+}
+
+gnomonImagesSerie::gnomonImagesSerie(const gnomonImagesSerie& images_serie) : d(new gnomonImagesSeriePrivate(*images_serie.d))
 {
 }
 
@@ -74,14 +95,17 @@ dtkImage* gnomonImagesSerie::image() const
 
 void gnomonImagesSerie::setImage(dtkImage* image)
 {
-    if(d->time >= d->images.size())
+    if (d->time >= d->images.size())
         d->images.resize(d->time + 1);
     QMap<QString, dtkImage*>& images = d->images[d->time];
     QMap<QString, dtkImage*>::iterator it = images.find(d->channel);
-    if(it == images.end())
+    if (it == images.end()) {
         images.insert(d->channel, image);
-    else
+    } 
+    else {
+        delete it.value();
         it.value() = image;
+    }
     if(!d->channels.contains(d->channel))
         d->channels.append(d->channel);
 }
@@ -115,5 +139,8 @@ const QStringList& gnomonImagesSerie::channels(void) const
 {
     return d->channels;
 }
+
+gnomonImagesSerie* gnomonImagesSerie::copy() const
+{ return new gnomonImagesSerie(*this); }
 
 // gnomonImagesSerie.cpp ends here

@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-class dtkImage;
+class gnomonImagesSerie;
 class gnomonParameter;
 
 // ///////////////////////////////////////////////////////////////////
@@ -31,7 +31,9 @@ public:
     virtual ~gnomonAbstractImagesSerieFilter(void) = default;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
+    virtual void setInput(gnomonImagesSerie *images_serie) = 0;
+
+    virtual gnomonImagesSerie *output() = 0;
 
     virtual QMap<QString, gnomonParameter*> parameters(void) = 0;
     virtual void setParameter(const QString&, const QVariant&) = 0;
@@ -41,10 +43,6 @@ public:
 
 public:
     virtual QMap<QString, QVariant> parameters(void) const = 0;
-
-    virtual double time(void) = 0;
-    virtual dtkImage *at(double t) = 0;
-    virtual dtkImage *next(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

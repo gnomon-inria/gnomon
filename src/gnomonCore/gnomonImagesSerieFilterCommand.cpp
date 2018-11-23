@@ -7,10 +7,7 @@
 class gnomonImagesSerieFilterCommandPrivate
 {
 public:
-    QMap<QString, QVariant> parameters;
-
-public:
-    dtkImage* image = nullptr;
+    gnomonImagesSerie* input = nullptr;
 };
 
 gnomonImagesSerieFilterCommand::gnomonImagesSerieFilterCommand(const QString& key) : d(new gnomonImagesSerieFilterCommandPrivate)
@@ -36,19 +33,19 @@ gnomonImagesSerieFilterCommand::~gnomonImagesSerieFilterCommand(void)
 void gnomonImagesSerieFilterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    this->action->setImage(d->image);
+    this->action->setInput(d->input);
 
     gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action->run();
 }
 
 void gnomonImagesSerieFilterCommand::undo(void)
 {
-    this->action->setImage(nullptr);
+    this->action->setInput(nullptr);
 }
 
-void gnomonImagesSerieFilterCommand::setImage(dtkImage *image)
+void gnomonImagesSerieFilterCommand::setInput(gnomonImagesSerie *input)
 {
-    d->image = image;
+    d->input = input;
 }
 
 QMap<QString, gnomonParameter*> gnomonImagesSerieFilterCommand::parameters(void) const
@@ -61,17 +58,7 @@ void gnomonImagesSerieFilterCommand::setParameter(const QString& parameter, cons
     this->action->setParameter(parameter, value);
 }
 
-double gnomonImagesSerieFilterCommand::time(void)
+gnomonImagesSerie *gnomonImagesSerieFilterCommand::output(void)
 {
-    return this->action->time();
-}
-
-dtkImage *gnomonImagesSerieFilterCommand::at(double t)
-{
-    return this->action->at(t);
-}
-
-dtkImage *gnomonImagesSerieFilterCommand::next(void)
-{
-    return this->action->next();
+    return this->action->output();
 }
