@@ -85,7 +85,7 @@ public slots:
 signals:
     void channelsChanged(QStringList);
 
- public:
+public:
     static QMap<double, QColor> grey_colormap;
 
 protected:

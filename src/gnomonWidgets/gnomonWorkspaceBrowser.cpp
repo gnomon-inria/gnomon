@@ -184,7 +184,11 @@ void gnomonWorkspaceBrowser::displayChannels(void)
 
     switch(nb_channels_ticked) {
     case 0:
-        d->browse_view->setBlending(false);
+        // dont disable it if there is only one channel. In this case, the blending can
+        // only be activated/deactivated manually
+        if(d->channels_list->count() > 1)
+            d->browse_view->setBlending(false);
+
         if(d->channels_list->currentItem())
             d->browse_view->onChannelChanged(d->channels_list->currentItem()->text(),
                                              d->color_map_editor->value());
