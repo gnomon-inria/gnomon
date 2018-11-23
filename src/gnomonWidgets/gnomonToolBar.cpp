@@ -113,19 +113,23 @@ class gnomonToolBarItem : public QLabel
     Q_OBJECT
 
 public:
-    gnomonToolBarItem(const QColor& color, const QString& label, QWidget *parent) : QLabel(label, parent) {
+    gnomonToolBarItem(const QColor& color, const QString& label, QWidget *parent = nullptr, bool display_destroy = true) : QLabel(label, parent) {
         m_color = color;
 
-        this->button_destroy = new gnomonItemButton(color, fa::times, this);
-        this->button_destroy->setAlignment(Qt::AlignRight);
-        this->button_destroy->setVisible(false);
+        if (display_destroy) {
+
+            this->button_destroy = new gnomonItemButton(color, fa::times, this);
+            this->button_destroy->setAlignment(Qt::AlignRight);
+            this->button_destroy->setVisible(false);
+
+            connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
+        }
 
         this->setAlignment(Qt::AlignCenter);
         this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
         this->setMouseTracking(true);
         this->setStyleSheet(QString("color: rgb(%1,%2,%3);").arg(color.red()).arg(color.green()).arg(color.blue()));
 
-        connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
     };
 
 signals:
@@ -133,7 +137,7 @@ signals:
     void destroy(void);
 
 public:
-    gnomonItemButton *button_destroy;
+    gnomonItemButton *button_destroy = nullptr;
 
 public:
     const QColor& color(void) { return m_color; } ;
@@ -145,12 +149,14 @@ protected:
 
 void enterEvent(QEvent *)
 {
-    this->button_destroy->setVisible(true);
+    if (this->button_destroy)
+        this->button_destroy->setVisible(true);
 }
 
 void leaveEvent(QEvent *)
 {
-    this->button_destroy->setVisible(false);
+    if (this->button_destroy)
+        this->button_destroy->setVisible(false);
 }
 
 private:
@@ -271,7 +277,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     d = new gnomonToolBarPrivate;
     d->q = this;
 
-    gnomonToolBarItem *item = new gnomonToolBarItem(browser_color, "Browse", this);
+    gnomonToolBarItem *item = new gnomonToolBarItem(browser_color, "Browse", this, false);
 
     gnomonToolBarButton *button = new gnomonToolBarButton(this);
 
