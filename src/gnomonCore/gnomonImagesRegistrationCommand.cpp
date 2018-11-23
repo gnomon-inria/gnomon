@@ -51,7 +51,7 @@ void gnomonImagesRegistrationCommand::addImage(dtkImage *image)
     d->images.push_back(image);
 }
 
-QMap<QString, gnomonParameter*> gnomonImagesRegistrationCommand::parameters(void) const
+QMap<QString, gnomonCoreParameter*> gnomonImagesRegistrationCommand::parameters(void) const
 {
     return this->action->parameters();
 }

@@ -15,7 +15,7 @@ public:
 public:
     void addImage(dtkImage *);
 
-    virtual QMap<QString, gnomonParameter*> parameters(void) const;
+    virtual QMap<QString, gnomonCoreParameter*> parameters(void) const;
 
     virtual void setParameter(const QString&, const QVariant&);
 

@@ -19,7 +19,7 @@
 #include <dtkCore>
 
 class dtkImage;
-class gnomonParameter;
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -31,7 +31,7 @@ public:
     virtual ~gnomonAbstractImagesRegistration(void) = default;
 
 public:
-    virtual QMap<QString, gnomonParameter*> parameters(void) const = 0;
+    virtual QMap<QString, gnomonCoreParameter*> parameters(void) const = 0;
     virtual void setParameter(const QString&, const QVariant&) = 0;
 
 public:
