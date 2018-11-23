@@ -45,7 +45,7 @@ QWidget *gnomonWidgetsParameterInt::widget(gnomonCoreParameterInt *parameter, QW
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, qOverload<int>(&QSpinBox::valueChanged),
+        QObject::connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                          [=](int value) { parameter->setValue(value); });
 
         return widget;
@@ -57,7 +57,7 @@ QWidget *gnomonWidgetsParameterInt::widget(gnomonCoreParameterInt *parameter, QW
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, qOverload<int>(&QSlider::valueChanged),
+        QObject::connect(widget, static_cast<void (QSlider::*)(int)>(&QSlider::valueChanged),
                          [=](int value) { parameter->setValue(value); });
 
         return widget;
@@ -78,7 +78,7 @@ QWidget *gnomonWidgetsParameterDouble::widget(gnomonCoreParameterDouble *paramet
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, qOverload<double>(&QDoubleSpinBox::valueChanged),
+        QObject::connect(widget, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                          [=](double value) { parameter->setValue(value); });
 
         return widget;
@@ -138,7 +138,7 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
         }
         widget->setCurrentText(parameter->currentValue());
 
-        QObject::connect(widget, qOverload<int>(&QComboBox::currentIndexChanged),
+        QObject::connect(widget, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                          [=](int id) { parameter->setCurrentIndex(id); });
 
         return widget;
