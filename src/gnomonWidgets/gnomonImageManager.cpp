@@ -255,7 +255,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImagesSeriePtr i
     });
 
     connect(item, &gnomonImageManagerItem::save, [=] () {
-       if(false) { // TODO
+       if(this->writer) {
            QSettings settings("inria", "gnomon");
            settings.beginGroup("General");
            QString path = settings.value("last_saved_file", QDir::homePath()).toString();
@@ -268,7 +268,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImagesSeriePtr i
                settings.setValue("last_saved_file", export_file_path);
                settings.endGroup();
 
-               this->writer->setImage(this->images_series[item]->image());
+               this->writer->setImagesSerie(this->images_series[item].data());
                this->writer->setPath(export_file_path);
                this->writer->run();
            }

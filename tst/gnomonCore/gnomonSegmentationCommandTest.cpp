@@ -14,7 +14,7 @@ class gnomonSegmentationCommandTestCasePrivate
 {
 public:
     gnomonSegmentationCommand      *command_segmentation = nullptr;
-    gnomonImagesSerieReaderCommand *command_czi_reader   = nullptr;
+    gnomonImagesSerie              *images_serie = nullptr;
 };
 
 gnomonSegmentationCommandTestCase::gnomonSegmentationCommandTestCase(void) : d(new gnomonSegmentationCommandTestCasePrivate)
@@ -33,8 +33,8 @@ void gnomonSegmentationCommandTestCase::initTestCase(void)
 
 void gnomonSegmentationCommandTestCase::init(void)
 {
-    // d->command_czi_reader = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-    // Q_ASSERT(d->command_czi_reader);
+    d->command_czi_reader = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
+    Q_ASSERT(d->command_czi_reader);
 
     // d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentation");
     // Q_ASSERT(d->command_segmentation);
