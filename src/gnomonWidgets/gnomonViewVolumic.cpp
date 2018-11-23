@@ -1206,9 +1206,18 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
 
     Q_ASSERT(QObject::sender() != this);
 
+    Q_ASSERT(d->image);
+
+    dtkArray<double> spacing = d->image->spacing();
+    double x_length = spacing[0] * double(d->image->xDim());
+    double y_length = spacing[1] * d->image->yDim();
+    double z_length = spacing[2] * d->image->zDim();
+
+    double radius = std::sqrt(x_length * x_length + y_length * y_length + z_length * z_length) * 0.5 * 0.02;
+
     vtkSmartPointer<vtkSphereSource> sphere_source =
         vtkSmartPointer<vtkSphereSource>::New();
-    sphere_source->SetRadius(5.0);
+    sphere_source->SetRadius(radius);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper =
         vtkSmartPointer<vtkPolyDataMapper>::New();
