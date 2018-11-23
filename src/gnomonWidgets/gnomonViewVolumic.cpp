@@ -1295,7 +1295,7 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
 
     Q_ASSERT(QObject::sender() != this);
 
-    Q_ASSERT(d->image);
+    if(!d->image) return;
 
     dtkArray<double> spacing = d->image->spacing();
     double x_length = spacing[0] * double(d->image->xDim());
