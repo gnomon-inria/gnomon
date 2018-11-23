@@ -34,8 +34,8 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
         this->command = new T(algorithm);
         QMap<QString, gnomonParameter*> parameters = this->command->parameters();
         for(QMap<QString, gnomonParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
-        { 
-            QWidget* widget = it.value()->connect(parent); 
+        {
+            QWidget* widget = it.value()->connect(parent);
             this->pane_item_params_layout->addRow(it.key(), widget);
         }
         this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
@@ -66,6 +66,7 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane_item_parameters->toggle();
 
     QPushButton *button = new QPushButton("Apply", parent);
+    button->setCheckable(true);
 
     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
     pane_item_button->setTitle(this->workspace());
@@ -78,7 +79,11 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane->addWidget(pane_item_button);
     pane->toggle();
 
-    parent->connect(button, SIGNAL(clicked()), parent, SLOT(apply()));
+    QObject::connect(button, &QPushButton::clicked, [=] () {
+                                                        parent->setCursor(Qt::BusyCursor);
+                                                        dynamic_cast<gnomonWorkspace*>(parent)->apply();
+                                                        parent->setCursor(Qt::ArrowCursor);
+                                                    });
 
     configure(parent, combo_box->currentText());
 
