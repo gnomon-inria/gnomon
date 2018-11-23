@@ -373,7 +373,7 @@ QColor gnomonToolBar::fusion_color = QColor("#ff9500");
 QColor gnomonToolBar::registration_color = QColor("#ffcc00");
 QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
 QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
-QColor gnomonToolBar::simulation_color = QColor("#5ac8fa");
+QColor gnomonToolBar::simulation_color = QColor("#5856d6");
 
 // ///////////////////////////////////////////////////////////////////
 
