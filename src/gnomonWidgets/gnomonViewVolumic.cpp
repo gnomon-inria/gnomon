@@ -1175,6 +1175,8 @@ void gnomonViewVolumic::onSliceChanged(int slice)
 
 void gnomonViewVolumic::applyLut(const QMap<double, QColor>& source)
 {
+    if (!d->image_interactor->image)
+        return;
 
     vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
     //color_function->RemoveAllPoints();
