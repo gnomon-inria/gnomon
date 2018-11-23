@@ -53,6 +53,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractIntensityImageData.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
+  gnomonAbstractMeshReader
+  gnomonAbstractMeshReader.h
   gnomonAbstractModel
   gnomonAbstractModel.h
   gnomonAbstractSystemScenario
@@ -119,6 +121,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractImagesSerieWriter.cpp
   gnomonAbstractIntensityImageData.cpp
   gnomonAbstractMeshData.cpp
+  gnomonAbstractMeshReader.cpp
   gnomonAbstractModel.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
