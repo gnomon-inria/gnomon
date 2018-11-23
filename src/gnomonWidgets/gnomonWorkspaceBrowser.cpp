@@ -71,7 +71,6 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     pane_item_channels->addLayout(pane_item_channels_layout);
     pane_item_channels->toggle();
 
-
     d->color_map_editor = new gnomonColorMapEditor(this);
     QPushButton * color_map_button = new QPushButton("Apply", this);
     connect(color_map_button, &QPushButton::clicked, [=](void) {
@@ -138,6 +137,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
 void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
 {
     d->channels_list->clear();
+    d->channels_lut.clear();
     d->channels_list->addItems(channels_list);
 
     for(int i=0; i < d->channels_list->count(); ++i)
@@ -151,14 +151,14 @@ void gnomonWorkspaceBrowser::replaceChannels(QStringList channels_list)
 void gnomonWorkspaceBrowser::replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item)
 {
     if(current_item) {
-        current_item->setCheckState(Qt::Checked);
-        d->pane_item_channels_lut->setTitle("Channel "+ current_item->text() + " LookUpTable");
-
         //save old values
         if(previous_item) {
             current_item->setCheckState(Qt::Unchecked);
             d->channels_lut[previous_item->text()] = d->color_map_editor->value();
         }
+
+        //current_item->setCheckState(Qt::Checked);
+        d->pane_item_channels_lut->setTitle("Channel "+ current_item->text() + " LookUpTable");
 
         //set current value
         if(d->channels_lut.contains(current_item->text())) {
@@ -184,7 +184,11 @@ void gnomonWorkspaceBrowser::displayChannels(void)
 
     switch(nb_channels_ticked) {
     case 0:
-        d->browse_view->setBlending(false);
+        // dont disable it if there is only one channel. In this case, the blending can
+        // only be activated/deactivated manually
+        if(d->channels_list->count() > 1)
+            d->browse_view->setBlending(false);
+
         if(d->channels_list->currentItem())
             d->browse_view->onChannelChanged(d->channels_list->currentItem()->text(),
                                              d->color_map_editor->value());
