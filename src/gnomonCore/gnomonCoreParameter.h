@@ -22,35 +22,19 @@
 // gnomonCoreParameter
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonCoreParameter : public QObject
+class GNOMONCORE_EXPORT gnomonCoreParameter
 {
-    Q_OBJECT
-
 public:
              gnomonCoreParameter(const QString& doc);
     virtual ~gnomonCoreParameter(void) = default;
 
     QString doc(void) const;
 
-    virtual QString type(void) const = 0;
-
 protected:
     QString m_doc;
 };
 
-// QDebug& operator<<(QDebug& stream, const gnomonCoreParameter& parameter)
-// {
-//     stream << parameter.type();
-
-//     return stream;
-// }
-
-// QDebug& operator<<(QDebug& stream,       gnomonCoreParameter *parameter)
-// {
-//     stream << parameter->type();
-
-//     return stream;
-// }
+Q_DECLARE_METATYPE(gnomonCoreParameter *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterNumeric
@@ -89,11 +73,6 @@ public:
     void setMaximumValue(T max) { m_max = max; }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
-    QString type(void) const
-    {
-        return QMetaType::typeName(qMetaTypeId<T>());
-    }
-
 private:
     T m_value = T(0);
     int m_accuracy = 2;
@@ -109,6 +88,14 @@ using gnomonCoreParameterLong   = gnomonCoreParameterNumeric<long>;
 using gnomonCoreParameterULong  = gnomonCoreParameterNumeric<unsigned long>;
 using gnomonCoreParameterDouble = gnomonCoreParameterNumeric<double>;
 
+Q_DECLARE_METATYPE(gnomonCoreParameterShort *);
+Q_DECLARE_METATYPE(gnomonCoreParameterUShort *);
+Q_DECLARE_METATYPE(gnomonCoreParameterInt *);
+Q_DECLARE_METATYPE(gnomonCoreParameterUInt *);
+Q_DECLARE_METATYPE(gnomonCoreParameterLong *);
+Q_DECLARE_METATYPE(gnomonCoreParameterULong *);
+Q_DECLARE_METATYPE(gnomonCoreParameterDouble *);
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterBool
 // ///////////////////////////////////////////////////////////////////
@@ -123,14 +110,11 @@ public:
 
     void setValue(bool);
 
-    QString type(void) const
-    {
-        return "bool";
-    }
-
 private:
     bool m_value = false;
 };
+
+Q_DECLARE_METATYPE(gnomonCoreParameterBool *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterString
@@ -146,14 +130,11 @@ public:
 
     void setValue(const QString&);
 
-    QString type(void) const
-    {
-        return "string";
-    }
-
 private:
     QString m_s;
 };
+
+Q_DECLARE_METATYPE(gnomonCoreParameterString *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterStringList
@@ -175,15 +156,12 @@ public:
     void addValue(const QString&);
     void removeValue(const QString&);
 
-    QString type(void) const
-    {
-        return "stringlist";
-    }
-
 private:
     int m_current_index = 0;
     QStringList m_values;
 };
+
+Q_DECLARE_METATYPE(gnomonCoreParameterStringList *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant
@@ -199,14 +177,11 @@ public:
 
     void setValue(const QVariant&);
 
-    QString type(void) const
-    {
-        return "variant";
-    }
-
 private:
     QVariant m_v;
 };
+
+Q_DECLARE_METATYPE(gnomonCoreParameterVariant *);
 
 //
 // gnomonCoreParameter.h ends here
