@@ -325,6 +325,7 @@
 %include <QVariant.i>
 
 %include "std_array.i"
+%include "std_vector.i"
 
 namespace std {
     %template(vec3_t) array<double, 3>;
