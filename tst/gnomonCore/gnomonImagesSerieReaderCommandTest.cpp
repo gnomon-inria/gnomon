@@ -45,7 +45,8 @@ void gnomonImagesSerieReaderCommandTestCase::readInr(void)
 
     gnomonImagesSerie *images_serie = d->command->imagesSerie();
 
-    QVERIFY(images_serie->times() == 1);
+    QVERIFY(images_serie->times().size() == 1);
+    QVERIFY(images_serie->times().first() == 0);
 
     dtkImage* image = images_serie->image();
 
@@ -68,7 +69,8 @@ void gnomonImagesSerieReaderCommandTestCase::readCzi(void)
 
     gnomonImagesSerie *images_serie = d->command->imagesSerie();
 
-    QVERIFY(images_serie->times() == 1);
+    QVERIFY(images_serie->times().size() == 1);
+    QVERIFY(images_serie->times().first() == 0);
 
     QStringList true_list = {"ChS1_EYFP", "Ch1_EBFP", "Ch2_PI", "Ch2_mCherry", "ChS1_EGFP"};
 

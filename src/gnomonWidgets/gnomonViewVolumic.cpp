@@ -1036,7 +1036,7 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
     d->c_y = d->y/2;
     d->c_z = d->z/2;
 
-    d->time_slider->setMaximum(d->images_serie->times() - 1);
+    d->time_slider->setMaximum(d->images_serie->times().last());
     d->time_slider->blockSignals(true);
     d->time_slider->setValue(d->images_serie->time());
     d->time_slider->blockSignals(false);
