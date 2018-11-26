@@ -29,6 +29,9 @@ set(${PROJECT_NAME}_HEADERS
   gnomonGridLayout.h
   gnomonImageManager
   gnomonImageManager.h
+  gnomonImageManager_p.h
+  gnomonImageManagerItem.h
+  gnomonImageManagerFocus.h
   gnomonItemButton.h
   gnomonOverlayPane
   gnomonOverlayPane.h
@@ -63,6 +66,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
   gnomonGridLayout.cpp
   gnomonImageManager.cpp
+  gnomonImageManagerItem.cpp
+  gnomonImageManagerFocus.cpp
   gnomonItemButton.cpp
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp

@@ -13,9 +13,11 @@
 // Code:
 
 #include "gnomonImageManager.h"
+#include "gnomonImageManager_p.h"
+#include "gnomonImageManagerItem.h"
+#include "gnomonImageManagerFocus.h"
 #include "gnomonItemButton.h"
 
-#include <gnomonFonts>
 #include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
 
 #include <dtkScript>
@@ -25,131 +27,9 @@
 #include <vtkImageData.h>
 #include <vtkPointData.h>
 
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonImageManagerItem
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonImageManagerItem : public QLabel
-{
-    Q_OBJECT
-
-public:
-     gnomonImageManagerItem(const QColor&, const QPixmap& thumbnail, QWidget *parent = nullptr);
-    ~gnomonImageManagerItem(void);
-
-signals:
-    void destroy(void);
-    void save(void);
-
-protected:
-    void enterEvent(QEvent *);
-    void leaveEvent(QEvent *);
-    void mousePressEvent(QMouseEvent *);
-
-public:
-    int id;
-
-public:
-    gnomonItemButton *button_destroy;
-    gnomonItemButton *button_save;
-    QPixmap thumbnail;
-    QPixmap transparent_thumbnail;
-};
-
-gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixmap& thumbnail, QWidget *parent) : QLabel(parent)
-{
-    this->button_destroy = new gnomonItemButton(color, fa::times, this);
-    this->button_destroy->move(79, 5);
-    this->button_destroy->setVisible(false);
-
-    this->button_save = new gnomonItemButton(color, fa::save, this);
-    this->button_save->move(5, 5);
-    this->button_save->setVisible(false);
-
-    this->setPixmap(thumbnail.scaled(100, 100, Qt::KeepAspectRatio));
-    this->thumbnail = *this->pixmap();
-
-    this->transparent_thumbnail = *this->pixmap();
-    this->transparent_thumbnail.fill();
-
-    QPainter painter;
-    painter.begin(&transparent_thumbnail);
-    painter.setOpacity(0.5);
-    painter.drawPixmap(0, 0, *this->pixmap());
-    painter.end();
-
-    this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
-
-    connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
-    connect(this->button_save, SIGNAL(clicked()), this, SIGNAL(save()));
-
-    this->setMouseTracking(true);
-}
-
-gnomonImageManagerItem::~gnomonImageManagerItem(void)
-{
-
-}
-
-void gnomonImageManagerItem::enterEvent(QEvent *)
-{
-    this->button_destroy->setVisible(true);
-    this->button_save->setVisible(true);
-    this->setPixmap(this->transparent_thumbnail);
-}
-
-void gnomonImageManagerItem::leaveEvent(QEvent *)
-{
-    this->button_destroy->setVisible(false);
-    this->button_save->setVisible(false);
-    this->setPixmap(this->thumbnail);
-}
-
-void gnomonImageManagerItem::mousePressEvent(QMouseEvent *)
-{
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setText(QString(":%1").arg(this->id));
-
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    drag->setPixmap(*(this->pixmap()));
-    drag->setHotSpot(QPoint(drag->pixmap().width()/2, drag->pixmap().height()/2));
-
-    Qt::DropAction dropAction = drag->exec();
-}
-
 // ///////////////////////////////////////////////////////////////////
 // gnomonImageManagerPrivate
 // ///////////////////////////////////////////////////////////////////
-
-class gnomonImageManagerPrivate : public QScrollArea
-{
-public:
-     gnomonImageManagerPrivate(QWidget *parent = nullptr);
-    ~gnomonImageManagerPrivate(void);
-
-public:
-    QSize sizeHint(void) const;
-
-public:
-    gnomonImageManagerItem *create(dtkImagePtr, const QColor&);
-
-public:
-    QHash<gnomonImageManagerItem *, dtkImagePtr> images;
-
-public:
-    gnomonAbstractImagesSerieWriter *writer;
-
-public:
-    static int item_counter;
-
-public:
-    bool inside = false;
-
-public:
-    QWidget *contents;
-};
 
 int gnomonImageManagerPrivate::item_counter = 0;
 
@@ -217,6 +97,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
     QRgb *b = reinterpret_cast<QRgb *>(i.bits());
 
     int z = d/2;
+
     for(int c = 0; c < w; ++c) {
         for(int r = 0; r < h; ++r) {
             double v;
@@ -273,6 +154,10 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
        }
     });
 
+    connect(item, &gnomonImageManagerItem::clicked, [=] () {
+        q->present(item);
+    });
+
     return item;
 }
 
@@ -320,6 +205,7 @@ QPixmap gnomonImageManager::thumbnail(int index)
 gnomonImageManager::gnomonImageManager(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonImageManagerPrivate;
+    d->q = this;
 
     QHBoxLayout *t_layout = new QHBoxLayout;
     t_layout->setContentsMargins(0, 0, 0, 0);
@@ -346,6 +232,95 @@ QSize gnomonImageManager::sizeHint(void) const
     return QSize(200, 140);
 }
 
+void gnomonImageManager::present(gnomonImageManagerItem *item)
+{
+    if(!d->focus_item)
+        d->focus_item = new gnomonImageManagerFocus(this);
+
+    QSequentialAnimationGroup *animation = new QSequentialAnimationGroup(this);
+
+    if (d->focus_item->presented) {
+
+        QVariantAnimation *p_animation = new QVariantAnimation(this);
+        p_animation->setDuration(250);
+        p_animation->setStartValue(d->focus_item->destnt);
+        p_animation->setEndValue(d->focus_item->source);
+        p_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QVariantAnimation *s_animation = new QVariantAnimation(this);
+        s_animation->setDuration(250);
+        s_animation->setStartValue(d->focus_item->d_size);
+        s_animation->setEndValue(d->focus_item->s_size);
+        s_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
+        g_animation->addAnimation(p_animation);
+        g_animation->addAnimation(s_animation);
+
+        connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->move(value.toPoint());
+        });
+
+        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->resize(value.toSize());
+            d->focus_item->setPixmap(d->focus_item->pixmap()->scaled(value.toSize().width(), value.toSize().height()));
+        });
+
+        connect(g_animation, &QAbstractAnimation::finished, [=] () {
+            d->focus_item->presented = false;
+        });
+
+        animation->addAnimation(g_animation);
+
+    }
+
+    {
+
+        d->focus_item->move(item->pos());
+        d->focus_item->resize(item->size());
+        d->focus_item->setStyleSheet("border: 2px solid white;");
+        d->focus_item->show();
+
+        d->focus_item->source = d->focus_item->pos();
+        d->focus_item->destnt = QPoint(this->size().width() / 2 - 3 * d->focus_item->width() / 2, this->size().height() / 2 - 3 * d->focus_item->height() / 2);
+        d->focus_item->s_size = d->focus_item->size();
+        d->focus_item->d_size = d->focus_item->size() * 3;
+
+        QVariantAnimation *p_animation = new QVariantAnimation(this);
+        p_animation->setDuration(500);
+        p_animation->setStartValue(d->focus_item->source);
+        p_animation->setEndValue(d->focus_item->destnt);
+        p_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QVariantAnimation *s_animation = new QVariantAnimation(this);
+        s_animation->setDuration(500);
+        s_animation->setStartValue(d->focus_item->s_size);
+        s_animation->setEndValue(d->focus_item->d_size);
+        s_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
+        g_animation->addAnimation(p_animation);
+        g_animation->addAnimation(s_animation);
+
+        connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->move(value.toPoint());
+        });
+
+        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->resize(value.toSize());
+            d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
+        });
+
+        connect(g_animation, &QAbstractAnimation::finished, [=] () {
+            d->focus_item->presented = true;
+        });
+
+        animation->addAnimation(g_animation);
+    }
+
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
 void gnomonImageManager::enterEvent(QEvent *)
 {
     d->inside = true;
@@ -366,10 +341,13 @@ void gnomonImageManager::mousePressEvent(QMouseEvent *event)
 
     if (handle.contains(event->pos())) {
 
-        if(this->size().height() < 150)
+        if(this->size().height() < 150) {
             emit expand();
-        else
+            d->state = gnomonImageManagerPrivate::Expanded;
+        } else {
             emit shrink();
+            d->state = gnomonImageManagerPrivate::Collapsed;
+        }
     }
 }
 
@@ -386,10 +364,6 @@ void gnomonImageManager::paintEvent(QPaintEvent *event)
 }
 
 gnomonImageManager *gnomonImageManager::s_instance = nullptr;
-
-// ///////////////////////////////////////////////////////////////////
-
-#include "gnomonImageManager.moc"
 
 //
 // gnomonImageManager.cpp ends here

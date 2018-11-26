@@ -22,6 +22,8 @@
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
+class gnomonImageManagerItem;
+
 class GNOMONWIDGETS_EXPORT gnomonImageManager : public QFrame
 {
     Q_OBJECT
@@ -38,6 +40,9 @@ public:
 
 public slots:
     void addImage(dtkImagePtr, const QColor&);
+
+public slots:
+    void present(gnomonImageManagerItem *);
 
 public:
     dtkImagePtr get(int index);
