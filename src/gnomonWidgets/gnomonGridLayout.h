@@ -30,6 +30,7 @@ public:
 
 public slots:
     void addView(void);
+	void removeAllViews(void);
 
 public:
     QList<gnomonViewVolumic *> views(void);

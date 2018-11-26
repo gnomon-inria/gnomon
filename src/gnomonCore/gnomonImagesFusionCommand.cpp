@@ -33,7 +33,7 @@ void gnomonImagesFusionCommand::redo(void)
     Q_ASSERT(this->action);
 
     for(auto& images_serie : d->images_series) {
-        gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->addImagesSerie(images_serie);
+        this->action->addImagesSerie(images_serie);
     };
 
     this->action->run();
@@ -41,7 +41,7 @@ void gnomonImagesFusionCommand::redo(void)
 
 void gnomonImagesFusionCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->removeImagesSeries();
+    this->action->removeImagesSeries();
 }
 
 void gnomonImagesFusionCommand::addImagesSerie(gnomonImagesSerie *images_serie)

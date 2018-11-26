@@ -56,6 +56,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d = new gnomonWorkspaceFusionPrivate;
 
     d->layout = new gnomonGridLayout;
+    d->layout->addView();
 
     d->target = new gnomonViewVolumic(this);
     d->target->setMinimumWidth(250);
@@ -83,11 +84,13 @@ void gnomonWorkspaceFusion::apply(void)
 {
     if(d->layout->views().isEmpty()) return;
 
+    d->command->undo();
     for(gnomonViewVolumic *view : d->layout->views()) {
         d->command->addImagesSerie(view->imagesSerie().data());
     }
     d->command->redo();
-    d->target->setImage(d->command->output()->image());
+
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)
