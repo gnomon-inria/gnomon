@@ -82,20 +82,40 @@ gnomonImagesSerie::~gnomonImagesSerie()
     delete d;
 }
 
+
+dtkImage* gnomonImagesSerie::image(size_t time) const
+{
+    return this->image(d->channel, time);
+}
+
 dtkImage* gnomonImagesSerie::image() const
 {
-    if(d->time >= d->images.size())
+    return this->image(d->channel, d->time);
+}
+
+dtkImage* gnomonImagesSerie::image(const QString& channel, size_t time) const
+{
+    if(time == SIZE_MAX)
+        time = d->time;
+
+    if(!d->images.contains(time))
     {
-        qDebug() << "gnomonImagesSerie has no time" << d->time;
+        qDebug() << "gnomonImagesSerie has no time" << time;
         return nullptr;
     }
-    const QMap<QString, dtkImage*>& images = d->images[d->time];
-    QMap<QString, dtkImage*>::const_iterator it = images.constFind(d->channel);
+
+    QString current_channel = channel;
+    if(channel.isEmpty())
+        current_channel = d->channel;
+
+    const QMap<QString, dtkImage*>& images = d->images[time];
+    QMap<QString, dtkImage*>::const_iterator it = images.constFind(current_channel);
     if(it == images.constEnd())
     {
-        qDebug() << "gnomonImagesSerie at time" << d->time << "has no" << d->channel << "channel";
+        qDebug() << "gnomonImagesSerie at time" << time << "has no" << current_channel << "channel";
         return nullptr;
     }
+
     return it.value();
 }
 
@@ -117,7 +137,6 @@ void gnomonImagesSerie::setImage(dtkImage* image, const QString& channel, size_t
     if(!d->images.contains(time)) {
         d->images[time] = QMap<QString, dtkImage*>();
     }
-
 
     QMap<QString, dtkImage*>& images = d->images[time];
     QMap<QString, dtkImage*>::iterator it = images.find(current_channel);

@@ -30,6 +30,9 @@ public:
 
 public:
     dtkImage* image() const;
+    dtkImage* image(size_t time) const;
+    dtkImage* image(const QString& channel, size_t time=SIZE_MAX) const;
+
     void setImage(dtkImage*, size_t time);
     void setImage(dtkImage*, const QString& channel = "", size_t time = SIZE_MAX);
 
