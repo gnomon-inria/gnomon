@@ -31,7 +31,7 @@ public:
     void leave(void) override {}
 
 public slots:
-    void apply(void);
+    void apply(void) override;
 
 private:
     class gnomonWorkspaceRegistrationPrivate *d;

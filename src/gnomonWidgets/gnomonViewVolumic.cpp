@@ -585,7 +585,7 @@ void gnomonViewVolumicPrivate::exportToManager(void)
     while(!dynamic_cast< QStackedWidget *>(parent))
         parent = parent->parentWidget();
 
-    QStackedWidget *stack = dynamic_cast< QStackedWidget * >(parent);
+    QStackedWidget *stack = dynamic_cast<QStackedWidget *>(parent);
 
     if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
         gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::browser_color);
