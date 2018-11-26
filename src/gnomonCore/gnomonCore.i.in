@@ -60,8 +60,8 @@
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonIntensityImage.h>
-#include <gnomonCore/gnomonMesh.h>
 #include <gnomonCore/gnomonLandmark.h>
+#include <gnomonCore/gnomonMesh.h>
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
@@ -315,8 +315,8 @@
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonIntensityImage.h>
-%include <gnomonCore/gnomonMesh.h>
 %include <gnomonCore/gnomonLandmark.h>
+%include <gnomonCore/gnomonMesh.h>
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
