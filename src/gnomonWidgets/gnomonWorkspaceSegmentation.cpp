@@ -131,6 +131,15 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 {
+    if (d->actor)
+        d->actor->Delete();
+
+    if (d->actor2D)
+        d->actor2D->Delete();
+
+    if (d->polydata)
+        d->polydata->Delete();
+
     delete d;
 }
 
