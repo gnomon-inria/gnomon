@@ -157,8 +157,6 @@ public:
     void addValue(const QString&);
     void removeValue(const QString&);
 
-    QString value(void) const;
-
     void setValue(const QString&);
 
 private:
