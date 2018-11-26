@@ -1,3 +1,6 @@
+#include <gnomonCore/gnomonCoreParameter.h>
+#include "gnomonWidgetsParameter.h"
+
 template <typename T>
 gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
@@ -29,52 +32,19 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
 
     if (this->command) {
         delete this->command;
+        this->command = nullptr;
     }
-    this->command = new T(algorithm);
 
-    QMap<QString, QVariant> parameters = this->command->parameters();
-    for (auto it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-        QWidget *widget;
-        QString key = it.key();
-        int type = it.value().type();
-
-        if (type == QMetaType::Int ||
-            // type == QMetaType::Uint ||
-            type == QMetaType::Long ||
-            type == QMetaType::ULong ||
-            type == QMetaType::LongLong ||
-            type == QMetaType::ULongLong) {
-            widget = new QSpinBox(parent);
-            static_cast< QSpinBox* >(widget)->setValue(it.value().value<int>());
-            parent->connect(static_cast< QSpinBox* >(widget), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-                            [=](int value){ this->command->setParameter(key, value); });
-
-        } else if (type == QMetaType::Float ||
-                   type == QMetaType::Double) {
-            widget = new QDoubleSpinBox(parent);
-            static_cast< QDoubleSpinBox* >(widget)->setValue(it.value().value<double>());
-            parent->connect(static_cast< QDoubleSpinBox* >(widget),  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-                            [=](double value){ this->command->setParameter(key, value); });
-
-        } else if (type == QMetaType::QString) {
-            widget = new QLineEdit(parent);
-            static_cast< QLineEdit* >(widget)->setText(it.value().value<QString>());
-            parent->connect(static_cast< QLineEdit* >(widget), &QLineEdit::textChanged,
-                            [=](QString value){ this->command->setParameter(key, value); });
-
-        } else if (type == QMetaType::Bool) {
-            widget = new QCheckBox(parent);
-            if(it.value().value<bool>()) {
-                static_cast< QCheckBox* >(widget)->setCheckState(Qt::Checked);
-            } else {
-                static_cast< QCheckBox* >(widget)->setCheckState(Qt::Unchecked);
-            }
-            parent->connect(static_cast< QCheckBox* >(widget), &QCheckBox::stateChanged,
-                            [=](int value){ this->command->setParameter(key, value > Qt::Unchecked); });
+    if (!algorithm.isEmpty()) {
+        this->command = new T(algorithm);
+        QMap<QString, gnomonCoreParameter *> parameters = this->command->parameters();
+        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+            if (widget)
+                this->pane_item_params_layout->addRow(it.key(), widget);
         }
-        this->pane_item_params_layout->addRow(it.key(), widget);
+        this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     }
-    this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 }
 
 template <typename T>
@@ -101,6 +71,7 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane_item_parameters->toggle();
 
     QPushButton *button = new QPushButton("Apply", parent);
+    button->setCheckable(true);
 
     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
     pane_item_button->setTitle(this->workspace());
@@ -113,7 +84,11 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane->addWidget(pane_item_button);
     pane->toggle();
 
-    parent->connect(button, SIGNAL(clicked()), parent, SLOT(apply()));
+    QObject::connect(button, &QPushButton::clicked, [=] () {
+        parent->setCursor(Qt::BusyCursor);
+        dynamic_cast<gnomonWorkspace*>(parent)->apply();
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
     configure(parent, combo_box->currentText());
 

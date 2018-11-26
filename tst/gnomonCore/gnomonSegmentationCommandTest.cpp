@@ -36,7 +36,7 @@ void gnomonSegmentationCommandTestCase::init(void)
     d->command_czi_reader = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
     Q_ASSERT(d->command_czi_reader);
 
-    d->command_segmentation = new gnomonSegmentationCommand("gnomonCellImageFromTimagetkSegmentation");
+    d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentation");
     Q_ASSERT(d->command_segmentation);
 }
 
@@ -50,10 +50,11 @@ void gnomonSegmentationCommandTestCase::redo(void)
     qDebug() << "d->command_czi_reader->at(0, \"Ch2_PI\")" << d->command_czi_reader->at(0, "Ch2_PI");
     d->command_segmentation->setImage(d->command_czi_reader->at(0, "Ch2_PI"));
 
-    d->command_segmentation->setParameter("h_min", 1500.);
+    QMap<QString, gnomonCoreParameter *> parameters = d->command_segmentation->parameters();
+    d->command_segmentation->setParameter("hmin", 1500.);
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);
     d->command_segmentation->setParameter("segmentation_gaussian_sigma", 0.25);
-    d->command_segmentation->setParameter("volume_threshold", 1000.);
+    d->command_segmentation->setParameter("volume_threshold", 1000);
     d->command_segmentation->setParameter("background_label", 1);
 
     d->command_segmentation->redo();

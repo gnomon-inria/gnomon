@@ -18,9 +18,9 @@ gnomonImagesSerieReaderCommand::gnomonImagesSerieReaderCommand(const QString& ke
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action = gnomonCore::imagesSerieReader::pluginFactory().create(key);
+    this->action = gnomonCore::imagesSerieReader::pluginFactory().create(key);
 
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action);
+    Q_ASSERT(this->action);
 }
 
 gnomonImagesSerieReaderCommand::~gnomonImagesSerieReaderCommand()
@@ -30,14 +30,14 @@ gnomonImagesSerieReaderCommand::~gnomonImagesSerieReaderCommand()
 
 void gnomonImagesSerieReaderCommand::redo(void)
 {
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action);
-    gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->setPath(d->path);
-    gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->run();
+    Q_ASSERT(this->action);
+    this->action->setPath(d->path);
+    this->action->run();
 }
 
 void gnomonImagesSerieReaderCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->setPath("");
+    this->action->setPath("");
 }
 
 void gnomonImagesSerieReaderCommand::setPath(const QString& path)
@@ -47,20 +47,20 @@ void gnomonImagesSerieReaderCommand::setPath(const QString& path)
 
 double gnomonImagesSerieReaderCommand::time(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->time();
+    return this->action->time();
 }
 
 dtkImage *gnomonImagesSerieReaderCommand::at(double t, const QString& channel)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->at(t, channel);
+    return this->action->at(t, channel);
 }
 
 dtkImage *gnomonImagesSerieReaderCommand::next(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->next();
+    return this->action->next();
 }
 
 QStringList gnomonImagesSerieReaderCommand::channels(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->channels();
+    return this->action->channels();
 }

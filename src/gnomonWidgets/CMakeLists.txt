@@ -29,6 +29,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonGridLayout.h
   gnomonImageManager
   gnomonImageManager.h
+  gnomonItemButton.h
   gnomonOverlayPane
   gnomonOverlayPane.h
   gnomonOverlayPaneItem
@@ -37,7 +38,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonToolBar.h
   gnomonViewVolumic
   gnomonViewVolumic.h
+  gnomonViewVolumicPool.h
   gnomonWidgets
+  gnomonWidgetsParameter
+  gnomonWidgetsParameter.h
   gnomonWorkspace
   gnomonWorkspace.h
   gnomonWorkspaceBrowser
@@ -59,14 +63,18 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
   gnomonGridLayout.cpp
   gnomonImageManager.cpp
+  gnomonItemButton.cpp
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp
   gnomonViewVolumic.cpp
+  gnomonViewVolumicPool.cpp
+  gnomonWidgetsParameter.cpp
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceSegmentation.cpp
+  gnomonWorkspaceSimulation.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspaceRegistration.cpp)
 

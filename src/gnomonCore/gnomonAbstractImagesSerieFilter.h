@@ -19,6 +19,7 @@
 #include <dtkCore>
 
 class dtkImage;
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -31,14 +32,13 @@ public:
 
 public:
     virtual void setImage(dtkImage *image) = 0;
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+    virtual void setParameter(const QString&, const QVariant&) = 0;
 
 public:
     virtual void run(void) = 0;
 
 public:
-    virtual QMap<QString, QVariant> parameters(void) const = 0;
-
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) = 0;
     virtual double time(void) = 0;
     virtual dtkImage *at(double t) = 0;
     virtual dtkImage *next(void) = 0;

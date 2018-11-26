@@ -26,25 +26,21 @@ class dtkImage;
 
 class GNOMONCORE_EXPORT gnomonAbstractSurfaceImageFromImage
 {
-    //Inputs
 public:
              gnomonAbstractSurfaceImageFromImage(void) = default;
     virtual ~gnomonAbstractSurfaceImageFromImage(void) = default;
 
 public:
     virtual void setImage(dtkImage *image) = 0;
-
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
 
-    // Outputs
 public:
     virtual dtkImage *computed3DSurfaceImage(void) const = 0;
     virtual dtkImage *computed2DSurfaceImage(void) const = 0;
-    virtual const QMap<QString, QVariant>& parameters(void) const = 0;
+    virtual QMap<QString, QVariant> parameters(void) const = 0;
 
 public:
     virtual void run(void) = 0;
-
 };
 
 // ///////////////////////////////////////////////////////////////////

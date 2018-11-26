@@ -16,24 +16,24 @@
 
 #include <gnomonCoreExport>
 
+#include <QtCore>
+
 #include <dtkCore>
 
 class dtkImage;
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesFusion
+class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public QRunnable
 {
 public:
     virtual ~gnomonAbstractImagesFusion(void) = default;
 
 public:
-    virtual void setParameters(const QMap<QString, QVariant>&) = 0;
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
-
-public:
+    virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void addImage(dtkImage *image) = 0;
     virtual void removeImages(void) = 0;
 
@@ -41,7 +41,8 @@ public:
     virtual void run(void) = 0;
 
 public:
-    virtual dtkImage *output() = 0;
+    virtual dtkImage *output(void) = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

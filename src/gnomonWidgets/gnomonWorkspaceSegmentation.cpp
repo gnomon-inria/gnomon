@@ -15,13 +15,15 @@
 #include "gnomonWorkspaceSegmentation.h"
 
 #include "gnomonViewVolumic.h"
+#include "gnomonViewVolumicPool.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonActorMeshCellImage.h>
-#include <gnomonCellImage.h>
-#include <gnomonSegmentationCommand.h>
+#include <gnomonVisualization/gnomonActorMeshCellImage.h>
+
+#include <gnomonCore/gnomonCellImage.h>
+#include <gnomonCore/gnomonSegmentationCommand.h>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -45,16 +47,24 @@ public:
     gnomonViewVolumic *source = nullptr;
     gnomonViewVolumic *target = nullptr;
 
+public:
+    gnomonViewVolumicPool *pool = nullptr;
+
+public:
     gnomonCellImage *cellimage = nullptr;
+
+public:
     gnomonActorMeshCellImage *actor = nullptr;
 };
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>()
 {
+
 }
 
 gnomonWorkspaceSegmentationPrivate::~gnomonWorkspaceSegmentationPrivate(void)
 {
+
 }
 
 QString gnomonWorkspaceSegmentationPrivate::workspace(void) const
@@ -67,6 +77,10 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
     return gnomonCore::cellImageFromImage::pluginFactory().keys();
 }
 
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnomonWorkspace(parent)
 {
     int stat;
@@ -77,6 +91,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
 
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
+
+    d->pool = new gnomonViewVolumicPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     QPushButton *cell_button = new QPushButton("Compute cells", this);
 
@@ -95,7 +113,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(d->target);
     layout->addWidget(pane);
 
-    connect(cell_button, SIGNAL(clicked()), this, SLOT(computeCells()));
+    connect(cell_button, &QPushButton::clicked, [=]() {
+                                                    this->setCursor(Qt::BusyCursor);
+                                                    this->computeCells();
+                                                    this->setCursor(Qt::BusyCursor);});
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
