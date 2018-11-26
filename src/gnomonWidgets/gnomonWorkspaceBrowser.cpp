@@ -72,19 +72,22 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     pane_item_channels->toggle();
 
     d->color_map_editor = new gnomonColorMapEditor(this);
+
     QPushButton * color_map_button = new QPushButton("Apply", this);
+
     connect(color_map_button, &QPushButton::clicked, [=](void) {
-            QMap<double, QColor> source = d->color_map_editor->value();
 
-            //if we are editing a single channel image
-            QString channel_name = "default";
-            if(d->channels_list->currentItem()) {
-                channel_name = d->channels_list->currentItem()->text();
-            }
+        QMap<double, QColor> source = d->color_map_editor->value();
 
-            d->channels_lut[channel_name] = source;
-            d->browse_view->applyLut(source);
-        });
+        QString channel_name = "default";
+
+        if(d->channels_list->currentItem()) {
+            channel_name = d->channels_list->currentItem()->text();
+        }
+
+        d->channels_lut[channel_name] = source;
+        d->browse_view->applyLut(source);
+    });
 
     d->pane_item_channels_lut = new gnomonOverlayPaneItem;
     d->pane_item_channels_lut->setTitle("Channels Lookuptable");

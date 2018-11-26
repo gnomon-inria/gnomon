@@ -88,7 +88,8 @@ int gnomonCoreParameterStringList::currentIndex(void) const
     return m_current_index;
 }
 
-QString gnomonCoreParameterStringList::currentValue(void) const
+// QString gnomonCoreParameterStringList::currentValue(void) const
+QString gnomonCoreParameterStringList::value(void) const
 {
     if (!m_values.empty()) {
         return m_values.at(m_current_index);

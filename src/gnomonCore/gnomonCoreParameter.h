@@ -149,7 +149,8 @@ public:
 
     int size(void) const;
     int currentIndex(void) const;
-    QString currentValue(void) const;
+    // QString currentValue(void) const;
+    QString value(void) const;
     QStringList values(void) const;
 
     void setCurrentIndex(int);
