@@ -34,7 +34,7 @@ void gnomonSegmentationCommandTestCase::initTestCase(void)
 
 void gnomonSegmentationCommandTestCase::init(void)
 {
-    d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentation");
+    d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentationTimagetk");
     Q_ASSERT(d->command_segmentation);
 }
 
@@ -51,13 +51,15 @@ void gnomonSegmentationCommandTestCase::redo(void)
 
     d->command_segmentation->setInput(d->images_serie);
 
-    d->command_segmentation->setParameter("hmin", 1500.);
+    d->command_segmentation->setParameter("hmin", 1500);
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);
     d->command_segmentation->setParameter("segmentation_gaussian_sigma", 0.25);
     d->command_segmentation->setParameter("volume_threshold", 1000);
     d->command_segmentation->setParameter("background_label", 1);
 
     d->command_segmentation->redo();
+
+    delete command;
 }
 
 void gnomonSegmentationCommandTestCase::undo(void)

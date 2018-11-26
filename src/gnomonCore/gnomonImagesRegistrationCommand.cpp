@@ -5,8 +5,7 @@
 class gnomonImagesRegistrationCommandPrivate
 {
 public:
-    QVector<dtkImage *> images;
-    QMap<QString, QVariant> parameters;
+    QVector<gnomonImagesSerie *> images_series;
 };
 
 gnomonImagesRegistrationCommand::gnomonImagesRegistrationCommand(const QString& key) : d(new gnomonImagesRegistrationCommandPrivate)
@@ -33,8 +32,8 @@ void gnomonImagesRegistrationCommand::redo(void)
 {
     Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action);
 
-    for(auto& image : d->images) {
-        gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->addImage(image);
+    for(auto& images_serie : d->images_series) {
+        gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->addImagesSerie(images_serie);
     };
 
     gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->run();
@@ -42,14 +41,17 @@ void gnomonImagesRegistrationCommand::redo(void)
 
 void gnomonImagesRegistrationCommand::undo(void)
 {
-    d->images.clear();
-    gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->removeImages();
+    d->images_series.clear();
+    gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->removeImagesSeries();
 }
 
-void gnomonImagesRegistrationCommand::addImage(dtkImage *image)
+void gnomonImagesRegistrationCommand::addImagesSerie(gnomonImagesSerie *images_serie)
 {
-    d->images.push_back(image);
+    d->images_series.push_back(images_serie);
 }
+
+gnomonImagesSerie* gnomonImagesRegistrationCommand::output()
+{ return this->action->output(); }
 
 QMap<QString, gnomonCoreParameter*> gnomonImagesRegistrationCommand::parameters(void) const
 {
@@ -59,19 +61,4 @@ QMap<QString, gnomonCoreParameter*> gnomonImagesRegistrationCommand::parameters(
 void gnomonImagesRegistrationCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
-}
-
-double gnomonImagesRegistrationCommand::time(void)
-{
-    return gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->time();
-}
-
-dtkImage *gnomonImagesRegistrationCommand::at(double t)
-{
-    return gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->at(t);
-}
-
-dtkImage *gnomonImagesRegistrationCommand::next(void)
-{
-    return gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->next();
 }
