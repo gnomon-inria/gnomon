@@ -20,6 +20,8 @@
 
 #include <dtkCore>
 
+#include "gnomonLandmark.h"
+
 class dtkImage;
 class gnomonCoreParameter;
 
@@ -38,7 +40,7 @@ public:
     virtual void addImage(dtkImage *image) = 0;
     virtual void removeImages(void) = 0;
 
-    virtual void addLandmarks(QVector<QVector3D>) = 0;
+    virtual void addLandmarks(const std::vector<gnomonLandmark>&) = 0;
     virtual void removeLandmarks(void) = 0;
 
 public:

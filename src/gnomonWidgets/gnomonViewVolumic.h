@@ -18,6 +18,8 @@
 
 #include <QtWidgets>
 
+#include <gnomonLandmark.h>
+
 class gnomonLandmark;
 
 class dtkImage;
@@ -70,7 +72,7 @@ public:
     dtkImagePtr image(void);
 
 public:
-    QVector<QVector3D> landmarks(void);
+    std::vector<gnomonLandmark> landmarks(void);
 
 public:
     vtkRenderer *renderer2D(void);

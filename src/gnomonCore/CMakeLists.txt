@@ -51,6 +51,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractImagesSerieWriter.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
+  gnomonLandmark.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
   gnomonAbstractModel

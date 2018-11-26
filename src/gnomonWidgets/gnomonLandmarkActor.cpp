@@ -1,6 +1,6 @@
-#include "gnomonLandmark.h"
+#include "gnomonLandmarkActor.h"
 
-int gnomonLandmark::RenderOpaqueGeometry(vtkViewport *viewport)
+int gnomonLandmarkActor::RenderOpaqueGeometry(vtkViewport *viewport)
 {
     if (!this->Mapper) return 0;
 
@@ -12,7 +12,7 @@ int gnomonLandmark::RenderOpaqueGeometry(vtkViewport *viewport)
     return 0;
 }
 
-void gnomonLandmark::render(vtkRenderer *ren)
+void gnomonLandmarkActor::render(vtkRenderer *ren)
 {
     this->Property->Render(this, ren);
     this->device->SetProperty (this->Property);
@@ -29,34 +29,34 @@ void gnomonLandmark::render(vtkRenderer *ren)
     this->device->Render(ren,this->Mapper);
 }
 
-void gnomonLandmark::ShallowCopy(vtkProp *prop)
+void gnomonLandmarkActor::ShallowCopy(vtkProp *prop)
 {
-    gnomonLandmark *f = gnomonLandmark::SafeDownCast(prop);
+    gnomonLandmarkActor *f = gnomonLandmarkActor::SafeDownCast(prop);
     this->vtkActor::ShallowCopy(prop);
 }
 
-gnomonLandmark::gnomonLandmark(std::size_t id) : vtkActor(), m_id(id)
+gnomonLandmarkActor::gnomonLandmarkActor(std::size_t id) : vtkActor(), m_id(id)
 {
 };
 
-std::size_t gnomonLandmark::id(void) const
+std::size_t gnomonLandmarkActor::id(void) const
 {
     return m_id;
 }
 
-void gnomonLandmark::setId(std::size_t id)
+void gnomonLandmarkActor::setId(std::size_t id)
 {
     m_id = id;
 }
 
-gnomonLandmark::gnomonLandmark() : m_id(0)
+gnomonLandmarkActor::gnomonLandmarkActor() : m_id(0)
 {
     this->device = vtkActor::New();
 }
 
-gnomonLandmark::~gnomonLandmark()
+gnomonLandmarkActor::~gnomonLandmarkActor()
 {
     this->device->Delete();
 }
 
-vtkStandardNewMacro(gnomonLandmark)
+vtkStandardNewMacro(gnomonLandmarkActor)

@@ -27,7 +27,7 @@
 
 #include <dtkImagingCore>
 
-#include "gnomonLandmark.h"
+#include "gnomonLandmarkActor.h"
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -285,7 +285,7 @@ public:
 
         double *p = picker->GetActor()->GetPosition();
 
-        gnomonLandmark *landmark = static_cast<gnomonLandmark *>(picker->GetActor());
+        gnomonLandmarkActor *landmark = static_cast<gnomonLandmarkActor *>(picker->GetActor());
 
         q->removeLandmark(landmark->id());
 
@@ -1176,19 +1176,21 @@ dtkImagePtr gnomonViewVolumic::image(void)
     return d->image;
 }
 
-QVector<QVector3D> gnomonViewVolumic::landmarks(void)
+std::vector<gnomonLandmark> gnomonViewVolumic::landmarks(void)
 {
-    QVector<QVector3D> landmarks;
+    std::vector<gnomonLandmark> landmarks;
     vtkActorCollection* actors_collection_2d =  d->renderer2D->GetActors();
 
     actors_collection_2d->InitTraversal();
+    gnomonLandmark point;
     for(std::size_t i = 0; i < actors_collection_2d->GetNumberOfItems(); ++i) {
-        gnomonLandmark *landmark = dynamic_cast<gnomonLandmark *>(actors_collection_2d->GetNextActor());
+        gnomonLandmarkActor *landmark = dynamic_cast<gnomonLandmarkActor *>(actors_collection_2d->GetNextActor());
         if(!landmark) continue;
 
-        double *p = landmark->GetPosition();
 
-        landmarks << QVector3D(p[0], p[1], p[2]);
+        landmark->GetPosition(point.pos);
+
+        landmarks.push_back(point);
     }
     return landmarks;
 }
@@ -1295,7 +1297,7 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
 
     Q_ASSERT(QObject::sender() != this);
 
-    if(!d->image) return;
+    if(!d->image) return 0;
 
     dtkArray<double> spacing = d->image->spacing();
     double x_length = spacing[0] * double(d->image->xDim());
@@ -1312,8 +1314,8 @@ std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, d
         vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(sphere_source->GetOutputPort());
 
-    vtkSmartPointer<gnomonLandmark> actor =
-        vtkSmartPointer<gnomonLandmark>::New();
+    vtkSmartPointer<gnomonLandmarkActor> actor =
+        vtkSmartPointer<gnomonLandmarkActor>::New();
     actor->setId(id);
     actor->SetMapper(mapper);
     actor->SetPosition(x, y, z);
@@ -1339,7 +1341,7 @@ void gnomonViewVolumic::removeLandmark(std::size_t id)
 
     actors_collection_2d->InitTraversal();
     for(std::size_t i = 0; i < actors_collection_2d->GetNumberOfItems(); ++i) {
-        gnomonLandmark *landmark = dynamic_cast<gnomonLandmark *>(actors_collection_2d->GetNextActor());
+        gnomonLandmarkActor *landmark = dynamic_cast<gnomonLandmarkActor *>(actors_collection_2d->GetNextActor());
         if(!landmark) continue;
 
         if(landmark->id() == id) {
@@ -1350,7 +1352,7 @@ void gnomonViewVolumic::removeLandmark(std::size_t id)
 
     actors_collection_3d->InitTraversal();
     for(std::size_t i = 0; i < actors_collection_3d->GetNumberOfItems(); ++i) {
-        gnomonLandmark *landmark = dynamic_cast<gnomonLandmark *>(actors_collection_3d->GetNextActor());
+        gnomonLandmarkActor *landmark = dynamic_cast<gnomonLandmarkActor *>(actors_collection_3d->GetNextActor());
         if(!landmark) continue;
 
         if(landmark->id() == id) {

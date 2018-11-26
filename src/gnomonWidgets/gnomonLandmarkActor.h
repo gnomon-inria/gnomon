@@ -9,19 +9,19 @@
 #include <vtkProperty.h>
 #include <vtkTexture.h>
 
-class GNOMONWIDGETS_EXPORT gnomonLandmark : public vtkActor
+class GNOMONWIDGETS_EXPORT gnomonLandmarkActor : public vtkActor
 {
 public:
-    vtkTypeMacro(gnomonLandmark, vtkActor);
+    vtkTypeMacro(gnomonLandmarkActor, vtkActor);
 
-    static gnomonLandmark *New();
+    static gnomonLandmarkActor *New();
 
     virtual int RenderOpaqueGeometry(vtkViewport *viewport) override;
 
     void ShallowCopy(vtkProp *prop) override;
 
 public:
-    gnomonLandmark(std::size_t id);
+    gnomonLandmarkActor(std::size_t id);
 
 public:
     std::size_t id(void) const;
@@ -31,8 +31,8 @@ public:
 protected:
     vtkActor* device = nullptr;
 
-    gnomonLandmark();
-    ~gnomonLandmark();
+    gnomonLandmarkActor();
+    ~gnomonLandmarkActor();
 
 private:
     virtual void render(vtkRenderer *ren);
