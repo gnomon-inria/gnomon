@@ -692,11 +692,12 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
     d->time_slider = new QSlider(this);
     d->time_slider->setObjectName("prout");
-    d->time_slider->setOrientation(Qt::Vertical);
+    d->time_slider->setOrientation(Qt::Horizontal);
     d->time_slider->setMinimum(0);
     d->time_slider->setMaximum(1);
     d->time_slider->setValue(0);
     d->time_slider->setEnabled(true);
+    d->time_slider->setTickPosition(QSlider::TicksAbove);
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeChange(int)));
 
@@ -704,12 +705,14 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     // connect(d, static_cast<void(gnomonViewVolumicPrivate::*)(int)>(&gnomonViewVolumicPrivate::sliceOrientationChanged), this, &gnomonViewVolumic::sliceOrientationChanged);
     connect(d, &gnomonViewVolumicPrivate::sliceOrientationChanged, this, &gnomonViewVolumic::sliceOrientationChanged);
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QLabel *time_slider_label = new QLabel("time:");
+    QGridLayout *layout = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->slice_slider);
-    layout->addWidget(d);
-    layout->addWidget(d->time_slider);
+    layout->addWidget(d->slice_slider, 0, 0, 1, 1);
+    layout->addWidget(d, 0, 1, 1, 1);
+    layout->addWidget(time_slider_label,1,0,1,1);
+    layout->addWidget(d->time_slider,1,1,1,1);
 
     this->setAcceptDrops(true);
 
@@ -1030,6 +1033,7 @@ void gnomonViewVolumic::timeChange(int value)
 
     d->time_slider->blockSignals(true);
     d->time_slider->setValue(value);
+    d->time_slider->setToolTip(QString("current time: %1").arg(value));
     d->time_slider->blockSignals(false);
 
     emit timeChanged(value);
@@ -1084,6 +1088,7 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
     d->time_slider->setMaximum(d->images_serie->times().last());
     d->time_slider->blockSignals(true);
     d->time_slider->setValue(d->images_serie->time());
+    d->time_slider->setToolTip(QString("current time: %1").arg(d->images_serie->time()));
     d->time_slider->blockSignals(false);
 
     // ///////////////////////////////////////////////////////////////////
