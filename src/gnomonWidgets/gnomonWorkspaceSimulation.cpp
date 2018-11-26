@@ -89,7 +89,7 @@ void gnomonWorkspaceSimulation::apply(void)
     qDebug()<<"Command OK";
     d->command->setMesh(d->source->mesh());
     d->command->redo();
-    // d->target->setMesh((gnomonMesh *)d->command->updatedMesh()->clone());
+    d->target->setMesh((gnomonMesh *)d->command->updatedMesh()->clone());
 
 }
 
