@@ -68,6 +68,9 @@ public:
 
 public:
     gnomonGridLayoutButton *button;
+
+public:
+    std::size_t landmark_id = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -95,7 +98,16 @@ gnomonGridLayout::~gnomonGridLayout(void)
 
 void gnomonGridLayout::addView(void)
 {
-    d->views << new gnomonViewVolumic;;
+    gnomonViewVolumic *new_view = new gnomonViewVolumic;
+    for(gnomonViewVolumic *view : d->views) {
+        connect(new_view, &gnomonViewVolumic::landmarkAdded, view, &gnomonViewVolumic::addLandmark);
+        connect(view, &gnomonViewVolumic::landmarkAdded, new_view, &gnomonViewVolumic::addLandmark);
+
+        connect(new_view, &gnomonViewVolumic::landmarkRemoved, view, &gnomonViewVolumic::removeLandmark);
+        connect(view, &gnomonViewVolumic::landmarkRemoved, new_view, &gnomonViewVolumic::removeLandmark);
+    }
+
+    d->views << new_view;
 
     this->update();
 }

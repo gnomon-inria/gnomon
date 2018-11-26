@@ -27,7 +27,7 @@ class gnomonCellImage;
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public QRunnable
 {
 public:
-    virtual void setImagesSerie(gnomonImagesSerie *images_serie) = 0;
+    virtual void setInput(gnomonImagesSerie *images_serie) = 0;
     virtual void setParameter(const QString&, QVariant) = 0;
     virtual void setUseMargins(bool use_margins) = 0;
     virtual void setBackgroundLabel(long label) = 0;
@@ -37,6 +37,8 @@ public:
     virtual void run(void) = 0;
 
 public:
+    virtual gnomonImagesSerie *input() = 0;
+    virtual gnomonImagesSerie *output() = 0;
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) = 0;
     virtual gnomonCellImage *computedImage(void) const = 0;
 };

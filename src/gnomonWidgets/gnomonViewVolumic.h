@@ -18,6 +18,10 @@
 
 #include <QtWidgets>
 
+#include <gnomonLandmark.h>
+
+class gnomonLandmark;
+
 class dtkImage;
 class gnomonImagesSerie;
 using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
@@ -43,9 +47,6 @@ signals:
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
-
-signals:
-    void sliceChanged(int);
 
 signals:
     void timeChanged(int);
@@ -77,6 +78,9 @@ public:
     gnomonImagesSeriePtr imagesSerie(void);
 
 public:
+    std::vector<gnomonLandmark> landmarks(void);
+
+public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
 
@@ -91,9 +95,17 @@ public slots:
     void onSliceChanged(int);
     void onTimeChanged(int);
     void onChannelChanged(const QString&, const QMap<double, QColor>&);
+    std::size_t addLandmark(std::size_t, double, double, double);
+    void removeLandmark(std::size_t);
 
 signals:
     void channelsChanged(QStringList);
+    void landmarkAdded(std::size_t, double, double, double);
+    void landmarkRemoved(std::size_t id);
+
+signals:
+    void sliceOrientationChanged(int);
+    void sliceChanged(int);
 
 public:
     static QMap<double, QColor> grey_colormap;

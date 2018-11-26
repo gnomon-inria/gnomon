@@ -1,6 +1,8 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractImagesFusion.h"
 
+#include "gnomonLandmark.h"
+
 class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand<gnomonAbstractImagesFusion>
 {
 public:
@@ -18,6 +20,11 @@ public:
     virtual void setParameter(const QString&, const QVariant&);
 
     gnomonImagesSerie *output(void);
+
+    void removeImagesSeries(void);
+
+    void addLandmarks(const std::vector<gnomonLandmark>&);
+    void removeLandmarks(void);
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;

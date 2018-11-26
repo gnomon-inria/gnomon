@@ -21,7 +21,7 @@
 #include "gnomonActor.h"
 #include "gnomonActorMesh.h"
 
-class gnomonCellImage;
+class gnomonPolyDataCellImage;
 
 class GNOMONVISUALIZATION_EXPORT gnomonActorMeshCellImage : public gnomonActorMesh
 {
@@ -31,7 +31,7 @@ public:
     static gnomonActorMeshCellImage *New(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellimage);
+	void setPolyData(gnomonPolyDataCellImage *polydata);
 
 public slots:
     void update(void) override;
