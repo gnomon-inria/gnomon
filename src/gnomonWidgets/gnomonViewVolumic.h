@@ -49,9 +49,6 @@ signals:
     void switchedTo2DYZ(void);
 
 signals:
-    void sliceChanged(int);
-
-signals:
     void timeChanged(int);
 
 public slots:
@@ -105,6 +102,10 @@ signals:
     void channelsChanged(QStringList);
     void landmarkAdded(std::size_t, double, double, double);
     void landmarkRemoved(std::size_t id);
+
+signals:
+    void sliceOrientationChanged(int);
+    void sliceChanged(int);
 
 public:
     static QMap<double, QColor> grey_colormap;

@@ -129,7 +129,7 @@ gnomonActor *gnomonViewManager::insert(gnomonCellGraph *data)
 gnomonActor *gnomonViewManager::insert(gnomonCellImage *data)
 {
     gnomonActorMeshCellImage *actor = gnomonActorMeshCellImage::New();
-    actor->setCellImage(data);
+    // actor->setCellImage(data);
 
     d->inspector->tree()->insert(actor);
 
