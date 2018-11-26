@@ -30,12 +30,13 @@ public:
 
 public:
     dtkImage* image() const;
-    void setImage(dtkImage*);
+    void setImage(dtkImage*, size_t time);
+    void setImage(dtkImage*, const QString& channel = "", size_t time = SIZE_MAX);
 
 public:
     size_t time(void) const;
     void setTime(size_t);
-    size_t times(void) const;   
+    QList<size_t> times(void) const;
 
 public:
     QString channel(void) const;
