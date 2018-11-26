@@ -41,8 +41,8 @@ void gnomonImagesRegistrationCommand::redo(void)
 
 void gnomonImagesRegistrationCommand::undo(void)
 {
-    d->images_series.clear();
     gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->removeImagesSeries();
+    d->images_series.clear();
 }
 
 void gnomonImagesRegistrationCommand::addImagesSerie(gnomonImagesSerie *images_serie)

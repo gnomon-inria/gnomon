@@ -11,10 +11,12 @@
 
 #include <dtkImage>
 
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
+
 class gnomonSegmentationCommandTestCasePrivate
 {
 public:
-    gnomonImagesSerie              *images_serie = nullptr;
+    gnomonImagesSeriePtr           images_serie = nullptr;
     gnomonSegmentationCommand      *command_segmentation = nullptr;
 };
 
@@ -46,10 +48,10 @@ void gnomonSegmentationCommandTestCase::redo(void)
     QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
     command->setPath(image_file_path);
     command->redo();
-    d->images_serie = new gnomonImagesSerie(*command->imagesSerie());
+    d->images_serie = gnomonImagesSeriePtr(command->imagesSerie());
     d->images_serie->setChannel("Ch2_PI");
 
-    d->command_segmentation->setInput(d->images_serie);
+    d->command_segmentation->setInput(d->images_serie.data());
 
     d->command_segmentation->setParameter("hmin", 1500);
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);
@@ -71,9 +73,6 @@ void gnomonSegmentationCommandTestCase::cleanup(void)
 {
     delete d->command_segmentation;
     d->command_segmentation = nullptr;
-
-    delete d->images_serie;
-    d->images_serie = nullptr;
 }
 
 void gnomonSegmentationCommandTestCase::cleanupTestCase(void)

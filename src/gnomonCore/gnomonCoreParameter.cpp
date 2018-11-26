@@ -123,6 +123,16 @@ void gnomonCoreParameterStringList::removeValue(const QString& val)
     }
 }
 
+QString gnomonCoreParameterStringList::value() const
+{ return currentValue(); }
+
+void gnomonCoreParameterStringList::setValue(const QString& val)
+{
+    int index = m_values.indexOf(val);
+    if(index >= 0)
+    { m_current_index = index; }
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant
 // ///////////////////////////////////////////////////////////////////

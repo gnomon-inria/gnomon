@@ -42,6 +42,7 @@ void gnomonImagesFusionCommand::redo(void)
 void gnomonImagesFusionCommand::undo(void)
 {
     this->action->removeImagesSeries();
+    d->images_series.clear();
 }
 
 void gnomonImagesFusionCommand::addImagesSerie(gnomonImagesSerie *images_serie)
