@@ -49,7 +49,7 @@ void gnomonSegmentationCommandTestCase::redo(void)
     d->images_serie = new gnomonImagesSerie(*command->imagesSerie());
     d->images_serie->setChannel("Ch2_PI");
 
-    d->command_segmentation->setImagesSerie(d->images_serie);
+    d->command_segmentation->setInput(d->images_serie);
 
     d->command_segmentation->setParameter("hmin", 1500.);
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);

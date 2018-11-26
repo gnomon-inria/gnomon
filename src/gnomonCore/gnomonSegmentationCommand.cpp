@@ -40,7 +40,7 @@ void gnomonSegmentationCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setImagesSerie(d->images_serie);
+    this->action->setInput(d->images_serie);
     this->action->run();
     d->computed_image = this->action->computedImage();
 }
@@ -49,12 +49,22 @@ void gnomonSegmentationCommand::undo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setImagesSerie(nullptr);
+    this->action->setInput(nullptr);
 }
 
-void gnomonSegmentationCommand::setImagesSerie(gnomonImagesSerie* images_serie)
+void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
 {
     d->images_serie = images_serie;
+}
+
+gnomonImagesSerie *gnomonSegmentationCommand::input()
+{
+    return this->action->input();
+}
+
+gnomonImagesSerie *gnomonSegmentationCommand::output()
+{
+    return this->action->output();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const

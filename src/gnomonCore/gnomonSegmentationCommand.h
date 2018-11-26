@@ -30,10 +30,13 @@ public:
     void undo(void) override;
 
 public:
-    void setImagesSerie(gnomonImagesSerie *images_serie);
+    void setInput(gnomonImagesSerie *images_serie);
+    gnomonImagesSerie *input();
+    
     void setParameter(const QString&, const QVariant&);
 
 public:
+    gnomonImagesSerie *output();
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
     gnomonCellImage *computedImage(void) const;
 

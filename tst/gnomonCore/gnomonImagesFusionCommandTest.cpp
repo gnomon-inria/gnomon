@@ -76,10 +76,10 @@ void gnomonImagesFusionCommandTestCase::undo(void)
 
 void gnomonImagesFusionCommandTestCase::cleanup(void)
 {
+    qDeleteAll(d->images_series);
+
     delete d->fusion_command;
     d->fusion_command = nullptr;
-
-    qDeleteAll(d->images_series);
 }
 
 void gnomonImagesFusionCommandTestCase::cleanupTestCase(void)

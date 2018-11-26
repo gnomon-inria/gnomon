@@ -133,10 +133,14 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
-    d->command->setImagesSerie(d->source->imagesSerie().data());
+    if(d->command->input() != d->source->imagesSerie().data())
+        d->command->setInput(d->source->imagesSerie().data());
+    else
+        qDebug() << "Not changed";
+
     d->command->redo();
 
-    // d->target->setImagesSerie(d->command->computedImage()->image()); TODO
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspaceSegmentation::computeCells(void)
