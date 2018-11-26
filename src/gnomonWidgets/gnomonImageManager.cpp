@@ -14,9 +14,11 @@
 
 #include "gnomonImageManager.h"
 #include "gnomonImageManager_p.h"
+#include "gnomonImageManagerData.h"
 #include "gnomonImageManagerItem.h"
 #include "gnomonImageManagerFocus.h"
 #include "gnomonItemButton.h"
+#include "gnomonToolBar.h"
 
 #include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
 
@@ -158,6 +160,37 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
         q->present(item);
     });
 
+    // ///////////////////////////////////////////////////////////////////
+    // Meta data computation
+    // ///////////////////////////////////////////////////////////////////
+
+    gnomonImageManagerData *data = new gnomonImageManagerData(this);
+    data->reference = item;
+    data->data["Dimension X"] = o->GetDimensions()[0];
+    data->data["Dimension Y"] = o->GetDimensions()[1];
+    data->data["Dimension Z"] = o->GetDimensions()[2];
+    data->data["Pixel Type"] = QString(QVariant::typeToName(image->storageType()));
+    data->data["Spacing X"] = o->GetSpacing()[0];
+    data->data["Spacing Y"] = o->GetSpacing()[1];
+    data->data["Spacing Z"] = o->GetSpacing()[2];
+    data->data["Extent X min"] = o->GetExtent()[0];
+    data->data["Extent X max"] = o->GetExtent()[1];
+    data->data["Extent Y min"] = o->GetExtent()[2];
+    data->data["Extent y max"] = o->GetExtent()[3];
+    data->data["Extent Z min"] = o->GetExtent()[4];
+    data->data["Extent Z max"] = o->GetExtent()[5];
+    data->data["Origin X"] = o->GetOrigin()[0];
+    data->data["Origin Y"] = o->GetOrigin()[1];
+    data->data["Origin Z"] = o->GetOrigin()[2];
+    data->data["Number of points"] = o->GetNumberOfPoints();
+    data->data["Provenance"] = color;
+    data->data["Range min"] = range[0];
+    data->data["Range max"] = range[1];
+
+    this->data.insert(item, data);
+
+    // ///////////////////////////////////////////////////////////////////
+
     return item;
 }
 
@@ -237,6 +270,9 @@ void gnomonImageManager::present(gnomonImageManagerItem *item)
     if(!d->focus_item)
         d->focus_item = new gnomonImageManagerFocus(this);
 
+    if (d->focus_area)
+        delete d->focus_area;
+
     QSequentialAnimationGroup *animation = new QSequentialAnimationGroup(this);
 
     if (d->focus_item->presented) {
@@ -274,6 +310,8 @@ void gnomonImageManager::present(gnomonImageManagerItem *item)
 
     }
 
+    QRect focus_item_dest_rect;
+
     {
 
         d->focus_item->move(item->pos());
@@ -285,6 +323,8 @@ void gnomonImageManager::present(gnomonImageManagerItem *item)
         d->focus_item->destnt = QPoint(this->size().width() / 2 - 3 * d->focus_item->width() / 2, this->size().height() / 2 - 3 * d->focus_item->height() / 2);
         d->focus_item->s_size = d->focus_item->size();
         d->focus_item->d_size = d->focus_item->size() * 3;
+
+        focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->size() * 3);
 
         QVariantAnimation *p_animation = new QVariantAnimation(this);
         p_animation->setDuration(500);
@@ -319,6 +359,14 @@ void gnomonImageManager::present(gnomonImageManagerItem *item)
     }
 
     animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+    connect(animation, &QAbstractAnimation::finished, [=] {
+        d->focus_area = d->data[item]->compute();
+        d->focus_area->setParent(this);
+        d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
+        d->focus_area->resize(d->focus_item->size());
+        d->focus_area->show();
+    });
 }
 
 void gnomonImageManager::enterEvent(QEvent *)

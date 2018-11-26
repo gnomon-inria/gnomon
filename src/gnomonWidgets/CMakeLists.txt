@@ -30,6 +30,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImageManager
   gnomonImageManager.h
   gnomonImageManager_p.h
+  gnomonImageManagerData.h
   gnomonImageManagerItem.h
   gnomonImageManagerFocus.h
   gnomonItemButton.h
@@ -66,6 +67,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
   gnomonGridLayout.cpp
   gnomonImageManager.cpp
+  gnomonImageManagerData.cpp
   gnomonImageManagerItem.cpp
   gnomonImageManagerFocus.cpp
   gnomonItemButton.cpp

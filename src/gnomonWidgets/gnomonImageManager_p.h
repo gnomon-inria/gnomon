@@ -24,6 +24,7 @@ using dtkImagePtr = QSharedPointer<dtkImage>;
 class gnomonAbstractImagesSerieWriter;
 
 class gnomonImageManager;
+class gnomonImageManagerData;
 class gnomonImageManagerItem;
 class gnomonImageManagerFocus;
 
@@ -47,6 +48,7 @@ public:
 
 public:
     QHash<gnomonImageManagerItem *, dtkImagePtr> images;
+    QHash<gnomonImageManagerItem *, gnomonImageManagerData *> data;
 
 public:
     gnomonAbstractImagesSerieWriter *writer;
@@ -56,6 +58,9 @@ public:
 
 public:
     gnomonImageManagerFocus *focus_item = nullptr;
+
+public:
+    QScrollArea *focus_area = nullptr;
 
 public:
     static int item_counter;
