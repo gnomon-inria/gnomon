@@ -30,6 +30,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImageManager
   gnomonImageManager.h
   gnomonItemButton.h
+  gnomonLandmarkActor.h
   gnomonOverlayPane
   gnomonOverlayPane.h
   gnomonOverlayPaneItem
@@ -64,6 +65,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonGridLayout.cpp
   gnomonImageManager.cpp
   gnomonItemButton.cpp
+  gnomonLandmarkActor.cpp
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp

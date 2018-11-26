@@ -6,6 +6,7 @@ class gnomonImagesFusionCommandPrivate
 {
 public:
     QVector<dtkImage *> images;
+    QVector<std::vector<gnomonLandmark>> landmarks;
 };
 
 gnomonImagesFusionCommand::gnomonImagesFusionCommand(const QString& key) : d(new gnomonImagesFusionCommandPrivate)
@@ -36,12 +37,23 @@ void gnomonImagesFusionCommand::redo(void)
         this->action->addImage(image);
     };
 
+    for(auto& landmarks : d->landmarks) {
+        this->action->addLandmarks(landmarks);
+    };
+
     this->action->run();
 }
 
 void gnomonImagesFusionCommand::undo(void)
 {
     this->action->removeImages();
+    this->action->removeLandmarks();
+}
+
+
+void gnomonImagesFusionCommand::setParameter(const QString& parameter, const QVariant& value)
+{
+    this->action->setParameter(parameter, value);
 }
 
 void gnomonImagesFusionCommand::addImage(dtkImage *image)
@@ -49,9 +61,19 @@ void gnomonImagesFusionCommand::addImage(dtkImage *image)
     d->images.push_back(image);
 }
 
-void gnomonImagesFusionCommand::setParameter(const QString& parameter, const QVariant& value)
+void gnomonImagesFusionCommand::removeImages(void)
 {
-    this->action->setParameter(parameter, value);
+    d->images.clear();
+}
+
+void gnomonImagesFusionCommand::addLandmarks(const std::vector<gnomonLandmark>& landmarks)
+{
+    d->landmarks.append(landmarks);
+}
+
+void gnomonImagesFusionCommand::removeLandmarks(void)
+{
+    d->landmarks.clear();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonImagesFusionCommand::parameters(void) const
