@@ -44,7 +44,7 @@ protected:
     void mousePressEvent(QMouseEvent *);
 
 private:
-    gnomonFontAwesome *font;
+    gnomonFontAwesome *font = nullptr;
 
 private:
     QMenu *menu;
@@ -181,7 +181,7 @@ public:
     }
 
 private:
-    gnomonFontAwesome *font;
+    gnomonFontAwesome *font = nullptr;
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -4,9 +4,9 @@
 class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieReader>
 {
 public:
-    gnomonImagesSerieReaderCommand() = delete;
-    gnomonImagesSerieReaderCommand(const QString&);
-    virtual ~gnomonImagesSerieReaderCommand();
+     gnomonImagesSerieReaderCommand(void) = delete;
+     gnomonImagesSerieReaderCommand(const QString&);
+    ~gnomonImagesSerieReaderCommand(void);
 
 public:
     void redo(void) override;
@@ -18,4 +18,5 @@ public:
 
 private:
     class gnomonImagesSerieReaderCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action;
 };

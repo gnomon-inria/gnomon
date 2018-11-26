@@ -11,6 +11,8 @@
 
 #include <dtkImage>
 
+using dtkImagePtr = std::shared_ptr<dtkImage>;
+
 class gnomonImagesFusionCommandTestCasePrivate
 {
 public:

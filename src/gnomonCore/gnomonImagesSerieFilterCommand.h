@@ -18,8 +18,10 @@ public:
 
     gnomonImagesSerie *output(void);
 
-    virtual QMap<QString, gnomonParameter*> parameters(void) const;
     virtual void setParameter(const QString&, const QVariant&);
+
+public:
+    QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
 private:
     class gnomonImagesSerieFilterCommandPrivate *d;

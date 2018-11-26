@@ -4,6 +4,7 @@
 #include <gnomonTest>
 
 #include <gnomonSegmentationCommand>
+#include <gnomonCore/gnomonImagesSerie>
 #include <gnomonImagesSerieReaderCommand>
 
 #include <dtkScript>
@@ -45,7 +46,7 @@ void gnomonSegmentationCommandTestCase::redo(void)
     QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
     command->setPath(image_file_path);
     command->redo();
-    d->images_serie = push_back(new gnomonImagesSerie(*command->imagesSerie()));
+    d->images_serie = new gnomonImagesSerie(*command->imagesSerie());
     d->images_serie->setChannel("Ch2_PI");
 
     d->command_segmentation->setImagesSerie(d->images_serie);

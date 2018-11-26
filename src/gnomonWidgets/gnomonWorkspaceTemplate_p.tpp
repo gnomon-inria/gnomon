@@ -1,3 +1,6 @@
+#include <gnomonCore/gnomonCoreParameter.h>
+#include "gnomonWidgetsParameter.h"
+
 template <typename T>
 gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
@@ -27,16 +30,18 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
         this->pane_item_params_layout = new QFormLayout(parent);
     }
 
-    if (this->command)
+    if (this->command) {
         delete this->command;
-    if(!algorithm.isEmpty())
-    {
+        this->command = nullptr;
+    }
+
+    if (!algorithm.isEmpty()) {
         this->command = new T(algorithm);
-        QMap<QString, gnomonParameter*> parameters = this->command->parameters();
-        for(QMap<QString, gnomonParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it)
-        {
-            QWidget* widget = it.value()->connect(parent);
-            this->pane_item_params_layout->addRow(it.key(), widget);
+        QMap<QString, gnomonCoreParameter *> parameters = this->command->parameters();
+        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+            if (widget)
+                this->pane_item_params_layout->addRow(it.key(), widget);
         }
         this->pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     }
@@ -81,10 +86,10 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane->toggle();
 
     QObject::connect(button, &QPushButton::clicked, [=] () {
-                                                        parent->setCursor(Qt::BusyCursor);
-                                                        dynamic_cast<gnomonWorkspace*>(parent)->apply();
-                                                        parent->setCursor(Qt::ArrowCursor);
-                                                    });
+        parent->setCursor(Qt::BusyCursor);
+        dynamic_cast<gnomonWorkspace*>(parent)->apply();
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
     configure(parent, combo_box->currentText());
 

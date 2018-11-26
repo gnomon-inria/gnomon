@@ -18,25 +18,25 @@ gnomonImagesFusionCommand::gnomonImagesFusionCommand(const QString& key) : d(new
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action = gnomonCore::imagesFusion::pluginFactory().create(key);
+    this->action = gnomonCore::imagesFusion::pluginFactory().create(key);
 
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesFusion>::action);
+    Q_ASSERT(this->action);
 }
 
-gnomonImagesFusionCommand::~gnomonImagesFusionCommand()
+gnomonImagesFusionCommand::~gnomonImagesFusionCommand(void)
 {
     delete d;
 }
 
 void gnomonImagesFusionCommand::redo(void)
 {
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesFusion>::action);
+    Q_ASSERT(this->action);
 
     for(auto& images_serie : d->images_series) {
         gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->addImagesSerie(images_serie);
     };
 
-    gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->run();
+    this->action->run();
 }
 
 void gnomonImagesFusionCommand::undo(void)
@@ -49,17 +49,17 @@ void gnomonImagesFusionCommand::addImagesSerie(gnomonImagesSerie *images_serie)
     d->images_series.push_back(images_serie);
 }
 
-QMap<QString, gnomonParameter*> gnomonImagesFusionCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
 void gnomonImagesFusionCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
 }
 
+QMap<QString, gnomonCoreParameter *> gnomonImagesFusionCommand::parameters(void) const
+{
+    return this->action->parameters();
+}
+
 gnomonImagesSerie *gnomonImagesFusionCommand::output(void)
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesFusion>::action->output();
+    return this->action->output();
 }

@@ -136,7 +136,7 @@ void gnomonImagesSerie::setChannel(const QString& channel)
     d->channel = channel;
 }
 
-const QStringList& gnomonImagesSerie::channels(void) const
+QStringList gnomonImagesSerie::channels(void) const
 {
     return d->channels;
 }

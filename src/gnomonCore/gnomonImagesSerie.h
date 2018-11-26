@@ -40,7 +40,7 @@ public:
 public:
     QString channel(void) const;
     void setChannel(const QString&);
-    const QStringList& channels(void) const;
+    QStringList channels(void) const;
 
 public:
     gnomonImagesSerie* copy() const;

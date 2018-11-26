@@ -7,6 +7,7 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonToolBar.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonWidgetsParameter.h"
 #include "gnomonWorkspace.h"
 #include "gnomonWorkspaceBrowser.h"
 #include "gnomonWorkspaceFusion.h"

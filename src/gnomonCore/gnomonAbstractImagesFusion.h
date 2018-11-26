@@ -16,22 +16,23 @@
 
 #include <gnomonCoreExport>
 
+#include <QtCore>
+
 #include <dtkCore>
 
 class gnomonImagesSerie;
-class gnomonParameter;
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesFusion
+class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public QRunnable
 {
 public:
     virtual ~gnomonAbstractImagesFusion(void) = default;
 
 public:
-    virtual QMap<QString, gnomonParameter*> parameters(void) const = 0;
     virtual void setParameter(const QString&, const QVariant&) = 0;
 
 public:
@@ -43,6 +44,7 @@ public:
 
 public:
     virtual gnomonImagesSerie *output() = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

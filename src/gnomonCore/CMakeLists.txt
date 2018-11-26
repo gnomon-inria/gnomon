@@ -67,6 +67,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellImage.h
   gnomonCore
   gnomonCore.h
+  gnomonCoreParameter
+  gnomonCoreParameter.h
   gnomonCoreSettings
   gnomonCoreSettings.h
   gnomonDataManager
@@ -90,8 +92,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMesh
   gnomonMesh.h
-  gnomonParameter
-  gnomonParameter.h
   gnomonSegmentationCommand
   gnomonSegmentationCommand.h
   gnomonSphereForm
@@ -126,6 +126,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
+  gnomonCoreParameter.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
   gnomonFemSolverCommand.cpp
@@ -135,7 +136,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImagesFusionCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
-  gnomonParameter.cpp
   gnomonSegmentationCommand.cpp
   gnomonSphereForm.cpp
   gnomonSystem.cpp

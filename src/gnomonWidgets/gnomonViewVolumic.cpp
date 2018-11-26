@@ -120,7 +120,7 @@ public:
     bool on = false;
 
 public:
-    gnomonFontAwesome *font;
+    gnomonFontAwesome *font = nullptr;
     fa::icon           icon;
     QColor             default_color;
 };
