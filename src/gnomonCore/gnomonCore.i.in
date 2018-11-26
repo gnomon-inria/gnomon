@@ -17,7 +17,6 @@
 %module(directors="1") gnomoncore
 
 %include <dtk_base.i>
-
 %import <dtkCore.i>
 
 %import <dtkImagingCore.i>
@@ -182,7 +181,7 @@
     }
 }
 
-%typemap(in) QList<size_t> {
+%typemap(in) QList<unsigned long> {
     if (PyList_Check($input)) {
         int i = 0;
         int end = PyList_Size($input);
@@ -190,30 +189,30 @@
             $1 << PyInt_AsLong(PyList_GET_ITEM($input, i));
         }
     } else {
-        qDebug("PyList of integers is expected as input. Empty QList<size_t> is returned.");
+        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
     }
 }
 
-%typemap(in) const QList<size_t>& {
+%typemap(in) const QList<unsigned long>& {
     if (PyList_Check($input)) {
         int i = 0;
         int end = PyList_Size($input);
-        $1 = new QList<size_t>;
+        $1 = new QList<unsigned long>;
         for(i;i!=end; ++i) {
             ($1)->append(PyInt_AsLong(PyList_GET_ITEM($input, i)));
         }
     } else {
-        qDebug("PyList of integers is expected as input. Empty QList<size_t> is returned.");
+        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
     }
 }
 
-%typemap(freearg) const QList<size_t>& {
+%typemap(freearg) const QList<unsigned long>& {
     if ($1) {
         delete $1;
     }
 }
 
-%typemap(directorout) QList<size_t> {
+%typemap(directorout) QList<unsigned long> {
     PyObject *list = static_cast<PyObject *>($1);
     if (PyList_Check(list)) {
         int i = 0;
@@ -223,7 +222,7 @@
             $result << PyInt_AsLong(o);
         }
     } else {
-        qDebug("PyList of integers is expected as input. Empty QList<size_t> is returned.");
+        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
     }
 }
 
@@ -277,6 +276,27 @@
 
  %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) const std::vector<gnomonLandmark, std::allocator< gnomonLandmark > >& {
     $1 = PyList_Check($input) ? 1 : 0;
+}
+
+%typemap(out) QList<unsigned long> {
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0; it != end; ++it, ++i) {
+        PyObject* v = PyInt_FromLong(*it);
+        PyList_SET_ITEM($result, i, v);
+    }
+}
+
+%typemap(directorin) QList<unsigned long> {
+    PyObject *list = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0; it != end; ++it, ++i) {
+        PyObject* v = PyInt_FromLong(*it);
+        PyList_SET_ITEM(list, i, v);
+    }
+    $input = list;
 }
 
 %typemap(out) std::vector<gnomonLandmark, std::allocator<gnomonLandmark>>

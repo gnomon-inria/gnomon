@@ -25,11 +25,11 @@ public:
 
 public:
     QString channel;
-    size_t time;
+    unsigned long time;
     QStringList channels;
 
 public:
-    QMap< size_t, QMap<QString, dtkImage*>> images;
+    QMap< unsigned long, QMap<QString, dtkImage*>> images;
 };
 
 gnomonImagesSeriePrivate::gnomonImagesSeriePrivate()
@@ -83,7 +83,7 @@ gnomonImagesSerie::~gnomonImagesSerie()
 }
 
 
-dtkImage* gnomonImagesSerie::image(size_t time) const
+dtkImage* gnomonImagesSerie::image(unsigned long time) const
 {
     return this->image(d->channel, time);
 }
@@ -93,7 +93,7 @@ dtkImage* gnomonImagesSerie::image() const
     return this->image(d->channel, d->time);
 }
 
-dtkImage* gnomonImagesSerie::image(const QString& channel, size_t time) const
+dtkImage* gnomonImagesSerie::image(const QString& channel, unsigned long time) const
 {
     if(time == SIZE_MAX)
         time = d->time;
@@ -120,12 +120,12 @@ dtkImage* gnomonImagesSerie::image(const QString& channel, size_t time) const
 }
 
 
-void gnomonImagesSerie::setImage(dtkImage* image, size_t time)
+void gnomonImagesSerie::setImage(dtkImage* image, unsigned long time)
 {
     this->setImage(image, d->channel, time);
 }
 
-void gnomonImagesSerie::setImage(dtkImage* image, const QString& channel, size_t time)
+void gnomonImagesSerie::setImage(dtkImage* image, const QString& channel, unsigned long time)
 {
     QString current_channel = channel;
     if(channel.isEmpty())
@@ -151,17 +151,17 @@ void gnomonImagesSerie::setImage(dtkImage* image, const QString& channel, size_t
         d->channels.append(current_channel);
 }
 
-size_t gnomonImagesSerie::time(void) const
+unsigned long gnomonImagesSerie::time(void) const
 {
     return d->time;
 }
 
-void gnomonImagesSerie::setTime(size_t time)
+void gnomonImagesSerie::setTime(unsigned long time)
 {
     d->time = time;
 }
 
-QList<size_t> gnomonImagesSerie::times(void) const
+QList<unsigned long> gnomonImagesSerie::times(void) const
 {
     return d->images.keys();
 }
