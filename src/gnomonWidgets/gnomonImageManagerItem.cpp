@@ -40,17 +40,19 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixma
         pix = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
 
         QPixmap pix2(100,100);
-        pix2.fill(QColor("#282C34"));
+        pix2.fill(Qt::transparent);
 
         QImage image = pix.toImage();;
 
         QPainter paint(&pix2);
         paint.setPen(color);
-        paint.drawRect(2*space,   0, size-2*space-1, size-2*space-1);
-        paint.drawRect(space, space, size-2*space-1, size-2*space-1);
-        paint.drawRect(0,   2*space, size-2*space-1, size-2*space-1);
-        QRectF target(1,   2*space+1, size-2*space-2, size-2*space-2);
-        QRectF source(0,           0, size-2*space-3, size-2*space-3);
+        paint.drawRect(2*space,       0, size-2*space-1, size-2*space-1);
+        paint.fillRect(2*space+1,     1, size-2*space-2, size-2*space-2, Qt::black);
+        paint.drawRect(space,     space, size-2*space-1, size-2*space-1);
+        paint.fillRect(space+1, space+1, size-2*space-2, size-2*space-2, Qt::black);
+        paint.drawRect(0,       2*space, size-2*space-1, size-2*space-1);
+        QRectF target(1,      2*space+1, size-2*space-2, size-2*space-2);
+        QRectF source(0,              0, size-2*space-3, size-2*space-3);
         paint.drawImage(target, image, source);
         paint.end();
 

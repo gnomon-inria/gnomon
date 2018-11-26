@@ -129,7 +129,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImagesSeriePtr i
         }
     }
 
-    bool multiple_images =  (images_serie->times() > 1);
+    bool multiple_images =  (images_serie->times().count() > 1);
 
     gnomonImageManagerItem *item = new gnomonImageManagerItem(color, QPixmap::fromImage(i), this, multiple_images);
 
