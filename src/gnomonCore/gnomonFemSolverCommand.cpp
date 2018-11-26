@@ -36,7 +36,7 @@ gnomonFemSolverCommand::~gnomonFemSolverCommand(void)
 void gnomonFemSolverCommand::redo(void)
 {
     Q_ASSERT(this->action);
-
+    qDebug()<<"redo command"<<d->mesh;
     this->action->setMesh(d->mesh);
 
     this->action->run();
@@ -50,6 +50,7 @@ void gnomonFemSolverCommand::undo(void)
 void gnomonFemSolverCommand::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
+    qDebug()<<"setmesh"<<d->mesh;
 }
 
 void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVariant& value)

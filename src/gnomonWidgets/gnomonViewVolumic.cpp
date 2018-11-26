@@ -398,6 +398,7 @@ public:
 
 public:
     dtkImagePtr image;
+    gnomonMesh *mesh;
 
 public:
     QSlider *slider;
@@ -1036,6 +1037,61 @@ void gnomonViewVolumic::setBlending(bool blend)
     d->blender->RemoveAllInputs();
 }
 
+gnomonMesh *gnomonViewVolumic::mesh(void)
+{
+  qDebug()<<"view mesh"<<d->mesh;
+  return d->mesh;
+
+}
+
+void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
+{
+
+  d->mesh = mesh;
+  qDebug()<<"view setmesh"<<d->mesh;
+
+  vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+  vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+  vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
+
+  QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
+  QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
+  QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
+
+  QMap<long,long> vertexPoint;
+
+  QList<long> vertices = mesh->vertexIds();
+
+  for (const auto& vertexId : vertices) {
+      long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
+      vertexPoint[vertexId] = vtkId;
+  }
+
+  polydata->SetPoints(polydataPoints);
+
+  QList<long> triangles = mesh->triangleIds();
+
+  for (const auto& triangleId : triangles) {
+      QList<long> triangleVertices = mesh->triangleVertexIds(triangleId);
+      long vtkId = polydataFaces->InsertNextCell(triangleVertices.size());
+      for (const auto& v : triangleVertices) {
+          polydataFaces->InsertCellPoint(vertexPoint[v]);
+      }
+  }
+
+  polydata->SetPolys(polydataFaces);
+
+  vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetInputData(polydata);
+
+  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+  actor->SetMapper(mapper);
+
+  d->renderer3D->AddActor(actor);
+  this->render();
+
+}
+
 void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& source)
 {
     d->image = i;
@@ -1456,47 +1512,47 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
                 return;
             }
             qDebug()<<"Add Mesh!";
-            // this->setMesh(mesh);
+            this->setMesh(mesh);
 
-            vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-            vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
-            vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
-
-            QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
-            QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
-            QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
-    
-            QMap<long,long> vertexPoint;
-
-            QList<long> vertices = mesh->vertexIds();
-
-            for (const auto& vertexId : vertices) {
-                long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
-                vertexPoint[vertexId] = vtkId;
-            }
-
-            polydata->SetPoints(polydataPoints);
-            
-            QList<long> triangles = mesh->triangleIds();
-
-            for (const auto& triangleId : triangles) {
-                QList<long> triangleVertices = mesh->triangleVertexIds(triangleId);
-                long vtkId = polydataFaces->InsertNextCell(triangleVertices.size());
-                for (const auto& v : triangleVertices) {
-                    polydataFaces->InsertCellPoint(vertexPoint[v]);
-                }
-            }
-
-            polydata->SetPolys(polydataFaces);
-
-            vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-            mapper->SetInputData(polydata);
-
-            vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-            actor->SetMapper(mapper);
-
-            d->renderer3D->AddActor(actor);
-            this->render();
+            // vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+            // vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+            // vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
+            //
+            // QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
+            // QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
+            // QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
+            //
+            // QMap<long,long> vertexPoint;
+            //
+            // QList<long> vertices = mesh->vertexIds();
+            //
+            // for (const auto& vertexId : vertices) {
+            //     long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
+            //     vertexPoint[vertexId] = vtkId;
+            // }
+            //
+            // polydata->SetPoints(polydataPoints);
+            //
+            // QList<long> triangles = mesh->triangleIds();
+            //
+            // for (const auto& triangleId : triangles) {
+            //     QList<long> triangleVertices = mesh->triangleVertexIds(triangleId);
+            //     long vtkId = polydataFaces->InsertNextCell(triangleVertices.size());
+            //     for (const auto& v : triangleVertices) {
+            //         polydataFaces->InsertCellPoint(vertexPoint[v]);
+            //     }
+            // }
+            //
+            // polydata->SetPolys(polydataFaces);
+            //
+            // vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+            // mapper->SetInputData(polydata);
+            //
+            // vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+            // actor->SetMapper(mapper);
+            //
+            // d->renderer3D->AddActor(actor);
+            // this->render();
 
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;

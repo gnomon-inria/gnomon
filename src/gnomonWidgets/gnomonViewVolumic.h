@@ -66,10 +66,12 @@ public slots:
 
 public:
     void setBlending(bool);
+    void setMesh(gnomonMesh *);
     void setImage(dtkImagePtr, const QMap<double, QColor>& = grey_colormap);
 
 public:
     dtkImagePtr image(void);
+    gnomonMesh *mesh(void);
 
 public:
     std::vector<gnomonLandmark> landmarks(void);
