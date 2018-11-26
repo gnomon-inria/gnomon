@@ -97,19 +97,21 @@ gnomonViewVolumicList::~gnomonViewVolumicList(void)
 // gnomonViewVolumicOverlay
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonViewVolumicOverlay : public QLabel
+class gnomonViewVolumicOverlay : public QWidget
 {
     Q_OBJECT
 
 public:
-     gnomonViewVolumicOverlay(fa::icon, QWidget *parent = nullptr);
-     gnomonViewVolumicOverlay(const QString& path, QWidget *parent = nullptr);
+    gnomonViewVolumicOverlay(fa::icon, QString = "", QWidget *parent = nullptr);
+    gnomonViewVolumicOverlay(const QString& path, QString = "", QWidget *parent = nullptr);
     ~gnomonViewVolumicOverlay(void);
 
-    void changeColor(const QColor&);
+    void setColor(const QColor&);
     void changePath(const QString&);
 
-    QColor defaultColor(void);
+    QColor defaultColor(void) const;
+
+    QString text() const;
 
 signals:
     void clicked(void);
@@ -121,14 +123,17 @@ public:
     bool on = false;
 
 public:
+    QLabel *label_icon = nullptr;
+    QLabel *label_text = nullptr;
+public:
     gnomonFontAwesome *font = nullptr;
     fa::icon           icon;
     QColor             default_color;
 };
 
-gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *parent) : QLabel(parent)
+gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, QWidget *parent) : QWidget(parent)
 {
-    this->default_color = QColor("#ffffff");
+    this->default_color = Qt::white;
 
     this->icon = icon;
 
@@ -136,15 +141,46 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QWidget *paren
     this->font->initFontAwesome();
     this->font->setDefaultOption("color", this->default_color);
 
-    this->setPixmap(this->font->icon(icon).pixmap(24, 24));
+    this->label_text  = new QLabel(text, this);
+    if(text.isEmpty()) this->label_text->setVisible(false);
+    this->label_text->setContentsMargins(0,0,0,0);
 
+    this->label_icon = new QLabel(this);
+    this->label_icon->setPixmap(this->font->icon(icon).pixmap(24, 24));
+    this->label_icon->setContentsMargins(0,0,0,0);
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(this->label_icon);
+    layout->addWidget(this->label_text);
+
+    this->setLayout(layout);
+    this->setContentsMargins(0,0,0,0);
     this->setStyleSheet("background: none;");
 }
 
-gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path, QWidget *parent) : QLabel(parent)
+gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path, QString text, QWidget *parent) : QWidget(parent)
 {
-    this->setPixmap(QPixmap(path));
+    this->default_color = Qt::white;
 
+    this->icon = icon;
+
+    this->font = new gnomonFontAwesome(this);
+    this->font->initFontAwesome();
+    this->font->setDefaultOption("color", this->default_color);
+
+    this->label_text  = new QLabel(text, this);
+    if(text.isEmpty()) this->label_text->setVisible(false);
+    this->label_text->setContentsMargins(0,0,0,0);
+
+    this->label_icon = new QLabel(this);
+    this->label_icon->setPixmap(QPixmap(path));
+    this->label_icon->setContentsMargins(0,0,0,0);
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(this->label_text);
+    layout->addWidget(this->label_icon);
+
+    this->setLayout(layout);
+    this->setContentsMargins(0,0,0,0);
     this->setStyleSheet("background: none;");
 }
 
@@ -159,23 +195,27 @@ void gnomonViewVolumicOverlay::mousePressEvent(QMouseEvent *)
 }
 
 
-void gnomonViewVolumicOverlay::changeColor(const QColor& color)
+void gnomonViewVolumicOverlay::setColor(const QColor& color)
 {
     this->font->setDefaultOption("color", color);
 
-    this->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+    this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
 }
 
 void gnomonViewVolumicOverlay::changePath(const QString& path)
 {
-    this->setPixmap(QPixmap(path));
+    this->label_icon->setPixmap(QPixmap(path));
 }
 
-QColor gnomonViewVolumicOverlay::defaultColor(void)
+QColor gnomonViewVolumicOverlay::defaultColor(void) const
 {
     return this->default_color;
 }
 
+QString gnomonViewVolumicOverlay::text(void) const
+{
+    return this->label_text->text();
+}
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewVolumicInteractorImage
 // ///////////////////////////////////////////////////////////////////
@@ -347,6 +387,9 @@ public:
     void setSliceOrientation(Orientation orientation);
 
 public:
+    void changeChannel(const QString&);
+
+public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
@@ -378,6 +421,8 @@ public:
     gnomonViewVolumicOverlay *picker = nullptr;
     gnomonViewVolumicOverlay *blending = nullptr;
     gnomonViewVolumicOverlay *sync = nullptr;
+    gnomonViewVolumicOverlay *stack = nullptr;
+    QList<gnomonViewVolumicOverlay *> layers;
 
 public:
     gnomonViewVolumicList *blending_list = nullptr;
@@ -426,25 +471,28 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
     this->SetRenderWindow(this->window);
     this->setEnableHiDPI(true);
 
-    this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, this);
-    this->renderer2D_button = new gnomonViewVolumicOverlay(fa::square, this);
-    this->renderer3D_button = new gnomonViewVolumicOverlay(fa::cube, this);
-    this->renderer3D_button->changeColor(Qt::gray);
-    this->renderer2D_XY = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XY.png", this);
+    this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, "", this);
+    this->renderer2D_button = new gnomonViewVolumicOverlay(fa::square, "", this);
+    this->renderer3D_button = new gnomonViewVolumicOverlay(fa::cube, "", this);
+    this->renderer3D_button->setColor(Qt::gray);
+    this->renderer2D_XY = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XY.png", "", this);
     this->renderer2D_XY->on = true;
-    this->renderer2D_XZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XZ-off.png", this);
+    this->renderer2D_XZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XZ-off.png", "", this);
     this->renderer2D_XZ->on = false;
-    this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ-off.png", this);
+    this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ-off.png", "", this);
     this->renderer2D_YZ->on = false;
-    this->picker = new gnomonViewVolumicOverlay(fa::crosshairs, this);
-    this->picker->changeColor(Qt::gray);
+    this->picker = new gnomonViewVolumicOverlay(fa::crosshairs, "", this);
+    this->picker->setColor(Qt::gray);
     this->picker->on = false;
-    this->blending = new gnomonViewVolumicOverlay(fa::adjust, this);
-    this->blending->changeColor(Qt::gray);
+    this->blending = new gnomonViewVolumicOverlay(fa::adjust, "", this);
+    this->blending->setColor(Qt::gray);
     this->blending->on = false;
-    this->sync = new gnomonViewVolumicOverlay(fa::unlock, this);
-    this->sync->changeColor(Qt::gray);
+    this->sync = new gnomonViewVolumicOverlay(fa::unlock, "", this);
+    this->sync->setColor(Qt::gray);
     this->sync->on = false;
+    this->stack = new gnomonViewVolumicOverlay(fa::eye, "", this);
+    this->stack->setColor(Qt::gray);
+    this->stack->on = false;
 
     this->blending_list = new gnomonViewVolumicList(this);
     this->blending_list->resize(200, 100);
@@ -500,9 +548,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->picker->on = !this->picker->on;
 
         if (this->picker->on)
-            this->picker->changeColor(Qt::white);
+            this->picker->setColor(Qt::white);
         else
-            this->picker->changeColor(Qt::gray);
+            this->picker->setColor(Qt::gray);
 
         q->setCursor(this->picker->on ? Qt::CrossCursor : Qt::ArrowCursor);
     });
@@ -512,9 +560,9 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         this->blending->on = !this->blending->on;
 
         if (this->blending->on)
-            this->blending->changeColor(Qt::white);
+            this->blending->setColor(Qt::white);
         else
-            this->blending->changeColor(Qt::gray);
+            this->blending->setColor(Qt::gray);
 
         this->opacity->setVisible(this->blending->on);
         this->blending_list->setVisible(this->blending->on);
@@ -539,16 +587,16 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
             emit q->unlinking();
 
         if (this->sync->on)
-            this->sync->changeColor(Qt::white);
+            this->sync->setColor(Qt::white);
         else
-            this->sync->changeColor(Qt::gray);
+            this->sync->setColor(Qt::gray);
 
         if (this->sync->on && !this->synced) {
             this->syncing_count = 0;
             if(!this->syncing_timer)
                 this->syncing_timer = new QTimer(this);
             connect(this->syncing_timer, &QTimer::timeout, [=] () {
-                this->sync->changeColor(this->syncing_count++ % 2 ? Qt::white : Qt::gray);
+                this->sync->setColor(this->syncing_count++ % 2 ? Qt::white : Qt::gray);
                 this->sync->update();
                 if (this->syncing_count == 11) {
                     this->sync->on = false;
@@ -562,6 +610,22 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
             this->syncing_timer->start(500);
         }
     });
+
+    connect(this->stack, &gnomonViewVolumicOverlay::clicked, [=] () {
+            if (this->stack->on) {
+                this->stack->setColor(Qt::gray);
+            } else {
+                this->stack->setColor(Qt::white);
+            }
+
+            for(auto& layer : this->layers) {
+                qDebug() << "layer on";
+                layer->setVisible(!this->stack->on);
+            }
+
+            this->stack->on = !this->stack->on;
+    });
+
 }
 
 gnomonViewVolumicPrivate::~gnomonViewVolumicPrivate(void)
@@ -619,8 +683,14 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->picker->move(90, 10);
     this->blending->move(130, 10);
     this->sync->move(event->size().width() - 90, 10);
+    this->stack->move(event->size().width() - 40, 50);
     this->opacity->move(event->size().width() - 200 + 5, event->size().height() - 100 - 10 - 30);
     this->blending_list->move(event->size().width() - 200 - 10, event->size().height() - 100 - 10);
+    std::size_t i = 0;
+    for(auto& layer : this->layers) {
+        layer->move(event->size().width() - layer->width(), 80 + i * 25);
+        ++i;
+    }
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -747,7 +817,7 @@ void gnomonViewVolumic::link(gnomonViewVolumic *other)
 
     d->sync->on = true;
     d->sync->icon = fa::lock;
-    d->sync->changeColor(Qt::white);
+    d->sync->setColor(Qt::white);
 
     d->synced = true;
 
@@ -777,7 +847,7 @@ void gnomonViewVolumic::unlink(gnomonViewVolumic *other)
 
     d->sync->on = false;
     d->sync->icon = fa::unlock;
-    d->sync->changeColor(Qt::gray);
+    d->sync->setColor(Qt::gray);
 
     d->synced = false;
 
@@ -809,11 +879,11 @@ void gnomonViewVolumic::switchTo3D(void)
 
     d->renderer2D_button->on = false;
     d->renderer2D_button->setEnabled(true);
-    d->renderer2D_button->changeColor(Qt::gray);
+    d->renderer2D_button->setColor(Qt::gray);
 
     d->renderer3D_button->on = true;
     d->renderer3D_button->setEnabled(false);
-    d->renderer3D_button->changeColor(Qt::white);
+    d->renderer3D_button->setColor(Qt::white);
 
     d->renderer2D_XY->setVisible(false);
     d->renderer2D_XZ->setVisible(false);
@@ -851,11 +921,11 @@ void gnomonViewVolumic::switchTo2D(void)
 
     d->renderer2D_button->on = true;
     d->renderer2D_button->setEnabled(false);
-    d->renderer2D_button->changeColor(Qt::white);
+    d->renderer2D_button->setColor(Qt::white);
 
     d->renderer3D_button->on = false;
     d->renderer3D_button->setEnabled(true);
-    d->renderer3D_button->changeColor(Qt::gray);
+    d->renderer3D_button->setColor(Qt::gray);
 
     d->renderer2D_XY->setVisible(true);
     d->renderer2D_XZ->setVisible(true);
@@ -1046,9 +1116,9 @@ void gnomonViewVolumic::setBlending(bool blend)
 {
     d->blending->on = blend;
     if(blend) {
-        d->blending->changeColor(Qt::white);
+        d->blending->setColor(Qt::white);
     } else {
-        d->blending->changeColor(Qt::gray);
+        d->blending->setColor(Qt::gray);
         if(d->images_serie && d->images_serie->image())
             this->setImage(d->images_serie->image());
     }
@@ -1462,9 +1532,88 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         delete command;
     }
 
+    for(auto& layer : d->layers) {
+        delete layer;
+    }
+    d->layers.clear();
+
+    QStringList layer_names = d->images_serie->channels();
+
+    std::size_t i = 0;
+    for(const QString& layer : layer_names) {
+        gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
+        layer_overlay->move(d->size().width() - layer_overlay->width(), 80 + i * 25);
+        if(i == 0) {
+            layer_overlay->on = true;
+            layer_overlay->setColor(Qt::white);
+        } else {
+            layer_overlay->on = false;
+            layer_overlay->setColor(Qt::gray);
+        }
+        layer_overlay->setVisible(d->stack->on);
+        connect(layer_overlay, &gnomonViewVolumicOverlay::clicked, [=] () {
+                if(layer_overlay->on) {
+                    layer_overlay->setColor(Qt::gray);
+                } else {
+                    layer_overlay->setColor(Qt::white);
+                }
+                layer_overlay->on = !layer_overlay->on;
+                d->changeChannel(layer_overlay->text());
+            });
+        d->layers << layer_overlay;
+        ++i;
+    }
+
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
+}
+
+void gnomonViewVolumicPrivate::changeChannel(const QString& current_channel)
+{
+    //count the number of channels toggled
+    std::size_t nb_layers_toggled = 0;
+    for(auto& layer : this->layers) {
+        if(layer->on) ++nb_layers_toggled;
+    }
+    qDebug() << nb_layers_toggled << " layers toggled";
+
+    switch(nb_layers_toggled) {
+
+    case 0:
+        // dont disable it if there is only one channel. In this case, the blending can
+        // only be activated/deactivated manually
+        if(this->layers.size() > 1) q->setBlending(false);
+
+        // q->onChannelChanged(current_channel, d->color_map_editor->value());
+        q->onChannelChanged(current_channel, QMap<double, QColor>());
+
+        break;
+
+    case 1:
+        q->setBlending(false);
+        // q->onChannelChanged(current_channel, d->color_map_editor->value());
+        q->onChannelChanged(current_channel, QMap<double, QColor>());
+
+        break;
+
+    default:
+        q->setBlending(true);
+        std::size_t i = 0;
+        for(auto& layer : this->layers) {
+            if(layer->on) {
+                // if(d->channels_lut.contains(d->channels_list->item(i)->text())) {
+                //     q->onChannelChanged(d->channels_list->item(i)->text(),
+                //                                      d->channels_lut[d->channels_list->item(i)->text()]);
+                // }
+                // else {
+                    // q->onChannelChanged(current_channel, d->color_map_editor->value());
+                q->onChannelChanged(current_channel, QMap<double, QColor>());
+                // }
+            }
+        }
+    }
+
 }
 
 // ///////////////////////////////////////////////////////////////////
