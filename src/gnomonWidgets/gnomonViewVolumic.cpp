@@ -487,6 +487,8 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         planeWidget[i]->RestrictPlaneToVolumeOn();
         planeWidget[i]->GetPlaneProperty()->SetColor(color);
         planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
+        planeWidget[i]->SetMarginSizeX(0);
+        planeWidget[i]->SetMarginSizeY(0);
     }
 
     // ///////////////////////////////////////////////////////////////////

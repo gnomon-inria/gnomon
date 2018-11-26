@@ -191,16 +191,15 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
     d->colormap_table->setFixedHeight(40);
     d->colormap_table->setMinimumWidth(120);
 
-    //load grey colormap as default
     d->current_map = "grey";
     d->colormap_box->setCurrentText(d->current_map);
     importColorMap(d->current_map);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setAlignment(Qt::AlignTop);
     layout->addWidget(d->colormap_box);
     layout->addWidget(d->colormap_table);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
 
     connect(d->colormap_box, SIGNAL(currentTextChanged(const QString&)), this, SLOT(importColorMap(const QString&)));
 }

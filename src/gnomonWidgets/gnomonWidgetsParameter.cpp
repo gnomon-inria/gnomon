@@ -136,7 +136,8 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
         for (auto it = parameter->values().begin(), it_end = parameter->values().end(); it != it_end; ++it) {
             widget->addItem(*it);
         }
-        widget->setCurrentText(parameter->currentValue());
+        // widget->setCurrentText(parameter->currentValue());
+        widget->setCurrentText(parameter->value());
 
         QObject::connect(widget, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                          [=](int id) { parameter->setCurrentIndex(id); });

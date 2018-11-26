@@ -23,7 +23,7 @@
 
 #include <vtkActor.h>
 #include <vtkCellData.h>
-#include <vtkClipPolydata.h>
+#include <vtkClipPolyData.h>
 #include <vtkCommand.h>
 #include <vtkDoubleArray.h>
 #include <vtkImageData.h>
@@ -163,7 +163,7 @@ void gnomonActor2DCellImage::setPolyData(gnomonPolyDataCellImage *polydata)
 }
 
 void gnomonActor2DCellImage::setDimensions(int value[3])
-{   
+{
     for(int i=0;i<3;i++)
         d->dimension[i] = value[i];
     this->modified();
@@ -191,7 +191,7 @@ void gnomonActor2DCellImage::update(void)
 {
     if(!d->polydata)
         return;
-    
+
     if (d->modified)
     {
         d->slicePositions[0] = d->dimension[0]/2;
@@ -201,9 +201,9 @@ void gnomonActor2DCellImage::update(void)
 
     for (int i=0;i<3;i++)
     {
-        d->updateSlice(i);   
+        d->updateSlice(i);
         if (this->GetNumberOfPaths()<=i)
-            this->AddPart(d->sliceActors[i]); 
+            this->AddPart(d->sliceActors[i]);
     }
 
     d->updateVisibility();

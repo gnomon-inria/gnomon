@@ -17,6 +17,7 @@
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonViewVolumicPool.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonImagesSerieFilterCommand>
@@ -37,14 +38,19 @@ public:
 public:
     gnomonViewVolumic *source = nullptr;
     gnomonViewVolumic *target = nullptr;
+
+public:
+    gnomonViewVolumicPool *pool = nullptr;
 };
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
 {
+
 }
 
 gnomonWorkspacePreprocessPrivate::~gnomonWorkspacePreprocessPrivate(void)
 {
+
 }
 
 QString gnomonWorkspacePreprocessPrivate::workspace(void) const
@@ -67,6 +73,10 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWo
 
     d->source = new gnomonViewVolumic(this);
     d->target = new gnomonViewVolumic(this);
+
+    d->pool = new gnomonViewVolumicPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
