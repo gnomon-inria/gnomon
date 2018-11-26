@@ -3,20 +3,21 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include "gnomonImagesSerie.h"
 #include "gnomonImagesFusionCommand.h"
 #include "gnomonImagesSerieReaderCommand.h"
+
+#include <gnomonCore/gnomonImagesSerie>
 
 #include <dtkScript>
 
 #include <dtkImage>
 
-using dtkImagePtr = std::shared_ptr<dtkImage>;
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class gnomonImagesFusionCommandTestCasePrivate
 {
 public:
-    QVector< gnomonImagesSerie* > images_series;
+    QVector< gnomonImagesSeriePtr > images_series;
     gnomonImagesFusionCommand *fusion_command = nullptr;
 };
 
@@ -48,21 +49,21 @@ void gnomonImagesFusionCommandTestCase::redo(void)
     QString image_0_file_path = QFINDTESTDATA("../resources/time_0_cut_resampled.inr");
     command->setPath(image_0_file_path);
     command->redo();
-    d->images_series.push_back(new gnomonImagesSerie(*command->imagesSerie()));
+    d->images_series.push_back(gnomonImagesSeriePtr(command->imagesSerie()));
 
     QString image_1_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated1_resampled.inr");
     command->setPath(image_1_file_path);
     command->redo();
-    d->images_series.push_back(new gnomonImagesSerie(*command->imagesSerie()));
+    d->images_series.push_back(gnomonImagesSeriePtr(command->imagesSerie()));
 
     QString image_2_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated2_resampled.inr");
     command->setPath(image_2_file_path);
     command->redo();
-    d->images_series.push_back(new gnomonImagesSerie(*command->imagesSerie()));
+    d->images_series.push_back(gnomonImagesSeriePtr(command->imagesSerie()));
 
-    d->fusion_command->addImagesSerie(d->images_series[0]);
-    d->fusion_command->addImagesSerie(d->images_series[1]);
-    d->fusion_command->addImagesSerie(d->images_series[2]);
+    d->fusion_command->addImagesSerie(d->images_series[0].data());
+    d->fusion_command->addImagesSerie(d->images_series[1].data());
+    d->fusion_command->addImagesSerie(d->images_series[2].data());
  
     d->fusion_command->setParameter("nb_iterations", 0);
     d->fusion_command->setParameter("n_job", 1);
@@ -76,8 +77,6 @@ void gnomonImagesFusionCommandTestCase::undo(void)
 
 void gnomonImagesFusionCommandTestCase::cleanup(void)
 {
-    qDeleteAll(d->images_series);
-
     delete d->fusion_command;
     d->fusion_command = nullptr;
 }

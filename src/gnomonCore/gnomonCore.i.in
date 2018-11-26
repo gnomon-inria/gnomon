@@ -181,6 +181,50 @@
         qDebug("PyDict is expected as input. Empty QMap<QString, gnomonCoreParameter*> is returned.");
     }
 }
+%typemap(in) QList<size_t> {
+    if (PyList_Check($input)) {
+        int i = 0;
+        int end = PyList_Size($input);
+        for(i;i!=end; ++i) {
+            $1 << PyInt_AsLong(PyList_GET_ITEM($input, i));
+        }
+    } else {
+        qDebug("PyList of integers is expected as input. Empty QList<size_t> is returned.");
+    }
+}
+
+%typemap(in) const QList<size_t>& {
+    if (PyList_Check($input)) {
+        int i = 0;
+        int end = PyList_Size($input);
+        $1 = new QList<size_t>;
+        for(i;i!=end; ++i) {
+            ($1)->append(PyInt_AsLong(PyList_GET_ITEM($input, i)));
+        }
+    } else {
+        qDebug("PyList of integers is expected as input. Empty QList<size_t> is returned.");
+    }
+}
+
+%typemap(freearg) const QList<size_t>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QList<size_t> {
+    PyObject *list = static_cast<PyObject *>($1);
+    if (PyList_Check(list)) {
+        int i = 0;
+        int end = PyList_Size(list);
+        for(i;i<end; ++i) {
+            PyObject *o = PyList_GET_ITEM(list, i);
+            $result << PyInt_AsLong(o);
+        }
+    } else {
+        qDebug("PyList of integers is expected as input. Empty QList<size_t> is returned.");
+    }
+}
 
 %extend QVariant {
     void setValue(gnomonCellComplex *value) {

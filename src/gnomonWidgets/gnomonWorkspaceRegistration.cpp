@@ -33,7 +33,7 @@ public:
 
 public:
     gnomonGridLayout *sources_layout;
-    gnomonGridLayout *targets_layout;
+    gnomonViewVolumic *target = nullptr;
 };
 
 QString gnomonWorkspaceRegistrationPrivate::workspace() const
@@ -60,14 +60,12 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
     QWidget *sources_dummy = new QWidget(this);
     sources_dummy->setLayout(d->sources_layout);
 
-    d->targets_layout = new gnomonGridLayout;
+    d->target  = new gnomonViewVolumic(this);
 
-    QWidget *targets_dummy = new QWidget(this);
-    targets_dummy->setLayout(d->targets_layout);
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(sources_dummy);
-    splitter->addWidget(targets_dummy);
+    splitter->addWidget(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -89,18 +87,11 @@ void gnomonWorkspaceRegistration::apply(void)
 
     d->command->undo();
     for(gnomonViewVolumic *view : d->sources_layout->views()) {
-        //        d->command->addImage(view->image().data()); //TODO
+               d->command->addImagesSerie(view->imagesSerie().data());
     }
     d->command->redo();
 
-    d->targets_layout->removeAllViews();
-    for(gnomonViewVolumic *view : d->sources_layout->views()) {
-        d->targets_layout->addView();
-    }
-
-    for(gnomonViewVolumic *view : d->targets_layout->views()) {
-        //view->setImage(dtkImagePtr(new dtkImage(*d->command->next()))); //TODO
-    }
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)

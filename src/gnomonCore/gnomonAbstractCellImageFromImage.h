@@ -37,7 +37,7 @@ public:
     virtual void run(void) = 0;
 
 public:
-    virtual gnomonImagesSerie *input()= 0;
+    virtual gnomonImagesSerie *input() = 0;
     virtual gnomonImagesSerie *output() = 0;
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) = 0;
     virtual gnomonCellImage *computedImage(void) const = 0;
