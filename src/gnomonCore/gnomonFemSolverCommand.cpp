@@ -15,7 +15,7 @@ public:
 
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "import gnomonFemSolver";
 
     int stat;
 
