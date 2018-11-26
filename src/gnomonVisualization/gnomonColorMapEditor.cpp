@@ -114,7 +114,8 @@ class gnomonColorMapEditorPrivate
 {
 public:
     QString name;
-    QMap<double, QColor> value;
+    QMap<QString, QMap<double, QColor> > colormaps;
+    QString current_map;
 
 public:
     QComboBox *colormap_box;
@@ -123,8 +124,6 @@ public:
 
 gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d(new gnomonColorMapEditorPrivate)
 {
-    d->value[0] = Qt::black;
-    d->value[1] = Qt::white;
     d->name = "";
 
     QPalette palette ;
@@ -188,10 +187,14 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
     d->colormap_box->addItem("YlGn");
     d->colormap_box->addItem("YlOrBr");
 
-    d->colormap_box->setCurrentText("grey");
     d->colormap_table = new gnomonColorMapTable();
     d->colormap_table->setFixedHeight(40);
     d->colormap_table->setMinimumWidth(120);
+
+    //load grey colormap as default
+    d->current_map = "grey";
+    d->colormap_box->setCurrentText(d->current_map);
+    importColorMap(d->current_map);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(d->colormap_box);
@@ -216,7 +219,11 @@ const QString& gnomonColorMapEditor::name(void) const
 
 const QMap<double, QColor>& gnomonColorMapEditor::value(void) const
 {
-    return d->value;
+    if(!d->colormaps.contains(d->current_map)) {
+        qWarning() << Q_FUNC_INFO << "shouldn't happen";
+    }
+
+    return d->colormaps[d->current_map];
 }
 
 void gnomonColorMapEditor::setName(const QString& name)
@@ -226,14 +233,23 @@ void gnomonColorMapEditor::setName(const QString& name)
 
 void gnomonColorMapEditor::setValue(const QMap<double, QColor>& value)
 {
-    d->value = value;
+    if(!d->colormaps.key(value, "").isEmpty() ) {
+        d->current_map = d->colormaps.key(value);
+    } else {
+        qWarning() << Q_FUNC_INFO << "insert no_name color map";
+        d->current_map = "no_name";
+        d->colormaps.insert(d->current_map, value);
+        d->colormap_box->addItem(d->current_map);
+    }
+
+    d->colormap_box->setCurrentText(d->current_map);
     d->colormap_table->removeColorPoints();
 
     for (const auto& v : value.keys())
         d->colormap_table->addColorPoint(v,value[v]);
     d->colormap_table->update();
 
-    emit valueChanged(d->value);
+    emit valueChanged(value);
 }
 
 void gnomonColorMapEditor::importColorMap(const QString& clut)
@@ -279,6 +295,7 @@ void gnomonColorMapEditor::importColorMap(const QString& clut)
         n = n.nextSibling();
     }
 
+    d->colormaps.insert(clut, colormap);
     this->setValue(colormap);
 }
 

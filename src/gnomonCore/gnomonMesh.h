@@ -42,6 +42,9 @@ public:
 public:
     gnomonMesh& operator = (const gnomonMesh& o)
     {
+        if (this == &o)
+            return *this;
+
         if (m_data != o.m_data) {
             if (m_data != nullptr) {
                 delete m_data;

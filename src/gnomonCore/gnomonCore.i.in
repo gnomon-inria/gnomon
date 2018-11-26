@@ -248,7 +248,6 @@
 %include <gnomonCore/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
-%include <gnomonCore/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 %include <gnomonCore/gnomonAbstractImagesSerieReader.h>

@@ -48,7 +48,7 @@ public:
     gnomonViewVolumic *target = nullptr;
 
 public:
-    gnomonViewVolumicPool *pool;
+    gnomonViewVolumicPool *pool = nullptr;
 
 public:
     gnomonCellImage *cellimage = nullptr;
@@ -113,7 +113,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(d->target);
     layout->addWidget(pane);
 
-    connect(cell_button, SIGNAL(clicked()), this, SLOT(computeCells()));
+    connect(cell_button, &QPushButton::clicked, [=]() {
+                                                    this->setCursor(Qt::BusyCursor);
+                                                    this->computeCells();
+                                                    this->setCursor(Qt::BusyCursor);});
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)

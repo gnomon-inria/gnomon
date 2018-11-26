@@ -65,7 +65,7 @@ public slots:
 
 public:
     void setBlending(bool);
-    void setImage(dtkImagePtr, const QMap<double, QColor>& = QMap<double, QColor>());
+    void setImage(dtkImagePtr, const QMap<double, QColor>& = grey_colormap);
 
 public:
     dtkImagePtr image(void);
@@ -87,6 +87,9 @@ public slots:
 
 signals:
     void channelsChanged(QStringList);
+
+public:
+    static QMap<double, QColor> grey_colormap;
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
