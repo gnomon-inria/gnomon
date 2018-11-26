@@ -123,9 +123,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(pane);
 
     connect(cell_button, &QPushButton::clicked, [=]() {
-                                                    this->setCursor(Qt::BusyCursor);
-                                                    this->computeCells();
-                                                    this->setCursor(Qt::BusyCursor);});
+        this->setCursor(Qt::BusyCursor);
+        this->computeCells();
+        this->setCursor(Qt::ArrowCursor);
+    });
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
