@@ -19,7 +19,8 @@
 #include "gnomonViewVolumic.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesSerieFilterCommand>
+#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonImagesSerieFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -89,7 +90,7 @@ void gnomonWorkspacePreprocess::apply(void)
         d->command->setInput(d->source->imagesSerie().data());
     else
         qDebug() << "Not changed";
-    
+
     d->command->redo();
 
     d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
