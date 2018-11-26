@@ -24,7 +24,6 @@ gnomonImagesFusionCommandTestCase::gnomonImagesFusionCommandTestCase(void) : d(n
 
 gnomonImagesFusionCommandTestCase::~gnomonImagesFusionCommandTestCase(void)
 {
-    qDeleteAll(d->images_series);
     delete d;
 }
 
@@ -77,6 +76,8 @@ void gnomonImagesFusionCommandTestCase::cleanup(void)
 {
     delete d->fusion_command;
     d->fusion_command = nullptr;
+
+    qDeleteAll(d->images_series);
 }
 
 void gnomonImagesFusionCommandTestCase::cleanupTestCase(void)
