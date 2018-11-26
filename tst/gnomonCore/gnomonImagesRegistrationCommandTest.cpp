@@ -36,7 +36,7 @@ void gnomonImagesRegistrationCommandTestCase::initTestCase(void)
 
 void gnomonImagesRegistrationCommandTestCase::init(void)
 {
-    d->registration_command = new gnomonImagesRegistrationCommand("gnomonImagesRegistration");
+    d->registration_command = new gnomonImagesRegistrationCommand("backwardRegistrationTimagetk");
     Q_ASSERT(d->registration_command);
 }
 
