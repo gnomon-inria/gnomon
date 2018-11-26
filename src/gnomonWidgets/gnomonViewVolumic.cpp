@@ -40,6 +40,7 @@
 #include <vtkContourFilter.h>
 #include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
+#include <vtkDoubleArray.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageBlend.h>
 #include <vtkImageCast.h>
@@ -1041,56 +1042,73 @@ void gnomonViewVolumic::setBlending(bool blend)
 
 gnomonMesh *gnomonViewVolumic::mesh(void)
 {
-  qDebug()<<"view mesh"<<d->mesh;
-  return d->mesh;
+    qDebug()<<"view mesh"<<d->mesh;
+    return d->mesh;
 
 }
 
 void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
 {
 
-  d->mesh = mesh;
-  qDebug()<<"view setmesh"<<d->mesh;
+    d->mesh = mesh;
+    qDebug()<<"view setmesh"<<d->mesh;
 
-  vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-  vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
-  vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
+    vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
 
-  QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
-  QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
-  QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
+    QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
+    QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
+    QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
 
-  QMap<long,long> vertexPoint;
+    QMap<long,long> vertexPoint;
 
-  QList<long> vertices = mesh->vertexIds();
+    QList<long> vertices = mesh->vertexIds();
 
-  for (const auto& vertexId : vertices) {
-      long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
-      vertexPoint[vertexId] = vtkId;
-  }
 
-  polydata->SetPoints(polydataPoints);
+    QMap<long, double> vertexScalarProperty;
+    for (const auto& vertexId : vertices) {
+        if (d->mesh->vertexPropertyNames().contains("scalar_field")) {
+            vertexScalarProperty[vertexId] = d->mesh->vertexProperty("scalar_field")[vertexId].value<double>();
+        } else {
+            vertexScalarProperty[vertexId] = 0;
+        }
+    }
 
-  QList<long> triangles = mesh->triangleIds();
+    QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
+    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
 
-  for (const auto& triangleId : triangles) {
+    for (const auto& vertexId : vertices) {
+        long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
+        polydataPointData->InsertValue(vtkId,vertexScalarProperty[vertexId]);
+        vertexPoint[vertexId] = vtkId;
+    }
+
+    polydata->SetPoints(polydataPoints);
+    polydata->GetPointData()->SetScalars(polydataPointData);
+
+    QList<long> triangles = mesh->triangleIds();
+
+    for (const auto& triangleId : triangles) {
       QList<long> triangleVertices = mesh->triangleVertexIds(triangleId);
       long vtkId = polydataFaces->InsertNextCell(triangleVertices.size());
       for (const auto& v : triangleVertices) {
           polydataFaces->InsertCellPoint(vertexPoint[v]);
       }
-  }
+    }
 
-  polydata->SetPolys(polydataFaces);
+    polydata->SetPolys(polydataFaces);
 
-  vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-  mapper->SetInputData(polydata);
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputData(polydata);
+    mapper->SetScalarRange(*(mm.first), *(mm.second));
 
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-  actor->SetMapper(mapper);
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
 
-  d->renderer3D->AddActor(actor);
-  this->render();
+    d->renderer3D->AddActor(actor);
+    this->render();
 
 }
 
