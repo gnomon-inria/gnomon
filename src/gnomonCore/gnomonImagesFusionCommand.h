@@ -1,6 +1,8 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractImagesFusion.h"
 
+#include "gnomonLandmark.h"
+
 class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand<gnomonAbstractImagesFusion>
 {
 public:
@@ -13,8 +15,13 @@ public:
     void undo(void) override;
 
 public:
-    void addImage(dtkImage *);
     void setParameter(const QString&, const QVariant&);
+
+    void addImage(dtkImage *);
+    void removeImages(void);
+
+    void addLandmarks(const std::vector<gnomonLandmark>&);
+    void removeLandmarks(void);
 
 public:
     dtkImage *output(void);
