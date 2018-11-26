@@ -10,6 +10,8 @@
 
 #include <dtkImage>
 
+using dtkImagePtr = std::shared_ptr<dtkImage>;
+
 class gnomonImagesFusionCommandTestCasePrivate
 {
 public:
@@ -45,23 +47,23 @@ void gnomonImagesFusionCommandTestCase::redo(void)
     QString image_0_file_path = QFINDTESTDATA("../resources/time_0_cut_resampled.inr");
     d->serie_reader_command->setPath(image_0_file_path);
     d->serie_reader_command->redo();
-    dtkImage *image_0 = d->serie_reader_command->at(0);
+    dtkImagePtr image_0 = dtkImagePtr(new dtkImage(*d->serie_reader_command->at(0)));
 
     QString image_1_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated1_resampled.inr");
     d->serie_reader_command->setPath(image_1_file_path);
     d->serie_reader_command->redo();
-    dtkImage *image_1 = d->serie_reader_command->at(0);
+    dtkImagePtr image_1 = dtkImagePtr(new dtkImage(*d->serie_reader_command->at(0)));
 
     QString image_2_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated2_resampled.inr");
     d->serie_reader_command->setPath(image_2_file_path);
     d->serie_reader_command->redo();
-    dtkImage *image_2 = d->serie_reader_command->at(0);
+    dtkImagePtr image_2 = dtkImagePtr(new dtkImage(*d->serie_reader_command->at(0)));
 
 
-    d->fusion_command->addImage(image_0);
-    d->fusion_command->addImage(image_1);
-    d->fusion_command->addImage(image_2);
- 
+    d->fusion_command->addImage(image_0.get());
+    d->fusion_command->addImage(image_1.get());
+    d->fusion_command->addImage(image_2.get());
+
     d->fusion_command->setParameter("nb_iterations", 0);
     d->fusion_command->redo();
 }
