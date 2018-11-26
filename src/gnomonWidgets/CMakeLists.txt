@@ -53,6 +53,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceRegistration
   gnomonWorkspaceRegistration.h
   gnomonWorkspaceSegmentation
+  gnomonWorkspaceSimulation
+  gnomonWorkspaceSimulation.h
   gnomonWorkspaceSegmentation.h
   gnomonWorkspaceTemplate_p.h
   gnomonWorkspaceTemplate_p.tpp)
