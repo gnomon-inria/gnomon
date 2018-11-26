@@ -27,6 +27,8 @@
 
 #include <dtkImagingCore>
 
+#include "gnomonLandmarkActor.h"
+
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkCellPicker.h>
@@ -35,7 +37,6 @@
 #include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkGlyph3D.h>
 #include <vtkImageBlend.h>
 #include <vtkImageCast.h>
 #include <vtkImageData.h>
@@ -184,6 +185,16 @@ public:
     static gnomonViewVolumicInteractorImage *New(void);
 
 public:
+    virtual void OnMouseMove(void) override
+        {
+            if(this->move_actor) {
+                return;
+            }
+
+            vtkInteractorStyleImage::OnMouseMove();
+
+        }
+
     virtual void OnLeftButtonDown(void) override
     {
         vtkInteractorStyleImage::OnLeftButtonDown();
@@ -203,18 +214,82 @@ public:
         picker->SetTolerance(0.0005);
         picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
-        if(picker->GetCellId() == -1)
-            return;
+        if(picker->GetCellId() == -1) return;
 
         double *picked = picker->GetPickPosition();
 
-        this->points->InsertNextPoint(picked[0], picked[1], picked[2]);
+        if(picker->GetActor()) {
+            this->move_actor = picker->GetActor();
+        } else {
+            std::size_t id = q->addLandmark(this->landmark_id, picked[0], picked[1], picked[2]);
 
-        this->mesh->SetPoints(this->points);
-        this->mesh->Modified();
+            emit q->landmarkAdded(id, picked[0], picked[1], picked[2]);
+        }
 
-        this->glyphs->SetInputData(this->mesh);
-        this->glyphs->Update();
+        this->q->render();
+    }
+
+    virtual void OnLeftButtonUp(void) override
+    {
+        vtkInteractorStyleImage::OnLeftButtonUp();
+
+        if(!this->picker)
+            return;
+
+        if(!this->picker->on)
+            return;
+
+        if(!this->image)
+            return;
+
+        if(!move_actor) return;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        picker->SetTolerance(0.0005);
+        picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        if(picker->GetCellId() == -1) return;
+
+        double *picked = picker->GetPickPosition();
+        this->move_actor->SetPosition(picked[0], picked[1], picked[2]);
+
+        this->move_actor = nullptr;
+
+        this->q->render();
+    }
+
+    virtual void OnMiddleButtonDown() override
+    {
+        vtkInteractorStyleImage::OnMiddleButtonDown();
+
+        if(!this->picker)
+            return;
+
+        if(!this->picker->on)
+            return;
+
+        if(!this->image)
+            return;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        picker->SetTolerance(0.0005);
+        picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        if(picker->GetCellId() == -1) return;
+
+        if(!picker->GetActor()) return;
+
+        double *p = picker->GetActor()->GetPosition();
+
+        gnomonLandmarkActor *landmark = static_cast<gnomonLandmarkActor *>(picker->GetActor());
+
+        q->removeLandmark(landmark->id());
+
+        emit q->landmarkRemoved(landmark->id());
 
         this->q->render();
     }
@@ -223,11 +298,11 @@ public:
     gnomonViewVolumic *q = nullptr;
     gnomonViewVolumicOverlay *picker = nullptr;
 
+    vtkActor *move_actor = nullptr;
+    std::size_t landmark_id = 0;
+
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
-    vtkSmartPointer<vtkPoints> points = nullptr;
-    vtkSmartPointer<vtkPolyData> mesh = nullptr;
-    vtkSmartPointer<vtkGlyph3D> glyphs = nullptr;
 };
 
 vtkStandardNewMacro(gnomonViewVolumicInteractorImage);
@@ -285,11 +360,6 @@ public:
     vtkSmartPointer<vtkImageViewer2> viewer = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
-
-public:
-    vtkSmartPointer<vtkPoints> points;
-    vtkSmartPointer<vtkPolyData> mesh;
-    vtkSmartPointer<vtkGlyph3D> glyphs;
 
 public:
     vtkSmartPointer<vtkImageBlend> blender = nullptr;
@@ -412,39 +482,11 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
         planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
     }
 
-    this->points = vtkSmartPointer<vtkPoints>::New();
-    this->points->Allocate(100);
-
-    this->mesh = vtkSmartPointer<vtkPolyData>::New();
-
-    vtkSmartPointer<vtkSphereSource> sphere_source = vtkSmartPointer<vtkSphereSource>::New();
-    sphere_source->SetRadius(1.0);
-    sphere_source->SetPhiResolution(16);
-    sphere_source->SetThetaResolution(16);
-    sphere_source->Update();
-
-    this->glyphs = vtkSmartPointer<vtkGlyph3D>::New();
-    this->glyphs->SetSourceData(sphere_source->GetOutput());
-    this->glyphs->SetInputData(this->mesh);
-
-    vtkSmartPointer<vtkPolyDataMapper> glyph_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    glyph_mapper->SetInputConnection(this->glyphs->GetOutputPort());
-
-    vtkSmartPointer<vtkActor> glyph_actor = vtkSmartPointer<vtkActor>::New();
-    glyph_actor->SetMapper(glyph_mapper);
-    glyph_actor->GetProperty()->SetColor(1.0, 0.0, 0.5);
-
-    this->renderer2D->AddActor(glyph_actor);
-    this->renderer3D->AddActor(glyph_actor);
-
     // ///////////////////////////////////////////////////////////////////
 
     this->image_interactor = gnomonViewVolumicInteractorImage::New();
     this->image_interactor->SetDefaultRenderer(this->renderer2D);
     this->image_interactor->picker = this->picker;
-    this->image_interactor->points = this->points;
-    this->image_interactor->mesh = this->mesh;
-    this->image_interactor->glyphs = this->glyphs;
 
     this->GetInteractor()->SetInteractorStyle(this->image_interactor);
 
@@ -546,7 +588,7 @@ void gnomonViewVolumicPrivate::exportToManager(void)
     while(!dynamic_cast< QStackedWidget *>(parent))
         parent = parent->parentWidget();
 
-    QStackedWidget *stack = dynamic_cast< QStackedWidget * >(parent);
+    QStackedWidget *stack = dynamic_cast<QStackedWidget *>(parent);
 
     if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
         gnomonImageManager::instance()->addImage(this->image, gnomonToolBar::browser_color);
@@ -990,14 +1032,6 @@ void gnomonViewVolumic::setBlending(bool blend)
 
 void gnomonViewVolumic::setImage(dtkImagePtr i, const QMap<double, QColor>& source)
 {
-    d->points->Reset();
-
-    d->mesh->SetPoints(d->points);
-    d->mesh->Modified();
-
-    d->glyphs->SetInputData(d->mesh);
-    d->glyphs->Update();
-
     d->image = i;
 
     // 2D
@@ -1152,6 +1186,25 @@ dtkImagePtr gnomonViewVolumic::image(void)
     return d->image;
 }
 
+std::vector<gnomonLandmark> gnomonViewVolumic::landmarks(void)
+{
+    std::vector<gnomonLandmark> landmarks;
+    vtkActorCollection* actors_collection_2d =  d->renderer2D->GetActors();
+
+    actors_collection_2d->InitTraversal();
+    gnomonLandmark point;
+    for(std::size_t i = 0; i < actors_collection_2d->GetNumberOfItems(); ++i) {
+        gnomonLandmarkActor *landmark = dynamic_cast<gnomonLandmarkActor *>(actors_collection_2d->GetNextActor());
+        if(!landmark) continue;
+
+
+        landmark->GetPosition(point.pos);
+
+        landmarks.push_back(point);
+    }
+    return landmarks;
+}
+
 vtkRenderWindowInteractor *gnomonViewVolumic::interactor(void)
 {
     return d->GetInteractor();
@@ -1246,6 +1299,79 @@ void gnomonViewVolumic::onChannelChanged(const QString& channel,
     }
 
     this->setImage(dtkImagePtr(new dtkImage(*img)), source);
+}
+
+std::size_t gnomonViewVolumic::addLandmark(std::size_t id, double x, double y, double z)
+{
+    Q_ASSERT(id == d->image_interactor->landmark_id);
+
+    Q_ASSERT(QObject::sender() != this);
+
+    if(!d->image) return 0;
+
+    dtkArray<double> spacing = d->image->spacing();
+    double x_length = spacing[0] * double(d->image->xDim());
+    double y_length = spacing[1] * d->image->yDim();
+    double z_length = spacing[2] * d->image->zDim();
+
+    double radius = std::sqrt(x_length * x_length + y_length * y_length + z_length * z_length) * 0.5 * 0.02;
+
+    vtkSmartPointer<vtkSphereSource> sphere_source =
+        vtkSmartPointer<vtkSphereSource>::New();
+    sphere_source->SetRadius(radius);
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(sphere_source->GetOutputPort());
+
+    vtkSmartPointer<gnomonLandmarkActor> actor =
+        vtkSmartPointer<gnomonLandmarkActor>::New();
+    actor->setId(id);
+    actor->SetMapper(mapper);
+    actor->SetPosition(x, y, z);
+
+    double a = double(id % 51) / 50.;
+    double b = double(50 - id % 51) / 50.;
+    actor->GetProperty()->SetColor((id % 2 != 0) ? a : b, (id % 3 == 0) ? a : b, (id % 4 == 0) ? a : b);
+
+    d->renderer2D->AddActor(actor);
+    d->renderer3D->AddActor(actor);
+
+    d->GetInteractor()->Render();
+
+    ++d->image_interactor->landmark_id;
+
+    return id;
+}
+
+void gnomonViewVolumic::removeLandmark(std::size_t id)
+{
+    vtkActorCollection* actors_collection_2d =  d->renderer2D->GetActors();
+    vtkActorCollection* actors_collection_3d =  d->renderer3D->GetActors();
+
+    actors_collection_2d->InitTraversal();
+    for(std::size_t i = 0; i < actors_collection_2d->GetNumberOfItems(); ++i) {
+        gnomonLandmarkActor *landmark = dynamic_cast<gnomonLandmarkActor *>(actors_collection_2d->GetNextActor());
+        if(!landmark) continue;
+
+        if(landmark->id() == id) {
+            d->renderer2D->RemoveActor(landmark);
+            break;
+        }
+    }
+
+    actors_collection_3d->InitTraversal();
+    for(std::size_t i = 0; i < actors_collection_3d->GetNumberOfItems(); ++i) {
+        gnomonLandmarkActor *landmark = dynamic_cast<gnomonLandmarkActor *>(actors_collection_3d->GetNextActor());
+        if(!landmark) continue;
+
+        if(landmark->id() == id) {
+            d->renderer3D->RemoveActor(landmark);
+            break;
+        }
+    }
+
+    d->GetInteractor()->Render();
 }
 
 void gnomonViewVolumic::dragEnterEvent(QDragEnterEvent *event)

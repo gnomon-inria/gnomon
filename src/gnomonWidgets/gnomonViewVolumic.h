@@ -18,6 +18,10 @@
 
 #include <QtWidgets>
 
+#include <gnomonLandmark.h>
+
+class gnomonLandmark;
+
 class dtkImage;
 using dtkImagePtr = QSharedPointer<dtkImage>;
 
@@ -65,6 +69,9 @@ public:
     dtkImagePtr image(void);
 
 public:
+    std::vector<gnomonLandmark> landmarks(void);
+
+public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
 
@@ -78,9 +85,13 @@ public slots:
     void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
     void onChannelChanged(const QString&, const QMap<double, QColor>&);
+    std::size_t addLandmark(std::size_t, double, double, double);
+    void removeLandmark(std::size_t);
 
 signals:
     void channelsChanged(QStringList);
+    void landmarkAdded(std::size_t, double, double, double);
+    void landmarkRemoved(std::size_t id);
 
 signals:
     void sliceOrientationChanged(int);
