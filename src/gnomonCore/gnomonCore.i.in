@@ -181,6 +181,7 @@
         qDebug("PyDict is expected as input. Empty QMap<QString, gnomonCoreParameter*> is returned.");
     }
 }
+
 %typemap(in) QList<size_t> {
     if (PyList_Check($input)) {
         int i = 0;
