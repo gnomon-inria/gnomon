@@ -22,6 +22,8 @@
 class gnomonImagesSerie;
 using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
+class gnomonImageManagerItem;
+
 class GNOMONWIDGETS_EXPORT gnomonImageManager : public QFrame
 {
     Q_OBJECT
@@ -38,6 +40,9 @@ public:
 
 public slots:
     void addImage(gnomonImagesSeriePtr, const QColor&);
+
+public slots:
+    void present(gnomonImageManagerItem *);
 
 public:
     gnomonImagesSeriePtr get(int index);

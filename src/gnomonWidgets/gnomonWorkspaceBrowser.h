@@ -34,7 +34,7 @@ public slots:
     void displayChannels(void);
     void replaceChannels(QStringList);
     void replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item);
-    void apply(void);
+    void apply(void) override;
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

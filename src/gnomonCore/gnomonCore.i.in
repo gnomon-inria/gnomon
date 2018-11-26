@@ -16,8 +16,6 @@
 
 %module(directors="1") gnomoncore
 
-%include "std_array.i"
-
 %include <dtk_base.i>
 
 %import <dtkCore.i>
@@ -52,6 +50,7 @@
 #include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 #include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
 #include <gnomonCore/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCellGraph.h>
@@ -64,6 +63,7 @@
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonImagesSerie.h>
 #include <gnomonCore/gnomonIntensityImage.h>
+#include <gnomonCore/gnomonLandmark.h>
 #include <gnomonCore/gnomonMesh.h>
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
@@ -226,6 +226,56 @@
     }
  }
 
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) std::vector<gnomonLandmark, std::allocator< gnomonLandmark > > {
+    $1 = PyList_Check($input) ? 1 : 0;
+}
+
+ %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) const std::vector<gnomonLandmark, std::allocator< gnomonLandmark > >& {
+    $1 = PyList_Check($input) ? 1 : 0;
+}
+
+%typemap(out) std::vector<gnomonLandmark, std::allocator<gnomonLandmark>>
+{
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0 ; it != end; ++it, ++i)  {
+        PyObject *point = PyList_New(3);
+        PyList_SET_ITEM(point, 0, PyFloat_FromDouble(it->pos[0]));
+        PyList_SET_ITEM(point, 1, PyFloat_FromDouble(it->pos[1]));
+        PyList_SET_ITEM(point, 2, PyFloat_FromDouble(it->pos[2]));
+        PyList_SET_ITEM($result, i, point);
+    }
+}
+
+%typemap(out) const std::vector<gnomonLandmark, std:allocator<gnomonLandmark>>&
+{
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0 ; it != end; ++it, ++i)  {
+        PyObject *point = PyList_New(3);
+        PyList_SET_ITEM(point, 0, PyFloat_FromDouble(it->pos[0]));
+        PyList_SET_ITEM(point, 1, PyFloat_FromDouble(it->pos[1]));
+        PyList_SET_ITEM(point, 2, PyFloat_FromDouble(it->pos[2]));
+        PyList_SET_ITEM($result, i, point);
+    }
+}
+
+%typemap(directorin) const std::vector<gnomonLandmark, std::allocator< gnomonLandmark > >&
+{
+    PyObject *list = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0 ; it != end; ++it, ++i)  {
+        PyObject *point = PyList_New(3);
+        PyList_SET_ITEM(point, 0, PyFloat_FromDouble(it->pos[0]));
+        PyList_SET_ITEM(point, 1, PyFloat_FromDouble(it->pos[1]));
+        PyList_SET_ITEM(point, 2, PyFloat_FromDouble(it->pos[2]));
+        PyList_SET_ITEM(list, i, point);
+    }
+    $input = list;
+}
 
 %pythoncode %{
     def world():
@@ -259,6 +309,7 @@
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>
@@ -270,6 +321,7 @@
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonImagesSerie.h>
 %include <gnomonCore/gnomonIntensityImage.h>
+%include <gnomonCore/gnomonLandmark.h>
 %include <gnomonCore/gnomonMesh.h>
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
@@ -277,6 +329,9 @@
 %include <gnomonCore/gnomonTypeDef.h>
 %include <gnomonCore/gnomonWallForm.h>
 %include <QVariant.i>
+
+%include "std_array.i"
+%include "std_vector.i"
 
 namespace std {
     %template(vec3_t) array<double, 3>;

@@ -83,11 +83,15 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 void gnomonWorkspaceFusion::apply(void)
 {
     if(d->layout->views().isEmpty()) return;
+    d->command->removeImagesSeries();
+    d->command->removeLandmarks();
 
     d->command->undo();
     for(gnomonViewVolumic *view : d->layout->views()) {
         d->command->addImagesSerie(view->imagesSerie().data());
+        d->command->addLandmarks(view->landmarks());
     }
+
     d->command->redo();
 
     d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
