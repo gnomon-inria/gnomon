@@ -28,6 +28,7 @@ public:
 
 signals:
     void indexChanged(int);
+    void indexDeleted(int);
 
 signals:
     void createFusion(void);
@@ -43,7 +44,11 @@ public slots:
     void onCreateRegistration(void);
     void onCreateSimulation(void);
 
- public:
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
+public:
     void setCurrentIndex(int);
 
 public:

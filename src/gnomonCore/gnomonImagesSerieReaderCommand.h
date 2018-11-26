@@ -4,9 +4,9 @@
 class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieReader>
 {
 public:
-    gnomonImagesSerieReaderCommand() = delete;
-    gnomonImagesSerieReaderCommand(const QString&);
-    virtual ~gnomonImagesSerieReaderCommand();
+     gnomonImagesSerieReaderCommand(void) = delete;
+     gnomonImagesSerieReaderCommand(const QString&);
+    ~gnomonImagesSerieReaderCommand(void);
 
 public:
     void redo(void) override;
@@ -14,11 +14,13 @@ public:
 
 public:
     void setPath(const QString& path);
+
     double time(void);
-    dtkImage *at(double t, const QString& channel = "");
+    dtkImage *at(double t, const QString& channel = QString());
     dtkImage *next(void);
     QStringList channels(void);
 
 private:
     class gnomonImagesSerieReaderCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action;
 };
