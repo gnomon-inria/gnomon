@@ -318,7 +318,8 @@ public:
     gnomonImagesSeriePtr images_serie;
 
 public:
-    QSlider *slice_slider;
+    QSlider     *slice_slider;
+    QLabel *time_slider_label;
 
 public:
     QSlider *time_slider;
@@ -642,6 +643,7 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     d->time_slider->setMaximum(1);
     d->time_slider->setValue(0);
     d->time_slider->setEnabled(true);
+    d->time_slider->setVisible(false);
     d->time_slider->setTickPosition(QSlider::TicksAbove);
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeChange(int)));
@@ -650,13 +652,14 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
     // connect(d, static_cast<void(gnomonViewVolumicPrivate::*)(int)>(&gnomonViewVolumicPrivate::sliceOrientationChanged), this, &gnomonViewVolumic::sliceOrientationChanged);
     connect(d, &gnomonViewVolumicPrivate::sliceOrientationChanged, this, &gnomonViewVolumic::sliceOrientationChanged);
 
-    QLabel *time_slider_label = new QLabel("time:");
-    QGridLayout *layout = new QGridLayout(this);
+    d->time_slider_label = new QLabel("Time:");
+    d->time_slider_label->setVisible(false);
+    QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
     layout->addWidget(d, 0, 1, 1, 1);
-    layout->addWidget(time_slider_label,1,0,1,1);
+    layout->addWidget(d->time_slider_label,1,0,1,1);
     layout->addWidget(d->time_slider,1,1,1,1);
 
     this->setAcceptDrops(true);
@@ -964,6 +967,11 @@ void gnomonViewVolumic::timeChange(int value)
 void gnomonViewVolumic::setImagesSerie(gnomonImagesSeriePtr images_serie, const QMap<double, QColor>& source)
 {
     d->images_serie = images_serie;
+    bool enable_slider = images_serie->times().count() > 1;
+
+    d->time_slider->setVisible(enable_slider);
+    d->time_slider_label->setVisible(enable_slider);
+
     if(d->images_serie->image())
         setImage(d->images_serie->image(), source);
 }
