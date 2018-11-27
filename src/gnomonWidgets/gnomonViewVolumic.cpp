@@ -1119,8 +1119,10 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
     d->volume_mapper->Modified();
     d->volume_mapper->Update();
 
-    if(!d->volume)
+    if(!d->volume) {
         d->volume = vtkSmartPointer<vtkVolume>::New();
+        d->renderer3D->AddActor(d->volume);
+    }
 
     image->GetPointData()->GetScalars()->GetRange(bounds);
     vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
@@ -1138,8 +1140,6 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
     d->volume->SetProperty(property);
     d->volume->Modified();
     d->volume->Update();
-
-    d->renderer3D->AddActor(d->volume);
 
     d->renderer2D->ResetCamera();
     d->renderer3D->ResetCamera();
@@ -1414,7 +1414,6 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         }
         layer_overlay->setVisible(d->stack->isToggled());
         connect(layer_overlay, &gnomonViewVolumicOverlay::iconClicked, [=] () {
-                qDebug() << "iconClicked";
                 d->toggleChannel(layer_overlay->text());
             });
         connect(layer_overlay, &gnomonViewVolumicOverlay::textClicked, [=] () {
