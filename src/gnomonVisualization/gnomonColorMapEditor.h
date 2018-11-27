@@ -40,7 +40,6 @@ public:
 
 signals:
     void valueChanged(const QMap<double, QColor>& val);
-
 public slots:
     void importColorMap(const QString& clut);
 
