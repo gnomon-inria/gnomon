@@ -560,7 +560,7 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->blending_list->move(15, event->size().height() - 100 - 10);
     std::size_t i = 0;
     for(auto& layer : this->layers) {
-        layer->move(event->size().width() - layer->width(), 80 + i * 25);
+        layer->move(event->size().width() - layer->width() + 15, 80 + i * 25);
         ++i;
     }
     this->clut->move(event->size().width() - 40, event->size().height() - 40);
@@ -1405,7 +1405,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     std::size_t i = 0;
     for(const QString& layer : layer_names) {
         gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
-        layer_overlay->move(d->size().width() - layer_overlay->width(), 80 + i * 25);
+        layer_overlay->move(d->size().width() - layer_overlay->width() + 15, 80 + i * 25);
         if(i == 0) {
             layer_overlay->toggle(true);
             layer_overlay->activate(true);
@@ -1431,9 +1431,15 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 void gnomonViewVolumicPrivate::activateChannel(const QString& channel_to_activate)
 {
     for(auto& layer : this->layers) {
-        if(layer->text() != channel_to_activate) layer->activate(false);
-        else layer->activate(true);
+        if(layer->text() != channel_to_activate) {
+            layer->activate(false);
+            layer->toggle(false);
+        } else {
+            layer->activate(true);
+            layer->toggle(false);
+        }
     }
+    this->toggleChannel(channel_to_activate);
 }
 
 void gnomonViewVolumicPrivate::toggleChannel(const QString& channel_to_toggle)
@@ -1453,8 +1459,8 @@ void gnomonViewVolumicPrivate::toggleChannel(const QString& channel_to_toggle)
     switch(nb_layers_toggled) {
 
     case 0:
-        q->setBlending(false);
-        q->onChannelChanged("", gnomonViewVolumic::grey_colormap);
+        // q->setBlending(false);
+        q->onChannelChanged(activated_layer, this->channels_lut[activated_layer]);
         break;
 
     case 1:

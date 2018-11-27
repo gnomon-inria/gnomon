@@ -35,6 +35,9 @@ class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlayText : public QLabel
 public:
     gnomonViewVolumicOverlayText(QString = "", QWidget *parent = nullptr);
 
+public:
+    int textWidth(void) const;
+
 signals:
     void clicked(void);
 
@@ -56,11 +59,15 @@ public:
     void changePath(const QString&);
 
     QString text() const;
+
     void activate(bool);
     void toggle(bool);
 
     bool isActivated(void) const;
     bool isToggled(void) const;
+
+public:
+    int textWidth(void) const;
 
 signals:
     void iconClicked(void);
