@@ -21,6 +21,8 @@ project(gnomonVisualization)
 set(${PROJECT_NAME}_HEADERS
   gnomonActor
   gnomonActor.h
+  gnomonActor2DCellImage
+  gnomonActor2DCellImage.h
   gnomonActorImage
   gnomonActorImage.h
   gnomonActorMesh
@@ -60,6 +62,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspectorViewWidget.h
   gnomonInspectorVolume
   gnomonInspectorVolume.h
+  gnomonPolyData
+  gnomonPolyData.h
+  gnomonPolyDataCellImage
+  gnomonPolyDataCellImage.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -68,6 +74,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
+  gnomonActor2DCellImage.cpp
   gnomonActorImage.cpp
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
@@ -89,6 +96,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspectorViewTree.cpp
   gnomonInspectorViewWidget.cpp
   gnomonInspectorVolume.cpp
+  gnomonPolyData.cpp
+  gnomonPolyDataCellImage.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 
@@ -128,7 +137,6 @@ qt5_use_modules(${PROJECT_NAME} Widgets)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)

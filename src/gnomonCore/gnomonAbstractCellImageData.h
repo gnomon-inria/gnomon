@@ -46,14 +46,13 @@ public:
     virtual QStringList cellPropertyNames(void) const = 0;
     virtual bool hasCellProperty(const QString& propertyName) const = 0;
 
-    virtual const QMap<long, QVariant>& cellProperty(const QString& propertyName) const = 0;
-    virtual       QMap<long, QVariant>& cellProperty(const QString& propertyName) = 0;
+    virtual QMap<long, QVariant> cellProperty(const QString& propertyName) const = 0;
 
     virtual void addCellProperty(const QString& propertyName) = 0;
     virtual void updateCellProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) = 0;
     virtual void removeCellProperty(const QString& propertyName) = 0;
 
-    virtual QMap<long, QVariant>& computeCellProperty(const QString& propertyName) = 0;
+    virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -70,7 +69,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageData, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageData, GNOMONCORE_EXPORT, cellimagedata);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageData, GNOMONCORE_EXPORT, cellImageData);
 }
 
 // gnomonAbstractCellImageData.h ends here

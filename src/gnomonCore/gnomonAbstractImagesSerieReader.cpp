@@ -25,4 +25,4 @@ namespace gnomonCore {
 }
 
 //
-// gnomonAbstractImageReader.cpp ends here
+// gnomonAbstractImagesSerieReader.cpp ends here

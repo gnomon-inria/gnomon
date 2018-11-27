@@ -1,11 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
   <qresource prefix="gnomon">
-    <file>gnomonViewVolumic-XY.png</file>
-    <file>gnomonViewVolumic-XZ.png</file>
-    <file>gnomonViewVolumic-YZ.png</file>
-    <file>gnomonViewVolumic-XY-off.png</file>
-    <file>gnomonViewVolumic-XZ-off.png</file>
-    <file>gnomonViewVolumic-YZ-off.png</file>
+    <file>gnomon_console.py</file>
   </qresource>
 </RCC>

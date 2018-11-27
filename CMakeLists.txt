@@ -24,7 +24,7 @@ project(gnomon)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
 set(${PROJECT_NAME}_VERSION_MINOR 9)
-set(${PROJECT_NAME}_VERSION_PATCH 0)
+set(${PROJECT_NAME}_VERSION_PATCH 1)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
 
@@ -128,6 +128,12 @@ if(DTK_BUILD_WRAPPERS)
   include(dtkWrap)
 endif()
 
+## ###################################################################
+## compiling options
+## ###################################################################
+
+option(GNOMON_BUILD_COMPOSER "Build composer layer" false)
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
@@ -137,7 +143,9 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomon)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonStyle)
+if(GNOMON_BUILD_COMPOSER)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
+endif(GNOMON_BUILD_COMPOSER)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)

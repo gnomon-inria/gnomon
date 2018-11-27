@@ -20,7 +20,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellGraphData, cellgraphdata, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractCellGraphData, cellGraphData, gnomonCore);
 }
 
 //

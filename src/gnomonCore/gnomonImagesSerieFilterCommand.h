@@ -4,9 +4,9 @@
 class GNOMONCORE_EXPORT gnomonImagesSerieFilterCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>
 {
 public:
-    gnomonImagesSerieFilterCommand() = delete;
-    gnomonImagesSerieFilterCommand(const QString&);
-    virtual ~gnomonImagesSerieFilterCommand();
+     gnomonImagesSerieFilterCommand(void) = delete;
+     gnomonImagesSerieFilterCommand(const QString&);
+    ~gnomonImagesSerieFilterCommand(void);
 
 public:
     void redo(void) override;
@@ -14,13 +14,15 @@ public:
 
 public:
     void setImage(dtkImage *image);
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue);
+    void setParameter(const QString&, const QVariant&);
 
 public:
+    QMap<QString, gnomonCoreParameter *> parameters(void) const;
     double time(void);
     dtkImage *at(double t);
     dtkImage *next(void);
 
 private:
     class gnomonImagesSerieFilterCommandPrivate *d;
+    using gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action;
 };

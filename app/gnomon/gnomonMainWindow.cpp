@@ -1,4 +1,3 @@
-// Version: $Id$
 //
 //
 
@@ -12,14 +11,15 @@
 
 // Code:
 
-#include "gnomonImageManager.h"
-#include "gnomonMainWindow.h"
-#include "gnomonToolBar.h"
-#include "gnomonWorkspaceBrowser.h"
-#include "gnomonWorkspaceFusion.h"
-#include "gnomonWorkspaceSegmentation.h"
-#include "gnomonWorkspacePreprocess.h"
-#include "gnomonWorkspaceRegistration.h"
+#include <gnomonImageManager.h>
+#include <gnomonMainWindow.h>
+#include <gnomonToolBar.h>
+#include <gnomonWorkspaceBrowser.h>
+#include <gnomonWorkspaceFusion.h>
+#include <gnomonWorkspaceSegmentation.h>
+#include <gnomonWorkspacePreprocess.h>
+#include <gnomonWorkspaceRegistration.h>
+#include <gnomonWorkspaceSimulation.h>
 
 #include <gnomonStyle>
 
@@ -87,7 +87,39 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     QWidget *central = new QWidget(this);
     central->setLayout(layout);
 
+    QAction *nextTabAction = new QAction("Switch to next workspace", this);
+    QAction *prevTabAction = new QAction("Switch to previous workspace", this);
+
+    nextTabAction->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_PageDown);
+    prevTabAction->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_PageUp);
+
+    this->addAction(nextTabAction);
+    this->addAction(prevTabAction);
+
+    connect(nextTabAction, &QAction::triggered, [=] (void) {
+                                                   int count = d->stack->count();
+                                                   int index = (d->stack->currentIndex()+1) % count ;
+                                                   d->menu->setCurrentIndex(index);
+                                               });
+
+    connect(prevTabAction, &QAction::triggered,  [=] (void) {
+                                                     int count = d->stack->count();
+                                                     int index = (d->stack->currentIndex()+count-1) % count;
+                                                     d->menu->setCurrentIndex(index);
+                                                 });
+
     connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
+
+    connect(d->menu, &gnomonToolBar::indexDeleted, [=] (int index) {
+            QWidget * widget = d->stack->widget(index);
+            if (d->stack->currentIndex() == index) {
+                d->menu->setCurrentIndex(0);
+            }
+            if (widget) {
+                d->stack->removeWidget(widget);
+                delete widget;
+            }
+        } );
 
     connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {
 
@@ -123,6 +155,57 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
         d->stack->addWidget(workspace);
         d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createSimulation, [=] (void) {
+
+            gnomonWorkspace *workspace = new gnomonWorkspaceSimulation(this);
+            workspace->enter();
+
+            d->stack->addWidget(workspace);
+            d->stack->setCurrentWidget(workspace);
+        });
+
+    static int l_h = 0;
+
+    connect(d->manager, &gnomonImageManager::expand, [=] (void) {
+
+        int m_h = d->manager->height();
+        int s_h = d->stack->height();
+
+        l_h = s_h;
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(d->stack->height());
+        animation->setEndValue(0);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->manager->setFixedHeight(m_h + s_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(d->manager, &gnomonImageManager::shrink, [=] (void) {
+
+        int m_h = d->manager->height();
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(0);
+        animation->setEndValue(l_h);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->manager->setFixedHeight(m_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+
     });
 
     this->setCentralWidget(central);

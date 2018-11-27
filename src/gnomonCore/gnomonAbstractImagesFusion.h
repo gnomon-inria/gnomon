@@ -1,0 +1,72 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <gnomonCoreExport>
+
+#include <QtCore>
+
+#include <dtkCore>
+
+#include "gnomonLandmark.h"
+
+class dtkImage;
+class gnomonCoreParameter;
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public QRunnable
+{
+public:
+    virtual ~gnomonAbstractImagesFusion(void) = default;
+
+public:
+    virtual void setParameter(const QString&, const QVariant&) = 0;
+
+    virtual void addImage(dtkImage *image) = 0;
+    virtual void removeImages(void) = 0;
+
+    virtual void addLandmarks(const std::vector<gnomonLandmark>&) = 0;
+    virtual void removeLandmarks(void) = 0;
+
+public:
+    virtual void run(void) = 0;
+
+public:
+    virtual dtkImage *output(void) = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
+};
+
+// ///////////////////////////////////////////////////////////////////
+// Give the concept the plugin machinery
+// ///////////////////////////////////////////////////////////////////
+
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesFusion *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+
+// /////////////////////////////////////////////////////////////////
+// Register to gnomonCore layer
+// /////////////////////////////////////////////////////////////////
+
+namespace gnomonCore {
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT, imagesFusion);
+}
+
+//
+// gnomonAbstractImagesFusion.h ends here

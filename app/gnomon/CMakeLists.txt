@@ -19,38 +19,10 @@ project(gnomon)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonDropSite.h
-  gnomonFinder.h
-  gnomonGridLayout.h
-  gnomonImageManager.h
-  gnomonMainWindow.h
-  gnomonOverlayPane.h
-  gnomonOverlayPaneItem.h
-  gnomonToolBar.h
-  gnomonViewVolumic.h
-  gnomonWorkspace.h
-  gnomonWorkspaceBrowser.h
-  gnomonWorkspaceFusion.h
-  gnomonWorkspaceSegmentation.h
-  gnomonWorkspacePreprocess.h
-  gnomonWorkspaceRegistration.h)
+  gnomonMainWindow.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonDropSite.cpp
-  gnomonFinder.cpp
-  gnomonGridLayout.cpp
-  gnomonImageManager.cpp
-  gnomonMainWindow.cpp
-  gnomonOverlayPane.cpp
-  gnomonOverlayPaneItem.cpp
-  gnomonToolBar.cpp
-  gnomonViewVolumic.cpp
-  gnomonWorkspace.cpp
-  gnomonWorkspaceBrowser.cpp
-  gnomonWorkspaceFusion.cpp
-  gnomonWorkspaceSegmentation.cpp
-  gnomonWorkspacePreprocess.cpp
-  gnomonWorkspaceRegistration.cpp)
+  gnomonMainWindow.cpp)
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomon.qrc)
@@ -76,13 +48,11 @@ qt5_use_modules(${PROJECT_NAME}_backend OpenGL)
 target_link_libraries(${PROJECT_NAME}_backend dtkCore)
 target_link_libraries(${PROJECT_NAME}_backend dtkScript)
 target_link_libraries(${PROJECT_NAME}_backend dtkWidgets)
-target_link_libraries(${PROJECT_NAME}_backend dtkComposer)
 
 target_link_libraries(${PROJECT_NAME}_backend dtkImagingCore)
 
 target_link_libraries(${PROJECT_NAME}_backend gnomonCore)
 target_link_libraries(${PROJECT_NAME}_backend gnomonStyle)
-target_link_libraries(${PROJECT_NAME}_backend gnomonComposer)
 target_link_libraries(${PROJECT_NAME}_backend gnomonFonts)
 target_link_libraries(${PROJECT_NAME}_backend gnomonWidgets)
 

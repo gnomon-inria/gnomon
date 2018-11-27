@@ -33,10 +33,16 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
+  gnomonAbstractCommand
+  gnomonAbstractCommand.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
+  gnomonAbstractFemSolver
+  gnomonAbstractFemSolver.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonAbstractImagesFusion
+  gnomonAbstractImagesFusion.h
   gnomonAbstractImagesSerieFilter
   gnomonAbstractImagesSerieFilter.h
   gnomonAbstractImagesSerieReader
@@ -45,16 +51,17 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractImagesSerieWriter.h
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
+  gnomonLandmark.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
   gnomonAbstractModel
   gnomonAbstractModel.h
+  gnomonAbstractSurfaceImageFromImage
+  gnomonAbstractSurfaceImageFromImage.h
   gnomonAbstractSystemScenario
   gnomonAbstractSystemScenario.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
-  gnomonAbstractCommand
-  gnomonAbstractCommand.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellGraph
@@ -63,15 +70,21 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellImage.h
   gnomonCore
   gnomonCore.h
+  gnomonCoreParameter
+  gnomonCoreParameter.h
   gnomonCoreSettings
   gnomonCoreSettings.h
   gnomonDataManager
   gnomonDataManager.h
   gnomonDiscreteDynamicForm
   gnomonDiscreteDynamicForm.h
+  gnomonFemSolverCommand
+  gnomonFemSolverCommand.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
+  gnomonImagesFusionCommand
+  gnomonImagesFusionCommand.h
   gnomonImagesSerieFilterCommand
   gnomonImagesSerieFilterCommand.h
   gnomonImagesSerieReaderCommand
@@ -101,21 +114,29 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractFemSolver.cpp
+  gnomonAbstractForm.cpp
+  gnomonAbstractImagesFusion.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
+  gnomonAbstractIntensityImageData.cpp
   gnomonAbstractMeshData.cpp
+  gnomonAbstractSurfaceImageFromImage.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractModel.cpp
-  gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
+  gnomonCoreParameter.cpp
   gnomonDataManager.cpp
   gnomonDiscreteDynamicForm.cpp
+  gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonImagesFusionCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonSegmentationCommand.cpp
@@ -166,7 +187,6 @@ target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
 
 if(DTK_BUILD_WRAPPERS)
   if(DTK_WRAPPING_PYTHON)

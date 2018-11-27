@@ -36,7 +36,7 @@ public:
 
 gnomonCellGraphFromImageNode::gnomonCellGraphFromImageNode(void) : dtkComposerNodeObject<gnomonAbstractCellGraphFromImage>(), d(new gnomonCellGraphFromImageNodePrivate())
 {
-    this->setFactory(gnomonCore::graphFromImage::pluginFactory());
+    this->setFactory(gnomonCore::cellGraphFromImage::pluginFactory());
 
     this->appendReceiver(&d->image_in);
     this->appendReceiver(&d->use_margins);

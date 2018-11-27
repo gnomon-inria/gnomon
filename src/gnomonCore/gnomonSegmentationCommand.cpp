@@ -1,6 +1,6 @@
 #include "gnomonSegmentationCommand.h"
 
-#include <gnomonCellImage>
+#include "gnomonCellImage.h"
 
 #include <dtkScript>
 #include <dtkImagingCore>
@@ -8,15 +8,13 @@
 class gnomonSegmentationCommandPrivate
 {
 public:
-    QMap<QString, QVariant> parameters;
-
-public:
-    dtkImage *image;
+    dtkImage *image = nullptr;
+    gnomonCellImage *computed_image = nullptr;
 };
 
-gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
+gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : gnomonAbstractCommand<gnomonAbstractCellImageFromImage>(), d(new gnomonSegmentationCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "import gnomonCellImageFromImage";
     int stat;
 
     dtkScriptInterpreterPython::instance()->interpret(command, &stat);
@@ -30,6 +28,9 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new
 
 gnomonSegmentationCommand::~gnomonSegmentationCommand(void)
 {
+    if (d->computed_image)
+        delete d->computed_image;
+
     delete d;
 }
 
@@ -38,10 +39,8 @@ void gnomonSegmentationCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->setImage(d->image);
-    for (auto it = d->parameters.cbegin(); it != d->parameters.cend(); ++it) {
-        this->action->setParameter(it.key(), *it);
-    }
     this->action->run();
+    d->computed_image = this->action->computedImage();
 }
 
 void gnomonSegmentationCommand::undo(void)
@@ -56,12 +55,17 @@ void gnomonSegmentationCommand::setImage(dtkImage* image)
     d->image = image;
 }
 
-void gnomonSegmentationCommand::setParameter(const QString& param_name, const QVariant& param_value)
+QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const
 {
-    d->parameters[param_name] = param_value;
+    return this->action->parameters();
 }
 
-dtkImage *gnomonSegmentationCommand::computedImage(void) const
+void gnomonSegmentationCommand::setParameter(const QString& parameter, const QVariant& value)
 {
-    return this->action->computedImage()->image();
+    this->action->setParameter(parameter, value);
+}
+
+gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
+{
+    return d->computed_image;
 }

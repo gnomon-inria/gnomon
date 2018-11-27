@@ -39,6 +39,9 @@ public:
 public:
     gnomonCellImage& operator = (const gnomonCellImage& o)
     {
+        if (this == &o)
+            return *this;
+
         if (m_data != o.m_data) {
             if (m_data != nullptr) {
                 delete m_data;
@@ -56,7 +59,13 @@ public:
     const gnomonAbstractCellImageData *data(void) const { return m_data; }
           gnomonAbstractCellImageData *data(void)       { return m_data; }
 
-    void setData(gnomonAbstractCellImageData* data) { m_data = data; }
+    void setData(gnomonAbstractCellImageData* data)
+    {
+        if (m_data) {
+            delete m_data;
+        }
+        m_data = data;
+    }
 
 public:
     virtual void setImage(dtkImage *image) { return m_data->setImage(image); }
@@ -70,16 +79,14 @@ public:
     virtual QStringList cellPropertyNames(void) const { return m_data->cellPropertyNames(); };
     virtual bool hasCellProperty(const QString& propertyName) const { return m_data->hasCellProperty(propertyName); }
 
-    virtual const QMap<long, QVariant>& cellProperty(const QString& propertyName) const { return m_data->cellProperty(propertyName); }
-    virtual       QMap<long, QVariant>& cellProperty(const QString& propertyName) { return m_data->cellProperty(propertyName); }
+    virtual QMap<long, QVariant> cellProperty(const QString& propertyName) const { return m_data->cellProperty(propertyName); }
 
     virtual void addCellProperty(const QString& propertyName) { return m_data->addCellProperty(propertyName); }
     virtual void updateCellProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) { return m_data->updateCellProperty(propertyName, values, eraseProperty); }
     virtual void removeCellProperty(const QString& propertyName) { return m_data->removeCellProperty(propertyName); }
 
-    virtual QMap<long, QVariant>& computeCellProperty(const QString& propertyName) { return m_data->computeCellProperty(propertyName); };
+    virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) { return m_data->computeCellProperty(propertyName); };
 };
-
 
 // ///////////////////////////////////////////////////////////////////
 

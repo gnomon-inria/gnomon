@@ -20,7 +20,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshData, meshdata, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractMeshData, meshData, gnomonCore);
 }
 
 //

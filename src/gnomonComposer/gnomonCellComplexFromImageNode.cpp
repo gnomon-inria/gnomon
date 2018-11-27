@@ -34,7 +34,7 @@ public:
 
 gnomonCellComplexFromImageNode::gnomonCellComplexFromImageNode(void) : dtkComposerNodeObject<gnomonAbstractCellComplexFromImage>(), d(new gnomonCellComplexFromImageNodePrivate())
 {
-    this->setFactory(gnomonCore::cellcomplexFromImage::pluginFactory());
+    this->setFactory(gnomonCore::cellComplexFromImage::pluginFactory());
 
     this->appendReceiver(&d->image_in);
     this->appendReceiver(&d->dimension);
