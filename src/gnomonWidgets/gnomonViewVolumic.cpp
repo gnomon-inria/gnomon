@@ -722,7 +722,7 @@ void gnomonViewVolumic::unlink(gnomonViewVolumic *other)
     }
 
     d->sync->toggle(false);
-    d->sync->icon = fa::unlock;
+    d->sync->changeIcon(fa::unlock);
 
     d->synced = false;
 
