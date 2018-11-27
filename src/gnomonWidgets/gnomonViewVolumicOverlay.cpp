@@ -96,6 +96,18 @@ void gnomonViewVolumicOverlay::changePath(const QString& path)
     this->label_icon->setPixmap(QPixmap(path));
 }
 
+void gnomonViewVolumicOverlay::changeColor(const QColor& color)
+{
+    this->font->setDefaultOption("color", color);
+    this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+}
+
+void gnomonViewVolumicOverlay::changeIcon(fa::icon icon)
+{
+    this->icon = icon;
+    this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+}
+
 void gnomonViewVolumicOverlay::toggle(bool toggled)
 {
     this->toggled = toggled;

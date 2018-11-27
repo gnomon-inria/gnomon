@@ -462,7 +462,7 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
                 if(!this->syncing_timer)
                     this->syncing_timer = new QTimer(this);
                 connect(this->syncing_timer, &QTimer::timeout, [=] () {
-                        this->sync->toggle(this->syncing_count++ % 2);
+                        this->sync->changeColor((this->syncing_count++ % 2) ? Qt::gray : Qt::white);
                         this->sync->update();
                         if (this->syncing_count == 11) {
                             this->sync->toggle(false);
@@ -693,7 +693,7 @@ void gnomonViewVolumic::link(gnomonViewVolumic *other)
         d->syncing_timer->stop();
 
     d->sync->toggle(true);
-    d->sync->icon = fa::lock;
+    d->sync->changeIcon(fa::lock);
 
     d->synced = true;
 

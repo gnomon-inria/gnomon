@@ -56,12 +56,14 @@ public:
     gnomonViewVolumicOverlay(const QString& path, QString = "", QWidget *parent = nullptr);
     ~gnomonViewVolumicOverlay(void);
 
-    void changePath(const QString&);
-
-    QString text() const;
-
     void activate(bool);
     void toggle(bool);
+
+    void changeColor(const QColor&);
+    void changePath(const QString&);
+    void changeIcon(fa::icon);
+
+    QString text() const;
 
     bool isActivated(void) const;
     bool isToggled(void) const;
@@ -80,6 +82,7 @@ public:
 public:
     gnomonViewVolumicOverlayIcon *label_icon = nullptr;
     gnomonViewVolumicOverlayText *label_text = nullptr;
+
 public:
     gnomonFontAwesome *font = nullptr;
     fa::icon           icon;
