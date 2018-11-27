@@ -40,7 +40,6 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, 
     this->label_text  = new gnomonViewVolumicOverlayText(text, this);
     if(text.isEmpty()) this->label_text->setVisible(false);
     this->label_text->resize(this->label_text->textWidth(), this->label_text->height());
-    qDebug() << "width" << this->label_text->size().width();
     this->label_icon = new gnomonViewVolumicOverlayIcon(this);
     this->label_icon->setPixmap(this->font->icon(icon).pixmap(24, 24));
 
