@@ -29,13 +29,13 @@ int gnomonViewVolumicOverlayText::textWidth(void) const
 
 gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, QWidget *parent) : QWidget(parent)
 {
-    this->default_color = Qt::gray;
-
+    this->pixmap = false;
     this->icon = icon;
 
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    this->font->setDefaultOption("color", this->default_color);
+    QColor color = Qt::gray;
+    this->font->setDefaultOption("color", color);
 
     this->label_text  = new gnomonViewVolumicOverlayText(text, this);
     if(text.isEmpty()) this->label_text->setVisible(false);
@@ -56,21 +56,23 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, 
     connect(this->label_text, &gnomonViewVolumicOverlayText::clicked, this, &gnomonViewVolumicOverlay::textClicked);
 }
 
-gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path, QString text, QWidget *parent) : QWidget(parent)
+gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path_on, const QString& path_off, QString text, QWidget *parent) : QWidget(parent)
 {
-    this->default_color = Qt::gray;
+    this->pixmap = true;
 
-    this->icon = icon;
+    this->path_on  = path_on;
+    this->path_off = path_off;
 
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    this->font->setDefaultOption("color", this->default_color);
+    QColor color = Qt::gray;
+    this->font->setDefaultOption("color", color);
 
     this->label_text  = new gnomonViewVolumicOverlayText(text, this);
     if(text.isEmpty()) this->label_text->setVisible(false);
 
     this->label_icon = new gnomonViewVolumicOverlayIcon(this);
-    this->label_icon->setPixmap(QPixmap(path));
+    this->label_icon->setPixmap(QPixmap(path_off));
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(this->label_text);
@@ -90,9 +92,10 @@ gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
 
 }
 
-void gnomonViewVolumicOverlay::changePath(const QString& path)
+void gnomonViewVolumicOverlay::changePaths(const QString& path_on, const QString& path_off)
 {
-    this->label_icon->setPixmap(QPixmap(path));
+    this->path_on = path_on;
+    this->path_off = path_off;
 }
 
 void gnomonViewVolumicOverlay::changeColor(const QColor& color)
@@ -112,12 +115,20 @@ void gnomonViewVolumicOverlay::toggle(bool toggled)
     this->toggled = toggled;
     if(this->toggled) {;
         QColor color = Qt::white;
-        this->font->setDefaultOption("color", color);
-        this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+        if(this->pixmap) {
+            this->label_icon->setPixmap(QPixmap(path_on));
+        } else {
+            this->font->setDefaultOption("color", color);
+            this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+        }
     } else {
         QColor color = Qt::gray;
-        this->font->setDefaultOption("color", color);
-        this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+        if(this->pixmap) {
+            this->label_icon->setPixmap(QPixmap(path_off));
+        } else  {
+            this->font->setDefaultOption("color", color);
+            this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+        }
     }
 }
 

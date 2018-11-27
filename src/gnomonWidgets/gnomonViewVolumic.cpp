@@ -354,12 +354,13 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
     this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, "", this);
     this->renderer2D_button = new gnomonViewVolumicOverlay(fa::square, "", this);
+    this->renderer2D_button->toggle(true);
     this->renderer3D_button = new gnomonViewVolumicOverlay(fa::cube, "", this);
-    this->renderer2D_XY = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XY.png", "", this);
+    this->renderer2D_XY = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XY.png", ":gnomon/gnomonViewVolumic-XY-off.png", "", this);
     this->renderer2D_XY->toggle(true);
-    this->renderer2D_XZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XZ-off.png", "", this);
+    this->renderer2D_XZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XZ.png", ":gnomon/gnomonViewVolumic-XZ-off.png", "", this);
     this->renderer2D_XZ->toggle(false);
-    this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ-off.png", "", this);
+    this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ.png",  ":gnomon/gnomonViewVolumic-YZ-off.png", "", this);
     this->renderer2D_YZ->toggle(false);
     this->picker = new gnomonViewVolumicOverlay(fa::crosshairs, "", this);
     this->picker->toggle(false);
@@ -560,11 +561,11 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->blending_list->move(15, event->size().height() - 100 - 10);
     std::size_t i = 0;
     for(auto& layer : this->layers) {
-        layer->move(event->size().width() - layer->width() + 15, 80 + i * 25);
+        layer->move(event->size().width() - layer->width() + 25, 80 + i * 25);
         ++i;
     }
     this->clut->move(event->size().width() - 40, event->size().height() - 40);
-    this->color_map_editor->move(event->size().width() - 140, event->size().height() - 150);
+    this->color_map_editor->move(event->size().width() - 140, event->size().height() - 120);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -844,10 +845,6 @@ void gnomonViewVolumic::switchTo2DXY(void)
 {
     if (d->renderer2D_XY->isToggled()) return;
 
-    d->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY.png");
-    d->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
-    d->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
-
     d->renderer2D_XY->toggle(true);
     d->renderer2D_XZ->toggle(false);
     d->renderer2D_YZ->toggle(false);
@@ -872,10 +869,6 @@ void gnomonViewVolumic::switchTo2DXZ(void)
 {
     if (d->renderer2D_XZ->isToggled()) return;
 
-    d->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
-    d->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ.png");
-    d->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ-off.png");
-
     d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->toggle(true);
     d->renderer2D_YZ->toggle(false);
@@ -899,10 +892,6 @@ void gnomonViewVolumic::switchTo2DXZ(void)
 void gnomonViewVolumic::switchTo2DYZ(void)
 {
     if (d->renderer2D_YZ->isToggled()) return;
-
-    d->renderer2D_XY->changePath(":gnomon/gnomonViewVolumic-XY-off.png");
-    d->renderer2D_XZ->changePath(":gnomon/gnomonViewVolumic-XZ-off.png");
-    d->renderer2D_YZ->changePath(":gnomon/gnomonViewVolumic-YZ.png");
 
     d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->toggle(false);
@@ -1405,7 +1394,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     std::size_t i = 0;
     for(const QString& layer : layer_names) {
         gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
-        layer_overlay->move(d->size().width() - layer_overlay->width() + 15, 80 + i * 25);
+        layer_overlay->move(d->size().width() - layer_overlay->width() + 25, 80 + i * 25);
         if(i == 0) {
             layer_overlay->toggle(true);
             layer_overlay->activate(true);

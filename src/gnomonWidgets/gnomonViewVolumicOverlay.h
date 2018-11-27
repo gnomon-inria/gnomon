@@ -53,14 +53,14 @@ class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlay : public QWidget
 
 public:
     gnomonViewVolumicOverlay(fa::icon, QString = "", QWidget *parent = nullptr);
-    gnomonViewVolumicOverlay(const QString& path, QString = "", QWidget *parent = nullptr);
+    gnomonViewVolumicOverlay(const QString& path_on, const QString& path_off, QString = "", QWidget *parent = nullptr);
     ~gnomonViewVolumicOverlay(void);
 
     void activate(bool);
     void toggle(bool);
 
     void changeColor(const QColor&);
-    void changePath(const QString&);
+    void changePaths(const QString&, const QString&);
     void changeIcon(fa::icon);
 
     QString text() const;
@@ -86,5 +86,7 @@ public:
 public:
     gnomonFontAwesome *font = nullptr;
     fa::icon           icon;
-    QColor             default_color;
+    QString            path_on;
+    QString            path_off;
+    bool               pixmap = false;
 };
