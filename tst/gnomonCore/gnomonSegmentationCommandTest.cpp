@@ -16,7 +16,7 @@ using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 class gnomonSegmentationCommandTestCasePrivate
 {
 public:
-    gnomonImagesSeriePtr           images_serie = nullptr;
+    gnomonImagesSeriePtr           images_serie = gnomonImagesSeriePtr(nullptr);
     gnomonSegmentationCommand      *command_segmentation = nullptr;
 };
 
