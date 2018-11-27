@@ -123,13 +123,23 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(pane);
 
     connect(cell_button, &QPushButton::clicked, [=]() {
-                                                    this->setCursor(Qt::BusyCursor);
-                                                    this->computeCells();
-                                                    this->setCursor(Qt::BusyCursor);});
+        this->setCursor(Qt::BusyCursor);
+        this->computeCells();
+        this->setCursor(Qt::ArrowCursor);
+    });
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 {
+    if (d->actor)
+        d->actor->Delete();
+
+    if (d->actor2D)
+        d->actor2D->Delete();
+
+    if (d->polydata)
+        d->polydata->Delete();
+
     delete d;
 }
 

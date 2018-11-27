@@ -124,13 +124,14 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImagesSeriePtr i
 
             v -= min;
             v *= (255./(max-min));
-
             *(b) = QColor(v, v, v).rgb();
             ++b;
         }
     }
 
-    gnomonImageManagerItem *item = new gnomonImageManagerItem(color, QPixmap::fromImage(i), this);
+    bool multiple_images =  (images_serie->times().count() > 1);
+
+    gnomonImageManagerItem *item = new gnomonImageManagerItem(color, QPixmap::fromImage(i), this, multiple_images);
 
     connect(item, &gnomonImageManagerItem::destroy, [=] () {
         this->contents->layout()->removeWidget(item);
