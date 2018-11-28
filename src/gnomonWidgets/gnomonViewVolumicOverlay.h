@@ -1,3 +1,17 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #pragma once
 
 #include <gnomonWidgetsExport>
@@ -26,10 +40,12 @@ public:
     void clicked(void);
 
 protected:
-    void mousePressEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *) override;
 };
 
-//////////
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlayText : public QLabel
 {
@@ -38,22 +54,27 @@ class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlayText : public QLabel
 public:
     gnomonViewVolumicOverlayText(QString = "", QWidget *parent = nullptr);
 
+public:
+    QSize sizeHint(void) const override;
+
 signals:
     void clicked(void);
 
 protected:
-    void mousePressEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *) override;
 };
 
-//////////
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlay : public QFrame
 {
     Q_OBJECT
 
 public:
-    gnomonViewVolumicOverlay(fa::icon, QString = "", QWidget *parent = nullptr);
-    gnomonViewVolumicOverlay(const QString& path_on, const QString& path_off, QString = "", QWidget *parent = nullptr);
+     gnomonViewVolumicOverlay(fa::icon, QString = "", QWidget *parent = nullptr);
+     gnomonViewVolumicOverlay(const QString& path_on, const QString& path_off, QString = "", QWidget *parent = nullptr);
     ~gnomonViewVolumicOverlay(void);
 
     void activate(bool);
@@ -63,14 +84,10 @@ public:
     void changePaths(const QString&, const QString&);
     void changeIcon(fa::icon);
 
-    QString text() const;
+    QString text(void) const;
 
     bool isActivated(void) const;
     bool isToggled(void) const;
-
-public:
-    QSize sizeHint(void) const override;
-    int textWidth(void) const;
 
 signals:
     void iconClicked(void);
@@ -91,3 +108,6 @@ public:
     QString            path_off;
     bool               pixmap = false;
 };
+
+//
+// gnomonViewVolumicOverlay.h ends here

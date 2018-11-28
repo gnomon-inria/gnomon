@@ -1,12 +1,27 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonViewVolumicOverlay.h"
 
-gnomonViewVolumicOverlayIcon::gnomonViewVolumicOverlayIcon(QWidget *parent) : QLabel(parent) {
+gnomonViewVolumicOverlayIcon::gnomonViewVolumicOverlayIcon(QWidget *parent) : QLabel(parent)
+{
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 QSize gnomonViewVolumicOverlayIcon::sizeHint(void) const
 {
-    return QSize(30, 30);
+    return QSize(24, 24);
 }
 
 void gnomonViewVolumicOverlayIcon::mousePressEvent(QMouseEvent *mouseEvent)
@@ -14,14 +29,14 @@ void gnomonViewVolumicOverlayIcon::mousePressEvent(QMouseEvent *mouseEvent)
     emit clicked();
 }
 
-//////////
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonViewVolumicOverlayText::gnomonViewVolumicOverlayText(QString text, QWidget *parent) : QLabel(text, parent)
 {
-    QFontMetrics fm(QApplication::font());
-
-    this->setFixedWidth(fm.width(this->text()) + 10);
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // this->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    // this->setScaledContents(true);
 }
 
 void gnomonViewVolumicOverlayText::mousePressEvent(QMouseEvent *mouseEvent)
@@ -29,36 +44,70 @@ void gnomonViewVolumicOverlayText::mousePressEvent(QMouseEvent *mouseEvent)
     emit clicked();
 }
 
-//////////
+QSize gnomonViewVolumicOverlayText::sizeHint(void) const
+{
+    QFontMetrics metrics(qApp->font());
+
+    qDebug() << Q_FUNC_INFO << metrics.width(this->text());
+
+    return QSize(metrics.width(this->text()), 24);
+}
+
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, QWidget *parent) : QFrame(parent)
 {
     this->pixmap = false;
     this->icon = icon;
 
+    QColor color = Qt::gray;
+
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    QColor color = Qt::gray;
     this->font->setDefaultOption("color", color);
 
-    this->label_text  = new gnomonViewVolumicOverlayText(text, this);
-    if(text.isEmpty()) this->label_text->setVisible(false);
+    if (!text.isEmpty()) {
+        qDebug() << "Creating overlay text for" << text;
+        this->label_text  = new gnomonViewVolumicOverlayText(text, this);
+    }
 
     this->label_icon = new gnomonViewVolumicOverlayIcon(this);
     this->label_icon->setPixmap(this->font->icon(icon).pixmap(24, 24));
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setAlignment(Qt::AlignRight);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(this->label_text);
+    if(!text.isEmpty())
+        layout->addWidget(this->label_text);
     layout->addWidget(this->label_icon);
 
-    this->setLayout(layout);
-    this->setStyleSheet("background: none;");
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    this->setStyleSheet("background: none; border: 1px solid red;");
 
     connect(this->label_icon, &gnomonViewVolumicOverlayIcon::clicked, this, &gnomonViewVolumicOverlay::iconClicked);
-    connect(this->label_text, &gnomonViewVolumicOverlayText::clicked, this, &gnomonViewVolumicOverlay::textClicked);
+
+    if(this->label_text)
+        connect(this->label_text, &gnomonViewVolumicOverlayText::clicked, this, &gnomonViewVolumicOverlay::textClicked);
+
+    int w = this->label_icon->sizeHint().width();
+
+    qDebug() << Q_FUNC_INFO << this->label_icon->sizeHint().width();
+
+    if(this->label_text) {
+
+        qDebug() << Q_FUNC_INFO << "Adding label text width" << this->label_text->sizeHint().width();
+
+        w += 20;
+        w += this->label_text->sizeHint().width();
+    } else {
+        w += 5;
+    }
+
+    qDebug() << Q_FUNC_INFO << w;
+
+    this->setFixedWidth(w);
 }
 
 gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path_on, const QString& path_off, QString text, QWidget *parent) : QFrame(parent)
@@ -68,29 +117,44 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path_on, const
     this->path_on  = path_on;
     this->path_off = path_off;
 
+    QColor color = Qt::gray;
+
     this->font = new gnomonFontAwesome(this);
     this->font->initFontAwesome();
-    QColor color = Qt::gray;
     this->font->setDefaultOption("color", color);
 
-    this->label_text  = new gnomonViewVolumicOverlayText(text, this);
-    if(text.isEmpty()) this->label_text->setVisible(false);
+    if(!text.isEmpty())
+        this->label_text  = new gnomonViewVolumicOverlayText(text, this);
 
     this->label_icon = new gnomonViewVolumicOverlayIcon(this);
     this->label_icon->setPixmap(QPixmap(path_off));
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setAlignment(Qt::AlignRight);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(this->label_text);
+    if(!text.isEmpty())
+        layout->addWidget(this->label_text);
     layout->addWidget(this->label_icon);
 
-    this->setLayout(layout);
     this->setStyleSheet("background: none;");
 
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
     connect(this->label_icon, &gnomonViewVolumicOverlayIcon::clicked, this, &gnomonViewVolumicOverlay::iconClicked);
-    connect(this->label_text, &gnomonViewVolumicOverlayText::clicked, this, &gnomonViewVolumicOverlay::textClicked);
+
+    if(this->label_text)
+        connect(this->label_text, &gnomonViewVolumicOverlayText::clicked, this, &gnomonViewVolumicOverlay::textClicked);
+
+    int w = this->label_icon->sizeHint().width();
+
+    if(this->label_text) {
+        w += 20;
+        w += this->label_text->sizeHint().width();
+    } else {
+        w += 5;
+    }
+
+    qDebug() << Q_FUNC_INFO << w;
+
+    this->setFixedWidth(w);
 }
 
 gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
@@ -119,6 +183,7 @@ void gnomonViewVolumicOverlay::changeIcon(fa::icon icon)
 void gnomonViewVolumicOverlay::toggle(bool toggled)
 {
     this->toggled = toggled;
+
     if(this->toggled) {;
         QColor color = Qt::white;
         if(this->pixmap) {
@@ -141,8 +206,12 @@ void gnomonViewVolumicOverlay::toggle(bool toggled)
 void gnomonViewVolumicOverlay::activate(bool activated)
 {
     this->activated = activated;
+
+    if(!this->label_text)
+        return;
+
     if(this->activated) {
-        this->label_text->setStyleSheet("background: white;  border-radius : 3px");
+        this->label_text->setStyleSheet("background: white; border-radius: 3px;");
     } else {
         this->label_text->setStyleSheet("background : none;");
     }
@@ -160,16 +229,11 @@ bool gnomonViewVolumicOverlay::isToggled(void) const
 
 QString gnomonViewVolumicOverlay::text(void) const
 {
-    return this->label_text->text();
+    if(this->label_text)
+        return this->label_text->text();
+
+    return QString();
 }
 
-int gnomonViewVolumicOverlay::textWidth(void) const
-{
-    return this->label_text->width();
-}
-
-QSize gnomonViewVolumicOverlay::sizeHint(void) const
-{
-    return QSize(this->label_icon->width() + this->label_text->width() - 5,
-                 std::max(this->label_icon->height(), this->label_text->height()));
-}
+//
+// gnomonViewVolumicOverlay.cpp ends here

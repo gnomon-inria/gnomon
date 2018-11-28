@@ -318,8 +318,7 @@ public:
     gnomonImagesSeriePtr images_serie;
 
 public:
-    QSlider     *slice_slider;
-    QLabel *time_slider_label;
+    QSlider *slice_slider;
 
 public:
     QSlider *time_slider;
@@ -562,7 +561,7 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->blending_list->move(15, event->size().height() - 100 - 10);
     std::size_t i = 0;
     for(auto& layer : this->layers) {
-        layer->move(event->size().width() - layer->width() + 25, 80 + i * 25);
+        layer->move(event->size().width() - layer->sizeHint().width(), 80 + i * 25);
         ++i;
     }
     this->clut->move(event->size().width() - 40, event->size().height() - 40);
@@ -648,18 +647,13 @@ gnomonViewVolumic::gnomonViewVolumic(QWidget *parent) : QFrame(parent)
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeChange(int)));
 
-
-    // connect(d, static_cast<void(gnomonViewVolumicPrivate::*)(int)>(&gnomonViewVolumicPrivate::sliceOrientationChanged), this, &gnomonViewVolumic::sliceOrientationChanged);
     connect(d, &gnomonViewVolumicPrivate::sliceOrientationChanged, this, &gnomonViewVolumic::sliceOrientationChanged);
 
-    d->time_slider_label = new QLabel("Time:");
-    d->time_slider_label->setVisible(false);
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
     layout->addWidget(d, 0, 1, 1, 1);
-    layout->addWidget(d->time_slider_label,1,0,1,1);
     layout->addWidget(d->time_slider,1,1,1,1);
 
     this->setAcceptDrops(true);
@@ -972,7 +966,6 @@ void gnomonViewVolumic::setImagesSerie(gnomonImagesSeriePtr images_serie, const 
     bool enable_slider = images_serie->times().count() > 1;
 
     d->time_slider->setVisible(enable_slider);
-    d->time_slider_label->setVisible(enable_slider);
 
     if(d->images_serie->image())
         setImage(d->images_serie->image(), source);
@@ -1418,9 +1411,11 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         }
         layer_overlay->setVisible(d->stack->isToggled());
         connect(layer_overlay, &gnomonViewVolumicOverlay::iconClicked, [=] () {
+            if(!layer_overlay->text().isEmpty())
                 d->toggleChannel(layer_overlay->text());
             });
         connect(layer_overlay, &gnomonViewVolumicOverlay::textClicked, [=] () {
+             if(!layer_overlay->text().isEmpty())
                 d->activateChannel(layer_overlay->text());
             });
         d->layers << layer_overlay;
