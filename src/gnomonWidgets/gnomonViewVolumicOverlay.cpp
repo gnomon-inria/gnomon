@@ -55,10 +55,7 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, 
 
     this->setLayout(layout);
     this->setStyleSheet("background: none;");
-
-
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    qDebug() << this->label_text->width() << this->label_icon->width() << this->label_text->height() << this->label_icon->height();
 
     connect(this->label_icon, &gnomonViewVolumicOverlayIcon::clicked, this, &gnomonViewVolumicOverlay::iconClicked);
     connect(this->label_text, &gnomonViewVolumicOverlayText::clicked, this, &gnomonViewVolumicOverlay::textClicked);

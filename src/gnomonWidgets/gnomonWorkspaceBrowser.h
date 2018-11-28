@@ -29,11 +29,6 @@ public:
 public:
     void enter(void) override {};
     void leave(void) override {};
-
-public slots:
-    void displayChannels(void);
-    void replaceChannels(QStringList);
-    void replaceChannel(QListWidgetItem *current_item, QListWidgetItem *previous_item);
     void apply(void) override;
 
 private:
