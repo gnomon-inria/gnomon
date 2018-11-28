@@ -967,6 +967,8 @@ void gnomonViewVolumic::timeChange(int value)
 void gnomonViewVolumic::setImagesSerie(gnomonImagesSeriePtr images_serie, const QMap<double, QColor>& source)
 {
     d->images_serie = images_serie;
+    d->last_channel_toggled = images_serie->channel();
+
     bool enable_slider = images_serie->times().count() > 1;
 
     d->time_slider->setVisible(enable_slider);
@@ -1396,13 +1398,18 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         delete layer;
     }
     d->layers.clear();
+    d->channels_lut.clear();
 
     QStringList layer_names = d->images_serie->channels();
+    if(layer_names.size() > 1)
+        d->stack->toggle(true);
 
     std::size_t i = 0;
     for(const QString& layer : layer_names) {
         gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
-        layer_overlay->move(d->size().width() - layer_overlay->width() + 25, 80 + i * 25);
+
+        layer_overlay->move(d->size().width() - layer_overlay->width(), 80 + i * layer_overlay->height());
+        layer_overlay->show();
         if(i == 0) {
             layer_overlay->toggle(true);
             layer_overlay->activate(true);
@@ -1432,7 +1439,11 @@ void gnomonViewVolumicPrivate::activateChannel(const QString& channel_to_activat
             layer->toggle(false);
         } else {
             layer->activate(true);
-            layer->toggle(false);
+            // this needs to be here because the next line will trigger a
+            // textChanged signal from color_map_editor
+            this->last_channel_toggled = channel_to_activate;
+            this->color_map_editor->setValue(this->channels_lut.value(channel_to_activate,
+                                                                      gnomonViewVolumic::grey_colormap));
         }
     }
     this->toggleChannel(channel_to_activate);
@@ -1446,8 +1457,11 @@ void gnomonViewVolumicPrivate::toggleChannel(const QString& channel_to_toggle)
     QString activated_layer;
     for(auto& layer : this->layers) {
         if(layer->text() == channel_to_toggle) layer->toggle(!layer->isToggled());
+        if(layer->isActivated()) {
+            activated_layer = layer->text();
+            layer->toggle(true); // cannot deactivate activated channel
+        }
         if(layer->isToggled()) ++nb_layers_toggled;
-        if(layer->isActivated()) activated_layer = layer->text();
     }
 
     Q_ASSERT(activated_layer != "");
@@ -1455,13 +1469,17 @@ void gnomonViewVolumicPrivate::toggleChannel(const QString& channel_to_toggle)
     switch(nb_layers_toggled) {
 
     case 0:
-        // q->setBlending(false);
-        q->onChannelChanged(activated_layer, this->channels_lut[activated_layer]);
+        if(this->layers.size() > 1) // don't deactivate blending on mono channel images, the user will do it
+            q->setBlending(false);
+
+        q->onChannelChanged(activated_layer, this->channels_lut.value(activated_layer,
+                                                                      gnomonViewVolumic::grey_colormap));
         break;
 
     case 1:
         q->setBlending(false);
-        q->onChannelChanged(activated_layer, this->channels_lut[activated_layer]);
+        q->onChannelChanged(activated_layer, this->channels_lut.value(activated_layer,
+                                                                      gnomonViewVolumic::grey_colormap));
         break;
 
     default:
@@ -1469,7 +1487,8 @@ void gnomonViewVolumicPrivate::toggleChannel(const QString& channel_to_toggle)
         std::size_t i = 0;
         for(auto& layer : this->layers) {
             if(layer->isToggled()) {
-                q->onChannelChanged(activated_layer, this->channels_lut[activated_layer]);
+                q->onChannelChanged(layer->text(), this->channels_lut.value(layer->text(),
+                                                                            gnomonViewVolumic::grey_colormap));
             }
         }
     }

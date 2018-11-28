@@ -19,7 +19,10 @@ class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlayIcon : public QLabel
 public:
     gnomonViewVolumicOverlayIcon(QWidget *parent = nullptr);
 
-signals:
+public:
+    QSize sizeHint(void) const override;
+
+ signals:
     void clicked(void);
 
 protected:
@@ -35,9 +38,6 @@ class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlayText : public QLabel
 public:
     gnomonViewVolumicOverlayText(QString = "", QWidget *parent = nullptr);
 
-public:
-    int textWidth(void) const;
-
 signals:
     void clicked(void);
 
@@ -47,7 +47,7 @@ protected:
 
 //////////
 
-class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlay : public QWidget
+class GNOMONWIDGETS_EXPORT gnomonViewVolumicOverlay : public QFrame
 {
     Q_OBJECT
 
@@ -69,6 +69,7 @@ public:
     bool isToggled(void) const;
 
 public:
+    QSize sizeHint(void) const override;
     int textWidth(void) const;
 
 signals:
