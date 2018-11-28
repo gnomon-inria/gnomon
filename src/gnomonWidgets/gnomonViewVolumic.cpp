@@ -489,10 +489,11 @@ gnomonViewVolumicPrivate::gnomonViewVolumicPrivate(QWidget *parent) : QVTKOpenGL
 
     connect(this->clut, &gnomonViewVolumicOverlay::iconClicked, [=] () {
 
-            this->color_map_editor->setVisible(!this->clut->isToggled());
+        this->color_map_editor->setVisible(!this->clut->isToggled());
+        this->color_map_editor->move(this->size().width() - this->color_map_editor->width() - 5, this->size().height() - this->color_map_editor->height() - 40);
 
-            this->clut->toggle(!this->clut->isToggled());
-        });
+        this->clut->toggle(!this->clut->isToggled());
+    });
 
     connect(this->color_map_editor, &gnomonColorMapEditor::valueChanged, [=] (const QMap<double, QColor>& clut) {
             this->channels_lut[last_channel_toggled] = clut;
@@ -561,11 +562,11 @@ void gnomonViewVolumicPrivate::resizeEvent(QResizeEvent *event)
     this->blending_list->move(15, event->size().height() - 100 - 10);
     std::size_t i = 0;
     for(auto& layer : this->layers) {
-        layer->move(event->size().width() - layer->sizeHint().width(), 80 + i * 25);
+        layer->move(event->size().width() - layer->sizeHint().width() + 5, 80 + i * layer->height());
         ++i;
     }
     this->clut->move(event->size().width() - 40, event->size().height() - 40);
-    this->color_map_editor->move(event->size().width() - 140, event->size().height() - 120);
+    this->color_map_editor->move(event->size().width() - this->color_map_editor->width() - 5, event->size().height() - this->color_map_editor->height() - 40);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -1401,7 +1402,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
     for(const QString& layer : layer_names) {
         gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
 
-        layer_overlay->move(d->size().width() - layer_overlay->width(), 80 + i * layer_overlay->height());
+        layer_overlay->move(d->size().width() - layer_overlay->width() + 5, 80 + i * layer_overlay->height());
         layer_overlay->show();
         if(i == 0) {
             layer_overlay->toggle(true);

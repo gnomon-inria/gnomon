@@ -48,8 +48,6 @@ QSize gnomonViewVolumicOverlayText::sizeHint(void) const
 {
     QFontMetrics metrics(qApp->font());
 
-    qDebug() << Q_FUNC_INFO << metrics.width(this->text());
-
     return QSize(metrics.width(this->text()), 24);
 }
 
@@ -69,10 +67,8 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, 
     this->font->initFontAwesome();
     this->font->setDefaultOption("color", color);
 
-    if (!text.isEmpty()) {
-        qDebug() << "Creating overlay text for" << text;
+    if (!text.isEmpty())
         this->label_text  = new gnomonViewVolumicOverlayText(text, this);
-    }
 
     this->label_icon = new gnomonViewVolumicOverlayIcon(this);
     this->label_icon->setPixmap(this->font->icon(icon).pixmap(24, 24));
@@ -84,7 +80,7 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, 
         layout->addWidget(this->label_text);
     layout->addWidget(this->label_icon);
 
-    this->setStyleSheet("background: none; border: 1px solid red;");
+    this->setStyleSheet("background: none;");
 
     connect(this->label_icon, &gnomonViewVolumicOverlayIcon::clicked, this, &gnomonViewVolumicOverlay::iconClicked);
 
@@ -93,21 +89,15 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(fa::icon icon, QString text, 
 
     int w = this->label_icon->sizeHint().width();
 
-    qDebug() << Q_FUNC_INFO << this->label_icon->sizeHint().width();
-
     if(this->label_text) {
-
-        qDebug() << Q_FUNC_INFO << "Adding label text width" << this->label_text->sizeHint().width();
-
         w += 20;
         w += this->label_text->sizeHint().width();
     } else {
-        w += 5;
+        w += 4;
     }
 
-    qDebug() << Q_FUNC_INFO << w;
-
     this->setFixedWidth(w);
+    this->setFixedHeight(30);
 }
 
 gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path_on, const QString& path_off, QString text, QWidget *parent) : QFrame(parent)
@@ -149,12 +139,11 @@ gnomonViewVolumicOverlay::gnomonViewVolumicOverlay(const QString& path_on, const
         w += 20;
         w += this->label_text->sizeHint().width();
     } else {
-        w += 5;
+        w += 4;
     }
 
-    qDebug() << Q_FUNC_INFO << w;
-
     this->setFixedWidth(w);
+    this->setFixedHeight(30);
 }
 
 gnomonViewVolumicOverlay::~gnomonViewVolumicOverlay(void)
