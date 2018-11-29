@@ -19,7 +19,8 @@
 
 #include <dtkImagingCore>
 
-using dtkImagePtr = QSharedPointer<dtkImage>;
+class gnomonImagesSerie;
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class gnomonAbstractImagesSerieWriter;
 
@@ -44,10 +45,10 @@ public:
     QSize sizeHint(void) const;
 
 public:
-    gnomonImageManagerItem *create(dtkImagePtr, const QColor&);
+    gnomonImageManagerItem *create(gnomonImagesSeriePtr, const QColor&);
 
 public:
-    QHash<gnomonImageManagerItem *, dtkImagePtr> images;
+    QHash<gnomonImageManagerItem *, gnomonImagesSeriePtr> images_series;
     QHash<gnomonImageManagerItem *, gnomonImageManagerData *> data;
 
 public:

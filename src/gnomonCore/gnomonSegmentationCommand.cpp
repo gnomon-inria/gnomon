@@ -2,13 +2,15 @@
 
 #include "gnomonCellImage.h"
 
+#include "gnomonImagesSerie.h"
+
 #include <dtkScript>
 #include <dtkImagingCore>
 
 class gnomonSegmentationCommandPrivate
 {
 public:
-    dtkImage *image = nullptr;
+    gnomonImagesSerie *images_serie = nullptr;
     gnomonCellImage *computed_image = nullptr;
 };
 
@@ -38,7 +40,7 @@ void gnomonSegmentationCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setImage(d->image);
+    this->action->setInput(d->images_serie);
     this->action->run();
     d->computed_image = this->action->computedImage();
 }
@@ -47,12 +49,22 @@ void gnomonSegmentationCommand::undo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setImage(nullptr);
+    this->action->setInput(nullptr);
 }
 
-void gnomonSegmentationCommand::setImage(dtkImage* image)
+void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
 {
-    d->image = image;
+    d->images_serie = images_serie;
+}
+
+gnomonImagesSerie *gnomonSegmentationCommand::input()
+{
+    return this->action->input();
+}
+
+gnomonImagesSerie *gnomonSegmentationCommand::output()
+{
+    return this->action->output();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const

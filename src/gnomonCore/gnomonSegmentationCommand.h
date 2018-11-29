@@ -15,6 +15,7 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractCellImageFromImage.h"
 
+class gnomonImagesSerie;
 class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand<gnomonAbstractCellImageFromImage>
@@ -29,10 +30,13 @@ public:
     void undo(void) override;
 
 public:
-    void setImage(dtkImage *image);
+    void setInput(gnomonImagesSerie *images_serie);
+    gnomonImagesSerie *input();
+    
     void setParameter(const QString&, const QVariant&);
 
 public:
+    gnomonImagesSerie *output();
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
     gnomonCellImage *computedImage(void) const;
 

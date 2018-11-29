@@ -43,6 +43,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractForm.h
   gnomonAbstractImagesFusion
   gnomonAbstractImagesFusion.h
+  gnomonAbstractImagesRegistration
+  gnomonAbstractImagesRegistration.h
   gnomonAbstractImagesSerieFilter
   gnomonAbstractImagesSerieFilter.h
   gnomonAbstractImagesSerieReader
@@ -83,8 +85,12 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
+  gnomonImagesSerie
+  gnomonImagesSerie.h
   gnomonImagesFusionCommand
   gnomonImagesFusionCommand.h
+  gnomonImagesRegistrationCommand
+  gnomonImagesRegistrationCommand.h
   gnomonImagesSerieFilterCommand
   gnomonImagesSerieFilterCommand.h
   gnomonImagesSerieReaderCommand
@@ -117,6 +123,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractFemSolver.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractImagesFusion.cpp
+  gnomonAbstractImagesRegistration.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
@@ -136,7 +143,9 @@ set(${PROJECT_NAME}_SOURCES
   gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonImagesSerie.cpp
   gnomonImagesFusionCommand.cpp
+  gnomonImagesRegistrationCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonSegmentationCommand.cpp

@@ -88,7 +88,6 @@ gnomonGridLayout::gnomonGridLayout(QWidget *parent) : QGridLayout(parent)
     this->setContentsMargins(0, 0, 0, 0);
     this->setSpacing(0);
     this->addWidget(d->button);
-    this->addView();
 }
 
 gnomonGridLayout::~gnomonGridLayout(void)
@@ -117,6 +116,12 @@ QList<gnomonViewVolumic *> gnomonGridLayout::views(void)
 {
     return d->views;
 }
+
+void gnomonGridLayout::removeAllViews(void)
+{
+    d->views.clear();
+    this->update();
+} 
 
 void gnomonGridLayout::clear(void)
 {

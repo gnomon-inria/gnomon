@@ -4,17 +4,20 @@
 #include <gnomonTest>
 
 #include <gnomonSegmentationCommand>
+#include <gnomonCore/gnomonImagesSerie>
 #include <gnomonImagesSerieReaderCommand>
 
 #include <dtkScript>
 
 #include <dtkImage>
 
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
+
 class gnomonSegmentationCommandTestCasePrivate
 {
 public:
+    gnomonImagesSeriePtr           images_serie = gnomonImagesSeriePtr(nullptr);
     gnomonSegmentationCommand      *command_segmentation = nullptr;
-    gnomonImagesSerieReaderCommand *command_czi_reader   = nullptr;
 };
 
 gnomonSegmentationCommandTestCase::gnomonSegmentationCommandTestCase(void) : d(new gnomonSegmentationCommandTestCasePrivate)
@@ -33,31 +36,32 @@ void gnomonSegmentationCommandTestCase::initTestCase(void)
 
 void gnomonSegmentationCommandTestCase::init(void)
 {
-    d->command_czi_reader = new gnomonImagesSerieReaderCommand("gnomonCziImageReader");
-    Q_ASSERT(d->command_czi_reader);
-
-    d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentation");
+    d->command_segmentation = new gnomonSegmentationCommand("seededWatershedSegmentationTimagetk");
     Q_ASSERT(d->command_segmentation);
 }
 
 void gnomonSegmentationCommandTestCase::redo(void)
 {
+    gnomonImagesSerieReaderCommand* command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+    Q_ASSERT(command);
+
     QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
+    command->setPath(image_file_path);
+    command->redo();
+    d->images_serie = gnomonImagesSeriePtr(command->imagesSerie());
+    d->images_serie->setChannel("Ch2_PI");
 
-    d->command_czi_reader->setPath(image_file_path);
-    d->command_czi_reader->redo();
+    d->command_segmentation->setInput(d->images_serie.data());
 
-    qDebug() << "d->command_czi_reader->at(0, \"Ch2_PI\")" << d->command_czi_reader->at(0, "Ch2_PI");
-    d->command_segmentation->setImage(d->command_czi_reader->at(0, "Ch2_PI"));
-
-    QMap<QString, gnomonCoreParameter *> parameters = d->command_segmentation->parameters();
-    d->command_segmentation->setParameter("hmin", 1500.);
+    d->command_segmentation->setParameter("hmin", 1500);
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);
     d->command_segmentation->setParameter("segmentation_gaussian_sigma", 0.25);
     d->command_segmentation->setParameter("volume_threshold", 1000);
     d->command_segmentation->setParameter("background_label", 1);
 
     d->command_segmentation->redo();
+
+    delete command;
 }
 
 void gnomonSegmentationCommandTestCase::undo(void)
@@ -69,11 +73,6 @@ void gnomonSegmentationCommandTestCase::cleanup(void)
 {
     delete d->command_segmentation;
     d->command_segmentation = nullptr;
-
-    delete d->command_czi_reader;
-    d->command_czi_reader = nullptr;
-
-    //dtkScriptInterpreterPython::instance()->release();
 }
 
 void gnomonSegmentationCommandTestCase::cleanupTestCase(void)

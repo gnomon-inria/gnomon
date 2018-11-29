@@ -173,10 +173,14 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->target->render();
 
-    d->command->setImage(d->source->image().data());
+    if(d->command->input() != d->source->imagesSerie().data())
+        d->command->setInput(d->source->imagesSerie().data());
+    else
+        qDebug() << "Not changed";
+
     d->command->redo();
 
-    d->target->setImage(dtkImagePtr(new dtkImage(*d->command->computedImage()->image())));
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspaceSegmentation::computeCells(void)

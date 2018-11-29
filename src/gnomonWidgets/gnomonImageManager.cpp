@@ -20,7 +20,9 @@
 #include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
 
-#include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
+#include <gnomonFonts>
+#include <gnomonCore/gnomonAbstractImagesSerieWriter>
+#include <gnomonCore/gnomonImagesSerie>
 
 #include <dtkScript>
 #include <dtkImagingCore>
@@ -72,13 +74,14 @@ QSize gnomonImageManagerPrivate::sizeHint(void) const
     return QSize(200, 130);
 }
 
-gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, const QColor& color)
+gnomonImageManagerItem *gnomonImageManagerPrivate::create(gnomonImagesSeriePtr images_serie, const QColor& color)
 {
-    if(!image)
+    if(!images_serie)
         return nullptr;
 
+    dtkImage *image = images_serie->image();
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(image.data());
+    converter->setInput(image);
     converter->convert();
 
     vtkImageData *o = static_cast<vtkImageData *>(converter->output());
@@ -121,17 +124,18 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
 
             v -= min;
             v *= (255./(max-min));
-
             *(b) = QColor(v, v, v).rgb();
             ++b;
         }
     }
 
-    gnomonImageManagerItem *item = new gnomonImageManagerItem(color, QPixmap::fromImage(i), this);
+    bool multiple_images =  (images_serie->times().count() > 1);
+
+    gnomonImageManagerItem *item = new gnomonImageManagerItem(color, QPixmap::fromImage(i), this, multiple_images);
 
     connect(item, &gnomonImageManagerItem::destroy, [=] () {
         this->contents->layout()->removeWidget(item);
-        this->images.remove(item);
+        this->images_series.remove(item);
         delete item;
     });
 
@@ -149,7 +153,7 @@ gnomonImageManagerItem *gnomonImageManagerPrivate::create(dtkImagePtr image, con
                settings.setValue("last_saved_file", export_file_path);
                settings.endGroup();
 
-               this->writer->setImage(this->images[item].data());
+               this->writer->setImagesSerie(this->images_series[item].data());
                this->writer->setPath(export_file_path);
                this->writer->run();
            }
@@ -206,28 +210,28 @@ gnomonImageManager *gnomonImageManager::instance(void)
     return s_instance;
 }
 
-void gnomonImageManager::addImage(dtkImagePtr image, const QColor& color)
+void gnomonImageManager::addImage(gnomonImagesSeriePtr images_serie, const QColor& color)
 {
-    gnomonImageManagerItem *item = d->create(image, color);
+    gnomonImageManagerItem *item = d->create(images_serie, color);
     item->id = d->item_counter++;
 
-    d->images.insert(item, image);
+    d->images_series.insert(item, images_serie);
     d->contents->layout()->addWidget(item);
 }
 
-dtkImagePtr gnomonImageManager::get(int index)
+gnomonImagesSeriePtr gnomonImageManager::get(int index)
 {
-    for (auto it = d->images.begin(); it != d->images.end(); ++it) {
+    for (auto it = d->images_series.begin(); it != d->images_series.end(); ++it) {
         if (index == it.key()->id) {
             return *it;
         }
     }
-    return dtkImagePtr();
+    return gnomonImagesSeriePtr();
 }
 
 QPixmap gnomonImageManager::thumbnail(int index)
 {
-    for (auto it = d->images.begin(); it != d->images.end(); ++it) {
+    for (auto it = d->images_series.begin(); it != d->images_series.end(); ++it) {
         if (index == it.key()->id) {
             return *(it.key()->pixmap());
         }

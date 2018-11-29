@@ -133,8 +133,8 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
     if (style == QStringLiteral("combobox")) {
         QComboBox *widget = new QComboBox(parent);
         widget->setToolTip(parameter->doc());
-        for (auto it = parameter->values().begin(), it_end = parameter->values().end(); it != it_end; ++it) {
-            widget->addItem(*it);
+        for (const auto value : parameter->values()) {
+            widget->addItem(value);
         }
         // widget->setCurrentText(parameter->currentValue());
         widget->setCurrentText(parameter->value());

@@ -20,7 +20,8 @@
 #include "gnomonViewVolumic.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonImagesSerie>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -55,6 +56,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d = new gnomonWorkspaceFusionPrivate;
 
     d->layout = new gnomonGridLayout;
+    d->layout->addView();
 
     d->target = new gnomonViewVolumic(this);
     d->target->setMinimumWidth(250);
@@ -81,16 +83,18 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 void gnomonWorkspaceFusion::apply(void)
 {
     if(d->layout->views().isEmpty()) return;
-    d->command->removeImages();
+    d->command->removeImagesSeries();
     d->command->removeLandmarks();
 
+    d->command->undo();
     for(gnomonViewVolumic *view : d->layout->views()) {
-        d->command->addImage(view->image().data());
+        d->command->addImagesSerie(view->imagesSerie().data());
         d->command->addLandmarks(view->landmarks());
     }
 
     d->command->redo();
-    d->target->setImage(dtkImagePtr(d->command->output()));
+
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

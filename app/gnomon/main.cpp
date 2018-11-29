@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     dtkApplication *application = dtkApplication::create(argc, argv);
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");

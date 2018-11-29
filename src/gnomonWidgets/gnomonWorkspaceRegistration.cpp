@@ -14,73 +14,64 @@
 
 #include "gnomonWorkspaceRegistration.h"
 
+#include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonWorkspaceTemplate_p.h"
 
-class gnomonWorkspaceRegistrationPrivate
+#include <gnomonImagesRegistrationCommand>
+
+#include <dtkImagingCore>
+#include <dtkScript>
+
+class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImagesRegistrationCommand >
 {
 public:
-    gnomonViewVolumic *registration_view_1;
-    gnomonViewVolumic *registration_view_2;
-    gnomonViewVolumic *registration_view_3;
-    gnomonViewVolumic *registration_view_4;
-    gnomonViewVolumic *registration_view_t;
+    QString workspace() const override;
+    QStringList keys() const override;
 
 public:
-    QComboBox *box;
+    gnomonGridLayout *sources_layout;
+    gnomonViewVolumic *target = nullptr;
 };
+
+QString gnomonWorkspaceRegistrationPrivate::workspace() const
+{ return "Registration"; }
+
+QStringList gnomonWorkspaceRegistrationPrivate::keys() const
+{
+    return gnomonCore::imagesRegistration::pluginFactory().keys();
+}
 
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnomonWorkspace(parent)
 {
+    int stat;
+
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesRegistration", &stat);
+
     d = new gnomonWorkspaceRegistrationPrivate;
 
-    d->registration_view_1 = new gnomonViewVolumic(this);
-    d->registration_view_2 = new gnomonViewVolumic(this);
-    d->registration_view_3 = new gnomonViewVolumic(this);
-    d->registration_view_4 = new gnomonViewVolumic(this);
-    d->registration_view_t = new gnomonViewVolumic(this);
+    d->sources_layout = new gnomonGridLayout;
+    d->sources_layout->addView();
+    d->sources_layout->addView();
+    d->sources_layout->addView();
 
-    QGridLayout *registration_layout = new QGridLayout;
-    registration_layout->setContentsMargins(0, 0, 0, 0);
-    registration_layout->setSpacing(1);
-    registration_layout->addWidget(d->registration_view_1, 0, 0);
-    registration_layout->addWidget(d->registration_view_2, 0, 1);
-    registration_layout->addWidget(d->registration_view_3, 1, 0);
-    registration_layout->addWidget(d->registration_view_4, 1, 1);
-    registration_layout->addWidget(d->registration_view_t, 0, 2, -1, -1);
+    QWidget *sources_dummy = new QWidget(this);
+    sources_dummy->setLayout(d->sources_layout);
 
-    d->box = new QComboBox(this);
-    d->box->addItem("Rigid");
+    d->target  = new gnomonViewVolumic(this);
 
-    QFormLayout *pane_item_params_layout = new QFormLayout;
-    pane_item_params_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    pane_item_params_layout->addRow("Method", d->box);
 
-    gnomonOverlayPaneItem *pane_item_inputs = new gnomonOverlayPaneItem;
-    pane_item_inputs->setTitle("Parameters");
-    pane_item_inputs->addLayout(pane_item_params_layout);
-    pane_item_inputs->toggle();
-
-    QPushButton *apply = new QPushButton("Apply", this);
-
-    gnomonOverlayPaneItem *pane_item_apply = new gnomonOverlayPaneItem;
-    pane_item_apply->setTitle("Registration");
-    pane_item_apply->addWidget(apply);
-    pane_item_apply->toggle();
-
-    gnomonOverlayPane *pane = new gnomonOverlayPane(this);
-    pane->addWidget(pane_item_inputs);
-    pane->addWidget(pane_item_apply);
-    pane->toggle();
+    QSplitter *splitter = new QSplitter(this);
+    splitter->addWidget(sources_dummy);
+    splitter->addWidget(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addLayout(registration_layout);
-    layout->addWidget(pane);
-
-    connect(apply, SIGNAL(clicked()), this, SLOT(apply()));
+    layout->addWidget(splitter);
+    layout->addWidget(d->pane(this));
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
@@ -90,7 +81,22 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 
 void gnomonWorkspaceRegistration::apply(void)
 {
-    qDebug() << Q_FUNC_INFO;
+    Q_ASSERT(d->command);
+
+    if(d->sources_layout->views().isEmpty()) return;
+
+    d->command->undo();
+    for(gnomonViewVolumic *view : d->sources_layout->views()) {
+               d->command->addImagesSerie(view->imagesSerie().data());
+    }
+    d->command->redo();
+
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
+}
+
+void gnomonWorkspaceRegistration::configure(const QString& algorithm)
+{
+    d->configure(this, algorithm);
 }
 
 //

@@ -18,7 +18,7 @@
 
 #include <gnomonFonts>
 
-gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixmap& thumbnail, gnomonImageManagerPrivate *parent) : QLabel(parent)
+gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixmap& thumbnail, gnomonImageManagerPrivate *parent, bool multi_images) : QLabel(parent)
 {
     this->parent = parent;
 
@@ -30,11 +30,49 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixma
     this->button_save->move(5, 5);
     this->button_save->setVisible(false);
 
-    this->setPixmap(thumbnail.scaled(100, 100, Qt::KeepAspectRatio));
-    this->thumbnail = *this->pixmap();
 
-    this->transparent_thumbnail = *this->pixmap();
-    this->transparent_thumbnail.fill();
+    int size  = 100;
+    int space =   3;
+    QPixmap pix;
+
+    if (multi_images) {
+        this->setBaseSize(size, size);
+        pix = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
+
+        QPixmap pix2(100,100);
+        pix2.fill(Qt::transparent);
+
+        QImage image = pix.toImage();;
+
+        QPainter paint(&pix2);
+        paint.setPen(color);
+        paint.drawRect(2*space,       0, size-2*space-1, size-2*space-1);
+        paint.fillRect(2*space+1,     1, size-2*space-2, size-2*space-2, Qt::black);
+        paint.drawRect(space,     space, size-2*space-1, size-2*space-1);
+        paint.fillRect(space+1, space+1, size-2*space-2, size-2*space-2, Qt::black);
+        paint.drawRect(0,       2*space, size-2*space-1, size-2*space-1);
+        QRectF target(1,      2*space+1, size-2*space-2, size-2*space-2);
+        QRectF source(0,              0, size-2*space-3, size-2*space-3);
+        paint.drawImage(target, image, source);
+        paint.end();
+
+        this->setPixmap(pix2);
+        this->thumbnail = pix2;
+
+        this->transparent_thumbnail = pix2;
+        this->transparent_thumbnail.fill();
+
+    } else {
+        pix = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
+        this->setPixmap(pix);
+
+        this->thumbnail = *this->pixmap();
+
+        this->transparent_thumbnail = *this->pixmap();
+        this->transparent_thumbnail.fill();
+    }
+
+
 
     QPainter painter;
     painter.begin(&transparent_thumbnail);
@@ -42,7 +80,9 @@ gnomonImageManagerItem::gnomonImageManagerItem(const QColor& color, const QPixma
     painter.drawPixmap(0, 0, *this->pixmap());
     painter.end();
 
-    this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
+    if (!multi_images) {
+        this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
+    }
 
     connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
     connect(this->button_save, SIGNAL(clicked()), this, SIGNAL(save()));

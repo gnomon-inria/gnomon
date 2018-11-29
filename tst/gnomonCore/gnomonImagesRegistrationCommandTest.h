@@ -2,13 +2,13 @@
 
 #include <QtCore>
 
-class gnomonMultiChannelImageReaderCommandTestCase : public QObject
+class gnomonImagesRegistrationCommandTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-    gnomonMultiChannelImageReaderCommandTestCase(void);
-    ~gnomonMultiChannelImageReaderCommandTestCase(void);
+    gnomonImagesRegistrationCommandTestCase(void);
+    ~gnomonImagesRegistrationCommandTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -23,5 +23,5 @@ private slots:
     void cleanup(void);
 
 private:
-    class gnomonMultiChannelImageReaderCommandTestCasePrivate *d;
+    class gnomonImagesRegistrationCommandTestCasePrivate *d;
 };
