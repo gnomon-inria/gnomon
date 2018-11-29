@@ -84,7 +84,7 @@ gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 
 void gnomonWorkspaceSimulation::apply(void)
 {
-    qDebug()<<"Apply";
+    qDebug()<<"----- Apply -----";
     Q_ASSERT(d->command);
     qDebug()<<"Command OK";
     d->command->setMesh(d->source->mesh());
