@@ -1104,6 +1104,18 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
     mapper->SetInputData(polydata);
     mapper->SetScalarRange(*(mm.first), *(mm.second));
 
+    vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
+    //color_function->RemoveAllPoints();
+
+    color_function->AddRGBPoint(*(mm.first), 0.25,  0,  0.5);
+    color_function->AddRGBPoint(0.5*(*(mm.first) + *(mm.second)), 0,  0.75,  0.56);
+    color_function->AddRGBPoint(*(mm.second), 1,  1,  0);
+
+    color_function->ClampingOn();
+    color_function->Modified();
+
+    mapper->SetLookupTable(color_function);
+
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
 
