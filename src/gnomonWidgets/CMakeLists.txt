@@ -58,9 +58,9 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspacePreprocess.h
   gnomonWorkspaceRegistration
   gnomonWorkspaceRegistration.h
-  gnomonWorkspaceSegmentation
   gnomonWorkspaceSimulation
   gnomonWorkspaceSimulation.h
+  gnomonWorkspaceSegmentation
   gnomonWorkspaceSegmentation.h
   gnomonWorkspaceTemplate_p.h
   gnomonWorkspaceTemplate_p.tpp)
