@@ -31,6 +31,7 @@
 #include <gnomonCore/gnomonMesh>
 
 #include "gnomonLandmarkActor.h"
+#include "gnomonPolyDataMesh.h"
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -1053,24 +1054,16 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
     d->mesh = mesh;
     qDebug()<<"view setmesh"<<d->mesh;
 
-    vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
-    vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
-    vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
-
-    QMap<long, QVariant> positions_x = mesh->vertexProperty("barycenter_x");
-    QMap<long, QVariant> positions_y = mesh->vertexProperty("barycenter_y");
-    QMap<long, QVariant> positions_z = mesh->vertexProperty("barycenter_z");
-
-    QMap<long,long> vertexPoint;
+    gnomonPolyDataMesh *polydata = gnomonPolyDataMesh::New();
+    polydata->setMesh(mesh);
+    polydata->update();
 
     QList<long> vertices = mesh->vertexIds();
 
-
     QMap<long, double> vertexScalarProperty;
     for (const auto& vertexId : vertices) {
-        if (d->mesh->vertexPropertyNames().contains("scalar_field")) {
-            vertexScalarProperty[vertexId] = d->mesh->vertexProperty("scalar_field")[vertexId].value<double>();
+        if (mesh->vertexPropertyNames().contains("scalar_field")) {
+            vertexScalarProperty[vertexId] = mesh->vertexProperty("scalar_field")[vertexId].value<double>();
         } else {
             vertexScalarProperty[vertexId] = 0;
         }
@@ -1078,27 +1071,6 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
 
     QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
     auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
-
-    for (const auto& vertexId : vertices) {
-        long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
-        polydataPointData->InsertValue(vtkId,vertexScalarProperty[vertexId]);
-        vertexPoint[vertexId] = vtkId;
-    }
-
-    polydata->SetPoints(polydataPoints);
-    polydata->GetPointData()->SetScalars(polydataPointData);
-
-    QList<long> triangles = mesh->triangleIds();
-
-    for (const auto& triangleId : triangles) {
-      QList<long> triangleVertices = mesh->triangleVertexIds(triangleId);
-      long vtkId = polydataFaces->InsertNextCell(triangleVertices.size());
-      for (const auto& v : triangleVertices) {
-          polydataFaces->InsertCellPoint(vertexPoint[v]);
-      }
-    }
-
-    polydata->SetPolys(polydataFaces);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polydata);
