@@ -16,11 +16,7 @@
 
 #include <gnomonCoreExport>
 
-#include <QtCore>
-
 #include <dtkCore>
-
-#include "gnomonLandmark.h"
 
 class gnomonImagesSerie;
 class gnomonCoreParameter;
@@ -29,45 +25,41 @@ class gnomonCoreParameter;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractImagesRegistration
 {
 public:
-    virtual ~gnomonAbstractImagesFusion(void) = default;
+    virtual ~gnomonAbstractImagesRegistration(void) = default;
 
 public:
+    virtual QMap<QString, gnomonCoreParameter*> parameters(void) const = 0;
     virtual void setParameter(const QString&, const QVariant&) = 0;
 
 public:
-    virtual void addImagesSerie(gnomonImagesSerie *) = 0;
+    virtual void addImagesSerie(gnomonImagesSerie *images_serie) = 0;
     virtual void removeImagesSeries(void) = 0;
 
-    virtual void addLandmarks(const std::vector<gnomonLandmark>&) = 0;
-    virtual void removeLandmarks(void) = 0;
+    virtual gnomonImagesSerie* output() = 0;
 
 public:
     virtual void run(void) = 0;
-
-public:
-    virtual gnomonImagesSerie *output() = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImagesFusion *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesRegistration *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT, imagesFusion);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT, imagesRegistration);
 }
 
 //
-// gnomonAbstractImagesFusion.h ends here
+// gnomonAbstractImagesRegistration.h ends here

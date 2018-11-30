@@ -23,7 +23,8 @@
 class gnomonLandmark;
 
 class dtkImage;
-using dtkImagePtr = QSharedPointer<dtkImage>;
+class gnomonImagesSerie;
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class gnomonMesh;
 using gnomonMeshPtr = QSharedPointer<gnomonMesh>;
@@ -50,6 +51,9 @@ signals:
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
 
+signals:
+    void timeChanged(int);
+
 public slots:
     void   link(gnomonViewVolumic *other);
     void unlink(gnomonViewVolumic *other);
@@ -64,13 +68,18 @@ public slots:
 public slots:
     void sliceChange(int);
 
-public:
-    void setBlending(bool);
-    void setMesh(gnomonMesh *);
-    void setImage(dtkImagePtr, const QMap<double, QColor>& = grey_colormap);
+public slots:
+    void timeChange(int);
 
 public:
-    dtkImagePtr image(void);
+    void setImage(dtkImage*, const QMap<double, QColor>& = QMap<double, QColor>());
+    void setImagesSerie(gnomonImagesSeriePtr, const QMap<double, QColor>& = grey_colormap);
+    void setBlending(bool);
+    void setMesh(gnomonMesh *);
+
+public:
+    dtkImage* image(void);
+    gnomonImagesSeriePtr imagesSerie(void);
     gnomonMesh *mesh(void);
 
 public:
@@ -89,6 +98,7 @@ public slots:
 public slots:
     void applyLut(const QMap<double, QColor>&);
     void onSliceChanged(int);
+    void onTimeChanged(int);
     void onChannelChanged(const QString&, const QMap<double, QColor>&);
     std::size_t addLandmark(std::size_t, double, double, double);
     void removeLandmark(std::size_t);

@@ -47,11 +47,12 @@ int main(int argc, char **argv)
 
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     dtkApplication *application = dtkApplication::create(argc, argv);
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
-    application->setApplicationVersion("0.9.0");
+    application->setApplicationVersion("0.9.1");
 
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");

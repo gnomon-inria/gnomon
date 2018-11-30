@@ -32,6 +32,7 @@ public:
 
 public slots:
     void apply(void) override;
+    void configure(const QString& text);
 
 private:
     class gnomonWorkspaceRegistrationPrivate *d;

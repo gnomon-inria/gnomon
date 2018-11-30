@@ -20,7 +20,8 @@
 #include "gnomonViewVolumicPool.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesSerieFilterCommand>
+#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonImagesSerieFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -95,17 +96,14 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    d->command->setImage(d->source->image().data());
+    if(d->command->input() != d->source->imagesSerie().data())
+        d->command->setInput(d->source->imagesSerie().data());
+    else
+        qDebug() << "Not changed";
 
     d->command->redo();
-    dtkImage *img = d->command->next();
 
-    if (!img) {
-        qDebug() << Q_FUNC_INFO << "Resulting image is void.";
-        return;
-    }
-
-    d->target->setImage(dtkImagePtr(new dtkImage(*img)));
+    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)

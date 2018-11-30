@@ -25,7 +25,7 @@ class gnomonImageManagerItem : public QLabel
     Q_OBJECT
 
 public:
-     gnomonImageManagerItem(const QColor&, const QPixmap& thumbnail, gnomonImageManagerPrivate *parent);
+    gnomonImageManagerItem(const QColor&, const QPixmap& thumbnail, gnomonImageManagerPrivate *parent, bool multi_images);
     ~gnomonImageManagerItem(void);
 
 signals:

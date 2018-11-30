@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-class dtkImage;
+class gnomonImagesSerie;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -30,7 +30,7 @@ public:
     virtual ~gnomonAbstractImagesSerieWriter(void) = default;
 
 public:
-    virtual void setImage(dtkImage *img) = 0;
+    virtual void setImagesSerie(gnomonImagesSerie *images_serie) = 0;
     virtual void setPath(const QString& path) = 0;
 
 public:

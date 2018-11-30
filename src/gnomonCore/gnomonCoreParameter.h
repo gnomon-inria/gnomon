@@ -157,6 +157,8 @@ public:
     void addValue(const QString&);
     void removeValue(const QString&);
 
+    void setValue(const QString&);
+
 private:
     int m_current_index = 0;
     QStringList m_values;
