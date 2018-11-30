@@ -33,6 +33,7 @@
 
 #include "gnomonLandmarkActor.h"
 #include "gnomonPolyDataMesh.h"
+#include "gnomonActorPolyData.h"
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -289,6 +290,10 @@ public:
     vtkSmartPointer<vtkImageViewer2> viewer = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
+
+public:
+    gnomonPolyDataMesh *polydata = nullptr;
+    gnomonActorPolyData *actor = nullptr;
 
 public:
     vtkSmartPointer<vtkImageBlend> blender = nullptr;
@@ -1001,57 +1006,23 @@ void gnomonViewVolumic::setBlending(bool blend)
 
 gnomonMesh *gnomonViewVolumic::mesh(void)
 {
-    qDebug()<<"view mesh"<<d->mesh;
     return d->mesh;
-
 }
 
 void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
 {
-
     d->mesh = mesh;
-    qDebug()<<"view setmesh"<<d->mesh;
 
-    gnomonPolyDataMesh *polydata = gnomonPolyDataMesh::New();
-    polydata->setMesh(mesh);
-    polydata->update();
+    if (!d->polydata)
+        d->polydata = gnomonPolyDataMesh::New();
+    d->polydata->setMesh(mesh);
 
-    QList<long> vertices = mesh->vertexIds();
+    if (!d->actor)
+        d->actor = gnomonActorPolyData::New();
+        d->renderer3D->AddActor(d->actor);
+    d->actor->setPolyData(d->polydata);
 
-    QMap<long, double> vertexScalarProperty;
-    for (const auto& vertexId : vertices) {
-        if (mesh->vertexPropertyNames().contains("scalar_field")) {
-            vertexScalarProperty[vertexId] = mesh->vertexProperty("scalar_field")[vertexId].value<double>();
-        } else {
-            vertexScalarProperty[vertexId] = 0;
-        }
-    }
-
-    QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
-    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
-
-    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(polydata);
-    mapper->SetScalarRange(*(mm.first), *(mm.second));
-
-    vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
-    //color_function->RemoveAllPoints();
-
-    color_function->AddRGBPoint(*(mm.first), 0.25,  0,  0.5);
-    color_function->AddRGBPoint(0.5*(*(mm.first) + *(mm.second)), 0,  0.75,  0.56);
-    color_function->AddRGBPoint(*(mm.second), 1,  1,  0);
-
-    color_function->ClampingOn();
-    color_function->Modified();
-
-    mapper->SetLookupTable(color_function);
-
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
-
-    d->renderer3D->AddActor(actor);
     this->render();
-
 }
 
 void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source)
@@ -1482,46 +1453,49 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            qDebug()<<"Add Mesh!";
             this->setMesh(mesh);
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }
     }
 
-    for(auto& layer : d->layers) {
-        delete layer;
-    }
-    d->layers.clear();
-    d->channels_lut.clear();
 
-    QStringList layer_names = d->images_serie->channels();
-    if(layer_names.size() > 1)
-        d->stack->toggle(true);
-
-    std::size_t i = 0;
-    for(const QString& layer : layer_names) {
-        gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
-
-        layer_overlay->move(d->size().width() - layer_overlay->width() + 5, 80 + i * layer_overlay->height());
-        layer_overlay->show();
-        if(i == 0) {
-            layer_overlay->toggle(true);
-            layer_overlay->activate(true);
-        } else {
-            layer_overlay->toggle(false);
+    if (d->images_serie)
+    {
+        for(auto& layer : d->layers) {
+            delete layer;
         }
-        layer_overlay->setVisible(d->stack->isToggled());
-        connect(layer_overlay, &gnomonViewVolumicOverlay::iconClicked, [=] () {
-            if(!layer_overlay->text().isEmpty())
-                d->toggleChannel(layer_overlay->text());
-            });
-        connect(layer_overlay, &gnomonViewVolumicOverlay::textClicked, [=] () {
-             if(!layer_overlay->text().isEmpty())
-                d->activateChannel(layer_overlay->text());
-            });
-        d->layers << layer_overlay;
-        ++i;
+        d->layers.clear();
+        d->channels_lut.clear();
+
+        QStringList layer_names = d->images_serie->channels();
+        if(layer_names.size() > 1)
+            d->stack->toggle(true);
+
+        std::size_t i = 0;
+        for(const QString& layer : layer_names) {
+            gnomonViewVolumicOverlay *layer_overlay = new gnomonViewVolumicOverlay(fa::eye, layer, this);
+
+            layer_overlay->move(d->size().width() - layer_overlay->width() + 5, 80 + i * layer_overlay->height());
+            layer_overlay->show();
+            if(i == 0) {
+                layer_overlay->toggle(true);
+                layer_overlay->activate(true);
+            } else {
+                layer_overlay->toggle(false);
+            }
+            layer_overlay->setVisible(d->stack->isToggled());
+            connect(layer_overlay, &gnomonViewVolumicOverlay::iconClicked, [=] () {
+                if(!layer_overlay->text().isEmpty())
+                    d->toggleChannel(layer_overlay->text());
+                });
+            connect(layer_overlay, &gnomonViewVolumicOverlay::textClicked, [=] () {
+                 if(!layer_overlay->text().isEmpty())
+                    d->activateChannel(layer_overlay->text());
+                });
+            d->layers << layer_overlay;
+            ++i;
+        }
     }
 
     // ///////////////////////////////////////////////////////////////

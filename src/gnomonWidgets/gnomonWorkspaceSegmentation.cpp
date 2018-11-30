@@ -201,6 +201,8 @@ void gnomonWorkspaceSegmentation::computeCells(void)
         return;
 
     vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
+    
+    delete converter;
 
     if(!d->actor)
         d->actor = gnomonActorMeshCellImage::New();
