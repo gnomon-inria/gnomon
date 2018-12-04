@@ -95,6 +95,7 @@ void gnomonActorPolyData::update(void)
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     }
     d->mapper->SetInputData(d->polydata);
+    qDebug()<<"PolyData"<<d->polydata->GetNumberOfPoints();
     
     if (!d->colorFunction)
     {
