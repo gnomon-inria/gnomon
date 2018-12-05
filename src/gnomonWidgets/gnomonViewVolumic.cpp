@@ -353,10 +353,11 @@ public:
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
+    double c_x = 0, c_y = 0, c_z = 0;
 
-    double x = 0, c_x = 0;
-    double y = 0, c_y = 0;
-    double z = 0, c_z = 0;
+    // double x = 0, c_x = 0;
+    // double y = 0, c_y = 0;
+    // double z = 0, c_z = 0;
 
 signals:
     void sliceOrientationChanged(int);
@@ -883,7 +884,6 @@ void gnomonViewVolumic::switchTo2DXY(void)
     d->planeWidget[2]->Off();
 
     d->slice_slider->blockSignals(true);
-    // d->slice_slider->setMaximum(d->z);
     d->slice_slider->setMinimum(d->zBounds[0]);
     d->slice_slider->setMaximum(d->zBounds[1]);
     d->slice_slider->blockSignals(false);
@@ -909,7 +909,6 @@ void gnomonViewVolumic::switchTo2DXZ(void)
     d->planeWidget[2]->On();
 
     d->slice_slider->blockSignals(true);
-    // d->slice_slider->setMaximum(d->y);
     d->slice_slider->setMinimum(d->yBounds[0]);
     d->slice_slider->setMaximum(d->yBounds[1]);
     d->slice_slider->blockSignals(false);
@@ -935,7 +934,6 @@ void gnomonViewVolumic::switchTo2DYZ(void)
     d->planeWidget[2]->On();
 
     d->slice_slider->blockSignals(true);
-    // d->slice_slider->setMaximum(d->x);
     d->slice_slider->setMinimum(d->xBounds[0]);
     d->slice_slider->setMaximum(d->xBounds[1]);
     d->slice_slider->blockSignals(false);
@@ -946,24 +944,35 @@ void gnomonViewVolumic::switchTo2DYZ(void)
 
 void gnomonViewVolumic::sliceChange(int value)
 {
-    if (d->viewer->GetSlice() == value)
-        return;
+    bool valueChanged = false;
 
     d->viewer->SetSlice(value);
 
     if (d->renderer2D_XY->isToggled()) {
         d->planeWidget[2]->SetSliceIndex(value);
-        d->c_z = value;
+        if (d->c_z != value)
+        {
+            d->c_z = value;
+            valueChanged = true;
+        }
     }
 
     if (d->renderer2D_XZ->isToggled()) {
         d->planeWidget[1]->SetSliceIndex(value);
-        d->c_y = value;
+        if (d->c_y != value)
+        {
+            d->c_y = value;
+            valueChanged = true;
+        }
     }
 
     if (d->renderer2D_YZ->isToggled()) {
         d->planeWidget[0]->SetSliceIndex(value);
-        d->c_x = value;
+        if (d->c_x != value)
+        {
+            d->c_x = value;
+            valueChanged = true;
+        }
     }
 
     d->GetInteractor()->Render();
@@ -972,7 +981,8 @@ void gnomonViewVolumic::sliceChange(int value)
     d->slice_slider->setValue(value);
     d->slice_slider->blockSignals(false);
 
-    emit sliceChanged(value);
+    if (valueChanged)
+        emit sliceChanged(value);
 }
 
 void gnomonViewVolumic::timeChange(int value)
@@ -1133,13 +1143,16 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
 
     d->image_interactor->image = image;
 
-    d->x = image->GetDimensions()[0];
-    d->y = image->GetDimensions()[1];
-    d->z = image->GetDimensions()[2];
+    d->xBounds[0] = 0;
+    d->xBounds[1] = image->GetDimensions()[0]-1;
+    d->yBounds[0] = 0;
+    d->yBounds[1] = image->GetDimensions()[1]-1;
+    d->zBounds[0] = 0;
+    d->zBounds[1] = image->GetDimensions()[2]-1;
 
-    d->c_x = d->x/2;
-    d->c_y = d->y/2;
-    d->c_z = d->z/2;
+    d->c_x = image->GetDimensions()[0]/2;
+    d->c_y = image->GetDimensions()[1]/2;
+    d->c_z = image->GetDimensions()[2]/2;
 
     d->time_slider->setMaximum(d->images_serie->times().last());
     d->time_slider->blockSignals(true);
@@ -1207,10 +1220,11 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
         d->planeWidget[1]->On();
         d->planeWidget[2]->Off();
 
-        d->viewer->SetSlice(d->z/2);
-        d->slice_slider->setMaximum(d->z);
+        d->viewer->SetSlice(d->c_z);
+        d->slice_slider->setMinimum(d->zBounds[0]);
+        d->slice_slider->setMaximum(d->zBounds[1]);
         d->slice_slider->blockSignals(true);
-        d->slice_slider->setValue(d->z/2);
+        d->slice_slider->setValue(d->c_z);
         d->slice_slider->blockSignals(false);
     }
 
@@ -1219,10 +1233,11 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
         d->planeWidget[1]->Off();
         d->planeWidget[2]->On();
 
-        d->viewer->SetSlice(d->y/2);
-        d->slice_slider->setMaximum(d->y);
+        d->viewer->SetSlice(d->c_y);
+        d->slice_slider->setMinimum(d->yBounds[0]);
+        d->slice_slider->setMaximum(d->yBounds[1]);
         d->slice_slider->blockSignals(true);
-        d->slice_slider->setValue(d->y/2);
+        d->slice_slider->setValue(d->c_y);
         d->slice_slider->blockSignals(false);
     }
 
@@ -1231,10 +1246,11 @@ void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source
         d->planeWidget[1]->On();
         d->planeWidget[2]->On();
 
-        d->viewer->SetSlice(d->x/2);
-        d->slice_slider->setMaximum(d->x);
+        d->viewer->SetSlice(d->c_x);
+        d->slice_slider->setMinimum(d->xBounds[0]);
+        d->slice_slider->setMaximum(d->xBounds[1]);
         d->slice_slider->blockSignals(true);
-        d->slice_slider->setValue(d->x/2);
+        d->slice_slider->setValue(d->c_x);
         d->slice_slider->blockSignals(false);
     }
 
