@@ -41,6 +41,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonOverlayPaneItem.h
   gnomonToolBar
   gnomonToolBar.h
+  gnomonViewForm
+  gnomonViewForm.h
   gnomonViewVolumic
   gnomonViewVolumic.h
   gnomonViewVolumicOverlay.h
@@ -81,6 +83,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp
   gnomonToolBar.cpp
+  gnomonViewForm.cpp
   gnomonViewVolumic.cpp
   gnomonViewVolumicOverlay.cpp
   gnomonViewVolumicPool.cpp

@@ -1039,11 +1039,11 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
 
-    if (!d->visu)
-        d->visu = new gnomonVisualizationMesh(this);
-    d->visu->setMesh(mesh);
-    d->visu->setParameter("alpha",0.5);
-    d->visu->render();
+    // if (!d->visu)
+    //     d->visu = new gnomonVisualizationMesh(this);
+    // d->visu->setMesh(mesh);
+    // d->visu->setParameter("alpha",0.5);
+    // d->visu->render();
 
 
     this->render();

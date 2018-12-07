@@ -219,7 +219,6 @@ void gnomonActor2DPolyData::update(void)
 
     for (int i=0;i<3;i++)
     {
-        qDebug()<<"Update Slice"<<i;
         d->updateSlice(i);
         if (this->GetNumberOfPaths()<=i)
             this->AddPart(d->sliceActors[i]);
@@ -248,7 +247,6 @@ void gnomonActor2DPolyData::setSliceOrientation(int value)
 {
     d->orientation = value;
     d->updateVisibility();
-    d->interactor->Render();
 }
 
 void gnomonActor2DPolyData::setSlice(int value)

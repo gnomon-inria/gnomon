@@ -14,6 +14,7 @@
 
 #include "gnomonWorkspaceSimulation.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 
@@ -38,8 +39,8 @@ public:
     QStringList keys() const override;
 
 public:
-    gnomonViewVolumic *source = nullptr;
-    gnomonViewVolumic *target = nullptr;
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
 };
 
 gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >()
@@ -66,8 +67,8 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWo
 
     d = new gnomonWorkspaceSimulationPrivate;
 
-    d->source = new gnomonViewVolumic(this);
-    d->target = new gnomonViewVolumic(this);
+    d->source = new gnomonViewForm(this);
+    d->target = new gnomonViewForm(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

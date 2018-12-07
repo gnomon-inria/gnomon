@@ -19,7 +19,8 @@
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
+// #include "gnomonViewVolumic.h"
 
 class gnomonWorkspaceBrowserPrivate
 {
@@ -29,7 +30,8 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    gnomonViewVolumic *browse_view;
+    // gnomonViewVolumic *browse_view;
+    gnomonViewForm *browse_view;
 
 };
 
@@ -47,7 +49,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
 
-    d->browse_view = new gnomonViewVolumic(this);
+    // d->browse_view = new gnomonViewVolumic(this);
+    d->browse_view = new gnomonViewForm(this);
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);

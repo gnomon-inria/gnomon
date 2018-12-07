@@ -19,7 +19,7 @@
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonCoreParameter>
 
-#include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 
 #include "gnomonPolyDataMesh.h"
 #include "gnomonActorPolyData.h"
@@ -34,7 +34,7 @@
 class gnomonVisualizationMeshPrivate
 {
 public:
-    gnomonViewVolumic* view;
+    gnomonViewForm* view;
     gnomonMesh *mesh;
 
 public:
@@ -48,7 +48,6 @@ public:
 public:
     QMetaObject::Connection connectSliceOrientation;
     QMetaObject::Connection connectSlice;
-
 public slots:
     void updateOpacity(void);
 
@@ -72,7 +71,7 @@ void gnomonVisualizationMeshPrivate::updateOpacity(void)
 // gnomonVisualizationMesh
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewVolumic* view) : d(new gnomonVisualizationMeshPrivate)
+gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : d(new gnomonVisualizationMeshPrivate)
 {
     d->view = view;
     d->mesh = Q_NULLPTR;
@@ -90,6 +89,7 @@ gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
+    this->update();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonVisualizationMesh::parameters(void) const
@@ -106,7 +106,7 @@ void gnomonVisualizationMesh::setParameter(const QString& parameter, const QVari
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationMesh::render(void)
+void gnomonVisualizationMesh::update(void)
 {
     if(!d->mesh)
         return;
@@ -133,8 +133,8 @@ void gnomonVisualizationMesh::render(void)
     d->actor->setPolyData(d->polydata);
 
     if (d->actor2D) {
-        this->disconnect(d->connectSliceOrientation);
-        this->disconnect(d->connectSlice);
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(d->actor2D);
         d->actor2D->Delete();
         d->actor2D = nullptr;
@@ -149,24 +149,32 @@ void gnomonVisualizationMesh::render(void)
     d->actor2D->setSliceThickness(0.5);
     d->actor2D->setPolyData(d->polydata);
 
-    d->connectSliceOrientation = connect(d->view, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {
+    d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         d->actor2D->setSliceOrientation(value);
     });
 
-    d->connectSlice = connect(d->view, &gnomonViewVolumic::sliceChanged, [=] (int value) {
+    d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
         d->actor2D->setSlice(value);
+        this->render();
     });
+
+    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { this->render(); });
+    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { this->render(); });
+    connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+    connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+    connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     d->polydata->GetBounds(bounds);
     d->view->setBounds(bounds);
 
-    d->actor2D->setSliceOrientation(d->view->orientation());
+    this->render();
+}
 
+void gnomonVisualizationMesh::render(void)
+{
     d->updateOpacity();
-
-    d->view->renderer2D()->ResetCamera();
-    d->view->renderer3D()->ResetCamera();
+    d->view->render();
 }
 
 

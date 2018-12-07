@@ -18,7 +18,7 @@
 
 #include <gnomonWidgetsExport.h>
 
-#include "gnomonViewVolumic.h"
+class gnomonViewForm;
 
 class gnomonMesh;
 class gnomonCoreParameter;
@@ -28,7 +28,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationMesh : public QObject
     Q_OBJECT
 
 public:
-     gnomonVisualizationMesh(gnomonViewVolumic *view);
+     gnomonVisualizationMesh(gnomonViewForm *view);
     ~gnomonVisualizationMesh(void);
 
 public:
@@ -39,6 +39,7 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
 public slots:
+    void update(void);
     void render(void);
 
 private:
