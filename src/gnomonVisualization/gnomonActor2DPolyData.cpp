@@ -59,13 +59,15 @@ public:
 
 public:
     int orientation;
+    double alpha;
 
 public:
     bool modified;
 
-public:
+public slots:
     void updateVisibility(void);
     void updateSlice(int orientation);
+    void updateOpacity(void);
 };
 
 void gnomonActor2DPolyDataPrivate::updateVisibility(void)
@@ -164,9 +166,15 @@ void gnomonActor2DPolyDataPrivate::updateSlice(int orientation)
         this->sliceActors[orientation]->SetMapper(this->sliceMappers[orientation]);
     }
     this->sliceActors[orientation]->GetProperty()->SetRepresentationToWireframe();
-    this->sliceActors[orientation]->GetProperty()->SetOpacity(0.9);
     this->sliceActors[orientation]->GetProperty()->SetLineWidth(2.);
     this->sliceActors[orientation]->Modified();
+}
+
+void gnomonActor2DPolyDataPrivate::updateOpacity(void)
+{
+    for (const auto& orientation : this->sliceActors.keys()) {
+        this->sliceActors[orientation]->GetProperty()->SetOpacity(this->alpha);
+    }
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -209,13 +217,6 @@ void gnomonActor2DPolyData::update(void)
     if(!d->polydata)
         return;
 
-    // if (d->modified)
-    // {
-    //     d->slicePositions[0] = d->dimension[0]/2;
-    //     d->slicePositions[1] = d->dimension[1]/2;
-    //     d->slicePositions[2] = d->dimension[2]/2;
-    // }
-
     for (int i=0;i<3;i++)
     {
         qDebug()<<"Update Slice"<<i;
@@ -257,11 +258,20 @@ void gnomonActor2DPolyData::setSlice(int value)
     d->interactor->Render();
 }
 
+void gnomonActor2DPolyData::setOpacity(double value)
+{
+    d->alpha = value;
+    d->updateOpacity();
+    d->interactor->Render();
+}
+
 gnomonActor2DPolyData::gnomonActor2DPolyData(void) : d(new gnomonActor2DPolyDataPrivate)
 {
     d->interactor = Q_NULLPTR;
     d->polydata = Q_NULLPTR;
     d->colorFunction = Q_NULLPTR;
+
+    d->alpha = 1;
 
     d->orientation = 2;
     d->sliceThickness = 1;

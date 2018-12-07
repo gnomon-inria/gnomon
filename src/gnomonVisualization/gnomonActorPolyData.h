@@ -37,6 +37,8 @@ public slots:
     void update(void) override;
     void modified(void);
 
+    void setOpacity(double);
+
 protected:
      gnomonActorPolyData(void);
     ~gnomonActorPolyData(void);

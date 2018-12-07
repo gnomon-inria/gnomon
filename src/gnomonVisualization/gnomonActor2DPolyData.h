@@ -60,6 +60,7 @@ public slots:
 public slots:
     void setSliceOrientation(int);
     void setSlice(int);
+    void setOpacity(double);
 
 public:
      gnomonActor2DPolyData(void);

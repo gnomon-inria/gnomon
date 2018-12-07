@@ -32,9 +32,8 @@
 #include <gnomonCore/gnomonMesh>
 
 #include "gnomonLandmarkActor.h"
-#include "gnomonPolyDataMesh.h"
-#include "gnomonActorPolyData.h"
-#include "gnomonActor2DPolyData.h"
+
+#include "gnomonVisualizationMesh.h"
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -293,13 +292,16 @@ public:
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
 
 public:
-    gnomonPolyDataMesh *polydata = nullptr;
-    gnomonActorPolyData *actor = nullptr;
-    gnomonActor2DPolyData *actor2D = nullptr;
+    gnomonVisualizationMesh *visu = nullptr;
 
-public:
-    QMetaObject::Connection connectSliceOrientation;
-    QMetaObject::Connection connectSlice;
+// public:
+//     gnomonPolyDataMesh *polydata = nullptr;
+//     gnomonActorPolyData *actor = nullptr;
+//     gnomonActor2DPolyData *actor2D = nullptr;
+
+// public:
+//     QMetaObject::Connection connectSliceOrientation;
+//     QMetaObject::Connection connectSlice;
 
 public:
     vtkSmartPointer<vtkImageBlend> blender = nullptr;
@@ -1037,54 +1039,18 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
 
-    if (d->polydata) {
-        d->polydata->Delete();
-        d->polydata = nullptr;
-    }
+    if (!d->visu)
+        d->visu = new gnomonVisualizationMesh(this);
+    d->visu->setMesh(mesh);
+    d->visu->setParameter("alpha",0.5);
+    d->visu->render();
 
-    if (!d->polydata)
-        d->polydata = gnomonPolyDataMesh::New();
-    d->polydata->setMesh((gnomonMesh *)mesh->clone());
 
-    if (d->actor) {
-        d->renderer3D->RemoveActor(d->actor);
-        d->actor->Delete();
-        d->actor = nullptr;
-    }
+    this->render();
+}
 
-    if (!d->actor)
-        d->actor = gnomonActorPolyData::New();
-        d->renderer3D->AddActor(d->actor);
-    d->actor->setPolyData(d->polydata);
-
-    if (d->actor2D) {
-        this->disconnect(d->connectSliceOrientation);
-        this->disconnect(d->connectSlice);
-        d->renderer2D->RemoveActor(d->actor2D);
-        d->actor2D->Delete();
-        d->actor2D = nullptr;
-    }
-
-    if (!d->actor2D)
-    {
-        d->actor2D = gnomonActor2DPolyData::New();
-        d->renderer2D->AddActor(d->actor2D);
-    }
-    d->actor2D->setInteractor(d->GetInteractor());
-    d->actor2D->setSliceThickness(0.5);
-    d->actor2D->setPolyData(d->polydata);
-
-    d->connectSliceOrientation = connect(this, &gnomonViewVolumic::sliceOrientationChanged, [=] (int value) {
-        d->actor2D->setSliceOrientation(value);
-    });
-
-    d->connectSlice = connect(this, &gnomonViewVolumic::sliceChanged, [=] (int value) {
-        d->actor2D->setSlice(value);
-    });
-
-    double bounds[6];
-    d->polydata->GetBounds(bounds);
-
+void gnomonViewVolumic::setBounds(double bounds[6])
+{   
     d->xBounds[0] = bounds[0];
     d->xBounds[1] = bounds[1];
     d->yBounds[0] = bounds[2];
@@ -1097,7 +1063,6 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
     d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
 
     if (d->renderer2D_XY->isToggled()) {
-        d->actor2D->setSliceOrientation(gnomonViewVolumicPrivate::SLICE_ORIENTATION_XY);
         d->slice_slider->blockSignals(true);
         d->slice_slider->setMinimum(d->zBounds[0]);
         d->slice_slider->setMaximum(d->zBounds[1]);
@@ -1106,7 +1071,6 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
     }
 
     if (d->renderer2D_XZ->isToggled()) {
-        d->actor2D->setSliceOrientation(gnomonViewVolumicPrivate::SLICE_ORIENTATION_XZ);
         d->slice_slider->blockSignals(true);
         d->slice_slider->setMinimum(d->yBounds[0]);
         d->slice_slider->setMaximum(d->yBounds[1]);
@@ -1115,7 +1079,6 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
     }
 
     if (d->renderer2D_YZ->isToggled()) {
-        d->actor2D->setSliceOrientation(gnomonViewVolumicPrivate::SLICE_ORIENTATION_YZ);
         d->slice_slider->blockSignals(true);
         d->slice_slider->setMinimum(d->xBounds[0]);
         d->slice_slider->setMaximum(d->xBounds[1]);
@@ -1126,7 +1089,6 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
     d->renderer2D->ResetCamera();
     d->renderer3D->ResetCamera();
 
-    this->render();
 }
 
 void gnomonViewVolumic::setImage(dtkImage* i, const QMap<double, QColor>& source)
@@ -1332,6 +1294,22 @@ vtkRenderer *gnomonViewVolumic::renderer2D(void)
 vtkRenderer *gnomonViewVolumic::renderer3D(void)
 {
     return d->renderer3D;
+}
+
+int gnomonViewVolumic::orientation(void)
+{
+    if (d->renderer2D_XY->isToggled()) {
+        return gnomonViewVolumicPrivate::SLICE_ORIENTATION_XY;
+    }
+
+    if (d->renderer2D_XZ->isToggled()) {
+        return gnomonViewVolumicPrivate::SLICE_ORIENTATION_XZ;
+    }
+
+    if (d->renderer2D_YZ->isToggled()) {
+        return gnomonViewVolumicPrivate::SLICE_ORIENTATION_YZ;
+    }
+    return gnomonViewVolumicPrivate::SLICE_ORIENTATION_XY;
 }
 
 void gnomonViewVolumic::render(void)

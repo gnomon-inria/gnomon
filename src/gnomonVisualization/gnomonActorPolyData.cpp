@@ -28,6 +28,7 @@
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 
@@ -49,8 +50,18 @@ public:
 
     vtkRenderWindowInteractor *interactor;
 
+    double alpha;
+
     bool modified;
+
+public slots:
+    void updateOpacity(void);
 };
+
+void gnomonActorPolyDataPrivate::updateOpacity(void)
+{
+    this->actor->GetProperty()->SetOpacity(this->alpha);
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonActorPolyData
@@ -121,12 +132,21 @@ void gnomonActorPolyData::update(void)
     d->modified = false;
 }
 
+void gnomonActorPolyData::setOpacity(double value)
+{
+    d->alpha = value;
+    d->updateOpacity();
+    d->interactor->Render();
+}
+
 gnomonActorPolyData::gnomonActorPolyData(void) : gnomonActor(), d(new gnomonActorPolyDataPrivate)
 {
     d->polydata = Q_NULLPTR;
     d->mapper = Q_NULLPTR;
     d->actor = Q_NULLPTR;
     d->interactor = Q_NULLPTR;
+
+    d->alpha = 1;
 }
 
 gnomonActorPolyData::~gnomonActorPolyData(void)

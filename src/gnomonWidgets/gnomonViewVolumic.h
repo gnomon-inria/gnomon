@@ -92,6 +92,12 @@ public:
 public:
     vtkRenderWindowInteractor *interactor(void);
 
+public:
+    int orientation(void);
+
+public slots:
+    void setBounds(double bounds[6]);
+
 public slots:
     void render(void);
 

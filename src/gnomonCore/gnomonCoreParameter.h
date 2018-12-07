@@ -30,6 +30,10 @@ public:
 
     QString doc(void) const;
 
+public:
+    virtual void setValue(const QVariant&);
+
+
 protected:
     QString m_doc;
 };
@@ -69,6 +73,7 @@ public:
     int accuracy(void) { return m_accuracy; }
 
     void setValue(T val) { m_value = val; }
+    void setValue(const QVariant& v) { m_value = v.value<T>(); }
     void setMinimumValue(T min) { m_min = min; }
     void setMaximumValue(T max) { m_max = max; }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
@@ -109,6 +114,7 @@ public:
     bool value(void) const;
 
     void setValue(bool);
+    void setValue(const QVariant&);
 
 private:
     bool m_value = false;
@@ -129,6 +135,7 @@ public:
     QString value(void) const;
 
     void setValue(const QString&);
+    void setValue(const QVariant&);
 
 private:
     QString m_s;
@@ -158,6 +165,7 @@ public:
     void removeValue(const QString&);
 
     void setValue(const QString&);
+    void setValue(const QVariant&);
 
 private:
     int m_current_index = 0;
