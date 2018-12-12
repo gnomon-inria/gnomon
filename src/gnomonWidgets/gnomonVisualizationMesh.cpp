@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonVisualizationMesh.h"
+#include "gnomonAbstractVisualization_p.h"
 
 #include <QtWidgets>
 
@@ -34,127 +35,102 @@
 class gnomonVisualizationMeshPrivate
 {
 public:
-    gnomonViewForm* view;
     gnomonMesh *mesh;
-
-public:
-    QMap<QString, gnomonCoreParameter *> parameters;
 
 public:
     gnomonPolyDataMesh *polydata = nullptr;
     gnomonActorPolyData *actor = nullptr;
     gnomonActor2DPolyData *actor2D = nullptr;
 
-public:
-    QMetaObject::Connection connectSliceOrientation;
-    QMetaObject::Connection connectSlice;
-
-public slots:
-    void updateOpacity(void);
 };
-
-void gnomonVisualizationMeshPrivate::updateOpacity(void)
-{
-    double alpha = ((gnomonCoreParameterDouble *)this->parameters["alpha"])->value();
-    
-    if(this->actor) {
-        this->actor->setOpacity(alpha);
-    }
-
-    if(this->actor2D) {
-        this->actor2D->setOpacity(alpha);
-    }
-}
 
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationMesh
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : d(new gnomonVisualizationMeshPrivate)
+gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationMeshPrivate)
 {
-    d->view = view;
-    d->mesh = Q_NULLPTR;
+    dd->mesh = Q_NULLPTR;
 
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the mesh rendering");
 }
 
 gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 {
-    delete d;
+    delete dd;
 
-    d = NULL;
+    dd = NULL;
 }
 
 void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
 {
-    d->mesh = mesh;
+    dd->mesh = mesh;
     this->update();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationMesh::parameters(void) const
+void gnomonVisualizationMesh::updateOpacity(void)
 {
-    return d->parameters;
-}
-
-void gnomonVisualizationMesh::setParameter(const QString& parameter, const QVariant& value)
-{
-    if (d->parameters.contains(parameter)) {
-        d->parameters[parameter]->setValue(value);
+    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    
+    if(dd->actor) {
+        dd->actor->setOpacity(alpha);
     }
-    else
-        qWarning()<<parameter<<"is not a valid parameter!";
+
+    if(dd->actor2D) {
+        dd->actor2D->setOpacity(alpha);
+    }
 }
 
 void gnomonVisualizationMesh::update(void)
 {
-    if(!d->mesh)
+    if(!dd->mesh)
         return;
 
-    if (d->polydata) {
-        d->polydata->Delete();
-        d->polydata = nullptr;
+    if (dd->polydata) {
+        dd->polydata->Delete();
+        dd->polydata = nullptr;
     }
 
-    if (!d->polydata)
-        d->polydata = gnomonPolyDataMesh::New();
-    d->polydata->setMesh((gnomonMesh *)d->mesh->clone());
+    if (!dd->polydata)
+        dd->polydata = gnomonPolyDataMesh::New();
+    dd->polydata->setMesh((gnomonMesh *)dd->mesh->clone());
 
-    if (d->actor) {
-        d->view->renderer3D()->RemoveActor(d->actor);
-        d->actor->Delete();
-        d->actor = nullptr;
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
     }
 
-    if (!d->actor)
-        d->actor = gnomonActorPolyData::New();
-        d->view->renderer3D()->AddActor(d->actor);
-    d->actor->setInteractor(d->view->interactor());
-    d->actor->setPolyData(d->polydata);
+    if (!dd->actor)
+        dd->actor = gnomonActorPolyData::New();
+        d->view->renderer3D()->AddActor(dd->actor);
+    dd->actor->setInteractor(d->view->interactor());
+    dd->actor->setPolyData(dd->polydata);
 
-    if (d->actor2D) {
+    if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
         disconnect(d->connectSlice);
-        d->view->renderer2D()->RemoveActor(d->actor2D);
-        d->actor2D->Delete();
-        d->actor2D = nullptr;
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
     }
 
-    if (!d->actor2D)
+    if (!dd->actor2D)
     {
-        d->actor2D = gnomonActor2DPolyData::New();
-        d->view->renderer2D()->AddActor(d->actor2D);
+        dd->actor2D = gnomonActor2DPolyData::New();
+        d->view->renderer2D()->AddActor(dd->actor2D);
     }
-    d->actor2D->setInteractor(d->view->interactor());
-    d->actor2D->setSliceThickness(0.5);
-    d->actor2D->setPolyData(d->polydata);
+    dd->actor2D->setInteractor(d->view->interactor());
+    dd->actor2D->setSliceThickness(0.5);
+    dd->actor2D->setPolyData(dd->polydata);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        d->actor2D->setSliceOrientation(value);
+        dd->actor2D->setSliceOrientation(value);
     });
 
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        d->actor2D->setSlice(value);
+        dd->actor2D->setSlice(value);
         this->render();
     });
 
@@ -165,7 +141,7 @@ void gnomonVisualizationMesh::update(void)
     connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
-    d->polydata->GetBounds(bounds);
+    dd->polydata->GetBounds(bounds);
     d->view->setBounds(bounds);
 
     this->render();
@@ -173,7 +149,7 @@ void gnomonVisualizationMesh::update(void)
 
 void gnomonVisualizationMesh::render(void)
 {
-    d->updateOpacity();
+    this->updateOpacity();
     d->view->render();
 }
 

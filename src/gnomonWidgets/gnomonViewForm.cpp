@@ -93,8 +93,9 @@ public:
     QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    gnomonVisualizationMesh *visuMesh = nullptr;
-    gnomonVisualizationImagesSerie *visuImagesSerie = nullptr;
+    QMap<QString, gnomonAbstractVisualization *> visu;
+    // gnomonVisualizationMesh *visuMesh = nullptr;
+    // gnomonVisualizationImagesSerie *visuImagesSerie = nullptr;
 
 public:
     gnomonMeshReaderCommand *mesh_reader_command = nullptr;
@@ -274,64 +275,37 @@ gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
 
 void gnomonViewFormPrivate::configure(QWidget *parent)
 {
-    if (this->visuImagesSerie) {
-
-        if ((this->parameterLayouts.contains("gnomonImagesSerie"))&&(this->parameterLayouts["gnomonImagesSerie"])) {
-            for(int row = 0, max_row = this->parameterLayouts["gnomonImagesSerie"]->count(); row < max_row; ++row) {
-                QLayoutItem *forDeletion = this->parameterLayouts["gnomonImagesSerie"]->takeAt(0);
-                forDeletion->widget()->disconnect();
-                delete forDeletion->widget();
-                delete forDeletion;
+    for (const auto& key : this->visu.keys()) {
+        gnomonAbstractVisualization *v = this->visu[key];
+        if(v) {
+            if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
+                for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
+                    QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
+                    forDeletion->widget()->disconnect();
+                    delete forDeletion->widget();
+                    delete forDeletion;
+                }
+            } else {
+                this->parameterLayouts[key] = new QFormLayout;
             }
-        } else {
-            this->parameterLayouts["gnomonImagesSerie"] = new QFormLayout;
-        }
 
-        if ((!this->parameterLayouts.contains("gnomonImagesSerie"))||(!this->visuPaneItems["gnomonImagesSerie"])) {
-            this->visuPaneItems["gnomonImagesSerie"] = new gnomonOverlayPaneItem(parent);
-            this->visuPaneItems["gnomonImagesSerie"]->setTitle("Image Visualization");
-            this->visuPaneItems["gnomonImagesSerie"]->addLayout(this->parameterLayouts["gnomonImagesSerie"]);
-            this->visuPaneItems["gnomonImagesSerie"]->toggle();
-        }
+            if ((!this->parameterLayouts.contains(key))||(!this->visuPaneItems[key])) {
+                this->visuPaneItems[key] = new gnomonOverlayPaneItem(parent);
+                this->visuPaneItems[key]->setTitle(key+" Visualization");
+                this->visuPaneItems[key]->addLayout(this->parameterLayouts[key]);
+                this->visuPaneItems[key]->toggle();
+            }
 
-        QMap<QString, gnomonCoreParameter *> parameters = this->visuImagesSerie->parameters();
-        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
-            if (widget)
-                this->parameterLayouts["gnomonImagesSerie"]->addRow(it.key(), widget);
+            QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+            for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+                QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+                if (widget)
+                    this->parameterLayouts[key]->addRow(it.key(), widget);
+            }
+            this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         }
-        this->parameterLayouts["gnomonImagesSerie"]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     }
 
-
-    if (this->visuMesh) {
-
-        if ((this->parameterLayouts.contains("gnomonMesh"))&&(this->parameterLayouts["gnomonMesh"])) {
-            for(int row = 0, max_row = this->parameterLayouts["gnomonMesh"]->count(); row < max_row; ++row) {
-                QLayoutItem *forDeletion = this->parameterLayouts["gnomonMesh"]->takeAt(0);
-                forDeletion->widget()->disconnect();
-                delete forDeletion->widget();
-                delete forDeletion;
-            }
-        } else {
-            this->parameterLayouts["gnomonMesh"] = new QFormLayout;
-        }
-
-        if ((!this->parameterLayouts.contains("gnomonMesh"))||(!this->visuPaneItems["gnomonMesh"])) {
-            this->visuPaneItems["gnomonMesh"] = new gnomonOverlayPaneItem(parent);
-            this->visuPaneItems["gnomonMesh"]->setTitle("Mesh Visualization");
-            this->visuPaneItems["gnomonMesh"]->addLayout(this->parameterLayouts["gnomonMesh"]);
-            this->visuPaneItems["gnomonMesh"]->toggle();
-        }
-
-        QMap<QString, gnomonCoreParameter *> parameters = this->visuMesh->parameters();
-        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
-            if (widget)
-                this->parameterLayouts["gnomonMesh"]->addRow(it.key(), widget);
-        }
-        this->parameterLayouts["gnomonMesh"]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    }
 
     this->refresh();
 }
@@ -387,10 +361,13 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
-        if(d->visuImagesSerie)
-            d->visuImagesSerie->update();
-        if(d->visuMesh)
-            d->visuMesh->update();
+        
+        for (const auto& key : d->visu.keys()) {
+            gnomonAbstractVisualization *v = d->visu[key];
+            if(v) {
+                v->update();
+            }
+        }
     });
 
     this->setAcceptDrops(true);
@@ -589,12 +566,13 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
     // if(d->images_serie->image())
     //     setImage(d->images_serie->image(), source);
 
-    if (!d->visuImagesSerie)
-        d->visuImagesSerie = new gnomonVisualizationImagesSerie(this);
-    d->visuImagesSerie->setImagesSerie(images_serie);
-    d->visuImagesSerie->setParameter("alpha",0.5);
+    if ((!d->visu.contains("gnomonImagesSerie"))||(!d->visu["gnomonImagesSerie"]))
+        d->visu["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
+    gnomonVisualizationImagesSerie *visuImagesSerie = (gnomonVisualizationImagesSerie *)d->visu["gnomonImagesSerie"];
+    visuImagesSerie->setImagesSerie(images_serie);
+    visuImagesSerie->setParameter("alpha",0.5);
 
-    gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)d->visuImagesSerie->parameters()["channel"];
+    gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)visuImagesSerie->parameters()["channel"];
     channelParam->setValues(images_serie->channels());
     channelParam->setValue(images_serie->channel());
 
@@ -619,10 +597,11 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
 
-    if (!d->visuMesh)
-        d->visuMesh = new gnomonVisualizationMesh(this);
-    d->visuMesh->setMesh(mesh);
-    d->visuMesh->setParameter("alpha",0.5);
+    if ((!d->visu.contains("gnomonMesh"))||(!d->visu["gnomonMesh"]))
+        d->visu["gnomonMesh"] = new gnomonVisualizationMesh(this);
+    gnomonVisualizationMesh *visuMesh = (gnomonVisualizationMesh *)d->visu["gnomonMesh"];
+    visuMesh->setMesh(mesh);
+    visuMesh->setParameter("alpha",0.5);
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);

@@ -19,6 +19,9 @@ project(gnomonWidgets)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonAbstractVisualization.h
+  gnomonAbstractVisualization_p.h
+  gnomonAbstractVisualization
   gnomonCodeEditor
   gnomonCodeEditor.h
   gnomonDropSite
@@ -72,6 +75,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractVisualization.cpp
   gnomonCodeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp

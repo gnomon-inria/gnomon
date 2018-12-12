@@ -18,12 +18,14 @@
 
 #include <gnomonWidgetsExport.h>
 
+#include "gnomonAbstractVisualization.h"
+
 class gnomonViewForm;
 
 class gnomonImagesSerie;
 class gnomonCoreParameter;
 
-class GNOMONWIDGETS_EXPORT gnomonVisualizationImagesSerie : public QObject
+class GNOMONWIDGETS_EXPORT gnomonVisualizationImagesSerie : public gnomonAbstractVisualization
 {
     Q_OBJECT
 
@@ -33,17 +35,16 @@ public:
 
 public:
 	void setImagesSerie(gnomonImagesSerie *imagesSerie);
-    void setParameter(const QString&, const QVariant&);
 
-public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+public slots:
+    void updateOpacity(void);
 
 public slots:
     void update(void);
     void render(void);
 
 private:
-	class gnomonVisualizationImagesSeriePrivate *d;
+	class gnomonVisualizationImagesSeriePrivate *dd;
 };
 
 
