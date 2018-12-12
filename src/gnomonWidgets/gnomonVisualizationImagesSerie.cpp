@@ -101,6 +101,7 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
     d->imagesSerie = Q_NULLPTR;
 
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
+    d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
 }
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
@@ -130,10 +131,17 @@ void gnomonVisualizationImagesSerie::setParameter(const QString& parameter, cons
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
+
 void gnomonVisualizationImagesSerie::update(void)
 {
     if(!d->imagesSerie)
         return;
+
+    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+
+    if(d->imagesSerie->channels().contains(channel))
+        d->imagesSerie->setChannel(channel);
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(d->imagesSerie->image());
@@ -207,7 +215,7 @@ void gnomonVisualizationImagesSerie::update(void)
 
     vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
     opacity->AddPoint(valueRange[0],0.00);
-    opacity->AddPoint(valueRange[1],1.00);
+    opacity->AddPoint(valueRange[1],alpha);
 
     vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
     property->SetScalarOpacity(opacity);

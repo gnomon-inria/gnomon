@@ -91,6 +91,8 @@ signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
 
+    void formAdded(void);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dragLeaveEvent(QDragLeaveEvent *);

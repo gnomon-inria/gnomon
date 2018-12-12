@@ -164,6 +164,7 @@ public:
     void addValue(const QString&);
     void removeValue(const QString&);
 
+    void setValues(const QStringList&);
     void setValue(const QString&);
     void setValue(const QVariant&);
 

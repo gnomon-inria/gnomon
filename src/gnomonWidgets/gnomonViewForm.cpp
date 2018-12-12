@@ -25,6 +25,9 @@
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonImagesSerie>
 
+#include <gnomonCore/gnomonCoreParameter.h>
+#include "gnomonWidgetsParameter.h"
+
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 
@@ -112,11 +115,21 @@ public:
     QSlider *slice_slider;
 
 public:
+    QPushButton *renderButton = nullptr;
+    QFormLayout *parameterLayout = nullptr;
+
+public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
     double c_x = 0, c_y = 0, c_z = 0;
 
 signals:
     void sliceOrientationChanged(int);
+
+public:
+    gnomonOverlayPane *pane(QWidget *parent);
+
+public slots:
+    void configure(QWidget *parent);
 };
 
 gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
@@ -244,8 +257,56 @@ void gnomonViewFormPrivate::updateOrientation(void)
     qDebug()<<"  --> Position:    "<<pos[0]<<pos[1]<<pos[2];
 
     this->GetInteractor()->Render();
-      
 }
+
+gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
+{
+    gnomonOverlayPane *pane = new gnomonOverlayPane(parent);
+
+    this->parameterLayout = new QFormLayout;
+    gnomonOverlayPaneItem *paneItemParameterLayout = new gnomonOverlayPaneItem(parent);
+    paneItemParameterLayout->setTitle("Parameters");
+    paneItemParameterLayout->addLayout(parameterLayout);
+    paneItemParameterLayout->toggle();
+
+    this->renderButton = new QPushButton("Render",parent);
+    this->renderButton->setCheckable(true);
+    gnomonOverlayPaneItem *paneItemButton = new gnomonOverlayPaneItem(parent);
+    paneItemButton->setTitle("View Form");
+    paneItemButton->addWidget(this->renderButton);
+    paneItemButton->toggle();
+
+    pane->addWidget(paneItemParameterLayout);
+    pane->addWidget(paneItemButton);
+    pane->toggle();
+
+    return pane;
+}
+
+void gnomonViewFormPrivate::configure(QWidget *parent)
+{
+    if (this->parameterLayout) {
+        for(int row = 0, max_row = this->parameterLayout->count(); row < max_row; ++row) {
+            QLayoutItem *forDeletion = this->parameterLayout->takeAt(0);
+            forDeletion->widget()->disconnect();
+            delete forDeletion->widget();
+            delete forDeletion;
+        }
+    } else {
+        this->parameterLayout = new QFormLayout(parent);
+    }
+
+    if (this->visuImagesSerie) {
+        QMap<QString, gnomonCoreParameter *> parameters = this->visuImagesSerie->parameters();
+        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+            if (widget)
+                this->parameterLayout->addRow(it.key(), widget);
+        }
+        this->parameterLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    }
+}
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
@@ -270,25 +331,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->slice_slider->setMaximum(1);
     d->slice_slider->setValue(0);
 
-    gnomonOverlayPane *pane = new gnomonOverlayPane(parent);
-
-    QFormLayout *parameterLayout = new QFormLayout;
-    gnomonOverlayPaneItem *paneItemParameterLayout = new gnomonOverlayPaneItem(parent);
-    paneItemParameterLayout->setTitle("Visualization");
-    paneItemParameterLayout->addLayout(parameterLayout);
-    paneItemParameterLayout->toggle();
-
-    QPushButton *button = new QPushButton("Render",parent);
-    button->setCheckable(true);
-    gnomonOverlayPaneItem *paneItemButton = new gnomonOverlayPaneItem(parent);
-    paneItemButton->setTitle("Visualization");
-    paneItemButton->addWidget(button);
-    paneItemButton->toggle();
-
-    pane->addWidget(paneItemParameterLayout);
-    pane->addWidget(paneItemButton);
-    pane->toggle();
-
     connect(d->slice_slider, SIGNAL(valueChanged(int)), this, SLOT(sliceChange(int)));
 
     connect(d, &gnomonViewFormPrivate::sliceOrientationChanged, this, &gnomonViewForm::sliceOrientationChanged);
@@ -298,7 +340,19 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
     layout->addWidget(d, 0, 1, 1, 1);
-    layout->addWidget(pane, 0, 2, 1, 1);
+    layout->addWidget(d->pane(parent), 0, 2, 1, 1);
+
+    // parent->connect(this, SIGNAL(formAdded()), parent, SLOT(configure()));
+    connect(this, &gnomonViewForm::formAdded, [=] () {
+        d->configure(parent);
+    });
+
+    connect(d->renderButton, &QPushButton::clicked, [=] () {
+        if(d->visuImagesSerie)
+            d->visuImagesSerie->update();
+        if(d->visuMesh)
+            d->visuMesh->update();
+    });
 
     this->setAcceptDrops(true);
     this->switchTo2D(); 
@@ -510,6 +564,15 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
     d->visuImagesSerie->setImagesSerie(images_serie);
     d->visuImagesSerie->setParameter("alpha",0.5);
 
+    qDebug()<<"Setting channel parameter"<<images_serie->channels();
+    qDebug()<<d->visuImagesSerie->parameters().keys();
+    gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)d->visuImagesSerie->parameters()["channel"];
+    qDebug()<<channelParam->values();
+    channelParam->setValues(images_serie->channels());
+    qDebug()<<channelParam->values();
+    channelParam->setValue(images_serie->channel());
+    qDebug()<<"Set channels";
+
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);
         this->switchTo3D();
@@ -518,6 +581,8 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
         d->renderer2D_button->toggle(false);
         this->switchTo2D();
     }
+
+    emit formAdded();
 }
 
 gnomonMesh *gnomonViewForm::mesh(void)

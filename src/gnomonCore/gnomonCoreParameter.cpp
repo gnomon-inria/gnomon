@@ -138,11 +138,29 @@ void gnomonCoreParameterStringList::removeValue(const QString& val)
     }
 }
 
+void gnomonCoreParameterStringList::setValues(const QStringList& val)
+{
+    QString c_val = m_values.at(m_current_index);
+
+    m_values.clear();
+    for (const auto& v : val) {
+        if (!m_values.contains(v)) {
+            m_values.append(v);
+        }
+    }
+
+    int index = m_values.indexOf(c_val);
+    if(index >= 0) {
+        m_current_index = index;
+    }
+}
+
 void gnomonCoreParameterStringList::setValue(const QString& val)
 {
     int index = m_values.indexOf(val);
-    if(index >= 0)
-    { m_current_index = index; }
+    if(index >= 0) { 
+        m_current_index = index; 
+    }
 }
 
 void gnomonCoreParameterStringList::setValue(const QVariant& v)
