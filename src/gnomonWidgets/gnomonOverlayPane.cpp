@@ -226,6 +226,14 @@ void gnomonOverlayPane::clear(void)
     }
 }
 
+void gnomonOverlayPane::clearLayout(void)
+{
+    QLayoutItem *child;
+
+    while ((child = d->layout->takeAt(0)) != 0) {
+    }
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 QColor gnomonOverlayPane::color = QColor("#242525");

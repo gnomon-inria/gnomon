@@ -54,6 +54,7 @@ public:
 
 public slots:
     void clear(void);
+    void clearLayout(void);
 
 public:
     static void setColor(QColor);

@@ -64,7 +64,6 @@ public:
 
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
-    // vtkSmartPointer<vtkImageViewer2> viewer = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
 
@@ -72,23 +71,24 @@ public:
     QMetaObject::Connection connectSliceOrientation;
     QMetaObject::Connection connectSlice;
 
-// public slots:
-//     void updateOpacity(void);
+public slots:
+    void updateOpacity(void);
 
 };
 
-// void gnomonVisualizationImagesSeriePrivate::updateOpacity(void)
-// {
-//     double alpha = ((gnomonCoreParameterDouble *)this->parameters["alpha"])->value();
+void gnomonVisualizationImagesSeriePrivate::updateOpacity(void)
+{
+    double alpha = ((gnomonCoreParameterDouble *)this->parameters["alpha"])->value();
     
-//     if(this->actor) {
-//         this->actor->setOpacity(alpha);
-//     }
+    double valueRange[2];
+    this->image->GetPointData()->GetScalars()->GetRange(valueRange);
 
-//     if(this->actor2D) {
-//         this->actor2D->setOpacity(alpha);
-//     }
-// }
+    vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    opacity->AddPoint(valueRange[0],0.00);
+    opacity->AddPoint(valueRange[1],alpha);
+
+    this->volume->GetProperty()->SetScalarOpacity(opacity);
+}
 
 
 // /////////////////////////////////////////////////////////////////
@@ -147,19 +147,8 @@ void gnomonVisualizationImagesSerie::update(void)
     converter->setInput(d->imagesSerie->image());
     converter->convert();
     d->image = static_cast<vtkImageData *>(converter->output());
-    qDebug()<<"Visu: Image Data"<<d->image->GetDimensions()[0]<<d->image->GetDimensions()[1]<<d->image->GetDimensions()[2];
 
     delete converter;
-
-    // d->image_interactor->image = image;
-    // d->viewer = vtkSmartPointer<vtkImageViewer2>::New();
-    // d->viewer->SetSliceOrientationToXY();
-    // d->viewer->SetRenderWindow(d->view->interactor()->GetRenderWindow());
-    // d->viewer->SetRenderer(d->view->renderer2D());
-    // d->viewer->SetupInteractor(d->view->interactor());
-    // d->viewer->GetWindowLevel()->SetOutputFormatToRGB();
-    // d->viewer->SetInputData(d->image);
-    // qDebug()<<"Visu: Image Viewer"<<d->viewer;
 
     double valueRange[2];
     d->image->GetPointData()->GetScalars()->GetRange(valueRange);
@@ -175,7 +164,6 @@ void gnomonVisualizationImagesSerie::update(void)
     image_color->SetOutputFormatToRGBA();
     image_color->SetInputData(d->image);
     image_color->Update();
-    qDebug()<<"Visu: Image Color"<<image_color;
 
     int imageDims[3]; d->image->GetDimensions(imageDims);
 
@@ -206,7 +194,6 @@ void gnomonVisualizationImagesSerie::update(void)
     d->volume_mapper->SetRequestedRenderModeToRayCast();
     d->volume_mapper->Modified();
     d->volume_mapper->Update();
-    qDebug()<<"Visu: Volume Mapper"<<d->volume_mapper;
 
     if(!d->volume) {
         d->volume = vtkSmartPointer<vtkVolume>::New();
@@ -228,17 +215,12 @@ void gnomonVisualizationImagesSerie::update(void)
     d->volume->Modified();
     d->volume->Update();
 
-    // d->view->renderer2D()->ResetCamera();
-    // d->view->renderer3D()->ResetCamera();
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         d->orientation = value;
-        qDebug()<<"Visu: Set orientation"<<value;
-        // d->viewer->SetSliceOrientation(value);
     });
 
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        // d->viewer->SetSlice(value);
         d->planeWidget[d->orientation]->SetSliceIndex(value/d->image->GetSpacing()[d->orientation]);
         this->render();
     });
@@ -271,7 +253,7 @@ void gnomonVisualizationImagesSerie::update(void)
 
 void gnomonVisualizationImagesSerie::render(void)
 {
-    // d->updateOpacity();
+    d->updateOpacity();
     d->view->render();
 }
 
