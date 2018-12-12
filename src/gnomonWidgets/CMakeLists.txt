@@ -47,6 +47,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonViewVolumic.h
   gnomonViewVolumicOverlay.h
   gnomonViewVolumicPool.h
+  gnomonVisualizationImagesSerie.h
+  gnomonVisualizationImagesSerie
   gnomonVisualizationMesh.h
   gnomonVisualizationMesh
   gnomonWidgets
@@ -88,6 +90,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonViewVolumicOverlay.cpp
   gnomonViewVolumicPool.cpp
   gnomonVisualizationMesh.cpp
+  gnomonVisualizationImagesSerie.cpp
   gnomonWidgetsParameter.cpp
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp

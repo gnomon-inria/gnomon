@@ -59,13 +59,13 @@ public slots:
     void sliceChange(int);
 
 public:
-    void setImage(dtkImage*);
-    // void setImagesSerie(gnomonImagesSeriePtr, const QMap<double, QColor>& = grey_colormap);
+    // void setImage(dtkImage*);
+    void setImagesSerie(gnomonImagesSerie*);
     void setMesh(gnomonMesh*);
 
 public:
-    dtkImage* image(void);
-    // gnomonImagesSeriePtr imagesSerie(void);
+    // dtkImage* image(void);
+    gnomonImagesSerie* imagesSerie(void);
     gnomonMesh *mesh(void);
 
 public:

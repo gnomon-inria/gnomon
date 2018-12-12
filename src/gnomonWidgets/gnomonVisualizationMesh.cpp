@@ -48,9 +48,9 @@ public:
 public:
     QMetaObject::Connection connectSliceOrientation;
     QMetaObject::Connection connectSlice;
+
 public slots:
     void updateOpacity(void);
-
 };
 
 void gnomonVisualizationMeshPrivate::updateOpacity(void)

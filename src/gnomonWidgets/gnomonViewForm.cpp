@@ -29,44 +29,14 @@
 #include "gnomonOverlayPaneItem.h"
 
 #include "gnomonVisualizationMesh.h"
+#include "gnomonVisualizationImagesSerie.h"
 
-// #include <vtkActor.h>
 #include <vtkCamera.h>
-// #include <vtkCellArray.h>
-// #include <vtkCellPicker.h>
-// #include <vtkColorTransferFunction.h>
-// #include <vtkContourFilter.h>
-// #include <vtkDataArray.h>
-// #include <vtkDataSetMapper.h>
-// #include <vtkDoubleArray.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-// #include <vtkImageBlend.h>
-// #include <vtkImageCast.h>
-// #include <vtkImageData.h>
-// #include <vtkImageMapToColors.h>
-// #include <vtkImagePlaneWidget.h>
-// #include <vtkImageViewer2.h>
-// #include <vtkImageMapToColors.h>
-// #include <vtkImageMapToWindowLevelColors.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleImage.h>
-// #include <vtkLookupTable.h>
-// #include <vtkObjectFactory.h>
-// #include <vtkPiecewiseFunction.h>
-// #include <vtkPoints.h>
-// #include <vtkPointData.h>
-// #include <vtkPolyData.h>
-// #include <vtkPolyDataMapper.h>
-// #include <vtkProperty.h>
 #include <vtkRenderer.h>
-// #include <vtkRendererCollection.h>
-// #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-// #include <vtkSmartPointer.h>
-// #include <vtkSmartVolumeMapper.h>
-// #include <vtkSphereSource.h>
-// #include <vtkVolume.h>
-// #include <vtkVolumeProperty.h>
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
@@ -120,11 +90,12 @@ public:
     QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    gnomonVisualizationMesh *visu = nullptr;
+    gnomonVisualizationMesh *visuMesh = nullptr;
+    gnomonVisualizationImagesSerie *visuImagesSerie = nullptr;
 
 public:
-    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
     gnomonMeshReaderCommand *mesh_reader_command = nullptr;
+    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
 
 public:
     gnomonViewVolumicOverlay *renderer2D_button = nullptr;
@@ -135,6 +106,7 @@ public:
 
 public:
     gnomonMesh *mesh;
+    gnomonImagesSerie *images_serie;
 
 public:
     QSlider *slice_slider;
@@ -165,16 +137,14 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->setEnableHiDPI(true);
 
     this->renderer2D_button = new gnomonViewVolumicOverlay(fa::square, "", this);
-    this->renderer2D_button->toggle(true);
+    this->renderer2D_button->toggle(false);
     this->renderer3D_button = new gnomonViewVolumicOverlay(fa::cube, "", this);
     this->renderer2D_XY = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XY.png", ":gnomon/gnomonViewVolumic-XY-off.png", "", this);
-    this->renderer2D_XY->toggle(true);
+    this->renderer2D_XY->toggle(false);
     this->renderer2D_XZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-XZ.png", ":gnomon/gnomonViewVolumic-XZ-off.png", "", this);
     this->renderer2D_XZ->toggle(false);
     this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ.png",  ":gnomon/gnomonViewVolumic-YZ-off.png", "", this);
     this->renderer2D_YZ->toggle(false);
-
-    this->ori = SLICE_ORIENTATION_XY;
 }
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
@@ -221,43 +191,60 @@ void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
 
 void gnomonViewFormPrivate::updateOrientation(void)
 {
+    qDebug()<<"Update camera"<<this->ori<<this->cameras.keys();
     if(!this->cameras.contains(this->ori)) {
         vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
+        cam->ParallelProjectionOn();
+        cam->SetParallelScale(1);
         cam->SetFocalPoint((xBounds[0]+xBounds[1])/2,(yBounds[0]+yBounds[1])/2,(zBounds[0]+zBounds[1])/2);
-
+        qDebug()<<"  --> X:"<<xBounds[0]<<xBounds[1];
+        qDebug()<<"  --> Y:"<<yBounds[0]<<yBounds[1];
+        qDebug()<<"  --> Z:"<<zBounds[0]<<zBounds[1];
+        qDebug()<<"  --> FocalPoint:  "<<(xBounds[0]+xBounds[1])/2<<(yBounds[0]+yBounds[1])/2<<(zBounds[0]+zBounds[1])/2;
+    
+     
         switch(this->ori)
         {
             case SLICE_ORIENTATION_XY:
                 cam->SetPosition((xBounds[0]+xBounds[1])/2,(yBounds[0]+yBounds[1])/2,zBounds[1]);
                 cam->SetViewUp(0,1,0);
                 cam->SetClippingRange((zBounds[1] - zBounds[0]) - 3.0, (zBounds[1] - zBounds[0]) + 3.0);
+                qDebug()<<"  --> Position:    "<<cam->GetPosition()[0]<<cam->GetPosition()[1]<<cam->GetPosition()[2];
                 break;
 
             case SLICE_ORIENTATION_XZ:
                 cam->SetPosition((xBounds[0]+xBounds[1])/2,yBounds[0],(zBounds[0]+zBounds[1])/2);
                 cam->SetViewUp(0,0,1);
                 cam->SetClippingRange((yBounds[1] - yBounds[0]) - 3.0, (yBounds[1] - yBounds[0]) + 3.0);
+                qDebug()<<"  --> Position:    "<<cam->GetPosition()[0]<<cam->GetPosition()[1]<<cam->GetPosition()[2];
                 break;
 
             case SLICE_ORIENTATION_YZ:
                 cam->SetPosition(xBounds[1],(yBounds[0]+yBounds[1])/2,(zBounds[0]+zBounds[1])/2);
                 cam->SetViewUp(0,0,1);
                 cam->SetClippingRange((xBounds[1] - xBounds[0]) - 3.0, (xBounds[1] - xBounds[0]) + 3.0);
+                qDebug()<<"  --> Position:    "<<cam->GetPosition()[0]<<cam->GetPosition()[1]<<cam->GetPosition()[2];
                 break;
         }
-        cam->SetParallelScale(1);
         this->renderer2D->SetActiveCamera(cam);
         this->renderer2D->ResetCamera();
         this->renderer2D->ResetCameraClippingRange();
-
         this->cameras[this->ori] = cam;
     }
     else {
         this->renderer2D->SetActiveCamera(this->cameras[this->ori]);
     }
 
-    this->GetInteractor()->Render();
+    double foc[3];
+    this->renderer2D->GetActiveCamera()->GetFocalPoint(foc);
+    qDebug()<<"  --> FocalPoint:  "<<foc[0]<<foc[1]<<foc[2];
 
+    double pos[3];
+    this->renderer2D->GetActiveCamera()->GetPosition(pos);
+    qDebug()<<"  --> Position:    "<<pos[0]<<pos[1]<<pos[2];
+
+    this->GetInteractor()->Render();
+      
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -315,7 +302,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     this->setAcceptDrops(true);
     this->switchTo2D(); 
-    this->switchTo2DXY(); 
+    this->switchTo2DXY();
+    d->updateOrientation(); 
 }
 
 gnomonViewForm::~gnomonViewForm(void)
@@ -355,6 +343,8 @@ void gnomonViewForm::switchTo2D(void)
 {
     if (d->renderer2D_button->isToggled()) return;
 
+    qDebug()<<"switchTo2D";
+
     d->renderer2D_button->toggle(true);
     d->renderer2D_button->setEnabled(false);
 
@@ -362,8 +352,11 @@ void gnomonViewForm::switchTo2D(void)
     d->renderer3D_button->setEnabled(true);
 
     d->renderer2D_XY->setVisible(true);
+    d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->setVisible(true);
+    d->renderer2D_XZ->toggle(false);
     d->renderer2D_YZ->setVisible(true);
+    d->renderer2D_YZ->toggle(false);
 
     d->renderer3D->DrawOff();
     d->renderer3D->InteractiveOff();
@@ -373,18 +366,30 @@ void gnomonViewForm::switchTo2D(void)
 
     d->renderer2D->InteractiveOn();
     d->renderer2D->DrawOn();
-    d->updateOrientation();
-
     d->slice_slider->setEnabled(true);
 
-    emit sliceOrientationChanged(d->orientation());
-
     emit switchedTo2D();
+
+    switch(d->ori) {
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+            this->switchTo2DXY();
+            break;
+
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+            this->switchTo2DXZ();
+            break;
+
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+            this->switchTo2DYZ();
+            break;
+    }
 }
 
 void gnomonViewForm::switchTo2DXY(void)
 {
     if (d->renderer2D_XY->isToggled()) return;
+    
+    qDebug()<<"switchTo2D_XY";
 
     d->renderer2D_XY->toggle(true);
     d->renderer2D_XZ->toggle(false);
@@ -406,6 +411,8 @@ void gnomonViewForm::switchTo2DXZ(void)
 {
     if (d->renderer2D_XZ->isToggled()) return;
 
+    qDebug()<<"switchTo2D_XZ";
+
     d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->toggle(true);
     d->renderer2D_YZ->toggle(false);
@@ -426,6 +433,8 @@ void gnomonViewForm::switchTo2DYZ(void)
 {
     if (d->renderer2D_YZ->isToggled()) return;
 
+    qDebug()<<"switchTo2D_YZ";
+
     d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->toggle(false);
     d->renderer2D_YZ->toggle(true);
@@ -440,7 +449,6 @@ void gnomonViewForm::switchTo2DYZ(void)
     d->slice_slider->setValue(d->c_x);
 
     emit switchedTo2DYZ();
-
 }
 
 void gnomonViewForm::sliceChange(int value)
@@ -479,191 +487,38 @@ void gnomonViewForm::sliceChange(int value)
 }
 
 
-// gnomonImagesSeriePtr gnomonViewForm::imagesSerie(void)
-// {
-//     return d->images_serie;
-// }
-
-// void gnomonViewForm::setImagesSerie(gnomonImagesSeriePtr images_serie, const QMap<double, QColor>& source)
-// {
-//     d->images_serie = images_serie;
-//     d->last_channel_toggled = images_serie->channel();
-
-//     bool enable_slider = images_serie->times().count() > 1;
-
-//     d->time_slider->setVisible(enable_slider);
-
-//     if(d->images_serie->image())
-//         setImage(d->images_serie->image(), source);
-// }
-
-dtkImage *gnomonViewForm::image(void)
+gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
 {
-    return nullptr;
-    // return d->images_serie->image();
+    return d->images_serie;
 }
 
-void gnomonViewForm::setImage(dtkImage* i)
+void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
 {
-    // // 2D
+    d->images_serie = images_serie;
+    qDebug()<<"Images Serie"<<images_serie->channel();
+    // d->last_channel_toggled = images_serie->channel();
 
-    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    // converter->setInput(i);
-    // converter->convert();
+    // bool enable_slider = images_serie->times().count() > 1;
 
-    // vtkImageData *image = static_cast<vtkImageData *>(converter->output());
+    // d->time_slider->setVisible(enable_slider);
 
-    // delete converter;
+    // if(d->images_serie->image())
+    //     setImage(d->images_serie->image(), source);
 
-    // d->image_interactor->image = image;
+    if (!d->visuImagesSerie)
+        d->visuImagesSerie = new gnomonVisualizationImagesSerie(this);
+    d->visuImagesSerie->setImagesSerie(images_serie);
+    d->visuImagesSerie->setParameter("alpha",0.5);
 
-    // d->xBounds[0] = 0;
-    // d->xBounds[1] = image->GetDimensions()[0]-1;
-    // d->yBounds[0] = 0;
-    // d->yBounds[1] = image->GetDimensions()[1]-1;
-    // d->zBounds[0] = 0;
-    // d->zBounds[1] = image->GetDimensions()[2]-1;
-
-    // d->c_x = image->GetDimensions()[0]/2;
-    // d->c_y = image->GetDimensions()[1]/2;
-    // d->c_z = image->GetDimensions()[2]/2;
-
-    // d->time_slider->setMaximum(d->images_serie->times().last());
-    // d->time_slider->blockSignals(true);
-    // d->time_slider->setValue(d->images_serie->time());
-    // d->time_slider->setToolTip(QString("current time: %1").arg(d->images_serie->time()));
-    // d->time_slider->blockSignals(false);
-
-    // // ///////////////////////////////////////////////////////////////////
-    // //
-    // // ///////////////////////////////////////////////////////////////////
-
-    // vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
-    // vtkSmartPointer<vtkImageMapToColors> image_color =nullptr;
-    // double bounds[2];
-    // image->GetPointData()->GetScalars()->GetRange(bounds);
-    // color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
-    // //color_function->RemoveAllPoints();
-
-    // for (const auto& val : source.keys()) {
-    //     double node = val*bounds[1] + (1-val)*bounds[0];
-    //     color_function->AddRGBPoint(node, source[val].red()/255.,  source[val].green()/255.,  source[val].blue()/255.);
-    // }
-
-    // color_function->ClampingOn();
-    // color_function->Modified();
-
-    // image_color = vtkSmartPointer<vtkImageMapToColors>::New();
-    // image_color->SetLookupTable(color_function);
-    // image_color->SetOutputFormatToRGBA();
-    // image_color->SetInputData(image);
-    // image_color->Update();
-
-    // if (d->blending->isToggled()) {
-    //     QString label = QString("Layer %1").arg(d->blender->GetNumberOfInputs());
-
-    //     d->blending_list->addItem(label);
-
-    //     d->blender->AddInputData(image_color->GetOutput());
-
-    //     d->blender->SetOpacity(0, 0.5);
-    //     d->blender->SetOpacity(1, 0.5);
-    //     d->blender->Update();
-
-    //     d->viewer->SetInputData(d->blender->GetOutput());
-
-    // } else {
-    //     d->viewer->SetInputData(image_color->GetOutput());
-    // }
-
-    // // ///////////////////////////////////////////////////////////////////
-
-    // // 3D
-
-    // int imageDims[3]; image->GetDimensions(imageDims);
-
-    // for(int i = 0; i < 3; i++) {
-    //     d->planeWidget[i]->SetInputData(image);
-    //     d->planeWidget[i]->SetSliceIndex(imageDims[i]/2);
-    //     d->planeWidget[i]->DisplayTextOn();
-    //     d->planeWidget[i]->InteractionOn();
-    // }
-
-    // if (d->renderer2D_XY->isToggled()) {
-    //     d->planeWidget[0]->On();
-    //     d->planeWidget[1]->On();
-    //     d->planeWidget[2]->Off();
-
-    //     d->viewer->SetSlice(d->c_z);
-    //     d->slice_slider->setMinimum(d->zBounds[0]);
-    //     d->slice_slider->setMaximum(d->zBounds[1]);
-    //     d->slice_slider->blockSignals(true);
-    //     d->slice_slider->setValue(d->c_z);
-    //     d->slice_slider->blockSignals(false);
-    // }
-
-    // if (d->renderer2D_XZ->isToggled()) {
-    //     d->planeWidget[0]->On();
-    //     d->planeWidget[1]->Off();
-    //     d->planeWidget[2]->On();
-
-    //     d->viewer->SetSlice(d->c_y);
-    //     d->slice_slider->setMinimum(d->yBounds[0]);
-    //     d->slice_slider->setMaximum(d->yBounds[1]);
-    //     d->slice_slider->blockSignals(true);
-    //     d->slice_slider->setValue(d->c_y);
-    //     d->slice_slider->blockSignals(false);
-    // }
-
-    // if (d->renderer2D_YZ->isToggled()) {
-    //     d->planeWidget[0]->Off();
-    //     d->planeWidget[1]->On();
-    //     d->planeWidget[2]->On();
-
-    //     d->viewer->SetSlice(d->c_x);
-    //     d->slice_slider->setMinimum(d->xBounds[0]);
-    //     d->slice_slider->setMaximum(d->xBounds[1]);
-    //     d->slice_slider->blockSignals(true);
-    //     d->slice_slider->setValue(d->c_x);
-    //     d->slice_slider->blockSignals(false);
-    // }
-
-    // if(!d->volume_mapper)
-    //     d->volume_mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
-
-    // d->volume_mapper->SetInputData(image);
-    // d->volume_mapper->SetRequestedRenderMode(vtkSmartVolumeMapper::DefaultRenderMode);
-    // d->volume_mapper->Modified();
-    // d->volume_mapper->Update();
-
-    // if(!d->volume) {
-    //     d->volume = vtkSmartPointer<vtkVolume>::New();
-    //     d->renderer3D->AddActor(d->volume);
-    // }
-
-    // image->GetPointData()->GetScalars()->GetRange(bounds);
-    // vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    // opacity->AddPoint(   bounds[0],                0.00);
-    // opacity->AddPoint(1*(bounds[1]-bounds[0])/2/4, 0.00);
-    // opacity->AddPoint(   bounds[1],                1.00);
-
-    // vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
-    // property->SetScalarOpacity(opacity);
-    // property->SetColor(color_function);
-    // property->ShadeOff();
-    // property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
-
-    // d->volume->SetMapper(d->volume_mapper);
-    // d->volume->SetProperty(property);
-    // d->volume->Modified();
-    // d->volume->Update();
-
-    d->renderer2D->ResetCamera();
-    d->renderer3D->ResetCamera();
-
-    this->render();
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
 }
-
 
 gnomonMesh *gnomonViewForm::mesh(void)
 {
@@ -674,14 +529,19 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
 
-    if (!d->visu)
-        d->visu = new gnomonVisualizationMesh(this);
-    d->visu->setMesh(mesh);
-    d->visu->setParameter("alpha",0.5);
-    d->visu->render();
+    if (!d->visuMesh)
+        d->visuMesh = new gnomonVisualizationMesh(this);
+    d->visuMesh->setMesh(mesh);
+    d->visuMesh->setParameter("alpha",0.5);
 
-
-    this->render();
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
 }
 
 void gnomonViewForm::setBounds(double bounds[6])
@@ -697,31 +557,32 @@ void gnomonViewForm::setBounds(double bounds[6])
     d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
     d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
 
+    d->cameras.clear();
+
     if (d->renderer2D_XY->isToggled()) {
         d->slice_slider->blockSignals(true);
         d->slice_slider->setMinimum(d->zBounds[0]);
         d->slice_slider->setMaximum(d->zBounds[1]);
-        d->slice_slider->blockSignals(false);
         d->slice_slider->setValue(d->c_z);
+        d->slice_slider->blockSignals(false);
     }
 
     if (d->renderer2D_XZ->isToggled()) {
         d->slice_slider->blockSignals(true);
         d->slice_slider->setMinimum(d->yBounds[0]);
         d->slice_slider->setMaximum(d->yBounds[1]);
-        d->slice_slider->blockSignals(false);
         d->slice_slider->setValue(d->c_y);
+        d->slice_slider->blockSignals(false);
     }
 
     if (d->renderer2D_YZ->isToggled()) {
         d->slice_slider->blockSignals(true);
         d->slice_slider->setMinimum(d->xBounds[0]);
         d->slice_slider->setMaximum(d->xBounds[1]);
-        d->slice_slider->blockSignals(false);
         d->slice_slider->setValue(d->c_x);
+        d->slice_slider->blockSignals(false);
     }
 
-    d->cameras.clear();
     d->renderer2D->ResetCamera();
     d->renderer3D->ResetCamera();
 
@@ -744,18 +605,7 @@ vtkRenderer *gnomonViewForm::renderer3D(void)
 
 int gnomonViewForm::orientation(void)
 {
-    if (d->renderer2D_XY->isToggled()) {
-        return gnomonViewFormPrivate::SLICE_ORIENTATION_XY;
-    }
-
-    if (d->renderer2D_XZ->isToggled()) {
-        return gnomonViewFormPrivate::SLICE_ORIENTATION_XZ;
-    }
-
-    if (d->renderer2D_YZ->isToggled()) {
-        return gnomonViewFormPrivate::SLICE_ORIENTATION_YZ;
-    }
-    return gnomonViewFormPrivate::SLICE_ORIENTATION_XY;
+    return d->ori;
 }
 
 void gnomonViewForm::render(void)
@@ -794,7 +644,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        // gnomonImagesSeriePtr images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
+        // gnomonImagesSerie * images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
         // emit channelsChanged(images_serie->channels());
         // this->setImagesSerie(images_serie);
     } else {
@@ -818,7 +668,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
         if(imageCommand) {
             imageCommand->setPath(path.remove("file://"));
             imageCommand->redo();
-            gnomonImagesSeriePtr images_serie = gnomonImagesSeriePtr(imageCommand->imagesSerie());
+            gnomonImagesSerie * images_serie = imageCommand->imagesSerie()->copy();
             if (!images_serie) {
                 qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
                 event->ignore();
@@ -827,7 +677,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             qDebug()<<"Add image";
             // emit channelsChanged(images_serie->channels());
             // emit timeChanged(images_serie->time());
-            // this->setImagesSerie(images_serie);
+            // this->switchTo3D();
+            this->setImagesSerie(images_serie);
         }
         else if(meshCommand)
         {
@@ -841,7 +692,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 return;
             }
             qDebug()<<"Add mesh";
-            this->switchTo3D();
+            // this->switchTo3D();
             this->setMesh(mesh);
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
