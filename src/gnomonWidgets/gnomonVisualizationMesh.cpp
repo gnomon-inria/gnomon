@@ -153,6 +153,5 @@ void gnomonVisualizationMesh::render(void)
     d->view->render();
 }
 
-
 //
 // gnomonVisualizationMesh.cpp ends here

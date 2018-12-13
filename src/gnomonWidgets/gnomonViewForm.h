@@ -22,12 +22,10 @@
 
 class gnomonLandmark;
 
-class dtkImage;
-class gnomonImagesSerie;
-using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
+class gnomonAbstractForm;
 
+class gnomonImagesSerie;
 class gnomonMesh;
-using gnomonMeshPtr = QSharedPointer<gnomonMesh>;
 
 class vtkRenderer;
 class vtkRenderWindowInteractor;
@@ -47,7 +45,6 @@ signals:
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
 
-
 public slots:
     void switchTo3D  (void);
     void switchTo2D  (void);
@@ -59,13 +56,13 @@ public slots:
     void sliceChange(int);
 
 public:
-    // void setImage(dtkImage*);
+    void setForm(const QString&, gnomonAbstractForm *);
     void setImagesSerie(gnomonImagesSerie*);
     void setMesh(gnomonMesh*);
 
 public:
-    // dtkImage* image(void);
-    gnomonImagesSerie* imagesSerie(void);
+    gnomonAbstractForm *form(const QString&); 
+    gnomonImagesSerie *imagesSerie(void);
     gnomonMesh *mesh(void);
 
 public:

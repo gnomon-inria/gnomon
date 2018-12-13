@@ -21,6 +21,7 @@
 #include <gnomonCore/gnomonImagesSerieReaderCommand>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
+#include <gnomonCore/gnomonAbstractForm>
 #include <dtkImagingCore>
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonImagesSerie>
@@ -64,8 +65,7 @@ public:
     ~gnomonViewFormPrivate(void);
 
 public slots:
-    void enableInteractor(void);
-    void disableInteractor(void);
+    void exportToManager(void);
 
 public:
     QSize sizeHint(void) const;
@@ -94,8 +94,6 @@ public:
 
 public:
     QMap<QString, gnomonAbstractVisualization *> visu;
-    // gnomonVisualizationMesh *visuMesh = nullptr;
-    // gnomonVisualizationImagesSerie *visuImagesSerie = nullptr;
 
 public:
     gnomonMeshReaderCommand *mesh_reader_command = nullptr;
@@ -108,9 +106,10 @@ public:
     gnomonViewVolumicOverlay *renderer2D_XZ = nullptr;
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
 
+    gnomonViewVolumicOverlay *export_button = nullptr;
+
 public:
-    gnomonMesh *mesh;
-    gnomonImagesSerie *images_serie;
+    QMap<QString, gnomonAbstractForm *> forms;
 
 public:
     QSlider *slice_slider;
@@ -166,20 +165,19 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->renderer2D_XZ->toggle(false);
     this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ.png",  ":gnomon/gnomonViewVolumic-YZ-off.png", "", this);
     this->renderer2D_YZ->toggle(false);
+
+    this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, "", this);
 }
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 {
 }
 
-void gnomonViewFormPrivate::enableInteractor(void)
+void gnomonViewFormPrivate::exportToManager(void)
 {
-    this->GetInteractor()->Enable();
-}
+    for (const auto& key : this->forms.keys()) {
 
-void gnomonViewFormPrivate::disableInteractor(void)
-{
-    this->GetInteractor()->Disable();
+    }
 }
 
 QSize gnomonViewFormPrivate::sizeHint(void) const
@@ -194,6 +192,8 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XY->move(10,  50);
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
+
+    this->export_button->move(event->size().width() - 40, 10);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -306,7 +306,6 @@ void gnomonViewFormPrivate::configure(QWidget *parent)
         }
     }
 
-
     this->refresh();
 }
 
@@ -336,6 +335,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->renderer2D_XY, SIGNAL(iconClicked()), this, SLOT(switchTo2DXY()));
     connect(d->renderer2D_XZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DXZ()));
     connect(d->renderer2D_YZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DYZ()));
+
+    connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
 
     d->slice_slider = new QSlider(this);
     d->slice_slider->setObjectName("Slice Position");
@@ -548,23 +549,39 @@ void gnomonViewForm::sliceChange(int value)
     d->GetInteractor()->Render();
 }
 
+gnomonAbstractForm *gnomonViewForm::form(const QString& name)
+{
+    if (d->forms.contains(name)) {
+        return d->forms[name];
+    } else {
+        return nullptr;
+    }
+}
+
+
+void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form)
+{
+    if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
+        return this->setImagesSerie(images_serie);
+    }
+    if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+        return this->setMesh(mesh);
+    }
+}
 
 gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
 {
-    return d->images_serie;
+    return dynamic_cast<gnomonImagesSerie *>(d->forms["gnomonImagesSerie"]);
 }
 
 void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
 {
-    d->images_serie = images_serie;
+    d->forms["gnomonImagesSerie"] = images_serie;
     // d->last_channel_toggled = images_serie->channel();
 
     // bool enable_slider = images_serie->times().count() > 1;
 
     // d->time_slider->setVisible(enable_slider);
-
-    // if(d->images_serie->image())
-    //     setImage(d->images_serie->image(), source);
 
     if ((!d->visu.contains("gnomonImagesSerie"))||(!d->visu["gnomonImagesSerie"]))
         d->visu["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
@@ -578,10 +595,10 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
 
     gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)visuImagesSerie->parameters()["value_range"];
     valueRangeParam->setMinimumValue(0);
-    if (d->images_serie->image()->storageType() == QMetaType::UChar) {
+    if (images_serie->image()->storageType() == QMetaType::UChar) {
         valueRangeParam->setMaximumValue(255);
         valueRangeParam->setValue(0,255);
-    } else if (d->images_serie->image()->storageType() == QMetaType::UShort) {
+    } else if (images_serie->image()->storageType() == QMetaType::UShort) {
         valueRangeParam->setMaximumValue(65535);
         valueRangeParam->setValue(0,65535);
     }
@@ -603,12 +620,12 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
 
 gnomonMesh *gnomonViewForm::mesh(void)
 {
-    return d->mesh;
+    return dynamic_cast<gnomonMesh *>(d->forms["gnomonMesh"]);
 }
 
 void gnomonViewForm::setMesh(gnomonMesh *mesh)
 {
-    d->mesh = mesh;
+    d->forms["gnomonMesh"] = mesh;
 
     if ((!d->visu.contains("gnomonMesh"))||(!d->visu["gnomonMesh"]))
         d->visu["gnomonMesh"] = new gnomonVisualizationMesh(this);
@@ -762,8 +779,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             }
             // emit channelsChanged(images_serie->channels());
             // emit timeChanged(images_serie->time());
-            // this->switchTo3D();
-            this->setImagesSerie(images_serie);
+            this->setForm("gnomonImagesSerie",images_serie);
         }
         else if(meshCommand)
         {
@@ -776,8 +792,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            // this->switchTo3D();
-            this->setMesh(mesh);
+            this->setForm("gnomonMesh",mesh);
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }

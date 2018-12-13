@@ -16,12 +16,14 @@
 
 #include <gnomonCoreExport>
 
+#include "gnomonAbstractForm.h"
+
 #include <dtkCore>
 
 class dtkImage;
 class gnomonImagesSeriePrivate;
 
-class GNOMONCORE_EXPORT gnomonImagesSerie
+class GNOMONCORE_EXPORT gnomonImagesSerie : public gnomonAbstractForm
 {
 public:
              gnomonImagesSerie();
