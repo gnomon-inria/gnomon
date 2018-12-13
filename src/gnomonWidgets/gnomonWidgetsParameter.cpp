@@ -14,6 +14,9 @@
 
 #include "gnomonWidgetsParameter.h"
 
+#include <gnomonVisualization/gnomonColorMapEditor.h>
+#include <gnomonVisualization/gnomonDoubleRangeEditor.h>
+
 QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)
 {
     if (gnomonCoreParameterInt *p = dynamic_cast<gnomonCoreParameterInt *>(parameter)) {
@@ -21,6 +24,9 @@ QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget 
     }
     if (gnomonCoreParameterDouble *p = dynamic_cast<gnomonCoreParameterDouble *>(parameter)) {
         return gnomonWidgetsParameterDouble::widget(p, parent);
+    }
+    if (gnomonCoreParameterIntRange *p = dynamic_cast<gnomonCoreParameterIntRange *>(parameter)) {
+        return gnomonWidgetsParameterIntRange::widget(p, parent);
     }
     if (gnomonCoreParameterBool *p = dynamic_cast<gnomonCoreParameterBool *>(parameter)) {
         return gnomonWidgetsParameterBool::widget(p, parent);
@@ -87,6 +93,31 @@ QWidget *gnomonWidgetsParameterDouble::widget(gnomonCoreParameterDouble *paramet
         return nullptr;
     }
 }
+
+QString gnomonWidgetsParameterIntRange::style = QStringLiteral("range_editor");
+
+QWidget *gnomonWidgetsParameterIntRange::widget(gnomonCoreParameterIntRange *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("range_editor")) {
+        gnomonDoubleRangeEditor *widget = new gnomonDoubleRangeEditor(parent);
+        widget->setToolTip(parameter->doc());
+        widget->setRange(parameter->min(),parameter->max());
+        widget->setValueMin(parameter->value()[0]);
+        widget->setValueMax(parameter->value()[1]);
+
+        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMinChanged,
+                         [=](int value) { parameter->setValue(value, widget->valueMax()); });
+
+        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMaxChanged,
+                         [=](int value) { parameter->setValue(widget->valueMin(), value); });
+
+        return widget;
+
+    } else {
+        return nullptr;
+    }
+}
+
 
 QString gnomonWidgetsParameterBool::style = QStringLiteral("checkbox");
 

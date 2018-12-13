@@ -569,12 +569,24 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
     if ((!d->visu.contains("gnomonImagesSerie"))||(!d->visu["gnomonImagesSerie"]))
         d->visu["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
     gnomonVisualizationImagesSerie *visuImagesSerie = (gnomonVisualizationImagesSerie *)d->visu["gnomonImagesSerie"];
-    visuImagesSerie->setImagesSerie(images_serie);
+    
     visuImagesSerie->setParameter("alpha",0.5);
 
     gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)visuImagesSerie->parameters()["channel"];
     channelParam->setValues(images_serie->channels());
     channelParam->setValue(images_serie->channel());
+
+    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)visuImagesSerie->parameters()["value_range"];
+    valueRangeParam->setMinimumValue(0);
+    if (d->images_serie->image()->storageType() == QMetaType::UChar) {
+        valueRangeParam->setMaximumValue(255);
+        valueRangeParam->setValue(0,255);
+    } else if (d->images_serie->image()->storageType() == QMetaType::UShort) {
+        valueRangeParam->setMaximumValue(65535);
+        valueRangeParam->setValue(0,65535);
+    }
+    visuImagesSerie->setImagesSerie(images_serie);
+
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);
@@ -588,6 +600,7 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
     emit formAdded();
 }
 
+
 gnomonMesh *gnomonViewForm::mesh(void)
 {
     return d->mesh;
@@ -600,8 +613,10 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
     if ((!d->visu.contains("gnomonMesh"))||(!d->visu["gnomonMesh"]))
         d->visu["gnomonMesh"] = new gnomonVisualizationMesh(this);
     gnomonVisualizationMesh *visuMesh = (gnomonVisualizationMesh *)d->visu["gnomonMesh"];
-    visuMesh->setMesh(mesh);
+
     visuMesh->setParameter("alpha",0.5);
+
+    visuMesh->setMesh(mesh);
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);

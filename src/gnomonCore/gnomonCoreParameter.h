@@ -101,6 +101,75 @@ Q_DECLARE_METATYPE(gnomonCoreParameterLong *);
 Q_DECLARE_METATYPE(gnomonCoreParameterULong *);
 Q_DECLARE_METATYPE(gnomonCoreParameterDouble *);
 
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterNumericRange
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
+class GNOMONCORE_EXPORT gnomonCoreParameterNumericRange : public gnomonCoreParameter
+{
+public:
+     gnomonCoreParameterNumericRange(QList<T> val, const QString& doc = QString()) :
+         gnomonCoreParameter(doc),
+         m_value(val) {}
+
+     gnomonCoreParameterNumericRange(QList<T> val, T min, T max, const QString& doc = QString()) :
+         gnomonCoreParameter(doc),
+         m_value(val),
+         m_min(min),
+         m_max(max) {}
+
+     gnomonCoreParameterNumericRange(T valMin, T valMax, T min, T max, const QString& doc = QString()) :
+         gnomonCoreParameter(doc),
+         m_value(QList<T>({valMin,valMax})),
+         m_min(min),
+         m_max(max) {}
+
+    gnomonCoreParameterNumericRange(T val[2], T min, T max, int accuracy, const QString& doc = QString()) :
+         gnomonCoreParameter(doc),
+         m_value(val),
+         m_min(min),
+         m_max(max),
+         m_accuracy(accuracy) {}
+
+    ~gnomonCoreParameterNumericRange(void) = default;
+
+    QList<T> value(void) const { return m_value; }
+    T min(void) const { return m_min; }
+    T max(void) const { return m_max; }
+    int accuracy(void) { return m_accuracy; }
+
+    void setValue(QList<T> val) { m_value = val; }
+    void setValue(T valMin, T valMax) { m_value = QList<T>({valMin, valMax}); }
+    void setValue(const QVariant& v) { m_value = v.value<QList<T> >(); }
+    void setMinimumValue(T min) { m_min = min; }
+    void setMaximumValue(T max) { m_max = max; }
+    void setAccuracy(int accuracy) { m_accuracy = accuracy; }
+
+private:
+    QList<T> m_value = {T(0),T(0)};
+    int m_accuracy = 2;
+    T m_min = std::numeric_limits<T>::min();
+    T m_max = std::numeric_limits<T>::max();
+};
+
+using gnomonCoreParameterShortRange  = gnomonCoreParameterNumericRange<short>;
+using gnomonCoreParameterUShortRange = gnomonCoreParameterNumericRange<unsigned short>;
+using gnomonCoreParameterIntRange    = gnomonCoreParameterNumericRange<int>;
+using gnomonCoreParameterUIntRange   = gnomonCoreParameterNumericRange<unsigned int>;
+using gnomonCoreParameterLongRange   = gnomonCoreParameterNumericRange<long>;
+using gnomonCoreParameterULongRange  = gnomonCoreParameterNumericRange<unsigned long>;
+using gnomonCoreParameterDoubleRange = gnomonCoreParameterNumericRange<double>;
+
+Q_DECLARE_METATYPE(gnomonCoreParameterShortRange *);
+Q_DECLARE_METATYPE(gnomonCoreParameterUShortRange *);
+Q_DECLARE_METATYPE(gnomonCoreParameterIntRange *);
+Q_DECLARE_METATYPE(gnomonCoreParameterUIntRange *);
+Q_DECLARE_METATYPE(gnomonCoreParameterLongRange *);
+Q_DECLARE_METATYPE(gnomonCoreParameterULongRange *);
+Q_DECLARE_METATYPE(gnomonCoreParameterDoubleRange *);
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterBool
 // ///////////////////////////////////////////////////////////////////

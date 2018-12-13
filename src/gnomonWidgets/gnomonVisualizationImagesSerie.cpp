@@ -34,6 +34,7 @@
 #include <vtkImageMapToWindowLevelColors.h>
 #include <vtkImagePlaneWidget.h>
 #include <vtkImageViewer2.h>
+#include <vtkLookupTable.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
@@ -63,6 +64,9 @@ public:
     vtkSmartPointer<vtkImageData> image = nullptr;
     vtkSmartPointer<vtkVolume> volume = nullptr;
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
+
+    vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
+    vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -73,8 +77,9 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
 {
     dd->imagesSerie = Q_NULLPTR;
 
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
     d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
+    d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
+    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
 }
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
@@ -93,15 +98,12 @@ void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSer
 void gnomonVisualizationImagesSerie::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     
-    double valueRange[2];
-    dd->image->GetPointData()->GetScalars()->GetRange(valueRange);
+    dd->opacity->AddPoint(value_range[0],0.00);
+    dd->opacity->AddPoint(value_range[1],alpha);
 
-    vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    opacity->AddPoint(valueRange[0],0.00);
-    opacity->AddPoint(valueRange[1],alpha);
-
-    dd->volume->GetProperty()->SetScalarOpacity(opacity);
+    dd->volume->GetProperty()->SetScalarOpacity(dd->opacity);
 }
 
 void gnomonVisualizationImagesSerie::update(void)
@@ -111,6 +113,7 @@ void gnomonVisualizationImagesSerie::update(void)
 
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
     QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+    QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
 
     if(dd->imagesSerie->channels().contains(channel))
         dd->imagesSerie->setChannel(channel);
@@ -122,20 +125,33 @@ void gnomonVisualizationImagesSerie::update(void)
 
     delete converter;
 
-    double valueRange[2];
-    dd->image->GetPointData()->GetScalars()->GetRange(valueRange);
+    if(!dd->color_function)
+        dd->color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
+    dd->color_function->RemoveAllPoints();
+    dd->color_function->AddRGBPoint(value_range[0],0,0,0);
+    dd->color_function->AddRGBPoint(value_range[1],1,1,1);
+    dd->color_function->ClampingOn();
+    dd->color_function->Modified();
 
-    vtkSmartPointer<vtkColorTransferFunction> color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
-    color_function->AddRGBPoint(valueRange[0],0,0,0);
-    color_function->AddRGBPoint(valueRange[1],1,1,1);
-    color_function->ClampingOn();
-    color_function->Modified();
+    if (!dd->opacity)
+        dd->opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    dd->opacity->RemoveAllPoints();
+    dd->opacity->AddPoint(value_range[0],0.00);
+    dd->opacity->AddPoint(value_range[1],alpha);
 
-    vtkSmartPointer<vtkImageMapToColors> image_color = vtkSmartPointer<vtkImageMapToColors>::New();
-    image_color->SetLookupTable(color_function);
-    image_color->SetOutputFormatToRGBA();
-    image_color->SetInputData(dd->image);
-    image_color->Update();
+    double image_range[2];
+    dd->image->GetPointData()->GetScalars()->GetRange(image_range);
+
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    int n_values = 1000;
+    lut->SetNumberOfTableValues(n_values);
+    for(size_t i = 0; i < n_values; ++i) {
+        double val = (i*image_range[1] + (n_values-i)*image_range[0])/(n_values-1.);
+        double *rgb = dd->color_function->GetColor(val);
+        double a = dd->opacity->GetValue(val);
+        lut->SetTableValue(i,rgb[0],rgb[1],rgb[2],a);
+    }
+    lut->SetTableRange(image_range);
 
     int imageDims[3]; dd->image->GetDimensions(imageDims);
 
@@ -150,12 +166,12 @@ void gnomonVisualizationImagesSerie::update(void)
         dd->planeWidget[i]->SetPlaneOrientation(i);
         dd->planeWidget[i]->RestrictPlaneToVolumeOn();
         dd->planeWidget[i]->GetPlaneProperty()->SetColor(color);
+        dd->planeWidget[i]->SetLookupTable(lut);
         // dd->planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
         dd->planeWidget[i]->SetMarginSizeX(0);
         dd->planeWidget[i]->SetMarginSizeY(0);
         dd->planeWidget[i]->SetSliceIndex(imageDims[i]/2);
         dd->planeWidget[i]->DisplayTextOn();
-        // d->view->renderer2D()->AddActor(d->planeWidget[i])
         dd->planeWidget[i]->InteractionOn();
     }
 
@@ -172,13 +188,9 @@ void gnomonVisualizationImagesSerie::update(void)
         d->view->renderer3D()->AddActor(dd->volume);
     }
 
-    vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    opacity->AddPoint(valueRange[0],0.00);
-    opacity->AddPoint(valueRange[1],alpha);
-
     vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
-    property->SetScalarOpacity(opacity);
-    property->SetColor(color_function);
+    property->SetScalarOpacity(dd->opacity);
+    property->SetColor(dd->color_function);
     property->ShadeOff();
     property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
 

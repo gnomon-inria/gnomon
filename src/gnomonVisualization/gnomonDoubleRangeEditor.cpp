@@ -77,7 +77,7 @@ gnomonDoubleRangeEditor::gnomonDoubleRangeEditor(QWidget *parent) : QWidget(pare
 
     layout->addWidget(d->spinbox_widget);
 
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(d->spinbox_valueMin, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &gnomonDoubleRangeEditor::valueMinChanged);
     connect(d->spinbox_valueMax, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &gnomonDoubleRangeEditor::valueMaxChanged);
