@@ -37,6 +37,9 @@ public:
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
+public:
+	virtual QImage imageRendering(void) = 0;
+
 public slots:
     virtual void update(void) = 0;
     virtual void render(void) = 0;

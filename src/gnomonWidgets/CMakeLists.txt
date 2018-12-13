@@ -28,6 +28,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDropSite.h
   gnomonFinder
   gnomonFinder.h
+  gnomonFormManager
+  gnomonFormManager.h
+  gnomonFormManager_p.h
+  gnomonFormManagerItem.h
   gnomonGridLayout
   gnomonGridLayout.h
   gnomonImageManager
@@ -79,6 +83,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCodeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp
+  gnomonFormManager.cpp
+  gnomonFormManagerItem.cpp
   gnomonGridLayout.cpp
   gnomonImageManager.cpp
   gnomonImageManagerData.cpp

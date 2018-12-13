@@ -14,8 +14,9 @@
 
 #include "gnomonViewForm.h"
 
-#include "gnomonToolBar.h"
+// #include "gnomonToolBar.h"
 #include "gnomonViewVolumicOverlay.h"
+#include "gnomonFormManager.h"
 
 #include <gnomonCore/gnomonAbstractCommand>
 #include <gnomonCore/gnomonImagesSerieReaderCommand>
@@ -109,6 +110,9 @@ public:
     gnomonViewVolumicOverlay *export_button = nullptr;
 
 public:
+    QColor export_color = QColor("#cccccc");
+
+public:
     QMap<QString, gnomonAbstractForm *> forms;
 
 public:
@@ -176,7 +180,8 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
-
+        QImage visuImage = this->visu[key]->imageRendering();
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, visuImage);
     }
 }
 
@@ -547,6 +552,12 @@ void gnomonViewForm::sliceChange(int value)
         emit sliceChanged(value);
 
     d->GetInteractor()->Render();
+}
+
+
+void gnomonViewForm::setExportColor(const QColor& color)
+{
+    d->export_color = color;
 }
 
 gnomonAbstractForm *gnomonViewForm::form(const QString& name)

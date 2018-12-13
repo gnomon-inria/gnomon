@@ -39,6 +39,9 @@ public:
 public slots:
     void updateOpacity(void);
 
+public:
+    QImage imageRendering(void);
+
 public slots:
     void update(void);
     void render(void);

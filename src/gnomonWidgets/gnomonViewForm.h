@@ -55,6 +55,9 @@ public slots:
 public slots:
     void sliceChange(int);
 
+public slots:
+    void setExportColor(const QColor& color);
+
 public:
     void setForm(const QString&, gnomonAbstractForm *);
     void setImagesSerie(gnomonImagesSerie*);

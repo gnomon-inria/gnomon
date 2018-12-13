@@ -82,6 +82,12 @@ void gnomonVisualizationMesh::updateOpacity(void)
     }
 }
 
+QImage gnomonVisualizationMesh::imageRendering(void)
+{
+    QImage image(100, 100, QImage::Format_RGB32);
+    return image;
+}
+
 void gnomonVisualizationMesh::update(void)
 {
     if(!dd->mesh)

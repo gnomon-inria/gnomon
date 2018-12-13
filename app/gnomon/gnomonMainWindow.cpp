@@ -12,6 +12,7 @@
 // Code:
 
 #include <gnomonImageManager.h>
+#include <gnomonFormManager.h>
 #include <gnomonMainWindow.h>
 #include <gnomonToolBar.h>
 #include <gnomonWorkspaceBrowser.h>
@@ -40,7 +41,8 @@ public:
     QStackedWidget *stack;
 
 public:
-    gnomonImageManager *manager;
+    // gnomonImageManager *manager;
+    gnomonFormManager *manager;
 
 public:
     gnomonMainWindow *q;
@@ -69,7 +71,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     d = new gnomonMainWindowPrivate;
     d->q = this;
 
-    d->manager = gnomonImageManager::instance();
+    // d->manager = gnomonImageManager::instance();
+    d->manager = gnomonFormManager::instance();
 
     d->stack = new QStackedWidget(this);
     d->stack->addWidget(new gnomonWorkspaceBrowser(this));
@@ -168,7 +171,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
 
     static int l_h = 0;
 
-    connect(d->manager, &gnomonImageManager::expand, [=] (void) {
+    // connect(d->manager, &gnomonImageManager::expand, [=] (void) {
+    connect(d->manager, &gnomonFormManager::expand, [=] (void) {
 
         int m_h = d->manager->height();
         int s_h = d->stack->height();
@@ -189,7 +193,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     });
 
-    connect(d->manager, &gnomonImageManager::shrink, [=] (void) {
+    // connect(d->manager, &gnomonImageManager::shrink, [=] (void) {
+    connect(d->manager, &gnomonFormManager::shrink, [=] (void) {
 
         int m_h = d->manager->height();
 

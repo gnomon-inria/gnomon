@@ -38,14 +38,15 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 #include <vtkVolume.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkVolumeProperty.h>
+#include <vtkWindowToImageFilter.h>
 
-#include <vtkRenderer.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationImagesSeriePrivate
@@ -104,6 +105,48 @@ void gnomonVisualizationImagesSerie::updateOpacity(void)
     dd->opacity->AddPoint(value_range[1],alpha);
 
     dd->volume->GetProperty()->SetScalarOpacity(dd->opacity);
+}
+
+QImage gnomonVisualizationImagesSerie::imageRendering(void)
+{
+    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+    renderWindow->SetOffScreenRendering(1);
+    renderWindow->SetSize(300, 300);
+    renderWindow->AddRenderer(renderer);
+
+    vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+    renderWindowInteractor->SetRenderWindow(renderWindow);
+
+    renderer->AddActor(dd->volume);
+    renderer->SetBackground(0,0,0); 
+    renderWindow->Render();
+
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(renderWindow);
+    windowToImageFilter->SetInputBufferTypeToRGBA(); 
+    windowToImageFilter->ReadFrontBufferOff(); 
+    windowToImageFilter->Update();
+
+    vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
+
+    int width = renderedImage->GetDimensions()[0];
+    int height = renderedImage->GetDimensions()[1];
+    QImage image( width, height, QImage::Format_RGB32);
+
+    QRgb *rgbPtr = reinterpret_cast<QRgb *>(image.bits());
+    for(int col = 0; col < width; ++col) {
+        for(int row = 0; row < height; ++row) {
+            double r, g, b;
+            r = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[0];
+            g = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[1];
+            b = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[2];
+            *(rgbPtr) = QColor(r,g,b).rgb();
+            ++rgbPtr;
+        }
+    }
+
+    return image;
 }
 
 void gnomonVisualizationImagesSerie::update(void)

@@ -19,6 +19,7 @@
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 #include "gnomonViewForm.h"
 // #include "gnomonViewVolumic.h"
 
@@ -51,6 +52,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
 
     // d->browse_view = new gnomonViewVolumic(this);
     d->browse_view = new gnomonViewForm(this);
+    d->browse_view->setExportColor(gnomonToolBar::browser_color);
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
