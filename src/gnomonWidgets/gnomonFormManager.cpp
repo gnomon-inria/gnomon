@@ -242,7 +242,8 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
 
         connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
             d->focus_item->resize(value.toSize());
-            d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
+            // d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
+            d->focus_item->setPixmap(item->image.scaled(value.toSize().width(), value.toSize().height()));
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {

@@ -49,6 +49,8 @@ public:
     gnomonItemButton *button_save;
 
 public:
+    QPixmap image;
+    
     QPixmap thumbnail;
     QPixmap transparent_thumbnail;
 };

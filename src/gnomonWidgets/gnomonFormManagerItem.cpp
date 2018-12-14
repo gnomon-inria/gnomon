@@ -30,23 +30,26 @@ gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap&
     this->button_save->move(5, 5);
     this->button_save->setVisible(false);
 
-
     int size  = 100;
     int space =   3;
     QPixmap pix;
 
-    pix = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
-    this->setPixmap(pix);
+    // pix = thumbnail;
+    // this->setPixmap(pix);
+    this->image = thumbnail;
 
-    this->thumbnail = *this->pixmap();
-    this->transparent_thumbnail = *this->pixmap();
+    this->thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
+    this->transparent_thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
     this->transparent_thumbnail.fill();
     
     QPainter painter;
     painter.begin(&transparent_thumbnail);
     painter.setOpacity(0.5);
-    painter.drawPixmap(0, 0, *this->pixmap());
+    // painter.drawPixmap(0, 0, *this->pixmap());
+    painter.drawPixmap(0, 0, this->thumbnail);
     painter.end();
+
+    this->setPixmap(this->thumbnail);
 
     this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
 
