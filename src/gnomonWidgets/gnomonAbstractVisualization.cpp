@@ -49,11 +49,6 @@ void gnomonAbstractVisualizationPrivate::updateOffscreenRenderer(double bounds[6
     this->offscreenRenderWindow->AddRenderer(this->offscreenRenderer);
     this->offscreenRenderWindow->SetOffScreenRendering(1);
     this->offscreenRenderWindow->SetSize(300, 300);
-
-    if(!this->offscreenRenderWindowInteractor) {
-        this->offscreenRenderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    }
-    this->offscreenRenderWindowInteractor->SetRenderWindow(this->offscreenRenderWindow);
     
     this->offscreenRenderer->SetBackground(0,0,0);
     
@@ -74,7 +69,6 @@ void gnomonAbstractVisualizationPrivate::updateOffscreenRenderer(double bounds[6
 
 QImage gnomonAbstractVisualizationPrivate::offscreenImageRendering(void)
 {
-    // this->offscreenRenderWindowInteractor->Render();
     this->offscreenRenderWindow->Render();
 
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();

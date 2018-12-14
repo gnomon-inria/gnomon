@@ -43,7 +43,6 @@ public:
 public:
     vtkSmartPointer<vtkRenderer> offscreenRenderer;
     vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
-    vtkSmartPointer<vtkRenderWindowInteractor> offscreenRenderWindowInteractor;
 
 public slots:
     void updateOffscreenRenderer(double bounds[6]);
