@@ -48,7 +48,7 @@ void gnomonAbstractVisualizationPrivate::updateOffscreenRenderer(double bounds[6
     }
     this->offscreenRenderWindow->AddRenderer(this->offscreenRenderer);
     this->offscreenRenderWindow->SetOffScreenRendering(1);
-    this->offscreenRenderWindow->SetSize(300, 300);
+    this->offscreenRenderWindow->SetSize(800, 800);
     
     this->offscreenRenderer->SetBackground(0,0,0);
     

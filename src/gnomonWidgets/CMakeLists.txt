@@ -31,6 +31,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormManager
   gnomonFormManager.h
   gnomonFormManager_p.h
+  gnomonFormManagerFocus.h
   gnomonFormManagerItem.h
   gnomonGridLayout
   gnomonGridLayout.h
@@ -84,6 +85,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDropSite.cpp
   gnomonFinder.cpp
   gnomonFormManager.cpp
+  gnomonFormManagerFocus.cpp
   gnomonFormManagerItem.cpp
   gnomonGridLayout.cpp
   gnomonImageManager.cpp

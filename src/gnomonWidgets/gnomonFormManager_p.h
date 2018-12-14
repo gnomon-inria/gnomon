@@ -22,6 +22,7 @@ class gnomonAbstractForm;
 
 class gnomonFormManager;
 class gnomonFormManagerItem;
+class gnomonFormManagerFocus;
 
 class gnomonFormManagerPrivate : public QScrollArea
 {
@@ -46,6 +47,12 @@ public:
 
 public:
     gnomonFormManager *q;
+
+public:
+    gnomonFormManagerFocus *focus_item = nullptr;
+
+public:
+    QScrollArea *focus_area = nullptr;
 
 public:
     static int item_counter;

@@ -14,6 +14,7 @@
 
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
+#include "gnomonFormManagerFocus.h"
 #include "gnomonFormManagerItem.h"
 #include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
@@ -160,7 +161,106 @@ QSize gnomonFormManager::sizeHint(void) const
 
 void gnomonFormManager::present(gnomonFormManagerItem *item)
 {
-    qDebug()<<"Focus";
+    if(!d->focus_item)
+        d->focus_item = new gnomonFormManagerFocus(this);
+
+    if (d->focus_area)
+        delete d->focus_area;
+
+    QSequentialAnimationGroup *animation = new QSequentialAnimationGroup(this);
+
+    if (d->focus_item->presented) {
+
+        QVariantAnimation *p_animation = new QVariantAnimation(this);
+        p_animation->setDuration(250);
+        p_animation->setStartValue(d->focus_item->destnt);
+        p_animation->setEndValue(d->focus_item->source);
+        p_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QVariantAnimation *s_animation = new QVariantAnimation(this);
+        s_animation->setDuration(250);
+        s_animation->setStartValue(d->focus_item->d_size);
+        s_animation->setEndValue(d->focus_item->s_size);
+        s_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
+        g_animation->addAnimation(p_animation);
+        g_animation->addAnimation(s_animation);
+
+        connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->move(value.toPoint());
+        });
+
+        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->resize(value.toSize());
+            d->focus_item->setPixmap(d->focus_item->pixmap()->scaled(value.toSize().width(), value.toSize().height()));
+        });
+
+        connect(g_animation, &QAbstractAnimation::finished, [=] () {
+            d->focus_item->presented = false;
+        });
+
+        animation->addAnimation(g_animation);
+
+    }
+
+    QRect focus_item_dest_rect;
+
+    {
+
+        d->focus_item->move(item->pos());
+        d->focus_item->resize(item->size());
+        d->focus_item->setStyleSheet("border: 2px solid white;");
+        d->focus_item->show();
+
+        d->focus_item->source = d->focus_item->pos();
+        d->focus_item->destnt = QPoint(this->size().width() / 2 - 3 * d->focus_item->width() / 2, this->size().height() / 2 - 3 * d->focus_item->height() / 2);
+        d->focus_item->s_size = d->focus_item->size();
+        d->focus_item->d_size = d->focus_item->size() * 3;
+
+        focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->size() * 3);
+
+        QVariantAnimation *p_animation = new QVariantAnimation(this);
+        p_animation->setDuration(500);
+        p_animation->setStartValue(d->focus_item->source);
+        p_animation->setEndValue(d->focus_item->destnt);
+        p_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QVariantAnimation *s_animation = new QVariantAnimation(this);
+        s_animation->setDuration(500);
+        s_animation->setStartValue(d->focus_item->s_size);
+        s_animation->setEndValue(d->focus_item->d_size);
+        s_animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
+        g_animation->addAnimation(p_animation);
+        g_animation->addAnimation(s_animation);
+
+        connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->move(value.toPoint());
+        });
+
+        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->focus_item->resize(value.toSize());
+            d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
+        });
+
+        connect(g_animation, &QAbstractAnimation::finished, [=] () {
+            d->focus_item->presented = true;
+        });
+
+        animation->addAnimation(g_animation);
+    }
+
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+    connect(animation, &QAbstractAnimation::finished, [=] {
+        d->focus_area = new QScrollArea(0);
+        d->focus_area->setParent(this);
+        d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
+        d->focus_area->resize(d->focus_item->size());
+        d->focus_area->show();
+    });
 }
 
 void gnomonFormManager::enterEvent(QEvent *)
