@@ -59,7 +59,9 @@ public:
 
 public:
     int orientation;
+
     double alpha;
+    QMap<double,QColor> colormap;
 
 public:
     bool modified;
@@ -68,6 +70,7 @@ public slots:
     void updateVisibility(void);
     void updateSlice(int orientation);
     void updateOpacity(void);
+    void updateColorFunction(void);
 };
 
 void gnomonActor2DPolyDataPrivate::updateVisibility(void)
@@ -130,26 +133,12 @@ void gnomonActor2DPolyDataPrivate::updateSlice(int orientation)
     bottomClipper->SetValue(0);
     bottomClipper->Update();
 
-    double bounds[2] = {0., 1.};
-    if (this->polydata->GetCellData()->GetNumberOfArrays()>0)
-    {
-        this->polydata->GetCellData()->GetArray(0)->GetRange(bounds);
-    }
-    else if (this->polydata->GetPointData()->GetNumberOfArrays()>0)
-    {
-        this->polydata->GetPointData()->GetArray(0)->GetRange(bounds);
-    }
 
     if (!this->colorFunction)
     {
         this->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
     }
-    this->colorFunction->RemoveAllPoints();
-    this->colorFunction->AddRGBPoint(bounds[0], 0.25,  0,  0.5);
-    this->colorFunction->AddRGBPoint(0.5*(bounds[0] + bounds[1]), 0,  0.75,  0.56);
-    this->colorFunction->AddRGBPoint(bounds[1], 1,  1,  0);
-    this->colorFunction->ClampingOn();
-    this->colorFunction->Modified();
+    this->updateColorFunction();
 
 
     if (!this->sliceMappers.contains(orientation)) {
@@ -175,6 +164,32 @@ void gnomonActor2DPolyDataPrivate::updateOpacity(void)
     for (const auto& orientation : this->sliceActors.keys()) {
         this->sliceActors[orientation]->GetProperty()->SetOpacity(this->alpha);
     }
+}
+
+void gnomonActor2DPolyDataPrivate::updateColorFunction(void)
+{
+    if (!this->colorFunction)
+        return;
+
+    double value_range[2] = {0., 1.};
+
+    if (this->polydata->GetCellData()->GetNumberOfArrays()>0)
+    {
+        this->polydata->GetCellData()->GetArray(0)->GetRange(value_range);
+    }
+    else if (this->polydata->GetPointData()->GetNumberOfArrays()>0)
+    {
+        this->polydata->GetPointData()->GetArray(0)->GetRange(value_range);
+    }
+
+    this->colorFunction->RemoveAllPoints();
+    for (const auto& val : this->colormap.keys()) {
+        double node = val*value_range[1] + (1-val)*value_range[0];
+        this->colorFunction->AddRGBPoint(node, this->colormap[val].red()/255., this->colormap[val].green()/255., this->colormap[val].blue()/255.);
+    }
+
+    this->colorFunction->ClampingOn();
+    this->colorFunction->Modified();
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -224,6 +239,8 @@ void gnomonActor2DPolyData::update(void)
             this->AddPart(d->sliceActors[i]);
     }
 
+    d->updateColorFunction();
+    d->updateOpacity();
     d->updateVisibility();
 
     d->interactor->Render();
@@ -263,6 +280,13 @@ void gnomonActor2DPolyData::setOpacity(double value)
     d->interactor->Render();
 }
 
+void gnomonActor2DPolyData::setColorMap(const QMap<double,QColor>& value)
+{
+    d->colormap = value;
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
 gnomonActor2DPolyData::gnomonActor2DPolyData(void) : d(new gnomonActor2DPolyDataPrivate)
 {
     d->interactor = Q_NULLPTR;
@@ -270,6 +294,9 @@ gnomonActor2DPolyData::gnomonActor2DPolyData(void) : d(new gnomonActor2DPolyData
     d->colorFunction = Q_NULLPTR;
 
     d->alpha = 1;
+    d->colormap = QMap<double, QColor>({
+        {0., QColor(0, 0, 0, 255)},
+        {1., QColor(255, 255, 255, 255)} });
 
     d->orientation = 2;
     d->sliceThickness = 1;

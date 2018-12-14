@@ -55,6 +55,7 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonA
     dd->mesh = Q_NULLPTR;
 
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the mesh rendering");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the mesh");
 }
 
 gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
@@ -94,6 +95,8 @@ QImage gnomonVisualizationMesh::imageRendering(void)
 
 void gnomonVisualizationMesh::update(void)
 {
+    QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+
     if(!dd->mesh)
         return;
 
@@ -117,6 +120,7 @@ void gnomonVisualizationMesh::update(void)
         d->view->renderer3D()->AddActor(dd->actor);
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
+    dd->actor->setColorMap(colormap);
 
     if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
@@ -134,6 +138,7 @@ void gnomonVisualizationMesh::update(void)
     dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.5);
     dd->actor2D->setPolyData(dd->polydata);
+    dd->actor2D->setColorMap(colormap);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);

@@ -598,7 +598,7 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
         d->visu["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
     gnomonVisualizationImagesSerie *visuImagesSerie = (gnomonVisualizationImagesSerie *)d->visu["gnomonImagesSerie"];
     
-    visuImagesSerie->setParameter("alpha",0.5);
+    visuImagesSerie->setParameter("alpha",1.0);
 
     gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)visuImagesSerie->parameters()["channel"];
     channelParam->setValues(images_serie->channels());
@@ -642,7 +642,7 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
         d->visu["gnomonMesh"] = new gnomonVisualizationMesh(this);
     gnomonVisualizationMesh *visuMesh = (gnomonVisualizationMesh *)d->visu["gnomonMesh"];
 
-    visuMesh->setParameter("alpha",0.5);
+    visuMesh->setParameter("alpha",1.0);
 
     visuMesh->setMesh(mesh);
 

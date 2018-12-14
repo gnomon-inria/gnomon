@@ -46,21 +46,47 @@ public:
     vtkSmartPointer<vtkActor> actor;
 
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
-    vtkSmartPointer<vtkPiecewiseFunction> opacityTransferFunction;
 
     vtkRenderWindowInteractor *interactor;
 
     double alpha;
+    QMap<double,QColor> colormap;
 
     bool modified;
 
 public slots:
     void updateOpacity(void);
+    void updateColorFunction(void);
 };
 
 void gnomonActorPolyDataPrivate::updateOpacity(void)
 {
     this->actor->GetProperty()->SetOpacity(this->alpha);
+}
+
+void gnomonActorPolyDataPrivate::updateColorFunction(void)
+{
+    if (!this->colorFunction)
+        return;
+    
+    double value_range[2] = {0., 1.};
+    if (this->polydata->GetCellData()->GetNumberOfArrays()>0)
+    {
+        this->polydata->GetCellData()->GetArray(0)->GetRange(value_range);
+    }
+    else if (this->polydata->GetPointData()->GetNumberOfArrays()>0)
+    {
+        this->polydata->GetPointData()->GetArray(0)->GetRange(value_range);
+    }
+
+    this->colorFunction->RemoveAllPoints();
+    for (const auto& val : this->colormap.keys()) {
+        double node = val*value_range[1] + (1-val)*value_range[0];
+        this->colorFunction->AddRGBPoint(node, this->colormap[val].red()/255., this->colormap[val].green()/255., this->colormap[val].blue()/255.);
+    }
+
+    this->colorFunction->ClampingOn();
+    this->colorFunction->Modified();
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -92,32 +118,16 @@ void gnomonActorPolyData::update(void)
     if(!d->polydata)
         return;
 
-    double bounds[2] = {0., 1.};
-    if (d->polydata->GetCellData()->GetNumberOfArrays()>0)
-    {
-        d->polydata->GetCellData()->GetArray(0)->GetRange(bounds);
-    }
-    else if (d->polydata->GetPointData()->GetNumberOfArrays()>0)
-    {
-        d->polydata->GetPointData()->GetArray(0)->GetRange(bounds);
-    }
-
     if (!d->mapper) {
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     }
     d->mapper->SetInputData(d->polydata);
-    qDebug()<<"PolyData"<<d->polydata->GetNumberOfPoints();
     
     if (!d->colorFunction)
     {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
     }
-    d->colorFunction->RemoveAllPoints();
-    d->colorFunction->AddRGBPoint(bounds[0], 0.25,  0,  0.5);
-    d->colorFunction->AddRGBPoint(0.5*(bounds[0] + bounds[1]), 0,  0.75,  0.56);
-    d->colorFunction->AddRGBPoint(bounds[1], 1,  1,  0);
-    d->colorFunction->ClampingOn();
-    d->colorFunction->Modified();
+    d->updateColorFunction();
 
     d->mapper->SetLookupTable(d->colorFunction);
     d->mapper->Update();
@@ -128,6 +138,8 @@ void gnomonActorPolyData::update(void)
     }
     d->actor->SetMapper(d->mapper);
     d->actor->Modified();
+
+    d->updateOpacity();
     
     d->modified = false;
 }
@@ -139,6 +151,13 @@ void gnomonActorPolyData::setOpacity(double value)
     d->interactor->Render();
 }
 
+void gnomonActorPolyData::setColorMap(const QMap<double,QColor>& value)
+{
+    d->colormap = value;
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
 gnomonActorPolyData::gnomonActorPolyData(void) : gnomonActor(), d(new gnomonActorPolyDataPrivate)
 {
     d->polydata = Q_NULLPTR;
@@ -147,6 +166,9 @@ gnomonActorPolyData::gnomonActorPolyData(void) : gnomonActor(), d(new gnomonActo
     d->interactor = Q_NULLPTR;
 
     d->alpha = 1;
+    d->colormap = QMap<double, QColor>({
+        {0., QColor(0, 0, 0, 255)},
+        {1., QColor(255, 255, 255, 255)} });
 }
 
 gnomonActorPolyData::~gnomonActorPolyData(void)

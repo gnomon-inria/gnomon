@@ -38,6 +38,7 @@ public slots:
     void modified(void);
 
     void setOpacity(double);
+    void setColorMap(const QMap<double,QColor>&);
 
 protected:
      gnomonActorPolyData(void);
