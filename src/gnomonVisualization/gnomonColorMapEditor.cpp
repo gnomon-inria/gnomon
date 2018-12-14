@@ -199,7 +199,7 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
     layout->setAlignment(Qt::AlignTop);
     layout->addWidget(d->colormap_box);
     layout->addWidget(d->colormap_table);
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(d->colormap_box, SIGNAL(currentTextChanged(const QString&)), this, SLOT(importColorMap(const QString&)));
 }

@@ -96,5 +96,16 @@ public:
     static QWidget *widget(gnomonCoreParameterStringList *parameter, QWidget *parent);
 };
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonWidgetsParameterColorMap
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterColorMap
+{
+public:
+    static QString style;
+    static QWidget *widget(gnomonCoreParameterColorMap *parameter, QWidget *parent);
+};
+
 //
 // gnomonWidgetsParameter.h ends here

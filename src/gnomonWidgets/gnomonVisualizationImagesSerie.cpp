@@ -73,6 +73,7 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
     d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
 }
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
@@ -116,6 +117,8 @@ void gnomonVisualizationImagesSerie::update(void)
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
     QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
+    QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+
 
     if(dd->imagesSerie->channels().contains(channel))
         dd->imagesSerie->setChannel(channel);
@@ -130,8 +133,13 @@ void gnomonVisualizationImagesSerie::update(void)
     if(!dd->color_function)
         dd->color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
     dd->color_function->RemoveAllPoints();
-    dd->color_function->AddRGBPoint(value_range[0],0,0,0);
-    dd->color_function->AddRGBPoint(value_range[1],1,1,1);
+    // dd->color_function->AddRGBPoint(value_range[0],0,0,0);
+    // dd->color_function->AddRGBPoint(value_range[1],1,1,1);
+    for (const auto& val : colormap.keys()) {
+        double node = val*value_range[1] + (1-val)*value_range[0];
+        dd->color_function->AddRGBPoint(node, colormap[val].red()/255., colormap[val].green()/255., colormap[val].blue()/255.);
+    }
+
     dd->color_function->ClampingOn();
     dd->color_function->Modified();
 

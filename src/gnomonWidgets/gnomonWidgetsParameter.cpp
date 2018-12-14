@@ -37,6 +37,9 @@ QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget 
     if (gnomonCoreParameterStringList *p = dynamic_cast<gnomonCoreParameterStringList *>(parameter)) {
         return gnomonWidgetsParameterStringList::widget(p, parent);
     }
+    if (gnomonCoreParameterColorMap *p = dynamic_cast<gnomonCoreParameterColorMap *>(parameter)) {
+        return gnomonWidgetsParameterColorMap::widget(p, parent);
+    }
     return nullptr;
 }
 
@@ -172,6 +175,26 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
 
         QObject::connect(widget, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                          [=](int id) { parameter->setCurrentIndex(id); });
+
+        return widget;
+
+    } else {
+        return nullptr;
+    }
+}
+
+QString gnomonWidgetsParameterColorMap::style = QStringLiteral("colormap_editor");
+
+QWidget *gnomonWidgetsParameterColorMap::widget(gnomonCoreParameterColorMap *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("colormap_editor")) {
+        gnomonColorMapEditor *widget = new gnomonColorMapEditor(parent);
+        widget->setToolTip(parameter->doc());
+
+        // widget->setCurrentText(parameter->currentValue());
+        widget->setValue(parameter->value());
+
+        QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) { parameter->setValue(val); });
 
         return widget;
 
