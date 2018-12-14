@@ -27,6 +27,7 @@
 #include "gnomonActor2DPolyData.h"
 
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationMeshPrivate
@@ -84,8 +85,11 @@ void gnomonVisualizationMesh::updateOpacity(void)
 
 QImage gnomonVisualizationMesh::imageRendering(void)
 {
-    QImage image(100, 100, QImage::Format_RGB32);
-    return image;
+    d->updateOffscreenRenderer(dd->polydata->GetBounds());
+
+    d->offscreenRenderer->AddActor(dd->actor);
+
+    return d->offscreenImageRendering();
 }
 
 void gnomonVisualizationMesh::update(void)

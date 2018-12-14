@@ -23,6 +23,11 @@
 #include "gnomonViewForm.h"
 
 
+class vtkRenderer;
+class vtkRenderWindow;
+class vtkRenderWindowInteractor;
+#include <vtkSmartPointer.h>
+
 class gnomonAbstractVisualizationPrivate
 {
 public:
@@ -34,6 +39,15 @@ public:
 public:
     QMetaObject::Connection connectSliceOrientation;
     QMetaObject::Connection connectSlice;
+
+public:
+    vtkSmartPointer<vtkRenderer> offscreenRenderer;
+    vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
+    vtkSmartPointer<vtkRenderWindowInteractor> offscreenRenderWindowInteractor;
+
+public slots:
+    void updateOffscreenRenderer(double bounds[6]);
+    QImage offscreenImageRendering(void);
 };
 
 
