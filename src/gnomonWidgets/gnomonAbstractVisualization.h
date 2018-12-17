@@ -40,6 +40,9 @@ public:
 public:
 	virtual QImage imageRendering(void) = 0;
 
+signals:
+	void parametersChanged(void);
+
 public slots:
     virtual void update(void) = 0;
     virtual void render(void) = 0;

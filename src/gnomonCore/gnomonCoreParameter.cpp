@@ -20,7 +20,7 @@
 // gnomonCoreParameter
 // ///////////////////////////////////////////////////////////////////
 
-gnomonCoreParameter::gnomonCoreParameter(const QString& doc) : m_doc(doc)
+gnomonCoreParameter::gnomonCoreParameter(const QString& doc) : QObject(), m_doc(doc)
 {
 }
 
@@ -49,12 +49,18 @@ bool gnomonCoreParameterBool::value(void) const
 
 void gnomonCoreParameterBool::setValue(bool val)
 {
-    m_value = val;
+    if(m_value != val) {
+        m_value = val;
+        emit valueChanged();
+    }
 }
 
 void gnomonCoreParameterBool::setValue(const QVariant& v)
 {
-    m_value = v.toBool();
+    if(m_value != v.toBool()) {
+        m_value = v.toBool();
+        emit valueChanged();
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -72,12 +78,18 @@ QString gnomonCoreParameterString::value(void) const
 
 void gnomonCoreParameterString::setValue(const QString& s)
 {
-    m_s = s;
+    if(m_s != s) {
+        m_s = s;
+        emit valueChanged();
+    }
 }
 
 void gnomonCoreParameterString::setValue(const QVariant& v)
 {
-    m_s = v.toString();
+    if(m_s != v.toString()) {
+        m_s = v.toString();
+        emit valueChanged();
+    }
 }
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterStringList
@@ -120,7 +132,10 @@ QStringList gnomonCoreParameterStringList::values(void) const
 
 void gnomonCoreParameterStringList::setCurrentIndex(int current_index)
 {
-    m_current_index = current_index;
+    if(m_current_index != current_index) {
+        m_current_index = current_index;
+        emit valueChanged();
+    }
 }
 
 void gnomonCoreParameterStringList::addValue(const QString& val)
@@ -154,6 +169,7 @@ void gnomonCoreParameterStringList::setValues(const QStringList& val)
     int index = m_values.indexOf(c_val);
     if(index >= 0) {
         m_current_index = index;
+        emit valueChanged();
     }
 }
 
@@ -161,7 +177,10 @@ void gnomonCoreParameterStringList::setValue(const QString& val)
 {
     int index = m_values.indexOf(val);
     if(index >= 0) { 
-        m_current_index = index; 
+        if(m_current_index != index) { 
+            m_current_index = index; 
+            emit valueChanged();
+        }
     }
 }
 
@@ -169,8 +188,12 @@ void gnomonCoreParameterStringList::setValue(const QVariant& v)
 {
     QString val = v.toString();
     int index = m_values.indexOf(val);
-    if(index >= 0)
-    { m_current_index = index; }
+    if(index >= 0){ 
+        if(m_current_index != index) { 
+            m_current_index = index; 
+            emit valueChanged();
+        }
+    }
 }
 
 
@@ -239,7 +262,11 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
         }
         n = n.nextSibling();
     }
-    m_c = colormap;
+
+    if(m_c != colormap) {
+        m_c = colormap;
+        emit valueChanged();
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -257,7 +284,10 @@ QVariant gnomonCoreParameterVariant::value(void) const
 
 void gnomonCoreParameterVariant::setValue(const QVariant& v)
 {
-    m_v = v;
+    if(m_v != v) {
+        m_v = v;
+        emit valueChanged();
+    }
 }
 
 //

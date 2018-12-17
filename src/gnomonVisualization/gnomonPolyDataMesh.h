@@ -32,6 +32,7 @@ public:
 
 public:
 	void setMesh(gnomonMesh *cellimage);
+    void setPropertyName(const QString& property_name);
 
 public slots:
     void update(void) override;

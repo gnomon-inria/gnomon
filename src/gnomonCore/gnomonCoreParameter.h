@@ -25,8 +25,10 @@
 // gnomonCoreParameter
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonCoreParameter
+class GNOMONCORE_EXPORT gnomonCoreParameter : public QObject
 {
+    Q_OBJECT
+
 public:
              gnomonCoreParameter(const QString& doc);
     virtual ~gnomonCoreParameter(void) = default;
@@ -36,6 +38,8 @@ public:
 public:
     virtual void setValue(const QVariant&);
 
+signals:
+    void valueChanged();
 
 protected:
     QString m_doc;
@@ -50,6 +54,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameter *);
 template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
 class GNOMONCORE_EXPORT gnomonCoreParameterNumeric : public gnomonCoreParameter
 {
+
 public:
      gnomonCoreParameterNumeric(T val, const QString& doc = QString()) :
          gnomonCoreParameter(doc),
@@ -75,8 +80,8 @@ public:
     T max(void) const { return m_max; }
     int accuracy(void) { return m_accuracy; }
 
-    void setValue(T val) { m_value = val; }
-    void setValue(const QVariant& v) { m_value = v.value<T>(); }
+    void setValue(T val) { if(m_value != val) { m_value = val; emit valueChanged(); } }
+    void setValue(const QVariant& v) { if(m_value != v.value<T>()) { m_value = v.value<T>(); emit valueChanged(); } }
     void setMinimumValue(T min) { m_min = min; }
     void setMaximumValue(T max) { m_max = max; }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
@@ -143,11 +148,11 @@ public:
     T max(void) const { return m_max; }
     int accuracy(void) { return m_accuracy; }
 
-    void setValue(QList<T> val) { m_value = val; }
-    void setValue(T valMin, T valMax) { m_value = QList<T>({valMin, valMax}); }
-    void setValue(const QVariant& v) { m_value = v.value<QList<T> >(); }
-    void setMinimumValue(T min) { m_min = min; }
-    void setMaximumValue(T max) { m_max = max; }
+    void setValue(QList<T> val) { if(m_value != val) { m_value = val; emit valueChanged(); } }
+    void setValue(T valMin, T valMax) { if((m_value[0] != valMin)||(m_value[1] != valMax)) { m_value = QList<T>({valMin, valMax});  emit valueChanged(); } }
+    void setValue(const QVariant& v) { if(m_value != v.value<QList<T> >()) { m_value = v.value<QList<T> >(); emit valueChanged(); } }
+    void setMinimumValue(T min) { m_min = min; if(m_value[0]<min) m_value[0]=min; if(m_value[1]<min) m_value[1]=min; emit valueChanged(); }
+    void setMaximumValue(T max) { m_max = max; if(m_value[0]>max) m_value[0]=max; if(m_value[0]<max) m_value[1]=max; emit valueChanged(); }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
 private:
@@ -176,6 +181,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameterDoubleRange *);
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterBool
 // ///////////////////////////////////////////////////////////////////
+ 
 
 class GNOMONCORE_EXPORT gnomonCoreParameterBool : public gnomonCoreParameter
 {

@@ -30,6 +30,7 @@ class vtkRenderWindowInteractor;
 
 class gnomonAbstractVisualizationPrivate
 {
+
 public:
     gnomonViewForm* view;
     

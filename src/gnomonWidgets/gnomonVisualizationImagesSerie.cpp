@@ -72,8 +72,8 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
 
     d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
+    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
 }
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)

@@ -52,6 +52,8 @@ class gnomonPolyDataMeshPrivate
 public:
     gnomonMesh *mesh;
 
+    QString property_name;
+
     bool modified;
 };
 
@@ -67,7 +69,13 @@ void gnomonPolyDataMesh::setMesh(gnomonMesh *mesh)
     d->mesh = mesh;
 
     this->modified();
-    this->update();
+}
+
+void gnomonPolyDataMesh::setPropertyName(const QString& property_name)
+{
+    d->property_name = property_name;
+
+    this->modified();
 }
 
 void gnomonPolyDataMesh::modified(void)
@@ -92,13 +100,18 @@ void gnomonPolyDataMesh::update(void)
 
     QList<long> vertices = d->mesh->vertexIds();
 
+    QMap<long, QVariant> vertexProperty;
+    if (d->mesh->vertexPropertyNames().contains(d->property_name)) {
+        vertexProperty = d->mesh->vertexProperty(d->property_name);
+    } else {
+        for (const auto& vertexId : vertices) {
+            vertexProperty[vertexId] = QVariant((double)vertexId);
+        }
+    }
+
     QMap<long, double> vertexScalarProperty;
     for (const auto& vertexId : vertices) {
-        if (d->mesh->vertexPropertyNames().contains("scalar_field")) {
-            vertexScalarProperty[vertexId] = d->mesh->vertexProperty("scalar_field")[vertexId].value<double>();
-        } else {
-            vertexScalarProperty[vertexId] = 0;
-        }
+        vertexScalarProperty[vertexId] = vertexProperty[vertexId].value<double>();
     }
 
     QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
@@ -131,6 +144,8 @@ void gnomonPolyDataMesh::update(void)
 gnomonPolyDataMesh::gnomonPolyDataMesh(void) : gnomonPolyData(), d(new gnomonPolyDataMeshPrivate)
 {
     d->mesh = Q_NULLPTR;
+
+    d->property_name = "";
 }
 
 gnomonPolyDataMesh::~gnomonPolyDataMesh(void)

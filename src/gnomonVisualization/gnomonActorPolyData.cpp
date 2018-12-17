@@ -50,6 +50,7 @@ public:
     vtkRenderWindowInteractor *interactor;
 
     double alpha;
+    double value_range[2];
     QMap<double,QColor> colormap;
 
     bool modified;
@@ -68,20 +69,10 @@ void gnomonActorPolyDataPrivate::updateColorFunction(void)
 {
     if (!this->colorFunction)
         return;
-    
-    double value_range[2] = {0., 1.};
-    if (this->polydata->GetCellData()->GetNumberOfArrays()>0)
-    {
-        this->polydata->GetCellData()->GetArray(0)->GetRange(value_range);
-    }
-    else if (this->polydata->GetPointData()->GetNumberOfArrays()>0)
-    {
-        this->polydata->GetPointData()->GetArray(0)->GetRange(value_range);
-    }
 
     this->colorFunction->RemoveAllPoints();
     for (const auto& val : this->colormap.keys()) {
-        double node = val*value_range[1] + (1-val)*value_range[0];
+        double node = val*this->value_range[1] + (1-val)*this->value_range[0];
         this->colorFunction->AddRGBPoint(node, this->colormap[val].red()/255., this->colormap[val].green()/255., this->colormap[val].blue()/255.);
     }
 
@@ -151,6 +142,14 @@ void gnomonActorPolyData::setOpacity(double value)
     d->interactor->Render();
 }
 
+void gnomonActorPolyData::setValueRange(const QList<double>& value)
+{
+    d->value_range[0] = value[0];
+    d->value_range[1] = value[1];
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
 void gnomonActorPolyData::setColorMap(const QMap<double,QColor>& value)
 {
     d->colormap = value;
@@ -166,6 +165,8 @@ gnomonActorPolyData::gnomonActorPolyData(void) : gnomonActor(), d(new gnomonActo
     d->interactor = Q_NULLPTR;
 
     d->alpha = 1;
+    d->value_range[0] = 0.;
+    d->value_range[1] = 1.;
     d->colormap = QMap<double, QColor>({
         {0., QColor(0, 0, 0, 255)},
         {1., QColor(255, 255, 255, 255)} });

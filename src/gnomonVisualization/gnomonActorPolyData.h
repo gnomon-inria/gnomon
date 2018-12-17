@@ -38,6 +38,7 @@ public slots:
     void modified(void);
 
     void setOpacity(double);
+    void setValueRange(const QList<double>& value);
     void setColorMap(const QMap<double,QColor>&);
 
 protected:

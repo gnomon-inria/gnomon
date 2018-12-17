@@ -26,6 +26,8 @@
 #include "gnomonActorPolyData.h"
 #include "gnomonActor2DPolyData.h"
 
+#include <vtkCellData.h>
+#include <vtkPointData.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
@@ -54,8 +56,17 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonA
 {
     dd->mesh = Q_NULLPTR;
 
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the mesh rendering");
+    d->parameters["property_name"] = new gnomonCoreParameterStringList("", {""}, "Mesh property to be displayed");
+    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the mesh");
+    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the mesh rendering");
+
+    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+        if(!dd->mesh)
+            return;
+        this->updateValueRange();
+        emit parametersChanged();
+    });
 }
 
 gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
@@ -68,6 +79,8 @@ gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
 {
     dd->mesh = mesh;
+
+    this->updateValueRange();
     this->update();
 }
 
@@ -84,6 +97,31 @@ void gnomonVisualizationMesh::updateOpacity(void)
     }
 }
 
+void gnomonVisualizationMesh::updateValueRange(void)
+{
+    QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+
+    QMap<long, QVariant> vertexProperty;
+    if(dd->mesh->vertexPropertyNames().contains(property_name)) {
+        vertexProperty = dd->mesh->vertexProperty(property_name);
+    } else {
+        for (const auto& vertexId : dd->mesh->vertexIds()) {
+            vertexProperty[vertexId] = QVariant((double)vertexId);
+        }
+    }
+
+    QList<double> vertexScalarPropertyValues;
+    for (const auto& vertexId : dd->mesh->vertexIds()) {
+        vertexScalarPropertyValues.append(vertexProperty[vertexId].value<double>());
+    } 
+    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
+
+
+    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
+    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+
+}
+
 QImage gnomonVisualizationMesh::imageRendering(void)
 {
     d->updateOffscreenRenderer(dd->polydata->GetBounds());
@@ -95,7 +133,9 @@ QImage gnomonVisualizationMesh::imageRendering(void)
 
 void gnomonVisualizationMesh::update(void)
 {
+    QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+    QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
 
     if(!dd->mesh)
         return;
@@ -108,6 +148,9 @@ void gnomonVisualizationMesh::update(void)
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataMesh::New();
     dd->polydata->setMesh((gnomonMesh *)dd->mesh->clone());
+    dd->polydata->setPropertyName(property_name);
+    dd->polydata->update();
+    
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -121,6 +164,7 @@ void gnomonVisualizationMesh::update(void)
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
+    dd->actor->setValueRange(value_range);
 
     if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
@@ -139,6 +183,7 @@ void gnomonVisualizationMesh::update(void)
     dd->actor2D->setSliceThickness(0.5);
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
+    dd->actor2D->setValueRange(value_range);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);

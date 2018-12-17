@@ -61,6 +61,7 @@ public slots:
     void setSliceOrientation(int);
     void setSlice(int);
     void setOpacity(double);
+    void setValueRange(const QList<double>& value);
     void setColorMap(const QMap<double,QColor>&);
 
 public:

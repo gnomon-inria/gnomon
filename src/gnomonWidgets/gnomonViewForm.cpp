@@ -292,6 +292,7 @@ void gnomonViewFormPrivate::configure(QWidget *parent)
                 }
             } else {
                 this->parameterLayouts[key] = new QFormLayout;
+                this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
             }
 
             if ((!this->parameterLayouts.contains(key))||(!this->visuPaneItems[key])) {
@@ -304,16 +305,17 @@ void gnomonViewFormPrivate::configure(QWidget *parent)
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
-                if (widget)
+                if (widget) {
                     this->parameterLayouts[key]->addRow(it.key(), widget);
+                }
             }
-            this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         }
     }
 
     this->refresh();
 }
 
+    
 void gnomonViewFormPrivate::refresh(void) 
 {
     this->visuPane->clearLayout();
@@ -639,10 +641,32 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
     d->forms["gnomonMesh"] = mesh;
 
     if ((!d->visu.contains("gnomonMesh"))||(!d->visu["gnomonMesh"]))
+    {
         d->visu["gnomonMesh"] = new gnomonVisualizationMesh(this);
+        connect(d->visu["gnomonMesh"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
+            d->configure((QWidget*)this->parent()); 
+            qDebug()<<"Configured parameter pane";
+        });
+    }
     gnomonVisualizationMesh *visuMesh = (gnomonVisualizationMesh *)d->visu["gnomonMesh"];
 
     visuMesh->setParameter("alpha",1.0);
+    
+    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)visuMesh->parameters()["property_name"];
+    QStringList properties = {""};
+    for (const auto& propertyName : mesh->vertexPropertyNames()) {
+        if(mesh->vertexProperty(propertyName)[mesh->vertexIds()[0]].canConvert<double>()) {
+            properties.append(propertyName);
+        }
+    }
+    propertyParam->setValues(properties);
+    propertyParam->setValue(QString(""));
+
+    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)visuMesh->parameters()["value_range"];
+    valueRangeParam->setMinimumValue(0);
+    valueRangeParam->setMaximumValue(255);
+    valueRangeParam->setValue(0,255);
+
 
     visuMesh->setMesh(mesh);
 
