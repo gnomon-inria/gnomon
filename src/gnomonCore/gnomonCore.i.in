@@ -49,6 +49,7 @@
 #include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 #include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
 #include <gnomonCore/gnomonAbstractMeshReader.h>
+#include <gnomonCore/gnomonAbstractMeshWriter.h>
 #include <gnomonCore/gnomonAbstractModel.h>
 #include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
@@ -374,6 +375,7 @@
 %include <gnomonCore/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonAbstractMeshReader.h>
+%include <gnomonCore/gnomonAbstractMeshWriter.h>
 %include <gnomonCore/gnomonAbstractModel.h>
 %include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>

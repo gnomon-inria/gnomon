@@ -20,7 +20,13 @@
 #include "gnomonToolBar.h"
 
 #include <gnomonFonts>
+
 #include <gnomonCore/gnomonAbstractForm>
+#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonMesh>
+
+#include <gnomonCore/gnomonImagesSerieWriterCommand>
+#include <gnomonCore/gnomonMeshWriterCommand>
 
 #include <dtkScript>
 
@@ -74,11 +80,36 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
     connect(item, &gnomonFormManagerItem::destroy, [=] () {
         this->contents->layout()->removeWidget(item);
         this->forms.remove(item);
+        this->formWriterCommand.remove(item);
         delete item;
     });
 
     connect(item, &gnomonFormManagerItem::save, [=] () {
-        qDebug()<<"Save form";
+        QSettings settings("inria", "gnomon");
+        settings.beginGroup("General");
+        QString path = settings.value("last_saved_file", QDir::homePath()).toString();
+        settings.endGroup();
+
+        gnomonAbstractForm *form = this->forms[item];
+
+        QString export_file_path;
+        if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"), path, tr("Images (*.inr.gz *.inr *.tif)"));
+            dynamic_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setImagesSerie(images_serie);
+            dynamic_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        }
+        if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save mesh"), path, tr("Meshes (*.ply)"));
+            dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setMesh(mesh);
+            dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        }
+
+        if(!export_file_path.isEmpty()) {
+           settings.beginGroup("general");
+           settings.setValue("last_saved_file", export_file_path);
+           settings.endGroup();
+           this->formWriterCommand[item]->redo();
+        }
     });
 
     connect(item, &gnomonFormManagerItem::clicked, [=] () {
@@ -106,6 +137,18 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
     item->id = d->item_counter++;
 
     d->forms.insert(item, form);
+
+
+    QString writerPlugin;
+    if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
+        d->formWriterCommand[item] = new gnomonImagesSerieWriterCommand("gnomonImagesSerieWriter");
+        dynamic_cast<gnomonImagesSerieWriterCommand *>(d->formWriterCommand[item])->setImagesSerie(images_serie);
+    }
+    if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+        d->formWriterCommand[item] = new gnomonMeshWriterCommand("gnomonMeshWriterPropertyTopomesh");
+        dynamic_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
+    }
+
     d->contents->layout()->addWidget(item);
 }
 

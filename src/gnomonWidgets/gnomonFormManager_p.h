@@ -19,6 +19,7 @@
 
 
 class gnomonAbstractForm;
+class gnomonAbstractCommand;
 
 class gnomonFormManager;
 class gnomonFormManagerItem;
@@ -44,6 +45,7 @@ public:
 
 public:
     QHash<gnomonFormManagerItem *, gnomonAbstractForm *> forms;
+    QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;
 
 public:
     gnomonFormManager *q;

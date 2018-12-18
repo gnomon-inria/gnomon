@@ -50,6 +50,7 @@
 // gnomonViewFormPrivate
 // ///////////////////////////////////////////////////////////////////
 
+
 class gnomonViewFormPrivate : public QVTKOpenGLWidget
 {
     Q_OBJECT
@@ -114,7 +115,6 @@ public:
     QSlider *slice_slider;
 
 public:
-
     gnomonOverlayPaneItem *paneItemButton = nullptr;
     QPushButton *renderButton = nullptr;
 
@@ -610,8 +610,8 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
         valueRangeParam->setMaximumValue(65535);
         valueRangeParam->setValue(0,65535);
     }
-    formVisualizationImagesSerie->setImagesSerie(images_serie);
 
+    formVisualizationImagesSerie->setImagesSerie(images_serie);
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);
@@ -661,7 +661,6 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
     valueRangeParam->setMinimumValue(0);
     valueRangeParam->setMaximumValue(255);
     valueRangeParam->setValue(0,255);
-
 
     formVisualizationMesh->setMesh(mesh);
 
@@ -777,6 +776,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
+        gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
+        this->setForm("formManager",form);
         // gnomonImagesSerie * images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
         // emit channelsChanged(images_serie->channels());
         // this->setImagesSerie(images_serie);

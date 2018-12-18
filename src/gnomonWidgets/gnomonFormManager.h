@@ -20,6 +20,7 @@
 #include <QtWidgets>
 
 class gnomonAbstractForm;
+class gnomonAbstractCommand;
 
 class gnomonFormManagerItem;
 

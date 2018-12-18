@@ -20,16 +20,16 @@
 
 #include "gnomonAbstractAlgorithm.h"
 
-class gnomonImagesSerie;
+class gnomonMesh;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesSerieWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractMeshWriter : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractImagesSerieWriter(void) = default;
+    virtual ~gnomonAbstractMeshWriter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,7 +37,7 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void setImagesSerie(gnomonImagesSerie *images_serie) = 0;
+    virtual void setMesh(gnomonMesh *images_serie) = 0;
     virtual void setPath(const QString& path) = 0;
 
 };
@@ -46,17 +46,17 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieWriter *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractMeshWriter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractMeshWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT, imagesSerieWriter);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMeshWriter, GNOMONCORE_EXPORT, meshWriter);
 }
 
 //
