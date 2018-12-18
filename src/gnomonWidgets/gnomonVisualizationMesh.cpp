@@ -65,7 +65,7 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonA
         if(!dd->mesh)
             return;
         this->updateValueRange();
-        // emit parametersChanged();
+        emit parametersChanged();
     });
 }
 

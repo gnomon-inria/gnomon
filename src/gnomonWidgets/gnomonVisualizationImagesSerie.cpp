@@ -82,7 +82,7 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
         if(!dd->imagesSerie)
             return;
         this->updateChannelColorMap();
-        // emit parametersChanged();
+        emit parametersChanged();
     });
 
 }
