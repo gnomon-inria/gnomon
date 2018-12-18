@@ -18,7 +18,7 @@
 class gnomonImagesSerie;
 class gnomonCellImage;
 
-class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand<gnomonAbstractCellImageFromImage>
+class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand
 {
 public:
      gnomonSegmentationCommand(void) = delete;
@@ -42,7 +42,6 @@ public:
 
 private:
     class gnomonSegmentationCommandPrivate *d;
-    using gnomonAbstractCommand<gnomonAbstractCellImageFromImage>::action;
 };
 
 //

@@ -18,6 +18,8 @@
 
 #include <dtkCore>
 
+#include "gnomonAbstractAlgorithm.h"
+
 class gnomonImagesSerie;
 class gnomonCoreParameter;
 
@@ -25,14 +27,15 @@ class gnomonCoreParameter;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesRegistration
+class GNOMONCORE_EXPORT gnomonAbstractImagesRegistration : public gnomonAbstractAlgorithm
 {
 public:
     virtual ~gnomonAbstractImagesRegistration(void) = default;
 
 public:
-    virtual QMap<QString, gnomonCoreParameter*> parameters(void) const = 0;
-    virtual void setParameter(const QString&, const QVariant&) = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
 
 public:
     virtual void addImagesSerie(gnomonImagesSerie *images_serie) = 0;
@@ -40,8 +43,6 @@ public:
 
     virtual gnomonImagesSerie* output() = 0;
 
-public:
-    virtual void run(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

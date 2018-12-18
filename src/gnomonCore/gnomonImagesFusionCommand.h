@@ -3,7 +3,7 @@
 
 #include "gnomonLandmark.h"
 
-class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand<gnomonAbstractImagesFusion>
+class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImagesFusionCommand(void) = delete;
@@ -28,7 +28,5 @@ public:
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
-
-private:
     class gnomonImagesFusionCommandPrivate *d;
 };

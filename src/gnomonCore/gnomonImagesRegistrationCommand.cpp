@@ -18,9 +18,9 @@ gnomonImagesRegistrationCommand::gnomonImagesRegistrationCommand(const QString& 
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action = gnomonCore::imagesRegistration::pluginFactory().create(key);
+    this->action = gnomonCore::imagesRegistration::pluginFactory().create(key);
 
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action);
+    Q_ASSERT(this->action);
 }
 
 gnomonImagesRegistrationCommand::~gnomonImagesRegistrationCommand()
@@ -30,18 +30,18 @@ gnomonImagesRegistrationCommand::~gnomonImagesRegistrationCommand()
 
 void gnomonImagesRegistrationCommand::redo(void)
 {
-    Q_ASSERT(gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action);
+    Q_ASSERT(this->action);
 
     for(auto& images_serie : d->images_series) {
-        gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->addImagesSerie(images_serie);
+        ((gnomonAbstractImagesRegistration *) this->action)->addImagesSerie(images_serie);
     };
 
-    gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->run();
+    this->action->run();
 }
 
 void gnomonImagesRegistrationCommand::undo(void)
 {
-    gnomonAbstractCommand<gnomonAbstractImagesRegistration>::action->removeImagesSeries();
+    ((gnomonAbstractImagesRegistration *) this->action)->removeImagesSeries();
     d->images_series.clear();
 }
 
@@ -51,7 +51,7 @@ void gnomonImagesRegistrationCommand::addImagesSerie(gnomonImagesSerie *images_s
 }
 
 gnomonImagesSerie* gnomonImagesRegistrationCommand::output()
-{ return this->action->output(); }
+{ return ((gnomonAbstractImagesRegistration *) this->action)->output(); }
 
 QMap<QString, gnomonCoreParameter*> gnomonImagesRegistrationCommand::parameters(void) const
 {

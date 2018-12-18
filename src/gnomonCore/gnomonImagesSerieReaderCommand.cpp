@@ -31,13 +31,13 @@ gnomonImagesSerieReaderCommand::~gnomonImagesSerieReaderCommand()
 void gnomonImagesSerieReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    this->action->setPath(d->path);
+    ((gnomonAbstractImagesSerieReader *) this->action)->setPath(d->path);
     this->action->run();
 }
 
 void gnomonImagesSerieReaderCommand::undo(void)
 {
-    this->action->setPath("");
+    ((gnomonAbstractImagesSerieReader *) this->action)->setPath("");
 }
 
 void gnomonImagesSerieReaderCommand::setPath(const QString& path)
@@ -47,5 +47,5 @@ void gnomonImagesSerieReaderCommand::setPath(const QString& path)
 
 gnomonImagesSerie *gnomonImagesSerieReaderCommand::imagesSerie()
 {
-    return gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action->imagesSerie();
+    return ((gnomonAbstractImagesSerieReader *) this->action)->imagesSerie();
 }

@@ -14,7 +14,7 @@ public:
     gnomonCellImage *computed_image = nullptr;
 };
 
-gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : gnomonAbstractCommand<gnomonAbstractCellImageFromImage>(), d(new gnomonSegmentationCommandPrivate)
+gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
     QString command = "import gnomonCellImageFromImage";
     int stat;
@@ -40,16 +40,16 @@ void gnomonSegmentationCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setInput(d->images_serie);
+    ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->images_serie);
     this->action->run();
-    d->computed_image = this->action->computedImage();
+    d->computed_image = ((gnomonAbstractCellImageFromImage *) this->action)->computedImage();
 }
 
 void gnomonSegmentationCommand::undo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setInput(nullptr);
+    ((gnomonAbstractCellImageFromImage *) this->action)->setInput(nullptr);
 }
 
 void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
@@ -59,12 +59,12 @@ void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
 
 gnomonImagesSerie *gnomonSegmentationCommand::input()
 {
-    return this->action->input();
+    return ((gnomonAbstractCellImageFromImage *) this->action)->input();
 }
 
 gnomonImagesSerie *gnomonSegmentationCommand::output()
 {
-    return this->action->output();
+    return ((gnomonAbstractCellImageFromImage *) this->action)->output();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const

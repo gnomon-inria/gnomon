@@ -17,6 +17,7 @@
 #include <dtkCore>
 
 #include <gnomonCoreExport>
+#include "gnomonAbstractAlgorithm.h"
 
 class gnomonMesh;
 class gnomonCoreParameter;
@@ -25,19 +26,18 @@ class gnomonCoreParameter;
 //
 //  ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractFemSolver : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractFemSolver : public gnomonAbstractAlgorithm
 {
 public:
-    virtual void setParameter(const QString&, const QVariant&) = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
+
+public:
 	virtual void setMesh(gnomonMesh *mesh) = 0;
 
 public:
     virtual gnomonMesh *updatedMesh(void) const = 0;
-
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
-
-public:
-    virtual void run(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

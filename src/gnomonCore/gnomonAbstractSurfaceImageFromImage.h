@@ -15,6 +15,7 @@
 #pragma once
 
 #include <gnomonCoreExport>
+#include "gnomonAbstractAlgorithm.h"
 
 #include <dtkCore>
 
@@ -24,23 +25,24 @@ class dtkImage;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractSurfaceImageFromImage
+class GNOMONCORE_EXPORT gnomonAbstractSurfaceImageFromImage : public gnomonAbstractAlgorithm
 {
 public:
              gnomonAbstractSurfaceImageFromImage(void) = default;
     virtual ~gnomonAbstractSurfaceImageFromImage(void) = default;
 
 public:
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
+
+public:
     virtual void setImage(dtkImage *image) = 0;
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
 
 public:
     virtual dtkImage *computed3DSurfaceImage(void) const = 0;
     virtual dtkImage *computed2DSurfaceImage(void) const = 0;
-    virtual QMap<QString, QVariant> parameters(void) const = 0;
 
-public:
-    virtual void run(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

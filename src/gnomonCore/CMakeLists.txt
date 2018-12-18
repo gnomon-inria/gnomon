@@ -19,6 +19,8 @@ project(gnomonCore)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonAbstractAlgorithm
+  gnomonAbstractAlgorithm.h
   gnomonAbstractCellComplexData
   gnomonAbstractCellComplexData.h
   gnomonAbstractCellComplexFromImage
@@ -117,6 +119,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWallForm.h)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractAlgorithm.cpp
   gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellComplexFromImage.cpp
   gnomonAbstractCellComplexReader.cpp

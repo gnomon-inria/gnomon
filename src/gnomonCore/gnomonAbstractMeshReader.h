@@ -18,23 +18,26 @@
 
 #include <dtkCore>
 
-class dtkImage;
+#include "gnomonAbstractAlgorithm.h"
+
 class gnomonMesh;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractMeshReader
+class GNOMONCORE_EXPORT gnomonAbstractMeshReader : public gnomonAbstractAlgorithm
 {
 public:
     virtual ~gnomonAbstractMeshReader(void) = default;
 
 public:
-    virtual void setPath(const QString& path) = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
 
 public:
-    virtual void run(void) = 0;
+    virtual void setPath(const QString& path) = 0;
 
 public:
     virtual gnomonMesh *mesh(void) = 0;

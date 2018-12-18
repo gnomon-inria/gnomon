@@ -1,7 +1,7 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractImagesSerieFilter.h"
 
-class GNOMONCORE_EXPORT gnomonImagesSerieFilterCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>
+class GNOMONCORE_EXPORT gnomonImagesSerieFilterCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImagesSerieFilterCommand(void) = delete;
@@ -25,5 +25,4 @@ public:
 
 private:
     class gnomonImagesSerieFilterCommandPrivate *d;
-    using gnomonAbstractCommand<gnomonAbstractImagesSerieFilter>::action;
 };

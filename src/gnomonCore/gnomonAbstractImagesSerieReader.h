@@ -18,22 +18,30 @@
 
 #include <dtkCore>
 
+#include "gnomonAbstractAlgorithm.h"
+
 class gnomonImagesSerie;
+
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesSerieReader
+class GNOMONCORE_EXPORT gnomonAbstractImagesSerieReader : public gnomonAbstractAlgorithm
 {
 public:
+			 gnomonAbstractImagesSerieReader(void) = default;
     virtual ~gnomonAbstractImagesSerieReader(void) = default;
+
+public:
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
 
 public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual void run(void) = 0;
     virtual gnomonImagesSerie *imagesSerie() = 0;
 };
 

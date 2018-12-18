@@ -31,13 +31,13 @@ gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
 void gnomonMeshReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    this->action->setPath(d->path);
+    ((gnomonAbstractMeshReader *) this->action)->setPath(d->path);
     this->action->run();
 }
 
 void gnomonMeshReaderCommand::undo(void)
 {
-    this->action->setPath("");
+    ((gnomonAbstractMeshReader *) this->action)->setPath("");
 }
 
 void gnomonMeshReaderCommand::setPath(const QString& path)
@@ -47,5 +47,5 @@ void gnomonMeshReaderCommand::setPath(const QString& path)
 
 gnomonMesh *gnomonMeshReaderCommand::mesh(void)
 {
-    return this->action->mesh();
+    return ((gnomonAbstractMeshReader *) this->action)->mesh();
 }

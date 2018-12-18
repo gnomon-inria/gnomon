@@ -1,7 +1,7 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractImagesSerieReader.h"
 
-class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieReader>
+class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImagesSerieReaderCommand(void) = delete;
@@ -18,5 +18,4 @@ public:
 
 private:
     class gnomonImagesSerieReaderCommandPrivate *d;
-    using gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action;
 };

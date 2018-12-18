@@ -1,7 +1,7 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractMeshReader.h"
 
-class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractCommand<gnomonAbstractMeshReader>
+class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractCommand
 {
 public:
      gnomonMeshReaderCommand(void) = delete;
@@ -19,5 +19,4 @@ public:
 
 private:
     class gnomonMeshReaderCommandPrivate *d;
-    using gnomonAbstractCommand<gnomonAbstractMeshReader>::action;
 };

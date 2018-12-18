@@ -1,7 +1,7 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractImagesRegistration.h"
 
-class GNOMONCORE_EXPORT gnomonImagesRegistrationCommand : public gnomonAbstractCommand<gnomonAbstractImagesRegistration>
+class GNOMONCORE_EXPORT gnomonImagesRegistrationCommand : public gnomonAbstractCommand
 {
 public:
     gnomonImagesRegistrationCommand() = delete;

@@ -22,20 +22,25 @@
 
 #include "gnomonLandmark.h"
 
+#include "gnomonAbstractAlgorithm.h"
+
 class gnomonImagesSerie;
 class gnomonCoreParameter;
+
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public gnomonAbstractAlgorithm
 {
 public:
     virtual ~gnomonAbstractImagesFusion(void) = default;
 
 public:
-    virtual void setParameter(const QString&, const QVariant&) = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
 
 public:
     virtual void addImagesSerie(gnomonImagesSerie *) = 0;
@@ -45,11 +50,7 @@ public:
     virtual void removeLandmarks(void) = 0;
 
 public:
-    virtual void run(void) = 0;
-
-public:
     virtual gnomonImagesSerie *output() = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
