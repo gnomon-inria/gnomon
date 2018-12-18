@@ -94,11 +94,9 @@ public:
     QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    QMap<QString, gnomonAbstractVisualization *> visu;
-
-public:
-    gnomonMeshReaderCommand *mesh_reader_command = nullptr;
-    gnomonImagesSerieReaderCommand *image_reader_command = nullptr;
+    QMap<QString, gnomonAbstractForm *> forms;
+    QMap<QString, gnomonAbstractVisualization *> formVisualization;
+    QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
 public:
     gnomonViewVolumicOverlay *renderer2D_button = nullptr;
@@ -113,9 +111,6 @@ public:
     QColor export_color = QColor("#cccccc");
 
 public:
-    QMap<QString, gnomonAbstractForm *> forms;
-
-public:
     QSlider *slice_slider;
 
 public:
@@ -124,9 +119,9 @@ public:
     QPushButton *renderButton = nullptr;
 
     QMap<QString, QFormLayout *> parameterLayouts;
-    QMap<QString, gnomonOverlayPaneItem *> visuPaneItems;
+    QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
 
-    gnomonOverlayPane *visuPane = nullptr;
+    gnomonOverlayPane *formVisualizationPane = nullptr;
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
@@ -180,8 +175,8 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
-        QImage visuImage = this->visu[key]->imageRendering();
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, visuImage);
+        QImage formVisualizationImage = this->formVisualization[key]->imageRendering();
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, formVisualizationImage);
     }
 }
 
@@ -256,8 +251,8 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
 gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
 {
-    if(!this->visuPane) {
-        this->visuPane = new gnomonOverlayPane(parent);
+    if(!this->formVisualizationPane) {
+        this->formVisualizationPane = new gnomonOverlayPane(parent);
     }
 
     if(!this->renderButton) {
@@ -273,15 +268,15 @@ gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
     this->paneItemButton->toggle();
 
     this->refresh();
-    this->visuPane->toggle();
+    this->formVisualizationPane->toggle();
 
-    return this->visuPane;
+    return this->formVisualizationPane;
 }
 
 void gnomonViewFormPrivate::configure(QWidget *parent)
 {
-    for (const auto& key : this->visu.keys()) {
-        gnomonAbstractVisualization *v = this->visu[key];
+    for (const auto& key : this->formVisualization.keys()) {
+        gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
@@ -295,11 +290,11 @@ void gnomonViewFormPrivate::configure(QWidget *parent)
                 this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
             }
 
-            if ((!this->parameterLayouts.contains(key))||(!this->visuPaneItems[key])) {
-                this->visuPaneItems[key] = new gnomonOverlayPaneItem(parent);
-                this->visuPaneItems[key]->setTitle(key+" Visualization");
-                this->visuPaneItems[key]->addLayout(this->parameterLayouts[key]);
-                this->visuPaneItems[key]->toggle();
+            if ((!this->parameterLayouts.contains(key))||(!this->formVisualizationPaneItems[key])) {
+                this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem(parent);
+                this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
+                this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
+                this->formVisualizationPaneItems[key]->toggle();
             }
 
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
@@ -318,14 +313,14 @@ void gnomonViewFormPrivate::configure(QWidget *parent)
     
 void gnomonViewFormPrivate::refresh(void) 
 {
-    this->visuPane->clearLayout();
+    this->formVisualizationPane->clearLayout();
 
-    for (const auto& key : this->visuPaneItems.keys()) {
-        if (this->visuPaneItems[key]) {
-            this->visuPane->addWidget(this->visuPaneItems[key]);
+    for (const auto& key : this->formVisualizationPaneItems.keys()) {
+        if (this->formVisualizationPaneItems[key]) {
+            this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
         }
     }
-    this->visuPane->addWidget(this->paneItemButton);
+    this->formVisualizationPane->addWidget(this->paneItemButton);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -370,8 +365,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
         
-        for (const auto& key : d->visu.keys()) {
-            gnomonAbstractVisualization *v = d->visu[key];
+        for (const auto& key : d->formVisualization.keys()) {
+            gnomonAbstractVisualization *v = d->formVisualization[key];
             if(v) {
                 v->update();
             }
@@ -596,17 +591,17 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
 
     // d->time_slider->setVisible(enable_slider);
 
-    if ((!d->visu.contains("gnomonImagesSerie"))||(!d->visu["gnomonImagesSerie"]))
-        d->visu["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
-    gnomonVisualizationImagesSerie *visuImagesSerie = (gnomonVisualizationImagesSerie *)d->visu["gnomonImagesSerie"];
+    if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"]))
+        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
+    gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
     
-    visuImagesSerie->setParameter("alpha",1.0);
+    formVisualizationImagesSerie->setParameter("alpha",1.0);
 
-    gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)visuImagesSerie->parameters()["channel"];
+    gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)formVisualizationImagesSerie->parameters()["channel"];
     channelParam->setValues(images_serie->channels());
     channelParam->setValue(images_serie->channel());
 
-    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)visuImagesSerie->parameters()["value_range"];
+    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)formVisualizationImagesSerie->parameters()["value_range"];
     valueRangeParam->setMinimumValue(0);
     if (images_serie->image()->storageType() == QMetaType::UChar) {
         valueRangeParam->setMaximumValue(255);
@@ -615,7 +610,7 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
         valueRangeParam->setMaximumValue(65535);
         valueRangeParam->setValue(0,65535);
     }
-    visuImagesSerie->setImagesSerie(images_serie);
+    formVisualizationImagesSerie->setImagesSerie(images_serie);
 
 
     if (d->renderer3D_button->isToggled()) {
@@ -640,19 +635,19 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
 {
     d->forms["gnomonMesh"] = mesh;
 
-    if ((!d->visu.contains("gnomonMesh"))||(!d->visu["gnomonMesh"]))
+    if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
     {
-        d->visu["gnomonMesh"] = new gnomonVisualizationMesh(this);
-        connect(d->visu["gnomonMesh"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
+        d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh(this);
+        connect(d->formVisualization["gnomonMesh"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
             d->configure((QWidget*)this->parent()); 
             qDebug()<<"Configured parameter pane";
         });
     }
-    gnomonVisualizationMesh *visuMesh = (gnomonVisualizationMesh *)d->visu["gnomonMesh"];
+    gnomonVisualizationMesh *formVisualizationMesh = (gnomonVisualizationMesh *)d->formVisualization["gnomonMesh"];
 
-    visuMesh->setParameter("alpha",1.0);
+    formVisualizationMesh->setParameter("alpha",1.0);
     
-    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)visuMesh->parameters()["property_name"];
+    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)formVisualizationMesh->parameters()["property_name"];
     QStringList properties = {""};
     for (const auto& propertyName : mesh->vertexPropertyNames()) {
         if(mesh->vertexProperty(propertyName)[mesh->vertexIds()[0]].canConvert<double>()) {
@@ -662,13 +657,13 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
     propertyParam->setValues(properties);
     propertyParam->setValue(QString(""));
 
-    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)visuMesh->parameters()["value_range"];
+    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)formVisualizationMesh->parameters()["value_range"];
     valueRangeParam->setMinimumValue(0);
     valueRangeParam->setMaximumValue(255);
     valueRangeParam->setValue(0,255);
 
 
-    visuMesh->setMesh(mesh);
+    formVisualizationMesh->setMesh(mesh);
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);
@@ -791,15 +786,15 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
         gnomonMeshReaderCommand *meshCommand = nullptr;
 
         if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif") || (path.endsWith("czi"))) {
-            if(!d->image_reader_command)
-                d->image_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-            imageCommand = d->image_reader_command;
+            if ((!d->formReaderCommand.contains("gnomonImagesSerie"))||(!d->formReaderCommand["gnomonImagesSerie"]))
+                d->formReaderCommand["gnomonImagesSerie"] = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+            imageCommand = (gnomonImagesSerieReaderCommand *) d->formReaderCommand["gnomonImagesSerie"];
         }
 
         if(path.endsWith("ply")) {
-            if(!d->mesh_reader_command)
-                d->mesh_reader_command = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
-            meshCommand = d->mesh_reader_command;
+            if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
+                d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
+            meshCommand = (gnomonMeshReaderCommand *) d->formReaderCommand["gnomonMesh"];
         }
 
 
