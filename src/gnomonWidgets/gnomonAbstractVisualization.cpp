@@ -74,7 +74,7 @@ QImage gnomonAbstractVisualizationPrivate::offscreenImageRendering(void)
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(this->offscreenRenderWindow);
     windowToImageFilter->SetInputBufferTypeToRGBA(); 
-    windowToImageFilter->ReadFrontBufferOff(); 
+    // windowToImageFilter->ReadFrontBufferOff(); 
     windowToImageFilter->Update();
 
     vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();

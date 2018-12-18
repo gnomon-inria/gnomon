@@ -60,6 +60,9 @@ public:
 
     vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
     vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
+
+public:
+    QMap<QString, QMap<double, QColor> > channelColormaps;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -74,6 +77,14 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
     d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
+
+    connect(d->parameters["channel"], &gnomonCoreParameter::valueChanged, [=] () {
+        if(!dd->imagesSerie)
+            return;
+        this->updateChannelColorMap();
+        // emit parametersChanged();
+    });
+
 }
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
@@ -100,6 +111,15 @@ void gnomonVisualizationImagesSerie::updateOpacity(void)
     dd->volume->GetProperty()->SetScalarOpacity(dd->opacity);
 }
 
+void gnomonVisualizationImagesSerie::updateChannelColorMap(void)
+{
+    QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+
+    if(dd->channelColormaps.contains(channel)) {
+        ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
+    }
+}
+
 QImage gnomonVisualizationImagesSerie::imageRendering(void)
 {
     d->updateOffscreenRenderer(dd->image->GetBounds());
@@ -119,6 +139,7 @@ void gnomonVisualizationImagesSerie::update(void)
     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
 
+    dd->channelColormaps[channel] = colormap;   
 
     if(dd->imagesSerie->channels().contains(channel))
         dd->imagesSerie->setChannel(channel);

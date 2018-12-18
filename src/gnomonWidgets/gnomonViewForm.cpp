@@ -360,7 +360,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     // parent->connect(this, SIGNAL(formAdded()), parent, SLOT(configure()));
     connect(this, &gnomonViewForm::formAdded, [=] () {
-        d->configure(parent);
+        d->configure((QWidget *)this->parent());
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
@@ -591,10 +591,15 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
 
     // d->time_slider->setVisible(enable_slider);
 
-    if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"]))
+    if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
         d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
+        connect(d->formVisualization["gnomonImagesSerie"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
+            d->configure((QWidget*)this->parent()); 
+            qDebug()<<"Configured parameter pane";
+        });
+    }
     gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
-    
+
     formVisualizationImagesSerie->setParameter("alpha",1.0);
 
     gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)formVisualizationImagesSerie->parameters()["channel"];
