@@ -24,6 +24,7 @@
 #include "gnomonViewForm.h"
 #include "gnomonActorImageVolume.h"
 #include "gnomonActor2DImageWidget.h"
+#include "gnomonActor2DImageChannelBlendingWidget.h"
 
 #include <vtkDataArray.h>
 #include <vtkImageData.h>
@@ -50,7 +51,8 @@ public:
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
 
-    gnomonActor2DImageWidget *actor2D = nullptr; 
+    // gnomonActor2DImageWidget *actor2D = nullptr; 
+    gnomonActor2DImageChannelBlendingWidget *actor2D = nullptr; 
     gnomonActorImageVolume *volume = nullptr;
 
 public:
@@ -154,24 +156,45 @@ void gnomonVisualizationImagesSerie::update(void)
     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
  
+    QString channel;
     if(dd->imagesSerie->channels().size()>1) {
-        QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+        channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
         if(dd->imagesSerie->channels().contains(channel))
             dd->imagesSerie->setChannel(channel);
         dd->channelColormaps[channel] = colormap;
-    }  
+    } else {
+        channel = "";
+    }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(dd->imagesSerie->image());
-    converter->convert();
-    dd->image = static_cast<vtkImageData *>(converter->output());
+    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    // converter->setInput(dd->imagesSerie->image());
+    // converter->convert();
+    // dd->image = static_cast<vtkImageData *>(converter->output());
+    // delete converter;
 
-    delete converter;
+    QMap<QString,vtkImageData *> channelImages;
+    for (const auto& channelName : dd->imagesSerie->channels()) {
+        qDebug()<<Q_FUNC_INFO<<channelName;
+        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+        converter->setInput(dd->imagesSerie->image(channelName));
+        converter->convert();
+        channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
+        delete converter;
+        qDebug()<<Q_FUNC_INFO<<channelName<<channelImages[channelName];
+    }
+
+    if(dd->imagesSerie->channels().size()>1) {
+        dd->image = channelImages[channel];
+    } else {
+        dd->image = channelImages.values()[0];
+    }
     
     if (!dd->actor2D) {
-        dd->actor2D = gnomonActor2DImageWidget::New();
+        // dd->actor2D = gnomonActor2DImageWidget::New();
+        dd->actor2D = gnomonActor2DImageChannelBlendingWidget::New();
     }
-    dd->actor2D->setImage(dd->image);
+    // dd->actor2D->setImage(dd->image);
+    dd->actor2D->setImages(channelImages);
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);

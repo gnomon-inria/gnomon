@@ -25,6 +25,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActor2DCellImage.h
   gnomonActor2DImageWidget
   gnomonActor2DImageWidget.h
+  gnomonActor2DImageChannelBlendingWidget
+  gnomonActor2DImageChannelBlendingWidget.h
   gnomonActor2DPolyData.h
   gnomonActor2DPolyData
   gnomonActor2DPolyData.h
@@ -87,6 +89,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActor2DCellImage.cpp
   gnomonActor2DImageWidget.cpp
+  gnomonActor2DImageChannelBlendingWidget.cpp
   gnomonActor2DPolyData.cpp
   gnomonActorImage.cpp
   gnomonActorImageVolume.cpp
