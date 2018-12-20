@@ -20,11 +20,13 @@
 
 #include <gnomonCore/gnomonAbstractCommand>
 #include <gnomonCore/gnomonImagesSerieReaderCommand>
+#include <gnomonCore/gnomonCellImageReaderCommand>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
 #include <gnomonCore/gnomonAbstractForm>
 #include <dtkImagingCore>
 #include <gnomonCore/gnomonMesh>
+#include <gnomonCore/gnomonCellImage>
 #include <gnomonCore/gnomonImagesSerie>
 
 #include <gnomonCore/gnomonCoreParameter.h>
@@ -34,6 +36,7 @@
 #include "gnomonOverlayPaneItem.h"
 
 #include "gnomonVisualizationMesh.h"
+#include "gnomonVisualizationCellImage.h"
 #include "gnomonVisualizationImagesSerie.h"
 
 #include <vtkCamera.h>
@@ -571,6 +574,9 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form)
     if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
         return this->setImagesSerie(images_serie);
     }
+    if (gnomonCellImage *cellImage = dynamic_cast<gnomonCellImage *>(form)) {
+        return this->setCellImage(cellImage);
+    }
     if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
         return this->setMesh(mesh);
     }
@@ -613,6 +619,37 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
     emit formAdded();
 }
 
+gnomonCellImage *gnomonViewForm::cellImage(void)
+{
+    return dynamic_cast<gnomonCellImage *>(d->forms["gnomonCellImage"]);
+}
+
+void gnomonViewForm::setCellImage(gnomonCellImage* cellImage)
+{
+    d->forms["gnomonCellImage"] = cellImage;
+
+    if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"])) {
+        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImage(this);
+        connect(d->formVisualization["gnomonCellImage"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
+            d->configure((QWidget*)this->parent()); 
+            qDebug()<<"Configured parameter pane";
+        });
+    }
+    gnomonVisualizationCellImage *formVisualizationCellImage = (gnomonVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
+    formVisualizationCellImage->setCellImage(cellImage);
+    formVisualizationCellImage->update();
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded();
+}
 
 gnomonMesh *gnomonViewForm::mesh(void)
 {
@@ -754,26 +791,28 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
         // emit channelsChanged(images_serie->channels());
         // this->setImagesSerie(images_serie);
     } else {
+        if((path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("tif"))&&(path.contains("seg",Qt::CaseInsensitive))) {
+            if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
+                d->formReaderCommand["gnomonCellImage"] = new gnomonCellImageReaderCommand("gnomonCellImageReaderPropertySpatialImage");
+            gnomonCellImageReaderCommand *cellImageCommand = (gnomonCellImageReaderCommand *) d->formReaderCommand["gnomonCellImage"];
+            cellImageCommand->setPath(path.remove("file://"));
+            cellImageCommand->redo();
+            
+            gnomonCellImage * cellImage = (gnomonCellImage *) cellImageCommand->cellImage()->clone();
+            if (!cellImage) {
+                qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
+                event->ignore();
+                return;
+            }
+            this->setForm("gnomonCellImage",cellImage);
 
-        gnomonImagesSerieReaderCommand *imageCommand = nullptr;
-        gnomonMeshReaderCommand *meshCommand = nullptr;
-
-        if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif") || (path.endsWith("czi"))) {
+        } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif") || (path.endsWith("czi"))) {
             if ((!d->formReaderCommand.contains("gnomonImagesSerie"))||(!d->formReaderCommand["gnomonImagesSerie"]))
                 d->formReaderCommand["gnomonImagesSerie"] = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-            imageCommand = (gnomonImagesSerieReaderCommand *) d->formReaderCommand["gnomonImagesSerie"];
-        }
-
-        if(path.endsWith("ply")) {
-            if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
-                d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
-            meshCommand = (gnomonMeshReaderCommand *) d->formReaderCommand["gnomonMesh"];
-        }
-
-
-        if(imageCommand) {
+            gnomonImagesSerieReaderCommand *imageCommand = (gnomonImagesSerieReaderCommand *) d->formReaderCommand["gnomonImagesSerie"];
             imageCommand->setPath(path.remove("file://"));
             imageCommand->redo();
+            
             gnomonImagesSerie * images_serie = imageCommand->imagesSerie()->copy();
             if (!images_serie) {
                 qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
@@ -783,9 +822,11 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             // emit channelsChanged(images_serie->channels());
             // emit timeChanged(images_serie->time());
             this->setForm("gnomonImagesSerie",images_serie);
-        }
-        else if(meshCommand)
-        {
+
+        } else if(path.endsWith("ply")) {
+            if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
+                d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
+            gnomonMeshReaderCommand *meshCommand = (gnomonMeshReaderCommand *) d->formReaderCommand["gnomonMesh"];
             meshCommand->setPath(path.remove("file://"));
             meshCommand->redo();
 
@@ -795,7 +836,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonMesh",mesh);
+            this->setForm("gnomonMesh",mesh);  
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }

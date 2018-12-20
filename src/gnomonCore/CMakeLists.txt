@@ -35,6 +35,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
+  gnomonAbstractCellImageReader
+  gnomonAbstractCellImageReader.h
   gnomonAbstractCommand
   gnomonAbstractCommand.h
   gnomonAbstractDynamicForm
@@ -76,6 +78,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellGraph.h
   gnomonCellImage
   gnomonCellImage.h
+  gnomonCellImageReaderCommand
+  gnomonCellImageReaderCommand.h
   gnomonCore
   gnomonCore.h
   gnomonCoreParameter
@@ -133,6 +137,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractCellImageReader.cpp
   gnomonAbstractFemSolver.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractImagesFusion.cpp
@@ -148,6 +153,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractSurfaceImageFromImage.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
+  gnomonCellImageReaderCommand.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonCoreParameter.cpp

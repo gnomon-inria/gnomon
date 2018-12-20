@@ -25,6 +25,7 @@ class gnomonLandmark;
 class gnomonAbstractForm;
 
 class gnomonImagesSerie;
+class gnomonCellImage;
 class gnomonMesh;
 
 class vtkRenderer;
@@ -60,12 +61,14 @@ public slots:
 
 public:
     void setForm(const QString&, gnomonAbstractForm *);
+    void setCellImage(gnomonCellImage*);
     void setImagesSerie(gnomonImagesSerie*);
     void setMesh(gnomonMesh*);
 
 public:
     gnomonAbstractForm *form(const QString&); 
     gnomonImagesSerie *imagesSerie(void);
+    gnomonCellImage *cellImage(void);
     gnomonMesh *mesh(void);
 
 public:
