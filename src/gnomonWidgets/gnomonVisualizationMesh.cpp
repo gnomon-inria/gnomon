@@ -169,9 +169,10 @@ void gnomonVisualizationMesh::update(void)
         dd->actor = nullptr;
     }
 
-    if (!dd->actor)
+    if (!dd->actor) {
         dd->actor = gnomonActorPolyData::New();
         d->view->renderer3D()->AddActor(dd->actor);
+    }
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);

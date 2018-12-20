@@ -23,10 +23,15 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActor.h
   gnomonActor2DCellImage
   gnomonActor2DCellImage.h
+  gnomonActor2DImageWidget
+  gnomonActor2DImageWidget.h
+  gnomonActor2DPolyData.h
   gnomonActor2DPolyData
   gnomonActor2DPolyData.h
   gnomonActorImage
   gnomonActorImage.h
+  gnomonActorImageVolume
+  gnomonActorImageVolume.h
   gnomonActorMesh
   gnomonActorMesh.h
   gnomonActorMesh_p.h
@@ -81,8 +86,10 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActor2DCellImage.cpp
+  gnomonActor2DImageWidget.cpp
   gnomonActor2DPolyData.cpp
   gnomonActorImage.cpp
+  gnomonActorImageVolume.cpp
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
   gnomonActorMeshCellGraph.cpp

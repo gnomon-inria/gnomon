@@ -22,22 +22,17 @@
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"
+#include "gnomonActorImageVolume.h"
+#include "gnomonActor2DImageWidget.h"
 
-#include <vtkColorTransferFunction.h>
 #include <vtkDataArray.h>
 #include <vtkImageData.h>
-#include <vtkImagePlaneWidget.h>
-#include <vtkLookupTable.h>
-#include <vtkPiecewiseFunction.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
-#include <vtkVolume.h>
-#include <vtkSmartVolumeMapper.h>
-#include <vtkVolumeProperty.h>
 
 
 // /////////////////////////////////////////////////////////////////
@@ -50,16 +45,13 @@ public:
     gnomonImagesSerie *imagesSerie;
 
 public:
-    vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
     int orientation = 2;
 
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
-    vtkSmartPointer<vtkVolume> volume = nullptr;
-    vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper = nullptr;
 
-    vtkSmartPointer<vtkColorTransferFunction> color_function = nullptr;
-    vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
+    gnomonActor2DImageWidget *actor2D = nullptr; 
+    gnomonActorImageVolume *volume = nullptr;
 
 public:
     QMap<QString, QMap<double, QColor> > channelColormaps;
@@ -128,12 +120,9 @@ void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSer
 void gnomonVisualizationImagesSerie::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
-    
-    dd->opacity->AddPoint(value_range[0],0.00);
-    dd->opacity->AddPoint(value_range[1],alpha);
 
-    dd->volume->GetProperty()->SetScalarOpacity(dd->opacity);
+    dd->actor2D->setOpacity(alpha);
+    dd->volume->setOpacity(alpha);
 }
 
 void gnomonVisualizationImagesSerie::updateChannelColorMap(void)
@@ -178,106 +167,43 @@ void gnomonVisualizationImagesSerie::update(void)
     dd->image = static_cast<vtkImageData *>(converter->output());
 
     delete converter;
-
-    if(!dd->color_function)
-        dd->color_function = vtkSmartPointer<vtkColorTransferFunction>::New();
-    dd->color_function->RemoveAllPoints();
-    // dd->color_function->AddRGBPoint(value_range[0],0,0,0);
-    // dd->color_function->AddRGBPoint(value_range[1],1,1,1);
-    for (const auto& val : colormap.keys()) {
-        double node = val*value_range[1] + (1-val)*value_range[0];
-        dd->color_function->AddRGBPoint(node, colormap[val].red()/255., colormap[val].green()/255., colormap[val].blue()/255.);
+    
+    if (!dd->actor2D) {
+        dd->actor2D = gnomonActor2DImageWidget::New();
     }
-
-    dd->color_function->ClampingOn();
-    dd->color_function->Modified();
-
-    if (!dd->opacity)
-        dd->opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    dd->opacity->RemoveAllPoints();
-    dd->opacity->AddPoint(value_range[0],0.00);
-    dd->opacity->AddPoint(value_range[1],alpha);
-
-    double image_range[2];
-    dd->image->GetPointData()->GetScalars()->GetRange(image_range);
-
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    int n_values = 1000;
-    lut->SetNumberOfTableValues(n_values);
-    for(size_t i = 0; i < n_values; ++i) {
-        double val = (i*image_range[1] + (n_values-i)*image_range[0])/(n_values-1.);
-        double *rgb = dd->color_function->GetColor(val);
-        double a = dd->opacity->GetValue(val);
-        lut->SetTableValue(i,rgb[0],rgb[1],rgb[2],a);
-    }
-    lut->SetTableRange(image_range);
-
-    int imageDims[3]; dd->image->GetDimensions(imageDims);
-
-    for(int i = 0; i < 3; i++) {
-
-        double color[3] = { 0, 0, 0 }; color[i] = 1;
-
-        if(!dd->planeWidget[i])
-            dd->planeWidget[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
-        dd->planeWidget[i]->SetInputData(dd->image);
-        dd->planeWidget[i]->SetInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
-        dd->planeWidget[i]->SetPlaneOrientation(i);
-        dd->planeWidget[i]->RestrictPlaneToVolumeOn();
-        dd->planeWidget[i]->GetPlaneProperty()->SetColor(color);
-        dd->planeWidget[i]->SetLookupTable(lut);
-        // dd->planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
-        dd->planeWidget[i]->SetMarginSizeX(0);
-        dd->planeWidget[i]->SetMarginSizeY(0);
-        dd->planeWidget[i]->SetSliceIndex(imageDims[i]/2);
-        dd->planeWidget[i]->DisplayTextOn();
-        dd->planeWidget[i]->InteractionOn();
-    }
-
-    if(!dd->volume_mapper)
-        dd->volume_mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
-
-    dd->volume_mapper->SetInputData(dd->image);
-    dd->volume_mapper->SetRequestedRenderModeToRayCast();
-    dd->volume_mapper->Modified();
-    dd->volume_mapper->Update();
-
-    if(!dd->volume) {
-        dd->volume = vtkSmartPointer<vtkVolume>::New();
+    dd->actor2D->setImage(dd->image);
+    dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
+    dd->actor2D->setColorMap(colormap);
+    dd->actor2D->setValueRange(value_range);
+    dd->actor2D->update();
+    
+    if (!dd->volume) {
+        dd->volume = gnomonActorImageVolume::New();
         d->view->renderer3D()->AddActor(dd->volume);
     }
-
-    vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
-    property->SetScalarOpacity(dd->opacity);
-    property->SetColor(dd->color_function);
-    property->ShadeOff();
-    property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
-
-    dd->volume->SetMapper(dd->volume_mapper);
-    dd->volume->SetProperty(property);
-    dd->volume->Modified();
-    dd->volume->Update();
-
+    dd->volume->setInteractor(d->view->interactor());
+    dd->volume->setImage(dd->image);
+    dd->volume->setColorMap(colormap);
+    dd->volume->setValueRange(value_range);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        dd->orientation = value;
+        dd->actor2D->setSliceOrientation(value);
     });
 
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        dd->planeWidget[dd->orientation]->SetSliceIndex(value/dd->image->GetSpacing()[dd->orientation]);
+        dd->actor2D->setSlice(value);
         this->render();
     });
 
     connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { 
-        for (int o=0;o<3;o++)
-            dd->planeWidget[o]->Off();
+        dd->actor2D->hide();
         this->render(); 
     });
     connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { 
-        for (int o=0;o<3;o++)
-            dd->planeWidget[o]->On();
+        dd->actor2D->show();
         this->render();
     });
+
     connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
     connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
     connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });

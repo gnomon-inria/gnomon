@@ -13,9 +13,7 @@
 // Code:
 
 #include "gnomonActorPolyData.h"
-
-#include <gnomonPolyDataCellImage>
-#include <gnomonCellImage>
+#include "gnomonPolyData.h"
 
 #include <dtkImagingCore>
 
