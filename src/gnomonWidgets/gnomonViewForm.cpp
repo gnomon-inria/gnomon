@@ -310,7 +310,6 @@ void gnomonViewFormPrivate::configure(QWidget *parent)
     this->refresh();
 }
 
-    
 void gnomonViewFormPrivate::refresh(void) 
 {
     this->formVisualizationPane->clearLayout();
@@ -599,24 +598,8 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
         });
     }
     gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
-
-    formVisualizationImagesSerie->setParameter("alpha",1.0);
-
-    gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)formVisualizationImagesSerie->parameters()["channel"];
-    channelParam->setValues(images_serie->channels());
-    channelParam->setValue(images_serie->channel());
-
-    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)formVisualizationImagesSerie->parameters()["value_range"];
-    valueRangeParam->setMinimumValue(0);
-    if (images_serie->image()->storageType() == QMetaType::UChar) {
-        valueRangeParam->setMaximumValue(255);
-        valueRangeParam->setValue(0,255);
-    } else if (images_serie->image()->storageType() == QMetaType::UShort) {
-        valueRangeParam->setMaximumValue(65535);
-        valueRangeParam->setValue(0,65535);
-    }
-
     formVisualizationImagesSerie->setImagesSerie(images_serie);
+    formVisualizationImagesSerie->update();
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);
@@ -649,25 +632,9 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh)
         });
     }
     gnomonVisualizationMesh *formVisualizationMesh = (gnomonVisualizationMesh *)d->formVisualization["gnomonMesh"];
-
-    formVisualizationMesh->setParameter("alpha",1.0);
-    
-    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)formVisualizationMesh->parameters()["property_name"];
-    QStringList properties = {""};
-    for (const auto& propertyName : mesh->vertexPropertyNames()) {
-        if(mesh->vertexProperty(propertyName)[mesh->vertexIds()[0]].canConvert<double>()) {
-            properties.append(propertyName);
-        }
-    }
-    propertyParam->setValues(properties);
-    propertyParam->setValue(QString(""));
-
-    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)formVisualizationMesh->parameters()["value_range"];
-    valueRangeParam->setMinimumValue(0);
-    valueRangeParam->setMaximumValue(255);
-    valueRangeParam->setValue(0,255);
-
     formVisualizationMesh->setMesh(mesh);
+
+    formVisualizationMesh->update();
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);

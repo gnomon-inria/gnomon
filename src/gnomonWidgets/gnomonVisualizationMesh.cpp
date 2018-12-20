@@ -80,8 +80,19 @@ void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
 {
     dd->mesh = mesh;
 
+    this->setParameter("alpha",1.0);
+    
+    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)d->parameters["property_name"];
+    QStringList properties = {""};
+    for (const auto& propertyName : dd->mesh->vertexPropertyNames()) {
+        if(dd->mesh->vertexProperty(propertyName)[dd->mesh->vertexIds()[0]].canConvert<double>()) {
+            properties.append(propertyName);
+        }
+    }
+    propertyParam->setValues(properties);
+    propertyParam->setValue(QString(""));
+    
     this->updateValueRange();
-    this->update();
 }
 
 void gnomonVisualizationMesh::updateOpacity(void)

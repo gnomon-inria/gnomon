@@ -97,7 +97,32 @@ gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
 void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSerie)
 {
     dd->imagesSerie = imagesSerie;
-    this->update();
+
+    this->setParameter("alpha",1.0);
+
+    dd->channelColormaps.clear();
+    if(dd->imagesSerie->channels().size()==1) {
+        delete d->parameters["channel"];
+        d->parameters.remove("channel");
+    } else {
+        if((!d->parameters.contains("channel"))||(!d->parameters["channel"])) {
+            d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
+        }
+        qDebug()<<Q_FUNC_INFO<<d->parameters["channel"];
+        gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)d->parameters["channel"];
+        channelParam->setValues(dd->imagesSerie->channels());
+        channelParam->setValue(dd->imagesSerie->channel());
+    }
+
+    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)d->parameters["value_range"];
+    valueRangeParam->setMinimumValue(0);
+    if (dd->imagesSerie->image()->storageType() == QMetaType::UChar) {
+        valueRangeParam->setMaximumValue(255);
+        valueRangeParam->setValue(0,255);
+    } else if (dd->imagesSerie->image()->storageType() == QMetaType::UShort) {
+        valueRangeParam->setMaximumValue(65535);
+        valueRangeParam->setValue(0,65535);
+    }
 }
 
 void gnomonVisualizationImagesSerie::updateOpacity(void)
@@ -113,10 +138,12 @@ void gnomonVisualizationImagesSerie::updateOpacity(void)
 
 void gnomonVisualizationImagesSerie::updateChannelColorMap(void)
 {
-    QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+    if(dd->imagesSerie->channels().size()>1) {
+        QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
 
-    if(dd->channelColormaps.contains(channel)) {
-        ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
+        if(dd->channelColormaps.contains(channel)) {
+            ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
+        }
     }
 }
 
@@ -135,14 +162,15 @@ void gnomonVisualizationImagesSerie::update(void)
         return;
 
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-
-    dd->channelColormaps[channel] = colormap;   
-
-    if(dd->imagesSerie->channels().contains(channel))
-        dd->imagesSerie->setChannel(channel);
+ 
+    if(dd->imagesSerie->channels().size()>1) {
+        QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+        if(dd->imagesSerie->channels().contains(channel))
+            dd->imagesSerie->setChannel(channel);
+        dd->channelColormaps[channel] = colormap;
+    }  
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(dd->imagesSerie->image());
