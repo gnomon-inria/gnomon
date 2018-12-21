@@ -37,6 +37,7 @@ public:
 
     void setName(const QString& name);
     void setValue(const QMap<double, QColor>& value);
+    void setValue(const QString& value);
 
 signals:
     void valueChanged(const QMap<double, QColor>& val);

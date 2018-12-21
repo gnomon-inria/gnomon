@@ -19,6 +19,7 @@
 
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonCoreParameter>
+#include "gnomonCoreParameterColor.h"
 
 #include "gnomonViewForm.h"
 

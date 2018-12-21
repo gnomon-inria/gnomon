@@ -16,6 +16,7 @@
 
 #include <gnomonVisualization/gnomonColorMapEditor.h>
 #include <gnomonVisualization/gnomonDoubleRangeEditor.h>
+#include "gnomonLookupTableEditor.h"
 
 QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)
 {
@@ -42,6 +43,9 @@ QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget 
     }
     if (gnomonCoreParameterColorMap *p = dynamic_cast<gnomonCoreParameterColorMap *>(parameter)) {
         return gnomonWidgetsParameterColorMap::widget(p, parent);
+    }
+    if (gnomonCoreParameterLookupTable *p = dynamic_cast<gnomonCoreParameterLookupTable *>(parameter)) {
+        return gnomonWidgetsParameterLookupTable::widget(p, parent);
     }
     return nullptr;
 }
@@ -231,6 +235,27 @@ QWidget *gnomonWidgetsParameterColorMap::widget(gnomonCoreParameterColorMap *par
         widget->setValue(parameter->value());
 
         QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) { 
+            parameter->setValue(val); 
+        });
+
+        return widget;
+
+    } else {
+        return nullptr;
+    }
+}
+
+QString gnomonWidgetsParameterLookupTable::style = QStringLiteral("lut_editor");
+
+QWidget *gnomonWidgetsParameterLookupTable::widget(gnomonCoreParameterLookupTable *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("lut_editor")) {
+        gnomonLookupTableEditor *widget = new gnomonLookupTableEditor(parent);
+        widget->setToolTip(parameter->doc());
+
+        widget->setValue(parameter->value());
+
+        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable *val) { 
             parameter->setValue(val); 
         });
 

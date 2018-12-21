@@ -54,6 +54,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonClutEditor
   gnomonClutEditor.h
   gnomonColorMapEditor.h
+  gnomonCoreParameterColor
+  gnomonCoreParameterColor.h
   gnomonDoubleEditor.h
   gnomonStringEditor.h
   gnomonDoubleRangeEditor.h
@@ -77,6 +79,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspectorViewWidget.h
   gnomonInspectorVolume
   gnomonInspectorVolume.h
+  gnomonLookupTable.h
+  gnomonLookupTableEditor.h
   gnomonPolyData
   gnomonPolyData.h
   gnomonPolyDataCellImage
@@ -107,6 +111,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActorScalarBar.cpp
   gnomonClutEditor.cpp
   gnomonColorMapEditor.cpp
+  gnomonCoreParameterColor.cpp
   gnomonStringEditor.cpp
   gnomonDoubleEditor.cpp
   gnomonDoubleRangeEditor.cpp
@@ -120,6 +125,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspectorViewTree.cpp
   gnomonInspectorViewWidget.cpp
   gnomonInspectorVolume.cpp
+  gnomonLookupTable.cpp
+  gnomonLookupTableEditor.cpp
   gnomonPolyData.cpp
   gnomonPolyDataCellImage.cpp
   gnomonPolyDataMesh.cpp

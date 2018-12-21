@@ -21,6 +21,8 @@
 
 #include <vtkImageData.h>
 
+class gnomonLookupTable;
+
 class GNOMONVISUALIZATION_EXPORT gnomonImageDataChannelBlending : public QObject, public vtkImageData
 {
 public:
@@ -29,15 +31,12 @@ public:
     static gnomonImageDataChannelBlending *New(void);
 
 public:
-	void setImages(QMap<QString, vtkImageData *> images);
+	void setImageChannels(QMap<QString, vtkImageData *> imageChannels);
+    void setChannelLookupTables(const QMap<QString, gnomonLookupTable *>&);
 
 public slots:
     void update(void);
     void modified(void);
-
-public slots:
-    void setValueRange(const QList<int>& value);
-    void setColorMap(const QMap<double,QColor>&);
 
 protected:
      gnomonImageDataChannelBlending(void);

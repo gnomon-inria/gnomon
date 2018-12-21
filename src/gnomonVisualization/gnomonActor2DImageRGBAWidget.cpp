@@ -62,7 +62,7 @@ public slots:
 
 void gnomonActor2DImageRGBAWidgetPrivate::updateOpacity(void)
 {
-    qDebug()<<Q_FUNC_INFO<<this->alpha;
+    // qDebug()<<Q_FUNC_INFO<<this->alpha;
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -99,12 +99,6 @@ void gnomonActor2DImageRGBAWidget::update(void)
     if(!d->image)
         return;
 
-    qDebug()<<Q_FUNC_INFO<<d->image;
-    qDebug()<<Q_FUNC_INFO<<d->image->GetDimensions()[0]<<d->image->GetDimensions()[1]<<d->image->GetDimensions()[2];
-    qDebug()<<Q_FUNC_INFO<<d->image->GetSpacing()[0]<<d->image->GetSpacing()[1]<<d->image->GetSpacing()[2];
-    qDebug()<<Q_FUNC_INFO<<d->image->GetPointData()->GetNumberOfComponents();
-    qDebug()<<Q_FUNC_INFO<<d->image->GetScalarPointer(0,0,0);
-
     int imageDims[3]; 
     d->image->GetDimensions(imageDims);
 
@@ -120,6 +114,8 @@ void gnomonActor2DImageRGBAWidget::update(void)
         d->planeWidget[i]->GetPlaneProperty()->SetColor(color);
         d->planeWidget[i]->GetColorMap()->SetLookupTable(NULL);
         d->planeWidget[i]->GetColorMap()->SetOutputFormatToRGBA();
+        d->planeWidget[i]->SetResliceInterpolateToNearestNeighbour(); 
+        d->planeWidget[i]->TextureInterpolateOff();   
         // d->planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
         d->planeWidget[i]->SetMarginSizeX(0);
         d->planeWidget[i]->SetMarginSizeY(0);

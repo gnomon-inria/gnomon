@@ -57,7 +57,7 @@ public slots:
 
 void gnomonActorImageRGBAVolumePrivate::updateOpacity(void)
 {
-    qDebug()<<Q_FUNC_INFO<<this->alpha;
+    // qDebug()<<Q_FUNC_INFO<<this->alpha;
 }
 
 // /////////////////////////////////////////////////////////////////

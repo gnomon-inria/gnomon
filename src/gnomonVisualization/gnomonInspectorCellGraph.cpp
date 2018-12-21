@@ -55,7 +55,7 @@ gnomonInspectorCellGraph::gnomonInspectorCellGraph(QWidget *parent) : QFrame(par
     d->vertexPropertyEditor->setName("Property Name");
 
     d->colorEditor = new gnomonColorMapEditor(this);
-    d->colorEditor->setName("Color Map");
+    // d->colorEditor->setName("Color Map");
 
     d->vertexPropertyRangeEditor = new gnomonDoubleRangeEditor(this);
     d->vertexPropertyRangeEditor->setName("Property Range");

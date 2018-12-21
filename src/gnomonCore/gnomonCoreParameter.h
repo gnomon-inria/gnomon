@@ -253,27 +253,6 @@ private:
 
 Q_DECLARE_METATYPE(gnomonCoreParameterStringList *);
 
-// ///////////////////////////////////////////////////////////////////
-// gnomonCoreParameterColormap
-// ///////////////////////////////////////////////////////////////////
-
-class GNOMONCORE_EXPORT gnomonCoreParameterColorMap : public gnomonCoreParameter
-{
-public:
-     gnomonCoreParameterColorMap(const QMap<double, QColor>& c, const QString& doc = QString());
-     gnomonCoreParameterColorMap(const QString& clut, const QString& doc = QString());
-    ~gnomonCoreParameterColorMap(void) = default;
-
-    QMap<double, QColor> value(void) const;
-
-    void setValue(const QMap<double, QColor>&);
-    void setValue(const QString&);
-
-private:
-    QMap<double, QColor> m_c;
-};
-
-Q_DECLARE_METATYPE(gnomonCoreParameterColorMap *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant

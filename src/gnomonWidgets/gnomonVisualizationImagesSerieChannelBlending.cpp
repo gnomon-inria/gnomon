@@ -19,6 +19,7 @@
 
 #include <gnomonCore/gnomonImagesSerie>
 #include <gnomonCore/gnomonCoreParameter>
+#include "gnomonCoreParameterColor.h"
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"
@@ -55,7 +56,10 @@ public:
     gnomonActorImageRGBAVolume *volume = nullptr;
 
 public:
-    QMap<QString, QMap<double, QColor> > channelColormaps;
+    QMap<QString, gnomonLookupTable *> channelLookupTables;
+
+public:
+    QMap<int, QString> defaultColormaps;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -66,17 +70,18 @@ gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieCha
 {
     dd->imagesSerie = Q_NULLPTR;
 
-    d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
-    d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
-    d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
+    // d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
+    // d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
+    // d->parameters["colormap"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("Greys"), "Colormap to apply to the image channel");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
 
-    connect(d->parameters["channel"], &gnomonCoreParameter::valueChanged, [=] () {
-        if(!dd->imagesSerie)
-            return;
-        this->updateChannelColorMap();
-        emit parametersChanged();
-    });
+
+    dd->defaultColormaps[0] = "0RGB_blue";
+    dd->defaultColormaps[1] = "0RGB_green";
+    dd->defaultColormaps[2] = "0RGB_red";
+    dd->defaultColormaps[3] = "0CMY_cyan";
+    dd->defaultColormaps[4] = "0CMY_magenta";
+    dd->defaultColormaps[5] = "0CMY_yellow";
 
 }
 
@@ -93,28 +98,32 @@ void gnomonVisualizationImagesSerieChannelBlending::setImagesSerie(gnomonImagesS
 
     this->setParameter("alpha",1.0);
 
-    dd->channelColormaps.clear();
-    if(dd->imagesSerie->channels().size()==1) {
-        delete d->parameters["channel"];
-        d->parameters.remove("channel");
-    } else {
-        if((!d->parameters.contains("channel"))||(!d->parameters["channel"])) {
-            d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
-        }
-        qDebug()<<Q_FUNC_INFO<<d->parameters["channel"];
-        gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)d->parameters["channel"];
-        channelParam->setValues(dd->imagesSerie->channels());
-        channelParam->setValue(dd->imagesSerie->channel());
+    dd->channelLookupTables.clear();
+
+    for (const auto& parameterName : d->parameters.keys()) {
+        if(parameterName.contains("lookuptable")) {
+            delete d->parameters[parameterName];
+            d->parameters.remove(parameterName);
+        } 
     }
 
-    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)d->parameters["value_range"];
-    valueRangeParam->setMinimumValue(0);
+    QList<double> valueRange = {0,1};
     if (dd->imagesSerie->image()->storageType() == QMetaType::UChar) {
-        valueRangeParam->setMaximumValue(255);
-        valueRangeParam->setValue(0,255);
+        valueRange[1] = 255;
     } else if (dd->imagesSerie->image()->storageType() == QMetaType::UShort) {
-        valueRangeParam->setMaximumValue(65535);
-        valueRangeParam->setValue(0,65535);
+        valueRange[1] = 65535;
+    }
+
+    if(dd->imagesSerie->channels().size()==1) {
+        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("grey", valueRange, true), "Lookuptable to apply to the image");
+        dd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+    } else {
+        int iChannel = 0;
+        for (const auto& channelName : dd->imagesSerie->channels()) {
+            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true), "Lookuptable to apply to the "+channelName+" image channel");
+            dd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
+            iChannel++;
+        }
     }
 }
 
@@ -124,17 +133,6 @@ void gnomonVisualizationImagesSerieChannelBlending::updateOpacity(void)
 
     dd->actor2D->setOpacity(alpha);
     dd->volume->setOpacity(alpha);
-}
-
-void gnomonVisualizationImagesSerieChannelBlending::updateChannelColorMap(void)
-{
-    if(dd->imagesSerie->channels().size()>1) {
-        QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
-
-        if(dd->channelColormaps.contains(channel)) {
-            ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
-        }
-    }
 }
 
 QImage gnomonVisualizationImagesSerieChannelBlending::imageRendering(void)
@@ -152,34 +150,24 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
         return;
 
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
-    QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+    // QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
+    // QMap<double, QColor> colormap = ((gnomonCoreParameterLookupTable *)d->parameters["colormap"])->value()->colorMap();
  
-    QString channel;
-    if(dd->imagesSerie->channels().size()>1) {
-        channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
-        if(dd->imagesSerie->channels().contains(channel))
-            dd->imagesSerie->setChannel(channel);
-        dd->channelColormaps[channel] = colormap;
-    } else {
-        channel = "";
-    }
 
     QMap<QString,vtkImageData *> channelImages;
     for (const auto& channelName : dd->imagesSerie->channels()) {
-        qDebug()<<Q_FUNC_INFO<<channelName;
         dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
         converter->setInput(dd->imagesSerie->image(channelName));
         converter->convert();
         channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
         delete converter;
-        qDebug()<<Q_FUNC_INFO<<channelName<<channelImages[channelName];
     }
 
     gnomonImageDataChannelBlending *blending = gnomonImageDataChannelBlending::New();
-    blending->setImages(channelImages);
-    blending->setColorMap(colormap);
-    blending->setValueRange(value_range);
+    blending->setImageChannels(channelImages);
+    blending->setChannelLookupTables(dd->channelLookupTables);
+    // blending->setColorMap(colormap);
+    // blending->setValueRange(value_range);
     blending->update();
     dd->image = blending;
     

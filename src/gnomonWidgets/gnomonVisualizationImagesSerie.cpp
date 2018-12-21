@@ -19,6 +19,7 @@
 
 #include <gnomonCore/gnomonImagesSerie>
 #include <gnomonCore/gnomonCoreParameter>
+#include "gnomonCoreParameterColor.h"
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"

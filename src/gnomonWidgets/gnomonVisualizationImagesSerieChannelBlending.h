@@ -38,7 +38,6 @@ public:
 
 public slots:
     void updateOpacity(void);
-    void updateChannelColorMap(void);
 
 public:
     QImage imageRendering(void);
