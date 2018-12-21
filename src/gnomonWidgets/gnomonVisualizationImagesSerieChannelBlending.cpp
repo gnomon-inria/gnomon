@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonVisualizationImagesSerie.h"
+#include "gnomonVisualizationImagesSerieChannelBlending.h"
 #include "gnomonAbstractVisualization_p.h"
 
 #include <QtWidgets>
@@ -22,8 +22,9 @@
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"
-#include "gnomonActorImageVolume.h"
-#include "gnomonActor2DImageWidget.h"
+#include "gnomonImageDataChannelBlending.h"
+#include "gnomonActorImageRGBAVolume.h"
+#include "gnomonActor2DImageRGBAWidget.h"
 
 #include <vtkDataArray.h>
 #include <vtkImageData.h>
@@ -36,10 +37,10 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// gnomonVisualizationImagesSeriePrivate
+// gnomonVisualizationImagesSerieChannelBlendingPrivate
 // /////////////////////////////////////////////////////////////////
 
-class gnomonVisualizationImagesSeriePrivate
+class gnomonVisualizationImagesSerieChannelBlendingPrivate
 {
 public:
     gnomonImagesSerie *imagesSerie;
@@ -50,18 +51,18 @@ public:
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
 
-    gnomonActor2DImageWidget *actor2D = nullptr;
-    gnomonActorImageVolume *volume = nullptr;
+    gnomonActor2DImageRGBAWidget *actor2D = nullptr; 
+    gnomonActorImageRGBAVolume *volume = nullptr;
 
 public:
     QMap<QString, QMap<double, QColor> > channelColormaps;
 };
 
 // /////////////////////////////////////////////////////////////////
-// gnomonVisualizationImagesSerie
+// gnomonVisualizationImagesSerieChannelBlending
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationImagesSeriePrivate)
+gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieChannelBlending(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationImagesSerieChannelBlendingPrivate)
 {
     dd->imagesSerie = Q_NULLPTR;
 
@@ -79,14 +80,14 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
 
 }
 
-gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
+gnomonVisualizationImagesSerieChannelBlending::~gnomonVisualizationImagesSerieChannelBlending(void)
 {
     delete dd;
 
     dd = NULL;
 }
 
-void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSerie)
+void gnomonVisualizationImagesSerieChannelBlending::setImagesSerie(gnomonImagesSerie *imagesSerie)
 {
     dd->imagesSerie = imagesSerie;
 
@@ -117,7 +118,7 @@ void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSer
     }
 }
 
-void gnomonVisualizationImagesSerie::updateOpacity(void)
+void gnomonVisualizationImagesSerieChannelBlending::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
 
@@ -125,7 +126,7 @@ void gnomonVisualizationImagesSerie::updateOpacity(void)
     dd->volume->setOpacity(alpha);
 }
 
-void gnomonVisualizationImagesSerie::updateChannelColorMap(void)
+void gnomonVisualizationImagesSerieChannelBlending::updateChannelColorMap(void)
 {
     if(dd->imagesSerie->channels().size()>1) {
         QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
@@ -136,7 +137,7 @@ void gnomonVisualizationImagesSerie::updateChannelColorMap(void)
     }
 }
 
-QImage gnomonVisualizationImagesSerie::imageRendering(void)
+QImage gnomonVisualizationImagesSerieChannelBlending::imageRendering(void)
 {
     d->updateOffscreenRenderer(dd->image->GetBounds());
 
@@ -145,7 +146,7 @@ QImage gnomonVisualizationImagesSerie::imageRendering(void)
     return d->offscreenImageRendering();
 }
 
-void gnomonVisualizationImagesSerie::update(void)
+void gnomonVisualizationImagesSerieChannelBlending::update(void)
 {
     if(!dd->imagesSerie)
         return;
@@ -164,31 +165,38 @@ void gnomonVisualizationImagesSerie::update(void)
         channel = "";
     }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(dd->imagesSerie->image());
-    converter->convert();
-    dd->image = static_cast<vtkImageData *>(converter->output());
-    delete converter;
+    QMap<QString,vtkImageData *> channelImages;
+    for (const auto& channelName : dd->imagesSerie->channels()) {
+        qDebug()<<Q_FUNC_INFO<<channelName;
+        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+        converter->setInput(dd->imagesSerie->image(channelName));
+        converter->convert();
+        channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
+        delete converter;
+        qDebug()<<Q_FUNC_INFO<<channelName<<channelImages[channelName];
+    }
 
+    gnomonImageDataChannelBlending *blending = gnomonImageDataChannelBlending::New();
+    blending->setImages(channelImages);
+    blending->setColorMap(colormap);
+    blending->setValueRange(value_range);
+    blending->update();
+    dd->image = blending;
     
     if (!dd->actor2D) {
-        dd->actor2D = gnomonActor2DImageWidget::New();
+        dd->actor2D = gnomonActor2DImageRGBAWidget::New();
     }
     dd->actor2D->setImage(dd->image);
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
-    dd->actor2D->setColorMap(colormap);
-    dd->actor2D->setValueRange(value_range);
     dd->actor2D->setOpacity(alpha);
     dd->actor2D->update();
     
     if (!dd->volume) {
-        dd->volume = gnomonActorImageVolume::New();
+        dd->volume = gnomonActorImageRGBAVolume::New();
         d->view->renderer3D()->AddActor(dd->volume);
     }
     dd->volume->setInteractor(d->view->interactor());
     dd->volume->setImage(dd->image);
-    dd->volume->setColorMap(colormap);
-    dd->volume->setValueRange(value_range);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
@@ -224,7 +232,7 @@ void gnomonVisualizationImagesSerie::update(void)
     this->render();
 }
 
-void gnomonVisualizationImagesSerie::render(void)
+void gnomonVisualizationImagesSerieChannelBlending::render(void)
 {
     this->updateOpacity();
     d->view->render();
@@ -232,4 +240,4 @@ void gnomonVisualizationImagesSerie::render(void)
 
 
 //
-// gnomonVisualizationImagesSerie.cpp ends here
+// gnomonVisualizationImagesSerieChannelBlending.cpp ends here

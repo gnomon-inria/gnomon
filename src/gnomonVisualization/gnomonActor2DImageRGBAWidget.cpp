@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonActor2DImageChannelBlendingWidget.h"
+#include "gnomonActor2DImageRGBAWidget.h"
 
 #include <dtkImagingCore>
 
@@ -36,10 +36,10 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// gnomonActor2DImageChannelBlendingWidgetPrivate
+// gnomonActor2DImageRGBAWidgetPrivate
 // /////////////////////////////////////////////////////////////////
 
-class gnomonActor2DImageChannelBlendingWidgetPrivate
+class gnomonActor2DImageRGBAWidgetPrivate
 {
 public:
     vtkSmartPointer<vtkImageData> image;
@@ -60,18 +60,18 @@ public slots:
     void updateColorFunction(void);
 };
 
-void gnomonActor2DImageChannelBlendingWidgetPrivate::updateOpacity(void)
+void gnomonActor2DImageRGBAWidgetPrivate::updateOpacity(void)
 {
     qDebug()<<Q_FUNC_INFO<<this->alpha;
 }
 
 // /////////////////////////////////////////////////////////////////
-// gnomonActor2DImageChannelBlendingWidget
+// gnomonActor2DImageRGBAWidget
 // /////////////////////////////////////////////////////////////////
 
-vtkStandardNewMacro(gnomonActor2DImageChannelBlendingWidget);
+vtkStandardNewMacro(gnomonActor2DImageRGBAWidget);
 
-void gnomonActor2DImageChannelBlendingWidget::setInteractor(void *interactor)
+void gnomonActor2DImageRGBAWidget::setInteractor(void *interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
     for(int i = 0; i < 3; i++) {
@@ -81,7 +81,7 @@ void gnomonActor2DImageChannelBlendingWidget::setInteractor(void *interactor)
     }
 }
 
-void gnomonActor2DImageChannelBlendingWidget::setImage(vtkImageData * image)
+void gnomonActor2DImageRGBAWidget::setImage(vtkImageData * image)
 {
     d->image = image;
 
@@ -89,12 +89,12 @@ void gnomonActor2DImageChannelBlendingWidget::setImage(vtkImageData * image)
     this->update();
 }
 
-void gnomonActor2DImageChannelBlendingWidget::modified(void)
+void gnomonActor2DImageRGBAWidget::modified(void)
 {
     d->modified = true;
 }
 
-void gnomonActor2DImageChannelBlendingWidget::update(void)
+void gnomonActor2DImageRGBAWidget::update(void)
 {
     if(!d->image)
         return;
@@ -132,59 +132,49 @@ void gnomonActor2DImageChannelBlendingWidget::update(void)
 }
 
 
-void gnomonActor2DImageChannelBlendingWidget::setSliceOrientation(int value)
+void gnomonActor2DImageRGBAWidget::setSliceOrientation(int value)
 {
     d->orientation = value;
 }
 
-void gnomonActor2DImageChannelBlendingWidget::setSlice(int value)
+void gnomonActor2DImageRGBAWidget::setSlice(int value)
 {
     d->planeWidget[d->orientation]->SetSliceIndex(value/d->image->GetSpacing()[d->orientation]);
     d->interactor->Render();
 }
 
-void gnomonActor2DImageChannelBlendingWidget::hide(void)
+void gnomonActor2DImageRGBAWidget::hide(void)
 {        
     for (int o=0;o<3;o++)
         d->planeWidget[o]->Off();
 }
 
-void gnomonActor2DImageChannelBlendingWidget::show(void)
+void gnomonActor2DImageRGBAWidget::show(void)
 {
     for (int o=0;o<3;o++)
         d->planeWidget[o]->On();
 }
 
 
-void gnomonActor2DImageChannelBlendingWidget::setOpacity(double value)
+void gnomonActor2DImageRGBAWidget::setOpacity(double value)
 {
     d->alpha = value;
     d->updateOpacity();
     d->interactor->Render();
 }
 
-gnomonActor2DImageChannelBlendingWidget::gnomonActor2DImageChannelBlendingWidget(void) : gnomonActor(), d(new gnomonActor2DImageChannelBlendingWidgetPrivate)
+gnomonActor2DImageRGBAWidget::gnomonActor2DImageRGBAWidget(void) : gnomonActor(), d(new gnomonActor2DImageRGBAWidgetPrivate)
 {
-    // d->image = Q_NULLPTR;
-
-    // d->colorFunction = Q_NULLPTR;
-    // d->opacity = Q_NULLPTR;
-
     d->orientation = 2;
 
     d->alpha = 1;
-    // d->value_range[0] = 0.;
-    // d->value_range[1] = 1.;
-    // d->colormap = QMap<double, QColor>({
-    //     {0., QColor(0, 0, 0, 255)},
-    //     {1., QColor(255, 255, 255, 255)} });
 }
 
-gnomonActor2DImageChannelBlendingWidget::~gnomonActor2DImageChannelBlendingWidget(void)
+gnomonActor2DImageRGBAWidget::~gnomonActor2DImageRGBAWidget(void)
 {
     delete d;
     d = NULL;
 }
 
 //
-// gnomonActor2DImageChannelBlendingWidget.cpp ends here
+// gnomonActor2DImageRGBAWidget.cpp ends here

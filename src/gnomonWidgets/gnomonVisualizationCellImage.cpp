@@ -191,7 +191,7 @@ void gnomonVisualizationCellImage::update(void)
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
     dd->actor2D->setInteractor(d->view->interactor());
-    dd->actor2D->setSliceThickness(0.5);
+    dd->actor2D->setSliceThickness(0.1);
     dd->actor2D->setPolyData(dd->polydata);
     // dd->actor2D->setColorMap(colormap);
     // dd->actor2D->setValueRange(value_range);

@@ -25,8 +25,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActor2DCellImage.h
   gnomonActor2DImageWidget
   gnomonActor2DImageWidget.h
-  gnomonActor2DImageChannelBlendingWidget
-  gnomonActor2DImageChannelBlendingWidget.h
+  gnomonActor2DImageRGBAWidget
+  gnomonActor2DImageRGBAWidget.h
   gnomonActor2DPolyData.h
   gnomonActor2DPolyData
   gnomonActor2DPolyData.h
@@ -34,6 +34,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorImage.h
   gnomonActorImageVolume
   gnomonActorImageVolume.h
+  gnomonActorImageRGBAVolume
+  gnomonActorImageRGBAVolume.h
   gnomonActorMesh
   gnomonActorMesh.h
   gnomonActorMesh_p.h
@@ -55,6 +57,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonDoubleEditor.h
   gnomonStringEditor.h
   gnomonDoubleRangeEditor.h
+  gnomonImageDataChannelBlending
+  gnomonImageDataChannelBlending.h
   gnomonInspector
   gnomonInspector.h
   gnomonInspectorCellGraph
@@ -89,10 +93,11 @@ set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActor2DCellImage.cpp
   gnomonActor2DImageWidget.cpp
-  gnomonActor2DImageChannelBlendingWidget.cpp
+  gnomonActor2DImageRGBAWidget.cpp
   gnomonActor2DPolyData.cpp
   gnomonActorImage.cpp
   gnomonActorImageVolume.cpp
+  gnomonActorImageRGBAVolume.cpp
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
   gnomonActorMeshCellGraph.cpp
@@ -105,6 +110,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonStringEditor.cpp
   gnomonDoubleEditor.cpp
   gnomonDoubleRangeEditor.cpp
+  gnomonImageDataChannelBlending.cpp
   gnomonInspector.cpp
   gnomonInspectorCellGraph.cpp
   gnomonInspectorSlicePlanes.cpp

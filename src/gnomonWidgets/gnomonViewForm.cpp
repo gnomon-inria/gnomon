@@ -38,6 +38,7 @@
 #include "gnomonVisualizationMesh.h"
 #include "gnomonVisualizationCellImage.h"
 #include "gnomonVisualizationImagesSerie.h"
+#include "gnomonVisualizationImagesSerieChannelBlending.h"
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -597,13 +598,15 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie)
     // d->time_slider->setVisible(enable_slider);
 
     if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
-        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
+        // d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
+        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending(this);
         connect(d->formVisualization["gnomonImagesSerie"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
             d->configure((QWidget*)this->parent()); 
             qDebug()<<"Configured parameter pane";
         });
     }
-    gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
+    // gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
+    gnomonVisualizationImagesSerieChannelBlending *formVisualizationImagesSerie = (gnomonVisualizationImagesSerieChannelBlending *)d->formVisualization["gnomonImagesSerie"];
     formVisualizationImagesSerie->setImagesSerie(images_serie);
     formVisualizationImagesSerie->update();
 

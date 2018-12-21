@@ -59,6 +59,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonVisualizationCellImage
   gnomonVisualizationImagesSerie.h
   gnomonVisualizationImagesSerie
+  gnomonVisualizationImagesSerieChannelBlending.h
+  gnomonVisualizationImagesSerieChannelBlending
   gnomonVisualizationMesh.h
   gnomonVisualizationMesh
   gnomonWidgets
@@ -105,6 +107,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonViewVolumicPool.cpp
   gnomonVisualizationCellImage.cpp
   gnomonVisualizationImagesSerie.cpp
+  gnomonVisualizationImagesSerieChannelBlending.cpp
   gnomonVisualizationMesh.cpp
   gnomonWidgetsParameter.cpp
   gnomonWorkspace.cpp

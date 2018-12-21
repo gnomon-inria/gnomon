@@ -22,12 +22,12 @@
 
 class vtkImageData;
 
-class GNOMONVISUALIZATION_EXPORT gnomonActor2DImageChannelBlendingWidget : public gnomonActor
+class GNOMONVISUALIZATION_EXPORT gnomonActor2DImageRGBAWidget : public gnomonActor
 {
 public:
-    vtkTypeMacro(gnomonActor2DImageChannelBlendingWidget, vtkAssembly);
+    vtkTypeMacro(gnomonActor2DImageRGBAWidget, vtkAssembly);
 
-    static gnomonActor2DImageChannelBlendingWidget *New(void);
+    static gnomonActor2DImageRGBAWidget *New(void);
 
 public:
     void setInteractor(void *interactor) override;
@@ -49,17 +49,17 @@ public slots:
     void setOpacity(double);
 
 protected:
-     gnomonActor2DImageChannelBlendingWidget(void);
-    ~gnomonActor2DImageChannelBlendingWidget(void);
+     gnomonActor2DImageRGBAWidget(void);
+    ~gnomonActor2DImageRGBAWidget(void);
 
 private:
-    gnomonActor2DImageChannelBlendingWidget(const gnomonActor2DImageChannelBlendingWidget&);
-    void operator = (const gnomonActor2DImageChannelBlendingWidget&);
+    gnomonActor2DImageRGBAWidget(const gnomonActor2DImageRGBAWidget&);
+    void operator = (const gnomonActor2DImageRGBAWidget&);
 
 private:
-	class gnomonActor2DImageChannelBlendingWidgetPrivate *d;
+	class gnomonActor2DImageRGBAWidgetPrivate *d;
 };
 
 
 //
-// gnomonActor2DImageChannelBlendingWidget.h ends here
+// gnomonActor2DImageRGBAWidget.h ends here
