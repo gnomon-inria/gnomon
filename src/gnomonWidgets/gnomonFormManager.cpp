@@ -142,11 +142,11 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
     QString writerPlugin;
     if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
         d->formWriterCommand[item] = new gnomonImagesSerieWriterCommand("gnomonImagesSerieWriter");
-        dynamic_cast<gnomonImagesSerieWriterCommand *>(d->formWriterCommand[item])->setImagesSerie(images_serie);
+        static_cast<gnomonImagesSerieWriterCommand *>(d->formWriterCommand[item])->setImagesSerie(images_serie);
     }
     if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
         d->formWriterCommand[item] = new gnomonMeshWriterCommand("gnomonMeshWriterPropertyTopomesh");
-        dynamic_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
+        static_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
     }
 
     d->contents->layout()->addWidget(item);

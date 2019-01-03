@@ -149,7 +149,7 @@ gnomonActorImageRGBAVolume::gnomonActorImageRGBAVolume(void) : gnomonActor(), d(
     d->volume_mapper = Q_NULLPTR;
     d->volume = Q_NULLPTR;
     d->interactor = Q_NULLPTR;
-    
+
     d->opacity = Q_NULLPTR;
 
     d->alpha = 1;
