@@ -45,6 +45,8 @@ public:
     vtkSmartPointer<vtkSmartVolumeMapper> volume_mapper;
     vtkSmartPointer<vtkVolume> volume;
 
+    vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
+
     vtkRenderWindowInteractor *interactor;
 
     double alpha;
@@ -57,7 +59,12 @@ public slots:
 
 void gnomonActorImageRGBAVolumePrivate::updateOpacity(void)
 {
-    // qDebug()<<Q_FUNC_INFO<<this->alpha;
+    if (!this->opacity)
+        return;
+
+    this->opacity->RemoveAllPoints();
+    this->opacity->AddPoint(0,0.00);
+    this->opacity->AddPoint(255,this->alpha);
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -94,7 +101,6 @@ void gnomonActorImageRGBAVolume::update(void)
 
     d->volume_mapper->SetInputData(d->image);
     d->volume_mapper->SetBlendModeToComposite();
-    // d->volume_mapper->SetRequestedRenderModeToRayCast();
     d->volume_mapper->SetRequestedRenderModeToDefault();
     d->volume_mapper->Modified();
     d->volume_mapper->Update();
@@ -104,10 +110,21 @@ void gnomonActorImageRGBAVolume::update(void)
         this->AddPart(d->volume);
     }
 
+    if (!d->opacity)
+        d->opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    d->updateOpacity();
+
+    if(!d->volume) {
+        d->volume = vtkSmartPointer<vtkVolume>::New();
+        this->AddPart(d->volume);
+    }
+
     vtkSmartPointer<vtkVolumeProperty> property = vtkSmartPointer<vtkVolumeProperty>::New();
+    property->SetScalarOpacity(d->opacity);
     property->IndependentComponentsOff();
     property->ShadeOff();
     property->SetInterpolationTypeToNearest();
+
 
     d->volume->SetMapper(d->volume_mapper);
     d->volume->SetProperty(property);
@@ -132,6 +149,8 @@ gnomonActorImageRGBAVolume::gnomonActorImageRGBAVolume(void) : gnomonActor(), d(
     d->volume_mapper = Q_NULLPTR;
     d->volume = Q_NULLPTR;
     d->interactor = Q_NULLPTR;
+    
+    d->opacity = Q_NULLPTR;
 
     d->alpha = 1;
 }
