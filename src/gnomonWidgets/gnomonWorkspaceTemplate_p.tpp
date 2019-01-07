@@ -18,6 +18,8 @@ gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
 template <typename T>
 void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString& algorithm)
 {
+    qDebug()<<Q_FUNC_INFO<<"Configure!";
+
     if (this->pane_item_params_layout) {
         for(int row = 0, max_row = this->pane_item_params_layout->count(); row < max_row; ++row) {
             QLayoutItem *forDeletion = this->pane_item_params_layout->takeAt(0);
@@ -30,13 +32,10 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
         this->pane_item_params_layout = new QFormLayout(parent);
     }
 
-    if (this->command) {
-        delete this->command;
-        this->command = nullptr;
-    }
+    this->algorithm=algorithm;
+
 
     if (!algorithm.isEmpty()) {
-        this->command = new T(algorithm);
         QMap<QString, gnomonCoreParameter *> parameters = this->command->parameters();
         for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
             QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
@@ -56,8 +55,16 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
         combo_box->addItem(*it);
     }
     combo_box->model()->sort(0);
+    this->command = new T(combo_box->currentText());
 
-    parent->connect(combo_box, SIGNAL(currentIndexChanged(QString)), parent, SLOT(configure(QString)));
+    QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm) {
+        if (this->command) {
+            delete this->command;
+            this->command = nullptr;
+        }
+        this->command = new T(algorithm);
+        this->configure(parent, algorithm);
+     });
 
     gnomonOverlayPaneItem *pane_item_algorithm = new gnomonOverlayPaneItem(parent);
     pane_item_algorithm->setTitle("Algorithm");

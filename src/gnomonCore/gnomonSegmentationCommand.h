@@ -36,9 +36,8 @@ public:
     void setParameter(const QString&, const QVariant&);
 
 public:
-    gnomonImagesSerie *output();
+    gnomonCellImage *output();
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
-    gnomonCellImage *computedImage(void) const;
 
 private:
     class gnomonSegmentationCommandPrivate *d;

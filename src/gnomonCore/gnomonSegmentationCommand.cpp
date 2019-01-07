@@ -11,7 +11,6 @@ class gnomonSegmentationCommandPrivate
 {
 public:
     gnomonImagesSerie *images_serie = nullptr;
-    gnomonCellImage *computed_image = nullptr;
 };
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
@@ -30,9 +29,6 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new
 
 gnomonSegmentationCommand::~gnomonSegmentationCommand(void)
 {
-    if (d->computed_image)
-        delete d->computed_image;
-
     delete d;
 }
 
@@ -40,9 +36,7 @@ void gnomonSegmentationCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->images_serie);
     this->action->run();
-    d->computed_image = ((gnomonAbstractCellImageFromImage *) this->action)->computedImage();
 }
 
 void gnomonSegmentationCommand::undo(void)
@@ -55,6 +49,7 @@ void gnomonSegmentationCommand::undo(void)
 void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
 {
     d->images_serie = images_serie;
+    ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->images_serie);
 }
 
 gnomonImagesSerie *gnomonSegmentationCommand::input()
@@ -62,9 +57,9 @@ gnomonImagesSerie *gnomonSegmentationCommand::input()
     return ((gnomonAbstractCellImageFromImage *) this->action)->input();
 }
 
-gnomonImagesSerie *gnomonSegmentationCommand::output()
+gnomonCellImage *gnomonSegmentationCommand::output()
 {
-    return ((gnomonAbstractCellImageFromImage *) this->action)->output();
+    return ((gnomonAbstractCellImageFromImage *) this->action)->computedImage();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const
@@ -75,9 +70,4 @@ QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void)
 void gnomonSegmentationCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
-}
-
-gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
-{
-    return d->computed_image;
 }

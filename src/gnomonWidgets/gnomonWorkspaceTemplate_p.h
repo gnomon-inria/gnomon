@@ -35,6 +35,7 @@ public:
     void configure(QWidget *widget, const QString& algorithm);
 
 public:
+    QString algorithm;
     T *command = nullptr;
     QFormLayout *pane_item_params_layout = nullptr;
 };
