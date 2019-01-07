@@ -111,6 +111,8 @@ void gnomonVisualizationMesh::updateOpacity(void)
 
 void gnomonVisualizationMesh::updateValueRange(void)
 {
+    qDebug()<<Q_FUNC_INFO;
+
     QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
 
     QMap<long, QVariant> vertexProperty;
@@ -131,7 +133,6 @@ void gnomonVisualizationMesh::updateValueRange(void)
 
     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
-
 }
 
 QImage gnomonVisualizationMesh::imageRendering(void)

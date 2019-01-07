@@ -95,13 +95,13 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
         QString export_file_path;
         if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"), path, tr("Images (*.inr.gz *.inr *.tif)"));
-            dynamic_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setImagesSerie(images_serie);
-            dynamic_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+            static_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setImagesSerie(images_serie);
+            static_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         }
         if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save mesh"), path, tr("Meshes (*.ply)"));
-            dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setMesh(mesh);
-            dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+            static_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setMesh(mesh);
+            static_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         }
 
         if(!export_file_path.isEmpty()) {

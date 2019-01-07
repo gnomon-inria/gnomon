@@ -19,6 +19,7 @@
 
 #include <gnomonCore/gnomonCellImage>
 #include <gnomonCore/gnomonCoreParameter>
+#include "gnomonCoreParameterColor.h"
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"
@@ -56,17 +57,17 @@ gnomonVisualizationCellImage::gnomonVisualizationCellImage(gnomonViewForm* view)
 {
     dd->cellImage = Q_NULLPTR;
 
-    // d->parameters["property_name"] = new gnomonCoreParameterStringList("", {""}, "CellImage property to be displayed");
-    // d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
-    // d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the cellImage");
+    d->parameters["property_name"] = new gnomonCoreParameterStringList("", {""}, "CellImage property to be displayed");
+    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
 
-    // connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
-    //     if(!dd->cellImage)
-    //         return;
-    //     this->updateValueRange();
-    //     emit parametersChanged();
-    // });
+    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+        if(!dd->cellImage)
+            return;
+        this->updateValueRange();
+        emit parametersChanged();
+    });
 }
 
 gnomonVisualizationCellImage::~gnomonVisualizationCellImage(void)
@@ -82,17 +83,17 @@ void gnomonVisualizationCellImage::setCellImage(gnomonCellImage *cellImage)
 
     this->setParameter("alpha",1.0);
     
-    // gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)d->parameters["property_name"];
-    // QStringList properties = {""};
-    // for (const auto& propertyName : dd->cellImage->vertexPropertyNames()) {
-    //     if(dd->cellImage->vertexProperty(propertyName)[dd->cellImage->vertexIds()[0]].canConvert<double>()) {
-    //         properties.append(propertyName);
-    //     }
-    // }
-    // propertyParam->setValues(properties);
-    // propertyParam->setValue(QString(""));
-    
-    // this->updateValueRange();
+    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)d->parameters["property_name"];
+    QStringList properties = {""};
+    for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
+         if(dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]].canConvert<double>()) {
+                properties.append(propertyName);
+         }
+    }
+    propertyParam->setValues(properties);
+    propertyParam->setValue(QString(""));
+
+    this->updateValueRange();
 }
 
 void gnomonVisualizationCellImage::updateOpacity(void)
@@ -108,30 +109,28 @@ void gnomonVisualizationCellImage::updateOpacity(void)
     }
 }
 
-// void gnomonVisualizationCellImage::updateValueRange(void)
-// {
-//     QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+void gnomonVisualizationCellImage::updateValueRange(void)
+{
+     QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
 
-//     QMap<long, QVariant> vertexProperty;
-//     if(dd->cellImage->vertexPropertyNames().contains(property_name)) {
-//         vertexProperty = dd->cellImage->vertexProperty(property_name);
-//     } else {
-//         for (const auto& vertexId : dd->cellImage->vertexIds()) {
-//             vertexProperty[vertexId] = QVariant((double)vertexId);
-//         }
-//     }
+     QMap<long, QVariant> cellProperty;
+     if(dd->cellImage->cellPropertyNames().contains(property_name)) {
+         cellProperty = dd->cellImage->cellProperty(property_name);
+     } else {
+         for (const auto& cellId : dd->cellImage->cellIds()) {
+             cellProperty[cellId] = QVariant((double)cellId);
+         }
+     }
 
-//     QList<double> vertexScalarPropertyValues;
-//     for (const auto& vertexId : dd->cellImage->vertexIds()) {
-//         vertexScalarPropertyValues.append(vertexProperty[vertexId].value<double>());
-//     } 
-//     auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
+     QList<double> cellScalarPropertyValues;
+     for (const auto& cellId : dd->cellImage->cellIds()) {
+         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
+     }
+     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
 
-
-//     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-//     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
-
-// }
+     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
+     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+}
 
 QImage gnomonVisualizationCellImage::imageRendering(void)
 {
@@ -144,9 +143,9 @@ QImage gnomonVisualizationCellImage::imageRendering(void)
 
 void gnomonVisualizationCellImage::update(void)
 {
-    // QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
-    // QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-    // QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+     QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
 
     if(!dd->cellImage)
         return;
@@ -159,7 +158,7 @@ void gnomonVisualizationCellImage::update(void)
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellImage::New();
     dd->polydata->setCellImage((gnomonCellImage *)dd->cellImage->clone());
-    // dd->polydata->setPropertyName(property_name);
+    dd->polydata->setPropertyName(property_name);
     dd->polydata->update();
     
 
@@ -174,8 +173,8 @@ void gnomonVisualizationCellImage::update(void)
         d->view->renderer3D()->AddActor(dd->actor);
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
-    // dd->actor->setColorMap(colormap);
-    // dd->actor->setValueRange(value_range);
+    dd->actor->setColorMap(colormap);
+    dd->actor->setValueRange(value_range);
 
     if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
@@ -193,8 +192,8 @@ void gnomonVisualizationCellImage::update(void)
     dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.1);
     dd->actor2D->setPolyData(dd->polydata);
-    // dd->actor2D->setColorMap(colormap);
-    // dd->actor2D->setValueRange(value_range);
+    dd->actor2D->setColorMap(colormap);
+    dd->actor2D->setValueRange(value_range);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);

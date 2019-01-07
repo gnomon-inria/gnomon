@@ -60,6 +60,8 @@ public:
     QMap<long, vtkSmartPointer<vtkPolyData> > cell_mesh;
     vtkSmartPointer<vtkPolyData> mesh;
 
+    QString propertyName;
+
     bool modified;
 };
 
@@ -88,6 +90,20 @@ void gnomonPolyDataCellImage::update(void)
     if(!d->cellimage)
         return;
 
+     QMap<long, QVariant> cellProperty;
+     if(d->cellimage->cellPropertyNames().contains(d->propertyName)) {
+         cellProperty = d->cellimage->cellProperty(d->propertyName);
+     } else {
+         for (const auto& cellId : d->cellimage->cellIds()) {
+             cellProperty[cellId] = QVariant((double)cellId);
+         }
+     }
+
+     QMap<long, double> cellScalarProperty;
+     for (const auto& cellId : cellProperty.keys()) {
+         cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
+     }
+
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     if(!converter)
         return;
@@ -113,13 +129,6 @@ void gnomonPolyDataCellImage::update(void)
     resample->SetMagnificationFactors(1/r_x,1/r_y,1/r_z);
     resample->SetInterpolationModeToNearestNeighbor();
     resample->Update();
-
-    QStringList cellProperties = d->cellimage->cellPropertyNames();
-    if (!cellProperties.contains("volume")) {
-        d->cellimage->computeCellProperty("volume");
-    }
-
-    QMap<long, QVariant> cellVolumes = d->cellimage->cellProperty("volume");
 
     if (d->modified)
         d->cell_mesh.clear();
@@ -153,9 +162,6 @@ void gnomonPolyDataCellImage::update(void)
                 smoother->NormalizeCoordinatesOn();
                 smoother->Update();
 
-                // int divisions = int(pow(cellVolumes[cellId].value<double>(),1/3.)*d->resolutionFactor);
-                // int divisions = 5.*d->resolutionFactor;
-
                 vtkSmartPointer<vtkQuadricDecimation> decimate = vtkSmartPointer<vtkQuadricDecimation>::New();
                 decimate->SetInputData(smoother->GetOutput());
                 // decimate->SetFeaturePointsAngle(120.0);
@@ -182,7 +188,7 @@ void gnomonPolyDataCellImage::update(void)
 
                 vtkSmartPointer<vtkDoubleArray> cellPolydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
                 for (int vtkId=0;vtkId<d->cell_mesh[cellId]->GetNumberOfCells();vtkId++) {
-                    cellPolydataFaceData->InsertValue(vtkId,cellId);
+                    cellPolydataFaceData->InsertValue(vtkId,cellScalarProperty[cellId]);
                 }
                 d->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
 
@@ -207,6 +213,12 @@ void gnomonPolyDataCellImage::update(void)
     this->GetCellData()->SetScalars(d->mesh->GetCellData()->GetScalars());
     
     d->modified = false;
+}
+
+void gnomonPolyDataCellImage::setPropertyName(const QString& value)
+{
+    d->propertyName = value;
+    this->update();
 }
 
 gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new gnomonPolyDataCellImagePrivate)
