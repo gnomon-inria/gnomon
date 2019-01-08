@@ -66,7 +66,7 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
 {
     dd->imagesSerie = Q_NULLPTR;
 
-    d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
+    d->parameters["channel"] = new gnomonCoreParameterString("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
@@ -99,10 +99,10 @@ void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSer
         d->parameters.remove("channel");
     } else {
         if((!d->parameters.contains("channel"))||(!d->parameters["channel"])) {
-            d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
+            d->parameters["channel"] = new gnomonCoreParameterString("", {""}, "Image channel to be displayed");
         }
         qDebug()<<Q_FUNC_INFO<<d->parameters["channel"];
-        gnomonCoreParameterStringList *channelParam = (gnomonCoreParameterStringList *)d->parameters["channel"];
+        gnomonCoreParameterString *channelParam = (gnomonCoreParameterString *)d->parameters["channel"];
         channelParam->setValues(dd->imagesSerie->channels());
         channelParam->setValue(dd->imagesSerie->channel());
     }
@@ -129,7 +129,7 @@ void gnomonVisualizationImagesSerie::updateOpacity(void)
 void gnomonVisualizationImagesSerie::updateChannelColorMap(void)
 {
     if(dd->imagesSerie->channels().size()>1) {
-        QString channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+        QString channel = ((gnomonCoreParameterString *)d->parameters["channel"])->value();
 
         if(dd->channelColormaps.contains(channel)) {
             ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
@@ -157,7 +157,7 @@ void gnomonVisualizationImagesSerie::update(void)
  
     QString channel;
     if(dd->imagesSerie->channels().size()>1) {
-        channel = ((gnomonCoreParameterStringList *)d->parameters["channel"])->value();
+        channel = ((gnomonCoreParameterString *)d->parameters["channel"])->value();
         if(dd->imagesSerie->channels().contains(channel))
             dd->imagesSerie->setChannel(channel);
         dd->channelColormaps[channel] = colormap;

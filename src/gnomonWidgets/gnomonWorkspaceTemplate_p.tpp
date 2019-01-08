@@ -63,6 +63,7 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
             this->command = nullptr;
         }
         this->command = new T(algorithm);
+        emit algorithmChanged(algorithm);
         this->configure(parent, algorithm);
      });
 

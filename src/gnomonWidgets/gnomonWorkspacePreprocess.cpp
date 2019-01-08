@@ -16,8 +16,11 @@
 
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
-#include "gnomonViewVolumicPool.h"
+
+//#include "gnomonViewVolumic.h"
+//#include "gnomonViewVolumicPool.h"
+#include "gnomonViewForm.h"
+
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore/gnomonImagesSerie>
@@ -37,11 +40,13 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewVolumic *source = nullptr;
-    gnomonViewVolumic *target = nullptr;
-
-public:
-    gnomonViewVolumicPool *pool = nullptr;
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
+//    gnomonViewVolumic *source = nullptr;
+//    gnomonViewVolumic *target = nullptr;
+//
+//public:
+//    gnomonViewVolumicPool *pool = nullptr;
 };
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
@@ -72,12 +77,15 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWo
 
     d = new gnomonWorkspacePreprocessPrivate;
 
-    d->source = new gnomonViewVolumic(this);
-    d->target = new gnomonViewVolumic(this);
+    d->source = new gnomonViewForm(this);
+    d->target = new gnomonViewForm(this);
 
-    d->pool = new gnomonViewVolumicPool(this);
-    d->pool->addView(d->source);
-    d->pool->addView(d->target);
+//    d->source = new gnomonViewVolumic(this);
+//    d->target = new gnomonViewVolumic(this);
+//
+//    d->pool = new gnomonViewVolumicPool(this);
+//    d->pool->addView(d->source);
+//    d->pool->addView(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -85,6 +93,19 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWo
     layout->addWidget(d->source);
     layout->addWidget(d->target);
     layout->addWidget(d->pane(this));
+
+    connect(d->source, &gnomonViewForm::formAdded, [=] () {
+        if(d->command->input() != d->source->imagesSerie())
+            d->command->setInput(d->source->imagesSerie());
+        else
+            qDebug() << "Not changed";
+        d->configure(this, d->algorithm);
+    });
+
+    connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->setInput(d->source->imagesSerie());
+        d->configure(this,algorithm);
+    });
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
@@ -96,14 +117,14 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->imagesSerie().data())
-        d->command->setInput(d->source->imagesSerie().data());
+    if(d->command->input() != d->source->imagesSerie())
+        d->command->setInput(d->source->imagesSerie());
     else
         qDebug() << "Not changed";
 
     d->command->redo();
 
-    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
+    d->target->setImagesSerie(d->command->output());
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)

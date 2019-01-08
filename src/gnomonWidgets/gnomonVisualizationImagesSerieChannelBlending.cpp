@@ -70,7 +70,7 @@ gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieCha
 {
     dd->imagesSerie = Q_NULLPTR;
 
-    // d->parameters["channel"] = new gnomonCoreParameterStringList("", {""}, "Image channel to be displayed");
+    // d->parameters["channel"] = new gnomonCoreParameterString("", {""}, "Image channel to be displayed");
     // d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
     // d->parameters["colormap"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("Greys"), "Colormap to apply to the image channel");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");

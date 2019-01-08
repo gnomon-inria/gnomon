@@ -19,8 +19,17 @@
 
 class gnomonOverlayPane;
 
+class gnomonWorkspacePrivateSignals : public QObject
+{
+    Q_OBJECT
+
+
+signals:
+    void algorithmChanged(const QString& algorithm);
+};
+
 template <typename T>
-class gnomonWorkspaceTemplatePrivate
+class gnomonWorkspaceTemplatePrivate : public gnomonWorkspacePrivateSignals
 {
 public:
              gnomonWorkspaceTemplatePrivate(void);
@@ -38,6 +47,7 @@ public:
     QString algorithm;
     T *command = nullptr;
     QFormLayout *pane_item_params_layout = nullptr;
+
 };
 
 #include "gnomonWorkspaceTemplate_p.tpp"

@@ -65,57 +65,34 @@ void gnomonCoreParameterBool::setValue(const QVariant& v)
 // gnomonCoreParameterString
 // ///////////////////////////////////////////////////////////////////
 
-gnomonCoreParameterString::gnomonCoreParameterString(const QString& s, const QString& doc) : gnomonCoreParameter(doc), m_s(s)
+gnomonCoreParameterString::gnomonCoreParameterString(const QString& value, const QString& doc) : gnomonCoreParameter(doc)
 {
+    m_values.append(value);
+    this->setCurrentIndex(m_values.indexOf(value));
 }
 
-QString gnomonCoreParameterString::value(void) const
-{
-    return m_s;
-}
-
-void gnomonCoreParameterString::setValue(const QString& s)
-{
-    if(m_s != s) {
-        m_s = s;
-        emit valueChanged();
-    }
-}
-
-void gnomonCoreParameterString::setValue(const QVariant& v)
-{
-    if(m_s != v.toString()) {
-        m_s = v.toString();
-        emit valueChanged();
-    }
-}
-// ///////////////////////////////////////////////////////////////////
-// gnomonCoreParameterStringList
-// ///////////////////////////////////////////////////////////////////
-
-
-gnomonCoreParameterStringList::gnomonCoreParameterStringList(const QString& value, const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
+gnomonCoreParameterString::gnomonCoreParameterString(const QString& value, const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
 {
     Q_ASSERT(m_values.contains(value));
     this->setCurrentIndex(m_values.indexOf(value));
 }
 
-gnomonCoreParameterStringList::gnomonCoreParameterStringList(const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
+gnomonCoreParameterString::gnomonCoreParameterString(const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
 {
 }
 
-int gnomonCoreParameterStringList::size(void) const
+int gnomonCoreParameterString::size(void) const
 {
     return m_values.size();
 }
 
-int gnomonCoreParameterStringList::currentIndex(void) const
+int gnomonCoreParameterString::currentIndex(void) const
 {
     return m_current_index;
 }
 
-// QString gnomonCoreParameterStringList::currentValue(void) const
-QString gnomonCoreParameterStringList::value(void) const
+// QString gnomonCoreParameterString::currentValue(void) const
+QString gnomonCoreParameterString::value(void) const
 {
     if (!m_values.empty()) {
         return m_values.at(m_current_index);
@@ -123,12 +100,12 @@ QString gnomonCoreParameterStringList::value(void) const
     return QString();
 }
 
-QStringList gnomonCoreParameterStringList::values(void) const
+QStringList gnomonCoreParameterString::values(void) const
 {
     return m_values;
 }
 
-void gnomonCoreParameterStringList::setCurrentIndex(int current_index)
+void gnomonCoreParameterString::setCurrentIndex(int current_index)
 {
     if(m_current_index != current_index) {
         m_current_index = current_index;
@@ -136,14 +113,14 @@ void gnomonCoreParameterStringList::setCurrentIndex(int current_index)
     }
 }
 
-void gnomonCoreParameterStringList::addValue(const QString& val)
+void gnomonCoreParameterString::addValue(const QString& val)
 {
     if (!m_values.contains(val)) {
         m_values.append(val);
     };
 }
 
-void gnomonCoreParameterStringList::removeValue(const QString& val)
+void gnomonCoreParameterString::removeValue(const QString& val)
 {
     m_values.removeAll(val);
     if (m_values.empty()) {
@@ -153,7 +130,7 @@ void gnomonCoreParameterStringList::removeValue(const QString& val)
     }
 }
 
-void gnomonCoreParameterStringList::setValues(const QStringList& val)
+void gnomonCoreParameterString::setValues(const QStringList& val)
 {
     QString c_val = m_values.at(m_current_index);
 
@@ -171,7 +148,7 @@ void gnomonCoreParameterStringList::setValues(const QStringList& val)
     }
 }
 
-void gnomonCoreParameterStringList::setValue(const QString& val)
+void gnomonCoreParameterString::setValue(const QString& val)
 {
     int index = m_values.indexOf(val);
     if(index >= 0) { 
@@ -182,7 +159,7 @@ void gnomonCoreParameterStringList::setValue(const QString& val)
     }
 }
 
-void gnomonCoreParameterStringList::setValue(const QVariant& v)
+void gnomonCoreParameterString::setValue(const QVariant& v)
 {
     QString val = v.toString();
     int index = m_values.indexOf(val);
@@ -192,6 +169,84 @@ void gnomonCoreParameterStringList::setValue(const QVariant& v)
             emit valueChanged();
         }
     }
+}
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterStringList
+// ///////////////////////////////////////////////////////////////////
+
+gnomonCoreParameterStringList::gnomonCoreParameterStringList(const QStringList& value, const QString& doc) : gnomonCoreParameter(doc), m_value(value), m_values(value)
+{
+}
+
+gnomonCoreParameterStringList::gnomonCoreParameterStringList(const QStringList& value, const QStringList& values, const QString& doc) : gnomonCoreParameter(doc), m_values(values)
+{
+    for (const auto& v : value) {
+        if (m_values.contains(v)) {
+            m_value.append(v);
+        }
+    }
+}
+
+int gnomonCoreParameterStringList::size(void) const
+{
+    return m_values.size();
+}
+
+
+QStringList gnomonCoreParameterStringList::value(void) const
+{
+    return m_value;
+}
+
+QStringList gnomonCoreParameterStringList::values(void) const
+{
+    return m_values;
+}
+
+void gnomonCoreParameterStringList::addValue(const QString& val)
+{
+    if (!m_values.contains(val)) {
+        m_values.append(val);
+    };
+}
+
+void gnomonCoreParameterStringList::removeValue(const QString& val)
+{
+    m_values.removeAll(val);
+    m_value.removeAll(val);
+}
+
+void gnomonCoreParameterStringList::setValues(const QStringList& val)
+{
+    m_values.clear();
+    for (const auto& v : val) {
+        if (!m_values.contains(v)) {
+            m_values.append(v);
+        }
+    }
+
+    for (const auto& v : m_value) {
+        if (!m_values.contains(v)) {
+            m_value.removeAll(v);
+        }
+    }
+}
+
+void gnomonCoreParameterStringList::setValue(const QStringList& value)
+{
+    m_value.clear();
+    for (const auto& v : value) {
+        if (m_values.contains(v)) {
+            m_value.append(v);
+        }
+    }
+}
+
+void gnomonCoreParameterStringList::setValue(const QVariant& v)
+{
+    QStringList val = v.toStringList();
+    this->setValue(val);
 }
 
 // ///////////////////////////////////////////////////////////////////

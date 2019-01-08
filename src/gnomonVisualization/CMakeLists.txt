@@ -87,6 +87,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPolyDataCellImage.h
   gnomonPolyDataMesh
   gnomonPolyDataMesh.h
+  gnomonStringListEditor.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -130,6 +131,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonPolyData.cpp
   gnomonPolyDataCellImage.cpp
   gnomonPolyDataMesh.cpp
+  gnomonStringListEditor.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 

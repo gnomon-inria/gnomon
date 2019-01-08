@@ -57,7 +57,7 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonA
 {
     dd->mesh = Q_NULLPTR;
 
-    d->parameters["property_name"] = new gnomonCoreParameterStringList("", {""}, "Mesh property to be displayed");
+    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "Mesh property to be displayed");
     d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the mesh");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the mesh rendering");
@@ -83,7 +83,7 @@ void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
 
     this->setParameter("alpha",1.0);
     
-    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)d->parameters["property_name"];
+    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
     QStringList properties = {""};
     for (const auto& propertyName : dd->mesh->vertexPropertyNames()) {
         if(dd->mesh->vertexProperty(propertyName)[dd->mesh->vertexIds()[0]].canConvert<double>()) {
@@ -113,7 +113,7 @@ void gnomonVisualizationMesh::updateValueRange(void)
 {
     qDebug()<<Q_FUNC_INFO;
 
-    QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
 
     QMap<long, QVariant> vertexProperty;
     if(dd->mesh->vertexPropertyNames().contains(property_name)) {
@@ -146,7 +146,7 @@ QImage gnomonVisualizationMesh::imageRendering(void)
 
 void gnomonVisualizationMesh::update(void)
 {
-    QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
 

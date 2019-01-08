@@ -33,7 +33,6 @@ gnomonImagesSerieFilterCommand::~gnomonImagesSerieFilterCommand(void)
 void gnomonImagesSerieFilterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractImagesSerieFilter *) this->action)->setInput(d->input);
 
     this->action->run();
 }
@@ -46,6 +45,9 @@ void gnomonImagesSerieFilterCommand::undo(void)
 void gnomonImagesSerieFilterCommand::setInput(gnomonImagesSerie *input)
 {
     d->input = input;
+    
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImagesSerieFilter *) this->action)->setInput(d->input);
 }
 
 void gnomonImagesSerieFilterCommand::setParameter(const QString& parameter, const QVariant& value)

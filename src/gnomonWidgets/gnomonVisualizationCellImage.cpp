@@ -57,7 +57,7 @@ gnomonVisualizationCellImage::gnomonVisualizationCellImage(gnomonViewForm* view)
 {
     dd->cellImage = Q_NULLPTR;
 
-    d->parameters["property_name"] = new gnomonCoreParameterStringList("", {""}, "CellImage property to be displayed");
+    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
     d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
@@ -83,7 +83,7 @@ void gnomonVisualizationCellImage::setCellImage(gnomonCellImage *cellImage)
 
     this->setParameter("alpha",1.0);
     
-    gnomonCoreParameterStringList *propertyParam = (gnomonCoreParameterStringList *)d->parameters["property_name"];
+    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
     QStringList properties = {""};
     for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
          if(dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]].canConvert<double>()) {
@@ -111,7 +111,7 @@ void gnomonVisualizationCellImage::updateOpacity(void)
 
 void gnomonVisualizationCellImage::updateValueRange(void)
 {
-     QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
 
      QMap<long, QVariant> cellProperty;
      if(dd->cellImage->cellPropertyNames().contains(property_name)) {
@@ -143,7 +143,7 @@ QImage gnomonVisualizationCellImage::imageRendering(void)
 
 void gnomonVisualizationCellImage::update(void)
 {
-     QString property_name = ((gnomonCoreParameterStringList *)d->parameters["property_name"])->value();
+     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
 

@@ -200,6 +200,7 @@ private:
 
 Q_DECLARE_METATYPE(gnomonCoreParameterBool *);
 
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterString
 // ///////////////////////////////////////////////////////////////////
@@ -207,30 +208,10 @@ Q_DECLARE_METATYPE(gnomonCoreParameterBool *);
 class GNOMONCORE_EXPORT gnomonCoreParameterString : public gnomonCoreParameter
 {
 public:
-     gnomonCoreParameterString(const QString& s, const QString& doc = QString());
+     gnomonCoreParameterString(const QString& value, const QString& doc = QString());
+     gnomonCoreParameterString(const QString& value, const QStringList& values, const QString& doc = QString());
+     gnomonCoreParameterString(const QStringList& values, const QString& doc = QString());
     ~gnomonCoreParameterString(void) = default;
-
-    QString value(void) const;
-
-    void setValue(const QString&);
-    void setValue(const QVariant&);
-
-private:
-    QString m_s;
-};
-
-Q_DECLARE_METATYPE(gnomonCoreParameterString *);
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonCoreParameterStringList
-// ///////////////////////////////////////////////////////////////////
-
-class GNOMONCORE_EXPORT gnomonCoreParameterStringList : public gnomonCoreParameter
-{
-public:
-     gnomonCoreParameterStringList(const QString& value, const QStringList& values, const QString& doc = QString());
-     gnomonCoreParameterStringList(const QStringList& values, const QString& doc = QString());
-    ~gnomonCoreParameterStringList(void) = default;
 
     int size(void) const;
     int currentIndex(void) const;
@@ -251,8 +232,37 @@ private:
     QStringList m_values;
 };
 
-Q_DECLARE_METATYPE(gnomonCoreParameterStringList *);
+Q_DECLARE_METATYPE(gnomonCoreParameterString *);
 
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterString
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONCORE_EXPORT gnomonCoreParameterStringList : public gnomonCoreParameter
+{
+public:
+     gnomonCoreParameterStringList(const QStringList& value, const QString& doc = QString());
+     gnomonCoreParameterStringList(const QStringList& value, const QStringList& values, const QString& doc = QString());
+    ~gnomonCoreParameterStringList(void) = default;
+
+    int size(void) const;
+    QStringList value(void) const;
+    QStringList values(void) const;
+
+    void addValue(const QString&);
+    void removeValue(const QString&);
+
+    void setValues(const QStringList&);
+    void setValue(const QStringList&);
+    void setValue(const QVariant&);
+
+private:
+    QStringList m_value;
+    QStringList m_values;
+};
+
+Q_DECLARE_METATYPE(gnomonCoreParameterStringList *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant

@@ -16,6 +16,7 @@
 
 #include <gnomonVisualization/gnomonColorMapEditor.h>
 #include <gnomonVisualization/gnomonDoubleRangeEditor.h>
+#include <gnomonVisualization/gnomonStringListEditor.h>
 #include "gnomonLookupTableEditor.h"
 
 QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)
@@ -180,29 +181,9 @@ QWidget *gnomonWidgetsParameterBool::widget(gnomonCoreParameterBool *parameter, 
     }
 }
 
-QString gnomonWidgetsParameterString::style = QStringLiteral("lineedit");
+QString gnomonWidgetsParameterString::style = QStringLiteral("combobox");
 
 QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *parameter, QWidget *parent)
-{
-    if (style == QStringLiteral("lineedit")) {
-        QLineEdit *widget = new QLineEdit(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setText(parameter->value());
-
-        QObject::connect(widget, &QLineEdit::textChanged, [=](QString value) {
-            parameter->setValue(value); 
-        });
-
-        return widget;
-
-    } else {
-        return nullptr;
-    }
-}
-
-QString gnomonWidgetsParameterStringList::style = QStringLiteral("combobox");
-
-QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList *parameter, QWidget *parent)
 {
     if (style == QStringLiteral("combobox")) {
         QComboBox *widget = new QComboBox(parent);
@@ -218,11 +199,43 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
         });
 
         return widget;
+    } else if (style == QStringLiteral("lineedit")) {
+        QLineEdit *widget = new QLineEdit(parent);
+        widget->setToolTip(parameter->doc());
+        widget->setText(parameter->value());
+
+        QObject::connect(widget, &QLineEdit::textChanged, [=](QString value) {
+            parameter->setValue(value);
+        });
+
+        return widget;
 
     } else {
         return nullptr;
     }
 }
+
+
+QString gnomonWidgetsParameterStringList::style = QStringLiteral("checkboxes");
+
+QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("checkboxes")) {
+        gnomonStringListEditor *widget = new gnomonStringListEditor(parent);
+        widget->setToolTip(parameter->doc());
+        widget->setValues(parameter->values());
+        widget->setValue(parameter->value());
+
+        QObject::connect(widget, &gnomonStringListEditor::valueChanged, [=](const QStringList& val) {
+            parameter->setValue(val);
+        });
+
+        return widget;
+    } else {
+        return nullptr;
+    }
+}
+
 
 QString gnomonWidgetsParameterColorMap::style = QStringLiteral("colormap_editor");
 
