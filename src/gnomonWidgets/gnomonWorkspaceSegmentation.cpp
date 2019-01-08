@@ -18,6 +18,8 @@
 //#include "gnomonViewVolumicPool.h"
 
 #include "gnomonViewForm.h"
+#include "gnomonViewFormPool.h"
+
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonWorkspaceTemplate_p.h"
@@ -51,8 +53,8 @@ public:
 //    gnomonViewVolumic *source = nullptr;
 //    gnomonViewVolumic *target = nullptr;
 
-//public:
-//    gnomonViewVolumicPool *pool = nullptr;
+public:
+    gnomonViewFormPool *pool = nullptr;
 
 public:
     gnomonCellImage *cellimage = nullptr;
@@ -97,9 +99,9 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     d->source = new gnomonViewForm(this);
     d->target = new gnomonViewForm(this);
 
-//    d->pool = new gnomonViewVolumicPool(this);
-//    d->pool->addView(d->source);
-//    d->pool->addView(d->target);
+    d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     gnomonOverlayPane *pane = d->pane(this);
 

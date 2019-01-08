@@ -110,8 +110,14 @@ public:
     gnomonViewVolumicOverlay *renderer2D_XZ = nullptr;
     gnomonViewVolumicOverlay *renderer2D_YZ = nullptr;
 
+    gnomonViewVolumicOverlay *sync = nullptr;
     gnomonViewVolumicOverlay *export_button = nullptr;
 
+public:
+    int syncing_count = 0;
+    QTimer *syncing_timer = nullptr;
+    bool synced = false;
+    
 public:
     QColor export_color = QColor("#cccccc");
 
@@ -169,6 +175,9 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->renderer2D_YZ = new gnomonViewVolumicOverlay(":gnomon/gnomonViewVolumic-YZ.png",  ":gnomon/gnomonViewVolumic-YZ-off.png", "", this);
     this->renderer2D_YZ->toggle(false);
 
+    this->sync = new gnomonViewVolumicOverlay(fa::unlock, "", this);
+    this->sync->toggle(false);
+    
     this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, "", this);
 }
 
@@ -197,6 +206,7 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(10,  90);
     this->renderer2D_YZ->move(10, 130);
 
+    this->sync->move(event->size().width() - 80, 10);
     this->export_button->move(event->size().width() - 40, 10);
 
     QVTKOpenGLWidget::resizeEvent(event);
@@ -360,6 +370,35 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
     layout->addWidget(d, 0, 1, 1, 1);
     layout->addWidget(d->pane(parent), 0, 2, 1, 1);
+
+    connect(d->sync, &gnomonViewVolumicOverlay::iconClicked, [=] () {
+        d->sync->toggle(!d->sync->isToggled());
+
+        if (d->sync->isToggled())
+            emit linking();
+        else
+            emit unlinking();
+
+        if (d->sync->isToggled() && !d->synced) {
+            d->syncing_count = 0;
+            if(!d->syncing_timer)
+                d->syncing_timer = new QTimer(d);
+            connect(d->syncing_timer, &QTimer::timeout, [=] () {
+                    d->sync->changeColor((d->syncing_count++ % 2) ? Qt::gray : Qt::white);
+                    d->sync->update();
+                    if (d->syncing_count == 11) {
+                        d->sync->toggle(false);
+                        d->syncing_timer->stop();
+                        d->syncing_timer->disconnect();
+                        delete d->syncing_timer;
+                        d->syncing_timer = nullptr;
+                        emit unlinking();
+                    }
+                });
+            d->syncing_timer->start(500);
+        }
+    });
+    
 
     // parent->connect(this, SIGNAL(formAdded()), parent, SLOT(configure()));
     connect(this, &gnomonViewForm::formAdded, [=] () {
@@ -552,6 +591,66 @@ void gnomonViewForm::sliceChange(int value)
         emit sliceChanged(value);
 
     d->GetInteractor()->Render();
+}
+
+void gnomonViewForm::link(gnomonViewForm *other)
+{
+    if (d->syncing_timer)
+        d->syncing_timer->stop();
+
+    d->sync->toggle(true);
+    d->sync->changeIcon(fa::lock);
+
+    d->synced = true;
+
+    // ///////////////////////////////////////////////////////////////
+
+    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
+
+    other->d->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+
+    connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
+    connect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
+    connect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
+    connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+    connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+}
+
+void gnomonViewForm::unlink(gnomonViewForm *other)
+{
+    if (d->syncing_timer) {
+        d->syncing_timer->stop();
+        d->syncing_timer->disconnect();
+        delete d->syncing_timer;
+        d->syncing_timer = nullptr;
+    }
+
+    d->sync->toggle(false);
+    d->sync->changeIcon(fa::unlock);
+
+    d->synced = false;
+
+    // ///////////////////////////////////////////////////////////////
+
+    vtkSmartPointer<vtkCamera> camera2D = vtkCamera::New();
+    camera2D->ShallowCopy(d->renderer2D->GetActiveCamera());
+
+    vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
+    camera3D->ShallowCopy(d->renderer2D->GetActiveCamera());
+
+    d->renderer2D->SetActiveCamera(camera2D);
+    d->renderer3D->SetActiveCamera(camera3D);
+
+    // ///////////////////////////////////////////////////////////////
+
+    disconnect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
+    disconnect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
+    disconnect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
+    disconnect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+    disconnect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
 }
 
 

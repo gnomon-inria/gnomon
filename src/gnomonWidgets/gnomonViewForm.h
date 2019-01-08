@@ -39,6 +39,7 @@ public:
      gnomonViewForm(QWidget *parent = nullptr);
     ~gnomonViewForm(void);
 
+
 signals:
     void switchedTo3D  (void);
     void switchedTo2D  (void);
@@ -46,12 +47,20 @@ signals:
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
 
+signals:
+    void   linking(void);
+    void unlinking(void);
+
 public slots:
     void switchTo3D  (void);
     void switchTo2D  (void);
     void switchTo2DXY(void);
     void switchTo2DXZ(void);
     void switchTo2DYZ(void);
+
+public slots:
+    void   link(gnomonViewForm *other);
+    void unlink(gnomonViewForm *other);
 
 public slots:
     void sliceChange(int);

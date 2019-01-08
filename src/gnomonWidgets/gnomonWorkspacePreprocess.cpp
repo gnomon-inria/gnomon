@@ -19,7 +19,9 @@
 
 //#include "gnomonViewVolumic.h"
 //#include "gnomonViewVolumicPool.h"
+
 #include "gnomonViewForm.h"
+#include "gnomonViewFormPool.h"
 
 #include "gnomonWorkspaceTemplate_p.h"
 
@@ -45,8 +47,8 @@ public:
 //    gnomonViewVolumic *source = nullptr;
 //    gnomonViewVolumic *target = nullptr;
 //
-//public:
-//    gnomonViewVolumicPool *pool = nullptr;
+public:
+    gnomonViewFormPool *pool = nullptr;
 };
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
@@ -83,9 +85,9 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWo
 //    d->source = new gnomonViewVolumic(this);
 //    d->target = new gnomonViewVolumic(this);
 //
-//    d->pool = new gnomonViewVolumicPool(this);
-//    d->pool->addView(d->source);
-//    d->pool->addView(d->target);
+    d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

@@ -1,0 +1,93 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonViewFormPool.h"
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonViewFormPoolPrivate : public QObject
+{
+    Q_OBJECT
+
+public slots:
+    void   linking(void);
+    void unlinking(void);
+
+public:
+    QList<gnomonViewForm *> views;
+
+public:
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
+};
+
+void gnomonViewFormPoolPrivate::linking(void)
+{
+    if(!this->source) {
+         this->source = dynamic_cast<gnomonViewForm *>(sender());
+         return;
+    }
+
+    if(!this->target) {
+         this->target = dynamic_cast<gnomonViewForm *>(sender());
+    }
+
+    if (this->source && this->target) {
+        this->source->link(this->target);
+        this->target->link(this->source);
+    }
+}
+
+void gnomonViewFormPoolPrivate::unlinking(void)
+{
+    if (this->source)
+        this->source->unlink(this->target);
+
+    if (this->target)
+        this->target->unlink(this->source);
+
+    this->source = nullptr;
+    this->target = nullptr;
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+gnomonViewFormPool::gnomonViewFormPool(QObject *parent) : QObject(parent)
+{
+    d = new gnomonViewFormPoolPrivate;
+}
+
+gnomonViewFormPool::~gnomonViewFormPool(void)
+{
+    d->views.clear();
+}
+
+void gnomonViewFormPool::addView(gnomonViewForm *view)
+{
+    d->views << view;
+
+    connect(view, SIGNAL(  linking()), d, SLOT(  linking()));
+    connect(view, SIGNAL(unlinking()), d, SLOT(unlinking()));
+}
+
+// ///////////////////////////////////////////////////////////////////
+
+#include "gnomonViewFormPool.moc"
+
+//
+// gnomonViewFormPool.cpp ends here
