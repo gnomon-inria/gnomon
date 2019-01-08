@@ -40,6 +40,7 @@
 #include <gnomonCore/gnomonAbstractCellImageData.h>
 #include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAbstractCellImageReader.h>
+#include <gnomonCore/gnomonAbstractCellImageWriter.h>
 #include <gnomonCore/gnomonAbstractMeshData.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonAbstractFemSolver.h>
@@ -367,6 +368,7 @@
 %include <gnomonCore/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAbstractCellImageReader.h>
+%include <gnomonCore/gnomonAbstractCellImageWriter.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAbstractImagesRegistration.h>
