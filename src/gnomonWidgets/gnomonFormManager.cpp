@@ -24,9 +24,11 @@
 #include <gnomonCore/gnomonAbstractForm>
 #include <gnomonCore/gnomonImagesSerie>
 #include <gnomonCore/gnomonMesh>
+#include <gnomonCore/gnomonCellImage>
 
 #include <gnomonCore/gnomonImagesSerieWriterCommand>
 #include <gnomonCore/gnomonMeshWriterCommand>
+#include <gnomonCore/gnomonCellImageWriterCommand>
 
 #include <dtkScript>
 
@@ -97,11 +99,14 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"), path, tr("Images (*.inr.gz *.inr *.tif)"));
             static_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setImagesSerie(images_serie);
             static_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
-        }
-        if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+        } else if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save mesh"), path, tr("Meshes (*.ply)"));
             static_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setMesh(mesh);
             static_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        } else if (gnomonCellImage *cellimage = dynamic_cast<gnomonCellImage *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell image"), path, tr("Images (*.tif)"));
+            static_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[item])->setCellImage(cellimage);
+            static_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         }
 
         if(!export_file_path.isEmpty()) {
@@ -143,10 +148,12 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
     if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
         d->formWriterCommand[item] = new gnomonImagesSerieWriterCommand("gnomonImagesSerieWriter");
         static_cast<gnomonImagesSerieWriterCommand *>(d->formWriterCommand[item])->setImagesSerie(images_serie);
-    }
-    if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+    } else if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
         d->formWriterCommand[item] = new gnomonMeshWriterCommand("gnomonMeshWriterPropertyTopomesh");
         static_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
+    } else if (gnomonCellImage *cellimage = dynamic_cast<gnomonCellImage *>(form)) {
+        d->formWriterCommand[item] = new gnomonCellImageWriterCommand("gnomonCellImageWriterPropertySpatialImage");
+        static_cast<gnomonCellImageWriterCommand *>(d->formWriterCommand[item])->setCellImage(cellimage);
     }
 
     d->contents->layout()->addWidget(item);
