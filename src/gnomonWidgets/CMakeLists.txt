@@ -51,7 +51,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonToolBar.h
   gnomonViewForm
   gnomonViewForm.h
-  gnomonViewFormPool
   gnomonViewFormPool.h
   gnomonViewVolumic
   gnomonViewVolumic.h
