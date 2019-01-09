@@ -21,7 +21,7 @@
 
 #include <gnomonAbstractFemSolver>
 #include <gnomonFemSolverCommand>
-
+#include <gnomonMesh>
 #include <dtkImagingCore>
 #include <dtkScript>
 
@@ -84,6 +84,12 @@ gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 
 void gnomonWorkspaceSimulation::apply(void)
 {
+    qDebug()<<"----- Apply -----";
+    Q_ASSERT(d->command);
+    qDebug()<<"Command OK";
+    d->command->setMesh(d->source->mesh());
+    d->command->redo();
+    d->target->setMesh((gnomonMesh *)d->command->updatedMesh()->clone());
 
 }
 

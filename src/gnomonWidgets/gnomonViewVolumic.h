@@ -26,6 +26,9 @@ class dtkImage;
 class gnomonImagesSerie;
 using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
+class gnomonMesh;
+using gnomonMeshPtr = QSharedPointer<gnomonMesh>;
+
 class vtkRenderer;
 class vtkRenderWindowInteractor;
 
@@ -70,12 +73,14 @@ public slots:
 
 public:
     void setImage(dtkImage*, const QMap<double, QColor>& = QMap<double, QColor>());
-    void setBlending(bool);
     void setImagesSerie(gnomonImagesSeriePtr, const QMap<double, QColor>& = grey_colormap);
+    void setBlending(bool);
+    void setMesh(gnomonMesh *);
 
 public:
     dtkImage* image(void);
     gnomonImagesSeriePtr imagesSerie(void);
+    gnomonMesh *mesh(void);
 
 public:
     std::vector<gnomonLandmark> landmarks(void);

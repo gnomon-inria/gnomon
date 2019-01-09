@@ -23,6 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActor.h
   gnomonActor2DCellImage
   gnomonActor2DCellImage.h
+  gnomonActor2DPolyData
+  gnomonActor2DPolyData.h
   gnomonActorImage
   gnomonActorImage.h
   gnomonActorMesh
@@ -34,6 +36,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorMeshCellGraph.h
   gnomonActorMeshCellImage
   gnomonActorMeshCellImage.h
+  gnomonActorPolyData
+  gnomonActorPolyData.h
   gnomonActorVolume
   gnomonActorVolume.h
   gnomonActorScalarBar
@@ -66,6 +70,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPolyData.h
   gnomonPolyDataCellImage
   gnomonPolyDataCellImage.h
+  gnomonPolyDataMesh
+  gnomonPolyDataMesh.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -75,11 +81,13 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActor2DCellImage.cpp
+  gnomonActor2DPolyData.cpp
   gnomonActorImage.cpp
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
   gnomonActorMeshCellGraph.cpp
   gnomonActorMeshCellImage.cpp
+  gnomonActorPolyData.cpp
   gnomonActorVolume.cpp
   gnomonActorScalarBar.cpp
   gnomonClutEditor.cpp
@@ -98,6 +106,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspectorVolume.cpp
   gnomonPolyData.cpp
   gnomonPolyDataCellImage.cpp
+  gnomonPolyDataMesh.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 
