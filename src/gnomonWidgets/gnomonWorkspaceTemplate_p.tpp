@@ -92,6 +92,7 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane->addWidget(pane_item_parameters);
     pane->addWidget(pane_item_button);
     pane->toggle();
+    pane->toggle();
 
     QObject::connect(button, &QPushButton::clicked, [=] () {
         parent->setCursor(Qt::BusyCursor);

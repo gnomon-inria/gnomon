@@ -659,6 +659,11 @@ void gnomonViewForm::setExportColor(const QColor& color)
     d->export_color = color;
 }
 
+void gnomonViewForm::toggleVisualizationPane(void)
+{
+    d->formVisualizationPane->toggle();
+}
+
 gnomonAbstractForm *gnomonViewForm::form(const QString& name)
 {
     if (d->forms.contains(name)) {

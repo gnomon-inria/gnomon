@@ -53,6 +53,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     // d->browse_view = new gnomonViewVolumic(this);
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(gnomonToolBar::browser_color);
+    d->browse_view->toggleVisualizationPane();
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);

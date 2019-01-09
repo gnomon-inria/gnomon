@@ -68,6 +68,9 @@ public slots:
 public slots:
     void setExportColor(const QColor& color);
 
+public slots:
+    void toggleVisualizationPane(void);
+
 public:
     void setForm(const QString&, gnomonAbstractForm *);
     void setCellImage(gnomonCellImage*);

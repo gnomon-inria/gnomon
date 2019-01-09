@@ -18,7 +18,7 @@
 
 #include <QtWidgets>
 
-class gnomonViewVolumic;
+class gnomonViewForm;
 
 class GNOMONWIDGETS_EXPORT gnomonGridLayout : public QGridLayout
 {
@@ -33,7 +33,7 @@ public slots:
 	void removeAllViews(void);
 
 public:
-    QList<gnomonViewVolumic *> views(void);
+    QList<gnomonViewForm *> views(void);
 
 protected:
     void clear(void);

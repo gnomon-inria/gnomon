@@ -13,7 +13,7 @@
 // Code:
 
 #include "gnomonGridLayout.h"
-#include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 
 #include <gnomonFonts>
 
@@ -64,7 +64,7 @@ private:
 class gnomonGridLayoutPrivate
 {
 public:
-    QList<gnomonViewVolumic *> views;
+    QList<gnomonViewForm *> views;
 
 public:
     gnomonGridLayoutButton *button;
@@ -98,21 +98,21 @@ gnomonGridLayout::~gnomonGridLayout(void)
 
 void gnomonGridLayout::addView(void)
 {
-    gnomonViewVolumic *new_view = new gnomonViewVolumic;
-    for(gnomonViewVolumic *view : d->views) {
-        connect(new_view, &gnomonViewVolumic::landmarkAdded, view, &gnomonViewVolumic::addLandmark);
-        connect(view, &gnomonViewVolumic::landmarkAdded, new_view, &gnomonViewVolumic::addLandmark);
-
-        connect(new_view, &gnomonViewVolumic::landmarkRemoved, view, &gnomonViewVolumic::removeLandmark);
-        connect(view, &gnomonViewVolumic::landmarkRemoved, new_view, &gnomonViewVolumic::removeLandmark);
-    }
+    gnomonViewForm *new_view = new gnomonViewForm;
+//    for(gnomonViewForm *view : d->views) {
+//        connect(new_view, &gnomonViewForm::landmarkAdded, view, &gnomonViewForm::addLandmark);
+//        connect(view, &gnomonViewForm::landmarkAdded, new_view, &gnomonViewForm::addLandmark);
+//
+//        connect(new_view, &gnomonViewForm::landmarkRemoved, view, &gnomonViewForm::removeLandmark);
+//        connect(view, &gnomonViewForm::landmarkRemoved, new_view, &gnomonViewForm::removeLandmark);
+//    }
 
     d->views << new_view;
 
     this->update();
 }
 
-QList<gnomonViewVolumic *> gnomonGridLayout::views(void)
+QList<gnomonViewForm *> gnomonGridLayout::views(void)
 {
     return d->views;
 }

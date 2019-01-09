@@ -17,7 +17,7 @@
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonImagesRegistrationCommand>
@@ -33,7 +33,7 @@ public:
 
 public:
     gnomonGridLayout *sources_layout;
-    gnomonViewVolumic *target = nullptr;
+    gnomonViewForm *target = nullptr;
 };
 
 QString gnomonWorkspaceRegistrationPrivate::workspace() const
@@ -60,7 +60,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
     QWidget *sources_dummy = new QWidget(this);
     sources_dummy->setLayout(d->sources_layout);
 
-    d->target  = new gnomonViewVolumic(this);
+    d->target  = new gnomonViewForm(this);
 
 
     QSplitter *splitter = new QSplitter(this);
@@ -86,12 +86,12 @@ void gnomonWorkspaceRegistration::apply(void)
     if(d->sources_layout->views().isEmpty()) return;
 
     d->command->undo();
-    for(gnomonViewVolumic *view : d->sources_layout->views()) {
-               d->command->addImagesSerie(view->imagesSerie().data());
+    for(gnomonViewForm *view : d->sources_layout->views()) {
+               d->command->addImagesSerie(view->imagesSerie());
     }
     d->command->redo();
 
-    d->target->setImagesSerie(gnomonImagesSeriePtr(d->command->output()));
+    d->target->setImagesSerie(d->command->output());
 }
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)

@@ -34,11 +34,9 @@ signals:
 protected:
     void mousePressEvent(QMouseEvent *);
 
-private:
+public:
     gnomonFontAwesome *font;
-
-private:
-    bool toggled = true;
+    bool toggled = false;
 };
 
 gnomonOverlayPaneToggle::gnomonOverlayPaneToggle(QWidget *parent) : QLabel(parent)
@@ -48,7 +46,7 @@ gnomonOverlayPaneToggle::gnomonOverlayPaneToggle(QWidget *parent) : QLabel(paren
     this->font->setDefaultOption("color", QColor("#ffffff"));
 
     this->setAlignment(Qt::AlignCenter);
-    this->setPixmap(this->font->icon(fa::chevronright).pixmap(16, 16));
+    this->setPixmap(this->font->icon(fa::chevronleft).pixmap(16, 16));
     this->setFixedWidth(20);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 }
@@ -63,8 +61,6 @@ void gnomonOverlayPaneToggle::mousePressEvent(QMouseEvent *)
     this->toggled = !this->toggled;
 
     this->font->setDefaultOption("color", QColor("#ffffff"));
-
-    this->setPixmap(this->font->icon(this->toggled ? fa::chevronright : fa::chevronleft).pixmap(16, 16));
 
     emit toggle();
 }
@@ -111,6 +107,7 @@ gnomonOverlayPane::gnomonOverlayPane(QWidget *parent) : QFrame(parent)
     d->layout->setContentsMargins(0, 0, 0, 0);
 
     d->toggle = new gnomonOverlayPaneToggle(this);
+    d->on = d->toggle->toggled;
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(d->layout);
@@ -134,6 +131,8 @@ gnomonOverlayPane::gnomonOverlayPane(QWidget *parent) : QFrame(parent)
     if(qApp->screens().first()->size().width() > 2000) {
         d->size = 620;
     }
+
+    this->toggle();
 }
 
 gnomonOverlayPane::~gnomonOverlayPane(void)
@@ -159,6 +158,10 @@ void gnomonOverlayPane::toggle(void)
 {
     if (d->deactivate)
         return;
+
+    qDebug()<<Q_FUNC_INFO<<d->toggle->toggled<<d->on;
+
+    d->toggle->setPixmap(d->toggle->font->icon(d->toggle->toggled ? fa::chevronright : fa::chevronleft).pixmap(16, 16));
 
     qlonglong stt = d->on ? d->size :  20;
     qlonglong end = d->on ?  20     : d->size;
