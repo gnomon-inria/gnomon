@@ -16,6 +16,7 @@
 
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 
 //#include "gnomonViewVolumic.h"
 //#include "gnomonViewVolumicPool.h"
@@ -80,11 +81,10 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWo
     d = new gnomonWorkspacePreprocessPrivate;
 
     d->source = new gnomonViewForm(this);
+    d->source->setExportColor(gnomonToolBar::preprocess_color);
     d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::preprocess_color);
 
-//    d->source = new gnomonViewVolumic(this);
-//    d->target = new gnomonViewVolumic(this);
-//
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);

@@ -17,6 +17,7 @@
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 #include "gnomonViewForm.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
@@ -61,7 +62,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
     sources_dummy->setLayout(d->sources_layout);
 
     d->target  = new gnomonViewForm(this);
-
+    d->target->setExportColor(gnomonToolBar::registration_color);
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(sources_dummy);

@@ -17,6 +17,7 @@
 #include "gnomonViewForm.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 
 #include "gnomonWorkspaceTemplate_p.h"
 
@@ -68,7 +69,9 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWo
     d = new gnomonWorkspaceSimulationPrivate;
 
     d->source = new gnomonViewForm(this);
+    d->source->setExportColor(gnomonToolBar::registration_color);
     d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::registration_color);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

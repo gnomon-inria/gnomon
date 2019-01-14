@@ -17,6 +17,7 @@
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 #include "gnomonViewForm.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
@@ -59,6 +60,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d->layout->addView();
 
     d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::fusion_color);
     d->target->setMinimumWidth(250);
 
     QWidget *dummy = new QWidget(this);
