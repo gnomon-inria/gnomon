@@ -22,6 +22,7 @@
 
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore/gnomonImagesSerie.h>
@@ -97,7 +98,9 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     d = new gnomonWorkspaceSegmentationPrivate;
 
     d->source = new gnomonViewForm(this);
+    d->source->setExportColor(gnomonToolBar::segmentation_color);
     d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::segmentation_color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
