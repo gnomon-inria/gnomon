@@ -23,6 +23,7 @@
 class gnomonLandmark;
 
 class gnomonAbstractForm;
+class gnomonAbstractVisualization;
 
 class gnomonImagesSerie;
 class gnomonCellImage;
@@ -72,10 +73,10 @@ public slots:
     void toggleVisualizationPane(void);
 
 public:
-    void setForm(const QString&, gnomonAbstractForm *);
-    void setCellImage(gnomonCellImage*);
-    void setImagesSerie(gnomonImagesSerie*);
-    void setMesh(gnomonMesh*);
+    void setForm(const QString&, gnomonAbstractForm *, gnomonAbstractVisualization *  = nullptr);
+    void setCellImage(gnomonCellImage *, gnomonAbstractVisualization *  = nullptr);
+    void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
+    void setMesh(gnomonMesh *, gnomonAbstractVisualization *  = nullptr);
 
 public:
     gnomonAbstractForm *form(const QString&); 

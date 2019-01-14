@@ -12,6 +12,7 @@
 
 // Code:
 
+#include "gnomonAbstractVisualization.h"
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
 #include "gnomonFormManagerFocus.h"
@@ -136,12 +137,15 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, const QImage& image)
+void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, gnomonAbstractVisualization* visualization)
 {
+
+    QImage image = visualization->imageRendering();
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
 
     d->forms.insert(item, form);
+    d->formVisualizations.insert(item, visualization);
 
 
     QString writerPlugin;
@@ -162,6 +166,16 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
 gnomonAbstractForm * gnomonFormManager::get(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
+        if (index == it.key()->id) {
+            return *it;
+        }
+    }
+    return nullptr;
+}
+
+gnomonAbstractVisualization * gnomonFormManager::getVisualization(int index)
+{
+    for (auto it = d->formVisualizations.begin(); it != d->formVisualizations.end(); ++it) {
         if (index == it.key()->id) {
             return *it;
         }

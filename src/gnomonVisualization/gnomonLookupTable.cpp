@@ -50,6 +50,11 @@ bool gnomonLookupTable::visibility(void) const
     return this->visible;
 }
 
+void gnomonLookupTable::setName(const QString& n)
+{
+    this->name = n;
+}
+
 void gnomonLookupTable::setColorMap(const QMap<double, QColor>& c)
 {
     this->colormap = c;

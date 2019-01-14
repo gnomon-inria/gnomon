@@ -219,6 +219,11 @@ gnomonColorMapEditor::~gnomonColorMapEditor(void)
     d = NULL;
 }
 
+const QString& gnomonColorMapEditor::name(void) const
+{
+    return d->current_map;
+}
+
 const QMap<double, QColor>& gnomonColorMapEditor::value(void) const
 {
     if(!d->colormaps.contains(d->current_map)) {

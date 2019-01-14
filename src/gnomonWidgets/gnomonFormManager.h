@@ -21,6 +21,7 @@
 
 class gnomonAbstractForm;
 class gnomonAbstractCommand;
+class gnomonAbstractVisualization;
 
 class gnomonFormManagerItem;
 
@@ -39,13 +40,14 @@ public:
     QSize sizeHint(void) const;
 
 public slots:
-    void addForm(gnomonAbstractForm *, const QColor&, const QImage& image);
+    void addForm(gnomonAbstractForm *, const QColor&, gnomonAbstractVisualization* visualization);
 
 public slots:
     void present(gnomonFormManagerItem *);
 
 public:
     gnomonAbstractForm * get(int index);
+    gnomonAbstractVisualization * getVisualization(int index);
 
 public:
     QPixmap thumbnail(int index);

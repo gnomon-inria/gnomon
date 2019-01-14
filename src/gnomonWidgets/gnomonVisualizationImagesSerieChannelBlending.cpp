@@ -163,6 +163,16 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
         delete converter;
     }
 
+
+    dd->channelLookupTables.clear();
+    if(dd->imagesSerie->channels().size()==1) {
+        dd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+    } else {
+        for (const auto& channelName : dd->imagesSerie->channels()) {
+            dd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
+        }
+    }
+
     gnomonImageDataChannelBlending *blending = gnomonImageDataChannelBlending::New();
     blending->setImageChannels(channelImages);
     blending->setChannelLookupTables(dd->channelLookupTables);

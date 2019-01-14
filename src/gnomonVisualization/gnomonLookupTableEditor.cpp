@@ -59,7 +59,8 @@ gnomonLookupTableEditor::gnomonLookupTableEditor(QWidget *parent) : QWidget(pare
     // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(d->colormap, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) { 
-        d->lut->setColorMap(val); 
+        d->lut->setColorMap(val);
+        d->lut->setName(d->colormap->name());
     });
 
     connect(d->value_range, &gnomonDoubleRangeEditor::valueMinChanged, [=](double value) { 

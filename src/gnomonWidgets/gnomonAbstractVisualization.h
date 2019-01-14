@@ -32,7 +32,9 @@ public:
     ~gnomonAbstractVisualization(void);
 
 public:
+    void setView(gnomonViewForm *view);
     void setParameter(const QString&, const QVariant&);
+    void setParameters(const QMap<QString, gnomonCoreParameter *>&);
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;

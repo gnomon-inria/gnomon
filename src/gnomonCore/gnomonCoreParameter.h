@@ -37,7 +37,6 @@ public:
 
 public:
     virtual void setValue(const QVariant&);
-
 signals:
     void valueChanged();
 
