@@ -699,7 +699,6 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
     // bool enable_slider = images_serie->times().count() > 1;
 
     // d->time_slider->setVisible(enable_slider);
-    qDebug()<<Q_FUNC_INFO<<visualization;
 
     if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
         // d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);

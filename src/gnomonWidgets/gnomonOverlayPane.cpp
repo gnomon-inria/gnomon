@@ -159,8 +159,6 @@ void gnomonOverlayPane::toggle(void)
     if (d->deactivate)
         return;
 
-    qDebug()<<Q_FUNC_INFO<<d->toggle->toggled<<d->on;
-
     d->toggle->setPixmap(d->toggle->font->icon(d->toggle->toggled ? fa::chevronright : fa::chevronleft).pixmap(16, 16));
 
     qlonglong stt = d->on ? d->size :  20;

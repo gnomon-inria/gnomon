@@ -104,10 +104,8 @@ gnomonLookupTable *gnomonCoreParameterLookupTable::value(void) const
 
 void gnomonCoreParameterLookupTable::setValue(gnomonLookupTable *lut)
 {
-    qDebug()<<Q_FUNC_INFO<<lut->colorMapName();
     m_l = lut;
     m_l->setColorMap(lut->colorMapName());
-    qDebug()<<Q_FUNC_INFO<<m_l->colorMapName();
 }
 
 

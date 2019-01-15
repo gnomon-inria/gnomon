@@ -132,40 +132,8 @@ void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCorePa
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
-        qDebug()<<Q_FUNC_INFO<<param;
         if (d->parameters.contains(param)) {
-            qDebug()<<Q_FUNC_INFO<<d->parameters[param];
-            if (gnomonCoreParameterBool *parameter = dynamic_cast<gnomonCoreParameterBool *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterBool *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterInt *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterDouble *parameter = dynamic_cast<gnomonCoreParameterDouble *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterDouble *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterIntRange *parameter = dynamic_cast<gnomonCoreParameterIntRange *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterIntRange *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterDoubleRange *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterDoubleRange *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterString *parameter = dynamic_cast<gnomonCoreParameterString *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterString *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterStringList *parameter = dynamic_cast<gnomonCoreParameterStringList *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterStringList *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterColorMap *parameter = dynamic_cast<gnomonCoreParameterColorMap *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterColorMap *) d->parameters[param])->setValue(parameter->value());
-            } else if (gnomonCoreParameterLookupTable *parameter = dynamic_cast<gnomonCoreParameterLookupTable *>(parameters[param])) {
-                qDebug()<<Q_FUNC_INFO<<parameter<<parameter->value();
-                ((gnomonCoreParameterLookupTable *) d->parameters[param])->setValue(parameter->value());
-            }
+            d->parameters[param] = parameters[param];
         }
     }
 }
