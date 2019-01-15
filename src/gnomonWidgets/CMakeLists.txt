@@ -54,6 +54,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceBrowser.h
   gnomonWorkspaceFusion
   gnomonWorkspaceFusion.h
+  gnomonWorkspaceLSystemSimulator
+  gnomonWorkspaceLSystemSimulator.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
   gnomonWorkspaceRegistration
@@ -62,6 +64,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceSimulation.h
   gnomonWorkspaceSegmentation
   gnomonWorkspaceSegmentation.h
+  gnomonWorkspaceTreeAnalysis
+  gnomonWorkspaceTreeAnalysis.h
   gnomonWorkspaceTemplate_p.h
   gnomonWorkspaceTemplate_p.tpp)
 
@@ -86,10 +90,12 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceFusion.cpp
+  gnomonWorkspaceLSystemSimulator.cpp
+  gnomonWorkspacePreprocess.cpp
+  gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
   gnomonWorkspaceSimulation.cpp
-  gnomonWorkspacePreprocess.cpp
-  gnomonWorkspaceRegistration.cpp)
+  gnomonWorkspaceTreeAnalysis.cpp)
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomonWidgets.qrc)
