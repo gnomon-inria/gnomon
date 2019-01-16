@@ -111,8 +111,6 @@ void gnomonVisualizationMesh::updateOpacity(void)
 
 void gnomonVisualizationMesh::updateValueRange(void)
 {
-    qDebug()<<Q_FUNC_INFO;
-
     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
 
     QMap<long, QVariant> vertexProperty;

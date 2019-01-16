@@ -144,7 +144,7 @@ public:
     gnomonOverlayPane *pane(QWidget *parent);
 
 public slots:
-    void configure(QWidget *parent);
+    void configure(QWidget *parent, const QString& key);
     void refresh(void);
 };
 
@@ -286,9 +286,9 @@ gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
     return this->formVisualizationPane;
 }
 
-void gnomonViewFormPrivate::configure(QWidget *parent)
+void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
 {
-    for (const auto& key : this->formVisualization.keys()) {
+    if (this->formVisualization.contains(key)) {
         gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
@@ -399,13 +399,11 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     });
     
 
-    // parent->connect(this, SIGNAL(formAdded()), parent, SLOT(configure()));
-    connect(this, &gnomonViewForm::formAdded, [=] () {
-        d->configure((QWidget *)this->parent());
+    connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
+        d->configure((QWidget *)this->parent(), key);
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
-        
         for (const auto& key : d->formVisualization.keys()) {
             gnomonAbstractVisualization *v = d->formVisualization[key];
             if(v) {
@@ -694,19 +692,14 @@ gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
 void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstractVisualization *visualization)
 {
     d->forms["gnomonImagesSerie"] = images_serie;
-    // d->last_channel_toggled = images_serie->channel();
 
     // bool enable_slider = images_serie->times().count() > 1;
-
     // d->time_slider->setVisible(enable_slider);
 
     if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
         // d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
         d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending(this);
-        connect(d->formVisualization["gnomonImagesSerie"], &gnomonAbstractVisualization::parametersChanged, [=] () {
-            d->configure((QWidget*)this->parent());
-            qDebug()<<"Configured parameter pane";
-        });
+
     }
     gnomonVisualizationImagesSerieChannelBlending *formVisualizationImagesSerie = (gnomonVisualizationImagesSerieChannelBlending *)d->formVisualization["gnomonImagesSerie"];
     // gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
@@ -726,7 +719,7 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
         this->switchTo2D();
     }
 
-    emit formAdded();
+    emit formAdded("gnomonImagesSerie");
 }
 
 gnomonCellImage *gnomonViewForm::cellImage(void)
@@ -740,10 +733,6 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"])) {
         d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImage(this);
-        connect(d->formVisualization["gnomonCellImage"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
-            d->configure((QWidget*)this->parent()); 
-            qDebug()<<"Configured parameter pane";
-        });
     }
     gnomonVisualizationCellImage *formVisualizationCellImage = (gnomonVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
     formVisualizationCellImage->setCellImage(cellImage);
@@ -761,7 +750,7 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
         this->switchTo2D();
     }
 
-    emit formAdded();
+    emit formAdded("gnomonCellImage");
 }
 
 gnomonMesh *gnomonViewForm::mesh(void)
@@ -776,10 +765,6 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
     {
         d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh(this);
-        connect(d->formVisualization["gnomonMesh"], &gnomonAbstractVisualization::parametersChanged, [=] () { 
-            d->configure((QWidget*)this->parent()); 
-            qDebug()<<"Configured parameter pane";
-        });
     }
     gnomonVisualizationMesh *formVisualizationMesh = (gnomonVisualizationMesh *)d->formVisualization["gnomonMesh"];
     formVisualizationMesh->setMesh(mesh);
@@ -797,7 +782,7 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
         this->switchTo2D();
     }
 
-    emit formAdded();
+    emit formAdded("gnomonMesh");
 }
 
 void gnomonViewForm::setBounds(double bounds[6])

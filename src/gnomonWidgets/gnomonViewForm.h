@@ -107,7 +107,7 @@ signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
 
-    void formAdded(void);
+    void formAdded(const QString&);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
