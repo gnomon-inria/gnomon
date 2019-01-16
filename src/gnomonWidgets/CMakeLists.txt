@@ -77,6 +77,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceLSystemSimulator.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
+  gnomonWorkspacePythonSimulator
+  gnomonWorkspacePythonSimulator.h
   gnomonWorkspaceRegistration
   gnomonWorkspaceRegistration.h
   gnomonWorkspaceSimulation
@@ -121,6 +123,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspacePreprocess.cpp
+  gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
   gnomonWorkspaceSimulation.cpp
