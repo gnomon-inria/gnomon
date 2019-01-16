@@ -14,6 +14,7 @@
 
 #include "gnomonWorkspaceLSystemSimulator.h"
 
+#include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
@@ -25,6 +26,9 @@ public:
     gnomonFinder *finder;
     gnomonFinderPathBar *path;
     gnomonFinderToolBar *toolbar;
+
+public:
+    gnomonCodeEditor *editor;
 
 public:
     gnomonViewVolumic *view;
@@ -43,6 +47,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
+
+    d->editor = new gnomonCodeEditor(this);
 
     d->view = new gnomonViewVolumic(this);
 
@@ -74,6 +80,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
+    splitter->addWidget(d->editor);
     splitter->addWidget(d->view);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
