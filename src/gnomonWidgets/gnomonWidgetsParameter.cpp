@@ -62,8 +62,8 @@ QWidget *gnomonWidgetsParameterInt::widget(gnomonCoreParameterInt *parameter, QW
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [=](int value) { 
-            parameter->setValue(value); 
+        QObject::connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [=](int value) {
+            parameter->setValue(value);
         });
 
         return widget;
@@ -75,8 +75,8 @@ QWidget *gnomonWidgetsParameterInt::widget(gnomonCoreParameterInt *parameter, QW
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, static_cast<void (QSlider::*)(int)>(&QSlider::valueChanged),[=](int value) { 
-            parameter->setValue(value); 
+        QObject::connect(widget, static_cast<void (QSlider::*)(int)>(&QSlider::valueChanged),[=](int value) {
+            parameter->setValue(value);
         });
 
         return widget;
@@ -97,7 +97,7 @@ QWidget *gnomonWidgetsParameterDouble::widget(gnomonCoreParameterDouble *paramet
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [=](double value) { 
+        QObject::connect(widget, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [=](double value) {
             parameter->setValue(value);
         });
 
@@ -119,11 +119,11 @@ QWidget *gnomonWidgetsParameterIntRange::widget(gnomonCoreParameterIntRange *par
         widget->setValueMin(parameter->value()[0]);
         widget->setValueMax(parameter->value()[1]);
 
-        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMinChanged, [=](int value) { 
+        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMinChanged, [=](int value) {
             parameter->setValue(value, widget->valueMax());
         });
 
-        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMaxChanged,[=](int value) { 
+        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMaxChanged,[=](int value) {
             parameter->setValue(widget->valueMin(), value);
         });
 
@@ -146,7 +146,7 @@ QWidget *gnomonWidgetsParameterDoubleRange::widget(gnomonCoreParameterDoubleRang
         widget->setValueMax(parameter->value()[1]);
 
         QObject::connect(widget, &gnomonDoubleRangeEditor::valueMinChanged, [=](int value) {
-            parameter->setValue(value, widget->valueMax()); 
+            parameter->setValue(value, widget->valueMax());
         });
 
         QObject::connect(widget, &gnomonDoubleRangeEditor::valueMaxChanged, [=](int value) {
@@ -171,7 +171,7 @@ QWidget *gnomonWidgetsParameterBool::widget(gnomonCoreParameterBool *parameter, 
         widget->setCheckState(parameter->value() ? Qt::Checked : Qt::Unchecked);
 
         QObject::connect(widget, &QCheckBox::stateChanged, [=](bool value) {
-            parameter->setValue(value); 
+            parameter->setValue(value);
         });
 
         return widget;
@@ -186,19 +186,24 @@ QString gnomonWidgetsParameterString::style = QStringLiteral("combobox");
 QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *parameter, QWidget *parent)
 {
     if (style == QStringLiteral("combobox")) {
+
         QComboBox *widget = new QComboBox(parent);
         widget->setToolTip(parameter->doc());
+
         for (const auto value : parameter->values()) {
             widget->addItem(value);
         }
-        // widget->setCurrentText(parameter->currentValue());
+
         widget->setCurrentText(parameter->value());
 
         QObject::connect(widget, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int id) {
-            parameter->setCurrentIndex(id); 
+
+            qDebug() << Q_FUNC_INFO << "HERE" << parameter;
+            parameter->setCurrentIndex(id);
         });
 
         return widget;
+
     } else if (style == QStringLiteral("lineedit")) {
         QLineEdit *widget = new QLineEdit(parent);
         widget->setToolTip(parameter->doc());
@@ -211,6 +216,7 @@ QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *paramet
         return widget;
 
     } else {
+
         return nullptr;
     }
 }
@@ -247,8 +253,8 @@ QWidget *gnomonWidgetsParameterColorMap::widget(gnomonCoreParameterColorMap *par
 
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) { 
-            parameter->setValue(val); 
+        QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
+            parameter->setValue(val);
         });
 
         return widget;
@@ -268,8 +274,8 @@ QWidget *gnomonWidgetsParameterLookupTable::widget(gnomonCoreParameterLookupTabl
 
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable *val) { 
-            parameter->setValue(val); 
+        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable *val) {
+            parameter->setValue(val);
         });
 
         return widget;

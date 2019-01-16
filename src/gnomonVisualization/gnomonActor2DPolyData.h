@@ -44,17 +44,19 @@ public:
 
 public:
     void setInteractor(void *interactor) override;
-    virtual void hide(void);
-    virtual void show(void);
 
 public:
-	void setPolyData(gnomonPolyData *polydata);
+    virtual void hide(void) override;
+    virtual void show(void) override;
+
+public:
+    void setPolyData(gnomonPolyData *polydata);
 
     void setSliceThickness(double value);
     void setSlicePositions(double value[3]);
 
 public slots:
-    void update(void);
+    void update(void) override;
     void modified(void);
 
 public slots:
@@ -75,7 +77,7 @@ private:
     void operator = (const gnomonActor2DPolyData&);
 
 private:
-	class gnomonActor2DPolyDataPrivate *d;
+    class gnomonActor2DPolyDataPrivate *d;
 };
 
 //

@@ -1,24 +1,35 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include <gnomonCore/gnomonCoreParameter.h>
+
 #include "gnomonWidgetsParameter.h"
 
-template <typename T>
-gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
+template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
 
 }
 
-template <typename T>
-gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
+template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
 {
-    if (this->command) {
+    if (this->command)
         delete this->command;
-    }
 }
 
-template <typename T>
-void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString& algorithm)
+template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString& algorithm)
 {
-    qDebug()<<Q_FUNC_INFO<<"Configure!";
+    qDebug() << Q_FUNC_INFO << "Configure!";
 
     if (this->pane_item_params_layout) {
         for(int row = 0, max_row = this->pane_item_params_layout->count(); row < max_row; ++row) {
@@ -46,8 +57,7 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
     }
 }
 
-template <typename T>
-gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
+template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
 {
     QComboBox *combo_box = new QComboBox(parent);
     QStringList combo_box_keys = this->keys();
@@ -104,3 +114,6 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
 
     return pane;
 }
+
+//
+// gnomonWorkspaceTemplate_p.tpp ends here

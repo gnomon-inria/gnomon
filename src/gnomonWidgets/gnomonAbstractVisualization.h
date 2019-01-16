@@ -40,10 +40,10 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
 public:
-	virtual QImage imageRendering(void) = 0;
+    virtual QImage imageRendering(void) = 0;
 
 signals:
-	void parametersChanged(void);
+    void parametersChanged(void);
 
 public slots:
     virtual void update(void) = 0;
@@ -52,7 +52,6 @@ public slots:
 protected:
     class gnomonAbstractVisualizationPrivate *d;
 };
-
 
 //
 // gnomonAbstractVisualization.h ends here
