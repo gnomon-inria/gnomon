@@ -18,7 +18,7 @@
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 
 class gnomonWorkspaceLSystemSimulatorPrivate
 {
@@ -31,7 +31,7 @@ public:
     gnomonCodeEditor *editor;
 
 public:
-    gnomonViewVolumic *view;
+    gnomonViewForm *view;
 };
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : gnomonWorkspace(parent)
@@ -50,7 +50,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->editor = new gnomonCodeEditor(this);
 
-    d->view = new gnomonViewVolumic(this);
+    d->view = new gnomonViewForm(this);
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);

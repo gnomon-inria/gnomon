@@ -16,22 +16,22 @@
 
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
-#include "gnomonViewVolumicPool.h"
+#include "gnomonViewForm.h"
+#include "gnomonViewFormPool.h"
 
 class gnomonWorkspaceTreeAnalysisPrivate
 {
 public:
-    gnomonViewVolumic *source = nullptr;
-    gnomonViewVolumic *target = nullptr;
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
 };
 
 gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspaceTreeAnalysisPrivate;
 
-    d->source = new gnomonViewVolumic(this);
-    d->target = new gnomonViewVolumic(this);
+    d->source = new gnomonViewForm(this);
+    d->target = new gnomonViewForm(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
