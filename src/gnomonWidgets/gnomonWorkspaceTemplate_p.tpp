@@ -29,8 +29,6 @@ template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplat
 
 template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString& algorithm)
 {
-    qDebug() << Q_FUNC_INFO << "Configure!";
-
     if (this->pane_item_params_layout) {
         for(int row = 0, max_row = this->pane_item_params_layout->count(); row < max_row; ++row) {
             QLayoutItem *forDeletion = this->pane_item_params_layout->takeAt(0);

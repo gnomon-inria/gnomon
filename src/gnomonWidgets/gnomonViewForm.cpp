@@ -117,7 +117,7 @@ public:
     int syncing_count = 0;
     QTimer *syncing_timer = nullptr;
     bool synced = false;
-    
+
 public:
     QColor export_color = QColor("#cccccc");
 
@@ -177,7 +177,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     this->sync = new gnomonViewVolumicOverlay(fa::unlock, "", this);
     this->sync->toggle(false);
-    
+
     this->export_button = new gnomonViewVolumicOverlay(fa::arrowcircleup, "", this);
 }
 
@@ -323,7 +323,7 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
     this->refresh();
 }
 
-void gnomonViewFormPrivate::refresh(void) 
+void gnomonViewFormPrivate::refresh(void)
 {
     this->formVisualizationPane->clearLayout();
 
@@ -397,7 +397,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
             d->syncing_timer->start(500);
         }
     });
-    
+
 
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
@@ -413,9 +413,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     });
 
     this->setAcceptDrops(true);
-    this->switchTo2D(); 
+    this->switchTo2D();
     this->switchTo2DXY();
-    d->updateOrientation(); 
+    d->updateOrientation();
 }
 
 gnomonViewForm::~gnomonViewForm(void)
@@ -786,7 +786,7 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
 }
 
 void gnomonViewForm::setBounds(double bounds[6])
-{   
+{
     d->xBounds[0] = bounds[0];
     d->xBounds[1] = bounds[1];
     d->yBounds[0] = bounds[2];
@@ -897,7 +897,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             gnomonCellImageReaderCommand *cellImageCommand = (gnomonCellImageReaderCommand *) d->formReaderCommand["gnomonCellImage"];
             cellImageCommand->setPath(path.remove("file://"));
             cellImageCommand->redo();
-            
+
             gnomonCellImage * cellImage = (gnomonCellImage *) cellImageCommand->cellImage()->clone();
             if (!cellImage) {
                 qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
@@ -912,7 +912,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             gnomonImagesSerieReaderCommand *imageCommand = (gnomonImagesSerieReaderCommand *) d->formReaderCommand["gnomonImagesSerie"];
             imageCommand->setPath(path.remove("file://"));
             imageCommand->redo();
-            
+
             gnomonImagesSerie * images_serie = imageCommand->imagesSerie()->copy();
             if (!images_serie) {
                 qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
@@ -936,7 +936,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonMesh",mesh);  
+            this->setForm("gnomonMesh",mesh);
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }

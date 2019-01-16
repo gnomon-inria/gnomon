@@ -198,7 +198,6 @@ QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *paramet
 
         QObject::connect(widget, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int id) {
 
-            qDebug() << Q_FUNC_INFO << "HERE" << parameter;
             parameter->setCurrentIndex(id);
         });
 
