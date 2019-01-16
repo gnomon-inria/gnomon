@@ -12,18 +12,15 @@
 
 // Code:
 
-#include "gnomonWorkspaceBrowser.h"
+#include "gnomonWorkspaceLSystemSimulator.h"
 
-#include <gnomonVisualization/gnomonColorMapEditor.h>
-
+#include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonToolBar.h"
-#include "gnomonViewForm.h"
-// #include "gnomonViewVolumic.h"
+#include "gnomonViewVolumic.h"
 
-class gnomonWorkspaceBrowserPrivate
+class gnomonWorkspaceLSystemSimulatorPrivate
 {
 public:
     gnomonFinder *finder;
@@ -31,14 +28,15 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    // gnomonViewVolumic *browse_view;
-    gnomonViewForm *browse_view;
+    gnomonCodeEditor *editor;
 
+public:
+    gnomonViewVolumic *view;
 };
 
-gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : gnomonWorkspace(parent)
 {
-    d = new gnomonWorkspaceBrowserPrivate;
+    d = new gnomonWorkspaceLSystemSimulatorPrivate;
 
     d->finder = new gnomonFinder(this);
     d->finder->switchToTreeView();
@@ -50,10 +48,9 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
 
-    // d->browse_view = new gnomonViewVolumic(this);
-    d->browse_view = new gnomonViewForm(this);
-    d->browse_view->setExportColor(gnomonToolBar::browser_color);
-    d->browse_view->toggleVisualizationPane();
+    d->editor = new gnomonCodeEditor(this);
+
+    d->view = new gnomonViewVolumic(this);
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
@@ -83,7 +80,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
-    splitter->addWidget(d->browse_view);
+    splitter->addWidget(d->editor);
+    splitter->addWidget(d->view);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -91,15 +89,16 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     layout->addWidget(splitter);
 }
 
-gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
+gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 {
     delete d;
 }
 
-void gnomonWorkspaceBrowser::apply(void)
+void gnomonWorkspaceLSystemSimulator::apply(void)
 {
 
 }
 
+
 //
-// gnomonWorkspaceBrowser.cpp ends here
+// gnomonWorkspaceLSystemSimulator.cpp ends here
