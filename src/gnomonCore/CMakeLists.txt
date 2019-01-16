@@ -43,6 +43,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCommand.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
+  gnomonAbstractEvolutionModel
+  gnomonAbstractEvolutionModel.h
   gnomonAbstractFemSolver
   gnomonAbstractFemSolver.h
   gnomonAbstractForm
@@ -143,6 +145,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellImageReader.cpp
   gnomonAbstractCellImageWriter.cpp
+  gnomonAbstractEvolutionModel.cpp
   gnomonAbstractFemSolver.cpp
   gnomonAbstractForm.cpp
   gnomonAbstractImagesFusion.cpp
