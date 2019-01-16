@@ -144,7 +144,7 @@ public:
     gnomonOverlayPane *pane(QWidget *parent);
 
 public slots:
-    void configure(QWidget *parent);
+    void configure(QWidget *parent, const QString& key);
     void refresh(void);
 };
 
@@ -286,9 +286,9 @@ gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
     return this->formVisualizationPane;
 }
 
-void gnomonViewFormPrivate::configure(QWidget *parent)
+void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
 {
-    for (const auto& key : this->formVisualization.keys()) {
+    if (this->formVisualization.contains(key)) {
         gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
@@ -399,8 +399,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     });
     
 
-    connect(this, &gnomonViewForm::formAdded, [=] () {
-        d->configure((QWidget *)this->parent());
+    connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
+        d->configure((QWidget *)this->parent(), key);
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
@@ -719,7 +719,7 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
         this->switchTo2D();
     }
 
-    emit formAdded();
+    emit formAdded("gnomonImagesSerie");
 }
 
 gnomonCellImage *gnomonViewForm::cellImage(void)
@@ -750,7 +750,7 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
         this->switchTo2D();
     }
 
-    emit formAdded();
+    emit formAdded("gnomonCellImage");
 }
 
 gnomonMesh *gnomonViewForm::mesh(void)
@@ -782,7 +782,7 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
         this->switchTo2D();
     }
 
-    emit formAdded();
+    emit formAdded("gnomonMesh");
 }
 
 void gnomonViewForm::setBounds(double bounds[6])
