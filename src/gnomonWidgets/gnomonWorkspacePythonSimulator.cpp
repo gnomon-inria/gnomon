@@ -25,7 +25,7 @@
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 
 
 class gnomonWorkspacePythonSimulatorPrivate
@@ -42,7 +42,7 @@ public:
     dtkInterpreter *terminal;
 
 public:
-    gnomonViewVolumic *view;
+    gnomonViewForm *view;
 
 public:
     gnomonOverlayPane *pane;
@@ -66,7 +66,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     d->editor = new gnomonCodeEditor(this);
     d->editor->resize(600, d->editor->height());
 
-    d->view = new gnomonViewVolumic(this);
+    d->view = new gnomonViewForm(this);
 
     d->terminal = new dtkInterpreter(this);
 
