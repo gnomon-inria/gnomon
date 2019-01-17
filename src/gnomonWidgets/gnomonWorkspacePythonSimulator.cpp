@@ -64,6 +64,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     d->toolbar->setPath(QDir::currentPath());
 
     d->editor = new gnomonCodeEditor(this);
+    d->editor->resize(600, d->editor->height());
 
     d->view = new gnomonViewVolumic(this);
 
@@ -118,7 +119,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     splitter->addWidget(d->editor);
     splitter->addWidget(viewer);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
