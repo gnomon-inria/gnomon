@@ -18,15 +18,25 @@
 
 #include <dtkCore>
 
+#include "gnomonAbstractAlgorithm.h"
+
 class gnomonCellComplex;
 
-class GNOMONCORE_EXPORT gnomonAbstractCellComplexReader
+class GNOMONCORE_EXPORT gnomonAbstractCellComplexReader : public gnomonAbstractAlgorithm
 {
 public:
     virtual ~gnomonAbstractCellComplexReader(void) {}
 
 public:
-    virtual gnomonCellComplex *read(const QString& path) = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
+
+public:
+    virtual void setPath(const QString& path) = 0;
+
+public:
+    virtual gnomonCellComplex *cellComplex(void) = 0;
 
 public:
     virtual QStringList types(void) = 0;

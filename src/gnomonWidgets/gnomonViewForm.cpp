@@ -21,11 +21,13 @@
 #include <gnomonCore/gnomonAbstractCommand>
 #include <gnomonCore/gnomonImagesSerieReaderCommand>
 #include <gnomonCore/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
 #include <gnomonCore/gnomonAbstractForm>
 #include <dtkImagingCore>
 #include <gnomonCore/gnomonMesh>
+#include <gnomonCore/gnomonCellComplex>
 #include <gnomonCore/gnomonCellImage>
 #include <gnomonCore/gnomonImagesSerie>
 
@@ -415,6 +417,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     this->setAcceptDrops(true);
     this->switchTo2D();
     this->switchTo2DXY();
+    this->switchTo3D();
     d->updateOrientation();
 }
 
@@ -923,6 +926,20 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             // emit timeChanged(images_serie->time());
             this->setForm("gnomonImagesSerie",images_serie);
 
+        } else if(path.endsWith("ply")) {
+            if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
+                d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopocellComplex");
+            gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
+            cellComplexCommand->setPath(path.remove("file://"));
+            cellComplexCommand->redo();
+
+            gnomonCellComplex *cellComplex = (gnomonCellComplex *) cellComplexCommand->cellComplex()->clone();
+            if (!cellComplex) {
+                qWarning() << Q_FUNC_INFO << "Resulting cellComplex is void.";
+                event->ignore();
+                return;
+            }
+            this->setForm("gnomonCellComplex",cellComplex);
         } else if(path.endsWith("ply")) {
             if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
                 d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");

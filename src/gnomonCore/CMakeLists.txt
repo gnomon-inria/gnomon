@@ -76,6 +76,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractTissueGrowthModel.h
   gnomonCellComplex
   gnomonCellComplex.h
+  gnomonCellComplexReaderCommand
+  gnomonCellComplexReaderCommand.h
   gnomonCellGraph
   gnomonCellGraph.h
   gnomonCellImage
@@ -158,6 +160,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractSurfaceImageFromImage.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
+  gnomonCellComplexReaderCommand.cpp
   gnomonCellImageReaderCommand.cpp
   gnomonCellImageWriterCommand.cpp
   gnomonCore.cpp
