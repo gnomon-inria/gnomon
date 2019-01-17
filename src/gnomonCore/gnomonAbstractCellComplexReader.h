@@ -22,10 +22,14 @@
 
 class gnomonCellComplex;
 
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
 class GNOMONCORE_EXPORT gnomonAbstractCellComplexReader : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractCellComplexReader(void) {}
+    virtual ~gnomonAbstractCellComplexReader(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -42,12 +46,18 @@ public:
     virtual QStringList types(void) = 0;
 };
 
-DTK_DECLARE_OBJECT(gnomonAbstractCellComplexReader *)
+// ///////////////////////////////////////////////////////////////////
+// Give the concept the plugin machinery
+// ///////////////////////////////////////////////////////////////////
 
+DTK_DECLARE_OBJECT(gnomonAbstractCellComplexReader *)
 DTK_DECLARE_PLUGIN(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
 
+// /////////////////////////////////////////////////////////////////
+// Register to gnomonCore layer
+// /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
     DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT, cellComplexReader);
