@@ -52,6 +52,11 @@ class gnomonPolyDataCellComplexPrivate
 public:
     gnomonCellComplex *cellComplex;
 
+    double cellScaleFactor;
+
+    QMap<long, vtkSmartPointer<vtkPolyData> > cell_mesh;
+    vtkSmartPointer<vtkPolyData> mesh;
+
     QString property_name;
 
     bool modified;
@@ -88,56 +93,117 @@ void gnomonPolyDataCellComplex::update(void)
     if(!d->cellComplex)
         return;
 
-    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
-    vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
-    vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
+//    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
+//    vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
+//    vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
 
     QMap<long, QVariant> positions_x = d->cellComplex->elementProperty(0,"barycenter_x");
     QMap<long, QVariant> positions_y = d->cellComplex->elementProperty(0,"barycenter_y");
     QMap<long, QVariant> positions_z = d->cellComplex->elementProperty(0,"barycenter_z");
 
-    QMap<long,long> vertexPoint;
+//    QMap<long,long> vertexPoint;
+//
+//    QList<long> vertices = d->cellComplex->elementIds(0);
+//
+//    QMap<long, QVariant> vertexProperty;
+//    if (d->cellComplex->elementPropertyNames(0).contains(d->property_name)) {
+//        vertexProperty = d->cellComplex->elementProperty(0,d->property_name);
+//    } else {
+//        for (const auto& vertexId : vertices) {
+//            vertexProperty[vertexId] = QVariant((double)vertexId);
+//        }
+//    }
+//
+//    QMap<long, double> vertexScalarProperty;
+//    for (const auto& vertexId : vertices) {
+//        vertexScalarProperty[vertexId] = vertexProperty[vertexId].value<double>();
+//    }
+//
+//    QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
+//    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
+//
+//    for (const auto& vertexId : vertices) {
+//        long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
+//        polydataPointData->InsertValue(vtkId,vertexScalarProperty[vertexId]);
+//        vertexPoint[vertexId] = vtkId;
+//    }
+//
+//    this->SetPoints(polydataPoints);
+//    this->GetPointData()->SetScalars(polydataPointData);
+//
+//
+//    QList<long> faces = d->cellComplex->elementIds(2);
+//
+//    for (const auto& faceId : faces) {
+//      QList<long> faceVertices = d->cellComplex->orientedFaceVertexIds(faceId);
+//      long vtkId = polydataFaces->InsertNextCell(faceVertices.size());
+//      for (const auto& v : faceVertices) {
+//          polydataFaces->InsertCellPoint(vertexPoint[v]);
+//      }
+//    }
+//
+//    this->SetPolys(polydataFaces);
 
-    QList<long> vertices = d->cellComplex->elementIds(0);
 
-    QMap<long, QVariant> vertexProperty;
-    if (d->cellComplex->elementPropertyNames(0).contains(d->property_name)) {
-        vertexProperty = d->cellComplex->elementProperty(0,d->property_name);
-    } else {
-        for (const auto& vertexId : vertices) {
-            vertexProperty[vertexId] = QVariant((double)vertexId);
+    QMap<long, QMap<long,long> > cellVertexPoints;
+
+    QMap<long, QVariant> cell_centers_x = d->cellComplex->elementProperty(3,"barycenter_x");
+    QMap<long, QVariant> cell_centers_y = d->cellComplex->elementProperty(3,"barycenter_y");
+    QMap<long, QVariant> cell_centers_z = d->cellComplex->elementProperty(3,"barycenter_z");
+
+    QList<long> cells = d->cellComplex->elementIds(3);
+
+    for (const auto& cellId : cells) {
+
+        if (!d->cell_mesh.contains(cellId)) {
+            d->cell_mesh[cellId] = vtkSmartPointer<vtkPolyData>::New();
+
+            vtkSmartPointer<vtkPoints> cellPolydataPoints = vtkSmartPointer<vtkPoints>::New();
+            vtkSmartPointer<vtkCellArray> cellPolydataFaces = vtkSmartPointer<vtkCellArray>::New();
+            vtkSmartPointer<vtkDoubleArray> cellPolydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
+
+            QList<long> cellVertices = d->cellComplex->incidentElementIds(3,cellId,0);
+            cellVertexPoints[cellId] = QMap<long,long>();
+
+            for (const auto& vertexId : cellVertices) {
+                double x = cell_centers_x[cellId].value<double>() + d->cellScaleFactor * (positions_x[vertexId].value<double>() - cell_centers_x[cellId].value<double>());
+                double y = cell_centers_y[cellId].value<double>() + d->cellScaleFactor * (positions_y[vertexId].value<double>() - cell_centers_y[cellId].value<double>());
+                double z = cell_centers_z[cellId].value<double>() + d->cellScaleFactor * (positions_z[vertexId].value<double>() - cell_centers_z[cellId].value<double>());
+                long vtkId = cellPolydataPoints->InsertNextPoint(x,y,z);
+                cellVertexPoints[cellId][vertexId] = vtkId;
+            }
+
+
+            QList<long> cellFaces = d->cellComplex->incidentElementIds(3,cellId,2);
+            for (const auto& faceId : cellFaces) {
+                QList<long> faceVertices = d->cellComplex->orientedFaceVertexIds(faceId);
+                long vtkId = cellPolydataFaces->InsertNextCell(faceVertices.size());
+                for (const auto& v : faceVertices) {
+                    cellPolydataFaces->InsertCellPoint(cellVertexPoints[cellId][v]);
+                }
+                cellPolydataFaceData->InsertValue(vtkId,cellId);
+            }
+
+            d->cell_mesh[cellId]->SetPoints(cellPolydataPoints);
+            d->cell_mesh[cellId]->SetPolys(cellPolydataFaces);
+            d->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
         }
     }
 
-    QMap<long, double> vertexScalarProperty;
-    for (const auto& vertexId : vertices) {
-        vertexScalarProperty[vertexId] = vertexProperty[vertexId].value<double>();
-    }
+    vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
+    for (const auto& cellId : cells)
+        if (d->cell_mesh.contains(cellId))
+            appender->AddInputData(d->cell_mesh[cellId]);
 
-    QList<double> vertexScalarPropertyValues = vertexScalarProperty.values();
-    auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
+    vtkSmartPointer<vtkCleanPolyData> cleaner = vtkSmartPointer<vtkCleanPolyData>::New();
+    cleaner->SetInputConnection(appender->GetOutputPort());
+    cleaner->Update();
 
-    for (const auto& vertexId : vertices) {
-        long vtkId = polydataPoints->InsertNextPoint(positions_x[vertexId].value<double>(),positions_y[vertexId].value<double>(),positions_z[vertexId].value<double>());
-        polydataPointData->InsertValue(vtkId,vertexScalarProperty[vertexId]);
-        vertexPoint[vertexId] = vtkId;
-    }
+    d->mesh = cleaner->GetOutput();
 
-    this->SetPoints(polydataPoints);
-    this->GetPointData()->SetScalars(polydataPointData);
-
-
-    QList<long> faces = d->cellComplex->elementIds(2);
-
-    for (const auto& faceId : faces) {
-      QList<long> faceVertices = d->cellComplex->orientedFaceVertexIds(faceId);
-      long vtkId = polydataFaces->InsertNextCell(faceVertices.size());
-      for (const auto& v : faceVertices) {
-          polydataFaces->InsertCellPoint(vertexPoint[v]);
-      }
-    }
-
-    this->SetPolys(polydataFaces);
+    this->SetPoints(d->mesh->GetPoints());
+    this->SetPolys(d->mesh->GetPolys());
+    this->GetCellData()->SetScalars(d->mesh->GetCellData()->GetScalars());
 
     d->modified = false;
 }
@@ -146,6 +212,7 @@ gnomonPolyDataCellComplex::gnomonPolyDataCellComplex(void) : gnomonPolyData(), d
 {
     d->cellComplex = Q_NULLPTR;
 
+    d->cellScaleFactor = 0.99;
     d->property_name = "";
 }
 
