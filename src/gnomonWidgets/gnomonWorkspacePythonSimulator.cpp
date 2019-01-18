@@ -21,6 +21,8 @@
 #include <dtkWidgets>
 #include "gnomonWorkspacePythonSimulator.h"
 
+#include <gnomonFonts>
+
 #include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
@@ -47,11 +49,17 @@ public:
 public:
     gnomonOverlayPane *pane;
 
+public:
+    gnomonFontSourceCodePro *font_source_code_pro;
+
 };
 
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
+
+    d->font_source_code_pro = new gnomonFontSourceCodePro(this);
+    d->font_source_code_pro->initFontSourceCodePro();
 
     d->finder = new gnomonFinder(this);
     d->finder->switchToTreeView();
@@ -62,16 +70,6 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
-
-    d->editor = new gnomonCodeEditor(this);
-    d->editor->resize(600, d->editor->height());
-
-    d->view = new gnomonViewForm(this);
-
-    d->terminal = new dtkInterpreter(this);
-
-    d->pane = new gnomonOverlayPane(this);
-
 
     // -- Organizing the finder column --
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
@@ -101,6 +99,16 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
 
+    d->editor = new gnomonCodeEditor(this);
+    d->editor->resize(600, d->editor->height());
+
+
+    d->view = new gnomonViewForm(this);
+
+    d->terminal = new dtkInterpreter(this);
+    d->terminal->setFont(d->font_source_code_pro->font(12));
+    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+
     // -- Organizing the viewer column --
     QVBoxLayout *viewer_layout = new QVBoxLayout;
     viewer_layout->setContentsMargins(0, 0, 0, 0);
@@ -108,10 +116,27 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     viewer_layout->addWidget(d->view);
     viewer_layout->addWidget(d->terminal);
 
-
     QWidget *viewer = new QWidget(this);
     viewer->setLayout(viewer_layout);
 
+
+    d->pane = new gnomonOverlayPane(this);
+
+    QPushButton *button = new QPushButton("Apply", parent);
+    button->setCheckable(true);
+
+    gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
+    pane_item_button->setTitle("Simulation");
+    pane_item_button->addWidget(button);
+    pane_item_button->toggle();
+
+    d->pane->addWidget(pane_item_button);
+
+    QObject::connect(button, &QPushButton::clicked, [=] () {
+        parent->setCursor(Qt::BusyCursor);
+        this->apply();
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
@@ -133,7 +158,11 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 
 void gnomonWorkspacePythonSimulator::apply(void)
 {
-
+    int stat;
+    if (d->terminal)
+    {
+        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
+    }
 }
 
 
