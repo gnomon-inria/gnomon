@@ -57,17 +57,12 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(gnomonViewForm* v
 {
     dd->cellComplex = Q_NULLPTR;
 
-//    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellComplex property to be displayed");
-//    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
-//    d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the cellComplex");
+    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellComplex property to be displayed");
+    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellComplex rendering");
-//
-//    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
-//        if(!dd->cellComplex)
-//            return;
-//        this->updateValueRange();
-//        emit parametersChanged();
-//    });
+
+
 }
 
 gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
@@ -82,18 +77,23 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
     dd->cellComplex = cellComplex;
 
     this->setParameter("alpha",1.0);
+    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+        if(!dd->cellComplex)
+            return;
+        this->updateValueRange();
+        emit parametersChanged();
+    });
+    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
+    QStringList properties = {""};
+    for (const auto& propertyName : dd->cellComplex->elementPropertyNames(3)) {
+        if(dd->cellComplex->elementProperty(3,propertyName)[dd->cellComplex->elementIds(3)[0]].canConvert<double>()) {
+            properties.append(propertyName);
+        }
+    }
+    propertyParam->setValues(properties);
+    propertyParam->setValue(QString(""));
 //
-//    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
-//    QStringList properties = {""};
-//    for (const auto& propertyName : dd->cellComplex->vertexPropertyNames()) {
-//        if(dd->cellComplex->vertexProperty(propertyName)[dd->cellComplex->vertexIds()[0]].canConvert<double>()) {
-//            properties.append(propertyName);
-//        }
-//    }
-//    propertyParam->setValues(properties);
-//    propertyParam->setValue(QString(""));
-//
-//    this->updateValueRange();
+    this->updateValueRange();
 }
 
 void gnomonVisualizationCellComplex::updateOpacity(void)
@@ -111,6 +111,25 @@ void gnomonVisualizationCellComplex::updateOpacity(void)
 
 void gnomonVisualizationCellComplex::updateValueRange(void)
 {
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+
+    QMap<long, QVariant> cellProperty;
+    if(dd->cellComplex->elementPropertyNames(3).contains(property_name)) {
+        cellProperty = dd->cellComplex->elementProperty(3,property_name);
+    } else {
+        for (const auto& cellId : dd->cellComplex->elementIds(3)) {
+            cellProperty[cellId] = QVariant((double)cellId);
+        }
+    }
+
+    QList<double> cellScalarPropertyValues;
+    for (const auto& cellId : dd->cellComplex->elementIds(3)) {
+        cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
+    }
+    auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
+    
+    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
+    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
 }
 
 QImage gnomonVisualizationCellComplex::imageRendering(void)
@@ -124,9 +143,9 @@ QImage gnomonVisualizationCellComplex::imageRendering(void)
 
 void gnomonVisualizationCellComplex::update(void)
 {
-//    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
-//    QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-//    QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+    QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
 
     if(!dd->cellComplex)
         return;
@@ -141,7 +160,7 @@ void gnomonVisualizationCellComplex::update(void)
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellComplex::New();
     dd->polydata->setCellComplex((gnomonCellComplex *)dd->cellComplex->clone());
-//    dd->polydata->setPropertyName(property_name);
+    dd->polydata->setPropertyName(property_name);
     dd->polydata->update();
 
 
@@ -157,8 +176,8 @@ void gnomonVisualizationCellComplex::update(void)
     }
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
-//    dd->actor->setColorMap(colormap);
-//    dd->actor->setValueRange(value_range);
+    dd->actor->setColorMap(colormap);
+    dd->actor->setValueRange(value_range);
 //
     if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
@@ -176,8 +195,8 @@ void gnomonVisualizationCellComplex::update(void)
     dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.5);
     dd->actor2D->setPolyData(dd->polydata);
-//    dd->actor2D->setColorMap(colormap);
-//    dd->actor2D->setValueRange(value_range);
+    dd->actor2D->setColorMap(colormap);
+    dd->actor2D->setValueRange(value_range);
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);

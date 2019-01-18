@@ -153,6 +153,22 @@ void gnomonPolyDataCellComplex::update(void)
 
     QList<long> cells = d->cellComplex->elementIds(3);
 
+    
+    QMap<long, QVariant> cellProperty;
+    if (d->cellComplex->elementPropertyNames(3).contains(d->property_name)) {
+        cellProperty = d->cellComplex->elementProperty(3,d->property_name);
+    } else {
+        for (const auto& cellId : cells) {
+            cellProperty[cellId] = QVariant((double)cellId);
+        }
+    }
+
+    QMap<long, double> cellScalarProperty;
+    for (const auto& cellId : cells) {
+        cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
+    }
+        
+
     for (const auto& cellId : cells) {
 
         if (!d->cell_mesh.contains(cellId)) {
@@ -181,7 +197,7 @@ void gnomonPolyDataCellComplex::update(void)
                 for (const auto& v : faceVertices) {
                     cellPolydataFaces->InsertCellPoint(cellVertexPoints[cellId][v]);
                 }
-                cellPolydataFaceData->InsertValue(vtkId,cellId);
+                cellPolydataFaceData->InsertValue(vtkId,cellScalarProperty[cellId]);
             }
 
             d->cell_mesh[cellId]->SetPoints(cellPolydataPoints);
