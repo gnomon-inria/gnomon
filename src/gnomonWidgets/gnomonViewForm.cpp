@@ -122,6 +122,9 @@ public:
     bool synced = false;
 
 public:
+    bool acceptCellComplex = true;
+
+public:
     QColor export_color = QColor("#cccccc");
 
 public:
@@ -868,6 +871,11 @@ void gnomonViewForm::setBounds(double bounds[6])
 
 }
 
+void gnomonViewForm::setAcceptCellComplex(bool accept)
+{
+    d->acceptCellComplex = accept;
+}
+
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
 {
     return d->GetInteractor();
@@ -962,7 +970,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             // emit timeChanged(images_serie->time());
             this->setForm("gnomonImagesSerie",images_serie);
 
-        } else if(path.endsWith("ply")) {
+        } else if((path.endsWith("ply")) and (d->acceptCellComplex)) {
             if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
                 d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
             gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];

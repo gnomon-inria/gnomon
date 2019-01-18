@@ -104,6 +104,10 @@ public slots:
     void render(void);
 
 public slots:
+    void setAcceptCellComplex(bool);
+
+
+public slots:
     void onSliceChanged(int);
 
 signals:

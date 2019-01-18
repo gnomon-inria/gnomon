@@ -70,6 +70,8 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWo
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(gnomonToolBar::registration_color);
+    d->source->setAcceptCellComplex(false);
+
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::registration_color);
 
