@@ -41,6 +41,9 @@ public:
 
 public:
     virtual gnomonMesh *mesh(void) = 0;
+
+public:
+    virtual QStringList types(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@ class gnomonAbstractVisualization;
 
 class gnomonImagesSerie;
 class gnomonCellImage;
+class gnomonCellComplex;
 class gnomonMesh;
 
 class vtkRenderer;
@@ -76,12 +77,14 @@ public:
     void setForm(const QString&, gnomonAbstractForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImage *, gnomonAbstractVisualization *  = nullptr);
     void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
+    void setCellComplex(gnomonCellComplex *, gnomonAbstractVisualization *  = nullptr);
     void setMesh(gnomonMesh *, gnomonAbstractVisualization *  = nullptr);
 
 public:
     gnomonAbstractForm *form(const QString&); 
     gnomonImagesSerie *imagesSerie(void);
     gnomonCellImage *cellImage(void);
+    gnomonCellComplex *cellComplex(void);
     gnomonMesh *mesh(void);
 
 public:
@@ -99,6 +102,10 @@ public slots:
 
 public slots:
     void render(void);
+
+public slots:
+    void setAcceptCellComplex(bool);
+
 
 public slots:
     void onSliceChanged(int);

@@ -21,11 +21,13 @@
 #include <gnomonCore/gnomonAbstractCommand>
 #include <gnomonCore/gnomonImagesSerieReaderCommand>
 #include <gnomonCore/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
 #include <gnomonCore/gnomonAbstractForm>
 #include <dtkImagingCore>
 #include <gnomonCore/gnomonMesh>
+#include <gnomonCore/gnomonCellComplex>
 #include <gnomonCore/gnomonCellImage>
 #include <gnomonCore/gnomonImagesSerie>
 
@@ -36,6 +38,7 @@
 #include "gnomonOverlayPaneItem.h"
 
 #include "gnomonVisualizationMesh.h"
+#include "gnomonVisualizationCellComplex.h"
 #include "gnomonVisualizationCellImage.h"
 #include "gnomonVisualizationImagesSerie.h"
 #include "gnomonVisualizationImagesSerieChannelBlending.h"
@@ -117,6 +120,9 @@ public:
     int syncing_count = 0;
     QTimer *syncing_timer = nullptr;
     bool synced = false;
+
+public:
+    bool acceptCellComplex = true;
 
 public:
     QColor export_color = QColor("#cccccc");
@@ -415,6 +421,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     this->setAcceptDrops(true);
     this->switchTo2D();
     this->switchTo2DXY();
+    this->switchTo3D();
     d->updateOrientation();
 }
 
@@ -679,6 +686,9 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form, gnom
     if (gnomonCellImage *cellImage = dynamic_cast<gnomonCellImage *>(form)) {
         return this->setCellImage(cellImage);
     }
+    if (gnomonCellComplex *cellComplex = dynamic_cast<gnomonCellComplex *>(form)) {
+        return this->setCellComplex(cellComplex);
+    }
     if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
         return this->setMesh(mesh);
     }
@@ -751,6 +761,38 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
     }
 
     emit formAdded("gnomonCellImage");
+}
+
+gnomonCellComplex *gnomonViewForm::cellComplex(void)
+{
+    return dynamic_cast<gnomonCellComplex *>(d->forms["gnomonCellComplex"]);
+}
+
+void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstractVisualization *visualization)
+{
+    d->forms["gnomonCellComplex"] = cellComplex;
+
+    if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
+    {
+        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex(this);
+    }
+    gnomonVisualizationCellComplex *formVisualizationCellComplex = (gnomonVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
+    formVisualizationCellComplex->setCellComplex(cellComplex);
+    if (visualization) {
+        formVisualizationCellComplex->setParameters(visualization->parameters());
+    }
+    formVisualizationCellComplex->update();
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonCellComplex");
 }
 
 gnomonMesh *gnomonViewForm::mesh(void)
@@ -827,6 +869,11 @@ void gnomonViewForm::setBounds(double bounds[6])
     d->renderer2D->ResetCamera();
     d->renderer3D->ResetCamera();
 
+}
+
+void gnomonViewForm::setAcceptCellComplex(bool accept)
+{
+    d->acceptCellComplex = accept;
 }
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
@@ -923,6 +970,22 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             // emit timeChanged(images_serie->time());
             this->setForm("gnomonImagesSerie",images_serie);
 
+        } else if((path.endsWith("ply")) and (d->acceptCellComplex)) {
+            if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
+                d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
+            gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
+            qDebug()<<Q_FUNC_INFO<<path.remove("file://");
+            cellComplexCommand->setPath(path.remove("file://"));
+            cellComplexCommand->redo();
+            qDebug()<<Q_FUNC_INFO<<cellComplexCommand;
+
+            gnomonCellComplex *cellComplex = (gnomonCellComplex *) cellComplexCommand->cellComplex()->clone();
+            if (!cellComplex) {
+                qWarning() << Q_FUNC_INFO << "Resulting cellComplex is void.";
+                event->ignore();
+                return;
+            }
+            this->setForm("gnomonCellComplex",cellComplex);
         } else if(path.endsWith("ply")) {
             if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
                 d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
