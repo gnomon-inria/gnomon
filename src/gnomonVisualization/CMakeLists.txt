@@ -83,6 +83,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonLookupTableEditor.h
   gnomonPolyData
   gnomonPolyData.h
+  gnomonPolyDataCellComplex
+  gnomonPolyDataCellComplex.h
   gnomonPolyDataCellImage
   gnomonPolyDataCellImage.h
   gnomonPolyDataMesh
@@ -129,6 +131,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonLookupTable.cpp
   gnomonLookupTableEditor.cpp
   gnomonPolyData.cpp
+  gnomonPolyDataCellComplex.cpp
   gnomonPolyDataCellImage.cpp
   gnomonPolyDataMesh.cpp
   gnomonStringListEditor.cpp
