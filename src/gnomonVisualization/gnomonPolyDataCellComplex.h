@@ -31,7 +31,7 @@ public:
     static gnomonPolyDataCellComplex *New(void);
 
 public:
-	void setCellComplex(gnomonCellComplex *cellimage);
+	void setCellComplex(gnomonCellComplex *cellComplex);
   void setScaleFactor(double scale_factor);
   void setPropertyName(const QString& property_name);
 

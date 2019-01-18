@@ -96,6 +96,8 @@ QWidget *gnomonWidgetsParameterDouble::widget(gnomonCoreParameterDouble *paramet
         widget->setMinimum(parameter->min());
         widget->setMaximum(parameter->max());
         widget->setValue(parameter->value());
+        widget->setDecimals(parameter->accuracy());
+        widget->setSingleStep(pow(10.,-parameter->accuracy()));
 
         QObject::connect(widget, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [=](double value) {
             parameter->setValue(value);
