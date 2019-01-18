@@ -26,7 +26,7 @@ public:
     virtual ~gnomonAbstractEvolutionModel(void) = default;
 
 public:
-    virtual void start(void) = 0;
+    virtual void reset(void) = 0;
     virtual void step(std::size_t time, std::size_t dt) = 0;
     virtual void run(std::size_t timeMin, std::size_t timeMax, std::size_t dt) = 0;
 };
@@ -41,7 +41,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT, abstractEvolutionModel);
+    DTK_DECLARE_CONCEPT(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT, evolutionModel);
 }
 
 //
