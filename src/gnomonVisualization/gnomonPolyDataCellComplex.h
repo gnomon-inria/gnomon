@@ -32,7 +32,8 @@ public:
 
 public:
 	void setCellComplex(gnomonCellComplex *cellimage);
-    void setPropertyName(const QString& property_name);
+  void setScaleFactor(double scale_factor);
+  void setPropertyName(const QString& property_name);
 
 public slots:
     void update(void) override;

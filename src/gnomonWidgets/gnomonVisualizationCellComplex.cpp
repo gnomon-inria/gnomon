@@ -61,6 +61,7 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(gnomonViewForm* v
     d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellComplex rendering");
+    d->parameters["scale_factor"] = new gnomonCoreParameterDouble(0.99, 0, 1, 2, "Scale for cell surface visualization");
 
 
 }
@@ -99,7 +100,7 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
 void gnomonVisualizationCellComplex::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    
+
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
     }
@@ -127,7 +128,7 @@ void gnomonVisualizationCellComplex::updateValueRange(void)
         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
     }
     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
-    
+
     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
 }
@@ -146,6 +147,8 @@ void gnomonVisualizationCellComplex::update(void)
     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+    double scale = ((gnomonCoreParameterDouble *)d->parameters["scale_factor"])->value();
+
 
     if(!dd->cellComplex)
         return;
@@ -161,6 +164,7 @@ void gnomonVisualizationCellComplex::update(void)
         dd->polydata = gnomonPolyDataCellComplex::New();
     dd->polydata->setCellComplex((gnomonCellComplex *)dd->cellComplex->clone());
     dd->polydata->setPropertyName(property_name);
+    dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
 
 

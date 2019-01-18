@@ -83,6 +83,15 @@ void gnomonPolyDataCellComplex::setPropertyName(const QString& property_name)
     this->modified();
 }
 
+
+void gnomonPolyDataCellComplex::setScaleFactor(double scale_factor)
+{
+    d->cellScaleFactor = scale_factor;
+
+    this->modified();
+}
+
+
 void gnomonPolyDataCellComplex::modified(void)
 {
     d->modified = true;
@@ -153,7 +162,7 @@ void gnomonPolyDataCellComplex::update(void)
 
     QList<long> cells = d->cellComplex->elementIds(3);
 
-    
+
     QMap<long, QVariant> cellProperty;
     if (d->cellComplex->elementPropertyNames(3).contains(d->property_name)) {
         cellProperty = d->cellComplex->elementProperty(3,d->property_name);
@@ -167,7 +176,7 @@ void gnomonPolyDataCellComplex::update(void)
     for (const auto& cellId : cells) {
         cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
     }
-        
+
 
     for (const auto& cellId : cells) {
 
