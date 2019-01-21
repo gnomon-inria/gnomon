@@ -22,6 +22,7 @@
 #include "gnomonWorkspacePythonSimulator.h"
 
 #include <gnomonFonts>
+#include <gnomonCore/gnomonAbstractEvolutionModel>
 
 #include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
@@ -162,6 +163,24 @@ void gnomonWorkspacePythonSimulator::apply(void)
     if (d->terminal)
     {
         d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
+
+        for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
+        {
+            gnomonAbstractEvolutionModel * model = gnomonCore::evolutionModel::pluginFactory().create(key);
+            model->run(0,1,1);
+            qDebug()<<"Run OK!";
+
+            d->view->setForm("simulation",model->form());
+
+//            QMap<QString, gnomonAbstractForm *> forms = model->forms();
+//            qDebug()<<forms.keys();
+//
+//            for (const auto& name : forms.keys())
+//            {
+//                qDebug()<<name<<forms[name];
+//                d->view->setForm(name,forms[name]);
+//            }
+        }
     }
 }
 
