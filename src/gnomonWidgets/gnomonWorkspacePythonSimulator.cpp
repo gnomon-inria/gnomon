@@ -30,6 +30,9 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewForm.h"
 
+#include "gnomonCoreParameter.h"
+#include "gnomonWidgetsParameter.h"
+
 
 class gnomonWorkspacePythonSimulatorPrivate
 {
@@ -53,11 +56,19 @@ public:
 public:
     gnomonFontSourceCodePro *font_source_code_pro;
 
+public:
+    QMap<QString, gnomonCoreParameter *> parameters;
 };
 
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
+
+    d->parameters["initial_time"] = new gnomonCoreParameterDouble(0., 0., 1000., 2., "Starting time for the simulation of the model");
+    d->parameters["final_time"] = new gnomonCoreParameterDouble(1., 0., 1000., 2., "Last time for the simulation of the model");
+    d->parameters["dt"] = new gnomonCoreParameterDouble(1., 0., 1., 2., "Time increment used for the step function of the model");
+    d->parameters["animate"] = new gnomonCoreParameterBool(true, "Whether to display the model results at each step");
+
 
     d->font_source_code_pro = new gnomonFontSourceCodePro(this);
     d->font_source_code_pro->initFontSourceCodePro();
@@ -120,11 +131,35 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     QWidget *viewer = new QWidget(this);
     viewer->setLayout(viewer_layout);
 
-
     d->pane = new gnomonOverlayPane(this);
 
-    QPushButton *button = new QPushButton("Apply", parent);
+    gnomonOverlayPaneItem * ubi_param_pane = new gnomonOverlayPaneItem(this);
+
+    QFormLayout * ubi_param_layout = new QFormLayout;
+    ubi_param_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
+    ubi_param_pane->setTitle("Ubiquitous Simulation Parameters");
+    ubi_param_pane->addLayout(ubi_param_layout);
+    ubi_param_pane->toggle();
+
+    for(QMap<QString, gnomonCoreParameter*>::iterator it = d->parameters.begin(), it_end = d->parameters.end(); it != it_end; ++it) {
+        QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+        if (widget) {
+            ubi_param_layout->addRow(it.key(), widget);
+        }
+    }
+
+    d->pane->addWidget(ubi_param_pane);
+
+
+    QPushButton *button = new QPushButton("Run", parent);
     button->setCheckable(true);
+
+    QObject::connect(button, &QPushButton::clicked, [=] () {
+        parent->setCursor(Qt::BusyCursor);
+        this->apply();
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
     pane_item_button->setTitle("Simulation");
@@ -133,11 +168,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     d->pane->addWidget(pane_item_button);
 
-    QObject::connect(button, &QPushButton::clicked, [=] () {
-        parent->setCursor(Qt::BusyCursor);
-        this->apply();
-        parent->setCursor(Qt::ArrowCursor);
-    });
+
 
     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
@@ -167,7 +198,12 @@ void gnomonWorkspacePythonSimulator::apply(void)
         for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
         {
             gnomonAbstractEvolutionModel * model = gnomonCore::evolutionModel::pluginFactory().create(key);
-            model->run(0,1,1);
+
+            double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
+            double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
+            double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
+
+            model->run(initial_time,final_time,dt);
 
             QMap<QString, gnomonAbstractForm *> forms = model->forms();
 
