@@ -18,13 +18,16 @@
 
 #include <dtkCore>
 
+class gnomonCoreParameter;
+
 class GNOMONCORE_EXPORT gnomonAbstractModel
 {
 public:
     virtual ~gnomonAbstractModel(void) = default;
 
 public:
-    virtual void step(std::size_t time, std::size_t dt) = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractModel *)
