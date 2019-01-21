@@ -22,6 +22,7 @@
 #include "gnomonWorkspacePythonSimulator.h"
 
 #include <gnomonFonts>
+#include <gnomonStyle>
 #include <gnomonCore/gnomonAbstractEvolutionModel>
 
 #include "gnomonCodeEditor.h"
@@ -34,6 +35,66 @@
 #include "gnomonWidgetsParameter.h"
 
 
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonCodeEditorToolBar
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonCodeEditorToolBar : public QFrame
+{
+    Q_OBJECT
+
+public:
+     gnomonCodeEditorToolBar(QWidget *parent);
+    ~gnomonCodeEditorToolBar(void);
+
+public:
+    void addAction(const QIcon &icon, const QObject *receiver, std::function<void(void)> function);
+    void addStretch(void);
+
+private:
+    QHBoxLayout *layout;
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonCodeEditorToolBar
+// ///////////////////////////////////////////////////////////////////
+
+gnomonCodeEditorToolBar::gnomonCodeEditorToolBar(QWidget *parent) : QFrame(parent)
+{
+    this->layout = new QHBoxLayout(this);
+    this->layout->setContentsMargins(10, 0, 10, 0);
+
+    this->setFixedHeight(36);
+}
+
+gnomonCodeEditorToolBar::~gnomonCodeEditorToolBar(void)
+{
+
+}
+
+void gnomonCodeEditorToolBar::addAction(const QIcon &icon, const QObject *receiver, std::function<void(void)> function)
+{
+    QToolButton *button = new QToolButton(this);
+    button->setIconSize(QSize(16, 16));
+//    button->setFlat(true);
+    button->setIcon(icon);
+
+    connect(button, &QToolButton::clicked, receiver, function);
+
+    this->layout->addWidget(button);
+}
+
+void gnomonCodeEditorToolBar::addStretch(void)
+{
+    this->layout->addStretch();
+}
+
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWorkspacePythonSimulatorPrivate
+// ///////////////////////////////////////////////////////////////////
+
 class gnomonWorkspacePythonSimulatorPrivate
 {
 public:
@@ -43,6 +104,7 @@ public:
 
 public:
     gnomonCodeEditor *editor;
+    gnomonCodeEditorToolBar *editor_toolbar;
 
 public:
     dtkInterpreter *terminal;
@@ -54,6 +116,7 @@ public:
     gnomonOverlayPane *pane;
 
 public:
+    gnomonFontAwesome *font_awesome;
     gnomonFontSourceCodePro *font_source_code_pro;
 
 public:
@@ -69,6 +132,10 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     d->parameters["dt"] = new gnomonCoreParameterDouble(1., 0., 1., 2., "Time increment used for the step function of the model");
     d->parameters["animate"] = new gnomonCoreParameterBool(true, "Whether to display the model results at each step");
 
+
+    d->font_awesome = new gnomonFontAwesome(this);
+    d->font_awesome->initFontAwesome();
+    d->font_awesome->setDefaultOption("color", QColor(GNOMON_STYLE_ACCENTCOLOR));
 
     d->font_source_code_pro = new gnomonFontSourceCodePro(this);
     d->font_source_code_pro->initFontSourceCodePro();
@@ -110,10 +177,29 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     connect(d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
     connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
-
     d->editor = new gnomonCodeEditor(this);
-    d->editor->resize(600, d->editor->height());
 
+    d->editor_toolbar = new gnomonCodeEditorToolBar(this);
+    d->editor_toolbar->addAction(d->font_awesome->icon(fa::folderopen), this, [=] () {
+        d->editor->openScript();
+    });
+    d->editor_toolbar->addAction(d->font_awesome->icon(fa::file), this, [=] () {
+        qWarning() << "Save not implemented";
+    });
+    d->editor_toolbar->addAction(d->font_awesome->icon(fa::play), this, [=] () {
+        this->apply();
+    });
+
+    // -- Organizing the editor column --
+    QVBoxLayout *editor_layout = new QVBoxLayout;
+    editor_layout->setContentsMargins(0, 0, 0, 0);
+    editor_layout->setSpacing(0);
+    editor_layout->addWidget(d->editor_toolbar);
+    editor_layout->addWidget(d->editor);
+
+    QWidget *editor_widget = new QWidget(this);
+    editor_widget->setLayout(editor_layout);
+    editor_widget->resize(800, editor_widget->height());
 
     d->view = new gnomonViewForm(this);
 
@@ -151,13 +237,12 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     d->pane->addWidget(ubi_param_pane);
 
-
     QPushButton *button = new QPushButton("Run", parent);
     button->setCheckable(true);
 
     QObject::connect(button, &QPushButton::clicked, [=] () {
         parent->setCursor(Qt::BusyCursor);
-        this->apply();
+        this->run();
         parent->setCursor(Qt::ArrowCursor);
     });
 
@@ -168,12 +253,10 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     d->pane->addWidget(pane_item_button);
 
-
-
     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
-    splitter->addWidget(d->editor);
+    splitter->addWidget(editor_widget);
     splitter->addWidget(viewer);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -194,27 +277,32 @@ void gnomonWorkspacePythonSimulator::apply(void)
     if (d->terminal)
     {
         d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
+    }
+}
 
-        for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
+void gnomonWorkspacePythonSimulator::run(void)
+{
+    for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
+    {
+        gnomonAbstractEvolutionModel * model = gnomonCore::evolutionModel::pluginFactory().create(key);
+
+        double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
+        double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
+        double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
+
+        model->run(initial_time,final_time,dt);
+
+        QMap<QString, gnomonAbstractForm *> forms = model->forms();
+
+
+        for (const auto& name : forms.keys())
         {
-            gnomonAbstractEvolutionModel * model = gnomonCore::evolutionModel::pluginFactory().create(key);
-
-            double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
-            double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
-            double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
-
-            model->run(initial_time,final_time,dt);
-
-            QMap<QString, gnomonAbstractForm *> forms = model->forms();
-
-            for (const auto& name : forms.keys())
-            {
-                d->view->setForm(name,forms[name]);
-            }
+            d->view->setForm(name,forms[name]);
         }
     }
 }
 
+#include "gnomonWorkspacePythonSimulator.moc"
 
 //
 // gnomonWorkspacePythonSimulator.cpp ends here

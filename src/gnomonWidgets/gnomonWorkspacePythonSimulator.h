@@ -31,6 +31,9 @@ public:
     void leave(void) override {};
     void apply(void) override;
 
+public:
+    void run(void);
+
 private:
     class gnomonWorkspacePythonSimulatorPrivate *d;
 };
