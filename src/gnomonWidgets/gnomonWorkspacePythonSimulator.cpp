@@ -168,18 +168,13 @@ void gnomonWorkspacePythonSimulator::apply(void)
         {
             gnomonAbstractEvolutionModel * model = gnomonCore::evolutionModel::pluginFactory().create(key);
             model->run(0,1,1);
-            qDebug()<<"Run OK!";
 
-            d->view->setForm("simulation",model->form());
+            QMap<QString, gnomonAbstractForm *> forms = model->forms();
 
-//            QMap<QString, gnomonAbstractForm *> forms = model->forms();
-//            qDebug()<<forms.keys();
-//
-//            for (const auto& name : forms.keys())
-//            {
-//                qDebug()<<name<<forms[name];
-//                d->view->setForm(name,forms[name]);
-//            }
+            for (const auto& name : forms.keys())
+            {
+                d->view->setForm(name,forms[name]);
+            }
         }
     }
 }

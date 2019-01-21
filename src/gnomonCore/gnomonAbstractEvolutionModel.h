@@ -33,8 +33,7 @@ public:
     virtual void run(std::size_t timeMin, std::size_t timeMax, std::size_t dt) = 0;
 
 public:
-//    virtual QMap<QString, gnomonAbstractForm *> forms() = 0;
-    virtual gnomonAbstractForm * form(void) = 0;
+    virtual QMap<QString, gnomonAbstractForm *> forms() = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractEvolutionModel *)
