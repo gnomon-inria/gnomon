@@ -33,8 +33,6 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
-
-public:
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 
 public:
