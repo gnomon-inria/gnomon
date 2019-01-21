@@ -486,6 +486,51 @@ void gnomonCodeEditor::resizeEvent(QResizeEvent *e)
     d->line_number_area->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
+void gnomonCodeEditor::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasText()) {
+        event->accept();
+        return;
+    }
+
+    event->ignore();
+}
+
+void gnomonCodeEditor::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
+}
+
+void gnomonCodeEditor::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->acceptProposedAction();
+}
+
+void gnomonCodeEditor::dropEvent(QDropEvent *event)
+{
+    QString path = event->mimeData()->text();
+
+    if (path.endsWith("py")) {
+        QString file_name = path.remove("file://");
+        if(file_name.isEmpty())
+            return;
+
+        QFile file(file_name);
+
+        if(!file.open(QIODevice::ReadOnly))
+            return;
+
+        this->setPlainText(file.readAll());
+
+        file.close();
+    } else {
+        QTextCursor tc = cursorForPosition( event->pos() );
+        tc.insertText(path);
+        setTextCursor(tc);
+    }
+    event->acceptProposedAction();
+}
+
 void gnomonCodeEditor::highlightCurrentLine(void)
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
