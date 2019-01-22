@@ -116,12 +116,15 @@ public:
 public:
     gnomonOverlayPane *pane;
 
+    QFormLayout *parameter_layout;
+
 public:
     gnomonFontAwesome *font_awesome;
     gnomonFontSourceCodePro *font_source_code_pro;
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters;
+    gnomonAbstractEvolutionModel * model = nullptr;
 };
 
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : gnomonWorkspace(parent)
@@ -237,8 +240,22 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
             ubi_param_layout->addRow(it.key(), widget);
         }
     }
-
     d->pane->addWidget(ubi_param_pane);
+
+    d->parameter_layout = new QFormLayout;
+    d->parameter_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
+    gnomonOverlayPaneItem * param_pane = new gnomonOverlayPaneItem(this);
+
+    param_pane->setTitle("Model Parameters");
+    param_pane->addLayout(d->parameter_layout);
+    param_pane->toggle();
+
+    d->pane->addWidget(param_pane);
+
+    QObject::connect(this, &gnomonWorkspacePythonSimulator::modelLoaded, [=] () {
+        this->configure(parent);
+    });
 
     QPushButton *button = new QPushButton("Run", parent);
     button->setCheckable(true);
@@ -276,32 +293,61 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 
 void gnomonWorkspacePythonSimulator::apply(void)
 {
+//    gnomonCore::evolutionModel::pluginFactory().clear();
+
     int stat;
     if (d->terminal)
     {
         d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
     }
+
+    for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
+    {
+        if (d->model) {
+            delete d->model;
+            d->model = nullptr;
+        }
+        d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
+    }
+
+    emit modelLoaded();
+}
+
+void  gnomonWorkspacePythonSimulator::configure(QWidget *parent)
+{
+
+    if(d->model) {
+        for(int row = 0, max_row = d->parameter_layout->count(); row < max_row; ++row) {
+            QLayoutItem *forDeletion = d->parameter_layout->takeAt(0);
+            forDeletion->widget()->disconnect();
+            delete forDeletion->widget();
+            delete forDeletion;
+        }
+
+        QMap<QString, gnomonCoreParameter *> parameters = d->model->parameters();
+        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+            if (widget) {
+                d->parameter_layout->addRow(it.key(), widget);
+            }
+        }
+    }
 }
 
 void gnomonWorkspacePythonSimulator::run(void)
 {
-    for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
+    double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
+    double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
+    double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
+
+    d->model->run(initial_time,final_time,dt);
+
+    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+
+
+    for (const auto& name : forms.keys())
     {
-        gnomonAbstractEvolutionModel * model = gnomonCore::evolutionModel::pluginFactory().create(key);
-
-        double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
-        double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
-        double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
-
-        model->run(initial_time,final_time,dt);
-
-        QMap<QString, gnomonAbstractForm *> forms = model->forms();
-
-
-        for (const auto& name : forms.keys())
-        {
-            d->view->setForm(name,forms[name]);
-        }
+        d->view->setForm(name,forms[name]);
     }
 }
 

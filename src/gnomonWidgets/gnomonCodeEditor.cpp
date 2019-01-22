@@ -353,6 +353,7 @@ void gnomonCodeEditor::keyPressEvent(QKeyEvent *e)
                 emit scriptSaved();
                 break;
             default:
+                QPlainTextEdit::keyPressEvent(e);
                 break;
 
         }

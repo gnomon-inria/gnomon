@@ -34,6 +34,12 @@ public:
 public:
     void run(void);
 
+public:
+    void configure(QWidget *);
+
+signals:
+    void modelLoaded(void);
+
 private:
     class gnomonWorkspacePythonSimulatorPrivate *d;
 };
