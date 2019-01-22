@@ -266,9 +266,20 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
         parent->setCursor(Qt::ArrowCursor);
     });
 
+
+    QPushButton *button_s = new QPushButton("Step", parent);
+    button->setCheckable(true);
+
+    QObject::connect(button_s, &QPushButton::clicked, [=] () {
+        parent->setCursor(Qt::BusyCursor);
+        this->step();
+        parent->setCursor(Qt::ArrowCursor);
+    });
+
     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
     pane_item_button->setTitle("Simulation");
     pane_item_button->addWidget(button);
+    pane_item_button->addWidget(button_s);
     pane_item_button->toggle();
 
     d->pane->addWidget(pane_item_button);
@@ -346,8 +357,43 @@ void gnomonWorkspacePythonSimulator::run(void)
     double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
     double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
     double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
+    bool animate = ((gnomonCoreParameterBool *)d->parameters["animate"])->value();
 
-    d->model->run(initial_time,final_time,dt);
+    qDebug()<<"-----> Animate: "<<animate;
+
+    // d->model->run(initial_time,final_time,dt);
+
+    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+
+    double t = initial_time;
+    while (t<final_time ) {
+
+        d->model->step(t,dt);
+        if (animate) {
+            forms = d->model->forms();
+            for (const auto& name : forms.keys())
+            {
+                d->view->setForm(name,forms[name]);
+                qDebug()<<"Step: "<<t;
+            }
+            QCoreApplication::processEvents();
+        }
+
+        t = t + dt;
+    }
+
+
+}
+
+void gnomonWorkspacePythonSimulator::step(void)
+{
+    double dt = ((gnomonCoreParameterDouble *)d->parameters["dt"])->value();
+    double initial_time = ((gnomonCoreParameterDouble *)d->parameters["initial_time"])->value();
+    double final_time = ((gnomonCoreParameterDouble *)d->parameters["final_time"])->value();
+
+    double t = initial_time;
+
+    d->model->step(t,dt);
 
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
 

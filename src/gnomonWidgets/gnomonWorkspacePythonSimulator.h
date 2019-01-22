@@ -33,6 +33,7 @@ public:
 
 public:
     void run(void);
+    void step(void);
 
 public:
     void configure(QWidget *);
