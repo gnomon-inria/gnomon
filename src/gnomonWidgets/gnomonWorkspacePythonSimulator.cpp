@@ -370,18 +370,24 @@ void gnomonWorkspacePythonSimulator::run(void)
 
         d->model->step(t,dt);
         if (animate) {
+            qDebug()<<"Step: "<<t;
             forms = d->model->forms();
             for (const auto& name : forms.keys())
             {
                 d->view->setForm(name,forms[name]);
-                qDebug()<<"Step: "<<t;
             }
             QCoreApplication::processEvents();
         }
-
         t = t + dt;
     }
 
+    if(!animate) {
+        forms = d->model->forms();
+        for (const auto& name : forms.keys())
+        {
+            d->view->setForm(name,forms[name]);
+        }
+    }
 
 }
 
