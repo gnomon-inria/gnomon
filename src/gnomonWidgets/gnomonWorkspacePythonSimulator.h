@@ -34,6 +34,7 @@ public:
 public:
     void run(void);
     void step(void);
+    void reset(void);
 
 public:
     void configure(QWidget *);

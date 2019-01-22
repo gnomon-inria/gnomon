@@ -276,10 +276,20 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
         parent->setCursor(Qt::ArrowCursor);
     });
 
+    QPushButton *button_r = new QPushButton("Reset", parent);
+    button->setCheckable(true);
+
+    QObject::connect(button_r, &QPushButton::clicked, [=] () {
+        parent->setCursor(Qt::BusyCursor);
+        this->reset();
+        parent->setCursor(Qt::ArrowCursor);
+    });
+
     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
     pane_item_button->setTitle("Simulation");
     pane_item_button->addWidget(button);
     pane_item_button->addWidget(button_s);
+    pane_item_button->addWidget(button_r);
     pane_item_button->toggle();
 
     d->pane->addWidget(pane_item_button);
@@ -409,6 +419,19 @@ void gnomonWorkspacePythonSimulator::step(void)
         d->view->setForm(name,forms[name]);
     }
 }
+
+void gnomonWorkspacePythonSimulator::reset(void)
+{
+    d->model->reset();
+
+    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+
+    for (const auto& name : forms.keys())
+    {
+        d->view->setForm(name,forms[name]);
+    }
+}
+
 
 #include "gnomonWorkspacePythonSimulator.moc"
 
