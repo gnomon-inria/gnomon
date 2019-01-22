@@ -366,7 +366,7 @@ void gnomonWorkspacePythonSimulator::run(void)
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
 
     double t = initial_time;
-    while (t<final_time ) {
+    while (t<=final_time ) {
 
         d->model->step(t,dt);
         if (animate) {
