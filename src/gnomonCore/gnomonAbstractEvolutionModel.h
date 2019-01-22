@@ -29,8 +29,8 @@ public:
 
 public:
     virtual void reset(void) = 0;
-    virtual void step(std::size_t time, std::size_t dt) = 0;
-    virtual void run(std::size_t timeMin, std::size_t timeMax, std::size_t dt) = 0;
+    virtual void step(double time, double dt) = 0;
+    virtual void run(double timeMin, double timeMax, double dt) = 0;
 
 public:
     virtual QMap<QString, gnomonAbstractForm *> forms() = 0;
