@@ -308,6 +308,13 @@ void gnomonWorkspacePythonSimulator::apply(void)
             d->model = nullptr;
         }
         d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
+
+        d->model->reset();
+        QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+        for (const auto& name : forms.keys())
+        {
+            d->view->setForm(name,forms[name]);
+        }
     }
 
     emit modelLoaded();
