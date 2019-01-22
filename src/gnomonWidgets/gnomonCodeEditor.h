@@ -32,8 +32,13 @@ public:
 
 public slots:
     void openScript(void);
-    // void saveScript(void);
+    void saveScript(void);
     // void saveScriptAs(void);
+
+signals:
+    void scriptLoaded(void);
+    void scriptOpened(void);
+    void scriptSaved(void);
 
 public:
     void lineNumberAreaPaintEvent(QPaintEvent *event);

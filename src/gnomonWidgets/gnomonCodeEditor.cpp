@@ -244,6 +244,9 @@ gnomonCodeEditor::gnomonCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
+    connect(this, SIGNAL(scriptOpened()), this, SLOT(openScript()));
+    connect(this, SIGNAL(scriptSaved()), this, SLOT(saveScript()));
+
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
     setFont(QFont("monospace"));
@@ -297,6 +300,11 @@ void gnomonCodeEditor::openScript(void)
     settings.endGroup();
 }
 
+void gnomonCodeEditor::saveScript(void)
+{
+    qDebug()<<"Not implemented yet!";
+}
+
 void gnomonCodeEditor::enableAutocompletion(bool enabled)
 {
     d->autocompletion_enabled = enabled;
@@ -331,7 +339,25 @@ void gnomonCodeEditor::insertCompletion(QString completion)
 
 void gnomonCodeEditor::keyPressEvent(QKeyEvent *e)
 {
-    if(d->autocompletion_enabled == false)
+    if (e->modifiers() & Qt::ControlModifier)
+    {
+        switch (e->key())
+        {
+            case Qt::Key_R:
+                emit scriptLoaded();
+                break;
+            case Qt::Key_O:
+                emit scriptOpened();
+                break;
+            case Qt::Key_S:
+                emit scriptSaved();
+                break;
+            default:
+                break;
+
+        }
+    }
+    else if(d->autocompletion_enabled == false)
     {
         QPlainTextEdit::keyPressEvent(e);
     }
@@ -378,6 +404,7 @@ void gnomonCodeEditor::keyPressEvent(QKeyEvent *e)
         cr.setWidth(d->completer->popup()->sizeHintForColumn(0) + d->completer->popup()->verticalScrollBar()->sizeHint().width());
         d->completer->complete(cr);
     }
+
 }
 
 gnomonCodeEditor::~gnomonCodeEditor(void)

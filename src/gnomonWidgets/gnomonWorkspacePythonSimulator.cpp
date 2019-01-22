@@ -64,6 +64,7 @@ gnomonCodeEditorToolBar::gnomonCodeEditorToolBar(QWidget *parent) : QFrame(paren
 {
     this->layout = new QHBoxLayout(this);
     this->layout->setContentsMargins(10, 0, 10, 0);
+    this->layout->setAlignment(Qt::AlignRight);
 
     this->setFixedHeight(36);
 }
@@ -178,6 +179,8 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
     d->editor = new gnomonCodeEditor(this);
+
+    connect(d->editor, SIGNAL(scriptLoaded()), this, SLOT(apply()));
 
     d->editor_toolbar = new gnomonCodeEditorToolBar(this);
     d->editor_toolbar->addAction(d->font_awesome->icon(fa::folderopen), this, [=] () {
