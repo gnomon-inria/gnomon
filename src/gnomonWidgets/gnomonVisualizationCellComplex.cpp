@@ -99,7 +99,7 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
         propertyParam->setValue(property_name);
     } else {
         propertyParam->setValue(QString(""));
-     }
+    }
 //
     this->updateValueRange();
 }
