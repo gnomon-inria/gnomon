@@ -62,6 +62,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
   gnomonLandmark.h
+  gnomonAbstractLStringData
+  gnomonAbstractLStringData.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
   gnomonAbstractMeshReader
@@ -158,6 +160,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
   gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractLStringData.cpp
   gnomonAbstractMeshData.cpp
   gnomonAbstractMeshReader.cpp
   gnomonAbstractMeshWriter.cpp
