@@ -35,24 +35,37 @@ public:
     virtual gnomonAbstractLStringData* clone(void) const = 0;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
-    virtual dtkImage* image(void) const = 0;
+    virtual void fromString(const QString&) const = 0;
+    virtual const QString& toString(void) const = 0;
+    virtual bool isEmpty() const = 0;
 
-    virtual QList<long> cellIds(void) const = 0;
-    virtual long cellCount(void) const = 0;
-    virtual QList<long> adjacentCellIds(long cellId) const = 0;
-    virtual long adjacentCellCount(long cellId) const = 0;
+public:
+    virtual QList<long> moduleIds(void) const = 0;
+    virtual long moduleCount(void) const = 0;
+    virtual bool hasModule(long moduleId) const = 0;
 
-    virtual QStringList cellPropertyNames(void) const = 0;
-    virtual bool hasCellProperty(const QString& propertyName) const = 0;
+    virtual const QString& moduleName(long moduleId) const = 0;
+    virtual const QList<QVariant>& moduleVariables(long moduleId) const = 0;
+    virtual const QString& moduleVariableString(long moduleId) const = 0;
 
-    virtual QMap<long, QVariant> cellProperty(const QString& propertyName) const = 0;
+    virtual QList<long> rootIds(void) const = 0;
 
-    virtual void addCellProperty(const QString& propertyName) = 0;
-    virtual void updateCellProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) = 0;
-    virtual void removeCellProperty(const QString& propertyName) = 0;
+public:
+    virtual bool hasChildren(long moduleId) const = 0;
+    virtual QList<long> childrenIds(long moduleId) const = 0;
+    virtual long childrenCount(long moduleId) const = 0;
 
-    virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) = 0;
+    virtual bool hasParent(long moduleId) const = 0;
+    virtual long parentId(long moduleId) const = 0;
+
+public:
+    virtual bool hasSuccessor(long moduleId) const = 0;
+    virtual long successorId(long moduleId) const = 0;
+
+    virtual bool hasLaterals(long moduleId) const = 0;
+    virtual QList<long> lateralIds(long moduleId) const = 0;
+
+
 };
 
 // ///////////////////////////////////////////////////////////////////
