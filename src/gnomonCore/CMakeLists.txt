@@ -23,8 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractAlgorithm.h
   gnomonAbstractCellComplexData
   gnomonAbstractCellComplexData.h
-  gnomonAbstractCellComplexFromImage
-  gnomonAbstractCellComplexFromImage.h
+  gnomonAbstractCellComplexFromCellImage
+  gnomonAbstractCellComplexFromCellImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
   gnomonAbstractCellGraphData
@@ -64,6 +64,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonLandmark.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
+  gnomonAbstractMeshFromImage
+  gnomonAbstractMeshFromImage.h
   gnomonAbstractMeshReader
   gnomonAbstractMeshReader.h
   gnomonAbstractMeshWriter
@@ -139,7 +141,7 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractAlgorithm.cpp
   gnomonAbstractCellComplexData.cpp
-  gnomonAbstractCellComplexFromImage.cpp
+  gnomonAbstractCellComplexFromCellImage.cpp
   gnomonAbstractCellComplexReader.cpp
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellGraphFromImage.cpp
@@ -157,6 +159,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractImagesSerieWriter.cpp
   gnomonAbstractIntensityImageData.cpp
   gnomonAbstractMeshData.cpp
+  gnomonAbstractMeshFromImage.cpp
   gnomonAbstractMeshReader.cpp
   gnomonAbstractMeshWriter.cpp
   gnomonAbstractModel.cpp
