@@ -121,6 +121,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonIntensityImage.h
   gnomonMesh
   gnomonMesh.h
+  gnomonMeshFromImageCommand
+  gnomonMeshFromImageCommand.h
   gnomonMeshReaderCommand
   gnomonMeshReaderCommand.h
   gnomonMeshWriterCommand
@@ -183,6 +185,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonImagesSerieWriterCommand.cpp
+  gnomonMeshFromImageCommand.cpp
   gnomonMeshReaderCommand.cpp
   gnomonMeshWriterCommand.cpp
   gnomonSegmentationCommand.cpp
