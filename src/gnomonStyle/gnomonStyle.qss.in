@@ -301,7 +301,7 @@ QScrollArea > QWidget > QWidget
 
 gnomonOverlayPaneItemHeader
 {
-    background: #000011;
+    background: @GNOMON_STYLE_BACKGROUNDCOLOR@;
 }
 
 gnomonOverlayPaneItemHeader > QFrame
