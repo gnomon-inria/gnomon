@@ -20,7 +20,7 @@ gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(n
 
     Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
-    this->action = gnomonCore::MeshFromImage::pluginFactory().create(key);
+    this->action = gnomonCore::meshFromImage::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
 }
