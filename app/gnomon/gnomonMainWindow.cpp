@@ -20,6 +20,7 @@
 #include <gnomonWorkspaceLSystemSimulator.h>
 #include <gnomonWorkspacePreprocess.h>
 #include <gnomonWorkspaceRegistration.h>
+#include <gnomonWorkspaceMeshFromImage.h>
 #include <gnomonWorkspaceSegmentation.h>
 #include <gnomonWorkspaceSimulation.h>
 #include <gnomonWorkspaceTreeAnalysis.h>
@@ -156,6 +157,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->menu, &gnomonToolBar::createRegistration, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceRegistration(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createMeshFromImage, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceMeshFromImage(this);
         workspace->enter();
 
         d->stack->addWidget(workspace);

@@ -35,6 +35,7 @@ signals:
     void createLSystemSimulator(void);
     void createPreprocess(void);
     void createRegistration(void);
+    void createMeshFromImage(void);
     void createSegmentation(void);
     void createSimulation(void);
     void createTreeAnalysis(void);
@@ -44,6 +45,7 @@ public slots:
     void onCreateLSystemSimulator(void);
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
+    void onCreateMeshFromImage(void);
     void onCreateSegmentation(void);
     void onCreateSimulation(void);
     void onCreateTreeAnalysis(void);
@@ -64,6 +66,7 @@ public:
     static QColor fusion_color;
     static QColor preprocess_color;
     static QColor registration_color;
+    static QColor meshFromImage_color;
     static QColor segmentation_color;
     static QColor simulation_color;
     static QColor tree_analysis_color;

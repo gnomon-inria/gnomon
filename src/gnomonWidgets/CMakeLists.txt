@@ -77,6 +77,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceFusion.h
   gnomonWorkspaceLSystemSimulator
   gnomonWorkspaceLSystemSimulator.h
+  gnomonWorkspaceMeshFromImage
+  gnomonWorkspaceMeshFromImage.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
   gnomonWorkspaceRegistration
@@ -123,6 +125,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
+  gnomonWorkspaceMeshFromImage.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
