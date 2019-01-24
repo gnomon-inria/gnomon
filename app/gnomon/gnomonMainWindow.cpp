@@ -22,6 +22,7 @@
 #include <gnomonWorkspaceRegistration.h>
 #include <gnomonWorkspaceMeshFromImage.h>
 #include <gnomonWorkspaceSegmentation.h>
+#include <gnomonWorkspaceCellComplexFromCellImage.h>
 #include <gnomonWorkspaceSimulation.h>
 #include <gnomonWorkspaceTreeAnalysis.h>
 
@@ -175,6 +176,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->menu, &gnomonToolBar::createSegmentation, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceSegmentation(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createCellComplexFromCellImage, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceCellComplexFromCellImage(this);
         workspace->enter();
 
         d->stack->addWidget(workspace);

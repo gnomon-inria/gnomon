@@ -37,6 +37,7 @@ signals:
     void createRegistration(void);
     void createMeshFromImage(void);
     void createSegmentation(void);
+    void createCellComplexFromCellImage(void);
     void createSimulation(void);
     void createTreeAnalysis(void);
 
@@ -47,6 +48,7 @@ public slots:
     void onCreateRegistration(void);
     void onCreateMeshFromImage(void);
     void onCreateSegmentation(void);
+    void onCreateCellComplexFromCellImage(void);
     void onCreateSimulation(void);
     void onCreateTreeAnalysis(void);
 
@@ -68,6 +70,7 @@ public:
     static QColor registration_color;
     static QColor meshFromImage_color;
     static QColor segmentation_color;
+    static QColor cellComplexFromCellImage_color;
     static QColor simulation_color;
     static QColor tree_analysis_color;
 

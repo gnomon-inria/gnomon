@@ -73,6 +73,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspace.h
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
+  gnomonWorkspaceCellComplexFromCellImage
+  gnomonWorkspaceCellComplexFromCellImage.h
   gnomonWorkspaceFusion
   gnomonWorkspaceFusion.h
   gnomonWorkspaceLSystemSimulator
@@ -123,6 +125,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWidgetsParameter.cpp
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
+  gnomonWorkspaceCellComplexFromCellImage.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspaceMeshFromImage.cpp
