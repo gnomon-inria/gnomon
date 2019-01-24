@@ -99,13 +99,15 @@ void gnomonPolyDataMesh::update(void)
     QMap<long,long> vertexPoint;
 
     QList<long> vertices = d->mesh->vertexIds();
+    double max_vertices = *std::max_element(vertices.begin(), vertices.end());
 
     QMap<long, QVariant> vertexProperty;
     if (d->mesh->vertexPropertyNames().contains(d->property_name)) {
         vertexProperty = d->mesh->vertexProperty(d->property_name);
     } else {
         for (const auto& vertexId : vertices) {
-            vertexProperty[vertexId] = QVariant((double)vertexId);
+            // vertexProperty[vertexId] = QVariant((double)vertexId);
+            vertexProperty[vertexId] = QVariant((double)max_vertices);
         }
     }
 
