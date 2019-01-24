@@ -20,9 +20,9 @@
 
 #include "gnomonAbstractModel.h"
 
-#include "gnomonAbstractForm.h";
-#include "gnomonMesh.h";
-#include "gnomonCellComplex.h";
+#include "gnomonAbstractForm.h"
+#include "gnomonMesh.h"
+#include "gnomonCellComplex.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractEvolutionModel : public gnomonAbstractModel
 {
