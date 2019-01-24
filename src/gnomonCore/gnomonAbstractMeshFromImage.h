@@ -20,26 +20,29 @@
 
 #include <dtkCore>
 
+#include "gnomonAbstractAlgorithm.h"
+
 class dtkImage;
 class gnomonMesh;
+class gnomonCellImage;
+class gnomonImagesSerie;
 
-class GNOMONCORE_EXPORT gnomonAbstractMeshFromImage : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractMeshFromImage : public gnomonAbstractAlgorithm
 {
 
     //Inputs
 public:
-    virtual void setImage(dtkImage *image) = 0;
-
-    virtual void setComplexDimension(int dimension) = 0;
+  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+  virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+  virtual void setInput(gnomonImagesSerie *images) = 0;
 
     // Outputs
 public:
-    virtual gnomonMesh *computedComplex(void) const = 0;
-
-    virtual gnomonMesh *adjacencyComplex(void) const = 0;
+    virtual gnomonMesh *output() const = 0;
+    virtual gnomonImagesSerie *input() const = 0;
 
 public:
-    virtual void run(void) = 0;
+    virtual void run(void) override = 0;
 
 };
 
