@@ -20,7 +20,9 @@
 
 #include "gnomonAbstractModel.h"
 
-class gnomonAbstractForm;
+#include "gnomonAbstractForm.h";
+#include "gnomonMesh.h";
+#include "gnomonCellComplex.h";
 
 class GNOMONCORE_EXPORT gnomonAbstractEvolutionModel : public gnomonAbstractModel
 {
@@ -34,7 +36,8 @@ public:
 
 public:
     virtual QMap<QString, gnomonAbstractForm *> forms() = 0;
-    virtual void setForm(QString, gnomonAbstractForm*) = 0;
+    virtual void setForm(QString, gnomonMesh *) = 0;
+    virtual void setForm(QString, gnomonCellComplex *) = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractEvolutionModel *)

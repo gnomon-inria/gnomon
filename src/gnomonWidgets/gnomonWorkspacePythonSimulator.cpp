@@ -367,7 +367,8 @@ void gnomonWorkspacePythonSimulator::apply(void)
     d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
 
     if(d->view->mesh()){
-            d->model->setForm("mesh", d->view->mesh());
+        // d->model->setForm("mesh", d->view->form("gnomonMesh"));
+        d->model->setForm("mesh", d->view->mesh());
     }
 
     if(d->view->cellComplex()){
