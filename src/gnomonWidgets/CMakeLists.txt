@@ -154,7 +154,6 @@ if(DTK_BUILD_WRAPPERS)
         sip${PROJECT_NAME}gnomonWorkspace.cpp
         sip${PROJECT_NAME}gnomonWorkspacePythonSimulator.cpp)
 
-      message("running sip")
       dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonWidgets ${CMAKE_SOURCE_DIR}/sip/gnomonWidgets/gnomonWidgetsmod.sip "${${PROJECT_NAME}_SIP_WRAPPERS}" "${${PROJECT_NAME}_WRAP_DEPENDS}")
 
       set_property(SOURCE sipgnomonWidgetscmodule.cpp PROPERTY SKIP_AUTOMOC ON)
