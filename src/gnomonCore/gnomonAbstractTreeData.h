@@ -41,12 +41,12 @@ public:
     virtual long rootId(void) const = 0;
 
 public:
-    virtual bool hasChildren(long moduleId) const = 0;
-    virtual QList<long> childrenIds(long moduleId) const = 0;
-    virtual long childrenCount(long moduleId) const = 0;
+    virtual bool hasChildren(long vertexId) const = 0;
+    virtual QList<long> childrenIds(long vertexId) const = 0;
+    virtual long childrenCount(long vertexId) const = 0;
 
-    virtual bool hasParent(long moduleId) const = 0;
-    virtual long parentId(long moduleId) const = 0;
+    virtual bool hasParent(long vertexId) const = 0;
+    virtual long parentId(long vertexId) const = 0;
 
     virtual QStringList vertexPropertyNames(void) const = 0;
     virtual bool hasVertexProperty(const QString& propertyName) const = 0;

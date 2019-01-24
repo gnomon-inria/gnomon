@@ -121,6 +121,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImagesSerieWriterCommand.h
   gnomonIntensityImage
   gnomonIntensityImage.h
+  gnomonLString
+  gnomonLString.h
   gnomonMesh
   gnomonMesh.h
   gnomonMeshReaderCommand
@@ -137,6 +139,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTypeDef.h
   gnomonTime
   gnomonTime.h
+  gnomonTree
+  gnomonTree.h
   gnomonWallForm
   gnomonWallForm.h)
 
