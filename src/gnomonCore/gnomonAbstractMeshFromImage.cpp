@@ -16,7 +16,7 @@
 #include "gnomonAbstractMeshFromImage.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshFromImage, MeshFromImage, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractMeshFromImage, meshFromImage, gnomonCore);
 }
 
 

@@ -69,7 +69,7 @@ QString gnomonWorkspaceMeshFromImagePrivate::workspace(void) const
 
 QStringList gnomonWorkspaceMeshFromImagePrivate::keys(void) const
 {
-    return gnomonCore::MeshFromImage::pluginFactory().keys();
+    return gnomonCore::meshFromImage::pluginFactory().keys();
 }
 
 gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : gnomonWorkspace(parent)
