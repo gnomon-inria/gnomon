@@ -37,6 +37,7 @@
 
 #include <gnomonCore/gnomonAbstractForm>
 #include <gnomonCore/gnomonMesh.h>
+#include <gnomonCore/gnomonCellComplex.h>
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -333,11 +334,15 @@ void gnomonWorkspacePythonSimulator::apply(void)
         delete d->model;
         d->model = nullptr;
     }
+
     d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
 
     if(d->view->mesh()){
-        // d->model->setForm("mesh", d->view->form("gnomonMesh"));
             d->model->setForm("mesh", d->view->mesh());
+    }
+
+    if(d->view->cellComplex()){
+            d->model->setForm("cellComplex", d->view->cellComplex());
     }
 
     d->model->reset();
