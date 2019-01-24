@@ -116,7 +116,8 @@ public:
 public:
     gnomonOverlayPane *pane;
 
-    QFormLayout *parameter_layout;
+    QFormLayout *parameter_layout = nullptr;
+    QVBoxLayout *viewer_layout = nullptr;
 
 public:
     gnomonFontAwesome *font_awesome;
@@ -130,6 +131,7 @@ public:
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
+    this->setObjectName("PythonSimulator");
 
     d->parameters["initial_time"] = new gnomonCoreParameterDouble(0., 0., 1000., 2., "Starting time for the simulation of the model");
     d->parameters["final_time"] = new gnomonCoreParameterDouble(1., 0., 1000., 2., "Last time for the simulation of the model");
@@ -213,15 +215,16 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     d->terminal->setFont(d->font_source_code_pro->font(12));
     d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
+
     // -- Organizing the viewer column --
-    QVBoxLayout *viewer_layout = new QVBoxLayout;
-    viewer_layout->setContentsMargins(0, 0, 0, 0);
-    viewer_layout->setSpacing(0);
-    viewer_layout->addWidget(d->view);
-    viewer_layout->addWidget(d->terminal);
+    d->viewer_layout = new QVBoxLayout;
+    d->viewer_layout->setContentsMargins(0, 0, 0, 0);
+    d->viewer_layout->setSpacing(0);
+    d->viewer_layout->addWidget(d->view);
+    d->viewer_layout->addWidget(d->terminal);
 
     QWidget *viewer = new QWidget(this);
-    viewer->setLayout(viewer_layout);
+    viewer->setLayout(d->viewer_layout);
 
     d->pane = new gnomonOverlayPane(this);
 
@@ -305,6 +308,16 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     layout->setSpacing(0);
     layout->addWidget(splitter);
     layout->addWidget(d->pane);
+
+    QFile file(":gnomon/jupyter_console.py");
+    if (file.open(QIODevice::ReadOnly)) {
+        int stat;
+        QString jupyter_script  = file.readAll();
+        file.close();
+        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat));
+    } else {
+        qWarning() << "Can't open jupyter console script";
+    }
 }
 
 gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
@@ -312,14 +325,30 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
     delete d;
 }
 
+void gnomonWorkspacePythonSimulator::addInterpreter(QWidget *editor)
+{
+    d->terminal->hide();
+    d->terminal->deleteLater();
+    d->terminal = Q_NULLPTR;
+
+    editor->setStyleSheet(gnomonStyleSheet());
+
+    d->viewer_layout->addWidget(editor);
+}
+
 void gnomonWorkspacePythonSimulator::apply(void)
 {
 //    gnomonCore::evolutionModel::pluginFactory().clear();
 
     int stat;
-    if (d->terminal)
-    {
+    if (d->terminal) {
         d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
+    } else {
+        QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
+        qDebug()<< output;
+        // QString print_output = QString("print(%1)\n").arg(output);
+        // qDebug()<< "DBG" << print_output;
+        // dtkScriptInterpreterPython::instance()->interpret(print_output, &stat);
     }
 
     for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
