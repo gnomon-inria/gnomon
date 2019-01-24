@@ -34,6 +34,7 @@ public:
 
 public:
     virtual QMap<QString, gnomonAbstractForm *> forms() = 0;
+    virtual void setForm(QString, gnomonAbstractForm*) = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractEvolutionModel *)
