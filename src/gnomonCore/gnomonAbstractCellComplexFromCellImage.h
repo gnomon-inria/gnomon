@@ -19,28 +19,27 @@
 #include <gnomonCoreExport.h> // enables the visibility of the concept
 
 #include <dtkCore>
+#include "gnomonAbstractAlgorithm.h"
 
 class gnomonCellImage;
 class gnomonCellComplex;
 
-class GNOMONCORE_EXPORT gnomonAbstractCellComplexFromCellImage : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractCellComplexFromCellImage : public gnomonAbstractAlgorithm
 {
+
+public:
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void run(void) override = 0;
 
     //Inputs
 public:
-    virtual void setCellImage(gnomonCellImage *cellImage) = 0;
-
-    virtual void setComplexDimension(int dimension) = 0;
+    virtual void setInput(gnomonCellImage *cellimage) = 0;
 
     // Outputs
 public:
-    virtual gnomonCellComplex *computedComplex(void) const = 0;
-
-    virtual gnomonCellComplex *adjacencyComplex(void) const = 0;
-
-public:
-    virtual void run(void) = 0;
-
+    virtual gnomonCellImage *input(void) = 0;
+    virtual gnomonCellComplex *output(void) const = 0;
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexFromCellImage *)
