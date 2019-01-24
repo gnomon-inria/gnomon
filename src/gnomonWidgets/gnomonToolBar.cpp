@@ -38,6 +38,7 @@ signals:
     void createMeshFromImage(void);
     void createSegmentation(void);
     void createCellComplexFromCellImage(void);
+    void createCellImageFilter(void);
     void createSimulation(void);
     void createTreeAnalysis(void);
 
@@ -59,6 +60,7 @@ private:
     QAction *action_registration;
     QAction *action_meshFromImage;
     QAction *action_cellComplexFromCellImage;
+    QAction *action_cellImageFilter;
     QAction *action_simulation;
     QAction *action_tree_analysis;
 };
@@ -82,6 +84,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_meshFromImage = this->menu->addAction("MeshFromImage");
     this->action_segmentation  = this->menu->addAction("Segmentation");
     this->action_cellComplexFromCellImage  = this->menu->addAction("CellComplexFromCellImage");
+    this->action_cellImageFilter  = this->menu->addAction("CellImageFilter");
     this->action_simulation    = this->menu->addAction("Simulation");
     this->action_tree_analysis = this->menu->addAction("Tree analysis");
 
@@ -115,6 +118,9 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_cellComplexFromCellImage)
         emit createCellComplexFromCellImage();
+
+    if(action == this->action_cellImageFilter)
+        emit createCellImageFilter();
 
     if(action == this->action_simulation)
         emit createSimulation();
@@ -295,6 +301,8 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::browser_color.red()).arg(gnomonToolBar::browser_color.green()).arg(gnomonToolBar::browser_color.blue()));
         else if(item->text() == "CellComplexFromCellImage")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::cellComplexFromCellImage_color.red()).arg(gnomonToolBar::cellComplexFromCellImage_color.green()).arg(gnomonToolBar::cellComplexFromCellImage_color.blue()));
+        else if(item->text() == "CellImageFilter")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::cellImageFilter_color.red()).arg(gnomonToolBar::cellImageFilter_color.green()).arg(gnomonToolBar::cellImageFilter_color.blue()));
         else if(item->text() == "Simulation")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::simulation_color.red()).arg(gnomonToolBar::simulation_color.green()).arg(gnomonToolBar::simulation_color.blue()));
         else if(item->text() == "Tree analysis")
@@ -331,6 +339,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     connect(button, SIGNAL(createMeshFromImage()), this, SLOT(onCreateMeshFromImage()));
     connect(button, SIGNAL(createSegmentation()), this, SLOT(onCreateSegmentation()));
     connect(button, SIGNAL(createCellComplexFromCellImage()), this, SLOT(onCreateCellComplexFromCellImage()));
+    connect(button, SIGNAL(createCellImageFilter()), this, SLOT(onCreateCellImageFilter()));
     connect(button, SIGNAL(createSimulation()), this, SLOT(onCreateSimulation()));
     connect(button, SIGNAL(createTreeAnalysis()), this, SLOT(onCreateTreeAnalysis()));
 
@@ -396,6 +405,13 @@ void gnomonToolBar::onCreateCellComplexFromCellImage(void)
     emit createCellComplexFromCellImage();
 }
 
+void gnomonToolBar::onCreateCellImageFilter(void)
+{
+    d->createWorkspace(cellImageFilter_color, "CellImageFilter");
+
+    emit createCellImageFilter();
+}
+
 void gnomonToolBar::onCreatePreprocess(void)
 {
     d->createWorkspace(preprocess_color, "Preprocess");
@@ -441,6 +457,7 @@ QColor gnomonToolBar::meshFromImage_color = QColor("#5f9ea0");
 QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
 QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
 QColor gnomonToolBar::cellComplexFromCellImage_color = QColor("#dc143c");
+QColor gnomonToolBar::cellImageFilter_color = QColor("#dc143c");
 QColor gnomonToolBar::simulation_color = QColor("#5856d6");
 QColor gnomonToolBar::tree_analysis_color = QColor("#734906");
 

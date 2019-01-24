@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellGraphFromImage.h
   gnomonAbstractCellImageData
   gnomonAbstractCellImageData.h
+  gnomonAbstractCellImageFilter
+  gnomonAbstractCellImageFilter.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
   gnomonAbstractCellImageReader
@@ -88,6 +90,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellGraph.h
   gnomonCellImage
   gnomonCellImage.h
+  gnomonCellImageFilterCommand
+  gnomonCellImageFilterCommand.h
   gnomonCellImageReaderCommand
   gnomonCellImageReaderCommand.h
   gnomonCellImageWriterCommand
@@ -150,6 +154,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
+  gnomonAbstractCellImageFilter.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellImageReader.cpp
   gnomonAbstractCellImageWriter.cpp
@@ -172,6 +177,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractTissueGrowthModel.cpp
   gnomonCellComplexFromCellImageCommand.cpp
   gnomonCellComplexReaderCommand.cpp
+  gnomonCellImageFilterCommand.cpp
   gnomonCellImageReaderCommand.cpp
   gnomonCellImageWriterCommand.cpp
   gnomonCore.cpp
