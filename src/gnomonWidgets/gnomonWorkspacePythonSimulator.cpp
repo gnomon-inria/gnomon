@@ -35,6 +35,9 @@
 #include "gnomonWidgetsParameter.h"
 
 
+#include <gnomonCore/gnomonAbstractForm>
+#include <gnomonCore/gnomonMesh.h>
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCodeEditorToolBar
@@ -351,20 +354,26 @@ void gnomonWorkspacePythonSimulator::apply(void)
         // dtkScriptInterpreterPython::instance()->interpret(print_output, &stat);
     }
 
-    for (const auto& key : gnomonCore::evolutionModel::pluginFactory().keys())
-    {
-        if (d->model) {
-            delete d->model;
-            d->model = nullptr;
-        }
-        d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
+    // QString key = dtkScriptInterpreterPython::instance()->interpret("print(__all__[0])", &stat);
 
-        d->model->reset();
-        QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
-        for (const auto& name : forms.keys())
-        {
-            d->view->setForm(name,forms[name]);
-        }
+    QString key = gnomonCore::evolutionModel::pluginFactory().keys().first();
+    qDebug()<<Q_FUNC_INFO<<key;
+    if (d->model) {
+        delete d->model;
+        d->model = nullptr;
+    }
+    d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
+
+    if(d->view->mesh()){
+        // d->model->setForm("mesh", d->view->form("gnomonMesh"));
+            d->model->setForm("mesh", d->view->mesh());
+    }
+
+    d->model->reset();
+    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+    for (const auto& name : forms.keys())
+    {
+        d->view->setForm(name,forms[name]);
     }
 
     emit modelLoaded();
@@ -405,11 +414,11 @@ void gnomonWorkspacePythonSimulator::run(void)
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
 
     double t = initial_time;
-    while (t<=final_time ) {
-
+    while (t<final_time ) {
+        t = t + dt;
+        qDebug()<<"Step: "<<t;
         d->model->step(t,dt);
         if (animate) {
-            qDebug()<<"Step: "<<t;
             forms = d->model->forms();
             for (const auto& name : forms.keys())
             {
@@ -417,7 +426,6 @@ void gnomonWorkspacePythonSimulator::run(void)
             }
             QCoreApplication::processEvents();
         }
-        t = t + dt;
     }
 
     if(!animate) {
@@ -452,7 +460,7 @@ void gnomonWorkspacePythonSimulator::step(void)
 void gnomonWorkspacePythonSimulator::reset(void)
 {
     d->model->reset();
-
+    qDebug()<<"Reset model";
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
 
     for (const auto& name : forms.keys())
