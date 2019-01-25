@@ -33,7 +33,6 @@ public:
 public slots:
     void openScript(void);
     void saveScript(void);
-    // void saveScriptAs(void);
 
 signals:
     void scriptLoaded(void);
