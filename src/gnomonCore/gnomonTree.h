@@ -80,7 +80,7 @@ public:
     bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); };
     QMap<long, QVariant> vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); };
 
-    bool isIsomorphicTo(gnomonTree *other) const { return m_data->isIsomorphicTo(other->data()); };
+    bool isIsomorphicTo(gnomonTree *other) const { return m_data->isIsomorphicTo(other); };
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -22,6 +22,8 @@ class dtkImage;
 
 #include <gnomonCoreExport>
 
+class gnomonTree;
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -52,7 +54,7 @@ public:
     virtual bool hasVertexProperty(const QString& propertyName) const = 0;
     virtual QMap<long, QVariant> vertexProperty(const QString& propertyName) const = 0;
 
-    virtual bool isIsomorphicTo(gnomonAbstractTreeData * other) const = 0;
+    virtual bool isIsomorphicTo(gnomonTree * other) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

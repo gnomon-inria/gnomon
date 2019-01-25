@@ -50,6 +50,7 @@
 #include <gnomonCore/gnomonAbstractImagesSerieFilter.h>
 #include <gnomonCore/gnomonAbstractImagesSerieReader.h>
 #include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
+#include <gnomonCore/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonAbstractMeshFromImage.h>
 #include <gnomonCore/gnomonAbstractMeshReader.h>
 #include <gnomonCore/gnomonAbstractMeshWriter.h>
@@ -57,6 +58,7 @@
 #include <gnomonCore/gnomonAbstractEvolutionModel.h>
 #include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
+#include <gnomonCore/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCellGraph.h>
 #include <gnomonCore/gnomonCellImage.h>
@@ -69,10 +71,12 @@
 #include <gnomonCore/gnomonImagesSerie.h>
 #include <gnomonCore/gnomonIntensityImage.h>
 #include <gnomonCore/gnomonLandmark.h>
+#include <gnomonCore/gnomonLString.h>
 #include <gnomonCore/gnomonMesh.h>
 #include <gnomonCore/gnomonSphereForm.h>
 #include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
+#include <gnomonCore/gnomonTree.h>
 #include <gnomonCore/gnomonTypeDef.h>
 #include <gnomonCore/gnomonWallForm.h>
 #include <vtkPythonUtil.h>
@@ -454,6 +458,7 @@
 %include <gnomonCore/gnomonAbstractImagesSerieWriter.h>
 %include <gnomonCore/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonAbstractMeshFromImage.h>
 %include <gnomonCore/gnomonAbstractMeshReader.h>
@@ -462,6 +467,7 @@
 %include <gnomonCore/gnomonAbstractEvolutionModel.h>
 %include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>
+%include <gnomonCore/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>
 %include <gnomonCore/gnomonCellImage.h>
@@ -473,10 +479,12 @@
 %include <gnomonCore/gnomonImagesSerie.h>
 %include <gnomonCore/gnomonIntensityImage.h>
 %include <gnomonCore/gnomonLandmark.h>
+%include <gnomonCore/gnomonLString.h>
 %include <gnomonCore/gnomonMesh.h>
 %include <gnomonCore/gnomonSphereForm.h>
 %include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonTree.h>
 %include <gnomonCore/gnomonTypeDef.h>
 %include <gnomonCore/gnomonWallForm.h>
 %include <QVariant.i>
