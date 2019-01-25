@@ -66,8 +66,6 @@ public:
 
     virtual bool hasLaterals(long moduleId) const = 0;
     virtual QList<long> lateralIds(long moduleId) const = 0;
-
-
 };
 
 // ///////////////////////////////////////////////////////////////////

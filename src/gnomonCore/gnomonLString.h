@@ -54,6 +54,7 @@ public:
         }
         return *this;
     }
+    QString name(void) const override { return"gnomonLString"; }
 
 public:
     const gnomonAbstractLStringData *data(void) const { return m_data; }

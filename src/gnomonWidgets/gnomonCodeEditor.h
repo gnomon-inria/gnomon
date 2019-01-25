@@ -51,10 +51,10 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
 
  protected:
-    void dragEnterEvent(QDragEnterEvent *);
-    void dragLeaveEvent(QDragLeaveEvent *);
-    void dragMoveEvent(QDragMoveEvent *);
-    void dropEvent(QDropEvent *);
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dragLeaveEvent(QDragLeaveEvent *) override;
+    void dragMoveEvent(QDragMoveEvent *) override;
+    void dropEvent(QDropEvent *) override;
 
 protected:
     QString textUnderCursor(void);
