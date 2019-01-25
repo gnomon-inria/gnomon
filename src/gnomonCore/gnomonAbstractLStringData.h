@@ -37,11 +37,13 @@ public:
 public:
     virtual void fromString(const QString&) const = 0;
     virtual const QString& toString(void) const = 0;
+    virtual bool isValid() const = 0;
     virtual bool isEmpty() const = 0;
 
 public:
     virtual QList<long> moduleIds(void) const = 0;
     virtual long moduleCount(void) const = 0;
+    virtual bool hasModule(const QString&) const = 0;
     virtual bool hasModule(long moduleId) const = 0;
 
     virtual const QString& moduleName(long moduleId) const = 0;
