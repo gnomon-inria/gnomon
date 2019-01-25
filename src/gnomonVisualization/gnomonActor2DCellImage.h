@@ -44,18 +44,18 @@ public:
 
 public:
     void setInteractor(void *interactor) override;
-    virtual void hide(void);
-    virtual void show(void);
+    void hide(void) override;
+    void show(void) override;
 
 public:
-	void setPolyData(gnomonPolyDataCellImage *polydata);
+    void setPolyData(gnomonPolyDataCellImage *polydata);
 
     void setDimensions(int value[3]);
     void setSpacing(double value[3]);
     void setSlicePositions(int value[3]);
 
 public slots:
-    void update(void);
+    void update(void) override;
     void modified(void);
 
 public slots:
@@ -71,7 +71,7 @@ private:
     void operator = (const gnomonActor2DCellImage&);
 
 private:
-	class gnomonActor2DCellImagePrivate *d;
+    class gnomonActor2DCellImagePrivate *d;
 };
 
 //
