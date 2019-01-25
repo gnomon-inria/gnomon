@@ -255,6 +255,7 @@ gnomonCodeEditor::gnomonCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
     setFont(QFont("monospace"));
+    this->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     d->highlighter = new gnomonCodeEditorSyntaxHighlighter(document());
 
