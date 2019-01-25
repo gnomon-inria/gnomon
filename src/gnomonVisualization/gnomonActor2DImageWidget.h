@@ -49,6 +49,7 @@ public slots:
     void setOpacity(double);
     void setValueRange(const QList<int>& value);
     void setColorMap(const QMap<double,QColor>&);
+    void setFlatRendering(bool);
 
 protected:
      gnomonActor2DImageWidget(void);

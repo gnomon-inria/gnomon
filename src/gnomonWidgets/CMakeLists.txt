@@ -60,6 +60,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonVisualizationCellComplex
   gnomonVisualizationCellImage.h
   gnomonVisualizationCellImage
+  gnomonVisualizationCellImageMarchingCubes.h
+  gnomonVisualizationCellImageMarchingCubes
   gnomonVisualizationImagesSerie.h
   gnomonVisualizationImagesSerie
   gnomonVisualizationImagesSerieChannelBlending.h
@@ -123,6 +125,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonViewVolumicPool.cpp
   gnomonVisualizationCellComplex.cpp
   gnomonVisualizationCellImage.cpp
+  gnomonVisualizationCellImageMarchingCubes.cpp
   gnomonVisualizationImagesSerie.cpp
   gnomonVisualizationImagesSerieChannelBlending.cpp
   gnomonVisualizationMesh.cpp

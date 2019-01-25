@@ -55,6 +55,9 @@ public:
     int value_range[2];
     QMap<double,QColor> colormap;
 
+    bool flat_rendering;
+    int background_value;
+
     bool modified;
 
 public slots:
@@ -68,8 +71,17 @@ void gnomonActor2DImageWidgetPrivate::updateOpacity(void)
         return;
 
     this->opacity->RemoveAllPoints();
-    this->opacity->AddPoint(this->value_range[0],0.00);
-    this->opacity->AddPoint(this->value_range[1],this->alpha);
+
+    if (this->flat_rendering) {
+        this->opacity->AddPoint(this->value_range[0],this->alpha);
+        this->opacity->AddPoint(this->background_value - 0.5,this->alpha);
+        this->opacity->AddPoint(this->background_value,0.00);
+        this->opacity->AddPoint(this->background_value + 0.5,this->alpha);
+        this->opacity->AddPoint(this->value_range[1],this->alpha);
+    } else {
+        this->opacity->AddPoint(this->value_range[0],0.00);
+        this->opacity->AddPoint(this->value_range[1],this->alpha);
+    }
 }
 
 void gnomonActor2DImageWidgetPrivate::updateColorFunction(void)
@@ -156,6 +168,7 @@ void gnomonActor2DImageWidget::update(void)
         d->planeWidget[i]->RestrictPlaneToVolumeOn();
         d->planeWidget[i]->GetPlaneProperty()->SetColor(color);
         d->planeWidget[i]->SetLookupTable(lut);
+        d->planeWidget[i]->SetResliceInterpolateToNearestNeighbour();
         // d->planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
         d->planeWidget[i]->SetMarginSizeX(0);
         d->planeWidget[i]->SetMarginSizeY(0);
@@ -215,6 +228,13 @@ void gnomonActor2DImageWidget::setColorMap(const QMap<double,QColor>& value)
     d->interactor->Render();
 }
 
+void gnomonActor2DImageWidget::setFlatRendering(bool value)
+{
+    d->flat_rendering = value;
+    d->updateOpacity();
+    d->interactor->Render();
+}
+
 gnomonActor2DImageWidget::gnomonActor2DImageWidget(void) : gnomonActor(), d(new gnomonActor2DImageWidgetPrivate)
 {
     d->image = Q_NULLPTR;
@@ -225,6 +245,8 @@ gnomonActor2DImageWidget::gnomonActor2DImageWidget(void) : gnomonActor(), d(new 
     d->orientation = 2;
 
     d->alpha = 1;
+    d->flat_rendering = false;
+    d->background_value = 1;
     d->value_range[0] = 0.;
     d->value_range[1] = 1.;
     d->colormap = QMap<double, QColor>({

@@ -54,6 +54,9 @@ public:
     int value_range[2];
     QMap<double,QColor> colormap;
 
+    bool flat_rendering;
+    int background_value;
+
     bool modified;
 
 public slots:
@@ -67,8 +70,17 @@ void gnomonActorImageVolumePrivate::updateOpacity(void)
         return;
 
     this->opacity->RemoveAllPoints();
-    this->opacity->AddPoint(this->value_range[0],0.00);
-    this->opacity->AddPoint(this->value_range[1],this->alpha);
+
+    if (this->flat_rendering) {
+        this->opacity->AddPoint(this->value_range[0],this->alpha);
+        this->opacity->AddPoint(this->background_value - 0.5,this->alpha);
+        this->opacity->AddPoint(this->background_value,0.00);
+        this->opacity->AddPoint(this->background_value + 0.5,this->alpha);
+        this->opacity->AddPoint(this->value_range[1],this->alpha);
+    } else {
+        this->opacity->AddPoint(this->value_range[0],0.00);
+        this->opacity->AddPoint(this->value_range[1],this->alpha);
+    }
 }
 
 void gnomonActorImageVolumePrivate::updateColorFunction(void)
@@ -140,7 +152,12 @@ void gnomonActorImageVolume::update(void)
     property->SetScalarOpacity(d->opacity);
     property->SetColor(d->colorFunction);
     property->ShadeOff();
-    property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+
+    if (d->flat_rendering) {
+        property->SetInterpolationType(VTK_NEAREST_INTERPOLATION);
+    } else {
+        property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+    }
 
     d->volume->SetMapper(d->volume_mapper);
     d->volume->SetProperty(property);
@@ -175,6 +192,23 @@ void gnomonActorImageVolume::setColorMap(const QMap<double,QColor>& value)
     d->interactor->Render();
 }
 
+void gnomonActorImageVolume::setFlatRendering(bool value)
+{
+    d->flat_rendering = value;
+    d->updateOpacity();
+
+    if (d->volume) {
+        vtkSmartPointer<vtkVolumeProperty> property = d->volume->GetProperty();
+        if (d->flat_rendering) {
+            property->SetInterpolationType(VTK_NEAREST_INTERPOLATION);
+        } else {
+            property->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+        }
+    }
+
+    d->interactor->Render();
+}
+
 gnomonActorImageVolume::gnomonActorImageVolume(void) : gnomonActor(), d(new gnomonActorImageVolumePrivate)
 {
     d->image = Q_NULLPTR;
@@ -186,6 +220,8 @@ gnomonActorImageVolume::gnomonActorImageVolume(void) : gnomonActor(), d(new gnom
     d->opacity = Q_NULLPTR;
 
     d->alpha = 1;
+    d->flat_rendering = false;
+    d->background_value = 1;
     d->value_range[0] = 0.;
     d->value_range[1] = 1.;
     d->colormap = QMap<double, QColor>({

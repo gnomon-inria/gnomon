@@ -24,14 +24,17 @@
 
 #include "gnomonViewForm.h"
 
-#include "gnomonPolyDataCellImage.h"
-#include "gnomonActorPolyData.h"
-#include "gnomonActor2DPolyData.h"
+#include "gnomonActorImageVolume.h"
+#include "gnomonActor2DImageWidget.h"
 
-#include <vtkCellData.h>
+#include <vtkDataArray.h>
+#include <vtkImageData.h>
 #include <vtkPointData.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkSmartPointer.h>
 
 
 // /////////////////////////////////////////////////////////////////
@@ -44,9 +47,10 @@ public:
     gnomonCellImage *cellImage;
 
 public:
-    gnomonPolyDataCellImage *polydata = nullptr;
-    gnomonActorPolyData *actor = nullptr;
-    gnomonActor2DPolyData *actor2D = nullptr;
+    vtkSmartPointer<vtkImageData> image = nullptr;
+
+    gnomonActorImageVolume *actor = nullptr;
+    gnomonActor2DImageWidget *actor2D = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -57,17 +61,9 @@ gnomonVisualizationCellImage::gnomonVisualizationCellImage(gnomonViewForm* view)
 {
     dd->cellImage = Q_NULLPTR;
 
-    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
-    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
+    d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
-
-    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
-        if(!dd->cellImage)
-            return;
-        this->updateValueRange();
-        emit parametersChanged();
-    });
 }
 
 gnomonVisualizationCellImage::~gnomonVisualizationCellImage(void)
@@ -82,16 +78,6 @@ void gnomonVisualizationCellImage::setCellImage(gnomonCellImage *cellImage)
     dd->cellImage = cellImage;
 
     this->setParameter("alpha",1.0);
-    
-    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
-    QStringList properties = {""};
-    for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
-         if(dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]].canConvert<double>()) {
-                properties.append(propertyName);
-         }
-    }
-    propertyParam->setValues(properties);
-    propertyParam->setValue(QString(""));
 
     this->updateValueRange();
 }
@@ -111,30 +97,16 @@ void gnomonVisualizationCellImage::updateOpacity(void)
 
 void gnomonVisualizationCellImage::updateValueRange(void)
 {
-     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+     QList<long> cellIds = dd->cellImage->cellIds();
+     auto mm = std::minmax_element(cellIds.begin(),cellIds.end());
 
-     QMap<long, QVariant> cellProperty;
-     if(dd->cellImage->cellPropertyNames().contains(property_name)) {
-         cellProperty = dd->cellImage->cellProperty(property_name);
-     } else {
-         for (const auto& cellId : dd->cellImage->cellIds()) {
-             cellProperty[cellId] = QVariant((double)cellId);
-         }
-     }
-
-     QList<double> cellScalarPropertyValues;
-     for (const auto& cellId : dd->cellImage->cellIds()) {
-         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
-     }
-     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
-
-     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
+     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
 }
 
 QImage gnomonVisualizationCellImage::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->polydata->GetBounds());
+    d->updateOffscreenRenderer(dd->image->GetBounds());
 
     d->offscreenRenderer->AddActor(dd->actor);
 
@@ -143,24 +115,23 @@ QImage gnomonVisualizationCellImage::imageRendering(void)
 
 void gnomonVisualizationCellImage::update(void)
 {
-     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
 
     if(!dd->cellImage)
         return;
 
-    if (dd->polydata) {
-        dd->polydata->Delete();
-        dd->polydata = nullptr;
+    if (dd->image) {
+        dd->image->Delete();
+        dd->image = nullptr;
     }
 
-    if (!dd->polydata)
-        dd->polydata = gnomonPolyDataCellImage::New();
-    dd->polydata->setCellImage((gnomonCellImage *)dd->cellImage->clone());
-    dd->polydata->setPropertyName(property_name);
-    dd->polydata->update();
-    
+
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(dd->cellImage->image());
+    converter->convert();
+    dd->image = static_cast<vtkImageData *>(converter->output());
+    delete converter;
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -169,12 +140,13 @@ void gnomonVisualizationCellImage::update(void)
     }
 
     if (!dd->actor)
-        dd->actor = gnomonActorPolyData::New();
+        dd->actor = gnomonActorImageVolume::New();
         d->view->renderer3D()->AddActor(dd->actor);
     dd->actor->setInteractor(d->view->interactor());
-    dd->actor->setPolyData(dd->polydata);
+    dd->actor->setImage(dd->image);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
+    dd->actor->setFlatRendering(true);
 
     if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
@@ -186,14 +158,15 @@ void gnomonVisualizationCellImage::update(void)
 
     if (!dd->actor2D)
     {
-        dd->actor2D = gnomonActor2DPolyData::New();
+        dd->actor2D = gnomonActor2DImageWidget::New();
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
-    dd->actor2D->setInteractor(d->view->interactor());
-    dd->actor2D->setSliceThickness(0.1);
-    dd->actor2D->setPolyData(dd->polydata);
+    dd->actor2D->setImage(dd->image);
+    dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
+    dd->actor2D->setFlatRendering(true);
+    dd->actor2D->update();
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
@@ -204,14 +177,27 @@ void gnomonVisualizationCellImage::update(void)
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { this->render(); });
+    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
+        dd->actor2D->hide();
+        this->render();
+    });
+
+    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
+        dd->actor2D->show();
+        this->render();
+    });
+
     connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
     connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
     connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
-    dd->polydata->GetBounds(bounds);
+    bounds[0] = 0;
+    bounds[1] = (dd->image->GetDimensions()[0]-1)*dd->image->GetSpacing()[0];
+    bounds[2] = 0;
+    bounds[3] = (dd->image->GetDimensions()[1]-1)*dd->image->GetSpacing()[1];
+    bounds[4] = 0;
+    bounds[5] = (dd->image->GetDimensions()[2]-1)*dd->image->GetSpacing()[2];
     d->view->setBounds(bounds);
 
     this->render();

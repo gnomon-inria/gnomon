@@ -40,6 +40,7 @@
 #include "gnomonVisualizationMesh.h"
 #include "gnomonVisualizationCellComplex.h"
 #include "gnomonVisualizationCellImage.h"
+#include "gnomonVisualizationCellImageMarchingCubes.h"
 #include "gnomonVisualizationImagesSerie.h"
 #include "gnomonVisualizationImagesSerieChannelBlending.h"
 
@@ -743,8 +744,10 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"])) {
         d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImage(this);
+//        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImageMarchingCubes(this);
     }
     gnomonVisualizationCellImage *formVisualizationCellImage = (gnomonVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
+//    gnomonVisualizationCellImageMarchingCubes *formVisualizationCellImage = (gnomonVisualizationCellImageMarchingCubes *)d->formVisualization["gnomonCellImage"];
     formVisualizationCellImage->setCellImage(cellImage);
     if (visualization) {
         formVisualizationCellImage->setParameters(visualization->parameters());
