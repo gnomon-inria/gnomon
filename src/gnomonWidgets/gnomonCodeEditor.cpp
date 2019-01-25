@@ -311,7 +311,7 @@ void gnomonCodeEditor::openScript(void)
 void gnomonCodeEditor::saveScript(void)
 {
     QString content = this->document()->toPlainText();
-    QString backup = d->file_name + ".bak";
+    QString backup = d->file_name + "~";
     QFile::remove(backup);
     QFile::copy(d->file_name, backup);
     QFile file(d->file_name);

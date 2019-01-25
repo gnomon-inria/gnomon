@@ -64,6 +64,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractIntensityImageData
   gnomonAbstractIntensityImageData.h
   gnomonLandmark.h
+  gnomonAbstractLStringData
+  gnomonAbstractLStringData.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
   gnomonAbstractMeshFromImage
@@ -80,6 +82,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractSystemScenario.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
+  gnomonAbstractTreeData
+  gnomonAbstractTreeData.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellComplexFromCellImageCommand
@@ -125,6 +129,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImagesSerieWriterCommand.h
   gnomonIntensityImage
   gnomonIntensityImage.h
+  gnomonLString
+  gnomonLString.h
   gnomonMesh
   gnomonMesh.h
   gnomonMeshFromImageCommand
@@ -143,6 +149,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTypeDef.h
   gnomonTime
   gnomonTime.h
+  gnomonTree
+  gnomonTree.h
   gnomonWallForm
   gnomonWallForm.h)
 
@@ -167,6 +175,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
   gnomonAbstractIntensityImageData.cpp
+  gnomonAbstractLStringData.cpp
   gnomonAbstractMeshData.cpp
   gnomonAbstractMeshFromImage.cpp
   gnomonAbstractMeshReader.cpp
@@ -175,6 +184,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractSurfaceImageFromImage.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
+  gnomonAbstractTreeData.cpp
   gnomonCellComplexFromCellImageCommand.cpp
   gnomonCellComplexReaderCommand.cpp
   gnomonCellImageFilterCommand.cpp
