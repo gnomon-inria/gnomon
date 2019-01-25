@@ -53,7 +53,7 @@ public:
     ~gnomonCodeEditorToolBar(void);
 
 public:
-    void addAction(const QIcon &icon, const QObject *receiver, std::function<void(void)> function);
+    void addAction(const QIcon &icon, const QObject *receiver, const QString& tool_tip, std::function<void(void)> function);
     void addStretch(void);
 
 private:
@@ -78,12 +78,13 @@ gnomonCodeEditorToolBar::~gnomonCodeEditorToolBar(void)
 
 }
 
-void gnomonCodeEditorToolBar::addAction(const QIcon &icon, const QObject *receiver, std::function<void(void)> function)
+void gnomonCodeEditorToolBar::addAction(const QIcon &icon, const QObject *receiver, const QString & tool_tip, std::function<void(void)> function)
 {
     QToolButton *button = new QToolButton(this);
     button->setIconSize(QSize(16, 16));
 //    button->setFlat(true);
     button->setIcon(icon);
+    button->setToolTip(tool_tip);
 
     connect(button, &QToolButton::clicked, receiver, function);
 
@@ -192,13 +193,13 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     connect(d->editor, SIGNAL(scriptLoaded()), this, SLOT(apply()));
 
     d->editor_toolbar = new gnomonCodeEditorToolBar(this);
-    d->editor_toolbar->addAction(d->font_awesome->icon(fa::folderopen), this, [=] () {
+    d->editor_toolbar->addAction(d->font_awesome->icon(fa::folderopen), this, "Open script", [=] () {
         d->editor->openScript();
     });
-    d->editor_toolbar->addAction(d->font_awesome->icon(fa::file), this, [=] () {
-        qWarning() << "Save not implemented";
+    d->editor_toolbar->addAction(d->font_awesome->icon(fa::file), this, "Save script", [=] () {
+        d->editor->saveScript();
     });
-    d->editor_toolbar->addAction(d->font_awesome->icon(fa::play), this, [=] () {
+    d->editor_toolbar->addAction(d->font_awesome->icon(fa::play), this, "Play script", [=] () {
         this->apply();
     });
 

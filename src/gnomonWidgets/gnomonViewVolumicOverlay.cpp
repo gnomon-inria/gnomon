@@ -175,7 +175,9 @@ void gnomonViewVolumicOverlay::toggle(bool toggled)
 
     if(this->toggled) {;
         QColor color = Qt::white;
-        if(this->pixmap) {
+        if (GNOMON_STYLE == "ONELIGHT")
+            color = Qt::black;
+        if (this->pixmap) {
             this->label_icon->setPixmap(QPixmap(path_on));
         } else {
             this->font->setDefaultOption("color", color);
@@ -183,7 +185,7 @@ void gnomonViewVolumicOverlay::toggle(bool toggled)
         }
     } else {
         QColor color = Qt::gray;
-        if(this->pixmap) {
+        if (this->pixmap) {
             this->label_icon->setPixmap(QPixmap(path_off));
         } else  {
             this->font->setDefaultOption("color", color);

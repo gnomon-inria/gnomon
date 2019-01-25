@@ -227,8 +227,12 @@ class gnomonCodeEditorPrivate
 public:
     QWidget *line_number_area;
 
+public:
+    QString file_name;
+
     gnomonCodeEditorSyntaxHighlighter *highlighter;
 
+public:
     bool autocompletion_enabled;
     QStringListModel *vocabulary;
     QTimer *autocompletion_timer;
@@ -251,6 +255,7 @@ gnomonCodeEditor::gnomonCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
     setFont(QFont("monospace"));
+    this->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     d->highlighter = new gnomonCodeEditorSyntaxHighlighter(document());
 
@@ -303,7 +308,19 @@ void gnomonCodeEditor::openScript(void)
 
 void gnomonCodeEditor::saveScript(void)
 {
-    qDebug()<<"Not implemented yet!";
+    QString content = this->document()->toPlainText();
+    QString backup = d->file_name + ".bak";
+    QFile::remove(backup);
+    QFile::copy(d->file_name, backup);
+    QFile file(d->file_name);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning()<<"Can't open file!  "<< d->file_name;
+        return;
+    }
+    QTextStream out(&file);
+    out << content;
+    file.close();
+    qDebug() << "file saved" << d->file_name;
 }
 
 void gnomonCodeEditor::enableAutocompletion(bool enabled)
@@ -548,6 +565,8 @@ void gnomonCodeEditor::dropEvent(QDropEvent *event)
 
         if(!file.open(QIODevice::ReadOnly))
             return;
+
+        d->file_name = file_name;
 
         QFileInfo dir_info(file_name);
         QDir script_dir = dir_info.dir();
