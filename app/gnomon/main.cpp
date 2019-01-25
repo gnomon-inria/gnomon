@@ -71,7 +71,8 @@ int main(int argc, char **argv)
     int stat;
 
     dtkImaging::initialize();
-    dtkScriptInterpreterPython::instance()->init();
+    bool redirect_io = true;
+    dtkScriptInterpreterPython::instance()->init(redirect_io,"gnomon-core");
     if (parser->isSet(jupyterOption)) {
         dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
     }

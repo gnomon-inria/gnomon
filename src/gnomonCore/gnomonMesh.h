@@ -59,6 +59,9 @@ public:
     }
 
 public:
+    QString name(void) const { return"gnomonMesh";}
+
+public:
     const gnomonAbstractMeshData *data(void) const { return m_data; }
           gnomonAbstractMeshData *data(void)       { return m_data; }
 

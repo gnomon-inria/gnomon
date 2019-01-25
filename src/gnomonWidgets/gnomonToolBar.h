@@ -33,6 +33,7 @@ signals:
 signals:
     void createFusion(void);
     void createLSystemSimulator(void);
+    void createPythonSimulator(void);
     void createPreprocess(void);
     void createRegistration(void);
     void createMeshFromImage(void);
@@ -45,6 +46,7 @@ signals:
 public slots:
     void onCreateFusion(void);
     void onCreateLSystemSimulator(void);
+    void onCreatePythonSimulator(void);
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
     void onCreateMeshFromImage(void);
@@ -67,6 +69,7 @@ public:
 public:
     static QColor browser_color;
     static QColor lsystem_color;
+    static QColor python_simulation_color;
     static QColor fusion_color;
     static QColor preprocess_color;
     static QColor registration_color;

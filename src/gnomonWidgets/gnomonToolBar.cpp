@@ -33,6 +33,7 @@ public:
 signals:
     void createFusion(void);
     void createLSystemSimulator(void);
+    void createPythonSimulator(void);
     void createPreprocess(void);
     void createRegistration(void);
     void createMeshFromImage(void);
@@ -55,6 +56,7 @@ private:
     QMenu *menu;
     QAction *action_fusion;
     QAction *action_lsystem;
+    QAction *action_python_simulation;
     QAction *action_segmentation;
     QAction *action_preprocess;
     QAction *action_registration;
@@ -79,6 +81,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
 
     this->action_fusion        = this->menu->addAction("Fusion");
     this->action_lsystem       = this->menu->addAction("LSystem simulator");
+    this->action_python_simulation = this->menu->addAction("Python simulator");
     this->action_preprocess    = this->menu->addAction("Preprocess");
     this->action_registration  = this->menu->addAction("Registration");
     this->action_meshFromImage = this->menu->addAction("MeshFromImage");
@@ -103,6 +106,9 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_lsystem)
         emit createLSystemSimulator();
+
+    if(action == this->action_python_simulation)
+        emit createPythonSimulator();
 
     if(action == this->action_preprocess)
         emit createPreprocess();
@@ -289,6 +295,8 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::fusion_color.red()).arg(gnomonToolBar::fusion_color.green()).arg(gnomonToolBar::fusion_color.blue()));
         else if(item->text() == "LSystem simulator")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::lsystem_color.red()).arg(gnomonToolBar::lsystem_color.green()).arg(gnomonToolBar::lsystem_color.blue()));
+        else if(item->text() == "Python simulator")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::python_simulation_color.red()).arg(gnomonToolBar::python_simulation_color.green()).arg(gnomonToolBar::python_simulation_color.blue()));
         else if(item->text() == "Segmentation")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
         else if(item->text() == "Preprocess")
@@ -334,6 +342,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
 
     connect(button, SIGNAL(createFusion()), this, SLOT(onCreateFusion()));
     connect(button, SIGNAL(createLSystemSimulator()), this, SLOT(onCreateLSystemSimulator()));
+    connect(button, SIGNAL(createPythonSimulator()), this, SLOT(onCreatePythonSimulator()));
     connect(button, SIGNAL(createPreprocess()), this, SLOT(onCreatePreprocess()));
     connect(button, SIGNAL(createRegistration()), this, SLOT(onCreateRegistration()));
     connect(button, SIGNAL(createMeshFromImage()), this, SLOT(onCreateMeshFromImage()));
@@ -383,6 +392,14 @@ void gnomonToolBar::onCreateFusion(void)
 
     emit createFusion();
 }
+
+void gnomonToolBar::onCreatePythonSimulator(void)
+{
+    d->createWorkspace(python_simulation_color, "Python simulator");
+
+    emit createPythonSimulator();
+}
+
 
 void gnomonToolBar::onCreateLSystemSimulator(void)
 {
@@ -451,6 +468,7 @@ void gnomonToolBar::onCreateTreeAnalysis(void)
 
 QColor gnomonToolBar::browser_color = QColor("#ff3b30");
 QColor gnomonToolBar::lsystem_color = QColor("#89a348");
+QColor gnomonToolBar::python_simulation_color = QColor("#a38948");
 QColor gnomonToolBar::fusion_color = QColor("#ff9500");
 QColor gnomonToolBar::registration_color = QColor("#ffcc00");
 QColor gnomonToolBar::meshFromImage_color = QColor("#5f9ea0");

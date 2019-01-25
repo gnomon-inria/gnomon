@@ -84,15 +84,22 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
         this->updateValueRange();
         emit parametersChanged();
     });
+
     gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+
     QStringList properties = {""};
-    for (const auto& propertyName : dd->cellComplex->elementPropertyNames(3)) {
-        if(dd->cellComplex->elementProperty(3,propertyName)[dd->cellComplex->elementIds(3)[0]].canConvert<double>()) {
-            properties.append(propertyName);
+    for (const auto& prop : dd->cellComplex->elementPropertyNames(3)) {
+        if(dd->cellComplex->elementProperty(3,prop)[dd->cellComplex->elementIds(3)[0]].canConvert<double>()) {
+            properties.append(prop);
         }
     }
     propertyParam->setValues(properties);
-    propertyParam->setValue(QString(""));
+    if (properties.contains(property_name)) {
+        propertyParam->setValue(property_name);
+    } else {
+        propertyParam->setValue(QString(""));
+    }
 //
     this->updateValueRange();
 }
