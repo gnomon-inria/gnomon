@@ -350,15 +350,11 @@ void gnomonWorkspacePythonSimulator::apply(void)
     } else {
         QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
         qDebug()<< output;
-        // QString print_output = QString("print(%1)\n").arg(output);
-        // qDebug()<< "DBG" << print_output;
-        // dtkScriptInterpreterPython::instance()->interpret(print_output, &stat);
     }
 
-    // QString key = dtkScriptInterpreterPython::instance()->interpret("print(__all__[0])", &stat);
-
-    QString key = gnomonCore::evolutionModel::pluginFactory().keys().first();
+    QString key = dtkScriptInterpreterPython::instance()->interpret("print(__all__[0])", &stat);
     qDebug()<<Q_FUNC_INFO<<key;
+
     if (d->model) {
         delete d->model;
         d->model = nullptr;
