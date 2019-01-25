@@ -64,17 +64,19 @@ public:
 
 public:
     void fromString(const QString& lstring) const { return m_data->fromString(lstring); };
-    const QString& toString(void) const { return m_data->toString(); };
-    bool isEmpty() const { return m_data->isEmpty(); };
+    QString toString(void) const { return m_data->toString(); };
+    bool isEmpty(void) const { return m_data->isEmpty(); };
+    bool isValid(void) const { return m_data->isValid(); };
 
 public:
     QList<long> moduleIds(void) const { return m_data->moduleIds(); };
     long moduleCount(void) const { return m_data->moduleCount(); };
-    bool hasModule(long moduleId) const { return m_data->hasModule(); };
+    bool hasModule(long moduleId) const { return m_data->hasModule(moduleId); };
+    bool hasModule(const QString& module_name) const { return m_data->hasModule(module_name); };
 
-    const QString& moduleName(long moduleId) const { return m_data->moduleName(moduleId); };
-    const QList<QVariant>& moduleVariables(long moduleId) const { return m_data->moduleVariables(moduleId); };
-    const QString& moduleVariableString(long moduleId) const { return m_data->moduleVariableString(moduleId); };
+    QString moduleName(long moduleId) const { return m_data->moduleName(moduleId); };
+    QList<QVariant> moduleVariables(long moduleId) const { return m_data->moduleVariables(moduleId); };
+    QString moduleVariableString(long moduleId) const { return m_data->moduleVariableString(moduleId); };
 
     QList<long> rootIds(void) const { return m_data->rootIds(); };
 

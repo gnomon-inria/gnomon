@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-#include "gnomonAbstractModel.h";
+#include "gnomonAbstractModel.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractEvolutionModel : public gnomonAbstractModel
 {

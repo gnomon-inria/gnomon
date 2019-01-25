@@ -20,7 +20,7 @@ class dtkImage;
 
 #include <dtkCore>
 
-#include <gnomonCoreExport.h>
+#include <gnomonCoreExport>
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -30,7 +30,7 @@ class GNOMONCORE_EXPORT gnomonAbstractTreeData
 {
 public:
              gnomonAbstractTreeData(void) = default;
-    virtual ~gnomonAbstractTreeData(void) {};
+    virtual ~gnomonAbstractTreeData(void) = default;
 
     virtual gnomonAbstractTreeData* clone(void) const = 0;
 

@@ -30,15 +30,15 @@ class GNOMONCORE_EXPORT gnomonAbstractLStringData
 {
 public:
              gnomonAbstractLStringData(void) = default;
-    virtual ~gnomonAbstractLStringData(void) {};
+    virtual ~gnomonAbstractLStringData(void) = default;
 
     virtual gnomonAbstractLStringData* clone(void) const = 0;
 
 public:
     virtual void fromString(const QString&) const = 0;
-    virtual const QString& toString(void) const = 0;
-    virtual bool isValid() const = 0;
-    virtual bool isEmpty() const = 0;
+    virtual QString toString(void) const = 0;
+    virtual bool isValid(void) const = 0;
+    virtual bool isEmpty(void) const = 0;
 
 public:
     virtual QList<long> moduleIds(void) const = 0;
@@ -46,9 +46,9 @@ public:
     virtual bool hasModule(const QString&) const = 0;
     virtual bool hasModule(long moduleId) const = 0;
 
-    virtual const QString& moduleName(long moduleId) const = 0;
-    virtual const QList<QVariant>& moduleVariables(long moduleId) const = 0;
-    virtual const QString& moduleVariableString(long moduleId) const = 0;
+    virtual QString moduleName(long moduleId) const = 0;
+    virtual QList<QVariant> moduleVariables(long moduleId) const = 0;
+    virtual QString moduleVariableString(long moduleId) const = 0;
 
     virtual QList<long> rootIds(void) const = 0;
 
