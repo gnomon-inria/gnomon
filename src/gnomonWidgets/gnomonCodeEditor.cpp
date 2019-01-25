@@ -290,6 +290,8 @@ void gnomonCodeEditor::openScript(void)
     if(file_name.isEmpty())
         return;
 
+    d->file_name = file_name;
+
     QFile file(file_name);
 
     if(!file.open(QIODevice::ReadOnly))
