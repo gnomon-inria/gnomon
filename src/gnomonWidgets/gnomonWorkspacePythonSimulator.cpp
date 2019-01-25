@@ -373,6 +373,7 @@ void gnomonWorkspacePythonSimulator::apply(void)
     }
 
     d->model->reset();
+
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
     for (const auto& name : forms.keys())
     {
@@ -421,6 +422,7 @@ void gnomonWorkspacePythonSimulator::run(void)
         t = t + dt;
         qDebug()<<"Step: "<<t;
         d->model->step(t,dt);
+
         if (animate) {
             forms = d->model->forms();
             for (const auto& name : forms.keys())

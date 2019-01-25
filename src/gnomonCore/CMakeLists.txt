@@ -23,8 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractAlgorithm.h
   gnomonAbstractCellComplexData
   gnomonAbstractCellComplexData.h
-  gnomonAbstractCellComplexFromImage
-  gnomonAbstractCellComplexFromImage.h
+  gnomonAbstractCellComplexFromCellImage
+  gnomonAbstractCellComplexFromCellImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
   gnomonAbstractCellGraphData
@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellGraphFromImage.h
   gnomonAbstractCellImageData
   gnomonAbstractCellImageData.h
+  gnomonAbstractCellImageFilter
+  gnomonAbstractCellImageFilter.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
   gnomonAbstractCellImageReader
@@ -66,6 +68,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractLStringData.h
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
+  gnomonAbstractMeshFromImage
+  gnomonAbstractMeshFromImage.h
   gnomonAbstractMeshReader
   gnomonAbstractMeshReader.h
   gnomonAbstractMeshWriter
@@ -82,12 +86,16 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractTreeData.h
   gnomonCellComplex
   gnomonCellComplex.h
+  gnomonCellComplexFromCellImageCommand
+  gnomonCellComplexFromCellImageCommand.h
   gnomonCellComplexReaderCommand
   gnomonCellComplexReaderCommand.h
   gnomonCellGraph
   gnomonCellGraph.h
   gnomonCellImage
   gnomonCellImage.h
+  gnomonCellImageFilterCommand
+  gnomonCellImageFilterCommand.h
   gnomonCellImageReaderCommand
   gnomonCellImageReaderCommand.h
   gnomonCellImageWriterCommand
@@ -125,6 +133,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonLString.h
   gnomonMesh
   gnomonMesh.h
+  gnomonMeshFromImageCommand
+  gnomonMeshFromImageCommand.h
   gnomonMeshReaderCommand
   gnomonMeshReaderCommand.h
   gnomonMeshWriterCommand
@@ -147,11 +157,12 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractAlgorithm.cpp
   gnomonAbstractCellComplexData.cpp
-  gnomonAbstractCellComplexFromImage.cpp
+  gnomonAbstractCellComplexFromCellImage.cpp
   gnomonAbstractCellComplexReader.cpp
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
+  gnomonAbstractCellImageFilter.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellImageReader.cpp
   gnomonAbstractCellImageWriter.cpp
@@ -166,6 +177,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractIntensityImageData.cpp
   gnomonAbstractLStringData.cpp
   gnomonAbstractMeshData.cpp
+  gnomonAbstractMeshFromImage.cpp
   gnomonAbstractMeshReader.cpp
   gnomonAbstractMeshWriter.cpp
   gnomonAbstractModel.cpp
@@ -173,7 +185,9 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractTreeData.cpp
+  gnomonCellComplexFromCellImageCommand.cpp
   gnomonCellComplexReaderCommand.cpp
+  gnomonCellImageFilterCommand.cpp
   gnomonCellImageReaderCommand.cpp
   gnomonCellImageWriterCommand.cpp
   gnomonCore.cpp
@@ -190,6 +204,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImagesSerieFilterCommand.cpp
   gnomonImagesSerieReaderCommand.cpp
   gnomonImagesSerieWriterCommand.cpp
+  gnomonMeshFromImageCommand.cpp
   gnomonMeshReaderCommand.cpp
   gnomonMeshWriterCommand.cpp
   gnomonSegmentationCommand.cpp

@@ -21,7 +21,10 @@
 #include <gnomonWorkspacePythonSimulator.h>
 #include <gnomonWorkspacePreprocess.h>
 #include <gnomonWorkspaceRegistration.h>
+#include <gnomonWorkspaceMeshFromImage.h>
 #include <gnomonWorkspaceSegmentation.h>
+#include <gnomonWorkspaceCellComplexFromCellImage.h>
+#include <gnomonWorkspaceCellImageFilter.h>
 #include <gnomonWorkspaceSimulation.h>
 #include <gnomonWorkspaceTreeAnalysis.h>
 
@@ -172,9 +175,36 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->setCurrentWidget(workspace);
     });
 
+    connect(d->menu, &gnomonToolBar::createMeshFromImage, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceMeshFromImage(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
     connect(d->menu, &gnomonToolBar::createSegmentation, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceSegmentation(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createCellComplexFromCellImage, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceCellComplexFromCellImage(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createCellImageFilter, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceCellImageFilter(this);
         workspace->enter();
 
         d->stack->addWidget(workspace);

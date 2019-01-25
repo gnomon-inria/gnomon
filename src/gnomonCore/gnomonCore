@@ -6,7 +6,7 @@
 #include "gnomonCellImage.h"
 #include "gnomonDataManager.h"
 #include "gnomonAbstractCellComplexData.h"
-#include "gnomonAbstractCellComplexFromImage.h"
+#include "gnomonAbstractCellComplexFromCellImage.h"
 #include "gnomonAbstractCellComplexReader.h"
 #include "gnomonAbstractCellGraphData.h"
 #include "gnomonAbstractCellGraphFromImage.h"
