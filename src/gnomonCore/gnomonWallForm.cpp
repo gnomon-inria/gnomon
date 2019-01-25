@@ -8,7 +8,7 @@ public:
 
 gnomonWallForm::gnomonWallForm(void) : d(new gnomonWallFormPrivate)
 {
-    this->record();
+//    this->record();
 }
 
 gnomonWallForm::~gnomonWallForm(void)

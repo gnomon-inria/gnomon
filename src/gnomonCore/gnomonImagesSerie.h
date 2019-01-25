@@ -31,6 +31,9 @@ public:
     virtual ~gnomonImagesSerie(void);
 
 public:
+    QString name(void) const { return"gnomonImagesSerie";}
+
+public:
     dtkImage* image() const;
     dtkImage* image(unsigned long time) const;
     dtkImage* image(const QString& channel, unsigned long time=SIZE_MAX) const;

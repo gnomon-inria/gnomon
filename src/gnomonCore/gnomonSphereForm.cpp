@@ -2,7 +2,7 @@
 
 gnomonSphereForm::gnomonSphereForm(void)
 {
-    this->record();
+//    this->record();
 }
 
 QString gnomonSphereForm::name(void) const

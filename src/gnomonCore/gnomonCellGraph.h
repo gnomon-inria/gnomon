@@ -54,6 +54,9 @@ public:
     }
 
 public:
+    QString name(void) const { return"gnomonCellGraph";}
+
+public:
     const gnomonAbstractCellGraphData *data(void) const { return m_data; }
           gnomonAbstractCellGraphData *data(void)       { return m_data; }
 

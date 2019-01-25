@@ -18,6 +18,7 @@
 #include <gnomonWorkspaceBrowser.h>
 #include <gnomonWorkspaceFusion.h>
 #include <gnomonWorkspaceLSystemSimulator.h>
+#include <gnomonWorkspacePythonSimulator.h>
 #include <gnomonWorkspacePreprocess.h>
 #include <gnomonWorkspaceRegistration.h>
 #include <gnomonWorkspaceSegmentation.h>
@@ -138,6 +139,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->menu, &gnomonToolBar::createLSystemSimulator, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceLSystemSimulator(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createPythonSimulator, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspacePythonSimulator(this);
         workspace->enter();
 
         d->stack->addWidget(workspace);

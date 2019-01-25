@@ -56,6 +56,9 @@ public:
     }
 
 public:
+    QString name(void) const { return"gnomonCellComplex";}
+
+public:
     const gnomonAbstractCellComplexData *data(void) const { return m_data; }
           gnomonAbstractCellComplexData *data(void)       { return m_data; }
 
