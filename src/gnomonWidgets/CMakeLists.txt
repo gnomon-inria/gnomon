@@ -79,6 +79,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceLSystemSimulator.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
+  gnomonWorkspacePythonSimulator
+  gnomonWorkspacePythonSimulator.h
   gnomonWorkspaceRegistration
   gnomonWorkspaceRegistration.h
   gnomonWorkspaceSimulation
@@ -124,6 +126,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspacePreprocess.cpp
+  gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
   gnomonWorkspaceSimulation.cpp
@@ -144,11 +147,26 @@ if(DTK_BUILD_WRAPPERS)
 
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
-  if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonWidgets.i.in ${CMAKE_BINARY_DIR}/gnomonWidgets.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonwidgets python ${CMAKE_BINARY_DIR}/gnomonWidgets.i "" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS};${dtk_WRAP_PREFIX}/dtkBase;${dtk_WRAP_PREFIX}/dtkCore;${dtk_WRAP_PREFIX}/QtCore;${dtk_WRAP_PREFIX}/QtWidgets;${dtk_WRAP_PREFIX}/dtkWidgets;${dtkImaging_WRAP_PREFIX}/dtkImagingCore/;${CMAKE_SOURCE_DIR}/src")
+  if (DTK_WRAPPING_PYTHON)
+    if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
-    set_property(SOURCE gnomonWidgets_wrap_python.cpp PROPERTY SKIP_AUTOMOC ON)
+      set(${PROJECT_NAME}_SIP_WRAPPERS
+        sip${PROJECT_NAME}gnomonWorkspace.cpp
+        sip${PROJECT_NAME}gnomonWorkspacePythonSimulator.cpp)
+
+      dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonWidgets ${CMAKE_SOURCE_DIR}/sip/gnomonWidgets/gnomonWidgetsmod.sip "${${PROJECT_NAME}_SIP_WRAPPERS}" "${${PROJECT_NAME}_WRAP_DEPENDS}")
+
+      set_property(SOURCE sipgnomonWidgetscmodule.cpp PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonWorkspace.cpp PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonWorkspacePythonSimulator.cpp PROPERTY SKIP_AUTOMOC ON)
+    endif()
+
+    if (DTK_PYTHON_WRAPPER MATCHES "SWIG")
+      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonWidgets.i.in ${CMAKE_BINARY_DIR}/gnomonWidgets.i @ONLY)
+      dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonwidgets python ${CMAKE_BINARY_DIR}/gnomonWidgets.i "" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS};${dtk_WRAP_PREFIX}/dtkBase;${dtk_WRAP_PREFIX}/dtkCore;${dtk_WRAP_PREFIX}/QtCore;${dtk_WRAP_PREFIX}/QtWidgets;${dtk_WRAP_PREFIX}/dtkWidgets;${dtkImaging_WRAP_PREFIX}/dtkImagingCore/;${CMAKE_SOURCE_DIR}/src")
+
+      set_property(SOURCE gnomonWidgets_wrap_python.cpp PROPERTY SKIP_AUTOMOC ON)
+    endif()
   endif()
 endif()
 
@@ -172,6 +190,26 @@ target_link_libraries(${PROJECT_NAME} gnomonVisualization)
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
+if(DTK_BUILD_WRAPPERS)
+  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+  endif()
+endif()
+
+## ###################################################################
+## Target properties
+## ###################################################################
+
+if(NOT SIP_FOUND)
+  set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
+  set_target_properties(${PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 0)
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION   ${gnomon_VERSION}
+                                                 SOVERSION ${gnomon_VERSION_MAJOR})
+
 ## #################################################################
 ## Export header file
 ## #################################################################
@@ -193,6 +231,31 @@ set(${PROJECT_NAME}_MODULES)
 if(DTK_BUILD_WRAPPERS AND SWIG_FOUND)
 
   if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+
+    if(DTK_PYTHON_WRAPPER MATCHES "SIP")
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        DEPENDS ${CMAKE_SOURCE_DIR}/sip/${PROJECT_NAME}/${PROJECT_NAME}mod.sip
+        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
+        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}")
+
+      if(APPLE)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+          DEPENDS ${CMAKE_SOURCE_DIR}/sip/${PROJECT_NAME}/${PROJECT_NAME}mod.sip
+          COMMAND ln -sf ../../lib${PROJECT_NAME}.dylib ${PROJECT_NAME}.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
+
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/${PROJECT_NAME}.so)
+      endif(APPLE)
+
+      if(UNIX AND NOT APPLE)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+          DEPENDS ${CMAKE_SOURCE_DIR}/sip/${PROJECT_NAME}/${PROJECT_NAME}mod.sip
+          COMMAND ln -fs ../../lib${PROJECT_NAME}.so ${PROJECT_NAME}.so
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
+
+        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/${PROJECT_NAME}.so)
+      endif(UNIX AND NOT APPLE)
+    endif()
 
     if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

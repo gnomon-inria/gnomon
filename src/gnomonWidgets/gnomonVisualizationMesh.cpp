@@ -82,8 +82,10 @@ void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
     dd->mesh = mesh;
 
     this->setParameter("alpha",1.0);
-    
+
     gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+
     QStringList properties = {""};
     for (const auto& propertyName : dd->mesh->vertexPropertyNames()) {
         if(dd->mesh->vertexProperty(propertyName)[dd->mesh->vertexIds()[0]].canConvert<double>()) {
@@ -91,7 +93,12 @@ void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
         }
     }
     propertyParam->setValues(properties);
-    propertyParam->setValue(QString(""));
+    if (properties.contains(property_name)) {
+        propertyParam->setValue(property_name);
+    } else {
+        propertyParam->setValue(QString(""));
+    }
+
     
     this->updateValueRange();
 }

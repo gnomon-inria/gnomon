@@ -55,6 +55,9 @@ public:
     }
 
 public:
+    QString name(void) const { return"gnomonIntensityImage";}
+
+public:
     const dtkImage *data(void) const { return m_data; }
           dtkImage *data(void)       { return m_data; }
 
