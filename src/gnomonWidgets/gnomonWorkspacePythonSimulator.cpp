@@ -373,7 +373,6 @@ void gnomonWorkspacePythonSimulator::apply(void)
     }
 
     d->model->reset();
-    qDebug()<<dtkScriptInterpreterPython::instance()->interpret("print('Step')", &stat);
 
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
     for (const auto& name : forms.keys())
@@ -419,12 +418,10 @@ void gnomonWorkspacePythonSimulator::run(void)
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
 
     double t = initial_time;
-    int stat;
     while (t<final_time ) {
         t = t + dt;
         qDebug()<<"Step: "<<t;
         d->model->step(t,dt);
-        qDebug()<<dtkScriptInterpreterPython::instance()->interpret("print('Step')", &stat);
 
         if (animate) {
             forms = d->model->forms();
