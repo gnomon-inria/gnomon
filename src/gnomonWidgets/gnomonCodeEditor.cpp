@@ -16,6 +16,7 @@
 #include <gnomonStyle>
 
 #include "gnomonCodeEditor.h"
+#include <dtkScript>
 
 #include <set>
 
@@ -547,6 +548,12 @@ void gnomonCodeEditor::dropEvent(QDropEvent *event)
 
         if(!file.open(QIODevice::ReadOnly))
             return;
+
+        QFileInfo dir_info(file_name);
+        QDir script_dir = dir_info.dir();
+        QString python_add_path = QString("import sys\nmydir='%1'\nif mydir not in sys.path:\n    sys.path.insert(0, mydir)\n").arg(script_dir.path());
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret(python_add_path,&stat);
 
         this->setPlainText(file.readAll());
 
