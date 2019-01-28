@@ -64,7 +64,7 @@ gnomonWorkspaceCellImageFilterPrivate::~gnomonWorkspaceCellImageFilterPrivate(vo
 
 QString gnomonWorkspaceCellImageFilterPrivate::workspace(void) const
 {
-    return "CellImageFilter";
+    return "Label Postprocess";
 }
 
 QStringList gnomonWorkspaceCellImageFilterPrivate::keys(void) const

@@ -65,7 +65,7 @@ gnomonWorkspaceCellComplexFromCellImagePrivate::~gnomonWorkspaceCellComplexFromC
 
 QString gnomonWorkspaceCellComplexFromCellImagePrivate::workspace(void) const
 {
-    return "CellComplexFromCellImage";
+    return "Cell Reconstruction";
 }
 
 QStringList gnomonWorkspaceCellComplexFromCellImagePrivate::keys(void) const

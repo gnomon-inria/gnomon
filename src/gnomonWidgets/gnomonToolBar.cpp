@@ -78,18 +78,28 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->setFixedWidth(32);
 
     this->menu = new QMenu(this);
+    this->menu->setStyleSheet("QMenu::item {padding: 2px 20px 2px 30px; border: 1px solid transparent; spacing: 10px; height: 50px; width: 300px; font-size: 16pt;} QMenu::icon {width: 50px; height:50px;}");
 
-    this->action_fusion        = this->menu->addAction("Fusion");
-    this->action_lsystem       = this->menu->addAction("LSystem simulator");
-    this->action_python_simulation = this->menu->addAction("Python simulator");
-    this->action_preprocess    = this->menu->addAction("Preprocess");
-    this->action_registration  = this->menu->addAction("Registration");
-    this->action_meshFromImage = this->menu->addAction("MeshFromImage");
-    this->action_segmentation  = this->menu->addAction("Segmentation");
-    this->action_cellComplexFromCellImage  = this->menu->addAction("CellComplexFromCellImage");
-    this->action_cellImageFilter  = this->menu->addAction("CellImageFilter");
-    this->action_simulation    = this->menu->addAction("Simulation");
-    this->action_tree_analysis = this->menu->addAction("Tree analysis");
+    QMenu * image_menu = this->menu->addMenu(this->font->icon(fa::image),"Image Processing");
+
+    this->action_fusion        = image_menu->addAction("Fusion");
+    this->action_preprocess    = image_menu->addAction("Preprocess");
+    this->action_registration  = image_menu->addAction("Registration");
+    this->action_segmentation  = image_menu->addAction("Segmentation");
+    this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
+
+    QMenu * mesh_menu = this->menu->addMenu(this->font->icon(fa::play),"Meshing");
+
+    this->action_cellComplexFromCellImage  = mesh_menu->addAction("Cell Reconstruction");
+    this->action_meshFromImage = mesh_menu->addAction("Surface Meshing");
+
+    QMenu * tree_menu = this->menu->addMenu(this->font->icon(fa::sitemap), "Tree Processing");
+    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
+
+    QMenu * simu_menu = this->menu->addMenu(this->font->icon(fa::sync),"Simulation");
+    this->action_simulation    = simu_menu->addAction("Simulation");
+    this->action_lsystem       = simu_menu->addAction("LSystem simulator");
+    this->action_python_simulation = simu_menu->addAction("Python simulator");
 
     connect(this->menu, SIGNAL(triggered(QAction *)), this, SLOT(create(QAction *)));
 }
@@ -417,14 +427,14 @@ void gnomonToolBar::onCreateSegmentation(void)
 
 void gnomonToolBar::onCreateCellComplexFromCellImage(void)
 {
-    d->createWorkspace(cellComplexFromCellImage_color, "CellComplexFromCellImage");
+    d->createWorkspace(cellComplexFromCellImage_color, "Cell Reconstruction");
 
     emit createCellComplexFromCellImage();
 }
 
 void gnomonToolBar::onCreateCellImageFilter(void)
 {
-    d->createWorkspace(cellImageFilter_color, "CellImageFilter");
+    d->createWorkspace(cellImageFilter_color, "Label Postprocess");
 
     emit createCellImageFilter();
 }
@@ -445,7 +455,7 @@ void gnomonToolBar::onCreateRegistration(void)
 
 void gnomonToolBar::onCreateMeshFromImage(void)
 {
-    d->createWorkspace(meshFromImage_color, "MeshFromImage");
+    d->createWorkspace(meshFromImage_color, "Surface Meshing");
 
     emit createMeshFromImage();
 }

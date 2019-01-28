@@ -64,7 +64,7 @@ gnomonWorkspaceMeshFromImagePrivate::~gnomonWorkspaceMeshFromImagePrivate(void)
 
 QString gnomonWorkspaceMeshFromImagePrivate::workspace(void) const
 {
-    return "MeshFromImage";
+    return "Surface Meshing";
 }
 
 QStringList gnomonWorkspaceMeshFromImagePrivate::keys(void) const
