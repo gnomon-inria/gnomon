@@ -35,12 +35,14 @@ public:
     ~gnomonCoreParameterColorMap(void) = default;
 
     QMap<double, QColor> value(void) const;
+    QString name(void) const;
 
     void setValue(const QMap<double, QColor>&);
     void setValue(const QString&);
 
 private:
     QMap<double, QColor> m_c;
+    QString m_n;
 };
 
 Q_DECLARE_METATYPE(gnomonCoreParameterColorMap *);

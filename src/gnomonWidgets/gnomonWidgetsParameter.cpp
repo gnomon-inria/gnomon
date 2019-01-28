@@ -252,7 +252,7 @@ QWidget *gnomonWidgetsParameterColorMap::widget(gnomonCoreParameterColorMap *par
         gnomonColorMapEditor *widget = new gnomonColorMapEditor(parent);
         widget->setToolTip(parameter->doc());
 
-        widget->setValue(parameter->value());
+        widget->setValue(parameter->name());
 
         QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
             parameter->setValue(val);

@@ -20,11 +20,11 @@
 // gnomonCoreParameterColorMap
 // ///////////////////////////////////////////////////////////////////
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QMap<double, QColor>& c, const QString& doc) : gnomonCoreParameter(doc), m_c(c)
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QMap<double, QColor>& c, const QString& doc) : gnomonCoreParameter(doc), m_c(c), m_n("no name")
 {
 }
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& clut, const QString& doc) : gnomonCoreParameter(doc)
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& clut, const QString& doc) : gnomonCoreParameter(doc), m_n(clut)
 {
     this->setValue(clut);
 }
@@ -33,6 +33,12 @@ QMap<double, QColor> gnomonCoreParameterColorMap::value(void) const
 {
     return m_c;
 }
+
+QString gnomonCoreParameterColorMap::name(void) const
+{
+    return m_n;
+}
+
 
 void gnomonCoreParameterColorMap::setValue(const QMap<double, QColor>& c)
 {
