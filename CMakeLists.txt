@@ -124,11 +124,6 @@ else()
   include(${VTK_USE_FILE})
 endif()
 
-find_package(pgl)
-find_package(lpy)
-include_directories(${pgl_INCLUDE_DIRS})
-include_directories(${lpy_INCLUDE_DIRS})
-
 if(DTK_BUILD_WRAPPERS)
   include(dtkWrap)
 endif()
