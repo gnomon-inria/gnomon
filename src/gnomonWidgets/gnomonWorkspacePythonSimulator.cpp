@@ -353,7 +353,8 @@ void gnomonWorkspacePythonSimulator::apply(void)
         qDebug()<< output;
     }
 
-    QString key = dtkScriptInterpreterPython::instance()->interpret("print(__all__[0])", &stat);
+    QString key = gnomonCore::evolutionModel::pluginFactory().keys()[0];
+//    QString key = dtkScriptInterpreterPython::instance()->interpret("print(__all__[0])", &stat);
     qDebug()<<Q_FUNC_INFO<<key;
 
     if (d->model) {

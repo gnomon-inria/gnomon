@@ -95,7 +95,6 @@ void gnomonWorkspaceFusion::apply(void)
     }
 
     d->command->redo();
-
     d->target->setImagesSerie(d->command->output());
 }
 
