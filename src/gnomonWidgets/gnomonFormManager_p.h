@@ -25,6 +25,7 @@ class gnomonAbstractVisualization;
 class gnomonFormManager;
 class gnomonFormManagerItem;
 class gnomonFormManagerFocus;
+class gnomonFormManagerData;
 
 class gnomonFormManagerPrivate : public QScrollArea
 {
@@ -48,6 +49,7 @@ public:
     QHash<gnomonFormManagerItem *, gnomonAbstractForm *> forms;
     QHash<gnomonFormManagerItem *, gnomonAbstractVisualization *> formVisualizations;
     QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;
+    QHash<gnomonFormManagerItem *, gnomonFormManagerData *> formData;
 
 public:
     gnomonFormManager *q;

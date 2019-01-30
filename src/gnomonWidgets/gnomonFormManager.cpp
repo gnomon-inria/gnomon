@@ -15,6 +15,7 @@
 #include "gnomonAbstractVisualization.h"
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
+#include "gnomonFormManagerData.h"
 #include "gnomonFormManagerFocus.h"
 #include "gnomonFormManagerItem.h"
 #include "gnomonItemButton.h"
@@ -121,6 +122,12 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
     connect(item, &gnomonFormManagerItem::clicked, [=] () {
         q->present(item);
     });
+
+    gnomonFormManagerData *data = new gnomonFormManagerData(this);
+    data->reference = item;
+    data->data["Name"] = form->name();
+    this->formData.insert(item, data);
+
 
     return item;
 }
@@ -311,6 +318,11 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {
+            d->focus_area = d->formData[item]->compute();
+            d->focus_area->setParent(this);
+            d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
+            d->focus_area->resize(d->focus_item->size());
+            d->focus_area->show();
             d->focus_item->presented = true;
         });
 
