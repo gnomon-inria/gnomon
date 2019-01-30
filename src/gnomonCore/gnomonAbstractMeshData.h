@@ -32,6 +32,14 @@ public:
 
     virtual gnomonAbstractMeshData* clone(void) const = 0;
 
+
+//  ///////////////////////////////////////////////////////////////////
+//  Metadata
+//  ///////////////////////////////////////////////////////////////////
+public:
+    virtual QVariantMap metadata(void) const = 0;
+
+
 public:
     virtual bool isValid(void) const = 0;
 

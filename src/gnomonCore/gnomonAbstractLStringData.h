@@ -34,6 +34,14 @@ public:
 
     virtual gnomonAbstractLStringData* clone(void) const = 0;
 
+
+//  ///////////////////////////////////////////////////////////////////
+//  Metadata
+//  ///////////////////////////////////////////////////////////////////
+public:
+    virtual QVariantMap metadata(void) const = 0;
+
+
 public:
     virtual void fromString(const QString&) const = 0;
     virtual QString toString(void) const = 0;

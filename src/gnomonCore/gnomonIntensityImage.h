@@ -56,6 +56,7 @@ public:
 
 public:
     QString name(void) const { return"gnomonIntensityImage";}
+    QVariantMap metadata(void) const override { return QVariantMap(); }
 
 public:
     const dtkImage *data(void) const { return m_data; }

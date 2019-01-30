@@ -54,7 +54,10 @@ public:
         }
         return *this;
     }
+
+public:
     QString name(void) const override { return"gnomonTree"; }
+    QVariantMap metadata(void) const override { return m_data->metadata(); }
 
 public:
     const gnomonAbstractTreeData *data(void) const { return m_data; }

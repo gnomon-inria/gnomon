@@ -125,7 +125,7 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
 
     gnomonFormManagerData *data = new gnomonFormManagerData(this);
     data->reference = item;
-    data->data["Name"] = form->name();
+    data->data = form->metadata();
     this->formData.insert(item, data);
 
 

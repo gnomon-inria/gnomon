@@ -32,6 +32,7 @@ public:
 
 public:
     QString name(void) const { return"gnomonImagesSerie";}
+    QVariantMap metadata(void) const override { return QVariantMap(); }
 
 public:
     dtkImage* image() const;

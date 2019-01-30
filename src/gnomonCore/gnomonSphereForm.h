@@ -17,6 +17,7 @@ public:
 
 public:
     QString name(void) const override;
+    QVariantMap metadata(void) const override { return QVariantMap(); }
 
 public:
     const gnomon::vec3_t center(void) const;
