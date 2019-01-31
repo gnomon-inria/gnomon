@@ -24,7 +24,7 @@ public:
 
 public:
     QString name(void) const override ;
-    QVariantMap metadata(void) const override { return QVariantMap(); }
+    QMap<QString,QString> metadata(void) const override { return QMap<QString,QString>(); }
 
     const gnomon::vec3_t normal(void) const;
     const gnomon::vec3_t position(void) const;

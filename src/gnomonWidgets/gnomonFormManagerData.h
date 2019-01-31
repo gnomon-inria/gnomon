@@ -34,7 +34,7 @@ public:
     gnomonFormManagerItem *reference;
 
 public:
-    QVariantMap data;
+    QMap<QString,QString> data;
 
 private:
     class gnomonFormManagerDataPrivate *d;
