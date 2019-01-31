@@ -54,7 +54,10 @@ public:
         }
         return *this;
     }
+
+public:
     QString name(void) const override { return"gnomonLString"; }
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
 
 public:
     const gnomonAbstractLStringData *data(void) const { return m_data; }

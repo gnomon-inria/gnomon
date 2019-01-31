@@ -55,6 +55,7 @@ public:
 
 public:
     QString name(void) const { return"gnomonCellGraph";}
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
 
 public:
     const gnomonAbstractCellGraphData *data(void) const { return m_data; }

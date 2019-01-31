@@ -36,6 +36,7 @@ public:
 
 public:
     virtual QString name(void) const = 0;
+    virtual QMap<QString,QString> metadata(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

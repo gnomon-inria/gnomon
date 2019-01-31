@@ -36,6 +36,14 @@ public:
 
     virtual gnomonAbstractTreeData* clone(void) const = 0;
 
+
+//  ///////////////////////////////////////////////////////////////////
+//  Metadata
+//  ///////////////////////////////////////////////////////////////////
+public:
+    virtual QMap<QString,QString> metadata(void) const = 0;
+
+
 public:
     virtual QList<long> vertexIds(void) const = 0;
     virtual long vertexCount(void) const = 0;

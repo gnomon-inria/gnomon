@@ -34,6 +34,14 @@ public:
 
     virtual gnomonAbstractCellImageData* clone(void) const = 0;
 
+
+//  ///////////////////////////////////////////////////////////////////
+//  Metadata
+//  ///////////////////////////////////////////////////////////////////
+public:
+    virtual QMap<QString,QString> metadata(void) const = 0;
+
+
 public:
     virtual void setImage(dtkImage *image) = 0;
     virtual dtkImage* image(void) const = 0;

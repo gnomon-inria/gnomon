@@ -15,6 +15,7 @@
 #include "gnomonAbstractVisualization.h"
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
+#include "gnomonFormManagerData.h"
 #include "gnomonFormManagerFocus.h"
 #include "gnomonFormManagerItem.h"
 #include "gnomonItemButton.h"
@@ -121,6 +122,12 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
     connect(item, &gnomonFormManagerItem::clicked, [=] () {
         q->present(item);
     });
+
+    gnomonFormManagerData *data = new gnomonFormManagerData(this);
+    data->reference = item;
+    data->data = form->metadata();
+    this->formData.insert(item, data);
+
 
     return item;
 }
@@ -278,11 +285,11 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
         d->focus_item->show();
 
         d->focus_item->source = d->focus_item->pos();
-        d->focus_item->destnt = QPoint(this->size().width() / 2 - 3 * d->focus_item->width() / 2, this->size().height() / 2 - 3 * d->focus_item->height() / 2);
+        d->focus_item->destnt = QPoint(this->size().width() / 2 - 8 * d->focus_item->width() / 2, this->size().height() / 2 - 6 * d->focus_item->height() / 2);
         d->focus_item->s_size = d->focus_item->size();
-        d->focus_item->d_size = d->focus_item->size() * 3;
+        d->focus_item->d_size = d->focus_item->size() * 6;
 
-        focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->size() * 3);
+        focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->size() * 6);
 
         QVariantAnimation *p_animation = new QVariantAnimation(this);
         p_animation->setDuration(500);
@@ -311,6 +318,11 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {
+            d->focus_area = d->formData[item]->compute();
+            d->focus_area->setParent(this);
+            d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
+            d->focus_area->resize(d->focus_item->size());
+            d->focus_area->show();
             d->focus_item->presented = true;
         });
 
@@ -325,6 +337,7 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
         d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
         d->focus_area->resize(d->focus_item->size());
         d->focus_area->show();
+        d->show();
     });
 }
 

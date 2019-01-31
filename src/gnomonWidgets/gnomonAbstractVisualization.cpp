@@ -49,7 +49,7 @@ void gnomonAbstractVisualizationPrivate::updateOffscreenRenderer(double bounds[6
     }
     this->offscreenRenderWindow->AddRenderer(this->offscreenRenderer);
     this->offscreenRenderWindow->SetOffScreenRendering(1);
-    this->offscreenRenderWindow->SetSize(300, 300);
+    this->offscreenRenderWindow->SetSize(1500, 1500);
     
     this->offscreenRenderer->SetBackground(0,0,0);
     
@@ -81,6 +81,7 @@ QImage gnomonAbstractVisualizationPrivate::offscreenImageRendering(void)
     vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
     int width = renderedImage->GetDimensions()[0];
     int height = renderedImage->GetDimensions()[1];
+    qDebug()<<Q_FUNC_INFO<<width<<height;
     QImage image( width, height, QImage::Format_RGB32);
 
     QRgb *rgbPtr = reinterpret_cast<QRgb *>(image.bits());
