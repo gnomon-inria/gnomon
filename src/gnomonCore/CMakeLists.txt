@@ -256,8 +256,6 @@ target_link_libraries(${PROJECT_NAME} dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} dtkImagingCore)
 
-target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
-
 if(DTK_BUILD_WRAPPERS)
   if(DTK_WRAPPING_PYTHON)
     target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
