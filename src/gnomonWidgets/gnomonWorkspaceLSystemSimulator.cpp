@@ -46,12 +46,15 @@ public:
 
 public:
     gnomonViewForm *view;
+    dtkInterpreter *terminal;
+    QVBoxLayout *viewer_layout = nullptr;
 
 public:
     gnomonOverlayPane *pane;
 
 public:
     gnomonAbstractEvolutionModel * model = nullptr;
+
 };
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : gnomonWorkspace(parent)
@@ -75,6 +78,19 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->editor->resize(800, d->editor->height());
 
     d->view = new gnomonViewForm(this);
+
+    d->terminal = new dtkInterpreter(this);
+    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+
+    // -- Organizing the viewer column --
+    d->viewer_layout = new QVBoxLayout;
+    d->viewer_layout->setContentsMargins(0, 0, 0, 0);
+    d->viewer_layout->setSpacing(0);
+    d->viewer_layout->addWidget(d->view);
+    d->viewer_layout->addWidget(d->terminal);
+
+    QWidget *viewer = new QWidget(this);
+    viewer->setLayout(d->viewer_layout);
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
@@ -149,7 +165,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
     splitter->addWidget(d->editor);
-    splitter->addWidget(d->view);
+    splitter->addWidget(viewer);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -172,21 +188,21 @@ void gnomonWorkspaceLSystemSimulator::apply(void)
 
     d->model->reset();
     gnomonLString *lstring = (gnomonLString *) d->model->forms()["lstring"];
-    qDebug()<<Q_FUNC_INFO<<lstring->toString();
+    d->terminal->output(lstring->toString());
 }
 
 void gnomonWorkspaceLSystemSimulator::step(void)
 {
     d->model->step(0,1);
     gnomonLString *lstring = (gnomonLString *) d->model->forms()["lstring"];
-    qDebug()<<Q_FUNC_INFO<<lstring->toString();
+    d->terminal->output(lstring->toString());
 }
 
 void gnomonWorkspaceLSystemSimulator::reset(void)
 {
     d->model->reset();
     gnomonLString *lstring = (gnomonLString *) d->model->forms()["lstring"];
-    qDebug()<<Q_FUNC_INFO<<lstring->toString();
+    d->terminal->output(lstring->toString());
 }
 
 
