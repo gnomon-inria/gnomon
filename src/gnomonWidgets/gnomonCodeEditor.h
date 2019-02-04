@@ -40,6 +40,9 @@ signals:
     void scriptSaved(void);
 
 public:
+    QString fileName(void);
+
+public:
     void lineNumberAreaPaintEvent(QPaintEvent *event);
 
 public:
