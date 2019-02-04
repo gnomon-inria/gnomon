@@ -15,7 +15,7 @@
 #include "gnomonImagesSerie.h"
 
 #include <dtkImagingCore>
-//#include <vtkImageData.h>
+#include <vtkImageData.h>
 
 class gnomonImagesSeriePrivate
 {
@@ -85,14 +85,14 @@ gnomonImagesSerie::~gnomonImagesSerie()
 
 QMap<QString,QString> gnomonImagesSerie::metadata(void) const
 {
-//    dtkImage *image = this->image();
-//    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-//    converter->setInput(image);
-//    converter->convert();
-//
-//    vtkImageData *image_data = static_cast<vtkImageData *>(converter->output());
-//
-//    delete converter;
+    dtkImage *image = this->image();
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(image);
+    converter->convert();
+
+    vtkImageData *image_data = static_cast<vtkImageData *>(converter->output());
+
+    delete converter;
 
     QMap<QString,QString> metadata;
 
@@ -105,9 +105,9 @@ QMap<QString,QString> gnomonImagesSerie::metadata(void) const
             i_channel++;
         }
     }
-//    metadata["Dimensions"] = "("+QString::number(image_data->GetDimensions()[0])+", "+QString::number(image_data->GetDimensions()[1])+","+QString::number(image_data->GetDimensions()[2])+")";
-//    metadata["Voxel Type"] = QString(QVariant::typeToName(image->storageType()));
-//    metadata["Voxel Size"] = "("+QString::number(image_data->GetSpacing()[0])+", "+QString::number(image_data->GetSpacing()[1])+","+QString::number(image_data->GetSpacing()[2])+")";
+    metadata["Dimensions"] = "("+QString::number(image_data->GetDimensions()[0])+", "+QString::number(image_data->GetDimensions()[1])+","+QString::number(image_data->GetDimensions()[2])+")";
+    metadata["Voxel Type"] = QString(QVariant::typeToName(image->storageType()));
+    metadata["Voxel Size"] = "("+QString::number(image_data->GetSpacing()[0])+", "+QString::number(image_data->GetSpacing()[1])+","+QString::number(image_data->GetSpacing()[2])+")";
 
     return metadata;
 }
