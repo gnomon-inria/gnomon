@@ -27,10 +27,12 @@
 #include <gnomonCore/gnomonImagesSerie>
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonCellImage>
+#include <gnomonCore/gnomonCellComplex>
 
 #include <gnomonCore/gnomonImagesSerieWriterCommand>
 #include <gnomonCore/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCellImageWriterCommand>
+#include <gnomonCore/gnomonCellComplexWriterCommand>
 
 #include <dtkScript>
 
@@ -109,6 +111,10 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell image"), path, tr("Images (*.tif)"));
             static_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[item])->setCellImage(cellimage);
             static_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        } else if (gnomonCellComplex *cellcomplex = dynamic_cast<gnomonCellComplex *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell complex"), path, tr("Meshes (*.ply)"));
+            static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setCellComplex(cellcomplex);
+            static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         }
 
         if(!export_file_path.isEmpty()) {
@@ -165,6 +171,9 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
     } else if (gnomonCellImage *cellimage = dynamic_cast<gnomonCellImage *>(form)) {
         d->formWriterCommand[item] = new gnomonCellImageWriterCommand("gnomonCellImageWriterPropertySpatialImage");
         static_cast<gnomonCellImageWriterCommand *>(d->formWriterCommand[item])->setCellImage(cellimage);
+    } else if (gnomonCellComplex *cellcomplex = dynamic_cast<gnomonCellComplex *>(form)) {
+        d->formWriterCommand[item] = new gnomonCellComplexWriterCommand("gnomonCellComplexWriterPropertyTopomesh");
+        static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
     }
 
     d->contents->layout()->addWidget(item);

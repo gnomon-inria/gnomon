@@ -92,6 +92,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellComplexFromCellImageCommand.h
   gnomonCellComplexReaderCommand
   gnomonCellComplexReaderCommand.h
+  gnomonCellComplexWriterCommand
+  gnomonCellComplexWriterCommand.h
   gnomonCellGraph
   gnomonCellGraph.h
   gnomonCellImage
@@ -190,6 +192,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractTreeData.cpp
   gnomonCellComplexFromCellImageCommand.cpp
   gnomonCellComplexReaderCommand.cpp
+  gnomonCellComplexWriterCommand.cpp
   gnomonCellImageFilterCommand.cpp
   gnomonCellImageReaderCommand.cpp
   gnomonCellImageWriterCommand.cpp
