@@ -27,6 +27,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellComplexFromCellImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
+  gnomonAbstractCellComplexWriter
+  gnomonAbstractCellComplexWriter.h
   gnomonAbstractCellGraphData
   gnomonAbstractCellGraphData.h
   gnomonAbstractCellGraphFromImage
@@ -159,6 +161,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellComplexFromCellImage.cpp
   gnomonAbstractCellComplexReader.cpp
+  gnomonAbstractCellComplexWriter.cpp
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellGraphFromImage.cpp
   gnomonAbstractCellImageData.cpp
