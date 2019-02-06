@@ -54,7 +54,7 @@ public:
     }
 
 public:
-    QString name(void) const { return"gnomonCellGraph";}
+    QString name(void) const override { return"gnomonCellGraph";}
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
 
 public:

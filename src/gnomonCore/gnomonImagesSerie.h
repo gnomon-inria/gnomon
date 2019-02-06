@@ -31,7 +31,7 @@ public:
     virtual ~gnomonImagesSerie(void);
 
 public:
-    QString name(void) const { return"gnomonImagesSerie";}
+    QString name(void) const override { return"gnomonImagesSerie";}
     QMap<QString,QString> metadata(void) const override;
 
 public:
