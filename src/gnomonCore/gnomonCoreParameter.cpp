@@ -151,7 +151,7 @@ void gnomonCoreParameterString::setValues(const QStringList& val)
 void gnomonCoreParameterString::setValue(const QString& val)
 {
     int index = m_values.indexOf(val);
-    if(index >= 0) { 
+    if(index >= 0) {
         if(m_current_index != index) { 
             m_current_index = index; 
             emit valueChanged();

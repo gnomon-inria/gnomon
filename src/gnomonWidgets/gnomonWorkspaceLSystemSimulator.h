@@ -31,6 +31,10 @@ public:
     void leave(void) override {};
     void apply(void) override;
 
+public slots:
+    void step(void);
+    void reset(void);
+
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;
 };

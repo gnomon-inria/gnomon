@@ -433,6 +433,12 @@ gnomonCodeEditor::~gnomonCodeEditor(void)
     delete d;
 }
 
+
+QString gnomonCodeEditor::fileName(void)
+{
+    return d->file_name;
+}
+
 void gnomonCodeEditor::updateVocabulary(void)
 {
     if(d->completer->popup()->isVisible() == false)
