@@ -93,8 +93,8 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_cellComplexFromCellImage  = mesh_menu->addAction("Cell Reconstruction");
     this->action_meshFromImage = mesh_menu->addAction("Surface Meshing");
 
-    QMenu * tree_menu = this->menu->addMenu(this->font->icon(fa::sitemap), "Tree Processing");
-    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
+//    QMenu * tree_menu = this->menu->addMenu(this->font->icon(fa::sitemap), "Tree Processing");
+//    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
 
     QMenu * simu_menu = this->menu->addMenu(this->font->icon(fa::sync),"Simulation");
     this->action_simulation    = simu_menu->addAction("Simulation");
@@ -141,8 +141,8 @@ void gnomonToolBarButton::create(QAction *action)
     if(action == this->action_simulation)
         emit createSimulation();
 
-    if(action == this->action_tree_analysis)
-        emit createTreeAnalysis();
+//    if(action == this->action_tree_analysis)
+//        emit createTreeAnalysis();
 }
 
 void gnomonToolBarButton::mousePressEvent(QMouseEvent *event)

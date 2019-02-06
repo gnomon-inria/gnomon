@@ -26,7 +26,7 @@
 #include <gnomonWorkspaceCellComplexFromCellImage.h>
 #include <gnomonWorkspaceCellImageFilter.h>
 #include <gnomonWorkspaceSimulation.h>
-#include <gnomonWorkspaceTreeAnalysis.h>
+//#include <gnomonWorkspaceTreeAnalysis.h>
 
 #include <gnomonStyle>
 
@@ -220,14 +220,14 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->setCurrentWidget(workspace);
     });
 
-    connect(d->menu, &gnomonToolBar::createTreeAnalysis, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceTreeAnalysis(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
+//    connect(d->menu, &gnomonToolBar::createTreeAnalysis, [=] (void) {
+//
+//        gnomonWorkspace *workspace = new gnomonWorkspaceTreeAnalysis(this);
+//        workspace->enter();
+//
+//        d->stack->addWidget(workspace);
+//        d->stack->setCurrentWidget(workspace);
+//    });
 
     static int l_h = 0;
 
