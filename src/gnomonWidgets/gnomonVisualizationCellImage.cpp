@@ -108,9 +108,16 @@ QImage gnomonVisualizationCellImage::imageRendering(void)
 {
     d->updateOffscreenRenderer(dd->image->GetBounds());
 
+    d->view->renderer3D()->RemoveActor(dd->actor);
     d->offscreenRenderer->AddActor(dd->actor);
 
-    return d->offscreenImageRendering();
+    QImage image = d->offscreenImageRendering();
+
+    d->offscreenRenderer->RemoveActor(dd->actor);
+    d->view->renderer3D()->AddActor(dd->actor);
+    dd->actor->setInteractor(d->view->interactor());
+
+    return image;
 }
 
 void gnomonVisualizationCellImage::update(void)
@@ -125,7 +132,6 @@ void gnomonVisualizationCellImage::update(void)
         dd->image->Delete();
         dd->image = nullptr;
     }
-
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(dd->cellImage->image());
