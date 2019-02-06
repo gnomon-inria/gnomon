@@ -370,7 +370,7 @@ void gnomonWorkspacePythonSimulator::apply(void)
     }
 
     if(d->view->cellComplex()){
-            d->model->setForm("cellComplex", d->view->cellComplex());
+        d->model->setForm("cellComplex", d->view->cellComplex());
     }
 
     d->model->reset();

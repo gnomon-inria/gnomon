@@ -697,7 +697,11 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form, gnom
 
 gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
 {
-    return dynamic_cast<gnomonImagesSerie *>(d->forms["gnomonImagesSerie"]);
+    if (d->forms.contains("gnomonImagesSerie")) {
+        return dynamic_cast<gnomonImagesSerie *>(d->forms["gnomonImagesSerie"]);
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstractVisualization *visualization)
@@ -735,7 +739,11 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
 
 gnomonCellImage *gnomonViewForm::cellImage(void)
 {
-    return dynamic_cast<gnomonCellImage *>(d->forms["gnomonCellImage"]);
+    if (d->forms.contains("gnomonCellImage")) {
+        return dynamic_cast<gnomonCellImage *>(d->forms["gnomonCellImage"]);
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisualization *visualization)
@@ -768,7 +776,11 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 
 gnomonCellComplex *gnomonViewForm::cellComplex(void)
 {
-    return dynamic_cast<gnomonCellComplex *>(d->forms["gnomonCellComplex"]);
+    if (d->forms.contains("gnomonCellComplex")) {
+        return dynamic_cast<gnomonCellComplex *>(d->forms["gnomonCellComplex"]);
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstractVisualization *visualization)
@@ -800,7 +812,11 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 
 gnomonMesh *gnomonViewForm::mesh(void)
 {
-    return dynamic_cast<gnomonMesh *>(d->forms["gnomonMesh"]);
+    if (d->forms.contains("gnomonMesh")) {
+        return dynamic_cast<gnomonMesh *>(d->forms["gnomonMesh"]);
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visualization)
