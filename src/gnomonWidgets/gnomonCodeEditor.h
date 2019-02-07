@@ -32,8 +32,15 @@ public:
 
 public slots:
     void openScript(void);
-    // void saveScript(void);
-    // void saveScriptAs(void);
+    void saveScript(void);
+
+signals:
+    void scriptLoaded(void);
+    void scriptOpened(void);
+    void scriptSaved(void);
+
+public:
+    QString fileName(void);
 
 public:
     void lineNumberAreaPaintEvent(QPaintEvent *event);
@@ -44,6 +51,12 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent* event) override;
+
+ protected:
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dragLeaveEvent(QDragLeaveEvent *) override;
+    void dragMoveEvent(QDragMoveEvent *) override;
+    void dropEvent(QDropEvent *) override;
 
 protected:
     QString textUnderCursor(void);

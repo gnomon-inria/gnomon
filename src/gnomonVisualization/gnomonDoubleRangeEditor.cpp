@@ -50,7 +50,7 @@ gnomonDoubleRangeEditor::gnomonDoubleRangeEditor(QWidget *parent) : QWidget(pare
     layout->setSpacing(0);
 
     d->label_name = new QLabel(d->name);
-    layout->addWidget(d->label_name);
+    // layout->addWidget(d->label_name);
 
     d->spinbox_valueMin = new QDoubleSpinBox();
     d->spinbox_valueMin->setRange(d->min,d->valueMax);
@@ -77,7 +77,7 @@ gnomonDoubleRangeEditor::gnomonDoubleRangeEditor(QWidget *parent) : QWidget(pare
 
     layout->addWidget(d->spinbox_widget);
 
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(d->spinbox_valueMin, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &gnomonDoubleRangeEditor::valueMinChanged);
     connect(d->spinbox_valueMax, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &gnomonDoubleRangeEditor::valueMaxChanged);
@@ -133,7 +133,6 @@ void gnomonDoubleRangeEditor::setRange(double min, double max)
     d->min = min;
     d->max = max;
 
-
     int dec = floor(-log10((d->max-d->min)/100.));
     double step = pow(10.,-dec);
 
@@ -158,7 +157,7 @@ void gnomonDoubleRangeEditor::setRange(double min, double max)
 void gnomonDoubleRangeEditor::setValueMin(double value)
 {
     d->valueMin = value;
-    d->spinbox_valueMin->setValue(d->valueMin);;
+    d->spinbox_valueMin->setValue(d->valueMin);
     d->spinbox_valueMax->setRange(d->valueMin,d->max);
 }
 

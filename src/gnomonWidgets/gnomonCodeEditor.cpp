@@ -16,6 +16,7 @@
 #include <gnomonStyle>
 
 #include "gnomonCodeEditor.h"
+#include <dtkScript>
 
 #include <set>
 
@@ -226,8 +227,12 @@ class gnomonCodeEditorPrivate
 public:
     QWidget *line_number_area;
 
+public:
+    QString file_name;
+
     gnomonCodeEditorSyntaxHighlighter *highlighter;
 
+public:
     bool autocompletion_enabled;
     QStringListModel *vocabulary;
     QTimer *autocompletion_timer;
@@ -244,9 +249,13 @@ gnomonCodeEditor::gnomonCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
+    connect(this, SIGNAL(scriptOpened()), this, SLOT(openScript()));
+    connect(this, SIGNAL(scriptSaved()), this, SLOT(saveScript()));
+
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
     setFont(QFont("monospace"));
+    this->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     d->highlighter = new gnomonCodeEditorSyntaxHighlighter(document());
 
@@ -281,6 +290,8 @@ void gnomonCodeEditor::openScript(void)
     if(file_name.isEmpty())
         return;
 
+    d->file_name = file_name;
+
     QFile file(file_name);
 
     if(!file.open(QIODevice::ReadOnly))
@@ -295,6 +306,23 @@ void gnomonCodeEditor::openScript(void)
     settings.setValue("last_open_script_path", info.absolutePath());
 
     settings.endGroup();
+}
+
+void gnomonCodeEditor::saveScript(void)
+{
+    QString content = this->document()->toPlainText();
+    QString backup = d->file_name + "~";
+    QFile::remove(backup);
+    QFile::copy(d->file_name, backup);
+    QFile file(d->file_name);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning()<<"Can't open file!  "<< d->file_name;
+        return;
+    }
+    QTextStream out(&file);
+    out << content;
+    file.close();
+    qDebug() << "file saved" << d->file_name;
 }
 
 void gnomonCodeEditor::enableAutocompletion(bool enabled)
@@ -331,7 +359,26 @@ void gnomonCodeEditor::insertCompletion(QString completion)
 
 void gnomonCodeEditor::keyPressEvent(QKeyEvent *e)
 {
-    if(d->autocompletion_enabled == false)
+    if (e->modifiers() & Qt::ControlModifier)
+    {
+        switch (e->key())
+        {
+            case Qt::Key_R:
+                emit scriptLoaded();
+                break;
+            case Qt::Key_O:
+                emit scriptOpened();
+                break;
+            case Qt::Key_S:
+                emit scriptSaved();
+                break;
+            default:
+                QPlainTextEdit::keyPressEvent(e);
+                break;
+
+        }
+    }
+    else if(d->autocompletion_enabled == false)
     {
         QPlainTextEdit::keyPressEvent(e);
     }
@@ -378,11 +425,18 @@ void gnomonCodeEditor::keyPressEvent(QKeyEvent *e)
         cr.setWidth(d->completer->popup()->sizeHintForColumn(0) + d->completer->popup()->verticalScrollBar()->sizeHint().width());
         d->completer->complete(cr);
     }
+
 }
 
 gnomonCodeEditor::~gnomonCodeEditor(void)
 {
     delete d;
+}
+
+
+QString gnomonCodeEditor::fileName(void)
+{
+    return d->file_name;
 }
 
 void gnomonCodeEditor::updateVocabulary(void)
@@ -484,6 +538,59 @@ void gnomonCodeEditor::resizeEvent(QResizeEvent *e)
 
     QRect cr = contentsRect();
     d->line_number_area->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+}
+
+void gnomonCodeEditor::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasText()) {
+        event->accept();
+        return;
+    }
+
+    event->ignore();
+}
+
+void gnomonCodeEditor::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
+}
+
+void gnomonCodeEditor::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->acceptProposedAction();
+}
+
+void gnomonCodeEditor::dropEvent(QDropEvent *event)
+{
+    QString path = event->mimeData()->text();
+
+    if (path.endsWith("py")) {
+        QString file_name = path.remove("file://");
+        if(file_name.isEmpty())
+            return;
+
+        QFile file(file_name);
+
+        if(!file.open(QIODevice::ReadOnly))
+            return;
+
+        d->file_name = file_name;
+
+        QFileInfo dir_info(file_name);
+        QDir script_dir = dir_info.dir();
+        QString python_add_path = QString("import sys\nmydir='%1'\nif mydir not in sys.path:\n    sys.path.insert(0, mydir)\n").arg(script_dir.path());
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret(python_add_path,&stat);
+
+        this->setPlainText(file.readAll());
+
+        file.close();
+    } else {
+        QTextCursor tc = cursorForPosition( event->pos() );
+        tc.insertText(path);
+        setTextCursor(tc);
+    }
+    event->acceptProposedAction();
 }
 
 void gnomonCodeEditor::highlightCurrentLine(void)

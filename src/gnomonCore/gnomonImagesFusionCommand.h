@@ -3,7 +3,7 @@
 
 #include "gnomonLandmark.h"
 
-class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand<gnomonAbstractImagesFusion>
+class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImagesFusionCommand(void) = delete;
@@ -15,18 +15,18 @@ public:
     void undo(void) override;
 
 public:
-    void setParameter(const QString&, const QVariant&);
+    void addImagesSerie(gnomonImagesSerie *);
 
-    void addImage(dtkImage *);
-    void removeImages(void);
+    virtual void setParameter(const QString&, const QVariant&);
+
+    gnomonImagesSerie *output(void);
+
+    void removeImagesSeries(void);
 
     void addLandmarks(const std::vector<gnomonLandmark>&);
     void removeLandmarks(void);
 
 public:
-    dtkImage *output(void);
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
-
-private:
     class gnomonImagesFusionCommandPrivate *d;
 };

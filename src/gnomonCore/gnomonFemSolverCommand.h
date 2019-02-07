@@ -3,7 +3,7 @@
 
 class gnomonMesh;
 
-class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand<gnomonAbstractFemSolver>
+class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {
 public:
      gnomonFemSolverCommand(void) = delete;
@@ -23,5 +23,4 @@ public:
 
 private:
     class gnomonFemSolverCommandPrivate *d;
-    using gnomonAbstractCommand<gnomonAbstractFemSolver>::action;
 };

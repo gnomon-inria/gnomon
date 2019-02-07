@@ -35,6 +35,8 @@ public:
     explicit gnomonMesh(gnomonAbstractMeshData *data) : m_data(data) {}
              gnomonMesh(const gnomonMesh& o) : m_data(o.m_data->clone()) {}
 
+    gnomonAbstractForm *clone(void) { return new gnomonMesh(*this); };
+
     virtual ~gnomonMesh(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:
@@ -55,6 +57,10 @@ public:
         }
         return *this;
     }
+
+public:
+    QString name(void) const override { return"gnomonMesh";}
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
 
 public:
     const gnomonAbstractMeshData *data(void) const { return m_data; }

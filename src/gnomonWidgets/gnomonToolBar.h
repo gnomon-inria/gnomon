@@ -32,17 +32,29 @@ signals:
 
 signals:
     void createFusion(void);
-    void createSegmentation(void);
+    void createLSystemSimulator(void);
+    void createPythonSimulator(void);
     void createPreprocess(void);
     void createRegistration(void);
+    void createMeshFromImage(void);
+    void createSegmentation(void);
+    void createCellComplexFromCellImage(void);
+    void createCellImageFilter(void);
     void createSimulation(void);
+    void createTreeAnalysis(void);
 
 public slots:
     void onCreateFusion(void);
-    void onCreateSegmentation(void);
+    void onCreateLSystemSimulator(void);
+    void onCreatePythonSimulator(void);
     void onCreatePreprocess(void);
     void onCreateRegistration(void);
+    void onCreateMeshFromImage(void);
+    void onCreateSegmentation(void);
+    void onCreateCellComplexFromCellImage(void);
+    void onCreateCellImageFilter(void);
     void onCreateSimulation(void);
+    void onCreateTreeAnalysis(void);
 
 protected:
     void enterEvent(QEvent *);
@@ -56,11 +68,17 @@ public:
 
 public:
     static QColor browser_color;
+    static QColor lsystem_color;
+    static QColor python_simulation_color;
     static QColor fusion_color;
-    static QColor segmentation_color;
     static QColor preprocess_color;
     static QColor registration_color;
+    static QColor meshFromImage_color;
+    static QColor segmentation_color;
+    static QColor cellComplexFromCellImage_color;
+    static QColor cellImageFilter_color;
     static QColor simulation_color;
+    static QColor tree_analysis_color;
 
 private:
     class gnomonToolBarPrivate *d;

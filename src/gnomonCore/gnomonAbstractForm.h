@@ -28,14 +28,15 @@ public:
              gnomonAbstractForm(void) = default;
     virtual ~gnomonAbstractForm(void) = default;
 
-public:
-    virtual void accept(class gnomonFormVisitor *) {};
+//public:
+//    virtual void accept(class gnomonFormVisitor *) {};
+//
+//protected:
+//    void record(void);
 
-protected:
-    void record(void);
-
 public:
-    virtual QString name(void) const { return "NONAME";};
+    virtual QString name(void) const = 0;
+    virtual QMap<QString,QString> metadata(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

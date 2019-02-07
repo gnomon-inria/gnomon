@@ -15,7 +15,7 @@ public:
 
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
 {
-    QString command = "import " + key;
+    QString command = "import gnomonFemSolver";
 
     int stat;
 
@@ -36,20 +36,21 @@ gnomonFemSolverCommand::~gnomonFemSolverCommand(void)
 void gnomonFemSolverCommand::redo(void)
 {
     Q_ASSERT(this->action);
-
-    this->action->setMesh(d->mesh);
+    qDebug()<<"redo command"<<d->mesh;
+    ((gnomonAbstractFemSolver *) this->action)->setMesh(d->mesh);
 
     this->action->run();
 }
 
 void gnomonFemSolverCommand::undo(void)
 {
-    this->action->setMesh(nullptr);
+    ((gnomonAbstractFemSolver *) this->action)->setMesh(nullptr);
 }
 
 void gnomonFemSolverCommand::setMesh(gnomonMesh *mesh)
 {
     d->mesh = mesh;
+    qDebug()<<"setmesh"<<d->mesh;
 }
 
 void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVariant& value)
@@ -59,7 +60,7 @@ void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVaria
 
 gnomonMesh *gnomonFemSolverCommand::updatedMesh(void)
 {
-    return this->action->updatedMesh();
+    return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) const

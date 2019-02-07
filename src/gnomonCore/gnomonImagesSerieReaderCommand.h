@@ -1,7 +1,7 @@
 #include "gnomonAbstractCommand.h"
 #include "gnomonAbstractImagesSerieReader.h"
 
-class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand<gnomonAbstractImagesSerieReader>
+class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImagesSerieReaderCommand(void) = delete;
@@ -14,13 +14,8 @@ public:
 
 public:
     void setPath(const QString& path);
-
-    double time(void);
-    dtkImage *at(double t, const QString& channel = QString());
-    dtkImage *next(void);
-    QStringList channels(void);
+    gnomonImagesSerie *imagesSerie();
 
 private:
     class gnomonImagesSerieReaderCommandPrivate *d;
-    using gnomonAbstractCommand<gnomonAbstractImagesSerieReader>::action;
 };

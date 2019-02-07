@@ -1,22 +1,33 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include <gnomonCore/gnomonCoreParameter.h>
+
 #include "gnomonWidgetsParameter.h"
 
-template <typename T>
-gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
+template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
 
 }
 
-template <typename T>
-gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
+template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
 {
-    if (this->command) {
+    if (this->command)
         delete this->command;
-    }
 }
 
-template <typename T>
-void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString& algorithm)
+template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString& algorithm)
 {
     if (this->pane_item_params_layout) {
         for(int row = 0, max_row = this->pane_item_params_layout->count(); row < max_row; ++row) {
@@ -30,13 +41,10 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
         this->pane_item_params_layout = new QFormLayout(parent);
     }
 
-    if (this->command) {
-        delete this->command;
-        this->command = nullptr;
-    }
+    this->algorithm=algorithm;
+
 
     if (!algorithm.isEmpty()) {
-        this->command = new T(algorithm);
         QMap<QString, gnomonCoreParameter *> parameters = this->command->parameters();
         for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
             QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
@@ -47,16 +55,25 @@ void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget *parent, const QString
     }
 }
 
-template <typename T>
-gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
+template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
 {
     QComboBox *combo_box = new QComboBox(parent);
     QStringList combo_box_keys = this->keys();
     for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
         combo_box->addItem(*it);
     }
+    combo_box->model()->sort(0);
+    this->command = new T(combo_box->currentText());
 
-    parent->connect(combo_box, SIGNAL(currentIndexChanged(QString)), parent, SLOT(configure(QString)));
+    QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm) {
+        if (this->command) {
+            delete this->command;
+            this->command = nullptr;
+        }
+        this->command = new T(algorithm);
+        emit algorithmChanged(algorithm);
+        this->configure(parent, algorithm);
+     });
 
     gnomonOverlayPaneItem *pane_item_algorithm = new gnomonOverlayPaneItem(parent);
     pane_item_algorithm->setTitle("Algorithm");
@@ -83,6 +100,7 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
     pane->addWidget(pane_item_parameters);
     pane->addWidget(pane_item_button);
     pane->toggle();
+    pane->toggle();
 
     QObject::connect(button, &QPushButton::clicked, [=] () {
         parent->setCursor(Qt::BusyCursor);
@@ -94,3 +112,6 @@ gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
 
     return pane;
 }
+
+//
+// gnomonWorkspaceTemplate_p.tpp ends here

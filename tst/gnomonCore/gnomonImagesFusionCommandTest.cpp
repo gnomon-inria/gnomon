@@ -6,16 +6,18 @@
 #include "gnomonImagesFusionCommand.h"
 #include "gnomonImagesSerieReaderCommand.h"
 
+#include <gnomonCore/gnomonImagesSerie>
+
 #include <dtkScript>
 
 #include <dtkImage>
 
-using dtkImagePtr = std::shared_ptr<dtkImage>;
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class gnomonImagesFusionCommandTestCasePrivate
 {
 public:
-    gnomonImagesSerieReaderCommand *serie_reader_command = nullptr;
+    QVector< gnomonImagesSeriePtr > images_series;
     gnomonImagesFusionCommand *fusion_command = nullptr;
 };
 
@@ -35,36 +37,36 @@ void gnomonImagesFusionCommandTestCase::initTestCase(void)
 
 void gnomonImagesFusionCommandTestCase::init(void)
 {
-    d->serie_reader_command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-    Q_ASSERT(d->serie_reader_command);
-
     d->fusion_command = new gnomonImagesFusionCommand("gnomonImagesFusion");
     Q_ASSERT(d->fusion_command);
 }
 
 void gnomonImagesFusionCommandTestCase::redo(void)
 {
+    gnomonImagesSerieReaderCommand* command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+    Q_ASSERT(command);
+
     QString image_0_file_path = QFINDTESTDATA("../resources/time_0_cut_resampled.inr");
-    d->serie_reader_command->setPath(image_0_file_path);
-    d->serie_reader_command->redo();
-    dtkImagePtr image_0 = dtkImagePtr(new dtkImage(*d->serie_reader_command->at(0)));
+    command->setPath(image_0_file_path);
+    command->redo();
+    d->images_series.push_back(gnomonImagesSeriePtr(command->imagesSerie()));
 
     QString image_1_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated1_resampled.inr");
-    d->serie_reader_command->setPath(image_1_file_path);
-    d->serie_reader_command->redo();
-    dtkImagePtr image_1 = dtkImagePtr(new dtkImage(*d->serie_reader_command->at(0)));
+    command->setPath(image_1_file_path);
+    command->redo();
+    d->images_series.push_back(gnomonImagesSeriePtr(command->imagesSerie()));
 
     QString image_2_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated2_resampled.inr");
-    d->serie_reader_command->setPath(image_2_file_path);
-    d->serie_reader_command->redo();
-    dtkImagePtr image_2 = dtkImagePtr(new dtkImage(*d->serie_reader_command->at(0)));
+    command->setPath(image_2_file_path);
+    command->redo();
+    d->images_series.push_back(gnomonImagesSeriePtr(command->imagesSerie()));
 
-
-    d->fusion_command->addImage(image_0.get());
-    d->fusion_command->addImage(image_1.get());
-    d->fusion_command->addImage(image_2.get());
-
+    d->fusion_command->addImagesSerie(d->images_series[0].data());
+    d->fusion_command->addImagesSerie(d->images_series[1].data());
+    d->fusion_command->addImagesSerie(d->images_series[2].data());
+ 
     d->fusion_command->setParameter("nb_iterations", 0);
+    d->fusion_command->setParameter("n_job", 1);
     d->fusion_command->redo();
 }
 

@@ -2,17 +2,18 @@
 
 #include "gnomonCellImage.h"
 
+#include "gnomonImagesSerie.h"
+
 #include <dtkScript>
 #include <dtkImagingCore>
 
 class gnomonSegmentationCommandPrivate
 {
 public:
-    dtkImage *image = nullptr;
-    gnomonCellImage *computed_image = nullptr;
+    gnomonImagesSerie *images_serie = nullptr;
 };
 
-gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : gnomonAbstractCommand<gnomonAbstractCellImageFromImage>(), d(new gnomonSegmentationCommandPrivate)
+gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
     QString command = "import gnomonCellImageFromImage";
     int stat;
@@ -28,9 +29,6 @@ gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : gnomo
 
 gnomonSegmentationCommand::~gnomonSegmentationCommand(void)
 {
-    if (d->computed_image)
-        delete d->computed_image;
-
     delete d;
 }
 
@@ -38,21 +36,30 @@ void gnomonSegmentationCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setImage(d->image);
     this->action->run();
-    d->computed_image = this->action->computedImage();
 }
 
 void gnomonSegmentationCommand::undo(void)
 {
     Q_ASSERT(this->action);
 
-    this->action->setImage(nullptr);
+    ((gnomonAbstractCellImageFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonSegmentationCommand::setImage(dtkImage* image)
+void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
 {
-    d->image = image;
+    d->images_serie = images_serie;
+    ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->images_serie);
+}
+
+gnomonImagesSerie *gnomonSegmentationCommand::input()
+{
+    return ((gnomonAbstractCellImageFromImage *) this->action)->input();
+}
+
+gnomonCellImage *gnomonSegmentationCommand::output()
+{
+    return ((gnomonAbstractCellImageFromImage *) this->action)->computedImage();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const
@@ -63,9 +70,4 @@ QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void)
 void gnomonSegmentationCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
-}
-
-gnomonCellImage *gnomonSegmentationCommand::computedImage(void) const
-{
-    return d->computed_image;
 }

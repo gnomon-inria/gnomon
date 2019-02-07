@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     dtkApplication *application = dtkApplication::create(argc, argv);
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");
@@ -70,7 +71,9 @@ int main(int argc, char **argv)
     int stat;
 
     dtkImaging::initialize();
-    dtkScriptInterpreterPython::instance()->init();
+    bool redirect_io = false;
+//    bool redirect_io = true;
+    dtkScriptInterpreterPython::instance()->init(redirect_io,"gnomon-core");
     if (parser->isSet(jupyterOption)) {
         dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
     }

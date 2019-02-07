@@ -113,79 +113,86 @@ void gnomonColorMapTable::paintEvent(QPaintEvent* event)
 class gnomonColorMapEditorPrivate
 {
 public:
-    QString name;
     QMap<QString, QMap<double, QColor> > colormaps;
     QString current_map;
 
 public:
+    QStringList colormap_names;
     QComboBox *colormap_box;
     gnomonColorMapTable *colormap_table;
 };
 
 gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d(new gnomonColorMapEditorPrivate)
 {
-    d->name = "";
-
     QPalette palette ;
     palette.setBrush(QPalette::Background, Qt::transparent);
 
-    d->colormap_box = new QComboBox(this);
+    d->colormap_names.clear();
 
-    d->colormap_box->addItem("0CMY_cyan");
-    d->colormap_box->addItem("0CMY_magenta");
-    d->colormap_box->addItem("0CMY_yellow");
-    d->colormap_box->addItem("0RGB_blue");
-    d->colormap_box->addItem("0RGB_green");
-    d->colormap_box->addItem("0RGB_red");
-    d->colormap_box->addItem("1Flashy_blue");
-    d->colormap_box->addItem("1Flashy_green");
-    d->colormap_box->addItem("1Flashy_orange");
-    d->colormap_box->addItem("1Flashy_purple");
-    d->colormap_box->addItem("1Flashy_red");
-    d->colormap_box->addItem("1Flashy_turquoise");
-    d->colormap_box->addItem("acidity");
-    d->colormap_box->addItem("atmosphere");
-    d->colormap_box->addItem("Blues");
-    d->colormap_box->addItem("bone");
-    d->colormap_box->addItem("BrBG");
-    d->colormap_box->addItem("bronze");
-    d->colormap_box->addItem("BuGn");
-    d->colormap_box->addItem("BuGrRd");
-    d->colormap_box->addItem("chestnut");
-    d->colormap_box->addItem("cold");
-    d->colormap_box->addItem("curvature");
-    d->colormap_box->addItem("density");
-    d->colormap_box->addItem("geo_jet");
-    d->colormap_box->addItem("glasbey");
-    d->colormap_box->addItem("GnBu");
-    d->colormap_box->addItem("Greens");
-    d->colormap_box->addItem("grey");
-    d->colormap_box->addItem("Greys");
-    d->colormap_box->addItem("hot");
-    d->colormap_box->addItem("inferno");
-    d->colormap_box->addItem("jet");
-    d->colormap_box->addItem("leaf");
-    d->colormap_box->addItem("morocco");
-    d->colormap_box->addItem("ocean");
-    d->colormap_box->addItem("Oranges");
-    d->colormap_box->addItem("PiYG");
-    d->colormap_box->addItem("primordia_jet");
-    d->colormap_box->addItem("PuBu");
-    d->colormap_box->addItem("PuBuGn");
-    d->colormap_box->addItem("PuOr");
-    d->colormap_box->addItem("PuRd");
-    d->colormap_box->addItem("Purples");
-    d->colormap_box->addItem("quercus");
-    d->colormap_box->addItem("RdBu");
-    d->colormap_box->addItem("RdYlBu");
-    d->colormap_box->addItem("RdYlGn");
-    d->colormap_box->addItem("Reds");
-    d->colormap_box->addItem("temperature");
-    d->colormap_box->addItem("tourmaline");
-    d->colormap_box->addItem("viridis");
-    d->colormap_box->addItem("wine");
-    d->colormap_box->addItem("YlGn");
-    d->colormap_box->addItem("YlOrBr");
+    d->colormap_names.append("0RGB_red");
+    d->colormap_names.append("0RGB_green");
+    d->colormap_names.append("0RGB_blue");
+    d->colormap_names.append("0CMY_cyan");
+    d->colormap_names.append("0CMY_magenta");
+    d->colormap_names.append("0CMY_yellow");
+
+    d->colormap_names.append("1Flashy_blue");
+    d->colormap_names.append("1Flashy_green");
+    d->colormap_names.append("1Flashy_orange");
+    d->colormap_names.append("1Flashy_purple");
+    d->colormap_names.append("1Flashy_red");
+    d->colormap_names.append("1Flashy_turquoise");
+
+    d->colormap_names.append("Blues");
+    d->colormap_names.append("Greens");
+    d->colormap_names.append("Greys");
+    d->colormap_names.append("Oranges");
+    d->colormap_names.append("Purples");
+    d->colormap_names.append("Reds");
+
+    d->colormap_names.append("BrBG");
+    d->colormap_names.append("BuGn");
+    d->colormap_names.append("BuGrRd");
+    d->colormap_names.append("GnBu");
+    d->colormap_names.append("PiYG");
+    d->colormap_names.append("PuBu");
+    d->colormap_names.append("PuBuGn");
+    d->colormap_names.append("PuOr");
+    d->colormap_names.append("PuRd");
+    d->colormap_names.append("RdBu");
+    d->colormap_names.append("RdYlBu");
+    d->colormap_names.append("RdYlGn");
+    d->colormap_names.append("YlGn");
+    d->colormap_names.append("YlOrBr");
+    
+    d->colormap_names.append("acidity");
+    d->colormap_names.append("atmosphere");
+    d->colormap_names.append("bone");
+    d->colormap_names.append("bronze");
+    // d->colormap_names.append("chestnut");
+    // d->colormap_names.append("cold");
+    d->colormap_names.append("curvature");
+    d->colormap_names.append("density");
+    d->colormap_names.append("geo_jet");
+    d->colormap_names.append("glasbey");
+    d->colormap_names.append("grey");
+    d->colormap_names.append("hot");
+    d->colormap_names.append("inferno");
+    d->colormap_names.append("jet");
+    d->colormap_names.append("leaf");
+    // d->colormap_names.append("morocco");
+    d->colormap_names.append("ocean");
+    // d->colormap_names.append("primordia_jet");
+    // d->colormap_names.append("quercus");
+    // d->colormap_names.append("temperature");
+    // d->colormap_names.append("tourmaline");
+    d->colormap_names.append("viridis");
+    // d->colormap_names.append("wine");
+
+    d->colormap_box = new QComboBox(this);
+    for(const auto& name : d->colormap_names) {
+        d->colormap_box->addItem(name);
+    }
 
     d->colormap_table = new gnomonColorMapTable();
     d->colormap_table->setFixedHeight(40);
@@ -197,6 +204,7 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignTop);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(d->colormap_box);
     layout->addWidget(d->colormap_table);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -213,7 +221,7 @@ gnomonColorMapEditor::~gnomonColorMapEditor(void)
 
 const QString& gnomonColorMapEditor::name(void) const
 {
-    return d->name;
+    return d->current_map;
 }
 
 const QMap<double, QColor>& gnomonColorMapEditor::value(void) const
@@ -223,11 +231,6 @@ const QMap<double, QColor>& gnomonColorMapEditor::value(void) const
     }
 
     return d->colormaps[d->current_map];
-}
-
-void gnomonColorMapEditor::setName(const QString& name)
-{
-    d->name = name;
 }
 
 void gnomonColorMapEditor::setValue(const QMap<double, QColor>& value)
@@ -249,6 +252,15 @@ void gnomonColorMapEditor::setValue(const QMap<double, QColor>& value)
     d->colormap_table->update();
 
     emit valueChanged(value);
+}
+
+void gnomonColorMapEditor::setValue(const QString& value)
+{
+    if(d->colormaps.keys().contains(value)) {
+        this->setValue(d->colormaps[value]);
+    } else if (d->colormap_names.contains(value)) {
+        this->importColorMap(value);
+    }
 }
 
 void gnomonColorMapEditor::importColorMap(const QString& clut)

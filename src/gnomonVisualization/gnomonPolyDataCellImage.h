@@ -37,6 +37,8 @@ public slots:
     void update(void) override;
     void modified(void);
 
+    void setPropertyName(const QString& value);
+
 public:
      gnomonPolyDataCellImage(void);
     ~gnomonPolyDataCellImage(void);

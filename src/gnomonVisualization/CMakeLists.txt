@@ -23,8 +23,19 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActor.h
   gnomonActor2DCellImage
   gnomonActor2DCellImage.h
+  gnomonActor2DImageWidget
+  gnomonActor2DImageWidget.h
+  gnomonActor2DImageRGBAWidget
+  gnomonActor2DImageRGBAWidget.h
+  gnomonActor2DPolyData.h
+  gnomonActor2DPolyData
+  gnomonActor2DPolyData.h
   gnomonActorImage
   gnomonActorImage.h
+  gnomonActorImageVolume
+  gnomonActorImageVolume.h
+  gnomonActorImageRGBAVolume
+  gnomonActorImageRGBAVolume.h
   gnomonActorMesh
   gnomonActorMesh.h
   gnomonActorMesh_p.h
@@ -34,6 +45,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonActorMeshCellGraph.h
   gnomonActorMeshCellImage
   gnomonActorMeshCellImage.h
+  gnomonActorPolyData
+  gnomonActorPolyData.h
   gnomonActorVolume
   gnomonActorVolume.h
   gnomonActorScalarBar
@@ -41,9 +54,13 @@ set(${PROJECT_NAME}_HEADERS
   gnomonClutEditor
   gnomonClutEditor.h
   gnomonColorMapEditor.h
+  gnomonCoreParameterColor
+  gnomonCoreParameterColor.h
   gnomonDoubleEditor.h
   gnomonStringEditor.h
   gnomonDoubleRangeEditor.h
+  gnomonImageDataChannelBlending
+  gnomonImageDataChannelBlending.h
   gnomonInspector
   gnomonInspector.h
   gnomonInspectorCellGraph
@@ -62,10 +79,17 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInspectorViewWidget.h
   gnomonInspectorVolume
   gnomonInspectorVolume.h
+  gnomonLookupTable.h
+  gnomonLookupTableEditor.h
   gnomonPolyData
   gnomonPolyData.h
+  gnomonPolyDataCellComplex
+  gnomonPolyDataCellComplex.h
   gnomonPolyDataCellImage
   gnomonPolyDataCellImage.h
+  gnomonPolyDataMesh
+  gnomonPolyDataMesh.h
+  gnomonStringListEditor.h
   gnomonView
   gnomonView.h
   gnomonViewManager
@@ -75,18 +99,26 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonActor.cpp
   gnomonActor2DCellImage.cpp
+  gnomonActor2DImageWidget.cpp
+  gnomonActor2DImageRGBAWidget.cpp
+  gnomonActor2DPolyData.cpp
   gnomonActorImage.cpp
+  gnomonActorImageVolume.cpp
+  gnomonActorImageRGBAVolume.cpp
   gnomonActorMesh.cpp
   gnomonActorMeshCellComplex.cpp
   gnomonActorMeshCellGraph.cpp
   gnomonActorMeshCellImage.cpp
+  gnomonActorPolyData.cpp
   gnomonActorVolume.cpp
   gnomonActorScalarBar.cpp
   gnomonClutEditor.cpp
   gnomonColorMapEditor.cpp
+  gnomonCoreParameterColor.cpp
   gnomonStringEditor.cpp
   gnomonDoubleEditor.cpp
   gnomonDoubleRangeEditor.cpp
+  gnomonImageDataChannelBlending.cpp
   gnomonInspector.cpp
   gnomonInspectorCellGraph.cpp
   gnomonInspectorSlicePlanes.cpp
@@ -96,8 +128,13 @@ set(${PROJECT_NAME}_SOURCES
   gnomonInspectorViewTree.cpp
   gnomonInspectorViewWidget.cpp
   gnomonInspectorVolume.cpp
+  gnomonLookupTable.cpp
+  gnomonLookupTableEditor.cpp
   gnomonPolyData.cpp
+  gnomonPolyDataCellComplex.cpp
   gnomonPolyDataCellImage.cpp
+  gnomonPolyDataMesh.cpp
+  gnomonStringListEditor.cpp
   gnomonView.cpp
   gnomonViewManager.cpp)
 

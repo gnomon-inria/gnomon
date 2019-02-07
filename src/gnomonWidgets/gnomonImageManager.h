@@ -19,8 +19,8 @@
 #include <QtCore>
 #include <QtWidgets>
 
-class dtkImage;
-using dtkImagePtr = QSharedPointer<dtkImage>;
+class gnomonImagesSerie;
+using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class gnomonImageManagerItem;
 
@@ -39,13 +39,13 @@ public:
     QSize sizeHint(void) const;
 
 public slots:
-    void addImage(dtkImagePtr, const QColor&);
+    void addImage(gnomonImagesSeriePtr, const QColor&);
 
 public slots:
     void present(gnomonImageManagerItem *);
 
 public:
-    dtkImagePtr get(int index);
+    gnomonImagesSeriePtr get(int index);
 
 public:
     QPixmap thumbnail(int index);

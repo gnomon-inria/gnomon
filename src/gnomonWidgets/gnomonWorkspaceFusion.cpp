@@ -17,10 +17,12 @@
 #include "gnomonGridLayout.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
-#include "gnomonViewVolumic.h"
+#include "gnomonToolBar.h"
+#include "gnomonViewForm.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonImagesSerie>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -35,7 +37,7 @@ public:
     gnomonGridLayout *layout;
 
 public:
-    gnomonViewVolumic *target;
+    gnomonViewForm *target;
 };
 
 QString gnomonWorkspaceFusionPrivate::workspace() const
@@ -55,8 +57,10 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
     d = new gnomonWorkspaceFusionPrivate;
 
     d->layout = new gnomonGridLayout;
+    d->layout->addView();
 
-    d->target = new gnomonViewVolumic(this);
+    d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::fusion_color);
     d->target->setMinimumWidth(250);
 
     QWidget *dummy = new QWidget(this);
@@ -81,16 +85,17 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 void gnomonWorkspaceFusion::apply(void)
 {
     if(d->layout->views().isEmpty()) return;
-    d->command->removeImages();
+    d->command->removeImagesSeries();
     d->command->removeLandmarks();
 
-    for(gnomonViewVolumic *view : d->layout->views()) {
-        d->command->addImage(view->image().data());
-        d->command->addLandmarks(view->landmarks());
+    d->command->undo();
+    for(gnomonViewForm *view : d->layout->views()) {
+        d->command->addImagesSerie(view->imagesSerie());
+//        d->command->addLandmarks(view->landmarks());
     }
 
     d->command->redo();
-    d->target->setImage(dtkImagePtr(d->command->output()));
+    d->target->setImagesSerie(d->command->output());
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

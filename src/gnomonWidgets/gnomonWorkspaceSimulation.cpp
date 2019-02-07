@@ -14,14 +14,16 @@
 
 #include "gnomonWorkspaceSimulation.h"
 #include "gnomonViewVolumic.h"
+#include "gnomonViewForm.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
+#include "gnomonToolBar.h"
 
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonAbstractFemSolver>
 #include <gnomonFemSolverCommand>
-
+#include <gnomonMesh>
 #include <dtkImagingCore>
 #include <dtkScript>
 
@@ -38,8 +40,8 @@ public:
     QStringList keys() const override;
 
 public:
-    gnomonViewVolumic *source = nullptr;
-    gnomonViewVolumic *target = nullptr;
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
 };
 
 gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >()
@@ -66,8 +68,12 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWo
 
     d = new gnomonWorkspaceSimulationPrivate;
 
-    d->source = new gnomonViewVolumic(this);
-    d->target = new gnomonViewVolumic(this);
+    d->source = new gnomonViewForm(this);
+    d->source->setExportColor(gnomonToolBar::registration_color);
+    d->source->setAcceptCellComplex(false);
+
+    d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::registration_color);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -84,6 +90,12 @@ gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 
 void gnomonWorkspaceSimulation::apply(void)
 {
+    qDebug()<<"----- Apply -----";
+    Q_ASSERT(d->command);
+    qDebug()<<"Command OK";
+    d->command->setMesh(d->source->mesh());
+    d->command->redo();
+    d->target->setMesh((gnomonMesh *)d->command->updatedMesh()->clone());
 
 }
 

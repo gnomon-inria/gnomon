@@ -18,7 +18,8 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCoreParameter.h>
+#include <gnomonCore/gnomonCoreParameter>
+#include "gnomonCoreParameterColor.h"
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameter
@@ -53,6 +54,28 @@ public:
 };
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonWidgetsParameterIntRange
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterIntRange
+{
+public:
+    static QString style;
+    static QWidget *widget(gnomonCoreParameterIntRange *parameter, QWidget *parent);
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWidgetsParameterDoubleRange
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterDoubleRange
+{
+public:
+    static QString style;
+    static QWidget *widget(gnomonCoreParameterDoubleRange *parameter, QWidget *parent);
+};
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameterBool
 // ///////////////////////////////////////////////////////////////////
 
@@ -83,6 +106,28 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterStringList
 public:
     static QString style;
     static QWidget *widget(gnomonCoreParameterStringList *parameter, QWidget *parent);
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWidgetsParameterColorMap
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterColorMap
+{
+public:
+    static QString style;
+    static QWidget *widget(gnomonCoreParameterColorMap *parameter, QWidget *parent);
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWidgetsParameterLookupTable
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterLookupTable
+{
+public:
+    static QString style;
+    static QWidget *widget(gnomonCoreParameterLookupTable *parameter, QWidget *parent);
 };
 
 //

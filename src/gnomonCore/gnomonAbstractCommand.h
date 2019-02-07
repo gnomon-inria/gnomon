@@ -16,7 +16,8 @@
 
 #include <QUndoCommand>
 
-template<typename T>
+#include "gnomonAbstractAlgorithm.h"
+
 class gnomonAbstractCommand : public QUndoCommand
 {
 public:
@@ -28,13 +29,12 @@ public:
     virtual void undo(void) = 0;
 
 protected:
-    T *action = nullptr;
+    gnomonAbstractAlgorithm *action = nullptr;
 };
 
 // ///////////////////////////////////////////////////////////////////
 
-template<typename T>
-inline gnomonAbstractCommand<T>::~gnomonAbstractCommand(void)
+inline gnomonAbstractCommand::~gnomonAbstractCommand(void)
 {
     if (action) {
         delete action;

@@ -34,7 +34,6 @@ public slots:
     void apply(void) override;
 
     void configure(const QString& text);
-    void computeCells(void);
 
 private:
     class gnomonWorkspaceSegmentationPrivate *d;
