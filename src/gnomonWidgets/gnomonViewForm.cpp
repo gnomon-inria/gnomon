@@ -405,7 +405,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         }
     });
 
-
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
     });
@@ -723,7 +722,6 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
         formVisualizationImagesSerie->setParameters(visualization->parameters());
     }
     formVisualizationImagesSerie->update();
-
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);

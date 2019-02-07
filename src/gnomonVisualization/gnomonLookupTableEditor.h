@@ -34,12 +34,12 @@ public:
      gnomonLookupTableEditor(QWidget *parent = 0);
     ~gnomonLookupTableEditor(void);
 
-    gnomonLookupTable *value(void) const;
+    gnomonLookupTable value(void) const;
 
-    void setValue(gnomonLookupTable *value);
+    void setValue(gnomonLookupTable value);
 
 signals:
-    void valueChanged(gnomonLookupTable *);
+    void valueChanged(gnomonLookupTable);
 
 private:
     class gnomonLookupTableEditorPrivate *d;

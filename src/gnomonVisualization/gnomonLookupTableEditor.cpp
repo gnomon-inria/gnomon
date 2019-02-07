@@ -29,7 +29,7 @@
 class gnomonLookupTableEditorPrivate
 {
 public:
-    gnomonLookupTable *lut;
+    gnomonLookupTable lut;
 
 public:
     QCheckBox *visible;
@@ -54,25 +54,29 @@ gnomonLookupTableEditor::gnomonLookupTableEditor(QWidget *parent) : QWidget(pare
     layout->addWidget(d->value_range);
     layout->addWidget(d->visible);
 
-    this->setValue(new gnomonLookupTable("grey"));
+    this->setValue(gnomonLookupTable("grey"));
 
     // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(d->colormap, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) { 
-        d->lut->setColorMap(val);
-        d->lut->setName(d->colormap->name());
+    connect(d->colormap, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
+        d->lut.setColorMap(val);
+        d->lut.setName(d->colormap->name());
+        emit valueChanged(d->lut);
     });
 
     connect(d->value_range, &gnomonDoubleRangeEditor::valueMinChanged, [=](double value) { 
-        d->lut->setValueRange(QList<double>({value, d->value_range->valueMax()}));
+        d->lut.setValueRange(QList<double>({value, d->value_range->valueMax()}));
+        emit valueChanged(d->lut);
     });
 
     connect(d->value_range, &gnomonDoubleRangeEditor::valueMaxChanged, [=](double value) { 
-        d->lut->setValueRange(QList<double>({d->value_range->valueMin(), value}));
+        d->lut.setValueRange(QList<double>({d->value_range->valueMin(), value}));
+        emit valueChanged(d->lut);
     });
 
     connect(d->visible, &QCheckBox::stateChanged, [=](int val) { 
-        d->lut->setVisibility(d->visible->checkState() == Qt::Checked); 
+        d->lut.setVisibility(d->visible->checkState() == Qt::Checked);
+        emit valueChanged(d->lut);
     });
 }
 
@@ -84,23 +88,23 @@ gnomonLookupTableEditor::~gnomonLookupTableEditor(void)
 }
 
 
-gnomonLookupTable *gnomonLookupTableEditor::value(void) const
+gnomonLookupTable gnomonLookupTableEditor::value(void) const
 {
     return d->lut;
 }
 
-void gnomonLookupTableEditor::setValue(gnomonLookupTable *lut)
+void gnomonLookupTableEditor::setValue(gnomonLookupTable lut)
 {
     d->lut = lut;
 
-    d->colormap->setValue(lut->colorMapName());
+    d->colormap->setValue(lut.colorMapName());
 
-    QList<double> valueRange = lut->valueRange();
+    QList<double> valueRange = lut.valueRange();
     d->value_range->setRange(valueRange[0],valueRange[1]);
     d->value_range->setValueMin(valueRange[0]);
     d->value_range->setValueMax(valueRange[1]);
 
-    if(lut->visibility())
+    if(lut.visibility())
         d->visible->setCheckState(Qt::Checked);
     else
         d->visible->setCheckState(Qt::Unchecked);

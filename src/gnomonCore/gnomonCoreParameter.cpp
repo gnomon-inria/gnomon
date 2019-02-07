@@ -32,6 +32,11 @@ void gnomonCoreParameter::setValue(const QVariant& v)
     return;
 }
 
+void gnomonCoreParameter::copy(gnomonCoreParameter *other)
+{
+    return;
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterBool
 // ///////////////////////////////////////////////////////////////////
@@ -57,6 +62,14 @@ void gnomonCoreParameterBool::setValue(const QVariant& v)
 {
     if(m_value != v.toBool()) {
         m_value = v.toBool();
+        emit valueChanged();
+    }
+}
+
+void gnomonCoreParameterBool::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterBool *param = dynamic_cast<gnomonCoreParameterBool *>(other)) {
+        m_value = param->value();
         emit valueChanged();
     }
 }
@@ -171,6 +184,15 @@ void gnomonCoreParameterString::setValue(const QVariant& v)
     }
 }
 
+void gnomonCoreParameterString::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterString *param = dynamic_cast<gnomonCoreParameterString *>(other)) {
+        m_values = param->values();
+        m_current_index = param->currentIndex();
+        emit valueChanged();
+    }
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterStringList
 // ///////////////////////////////////////////////////////////////////
@@ -249,6 +271,16 @@ void gnomonCoreParameterStringList::setValue(const QVariant& v)
     this->setValue(val);
 }
 
+
+void gnomonCoreParameterStringList::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterStringList *param = dynamic_cast<gnomonCoreParameterStringList *>(other)) {
+        m_values = param->values();
+        m_value = param->value();
+        emit valueChanged();
+    }
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant
 // ///////////////////////////////////////////////////////////////////
@@ -266,6 +298,15 @@ void gnomonCoreParameterVariant::setValue(const QVariant& v)
 {
     if(m_v != v) {
         m_v = v;
+        emit valueChanged();
+    }
+}
+
+
+void gnomonCoreParameterVariant::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterVariant *param = dynamic_cast<gnomonCoreParameterVariant *>(other)) {
+        m_v = param->value();
         emit valueChanged();
     }
 }

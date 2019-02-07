@@ -32,7 +32,7 @@ public:
 
 public:
 	void setImageChannels(QMap<QString, vtkImageData *> imageChannels);
-    void setChannelLookupTables(const QMap<QString, gnomonLookupTable *>&);
+    void setChannelLookupTables(const QMap<QString, gnomonLookupTable>&);
 
 public slots:
     void update(void);

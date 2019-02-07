@@ -37,6 +37,8 @@ public:
 
 public:
     virtual void setValue(const QVariant&);
+    virtual void copy(gnomonCoreParameter *);
+
 signals:
     void valueChanged();
 
@@ -84,6 +86,16 @@ public:
     void setMinimumValue(T min) { m_min = min; }
     void setMaximumValue(T max) { m_max = max; }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
+
+    void copy(gnomonCoreParameter *other) {
+        if (gnomonCoreParameterNumeric<T> *param = dynamic_cast<gnomonCoreParameterNumeric<T> *>(other)) {
+            m_min = param->min();
+            m_max = param->max();
+            m_accuracy = param->accuracy();
+            m_value = param->value();
+            emit valueChanged();
+        }
+    }
 
 private:
     T m_value = T(0);
@@ -154,6 +166,16 @@ public:
     void setMaximumValue(T max) { m_max = max; if(m_value[0]>max) m_value[0]=max; if(m_value[0]<max) m_value[1]=max; emit valueChanged(); }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
+    void copy(gnomonCoreParameter *other) {
+        if (gnomonCoreParameterNumericRange<T> *param = dynamic_cast<gnomonCoreParameterNumericRange<T> *>(other)) {
+            m_min = param->min();
+            m_max = param->max();
+            m_accuracy = param->accuracy();
+            m_value = param->value();
+            emit valueChanged();
+        }
+    }
+
 private:
     QList<T> m_value = {T(0),T(0)};
     int m_accuracy = 2;
@@ -193,6 +215,8 @@ public:
     void setValue(bool);
     void setValue(const QVariant&);
 
+    void copy(gnomonCoreParameter *other);
+
 private:
     bool m_value = false;
 };
@@ -226,6 +250,8 @@ public:
     void setValue(const QString&);
     void setValue(const QVariant&);
 
+    void copy(gnomonCoreParameter *other);
+
 private:
     int m_current_index = 0;
     QStringList m_values;
@@ -256,6 +282,8 @@ public:
     void setValue(const QStringList&);
     void setValue(const QVariant&);
 
+    void copy(gnomonCoreParameter *other);
+
 private:
     QStringList m_value;
     QStringList m_values;
@@ -276,6 +304,8 @@ public:
     QVariant value(void) const;
 
     void setValue(const QVariant&);
+
+    void copy(gnomonCoreParameter *other);
 
 private:
     QVariant m_v;

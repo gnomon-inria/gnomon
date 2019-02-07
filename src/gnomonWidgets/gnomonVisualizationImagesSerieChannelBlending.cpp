@@ -52,11 +52,13 @@ public:
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
 
+    gnomonImageDataChannelBlending *blending = nullptr;
+
     gnomonActor2DImageRGBAWidget *actor2D = nullptr; 
     gnomonActorImageRGBAVolume *volume = nullptr;
 
 public:
-    QMap<QString, gnomonLookupTable *> channelLookupTables;
+    QMap<QString, gnomonLookupTable> channelLookupTables;
 
 public:
     QMap<int, QString> defaultColormaps;
@@ -100,11 +102,14 @@ void gnomonVisualizationImagesSerieChannelBlending::setImagesSerie(gnomonImagesS
 
     dd->channelLookupTables.clear();
 
-    for (const auto& parameterName : d->parameters.keys()) {
+
+    QList<QString> parameterNames = d->parameters.keys();
+
+    for (const auto& parameterName : parameterNames) {
         if(parameterName.contains("lookuptable")) {
             delete d->parameters[parameterName];
             d->parameters.remove(parameterName);
-        } 
+        }
     }
 
     QList<double> valueRange = {0,1};
@@ -115,13 +120,19 @@ void gnomonVisualizationImagesSerieChannelBlending::setImagesSerie(gnomonImagesS
     }
 
     if(dd->imagesSerie->channels().size()==1) {
-        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("grey", valueRange, true), "Lookuptable to apply to the image");
-        dd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+        if (dd->channelLookupTables.contains("")) {
+            dd->channelLookupTables.remove("");
+        }
+        dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
+        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[""], "Lookuptable to apply to the image");
     } else {
         int iChannel = 0;
         for (const auto& channelName : dd->imagesSerie->channels()) {
-            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true), "Lookuptable to apply to the "+channelName+" image channel");
-            dd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
+            if (dd->channelLookupTables.contains(channelName)) {
+                dd->channelLookupTables.remove(channelName);
+            }
+            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
+            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
             iChannel++;
         }
     }
@@ -173,13 +184,15 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
         }
     }
 
-    gnomonImageDataChannelBlending *blending = gnomonImageDataChannelBlending::New();
-    blending->setImageChannels(channelImages);
-    blending->setChannelLookupTables(dd->channelLookupTables);
+    if (!dd->blending) {
+        dd->blending = gnomonImageDataChannelBlending::New();
+    }
+    dd->blending->setImageChannels(channelImages);
+    dd->blending->setChannelLookupTables(dd->channelLookupTables);
     // blending->setColorMap(colormap);
     // blending->setValueRange(value_range);
-    blending->update();
-    dd->image = blending;
+    dd->blending->update();
+    dd->image = dd->blending;
     
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageRGBAWidget::New();

@@ -134,7 +134,8 @@ void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCorePa
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-            d->parameters[param] = parameters[param];
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
         }
     }
 }

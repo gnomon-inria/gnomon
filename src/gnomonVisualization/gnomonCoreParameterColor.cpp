@@ -94,24 +94,41 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
     }
 }
 
+void gnomonCoreParameterColorMap::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterColorMap *param = dynamic_cast<gnomonCoreParameterColorMap *>(other)) {
+        m_n = param->name();
+        m_c = param->value();
+        emit valueChanged();
+    }
+}
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterLookupTable
 // ///////////////////////////////////////////////////////////////////
 
-gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(gnomonLookupTable *lut, const QString& doc) : gnomonCoreParameter(doc), m_l(lut)
+gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(const gnomonLookupTable& lut, const QString& doc) : gnomonCoreParameter(doc), m_l(lut)
 {
 }
 
-gnomonLookupTable *gnomonCoreParameterLookupTable::value(void) const
+gnomonLookupTable gnomonCoreParameterLookupTable::value(void) const
 {
     return m_l;
 }
 
-void gnomonCoreParameterLookupTable::setValue(gnomonLookupTable *lut)
+void gnomonCoreParameterLookupTable::setValue(const gnomonLookupTable& lut)
 {
     m_l = lut;
-    m_l->setColorMap(lut->colorMapName());
+    m_l.setColorMap(lut.colorMapName());
+}
+
+void gnomonCoreParameterLookupTable::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterLookupTable *param = dynamic_cast<gnomonCoreParameterLookupTable *>(other)) {
+        m_l = param->value();
+        emit valueChanged();
+    }
 }
 
 

@@ -40,6 +40,8 @@ public:
     void setValue(const QMap<double, QColor>&);
     void setValue(const QString&);
 
+    void copy(gnomonCoreParameter *other);
+
 private:
     QMap<double, QColor> m_c;
     QString m_n;
@@ -54,15 +56,17 @@ Q_DECLARE_METATYPE(gnomonCoreParameterColorMap *);
 class GNOMONWIDGETS_EXPORT gnomonCoreParameterLookupTable : public gnomonCoreParameter
 {
 public:
-     gnomonCoreParameterLookupTable(gnomonLookupTable *lut, const QString& doc = QString());
+     gnomonCoreParameterLookupTable(const gnomonLookupTable& lut, const QString& doc = QString());
     ~gnomonCoreParameterLookupTable(void) = default;
 
-    gnomonLookupTable *value(void) const;
+    gnomonLookupTable value(void) const;
 
-    void setValue(gnomonLookupTable *);
+    void setValue(const gnomonLookupTable&);
+
+    void copy(gnomonCoreParameter *other);
 
 private:
-    gnomonLookupTable * m_l;
+    gnomonLookupTable m_l;
 };
 
 Q_DECLARE_METATYPE(gnomonCoreParameterLookupTable *);

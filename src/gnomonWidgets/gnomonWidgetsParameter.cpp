@@ -275,7 +275,7 @@ QWidget *gnomonWidgetsParameterLookupTable::widget(gnomonCoreParameterLookupTabl
 
         widget->setValue(parameter->value());
 
-        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable *val) {
+        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable val) {
             parameter->setValue(val);
         });
 

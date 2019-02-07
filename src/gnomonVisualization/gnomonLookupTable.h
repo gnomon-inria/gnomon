@@ -23,11 +23,11 @@
 // gnomonLookupTableColormap
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonLookupTable : public QObject
+class GNOMONWIDGETS_EXPORT gnomonLookupTable
 {
-	Q_OBJECT
 
 public:
+     gnomonLookupTable(void) = default;
      gnomonLookupTable(const QMap<double, QColor>& c, const QList<double> r={0,1}, bool v=true);
      gnomonLookupTable(const QString& clut, const QList<double> r={0,1}, bool v=true);
     ~gnomonLookupTable(void) = default;
@@ -49,8 +49,6 @@ private:
     QList<double> value_range;
     bool visible;
 };
-
-Q_DECLARE_METATYPE(gnomonLookupTable *);
 
 //
 // gnomonLookupTable.h ends here

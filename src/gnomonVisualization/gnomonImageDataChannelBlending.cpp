@@ -50,7 +50,7 @@ public:
 public:
 
     int value_range[2];
-    QMap<QString, gnomonLookupTable *> channelLookupTables;
+    QMap<QString, gnomonLookupTable> channelLookupTables;
 
     bool modified;
 
@@ -62,9 +62,9 @@ public slots:
 void gnomonImageDataChannelBlendingPrivate::updateOpacities(void)
 {
     for (const auto& channelName : this->imageChannels.keys()) {
-        gnomonLookupTable *lut = this->channelLookupTables[channelName];
+        gnomonLookupTable lut = this->channelLookupTables[channelName];
         
-        QList<double> value_range = lut->valueRange();
+        QList<double> value_range = lut.valueRange();
 
         this->opacities[channelName]->RemoveAllPoints();
         this->opacities[channelName]->AddPoint(value_range[0],0.00);
@@ -75,10 +75,10 @@ void gnomonImageDataChannelBlendingPrivate::updateOpacities(void)
 void gnomonImageDataChannelBlendingPrivate::updateColorFunctions(void)
 {
     for (const auto& channelName : this->imageChannels.keys()) {
-        gnomonLookupTable *lut = this->channelLookupTables[channelName];
+        gnomonLookupTable lut = this->channelLookupTables[channelName];
         
-        QList<double> value_range = lut->valueRange();
-        QMap<double, QColor> colormap = lut->colorMap();
+        QList<double> value_range = lut.valueRange();
+        QMap<double, QColor> colormap = lut.colorMap();
 
         this->colorFunctions[channelName]->RemoveAllPoints();
         for (const auto& val : colormap.keys()) {
@@ -111,7 +111,7 @@ void gnomonImageDataChannelBlending::setImageChannels(QMap<QString, vtkImageData
     this->modified();
 }
 
-void gnomonImageDataChannelBlending::setChannelLookupTables(const QMap<QString, gnomonLookupTable *>& value)
+void gnomonImageDataChannelBlending::setChannelLookupTables(const QMap<QString, gnomonLookupTable>& value)
 {
     d->channelLookupTables = value;
 }
@@ -128,6 +128,12 @@ void gnomonImageDataChannelBlending::update(void)
 
     if(d->channelLookupTables.size() != d->imageChannels.size())
         return;
+
+    for (const auto& channel : d->imageChannels.keys()) {
+        if(!d->channelLookupTables.contains(channel)) {
+            return;
+        }
+    }
 
     d->updateColorFunctions();
     d->updateOpacities();
@@ -162,7 +168,7 @@ void gnomonImageDataChannelBlending::update(void)
     // blend->SetBlendModeToCompound();
 
     for (const auto& channelName : d->imageChannels.keys()) {
-        if(d->channelLookupTables[channelName]->visibility()) {
+        if(d->channelLookupTables[channelName].visibility()) {
             vtkSmartPointer<vtkImageMapToColors> colors = vtkSmartPointer<vtkImageMapToColors>::New();
             colors->SetInputData(d->imageChannels[channelName]);
             colors->SetLookupTable(channelLuts[channelName]);
