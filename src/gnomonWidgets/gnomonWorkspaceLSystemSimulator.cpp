@@ -13,26 +13,27 @@
 // Code:
 
 #include <dtkConfig.h>
-
 #if defined(DTK_BUILD_WRAPPERS)
 #include <dtkScript>
 #endif
-
 #include <dtkWidgets>
-#include "gnomonWorkspaceLSystemSimulator.h"
+
+#include <gnomonCore/gnomonAbstractEvolutionModel>
+#include <gnomonCore/gnomonAbstractForm>
+#include <gnomonCore/gnomonLString.h>
+#include <gnomonStyle>
 
 #include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewForm.h"
-
 #include "gnomonCoreParameter.h"
+#include "gnomonWorkspaceLSystemSimulator.h"
 
-#include <gnomonCore/gnomonAbstractEvolutionModel>
-
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonLString.h>
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceLSystemSimulatorPrivate
 {
@@ -54,7 +55,6 @@ public:
 
 public:
     gnomonAbstractEvolutionModel * model = nullptr;
-
 };
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : gnomonWorkspace(parent)
@@ -140,7 +140,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
         parent->setCursor(Qt::ArrowCursor);
     });
 
-
     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
     pane_item_button->setTitle("Simulation");
     pane_item_button->addWidget(button);
@@ -149,7 +148,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     pane_item_button->toggle();
 
     d->pane->addWidget(pane_item_button);
-
 
     connect(d->finder, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
     connect(d->finder, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
@@ -172,6 +170,19 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     layout->setSpacing(0);
     layout->addWidget(splitter);
     layout->addWidget(d->pane);
+
+    this->setObjectName("LSystemSimulator");
+
+    QFile file(":gnomon/jupyter_console.py");
+
+    if (file.open(QIODevice::ReadOnly)) {
+        int stat;
+        QString jupyter_script  = file.readAll();
+        file.close();
+        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat));
+    } else {
+        qWarning() << "Can't open jupyter console script";
+    }
 }
 
 gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
@@ -205,6 +216,19 @@ void gnomonWorkspaceLSystemSimulator::reset(void)
     d->terminal->output(lstring->toString());
 }
 
+void gnomonWorkspaceLSystemSimulator::addInterpreter(QWidget *editor)
+{
+    if(!d->terminal)
+        return;
+
+    d->terminal->hide();
+    d->terminal->deleteLater();
+    d->terminal = Q_NULLPTR;
+
+    editor->setStyleSheet(gnomonStyleSheet());
+
+    d->viewer_layout->addWidget(editor);
+}
 
 //
 // gnomonWorkspaceLSystemSimulator.cpp ends here

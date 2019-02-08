@@ -13,32 +13,26 @@
 // Code:
 
 #include <dtkConfig.h>
-
 #if defined(DTK_BUILD_WRAPPERS)
 #include <dtkScript>
 #endif
-
 #include <dtkWidgets>
-#include "gnomonWorkspacePythonSimulator.h"
 
+#include <gnomonCore/gnomonAbstractEvolutionModel>
+#include <gnomonCore/gnomonAbstractForm>
+#include <gnomonCore/gnomonMesh.h>
+#include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonFonts>
 #include <gnomonStyle>
-#include <gnomonCore/gnomonAbstractEvolutionModel>
 
 #include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewForm.h"
-
 #include "gnomonCoreParameter.h"
 #include "gnomonWidgetsParameter.h"
-
-
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonMesh.h>
-#include <gnomonCore/gnomonCellComplex.h>
-
+#include "gnomonWorkspacePythonSimulator.h"
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCodeEditorToolBar
@@ -136,13 +130,11 @@ public:
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : gnomonWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
-    this->setObjectName("PythonSimulator");
 
     d->parameters["initial_time"] = new gnomonCoreParameterDouble(0., 0., 1000., 2., "Starting time for the simulation of the model");
     d->parameters["final_time"] = new gnomonCoreParameterDouble(1., 0., 1000., 2., "Last time for the simulation of the model");
     d->parameters["dt"] = new gnomonCoreParameterDouble(1., 0., 1., 2., "Time increment used for the step function of the model");
     d->parameters["animate"] = new gnomonCoreParameterBool(true, "Whether to display the model results at each step");
-
 
     d->font_awesome = new gnomonFontAwesome(this);
     d->font_awesome->initFontAwesome();
@@ -314,7 +306,10 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     layout->addWidget(splitter);
     layout->addWidget(d->pane);
 
+    this->setObjectName("PythonSimulator");
+
     QFile file(":gnomon/jupyter_console.py");
+
     if (file.open(QIODevice::ReadOnly)) {
         int stat;
         QString jupyter_script  = file.readAll();
@@ -332,6 +327,9 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 
 void gnomonWorkspacePythonSimulator::addInterpreter(QWidget *editor)
 {
+    if(!d->terminal)
+        return;
+
     d->terminal->hide();
     d->terminal->deleteLater();
     d->terminal = Q_NULLPTR;
@@ -475,6 +473,7 @@ void gnomonWorkspacePythonSimulator::reset(void)
     }
 }
 
+// ///////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspacePythonSimulator.moc"
 

@@ -8,3 +8,4 @@
 
 %Include gnomonWorkspace.sip
 %Include gnomonWorkspacePythonSimulator.sip
+%Include gnomonWorkspaceLSystemSimulator.sip

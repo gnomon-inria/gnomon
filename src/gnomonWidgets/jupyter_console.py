@@ -13,6 +13,7 @@
 # Code:
 
 import gnomoncore
+
 from gnomonWidgets import *
 
 try:
@@ -49,6 +50,7 @@ else:
     console.kernel_client = kernel_client
 
     toplevels = qApp.topLevelWidgets()
+
     for widget in toplevels:
         if isinstance(widget, QMainWindow):
             sublevels = widget.children()
@@ -56,6 +58,11 @@ else:
                 if (subwidget.objectName() == "PythonSimulator"):
                     print("replace terminal with jupyter console")
                     window = gnomonWorkspacePythonSimulator.downcast(subwidget)
+                    window.addInterpreter(console)
+
+                if (subwidget.objectName() == "LSystemSimulator"):
+                    print("replace terminal with jupyter console")
+                    window = gnomonWorkspaceLSystemSimulator.downcast(subwidget)
                     window.addInterpreter(console)
 
 #

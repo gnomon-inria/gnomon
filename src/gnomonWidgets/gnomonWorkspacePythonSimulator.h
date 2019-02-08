@@ -40,7 +40,7 @@ public:
     void configure(QWidget *);
     void addInterpreter(QWidget *);
 
- public:
+public:
     static gnomonWorkspacePythonSimulator *downcast(QWidget *widget)
     {
         return dynamic_cast<gnomonWorkspacePythonSimulator *>(widget);
