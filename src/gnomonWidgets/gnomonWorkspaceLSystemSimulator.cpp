@@ -47,7 +47,11 @@ public:
 
 public:
     gnomonViewForm *view;
+
+public:
     dtkInterpreter *terminal;
+
+public:
     QVBoxLayout *viewer_layout = nullptr;
 
 public:
@@ -193,27 +197,43 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 void gnomonWorkspaceLSystemSimulator::apply(void)
 {
     d->model = gnomonCore::evolutionModel::pluginFactory().create("gnomonLStringEvolutionModelLPy");
-    gnomonCoreParameterString * file = ((gnomonCoreParameterString *)d->model->parameters()["lpy_file"]);
+
+    gnomonCoreParameterString *file = ((gnomonCoreParameterString *)d->model->parameters()["lpy_file"]);
     file->addValue(d->editor->fileName());
     file->setValue(d->editor->fileName());
 
     d->model->reset();
-    gnomonLString *lstring = (gnomonLString *) d->model->forms()["lstring"];
-    d->terminal->output(lstring->toString());
+
+    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+
+    if (d->terminal)
+        d->terminal->output(lstring->toString());
+    else
+        qDebug() << Q_FUNC_INFO << lstring->toString();
 }
 
 void gnomonWorkspaceLSystemSimulator::step(void)
 {
-    d->model->step(0,1);
-    gnomonLString *lstring = (gnomonLString *) d->model->forms()["lstring"];
-    d->terminal->output(lstring->toString());
+    d->model->step(0, 1);
+
+    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+
+    if (d->terminal)
+        d->terminal->output(lstring->toString());
+    else
+        qDebug() << Q_FUNC_INFO << lstring->toString();
 }
 
 void gnomonWorkspaceLSystemSimulator::reset(void)
 {
     d->model->reset();
-    gnomonLString *lstring = (gnomonLString *) d->model->forms()["lstring"];
-    d->terminal->output(lstring->toString());
+
+    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+
+    if (d->terminal)
+        d->terminal->output(lstring->toString());
+    else
+        qDebug() << Q_FUNC_INFO << lstring->toString();
 }
 
 void gnomonWorkspaceLSystemSimulator::addInterpreter(QWidget *editor)
