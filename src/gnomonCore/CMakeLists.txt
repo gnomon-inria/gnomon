@@ -39,6 +39,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageFilter.h
   gnomonAbstractCellImageFromImage
   gnomonAbstractCellImageFromImage.h
+  gnomonAbstractCellImageQuantification
+  gnomonAbstractCellImageQuantification.h
   gnomonAbstractCellImageReader
   gnomonAbstractCellImageReader.h
   gnomonAbstractCellImageWriter
@@ -169,6 +171,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFilter.cpp
   gnomonAbstractCellImageFromImage.cpp
+  gnomonAbstractCellImageQuantification.cpp
   gnomonAbstractCellImageReader.cpp
   gnomonAbstractCellImageWriter.cpp
   gnomonAbstractEvolutionModel.cpp
