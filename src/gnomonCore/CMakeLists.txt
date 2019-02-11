@@ -102,6 +102,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCellImage.h
   gnomonCellImageFilterCommand
   gnomonCellImageFilterCommand.h
+  gnomonCellImageQuantificationCommand
+  gnomonCellImageQuantificationCommand.h
   gnomonCellImageReaderCommand
   gnomonCellImageReaderCommand.h
   gnomonCellImageWriterCommand
@@ -197,6 +199,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCellComplexReaderCommand.cpp
   gnomonCellComplexWriterCommand.cpp
   gnomonCellImageFilterCommand.cpp
+  gnomonCellImageQuantificationCommand.cpp
   gnomonCellImageReaderCommand.cpp
   gnomonCellImageWriterCommand.cpp
   gnomonCore.cpp
