@@ -136,6 +136,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceCellComplexFromCellImage.cpp
   gnomonWorkspaceCellImageFilter.cpp
+  gnomonWorkspaceCellImageQuantification.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspaceMeshFromImage.cpp
