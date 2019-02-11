@@ -26,9 +26,16 @@
 #include <gnomonCore/gnomonImagesSerie>
 #include <gnomonCore/gnomonCellImageQuantificationCommand>
 
+#include <gnomonStyle>
+
 #include <dtkWidgets>
 #include <dtkImagingCore>
 #include <dtkScript>
+
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWorkspaceCellImageQuantificationPrivate
+// ///////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceCellImageQuantificationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonCellImageQuantificationCommand>
 {
@@ -45,6 +52,8 @@ public:
 
 public:
     dtkInterpreter *terminal;
+    QVBoxLayout *mpl_layout = nullptr;
+    QWidget *mpl_view = nullptr;
     
 };
 
@@ -68,6 +77,11 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
     return gnomonCore::cellImageQuantification::pluginFactory().keys();
 }
 
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWorkspaceCellImageQuantification
+// ///////////////////////////////////////////////////////////////////
+
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : gnomonWorkspace(parent)
 {
     int stat;
@@ -82,12 +96,21 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->terminal = new dtkInterpreter(this);
     d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
-
+    d->mpl_layout = new QVBoxLayout;
+    d->mpl_layout->setContentsMargins(0, 0, 0, 0);
+    d->mpl_layout->setSpacing(0);
+    d->mpl_layout->addWidget(d->terminal);
+    
+    d->mpl_view = new QWidget(this);
+    d->mpl_view->setLayout(d->mpl_layout);
+    d->mpl_view->resize(800,d->mpl_view->height());
+    d->mpl_view->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum));
+    
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->view);
-    layout->addWidget(d->terminal);
+    layout->addWidget(d->mpl_view);
     layout->addWidget(d->pane(this));
 
     connect(d->view, &gnomonViewForm::formAdded, [=] () {
@@ -101,11 +124,39 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
         d->command->setImage(d->view->imagesSerie());
         d->configure(this,algorithm);
     });
+
+    this->setObjectName("QuantificationWorkspace");
+
+    QFile file(":gnomon/matplotlib_figure.py");
+
+    if (file.open(QIODevice::ReadOnly)) {
+        int stat;
+        QString matplotlib_script  = file.readAll();
+        file.close();
+        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat));
+    } else {
+        qWarning() << "Can't open matplotlib figure script";
+    }
 }
 
 gnomonWorkspaceCellImageQuantification::~gnomonWorkspaceCellImageQuantification(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceCellImageQuantification::addView(QWidget *figure)
+{
+    if(!d->terminal)
+        return;
+
+    d->terminal->hide();
+    d->terminal->deleteLater();
+    d->terminal = Q_NULLPTR;
+
+    figure->setStyleSheet(gnomonStyleSheet());
+
+    d->mpl_layout->addWidget(figure);
+    d->mpl_view->resize(800,d->mpl_view->height());
 }
 
 void gnomonWorkspaceCellImageQuantification::apply(void)

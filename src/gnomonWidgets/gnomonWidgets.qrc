@@ -2,6 +2,8 @@
 <RCC version="1.0">
   <qresource prefix="gnomon">
     <file>jupyter_console.py</file>
+    <file>matplotlib_figure.py</file>
+
     <file>gnomonViewVolumic-XY.png</file>
     <file>gnomonViewVolumic-XZ.png</file>
     <file>gnomonViewVolumic-YZ.png</file>
