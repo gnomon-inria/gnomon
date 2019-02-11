@@ -77,7 +77,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
     d->view = new gnomonViewForm(this);
-    d->view->setExportColor(gnomonToolBar::preprocess_color);
+    d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
 
     d->terminal = new dtkInterpreter(this);
     d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());

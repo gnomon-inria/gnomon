@@ -35,6 +35,7 @@ signals:
     void createLSystemSimulator(void);
     void createPythonSimulator(void);
     void createPreprocess(void);
+    void createCellImageQuantification(void);
     void createRegistration(void);
     void createMeshFromImage(void);
     void createSegmentation(void);
@@ -59,6 +60,7 @@ private:
     QAction *action_python_simulation;
     QAction *action_segmentation;
     QAction *action_preprocess;
+    QAction *action_cellImageQuantification;
     QAction *action_registration;
     QAction *action_meshFromImage;
     QAction *action_cellComplexFromCellImage;
@@ -87,6 +89,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_registration  = image_menu->addAction("Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
+    this->action_cellImageQuantification  = image_menu->addAction("Cell Quantification");
 
     QMenu * mesh_menu = this->menu->addMenu(this->font->icon(fa::play),"Meshing");
 
@@ -122,6 +125,9 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_preprocess)
         emit createPreprocess();
+
+    if(action == this->action_cellImageQuantification)
+        emit createCellImageQuantification();
 
     if(action == this->action_registration)
         emit createRegistration();
@@ -311,6 +317,8 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
         else if(item->text() == "Preprocess")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
+        else if(item->text() == "Cell Quantification")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::cellImageQuantification_color.red()).arg(gnomonToolBar::cellImageQuantification_color.green()).arg(gnomonToolBar::cellImageQuantification_color.blue()));
         else if(item->text() == "Registration")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
         else if(item->text() == "MeshFromImage")
@@ -354,6 +362,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     connect(button, SIGNAL(createLSystemSimulator()), this, SLOT(onCreateLSystemSimulator()));
     connect(button, SIGNAL(createPythonSimulator()), this, SLOT(onCreatePythonSimulator()));
     connect(button, SIGNAL(createPreprocess()), this, SLOT(onCreatePreprocess()));
+    connect(button, SIGNAL(createCellImageQuantification()), this, SLOT(onCreateCellImageQuantification()));
     connect(button, SIGNAL(createRegistration()), this, SLOT(onCreateRegistration()));
     connect(button, SIGNAL(createMeshFromImage()), this, SLOT(onCreateMeshFromImage()));
     connect(button, SIGNAL(createSegmentation()), this, SLOT(onCreateSegmentation()));
@@ -410,7 +419,6 @@ void gnomonToolBar::onCreatePythonSimulator(void)
     emit createPythonSimulator();
 }
 
-
 void gnomonToolBar::onCreateLSystemSimulator(void)
 {
     d->createWorkspace(lsystem_color, "LSystem simulator");
@@ -444,6 +452,13 @@ void gnomonToolBar::onCreatePreprocess(void)
     d->createWorkspace(preprocess_color, "Preprocess");
 
     emit createPreprocess();
+}
+
+void gnomonToolBar::onCreateCellImageQuantification(void)
+{
+    d->createWorkspace(cellImageQuantification_color, "Cell Quantification");
+
+    emit createCellImageQuantification();
 }
 
 void gnomonToolBar::onCreateRegistration(void)
@@ -483,6 +498,7 @@ QColor gnomonToolBar::fusion_color = QColor("#ff9500");
 QColor gnomonToolBar::registration_color = QColor("#ffcc00");
 QColor gnomonToolBar::meshFromImage_color = QColor("#5f9ea0");
 QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
+QColor gnomonToolBar::cellImageQuantification_color = QColor("#4c64d9");
 QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
 QColor gnomonToolBar::cellComplexFromCellImage_color = QColor("#dc143c");
 QColor gnomonToolBar::cellImageFilter_color = QColor("#dc143c");
