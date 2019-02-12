@@ -36,11 +36,15 @@ else:
     for widget in toplevels:
         if isinstance(widget, QMainWindow):
             sublevels = widget.children()
+
+            for w in widget.children():
+                sublevels += w.children()
+
             for subwidget in sublevels:
-                if (subwidget.objectName() == "QuantificationWorkspace"):
-                    print("replace terminal with matplotlib figure")
-                    widget = gnomonWorkspaceCellImageQuantification.downcast(subwidget)
-                    widget.addView(mpl_view.widget())
+                if (subwidget.objectName() == "ViewMatplotlib"):
+                    print("add matplotlib figure")
+                    widget = gnomonViewMatplotlib.downcast(subwidget)
+                    widget.addWidget(mpl_view.widget())
 
 
 #

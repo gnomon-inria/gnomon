@@ -34,14 +34,6 @@ public slots:
     void apply(void) override;
     void configure(const QString& text);
 
-    void addView(QWidget *);
-
-public:
-    static gnomonWorkspaceCellImageQuantification *downcast(QWidget *widget)
-    {
-        return dynamic_cast<gnomonWorkspaceCellImageQuantification *>(widget);
-    }
-
 private:
     class gnomonWorkspaceCellImageQuantificationPrivate *d;
 };

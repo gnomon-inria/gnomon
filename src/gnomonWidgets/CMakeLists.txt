@@ -53,6 +53,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonViewForm
   gnomonViewForm.h
   gnomonViewFormPool.h
+  gnomonViewMatplotlib
+  gnomonViewMatplotlib.h
   gnomonViewVolumic
   gnomonViewVolumic.h
   gnomonViewVolumicOverlay.h
@@ -122,6 +124,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonToolBar.cpp
   gnomonViewForm.cpp
   gnomonViewFormPool.cpp
+  gnomonViewMatplotlib.cpp
   gnomonViewVolumic.cpp
   gnomonViewVolumicOverlay.cpp
   gnomonViewVolumicPool.cpp
@@ -166,18 +169,18 @@ if(DTK_BUILD_WRAPPERS)
     if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
       set(${PROJECT_NAME}_SIP_WRAPPERS
+        sip${PROJECT_NAME}gnomonViewMatplotlib.cpp
         sip${PROJECT_NAME}gnomonWorkspace.cpp
-        sip${PROJECT_NAME}gnomonWorkspaceCellImageQuantification.cpp
         sip${PROJECT_NAME}gnomonWorkspacePythonSimulator.cpp
         sip${PROJECT_NAME}gnomonWorkspaceLSystemSimulator.cpp)
 
       dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonWidgets ${CMAKE_SOURCE_DIR}/sip/gnomonWidgets/gnomonWidgetsmod.sip "${${PROJECT_NAME}_SIP_WRAPPERS}" "${${PROJECT_NAME}_WRAP_DEPENDS}")
 
-      set_property(SOURCE sipgnomonWidgetscmodule.cpp                                PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspace.cpp                        PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspaceCellImageQuantification.cpp PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspacePythonSimulator.cpp         PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspaceLSystemSimulator.cpp        PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetscmodule.cpp                           PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonViewMatplotlib.cpp              PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonWorkspace.cpp                   PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonWorkspacePythonSimulator.cpp    PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonWorkspaceLSystemSimulator.cpp   PROPERTY SKIP_AUTOMOC ON)
     endif()
 
     if (DTK_PYTHON_WRAPPER MATCHES "SWIG")
