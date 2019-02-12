@@ -38,13 +38,6 @@ public:
 
 public:
     void configure(QWidget *);
-    void addInterpreter(QWidget *);
-
-public:
-    static gnomonWorkspacePythonSimulator *downcast(QWidget *widget)
-    {
-        return dynamic_cast<gnomonWorkspacePythonSimulator *>(widget);
-    }
 
 signals:
     void modelLoaded(void);

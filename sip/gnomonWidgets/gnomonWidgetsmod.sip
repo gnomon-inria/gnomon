@@ -6,8 +6,5 @@
 
 %Import dtkWidgets/dtkWidgetsmod.sip
 
+%Include gnomonInterpreterJupyter.sip
 %Include gnomonViewMatplotlib.sip
-
-%Include gnomonWorkspace.sip
-%Include gnomonWorkspacePythonSimulator.sip
-%Include gnomonWorkspaceLSystemSimulator.sip

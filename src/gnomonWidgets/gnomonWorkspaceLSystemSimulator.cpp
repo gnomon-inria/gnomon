@@ -25,6 +25,7 @@
 
 #include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
+#include "gnomonInterpreterJupyter.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewForm.h"
@@ -49,7 +50,7 @@ public:
     gnomonViewForm *view;
 
 public:
-    dtkInterpreter *terminal;
+    gnomonInterpreterJupyter *terminal;
 
 public:
     QVBoxLayout *viewer_layout = nullptr;
@@ -83,8 +84,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->view = new gnomonViewForm(this);
 
-    d->terminal = new dtkInterpreter(this);
-    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+    d->terminal = new gnomonInterpreterJupyter(this);
+//    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
     // -- Organizing the viewer column --
     d->viewer_layout = new QVBoxLayout;
@@ -174,19 +175,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     layout->setSpacing(0);
     layout->addWidget(splitter);
     layout->addWidget(d->pane);
-
-    this->setObjectName("LSystemSimulator");
-
-    QFile file(":gnomon/jupyter_console.py");
-
-    if (file.open(QIODevice::ReadOnly)) {
-        int stat;
-        QString jupyter_script  = file.readAll();
-        file.close();
-        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat));
-    } else {
-        qWarning() << "Can't open jupyter console script";
-    }
 }
 
 gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
@@ -234,20 +222,6 @@ void gnomonWorkspaceLSystemSimulator::reset(void)
         d->terminal->output(lstring->toString());
     else
         qDebug() << Q_FUNC_INFO << lstring->toString();
-}
-
-void gnomonWorkspaceLSystemSimulator::addInterpreter(QWidget *editor)
-{
-    if(!d->terminal)
-        return;
-
-    d->terminal->hide();
-    d->terminal->deleteLater();
-    d->terminal = Q_NULLPTR;
-
-    editor->setStyleSheet(gnomonStyleSheet());
-
-    d->viewer_layout->addWidget(editor);
 }
 
 //

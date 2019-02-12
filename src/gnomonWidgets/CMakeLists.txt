@@ -42,6 +42,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImageManagerData.h
   gnomonImageManagerItem.h
   gnomonImageManagerFocus.h
+  gnomonInterpreterJupyter
+  gnomonInterpreterJupyter.h
   gnomonItemButton.h
   gnomonLandmarkActor.h
   gnomonOverlayPane
@@ -117,6 +119,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImageManagerData.cpp
   gnomonImageManagerItem.cpp
   gnomonImageManagerFocus.cpp
+  gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
   gnomonLandmarkActor.cpp
   gnomonOverlayPane.cpp
@@ -169,18 +172,14 @@ if(DTK_BUILD_WRAPPERS)
     if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
       set(${PROJECT_NAME}_SIP_WRAPPERS
-        sip${PROJECT_NAME}gnomonViewMatplotlib.cpp
-        sip${PROJECT_NAME}gnomonWorkspace.cpp
-        sip${PROJECT_NAME}gnomonWorkspacePythonSimulator.cpp
-        sip${PROJECT_NAME}gnomonWorkspaceLSystemSimulator.cpp)
+        sip${PROJECT_NAME}gnomonInterpreterJupyter.cpp
+        sip${PROJECT_NAME}gnomonViewMatplotlib.cpp)
 
       dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonWidgets ${CMAKE_SOURCE_DIR}/sip/gnomonWidgets/gnomonWidgetsmod.sip "${${PROJECT_NAME}_SIP_WRAPPERS}" "${${PROJECT_NAME}_WRAP_DEPENDS}")
 
       set_property(SOURCE sipgnomonWidgetscmodule.cpp                           PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonWidgetsgnomonInterpreterJupyter.cpp          PROPERTY SKIP_AUTOMOC ON)
       set_property(SOURCE sipgnomonWidgetsgnomonViewMatplotlib.cpp              PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspace.cpp                   PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspacePythonSimulator.cpp    PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonWorkspaceLSystemSimulator.cpp   PROPERTY SKIP_AUTOMOC ON)
     endif()
 
     if (DTK_PYTHON_WRAPPER MATCHES "SWIG")

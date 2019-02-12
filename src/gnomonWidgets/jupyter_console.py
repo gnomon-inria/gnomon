@@ -54,16 +54,14 @@ else:
     for widget in toplevels:
         if isinstance(widget, QMainWindow):
             sublevels = widget.children()
+
+            for w in widget.children():
+                sublevels += w.children()
+
             for subwidget in sublevels:
-                if (subwidget.objectName() == "PythonSimulator"):
+                if (subwidget.objectName() == "InterpreterJupyter"):
                     print("replace terminal with jupyter console")
-                    window = gnomonWorkspacePythonSimulator.downcast(subwidget)
-                    window.addInterpreter(console)
-
-                if (subwidget.objectName() == "LSystemSimulator"):
-                    print("replace terminal with jupyter console")
-                    window = gnomonWorkspaceLSystemSimulator.downcast(subwidget)
-                    window.addInterpreter(console)
-
+                    window = gnomonInterpreterJupyter.downcast(subwidget)
+                    window.addWidget(console)
 #
 # create_jupyter_console.py ends here

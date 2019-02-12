@@ -31,18 +31,9 @@ public:
     void leave(void) override {};
     void apply(void) override;
 
-public:
-    void addInterpreter(QWidget *editor);
-
 public slots:
     void step(void);
     void reset(void);
-
-public:
-    static gnomonWorkspaceLSystemSimulator *downcast(QWidget *widget)
-    {
-        return dynamic_cast<gnomonWorkspaceLSystemSimulator *>(widget);
-    }
 
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;

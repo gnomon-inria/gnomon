@@ -27,6 +27,7 @@
 
 #include "gnomonCodeEditor.h"
 #include "gnomonFinder.h"
+#include "gnomonInterpreterJupyter.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonViewForm.h"
@@ -107,7 +108,7 @@ public:
     gnomonCodeEditorToolBar *editor_toolbar;
 
 public:
-    dtkInterpreter *terminal;
+    gnomonInterpreterJupyter *terminal;
 
 public:
     gnomonViewForm *view;
@@ -208,9 +209,8 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     d->view = new gnomonViewForm(this);
 
-    d->terminal = new dtkInterpreter(this);
-    d->terminal->setFont(d->font_source_code_pro->font(12));
-    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+    d->terminal = new gnomonInterpreterJupyter(this);
+//    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
 
     // -- Organizing the viewer column --
@@ -305,19 +305,6 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     layout->setSpacing(0);
     layout->addWidget(splitter);
     layout->addWidget(d->pane);
-
-    this->setObjectName("PythonSimulator");
-
-    QFile file(":gnomon/jupyter_console.py");
-
-    if (file.open(QIODevice::ReadOnly)) {
-        int stat;
-        QString jupyter_script  = file.readAll();
-        file.close();
-        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat));
-    } else {
-        qWarning() << "Can't open jupyter console script";
-    }
 }
 
 gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
@@ -325,31 +312,13 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
     delete d;
 }
 
-void gnomonWorkspacePythonSimulator::addInterpreter(QWidget *editor)
-{
-    if(!d->terminal)
-        return;
-
-    d->terminal->hide();
-    d->terminal->deleteLater();
-    d->terminal = Q_NULLPTR;
-
-    editor->setStyleSheet(gnomonStyleSheet());
-
-    d->viewer_layout->addWidget(editor);
-}
-
 void gnomonWorkspacePythonSimulator::apply(void)
 {
 //    gnomonCore::evolutionModel::pluginFactory().clear();
 
     int stat;
-    if (d->terminal) {
-        d->terminal->output(dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat));
-    } else {
-        QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
-        qDebug()<< output;
-    }
+    QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
+    qDebug()<< output;
 
     QString key = gnomonCore::evolutionModel::pluginFactory().keys()[0];
 //    QString key = dtkScriptInterpreterPython::instance()->interpret("print(__all__[0])", &stat);
