@@ -20,7 +20,7 @@ from gnomonWidgets import *
 import matplotlib.pyplot as plt
 
 try:
-    from Models.gnomonMplView import gnomonMplView
+    from gnomonMatplotlib.gnomonMplTabWidget import gnomonMplTabWidget
 except:
     print "Could not import mpl view class", sys.exc_info()
 else:
@@ -29,7 +29,7 @@ else:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
 
-    mpl_view = gnomonMplView(plt.figure(0),4,10,dpi=40)
+    mpl_tabs = gnomonMplTabWidget()
 
     toplevels = qApp.topLevelWidgets()
 
@@ -44,7 +44,7 @@ else:
                 if (subwidget.objectName() == "ViewMatplotlib"):
                     print("add matplotlib figure")
                     widget = gnomonViewMatplotlib.downcast(subwidget)
-                    widget.addWidget(mpl_view.widget())
+                    widget.addWidget(mpl_tabs)
 
 
 #
