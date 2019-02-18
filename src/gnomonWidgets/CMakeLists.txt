@@ -74,6 +74,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonVisualizationMesh.h
   gnomonVisualizationMesh
   gnomonWidgets
+  gnomonWidgets.h
   gnomonWidgetsParameter
   gnomonWidgetsParameter.h
   gnomonWorkspace
@@ -137,6 +138,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonVisualizationImagesSerie.cpp
   gnomonVisualizationImagesSerieChannelBlending.cpp
   gnomonVisualizationMesh.cpp
+  gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp

@@ -21,11 +21,9 @@
 #include <gnomonCore/gnomonCoreParameter>
 #include <gnomonVisualization/gnomonCoreParameterColor>
 
-#include "gnomonViewForm.h"
+#include "gnomonWidgets.h"
 
-#include "gnomonPolyDataMesh.h"
-#include "gnomonActorPolyData.h"
-#include "gnomonActor2DPolyData.h"
+#include "gnomonViewForm.h"
 
 #include <vtkCamera.h>
 #include <vtkImageData.h>
@@ -145,6 +143,11 @@ void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;
 }
+
+namespace gnomonWidgets {
+    DTK_DEFINE_CONCEPT(gnomonAbstractVisualization, visualization, gnomonWidgets);
+}
+
 
 //
 // gnomonAbstractVisualization.cpp ends here

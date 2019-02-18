@@ -53,5 +53,22 @@ protected:
     class gnomonAbstractVisualizationPrivate *d;
 };
 
+// ///////////////////////////////////////////////////////////////////
+// Give the concept the plugin machinery
+// ///////////////////////////////////////////////////////////////////
+
+DTK_DECLARE_OBJECT        (gnomonAbstractVisualization *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT)
+
+// /////////////////////////////////////////////////////////////////
+// Register to gnomonWidgets layer
+// /////////////////////////////////////////////////////////////////
+
+namespace gnomonWidgets {
+    DTK_DECLARE_CONCEPT(gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT, visualization);
+}
+
 //
 // gnomonAbstractVisualization.h ends here
