@@ -20,6 +20,7 @@
 #include <gnomonWorkspaceLSystemSimulator.h>
 #include <gnomonWorkspacePythonSimulator.h>
 #include <gnomonWorkspacePreprocess.h>
+#include <gnomonWorkspaceCellImageQuantification.h>
 #include <gnomonWorkspaceRegistration.h>
 #include <gnomonWorkspaceMeshFromImage.h>
 #include <gnomonWorkspaceSegmentation.h>
@@ -160,6 +161,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->menu, &gnomonToolBar::createPreprocess, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspacePreprocess(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
+    connect(d->menu, &gnomonToolBar::createCellImageQuantification, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceCellImageQuantification(this);
         workspace->enter();
 
         d->stack->addWidget(workspace);

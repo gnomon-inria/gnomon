@@ -1,0 +1,51 @@
+# Version: $Id$
+#
+#
+
+# Commentary:
+#
+#
+
+# Change Log:
+#
+#
+
+# Code:
+
+import sys
+
+import gnomoncore
+from gnomonWidgets import *
+
+import matplotlib.pyplot as plt
+
+try:
+    from gnomonMatplotlib.gnomonMplTabWidget import gnomonMplTabWidget
+except:
+    print "Could not import mpl view class", sys.exc_info()
+else:
+
+    from PyQt5.QtWidgets import qApp, QMainWindow
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+
+    mpl_tabs = gnomonMplTabWidget()
+
+    toplevels = qApp.topLevelWidgets()
+
+    for widget in toplevels:
+        if isinstance(widget, QMainWindow):
+            sublevels = widget.children()
+
+            for w in widget.children():
+                sublevels += w.children()
+
+            for subwidget in sublevels:
+                if (subwidget.objectName() == "ViewMatplotlib"):
+                    print("add matplotlib figure")
+                    widget = gnomonViewMatplotlib.downcast(subwidget)
+                    widget.addWidget(mpl_tabs)
+
+
+#
+# matplotlib_figure.py ends here

@@ -40,6 +40,7 @@
 #include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
 #include <gnomonCore/gnomonAbstractCellImageData.h>
 #include <gnomonCore/gnomonAbstractCellImageFromImage.h>
+#include <gnomonCore/gnomonAbstractCellImageQuantification.h>
 #include <gnomonCore/gnomonAbstractCellImageReader.h>
 #include <gnomonCore/gnomonAbstractCellImageWriter.h>
 #include <gnomonCore/gnomonAbstractMeshData.h>
@@ -508,6 +509,7 @@
 %include <gnomonCore/gnomonAbstractCellGraphFromImage.h>
 %include <gnomonCore/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonAbstractCellImageFromImage.h>
+%include <gnomonCore/gnomonAbstractCellImageQuantification.h>
 %include <gnomonCore/gnomonAbstractCellImageReader.h>
 %include <gnomonCore/gnomonAbstractCellImageWriter.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
