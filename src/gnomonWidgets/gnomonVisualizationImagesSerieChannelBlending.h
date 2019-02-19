@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationImagesSerieChannelBlending : publi
     Q_OBJECT
 
 public:
-     gnomonVisualizationImagesSerieChannelBlending(gnomonViewForm *view);
+     gnomonVisualizationImagesSerieChannelBlending(void);
     ~gnomonVisualizationImagesSerieChannelBlending(void);
 
 public:

@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImageMarchingCubes : public gn
     Q_OBJECT
 
 public:
-     gnomonVisualizationCellImageMarchingCubes(gnomonViewForm *view);
+     gnomonVisualizationCellImageMarchingCubes(void);
     ~gnomonVisualizationCellImageMarchingCubes(void);
 
 public:

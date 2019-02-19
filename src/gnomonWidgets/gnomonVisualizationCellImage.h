@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImage : public gnomonAbstractV
     Q_OBJECT
 
 public:
-     gnomonVisualizationCellImage(gnomonViewForm *view);
+     gnomonVisualizationCellImage(void);
     ~gnomonVisualizationCellImage(void);
 
 public:

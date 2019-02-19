@@ -57,7 +57,7 @@ public:
 // gnomonVisualizationCellImage
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImage::gnomonVisualizationCellImage(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationCellImagePrivate)
+gnomonVisualizationCellImage::gnomonVisualizationCellImage(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImagePrivate)
 {
     dd->cellImage = Q_NULLPTR;
 

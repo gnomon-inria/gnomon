@@ -32,7 +32,7 @@ class GNOMONWIDGETS_EXPORT gnomonAbstractVisualizationCellComplex : public gnomo
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationCellComplex(gnomonViewForm *view) : gnomonAbstractVisualization(view) {}
+    gnomonAbstractVisualizationCellComplex(void) : gnomonAbstractVisualization() {}
     virtual ~gnomonAbstractVisualizationCellComplex(void) = default;
 
 public:

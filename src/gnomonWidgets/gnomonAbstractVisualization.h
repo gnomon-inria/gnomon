@@ -28,7 +28,7 @@ class GNOMONWIDGETS_EXPORT gnomonAbstractVisualization : public QObject
     Q_OBJECT
 
 public:
-     gnomonAbstractVisualization(gnomonViewForm *view);
+     gnomonAbstractVisualization();
     ~gnomonAbstractVisualization(void);
 
 public:
@@ -37,6 +37,7 @@ public:
     void setParameters(const QMap<QString, gnomonCoreParameter *>&);
 
 public:
+    gnomonViewForm* view(void);
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
 public:

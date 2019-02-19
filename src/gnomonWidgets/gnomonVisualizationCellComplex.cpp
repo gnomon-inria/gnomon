@@ -94,7 +94,7 @@ void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
 // gnomonVisualizationCellComplex
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(gnomonViewForm* view) : gnomonAbstractVisualizationCellComplex(view), dd(new gnomonVisualizationCellComplexPrivate)
+gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbstractVisualizationCellComplex(), dd(new gnomonVisualizationCellComplexPrivate)
 {
 
     dd->q = this;

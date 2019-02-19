@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationImagesSerie : public gnomonAbstrac
     Q_OBJECT
 
 public:
-     gnomonVisualizationImagesSerie(gnomonViewForm *view);
+     gnomonVisualizationImagesSerie(void);
     ~gnomonVisualizationImagesSerie(void);
 
 public:

@@ -101,9 +101,8 @@ QImage gnomonAbstractVisualizationPrivate::offscreenImageRendering(void)
 // gnomonAbstractVisualization
 // /////////////////////////////////////////////////////////////////
 
-gnomonAbstractVisualization::gnomonAbstractVisualization(gnomonViewForm* view) : d(new gnomonAbstractVisualizationPrivate)
+gnomonAbstractVisualization::gnomonAbstractVisualization(void) : d(new gnomonAbstractVisualizationPrivate)
 {
-    d->view = view;
 }
 
 gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
@@ -138,10 +137,14 @@ void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCorePa
     }
 }
 
-
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;
+}
+
+gnomonViewForm* gnomonAbstractVisualization::view(void)
+{
+    return d->view;
 }
 
 namespace gnomonWidgets {

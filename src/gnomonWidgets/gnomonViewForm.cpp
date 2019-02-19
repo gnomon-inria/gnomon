@@ -24,8 +24,10 @@
 #include <gnomonCore/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
-#include <gnomonCore/gnomonAbstractForm>
 #include <dtkImagingCore>
+#include <dtkScript>
+
+#include <gnomonCore/gnomonAbstractForm>
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonCellComplex>
 #include <gnomonCore/gnomonCellImage>
@@ -712,8 +714,8 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
 
     if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
         // d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
-        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending(this);
-
+        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending();
+        d->formVisualization["gnomonImagesSerie"]->setView(this);
     }
     gnomonVisualizationImagesSerieChannelBlending *formVisualizationImagesSerie = (gnomonVisualizationImagesSerieChannelBlending *)d->formVisualization["gnomonImagesSerie"];
     // gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
@@ -750,7 +752,8 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"])) {
 //        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImage(this);
-        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImageMarchingCubes(this);
+        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImageMarchingCubes();
+        d->formVisualization["gnomonCellImage"]->setView(this);
     }
 //    gnomonVisualizationCellImage *formVisualizationCellImage = (gnomonVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
     gnomonVisualizationCellImageMarchingCubes *formVisualizationCellImage = (gnomonVisualizationCellImageMarchingCubes *)d->formVisualization["gnomonCellImage"];
@@ -787,9 +790,10 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
     {
-        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex(this);
+        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
+        d->formVisualization["gnomonCellComplex"]->setView(this);
     }
-    gnomonVisualizationCellComplex *formVisualizationCellComplex = (gnomonVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
+    gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
     formVisualizationCellComplex->setCellComplex(cellComplex);
     if (visualization) {
         formVisualizationCellComplex->setParameters(visualization->parameters());
@@ -823,7 +827,8 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
 
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
     {
-        d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh(this);
+        d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh();
+        d->formVisualization["gnomonMesh"]->setView(this);
     }
     gnomonVisualizationMesh *formVisualizationMesh = (gnomonVisualizationMesh *)d->formVisualization["gnomonMesh"];
     formVisualizationMesh->setMesh(mesh);

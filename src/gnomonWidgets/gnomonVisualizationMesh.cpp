@@ -53,7 +53,7 @@ public:
 // gnomonVisualizationMesh
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationMeshPrivate)
+gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationMeshPrivate)
 {
     dd->mesh = Q_NULLPTR;
 

@@ -53,7 +53,7 @@ public:
 // gnomonVisualizationCellImageMarchingCubes
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
+gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
     dd->cellImage = Q_NULLPTR;
 

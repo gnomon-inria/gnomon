@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisual
     Q_OBJECT
 
 public:
-     gnomonVisualizationMesh(gnomonViewForm *view);
+     gnomonVisualizationMesh(void);
     ~gnomonVisualizationMesh(void);
 
 public:

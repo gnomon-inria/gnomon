@@ -24,6 +24,7 @@
 
 #include <gnomonWidgets/gnomonAbstractVisualization.h>
 #include <gnomonWidgets/gnomonAbstractVisualizationCellComplex.h>
+#include <gnomonWidgets/gnomonViewForm.h>
 #include <gnomonWidgets/gnomonViewVolumic.h>
 
 %}
@@ -86,6 +87,7 @@
 
 %include <gnomonWidgets/gnomonAbstractVisualization.h>
 %include <gnomonWidgets/gnomonAbstractVisualizationCellComplex.h>
+%include <gnomonWidgets/gnomonViewForm.h>
 %include <gnomonWidgets/gnomonViewVolumic.h>
 
 //

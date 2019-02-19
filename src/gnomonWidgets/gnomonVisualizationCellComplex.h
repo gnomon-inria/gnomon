@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationCellComplex : public gnomonAbstrac
     Q_OBJECT
 
 public:
-     gnomonVisualizationCellComplex(gnomonViewForm *view);
+     gnomonVisualizationCellComplex(void);
     ~gnomonVisualizationCellComplex(void);
 
 public:
@@ -47,6 +47,11 @@ private:
 	class gnomonVisualizationCellComplexPrivate *dd;
 };
 
+
+inline gnomonAbstractVisualizationCellComplex *gnomonVisualizationCellComplexCreator(void)
+{
+    return new gnomonVisualizationCellComplex();
+}
 
 //
 // gnomonVisualizationCellComplex.h ends here
