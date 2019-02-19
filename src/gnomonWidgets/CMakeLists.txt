@@ -22,6 +22,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractVisualization.h
   gnomonAbstractVisualization_p.h
   gnomonAbstractVisualization
+  gnomonAbstractVisualizationCellComplex.h
+  gnomonAbstractVisualizationCellComplex
   gnomonCodeEditor
   gnomonCodeEditor.h
   gnomonDropSite
@@ -108,6 +110,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractVisualization.cpp
+  gnomonAbstractVisualizationCellComplex.cpp
   gnomonCodeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp

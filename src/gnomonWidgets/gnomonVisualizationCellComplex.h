@@ -18,14 +18,14 @@
 
 #include <gnomonWidgetsExport.h>
 
-#include "gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationCellComplex.h"
 
 class gnomonViewForm;
 
 class gnomonCellComplex;
 class gnomonCoreParameter;
 
-class GNOMONWIDGETS_EXPORT gnomonVisualizationCellComplex : public gnomonAbstractVisualization
+class GNOMONWIDGETS_EXPORT gnomonVisualizationCellComplex : public gnomonAbstractVisualizationCellComplex
 {
     Q_OBJECT
 
@@ -34,14 +34,14 @@ public:
     ~gnomonVisualizationCellComplex(void);
 
 public:
-	void setCellComplex(gnomonCellComplex *cellComplex);
+	void setCellComplex(gnomonCellComplex *cellComplex) override;
 
 public:
-    QImage imageRendering(void);
+    QImage imageRendering(void) override;
 
 public slots:
-    void update(void);
-    void render(void);
+    void update(void) override;
+    void render(void) override;
 
 private:
 	class gnomonVisualizationCellComplexPrivate *dd;
