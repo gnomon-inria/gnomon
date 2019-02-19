@@ -36,10 +36,6 @@ public:
 public:
 	void setCellComplex(gnomonCellComplex *cellComplex);
 
-public slots:
-    void updateOpacity(void);
-    void updateValueRange(void);
-    
 public:
     QImage imageRendering(void);
 
