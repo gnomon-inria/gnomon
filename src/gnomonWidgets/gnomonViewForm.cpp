@@ -353,6 +353,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d = new gnomonViewFormPrivate;
     d->q = this;
 
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
+
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
     connect(d->renderer3D_button, SIGNAL(iconClicked()), this, SLOT(switchTo3D()));
     connect(d->renderer2D_XY, SIGNAL(iconClicked()), this, SLOT(switchTo2DXY()));
@@ -788,9 +791,12 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 {
     d->forms["gnomonCellComplex"] = cellComplex;
 
+    QString key = gnomonWidgets::visualizationCellComplex::pluginFactory().keys()[0];
+
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
     {
-        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
+//        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
+        d->formVisualization["gnomonCellComplex"] = gnomonWidgets::visualizationCellComplex::pluginFactory().create(key);
         d->formVisualization["gnomonCellComplex"]->setView(this);
     }
     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
