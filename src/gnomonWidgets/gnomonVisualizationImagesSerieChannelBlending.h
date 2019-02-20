@@ -40,11 +40,11 @@ public slots:
     void updateOpacity(void);
 
 public:
-    QImage imageRendering(void);
+    QImage imageRendering(void) override;
 
 public slots:
-    void update(void);
-    void render(void);
+    void update(void) override;
+    void render(void) override;
 
 public:
     void setParameter(const QString&, const QVariant&) override;

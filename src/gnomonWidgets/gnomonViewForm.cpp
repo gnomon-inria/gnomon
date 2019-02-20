@@ -313,12 +313,10 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
                 this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
             }
 
-            if ((!this->parameterLayouts.contains(key))||(!this->formVisualizationPaneItems[key])) {
-                this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem(parent);
-                this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
-                this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
-                this->formVisualizationPaneItems[key]->toggle();
+            if (!this->formVisualizationPaneItems.contains(key)) {
+                this->refresh();
             }
+            this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
             qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
@@ -339,10 +337,44 @@ void gnomonViewFormPrivate::refresh(void)
 {
     this->formVisualizationPane->clearLayout();
 
-    for (const auto& key : this->formVisualizationPaneItems.keys()) {
-        if (this->formVisualizationPaneItems[key]) {
-            this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
+    for (const auto& key : this->formVisualization.keys()) {
+
+        if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
+            this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem((QWidget *) q->parent());
+            this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
+
+            QComboBox *combo_box = new QComboBox(this);
+            QStringList combo_box_keys = {};
+            if (key == "gnomonCellComplex") {
+                combo_box_keys = gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
+            }
+            for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
+                combo_box->addItem(*it);
+            }
+            combo_box->model()->sort(0);
+
+            QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
+                qDebug()<<"Visualization changed"<<visu;
+                if (this->formVisualization[key]) {
+                    delete this->formVisualization[key];
+                    this->formVisualization[key] = nullptr;
+                }
+                if (key == "gnomonCellComplex") {
+                    this->formVisualization[key] = gnomonWidgets::visualizationCellComplex::pluginFactory().create(visu);
+                    this->formVisualization[key]->setView(q);
+                    gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
+                    gnomonCellComplex *cellComplex = (gnomonCellComplex *)this->forms[key];
+                    formVisualizationCellComplex->setCellComplex(cellComplex);
+                    formVisualizationCellComplex->update();
+                 }
+                this->configure((QWidget *) q->parent(), key);
+            });
+
+            this->formVisualizationPaneItems[key]->addWidget(combo_box);
+            this->formVisualizationPaneItems[key]->toggle();
         }
+
+        this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
     }
     this->formVisualizationPane->addWidget(this->paneItemButton);
 }
@@ -796,6 +828,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 
     qDebug()<<Q_FUNC_INFO<<gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
     QString key = gnomonWidgets::visualizationCellComplex::pluginFactory().keys()[0];
+//    QString key = "gnomonVisualizationCellComplexTriangularMesh";
 
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
     {

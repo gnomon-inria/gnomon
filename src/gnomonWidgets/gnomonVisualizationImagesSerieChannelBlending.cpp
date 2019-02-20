@@ -89,6 +89,20 @@ gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieCha
 
 gnomonVisualizationImagesSerieChannelBlending::~gnomonVisualizationImagesSerieChannelBlending(void)
 {
+    if (dd->volume) {
+        d->view->renderer3D()->RemoveActor(dd->volume);
+        dd->volume->Delete();
+        dd->volume = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
     delete dd;
 
     dd = NULL;
