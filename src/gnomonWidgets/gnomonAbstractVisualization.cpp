@@ -17,11 +17,9 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonMesh>
-#include <gnomonCore/gnomonCoreParameter>
-#include <gnomonVisualization/gnomonCoreParameterColor>
-
-#include "gnomonWidgets.h"
+//#include <gnomonCore/gnomonMesh>
+//#include <gnomonCore/gnomonCoreParameter>
+//#include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonViewForm.h"
 
@@ -112,30 +110,30 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonAbstractVisualization::parameters(void) const
-{
-    return d->parameters;
-}
-
-void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
-{
-    if (d->parameters.contains(parameter)) {
-        d->parameters[parameter]->setValue(value);
-    }
-    else
-        qWarning()<<parameter<<"is not a valid parameter!";
-}
-
-void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
-{
-//    d->parameters = parameters;
-    for (const auto& param : parameters.keys()) {
-        if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
-        }
-    }
-}
+//QMap<QString, gnomonCoreParameter *> gnomonAbstractVisualization::parameters(void) const
+//{
+//    return d->parameters;
+//}
+//
+//void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
+//{
+//    if (d->parameters.contains(parameter)) {
+//        d->parameters[parameter]->setValue(value);
+//    }
+//    else
+//        qWarning()<<parameter<<"is not a valid parameter!";
+//}
+//
+//void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+//{
+////    d->parameters = parameters;
+//    for (const auto& param : parameters.keys()) {
+//        if (d->parameters.contains(param)) {
+////            d->parameters[param] = parameters[param];
+//            d->parameters[param]->copy(parameters[param]);
+//        }
+//    }
+//}
 
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
@@ -145,10 +143,6 @@ void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 gnomonViewForm* gnomonAbstractVisualization::view(void)
 {
     return d->view;
-}
-
-namespace gnomonWidgets {
-    DTK_DEFINE_CONCEPT(gnomonAbstractVisualization, visualization, gnomonWidgets);
 }
 
 

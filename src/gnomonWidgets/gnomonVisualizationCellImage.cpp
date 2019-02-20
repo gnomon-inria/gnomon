@@ -216,6 +216,30 @@ void gnomonVisualizationCellImage::render(void)
 }
 
 
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImage::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationCellImage::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationCellImage::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
 
 //
 // gnomonVisualizationCellImage.cpp ends here

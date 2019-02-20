@@ -47,6 +47,12 @@ public slots:
     void update(void);
     void render(void);
 
+public:
+    void setParameter(const QString&, const QVariant&) override;
+    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+
+
 private:
 	class gnomonVisualizationCellImagePrivate *dd;
 };

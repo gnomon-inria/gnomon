@@ -18,8 +18,6 @@
 
 #include <gnomonWidgetsExport.h>
 
-#include <dtkCore>
-
 class gnomonViewForm;
 class gnomonCoreParameter;
 
@@ -33,12 +31,12 @@ public:
 
 public:
     void setView(gnomonViewForm *view);
-    void setParameter(const QString&, const QVariant&);
-    void setParameters(const QMap<QString, gnomonCoreParameter *>&);
+    virtual void setParameter(const QString&, const QVariant&) = 0;
+    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) = 0;
 
 public:
     gnomonViewForm* view(void);
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 
 public:
     virtual QImage imageRendering(void) = 0;
@@ -53,23 +51,6 @@ public slots:
 protected:
     class gnomonAbstractVisualizationPrivate *d;
 };
-
-// ///////////////////////////////////////////////////////////////////
-// Give the concept the plugin machinery
-// ///////////////////////////////////////////////////////////////////
-
-DTK_DECLARE_OBJECT        (gnomonAbstractVisualization *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT)
-
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonWidgets layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonWidgets {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualization, GNOMONWIDGETS_EXPORT, visualization);
-}
 
 //
 // gnomonAbstractVisualization.h ends here

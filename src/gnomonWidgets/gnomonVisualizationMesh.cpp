@@ -232,5 +232,30 @@ void gnomonVisualizationMesh::render(void)
     d->view->render();
 }
 
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationMesh::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationMesh::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationMesh::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
+
 //
 // gnomonVisualizationMesh.cpp ends here

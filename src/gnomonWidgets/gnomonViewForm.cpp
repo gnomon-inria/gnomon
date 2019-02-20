@@ -300,6 +300,7 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
     if (this->formVisualization.contains(key)) {
         gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
+            qDebug()<<Q_FUNC_INFO<<key;
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
@@ -319,7 +320,9 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
                 this->formVisualizationPaneItems[key]->toggle();
             }
 
+            qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+            qDebug()<<Q_FUNC_INFO<<parameters;
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
                 if (widget) {
@@ -791,6 +794,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 {
     d->forms["gnomonCellComplex"] = cellComplex;
 
+    qDebug()<<Q_FUNC_INFO<<gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
     QString key = gnomonWidgets::visualizationCellComplex::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))

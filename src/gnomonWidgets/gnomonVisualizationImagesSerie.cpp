@@ -231,6 +231,30 @@ void gnomonVisualizationImagesSerie::render(void)
     d->view->render();
 }
 
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationImagesSerie::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationImagesSerie::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationImagesSerie::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
 
 //
 // gnomonVisualizationImagesSerie.cpp ends here
