@@ -19,6 +19,11 @@ project(gnomonWidgets)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonAbstractMatplotlibVisualization.h
+  gnomonAbstractMatplotlibVisualization_p.h
+  gnomonAbstractMatplotlibVisualization
+  gnomonAbstractMatplotlibVisualizationTree.h
+  gnomonAbstractMatplotlibVisualizationTree
   gnomonAbstractVisualization.h
   gnomonAbstractVisualization_p.h
   gnomonAbstractVisualization
@@ -110,6 +115,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractMatplotlibVisualization.cpp
+  gnomonAbstractMatplotlibVisualizationTree.cpp
   gnomonAbstractVisualization.cpp
   gnomonAbstractVisualizationCellComplex.cpp
   gnomonCodeEditor.cpp

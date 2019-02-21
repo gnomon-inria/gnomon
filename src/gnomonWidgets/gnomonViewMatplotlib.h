@@ -18,6 +18,9 @@
 
 #include <QtWidgets>
 
+class gnomonAbstractForm;
+class gnomonAbstractMatplotlibVisualization;
+
 class GNOMONWIDGETS_EXPORT gnomonViewMatplotlib : public QFrame
 {
     Q_OBJECT
@@ -25,6 +28,9 @@ class GNOMONWIDGETS_EXPORT gnomonViewMatplotlib : public QFrame
 public:
      gnomonViewMatplotlib(QWidget *parent = nullptr);
     ~gnomonViewMatplotlib(void);
+
+public:
+    void setForm(const QString&, gnomonAbstractForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
 
 public:
     void addWidget(QWidget *);

@@ -88,6 +88,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractTissueGrowthModel.h
   gnomonAbstractTreeData
   gnomonAbstractTreeData.h
+  gnomonAbstractTreeReader
+  gnomonAbstractTreeReader.h
   gnomonCellComplex
   gnomonCellComplex.h
   gnomonCellComplexFromCellImageCommand
@@ -159,6 +161,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTime.h
   gnomonTree
   gnomonTree.h
+  gnomonTreeReaderCommand
+  gnomonTreeReaderCommand.h
   gnomonWallForm
   gnomonWallForm.h)
 
@@ -195,6 +199,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
   gnomonAbstractTreeData.cpp
+  gnomonAbstractTreeReader.cpp
   gnomonCellComplexFromCellImageCommand.cpp
   gnomonCellComplexReaderCommand.cpp
   gnomonCellComplexWriterCommand.cpp
@@ -223,6 +228,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp
+  gnomonTreeReaderCommand.cpp
   gnomonWallForm.cpp)
 
 ## #################################################################

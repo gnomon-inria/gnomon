@@ -61,6 +61,7 @@
 #include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 #include <gnomonCore/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonAbstractTreeData.h>
+#include <gnomonCore/gnomonAbstractTreeReader.h>
 #include <gnomonCore/gnomonCellComplex.h>
 #include <gnomonCore/gnomonCellGraph.h>
 #include <gnomonCore/gnomonCellImage.h>
@@ -530,6 +531,7 @@
 %include <gnomonCore/gnomonAbstractSurfaceImageFromImage.h>
 %include <gnomonCore/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonAbstractTreeData.h>
+%include <gnomonCore/gnomonAbstractTreeReader.h>
 %include <gnomonCore/gnomonCellComplex.h>
 %include <gnomonCore/gnomonCellGraph.h>
 %include <gnomonCore/gnomonCellImage.h>

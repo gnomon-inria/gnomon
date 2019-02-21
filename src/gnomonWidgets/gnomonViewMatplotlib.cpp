@@ -20,6 +20,15 @@
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 
+#include <gnomonCore/gnomonAbstractCommand>
+#include <gnomonCore/gnomonTreeReaderCommand>
+
+#include <gnomonCore/gnomonAbstractForm>
+#include <gnomonCore/gnomonTree>
+
+#include "gnomonAbstractMatplotlibVisualization.h"
+#include "gnomonAbstractMatplotlibVisualizationTree.h"
+
 #include <gnomonFonts>
 #include <gnomonStyle>
 
@@ -44,7 +53,6 @@ public:
 public:
     gnomonViewMatplotlib *q = nullptr;
 
-
 public:
     QSize sizeHint(void) const;
 
@@ -60,7 +68,7 @@ public slots:
 
 public:
     QMap<QString, gnomonAbstractForm *> forms;
-    QMap<QString, gnomonAbstractVisualization *> formVisualization;
+    QMap<QString, gnomonAbstractMatplotlibVisualization *> formVisualization;
     QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
 public:
@@ -179,6 +187,34 @@ gnomonViewMatplotlib::~gnomonViewMatplotlib(void)
     delete d;
 }
 
+void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form, gnomonAbstractMatplotlibVisualization *visualization)
+{
+    if (gnomonTree *tree = dynamic_cast<gnomonTree *>(form)) {
+        d->forms["gnomonTree"] = tree;
+
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
+    
+        qDebug()<<Q_FUNC_INFO<<gnomonWidgets::matplotlibVisualizationTree::pluginFactory().keys();
+        QString key = gnomonWidgets::matplotlibVisualizationTree::pluginFactory().keys()[0];
+    
+        if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
+        {
+            d->formVisualization["gnomonTree"] = gnomonWidgets::matplotlibVisualizationTree::pluginFactory().create(key);
+            d->formVisualization["gnomonTree"]->setView(this);
+        }
+        gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)d->formVisualization["gnomonTree"];
+        formVisualizationTree->setTree(tree);
+        if (visualization) {
+            formVisualizationTree->setParameters(visualization->parameters());
+        }
+        formVisualizationTree->update();
+
+//        emit formAdded("gnomonTree");
+    }
+}
+
+
 void gnomonViewMatplotlib::addWidget(QWidget *widget)
 {
     widget->setStyleSheet(gnomonStyleSheet());
@@ -208,7 +244,27 @@ void gnomonViewMatplotlib::dragMoveEvent(QDragMoveEvent *event)
 void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
-    qDebug()<<Q_FUNC_INFO<<path;
+    
+    if(path.startsWith(":")) {
+        gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
+        qDebug()<<form;
+    } else {
+        if (path.endsWith("xml"))  {
+            if ((!d->formReaderCommand.contains("gnomonTree"))||(!d->formReaderCommand["gnomonTree"]))
+                d->formReaderCommand["gnomonTree"] = new gnomonTreeReaderCommand("gnomonTreeReaderTreex");
+            gnomonTreeReaderCommand *treeCommand = (gnomonTreeReaderCommand *) d->formReaderCommand["gnomonTree"];
+            treeCommand->setPath(path.remove("file://"));
+            treeCommand->redo();
+
+            gnomonTree * tree = (gnomonTree *) treeCommand->tree()->clone();
+            if (!tree) {
+                qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
+                event->ignore();
+                return;
+            }
+            this->setForm("gnomonTree",tree);
+        }
+    }
 
     event->accept();
 }
