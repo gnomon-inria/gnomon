@@ -41,6 +41,9 @@ public:
         return dynamic_cast<gnomonViewMatplotlib *>(widget);
     }
 
+signals:
+    void formAdded(const QString&);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dragLeaveEvent(QDragLeaveEvent *);
