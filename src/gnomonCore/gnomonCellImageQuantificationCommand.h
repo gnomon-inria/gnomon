@@ -17,6 +17,7 @@ public:
     void setCellImage(gnomonCellImage *cellimage);
 
     gnomonCellImage *cellImage(void);
+    gnomonDataFrame *dataFrame(void);
 
     virtual void setParameter(const QString&, const QVariant&);
 

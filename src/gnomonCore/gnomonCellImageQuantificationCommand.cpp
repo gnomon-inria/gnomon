@@ -75,3 +75,8 @@ gnomonCellImage *gnomonCellImageQuantificationCommand::cellImage(void)
 {
     return ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
 }
+
+gnomonDataFrame *gnomonCellImageQuantificationCommand::dataFrame(void)
+{
+    return ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+}
