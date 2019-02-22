@@ -47,6 +47,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageWriter.h
   gnomonAbstractCommand
   gnomonAbstractCommand.h
+  gnomonAbstractDataFrameData
+  gnomonAbstractDataFrameData.h
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
   gnomonAbstractEvolutionModel
@@ -116,6 +118,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCoreParameter.h
   gnomonCoreSettings
   gnomonCoreSettings.h
+  gnomonDataFrame
+  gnomonDataFrame.h
   gnomonDataManager
   gnomonDataManager.h
   gnomonDiscreteDynamicForm
@@ -180,6 +184,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractCellImageQuantification.cpp
   gnomonAbstractCellImageReader.cpp
   gnomonAbstractCellImageWriter.cpp
+  gnomonAbstractDataFrameData.cpp
   gnomonAbstractEvolutionModel.cpp
   gnomonAbstractFemSolver.cpp
   gnomonAbstractForm.cpp

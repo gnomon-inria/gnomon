@@ -37,7 +37,7 @@ public:
 
     gnomonAbstractForm *clone(void) { return new gnomonMesh(*this); };
 
-    virtual ~gnomonMesh(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+    ~gnomonMesh(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:
     gnomonMesh& operator = (const gnomonMesh& o)
@@ -69,36 +69,36 @@ public:
     void setData(gnomonAbstractMeshData* data) { m_data = data; }
 
 public:
-    virtual QList<long> vertexIds(void) const { return m_data->vertexIds(); }
-    virtual long vertexCount(void) const { return m_data->vertexCount(); }
+    QList<long> vertexIds(void) const { return m_data->vertexIds(); }
+    long vertexCount(void) const { return m_data->vertexCount(); }
 
 public:
-    virtual QList<long> triangleIds(void) const { return m_data->triangleIds(); }
-    virtual long triangleCount(void) const { return m_data->triangleCount(); }
+    QList<long> triangleIds(void) const { return m_data->triangleIds(); }
+    long triangleCount(void) const { return m_data->triangleCount(); }
 
-    virtual QList<long> triangleVertexIds(long triangleId) const { return m_data->triangleVertexIds(triangleId); }
-
-public:
-    virtual long addVertex(void) { return m_data->addVertex(); }
-    virtual long addVertex(long vertexId) { return m_data->addVertex(vertexId); }
-    virtual void removeVertex(long vertexId) { return m_data->removeVertex(vertexId); }
-
-    virtual long addTriangle(const QList<long>& vertexIds) { return m_data->addTriangle(vertexIds); }
-    virtual long addTriangle(const QList<long>& vertexIds, long triangleId) { return m_data->addTriangle(vertexIds, triangleId); }
-    virtual void removeTriangle(long triangleId) { return m_data->removeTriangle(triangleId); }
+    QList<long> triangleVertexIds(long triangleId) const { return m_data->triangleVertexIds(triangleId); }
 
 public:
-    virtual QStringList vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
-    virtual bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); }
-    virtual QMap<long, QVariant> vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); }
-    virtual QMap<long, QVariant> addVertexProperty(const QString& propertyName) { return m_data->addVertexProperty(propertyName); }
-    virtual void removeVertexProperty(const QString& propertyName) { return m_data->removeVertexProperty(propertyName); }
+    long addVertex(void) { return m_data->addVertex(); }
+    long addVertex(long vertexId) { return m_data->addVertex(vertexId); }
+    void removeVertex(long vertexId) { return m_data->removeVertex(vertexId); }
 
-    virtual QStringList trianglePropertyNames(void) const { return m_data->trianglePropertyNames(); }
-    virtual bool hasTriangleProperty(const QString& propertyName) const { return m_data->hasTriangleProperty(propertyName); }
-    virtual QMap<long, QVariant> triangleProperty(const QString& propertyName) const { return m_data->triangleProperty(propertyName); }
-    virtual QMap<long, QVariant> addTriangleProperty(const QString& propertyName) { return m_data->addTriangleProperty(propertyName); }
-    virtual void removeTriangleProperty(const QString& propertyName) { return m_data->removeTriangleProperty(propertyName); }
+    long addTriangle(const QList<long>& vertexIds) { return m_data->addTriangle(vertexIds); }
+    long addTriangle(const QList<long>& vertexIds, long triangleId) { return m_data->addTriangle(vertexIds, triangleId); }
+    void removeTriangle(long triangleId) { return m_data->removeTriangle(triangleId); }
+
+public:
+    QStringList vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
+    bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); }
+    QMap<long, QVariant> vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); }
+    QMap<long, QVariant> addVertexProperty(const QString& propertyName) { return m_data->addVertexProperty(propertyName); }
+    void removeVertexProperty(const QString& propertyName) { return m_data->removeVertexProperty(propertyName); }
+
+    QStringList trianglePropertyNames(void) const { return m_data->trianglePropertyNames(); }
+    bool hasTriangleProperty(const QString& propertyName) const { return m_data->hasTriangleProperty(propertyName); }
+    QMap<long, QVariant> triangleProperty(const QString& propertyName) const { return m_data->triangleProperty(propertyName); }
+    QMap<long, QVariant> addTriangleProperty(const QString& propertyName) { return m_data->addTriangleProperty(propertyName); }
+    void removeTriangleProperty(const QString& propertyName) { return m_data->removeTriangleProperty(propertyName); }
 };
 
 // ///////////////////////////////////////////////////////////////////

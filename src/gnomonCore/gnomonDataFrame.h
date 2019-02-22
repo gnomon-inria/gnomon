@@ -1,0 +1,83 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <gnomonCoreExport.h>
+
+#include "gnomonAbstractDataFrameData.h"
+#include "gnomonAbstractForm.h"
+
+#include <QtCore>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONCORE_EXPORT gnomonDataFrame : public gnomonAbstractForm
+{
+protected:
+    gnomonAbstractDataFrameData *m_data;
+
+public:
+    explicit gnomonDataFrame(void) : m_data(nullptr) {}
+    explicit gnomonDataFrame(gnomonAbstractDataFrameData *data) : m_data(data) {}
+             gnomonDataFrame(const gnomonDataFrame& o) : m_data(o.m_data->clone()) {}
+
+    gnomonAbstractForm *clone(void) { return new gnomonDataFrame(*this); };
+
+    ~gnomonDataFrame(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+
+public:
+    gnomonDataFrame& operator = (const gnomonDataFrame& o)
+    {
+        if (this == &o)
+            return *this;
+
+        if (m_data != o.m_data) {
+            if (m_data != nullptr) {
+                delete m_data;
+            }
+            if(o.m_data != nullptr) {
+                m_data = o.m_data->clone();
+            } else {
+                m_data = nullptr;
+            }
+        }
+        return *this;
+    }
+
+public:
+    QString name(void) const override { return"gnomonDataFrame";}
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+
+public:
+    const gnomonAbstractDataFrameData *data(void) const { return m_data; }
+          gnomonAbstractDataFrameData *data(void)       { return m_data; }
+
+    void setData(gnomonAbstractDataFrameData* data) { m_data = data; }
+
+public:
+    QList<long> index(void) const { return m_data->index(); }
+
+    QStringList columnNames(void) const { return m_data->columnNames(); }
+    QMap<long, QVariant>& column(QString columnName) const { return m_data->column(columnName); }
+};
+
+// ///////////////////////////////////////////////////////////////////
+
+DTK_DECLARE_OBJECT(gnomonDataFrame *)
+
+//
+// gnomonDataFrame.h ends here

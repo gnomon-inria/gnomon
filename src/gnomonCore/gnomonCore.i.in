@@ -45,6 +45,7 @@
 #include <gnomonCore/gnomonAbstractCellImageWriter.h>
 #include <gnomonCore/gnomonAbstractMeshData.h>
 #include <gnomonCore/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonAbstractFemSolver.h>
 #include <gnomonCore/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonAbstractImagesFusion.h>
@@ -67,6 +68,7 @@
 #include <gnomonCore/gnomonCellImage.h>
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonCoreParameter.h>
+#include <gnomonCore/gnomonDataFrame.h>
 #include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonDiscreteDynamicForm.h>
 #include <gnomonCore/gnomonFileSystemFormReader.h>
@@ -513,6 +515,7 @@
 %include <gnomonCore/gnomonAbstractCellImageQuantification.h>
 %include <gnomonCore/gnomonAbstractCellImageReader.h>
 %include <gnomonCore/gnomonAbstractCellImageWriter.h>
+%include <gnomonCore/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAbstractImagesRegistration.h>
@@ -536,6 +539,7 @@
 %include <gnomonCore/gnomonCellGraph.h>
 %include <gnomonCore/gnomonCellImage.h>
 %include <gnomonCore/gnomonCoreParameter.h>
+%include <gnomonCore/gnomonDataFrame.h>
 %include <gnomonCore/gnomonDataManager.h>
 %include <gnomonCore/gnomonDiscreteDynamicForm.h>
 %include <gnomonCore/gnomonFileSystemFormReader.h>
