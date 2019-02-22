@@ -22,6 +22,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractMatplotlibVisualization.h
   gnomonAbstractMatplotlibVisualization_p.h
   gnomonAbstractMatplotlibVisualization
+  gnomonAbstractMatplotlibVisualizationDataFrame.h
+  gnomonAbstractMatplotlibVisualizationDataFrame
   gnomonAbstractMatplotlibVisualizationTree.h
   gnomonAbstractMatplotlibVisualizationTree
   gnomonAbstractVisualization.h
@@ -116,6 +118,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractMatplotlibVisualization.cpp
+  gnomonAbstractMatplotlibVisualizationDataFrame.cpp
   gnomonAbstractMatplotlibVisualizationTree.cpp
   gnomonAbstractVisualization.cpp
   gnomonAbstractVisualizationCellComplex.cpp

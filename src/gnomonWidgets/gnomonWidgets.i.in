@@ -27,6 +27,7 @@
 #include <dtkImagingCore>
 #include <gnomonCore>
 #include <gnomonWidgets/gnomonAbstractMatplotlibVisualization.h>
+#include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationDataFrame.h>
 #include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationTree.h>
 #include <gnomonWidgets/gnomonAbstractVisualization.h>
 #include <gnomonWidgets/gnomonAbstractVisualizationCellComplex.h>
@@ -96,6 +97,7 @@
 
 
 %include <gnomonWidgets/gnomonAbstractMatplotlibVisualization.h>
+%include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationDataFrame.h>
 %include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationTree.h>
 %include <gnomonWidgets/gnomonAbstractVisualization.h>
 %include <gnomonWidgets/gnomonAbstractVisualizationCellComplex.h>
