@@ -107,10 +107,9 @@ gnomonViewMatplotlibPrivate::~gnomonViewMatplotlibPrivate(void)
 
 void gnomonViewMatplotlibPrivate::exportToManager(void)
 {
-    qDebug()<<Q_FUNC_INFO<<"Not implemented yet!";
-//    for (const auto& key : this->forms.keys()) {
-//        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
-//    }
+    for (const auto& key : this->forms.keys()) {
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
+    }
 }
 
 QSize gnomonViewMatplotlibPrivate::sizeHint(void) const
