@@ -38,8 +38,8 @@ gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap&
     // this->setPixmap(pix);
     this->image = thumbnail;
 
-    this->thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
-    this->transparent_thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio);
+    this->thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    this->transparent_thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     this->transparent_thumbnail.fill();
     
     QPainter painter;
