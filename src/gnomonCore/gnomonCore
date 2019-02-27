@@ -38,7 +38,6 @@
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonFormVisitor.h"
 #include "gnomonImagesSerie.h"
-#include "gnomonIntensityImage.h"
 #include "gnomonLandmark.h"
 #include "gnomonLString.h"
 #include "gnomonMesh.h"
