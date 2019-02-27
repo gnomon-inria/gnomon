@@ -376,7 +376,8 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
     
     if(path.startsWith(":")) {
         gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
-        qDebug()<<form;
+        this->setForm("formManager",form);
+
     } else {
         if (path.endsWith("xml"))  {
             if ((!d->formReaderCommand.contains("gnomonTree"))||(!d->formReaderCommand["gnomonTree"]))
