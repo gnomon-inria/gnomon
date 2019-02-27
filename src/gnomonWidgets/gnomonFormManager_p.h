@@ -21,6 +21,7 @@
 class gnomonAbstractForm;
 class gnomonAbstractCommand;
 class gnomonAbstractVisualization;
+class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManager;
 class gnomonFormManagerItem;
@@ -48,6 +49,7 @@ public:
 public:
     QHash<gnomonFormManagerItem *, gnomonAbstractForm *> forms;
     QHash<gnomonFormManagerItem *, gnomonAbstractVisualization *> formVisualizations;
+    QHash<gnomonFormManagerItem *, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
     QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;
     QHash<gnomonFormManagerItem *, gnomonFormManagerData *> formData;
 

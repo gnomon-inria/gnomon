@@ -53,7 +53,7 @@ public:
 // gnomonVisualizationMesh
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationMeshPrivate)
+gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationMeshPrivate)
 {
     dd->mesh = Q_NULLPTR;
 
@@ -72,6 +72,21 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(gnomonViewForm* view) : gnomonA
 
 gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 {
+
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
     delete dd;
 
     dd = NULL;
@@ -230,6 +245,31 @@ void gnomonVisualizationMesh::render(void)
 {
     this->updateOpacity();
     d->view->render();
+}
+
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationMesh::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationMesh::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationMesh::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
 }
 
 //

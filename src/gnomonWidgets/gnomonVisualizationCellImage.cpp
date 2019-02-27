@@ -57,7 +57,7 @@ public:
 // gnomonVisualizationCellImage
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImage::gnomonVisualizationCellImage(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationCellImagePrivate)
+gnomonVisualizationCellImage::gnomonVisualizationCellImage(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImagePrivate)
 {
     dd->cellImage = Q_NULLPTR;
 
@@ -68,6 +68,21 @@ gnomonVisualizationCellImage::gnomonVisualizationCellImage(gnomonViewForm* view)
 
 gnomonVisualizationCellImage::~gnomonVisualizationCellImage(void)
 {
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
+
     delete dd;
 
     dd = NULL;
@@ -216,6 +231,30 @@ void gnomonVisualizationCellImage::render(void)
 }
 
 
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImage::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationCellImage::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationCellImage::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
 
 //
 // gnomonVisualizationCellImage.cpp ends here

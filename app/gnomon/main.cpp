@@ -26,6 +26,8 @@
 #include <dtkWidgets>
 
 #include <dtkImagingCore>
+#include <gnomonCore>
+#include <gnomonWidgets>
 
 QString gnomonReadFile(const QString& path)
 {
@@ -65,12 +67,17 @@ int main(int argc, char **argv)
     QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
 
     if (parser->isSet(verboseOption)) {
-        dtkImaging::setVerboseLoading(true);;
+        dtkImaging::setVerboseLoading(true);
+        gnomonCore::setVerboseLoading(true);
+        gnomonWidgets::setVerboseLoading(true);
     }
 
     int stat;
 
     dtkImaging::initialize();
+    gnomonCore::initialize();
+    gnomonWidgets::initialize();
+
     bool redirect_io = false;
 //    bool redirect_io = true;
     dtkScriptInterpreterPython::instance()->init(redirect_io,"gnomon-core");
@@ -88,6 +95,8 @@ int main(int argc, char **argv)
     delete window;
 
     dtkImaging::uninitialize();
+    gnomonCore::uninitialize();
+    gnomonWidgets::uninitialize();
     dtkScriptInterpreterPython::instance()->release();
 
     return status;

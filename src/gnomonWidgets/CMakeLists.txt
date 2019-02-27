@@ -19,9 +19,18 @@ project(gnomonWidgets)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonAbstractMatplotlibVisualization.h
+  gnomonAbstractMatplotlibVisualization_p.h
+  gnomonAbstractMatplotlibVisualization
+  gnomonAbstractMatplotlibVisualizationDataFrame.h
+  gnomonAbstractMatplotlibVisualizationDataFrame
+  gnomonAbstractMatplotlibVisualizationTree.h
+  gnomonAbstractMatplotlibVisualizationTree
   gnomonAbstractVisualization.h
   gnomonAbstractVisualization_p.h
   gnomonAbstractVisualization
+  gnomonAbstractVisualizationCellComplex.h
+  gnomonAbstractVisualizationCellComplex
   gnomonCodeEditor
   gnomonCodeEditor.h
   gnomonDropSite
@@ -63,6 +72,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonViewVolumicPool.h
   gnomonVisualizationCellComplex.h
   gnomonVisualizationCellComplex
+  gnomonVisualizationCellComplexPlugin.h
   gnomonVisualizationCellImage.h
   gnomonVisualizationCellImage
   gnomonVisualizationCellImageMarchingCubes.h
@@ -74,6 +84,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonVisualizationMesh.h
   gnomonVisualizationMesh
   gnomonWidgets
+  gnomonWidgets.h
   gnomonWidgetsParameter
   gnomonWidgetsParameter.h
   gnomonWorkspace
@@ -106,7 +117,11 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractMatplotlibVisualization.cpp
+  gnomonAbstractMatplotlibVisualizationDataFrame.cpp
+  gnomonAbstractMatplotlibVisualizationTree.cpp
   gnomonAbstractVisualization.cpp
+  gnomonAbstractVisualizationCellComplex.cpp
   gnomonCodeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp
@@ -132,11 +147,13 @@ set(${PROJECT_NAME}_SOURCES
   gnomonViewVolumicOverlay.cpp
   gnomonViewVolumicPool.cpp
   gnomonVisualizationCellComplex.cpp
+  gnomonVisualizationCellComplexPlugin.cpp
   gnomonVisualizationCellImage.cpp
   gnomonVisualizationCellImageMarchingCubes.cpp
   gnomonVisualizationImagesSerie.cpp
   gnomonVisualizationImagesSerieChannelBlending.cpp
   gnomonVisualizationMesh.cpp
+  gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp
   gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp

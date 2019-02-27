@@ -22,6 +22,7 @@
 class gnomonAbstractForm;
 class gnomonAbstractCommand;
 class gnomonAbstractVisualization;
+class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManagerItem;
 
@@ -41,6 +42,7 @@ public:
 
 public slots:
     void addForm(gnomonAbstractForm *, const QColor&, gnomonAbstractVisualization* visualization);
+    void addForm(gnomonAbstractForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
 
 public slots:
     void present(gnomonFormManagerItem *);

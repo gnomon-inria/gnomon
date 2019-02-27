@@ -24,6 +24,7 @@
 
 class gnomonImagesSerie;
 class gnomonCellImage;
+class gnomonDataFrame;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageQuantification : public gnomonAbstractAlgorithm
 {
@@ -39,6 +40,7 @@ public:
     // Outputs
 public:
     virtual gnomonCellImage *cellImage() const = 0;
+    virtual gnomonDataFrame *dataFrame() const = 0;
 
 public:
     virtual void run(void) override = 0;

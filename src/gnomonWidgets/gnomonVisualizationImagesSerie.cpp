@@ -62,7 +62,7 @@ public:
 // gnomonVisualizationImagesSerie
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationImagesSeriePrivate)
+gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationImagesSeriePrivate)
 {
     dd->imagesSerie = Q_NULLPTR;
 
@@ -82,6 +82,20 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(gnomonViewForm* v
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
 {
+    if (dd->volume) {
+        d->view->renderer3D()->RemoveActor(dd->volume);
+        dd->volume->Delete();
+        dd->volume = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
     delete dd;
 
     dd = NULL;
@@ -231,6 +245,30 @@ void gnomonVisualizationImagesSerie::render(void)
     d->view->render();
 }
 
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationImagesSerie::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationImagesSerie::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationImagesSerie::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
 
 //
 // gnomonVisualizationImagesSerie.cpp ends here

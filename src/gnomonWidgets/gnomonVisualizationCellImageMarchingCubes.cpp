@@ -53,7 +53,7 @@ public:
 // gnomonVisualizationCellImageMarchingCubes
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
+gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
     dd->cellImage = Q_NULLPTR;
 
@@ -72,6 +72,20 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
 
 gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarchingCubes(void)
 {
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
     delete dd;
 
     dd = NULL;
@@ -224,6 +238,30 @@ void gnomonVisualizationCellImageMarchingCubes::render(void)
 }
 
 
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImageMarchingCubes::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
 
 //
 // gnomonVisualizationCellImageMarchingCubes.cpp ends here

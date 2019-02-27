@@ -24,8 +24,10 @@
 #include <gnomonCore/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
-#include <gnomonCore/gnomonAbstractForm>
 #include <dtkImagingCore>
+#include <dtkScript>
+
+#include <gnomonCore/gnomonAbstractForm>
 #include <gnomonCore/gnomonMesh>
 #include <gnomonCore/gnomonCellComplex>
 #include <gnomonCore/gnomonCellImage>
@@ -298,6 +300,7 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
     if (this->formVisualization.contains(key)) {
         gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
+            qDebug()<<Q_FUNC_INFO<<key;
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
@@ -310,14 +313,14 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
                 this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
             }
 
-            if ((!this->parameterLayouts.contains(key))||(!this->formVisualizationPaneItems[key])) {
-                this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem(parent);
-                this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
-                this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
-                this->formVisualizationPaneItems[key]->toggle();
+            if (!this->formVisualizationPaneItems.contains(key)) {
+                this->refresh();
             }
+            this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
+            qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+            qDebug()<<Q_FUNC_INFO<<parameters;
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
                 if (widget) {
@@ -334,10 +337,44 @@ void gnomonViewFormPrivate::refresh(void)
 {
     this->formVisualizationPane->clearLayout();
 
-    for (const auto& key : this->formVisualizationPaneItems.keys()) {
-        if (this->formVisualizationPaneItems[key]) {
-            this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
+    for (const auto& key : this->formVisualization.keys()) {
+
+        if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
+            this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem((QWidget *) q->parent());
+            this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
+
+            QComboBox *combo_box = new QComboBox(this);
+            QStringList combo_box_keys = {};
+            if (key == "gnomonCellComplex") {
+                combo_box_keys = gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
+            }
+            for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
+                combo_box->addItem(*it);
+            }
+            combo_box->model()->sort(0);
+
+            QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
+                qDebug()<<"Visualization changed"<<visu;
+                if (this->formVisualization[key]) {
+                    delete this->formVisualization[key];
+                    this->formVisualization[key] = nullptr;
+                }
+                if (key == "gnomonCellComplex") {
+                    this->formVisualization[key] = gnomonWidgets::visualizationCellComplex::pluginFactory().create(visu);
+                    this->formVisualization[key]->setView(q);
+                    gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
+                    gnomonCellComplex *cellComplex = (gnomonCellComplex *)this->forms[key];
+                    formVisualizationCellComplex->setCellComplex(cellComplex);
+                    formVisualizationCellComplex->update();
+                 }
+                this->configure((QWidget *) q->parent(), key);
+            });
+
+            this->formVisualizationPaneItems[key]->addWidget(combo_box);
+            this->formVisualizationPaneItems[key]->toggle();
         }
+
+        this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
     }
     this->formVisualizationPane->addWidget(this->paneItemButton);
 }
@@ -350,6 +387,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonViewFormPrivate;
     d->q = this;
+
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
     connect(d->renderer3D_button, SIGNAL(iconClicked()), this, SLOT(switchTo3D()));
@@ -712,8 +752,8 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
 
     if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
         // d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
-        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending(this);
-
+        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending();
+        d->formVisualization["gnomonImagesSerie"]->setView(this);
     }
     gnomonVisualizationImagesSerieChannelBlending *formVisualizationImagesSerie = (gnomonVisualizationImagesSerieChannelBlending *)d->formVisualization["gnomonImagesSerie"];
     // gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
@@ -750,7 +790,8 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"])) {
 //        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImage(this);
-        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImageMarchingCubes(this);
+        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImageMarchingCubes();
+        d->formVisualization["gnomonCellImage"]->setView(this);
     }
 //    gnomonVisualizationCellImage *formVisualizationCellImage = (gnomonVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
     gnomonVisualizationCellImageMarchingCubes *formVisualizationCellImage = (gnomonVisualizationCellImageMarchingCubes *)d->formVisualization["gnomonCellImage"];
@@ -785,11 +826,17 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 {
     d->forms["gnomonCellComplex"] = cellComplex;
 
+    qDebug()<<Q_FUNC_INFO<<gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
+    QString key = gnomonWidgets::visualizationCellComplex::pluginFactory().keys()[0];
+//    QString key = "gnomonVisualizationCellComplexTriangularMesh";
+
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
     {
-        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex(this);
+//        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
+        d->formVisualization["gnomonCellComplex"] = gnomonWidgets::visualizationCellComplex::pluginFactory().create(key);
+        d->formVisualization["gnomonCellComplex"]->setView(this);
     }
-    gnomonVisualizationCellComplex *formVisualizationCellComplex = (gnomonVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
+    gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
     formVisualizationCellComplex->setCellComplex(cellComplex);
     if (visualization) {
         formVisualizationCellComplex->setParameters(visualization->parameters());
@@ -823,7 +870,8 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
 
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
     {
-        d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh(this);
+        d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh();
+        d->formVisualization["gnomonMesh"]->setView(this);
     }
     gnomonVisualizationMesh *formVisualizationMesh = (gnomonVisualizationMesh *)d->formVisualization["gnomonMesh"];
     formVisualizationMesh->setMesh(mesh);

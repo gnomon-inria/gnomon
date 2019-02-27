@@ -13,6 +13,8 @@
 // Code:
 
 #include "gnomonAbstractVisualization.h"
+#include "gnomonAbstractMatplotlibVisualization.h"
+
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
 #include "gnomonFormManagerData.h"
@@ -175,6 +177,21 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
         d->formWriterCommand[item] = new gnomonCellComplexWriterCommand("gnomonCellComplexWriterPropertyTopomesh");
         static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
     }
+
+    d->contents->layout()->addWidget(item);
+}
+
+void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
+{
+    qDebug()<<Q_FUNC_INFO;
+    QImage image = visualization->imageRendering();
+    qDebug()<<Q_FUNC_INFO<<image;
+
+    gnomonFormManagerItem *item = d->create(form, color, image);
+    item->id = d->item_counter++;
+
+    d->forms.insert(item, form);
+    d->formMatplotlibVisualizations.insert(item, visualization);
 
     d->contents->layout()->addWidget(item);
 }

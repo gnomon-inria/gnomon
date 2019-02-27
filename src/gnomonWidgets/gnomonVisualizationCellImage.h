@@ -30,7 +30,7 @@ class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImage : public gnomonAbstractV
     Q_OBJECT
 
 public:
-     gnomonVisualizationCellImage(gnomonViewForm *view);
+     gnomonVisualizationCellImage(void);
     ~gnomonVisualizationCellImage(void);
 
 public:
@@ -41,11 +41,17 @@ public slots:
     void updateValueRange(void);
     
 public:
-    QImage imageRendering(void);
+    QImage imageRendering(void) override;
 
 public slots:
-    void update(void);
-    void render(void);
+    void update(void) override;
+    void render(void) override;
+
+public:
+    void setParameter(const QString&, const QVariant&) override;
+    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+
 
 private:
 	class gnomonVisualizationCellImagePrivate *dd;

@@ -68,7 +68,7 @@ public:
 // gnomonVisualizationImagesSerieChannelBlending
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieChannelBlending(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationImagesSerieChannelBlendingPrivate)
+gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieChannelBlending(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationImagesSerieChannelBlendingPrivate)
 {
     dd->imagesSerie = Q_NULLPTR;
 
@@ -89,6 +89,20 @@ gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieCha
 
 gnomonVisualizationImagesSerieChannelBlending::~gnomonVisualizationImagesSerieChannelBlending(void)
 {
+    if (dd->volume) {
+        d->view->renderer3D()->RemoveActor(dd->volume);
+        dd->volume->Delete();
+        dd->volume = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
     delete dd;
 
     dd = NULL;
@@ -249,6 +263,31 @@ void gnomonVisualizationImagesSerieChannelBlending::render(void)
     d->view->render();
 }
 
+
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationImagesSerieChannelBlending::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationImagesSerieChannelBlending::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationImagesSerieChannelBlending::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
+}
 
 //
 // gnomonVisualizationImagesSerieChannelBlending.cpp ends here

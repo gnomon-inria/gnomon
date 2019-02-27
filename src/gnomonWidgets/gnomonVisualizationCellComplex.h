@@ -18,39 +18,45 @@
 
 #include <gnomonWidgetsExport.h>
 
-#include "gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationCellComplex.h"
 
 class gnomonViewForm;
 
 class gnomonCellComplex;
 class gnomonCoreParameter;
 
-class GNOMONWIDGETS_EXPORT gnomonVisualizationCellComplex : public gnomonAbstractVisualization
+class GNOMONWIDGETS_EXPORT gnomonVisualizationCellComplex : public gnomonAbstractVisualizationCellComplex
 {
     Q_OBJECT
 
 public:
-     gnomonVisualizationCellComplex(gnomonViewForm *view);
+     gnomonVisualizationCellComplex(void);
     ~gnomonVisualizationCellComplex(void);
 
 public:
-	void setCellComplex(gnomonCellComplex *cellComplex);
+	void setCellComplex(gnomonCellComplex *cellComplex) override;
 
-public slots:
-    void updateOpacity(void);
-    void updateValueRange(void);
-    
 public:
-    QImage imageRendering(void);
+    QImage imageRendering(void) override;
 
 public slots:
-    void update(void);
-    void render(void);
+    void update(void) override;
+    void render(void) override;
+
+public:
+    void setParameter(const QString&, const QVariant&) override;
+    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 private:
 	class gnomonVisualizationCellComplexPrivate *dd;
 };
 
+
+inline gnomonAbstractVisualizationCellComplex *gnomonVisualizationCellComplexCreator(void)
+{
+    return new gnomonVisualizationCellComplex();
+}
 
 //
 // gnomonVisualizationCellComplex.h ends here

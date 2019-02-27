@@ -17,15 +17,11 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonMesh>
-#include <gnomonCore/gnomonCoreParameter>
-#include <gnomonVisualization/gnomonCoreParameterColor>
+//#include <gnomonCore/gnomonMesh>
+//#include <gnomonCore/gnomonCoreParameter>
+//#include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonViewForm.h"
-
-#include "gnomonPolyDataMesh.h"
-#include "gnomonActorPolyData.h"
-#include "gnomonActor2DPolyData.h"
 
 #include <vtkCamera.h>
 #include <vtkImageData.h>
@@ -103,9 +99,8 @@ QImage gnomonAbstractVisualizationPrivate::offscreenImageRendering(void)
 // gnomonAbstractVisualization
 // /////////////////////////////////////////////////////////////////
 
-gnomonAbstractVisualization::gnomonAbstractVisualization(gnomonViewForm* view) : d(new gnomonAbstractVisualizationPrivate)
+gnomonAbstractVisualization::gnomonAbstractVisualization(void) : d(new gnomonAbstractVisualizationPrivate)
 {
-    d->view = view;
 }
 
 gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
@@ -115,36 +110,41 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonAbstractVisualization::parameters(void) const
-{
-    return d->parameters;
-}
-
-void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
-{
-    if (d->parameters.contains(parameter)) {
-        d->parameters[parameter]->setValue(value);
-    }
-    else
-        qWarning()<<parameter<<"is not a valid parameter!";
-}
-
-void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
-{
-//    d->parameters = parameters;
-    for (const auto& param : parameters.keys()) {
-        if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
-        }
-    }
-}
-
+//QMap<QString, gnomonCoreParameter *> gnomonAbstractVisualization::parameters(void) const
+//{
+//    return d->parameters;
+//}
+//
+//void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
+//{
+//    if (d->parameters.contains(parameter)) {
+//        d->parameters[parameter]->setValue(value);
+//    }
+//    else
+//        qWarning()<<parameter<<"is not a valid parameter!";
+//}
+//
+//void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+//{
+////    d->parameters = parameters;
+//    for (const auto& param : parameters.keys()) {
+//        if (d->parameters.contains(param)) {
+////            d->parameters[param] = parameters[param];
+//            d->parameters[param]->copy(parameters[param]);
+//        }
+//    }
+//}
 
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;
 }
+
+gnomonViewForm* gnomonAbstractVisualization::view(void)
+{
+    return d->view;
+}
+
 
 //
 // gnomonAbstractVisualization.cpp ends here

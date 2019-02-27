@@ -18,24 +18,24 @@
 
 #include <gnomonWidgetsExport.h>
 
-class gnomonViewForm;
+class gnomonViewMatplotlib;
 class gnomonCoreParameter;
 
-class GNOMONWIDGETS_EXPORT gnomonAbstractVisualization : public QObject
+class GNOMONWIDGETS_EXPORT gnomonAbstractMatplotlibVisualization : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonAbstractVisualization();
-    ~gnomonAbstractVisualization(void);
+     gnomonAbstractMatplotlibVisualization();
+    ~gnomonAbstractMatplotlibVisualization(void);
 
 public:
-    void setView(gnomonViewForm *view);
+    void setView(gnomonViewMatplotlib *view);
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) = 0;
 
 public:
-    gnomonViewForm* view(void);
+    gnomonViewMatplotlib* view(void);
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 
 public:
@@ -49,8 +49,8 @@ public slots:
     virtual void render(void) = 0;
 
 protected:
-    class gnomonAbstractVisualizationPrivate *d;
+    class gnomonAbstractMatplotlibVisualizationPrivate *d;
 };
 
 //
-// gnomonAbstractVisualization.h ends here
+// gnomonAbstractMatplotlibVisualization.h ends here

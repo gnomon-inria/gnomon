@@ -46,15 +46,58 @@ public:
     gnomonActorPolyData *actor = nullptr;
     gnomonActor2DPolyData *actor2D = nullptr;
 
+    gnomonVisualizationCellComplex *q;
+
+public slots:
+    void updateOpacity(void);
+    void updateValueRange(void);
 };
+
+void gnomonVisualizationCellComplexPrivate::updateOpacity(void)
+{
+    double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
+
+    if(this->actor) {
+        this->actor->setOpacity(alpha);
+    }
+
+    if(this->actor2D) {
+        this->actor2D->setOpacity(alpha);
+    }
+}
+
+void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
+{
+    QString property_name = ((gnomonCoreParameterString *)q->parameters()["property_name"])->value();
+
+    QMap<long, QVariant> cellProperty;
+    if(this->cellComplex->elementPropertyNames(3).contains(property_name)) {
+        cellProperty = this->cellComplex->elementProperty(3,property_name);
+    } else {
+        for (const auto& cellId : this->cellComplex->elementIds(3)) {
+            cellProperty[cellId] = QVariant((double)cellId);
+        }
+    }
+
+    QList<double> cellScalarPropertyValues;
+    for (const auto& cellId : this->cellComplex->elementIds(3)) {
+        cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
+    }
+    auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
+
+    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
+    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
+}
 
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationCellComplex
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(gnomonViewForm* view) : gnomonAbstractVisualization(view), dd(new gnomonVisualizationCellComplexPrivate)
+gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbstractVisualizationCellComplex(), dd(new gnomonVisualizationCellComplexPrivate)
 {
+
+    dd->q = this;
     dd->cellComplex = Q_NULLPTR;
 
     d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellComplex property to be displayed");
@@ -68,6 +111,21 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(gnomonViewForm* v
 
 gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
 {
+
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
+    }
+
+    if (dd->actor2D) {
+        disconnect(d->connectSliceOrientation);
+        disconnect(d->connectSlice);
+        d->view->renderer2D()->RemoveActor(dd->actor2D);
+        dd->actor2D->Delete();
+        dd->actor2D = nullptr;
+    }
+
     delete dd;
 
     dd = NULL;
@@ -81,7 +139,7 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
         if(!dd->cellComplex)
             return;
-        this->updateValueRange();
+        dd->updateValueRange();
         emit parametersChanged();
     });
 
@@ -101,43 +159,7 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
         propertyParam->setValue(QString(""));
     }
 //
-    this->updateValueRange();
-}
-
-void gnomonVisualizationCellComplex::updateOpacity(void)
-{
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-
-    if(dd->actor) {
-        dd->actor->setOpacity(alpha);
-    }
-
-    if(dd->actor2D) {
-        dd->actor2D->setOpacity(alpha);
-    }
-}
-
-void gnomonVisualizationCellComplex::updateValueRange(void)
-{
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
-
-    QMap<long, QVariant> cellProperty;
-    if(dd->cellComplex->elementPropertyNames(3).contains(property_name)) {
-        cellProperty = dd->cellComplex->elementProperty(3,property_name);
-    } else {
-        for (const auto& cellId : dd->cellComplex->elementIds(3)) {
-            cellProperty[cellId] = QVariant((double)cellId);
-        }
-    }
-
-    QList<double> cellScalarPropertyValues;
-    for (const auto& cellId : dd->cellComplex->elementIds(3)) {
-        cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
-    }
-    auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
-
-    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+    dd->updateValueRange();
 }
 
 QImage gnomonVisualizationCellComplex::imageRendering(void)
@@ -233,8 +255,33 @@ void gnomonVisualizationCellComplex::update(void)
 
 void gnomonVisualizationCellComplex::render(void)
 {
-    this->updateOpacity();
+    dd->updateOpacity();
     d->view->render();
+}
+
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellComplex::parameters(void) const
+{
+    return d->parameters;
+}
+
+void gnomonVisualizationCellComplex::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->parameters.contains(parameter)) {
+        d->parameters[parameter]->setValue(value);
+    }
+    else
+        qWarning()<<parameter<<"is not a valid parameter!";
+}
+
+void gnomonVisualizationCellComplex::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+{
+//    d->parameters = parameters;
+    for (const auto& param : parameters.keys()) {
+        if (d->parameters.contains(param)) {
+//            d->parameters[param] = parameters[param];
+            d->parameters[param]->copy(parameters[param]);
+        }
+    }
 }
 
 //
