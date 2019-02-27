@@ -379,7 +379,7 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
         this->setForm("formManager",form);
 
     } else {
-        if (path.endsWith("xml"))  {
+        if ((path.endsWith("xml")) || (path.endsWith("txt")))   {
             if ((!d->formReaderCommand.contains("gnomonTree"))||(!d->formReaderCommand["gnomonTree"]))
                 d->formReaderCommand["gnomonTree"] = new gnomonTreeReaderCommand("gnomonTreeReaderTreex");
             gnomonTreeReaderCommand *treeCommand = (gnomonTreeReaderCommand *) d->formReaderCommand["gnomonTree"];
