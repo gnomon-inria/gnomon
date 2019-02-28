@@ -256,6 +256,7 @@ QWidget *gnomonWidgetsParameterColorMap::widget(gnomonCoreParameterColorMap *par
 
         QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
             parameter->setValue(val);
+            parameter->setName(widget->name());
         });
 
         return widget;
