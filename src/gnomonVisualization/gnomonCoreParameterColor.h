@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <gnomonWidgetsExport>
+#include <gnomonVisualizationExport.h>
 #include <gnomonCore/gnomonCoreParameter>
 
 #include "gnomonLookupTable.h"
@@ -27,7 +27,7 @@
 // gnomonCoreParameterColormap
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonCoreParameterColorMap : public gnomonCoreParameter
+class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorMap : public gnomonCoreParameter
 {
 public:
      gnomonCoreParameterColorMap(const QMap<double, QColor>& c, const QString& doc = QString());
@@ -53,7 +53,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameterColorMap *);
 // gnomonCoreParameterColormap
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonCoreParameterLookupTable : public gnomonCoreParameter
+class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterLookupTable : public gnomonCoreParameter
 {
 public:
      gnomonCoreParameterLookupTable(const gnomonLookupTable& lut, const QString& doc = QString());

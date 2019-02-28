@@ -23,10 +23,13 @@
 
 %{
 
+#include <dtkImagingCore>
+#include <gnomonCore>
 #include <gnomonVisualization/gnomonActor.h>
 #include <gnomonVisualization/gnomonActorImage.h>
 #include <gnomonVisualization/gnomonActorScalarBar.h>
 #include <gnomonVisualization/gnomonActorVolume.h>
+#include <gnomonVisualization/gnomonCoreParameterColor.h>
 #include <gnomonVisualization/gnomonView.h>
 #include <gnomonVisualization/gnomonViewManager.h>
 
@@ -90,10 +93,14 @@
 
 %ignore onInserted;
 
+%rename(ParameterLookupTable)  gnomonCoreParameterLookupTable;
+%rename(ParameterColorMap)     gnomonCoreColorMap;
+
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+%include <gnomonVisualization/gnomonCoreParameterColor.h>
 %include <gnomonVisualization/gnomonView.h>
 %include <gnomonVisualization/gnomonViewManager.h>
 
