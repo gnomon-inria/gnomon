@@ -40,6 +40,8 @@ public:
     void setValue(const QMap<double, QColor>&);
     void setValue(const QString&);
 
+    void setName(const QString&);
+
     void copy(gnomonCoreParameter *other);
 
 private:

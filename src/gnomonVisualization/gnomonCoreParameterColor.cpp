@@ -90,8 +90,14 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
 
     if(m_c != colormap) {
         m_c = colormap;
+        m_n = clut;
         emit valueChanged();
     }
+}
+
+void gnomonCoreParameterColorMap::setName(const QString& clut)
+{
+    m_n = clut;
 }
 
 void gnomonCoreParameterColorMap::copy(gnomonCoreParameter *other)
