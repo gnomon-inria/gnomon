@@ -94,7 +94,7 @@
 %ignore onInserted;
 
 %rename(ParameterLookupTable)  gnomonCoreParameterLookupTable;
-%rename(ParameterColorMap)     gnomonCoreColorMap;
+%rename(ParameterColorMap)     gnomonCoreParameterColorMap;
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
