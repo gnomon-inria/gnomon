@@ -119,6 +119,8 @@ public:
     gnomonViewVolumicOverlay *sync = nullptr;
     gnomonViewVolumicOverlay *export_button = nullptr;
 
+
+
 public:
     int syncing_count = 0;
     QTimer *syncing_timer = nullptr;
@@ -141,6 +143,9 @@ public:
     QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
 
     gnomonOverlayPane *formVisualizationPane = nullptr;
+
+public:
+    gnomonOverlayPane *infoPane = nullptr;
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
@@ -406,6 +411,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->slice_slider->setMaximum(1);
     d->slice_slider->setValue(0);
 
+    d->infoPane = new gnomonOverlayPane(parent);
+    d->infoPane->toggle();
+
     connect(d->slice_slider, SIGNAL(valueChanged(int)), this, SLOT(sliceChange(int)));
 
     connect(d, &gnomonViewFormPrivate::sliceOrientationChanged, this, &gnomonViewForm::sliceOrientationChanged);
@@ -414,8 +422,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
-    layout->addWidget(d, 0, 1, 1, 1);
-    layout->addWidget(d->pane(parent), 0, 2, 1, 1);
+    layout->addWidget(d->infoPane, 0, 1, 1, 1);
+    layout->addWidget(d, 0, 2, 1, 1);
+    layout->addWidget(d->pane(parent), 0, 3, 1, 1);
 
     connect(d->sync, &gnomonViewVolumicOverlay::iconClicked, [=] () {
         d->sync->toggle(!d->sync->isToggled());
@@ -954,6 +963,11 @@ vtkRenderer *gnomonViewForm::renderer2D(void)
 vtkRenderer *gnomonViewForm::renderer3D(void)
 {
     return d->renderer3D;
+}
+
+gnomonOverlayPane *gnomonViewForm::infoPane(void)
+{
+    return d->infoPane;
 }
 
 int gnomonViewForm::orientation(void)

@@ -23,15 +23,19 @@
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"
+#include "gnomonOverlayPane.h"
+#include "gnomonOverlayPaneItem.h"
 
 #include "gnomonPolyDataCellImage.h"
 #include "gnomonActorPolyData.h"
 #include "gnomonActor2DPolyData.h"
 
 #include <vtkCellData.h>
+#include <vtkCellLocator.h>
 #include <vtkCellPicker.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkPointData.h>
+#include <vtkProp3DCollection.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
@@ -52,10 +56,17 @@ public:
     {
         vtkInteractorStyleTrackballCamera::OnMouseMove();
 
+        this->clicks = 0;
+
         int *pos = this->GetInteractor()->GetEventPosition();
+
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
-        long vtkId = picker->GetCellId();
+        long vtkId = -1;
+        if (picker->GetViewProp()==this->q->actor()) {
+            vtkId = picker->GetCellId();
+        }
+
         this->updateTextActor(vtkId);
     }
 
@@ -64,9 +75,30 @@ public:
         vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
 
         int *pos = this->GetInteractor()->GetEventPosition();
-        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
-        long vtkId = picker->GetCellId();
+        this->clicks++;
+
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+        long vtkId = -1;
+        if (picker->GetViewProp()==this->q->actor()) {
+            vtkId = picker->GetCellId();
+        }
+
+        if (vtkId == -1) {
+            this->clicks = 0;
+
+            if (this->q->view()->infoPane()->isToggled()) {
+                this->q->view()->infoPane()->toggle();
+                this->q->view()->infoPane()->clear();
+                this->infoPaneItem = nullptr;
+                this->infoLayout = nullptr;
+            }
+        }
+
+        if (this->clicks == 2) {
+            this->OnDoubleClick(vtkId);
+            this->clicks = 0;
+        }
     }
 
     virtual void OnLeftButtonUp(void) override
@@ -76,7 +108,46 @@ public:
         int *pos = this->GetInteractor()->GetEventPosition();
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
-        long vtkId = picker->GetCellId();
+        long vtkId = -1;
+        if (picker->GetViewProp()==this->q->actor()) {
+            vtkId = picker->GetCellId();
+        }
+    }
+
+    void OnDoubleClick(long vtkId)
+    {
+        long cellId = q->cellId(vtkId);
+        QString text = "Cell ";
+        text.append(QString::number(cellId));
+
+        if (!this->infoPaneItem) {
+            this->infoPaneItem = new gnomonOverlayPaneItem((QWidget *) q->view()->parent());
+            this->infoPaneItem->toggle();
+        }
+        this->infoPaneItem->setTitle(text);
+
+        if (!this->infoLayout) {
+            this->infoLayout = new QFormLayout;
+            this->infoLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+            this->infoPaneItem->addLayout(infoLayout);
+        } else {
+            for(int row = 0, max_row = this->infoLayout->count(); row < max_row; ++row) {
+                QLayoutItem *forDeletion = this->infoLayout->takeAt(0);
+                forDeletion->widget()->disconnect();
+                delete forDeletion->widget();
+                delete forDeletion;
+            }
+        }
+
+        QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
+        for(QMap<QString, QVariant>::iterator it = cellInfo.begin(), it_end = cellInfo.end(); it != it_end; ++it) {
+            infoLayout->addRow(it.key(), new QLabel(it.value().toString()));
+        }
+
+        if (!this->q->view()->infoPane()->isToggled()) {
+            this->q->view()->infoPane()->toggle();
+            this->q->view()->infoPane()->addWidget(this->infoPaneItem);
+        }
     }
 
     void updateTextActor(long vtkId)
@@ -111,8 +182,15 @@ public:
     gnomonVisualizationCellImageMarchingCubes *q = nullptr;
 
 public:
+    gnomonOverlayPaneItem *infoPaneItem = nullptr;
+    QFormLayout *infoLayout = nullptr;
+
+public:
     vtkSmartPointer<vtkCellPicker> picker = nullptr;
     vtkSmartPointer<vtkTextActor> textActor = nullptr;
+
+private:
+    unsigned int clicks = 0;
 
 };
 
@@ -223,7 +301,6 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
 void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *cellImage)
 {
     dd->cellImage = cellImage;
-
 
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
@@ -355,9 +432,28 @@ void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString
     }
 }
 
+vtkProp * gnomonVisualizationCellImageMarchingCubes::actor(void)
+{
+    return dd->actor;
+}
+
 long gnomonVisualizationCellImageMarchingCubes::cellId(long vtkId)
 {
     return dd->polydata->cellId(vtkId);
+}
+
+QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long cellId)
+{
+    QMap<QString, QVariant> info;
+//    info["label"] = QVariant(int(cellId));
+    for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
+        QMap<long, QVariant> property = dd->cellImage->cellProperty(propertyName);
+        if (property.contains(cellId)) {
+            info[propertyName] = property[cellId];
+        }
+    }
+
+    return info;
 }
 
 //

@@ -25,6 +25,8 @@ class gnomonViewForm;
 class gnomonCellImage;
 class gnomonCoreParameter;
 
+class vtkProp;
+
 class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImageMarchingCubes : public gnomonAbstractVisualization
 {
     Q_OBJECT
@@ -49,9 +51,13 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
-    long cellId(long vtkId);
+    vtkProp *actor(void);
 
-private:
+public:
+    long cellId(long vtkId);
+    QMap<QString, QVariant> cellInfo(long cellId);
+
+public:
 	class gnomonVisualizationCellImageMarchingCubesPrivate *dd;
 };
 

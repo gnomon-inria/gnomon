@@ -21,6 +21,7 @@
 #include <gnomonLandmark.h>
 
 class gnomonLandmark;
+class gnomonOverlayPane;
 
 class gnomonAbstractForm;
 class gnomonAbstractVisualization;
@@ -90,6 +91,9 @@ public:
 public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
+
+public:
+    gnomonOverlayPane *infoPane(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);

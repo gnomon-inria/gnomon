@@ -40,6 +40,9 @@ public:
 public:
     void setWidth(int);
 
+public:
+    bool isToggled(void);
+
 public slots:
     void toggle(void);
 
