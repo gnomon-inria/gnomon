@@ -187,10 +187,16 @@ void gnomonPolyDataCellImage::update(void)
                 }
 
                 vtkSmartPointer<vtkDoubleArray> cellPolydataFaceData = vtkSmartPointer<vtkDoubleArray>::New();
+
+                vtkSmartPointer<vtkDoubleArray> cellPolydataIds = vtkSmartPointer<vtkDoubleArray>::New();
+                cellPolydataIds->SetName("CellId");
+
                 for (int vtkId=0;vtkId<d->cell_mesh[cellId]->GetNumberOfCells();vtkId++) {
                     cellPolydataFaceData->InsertValue(vtkId,cellScalarProperty[cellId]);
+                    cellPolydataIds->InsertValue(vtkId,cellId);
                 }
                 d->cell_mesh[cellId]->GetCellData()->SetScalars(cellPolydataFaceData);
+                d->cell_mesh[cellId]->GetCellData()->AddArray(cellPolydataIds);
 
                 d->cell_mesh[cellId] = d->cell_mesh[cellId];
             }
@@ -219,6 +225,12 @@ void gnomonPolyDataCellImage::setPropertyName(const QString& value)
 {
     d->propertyName = value;
     this->update();
+}
+
+long gnomonPolyDataCellImage::cellId(long vtkId)
+{
+    vtkSmartPointer<vtkDoubleArray> cellIds = vtkDoubleArray::SafeDownCast(d->mesh->GetCellData()->GetAbstractArray("CellId"));
+    return cellIds->GetValue(vtkId);
 }
 
 gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new gnomonPolyDataCellImagePrivate)

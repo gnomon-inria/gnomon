@@ -29,10 +29,94 @@
 #include "gnomonActor2DPolyData.h"
 
 #include <vtkCellData.h>
+#include <vtkCellPicker.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkPointData.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkTextActor.h>
+#include <vtkTextProperty.h>
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonInteractorStyleCellImageMarchingCubes
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonInteractorStyleCellImageMarchingCubes : public vtkInteractorStyleTrackballCamera
+{
+public:
+    static gnomonInteractorStyleCellImageMarchingCubes *New(void);
+
+public:
+    virtual void OnMouseMove(void) override
+    {
+        vtkInteractorStyleTrackballCamera::OnMouseMove();
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        long vtkId = picker->GetCellId();
+        this->updateTextActor(vtkId);
+    }
+
+    virtual void OnLeftButtonDown(void) override
+    {
+        vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        long vtkId = picker->GetCellId();
+    }
+
+    virtual void OnLeftButtonUp(void) override
+    {
+        vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+        
+        int *pos = this->GetInteractor()->GetEventPosition();
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        long vtkId = picker->GetCellId();
+    }
+
+    void updateTextActor(long vtkId)
+    {
+        if (!this->textActor) {
+            this->textActor = vtkSmartPointer<vtkTextActor>::New();
+            this->textActor->SetPosition2(10, 40);
+            this->textActor->GetTextProperty()->SetFontSize(24);
+            this->textActor->GetTextProperty()->SetColor (1.0, 1.0, 1.0);
+            this->GetDefaultRenderer()->AddActor2D(textActor);
+        }
+
+        if (vtkId > -1) {
+            long cellId = q->cellId(vtkId);
+            QString text = "Cell ";
+            text.append(QString::number(cellId));
+            this->textActor->SetInput(text.toStdString().c_str());
+        } else {
+            this->textActor->SetInput("");
+        }
+        this->GetInteractor()->Render();
+    }
+
+public:
+    gnomonInteractorStyleCellImageMarchingCubes(void) : vtkInteractorStyleTrackballCamera()
+    {
+        this->picker = vtkSmartPointer<vtkCellPicker>::New();
+        this->picker->SetTolerance(0.0005);
+    }
+
+public:
+    gnomonVisualizationCellImageMarchingCubes *q = nullptr;
+
+public:
+    vtkSmartPointer<vtkCellPicker> picker = nullptr;
+    vtkSmartPointer<vtkTextActor> textActor = nullptr;
+
+};
+
+vtkStandardNewMacro(gnomonInteractorStyleCellImageMarchingCubes);
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationCellImageMarchingCubesPrivate
@@ -47,6 +131,9 @@ public:
     gnomonPolyDataCellImage *polydata = nullptr;
     gnomonActorPolyData *actor = nullptr;
     gnomonActor2DPolyData *actor2D = nullptr;
+
+public:
+    gnomonInteractorStyleCellImageMarchingCubes *interactor_style = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -68,6 +155,9 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
         this->updateValueRange();
         emit parametersChanged();
     });
+
+    dd->interactor_style = gnomonInteractorStyleCellImageMarchingCubes::New();
+    dd->interactor_style->q = this;
 }
 
 gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarchingCubes(void)
@@ -85,6 +175,8 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
+
+    dd->interactor_style->Delete();
 
     delete dd;
 
@@ -228,15 +320,22 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->polydata->GetBounds(bounds);
     d->view->setBounds(bounds);
 
+
     this->render();
+
+    qDebug()<<Q_FUNC_INFO<<d->view->interactor()->GetInteractorStyle()<<dd->interactor_style;
+    qDebug()<<Q_FUNC_INFO<<d->view->interactor()->GetInteractorStyle()<<dd->interactor_style;
 }
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
 {
+    dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
+    d->view->interactor()->SetInteractorStyle(dd->interactor_style);
+    d->view->interactor()->Enable();
+
     this->updateOpacity();
     d->view->render();
 }
-
 
 QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImageMarchingCubes::parameters(void) const
 {
@@ -261,6 +360,11 @@ void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+long gnomonVisualizationCellImageMarchingCubes::cellId(long vtkId)
+{
+    return dd->polydata->cellId(vtkId);
 }
 
 //
