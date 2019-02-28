@@ -35,10 +35,6 @@ public:
 
 public:
 	void setCellImage(gnomonCellImage *cellImage);
-
-public slots:
-    void updateOpacity(void);
-    void updateValueRange(void);
     
 public:
     QImage imageRendering(void) override;

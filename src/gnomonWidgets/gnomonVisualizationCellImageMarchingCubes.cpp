@@ -134,7 +134,50 @@ public:
 
 public:
     gnomonInteractorStyleCellImageMarchingCubes *interactor_style = nullptr;
+
+    gnomonVisualizationCellImageMarchingCubes *q;
+    
+public slots:
+    void updateOpacity(void);
+    void updateValueRange(void);
 };
+
+
+void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
+{
+    double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
+    
+    if(this->actor) {
+        this->actor->setOpacity(alpha);
+    }
+
+    if(this->actor2D) {
+        this->actor2D->setOpacity(alpha);
+    }
+}
+
+void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
+{
+     QString property_name = ((gnomonCoreParameterString *)q->parameters()["property_name"])->value();
+
+     QMap<long, QVariant> cellProperty;
+     if(this->cellImage->cellPropertyNames().contains(property_name)) {
+         cellProperty = this->cellImage->cellProperty(property_name);
+     } else {
+         for (const auto& cellId : this->cellImage->cellIds()) {
+             cellProperty[cellId] = QVariant((double)cellId);
+         }
+     }
+
+     QList<double> cellScalarPropertyValues;
+     for (const auto& cellId : this->cellImage->cellIds()) {
+         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
+     }
+     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
+
+     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
+     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationCellImageMarchingCubes
@@ -142,19 +185,13 @@ public:
 
 gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
+    dd->q = this;
     dd->cellImage = Q_NULLPTR;
 
     d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
     d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
-
-    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
-        if(!dd->cellImage)
-            return;
-        this->updateValueRange();
-        emit parametersChanged();
-    });
 
     dd->interactor_style = gnomonInteractorStyleCellImageMarchingCubes::New();
     dd->interactor_style->q = this;
@@ -187,9 +224,18 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *ce
 {
     dd->cellImage = cellImage;
 
+
     this->setParameter("alpha",1.0);
-    
+    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+        if(!dd->cellImage)
+            return;
+        dd->updateValueRange();
+        emit parametersChanged();
+    });
+
     gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+
     QStringList properties = {""};
     for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
          if(dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]].canConvert<double>()) {
@@ -197,45 +243,13 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *ce
          }
     }
     propertyParam->setValues(properties);
-    propertyParam->setValue(QString(""));
-
-    this->updateValueRange();
-}
-
-void gnomonVisualizationCellImageMarchingCubes::updateOpacity(void)
-{
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    
-    if(dd->actor) {
-        dd->actor->setOpacity(alpha);
+    if (properties.contains(property_name)) {
+        propertyParam->setValue(property_name);
+    } else {
+        propertyParam->setValue(QString(""));
     }
 
-    if(dd->actor2D) {
-        dd->actor2D->setOpacity(alpha);
-    }
-}
-
-void gnomonVisualizationCellImageMarchingCubes::updateValueRange(void)
-{
-     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
-
-     QMap<long, QVariant> cellProperty;
-     if(dd->cellImage->cellPropertyNames().contains(property_name)) {
-         cellProperty = dd->cellImage->cellProperty(property_name);
-     } else {
-         for (const auto& cellId : dd->cellImage->cellIds()) {
-             cellProperty[cellId] = QVariant((double)cellId);
-         }
-     }
-
-     QList<double> cellScalarPropertyValues;
-     for (const auto& cellId : dd->cellImage->cellIds()) {
-         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
-     }
-     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
-
-     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+    dd->updateValueRange();
 }
 
 QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
@@ -252,43 +266,26 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
      QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+     qDebug()<<Q_FUNC_INFO<<property_name<<value_range;
 
     if(!dd->cellImage)
         return;
 
-    if (dd->polydata) {
-        dd->polydata->Delete();
-        dd->polydata = nullptr;
-    }
-
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellImage::New();
-    dd->polydata->setCellImage((gnomonCellImage *)dd->cellImage->clone());
+    dd->polydata->setCellImage(dd->cellImage);
     dd->polydata->setPropertyName(property_name);
     dd->polydata->update();
-    
-
-    if (dd->actor) {
-        d->view->renderer3D()->RemoveActor(dd->actor);
-        dd->actor->Delete();
-        dd->actor = nullptr;
-    }
 
     if (!dd->actor)
+    {
         dd->actor = gnomonActorPolyData::New();
         d->view->renderer3D()->AddActor(dd->actor);
+    }
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
-
-    if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
-    }
 
     if (!dd->actor2D)
     {
@@ -320,11 +317,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->polydata->GetBounds(bounds);
     d->view->setBounds(bounds);
 
-
     this->render();
-
-    qDebug()<<Q_FUNC_INFO<<d->view->interactor()->GetInteractorStyle()<<dd->interactor_style;
-    qDebug()<<Q_FUNC_INFO<<d->view->interactor()->GetInteractorStyle()<<dd->interactor_style;
 }
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
@@ -333,7 +326,7 @@ void gnomonVisualizationCellImageMarchingCubes::render(void)
     d->view->interactor()->SetInteractorStyle(dd->interactor_style);
     d->view->interactor()->Enable();
 
-    this->updateOpacity();
+    dd->updateOpacity();
     d->view->render();
 }
 
