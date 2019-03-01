@@ -184,6 +184,26 @@ public:
     }
 
 public:
+    ~gnomonInteractorStyleCellImageMarchingCubes(void)
+    {
+        this->picker->Delete();
+        this->picker = nullptr;
+
+        if (this->q->view()->infoPane()->isToggled()) {
+            this->q->view()->infoPane()->toggle();
+            this->q->view()->infoPane()->clear();
+        }
+
+        delete this->infoLayout;
+        this->infoLayout = nullptr;
+
+        delete this->infoPaneItem;
+        this->infoPaneItem = nullptr;
+
+        this->q = nullptr;
+    }
+
+public:
     gnomonVisualizationCellImageMarchingCubes *q = nullptr;
 
 public:
