@@ -23,16 +23,204 @@
 #include <dtkImagingCore>
 
 #include "gnomonViewForm.h"
+#include "gnomonOverlayPane.h"
+#include "gnomonOverlayPaneItem.h"
 
 #include "gnomonPolyDataCellImage.h"
 #include "gnomonActorPolyData.h"
 #include "gnomonActor2DPolyData.h"
 
 #include <vtkCellData.h>
+#include <vtkCellLocator.h>
+#include <vtkCellPicker.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkPointData.h>
+#include <vtkProp3DCollection.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkTextActor.h>
+#include <vtkTextProperty.h>
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonInteractorStyleCellImageMarchingCubes
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonInteractorStyleCellImageMarchingCubes : public vtkInteractorStyleTrackballCamera
+{
+public:
+    static gnomonInteractorStyleCellImageMarchingCubes *New(void);
+
+public:
+    virtual void OnMouseMove(void) override
+    {
+        vtkInteractorStyleTrackballCamera::OnMouseMove();
+
+        this->clicks = 0;
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        long vtkId = -1;
+        if (picker->GetViewProp()==this->actor) {
+            vtkId = picker->GetCellId();
+        }
+
+        this->updateTextActor(vtkId);
+    }
+
+    virtual void OnLeftButtonDown(void) override
+    {
+        vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
+
+        int *pos = this->GetInteractor()->GetEventPosition();
+
+        this->clicks++;
+
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+        long vtkId = -1;
+        if (picker->GetViewProp()==this->actor) {
+            vtkId = picker->GetCellId();
+        }
+
+        if (vtkId == -1) {
+            this->clicks = 0;
+
+            if (this->q->view()->infoPane()->isToggled()) {
+                this->q->view()->infoPane()->toggle();
+                this->q->view()->infoPane()->clear();
+                this->infoPaneItem = nullptr;
+                this->infoLayout = nullptr;
+            }
+        }
+
+        if (this->clicks == 2) {
+            this->OnDoubleClick(vtkId);
+            this->clicks = 0;
+        }
+    }
+
+    virtual void OnLeftButtonUp(void) override
+    {
+        vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+        
+        int *pos = this->GetInteractor()->GetEventPosition();
+        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+        long vtkId = -1;
+        if (picker->GetViewProp()==this->actor) {
+            vtkId = picker->GetCellId();
+        }
+    }
+
+    void OnDoubleClick(long vtkId)
+    {
+        long cellId = q->cellId(vtkId);
+        QString text = "Cell ";
+        text.append(QString::number(cellId));
+
+        if (!this->infoPaneItem) {
+            this->infoPaneItem = new gnomonOverlayPaneItem((QWidget *) q->view()->parent());
+            this->infoPaneItem->toggle();
+        }
+        this->infoPaneItem->setTitle(text);
+
+        if (!this->infoLayout) {
+            this->infoLayout = new QFormLayout;
+            this->infoLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+            this->infoPaneItem->addLayout(infoLayout);
+        } else {
+            for(int row = 0, max_row = this->infoLayout->count(); row < max_row; ++row) {
+                QLayoutItem *forDeletion = this->infoLayout->takeAt(0);
+                forDeletion->widget()->disconnect();
+                delete forDeletion->widget();
+                delete forDeletion;
+            }
+        }
+
+        QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
+        for(QMap<QString, QVariant>::iterator it = cellInfo.begin(), it_end = cellInfo.end(); it != it_end; ++it) {
+            infoLayout->addRow(it.key(), new QLabel(it.value().toString()));
+        }
+
+        if (!this->q->view()->infoPane()->isToggled()) {
+            this->q->view()->infoPane()->toggle();
+            this->q->view()->infoPane()->addWidget(this->infoPaneItem);
+        }
+    }
+
+    void updateTextActor(long vtkId)
+    {
+        if (!this->textActor) {
+            this->textActor = vtkSmartPointer<vtkTextActor>::New();
+            this->textActor->SetPosition2(10, 40);
+            this->textActor->GetTextProperty()->SetFontSize(24);
+            this->textActor->GetTextProperty()->SetColor (1.0, 1.0, 1.0);
+            this->GetDefaultRenderer()->AddActor2D(textActor);
+        }
+
+        if (vtkId > -1) {
+            long cellId = q->cellId(vtkId);
+            QString text = "Cell ";
+            text.append(QString::number(cellId));
+            this->textActor->SetInput(text.toStdString().c_str());
+        } else {
+            this->textActor->SetInput("");
+        }
+        this->GetInteractor()->Render();
+    }
+
+    void setActor(vtkProp *actor)
+    {
+        this->actor = actor;
+    }
+
+public:
+    gnomonInteractorStyleCellImageMarchingCubes(void) : vtkInteractorStyleTrackballCamera()
+    {
+        this->picker = vtkSmartPointer<vtkCellPicker>::New();
+        this->picker->SetTolerance(0.0005);
+    }
+
+public:
+    ~gnomonInteractorStyleCellImageMarchingCubes(void)
+    {
+        this->picker->Delete();
+        this->picker = nullptr;
+
+        if (this->q->view()->infoPane()->isToggled()) {
+            this->q->view()->infoPane()->toggle();
+            this->q->view()->infoPane()->clear();
+        }
+
+        delete this->infoLayout;
+        this->infoLayout = nullptr;
+
+        delete this->infoPaneItem;
+        this->infoPaneItem = nullptr;
+
+        this->q = nullptr;
+    }
+
+public:
+    gnomonVisualizationCellImageMarchingCubes *q = nullptr;
+
+public:
+    gnomonOverlayPaneItem *infoPaneItem = nullptr;
+    QFormLayout *infoLayout = nullptr;
+
+public:
+    vtkSmartPointer<vtkCellPicker> picker = nullptr;
+    vtkSmartPointer<vtkTextActor> textActor = nullptr;
+    vtkSmartPointer<vtkProp> actor = nullptr;
+
+private:
+    unsigned int clicks = 0;
+
+};
+
+vtkStandardNewMacro(gnomonInteractorStyleCellImageMarchingCubes);
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationCellImageMarchingCubesPrivate
@@ -47,14 +235,64 @@ public:
     gnomonPolyDataCellImage *polydata = nullptr;
     gnomonActorPolyData *actor = nullptr;
     gnomonActor2DPolyData *actor2D = nullptr;
+
+public:
+    gnomonInteractorStyleCellImageMarchingCubes *interactor_style = nullptr;
+
+    gnomonVisualizationCellImageMarchingCubes *q;
+    
+public slots:
+    void updateOpacity(void);
+    void updateValueRange(void);
 };
+
+
+void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
+{
+    double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
+    
+    if(this->actor) {
+        this->actor->setOpacity(alpha);
+    }
+
+    if(this->actor2D) {
+        this->actor2D->setOpacity(alpha);
+    }
+}
+
+void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
+{
+     QString property_name = ((gnomonCoreParameterString *)q->parameters()["property_name"])->value();
+
+     QMap<long, QVariant> cellProperty;
+     if(this->cellImage->cellPropertyNames().contains(property_name)) {
+         cellProperty = this->cellImage->cellProperty(property_name);
+     } else {
+         for (const auto& cellId : this->cellImage->cellIds()) {
+             cellProperty[cellId] = QVariant((double)cellId);
+         }
+     }
+
+     QList<double> cellScalarPropertyValues;
+     for (const auto& cellId : this->cellImage->cellIds()) {
+         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
+     }
+     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
+
+     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
+     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
+     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setValue(*(mm.first),*(mm.second));
+
+     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)this->q->parameters()["value_range"])->value();
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationCellImageMarchingCubes
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
+gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
+    dd->q = this;
     dd->cellImage = Q_NULLPTR;
 
     d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
@@ -62,12 +300,8 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
 
-    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
-        if(!dd->cellImage)
-            return;
-        this->updateValueRange();
-        emit parametersChanged();
-    });
+    dd->interactor_style = gnomonInteractorStyleCellImageMarchingCubes::New();
+    dd->interactor_style->q = this;
 }
 
 gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarchingCubes(void)
@@ -86,6 +320,8 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
         dd->actor2D = nullptr;
     }
 
+    dd->interactor_style->Delete();
+
     delete dd;
 
     dd = NULL;
@@ -96,54 +332,31 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *ce
     dd->cellImage = cellImage;
 
     this->setParameter("alpha",1.0);
-    
+    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+        if(!dd->cellImage)
+            return;
+        dd->updateValueRange();
+        emit parametersChanged();
+    });
+
     gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
+    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+
     QStringList properties = {""};
     for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
-         if(dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]].canConvert<double>()) {
+         QVariant property_variant = dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]];
+         if(property_variant.canConvert<double>() || property_variant.canConvert<int>()) {
                 properties.append(propertyName);
          }
     }
     propertyParam->setValues(properties);
-    propertyParam->setValue(QString(""));
-
-    this->updateValueRange();
-}
-
-void gnomonVisualizationCellImageMarchingCubes::updateOpacity(void)
-{
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    
-    if(dd->actor) {
-        dd->actor->setOpacity(alpha);
+    if (properties.contains(property_name)) {
+        propertyParam->setValue(property_name);
+    } else {
+        propertyParam->setValue(QString(""));
     }
 
-    if(dd->actor2D) {
-        dd->actor2D->setOpacity(alpha);
-    }
-}
-
-void gnomonVisualizationCellImageMarchingCubes::updateValueRange(void)
-{
-     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
-
-     QMap<long, QVariant> cellProperty;
-     if(dd->cellImage->cellPropertyNames().contains(property_name)) {
-         cellProperty = dd->cellImage->cellProperty(property_name);
-     } else {
-         for (const auto& cellId : dd->cellImage->cellIds()) {
-             cellProperty[cellId] = QVariant((double)cellId);
-         }
-     }
-
-     QList<double> cellScalarPropertyValues;
-     for (const auto& cellId : dd->cellImage->cellIds()) {
-         cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
-     }
-     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
-
-     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-     ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+    dd->updateValueRange();
 }
 
 QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
@@ -160,43 +373,28 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
      QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+     qDebug()<<Q_FUNC_INFO<<property_name<<value_range;
 
     if(!dd->cellImage)
         return;
 
-    if (dd->polydata) {
-        dd->polydata->Delete();
-        dd->polydata = nullptr;
-    }
-
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellImage::New();
-    dd->polydata->setCellImage((gnomonCellImage *)dd->cellImage->clone());
+    dd->polydata->setCellImage(dd->cellImage);
     dd->polydata->setPropertyName(property_name);
     dd->polydata->update();
-    
-
-    if (dd->actor) {
-        d->view->renderer3D()->RemoveActor(dd->actor);
-        dd->actor->Delete();
-        dd->actor = nullptr;
-    }
 
     if (!dd->actor)
+    {
         dd->actor = gnomonActorPolyData::New();
         d->view->renderer3D()->AddActor(dd->actor);
+    }
     dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
 
-    if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
-    }
+    dd->interactor_style->setActor(dd->actor);
 
     if (!dd->actor2D)
     {
@@ -233,10 +431,13 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
 {
-    this->updateOpacity();
+    dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
+    d->view->interactor()->SetInteractorStyle(dd->interactor_style);
+    d->view->interactor()->Enable();
+
+    dd->updateOpacity();
     d->view->render();
 }
-
 
 QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImageMarchingCubes::parameters(void) const
 {
@@ -261,6 +462,25 @@ void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+long gnomonVisualizationCellImageMarchingCubes::cellId(long vtkId)
+{
+    return dd->polydata->cellId(vtkId);
+}
+
+QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long cellId)
+{
+    QMap<QString, QVariant> info;
+//    info["label"] = QVariant(int(cellId));
+    for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
+        QMap<long, QVariant> property = dd->cellImage->cellProperty(propertyName);
+        if (property.contains(cellId)) {
+            info[propertyName] = property[cellId];
+        }
+    }
+
+    return info;
 }
 
 //

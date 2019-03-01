@@ -154,6 +154,11 @@ void gnomonOverlayPane::setWidth(int width)
     emit widthChanged();
 }
 
+bool gnomonOverlayPane::isToggled(void)
+{
+    return d->on;
+}
+
 void gnomonOverlayPane::toggle(void)
 {
     if (d->deactivate)

@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonVisualizationCellImage.h"
+#include "gnomonVisualizationCellImageVolume.h"
 #include "gnomonAbstractVisualization_p.h"
 
 #include <QtWidgets>
@@ -38,10 +38,10 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// gnomonVisualizationCellImagePrivate
+// gnomonVisualizationCellImageVolumePrivate
 // /////////////////////////////////////////////////////////////////
 
-class gnomonVisualizationCellImagePrivate
+class gnomonVisualizationCellImageVolumePrivate
 {
 public:
     gnomonCellImage *cellImage;
@@ -54,10 +54,10 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////
-// gnomonVisualizationCellImage
+// gnomonVisualizationCellImageVolume
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImage::gnomonVisualizationCellImage(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImagePrivate)
+gnomonVisualizationCellImageVolume::gnomonVisualizationCellImageVolume(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageVolumePrivate)
 {
     dd->cellImage = Q_NULLPTR;
 
@@ -66,7 +66,7 @@ gnomonVisualizationCellImage::gnomonVisualizationCellImage(void) : gnomonAbstrac
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
 }
 
-gnomonVisualizationCellImage::~gnomonVisualizationCellImage(void)
+gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
 {
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -88,7 +88,7 @@ gnomonVisualizationCellImage::~gnomonVisualizationCellImage(void)
     dd = NULL;
 }
 
-void gnomonVisualizationCellImage::setCellImage(gnomonCellImage *cellImage)
+void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImage *cellImage)
 {
     dd->cellImage = cellImage;
 
@@ -97,7 +97,7 @@ void gnomonVisualizationCellImage::setCellImage(gnomonCellImage *cellImage)
     this->updateValueRange();
 }
 
-void gnomonVisualizationCellImage::updateOpacity(void)
+void gnomonVisualizationCellImageVolume::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
     
@@ -110,7 +110,7 @@ void gnomonVisualizationCellImage::updateOpacity(void)
     }
 }
 
-void gnomonVisualizationCellImage::updateValueRange(void)
+void gnomonVisualizationCellImageVolume::updateValueRange(void)
 {
      QList<long> cellIds = dd->cellImage->cellIds();
      auto mm = std::minmax_element(cellIds.begin(),cellIds.end());
@@ -119,7 +119,7 @@ void gnomonVisualizationCellImage::updateValueRange(void)
      ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
 }
 
-QImage gnomonVisualizationCellImage::imageRendering(void)
+QImage gnomonVisualizationCellImageVolume::imageRendering(void)
 {
     d->updateOffscreenRenderer(dd->image->GetBounds());
 
@@ -135,7 +135,7 @@ QImage gnomonVisualizationCellImage::imageRendering(void)
     return image;
 }
 
-void gnomonVisualizationCellImage::update(void)
+void gnomonVisualizationCellImageVolume::update(void)
 {
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
@@ -224,19 +224,19 @@ void gnomonVisualizationCellImage::update(void)
     this->render();
 }
 
-void gnomonVisualizationCellImage::render(void)
+void gnomonVisualizationCellImageVolume::render(void)
 {
     this->updateOpacity();
     d->view->render();
 }
 
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImage::parameters(void) const
+QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImageVolume::parameters(void) const
 {
     return d->parameters;
 }
 
-void gnomonVisualizationCellImage::setParameter(const QString& parameter, const QVariant& value)
+void gnomonVisualizationCellImageVolume::setParameter(const QString& parameter, const QVariant& value)
 {
     if (d->parameters.contains(parameter)) {
         d->parameters[parameter]->setValue(value);
@@ -245,7 +245,7 @@ void gnomonVisualizationCellImage::setParameter(const QString& parameter, const 
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellImage::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationCellImageVolume::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
@@ -257,4 +257,4 @@ void gnomonVisualizationCellImage::setParameters(const QMap<QString, gnomonCoreP
 }
 
 //
-// gnomonVisualizationCellImage.cpp ends here
+// gnomonVisualizationCellImageVolume.cpp ends here

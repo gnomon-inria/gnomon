@@ -40,6 +40,9 @@ public slots:
     void setPropertyName(const QString& value);
 
 public:
+    long cellId(long vtkId);
+
+public:
      gnomonPolyDataCellImage(void);
     ~gnomonPolyDataCellImage(void);
 

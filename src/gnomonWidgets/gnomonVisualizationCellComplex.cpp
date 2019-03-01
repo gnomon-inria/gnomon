@@ -158,7 +158,7 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
     } else {
         propertyParam->setValue(QString(""));
     }
-//
+
     dd->updateValueRange();
 }
 
@@ -211,7 +211,7 @@ void gnomonVisualizationCellComplex::update(void)
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
-//
+
     if (dd->actor2D) {
         disconnect(d->connectSliceOrientation);
         disconnect(d->connectSlice);

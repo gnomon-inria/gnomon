@@ -39,10 +39,9 @@
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 
+#include "gnomonAbstractVisualizationCellComplex.h"
+#include "gnomonAbstractVisualizationCellImage.h"
 #include "gnomonVisualizationMesh.h"
-#include "gnomonVisualizationCellComplex.h"
-#include "gnomonVisualizationCellImage.h"
-#include "gnomonVisualizationCellImageMarchingCubes.h"
 #include "gnomonVisualizationImagesSerie.h"
 #include "gnomonVisualizationImagesSerieChannelBlending.h"
 
@@ -119,6 +118,8 @@ public:
     gnomonViewVolumicOverlay *sync = nullptr;
     gnomonViewVolumicOverlay *export_button = nullptr;
 
+
+
 public:
     int syncing_count = 0;
     QTimer *syncing_timer = nullptr;
@@ -141,6 +142,9 @@ public:
     QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
 
     gnomonOverlayPane *formVisualizationPane = nullptr;
+
+public:
+    gnomonOverlayPane *infoPane = nullptr;
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
@@ -347,6 +351,8 @@ void gnomonViewFormPrivate::refresh(void)
             QStringList combo_box_keys = {};
             if (key == "gnomonCellComplex") {
                 combo_box_keys = gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
+            } else if (key == "gnomonCellImage") {
+                combo_box_keys = gnomonWidgets::visualizationCellImage::pluginFactory().keys();
             }
             for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
                 combo_box->addItem(*it);
@@ -366,7 +372,14 @@ void gnomonViewFormPrivate::refresh(void)
                     gnomonCellComplex *cellComplex = (gnomonCellComplex *)this->forms[key];
                     formVisualizationCellComplex->setCellComplex(cellComplex);
                     formVisualizationCellComplex->update();
-                 }
+                } else if (key == "gnomonCellImage") {
+                    this->formVisualization[key] = gnomonWidgets::visualizationCellImage::pluginFactory().create(visu);
+                    this->formVisualization[key]->setView(q);
+                    gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
+                    gnomonCellImage *cellImage = (gnomonCellImage *)this->forms[key];
+                    formVisualizationCellImage->setCellImage(cellImage);
+                    formVisualizationCellImage->update();
+                }
                 this->configure((QWidget *) q->parent(), key);
             });
 
@@ -406,6 +419,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->slice_slider->setMaximum(1);
     d->slice_slider->setValue(0);
 
+    d->infoPane = new gnomonOverlayPane(parent);
+    d->infoPane->toggle();
+
     connect(d->slice_slider, SIGNAL(valueChanged(int)), this, SLOT(sliceChange(int)));
 
     connect(d, &gnomonViewFormPrivate::sliceOrientationChanged, this, &gnomonViewForm::sliceOrientationChanged);
@@ -414,8 +430,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
-    layout->addWidget(d, 0, 1, 1, 1);
-    layout->addWidget(d->pane(parent), 0, 2, 1, 1);
+    layout->addWidget(d->infoPane, 0, 1, 1, 1);
+    layout->addWidget(d, 0, 2, 1, 1);
+    layout->addWidget(d->pane(parent), 0, 3, 1, 1);
 
     connect(d->sync, &gnomonViewVolumicOverlay::iconClicked, [=] () {
         d->sync->toggle(!d->sync->isToggled());
@@ -788,13 +805,16 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 {
     d->forms["gnomonCellImage"] = cellImage;
 
-    if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"])) {
-//        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImage(this);
-        d->formVisualization["gnomonCellImage"] = new gnomonVisualizationCellImageMarchingCubes();
+    qDebug()<<Q_FUNC_INFO<<gnomonWidgets::visualizationCellImage::pluginFactory().keys();
+    QString key = gnomonWidgets::visualizationCellImage::pluginFactory().keys()[0];
+
+    if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
+    {
+        d->formVisualization["gnomonCellImage"] = gnomonWidgets::visualizationCellImage::pluginFactory().create(key);
         d->formVisualization["gnomonCellImage"]->setView(this);
     }
-//    gnomonVisualizationCellImage *formVisualizationCellImage = (gnomonVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
-    gnomonVisualizationCellImageMarchingCubes *formVisualizationCellImage = (gnomonVisualizationCellImageMarchingCubes *)d->formVisualization["gnomonCellImage"];
+
+    gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
     formVisualizationCellImage->setCellImage(cellImage);
     if (visualization) {
         formVisualizationCellImage->setParameters(visualization->parameters());
@@ -954,6 +974,11 @@ vtkRenderer *gnomonViewForm::renderer2D(void)
 vtkRenderer *gnomonViewForm::renderer3D(void)
 {
     return d->renderer3D;
+}
+
+gnomonOverlayPane *gnomonViewForm::infoPane(void)
+{
+    return d->infoPane;
 }
 
 int gnomonViewForm::orientation(void)

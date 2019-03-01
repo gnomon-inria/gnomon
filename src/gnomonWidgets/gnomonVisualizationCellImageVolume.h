@@ -18,28 +18,28 @@
 
 #include <gnomonWidgetsExport.h>
 
-#include "gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationCellImage.h"
 
 class gnomonViewForm;
 
 class gnomonCellImage;
 class gnomonCoreParameter;
 
-class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImage : public gnomonAbstractVisualization
+class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImageVolume : public gnomonAbstractVisualizationCellImage
 {
     Q_OBJECT
 
 public:
-     gnomonVisualizationCellImage(void);
-    ~gnomonVisualizationCellImage(void);
+     gnomonVisualizationCellImageVolume(void);
+    ~gnomonVisualizationCellImageVolume(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellImage);
+	void setCellImage(gnomonCellImage *cellImage) override;
 
 public slots:
     void updateOpacity(void);
     void updateValueRange(void);
-    
+
 public:
     QImage imageRendering(void) override;
 
@@ -54,8 +54,14 @@ public:
 
 
 private:
-	class gnomonVisualizationCellImagePrivate *dd;
+	class gnomonVisualizationCellImageVolumePrivate *dd;
 };
+
+
+inline gnomonAbstractVisualizationCellImage *gnomonVisualizationCellImageVolumeCreator(void)
+{
+    return new gnomonVisualizationCellImageVolume();
+}
 
 
 //
