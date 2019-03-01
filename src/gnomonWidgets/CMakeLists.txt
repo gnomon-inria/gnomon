@@ -31,6 +31,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractVisualization
   gnomonAbstractVisualizationCellComplex.h
   gnomonAbstractVisualizationCellComplex
+  gnomonAbstractVisualizationCellImage.h
+  gnomonAbstractVisualizationCellImage
   gnomonCodeEditor
   gnomonCodeEditor.h
   gnomonDropSite
@@ -72,11 +74,13 @@ set(${PROJECT_NAME}_HEADERS
   gnomonViewVolumicPool.h
   gnomonVisualizationCellComplex.h
   gnomonVisualizationCellComplex
-  gnomonVisualizationCellComplexPlugin.h
-  gnomonVisualizationCellImage.h
-  gnomonVisualizationCellImage
+## gnomonVisualizationCellComplexPlugin.h
   gnomonVisualizationCellImageMarchingCubes.h
   gnomonVisualizationCellImageMarchingCubes
+  gnomonVisualizationCellImageMarchingCubesPlugin.h
+  gnomonVisualizationCellImageVolume.h
+  gnomonVisualizationCellImageVolume
+## gnomonVisualizationCellImageVolumePlugin.h
   gnomonVisualizationImagesSerie.h
   gnomonVisualizationImagesSerie
   gnomonVisualizationImagesSerieChannelBlending.h
@@ -122,6 +126,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractMatplotlibVisualizationTree.cpp
   gnomonAbstractVisualization.cpp
   gnomonAbstractVisualizationCellComplex.cpp
+  gnomonAbstractVisualizationCellImage.cpp
   gnomonCodeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp
@@ -147,9 +152,11 @@ set(${PROJECT_NAME}_SOURCES
   gnomonViewVolumicOverlay.cpp
   gnomonViewVolumicPool.cpp
   gnomonVisualizationCellComplex.cpp
-  gnomonVisualizationCellComplexPlugin.cpp
-  gnomonVisualizationCellImage.cpp
+## gnomonVisualizationCellComplexPlugin.cpp
   gnomonVisualizationCellImageMarchingCubes.cpp
+  gnomonVisualizationCellImageMarchingCubesPlugin.cpp
+  gnomonVisualizationCellImageVolume.cpp
+## gnomonVisualizationCellImageVolumePlugin.cpp
   gnomonVisualizationImagesSerie.cpp
   gnomonVisualizationImagesSerieChannelBlending.cpp
   gnomonVisualizationMesh.cpp

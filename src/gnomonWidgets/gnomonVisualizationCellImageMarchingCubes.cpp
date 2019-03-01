@@ -256,24 +256,21 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
      QList<double> cellScalarPropertyValues;
      for (const auto& cellId : this->cellImage->cellIds()) {
          cellScalarPropertyValues.append(cellProperty[cellId].value<double>());
-         qDebug()<<"Cell"<<cellId<<"("<<property_name<<") :"<<cellProperty[cellId].value<double>();
      }
      auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
-     qDebug()<<property_name<<*(mm.first)<<*(mm.second);
 
      ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
      ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
      ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setValue(*(mm.first),*(mm.second));
 
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)this->q->parameters()["value_range"])->value();
-     qDebug()<<Q_FUNC_INFO<<property_name<<value_range;
 }
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationCellImageMarchingCubes
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
+gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
     dd->q = this;
     dd->cellImage = Q_NULLPTR;

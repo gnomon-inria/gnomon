@@ -18,16 +18,14 @@
 
 #include <gnomonWidgetsExport.h>
 
-#include "gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationCellImage.h"
 
 class gnomonViewForm;
 
 class gnomonCellImage;
 class gnomonCoreParameter;
 
-class vtkProp;
-
-class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImageMarchingCubes : public gnomonAbstractVisualization
+class GNOMONWIDGETS_EXPORT gnomonVisualizationCellImageMarchingCubes : public gnomonAbstractVisualizationCellImage
 {
     Q_OBJECT
 
@@ -36,7 +34,7 @@ public:
     ~gnomonVisualizationCellImageMarchingCubes(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellImage);
+	void setCellImage(gnomonCellImage *cellImage) override;
     
 public:
     QImage imageRendering(void) override;
@@ -57,6 +55,11 @@ public:
 public:
 	class gnomonVisualizationCellImageMarchingCubesPrivate *dd;
 };
+
+inline gnomonAbstractVisualizationCellImage *gnomonVisualizationCellImageMarchingCubesCreator(void)
+{
+    return new gnomonVisualizationCellImageMarchingCubes();
+}
 
 
 //
