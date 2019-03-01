@@ -63,7 +63,7 @@ public:
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
         long vtkId = -1;
-        if (picker->GetViewProp()==this->q->actor()) {
+        if (picker->GetViewProp()==this->actor) {
             vtkId = picker->GetCellId();
         }
 
@@ -80,7 +80,7 @@ public:
 
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
         long vtkId = -1;
-        if (picker->GetViewProp()==this->q->actor()) {
+        if (picker->GetViewProp()==this->actor) {
             vtkId = picker->GetCellId();
         }
 
@@ -109,7 +109,7 @@ public:
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
         long vtkId = -1;
-        if (picker->GetViewProp()==this->q->actor()) {
+        if (picker->GetViewProp()==this->actor) {
             vtkId = picker->GetCellId();
         }
     }
@@ -171,6 +171,11 @@ public:
         this->GetInteractor()->Render();
     }
 
+    void setActor(vtkProp *actor)
+    {
+        this->actor = actor;
+    }
+
 public:
     gnomonInteractorStyleCellImageMarchingCubes(void) : vtkInteractorStyleTrackballCamera()
     {
@@ -188,6 +193,7 @@ public:
 public:
     vtkSmartPointer<vtkCellPicker> picker = nullptr;
     vtkSmartPointer<vtkTextActor> textActor = nullptr;
+    vtkSmartPointer<vtkProp> actor = nullptr;
 
 private:
     unsigned int clicks = 0;
@@ -364,6 +370,8 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
 
+    dd->interactor_style->setActor(dd->actor);
+
     if (!dd->actor2D)
     {
         dd->actor2D = gnomonActor2DPolyData::New();
@@ -430,11 +438,6 @@ void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString
             d->parameters[param]->copy(parameters[param]);
         }
     }
-}
-
-vtkProp * gnomonVisualizationCellImageMarchingCubes::actor(void)
-{
-    return dd->actor;
 }
 
 long gnomonVisualizationCellImageMarchingCubes::cellId(long vtkId)
