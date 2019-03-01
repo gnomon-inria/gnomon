@@ -23,13 +23,13 @@
 
 #include <gnomonCore/gnomonAbstractCommand>
 #include <gnomonCore/gnomonImagesSerieReaderCommand>
-#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 #include <gnomonCore/gnomonMeshReaderCommand>
 
 #include <gnomonVisualization/gnomonColorMapEditor.h>
 
 #include <dtkImagingCore>
-#include <gnomonCore/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonMesh>
 
 #include "gnomonLandmarkActor.h"
 

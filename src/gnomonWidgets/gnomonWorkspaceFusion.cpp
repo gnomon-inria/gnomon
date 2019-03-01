@@ -22,7 +22,7 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore/gnomonImagesFusionCommand>
-#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 
 #include <dtkImagingCore>
 #include <dtkScript>

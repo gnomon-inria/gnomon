@@ -15,7 +15,7 @@
 #include "gnomonPolyData.h"
 #include "gnomonPolyDataCellComplex.h"
 
-#include <gnomonCellComplex.h>
+#include <gnomonForm/gnomonCellComplex>
 
 #include <dtkImagingCore>
 

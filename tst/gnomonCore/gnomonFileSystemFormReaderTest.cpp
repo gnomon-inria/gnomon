@@ -9,7 +9,7 @@
 
 #include <gnomonFileSystemFormReader.h>
 #include <gnomonTime.h>
-#include <gnomonIntensityImage.h>
+#include <gnomonForm/gnomonIntensityImage>
 
 class gnomonFileSystemFormReaderTestCasePrivate
 {

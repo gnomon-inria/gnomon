@@ -26,8 +26,8 @@
 
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonCore/gnomonCellImage>
-#include <gnomonCore/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonCellComplex>
 #include <gnomonCore/gnomonCellComplexFromCellImageCommand>
 
 #include <dtkImagingCore>

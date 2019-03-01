@@ -19,9 +19,9 @@
 #include <dtkWidgets>
 
 #include <gnomonCore/gnomonAbstractEvolutionModel>
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonMesh.h>
-#include <gnomonCore/gnomonCellComplex.h>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm>
+#include <gnomonCore/gnomonForm/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonCellComplex>
 #include <gnomonFonts>
 #include <gnomonStyle>
 

@@ -6,7 +6,7 @@
 #include "gnomonImagesFusionCommand.h"
 #include "gnomonImagesSerieReaderCommand.h"
 
-#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 
 #include <dtkScript>
 

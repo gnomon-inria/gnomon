@@ -16,7 +16,7 @@
 #include "gnomonActorMesh_p.h"
 #include "gnomonActorMeshCellGraph.h"
 
-#include <gnomonCellGraph.h>
+#include <gnomonForm/gnomonCellGraph>
 
 #include <QtWidgets>
 

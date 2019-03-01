@@ -1,5 +1,5 @@
 #include "gnomonFileSystemFormReader.h"
-#include "gnomonIntensityImage.h"
+#include "gnomonForm/gnomonIntensityImage.h"
 
 #include <dtkImagingCore>
 

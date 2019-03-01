@@ -17,7 +17,7 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellComplex>
 #include <gnomonCore/gnomonCoreParameter>
 #include "gnomonCoreParameterColor.h"
 

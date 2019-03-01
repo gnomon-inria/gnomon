@@ -3,7 +3,7 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include "gnomonImagesSerie.h"
+#include <gnomonForm/gnomonImagesSerie>
 #include "gnomonImagesSerieFilterCommand.h"
 #include "gnomonImagesSerieReaderCommand.h"
 

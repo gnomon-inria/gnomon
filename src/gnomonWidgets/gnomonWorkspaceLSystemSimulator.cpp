@@ -19,8 +19,8 @@
 #include <dtkWidgets>
 
 #include <gnomonCore/gnomonAbstractEvolutionModel>
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonLString.h>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm>
+#include <gnomonCore/gnomonForm/gnomonLString>
 #include <gnomonStyle>
 
 #include "gnomonCodeEditor.h"

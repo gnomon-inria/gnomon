@@ -23,8 +23,8 @@
 
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonCore/gnomonCellImage>
-#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 #include <gnomonCore/gnomonCellImageQuantificationCommand>
 
 #include <gnomonStyle>

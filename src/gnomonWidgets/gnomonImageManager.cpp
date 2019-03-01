@@ -22,7 +22,7 @@
 
 #include <gnomonFonts>
 #include <gnomonCore/gnomonAbstractImagesSerieWriter>
-#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 
 #include <dtkScript>
 #include <dtkImagingCore>

@@ -20,9 +20,10 @@
 
 #include <dtkCore>
 
-#include <gnomonTime.h>
-#include <gnomonAbstractDynamicForm.h>
-#include <gnomonAbstractForm.h>
+#include "gnomonAbstractDynamicForm.h"
+
+class gnomonTime;
+class gnomonAbstractForm;
 
 
 // ///////////////////////////////////////////////////////////////////

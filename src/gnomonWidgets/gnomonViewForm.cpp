@@ -27,11 +27,11 @@
 #include <dtkImagingCore>
 #include <dtkScript>
 
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonMesh>
-#include <gnomonCore/gnomonCellComplex>
-#include <gnomonCore/gnomonCellImage>
-#include <gnomonCore/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm>
+#include <gnomonCore/gnomonForm/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 
 #include <gnomonCore/gnomonCoreParameter.h>
 #include "gnomonWidgetsParameter.h"

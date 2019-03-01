@@ -1,8 +1,8 @@
 #include "gnomonSegmentationCommand.h"
 
-#include "gnomonCellImage.h"
+#include "gnomonForm/gnomonCellImage.h"
 
-#include "gnomonImagesSerie.h"
+#include "gnomonForm/gnomonImagesSerie.h"
 
 #include <dtkScript>
 #include <dtkImagingCore>

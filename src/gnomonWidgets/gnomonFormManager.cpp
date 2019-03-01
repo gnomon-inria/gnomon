@@ -25,11 +25,11 @@
 
 #include <gnomonFonts>
 
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonImagesSerie>
-#include <gnomonCore/gnomonMesh>
-#include <gnomonCore/gnomonCellImage>
-#include <gnomonCore/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie>
+#include <gnomonCore/gnomonForm/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonCellComplex>
 
 #include <gnomonCore/gnomonImagesSerieWriterCommand>
 #include <gnomonCore/gnomonMeshWriterCommand>

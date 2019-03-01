@@ -2,7 +2,7 @@
 
 #include <dtkScript>
 
-#include "gnomonMesh.h"
+#include "gnomonForm/gnomonMesh.h"
 
 class gnomonFemSolverCommandPrivate
 {

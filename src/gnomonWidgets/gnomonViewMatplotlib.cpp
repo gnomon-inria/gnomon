@@ -23,9 +23,9 @@
 #include <gnomonCore/gnomonAbstractCommand>
 #include <gnomonCore/gnomonTreeReaderCommand>
 
-#include <gnomonCore/gnomonAbstractForm>
-#include <gnomonCore/gnomonDataFrame>
-#include <gnomonCore/gnomonTree>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm>
+#include <gnomonCore/gnomonForm/gnomonDataFrame>
+#include <gnomonCore/gnomonForm/gnomonTree>
 
 #include <gnomonCore/gnomonCoreParameter.h>
 #include "gnomonWidgetsParameter.h"

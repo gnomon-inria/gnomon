@@ -15,26 +15,32 @@
 project(gnomonCore)
 
 ## #################################################################
+## Dependencies - internal
+## #################################################################
+
+include_directories(gnomonForm)
+
+## #################################################################
+## Inputs
+## #################################################################
+
+add_subdirectory(gnomonForm)
+
+## #################################################################
 ## Sources
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
   gnomonAbstractAlgorithm
   gnomonAbstractAlgorithm.h
-  gnomonAbstractCellComplexData
-  gnomonAbstractCellComplexData.h
   gnomonAbstractCellComplexFromCellImage
   gnomonAbstractCellComplexFromCellImage.h
   gnomonAbstractCellComplexReader
   gnomonAbstractCellComplexReader.h
   gnomonAbstractCellComplexWriter
   gnomonAbstractCellComplexWriter.h
-  gnomonAbstractCellGraphData
-  gnomonAbstractCellGraphData.h
   gnomonAbstractCellGraphFromImage
   gnomonAbstractCellGraphFromImage.h
-  gnomonAbstractCellImageData
-  gnomonAbstractCellImageData.h
   gnomonAbstractCellImageFilter
   gnomonAbstractCellImageFilter.h
   gnomonAbstractCellImageFromImage
@@ -47,16 +53,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractCellImageWriter.h
   gnomonAbstractCommand
   gnomonAbstractCommand.h
-  gnomonAbstractDataFrameData
-  gnomonAbstractDataFrameData.h
-  gnomonAbstractDynamicForm
-  gnomonAbstractDynamicForm.h
   gnomonAbstractEvolutionModel
   gnomonAbstractEvolutionModel.h
   gnomonAbstractFemSolver
   gnomonAbstractFemSolver.h
-  gnomonAbstractForm
-  gnomonAbstractForm.h
   gnomonAbstractImagesFusion
   gnomonAbstractImagesFusion.h
   gnomonAbstractImagesRegistration
@@ -67,13 +67,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractImagesSerieReader.h
   gnomonAbstractImagesSerieWriter
   gnomonAbstractImagesSerieWriter.h
-  gnomonAbstractIntensityImageData
-  gnomonAbstractIntensityImageData.h
   gnomonLandmark.h
-  gnomonAbstractLStringData
-  gnomonAbstractLStringData.h
-  gnomonAbstractMeshData
-  gnomonAbstractMeshData.h
   gnomonAbstractMeshFromImage
   gnomonAbstractMeshFromImage.h
   gnomonAbstractMeshReader
@@ -88,22 +82,14 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAbstractSystemScenario.h
   gnomonAbstractTissueGrowthModel
   gnomonAbstractTissueGrowthModel.h
-  gnomonAbstractTreeData
-  gnomonAbstractTreeData.h
   gnomonAbstractTreeReader
   gnomonAbstractTreeReader.h
-  gnomonCellComplex
-  gnomonCellComplex.h
   gnomonCellComplexFromCellImageCommand
   gnomonCellComplexFromCellImageCommand.h
   gnomonCellComplexReaderCommand
   gnomonCellComplexReaderCommand.h
   gnomonCellComplexWriterCommand
   gnomonCellComplexWriterCommand.h
-  gnomonCellGraph
-  gnomonCellGraph.h
-  gnomonCellImage
-  gnomonCellImage.h
   gnomonCellImageFilterCommand
   gnomonCellImageFilterCommand.h
   gnomonCellImageQuantificationCommand
@@ -118,19 +104,13 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCoreParameter.h
   gnomonCoreSettings
   gnomonCoreSettings.h
-  gnomonDataFrame
-  gnomonDataFrame.h
   gnomonDataManager
   gnomonDataManager.h
-  gnomonDiscreteDynamicForm
-  gnomonDiscreteDynamicForm.h
   gnomonFemSolverCommand
   gnomonFemSolverCommand.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
-  gnomonImagesSerie
-  gnomonImagesSerie.h
   gnomonImagesFusionCommand
   gnomonImagesFusionCommand.h
   gnomonImagesRegistrationCommand
@@ -141,12 +121,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImagesSerieReaderCommand.h
   gnomonImagesSerieWriterCommand
   gnomonImagesSerieWriterCommand.h
-  gnomonIntensityImage
-  gnomonIntensityImage.h
-  gnomonLString
-  gnomonLString.h
-  gnomonMesh
-  gnomonMesh.h
   gnomonMeshFromImageCommand
   gnomonMeshFromImageCommand.h
   gnomonMeshReaderCommand
@@ -155,47 +129,33 @@ set(${PROJECT_NAME}_HEADERS
   gnomonMeshWriterCommand.h
   gnomonSegmentationCommand
   gnomonSegmentationCommand.h
-  gnomonSphereForm
-  gnomonSphereForm.h
   gnomonSystem
   gnomonSystem.h
   gnomonTypeDef
   gnomonTypeDef.h
   gnomonTime
   gnomonTime.h
-  gnomonTree
-  gnomonTree.h
   gnomonTreeReaderCommand
-  gnomonTreeReaderCommand.h
-  gnomonWallForm
-  gnomonWallForm.h)
+  gnomonTreeReaderCommand.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractAlgorithm.cpp
-  gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellComplexFromCellImage.cpp
   gnomonAbstractCellComplexReader.cpp
   gnomonAbstractCellComplexWriter.cpp
-  gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellGraphFromImage.cpp
-  gnomonAbstractCellImageData.cpp
   gnomonAbstractCellImageFilter.cpp
   gnomonAbstractCellImageFromImage.cpp
   gnomonAbstractCellImageQuantification.cpp
   gnomonAbstractCellImageReader.cpp
   gnomonAbstractCellImageWriter.cpp
-  gnomonAbstractDataFrameData.cpp
   gnomonAbstractEvolutionModel.cpp
   gnomonAbstractFemSolver.cpp
-  gnomonAbstractForm.cpp
   gnomonAbstractImagesFusion.cpp
   gnomonAbstractImagesRegistration.cpp
   gnomonAbstractImagesSerieFilter.cpp
   gnomonAbstractImagesSerieReader.cpp
   gnomonAbstractImagesSerieWriter.cpp
-  gnomonAbstractIntensityImageData.cpp
-  gnomonAbstractLStringData.cpp
-  gnomonAbstractMeshData.cpp
   gnomonAbstractMeshFromImage.cpp
   gnomonAbstractMeshReader.cpp
   gnomonAbstractMeshWriter.cpp
@@ -203,7 +163,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonAbstractSurfaceImageFromImage.cpp
   gnomonAbstractSystemScenario.cpp
   gnomonAbstractTissueGrowthModel.cpp
-  gnomonAbstractTreeData.cpp
   gnomonAbstractTreeReader.cpp
   gnomonCellComplexFromCellImageCommand.cpp
   gnomonCellComplexReaderCommand.cpp
@@ -216,11 +175,9 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCoreSettings.cpp
   gnomonCoreParameter.cpp
   gnomonDataManager.cpp
-  gnomonDiscreteDynamicForm.cpp
   gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
-  gnomonImagesSerie.cpp
   gnomonImagesFusionCommand.cpp
   gnomonImagesRegistrationCommand.cpp
   gnomonImagesSerieFilterCommand.cpp
@@ -230,11 +187,9 @@ set(${PROJECT_NAME}_SOURCES
   gnomonMeshReaderCommand.cpp
   gnomonMeshWriterCommand.cpp
   gnomonSegmentationCommand.cpp
-  gnomonSphereForm.cpp
   gnomonSystem.cpp
   gnomonTime.cpp
-  gnomonTreeReaderCommand.cpp
-  gnomonWallForm.cpp)
+  gnomonTreeReaderCommand.cpp)
 
 ## #################################################################
 ## Wrapping

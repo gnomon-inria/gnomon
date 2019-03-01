@@ -23,7 +23,7 @@
 #include <dtkImage>
 #include <gnomonCellComplex>
 #include <gnomonCellGraph>
-#include <gnomonCellImage>
+#include <gnomonForm/gnomonCellImage>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerNodeViewPrivate

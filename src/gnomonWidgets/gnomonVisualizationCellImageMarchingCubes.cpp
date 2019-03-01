@@ -17,7 +17,7 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonCellImage>
 #include <gnomonCore/gnomonCoreParameter>
 #include "gnomonCoreParameterColor.h"
 #include <dtkImagingCore>

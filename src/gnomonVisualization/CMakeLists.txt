@@ -177,6 +177,7 @@ target_link_libraries(${PROJECT_NAME} dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
+target_link_libraries(${PROJECT_NAME} gnomonForm)
 target_link_libraries(${PROJECT_NAME} gnomonFonts)
 target_link_libraries(${PROJECT_NAME} gnomonStyle)
 

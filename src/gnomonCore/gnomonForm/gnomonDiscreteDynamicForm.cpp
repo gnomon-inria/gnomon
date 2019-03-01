@@ -15,6 +15,8 @@
 #include "gnomonCore.h"
 #include "gnomonDiscreteDynamicForm.h"
 
+#include "gnomonTime.h"
+
 #include <QtGlobal>
 
 class gnomonDiscreteDynamicFormPrivate
