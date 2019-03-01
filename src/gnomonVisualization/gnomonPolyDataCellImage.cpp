@@ -101,7 +101,7 @@ void gnomonPolyDataCellImage::update(void)
      QMap<long, double> cellScalarProperty;
      for (const auto& cellId : cellProperty.keys()) {
          cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
-         qDebug()<<"Cell"<<cellId<<"("<<d->propertyName<<") :"<<cellProperty[cellId].value<double>();
+         qDebug()<<"Cell"<<cellId<<"("<<d->propertyName<<") :"<<cellScalarProperty[cellId];
      }
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");

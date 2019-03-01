@@ -163,7 +163,7 @@ public:
     void setValue(T valMin, T valMax) { if((m_value[0] != valMin)||(m_value[1] != valMax)) { m_value = QList<T>({valMin, valMax});  emit valueChanged(); } }
     void setValue(const QVariant& v) { if(m_value != v.value<QList<T> >()) { m_value = v.value<QList<T> >(); emit valueChanged(); } }
     void setMinimumValue(T min) { m_min = min; if(m_value[0]<min) m_value[0]=min; if(m_value[1]<min) m_value[1]=min; emit valueChanged(); }
-    void setMaximumValue(T max) { m_max = max; if(m_value[0]>max) m_value[0]=max; if(m_value[0]<max) m_value[1]=max; emit valueChanged(); }
+    void setMaximumValue(T max) { m_max = max; if(m_value[0]>max) m_value[0]=max; if(m_value[0]>max) m_value[1]=max; emit valueChanged(); }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
     void copy(gnomonCoreParameter *other) {
