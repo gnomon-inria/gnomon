@@ -54,7 +54,6 @@ add_executable(${PROJECT_NAME}
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
-target_link_libraries(${PROJECT_NAME} gnomonForm)
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} Qt5::Test)

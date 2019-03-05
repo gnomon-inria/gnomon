@@ -15,12 +15,6 @@
 project(gnomonCore)
 
 ## #################################################################
-## Dependencies - internal
-## #################################################################
-
-include_directories(gnomonForm)
-
-## #################################################################
 ## Inputs
 ## #################################################################
 
@@ -136,7 +130,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTime
   gnomonTime.h
   gnomonTreeReaderCommand
-  gnomonTreeReaderCommand.h)
+  gnomonTreeReaderCommand.h
+  ${${PROJECT_NAME}_FORM_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractAlgorithm.cpp
@@ -189,7 +184,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonSegmentationCommand.cpp
   gnomonSystem.cpp
   gnomonTime.cpp
-  gnomonTreeReaderCommand.cpp)
+  gnomonTreeReaderCommand.cpp
+  ${${PROJECT_NAME}_FORM_SOURCES})
 
 ## #################################################################
 ## Wrapping

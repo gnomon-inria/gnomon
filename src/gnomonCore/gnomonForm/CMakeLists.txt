@@ -12,14 +12,14 @@
 ##
 ### Code:
 
-project(gnomonForm)
-
 
 ## #################################################################
 ## Sources
 ## #################################################################
 
-set(${PROJECT_NAME}_HEADERS
+
+
+set(HEADERS
   gnomonAbstractCellComplexData
   gnomonAbstractCellComplexData.h
   gnomonAbstractCellGraphData
@@ -65,7 +65,16 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWallForm
   gnomonWallForm.h)
 
-set(${PROJECT_NAME}_SOURCES
+
+get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+foreach (FILE ${HEADERS})
+    list(APPEND FULL_HEADERS ${DIRECTORY}/${FILE})
+endforeach()
+string(REPLACE "gnomon" "" DIRECTORY ${DIRECTORY})
+string(TOUPPER ${DIRECTORY} DIRECTORY)
+set(${PROJECT_NAME}_${DIRECTORY}_HEADERS ${FULL_HEADERS} PARENT_SCOPE)
+
+set(SOURCES
   gnomonAbstractCellComplexData.cpp
   gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellImageData.cpp
@@ -80,70 +89,13 @@ set(${PROJECT_NAME}_SOURCES
   gnomonSphereForm.cpp
   gnomonWallForm.cpp)
 
-## #################################################################
-## Build rules
-## #################################################################
-
-add_library(${PROJECT_NAME} SHARED
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_HEADERS})
-
-## ###################################################################
-## Link rules
-## ###################################################################
-
-target_link_libraries(${PROJECT_NAME} Qt5::Core)
-target_link_libraries(${PROJECT_NAME} Qt5::Gui)
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
-
-target_link_libraries(${PROJECT_NAME} dtkCore)
-target_link_libraries(${PROJECT_NAME} dtkWidgets)
-
-target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-
-target_link_libraries(${PROJECT_NAME} gnomonCore)
-
-# #################################################################
-## Target properties
-## #################################################################
-
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
-set_target_properties(${PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
-set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 0)
-set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVERSION ${gnomon_VERSION_MAJOR})
-
-## #################################################################
-## Export header file
-## #################################################################
-
-generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
-generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export")
-
-set(${PROJECT_NAME}_HEADERS
-  ${${PROJECT_NAME}_HEADERS}
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
-
-## ###################################################################
-## Install rules - files
-## ###################################################################
-
-install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/gnomon
-  COMPONENT gnomon-core)
-
-## ###################################################################
-## Install rules - targets
-## ###################################################################
-
-install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT gnomon-core
-         EXPORT gnomonDepends)
-
-
+get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+foreach (FILE ${SOURCES})
+    list(APPEND FULL_SOURCES ${DIRECTORY}/${FILE})
+endforeach()
+string(REPLACE "gnomon" "" DIRECTORY ${DIRECTORY})
+string(TOUPPER ${DIRECTORY} DIRECTORY)
+set(${PROJECT_NAME}_${DIRECTORY}_SOURCES ${FULL_SOURCES} PARENT_SCOPE)
 
 ######################################################################
 ### CMakeLists.txt ends here
