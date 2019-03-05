@@ -33,8 +33,7 @@
 
 #include <dtkImagingCore>
 
-#include <gnomonCore/gnomonForm/gnomonAbstractCellComplexData.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractCellGraphData.h>
+
 #include <gnomonCore/gnomonForm/gnomonAbstractCellImageData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
@@ -42,8 +41,6 @@
 #include <gnomonCore/gnomonForm/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractMeshData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractTreeData.h>
-#include <gnomonCore/gnomonForm/gnomonCellComplex.h>
-#include <gnomonCore/gnomonForm/gnomonCellGraph.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame.h>
 #include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
@@ -54,6 +51,10 @@
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 #include <gnomonCore/gnomonForm/gnomonTree.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 
 #include <gnomonCore/gnomonAbstractCellComplexFromCellImage.h>
 #include <gnomonCore/gnomonAbstractCellComplexReader.h>
@@ -507,8 +508,7 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <gnomonCore/gnomonForm/gnomonAbstractCellComplexData.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractCellGraphData.h>
+
 %include <gnomonCore/gnomonForm/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
@@ -516,8 +516,6 @@
 %include <gnomonCore/gnomonForm/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractTreeData.h>
-%include <gnomonCore/gnomonForm/gnomonCellComplex.h>
-%include <gnomonCore/gnomonForm/gnomonCellGraph.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame.h>
 %include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
@@ -528,6 +526,10 @@
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 %include <gnomonCore/gnomonForm/gnomonTree.h>
 %include <gnomonCore/gnomonForm/gnomonWallForm.h>
+%include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
+%include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 
 %include <gnomonCore/gnomonAbstractCellComplexFromCellImage.h>
 %include <gnomonCore/gnomonAbstractCellComplexReader.h>

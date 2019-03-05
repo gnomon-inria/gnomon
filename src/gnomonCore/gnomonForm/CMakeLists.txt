@@ -14,16 +14,17 @@
 
 
 ## #################################################################
+## Inputs
+## #################################################################
+
+add_subdirectory(gnomonCellComplex)
+add_subdirectory(gnomonCellGraph)
+
+## #################################################################
 ## Sources
 ## #################################################################
 
-
-
 set(HEADERS
-  gnomonAbstractCellComplexData
-  gnomonAbstractCellComplexData.h
-  gnomonAbstractCellGraphData
-  gnomonAbstractCellGraphData.h
   gnomonAbstractCellImageData
   gnomonAbstractCellImageData.h
   gnomonAbstractDataFrameData
@@ -40,10 +41,6 @@ set(HEADERS
   gnomonAbstractMeshData.h
   gnomonAbstractTreeData
   gnomonAbstractTreeData.h
-  gnomonCellComplex
-  gnomonCellComplex.h
-  gnomonCellGraph
-  gnomonCellGraph.h
   gnomonCellImage
   gnomonCellImage.h
   gnomonDataFrame
@@ -63,7 +60,9 @@ set(HEADERS
   gnomonTree
   gnomonTree.h
   gnomonWallForm
-  gnomonWallForm.h)
+  gnomonWallForm.h
+  ${${PROJECT_NAME}_FORM_CELLCOMPLEX_HEADERS}
+  ${${PROJECT_NAME}_FORM_CELLGRAPH_HEADERS})
 
 
 get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
@@ -75,8 +74,6 @@ string(TOUPPER ${DIRECTORY} DIRECTORY)
 set(${PROJECT_NAME}_${DIRECTORY}_HEADERS ${FULL_HEADERS} PARENT_SCOPE)
 
 set(SOURCES
-  gnomonAbstractCellComplexData.cpp
-  gnomonAbstractCellGraphData.cpp
   gnomonAbstractCellImageData.cpp
   gnomonAbstractDataFrameData.cpp
   gnomonAbstractForm.cpp
@@ -87,7 +84,9 @@ set(SOURCES
   gnomonDiscreteDynamicForm.cpp
   gnomonImagesSerie.cpp
   gnomonSphereForm.cpp
-  gnomonWallForm.cpp)
+  gnomonWallForm.cpp
+  ${${PROJECT_NAME}_FORM_CELLCOMPLEX_SOURCES}
+  ${${PROJECT_NAME}_FORM_CELLGRAPH_SOURCES})
 
 get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 foreach (FILE ${SOURCES})
