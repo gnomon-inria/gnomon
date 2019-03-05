@@ -21,8 +21,7 @@
 #include "gnomonInspectorViewTree.h"
 #include "gnomonViewManager.h"
 
-#include <gnomonForm/gnomonCellComplex>
-#include <gnomonForm/gnomonCellGraph>
+#include <gnomonCore>
 
 #include <dtkImagingCore>
 

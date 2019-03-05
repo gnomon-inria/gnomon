@@ -17,7 +17,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractMeshData.h"
-#include "gnomonAbstractForm.h"
+#include "gnomonForm/gnomonAbstractForm.h"
 
 #include <QtCore>
 

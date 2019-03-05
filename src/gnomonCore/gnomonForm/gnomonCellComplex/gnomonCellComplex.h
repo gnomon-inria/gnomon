@@ -17,7 +17,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonAbstractCellComplexData.h"
-#include "gnomonAbstractForm.h"
+#include "gnomonForm/gnomonAbstractForm.h"
 
 #include <QtCore>
 

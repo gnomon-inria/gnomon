@@ -16,7 +16,7 @@
 
 #include <gnomonCoreExport>
 
-#include "gnomonAbstractForm.h"
+#include "gnomonForm/gnomonAbstractForm.h"
 
 #include <dtkCore>
 

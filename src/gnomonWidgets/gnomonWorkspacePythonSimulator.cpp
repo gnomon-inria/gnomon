@@ -20,8 +20,7 @@
 
 #include <gnomonCore/gnomonAbstractEvolutionModel>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm>
-#include <gnomonCore/gnomonForm/gnomonMesh>
-#include <gnomonCore/gnomonForm/gnomonCellComplex>
+#include <gnomonCore>
 #include <gnomonFonts>
 #include <gnomonStyle>
 

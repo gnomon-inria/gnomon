@@ -16,7 +16,7 @@
 
 #include <gnomonCoreExport.h>
 
-#include "gnomonAbstractForm.h"
+#include "gnomonForm/gnomonAbstractForm.h"
 
 #include <QtCore>
 #include <dtkImagingCore>

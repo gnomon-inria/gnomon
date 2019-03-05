@@ -25,6 +25,7 @@ add_subdirectory(gnomonForm)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_FORM_HEADERS}
   gnomonAbstractAlgorithm
   gnomonAbstractAlgorithm.h
   gnomonAbstractCellComplexFromCellImage
@@ -130,10 +131,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTime
   gnomonTime.h
   gnomonTreeReaderCommand
-  gnomonTreeReaderCommand.h
-  ${${PROJECT_NAME}_FORM_HEADERS})
+  gnomonTreeReaderCommand.h)
 
 set(${PROJECT_NAME}_SOURCES
+  ${${PROJECT_NAME}_FORM_SOURCES}
   gnomonAbstractAlgorithm.cpp
   gnomonAbstractCellComplexFromCellImage.cpp
   gnomonAbstractCellComplexReader.cpp
@@ -184,8 +185,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonSegmentationCommand.cpp
   gnomonSystem.cpp
   gnomonTime.cpp
-  gnomonTreeReaderCommand.cpp
-  ${${PROJECT_NAME}_FORM_SOURCES})
+  gnomonTreeReaderCommand.cpp)
 
 ## #################################################################
 ## Wrapping
