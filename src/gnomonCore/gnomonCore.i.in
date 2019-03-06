@@ -75,16 +75,17 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 
-#include <gnomonCore/gnomonAbstractModel.h>
-#include <gnomonCore/gnomonAbstractEvolutionModel.h>
-#include <gnomonCore/gnomonAbstractSystemScenario.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
+#include <gnomonCore/gnomonModel/gnomonSystem.h>
+
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonCoreParameter.h>
 #include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonLandmark.h>
-#include <gnomonCore/gnomonSystem.h>
 #include <gnomonCore/gnomonTime.h>
 #include <gnomonCore/gnomonTypeDef.h>
 #include <vtkPythonUtil.h>
@@ -550,16 +551,17 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 
-%include <gnomonCore/gnomonAbstractModel.h>
-%include <gnomonCore/gnomonAbstractEvolutionModel.h>
-%include <gnomonCore/gnomonAbstractSystemScenario.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
+%include <gnomonCore/gnomonModel/gnomonSystem.h>
+
 %include <gnomonCore/gnomonCore.h>
 %include <gnomonCore/gnomonCoreParameter.h>
 %include <gnomonCore/gnomonDataManager.h>
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonLandmark.h>
-%include <gnomonCore/gnomonSystem.h>
 %include <gnomonCore/gnomonTime.h>
 %include <gnomonCore/gnomonTypeDef.h>
 %include <QVariant.i>

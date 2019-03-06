@@ -22,7 +22,7 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonImagesRegistrationCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesRegistrationCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>

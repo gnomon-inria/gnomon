@@ -1,4 +1,4 @@
-#include "gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractCommand.h"
 
 class gnomonImagesSerie;
 

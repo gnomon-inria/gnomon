@@ -21,9 +21,9 @@
 #include "gnomonWorkspacePreprocess.h"
 #include "gnomonViewVolumicOverlay.h"
 
-#include <gnomonCore/gnomonAbstractCommand>
-#include <gnomonCore/gnomonImagesSerieReaderCommand>
-#include <gnomonCore/gnomonMeshReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 
 #include <gnomonVisualization/gnomonColorMapEditor.h>
 

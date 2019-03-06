@@ -24,7 +24,7 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCellImageQuantificationCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageQuantificationCommand>
 
 #include <gnomonStyle>
 

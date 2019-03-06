@@ -1,4 +1,4 @@
-#include "gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractCommand.h"
 class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand

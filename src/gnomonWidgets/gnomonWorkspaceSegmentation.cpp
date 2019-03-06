@@ -26,7 +26,7 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonSegmentationCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonSegmentationCommand.h>
 
 #include <dtkImagingCore>
 #include <dtkScript>

@@ -3,7 +3,7 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include "gnomonImagesSerieReaderCommand.h"
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
 
 #include <dtkScript>
 

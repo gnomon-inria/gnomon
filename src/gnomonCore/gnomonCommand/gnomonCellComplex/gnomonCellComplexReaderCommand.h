@@ -1,4 +1,4 @@
-#include "gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractCommand.h"
 class gnomonCellComplex;
 
 class GNOMONCORE_EXPORT gnomonCellComplexReaderCommand : public gnomonAbstractCommand

@@ -18,11 +18,11 @@
 #include "gnomonViewVolumicOverlay.h"
 #include "gnomonFormManager.h"
 
-#include <gnomonCore/gnomonAbstractCommand>
-#include <gnomonCore/gnomonImagesSerieReaderCommand>
-#include <gnomonCore/gnomonCellImageReaderCommand>
-#include <gnomonCore/gnomonCellComplexReaderCommand>
-#include <gnomonCore/gnomonMeshReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>

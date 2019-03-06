@@ -27,10 +27,10 @@
 
 #include <gnomonCore>
 
-#include <gnomonCore/gnomonImagesSerieWriterCommand>
-#include <gnomonCore/gnomonMeshWriterCommand>
-#include <gnomonCore/gnomonCellImageWriterCommand>
-#include <gnomonCore/gnomonCellComplexWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
 
 #include <dtkScript>
 

@@ -25,7 +25,7 @@
 #include <dtkImagingCore>
 #include <dtkScript>
 
-#include <gnomonCore/gnomonFemSolverCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonFemSolverCommand>
 
 #include <vtkImageData.h>
 

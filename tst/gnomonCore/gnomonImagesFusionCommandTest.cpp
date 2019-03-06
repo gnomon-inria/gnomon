@@ -3,8 +3,8 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include "gnomonImagesFusionCommand.h"
-#include "gnomonImagesSerieReaderCommand.h"
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
 
 #include <dtkScript>
 

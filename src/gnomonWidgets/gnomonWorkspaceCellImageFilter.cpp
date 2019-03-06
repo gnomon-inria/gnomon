@@ -27,7 +27,7 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCellImageFilterCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>

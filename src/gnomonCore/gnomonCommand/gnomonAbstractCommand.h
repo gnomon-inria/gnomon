@@ -16,8 +16,8 @@
 
 #include <QUndoCommand>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include <gnomonCore>
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonAbstractCommand : public QUndoCommand
 {

@@ -20,8 +20,8 @@
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"
 
-#include <gnomonCore/gnomonAbstractCommand>
-#include <gnomonCore/gnomonTreeReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
 
 #include <gnomonCore>
 

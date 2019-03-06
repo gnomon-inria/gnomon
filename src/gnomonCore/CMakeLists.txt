@@ -19,38 +19,15 @@ project(gnomonCore)
 ## #################################################################
 
 add_subdirectory(gnomonAlgorithm)
+add_subdirectory(gnomonCommand)
 add_subdirectory(gnomonForm)
+add_subdirectory(gnomonModel)
 
 ## #################################################################
 ## Sources
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonAbstractCommand
-  gnomonAbstractCommand.h
-  gnomonAbstractEvolutionModel
-  gnomonAbstractEvolutionModel.h
-  gnomonLandmark.h
-  gnomonAbstractModel
-  gnomonAbstractModel.h
-  gnomonAbstractSystemScenario
-  gnomonAbstractSystemScenario.h
-  gnomonAbstractTissueGrowthModel
-  gnomonAbstractTissueGrowthModel.h
-  gnomonCellComplexFromCellImageCommand
-  gnomonCellComplexFromCellImageCommand.h
-  gnomonCellComplexReaderCommand
-  gnomonCellComplexReaderCommand.h
-  gnomonCellComplexWriterCommand
-  gnomonCellComplexWriterCommand.h
-  gnomonCellImageFilterCommand
-  gnomonCellImageFilterCommand.h
-  gnomonCellImageQuantificationCommand
-  gnomonCellImageQuantificationCommand.h
-  gnomonCellImageReaderCommand
-  gnomonCellImageReaderCommand.h
-  gnomonCellImageWriterCommand
-  gnomonCellImageWriterCommand.h
   gnomonCore
   gnomonCore.h
   gnomonCoreParameter
@@ -59,73 +36,31 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCoreSettings.h
   gnomonDataManager
   gnomonDataManager.h
-  gnomonFemSolverCommand
-  gnomonFemSolverCommand.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
-  gnomonImagesFusionCommand
-  gnomonImagesFusionCommand.h
-  gnomonImagesRegistrationCommand
-  gnomonImagesRegistrationCommand.h
-  gnomonImagesSerieFilterCommand
-  gnomonImagesSerieFilterCommand.h
-  gnomonImagesSerieReaderCommand
-  gnomonImagesSerieReaderCommand.h
-  gnomonImagesSerieWriterCommand
-  gnomonImagesSerieWriterCommand.h
-  gnomonMeshFromImageCommand
-  gnomonMeshFromImageCommand.h
-  gnomonMeshReaderCommand
-  gnomonMeshReaderCommand.h
-  gnomonMeshWriterCommand
-  gnomonMeshWriterCommand.h
-  gnomonSegmentationCommand
-  gnomonSegmentationCommand.h
-  gnomonSystem
-  gnomonSystem.h
+  gnomonLandmark.h
   gnomonTypeDef
   gnomonTypeDef.h
   gnomonTime
   gnomonTime.h
-  gnomonTreeReaderCommand
-  gnomonTreeReaderCommand.h
   ${${PROJECT_NAME}_ALGORITHM_HEADERS}
-  ${${PROJECT_NAME}_FORM_HEADERS})
+  ${${PROJECT_NAME}_COMMAND_HEADERS}
+  ${${PROJECT_NAME}_FORM_HEADERS}
+  ${${PROJECT_NAME}_MODEL_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonAbstractEvolutionModel.cpp
-  gnomonAbstractModel.cpp
-  gnomonAbstractSystemScenario.cpp
-  gnomonAbstractTissueGrowthModel.cpp
-  gnomonCellComplexFromCellImageCommand.cpp
-  gnomonCellComplexReaderCommand.cpp
-  gnomonCellComplexWriterCommand.cpp
-  gnomonCellImageFilterCommand.cpp
-  gnomonCellImageQuantificationCommand.cpp
-  gnomonCellImageReaderCommand.cpp
-  gnomonCellImageWriterCommand.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonCoreParameter.cpp
   gnomonDataManager.cpp
-  gnomonFemSolverCommand.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
-  gnomonImagesFusionCommand.cpp
-  gnomonImagesRegistrationCommand.cpp
-  gnomonImagesSerieFilterCommand.cpp
-  gnomonImagesSerieReaderCommand.cpp
-  gnomonImagesSerieWriterCommand.cpp
-  gnomonMeshFromImageCommand.cpp
-  gnomonMeshReaderCommand.cpp
-  gnomonMeshWriterCommand.cpp
-  gnomonSegmentationCommand.cpp
-  gnomonSystem.cpp
   gnomonTime.cpp
-  gnomonTreeReaderCommand.cpp
   ${${PROJECT_NAME}_ALGORITHM_SOURCES}
-  ${${PROJECT_NAME}_FORM_SOURCES})
+  ${${PROJECT_NAME}_COMMAND_SOURCES}
+  ${${PROJECT_NAME}_FORM_SOURCES}
+  ${${PROJECT_NAME}_MODEL_SOURCES})
 
 ## #################################################################
 ## Wrapping

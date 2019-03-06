@@ -6,8 +6,6 @@
 #include <dtkCore>
 #include <dtkLog>
 
-#include <gnomonCore/gnomonAbstractSystemScenario>
-
 class gnomonSphereExpansionScenario : public gnomonAbstractSystemScenario
 {
 

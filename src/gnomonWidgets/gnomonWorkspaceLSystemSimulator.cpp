@@ -18,7 +18,6 @@
 #endif
 #include <dtkWidgets>
 
-#include <gnomonCore/gnomonAbstractEvolutionModel>
 #include <gnomonCore>
 #include <gnomonStyle>
 

@@ -18,16 +18,13 @@
 #include "gnomonOverlayPaneItem.h"
 #include "gnomonToolBar.h"
 
-//#include "gnomonViewVolumic.h"
-//#include "gnomonViewVolumicPool.h"
-
 #include "gnomonViewForm.h"
 #include "gnomonViewFormPool.h"
 
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonMeshFromImageCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshFromImageCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
