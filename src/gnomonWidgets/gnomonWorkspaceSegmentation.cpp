@@ -25,8 +25,7 @@
 #include "gnomonToolBar.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonCore/gnomonForm/gnomonImagesSerie>
-#include <gnomonCore/gnomonForm/gnomonCellImage>
+#include <gnomonCore>
 #include <gnomonCore/gnomonSegmentationCommand.h>
 
 #include <dtkImagingCore>

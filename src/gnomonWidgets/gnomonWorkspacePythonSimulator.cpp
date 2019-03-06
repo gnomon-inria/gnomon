@@ -19,7 +19,6 @@
 #include <dtkWidgets>
 
 #include <gnomonCore/gnomonAbstractEvolutionModel>
-#include <gnomonCore/gnomonForm/gnomonAbstractForm>
 #include <gnomonCore>
 #include <gnomonFonts>
 #include <gnomonStyle>

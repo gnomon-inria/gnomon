@@ -21,8 +21,8 @@
 #include "gnomonViewForm.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
+#include <gnomonCore>
 #include <gnomonCore/gnomonImagesFusionCommand>
-#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 
 #include <dtkImagingCore>
 #include <dtkScript>

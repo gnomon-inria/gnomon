@@ -37,23 +37,22 @@
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
 #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+#include <gnomonCore/gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h>
+#include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
+#include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
-#include <gnomonCore/gnomonForm/gnomonAbstractCellImageData.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractLStringData.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractMeshData.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractTreeData.h>
-#include <gnomonCore/gnomonForm/gnomonCellImage.h>
-#include <gnomonCore/gnomonForm/gnomonDataFrame.h>
 #include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
-#include <gnomonCore/gnomonForm/gnomonImagesSerie.h>
-#include <gnomonCore/gnomonForm/gnomonIntensityImage.h>
-#include <gnomonCore/gnomonForm/gnomonLString.h>
-#include <gnomonCore/gnomonForm/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-#include <gnomonCore/gnomonForm/gnomonTree.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 #include <gnomonCore/gnomonAbstractCellComplexFromCellImage.h>
@@ -508,27 +507,26 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-// %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
-// %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
-// %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
-// %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+%include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
+%include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+%include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
+%include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+%include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
+%include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+%include <gnomonCore/gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h>
+%include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
+%include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
+%include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
+%include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+%include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
+%include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
-%include <gnomonCore/gnomonForm/gnomonAbstractCellImageData.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractLStringData.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractMeshData.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractTreeData.h>
-%include <gnomonCore/gnomonForm/gnomonCellImage.h>
-%include <gnomonCore/gnomonForm/gnomonDataFrame.h>
 %include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
-%include <gnomonCore/gnomonForm/gnomonImagesSerie.h>
-%include <gnomonCore/gnomonForm/gnomonIntensityImage.h>
-%include <gnomonCore/gnomonForm/gnomonLString.h>
-%include <gnomonCore/gnomonForm/gnomonMesh.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-%include <gnomonCore/gnomonForm/gnomonTree.h>
 %include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 %include <gnomonCore/gnomonAbstractCellComplexFromCellImage.h>

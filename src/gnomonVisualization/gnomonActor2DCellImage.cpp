@@ -15,7 +15,7 @@
 #include "gnomonActor2DCellImage.h"
 
 #include <gnomonPolyDataCellImage>
-#include <gnomonForm/gnomonCellImage>
+#include <gnomonCore>
 
 #include <dtkImagingCore>
 

@@ -15,7 +15,7 @@
 #include "gnomonPolyData.h"
 #include "gnomonPolyDataMesh.h"
 
-#include <gnomonForm/gnomonMesh>
+#include <gnomonCore>
 
 #include <dtkImagingCore>
 

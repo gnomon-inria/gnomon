@@ -4,7 +4,6 @@
 #include <gnomonTest>
 
 #include <gnomonSegmentationCommand>
-#include <gnomonCore/gnomonForm/gnomonImagesSerie>
 #include <gnomonImagesSerieReaderCommand>
 
 #include <dtkScript>

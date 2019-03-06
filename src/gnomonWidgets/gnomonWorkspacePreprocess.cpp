@@ -26,7 +26,7 @@
 
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonCore/gnomonForm/gnomonImagesSerie>
+#include <gnomonCore>
 #include <gnomonCore/gnomonImagesSerieFilterCommand>
 
 #include <dtkImagingCore>

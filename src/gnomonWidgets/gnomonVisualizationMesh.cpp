@@ -17,7 +17,7 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonForm/gnomonMesh>
+#include <gnomonCore>
 #include <gnomonCore/gnomonCoreParameter>
 #include "gnomonCoreParameterColor.h"
 

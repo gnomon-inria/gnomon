@@ -3,7 +3,6 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include <gnomonForm/gnomonImagesSerie>
 #include "gnomonImagesRegistrationCommand.h"
 #include "gnomonImagesSerieReaderCommand.h"
 

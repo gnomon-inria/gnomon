@@ -23,7 +23,7 @@
 
 #include <gnomonAbstractFemSolver>
 #include <gnomonFemSolverCommand>
-#include <gnomonForm/gnomonMesh>
+#include <gnomonCore>
 #include <dtkImagingCore>
 #include <dtkScript>
 

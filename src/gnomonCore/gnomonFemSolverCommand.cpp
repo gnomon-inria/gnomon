@@ -2,8 +2,6 @@
 
 #include <dtkScript>
 
-#include "gnomonForm/gnomonMesh.h"
-
 class gnomonFemSolverCommandPrivate
 {
 public:

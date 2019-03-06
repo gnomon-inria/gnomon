@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonForm/gnomonImagesSerie.h"
+#include "gnomonImagesSerie.h"
 
 #include <dtkImagingCore>
 #include <vtkImageData.h>
