@@ -13,7 +13,6 @@
 // Code:
 
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractCellImageFromImage.h"
 
 class gnomonImagesSerie;
 class gnomonCellImage;

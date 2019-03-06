@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonCore.h"
 

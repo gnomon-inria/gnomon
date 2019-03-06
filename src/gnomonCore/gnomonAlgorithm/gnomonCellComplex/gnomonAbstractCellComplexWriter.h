@@ -15,21 +15,21 @@
 #pragma once
 
 #include <gnomonCoreExport>
-#include "gnomonAbstractAlgorithm.h"
 
 #include <dtkCore>
 
-class dtkImage;
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+
+class gnomonCellComplex;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractSurfaceImageFromImage : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractCellComplexWriter : public gnomonAbstractAlgorithm
 {
 public:
-             gnomonAbstractSurfaceImageFromImage(void) = default;
-    virtual ~gnomonAbstractSurfaceImageFromImage(void) = default;
+    virtual ~gnomonAbstractCellComplexWriter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,11 +37,8 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
-
-public:
-    virtual dtkImage *computed3DSurfaceImage(void) const = 0;
-    virtual dtkImage *computed2DSurfaceImage(void) const = 0;
+    virtual void setCellComplex(gnomonCellComplex *cellcomplex) = 0;
+    virtual void setPath(const QString& path) = 0;
 
 };
 
@@ -49,18 +46,18 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractSurfaceImageFromImage *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractCellComplexWriter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT, surfaceImageFromImage);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT, cellComplexWriter);
 }
 
 //
-// gnomonAbstractForm.h ends here
+// gnomonAbstractImageWriter.h ends here

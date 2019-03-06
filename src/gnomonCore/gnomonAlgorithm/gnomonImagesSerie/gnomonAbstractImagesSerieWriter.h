@@ -14,22 +14,22 @@
 
 #pragma once
 
-#include <gnomonCoreExport.h> // enables the visibility of the concept
+#include <gnomonCoreExport>
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCellComplex;
+class gnomonImagesSerie;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellComplexReader : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractImagesSerieWriter : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractCellComplexReader(void) = default;
+    virtual ~gnomonAbstractImagesSerieWriter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,31 +37,27 @@ public:
     virtual void run(void) override = 0;
 
 public:
+    virtual void setImagesSerie(gnomonImagesSerie *images_serie) = 0;
     virtual void setPath(const QString& path) = 0;
 
-public:
-    virtual gnomonCellComplex *cellComplex(void) = 0;
-
-public:
-    virtual QStringList types(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT(gnomonAbstractCellComplexReader *)
-DTK_DECLARE_PLUGIN(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieWriter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexReader, GNOMONCORE_EXPORT, cellComplexReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieWriter, GNOMONCORE_EXPORT, imagesSerieWriter);
 }
 
 //
-// gnomonAbstractCellComplexReader.h ends here
+// gnomonAbstractImageWriter.h ends here

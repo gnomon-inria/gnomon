@@ -1,7 +1,8 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractImagesFusion.h"
 
 #include "gnomonLandmark.h"
+
+class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonImagesFusionCommand : public gnomonAbstractCommand
 {

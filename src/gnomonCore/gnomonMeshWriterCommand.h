@@ -1,5 +1,6 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractMeshWriter.h"
+
+class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractCommand
 {

@@ -21,11 +21,11 @@
 
 #include "gnomonWorkspaceTemplate_p.h"
 
-#include <gnomonAbstractFemSolver>
-#include <gnomonFemSolverCommand>
 #include <gnomonCore>
 #include <dtkImagingCore>
 #include <dtkScript>
+
+#include <gnomonCore/gnomonFemSolverCommand>
 
 #include <vtkImageData.h>
 

@@ -20,7 +20,7 @@
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class dtkImage;
 class gnomonCellImage;

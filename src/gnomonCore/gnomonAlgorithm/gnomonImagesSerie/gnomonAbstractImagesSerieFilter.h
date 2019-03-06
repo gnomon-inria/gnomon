@@ -18,20 +18,19 @@
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonImagesSerie;
-
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesSerieReader : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractImagesSerieFilter : public gnomonAbstractAlgorithm
 {
 public:
-			 gnomonAbstractImagesSerieReader(void) = default;
-    virtual ~gnomonAbstractImagesSerieReader(void) = default;
+    virtual ~gnomonAbstractImagesSerieFilter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -39,28 +38,28 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void setPath(const QString& path) = 0;
+    virtual void setInput(gnomonImagesSerie *images_serie) = 0;
+    virtual gnomonImagesSerie *input() = 0;
 
-public:
-    virtual gnomonImagesSerie *imagesSerie() = 0;
+    virtual gnomonImagesSerie *output() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieFilter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieFilter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieFilter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieFilter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT, imagesSerieReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieFilter, GNOMONCORE_EXPORT, imagesSerieFilter);
 }
 
 //
-// gnomonAbstractImagesSerieReader.h ends here
+// gnomonAbstractImagesSerieFilter.h ends here

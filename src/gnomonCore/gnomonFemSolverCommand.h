@@ -1,5 +1,4 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractFemSolver.h"
 
 class gnomonMesh;
 

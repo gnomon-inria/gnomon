@@ -16,26 +16,22 @@
 
 #include <gnomonCoreExport>
 
-#include <QtCore>
-
 #include <dtkCore>
 
-#include "gnomonLandmark.h"
-
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonImagesSerie;
-class gnomonCoreParameter;
 
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImagesFusion : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractImagesSerieReader : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractImagesFusion(void) = default;
+			 gnomonAbstractImagesSerieReader(void) = default;
+    virtual ~gnomonAbstractImagesSerieReader(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -43,32 +39,28 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void addImagesSerie(gnomonImagesSerie *) = 0;
-    virtual void removeImagesSeries(void) = 0;
-
-    virtual void addLandmarks(const std::vector<gnomonLandmark>&) = 0;
-    virtual void removeLandmarks(void) = 0;
+    virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonImagesSerie *output() = 0;
+    virtual gnomonImagesSerie *imagesSerie() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImagesFusion *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesSerieReader *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImagesFusion, GNOMONCORE_EXPORT, imagesFusion);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesSerieReader, GNOMONCORE_EXPORT, imagesSerieReader);
 }
 
 //
-// gnomonAbstractImagesFusion.h ends here
+// gnomonAbstractImagesSerieReader.h ends here

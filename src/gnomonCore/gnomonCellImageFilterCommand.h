@@ -1,5 +1,5 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractCellImageFilter.h"
+class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonCellImageFilterCommand : public gnomonAbstractCommand
 {

@@ -15,21 +15,21 @@
 #pragma once
 
 #include <gnomonCoreExport>
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
-
-class gnomonMesh;
+class dtkImage;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractMeshReader : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractSurfaceImageFromImage : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractMeshReader(void) = default;
+             gnomonAbstractSurfaceImageFromImage(void) = default;
+    virtual ~gnomonAbstractSurfaceImageFromImage(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,31 +37,30 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void setPath(const QString& path) = 0;
+    virtual void setImage(dtkImage *image) = 0;
 
 public:
-    virtual gnomonMesh *mesh(void) = 0;
+    virtual dtkImage *computed3DSurfaceImage(void) const = 0;
+    virtual dtkImage *computed2DSurfaceImage(void) const = 0;
 
-public:
-    virtual QStringList types(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractMeshReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractSurfaceImageFromImage *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshReader, GNOMONCORE_EXPORT, meshReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractSurfaceImageFromImage, GNOMONCORE_EXPORT, surfaceImageFromImage);
 }
 
 //
-// gnomonAbstractMeshReader.h ends here
+// gnomonAbstractForm.h ends here

@@ -17,7 +17,7 @@
 #include <dtkCore>
 
 #include <gnomonCoreExport>
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonMesh;
 class gnomonCoreParameter;

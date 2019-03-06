@@ -21,7 +21,6 @@
 #include "gnomonToolBar.h"
 
 #include <gnomonFonts>
-#include <gnomonCore/gnomonAbstractImagesSerieWriter>
 #include <gnomonCore>
 
 #include <dtkScript>

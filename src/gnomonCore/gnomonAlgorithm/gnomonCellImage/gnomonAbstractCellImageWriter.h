@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonCellImage;
 
@@ -26,10 +26,10 @@ class gnomonCellImage;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellImageReader : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractCellImageWriter : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractCellImageReader(void) = default;
+    virtual ~gnomonAbstractCellImageWriter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,28 +37,27 @@ public:
     virtual void run(void) override = 0;
 
 public:
+    virtual void setCellImage(gnomonCellImage *cellimage) = 0;
     virtual void setPath(const QString& path) = 0;
 
-public:
-    virtual gnomonCellImage *cellImage(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractCellImageReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractCellImageWriter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT, cellImageReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT, cellImageWriter);
 }
 
 //
-// gnomonAbstractCellImageReader.h ends here
+// gnomonAbstractImageWriter.h ends here

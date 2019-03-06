@@ -18,18 +18,18 @@
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCellImage;
+class gnomonMesh;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellImageWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractMeshWriter : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractCellImageWriter(void) = default;
+    virtual ~gnomonAbstractMeshWriter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,7 +37,7 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void setCellImage(gnomonCellImage *cellimage) = 0;
+    virtual void setMesh(gnomonMesh *mesh) = 0;
     virtual void setPath(const QString& path) = 0;
 
 };
@@ -46,17 +46,17 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractCellImageWriter *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractMeshWriter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractMeshWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT, cellImageWriter);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMeshWriter, GNOMONCORE_EXPORT, meshWriter);
 }
 
 //

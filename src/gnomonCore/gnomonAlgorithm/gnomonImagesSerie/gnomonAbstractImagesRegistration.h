@@ -18,18 +18,19 @@
 
 #include <dtkCore>
 
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonTree;
+class gnomonImagesSerie;
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractTreeReader : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractImagesRegistration : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractTreeReader(void) = default;
+    virtual ~gnomonAbstractImagesRegistration(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -37,28 +38,29 @@ public:
     virtual void run(void) override = 0;
 
 public:
-    virtual void setPath(const QString& path) = 0;
+    virtual void addImagesSerie(gnomonImagesSerie *images_serie) = 0;
+    virtual void removeImagesSeries(void) = 0;
 
-public:
-    virtual gnomonTree *tree(void) = 0;
+    virtual gnomonImagesSerie* output() = 0;
+
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractTreeReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractImagesRegistration *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractTreeReader, GNOMONCORE_EXPORT, treeReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractImagesRegistration, GNOMONCORE_EXPORT, imagesRegistration);
 }
 
 //
-// gnomonAbstractTreeReader.h ends here
+// gnomonAbstractImagesRegistration.h ends here

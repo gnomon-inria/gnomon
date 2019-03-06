@@ -1,5 +1,6 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractImagesRegistration.h"
+
+class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonImagesRegistrationCommand : public gnomonAbstractCommand
 {

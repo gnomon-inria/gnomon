@@ -1,5 +1,6 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractImagesSerieReader.h"
+
+class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonImagesSerieReaderCommand : public gnomonAbstractCommand
 {

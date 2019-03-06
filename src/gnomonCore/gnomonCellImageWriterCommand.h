@@ -1,5 +1,5 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractCellImageWriter.h"
+class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonCellImageWriterCommand : public gnomonAbstractCommand
 {

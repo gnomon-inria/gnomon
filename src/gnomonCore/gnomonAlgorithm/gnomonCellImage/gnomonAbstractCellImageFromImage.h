@@ -19,7 +19,7 @@
 #include <QtCore>
 
 #include <dtkCore>
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonCoreParameter;
 class gnomonImagesSerie;

@@ -1,5 +1,6 @@
 #include "gnomonAbstractCommand.h"
-#include "gnomonAbstractImagesSerieFilter.h"
+
+class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonImagesSerieFilterCommand : public gnomonAbstractCommand
 {

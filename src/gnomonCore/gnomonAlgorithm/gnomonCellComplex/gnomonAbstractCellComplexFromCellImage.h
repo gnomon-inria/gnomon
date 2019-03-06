@@ -19,7 +19,7 @@
 #include <gnomonCoreExport.h> // enables the visibility of the concept
 
 #include <dtkCore>
-#include "gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonCellImage;
 class gnomonCellComplex;
