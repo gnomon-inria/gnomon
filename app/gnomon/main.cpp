@@ -28,6 +28,7 @@
 #include <dtkImagingCore>
 #include <gnomonCore>
 #include <gnomonWidgets>
+#include <gnomonWorkspace>
 
 QString gnomonReadFile(const QString& path)
 {

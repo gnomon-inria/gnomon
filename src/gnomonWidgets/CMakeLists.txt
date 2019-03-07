@@ -90,35 +90,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWidgets
   gnomonWidgets.h
   gnomonWidgetsParameter
-  gnomonWidgetsParameter.h
-  gnomonWorkspace
-  gnomonWorkspace.h
-  gnomonWorkspaceBrowser
-  gnomonWorkspaceBrowser.h
-  gnomonWorkspaceCellComplexFromCellImage
-  gnomonWorkspaceCellComplexFromCellImage.h
-  gnomonWorkspaceCellImageFilter
-  gnomonWorkspaceCellImageFilter.h
-  gnomonWorkspaceFusion
-  gnomonWorkspaceFusion.h
-  gnomonWorkspaceLSystemSimulator
-  gnomonWorkspaceLSystemSimulator.h
-  gnomonWorkspaceMeshFromImage
-  gnomonWorkspaceMeshFromImage.h
-  gnomonWorkspacePreprocess
-  gnomonWorkspacePreprocess.h
-  gnomonWorkspacePythonSimulator
-  gnomonWorkspacePythonSimulator.h
-  gnomonWorkspaceRegistration
-  gnomonWorkspaceRegistration.h
-  gnomonWorkspaceSimulation
-  gnomonWorkspaceSimulation.h
-  gnomonWorkspaceSegmentation
-  gnomonWorkspaceSegmentation.h
-  gnomonWorkspaceTreeAnalysis
-  gnomonWorkspaceTreeAnalysis.h
-  gnomonWorkspaceTemplate_p.h
-  gnomonWorkspaceTemplate_p.tpp)
+  gnomonWidgetsParameter.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAbstractMatplotlibVisualization.cpp
@@ -161,21 +133,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonVisualizationImagesSerieChannelBlending.cpp
   gnomonVisualizationMesh.cpp
   gnomonWidgets.cpp
-  gnomonWidgetsParameter.cpp
-  gnomonWorkspace.cpp
-  gnomonWorkspaceBrowser.cpp
-  gnomonWorkspaceCellComplexFromCellImage.cpp
-  gnomonWorkspaceCellImageFilter.cpp
-  gnomonWorkspaceCellImageQuantification.cpp
-  gnomonWorkspaceFusion.cpp
-  gnomonWorkspaceLSystemSimulator.cpp
-  gnomonWorkspaceMeshFromImage.cpp
-  gnomonWorkspacePreprocess.cpp
-  gnomonWorkspacePythonSimulator.cpp
-  gnomonWorkspaceRegistration.cpp
-  gnomonWorkspaceSegmentation.cpp
-  gnomonWorkspaceSimulation.cpp
-  gnomonWorkspaceTreeAnalysis.cpp)
+  gnomonWidgetsParameter.cpp)
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomonWidgets.qrc)

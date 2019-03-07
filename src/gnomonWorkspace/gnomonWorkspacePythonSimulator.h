@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include <gnomonWidgetsExport>
+#include <gnomonWorkspaceExport>
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWIDGETS_EXPORT gnomonWorkspacePythonSimulator : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonSimulator : public gnomonWorkspace
 {
     Q_OBJECT
 

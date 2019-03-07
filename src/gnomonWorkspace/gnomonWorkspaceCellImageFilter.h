@@ -14,17 +14,17 @@
 
 #pragma once
 
-#include <gnomonWidgetsExport>
+#include <gnomonWorkspaceExport>
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWIDGETS_EXPORT gnomonWorkspaceRegistration : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageFilter : public gnomonWorkspace
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceRegistration(QWidget *parent = nullptr);
-    ~gnomonWorkspaceRegistration(void);
+     gnomonWorkspaceCellImageFilter(QWidget *parent = nullptr);
+    ~gnomonWorkspaceCellImageFilter(void);
 
 public:
     void enter(void) override {}
@@ -35,8 +35,8 @@ public slots:
     void configure(const QString& text);
 
 private:
-    class gnomonWorkspaceRegistrationPrivate *d;
+    class gnomonWorkspaceCellImageFilterPrivate *d;
 };
 
 //
-// gnomonWorkspaceRegistration.h ends here
+// gnomonWorkspaceCellImageFilter.h ends here

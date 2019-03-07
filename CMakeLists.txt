@@ -154,6 +154,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWorkspace)
 
 ## ###################################################################
 ## Input

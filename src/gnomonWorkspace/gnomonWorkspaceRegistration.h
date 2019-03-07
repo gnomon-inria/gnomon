@@ -14,17 +14,17 @@
 
 #pragma once
 
-#include <gnomonWidgetsExport>
+#include <gnomonWorkspaceExport>
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWIDGETS_EXPORT gnomonWorkspaceSimulation : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public gnomonWorkspace
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceSimulation(QWidget *parent = nullptr);
-    ~gnomonWorkspaceSimulation(void);
+     gnomonWorkspaceRegistration(QWidget *parent = nullptr);
+    ~gnomonWorkspaceRegistration(void);
 
 public:
     void enter(void) override {}
@@ -35,8 +35,8 @@ public slots:
     void configure(const QString& text);
 
 private:
-    class gnomonWorkspaceSimulationPrivate *d;
+    class gnomonWorkspaceRegistrationPrivate *d;
 };
 
 //
-// gnomonWorkspaceSimulation.h ends here
+// gnomonWorkspaceRegistration.h ends here

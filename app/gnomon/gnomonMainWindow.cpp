@@ -15,21 +15,11 @@
 #include <gnomonFormManager.h>
 #include <gnomonMainWindow.h>
 #include <gnomonToolBar.h>
-#include <gnomonWorkspaceBrowser.h>
-#include <gnomonWorkspaceFusion.h>
-#include <gnomonWorkspaceLSystemSimulator.h>
-#include <gnomonWorkspacePythonSimulator.h>
-#include <gnomonWorkspacePreprocess.h>
-#include <gnomonWorkspaceCellImageQuantification.h>
-#include <gnomonWorkspaceRegistration.h>
-#include <gnomonWorkspaceMeshFromImage.h>
-#include <gnomonWorkspaceSegmentation.h>
-#include <gnomonWorkspaceCellComplexFromCellImage.h>
-#include <gnomonWorkspaceCellImageFilter.h>
-#include <gnomonWorkspaceSimulation.h>
-//#include <gnomonWorkspaceTreeAnalysis.h>
 
 #include <gnomonStyle>
+#include <gnomonCore>
+#include <gnomonWidgets>
+#include <gnomonWorkspace>
 
 // ///////////////////////////////////////////////////////////////////
 //

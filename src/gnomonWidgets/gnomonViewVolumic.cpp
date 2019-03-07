@@ -15,10 +15,6 @@
 #include "gnomonImageManager.h"
 #include "gnomonViewVolumic.h"
 #include "gnomonToolBar.h"
-#include "gnomonWorkspaceBrowser.h"
-#include "gnomonWorkspaceFusion.h"
-#include "gnomonWorkspaceSegmentation.h"
-#include "gnomonWorkspacePreprocess.h"
 #include "gnomonViewVolumicOverlay.h"
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
@@ -558,16 +554,7 @@ void gnomonViewVolumicPrivate::exportToManager(void)
 
     QStackedWidget *stack = dynamic_cast<QStackedWidget *>(parent);
 
-    if(gnomonWorkspaceBrowser* workspace = dynamic_cast<gnomonWorkspaceBrowser *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::browser_color);
-    else if(gnomonWorkspaceFusion* workspace = dynamic_cast<gnomonWorkspaceFusion *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::fusion_color);
-    else if(gnomonWorkspaceSegmentation* workspace = dynamic_cast<gnomonWorkspaceSegmentation *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::segmentation_color);
-    else if(gnomonWorkspacePreprocess* workspace = dynamic_cast<gnomonWorkspacePreprocess *>(stack->currentWidget()))
-        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::preprocess_color);
-    else
-        gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::registration_color);
+    gnomonImageManager::instance()->addImage(this->images_serie, gnomonToolBar::registration_color);
 }
 
 QSize gnomonViewVolumicPrivate::sizeHint(void) const

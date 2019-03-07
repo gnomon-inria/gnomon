@@ -14,17 +14,17 @@
 
 #pragma once
 
-#include <gnomonWidgetsExport>
+#include <gnomonWorkspaceExport>
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWIDGETS_EXPORT gnomonWorkspacePreprocess : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceFusion : public gnomonWorkspace
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspacePreprocess(QWidget *parent = nullptr);
-    ~gnomonWorkspacePreprocess(void);
+     gnomonWorkspaceFusion(QWidget *parent = nullptr);
+    ~gnomonWorkspaceFusion(void);
 
 public:
     void enter(void) override {}
@@ -35,8 +35,8 @@ public slots:
     void configure(const QString& text);
 
 private:
-    class gnomonWorkspacePreprocessPrivate *d;
+    class gnomonWorkspaceFusionPrivate *d;
 };
 
 //
-// gnomonWorkspacePreprocess.h ends here
+// gnomonWorkspaceFusion.h ends here

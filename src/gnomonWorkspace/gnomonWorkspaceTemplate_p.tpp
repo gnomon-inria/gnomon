@@ -13,8 +13,9 @@
 // Code:
 
 #include <gnomonCore/gnomonCoreParameter.h>
-
-#include "gnomonWidgetsParameter.h"
+#include <gnomonWidgets/gnomonWidgetsParameter.h>
+#include <gnomonWidgets/gnomonOverlayPane.h>
+#include <gnomonWidgets/gnomonOverlayPaneItem.h>
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
