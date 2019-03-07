@@ -31,7 +31,7 @@ add_subdirectory(gnomonTree)
 ## Sources
 ## #################################################################
 
-set(HEADERS
+ADD_GNOMON_HEADERS(
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
@@ -53,15 +53,7 @@ set(HEADERS
   ${${PROJECT_NAME}_FORM_TREE_HEADERS})
 
 
-get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-foreach (FILE ${HEADERS})
-    list(APPEND FULL_HEADERS ${DIRECTORY}/${FILE})
-endforeach()
-string(REPLACE "gnomon" "" DIRECTORY ${DIRECTORY})
-string(TOUPPER ${DIRECTORY} DIRECTORY)
-set(${PROJECT_NAME}_${DIRECTORY}_HEADERS ${FULL_HEADERS} PARENT_SCOPE)
-
-set(SOURCES
+ADD_GNOMON_SOURCES(
   gnomonAbstractForm.cpp
   gnomonDiscreteDynamicForm.cpp
   gnomonSphereForm.cpp
@@ -76,13 +68,6 @@ set(SOURCES
   ${${PROJECT_NAME}_FORM_MESH_SOURCES}
   ${${PROJECT_NAME}_FORM_TREE_SOURCES})
 
-get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-foreach (FILE ${SOURCES})
-    list(APPEND FULL_SOURCES ${DIRECTORY}/${FILE})
-endforeach()
-string(REPLACE "gnomon" "" DIRECTORY ${DIRECTORY})
-string(TOUPPER ${DIRECTORY} DIRECTORY)
-set(${PROJECT_NAME}_${DIRECTORY}_SOURCES ${FULL_SOURCES} PARENT_SCOPE)
 
 ######################################################################
 ### CMakeLists.txt ends here

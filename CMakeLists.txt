@@ -138,6 +138,15 @@ endif()
 
 option(GNOMON_BUILD_COMPOSER "Build composer layer" false)
 
+
+
+## #################################################################
+## Targets
+## #################################################################
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+include(gnomonSubdirectoryAddFiles)
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
