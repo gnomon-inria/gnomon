@@ -15,7 +15,7 @@
 import sys
 
 import gnomoncore
-from gnomonWidgets import *
+from gnomonVisualization import gnomonViewMatplotlib
 
 import matplotlib.pyplot as plt
 
