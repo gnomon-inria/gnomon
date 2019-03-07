@@ -14,12 +14,8 @@
 
 #include "gnomonWorkspaceBrowser.h"
 
-#include "gnomonFinder.h"
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonToolBar.h"
-#include "gnomonViewForm.h"
-// #include "gnomonViewVolumic.h"
+#include <gnomonWidgets>
+#include <gnomonVisualization>
 
 class gnomonWorkspaceBrowserPrivate
 {

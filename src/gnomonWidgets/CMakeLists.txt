@@ -15,85 +15,57 @@
 project(gnomonWidgets)
 
 ## #################################################################
+## Inputs
+## #################################################################
+
+add_subdirectory(gnomonColor)
+add_subdirectory(gnomonEditor)
+add_subdirectory(gnomonManager)
+
+## #################################################################
 ## Sources
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonClutEditor
-  gnomonClutEditor.h
   gnomonCodeEditor
   gnomonCodeEditor.h
-  gnomonColorMapEditor.h
-  gnomonCoreParameterColor
-  gnomonCoreParameterColor.h
-  gnomonDoubleEditor.h
-  gnomonDoubleRangeEditor.h
   gnomonDropSite
   gnomonDropSite.h
   gnomonFinder
   gnomonFinder.h
-  gnomonFormManager
-  gnomonFormManager.h
-  gnomonFormManager_p.h
-  gnomonFormManagerData.h
-  gnomonFormManagerFocus.h
-  gnomonFormManagerItem.h
-  gnomonImageManager
-  gnomonImageManager.h
-  gnomonImageManager_p.h
-  gnomonImageManagerData.h
-  gnomonImageManagerItem.h
-  gnomonImageManagerFocus.h
   gnomonInterpreterJupyter
   gnomonInterpreterJupyter.h
   gnomonItemButton.h
-  gnomonLookupTable.cpp
-  gnomonLookupTable.h
-  gnomonLookupTableEditor.cpp
-  gnomonLookupTableEditor.h
   gnomonOverlayButton.h
   gnomonOverlayPane
   gnomonOverlayPane.h
   gnomonOverlayPaneItem
   gnomonOverlayPaneItem.h
-  gnomonStringEditor.h
-  gnomonStringListEditor.h
   gnomonToolBar
   gnomonToolBar.h
   gnomonWidgets
   gnomonWidgets.h
   gnomonWidgetsParameter
-  gnomonWidgetsParameter.h)
+  gnomonWidgetsParameter.h
+  ${${PROJECT_NAME}_COLOR_HEADERS}
+  ${${PROJECT_NAME}_EDITOR_HEADERS}
+  ${${PROJECT_NAME}_MANAGER_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonClutEditor.cpp
   gnomonCodeEditor.cpp
-  gnomonColorMapEditor.cpp
-  gnomonCoreParameterColor.cpp
-  gnomonDoubleEditor.cpp
-  gnomonDoubleRangeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp
-  gnomonFormManager.cpp
-  gnomonFormManagerData.cpp
-  gnomonFormManagerFocus.cpp
-  gnomonFormManagerItem.cpp
-  gnomonImageManager.cpp
-  gnomonImageManagerData.cpp
-  gnomonImageManagerItem.cpp
-  gnomonImageManagerFocus.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
-  gnomonLookupTable.cpp
-  gnomonLookupTableEditor.cpp
   gnomonOverlayButton.cpp
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp
-  gnomonStringEditor.cpp
-  gnomonStringListEditor.cpp
   gnomonToolBar.cpp
   gnomonWidgets.cpp
-  gnomonWidgetsParameter.cpp)
+  gnomonWidgetsParameter.cpp
+  ${${PROJECT_NAME}_COLOR_SOURCES}
+  ${${PROJECT_NAME}_EDITOR_SOURCES}
+  ${${PROJECT_NAME}_MANAGER_SOURCES})
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomonWidgets.qrc)

@@ -1,7 +1,7 @@
 class gnomonViewMatplotlib : public QFrame
 {
 %TypeHeaderCode
-#include "gnomonViewMatplotlib.h"
+#include "gnomonView/gnomonViewMatplotlib.h"
 
 #include <QtCore>
 #include <QtGui>

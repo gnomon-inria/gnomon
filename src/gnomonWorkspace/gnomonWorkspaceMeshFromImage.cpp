@@ -14,16 +14,12 @@
 
 #include "gnomonWorkspaceMeshFromImage.h"
 
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonToolBar.h"
-
-#include "gnomonViewForm.h"
-#include "gnomonViewFormPool.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
+
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshFromImageCommand>
 
 #include <dtkImagingCore>

@@ -14,10 +14,9 @@
 
 #include "gnomonWorkspaceTreeAnalysis.h"
 
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonViewForm.h"
-#include "gnomonViewFormPool.h"
+#include <gnomonCore>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
 
 class gnomonWorkspaceTreeAnalysisPrivate
 {

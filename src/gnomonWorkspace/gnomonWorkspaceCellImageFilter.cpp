@@ -14,19 +14,14 @@
 
 #include "gnomonWorkspaceCellImageFilter.h"
 
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonToolBar.h"
 
-//#include "gnomonViewVolumic.h"
-//#include "gnomonViewVolumicPool.h"
-
-#include "gnomonViewForm.h"
-#include "gnomonViewFormPool.h"
 
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
+
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageFilterCommand>
 
 #include <dtkImagingCore>

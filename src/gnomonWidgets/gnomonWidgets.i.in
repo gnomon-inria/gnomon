@@ -26,7 +26,7 @@
 
 #include <dtkImagingCore>
 #include <gnomonCore>
-#include <gnomonWidgets/gnomonCoreParameterColor.h>
+#include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
 
 %}
 
@@ -38,6 +38,11 @@
 #undef Py_hash_t
 #endif
 #endif
+
+
+// /////////////////////////////////////////////////////////////////
+// VTK
+// /////////////////////////////////////////////////////////////////
 
 #include <vtkPythonUtil.h>
 
@@ -88,7 +93,7 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <gnomonWidgets/gnomonCoreParameterColor.h>
+%include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
 
 //
 // gnomonWidgets.i.in ends here

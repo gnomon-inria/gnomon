@@ -13,22 +13,16 @@
 // Code:
 
 #include <dtkConfig.h>
-#if defined(DTK_BUILD_WRAPPERS)
 #include <dtkScript>
-#endif
 #include <dtkWidgets>
+
+#include "gnomonWorkspaceLSystemSimulator.h"
 
 #include <gnomonCore>
 #include <gnomonStyle>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
 
-#include "gnomonCodeEditor.h"
-#include "gnomonFinder.h"
-#include "gnomonInterpreterJupyter.h"
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonViewForm.h"
-#include "gnomonCoreParameter.h"
-#include "gnomonWorkspaceLSystemSimulator.h"
 
 // ///////////////////////////////////////////////////////////////////
 //

@@ -11,13 +11,11 @@
 
 // Code:
 
-#include <gnomonImageManager.h>
-#include <gnomonFormManager.h>
 #include <gnomonMainWindow.h>
-#include <gnomonToolBar.h>
 
 #include <gnomonStyle>
 #include <gnomonCore>
+#include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
 

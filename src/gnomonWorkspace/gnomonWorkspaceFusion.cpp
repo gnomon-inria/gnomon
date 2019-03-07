@@ -14,14 +14,12 @@
 
 #include "gnomonWorkspaceFusion.h"
 
-#include "gnomonGridLayout.h"
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonToolBar.h"
-#include "gnomonViewForm.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
+
 #include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesFusionCommand>
 
 #include <dtkImagingCore>

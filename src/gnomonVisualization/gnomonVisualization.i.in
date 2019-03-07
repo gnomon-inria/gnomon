@@ -26,20 +26,17 @@
 
 #include <dtkImagingCore>
 #include <gnomonCore>
-#include <gnomonVisualization/gnomonActor.h>
-#include <gnomonVisualization/gnomonActorImage.h>
-#include <gnomonVisualization/gnomonActorScalarBar.h>
-#include <gnomonVisualization/gnomonActorVolume.h>
-#include <gnomonVisualization/gnomonView.h>
-#include <gnomonVisualization/gnomonViewManager.h>
-#include <gnomonVisualization/gnomonAbstractMatplotlibVisualization.h>
-#include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationDataFrame.h>
-#include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationTree.h>
-#include <gnomonVisualization/gnomonAbstractVisualization.h>
-#include <gnomonVisualization/gnomonAbstractVisualizationCellComplex.h>
-#include <gnomonVisualization/gnomonAbstractVisualizationCellImage.h>
-#include <gnomonVisualization/gnomonViewForm.h>
-#include <gnomonVisualization/gnomonViewVolumic.h>
+#include <gnomonVisualization/gnomonActor/gnomonActor.h>
+#include <gnomonVisualization/gnomonView/gnomonView.h>
+#include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
+#include <gnomonVisualization/gnomonView/gnomonViewVolumic.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
 %}
 
@@ -51,6 +48,11 @@
 #undef Py_hash_t
 #endif
 #endif
+
+
+// /////////////////////////////////////////////////////////////////
+// VTK
+// /////////////////////////////////////////////////////////////////
 
 #include <vtkPythonUtil.h>
 
@@ -200,16 +202,18 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <gnomonVisualization/gnomonView.h>
-%include <gnomonVisualization/gnomonViewManager.h>
-%include <gnomonVisualization/gnomonAbstractMatplotlibVisualization.h>
-%include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationDataFrame.h>
-%include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationTree.h>
-%include <gnomonVisualization/gnomonAbstractVisualization.h>
-%include <gnomonVisualization/gnomonAbstractVisualizationCellComplex.h>
-%include <gnomonVisualization/gnomonAbstractVisualizationCellImage.h>
-%include <gnomonVisualization/gnomonViewForm.h>
-%include <gnomonVisualization/gnomonViewVolumic.h>
+%include <gnomonVisualization/gnomonActor/gnomonActor.h>
+%include <gnomonVisualization/gnomonView/gnomonView.h>
+%include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+%include <gnomonVisualization/gnomonView/gnomonViewForm.h>
+%include <gnomonVisualization/gnomonView/gnomonViewVolumic.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
+
 
 //
 // gnomonVisualization.i.in ends here

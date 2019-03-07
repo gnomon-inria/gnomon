@@ -14,16 +14,12 @@
 
 #include "gnomonWorkspaceCellImageQuantification.h"
 
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonToolBar.h"
-
-#include "gnomonViewForm.h"
-#include "gnomonViewMatplotlib.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
+
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageQuantificationCommand>
 
 #include <gnomonStyle>

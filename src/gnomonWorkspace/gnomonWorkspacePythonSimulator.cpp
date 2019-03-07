@@ -18,19 +18,14 @@
 #endif
 #include <dtkWidgets>
 
+#include "gnomonWorkspacePythonSimulator.h"
+
 #include <gnomonCore>
 #include <gnomonFonts>
 #include <gnomonStyle>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
 
-#include "gnomonCodeEditor.h"
-#include "gnomonFinder.h"
-#include "gnomonInterpreterJupyter.h"
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
-#include "gnomonViewForm.h"
-#include "gnomonCoreParameter.h"
-#include "gnomonWidgetsParameter.h"
-#include "gnomonWorkspacePythonSimulator.h"
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCodeEditorToolBar
