@@ -26,14 +26,7 @@
 
 #include <dtkImagingCore>
 #include <gnomonCore>
-#include <gnomonWidgets/gnomonAbstractMatplotlibVisualization.h>
-#include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationDataFrame.h>
-#include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationTree.h>
-#include <gnomonWidgets/gnomonAbstractVisualization.h>
-#include <gnomonWidgets/gnomonAbstractVisualizationCellComplex.h>
-#include <gnomonWidgets/gnomonAbstractVisualizationCellImage.h>
-#include <gnomonWidgets/gnomonViewForm.h>
-#include <gnomonWidgets/gnomonViewVolumic.h>
+#include <gnomonWidgets/gnomonCoreParameterColor.h>
 
 %}
 
@@ -49,6 +42,7 @@
 #endif
 
 #include <vtkPythonUtil.h>
+
 
 %}
 
@@ -188,15 +182,7 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-
-%include <gnomonWidgets/gnomonAbstractMatplotlibVisualization.h>
-%include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationDataFrame.h>
-%include <gnomonWidgets/gnomonAbstractMatplotlibVisualizationTree.h>
-%include <gnomonWidgets/gnomonAbstractVisualization.h>
-%include <gnomonWidgets/gnomonAbstractVisualizationCellComplex.h>
-%include <gnomonWidgets/gnomonAbstractVisualizationCellImage.h>
-%include <gnomonWidgets/gnomonViewForm.h>
-%include <gnomonWidgets/gnomonViewVolumic.h>
+%include <gnomonWidgets/gnomonCoreParameterColor.h>
 
 //
-// gnomonVisualization.i.in ends here
+// gnomonWidgets.i.in ends here

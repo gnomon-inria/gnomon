@@ -19,124 +19,173 @@ project(gnomonVisualization)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonActor
-  gnomonActor.h
-  gnomonActor2DCellImage
-  gnomonActor2DCellImage.h
-  gnomonActor2DImageWidget
-  gnomonActor2DImageWidget.h
-  gnomonActor2DImageRGBAWidget
-  gnomonActor2DImageRGBAWidget.h
-  gnomonActor2DPolyData.h
-  gnomonActor2DPolyData
-  gnomonActor2DPolyData.h
-  gnomonActorImage
-  gnomonActorImage.h
-  gnomonActorImageVolume
-  gnomonActorImageVolume.h
-  gnomonActorImageRGBAVolume
-  gnomonActorImageRGBAVolume.h
-  gnomonActorMesh
-  gnomonActorMesh.h
-  gnomonActorMesh_p.h
-  gnomonActorMeshCellComplex
-  gnomonActorMeshCellComplex.h
-  gnomonActorMeshCellGraph
-  gnomonActorMeshCellGraph.h
-  gnomonActorMeshCellImage
-  gnomonActorMeshCellImage.h
-  gnomonActorPolyData
-  gnomonActorPolyData.h
-  gnomonActorVolume
-  gnomonActorVolume.h
-  gnomonActorScalarBar
-  gnomonActorScalarBar.h
-  gnomonClutEditor
-  gnomonClutEditor.h
-  gnomonColorMapEditor.h
-  gnomonCoreParameterColor
-  gnomonCoreParameterColor.h
-  gnomonDoubleEditor.h
-  gnomonStringEditor.h
-  gnomonDoubleRangeEditor.h
-  gnomonImageDataChannelBlending
-  gnomonImageDataChannelBlending.h
-  gnomonInspector
-  gnomonInspector.h
-  gnomonInspectorCellGraph
-  gnomonInspectorCellGraph.h
-  gnomonInspectorSlicePlanes
-  gnomonInspectorSlicePlanes.h
-  gnomonInspectorImage
-  gnomonInspectorImage.h
-  gnomonInspectorImageProperties
-  gnomonInspectorImageProperties.h
-  gnomonInspectorMesh
-  gnomonInspectorMesh.h
-  gnomonInspectorViewTree
-  gnomonInspectorViewTree.h
-  gnomonInspectorViewWidget
-  gnomonInspectorViewWidget.h
-  gnomonInspectorVolume
-  gnomonInspectorVolume.h
-  gnomonLookupTable.h
-  gnomonLookupTableEditor.h
-  gnomonPolyData
-  gnomonPolyData.h
-  gnomonPolyDataCellComplex
-  gnomonPolyDataCellComplex.h
-  gnomonPolyDataCellImage
-  gnomonPolyDataCellImage.h
-  gnomonPolyDataMesh
-  gnomonPolyDataMesh.h
-  gnomonStringListEditor.h
-  gnomonView
-  gnomonView.h
-  gnomonViewManager
-  gnomonViewManager.h
-  gnomonVisualization)
+    gnomonAbstractMatplotlibVisualization
+    gnomonAbstractMatplotlibVisualization.h
+    gnomonAbstractMatplotlibVisualization_p.h
+    gnomonAbstractMatplotlibVisualizationDataFrame
+    gnomonAbstractMatplotlibVisualizationDataFrame.h
+    gnomonAbstractMatplotlibVisualizationTree
+    gnomonAbstractMatplotlibVisualizationTree.h
+    gnomonAbstractVisualization
+    gnomonAbstractVisualization.h
+    gnomonAbstractVisualization_p.h
+    gnomonAbstractVisualizationCellComplex
+    gnomonAbstractVisualizationCellComplex.h
+    gnomonAbstractVisualizationCellImage
+    gnomonAbstractVisualizationCellImage.h
+    gnomonActor
+    gnomonActor.h
+    gnomonActor2DCellImage
+    gnomonActor2DCellImage.h
+    gnomonActor2DImageChannelBlendingWidget
+    gnomonActor2DImageChannelBlendingWidget.h
+    gnomonActor2DImageRGBAWidget
+    gnomonActor2DImageRGBAWidget.h
+    gnomonActor2DImageWidget
+    gnomonActor2DImageWidget.h
+    gnomonActor2DPolyData
+    gnomonActor2DPolyData.h
+    gnomonActorImage
+    gnomonActorImage.h
+    gnomonActorImageRGBAVolume
+    gnomonActorImageRGBAVolume.h
+    gnomonActorImageVolume
+    gnomonActorImageVolume.h
+    gnomonActorMesh
+    gnomonActorMesh.h
+    gnomonActorMesh_p.h
+    gnomonActorMeshCellComplex
+    gnomonActorMeshCellComplex.h
+    gnomonActorMeshCellGraph
+    gnomonActorMeshCellGraph.h
+    gnomonActorMeshCellImage
+    gnomonActorMeshCellImage.h
+    gnomonActorPolyData
+    gnomonActorPolyData.h
+    gnomonActorScalarBar
+    gnomonActorScalarBar.h
+    gnomonActorVolume
+    gnomonActorVolume.h
+    gnomonGridLayout.h
+    gnomonGridLayout
+    gnomonImageDataChannelBlending
+    gnomonImageDataChannelBlending.h
+    gnomonInspector
+    gnomonInspector.h
+    gnomonInspectorCellGraph
+    gnomonInspectorCellGraph.h
+    gnomonInspectorImage
+    gnomonInspectorImage.h
+    gnomonInspectorImageProperties
+    gnomonInspectorImageProperties.h
+    gnomonInspectorMain
+    gnomonInspectorMesh
+    gnomonInspectorMesh.h
+    gnomonInspectorSlicePlanes
+    gnomonInspectorSlicePlanes.h
+    gnomonInspectorViewTree
+    gnomonInspectorViewTree.h
+    gnomonInspectorViewWidget
+    gnomonInspectorViewWidget.h
+    gnomonInspectorVolume
+    gnomonInspectorVolume.h
+    gnomonLandmarkActor.h
+    gnomonPolyData
+    gnomonPolyData.h
+    gnomonPolyDataCellComplex
+    gnomonPolyDataCellComplex.h
+    gnomonPolyDataCellImage
+    gnomonPolyDataCellImage.h
+    gnomonPolyDataMesh
+    gnomonPolyDataMesh.h
+    gnomonView
+    gnomonView.h
+    gnomonViewForm
+    gnomonViewForm.h
+    gnomonViewFormPool
+    gnomonViewFormPool.h
+    gnomonViewManager
+    gnomonViewManager.h
+    gnomonViewMatplotlib
+    gnomonViewMatplotlib.h
+    gnomonViewVolumic
+    gnomonViewVolumic.h
+    gnomonViewVolumicPool.h
+    gnomonVisualization
+    gnomonVisualizationCellComplex
+    gnomonVisualizationCellComplex.h
+##  gnomonVisualizationCellComplexPlugin.h
+    gnomonVisualizationCellImageMarchingCubes
+    gnomonVisualizationCellImageMarchingCubes.h
+    gnomonVisualizationCellImageMarchingCubesPlugin.h
+    gnomonVisualizationCellImageVolume
+    gnomonVisualizationCellImageVolume.h
+##  gnomonVisualizationCellImageVolumePlugin.h
+    gnomonVisualizationImagesSerie
+    gnomonVisualizationImagesSerie.h
+    gnomonVisualizationImagesSerieChannelBlending
+    gnomonVisualizationImagesSerieChannelBlending.h
+    gnomonVisualizationMesh
+    gnomonVisualizationMesh.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonActor.cpp
-  gnomonActor2DCellImage.cpp
-  gnomonActor2DImageWidget.cpp
-  gnomonActor2DImageRGBAWidget.cpp
-  gnomonActor2DPolyData.cpp
-  gnomonActorImage.cpp
-  gnomonActorImageVolume.cpp
-  gnomonActorImageRGBAVolume.cpp
-  gnomonActorMesh.cpp
-  gnomonActorMeshCellComplex.cpp
-  gnomonActorMeshCellGraph.cpp
-  gnomonActorMeshCellImage.cpp
-  gnomonActorPolyData.cpp
-  gnomonActorVolume.cpp
-  gnomonActorScalarBar.cpp
-  gnomonClutEditor.cpp
-  gnomonColorMapEditor.cpp
-  gnomonCoreParameterColor.cpp
-  gnomonStringEditor.cpp
-  gnomonDoubleEditor.cpp
-  gnomonDoubleRangeEditor.cpp
-  gnomonImageDataChannelBlending.cpp
-  gnomonInspector.cpp
-  gnomonInspectorCellGraph.cpp
-  gnomonInspectorSlicePlanes.cpp
-  gnomonInspectorImage.cpp
-  gnomonInspectorImageProperties.cpp
-  gnomonInspectorMesh.cpp
-  gnomonInspectorViewTree.cpp
-  gnomonInspectorViewWidget.cpp
-  gnomonInspectorVolume.cpp
-  gnomonLookupTable.cpp
-  gnomonLookupTableEditor.cpp
-  gnomonPolyData.cpp
-  gnomonPolyDataCellComplex.cpp
-  gnomonPolyDataCellImage.cpp
-  gnomonPolyDataMesh.cpp
-  gnomonStringListEditor.cpp
-  gnomonView.cpp
-  gnomonViewManager.cpp)
+    gnomonAbstractMatplotlibVisualization.cpp
+    gnomonAbstractMatplotlibVisualizationDataFrame.cpp
+    gnomonAbstractMatplotlibVisualizationTree.cpp
+    gnomonAbstractVisualization.cpp
+    gnomonAbstractVisualizationCellComplex.cpp
+    gnomonAbstractVisualizationCellImage.cpp
+    gnomonActor.cpp
+    gnomonActor2DCellImage.cpp
+    gnomonActor2DImageChannelBlendingWidget.cpp
+    gnomonActor2DImageRGBAWidget.cpp
+    gnomonActor2DImageWidget.cpp
+    gnomonActor2DPolyData.cpp
+    gnomonActorImage.cpp
+    gnomonActorImageRGBAVolume.cpp
+    gnomonActorImageVolume.cpp
+    gnomonActorMesh.cpp
+    gnomonActorMeshCellComplex.cpp
+    gnomonActorMeshCellGraph.cpp
+    gnomonActorMeshCellImage.cpp
+    gnomonActorPolyData.cpp
+    gnomonActorScalarBar.cpp
+    gnomonActorVolume.cpp
+    gnomonGridLayout.cpp
+    gnomonImageDataChannelBlending.cpp
+    gnomonInspector.cpp
+    gnomonInspectorCellGraph.cpp
+    gnomonInspectorImage.cpp
+    gnomonInspectorImageProperties.cpp
+    gnomonInspectorMesh.cpp
+    gnomonInspectorSlicePlanes.cpp
+    gnomonInspectorViewTree.cpp
+    gnomonInspectorViewWidget.cpp
+    gnomonInspectorVolume.cpp
+    gnomonLandmarkActor.cpp
+    gnomonPolyData.cpp
+    gnomonPolyDataCellComplex.cpp
+    gnomonPolyDataCellImage.cpp
+    gnomonPolyDataMesh.cpp
+    gnomonView.cpp
+    gnomonViewForm.cpp
+    gnomonViewFormPool.cpp
+    gnomonViewManager.cpp
+    gnomonViewMatplotlib.cpp
+    gnomonViewVolumic.cpp
+    gnomonViewVolumicPool.cpp
+    gnomonVisualizationCellComplex.cpp
+##  gnomonVisualizationCellComplexPlugin.cpp
+    gnomonVisualizationCellImageMarchingCubes.cpp
+    gnomonVisualizationCellImageMarchingCubesPlugin.cpp
+    gnomonVisualizationCellImageVolume.cpp
+##  gnomonVisualizationCellImageVolumePlugin.cpp
+    gnomonVisualizationImagesSerie.cpp
+    gnomonVisualizationImagesSerieChannelBlending.cpp
+    gnomonVisualizationMesh.cpp)
+
+set(${PROJECT_NAME}_SOURCES_QRC
+  gnomonVisualization.qrc)
 
 ## #################################################################
 ## Wrapping
@@ -150,11 +199,24 @@ if(DTK_BUILD_WRAPPERS)
 
   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
-  if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonVisualization.i.in ${CMAKE_BINARY_DIR}/gnomonVisualization.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonvisualization python ${CMAKE_BINARY_DIR}/gnomonVisualization.i "" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS};${dtk_WRAP_PREFIX}/dtkBase;${dtk_WRAP_PREFIX}/dtkCore;${dtk_WRAP_PREFIX}/QtCore;${dtk_WRAP_PREFIX}/QtWidgets;${dtk_WRAP_PREFIX}/dtkWidgets;${dtkImaging_WRAP_PREFIX}/dtkImagingCore/;${CMAKE_SOURCE_DIR}/src")
+  if (DTK_WRAPPING_PYTHON)
+    if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
-    set_property(SOURCE gnomonVisualization_wrap_python.cpp PROPERTY SKIP_AUTOMOC ON)
+      set(${PROJECT_NAME}_SIP_WRAPPERS
+        sip${PROJECT_NAME}gnomonViewMatplotlib.cpp)
+
+      dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonVisualization ${CMAKE_SOURCE_DIR}/sip/gnomonVisualization/gnomonVisualizationmod.sip "${${PROJECT_NAME}_SIP_WRAPPERS}" "${${PROJECT_NAME}_WRAP_DEPENDS}")
+
+      set_property(SOURCE sipgnomonVisualizationcmodule.cpp                           PROPERTY SKIP_AUTOMOC ON)
+      set_property(SOURCE sipgnomonVisualizationgnomonViewMatplotlib.cpp              PROPERTY SKIP_AUTOMOC ON)
+    endif()
+
+    if (DTK_PYTHON_WRAPPER MATCHES "SWIG")
+      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonVisualization.i.in ${CMAKE_BINARY_DIR}/gnomonVisualization.i @ONLY)
+      dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonvisualization python ${CMAKE_BINARY_DIR}/gnomonVisualization.i "" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS};${dtk_WRAP_PREFIX}/dtkBase;${dtk_WRAP_PREFIX}/dtkCore;${dtk_WRAP_PREFIX}/QtCore;${dtk_WRAP_PREFIX}/QtWidgets;${dtk_WRAP_PREFIX}/dtkWidgets;${dtkImaging_WRAP_PREFIX}/dtkImagingCore/;${CMAKE_SOURCE_DIR}/src")
+
+      set_property(SOURCE gnomonVisualization_wrap_python.cpp PROPERTY SKIP_AUTOMOC ON)
+    endif()
   endif()
 endif()
 
@@ -162,10 +224,13 @@ endif()
 ## Build rules
 ## #################################################################
 
+qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
+
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES_WRAP}
   ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_HEADERS})
+  ${${PROJECT_NAME}_HEADERS}
+  ${${PROJECT_NAME}_SOURCES_RCC})
 
 qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Gui)
@@ -179,8 +244,15 @@ target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
 target_link_libraries(${PROJECT_NAME} gnomonCore)
 target_link_libraries(${PROJECT_NAME} gnomonFonts)
 target_link_libraries(${PROJECT_NAME} gnomonStyle)
+target_link_libraries(${PROJECT_NAME} gnomonWidgets)
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
+
+if(DTK_BUILD_WRAPPERS)
+  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+  endif()
+endif()
 
 # #################################################################
 ## Target properties

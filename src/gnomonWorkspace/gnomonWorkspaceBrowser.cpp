@@ -14,8 +14,6 @@
 
 #include "gnomonWorkspaceBrowser.h"
 
-#include <gnomonVisualization/gnomonColorMapEditor.h>
-
 #include "gnomonFinder.h"
 #include "gnomonOverlayPane.h"
 #include "gnomonOverlayPaneItem.h"

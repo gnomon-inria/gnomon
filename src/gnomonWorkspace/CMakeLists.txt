@@ -80,8 +80,8 @@ qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
-target_link_libraries(${PROJECT_NAME} gnomonVisualization)
 target_link_libraries(${PROJECT_NAME} gnomonWidgets)
+target_link_libraries(${PROJECT_NAME} gnomonVisualization)
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 

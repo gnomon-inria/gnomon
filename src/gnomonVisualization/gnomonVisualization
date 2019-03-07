@@ -2,5 +2,8 @@
 #include "gnomonActorImage.h"
 #include "gnomonActorMesh.h"
 #include "gnomonActorVolume.h"
+#include "gnomonGridLayout.h"
 #include "gnomonView.h"
+#include "gnomonViewForm.h"
+#include "gnomonViewFormPool.h"
 #include "gnomonViewManager.h"

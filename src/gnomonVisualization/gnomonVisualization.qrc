@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="gnomon">
+    <file>matplotlib_figure.py</file>
+  </qresource>
+</RCC>

@@ -29,9 +29,16 @@
 #include <gnomonVisualization/gnomonActorImage.h>
 #include <gnomonVisualization/gnomonActorScalarBar.h>
 #include <gnomonVisualization/gnomonActorVolume.h>
-#include <gnomonVisualization/gnomonCoreParameterColor.h>
 #include <gnomonVisualization/gnomonView.h>
 #include <gnomonVisualization/gnomonViewManager.h>
+#include <gnomonVisualization/gnomonAbstractMatplotlibVisualization.h>
+#include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+#include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationTree.h>
+#include <gnomonVisualization/gnomonAbstractVisualization.h>
+#include <gnomonVisualization/gnomonAbstractVisualizationCellComplex.h>
+#include <gnomonVisualization/gnomonAbstractVisualizationCellImage.h>
+#include <gnomonVisualization/gnomonViewForm.h>
+#include <gnomonVisualization/gnomonViewVolumic.h>
 
 %}
 
@@ -100,9 +107,16 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <gnomonVisualization/gnomonCoreParameterColor.h>
 %include <gnomonVisualization/gnomonView.h>
 %include <gnomonVisualization/gnomonViewManager.h>
+%include <gnomonVisualization/gnomonAbstractMatplotlibVisualization.h>
+%include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+%include <gnomonVisualization/gnomonAbstractMatplotlibVisualizationTree.h>
+%include <gnomonVisualization/gnomonAbstractVisualization.h>
+%include <gnomonVisualization/gnomonAbstractVisualizationCellComplex.h>
+%include <gnomonVisualization/gnomonAbstractVisualizationCellImage.h>
+%include <gnomonVisualization/gnomonViewForm.h>
+%include <gnomonVisualization/gnomonViewVolumic.h>
 
 //
 // gnomonVisualization.i.in ends here

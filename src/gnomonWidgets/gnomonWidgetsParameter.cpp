@@ -14,9 +14,9 @@
 
 #include "gnomonWidgetsParameter.h"
 
-#include <gnomonVisualization/gnomonColorMapEditor.h>
-#include <gnomonVisualization/gnomonDoubleRangeEditor.h>
-#include <gnomonVisualization/gnomonStringListEditor.h>
+#include "gnomonColorMapEditor.h"
+#include "gnomonDoubleRangeEditor.h"
+#include "gnomonStringListEditor.h"
 #include "gnomonLookupTableEditor.h"
 
 QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)

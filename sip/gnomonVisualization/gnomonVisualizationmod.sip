@@ -1,4 +1,4 @@
-%Module gnomonWidgets
+%Module gnomonVisualization
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
@@ -6,4 +6,4 @@
 
 %Import dtkWidgets/dtkWidgetsmod.sip
 
-%Include gnomonInterpreterJupyter.sip
+%Include gnomonViewMatplotlib.sip

@@ -19,22 +19,15 @@ project(gnomonWidgets)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonAbstractMatplotlibVisualization.h
-  gnomonAbstractMatplotlibVisualization_p.h
-  gnomonAbstractMatplotlibVisualization
-  gnomonAbstractMatplotlibVisualizationDataFrame.h
-  gnomonAbstractMatplotlibVisualizationDataFrame
-  gnomonAbstractMatplotlibVisualizationTree.h
-  gnomonAbstractMatplotlibVisualizationTree
-  gnomonAbstractVisualization.h
-  gnomonAbstractVisualization_p.h
-  gnomonAbstractVisualization
-  gnomonAbstractVisualizationCellComplex.h
-  gnomonAbstractVisualizationCellComplex
-  gnomonAbstractVisualizationCellImage.h
-  gnomonAbstractVisualizationCellImage
+  gnomonClutEditor
+  gnomonClutEditor.h
   gnomonCodeEditor
   gnomonCodeEditor.h
+  gnomonColorMapEditor.h
+  gnomonCoreParameterColor
+  gnomonCoreParameterColor.h
+  gnomonDoubleEditor.h
+  gnomonDoubleRangeEditor.h
   gnomonDropSite
   gnomonDropSite.h
   gnomonFinder
@@ -45,8 +38,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormManagerData.h
   gnomonFormManagerFocus.h
   gnomonFormManagerItem.h
-  gnomonGridLayout
-  gnomonGridLayout.h
   gnomonImageManager
   gnomonImageManager.h
   gnomonImageManager_p.h
@@ -56,82 +47,51 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInterpreterJupyter
   gnomonInterpreterJupyter.h
   gnomonItemButton.h
-  gnomonLandmarkActor.h
+  gnomonLookupTable.cpp
+  gnomonLookupTable.h
+  gnomonLookupTableEditor.cpp
+  gnomonLookupTableEditor.h
+  gnomonOverlayButton.h
   gnomonOverlayPane
   gnomonOverlayPane.h
   gnomonOverlayPaneItem
   gnomonOverlayPaneItem.h
+  gnomonStringEditor.h
+  gnomonStringListEditor.h
   gnomonToolBar
   gnomonToolBar.h
-  gnomonViewForm
-  gnomonViewForm.h
-  gnomonViewFormPool.h
-  gnomonViewMatplotlib
-  gnomonViewMatplotlib.h
-  gnomonViewVolumic
-  gnomonViewVolumic.h
-  gnomonViewVolumicOverlay.h
-  gnomonViewVolumicPool.h
-  gnomonVisualizationCellComplex.h
-  gnomonVisualizationCellComplex
-## gnomonVisualizationCellComplexPlugin.h
-  gnomonVisualizationCellImageMarchingCubes.h
-  gnomonVisualizationCellImageMarchingCubes
-  gnomonVisualizationCellImageMarchingCubesPlugin.h
-  gnomonVisualizationCellImageVolume.h
-  gnomonVisualizationCellImageVolume
-## gnomonVisualizationCellImageVolumePlugin.h
-  gnomonVisualizationImagesSerie.h
-  gnomonVisualizationImagesSerie
-  gnomonVisualizationImagesSerieChannelBlending.h
-  gnomonVisualizationImagesSerieChannelBlending
-  gnomonVisualizationMesh.h
-  gnomonVisualizationMesh
   gnomonWidgets
   gnomonWidgets.h
   gnomonWidgetsParameter
   gnomonWidgetsParameter.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonAbstractMatplotlibVisualization.cpp
-  gnomonAbstractMatplotlibVisualizationDataFrame.cpp
-  gnomonAbstractMatplotlibVisualizationTree.cpp
-  gnomonAbstractVisualization.cpp
-  gnomonAbstractVisualizationCellComplex.cpp
-  gnomonAbstractVisualizationCellImage.cpp
+  gnomonClutEditor.cpp
   gnomonCodeEditor.cpp
+  gnomonColorMapEditor.cpp
+  gnomonCoreParameterColor.cpp
+  gnomonDoubleEditor.cpp
+  gnomonDoubleRangeEditor.cpp
   gnomonDropSite.cpp
   gnomonFinder.cpp
   gnomonFormManager.cpp
   gnomonFormManagerData.cpp
   gnomonFormManagerFocus.cpp
   gnomonFormManagerItem.cpp
-  gnomonGridLayout.cpp
   gnomonImageManager.cpp
   gnomonImageManagerData.cpp
   gnomonImageManagerItem.cpp
   gnomonImageManagerFocus.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
-  gnomonLandmarkActor.cpp
+  gnomonLookupTable.cpp
+  gnomonLookupTableEditor.cpp
+  gnomonOverlayButton.cpp
   gnomonOverlayPane.cpp
   gnomonOverlayPaneItem.cpp
+  gnomonStringEditor.cpp
+  gnomonStringListEditor.cpp
   gnomonToolBar.cpp
-  gnomonViewForm.cpp
-  gnomonViewFormPool.cpp
-  gnomonViewMatplotlib.cpp
-  gnomonViewVolumic.cpp
-  gnomonViewVolumicOverlay.cpp
-  gnomonViewVolumicPool.cpp
-  gnomonVisualizationCellComplex.cpp
-## gnomonVisualizationCellComplexPlugin.cpp
-  gnomonVisualizationCellImageMarchingCubes.cpp
-  gnomonVisualizationCellImageMarchingCubesPlugin.cpp
-  gnomonVisualizationCellImageVolume.cpp
-## gnomonVisualizationCellImageVolumePlugin.cpp
-  gnomonVisualizationImagesSerie.cpp
-  gnomonVisualizationImagesSerieChannelBlending.cpp
-  gnomonVisualizationMesh.cpp
   gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp)
 
@@ -154,14 +114,12 @@ if(DTK_BUILD_WRAPPERS)
     if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
       set(${PROJECT_NAME}_SIP_WRAPPERS
-        sip${PROJECT_NAME}gnomonInterpreterJupyter.cpp
-        sip${PROJECT_NAME}gnomonViewMatplotlib.cpp)
+        sip${PROJECT_NAME}gnomonInterpreterJupyter.cpp)
 
       dtk_wrap_sip(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomonWidgets ${CMAKE_SOURCE_DIR}/sip/gnomonWidgets/gnomonWidgetsmod.sip "${${PROJECT_NAME}_SIP_WRAPPERS}" "${${PROJECT_NAME}_WRAP_DEPENDS}")
 
       set_property(SOURCE sipgnomonWidgetscmodule.cpp                           PROPERTY SKIP_AUTOMOC ON)
       set_property(SOURCE sipgnomonWidgetsgnomonInterpreterJupyter.cpp          PROPERTY SKIP_AUTOMOC ON)
-      set_property(SOURCE sipgnomonWidgetsgnomonViewMatplotlib.cpp              PROPERTY SKIP_AUTOMOC ON)
     endif()
 
     if (DTK_PYTHON_WRAPPER MATCHES "SWIG")
@@ -189,7 +147,8 @@ qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_link_libraries(${PROJECT_NAME} gnomonCore)
-target_link_libraries(${PROJECT_NAME} gnomonVisualization)
+target_link_libraries(${PROJECT_NAME} gnomonFonts)
+target_link_libraries(${PROJECT_NAME} gnomonStyle)
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
