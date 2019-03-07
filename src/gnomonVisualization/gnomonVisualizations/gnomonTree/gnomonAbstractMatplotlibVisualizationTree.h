@@ -64,7 +64,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMatplotlibVisualizationTree, GNOMONVISU
 // Register to gnomonWidgets layer
 // /////////////////////////////////////////////////////////////////
 
-namespace gnomonWidgets {
+namespace gnomonVisualization {
     DTK_DECLARE_CONCEPT(gnomonAbstractMatplotlibVisualizationTree, GNOMONVISUALIZATION_EXPORT, matplotlibVisualizationTree);
 }
 

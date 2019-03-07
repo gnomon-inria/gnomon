@@ -15,7 +15,7 @@
 #include "gnomonWidgets.h"
 #include "gnomonAbstractMatplotlibVisualizationTree.h"
 
-namespace gnomonWidgets {
+namespace gnomonVisualization {
     DTK_DEFINE_CONCEPT(gnomonAbstractMatplotlibVisualizationTree, matplotlibVisualizationTree, gnomonWidgets);
 }
 

@@ -17,7 +17,8 @@
 #include <QtCore>
 
 #include <dtkCore>
-#include <gnomonAbstractVisualizationCellImage>
+
+#include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 
 class gnomonVisualizationCellImageVolumePlugin: public gnomonAbstractVisualizationCellImagePlugin
 {

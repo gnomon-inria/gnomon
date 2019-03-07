@@ -12,8 +12,9 @@
 
 // Code:
 
-#include "gnomonVisualizationCellComplex.h"
 #include "gnomonVisualizationCellComplexPlugin.h"
+
+#include "gnomonVisualizations/gnomonCellComplex/gnomonVisualizationCellComplex.h"
 
 #include <dtkCore>
 #include <gnomonWidgets>
@@ -21,9 +22,9 @@
 void gnomonVisualizationCellComplexPlugin::initialize(void)
 {
     QString plugin_name = "gnomonVisualizationCellComplex";
-    gnomonWidgets::visualizationCellComplex::pluginFactory().record(plugin_name, gnomonVisualizationCellComplexCreator);
+    gnomonVisualization::visualizationCellComplex::pluginFactory().record(plugin_name, gnomonVisualizationCellComplexCreator);
 
-    if (gnomonWidgets::visualizationCellComplex::pluginFactory().keys().contains(plugin_name)) {
+    if (gnomonVisualization::visualizationCellComplex::pluginFactory().keys().contains(plugin_name)) {
         qDebug()<<"C++ plugin"<<plugin_name<<"has been successfully loaded!";
     }
 

@@ -17,7 +17,7 @@
 #include <QtCore>
 
 #include <dtkCore>
-#include <gnomonAbstractVisualizationCellComplex>
+#include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 
 class gnomonVisualizationCellComplexPlugin: public gnomonAbstractVisualizationCellComplexPlugin
 {

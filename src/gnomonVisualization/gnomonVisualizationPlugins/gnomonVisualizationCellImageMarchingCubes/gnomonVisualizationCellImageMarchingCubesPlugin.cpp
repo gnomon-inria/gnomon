@@ -12,8 +12,9 @@
 
 // Code:
 
-#include "gnomonVisualizationCellImageMarchingCubes.h"
 #include "gnomonVisualizationCellImageMarchingCubesPlugin.h"
+
+#include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageMarchingCubes.h"
 
 #include <dtkCore>
 #include <gnomonWidgets>
@@ -21,9 +22,9 @@
 void gnomonVisualizationCellImageMarchingCubesPlugin::initialize(void)
 {
     QString plugin_name = "gnomonVisualizationCellImageMarchingCubes";
-    gnomonWidgets::visualizationCellImage::pluginFactory().record(plugin_name, gnomonVisualizationCellImageMarchingCubesCreator);
+    gnomonVisualization::visualizationCellImage::pluginFactory().record(plugin_name, gnomonVisualizationCellImageMarchingCubesCreator);
 
-    if (gnomonWidgets::visualizationCellImage::pluginFactory().keys().contains(plugin_name)) {
+    if (gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name)) {
         qDebug()<<"C++ plugin"<<plugin_name<<"has been successfully loaded!";
     }
 

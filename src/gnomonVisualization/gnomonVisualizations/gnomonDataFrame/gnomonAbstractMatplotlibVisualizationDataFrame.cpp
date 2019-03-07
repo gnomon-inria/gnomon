@@ -15,7 +15,7 @@
 #include "gnomonWidgets.h"
 #include "gnomonAbstractMatplotlibVisualizationDataFrame.h"
 
-namespace gnomonWidgets {
+namespace gnomonVisualization {
     DTK_DEFINE_CONCEPT(gnomonAbstractMatplotlibVisualizationDataFrame, matplotlibVisualizationDataFrame, gnomonWidgets);
 }
 

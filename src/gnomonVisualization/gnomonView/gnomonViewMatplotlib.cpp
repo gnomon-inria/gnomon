@@ -189,9 +189,9 @@ void gnomonViewMatplotlibPrivate::refresh(void)
             QComboBox *combo_box = new QComboBox(this);
             QStringList combo_box_keys = {};
             if (key == "gnomonTree") {
-                combo_box_keys = gnomonWidgets::matplotlibVisualizationTree::pluginFactory().keys();
+                combo_box_keys = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
             } else  if (key == "gnomonDataFrame") {
-                combo_box_keys = gnomonWidgets::matplotlibVisualizationDataFrame::pluginFactory().keys();
+                combo_box_keys = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
             }
             for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
                 combo_box->addItem(*it);
@@ -206,14 +206,14 @@ void gnomonViewMatplotlibPrivate::refresh(void)
                 }
 
                 if (key == "gnomonTree") {
-                    this->formVisualization[key] = gnomonWidgets::matplotlibVisualizationTree::pluginFactory().create(visu);
+                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)this->formVisualization[key];
                     gnomonTree *tree = (gnomonTree *)this->forms[key];
                     formVisualizationTree->setTree(tree);
                     formVisualizationTree->update();
                 } else if (key == "gnomonDataFrame") {
-                    this->formVisualization[key] = gnomonWidgets::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
+                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
                     gnomonDataFrame *dataFrame = (gnomonDataFrame *)this->forms[key];
@@ -292,12 +292,12 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
     
-        qDebug()<<Q_FUNC_INFO<<gnomonWidgets::matplotlibVisualizationTree::pluginFactory().keys();
-        QString key = gnomonWidgets::matplotlibVisualizationTree::pluginFactory().keys()[0];
+        qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
+        QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
     
         if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
         {
-            d->formVisualization["gnomonTree"] = gnomonWidgets::matplotlibVisualizationTree::pluginFactory().create(key);
+            d->formVisualization["gnomonTree"] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(key);
             d->formVisualization["gnomonTree"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)d->formVisualization["gnomonTree"];
@@ -314,12 +314,12 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame", &stat);
     
-        qDebug()<<Q_FUNC_INFO<<gnomonWidgets::matplotlibVisualizationDataFrame::pluginFactory().keys();
-        QString key = gnomonWidgets::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
+        qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
+        QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
     
         if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
         {
-            d->formVisualization["gnomonDataFrame"] = gnomonWidgets::matplotlibVisualizationDataFrame::pluginFactory().create(key);
+            d->formVisualization["gnomonDataFrame"] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(key);
             d->formVisualization["gnomonDataFrame"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)d->formVisualization["gnomonDataFrame"];

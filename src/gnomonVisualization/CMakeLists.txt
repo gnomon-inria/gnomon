@@ -22,6 +22,7 @@ add_subdirectory(gnomonActor)
 add_subdirectory(gnomonInspector)
 add_subdirectory(gnomonView)
 add_subdirectory(gnomonVisualizations)
+add_subdirectory(gnomonVisualizationPlugins)
 
 ## #################################################################
 ## Sources

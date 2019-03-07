@@ -15,7 +15,7 @@
 #include "gnomonWidgets.h"
 #include "gnomonAbstractVisualizationCellImage.h"
 
-namespace gnomonWidgets {
+namespace gnomonVisualization {
     DTK_DEFINE_CONCEPT(gnomonAbstractVisualizationCellImage, visualizationCellImage, gnomonWidgets);
 }
 

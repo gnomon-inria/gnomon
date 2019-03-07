@@ -337,9 +337,9 @@ void gnomonViewFormPrivate::refresh(void)
             QComboBox *combo_box = new QComboBox(this);
             QStringList combo_box_keys = {};
             if (key == "gnomonCellComplex") {
-                combo_box_keys = gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
+                combo_box_keys = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
             } else if (key == "gnomonCellImage") {
-                combo_box_keys = gnomonWidgets::visualizationCellImage::pluginFactory().keys();
+                combo_box_keys = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
             }
             for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
                 combo_box->addItem(*it);
@@ -353,14 +353,14 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key] = nullptr;
                 }
                 if (key == "gnomonCellComplex") {
-                    this->formVisualization[key] = gnomonWidgets::visualizationCellComplex::pluginFactory().create(visu);
+                    this->formVisualization[key] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
                     gnomonCellComplex *cellComplex = (gnomonCellComplex *)this->forms[key];
                     formVisualizationCellComplex->setCellComplex(cellComplex);
                     formVisualizationCellComplex->update();
                 } else if (key == "gnomonCellImage") {
-                    this->formVisualization[key] = gnomonWidgets::visualizationCellImage::pluginFactory().create(visu);
+                    this->formVisualization[key] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
                     gnomonCellImage *cellImage = (gnomonCellImage *)this->forms[key];
@@ -792,12 +792,12 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
 {
     d->forms["gnomonCellImage"] = cellImage;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonWidgets::visualizationCellImage::pluginFactory().keys();
-    QString key = gnomonWidgets::visualizationCellImage::pluginFactory().keys()[0];
+    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellImage::pluginFactory().keys();
+    QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
     {
-        d->formVisualization["gnomonCellImage"] = gnomonWidgets::visualizationCellImage::pluginFactory().create(key);
+        d->formVisualization["gnomonCellImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key);
         d->formVisualization["gnomonCellImage"]->setView(this);
     }
 
@@ -833,14 +833,14 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
 {
     d->forms["gnomonCellComplex"] = cellComplex;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonWidgets::visualizationCellComplex::pluginFactory().keys();
-    QString key = gnomonWidgets::visualizationCellComplex::pluginFactory().keys()[0];
+    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
+    QString key = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
 //    QString key = "gnomonVisualizationCellComplexTriangularMesh";
 
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
     {
 //        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
-        d->formVisualization["gnomonCellComplex"] = gnomonWidgets::visualizationCellComplex::pluginFactory().create(key);
+        d->formVisualization["gnomonCellComplex"] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(key);
         d->formVisualization["gnomonCellComplex"]->setView(this);
     }
     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];

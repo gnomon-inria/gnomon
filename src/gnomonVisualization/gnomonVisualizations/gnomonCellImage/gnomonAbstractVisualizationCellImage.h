@@ -64,7 +64,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZA
 // Register to gnomonWidgets layer
 // /////////////////////////////////////////////////////////////////
 
-namespace gnomonWidgets {
+namespace gnomonVisualization {
     DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT, visualizationCellImage);
 }
 
