@@ -38,11 +38,17 @@
 #undef  GNOMONWIDGETS_EXPORT
 #define GNOMONWIDGETS_EXPORT
 
+
+%rename(ParameterLookupTable)  gnomonCoreParameterLookupTable;
+%rename(ParameterColorMap)     gnomonCoreParameterColorMap;
+
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+
+
 
 //
 // gnomonWidgets.i.in ends here
