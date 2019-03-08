@@ -31,8 +31,6 @@
 #include "gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h"
-#include "gnomonForm/gnomonIntensityImage/gnomonAbstractIntensityImageData.h"
-#include "gnomonForm/gnomonIntensityImage/gnomonIntensityImage.h"
 #include "gnomonForm/gnomonLString/gnomonAbstractLStringData.h"
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonForm/gnomonMesh/gnomonAbstractMeshData.h"
@@ -49,6 +47,7 @@
 #include "gnomonModel/gnomonAbstractModel.h"
 #include "gnomonModel/gnomonAbstractEvolutionModel.h"
 #include "gnomonModel/gnomonAbstractSystemScenario.h"
+#include "gnomonModel/gnomonAbstractTissueGrowthModel.h"
 #include "gnomonModel/gnomonSystem.h"
 
 #include "gnomonCoreParameter.h"
