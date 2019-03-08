@@ -28,9 +28,8 @@
 
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
-#include "gnomonVisualizations/gnomonImagesSerie/gnomonVisualizationImagesSerie.h"
-#include "gnomonVisualizations/gnomonImagesSerie/gnomonVisualizationImagesSerieChannelBlending.h"
-#include "gnomonVisualizations/gnomonMesh/gnomonVisualizationMesh.h"
+#include "gnomonVisualizations/gnomonImagesSerie/gnomonAbstractVisualizationImagesSerie.h"
+#include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -340,6 +339,10 @@ void gnomonViewFormPrivate::refresh(void)
                 combo_box_keys = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
             } else if (key == "gnomonCellImage") {
                 combo_box_keys = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
+            } else if (key == "gnomonImagesSerie") {
+                combo_box_keys = gnomonVisualization::visualizationImagesSerie::pluginFactory().keys();
+            } else if (key == "gnomonMesh") {
+                combo_box_keys = gnomonVisualization::visualizationMesh::pluginFactory().keys();
             }
             for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
                 combo_box->addItem(*it);
@@ -366,6 +369,20 @@ void gnomonViewFormPrivate::refresh(void)
                     gnomonCellImage *cellImage = (gnomonCellImage *)this->forms[key];
                     formVisualizationCellImage->setCellImage(cellImage);
                     formVisualizationCellImage->update();
+                } else if (key == "gnomonImagesSerie") {
+                    this->formVisualization[key] = gnomonVisualization::visualizationImagesSerie::pluginFactory().create(visu);
+                    this->formVisualization[key]->setView(q);
+                    gnomonAbstractVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonAbstractVisualizationImagesSerie *)this->formVisualization[key];
+                    gnomonImagesSerie *imagesSerie = (gnomonImagesSerie *)this->forms[key];
+                    formVisualizationImagesSerie->setImagesSerie(imagesSerie);
+                    formVisualizationImagesSerie->update();
+                } else if (key == "gnomonMesh") {
+                    this->formVisualization[key] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu);
+                    this->formVisualization[key]->setView(q);
+                    gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
+                    gnomonMesh *mesh = (gnomonMesh *)this->forms[key];
+                    formVisualizationMesh->setMesh(mesh);
+                    formVisualizationMesh->update();
                 }
                 this->configure((QWidget *) q->parent(), key);
             });
@@ -754,13 +771,16 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
     // bool enable_slider = images_serie->times().count() > 1;
     // d->time_slider->setVisible(enable_slider);
 
-    if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"])) {
-        // d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerie(this);
-        d->formVisualization["gnomonImagesSerie"] = new gnomonVisualizationImagesSerieChannelBlending();
+    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationImagesSerie::pluginFactory().keys();
+    QString key = gnomonVisualization::visualizationImagesSerie::pluginFactory().keys()[0];
+
+    if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"]))
+    {
+        d->formVisualization["gnomonImagesSerie"] = gnomonVisualization::visualizationImagesSerie::pluginFactory().create(key);
         d->formVisualization["gnomonImagesSerie"]->setView(this);
     }
-    gnomonVisualizationImagesSerieChannelBlending *formVisualizationImagesSerie = (gnomonVisualizationImagesSerieChannelBlending *)d->formVisualization["gnomonImagesSerie"];
-    // gnomonVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
+
+    gnomonAbstractVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonAbstractVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
     formVisualizationImagesSerie->setImagesSerie(images_serie);
     if (visualization) {
         formVisualizationImagesSerie->setParameters(visualization->parameters());
@@ -875,12 +895,16 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
 {
     d->forms["gnomonMesh"] = mesh;
 
+    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationMesh::pluginFactory().keys();
+    QString key = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
+
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
     {
-        d->formVisualization["gnomonMesh"] = new gnomonVisualizationMesh();
+        d->formVisualization["gnomonMesh"] = gnomonVisualization::visualizationMesh::pluginFactory().create(key);
         d->formVisualization["gnomonMesh"]->setView(this);
     }
-    gnomonVisualizationMesh *formVisualizationMesh = (gnomonVisualizationMesh *)d->formVisualization["gnomonMesh"];
+
+    gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)d->formVisualization["gnomonMesh"];
     formVisualizationMesh->setMesh(mesh);
     if (visualization) {
         formVisualizationMesh->setParameters(visualization->parameters());
