@@ -18,8 +18,10 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCoreParameter>
-#include "gnomonCoreParameterColor.h"
+#include <gnomonCore>
+
+class gnomonCoreParameterLookupTable;
+class gnomonCoreParameterColorMap;
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameter

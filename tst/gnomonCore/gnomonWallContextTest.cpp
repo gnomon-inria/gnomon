@@ -6,11 +6,6 @@
 #include <dtkCore>
 #include <dtkLog>
 
-#include <gnomonAbstractDynamicForm.h>
-#include <gnomonExpansionSphereModel.h>
-#include <gnomonSphereForm.h>
-#include <gnomonWallContext.h>
-
 gnomonWallContextTestCase::gnomonWallContextTestCase(void)
 {
 

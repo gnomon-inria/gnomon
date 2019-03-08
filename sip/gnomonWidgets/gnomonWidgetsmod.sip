@@ -7,4 +7,3 @@
 %Import dtkWidgets/dtkWidgetsmod.sip
 
 %Include gnomonInterpreterJupyter.sip
-%Include gnomonViewMatplotlib.sip

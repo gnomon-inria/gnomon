@@ -138,6 +138,15 @@ endif()
 
 option(GNOMON_BUILD_COMPOSER "Build composer layer" false)
 
+
+
+## #################################################################
+## Targets
+## #################################################################
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+include(gnomonSubdirectoryAddFiles)
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
@@ -154,6 +163,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWorkspace)
 
 ## ###################################################################
 ## Input

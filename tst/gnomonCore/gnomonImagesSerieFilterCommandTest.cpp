@@ -3,9 +3,8 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include "gnomonImagesSerie.h"
-#include "gnomonImagesSerieFilterCommand.h"
-#include "gnomonImagesSerieReaderCommand.h"
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieFilterCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
 
 #include <dtkScript>
 

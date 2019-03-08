@@ -1,0 +1,53 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonInspectorMesh.h"
+
+#include <gnomonWidgets>
+
+// /////////////////////////////////////////////////////////////////
+// gnomonInspectorMeshPrivate
+// /////////////////////////////////////////////////////////////////
+
+class gnomonInspectorMeshPrivate
+{
+public:
+};
+
+// /////////////////////////////////////////////////////////////////
+// gnomonInspectorMesh
+// /////////////////////////////////////////////////////////////////
+
+gnomonInspectorMesh::gnomonInspectorMesh(QWidget *parent) : gnomonInspector(parent), d(new gnomonInspectorMeshPrivate)
+{
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    this->setLayout(layout);
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+gnomonInspectorMesh::~gnomonInspectorMesh(void)
+{
+    delete d;
+
+    d = NULL;
+}
+
+//
+// gnomonInspectorMesh.cpp ends here

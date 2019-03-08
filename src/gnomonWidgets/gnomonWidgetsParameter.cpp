@@ -14,10 +14,12 @@
 
 #include "gnomonWidgetsParameter.h"
 
-#include <gnomonVisualization/gnomonColorMapEditor.h>
-#include <gnomonVisualization/gnomonDoubleRangeEditor.h>
-#include <gnomonVisualization/gnomonStringListEditor.h>
-#include "gnomonLookupTableEditor.h"
+#include "gnomonColor/gnomonCoreParameterColor.h"
+
+#include "gnomonEditor/gnomonColorMapEditor.h"
+#include "gnomonEditor/gnomonDoubleRangeEditor.h"
+#include "gnomonEditor/gnomonStringListEditor.h"
+#include "gnomonEditor/gnomonLookupTableEditor.h"
 
 QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)
 {

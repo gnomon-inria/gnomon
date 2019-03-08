@@ -3,9 +3,8 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include <gnomonSegmentationCommand>
-#include <gnomonCore/gnomonImagesSerie>
-#include <gnomonImagesSerieReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonSegmentationCommand>
 
 #include <dtkScript>
 

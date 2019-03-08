@@ -6,10 +6,6 @@
 #include <dtkCore>
 #include <dtkLog>
 
-#include <gnomonCore/gnomonAbstractSystemScenario>
-#include <gnomonCore/gnomonSphereForm>
-#include <gnomonCore/gnomonWallForm>
-
 class gnomonSphereExpansionScenario : public gnomonAbstractSystemScenario
 {
 

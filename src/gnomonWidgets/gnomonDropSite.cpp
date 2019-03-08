@@ -13,7 +13,7 @@
 // Code:
 
 #include "gnomonDropSite.h"
-#include "gnomonImageManager.h"
+#include "gnomonManager/gnomonImageManager.h"
 
 class gnomonDropSitePrivate
 {
