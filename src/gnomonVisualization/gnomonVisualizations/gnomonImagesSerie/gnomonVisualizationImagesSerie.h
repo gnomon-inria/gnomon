@@ -18,14 +18,14 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationImagesSerie.h"
 
 class gnomonViewForm;
 
 class gnomonImagesSerie;
 class gnomonCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImagesSerie : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImagesSerie : public gnomonAbstractVisualizationImagesSerie
 {
     Q_OBJECT
 
@@ -34,7 +34,7 @@ public:
     ~gnomonVisualizationImagesSerie(void);
 
 public:
-	void setImagesSerie(gnomonImagesSerie *imagesSerie);
+	void setImagesSerie(gnomonImagesSerie *imagesSerie) override;
 
 public slots:
     void updateOpacity(void);
@@ -56,6 +56,10 @@ private:
 	class gnomonVisualizationImagesSeriePrivate *dd;
 };
 
+inline gnomonAbstractVisualizationImagesSerie *gnomonVisualizationImagesSerieCreator(void)
+{
+    return new gnomonVisualizationImagesSerie();
+}
 
 //
 // gnomonVisualizationImagesSerie.h ends here

@@ -1,3 +1,4 @@
+#include "gnomonVisualization.h"
 #include "gnomonActor/gnomonActor.h"
 #include "gnomonActor/gnomonActorLegacy/gnomonActorImage.h"
 #include "gnomonActor/gnomonActorLegacy/gnomonActorMesh.h"

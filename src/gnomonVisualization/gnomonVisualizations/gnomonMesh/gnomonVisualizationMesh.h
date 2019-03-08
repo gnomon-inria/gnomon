@@ -18,14 +18,14 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationMesh.h"
 
 class gnomonViewForm;
 
 class gnomonMesh;
 class gnomonCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisualizationMesh
 {
     Q_OBJECT
 
@@ -34,7 +34,7 @@ public:
     ~gnomonVisualizationMesh(void);
 
 public:
-	void setMesh(gnomonMesh *mesh);
+	void setMesh(gnomonMesh *mesh) override;
 
 public slots:
     void updateOpacity(void);
@@ -56,6 +56,10 @@ private:
 	class gnomonVisualizationMeshPrivate *dd;
 };
 
+inline gnomonAbstractVisualizationMesh *gnomonVisualizationMeshCreator(void)
+{
+    return new gnomonVisualizationMesh();
+}
 
 //
 // gnomonVisualizationMesh.h ends here

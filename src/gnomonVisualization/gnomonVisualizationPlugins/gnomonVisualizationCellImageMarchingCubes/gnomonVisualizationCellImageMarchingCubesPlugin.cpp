@@ -17,7 +17,7 @@
 #include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageMarchingCubes.h"
 
 #include <dtkCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
 
 void gnomonVisualizationCellImageMarchingCubesPlugin::initialize(void)
 {

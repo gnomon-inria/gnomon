@@ -67,7 +67,7 @@ public:
 // gnomonVisualizationImagesSerieChannelBlending
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieChannelBlending(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationImagesSerieChannelBlendingPrivate)
+gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieChannelBlending(void) : gnomonAbstractVisualizationImagesSerie(), dd(new gnomonVisualizationImagesSerieChannelBlendingPrivate)
 {
     dd->imagesSerie = Q_NULLPTR;
 

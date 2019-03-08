@@ -19,6 +19,8 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonAbstractVisualizationImagesSerie.h
+    gnomonAbstractVisualizationImagesSerie
     gnomonVisualizationImagesSerie
     gnomonVisualizationImagesSerie.h
     gnomonVisualizationImagesSerieChannelBlending
@@ -26,6 +28,7 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonAbstractVisualizationImagesSerie.cpp
     gnomonVisualizationImagesSerie.cpp
     gnomonVisualizationImagesSerieChannelBlending.cpp)
 

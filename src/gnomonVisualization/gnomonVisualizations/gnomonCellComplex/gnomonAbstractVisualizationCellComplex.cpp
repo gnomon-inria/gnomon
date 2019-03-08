@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "gnomonWidgets.h"
+#include "gnomonVisualization.h"
 #include "gnomonAbstractVisualizationCellComplex.h"
 
 namespace gnomonVisualization {
-    DTK_DEFINE_CONCEPT(gnomonAbstractVisualizationCellComplex, visualizationCellComplex, gnomonWidgets);
+    DTK_DEFINE_CONCEPT(gnomonAbstractVisualizationCellComplex, visualizationCellComplex, gnomonVisualization);
 }
 
 //

@@ -61,7 +61,7 @@ public:
 // gnomonVisualizationImagesSerie
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationImagesSeriePrivate)
+gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(void) : gnomonAbstractVisualizationImagesSerie(), dd(new gnomonVisualizationImagesSeriePrivate)
 {
     dd->imagesSerie = Q_NULLPTR;
 

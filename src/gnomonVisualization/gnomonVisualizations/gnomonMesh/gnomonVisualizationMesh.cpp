@@ -52,7 +52,7 @@ public:
 // gnomonVisualizationMesh
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualization(), dd(new gnomonVisualizationMeshPrivate)
+gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualizationMesh(), dd(new gnomonVisualizationMeshPrivate)
 {
     dd->mesh = Q_NULLPTR;
 

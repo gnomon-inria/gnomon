@@ -17,7 +17,7 @@
 #include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageVolume.h"
 
 #include <dtkCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
 
 void gnomonVisualizationCellImageVolumePlugin::initialize(void)
 {

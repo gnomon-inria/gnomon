@@ -18,14 +18,14 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonAbstractVisualizationImagesSerie.h"
 
 class gnomonViewForm;
 
 class gnomonImagesSerie;
 class gnomonCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImagesSerieChannelBlending : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImagesSerieChannelBlending : public gnomonAbstractVisualizationImagesSerie
 {
     Q_OBJECT
 
@@ -34,7 +34,7 @@ public:
     ~gnomonVisualizationImagesSerieChannelBlending(void);
 
 public:
-	void setImagesSerie(gnomonImagesSerie *imagesSerie);
+	void setImagesSerie(gnomonImagesSerie *imagesSerie) override;
 
 public slots:
     void updateOpacity(void);
@@ -55,6 +55,10 @@ private:
 	class gnomonVisualizationImagesSerieChannelBlendingPrivate *dd;
 };
 
+inline gnomonAbstractVisualizationImagesSerie *gnomonVisualizationImagesSerieChannelBlendingCreator(void)
+{
+    return new gnomonVisualizationImagesSerieChannelBlending();
+}
 
 //
 // gnomonVisualizationImagesSerieChannelBlending.h ends here

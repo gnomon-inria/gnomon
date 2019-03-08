@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "gnomonWidgets.h"
+#include "gnomonVisualization.h"
 #include "gnomonAbstractMatplotlibVisualizationDataFrame.h"
 
 namespace gnomonVisualization {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMatplotlibVisualizationDataFrame, matplotlibVisualizationDataFrame, gnomonWidgets);
+    DTK_DEFINE_CONCEPT(gnomonAbstractMatplotlibVisualizationDataFrame, matplotlibVisualizationDataFrame, gnomonVisualization);
 }
 
 //

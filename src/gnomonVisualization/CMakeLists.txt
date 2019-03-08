@@ -30,12 +30,14 @@ add_subdirectory(gnomonVisualizationPlugins)
 
 set(${PROJECT_NAME}_HEADERS
     gnomonVisualization
+    gnomonVisualization.h
     ${${PROJECT_NAME}_ACTOR_HEADERS}
     ${${PROJECT_NAME}_INSPECTOR_HEADERS}
     ${${PROJECT_NAME}_VIEW_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
+    gnomonVisualization.cpp
     ${${PROJECT_NAME}_ACTOR_SOURCES}
     ${${PROJECT_NAME}_INSPECTOR_SOURCES}
     ${${PROJECT_NAME}_VIEW_SOURCES}

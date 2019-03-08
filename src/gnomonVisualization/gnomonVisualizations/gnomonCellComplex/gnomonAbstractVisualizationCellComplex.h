@@ -61,7 +61,7 @@ DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationCellComplex, GNOMONVISUALI
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationCellComplex, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
-// Register to gnomonWidgets layer
+// Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {

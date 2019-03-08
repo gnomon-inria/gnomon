@@ -24,19 +24,19 @@
 
 class gnomonViewForm;
 
-class gnomonCellImage;
+class gnomonMesh;
 class gnomonCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellImage : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractVisualization
 {
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationCellImage(void) : gnomonAbstractVisualization() {}
-    virtual ~gnomonAbstractVisualizationCellImage(void) = default;
+    gnomonAbstractVisualizationMesh(void) : gnomonAbstractVisualization() {}
+    virtual ~gnomonAbstractVisualizationMesh(void) = default;
 
 public:
-	virtual void setCellImage(gnomonCellImage *cellImage) = 0;
+	virtual void setMesh(gnomonMesh *cellComplex) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
@@ -55,18 +55,18 @@ public slots:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationCellImage *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationMesh *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT, visualizationCellImage);
+    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT, visualizationMesh);
 }
 
 //
-// gnomonAbstractVisualizationCellImage.h ends here
+// gnomonAbstractVisualizationMesh.h ends here

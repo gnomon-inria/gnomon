@@ -17,7 +17,7 @@
 #include "gnomonVisualizations/gnomonCellComplex/gnomonVisualizationCellComplex.h"
 
 #include <dtkCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
 
 void gnomonVisualizationCellComplexPlugin::initialize(void)
 {
