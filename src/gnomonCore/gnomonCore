@@ -10,6 +10,7 @@
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h"
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h"
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h"
+#include "gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h"
 #include "gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h"
 #include "gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h"
 #include "gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h"
