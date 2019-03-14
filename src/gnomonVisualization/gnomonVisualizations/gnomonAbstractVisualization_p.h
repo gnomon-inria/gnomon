@@ -42,6 +42,13 @@ public:
     QMetaObject::Connection connectSlice;
 
 public:
+    QMetaObject::Connection connect3D;
+    QMetaObject::Connection connect2D;
+    QMetaObject::Connection connectXY;
+    QMetaObject::Connection connectXZ;
+    QMetaObject::Connection connectYZ;
+
+public:
     vtkSmartPointer<vtkRenderer> offscreenRenderer;
     vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
 

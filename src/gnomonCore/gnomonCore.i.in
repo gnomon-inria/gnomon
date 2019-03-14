@@ -33,6 +33,12 @@
 
 #include <dtkImagingCore>
 
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
+#include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+#include <gnomonCore/gnomonForm/gnomonWallForm.h>
+
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
@@ -48,12 +54,6 @@
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
-
-#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-#include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
-#include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-#include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
@@ -510,6 +510,13 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+
+%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
+%include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+%include <gnomonCore/gnomonForm/gnomonWallForm.h>
+
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
@@ -525,12 +532,6 @@
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
-
-%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-%include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
-%include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-%include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>

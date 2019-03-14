@@ -299,6 +299,10 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
 
+    d->parameters["x_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of x positions of cells to display");
+    d->parameters["y_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of y positions of cells to display");
+    d->parameters["z_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of z positions of cells to display");
+
     dd->interactor_style = gnomonInteractorStyleCellImageMarchingCubes::New();
     dd->interactor_style->q = this;
 }
@@ -356,6 +360,22 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *ce
     }
 
     dd->updateValueRange();
+
+    gnomonCoreParameterDoubleRange *xRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["x_range"];
+    xRangeParam->setMinimumValue(0);
+    xRangeParam->setMaximumValue(dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+    xRangeParam->setValue(0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+
+    gnomonCoreParameterDoubleRange *yRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["y_range"];
+    yRangeParam->setMinimumValue(0);
+    yRangeParam->setMaximumValue(dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+    yRangeParam->setValue(0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+
+    gnomonCoreParameterDoubleRange *zRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["z_range"];
+    zRangeParam->setMinimumValue(0);
+    zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+    zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+
 }
 
 QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
@@ -374,6 +394,10 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
      qDebug()<<Q_FUNC_INFO<<property_name<<value_range;
 
+     QList<double> x_range = ((gnomonCoreParameterDoubleRange *)d->parameters["x_range"])->value();
+     QList<double> y_range = ((gnomonCoreParameterDoubleRange *)d->parameters["y_range"])->value();
+     QList<double> z_range = ((gnomonCoreParameterDoubleRange *)d->parameters["z_range"])->value();
+
     if(!dd->cellImage)
         return;
 
@@ -381,6 +405,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         dd->polydata = gnomonPolyDataCellImage::New();
     dd->polydata->setCellImage(dd->cellImage);
     dd->polydata->setPropertyName(property_name);
+    dd->polydata->setSliceRanges(x_range, y_range, z_range);
     dd->polydata->update();
 
     if (!dd->actor)

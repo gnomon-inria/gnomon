@@ -1,6 +1,7 @@
 #include "gnomonFileSystemFormReaderTest.h"
 
 #include <gnomonCore>
+#include <gnomonCore/gnomonForm/gnomonIntensityImage/gnomonIntensityImage>
 #include <gnomonTest>
 
 #include <dtkCore>
