@@ -56,7 +56,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT, DataFrameWriter);
+    DTK_DECLARE_CONCEPT(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT, dataFrameWriter);
 }
 
 //
