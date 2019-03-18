@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
 class gnomonImagesSerie;
+class gnomonMesh;
 
 class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
 {

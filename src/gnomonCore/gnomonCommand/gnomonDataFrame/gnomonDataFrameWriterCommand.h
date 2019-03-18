@@ -1,6 +1,6 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonImagesSerie;
+class gnomonDataFrame;
 
 class GNOMONCORE_EXPORT gnomonDataFrameWriterCommand : public gnomonAbstractCommand
 {
