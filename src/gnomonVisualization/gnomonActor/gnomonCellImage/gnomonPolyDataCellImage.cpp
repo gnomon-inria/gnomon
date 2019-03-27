@@ -273,7 +273,7 @@ gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new
     d->cellimage = Q_NULLPTR;
 
     d->cellScaleFactor = 1.;
-    d->resamplingSpacing = 2.;
+    d->resamplingSpacing = 0.75;
     d->smoothingFactor = 1.;
     d->decimationFactor = 1.;
 }
