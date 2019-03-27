@@ -1039,7 +1039,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
         // emit channelsChanged(images_serie->channels());
         // this->setImagesSerie(images_serie);
     } else {
-        if((path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("tif"))&&(path.contains("seg",Qt::CaseInsensitive))) {
+        if((path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz")  || path.endsWith("tif"))&&(path.contains("seg",Qt::CaseInsensitive))) {
             if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
                 d->formReaderCommand["gnomonCellImage"] = new gnomonCellImageReaderCommand("gnomonCellImageReaderPropertySpatialImage");
             gnomonCellImageReaderCommand *cellImageCommand = (gnomonCellImageReaderCommand *) d->formReaderCommand["gnomonCellImage"];
@@ -1054,7 +1054,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             }
             this->setForm("gnomonCellImage",cellImage);
 
-        } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("tif") || (path.endsWith("czi"))) {
+        } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz") || path.endsWith("tif") || (path.endsWith("czi"))) {
             if ((!d->formReaderCommand.contains("gnomonImagesSerie"))||(!d->formReaderCommand["gnomonImagesSerie"]))
                 d->formReaderCommand["gnomonImagesSerie"] = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
             gnomonImagesSerieReaderCommand *imageCommand = (gnomonImagesSerieReaderCommand *) d->formReaderCommand["gnomonImagesSerie"];

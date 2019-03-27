@@ -62,6 +62,8 @@ public:
 
     QString propertyName;
 
+    QMap<QString,QList<double>> slice;
+
     bool modified;
 };
 
@@ -89,13 +91,24 @@ void gnomonPolyDataCellImage::update(void)
     if(!d->cellimage)
         return;
 
-     QMap<long, QVariant> cellProperty;
-     if(d->cellimage->cellPropertyNames().contains(d->propertyName)) {
+    QMap<long, QVariant> cellProperty;
+    if(d->cellimage->cellPropertyNames().contains(d->propertyName)) {
          cellProperty = d->cellimage->cellProperty(d->propertyName);
-     } else {
-         for (const auto& cellId : d->cellimage->cellIds()) {
-             cellProperty[cellId] = QVariant((double)cellId);
-         }
+    } else {
+        for (const auto& cellId : d->cellimage->cellIds()) {
+            cellProperty[cellId] = QVariant((double)cellId);
+        }
+    }
+
+     QMap<long, QList<double> > cellBarycenter;
+     QMap<long, QVariant> cellBarycenterXProperty = d->cellimage->cellProperty("barycenter_x");
+     QMap<long, QVariant> cellBarycenterYProperty = d->cellimage->cellProperty("barycenter_y");
+     QMap<long, QVariant> cellBarycenterZProperty = d->cellimage->cellProperty("barycenter_z");
+     for (const auto& cellId : d->cellimage->cellIds()) {
+         cellBarycenter[cellId] = {0., 0., 0.};
+         cellBarycenter[cellId][0] = cellBarycenterXProperty[cellId].value<double>();
+         cellBarycenter[cellId][1] = cellBarycenterYProperty[cellId].value<double>();
+         cellBarycenter[cellId][2] = cellBarycenterZProperty[cellId].value<double>();
      }
 
      QMap<long, double> cellScalarProperty;
@@ -143,8 +156,7 @@ void gnomonPolyDataCellImage::update(void)
             contour->ComputeGradientsOn();
             contour->SetValue(0,cellId);
             contour->Update();
-            // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
- 
+            qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
 
             if (contour->GetOutput()->GetNumberOfCells()>0)
             { 
@@ -202,10 +214,24 @@ void gnomonPolyDataCellImage::update(void)
         }
     }
 
+
+
     vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
-    for (const auto& cellId : cells)
-        if (d->cell_mesh.contains(cellId))
-            appender->AddInputData(d->cell_mesh[cellId]);
+    for (const auto& cellId : cells) {
+        if (d->cell_mesh.contains(cellId)) {
+            qDebug()<<cellBarycenter[cellId]<<d->slice["x"]<<d->slice["y"]<<d->slice["z"];
+            bool display_cell = true;
+            display_cell = display_cell & (cellBarycenter[cellId][0] >= d->slice["x"][0]);
+            display_cell = display_cell & (cellBarycenter[cellId][0] <= d->slice["x"][1]);
+            display_cell = display_cell & (cellBarycenter[cellId][1] >= d->slice["y"][0]);
+            display_cell = display_cell & (cellBarycenter[cellId][1] <= d->slice["y"][1]);
+            display_cell = display_cell & (cellBarycenter[cellId][2] >= d->slice["z"][0]);
+            display_cell = display_cell & (cellBarycenter[cellId][2] <= d->slice["z"][1]);
+
+            if (display_cell)
+                appender->AddInputData(d->cell_mesh[cellId]);
+        }
+    }
 
     vtkSmartPointer<vtkCleanPolyData> cleaner = vtkSmartPointer<vtkCleanPolyData>::New();
     cleaner->SetInputConnection(appender->GetOutputPort());
@@ -222,10 +248,19 @@ void gnomonPolyDataCellImage::update(void)
 
 void gnomonPolyDataCellImage::setPropertyName(const QString& value)
 {
-    d->propertyName = value;
+    if (d->propertyName != value)
+        this->modified();
 
-    this->modified();
+    d->propertyName = value;
 }
+
+void gnomonPolyDataCellImage::setSliceRanges(const QList<double>& x_value, const QList<double>& y_value, const QList<double>& z_value)
+{
+    d->slice["x"] = x_value;
+    d->slice["y"] = y_value;
+    d->slice["z"] = z_value;
+}
+
 
 long gnomonPolyDataCellImage::cellId(long vtkId)
 {
@@ -238,7 +273,7 @@ gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new
     d->cellimage = Q_NULLPTR;
 
     d->cellScaleFactor = 1.;
-    d->resamplingSpacing = 1.5;
+    d->resamplingSpacing = 0.75;
     d->smoothingFactor = 1.;
     d->decimationFactor = 1.;
 }

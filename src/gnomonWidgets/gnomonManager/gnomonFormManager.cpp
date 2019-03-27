@@ -31,6 +31,7 @@
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 
 #include <dtkScript>
 
@@ -113,6 +114,10 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell complex"), path, tr("Meshes (*.ply)"));
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setCellComplex(cellcomplex);
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        } else if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save data frame"), path, tr("Comma separated value (*.csv)"));
+            static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setDataFrame(dataFrame);
+            static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         }
 
         if(!export_file_path.isEmpty()) {
@@ -188,6 +193,15 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
 
     d->forms.insert(item, form);
     d->formMatplotlibVisualizations.insert(item, visualization);
+
+
+    QString writerPlugin;
+    if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+        qDebug()<<Q_FUNC_INFO<<dataFrame;
+        d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
+        static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
+    }
+
 
     d->contents->layout()->addWidget(item);
 }

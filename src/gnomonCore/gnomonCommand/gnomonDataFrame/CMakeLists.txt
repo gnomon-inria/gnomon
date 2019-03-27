@@ -14,15 +14,21 @@
 
 
 ## #################################################################
-## Inputs
+## Sources
 ## #################################################################
 
-add_subdirectory(gnomonVisualizationCellComplex)
-add_subdirectory(gnomonVisualizationCellImageMarchingCubes)
-## add_subdirectory(gnomonVisualizationCellImageVolume)
-## add_subdirectory(gnomonVisualizationImagesSerie)
-add_subdirectory(gnomonVisualizationImagesSerieChannelBlending)
-add_subdirectory(gnomonVisualizationMesh)
+
+ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonDataFrameReaderCommand
+    gnomonDataFrameReaderCommand.h
+    gnomonDataFrameWriterCommand
+    gnomonDataFrameWriterCommand.h)
+
+
+ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonDataFrameReaderCommand.cpp
+    gnomonDataFrameWriterCommand.cpp)
+
 
 ######################################################################
 ### CMakeLists.txt ends here
