@@ -242,6 +242,9 @@ public:
     gnomonInteractorStyleCellImageMarchingCubes *interactor_style = nullptr;
 
     gnomonVisualizationCellImageMarchingCubes *q;
+
+public:
+    bool is2D = false;
     
 public slots:
     void updateOpacity(void);
@@ -332,7 +335,10 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
     disconnect(d->connectXZ);
     disconnect(d->connectYZ);
 
-    dd->interactor_style->Delete();
+    qDebug()<<"Changing interactor style"<<d->view->interactor();
+    d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
+    qDebug()<<"Changed interactor style";
+//    dd->interactor_style->Delete();
 
     delete dd;
 
@@ -425,8 +431,10 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
+    qDebug()<<Q_FUNC_INFO<<"Actor 3D Ok!";
 
     dd->interactor_style->setActor(dd->actor);
+    qDebug()<<Q_FUNC_INFO<<"Interactor OK!";
 
     if (!dd->actor2D)
     {
@@ -435,9 +443,11 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     }
     dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.1);
+    qDebug()<<Q_FUNC_INFO<<"Actor 2D : SetPolyData "<<dd->polydata;
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
+    qDebug()<<Q_FUNC_INFO<<"Actor 2D Ok!";
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
@@ -448,8 +458,8 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         this->render();
     });
 
-    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { this->render(); });
-    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { this->render(); });
+    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
+    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
     d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
     d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
     d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
@@ -463,9 +473,11 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
 {
-    dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
-    d->view->interactor()->SetInteractorStyle(dd->interactor_style);
-    d->view->interactor()->Enable();
+    if (!dd->is2D) {
+        dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
+        d->view->interactor()->SetInteractorStyle(dd->interactor_style);
+        d->view->interactor()->Enable();
+    }
 
     dd->updateOpacity();
     d->view->render();

@@ -90,10 +90,10 @@ void gnomonCodeEditorToolBar::addStretch(void)
 
 class gnomonWorkspacePythonSimulatorPrivate
 {
-public:
-    gnomonFinder *finder;
-    gnomonFinderPathBar *path;
-    gnomonFinderToolBar *toolbar;
+//public:
+//    gnomonFinder *finder;
+//    gnomonFinderPathBar *path;
+//    gnomonFinderToolBar *toolbar;
 
 public:
     gnomonCodeEditor *editor;
@@ -136,42 +136,42 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     d->font_source_code_pro = new gnomonFontSourceCodePro(this);
     d->font_source_code_pro->initFontSourceCodePro();
 
-    d->finder = new gnomonFinder(this);
-    d->finder->switchToTreeView();
-
-    d->path = new gnomonFinderPathBar(this);
-    d->path->setPath(QDir::currentPath());
-    d->path->setFixedHeight(32);
-
-    d->toolbar = new gnomonFinderToolBar(this);
-    d->toolbar->setPath(QDir::currentPath());
-
-    // -- Organizing the finder column --
-    QHBoxLayout *toolbar_layout = new QHBoxLayout;
-    toolbar_layout->setContentsMargins(0, 0, 0, 0);
-    toolbar_layout->setSpacing(0);
-    toolbar_layout->addWidget(d->toolbar);
-    toolbar_layout->addWidget(d->path);
-
-    QVBoxLayout *finder_layout = new QVBoxLayout;
-    finder_layout->setContentsMargins(0, 0, 0, 0);
-    finder_layout->setSpacing(0);
-    finder_layout->addLayout(toolbar_layout);
-    finder_layout->addWidget(d->finder);
-
-    QWidget *finder = new QWidget(this);
-    finder->setLayout(finder_layout);
-
-    connect(d->finder, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
-    connect(d->finder, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
-
-    connect(d->path, SIGNAL(changed(QString)), d->finder,  SLOT(setPath(QString)));
-    connect(d->path, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
-
-    connect(d->toolbar, SIGNAL(changed(QString)), d->finder, SLOT(setPath(QString)));
-    connect(d->toolbar, SIGNAL(changed(QString)), d->path,   SLOT(setPath(QString)));
-    connect(d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
-    connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
+//    d->finder = new gnomonFinder(this);
+//    d->finder->switchToTreeView();
+//
+//    d->path = new gnomonFinderPathBar(this);
+//    d->path->setPath(QDir::currentPath());
+//    d->path->setFixedHeight(32);
+//
+//    d->toolbar = new gnomonFinderToolBar(this);
+//    d->toolbar->setPath(QDir::currentPath());
+//
+//    // -- Organizing the finder column --
+//    QHBoxLayout *toolbar_layout = new QHBoxLayout;
+//    toolbar_layout->setContentsMargins(0, 0, 0, 0);
+//    toolbar_layout->setSpacing(0);
+//    toolbar_layout->addWidget(d->toolbar);
+//    toolbar_layout->addWidget(d->path);
+//
+//    QVBoxLayout *finder_layout = new QVBoxLayout;
+//    finder_layout->setContentsMargins(0, 0, 0, 0);
+//    finder_layout->setSpacing(0);
+//    finder_layout->addLayout(toolbar_layout);
+//    finder_layout->addWidget(d->finder);
+//
+//    QWidget *finder = new QWidget(this);
+//    finder->setLayout(finder_layout);
+//
+//    connect(d->finder, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
+//    connect(d->finder, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
+//
+//    connect(d->path, SIGNAL(changed(QString)), d->finder,  SLOT(setPath(QString)));
+//    connect(d->path, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
+//
+//    connect(d->toolbar, SIGNAL(changed(QString)), d->finder, SLOT(setPath(QString)));
+//    connect(d->toolbar, SIGNAL(changed(QString)), d->path,   SLOT(setPath(QString)));
+//    connect(d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
+//    connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
     d->editor = new gnomonCodeEditor(this);
 
@@ -288,7 +288,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(finder);
+//    splitter->addWidget(finder);
     splitter->addWidget(editor_widget);
     splitter->addWidget(viewer);
 
@@ -337,6 +337,10 @@ void gnomonWorkspacePythonSimulator::apply(void)
     QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
     for (const auto& name : forms.keys())
     {
+        qDebug()<<Q_FUNC_INFO<<name<<forms[name];
+        if (name == "cellImage") {
+            qDebug()<<Q_FUNC_INFO<<((gnomonCellImage *)forms[name])->cellIds();
+        }
         d->view->setForm(name,forms[name]);
     }
 
