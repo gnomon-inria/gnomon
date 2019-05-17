@@ -156,7 +156,7 @@ void gnomonPolyDataCellImage::update(void)
             contour->ComputeGradientsOn();
             contour->SetValue(0,cellId);
             contour->Update();
-            qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
+            // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
 
             if (contour->GetOutput()->GetNumberOfCells()>0)
             { 
@@ -219,7 +219,6 @@ void gnomonPolyDataCellImage::update(void)
     vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
     for (const auto& cellId : cells) {
         if (d->cell_mesh.contains(cellId)) {
-            qDebug()<<cellBarycenter[cellId]<<d->slice["x"]<<d->slice["y"]<<d->slice["z"];
             bool display_cell = true;
             display_cell = display_cell & (cellBarycenter[cellId][0] >= d->slice["x"][0]);
             display_cell = display_cell & (cellBarycenter[cellId][0] <= d->slice["x"][1]);

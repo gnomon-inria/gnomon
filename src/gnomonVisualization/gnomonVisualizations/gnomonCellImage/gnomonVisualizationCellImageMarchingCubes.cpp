@@ -54,19 +54,8 @@ public:
     virtual void OnMouseMove(void) override
     {
         vtkInteractorStyleTrackballCamera::OnMouseMove();
-
         this->clicks = 0;
-
-        int *pos = this->GetInteractor()->GetEventPosition();
-
-        this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
-
-        long vtkId = -1;
-        if (picker->GetViewProp()==this->actor) {
-            vtkId = picker->GetCellId();
-        }
-
-        this->updateTextActor(vtkId);
+        this->updateTextActor(-1);
     }
 
     virtual void OnLeftButtonDown(void) override
@@ -93,11 +82,6 @@ public:
                 this->infoLayout = nullptr;
             }
         }
-
-        if (this->clicks == 2) {
-            this->OnDoubleClick(vtkId);
-            this->clicks = 0;
-        }
     }
 
     virtual void OnLeftButtonUp(void) override
@@ -110,6 +94,25 @@ public:
         long vtkId = -1;
         if (picker->GetViewProp()==this->actor) {
             vtkId = picker->GetCellId();
+        }
+
+        this->updateTextActor(vtkId);
+
+        if (this->clicks == 1) {
+
+            int *pos = this->GetInteractor()->GetEventPosition();
+
+            this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
+            long vtkId = -1;
+            if (picker->GetViewProp()==this->actor) {
+                vtkId = picker->GetCellId();
+            }
+        }
+
+        if (this->clicks == 2) {
+            this->OnDoubleClick(vtkId);
+            this->clicks = 0;
         }
     }
 
@@ -398,7 +401,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
      QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
-     qDebug()<<Q_FUNC_INFO<<property_name<<value_range;
 
      QList<double> x_range = ((gnomonCoreParameterDoubleRange *)d->parameters["x_range"])->value();
      QList<double> y_range = ((gnomonCoreParameterDoubleRange *)d->parameters["y_range"])->value();
