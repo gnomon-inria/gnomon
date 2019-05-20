@@ -19,7 +19,7 @@
 
 add_subdirectory(gnomonVisualizationCellComplex)
 add_subdirectory(gnomonVisualizationCellImageMarchingCubes)
-## add_subdirectory(gnomonVisualizationCellImageVolume)
+add_subdirectory(gnomonVisualizationCellImageVolume)
 ## add_subdirectory(gnomonVisualizationImagesSerie)
 add_subdirectory(gnomonVisualizationImagesSerieChannelBlending)
 add_subdirectory(gnomonVisualizationMesh)

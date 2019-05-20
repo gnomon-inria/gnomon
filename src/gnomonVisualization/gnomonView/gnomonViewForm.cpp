@@ -104,8 +104,6 @@ public:
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
 
-
-
 public:
     int syncing_count = 0;
     QTimer *syncing_timer = nullptr;
@@ -225,6 +223,7 @@ void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
 void gnomonViewFormPrivate::updateOrientation(void)
 {
     if(!this->cameras.contains(this->ori)) {
+        qDebug()<<Q_FUNC_INFO<<"Updating camera"<<ori;
         vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
         cam->ParallelProjectionOn();
         cam->SetParallelScale(1);
@@ -350,6 +349,7 @@ void gnomonViewFormPrivate::refresh(void)
             combo_box->model()->sort(0);
 
             QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
+                q->switchTo3D();
                 qDebug()<<"Visualization changed"<<visu;
                 if (this->formVisualization[key]) {
                     delete this->formVisualization[key];
@@ -523,6 +523,8 @@ void gnomonViewForm::switchTo2D(void)
 {
     if (d->renderer2D_button->isToggled()) return;
 
+    qDebug()<<Q_FUNC_INFO;
+
     d->renderer2D_button->toggle(true);
     d->renderer2D_button->setEnabled(false);
 
@@ -565,13 +567,6 @@ void gnomonViewForm::switchTo2D(void)
 
 void gnomonViewForm::switchTo2DXY(void)
 {
-    if (d->renderer2D_XY->isToggled()) return;
-
-    d->renderer2D_XY->toggle(true);
-    d->renderer2D_XZ->toggle(false);
-    d->renderer2D_YZ->toggle(false);
-
-    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XY);
     emit sliceOrientationChanged(gnomonViewFormPrivate::SLICE_ORIENTATION_XY);
 
     d->slice_slider->blockSignals(true);
@@ -579,19 +574,19 @@ void gnomonViewForm::switchTo2DXY(void)
     d->slice_slider->setMaximum(d->zBounds[1]);
     d->slice_slider->blockSignals(false);
     d->slice_slider->setValue(d->c_z);
+    emit sliceChanged(d->c_z);
+
+    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XY);
+
+    d->renderer2D_XY->toggle(true);
+    d->renderer2D_XZ->toggle(false);
+    d->renderer2D_YZ->toggle(false);
 
     emit switchedTo2DXY();
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
 {
-    if (d->renderer2D_XZ->isToggled()) return;
-
-    d->renderer2D_XY->toggle(false);
-    d->renderer2D_XZ->toggle(true);
-    d->renderer2D_YZ->toggle(false);
-
-    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XZ);
     emit sliceOrientationChanged(gnomonViewFormPrivate::SLICE_ORIENTATION_XZ);
 
     d->slice_slider->blockSignals(true);
@@ -599,19 +594,19 @@ void gnomonViewForm::switchTo2DXZ(void)
     d->slice_slider->setMaximum(d->yBounds[1]);
     d->slice_slider->blockSignals(false);
     d->slice_slider->setValue(d->c_y);
+    emit sliceChanged(d->c_y);
+
+    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XZ);
+
+    d->renderer2D_XY->toggle(false);
+    d->renderer2D_XZ->toggle(true);
+    d->renderer2D_YZ->toggle(false);
 
     emit switchedTo2DXZ();
 }
 
 void gnomonViewForm::switchTo2DYZ(void)
 {
-    if (d->renderer2D_YZ->isToggled()) return;
-
-    d->renderer2D_XY->toggle(false);
-    d->renderer2D_XZ->toggle(false);
-    d->renderer2D_YZ->toggle(true);
-
-    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_YZ);
     emit sliceOrientationChanged(gnomonViewFormPrivate::SLICE_ORIENTATION_YZ);
 
     d->slice_slider->blockSignals(true);
@@ -619,6 +614,13 @@ void gnomonViewForm::switchTo2DYZ(void)
     d->slice_slider->setMaximum(d->xBounds[1]);
     d->slice_slider->blockSignals(false);
     d->slice_slider->setValue(d->c_x);
+    emit sliceChanged(d->c_x);
+
+    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_YZ);
+
+    d->renderer2D_XY->toggle(false);
+    d->renderer2D_XZ->toggle(false);
+    d->renderer2D_YZ->toggle(true);
 
     emit switchedTo2DYZ();
 }
@@ -737,7 +739,6 @@ gnomonAbstractForm *gnomonViewForm::form(const QString& name)
         return nullptr;
     }
 }
-
 
 void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form, gnomonAbstractVisualization *visualization)
 {

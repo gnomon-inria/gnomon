@@ -86,6 +86,7 @@ void gnomonActor2DPolyDataPrivate::updateVisibility(void)
 
 void gnomonActor2DPolyDataPrivate::updateSlice(int orientation)
 {
+    qDebug()<<Q_FUNC_INFO;
     vtkSmartPointer<vtkPlane> topPlane = vtkSmartPointer<vtkPlane>::New();
     if (orientation==0)
     {
@@ -102,13 +103,16 @@ void gnomonActor2DPolyDataPrivate::updateSlice(int orientation)
         topPlane->SetOrigin(0, 0, this->slicePositions[2]+this->sliceThickness);
         topPlane->SetNormal(0, 0, 1);
     }
+    qDebug()<<Q_FUNC_INFO<<"Top Plane OK!";
 
     vtkSmartPointer<vtkClipPolyData> topClipper = vtkSmartPointer<vtkClipPolyData>::New();
     topClipper->SetInputData(this->polydata);
     topClipper->SetClipFunction(topPlane);
     topClipper->SetValue(0);
     topClipper->InsideOutOn();
+    qDebug()<<Q_FUNC_INFO<<this->polydata;
     topClipper->Update();
+    qDebug()<<Q_FUNC_INFO<<"Top Clipper OK!";
 
     vtkSmartPointer<vtkPlane> bottomPlane = vtkSmartPointer<vtkPlane>::New();
     if (orientation==0)
@@ -221,11 +225,12 @@ void gnomonActor2DPolyData::update(void)
     if(!d->polydata)
         return;
 
-    for (int i=0;i<3;i++)
-    {
-        d->updateSlice(i);
-        if (this->GetNumberOfPaths()<=i)
-            this->AddPart(d->sliceActors[i]);
+    if (d->modified) {
+        for (int i=0;i<3;i++) {
+            d->updateSlice(i);
+            if (this->GetNumberOfPaths()<=i)
+                this->AddPart(d->sliceActors[i]);
+        }
     }
 
     d->updateColorFunction();

@@ -81,6 +81,11 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
         dd->actor2D = nullptr;
     }
 
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+    disconnect(d->connectXY);
+    disconnect(d->connectXZ);
+    disconnect(d->connectYZ);
 
     delete dd;
 
@@ -153,11 +158,11 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->image = static_cast<vtkImageData *>(converter->output());
     delete converter;
 
-    if (dd->actor) {
-        d->view->renderer3D()->RemoveActor(dd->actor);
-        dd->actor->Delete();
-        dd->actor = nullptr;
-    }
+//    if (dd->actor) {
+//        d->view->renderer3D()->RemoveActor(dd->actor);
+//        dd->actor->Delete();
+//        dd->actor = nullptr;
+//    }
 
     if (!dd->actor)
         dd->actor = gnomonActorImageVolume::New();
@@ -168,13 +173,13 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->actor->setValueRange(value_range);
     dd->actor->setFlatRendering(true);
 
-    if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
-    }
+//    if (dd->actor2D) {
+//        disconnect(d->connectSliceOrientation);
+//        disconnect(d->connectSlice);
+//        d->view->renderer2D()->RemoveActor(dd->actor2D);
+//        dd->actor2D->Delete();
+//        dd->actor2D = nullptr;
+//    }
 
     if (!dd->actor2D)
     {
@@ -189,27 +194,31 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->actor2D->update();
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
+        qDebug()<<Q_FUNC_INFO<<"Slice orientation changed"<<value;
         dd->actor2D->setSliceOrientation(value);
     });
 
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
+        qDebug()<<Q_FUNC_INFO<<"Slice changed"<<value;
         dd->actor2D->setSlice(value);
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
+    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
+        qDebug()<<Q_FUNC_INFO<<"Switched to 3D";
         dd->actor2D->hide();
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
+    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
+        qDebug()<<Q_FUNC_INFO<<"Switched to 2D";
         dd->actor2D->show();
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
+    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     bounds[0] = 0;
