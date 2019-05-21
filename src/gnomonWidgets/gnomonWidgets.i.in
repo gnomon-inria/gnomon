@@ -27,6 +27,7 @@
 #include <dtkImagingCore>
 #include <gnomonCore>
 #include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+#include <gnomonWidgets/gnomonOverlayPane.h>
 
 %}
 
@@ -41,12 +42,14 @@
 
 %rename(ParameterLookupTable)  gnomonCoreParameterLookupTable;
 %rename(ParameterColorMap)     gnomonCoreParameterColorMap;
+// %rename(OverlayPane)           gnomonOverlayPane;
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+%include <gnomonWidgets/gnomonOverlayPane.h>
 
 
 
