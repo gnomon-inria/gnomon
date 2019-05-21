@@ -97,10 +97,14 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 
-using gnomonCellImageSeries = gnomonTimeSeries<gnomonCellImage *>;
+DTK_DECLARE_OBJECT(gnomonCellImage *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+using gnomonCellImageSeries = gnomonTimeSeries<gnomonCellImage>;
 Q_DECLARE_METATYPE(gnomonCellImageSeries *)
 
-DTK_DECLARE_OBJECT(gnomonCellImage *)
 
 //
 // gnomonCellImage.h ends here

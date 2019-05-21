@@ -95,6 +95,9 @@ template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
 template <typename T> void gnomonTimeSeries<T>::insert(double t, T* form)
 {
     Q_ASSERT_X(d->forms.contains(t), "insert", "Invalid time position : the form is already defined at this time");
+    if (d->forms.size() == 0) {
+        d->current_time = t;
+    }
     d->forms.insert(t, form);
 }
 
@@ -120,6 +123,9 @@ template <typename T> void gnomonTimeSeries<T>::drop(const double t)
 {
     Q_ASSERT_X(d->forms.contains(t), "drop", "Invalid time position : the form is not defined at this time");
     d->forms.remove(t);
+    if ((d->current_time = t) && (d->forms.size() > 0)) {
+        d->current_time = d->forms.keys()[0];
+    }
 }
 
 // /////////////////////////////////////////////////////////////////

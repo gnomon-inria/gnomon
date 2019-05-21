@@ -47,5 +47,5 @@ void gnomonCellImageReaderCommand::setPath(const QString& path)
 
 gnomonCellImage *gnomonCellImageReaderCommand::cellImage(void)
 {
-    return ((gnomonAbstractCellImageReader *) this->action)->cellImage();
+    return ((gnomonAbstractCellImageReader *) this->action)->cellImage()->current();
 }

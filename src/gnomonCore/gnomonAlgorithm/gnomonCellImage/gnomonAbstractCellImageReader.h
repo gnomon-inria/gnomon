@@ -20,7 +20,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCellImage;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -40,7 +40,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonCellImage *cellImage(void) = 0;
+    virtual gnomonCellImageSeries *cellImage(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
