@@ -47,5 +47,5 @@ void gnomonDataFrameReaderCommand::setPath(const QString& path)
 
 gnomonDataFrame *gnomonDataFrameReaderCommand::dataFrame(void)
 {
-    return ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+    return ((gnomonAbstractDataFrameReader *) this->action)->dataFrame()->current();
 }

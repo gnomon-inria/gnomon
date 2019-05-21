@@ -18,6 +18,7 @@
 
 #include "gnomonAbstractLStringData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
 
@@ -103,6 +104,12 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT(gnomonLString *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonLString> gnomonLStringSeries;
+Q_DECLARE_METATYPE(gnomonLStringSeries *)
 
 //
 // gnomonLString.h ends here

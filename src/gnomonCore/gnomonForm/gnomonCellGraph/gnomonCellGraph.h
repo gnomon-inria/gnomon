@@ -18,6 +18,7 @@
 
 #include "gnomonAbstractCellGraphData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
 
@@ -121,6 +122,12 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT(gnomonCellGraph *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonCellGraph> gnomonCellGraphSeries;
+Q_DECLARE_METATYPE(gnomonCellGraphSeries *)
 
 //
 // gnomonCellGraph.h ends here

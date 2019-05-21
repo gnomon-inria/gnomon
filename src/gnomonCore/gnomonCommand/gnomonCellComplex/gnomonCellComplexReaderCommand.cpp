@@ -47,5 +47,5 @@ void gnomonCellComplexReaderCommand::setPath(const QString& path)
 
 gnomonCellComplex *gnomonCellComplexReaderCommand::cellComplex(void)
 {
-    return ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
+    return ((gnomonAbstractCellComplexReader *) this->action)->cellComplex()->current();
 }

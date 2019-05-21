@@ -18,7 +18,6 @@
 
 #include "gnomonAbstractCellImageData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
-
 #include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
@@ -96,13 +95,12 @@ public:
 
 // ///////////////////////////////////////////////////////////////////
 
-
 DTK_DECLARE_OBJECT(gnomonCellImage *)
 
 
 // ///////////////////////////////////////////////////////////////////
 
-using gnomonCellImageSeries = gnomonTimeSeries<gnomonCellImage>;
+typedef gnomonTimeSeries<gnomonCellImage> gnomonCellImageSeries;
 Q_DECLARE_METATYPE(gnomonCellImageSeries *)
 
 

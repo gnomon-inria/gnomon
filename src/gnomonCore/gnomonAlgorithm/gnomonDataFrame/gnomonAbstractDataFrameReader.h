@@ -20,6 +20,8 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
+#include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
+
 class gnomonDataFrame;
 
 // ///////////////////////////////////////////////////////////////////
@@ -40,7 +42,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonDataFrame *dataFrame(void) = 0;
+    virtual gnomonDataFrameSeries *dataFrame(void) = 0;
 
 public:
     virtual QStringList types(void) = 0;

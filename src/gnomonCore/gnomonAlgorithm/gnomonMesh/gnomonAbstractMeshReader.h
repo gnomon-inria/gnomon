@@ -20,6 +20,8 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
+
 class gnomonMesh;
 
 // ///////////////////////////////////////////////////////////////////
@@ -40,7 +42,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonMesh *mesh(void) = 0;
+    virtual gnomonMeshSeries *mesh(void) = 0;
 
 public:
     virtual QStringList types(void) = 0;

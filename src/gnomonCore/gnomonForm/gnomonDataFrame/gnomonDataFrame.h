@@ -18,6 +18,7 @@
 
 #include "gnomonAbstractDataFrameData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
 
@@ -78,6 +79,12 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT(gnomonDataFrame *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonDataFrame> gnomonDataFrameSeries;
+Q_DECLARE_METATYPE(gnomonDataFrameSeries *)
 
 //
 // gnomonDataFrame.h ends here

@@ -18,6 +18,7 @@
 
 #include "gnomonAbstractTreeData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
 
@@ -89,6 +90,12 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT(gnomonTree *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonTree> gnomonTreeSeries;
+Q_DECLARE_METATYPE(gnomonTreeSeries *)
 
 //
 // gnomonTree.h ends here

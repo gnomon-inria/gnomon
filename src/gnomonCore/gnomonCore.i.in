@@ -656,7 +656,13 @@ namespace std {
 %template(ParameterULong)  gnomonCoreParameterNumeric<unsigned long>;
 %template(ParameterDouble) gnomonCoreParameterNumeric<double>;
 
+%template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;
+%template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
 %template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
+%template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;
+%template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
+%template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
+%template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
 //
 // gnomonCore.i.in ends here

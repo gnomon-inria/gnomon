@@ -20,7 +20,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCellComplex;
+#include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -40,7 +40,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonCellComplex *cellComplex(void) = 0;
+    virtual gnomonCellComplexSeries *cellComplex(void) = 0;
 
 public:
     virtual QStringList types(void) = 0;

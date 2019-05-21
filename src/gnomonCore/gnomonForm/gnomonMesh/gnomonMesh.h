@@ -18,6 +18,7 @@
 
 #include "gnomonAbstractMeshData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
 
@@ -104,6 +105,12 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT(gnomonMesh *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonMesh> gnomonMeshSeries;
+Q_DECLARE_METATYPE(gnomonMeshSeries *)
 
 //
 // gnomonMesh.h ends here
