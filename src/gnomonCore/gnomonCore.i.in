@@ -35,8 +35,8 @@
 
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-#include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+#include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
@@ -402,12 +402,12 @@
         return $self->value<gnomonCellGraph *>();
     }
 
-    void setValue(gnomonDiscreteDynamicForm *value) {
+    /* void setValue(gnomonDiscreteDynamicForm *value) {
         $self->setValue(dtkMetaType::variantFromValue(value));
     }
     gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
         return $self->value<gnomonDiscreteDynamicForm *>();
-    }
+    } */
 
     void setValue(gnomonSphereForm *value) {
         $self->setValue(dtkMetaType::variantFromValue(value));
@@ -514,8 +514,8 @@
 
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-%include <gnomonCore/gnomonForm/gnomonDiscreteDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+%include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 %include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>

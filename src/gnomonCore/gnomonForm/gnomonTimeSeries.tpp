@@ -1,0 +1,134 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonCore.h"
+#include "gnomonTime.h"
+
+#include <QtGlobal>
+
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonTimeSeries
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(void) : d(new gnomonTimeSeriesPrivate<T>)
+{
+}
+
+template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeries<T>& o) : d(new gnomonTimeSeriesPrivate<T>)
+{
+    d->forms = o.d->forms;
+    d->current_time = o.d->current_time;
+}
+
+template <typename T> gnomonTimeSeries<T>::~gnomonTimeSeries(void)
+{
+    delete d;
+}
+
+template <typename T> gnomonAbstractDynamicForm<T> *gnomonTimeSeries<T>::clone(void) const
+{
+    return new gnomonTimeSeries(*this);
+};
+
+template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const gnomonTimeSeries<T>& o)
+{
+    if (this == &o)
+        return *this;
+
+    d->forms = o.d->forms;
+    d->current_time = o.d->current_time;
+
+    return (*this);
+}
+
+template <typename T> T* gnomonTimeSeries<T>::seek(double t) const
+{
+    Q_ASSERT_X(d->forms.contains(t), "seek", "Invalid time position : the form is not defined at this time");
+
+    d->current_time = t;
+    return this->current();
+}
+
+template <typename T> T* gnomonTimeSeries<T>::current(void) const
+{
+    return d->forms[d->current_time];
+}
+
+template <typename T> T* gnomonTimeSeries<T>::next(void) const
+{
+    auto it = d->forms.upperBound(d->current_time);
+    Q_ASSERT_X(it==d->forms.end(), "next", "Invalid time position : the form is not defined at this time");
+    d->current_time = it.key();
+    return it.value();
+};
+
+template <typename T> T* gnomonTimeSeries<T>::prev(void) const
+{
+    auto it = d->forms.lowerBound(d->current_time);
+    Q_ASSERT_X(it--==d->forms.end(), "prev", "Invalid time position : the form is not defined at this time");
+    d->current_time = it.key();
+    return it.value();
+};
+
+template <typename T> double gnomonTimeSeries<T>::time(void) const
+{
+    return d->current_time;
+}
+
+template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
+{
+    return d->forms.keys();
+}
+
+template <typename T> void gnomonTimeSeries<T>::insert(double t, T* form)
+{
+    Q_ASSERT_X(d->forms.contains(t), "insert", "Invalid time position : the form is already defined at this time");
+    d->forms.insert(t, form);
+}
+
+//void gnomonTimeSeries::insert(const gnomonTimeSeries& dynamic_form)
+//{
+//    for(auto it = dynamic_form.d->forms.begin(); it != dynamic_form.d->forms.end(); ++it) { // Iterates on the times
+//        if(d->forms.contains(it.key())) { // The time already exists
+//            for(auto jt = it->begin(); jt != it->end(); ++jt) { // Iterates on the forms of a given time
+//                auto forms = d->forms[it.key()];
+//                if(!forms.contains(jt.key())) { // The form doesn't exist at the given time
+//                    forms.insert(jt.key(), jt.value()); // Insert the form at the given time
+//                } else { // The form already exists at the given time
+//                    dtkError() << "Invalid form : the form is already defined at this time";
+//                }
+//            }
+//        } else { // The time doesn't exist yet
+//            d->forms.insert(it.key(), it.value());  // Insert the time and the form
+//        }
+//    }
+//}
+
+template <typename T> void gnomonTimeSeries<T>::drop(const double t)
+{
+    Q_ASSERT_X(d->forms.contains(t), "drop", "Invalid time position : the form is not defined at this time");
+    d->forms.remove(t);
+}
+
+// /////////////////////////////////////////////////////////////////
+// Register to gnomonCore layer
+// /////////////////////////////////////////////////////////////////
+
+//namespace gnomonCore {
+//    DTK_DEFINE_CONCEPT(gnomonTimeSeries, discreteDynamicForm, gnomonCore);
+//}
+
+//
+// gnomonTimeSeries.tpp ends here

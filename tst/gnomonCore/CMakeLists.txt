@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonDataManagerTest.h
-  gnomonDiscreteDynamicFormTest.h
+  # gnomonDiscreteDynamicFormTest.h
   gnomonFileSystemFormReaderTest.h
   gnomonImagesFusionCommandTest.h
   gnomonImagesRegistrationCommandTest.h
@@ -23,7 +23,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonDataManagerTest.cpp
-  gnomonDiscreteDynamicFormTest.cpp
+  # gnomonDiscreteDynamicFormTest.cpp
   gnomonFileSystemFormReaderTest.cpp
   gnomonImagesFusionCommandTest.cpp
   gnomonImagesRegistrationCommandTest.cpp

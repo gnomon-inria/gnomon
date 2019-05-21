@@ -42,7 +42,7 @@
 
 #include "gnomonForm/gnomonAbstractDynamicForm.h"
 #include "gnomonForm/gnomonAbstractForm.h"
-#include "gnomonForm/gnomonDiscreteDynamicForm.h"
+// #include "gnomonForm/gnomonDiscreteDynamicForm.h"
 #include "gnomonForm/gnomonSphereForm.h"
 #include "gnomonForm/gnomonWallForm.h"
 
