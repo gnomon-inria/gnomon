@@ -586,5 +586,7 @@ namespace std {
 %template(ParameterULong)  gnomonCoreParameterNumeric<unsigned long>;
 %template(ParameterDouble) gnomonCoreParameterNumeric<double>;
 
+%template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
+
 //
 // gnomonCore.i.in ends here
