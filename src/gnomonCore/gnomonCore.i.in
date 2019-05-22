@@ -77,6 +77,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 
 #include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
@@ -559,6 +560,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 
 %include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
