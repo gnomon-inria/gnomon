@@ -38,6 +38,9 @@ QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget 
     if (gnomonCoreParameterBool *p = dynamic_cast<gnomonCoreParameterBool *>(parameter)) {
         return gnomonWidgetsParameterBool::widget(p, parent);
     }
+    if (gnomonCoreParameterText *p = dynamic_cast<gnomonCoreParameterText *>(parameter)) {
+        return gnomonWidgetsParameterText::widget(p, parent);
+    }
     if (gnomonCoreParameterString *p = dynamic_cast<gnomonCoreParameterString *>(parameter)) {
         return gnomonWidgetsParameterString::widget(p, parent);
     }
@@ -176,6 +179,27 @@ QWidget *gnomonWidgetsParameterBool::widget(gnomonCoreParameterBool *parameter, 
 
         QObject::connect(widget, &QCheckBox::stateChanged, [=](bool value) {
             parameter->setValue(value);
+        });
+
+        return widget;
+
+    } else {
+        return nullptr;
+    }
+}
+
+
+QString gnomonWidgetsParameterText::style = QStringLiteral("textedit");
+
+QWidget *gnomonWidgetsParameterText::widget(gnomonCoreParameterText *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("textedit")) {
+        QTextEdit *widget = new QTextEdit(parent);
+        widget->setToolTip(parameter->doc());
+        widget->setText(parameter->value());
+
+        QObject::connect(widget, &QTextEdit::textChanged, [=](void) {
+            parameter->setValue(widget->toPlainText());
         });
 
         return widget;
