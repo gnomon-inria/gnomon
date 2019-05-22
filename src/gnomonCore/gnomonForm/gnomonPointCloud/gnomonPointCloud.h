@@ -16,7 +16,7 @@
 
 #include <gnomonCoreExport.h>
 
-#include "gnomonAbstractMeshData.h"
+#include "gnomonAbstractPointCloudData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
 
 #include <QtCore>
@@ -25,22 +25,22 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonMesh : public gnomonAbstractForm
+class GNOMONCORE_EXPORT gnomonPointCloud : public gnomonAbstractForm
 {
 protected:
-    gnomonAbstractMeshData *m_data;
+    gnomonAbstractPointCloudData *m_data;
 
 public:
-    explicit gnomonMesh(void) : m_data(nullptr) {}
-    explicit gnomonMesh(gnomonAbstractMeshData *data) : m_data(data) {}
-             gnomonMesh(const gnomonMesh& o) : m_data(o.m_data->clone()) {}
+    explicit gnomonPointCloud(void) : m_data(nullptr) {}
+    explicit gnomonPointCloud(gnomonAbstractPointCloudData *data) : m_data(data) {}
+             gnomonPointCloud(const gnomonPointCloud& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonMesh(*this); };
+    gnomonAbstractForm *clone(void) { return new gnomonPointCloud(*this); };
 
-    ~gnomonMesh(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+    ~gnomonPointCloud(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:
-    gnomonMesh& operator = (const gnomonMesh& o)
+    gnomonPointCloud& operator = (const gnomonPointCloud& o)
     {
         if (this == &o)
             return *this;
@@ -59,51 +59,32 @@ public:
     }
 
 public:
-    QString name(void) const override { return"gnomonMesh";}
+    QString name(void) const override { return"gnomonPointCloud";}
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
 
 public:
-    const gnomonAbstractMeshData *data(void) const { return m_data; }
-          gnomonAbstractMeshData *data(void)       { return m_data; }
+    const gnomonAbstractPointCloudData *data(void) const { return m_data; }
+          gnomonAbstractPointCloudData *data(void)       { return m_data; }
 
-    void setData(gnomonAbstractMeshData* data) { m_data = data; }
-
-public:
-    QList<long> vertexIds(void) const { return m_data->vertexIds(); }
-    long vertexCount(void) const { return m_data->vertexCount(); }
+    void setData(gnomonAbstractPointCloudData* data) { m_data = data; }
 
 public:
-    QList<long> triangleIds(void) const { return m_data->triangleIds(); }
-    long triangleCount(void) const { return m_data->triangleCount(); }
-
-    QList<long> triangleVertexIds(long triangleId) const { return m_data->triangleVertexIds(triangleId); }
+    QList<long> pointIds(void) const { return m_data->pointIds(); }
+    long pointCount(void) const { return m_data->pointCount(); }
 
 public:
-    long addVertex(void) { return m_data->addVertex(); }
-    long addVertex(long vertexId) { return m_data->addVertex(vertexId); }
-    void removeVertex(long vertexId) { return m_data->removeVertex(vertexId); }
+    QStringList pointPropertyNames(void) const { return m_data->pointPropertyNames(); }
+    bool hasPointProperty(const QString& propertyName) const { return m_data->hasPointProperty(propertyName); }
+    QMap<long, QVariant> pointProperty(const QString& propertyName) const { return m_data->pointProperty(propertyName); }
+    QMap<long, double> pointX(void) const { return m_data->pointX(); }
+    QMap<long, double> pointY(void) const { return m_data->pointY(); }
+    QMap<long, double> pointZ(void) const { return m_data->pointZ(); }
 
-    long addTriangle(const QList<long>& vertexIds) { return m_data->addTriangle(vertexIds); }
-    long addTriangle(const QList<long>& vertexIds, long triangleId) { return m_data->addTriangle(vertexIds, triangleId); }
-    void removeTriangle(long triangleId) { return m_data->removeTriangle(triangleId); }
-
-public:
-    QStringList vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
-    bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); }
-    QMap<long, QVariant> vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); }
-    QMap<long, QVariant> addVertexProperty(const QString& propertyName) { return m_data->addVertexProperty(propertyName); }
-    void removeVertexProperty(const QString& propertyName) { return m_data->removeVertexProperty(propertyName); }
-
-    QStringList trianglePropertyNames(void) const { return m_data->trianglePropertyNames(); }
-    bool hasTriangleProperty(const QString& propertyName) const { return m_data->hasTriangleProperty(propertyName); }
-    QMap<long, QVariant> triangleProperty(const QString& propertyName) const { return m_data->triangleProperty(propertyName); }
-    QMap<long, QVariant> addTriangleProperty(const QString& propertyName) { return m_data->addTriangleProperty(propertyName); }
-    void removeTriangleProperty(const QString& propertyName) { return m_data->removeTriangleProperty(propertyName); }
 };
 
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT(gnomonMesh *)
+DTK_DECLARE_OBJECT(gnomonPointCloud *)
 
 //
-// gnomonMesh.h ends here
+// gnomonPointCloud.h ends here

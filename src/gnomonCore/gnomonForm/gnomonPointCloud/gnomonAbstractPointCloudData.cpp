@@ -13,15 +13,15 @@
 // Code:
 
 #include "gnomonCore.h"
-#include "gnomonAbstractMeshData.h"
+#include "gnomonAbstractPointCloudData.h"
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshData, meshData, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractPointCloudData, pointCloudData, gnomonCore);
 }
 
 //
-// gnomonAbstractMeshData.cpp ends here
+// gnomonAbstractPointCloudData.cpp ends here
