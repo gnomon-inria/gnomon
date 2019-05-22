@@ -25,6 +25,7 @@ add_subdirectory(gnomonImagesSerie)
 add_subdirectory(gnomonIntensityImage)
 add_subdirectory(gnomonLString)
 add_subdirectory(gnomonMesh)
+add_subdirectory(gnomonPointCloud)
 add_subdirectory(gnomonTree)
 
 ## #################################################################
@@ -50,6 +51,7 @@ ADD_GNOMON_HEADERS(
   ${${PROJECT_NAME}_FORM_INTENSITYIMAGE_HEADERS}
   ${${PROJECT_NAME}_FORM_LSTRING_HEADERS}
   ${${PROJECT_NAME}_FORM_MESH_HEADERS}
+  ${${PROJECT_NAME}_FORM_POINTCLOUD_HEADERS}
   ${${PROJECT_NAME}_FORM_TREE_HEADERS})
 
 
@@ -66,6 +68,7 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_FORM_INTENSITYIMAGE_SOURCES}
   ${${PROJECT_NAME}_FORM_LSTRING_SOURCES}
   ${${PROJECT_NAME}_FORM_MESH_SOURCES}
+  ${${PROJECT_NAME}_FORM_POINTCLOUD_SOURCES}
   ${${PROJECT_NAME}_FORM_TREE_SOURCES})
 
 
