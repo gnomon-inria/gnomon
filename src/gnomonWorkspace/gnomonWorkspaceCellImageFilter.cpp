@@ -121,7 +121,7 @@ void gnomonWorkspaceCellImageFilter::apply(void)
 
     d->command->redo();
 
-    d->target->setCellImage(d->command->output());
+//    d->target->setCellImage(d->command->output());
 }
 
 void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)

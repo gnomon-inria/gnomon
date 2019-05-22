@@ -135,7 +135,7 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
 
     d->command->redo();
 
-    d->view->setCellImage(d->command->cellImage());
+//    d->view->setCellImage(d->command->cellImage());
     d->mpl_figure->setForm("gnomonDataFrame",(gnomonAbstractForm *) d->command->dataFrame());
 }
 

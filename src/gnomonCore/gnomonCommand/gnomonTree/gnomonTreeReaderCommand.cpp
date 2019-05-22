@@ -45,7 +45,7 @@ void gnomonTreeReaderCommand::setPath(const QString& path)
     d->path = path;
 }
 
-gnomonTree *gnomonTreeReaderCommand::tree(void)
+gnomonTreeSeries *gnomonTreeReaderCommand::tree(void)
 {
-    return ((gnomonAbstractTreeReader *) this->action)->tree()->current();
+    return ((gnomonAbstractTreeReader *) this->action)->tree();
 }

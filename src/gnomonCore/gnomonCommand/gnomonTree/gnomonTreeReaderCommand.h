@@ -16,7 +16,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonTree *tree(void);
+    gnomonTreeSeries *tree(void);
 
 private:
     class gnomonTreeReaderCommandPrivate *d;

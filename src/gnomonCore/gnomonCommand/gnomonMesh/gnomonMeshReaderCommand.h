@@ -16,7 +16,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonMesh *mesh(void);
+    gnomonMeshSeries *mesh(void);
 
 private:
     class gnomonMeshReaderCommandPrivate *d;

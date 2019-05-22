@@ -341,7 +341,7 @@ void gnomonWorkspacePythonSimulator::apply(void)
         if (name == "cellImage") {
             qDebug()<<Q_FUNC_INFO<<((gnomonCellImage *)forms[name])->cellIds();
         }
-        d->view->setForm(name,forms[name]);
+//        d->view->setForm(name,forms[name]);
     }
 
     emit modelLoaded();
@@ -391,7 +391,7 @@ void gnomonWorkspacePythonSimulator::run(void)
             forms = d->model->forms();
             for (const auto& name : forms.keys())
             {
-                d->view->setForm(name,forms[name]);
+//                d->view->setForm(name,forms[name]);
             }
             QCoreApplication::processEvents();
         }
@@ -401,7 +401,7 @@ void gnomonWorkspacePythonSimulator::run(void)
         forms = d->model->forms();
         for (const auto& name : forms.keys())
         {
-            d->view->setForm(name,forms[name]);
+//            d->view->setForm(name,forms[name]);
         }
     }
 
@@ -422,7 +422,7 @@ void gnomonWorkspacePythonSimulator::step(void)
 
     for (const auto& name : forms.keys())
     {
-        d->view->setForm(name,forms[name]);
+//        d->view->setForm(name,forms[name]);
     }
 }
 
@@ -434,7 +434,7 @@ void gnomonWorkspacePythonSimulator::reset(void)
 
     for (const auto& name : forms.keys())
     {
-        d->view->setForm(name,forms[name]);
+//        d->view->setForm(name,forms[name]);
     }
 }
 

@@ -26,10 +26,14 @@ class gnomonOverlayPane;
 class gnomonAbstractForm;
 class gnomonAbstractVisualization;
 
+template <typename T>
+class gnomonTimeSeries;
+
 class gnomonImagesSerie;
-class gnomonCellImage;
-class gnomonCellComplex;
-class gnomonMesh;
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+
 
 class vtkRenderer;
 class vtkRenderWindowInteractor;
@@ -75,14 +79,14 @@ public slots:
     void toggleVisualizationPane(void);
 
 public:
-    void setForm(const QString&, gnomonAbstractForm *, gnomonAbstractVisualization *  = nullptr);
-    void setCellImage(gnomonCellImage *, gnomonAbstractVisualization *  = nullptr);
+    void setForm(const QString&, gnomonTimeSeries<gnomonAbstractForm> *, gnomonAbstractVisualization *  = nullptr);
+    void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
     void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
-    void setCellComplex(gnomonCellComplex *, gnomonAbstractVisualization *  = nullptr);
-    void setMesh(gnomonMesh *, gnomonAbstractVisualization *  = nullptr);
+    void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setMesh(gnomonMeshSeries *, gnomonAbstractVisualization *  = nullptr);
 
 public:
-    gnomonAbstractForm *form(const QString&); 
+    gnomonAbstractForm *form(const QString&);
     gnomonImagesSerie *imagesSerie(void);
     gnomonCellImage *cellImage(void);
     gnomonCellComplex *cellComplex(void);

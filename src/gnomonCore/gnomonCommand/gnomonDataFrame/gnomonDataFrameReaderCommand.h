@@ -16,7 +16,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonDataFrame *dataFrame(void);
+    gnomonDataFrameSeries *dataFrame(void);
 
 private:
     class gnomonDataFrameReaderCommandPrivate *d;

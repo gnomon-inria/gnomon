@@ -15,7 +15,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonCellComplex *cellComplex(void);
+    gnomonCellComplexSeries *cellComplex(void);
 
 private:
     class gnomonCellComplexReaderCommandPrivate *d;

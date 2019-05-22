@@ -15,7 +15,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonCellImage *cellImage(void);
+    gnomonCellImageSeries *cellImage(void);
 
 private:
     class gnomonCellImageReaderCommandPrivate *d;
