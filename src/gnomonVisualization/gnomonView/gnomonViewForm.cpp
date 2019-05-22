@@ -90,7 +90,7 @@ public:
     QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    QMap<QString, gnomonTimeSeries<gnomonAbstractForm> *> forms;
+    QMap<QString, gnomonAbstractDynamicForm *> forms;
     QMap<QString, gnomonAbstractVisualization *> formVisualization;
     QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
@@ -360,14 +360,14 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
                     gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *)this->forms[key];
-                    formVisualizationCellComplex->setCellComplex(cellComplex->current());
+                    formVisualizationCellComplex->setCellComplex((gnomonCellComplex *)cellComplex->current());
                     formVisualizationCellComplex->update();
                 } else if (key == "gnomonCellImage") {
                     this->formVisualization[key] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
                     gnomonCellImageSeries *cellImage = (gnomonCellImageSeries *)this->forms[key];
-                    formVisualizationCellImage->setCellImage(cellImage->current());
+                    formVisualizationCellImage->setCellImage((gnomonCellImage *)cellImage->current());
                     formVisualizationCellImage->update();
                 } else if (key == "gnomonImagesSerie") {
                     this->formVisualization[key] = gnomonVisualization::visualizationImagesSerie::pluginFactory().create(visu);
@@ -381,7 +381,7 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
                     gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
-                    formVisualizationMesh->setMesh(mesh->current());
+                    formVisualizationMesh->setMesh((gnomonMesh *)mesh->current());
                     formVisualizationMesh->update();
                 }
                 this->configure((QWidget *) q->parent(), key);
@@ -740,7 +740,7 @@ gnomonAbstractForm *gnomonViewForm::form(const QString& name)
     }
 }
 
-void gnomonViewForm::setForm(const QString& name, gnomonTimeSeries<gnomonAbstractForm> *form, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
     qDebug()<<Q_FUNC_INFO<<name<<form;
     if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
@@ -804,7 +804,7 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
 gnomonCellImage *gnomonViewForm::cellImage(void)
 {
     if (d->forms.contains("gnomonCellImage")) {
-        return dynamic_cast<gnomonCellImageSeries *>(d->forms["gnomonCellImage"])->current();
+        return dynamic_cast<gnomonCellImage *>(d->forms["gnomonCellImage"]->current());
     } else {
         return nullptr;
     }
@@ -812,7 +812,7 @@ gnomonCellImage *gnomonViewForm::cellImage(void)
 
 void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstractVisualization *visualization)
 {
-    d->forms["gnomonCellImage"] = (gnomonTimeSeries<gnomonAbstractForm> *) cellImage;
+    d->forms["gnomonCellImage"] = cellImage;
 
     qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellImage::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
@@ -824,7 +824,7 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstra
     }
 
     gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
-    formVisualizationCellImage->setCellImage(cellImage->current());
+    formVisualizationCellImage->setCellImage((gnomonCellImage*)cellImage->current());
     if (visualization) {
         formVisualizationCellImage->setParameters(visualization->parameters());
     }
@@ -845,7 +845,7 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstra
 gnomonCellComplex *gnomonViewForm::cellComplex(void)
 {
     if (d->forms.contains("gnomonCellComplex")) {
-        return dynamic_cast<gnomonCellComplexSeries *>(d->forms["gnomonCellComplex"])->current();
+        return dynamic_cast<gnomonCellComplex *>(d->forms["gnomonCellComplex"]->current());
     } else {
         return nullptr;
     }
@@ -853,7 +853,7 @@ gnomonCellComplex *gnomonViewForm::cellComplex(void)
 
 void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomonAbstractVisualization *visualization)
 {
-    d->forms["gnomonCellComplex"] = (gnomonTimeSeries<gnomonAbstractForm> *) cellComplex;
+    d->forms["gnomonCellComplex"] = cellComplex;
 
     qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
@@ -866,7 +866,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
         d->formVisualization["gnomonCellComplex"]->setView(this);
     }
     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
-    formVisualizationCellComplex->setCellComplex(cellComplex->current());
+    formVisualizationCellComplex->setCellComplex((gnomonCellComplex *)cellComplex->current());
     if (visualization) {
         formVisualizationCellComplex->setParameters(visualization->parameters());
     }
@@ -887,7 +887,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
 gnomonMesh *gnomonViewForm::mesh(void)
 {
     if (d->forms.contains("gnomonMesh")) {
-        return dynamic_cast<gnomonMeshSeries *>(d->forms["gnomonMesh"])->current();
+        return dynamic_cast<gnomonMesh *>(d->forms["gnomonMesh"]->current());
     } else {
         return nullptr;
     }
@@ -895,7 +895,7 @@ gnomonMesh *gnomonViewForm::mesh(void)
 
 void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization *visualization)
 {
-    d->forms["gnomonMesh"] = (gnomonTimeSeries<gnomonAbstractForm> *) mesh;
+    d->forms["gnomonMesh"] = mesh;
 
     qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationMesh::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
@@ -907,7 +907,7 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization
     }
 
     gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)d->formVisualization["gnomonMesh"];
-    formVisualizationMesh->setMesh(mesh->current());
+    formVisualizationMesh->setMesh(dynamic_cast<gnomonMesh *>(mesh->current()));
     if (visualization) {
         formVisualizationMesh->setParameters(visualization->parameters());
     }

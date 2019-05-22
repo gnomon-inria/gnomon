@@ -37,7 +37,7 @@ template <typename T> gnomonTimeSeries<T>::~gnomonTimeSeries(void)
     delete d;
 }
 
-template <typename T> gnomonAbstractDynamicForm<T> *gnomonTimeSeries<T>::clone(void) const
+template <typename T> gnomonAbstractDynamicForm *gnomonTimeSeries<T>::clone(void) const
 {
     return new gnomonTimeSeries(*this);
 };
@@ -53,7 +53,7 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
     return (*this);
 }
 
-template <typename T> T* gnomonTimeSeries<T>::seek(double t) const
+template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::at(double t) const
 {
     Q_ASSERT_X(d->forms.contains(t), "seek", "Invalid time position : the form is not defined at this time");
 
@@ -61,12 +61,12 @@ template <typename T> T* gnomonTimeSeries<T>::seek(double t) const
     return this->current();
 }
 
-template <typename T> T* gnomonTimeSeries<T>::current(void) const
+template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::current(void) const
 {
     return d->forms[d->current_time];
 }
 
-template <typename T> T* gnomonTimeSeries<T>::next(void) const
+/*template <typename T> T* gnomonTimeSeries<T>::next(void) const
 {
     auto it = d->forms.upperBound(d->current_time);
     Q_ASSERT_X(it==d->forms.end(), "next", "Invalid time position : the form is not defined at this time");
@@ -80,7 +80,7 @@ template <typename T> T* gnomonTimeSeries<T>::prev(void) const
     Q_ASSERT_X(it--==d->forms.end(), "prev", "Invalid time position : the form is not defined at this time");
     d->current_time = it.key();
     return it.value();
-};
+};*/
 
 template <typename T> double gnomonTimeSeries<T>::time(void) const
 {

@@ -40,7 +40,7 @@ public:
 
 //template <typename T, typename Enable = std::enable_if_t<std::is_base_of<gnomonAbstractForm,T>::value>>
 template <typename T>
-class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm<T>
+class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm
 {
 
 public:
@@ -52,17 +52,17 @@ public:
     gnomonTimeSeries<T>& operator = (const gnomonTimeSeries<T>& o);
 
 public:
-    gnomonAbstractDynamicForm<T> *clone(void) const override;
+    gnomonAbstractDynamicForm *clone(void) const override;
 
 public:
-    T *seek(double t) const override;
-    T *current(void) const override;
-    T *next(void) const override;
-    T *prev(void) const override;
+    gnomonAbstractForm *at(double t) const override;
+    gnomonAbstractForm *current(void) const override;
+//    T *next(void) const override;
+//    T *prev(void) const override;
     double time(void) const override;
     QList<double> times(void) const override;
 
-    void insert(double t, T *form) override;
+    void insert(double t, T *form);
 //    void insert(const T& form) override;
     void drop(double t) override;
 

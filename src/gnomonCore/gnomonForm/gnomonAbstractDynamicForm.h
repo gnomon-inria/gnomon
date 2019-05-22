@@ -27,8 +27,6 @@
 // ///////////////////////////////////////////////////////////////////
 class gnomonAbstractForm;
 
-// template <typename T, typename Enable = std::enable_if_t<std::is_base_of<gnomonAbstractForm,T>::value>>
-template <typename T>
 class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
 {
 public:
@@ -39,14 +37,12 @@ public:
     virtual gnomonAbstractDynamicForm *clone(void) const = 0;
 
 public:
-    virtual T *seek(double t) const = 0;
-    virtual T *current(void) const = 0;
-    virtual T *next(void) const = 0;
-    virtual T *prev(void) const = 0;
+    virtual gnomonAbstractForm *at(double t) const = 0;
+    virtual gnomonAbstractForm *current(void) const = 0;
     virtual double time(void) const = 0;
     virtual QList<double> times(void) const = 0;
 
-    virtual void insert(double t, T *form) = 0;
+//    virtual void insert(double t, T *form) = 0;
 //    virtual void insert(const T& form) = 0;
     virtual void drop(double t) = 0;
 

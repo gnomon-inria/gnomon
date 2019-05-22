@@ -79,7 +79,7 @@ public slots:
     void toggleVisualizationPane(void);
 
 public:
-    void setForm(const QString&, gnomonTimeSeries<gnomonAbstractForm> *, gnomonAbstractVisualization *  = nullptr);
+    void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
     void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
     void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
