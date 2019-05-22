@@ -223,6 +223,29 @@ private:
 
 Q_DECLARE_METATYPE(gnomonCoreParameterBool *);
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterText
+// ///////////////////////////////////////////////////////////////////
+
+
+class GNOMONCORE_EXPORT gnomonCoreParameterText : public gnomonCoreParameter
+{
+public:
+     gnomonCoreParameterText(const QString& val, const QString& doc = QString());
+    ~gnomonCoreParameterText(void) = default;
+    
+    QString value(void) const;
+    
+    void setValue(QString&);
+    void setValue(const QVariant&);
+    
+    void copy(gnomonCoreParameter *other);
+    
+private:
+    QString m_value = "";
+};
+
+Q_DECLARE_METATYPE(gnomonCoreParameterText *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterString

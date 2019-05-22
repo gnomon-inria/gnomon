@@ -506,6 +506,7 @@
 %rename(ParameterString)     gnomonCoreParameterString;
 %rename(ParameterStringList) gnomonCoreParameterStringList;
 %rename(ParameterVariant)    gnomonCoreParameterVariant;
+%rename(ParameterText)       gnomonCoreParameterText;
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
