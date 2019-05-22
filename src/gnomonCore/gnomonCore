@@ -37,6 +37,8 @@
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonForm/gnomonMesh/gnomonAbstractMeshData.h"
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
+#include "gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h"
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonForm/gnomonTree/gnomonAbstractTreeData.h"
 #include "gnomonForm/gnomonTree/gnomonTree.h"
 
