@@ -75,6 +75,44 @@ void gnomonCoreParameterBool::copy(gnomonCoreParameter *other)
 }
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterText
+// ///////////////////////////////////////////////////////////////////
+
+gnomonCoreParameterText::gnomonCoreParameterText(const QString& val, const QString& doc) : gnomonCoreParameter(doc), m_value(val)
+{
+}
+
+QString gnomonCoreParameterText::value(void) const
+{
+    return m_value;
+}
+
+void gnomonCoreParameterText::setValue(QString& val)
+{
+    if(m_value != val) {
+        m_value = val;
+        emit valueChanged();
+    }
+}
+
+void gnomonCoreParameterText::setValue(const QVariant& v)
+{
+    QString val = v.toString();
+    if(m_value != val) {
+        m_value = val;
+        emit valueChanged();
+    }
+}
+
+void gnomonCoreParameterText::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterText *param = dynamic_cast<gnomonCoreParameterText *>(other)) {
+        m_value = param->value();
+        emit valueChanged();
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterString
 // ///////////////////////////////////////////////////////////////////
 
