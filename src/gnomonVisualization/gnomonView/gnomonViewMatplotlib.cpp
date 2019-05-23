@@ -115,7 +115,29 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
 
     QString export_file_path;
     export_file_path = QFileDialog::getSaveFileName(this, tr("Save figure"), path, tr("Figures (*.png)"));
-    qDebug()<<"Figure save at"<<export_file_path;
+
+    QString figure_number = "0";
+    for(int row = 0, max_row = this->layout->count(); row < max_row; ++row) {
+        QLayoutItem *item = this->layout->itemAt(0);
+        QWidget *widget = item->widget();
+        if (widget->objectName().contains("MplTabWidget")) {
+            QStringList name_items = widget->objectName().split(" ");
+            if (name_items.size()>1) {
+                figure_number = name_items[2];
+            }
+        }
+    }
+    qDebug()<<figure_number;
+
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
+    QString figure_statement = "figure = plt.figure("+figure_number+")";
+    dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
+    QString save_statement = "figure.savefig('"+export_file_path+"')";
+    dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
+    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+
 }
 
 QSize gnomonViewMatplotlibPrivate::sizeHint(void) const
