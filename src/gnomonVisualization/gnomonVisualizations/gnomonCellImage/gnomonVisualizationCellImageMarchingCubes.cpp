@@ -331,6 +331,8 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
         dd->actor2D = nullptr;
     }
 
+    disconnect(d->connectTime);
+
     disconnect(d->connect3D);
     disconnect(d->connect2D);
     disconnect(d->connectXY);
@@ -418,15 +420,34 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     if(!dd->cellImage)
         return;
 
-    if (!dd->polydata)
+    disconnect(d->connectSliceOrientation);
+    disconnect(d->connectSlice);
+    disconnect(d->connectTime);
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+    disconnect(d->connectXY);
+    disconnect(d->connectXZ);
+    disconnect(d->connectYZ);
+
+    if (dd->polydata) {
+        dd->polydata->Delete();
+        dd->polydata = nullptr;
+    }
+    if (!dd->polydata) {
         dd->polydata = gnomonPolyDataCellImage::New();
+    }
     dd->polydata->setCellImage(dd->cellImage);
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setSliceRanges(x_range, y_range, z_range);
     dd->polydata->update();
 
-    if (!dd->actor)
-    {
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
+    }
+    if (!dd->actor) {
+
         dd->actor = gnomonActorPolyData::New();
         d->view->renderer3D()->AddActor(dd->actor);
     }
@@ -452,6 +473,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor2D->setValueRange(value_range);
     qDebug()<<Q_FUNC_INFO<<"Actor 2D Ok!";
 
+
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
     });
@@ -462,7 +484,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     });
 
     d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-        qDebug()<<"Change time!"<<value;
+        qDebug()<<"Time changed"<<value;
         if (dd->cellImageSeries->times().contains(value)) {
             dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
             this->update();
@@ -471,11 +493,14 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     });
 
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
-    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
-    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
+    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
+
+    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+
+    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+
+    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     dd->polydata->GetBounds(bounds);

@@ -1097,7 +1097,7 @@ void gnomonViewForm::setBounds(double bounds[6])
     }
 
     d->renderer2D->ResetCamera();
-    d->renderer3D->ResetCamera();
+//    d->renderer3D->ResetCamera();
 
 }
 

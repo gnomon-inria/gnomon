@@ -51,7 +51,7 @@ public:
     double value_range[2];
     QMap<double,QColor> colormap;
 
-    bool modified;
+    bool modified = true;
 
 public slots:
     void updateOpacity(void);

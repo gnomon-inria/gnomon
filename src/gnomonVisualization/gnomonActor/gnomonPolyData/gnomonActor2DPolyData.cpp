@@ -110,7 +110,7 @@ void gnomonActor2DPolyDataPrivate::updateSlice(int orientation)
     topClipper->SetClipFunction(topPlane);
     topClipper->SetValue(0);
     topClipper->InsideOutOn();
-    qDebug()<<Q_FUNC_INFO<<this->polydata;
+    qDebug()<<Q_FUNC_INFO<<this->polydata<<this->polydata->GetNumberOfCells();
     topClipper->Update();
     qDebug()<<Q_FUNC_INFO<<"Top Clipper OK!";
 
