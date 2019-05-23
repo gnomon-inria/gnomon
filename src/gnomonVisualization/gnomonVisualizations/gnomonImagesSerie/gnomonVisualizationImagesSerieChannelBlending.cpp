@@ -53,7 +53,7 @@ public:
 
     gnomonImageDataChannelBlending *blending = nullptr;
 
-    gnomonActor2DImageRGBAWidget *actor2D = nullptr; 
+    gnomonActor2DImageRGBAWidget *actor2D = nullptr;
     gnomonActorImageRGBAVolume *volume = nullptr;
 
 public:
@@ -101,6 +101,12 @@ gnomonVisualizationImagesSerieChannelBlending::~gnomonVisualizationImagesSerieCh
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
+
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+    disconnect(d->connectXY);
+    disconnect(d->connectXZ);
+    disconnect(d->connectYZ);
 
     delete dd;
 
@@ -176,7 +182,7 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
     // QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     // QMap<double, QColor> colormap = ((gnomonCoreParameterLookupTable *)d->parameters["colormap"])->value()->colorMap();
- 
+
 
     QMap<QString,vtkImageData *> channelImages;
     for (const auto& channelName : dd->imagesSerie->channels()) {
@@ -206,7 +212,7 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
     // blending->setValueRange(value_range);
     dd->blending->update();
     dd->image = dd->blending;
-    
+
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageRGBAWidget::New();
     }
@@ -214,7 +220,7 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
     dd->actor2D->setOpacity(alpha);
     dd->actor2D->update();
-    
+
     if (!dd->volume) {
         dd->volume = gnomonActorImageRGBAVolume::New();
         d->view->renderer3D()->AddActor(dd->volume);
@@ -231,11 +237,11 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { 
+    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
         dd->actor2D->hide();
-        this->render(); 
+        this->render();
     });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { 
+    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
         dd->actor2D->show();
         this->render();
     });

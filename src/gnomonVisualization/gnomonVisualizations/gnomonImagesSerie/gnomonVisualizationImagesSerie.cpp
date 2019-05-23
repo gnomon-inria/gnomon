@@ -95,6 +95,12 @@ gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
         dd->actor2D = nullptr;
     }
 
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+    disconnect(d->connectXY);
+    disconnect(d->connectXZ);
+    disconnect(d->connectYZ);
+
     delete dd;
 
     dd = NULL;
@@ -167,7 +173,7 @@ void gnomonVisualizationImagesSerie::update(void)
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
- 
+
     QString channel;
     if(dd->imagesSerie->channels().size()>1) {
         channel = ((gnomonCoreParameterString *)d->parameters["channel"])->value();
@@ -184,7 +190,7 @@ void gnomonVisualizationImagesSerie::update(void)
     dd->image = static_cast<vtkImageData *>(converter->output());
     delete converter;
 
-    
+
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageWidget::New();
     }
@@ -194,7 +200,7 @@ void gnomonVisualizationImagesSerie::update(void)
     dd->actor2D->setValueRange(value_range);
     dd->actor2D->setOpacity(alpha);
     dd->actor2D->update();
-    
+
     if (!dd->volume) {
         dd->volume = gnomonActorImageVolume::New();
         d->view->renderer3D()->AddActor(dd->volume);
@@ -213,11 +219,11 @@ void gnomonVisualizationImagesSerie::update(void)
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { 
+    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
         dd->actor2D->hide();
-        this->render(); 
+        this->render();
     });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { 
+    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
         dd->actor2D->show();
         this->render();
     });

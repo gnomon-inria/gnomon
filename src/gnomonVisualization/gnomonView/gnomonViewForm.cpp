@@ -121,6 +121,7 @@ public:
 public:
     gnomonOverlayPaneItem *paneItemButton = nullptr;
     QPushButton *renderButton = nullptr;
+    QPushButton *clearButton = nullptr;
 
     QMap<QString, QFormLayout *> parameterLayouts;
     QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
@@ -269,13 +270,20 @@ gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
     if(!this->renderButton) {
         this->renderButton = new QPushButton("Render",parent);
     }
+
+    if(!this->clearButton) {
+        this->clearButton = new QPushButton("Clear", parent);
+    }
+
     this->renderButton->setCheckable(true);
+    this->clearButton->setCheckable(true);
 
     if(!this->paneItemButton) {
         this->paneItemButton = new gnomonOverlayPaneItem(parent);
     }
     this->paneItemButton->setTitle("View Form");
     this->paneItemButton->addWidget(this->renderButton);
+    this->paneItemButton->addWidget(this->clearButton);
     this->paneItemButton->toggle();
 
     this->refresh();
@@ -477,6 +485,30 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                 v->update();
             }
         }
+    });
+
+    connect(d->clearButton, &QPushButton::clicked, [=] () {
+      for (const auto& key : d->formVisualization.keys()) {
+          if (key == "gnomonCellComplex") {
+            gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex =  (gnomonAbstractVisualizationCellComplex *)d->formVisualization[key];
+            delete formVisualizationCellComplex;
+          } else if (key=="gnomonImagesSerie") {
+            gnomonAbstractVisualizationImagesSerie *formVisualizationImagesSerie =  (gnomonAbstractVisualizationImagesSerie *)d->formVisualization[key];
+            delete formVisualizationImagesSerie;
+          } else if (key=="gnomonCellImage") {
+            gnomonAbstractVisualizationCellImage *formVisualizationCellImage =  (gnomonAbstractVisualizationCellImage *)d->formVisualization[key];
+            delete formVisualizationCellImage;
+          } else if (key=="gnomonMesh") {
+            gnomonAbstractVisualizationMesh *formVisualizationMesh =  (gnomonAbstractVisualizationMesh *)d->formVisualization[key];
+            delete formVisualizationMesh;
+          }
+
+      qDebug()<<Q_FUNC_INFO<<"remove formVisualization"<<key<<d->formVisualization.remove(key);
+      qDebug()<<Q_FUNC_INFO<<"remove forms"<<key<<d->forms.remove(key);
+      qDebug()<<Q_FUNC_INFO<<"remove formVisualizationPaneItems"<<key<<d->formVisualizationPaneItems.remove(key);
+      qDebug()<<Q_FUNC_INFO<<"remove parameterLayouts"<<key<<d->parameterLayouts.remove(key);
+    }
+    this->render();
     });
 
     this->setAcceptDrops(true);
