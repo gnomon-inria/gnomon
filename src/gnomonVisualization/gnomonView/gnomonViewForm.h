@@ -130,7 +130,7 @@ signals:
     void timeChanged(double);
 
 public slots:
-    void timeChange(double);
+    void timeIndexChange(int);
 
 public slots:
     void onTimeChanged(double);

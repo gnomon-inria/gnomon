@@ -92,9 +92,9 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
     dd = NULL;
 }
 
-void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImage *cellImage)
+void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    dd->cellImage = cellImage;
+    dd->cellImage = (gnomonCellImage *) cellImage->current();
 
     this->setParameter("alpha",1.0);
 

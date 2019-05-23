@@ -124,7 +124,7 @@ public:
 
 public:
     QSlider *time_slider = nullptr;
-    std::set<double> forms_times;
+    QSet<double> forms_times;
 
 public:
     gnomonOverlayPaneItem *paneItemButton = nullptr;
@@ -380,7 +380,7 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
                     gnomonCellImageSeries *cellImage = (gnomonCellImageSeries *)this->forms[key];
-                    formVisualizationCellImage->setCellImage(dynamic_cast<gnomonCellImage *>(cellImage->current()));
+                    formVisualizationCellImage->setCellImage(cellImage);
                     formVisualizationCellImage->update();
                 } else if (key == "gnomonImagesSerie") {
                     this->formVisualization[key] = gnomonVisualization::visualizationImagesSerie::pluginFactory().create(visu);
@@ -418,16 +418,18 @@ void gnomonViewFormPrivate::refresh(void)
 
 void gnomonViewFormPrivate::updateTimeSlider(void)
 {
-    if(this->forms_times.size() < 1) {
+    qDebug()<<Q_FUNC_INFO<<"Times :"<<forms_times;
+
+    if(this->forms_times.size() < 2) {
         this->time_slider->setVisible(false);
         return;
     }
-
     this->time_slider->setVisible(true);
+
 
     this->time_slider->setOrientation(Qt::Horizontal);
     this->time_slider->setMinimum(0);
-    this->time_slider->setMaximum(this->forms_times.size());
+    this->time_slider->setMaximum(this->forms_times.size()-1);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -476,8 +478,10 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->time_slider->setVisible(true);
     d->time_slider->setTickPosition(QSlider::TicksAbove);
 
-    connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeChange(int)));
-
+    connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
+//    connect(d->time_slider, &QSlider::valueChanged, [=] (int value) {
+//        this->timeChange((double) value);
+//    });
 
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -534,6 +538,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     this->switchTo2DXY();
     this->switchTo3D();
     d->updateOrientation();
+    d->updateTimeSlider();
 }
 
 gnomonViewForm::~gnomonViewForm(void)
@@ -711,20 +716,30 @@ void gnomonViewForm::sliceChange(int value)
 }
 
 
-void gnomonViewForm::timeChange(double value)
+void gnomonViewForm::timeIndexChange(int value)
 {
+
+    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
+    qSort(sorted_times);
+    qDebug()<<sorted_times;
+
+    double time = sorted_times[value];
+
     bool valueChanged = false;
-    if (d->c_t != value) {
+    if (d->c_t != time) {
         valueChanged = true;
+        d->c_t = time;
     }
 
     d->time_slider->blockSignals(true);
     d->time_slider->setValue(value);
-    d->time_slider->setToolTip(QString("current time: %1").arg(value));
+    d->time_slider->setToolTip(QString("current time: %1").arg(time));
     d->time_slider->blockSignals(false);
 
-    if (valueChanged)
-        emit timeChanged(value);
+    if (valueChanged) {
+        qDebug()<<Q_FUNC_INFO<<"Time Changed !"<<time;
+        emit timeChanged(time);
+    }
 
     d->GetInteractor()->Render();
 }
@@ -813,19 +828,15 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
 {
     qDebug()<<Q_FUNC_INFO<<name<<form;
     if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
-        return this->setImagesSerie(images_serie, visualization);
-    }
-    if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
-        return this->setCellImage(cellImage);
-    }
-    if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-        return this->setCellComplex(cellComplex);
-    }
-    if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
-        return this->setMesh(mesh);
-    }
-    if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
-        return this->setPointCloud(pointCloud);
+        this->setImagesSerie(images_serie, visualization);
+    } else if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
+        this->setCellImage(cellImage);
+    } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
+        this->setCellComplex(cellComplex);
+    } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
+        this->setMesh(mesh);
+    } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+        this->setPointCloud(pointCloud);
     }
 
     QList<double> new_times = form->times();
@@ -833,6 +844,8 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
         d->forms_times.insert(time);
     }
     d->updateTimeSlider();
+
+    return;
 }
 
 gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
@@ -902,7 +915,7 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstra
     }
 
     gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
-    formVisualizationCellImage->setCellImage(dynamic_cast<gnomonCellImage *>(cellImage->current()));
+    formVisualizationCellImage->setCellImage(cellImage);
     if (visualization) {
         formVisualizationCellImage->setParameters(visualization->parameters());
     }

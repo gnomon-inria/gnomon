@@ -34,7 +34,7 @@ public:
     ~gnomonVisualizationCellImageVolume(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellImage) override;
+	void setCellImage(gnomonCellImageSeries *cellImage) override;
 
 public slots:
     void updateOpacity(void);

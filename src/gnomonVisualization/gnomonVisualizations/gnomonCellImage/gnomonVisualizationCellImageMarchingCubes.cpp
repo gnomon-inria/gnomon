@@ -231,6 +231,7 @@ vtkStandardNewMacro(gnomonInteractorStyleCellImageMarchingCubes);
 class gnomonVisualizationCellImageMarchingCubesPrivate
 {
 public:
+    gnomonCellImageSeries *cellImageSeries;
     gnomonCellImage *cellImage;
 
 public:
@@ -298,6 +299,7 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
 gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
     dd->q = this;
+    dd->cellImageSeries = Q_NULLPTR;
     dd->cellImage = Q_NULLPTR;
 
     d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
@@ -345,9 +347,10 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
     dd = NULL;
 }
 
-void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *cellImage)
+void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    dd->cellImage = cellImage;
+    dd->cellImageSeries = cellImage;
+    dd->cellImage = (gnomonCellImage *) cellImage->current();
 
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
@@ -458,11 +461,21 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         this->render();
     });
 
+    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
+        qDebug()<<"Change time!"<<value;
+        if (dd->cellImageSeries->times().contains(value)) {
+            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+            this->update();
+            this->render();
+        }
+    });
+
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
     d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
     d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
     d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
     d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
+
 
     double bounds[6];
     dd->polydata->GetBounds(bounds);
