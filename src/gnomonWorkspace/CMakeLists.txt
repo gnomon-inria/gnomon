@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceLSystemSimulator.h
   gnomonWorkspaceMeshFromImage
   gnomonWorkspaceMeshFromImage.h
+  gnomonWorkspacePointCloudFromImage
+  gnomonWorkspacePointCloudFromImage.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
   gnomonWorkspacePythonSimulator
@@ -57,6 +59,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspaceMeshFromImage.cpp
+  gnomonWorkspacePointCloudFromImage.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp

@@ -21,6 +21,7 @@ add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonDataFrame)
 add_subdirectory(gnomonImagesSerie)
 add_subdirectory(gnomonMesh)
+add_subdirectory(gnomonPointCloud)
 add_subdirectory(gnomonTree)
 
 ## #################################################################
@@ -39,6 +40,7 @@ ADD_GNOMON_HEADERS(
     ${${PROJECT_NAME}_VISUALIZATIONS_DATAFRAME_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_IMAGESSERIE_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_MESH_HEADERS}
+    ${${PROJECT_NAME}_VISUALIZATIONS_POINTCLOUD_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_TREE_HEADERS})
 
 
@@ -50,6 +52,7 @@ ADD_GNOMON_SOURCES(
     ${${PROJECT_NAME}_VISUALIZATIONS_DATAFRAME_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_IMAGESSERIE_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_MESH_SOURCES}
+    ${${PROJECT_NAME}_VISUALIZATIONS_POINTCLOUD_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_TREE_SOURCES})
 
 

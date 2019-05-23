@@ -181,6 +181,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->addWidget(workspace);
         d->stack->setCurrentWidget(workspace);
     });
+    
+    connect(d->menu, &gnomonToolBar::createPointCloudFromImage, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspacePointCloudFromImage(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
 
     connect(d->menu, &gnomonToolBar::createSegmentation, [=] (void) {
 

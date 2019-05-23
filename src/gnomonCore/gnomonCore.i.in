@@ -52,6 +52,8 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
@@ -75,6 +77,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 
 #include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
@@ -532,6 +535,8 @@
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+%include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
+%include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
@@ -555,6 +560,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 
 %include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
