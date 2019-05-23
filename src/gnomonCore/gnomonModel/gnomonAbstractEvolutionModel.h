@@ -21,6 +21,7 @@
 #include "gnomonAbstractModel.h"
 
 class gnomonAbstractForm;
+class gnomonAbstractDynamicForm;
 class gnomonMesh;
 class gnomonCellComplex;
 
@@ -35,7 +36,7 @@ public:
     virtual void run(double timeMin, double timeMax, double dt) = 0;
 
 public:
-    virtual QMap<QString, gnomonAbstractForm *> forms() = 0;
+    virtual QMap<QString, gnomonAbstractDynamicForm *> forms() = 0;
     virtual void setForm(QString, gnomonMesh *) = 0;
     virtual void setForm(QString, gnomonCellComplex *) = 0;
 };

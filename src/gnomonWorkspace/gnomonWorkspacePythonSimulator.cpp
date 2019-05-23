@@ -334,14 +334,14 @@ void gnomonWorkspacePythonSimulator::apply(void)
 
     d->model->reset();
 
-    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+    QMap<QString, gnomonAbstractDynamicForm *> forms = d->model->forms();
     for (const auto& name : forms.keys())
     {
         qDebug()<<Q_FUNC_INFO<<name<<forms[name];
         if (name == "cellImage") {
             qDebug()<<Q_FUNC_INFO<<((gnomonCellImage *)forms[name])->cellIds();
         }
-//        d->view->setForm(name,forms[name]);
+        d->view->setForm(name,forms[name]);
     }
 
     emit modelLoaded();
@@ -379,7 +379,7 @@ void gnomonWorkspacePythonSimulator::run(void)
 
     // d->model->run(initial_time,final_time,dt);
 
-    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+    QMap<QString, gnomonAbstractDynamicForm *> forms = d->model->forms();
 
     double t = initial_time;
     while (t<final_time ) {
@@ -417,7 +417,7 @@ void gnomonWorkspacePythonSimulator::step(void)
 
     d->model->step(t,dt);
 
-    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+    QMap<QString, gnomonAbstractDynamicForm *> forms = d->model->forms();
 
 
     for (const auto& name : forms.keys())
@@ -430,7 +430,7 @@ void gnomonWorkspacePythonSimulator::reset(void)
 {
     d->model->reset();
     qDebug()<<"Reset model";
-    QMap<QString, gnomonAbstractForm *> forms = d->model->forms();
+    QMap<QString, gnomonAbstractDynamicForm *> forms = d->model->forms();
 
     for (const auto& name : forms.keys())
     {
