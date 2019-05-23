@@ -766,7 +766,7 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
     if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         return this->setMesh(mesh);
     }
-    if (gnomonPointCloud *pointCloud = dynamic_cast<gnomonPointCloud *>(form)) {
+    if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         return this->setPointCloud(pointCloud);
     }
 }
@@ -948,7 +948,7 @@ gnomonPointCloud *gnomonViewForm::pointCloud(void)
     }
 }
 
-void gnomonViewForm::setPointCloud(gnomonPointCloud *pointCloud, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbstractVisualization *visualization)
 {
     d->forms["gnomonPointCloud"] = pointCloud;
 
@@ -962,7 +962,7 @@ void gnomonViewForm::setPointCloud(gnomonPointCloud *pointCloud, gnomonAbstractV
     }
 
     gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
-    formVisualizationPointCloud->setPointCloud(pointCloud);
+    formVisualizationPointCloud->setPointCloud(dynamic_cast<gnomonPointCloud *>(pointCloud->current()));
     if (visualization) {
         formVisualizationPointCloud->setParameters(visualization->parameters());
     }

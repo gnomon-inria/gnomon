@@ -86,5 +86,11 @@ public:
 
 DTK_DECLARE_OBJECT(gnomonPointCloud *)
 
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonPointCloud> gnomonPointCloudSeries;
+Q_DECLARE_METATYPE(gnomonPointCloudSeries *)
+
 //
 // gnomonPointCloud.h ends here
