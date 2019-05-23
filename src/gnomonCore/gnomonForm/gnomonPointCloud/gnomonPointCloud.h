@@ -1,0 +1,90 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <gnomonCoreExport.h>
+
+#include "gnomonAbstractPointCloudData.h"
+#include "gnomonForm/gnomonAbstractForm.h"
+
+#include <QtCore>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONCORE_EXPORT gnomonPointCloud : public gnomonAbstractForm
+{
+protected:
+    gnomonAbstractPointCloudData *m_data;
+
+public:
+    explicit gnomonPointCloud(void) : m_data(nullptr) {}
+    explicit gnomonPointCloud(gnomonAbstractPointCloudData *data) : m_data(data) {}
+             gnomonPointCloud(const gnomonPointCloud& o) : m_data(o.m_data->clone()) {}
+
+    gnomonAbstractForm *clone(void) { return new gnomonPointCloud(*this); };
+
+    ~gnomonPointCloud(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+
+public:
+    gnomonPointCloud& operator = (const gnomonPointCloud& o)
+    {
+        if (this == &o)
+            return *this;
+
+        if (m_data != o.m_data) {
+            if (m_data != nullptr) {
+                delete m_data;
+            }
+            if(o.m_data != nullptr) {
+                m_data = o.m_data->clone();
+            } else {
+                m_data = nullptr;
+            }
+        }
+        return *this;
+    }
+
+public:
+    QString name(void) const override { return"gnomonPointCloud";}
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+
+public:
+    const gnomonAbstractPointCloudData *data(void) const { return m_data; }
+          gnomonAbstractPointCloudData *data(void)       { return m_data; }
+
+    void setData(gnomonAbstractPointCloudData* data) { m_data = data; }
+
+public:
+    QList<long> pointIds(void) const { return m_data->pointIds(); }
+    long pointCount(void) const { return m_data->pointCount(); }
+
+public:
+    QStringList pointPropertyNames(void) const { return m_data->pointPropertyNames(); }
+    bool hasPointProperty(const QString& propertyName) const { return m_data->hasPointProperty(propertyName); }
+    QMap<long, QVariant> pointProperty(const QString& propertyName) const { return m_data->pointProperty(propertyName); }
+    QMap<long, double> pointX(void) const { return m_data->pointX(); }
+    QMap<long, double> pointY(void) const { return m_data->pointY(); }
+    QMap<long, double> pointZ(void) const { return m_data->pointZ(); }
+
+};
+
+// ///////////////////////////////////////////////////////////////////
+
+DTK_DECLARE_OBJECT(gnomonPointCloud *)
+
+//
+// gnomonPointCloud.h ends here

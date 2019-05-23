@@ -38,6 +38,7 @@ signals:
     void createCellImageQuantification(void);
     void createRegistration(void);
     void createMeshFromImage(void);
+    void createPointCloudFromImage(void);
     void createSegmentation(void);
     void createCellComplexFromCellImage(void);
     void createCellImageFilter(void);
@@ -52,6 +53,7 @@ public slots:
     void onCreateCellImageQuantification(void);
     void onCreateRegistration(void);
     void onCreateMeshFromImage(void);
+    void onCreatePointCloudFromImage(void);
     void onCreateSegmentation(void);
     void onCreateCellComplexFromCellImage(void);
     void onCreateCellImageFilter(void);
@@ -77,6 +79,7 @@ public:
     static QColor cellImageQuantification_color;
     static QColor registration_color;
     static QColor meshFromImage_color;
+    static QColor pointCloudFromImage_color;
     static QColor segmentation_color;
     static QColor cellComplexFromCellImage_color;
     static QColor cellImageFilter_color;

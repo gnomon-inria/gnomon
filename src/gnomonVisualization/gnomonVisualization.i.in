@@ -36,6 +36,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
 %}
@@ -209,6 +210,7 @@
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
 

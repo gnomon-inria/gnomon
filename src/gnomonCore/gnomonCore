@@ -22,6 +22,7 @@
 #include "gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h"
 #include "gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h"
 #include "gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h"
+#include "gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h"
 
 #include "gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h"
@@ -37,6 +38,8 @@
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonForm/gnomonMesh/gnomonAbstractMeshData.h"
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
+#include "gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h"
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonForm/gnomonTree/gnomonAbstractTreeData.h"
 #include "gnomonForm/gnomonTree/gnomonTree.h"
 
