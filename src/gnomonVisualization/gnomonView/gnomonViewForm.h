@@ -30,6 +30,7 @@ class gnomonImagesSerie;
 class gnomonCellImage;
 class gnomonCellComplex;
 class gnomonMesh;
+class gnomonPointCloud;
 
 class vtkRenderer;
 class vtkRenderWindowInteractor;
@@ -80,6 +81,7 @@ public:
     void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
     void setCellComplex(gnomonCellComplex *, gnomonAbstractVisualization *  = nullptr);
     void setMesh(gnomonMesh *, gnomonAbstractVisualization *  = nullptr);
+    void setPointCloud(gnomonPointCloud *, gnomonAbstractVisualization *  = nullptr);
 
 public:
     gnomonAbstractForm *form(const QString&); 
@@ -87,6 +89,7 @@ public:
     gnomonCellImage *cellImage(void);
     gnomonCellComplex *cellComplex(void);
     gnomonMesh *mesh(void);
+    gnomonPointCloud *pointCloud(void);
 
 public:
     vtkRenderer *renderer2D(void);

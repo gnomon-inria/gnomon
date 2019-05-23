@@ -30,6 +30,7 @@
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 #include "gnomonVisualizations/gnomonImagesSerie/gnomonAbstractVisualizationImagesSerie.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
+#include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -350,6 +351,8 @@ void gnomonViewFormPrivate::refresh(void)
                 combo_box_keys = gnomonVisualization::visualizationImagesSerie::pluginFactory().keys();
             } else if (key == "gnomonMesh") {
                 combo_box_keys = gnomonVisualization::visualizationMesh::pluginFactory().keys();
+            } else if (key == "gnomonPointCloud") {
+                combo_box_keys = gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
             }
             for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
                 combo_box->addItem(*it);
@@ -391,6 +394,13 @@ void gnomonViewFormPrivate::refresh(void)
                     gnomonMesh *mesh = (gnomonMesh *)this->forms[key];
                     formVisualizationMesh->setMesh(mesh);
                     formVisualizationMesh->update();
+                } else if (key == "gnomonPointCloud") {
+                    this->formVisualization[key] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
+                    this->formVisualization[key]->setView(q);
+                    gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)this->formVisualization[key];
+                    gnomonPointCloud *pointCloud = (gnomonPointCloud *)this->forms[key];
+                    formVisualizationPointCloud->setPointCloud(pointCloud);
+                    formVisualizationPointCloud->update();
                 }
                 this->configure((QWidget *) q->parent(), key);
             });
@@ -415,6 +425,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationPointCloud", &stat);
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
     connect(d->renderer3D_button, SIGNAL(iconClicked()), this, SLOT(switchTo3D()));
@@ -786,6 +797,9 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form, gnom
     if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
         return this->setMesh(mesh);
     }
+    if (gnomonPointCloud *pointCloud = dynamic_cast<gnomonPointCloud *>(form)) {
+        return this->setPointCloud(pointCloud);
+    }
 }
 
 gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
@@ -954,6 +968,47 @@ void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visu
     }
 
     emit formAdded("gnomonMesh");
+}
+
+gnomonPointCloud *gnomonViewForm::pointCloud(void)
+{
+    if (d->forms.contains("gnomonPointCloud")) {
+        return dynamic_cast<gnomonPointCloud *>(d->forms["gnomonPointCloud"]);
+    } else {
+        return nullptr;
+    }
+}
+
+void gnomonViewForm::setPointCloud(gnomonPointCloud *pointCloud, gnomonAbstractVisualization *visualization)
+{
+    d->forms["gnomonPointCloud"] = pointCloud;
+
+    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
+    QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
+
+    if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
+    {
+        d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(key);
+        d->formVisualization["gnomonPointCloud"]->setView(this);
+    }
+
+    gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
+    formVisualizationPointCloud->setPointCloud(pointCloud);
+    if (visualization) {
+        formVisualizationPointCloud->setParameters(visualization->parameters());
+    }
+    formVisualizationPointCloud->update();
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonPointCloud");
 }
 
 void gnomonViewForm::setBounds(double bounds[6])

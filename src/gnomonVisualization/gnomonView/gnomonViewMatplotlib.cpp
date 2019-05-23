@@ -16,6 +16,7 @@
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
 
 #include <gnomonCore>
 #include <gnomonFonts>
@@ -378,11 +379,25 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
 
             gnomonTree * tree = (gnomonTree *) treeCommand->tree()->clone();
             if (!tree) {
-                qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
+                qWarning() << Q_FUNC_INFO << "Resulting tree is void.";
                 event->ignore();
                 return;
             }
             this->setForm("gnomonTree",tree);
+        } else if (path.endsWith("csv")) {
+            if ((!d->formReaderCommand.contains("gnomonDataFrame"))||(!d->formReaderCommand["gnomonDataFrame"]))
+                d->formReaderCommand["gnomonDataFrame"] = new gnomonDataFrameReaderCommand("gnomonDataFrameReaderPandas");
+            gnomonDataFrameReaderCommand *dataFrameCommand = (gnomonDataFrameReaderCommand *) d->formReaderCommand["gnomonDataFrame"];
+            dataFrameCommand->setPath(path.remove("file://"));
+            dataFrameCommand->redo();
+
+            gnomonDataFrame * dataFrame = (gnomonDataFrame *) dataFrameCommand->dataFrame()->clone();
+            if (!dataFrame) {
+                qWarning() << Q_FUNC_INFO << "Resulting dataframe is void.";
+                event->ignore();
+                return;
+            }
+            this->setForm("gnomonDataFrame",dataFrame);
         }
     }
 

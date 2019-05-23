@@ -38,6 +38,7 @@ signals:
     void createCellImageQuantification(void);
     void createRegistration(void);
     void createMeshFromImage(void);
+    void createPointCloudFromImage(void);
     void createSegmentation(void);
     void createCellComplexFromCellImage(void);
     void createCellImageFilter(void);
@@ -63,6 +64,7 @@ private:
     QAction *action_cellImageQuantification;
     QAction *action_registration;
     QAction *action_meshFromImage;
+    QAction *action_pointCloudFromImage;
     QAction *action_cellComplexFromCellImage;
     QAction *action_cellImageFilter;
     QAction *action_simulation;
@@ -88,6 +90,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_preprocess    = image_menu->addAction("Preprocess");
     this->action_registration  = image_menu->addAction("Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
+    this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
     this->action_cellImageQuantification  = image_menu->addAction("Cell Quantification");
 
@@ -137,6 +140,9 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_segmentation)
         emit createSegmentation();
+        
+    if(action == this->action_pointCloudFromImage)
+        emit createPointCloudFromImage();
 
     if(action == this->action_cellComplexFromCellImage)
         emit createCellComplexFromCellImage();
@@ -323,6 +329,8 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
         else if(item->text() == "MeshFromImage")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::meshFromImage_color.red()).arg(gnomonToolBar::meshFromImage_color.green()).arg(gnomonToolBar::meshFromImage_color.blue()));
+        else if(item->text() == "PointCloudFromImage")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::pointCloudFromImage_color.red()).arg(gnomonToolBar::pointCloudFromImage_color.green()).arg(gnomonToolBar::pointCloudFromImage_color.blue()));
         else if(item->text() == "Browse")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::browser_color.red()).arg(gnomonToolBar::browser_color.green()).arg(gnomonToolBar::browser_color.blue()));
         else if(item->text() == "CellComplexFromCellImage")
@@ -365,6 +373,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     connect(button, SIGNAL(createCellImageQuantification()), this, SLOT(onCreateCellImageQuantification()));
     connect(button, SIGNAL(createRegistration()), this, SLOT(onCreateRegistration()));
     connect(button, SIGNAL(createMeshFromImage()), this, SLOT(onCreateMeshFromImage()));
+    connect(button, SIGNAL(createPointCloudFromImage()), this, SLOT(onCreatePointCloudFromImage()));
     connect(button, SIGNAL(createSegmentation()), this, SLOT(onCreateSegmentation()));
     connect(button, SIGNAL(createCellComplexFromCellImage()), this, SLOT(onCreateCellComplexFromCellImage()));
     connect(button, SIGNAL(createCellImageFilter()), this, SLOT(onCreateCellImageFilter()));
@@ -475,6 +484,13 @@ void gnomonToolBar::onCreateMeshFromImage(void)
     emit createMeshFromImage();
 }
 
+void gnomonToolBar::onCreatePointCloudFromImage(void)
+{
+    d->createWorkspace(meshFromImage_color, "Nuclei Detection");
+
+    emit createPointCloudFromImage();
+}
+
 void gnomonToolBar::onCreateSimulation(void)
 {
     d->createWorkspace(simulation_color, "Simulation");
@@ -497,6 +513,7 @@ QColor gnomonToolBar::python_simulation_color = QColor("#a38948");
 QColor gnomonToolBar::fusion_color = QColor("#ff9500");
 QColor gnomonToolBar::registration_color = QColor("#ffcc00");
 QColor gnomonToolBar::meshFromImage_color = QColor("#5f9ea0");
+QColor gnomonToolBar::pointCloudFromImage_color = QColor("#099556");
 QColor gnomonToolBar::preprocess_color = QColor("#4cd964");
 QColor gnomonToolBar::cellImageQuantification_color = QColor("#4c64d9");
 QColor gnomonToolBar::segmentation_color = QColor("#5ac8fa");
