@@ -70,9 +70,6 @@ public slots:
     void unlink(gnomonViewForm *other);
 
 public slots:
-    void sliceChange(int);
-
-public slots:
     void setExportColor(const QColor& color);
 
 public slots:
@@ -120,11 +117,23 @@ public slots:
 public slots:
     void onSliceChanged(int);
 
+public slots:
+    void sliceChange(int);
+
 signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
 
     void formAdded(const QString&);
+
+signals:
+    void timeChanged(double);
+
+public slots:
+    void timeChange(double);
+
+public slots:
+    void onTimeChanged(double);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
