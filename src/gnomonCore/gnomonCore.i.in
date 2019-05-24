@@ -741,6 +741,7 @@ namespace std {
 %template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;
 %template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
 %template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
+%template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
 %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
 //
