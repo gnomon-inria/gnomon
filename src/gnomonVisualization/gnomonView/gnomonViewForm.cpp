@@ -499,27 +499,25 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     });
 
     connect(d->clearButton, &QPushButton::clicked, [=] () {
-      for (const auto& key : d->formVisualization.keys()) {
-          if (key == "gnomonCellComplex") {
-            gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex =  (gnomonAbstractVisualizationCellComplex *)d->formVisualization[key];
-            delete formVisualizationCellComplex;
-          } else if (key=="gnomonImagesSerie") {
-            gnomonAbstractVisualizationImagesSerie *formVisualizationImagesSerie =  (gnomonAbstractVisualizationImagesSerie *)d->formVisualization[key];
-            delete formVisualizationImagesSerie;
-          } else if (key=="gnomonCellImage") {
-            gnomonAbstractVisualizationCellImage *formVisualizationCellImage =  (gnomonAbstractVisualizationCellImage *)d->formVisualization[key];
-            delete formVisualizationCellImage;
-          } else if (key=="gnomonMesh") {
-            gnomonAbstractVisualizationMesh *formVisualizationMesh =  (gnomonAbstractVisualizationMesh *)d->formVisualization[key];
-            delete formVisualizationMesh;
-          }
+        d->formVisualizationPane->clearLayout();
 
-      qDebug()<<Q_FUNC_INFO<<"remove formVisualization"<<key<<d->formVisualization.remove(key);
-      qDebug()<<Q_FUNC_INFO<<"remove forms"<<key<<d->forms.remove(key);
-      qDebug()<<Q_FUNC_INFO<<"remove formVisualizationPaneItems"<<key<<d->formVisualizationPaneItems.remove(key);
-      qDebug()<<Q_FUNC_INFO<<"remove parameterLayouts"<<key<<d->parameterLayouts.remove(key);
-    }
-    this->render();
+        for (const auto& key : d->formVisualization.keys()) {
+            d->formVisualization[key]->disconnect();
+            delete d->formVisualization[key];
+            delete d->forms[key];
+            d->parameterLayouts[key]->disconnect();
+            delete d->parameterLayouts[key];
+            d->formVisualizationPaneItems[key]->disconnect();
+            delete d->formVisualizationPaneItems[key];
+        }
+        d->formVisualization.clear();
+        d->forms.clear();
+        d->parameterLayouts.clear();
+        d->formVisualizationPaneItems.clear();
+
+        d->formVisualizationPane->addWidget(d->paneItemButton);
+
+        this->render();
     });
 
     this->setAcceptDrops(true);

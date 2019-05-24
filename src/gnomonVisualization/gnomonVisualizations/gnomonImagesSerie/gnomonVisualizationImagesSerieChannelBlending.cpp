@@ -237,18 +237,18 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
+    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
         dd->actor2D->hide();
         this->render();
     });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
+    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
         dd->actor2D->show();
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
+    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     bounds[0] = 0;
