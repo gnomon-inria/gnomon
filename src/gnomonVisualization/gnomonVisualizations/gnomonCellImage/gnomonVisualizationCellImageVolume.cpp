@@ -67,6 +67,15 @@ gnomonVisualizationCellImageVolume::gnomonVisualizationCellImageVolume(void) : g
 
 gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
 {
+    this->clear();
+
+    delete dd;
+
+    dd = NULL;
+}
+
+void gnomonVisualizationCellImageVolume::clear(void)
+{
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -86,10 +95,6 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
     disconnect(d->connectXY);
     disconnect(d->connectXZ);
     disconnect(d->connectYZ);
-
-    delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImage *cellImage)

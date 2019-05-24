@@ -53,7 +53,7 @@ public:
 
     gnomonImageDataChannelBlending *blending = nullptr;
 
-    gnomonActor2DImageRGBAWidget *actor2D = nullptr; 
+    gnomonActor2DImageRGBAWidget *actor2D = nullptr;
     gnomonActorImageRGBAVolume *volume = nullptr;
 
 public:
@@ -88,6 +88,15 @@ gnomonVisualizationImagesSerieChannelBlending::gnomonVisualizationImagesSerieCha
 
 gnomonVisualizationImagesSerieChannelBlending::~gnomonVisualizationImagesSerieChannelBlending(void)
 {
+    this->clear();
+
+    delete dd;
+
+    dd = NULL;
+}
+
+void gnomonVisualizationImagesSerieChannelBlending::clear(void)
+{
     if (dd->volume) {
         d->view->renderer3D()->RemoveActor(dd->volume);
         dd->volume->Delete();
@@ -102,9 +111,11 @@ gnomonVisualizationImagesSerieChannelBlending::~gnomonVisualizationImagesSerieCh
         dd->actor2D = nullptr;
     }
 
-    delete dd;
-
-    dd = NULL;
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+    disconnect(d->connectXY);
+    disconnect(d->connectXZ);
+    disconnect(d->connectYZ);
 }
 
 void gnomonVisualizationImagesSerieChannelBlending::setImagesSerie(gnomonImagesSerie *imagesSerie)
@@ -176,7 +187,7 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
     // QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
     // QMap<double, QColor> colormap = ((gnomonCoreParameterLookupTable *)d->parameters["colormap"])->value()->colorMap();
- 
+
 
     QMap<QString,vtkImageData *> channelImages;
     for (const auto& channelName : dd->imagesSerie->channels()) {
@@ -206,7 +217,7 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
     // blending->setValueRange(value_range);
     dd->blending->update();
     dd->image = dd->blending;
-    
+
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageRGBAWidget::New();
     }
@@ -214,7 +225,7 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
     dd->actor2D->setOpacity(alpha);
     dd->actor2D->update();
-    
+
     if (!dd->volume) {
         dd->volume = gnomonActorImageRGBAVolume::New();
         d->view->renderer3D()->AddActor(dd->volume);
@@ -231,18 +242,18 @@ void gnomonVisualizationImagesSerieChannelBlending::update(void)
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { 
+    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
         dd->actor2D->hide();
-        this->render(); 
+        this->render();
     });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { 
+    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
         dd->actor2D->show();
         this->render();
     });
 
-    connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
+    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     bounds[0] = 0;

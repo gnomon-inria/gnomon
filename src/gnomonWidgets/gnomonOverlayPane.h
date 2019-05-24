@@ -53,6 +53,9 @@ public:
     void addLayout(QLayout *);
 
 public:
+    void addInfoPaneItem(const QString& title, QMap<QString, QVariant> info);
+
+public:
     void addWidget(QWidget *);
 
 public slots:

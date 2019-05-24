@@ -118,38 +118,19 @@ public:
 
     void OnDoubleClick(long vtkId)
     {
+        this->q->view()->infoPane()->clear();
+
         long cellId = q->cellId(vtkId);
         QString text = "Cell ";
         text.append(QString::number(cellId));
 
-        if (!this->infoPaneItem) {
-            this->infoPaneItem = new gnomonOverlayPaneItem((QWidget *) q->view()->parent());
-            this->infoPaneItem->toggle();
-        }
-        this->infoPaneItem->setTitle(text);
-
-        if (!this->infoLayout) {
-            this->infoLayout = new QFormLayout;
-            this->infoLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-            this->infoPaneItem->addLayout(infoLayout);
-        } else {
-            for(int row = 0, max_row = this->infoLayout->count(); row < max_row; ++row) {
-                QLayoutItem *forDeletion = this->infoLayout->takeAt(0);
-                forDeletion->widget()->disconnect();
-                delete forDeletion->widget();
-                delete forDeletion;
-            }
-        }
-
         QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
-        for(QMap<QString, QVariant>::iterator it = cellInfo.begin(), it_end = cellInfo.end(); it != it_end; ++it) {
-            infoLayout->addRow(it.key(), new QLabel(it.value().toString()));
-        }
+
 
         if (!this->q->view()->infoPane()->isToggled()) {
             this->q->view()->infoPane()->toggle();
-            this->q->view()->infoPane()->addWidget(this->infoPaneItem);
         }
+        this->q->view()->infoPane()->addInfoPaneItem(text, cellInfo);
     }
 
     void updateTextActor(long vtkId)
@@ -315,6 +296,15 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
 
 gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarchingCubes(void)
 {
+    this->clear();
+
+    delete dd;
+
+    dd = NULL;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::clear(void)
+{
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -339,10 +329,6 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
     qDebug()<<"Changed interactor style";
 //    dd->interactor_style->Delete();
-
-    delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *cellImage)
