@@ -132,6 +132,7 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
     QString figure_statement = "figure = plt.figure("+figure_number+")";
+    dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
     dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
     dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
     QString save_statement = "figure.savefig('"+export_file_path+"')";
