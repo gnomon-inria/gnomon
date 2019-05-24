@@ -47,6 +47,7 @@ signals:
 public slots:
     virtual void update(void) = 0;
     virtual void render(void) = 0;
+    virtual void clear(void) = 0;
 
 protected:
     class gnomonAbstractMatplotlibVisualizationPrivate *d;

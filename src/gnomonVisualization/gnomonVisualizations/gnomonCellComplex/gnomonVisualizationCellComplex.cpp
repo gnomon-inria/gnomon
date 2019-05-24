@@ -111,7 +111,14 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbs
 
 gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
 {
+    this->clear();
 
+    delete dd;
+    dd = NULL;
+}
+
+void gnomonVisualizationCellComplex::clear(void)
+{
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -131,10 +138,6 @@ gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
     disconnect(d->connectXY);
     disconnect(d->connectXZ);
     disconnect(d->connectYZ);
-
-    delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellComplex)

@@ -81,6 +81,15 @@ gnomonVisualizationImagesSerie::gnomonVisualizationImagesSerie(void) : gnomonAbs
 
 gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
 {
+    this->clear();
+
+    delete dd;
+
+    dd = NULL;
+}
+
+void gnomonVisualizationImagesSerie::clear(void)
+{
     if (dd->volume) {
         d->view->renderer3D()->RemoveActor(dd->volume);
         dd->volume->Delete();
@@ -100,10 +109,6 @@ gnomonVisualizationImagesSerie::~gnomonVisualizationImagesSerie(void)
     disconnect(d->connectXY);
     disconnect(d->connectXZ);
     disconnect(d->connectYZ);
-
-    delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationImagesSerie::setImagesSerie(gnomonImagesSerie *imagesSerie)

@@ -296,6 +296,15 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
 
 gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarchingCubes(void)
 {
+    this->clear();
+
+    delete dd;
+
+    dd = NULL;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::clear(void)
+{
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -320,10 +329,6 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
     qDebug()<<"Changed interactor style";
 //    dd->interactor_style->Delete();
-
-    delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *cellImage)

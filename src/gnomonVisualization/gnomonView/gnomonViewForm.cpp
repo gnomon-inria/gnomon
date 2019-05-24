@@ -503,6 +503,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
         for (const auto& key : d->formVisualization.keys()) {
             d->formVisualization[key]->disconnect();
+            d->formVisualization[key]->clear();
             delete d->formVisualization[key];
             delete d->forms[key];
             d->parameterLayouts[key]->disconnect();
