@@ -57,10 +57,12 @@ protected:
 
 public:
     gnomonOverlayButton *export_button = nullptr;
+    gnomonOverlayButton *save_button = nullptr;
     QColor export_color = QColor("#cccccc");
 
 public slots:
     void exportToManager(void);
+    void saveFigure(void);
 
 public:
     QMap<QString, gnomonAbstractForm *> forms;
@@ -90,6 +92,7 @@ gnomonViewMatplotlibPrivate::gnomonViewMatplotlibPrivate(QWidget *parent) : QWid
     this->layout = new QVBoxLayout(this);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", parent);
+    this->save_button = new gnomonOverlayButton(fa::save, "", parent);
 }
 
 gnomonViewMatplotlibPrivate::~gnomonViewMatplotlibPrivate(void)
@@ -103,6 +106,41 @@ void gnomonViewMatplotlibPrivate::exportToManager(void)
     }
 }
 
+void gnomonViewMatplotlibPrivate::saveFigure(void)
+{
+    QSettings settings("inria", "gnomon");
+    settings.beginGroup("General");
+    QString path = settings.value("last_saved_file", QDir::homePath()).toString();
+    settings.endGroup();
+
+    QString export_file_path;
+    export_file_path = QFileDialog::getSaveFileName(this, tr("Save figure"), path, tr("Figures (*.png)"));
+
+    QString figure_number = "0";
+    for(int row = 0, max_row = this->layout->count(); row < max_row; ++row) {
+        QLayoutItem *item = this->layout->itemAt(0);
+        QWidget *widget = item->widget();
+        if (widget->objectName().contains("MplTabWidget")) {
+            QStringList name_items = widget->objectName().split(" ");
+            if (name_items.size()>1) {
+                figure_number = name_items[2];
+            }
+        }
+    }
+    qDebug()<<figure_number;
+
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
+    QString figure_statement = "figure = plt.figure("+figure_number+")";
+    dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
+    dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
+    QString save_statement = "figure.savefig('"+export_file_path+"')";
+    dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
+    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+
+}
+
 QSize gnomonViewMatplotlibPrivate::sizeHint(void) const
 {
     return QSize(800, 600);
@@ -111,6 +149,7 @@ QSize gnomonViewMatplotlibPrivate::sizeHint(void) const
 void gnomonViewMatplotlibPrivate::resizeEvent(QResizeEvent *event)
 {
     this->export_button->move(event->size().width() - 40, 10);
+    this->save_button->move(event->size().width() -80, 10);
 
     QWidget::resizeEvent(event);
 }
@@ -250,6 +289,7 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     layout->addWidget(d->pane(parent), 0, 1, 1, 1);
 
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
+    connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
 
     this->setObjectName("ViewMatplotlib");
 
@@ -292,10 +332,10 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form
 
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
-    
+
         qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
-    
+
         if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
         {
             d->formVisualization["gnomonTree"] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(key);
@@ -314,10 +354,10 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form
 
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame", &stat);
-    
+
         qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
-    
+
         if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
         {
             d->formVisualization["gnomonDataFrame"] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(key);
@@ -364,7 +404,7 @@ void gnomonViewMatplotlib::dragMoveEvent(QDragMoveEvent *event)
 void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
-    
+
     if(path.startsWith(":")) {
         gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
         this->setForm("formManager",form);

@@ -129,6 +129,7 @@ public:
 public:
     gnomonOverlayPaneItem *paneItemButton = nullptr;
     QPushButton *renderButton = nullptr;
+    QPushButton *clearButton = nullptr;
 
     QMap<QString, QFormLayout *> parameterLayouts;
     QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
@@ -280,13 +281,20 @@ gnomonOverlayPane *gnomonViewFormPrivate::pane(QWidget *parent)
     if(!this->renderButton) {
         this->renderButton = new QPushButton("Render",parent);
     }
+
+    if(!this->clearButton) {
+        this->clearButton = new QPushButton("Clear", parent);
+    }
+
     this->renderButton->setCheckable(true);
+    this->clearButton->setCheckable(true);
 
     if(!this->paneItemButton) {
         this->paneItemButton = new gnomonOverlayPaneItem(parent);
     }
     this->paneItemButton->setTitle("View Form");
     this->paneItemButton->addWidget(this->renderButton);
+    this->paneItemButton->addWidget(this->clearButton);
     this->paneItemButton->toggle();
 
     this->refresh();
@@ -531,6 +539,28 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                 v->update();
             }
         }
+    });
+
+    connect(d->clearButton, &QPushButton::clicked, [=] () {
+        d->formVisualizationPane->clearLayout();
+
+        for (const auto& key : d->formVisualization.keys()) {
+            d->formVisualization[key]->disconnect();
+            d->formVisualization[key]->clear();
+            delete d->formVisualization[key];
+            d->parameterLayouts[key]->disconnect();
+            delete d->parameterLayouts[key];
+            d->formVisualizationPaneItems[key]->disconnect();
+            delete d->formVisualizationPaneItems[key];
+        }
+        d->formVisualization.clear();
+        d->forms.clear();
+        d->parameterLayouts.clear();
+        d->formVisualizationPaneItems.clear();
+
+        d->formVisualizationPane->addWidget(d->paneItemButton);
+
+        this->render();
     });
 
     this->setAcceptDrops(true);

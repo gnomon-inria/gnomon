@@ -71,6 +71,15 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualiza
 
 gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 {
+    this->clear();
+
+    delete dd;
+
+    dd = NULL;
+}
+
+void gnomonVisualizationMesh::clear(void)
+{
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -85,10 +94,6 @@ gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
-
-    delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
