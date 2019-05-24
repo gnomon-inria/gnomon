@@ -171,6 +171,7 @@ gnomonColorMapEditor::gnomonColorMapEditor(QWidget *parent) : QWidget(parent), d
     d->colormap_names.append("bronze");
     // d->colormap_names.append("chestnut");
     // d->colormap_names.append("cold");
+    d->colormap_names.append("cividis");
     d->colormap_names.append("curvature");
     d->colormap_names.append("density");
     d->colormap_names.append("geo_jet");

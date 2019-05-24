@@ -49,6 +49,7 @@
     <file>cluts/chestnut.clut</file>
     <file>cluts/cold.clut</file>
     <file>cluts/curvature.clut</file>
+    <file>cluts/cividis.clut</file>
     <file>cluts/density.clut</file>
     <file>cluts/geo_jet.clut</file>
     <file>cluts/glasbey.clut</file>
