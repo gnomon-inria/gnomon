@@ -32,6 +32,7 @@ public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
     virtual void run(void) override = 0;
+    virtual QString documentation(void) override = 0;
 
 public:
     virtual void setInput(gnomonImagesSerie *images_serie) = 0;

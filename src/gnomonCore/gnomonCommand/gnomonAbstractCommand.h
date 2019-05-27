@@ -29,6 +29,10 @@ public:
     virtual void redo(void) = 0;
     virtual void undo(void) = 0;
 
+    QString documentation(void){
+      return action->documentation();
+    };
+
 protected:
     gnomonAbstractAlgorithm *action = nullptr;
 };
