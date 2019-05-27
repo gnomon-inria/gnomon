@@ -869,9 +869,11 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
         this->setPointCloud(pointCloud);
     }
 
-    QList<double> new_times = form->times();
-    for(auto time : new_times) {
-        d->forms_times.insert(time);
+    d->forms_times.clear();
+    for (const auto& key : d->forms.keys()) {
+        for(auto time : d->forms[key]->times()) {
+            d->forms_times.insert(time);
+        }
     }
     d->updateTimeSlider();
 
@@ -1174,7 +1176,13 @@ void gnomonViewForm::onSliceChanged(int slice)
 
 void gnomonViewForm::onTimeChanged(double time)
 {
-    d->time_slider->setValue(time);
+    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
+
+    if (sorted_times.contains(time)) {
+        qSort(sorted_times);
+        int value = sorted_times.indexOf(time);
+        d->time_slider->setValue(value);
+    }
 }
 
 void gnomonViewForm::dragEnterEvent(QDragEnterEvent *event)
