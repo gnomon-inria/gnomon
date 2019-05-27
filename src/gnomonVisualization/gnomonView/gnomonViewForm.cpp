@@ -408,7 +408,7 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)this->formVisualization[key];
-                    gnomonPointCloud *pointCloud = (gnomonPointCloud *)this->forms[key];
+                    gnomonPointCloudSeries *pointCloud = (gnomonPointCloudSeries *)this->forms[key];
                     formVisualizationPointCloud->setPointCloud(pointCloud);
                     formVisualizationPointCloud->update();
                 }
@@ -1069,7 +1069,7 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
     }
 
     gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
-    formVisualizationPointCloud->setPointCloud(dynamic_cast<gnomonPointCloud *>(pointCloud->current()));
+    formVisualizationPointCloud->setPointCloud(pointCloud);
     if (visualization) {
         formVisualizationPointCloud->setParameters(visualization->parameters());
     }

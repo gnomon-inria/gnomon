@@ -18,6 +18,7 @@
 
 #include "gnomonAbstractPointCloudData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonForm/gnomonTimeSeries.h"
 
 #include <QtCore>
 
