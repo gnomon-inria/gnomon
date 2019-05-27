@@ -219,11 +219,14 @@ void gnomonPolyDataCellComplex::update(void)
     for (const auto& cellId : cells)
         if (d->cell_mesh.contains(cellId))
             appender->AddInputData(d->cell_mesh[cellId]);
+    appender->Update();
+    // d->mesh = appender->GetOutput();
 
     vtkSmartPointer<vtkCleanPolyData> cleaner = vtkSmartPointer<vtkCleanPolyData>::New();
+    // cleaner->ConvertPolysToLinesOff();
+    // cleaner->ConvertLinesToPointsOff();
     cleaner->SetInputConnection(appender->GetOutputPort());
     cleaner->Update();
-
     d->mesh = cleaner->GetOutput();
 
     this->SetPoints(d->mesh->GetPoints());

@@ -381,7 +381,7 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
                     gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *)this->forms[key];
-                    formVisualizationCellComplex->setCellComplex((gnomonCellComplex *)cellComplex->current());
+                    formVisualizationCellComplex->setCellComplex(cellComplex);
                     formVisualizationCellComplex->update();
                 } else if (key == "gnomonCellImage") {
                     this->formVisualization[key] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
@@ -989,7 +989,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
         d->formVisualization["gnomonCellComplex"]->setView(this);
     }
     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
-    formVisualizationCellComplex->setCellComplex((gnomonCellComplex *)cellComplex->current());
+    formVisualizationCellComplex->setCellComplex(cellComplex);
     if (visualization) {
         formVisualizationCellComplex->setParameters(visualization->parameters());
     }

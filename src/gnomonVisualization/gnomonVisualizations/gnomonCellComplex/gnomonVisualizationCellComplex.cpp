@@ -39,6 +39,7 @@
 class gnomonVisualizationCellComplexPrivate
 {
 public:
+    gnomonCellComplexSeries *cellComplexSeries;
     gnomonCellComplex *cellComplex;
 
 public:
@@ -140,9 +141,12 @@ void gnomonVisualizationCellComplex::clear(void)
     disconnect(d->connectYZ);
 }
 
-void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellComplex)
+void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cellComplexSeries)
 {
-    dd->cellComplex = cellComplex;
+    dd->cellComplexSeries = cellComplexSeries;
+    dd->cellComplex = (gnomonCellComplex *) cellComplexSeries->current();
+
+    qDebug()<<Q_FUNC_INFO<<dd->cellComplex->elementCount(3)<<"Cells";
 
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
@@ -191,8 +195,6 @@ void gnomonVisualizationCellComplex::update(void)
     if(!dd->cellComplex)
         return;
 
-    qDebug()<<Q_FUNC_INFO<<dd->cellComplex<<dd->cellComplex->elementCount(2)<<"Faces";
-
     if (dd->polydata) {
         dd->polydata->Delete();
         dd->polydata = nullptr;
@@ -204,7 +206,6 @@ void gnomonVisualizationCellComplex::update(void)
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
-
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -243,7 +244,7 @@ void gnomonVisualizationCellComplex::update(void)
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
     });
-//
+
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
         dd->actor2D->setSlice(value);
         this->render();
@@ -258,6 +259,7 @@ void gnomonVisualizationCellComplex::update(void)
     double bounds[6];
     dd->polydata->GetBounds(bounds);
     d->view->setBounds(bounds);
+    qDebug()<<Q_FUNC_INFO<<bounds;
 
     this->render();
 }
@@ -296,6 +298,10 @@ void gnomonVisualizationCellComplex::setParameters(const QMap<QString, gnomonCor
 void gnomonVisualizationCellComplex::onTimeChanged(double value)
 {
     qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    if (dd->cellComplexSeries->times().contains(value)) {
+        dd->cellComplex = (gnomonCellComplex *) dd->cellComplexSeries->at(value);
+        this->update();
+    }
     this->render();
 }
 
