@@ -77,6 +77,8 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
 
 void gnomonVisualizationCellImageVolume::clear(void)
 {
+    gnomonAbstractVisualization::clear();
+
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -91,7 +93,7 @@ void gnomonVisualizationCellImageVolume::clear(void)
         dd->actor2D = nullptr;
     }
 
-    disconnect(d->connectTime);
+//    disconnect(d->connectTime);
 
     disconnect(d->connect3D);
     disconnect(d->connect2D);
@@ -215,15 +217,15 @@ void gnomonVisualizationCellImageVolume::update(void)
         this->render();
     });
 
-    disconnect(d->connectTime);
-    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-        qDebug()<<"Time changed"<<value;
-        if (dd->cellImageSeries->times().contains(value)) {
-            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
-            this->update();
-            this->render();
-        }
-    });
+//    disconnect(d->connectTime);
+//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
+//        qDebug()<<"Time changed"<<value;
+//        if (dd->cellImageSeries->times().contains(value)) {
+//            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+//            this->update();
+//            this->render();
+//        }
+//    });
 
     disconnect(d->connect3D);
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
@@ -288,6 +290,16 @@ void gnomonVisualizationCellImageVolume::setParameters(const QMap<QString, gnomo
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
+{
+    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    if (dd->cellImageSeries->times().contains(value)) {
+        dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+        this->update();
+    }
+    this->render();
 }
 
 //

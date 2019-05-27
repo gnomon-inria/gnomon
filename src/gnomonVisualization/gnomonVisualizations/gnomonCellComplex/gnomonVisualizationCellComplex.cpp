@@ -293,5 +293,11 @@ void gnomonVisualizationCellComplex::setParameters(const QMap<QString, gnomonCor
     }
 }
 
+void gnomonVisualizationCellComplex::onTimeChanged(double value)
+{
+    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    this->render();
+}
+
 //
 // gnomonVisualizationCellComplex.cpp ends here

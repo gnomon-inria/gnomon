@@ -138,11 +138,29 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;
+
+    disconnect(d->connectTime);
+    d->connectTime = connect(d->view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
+//        this->onTimeChanged(value);
+//    });
 }
 
 gnomonViewForm* gnomonAbstractVisualization::view(void)
 {
     return d->view;
+}
+
+
+//void gnomonAbstractVisualization::onTimeChanged(double)
+//{
+//    this->render();
+//    return;
+//}
+
+void gnomonAbstractVisualization::clear(void)
+{
+    disconnect(d->connectTime);
 }
 
 

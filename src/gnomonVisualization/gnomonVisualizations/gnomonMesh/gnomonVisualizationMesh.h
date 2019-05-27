@@ -46,7 +46,12 @@ public:
 public slots:
     void update(void) override;
     void render(void) override;
-    void clear(void) override;
+
+public slots:
+    void clear(void);;
+
+public slots:
+    void onTimeChanged(double) override;
 
 public:
     void setParameter(const QString&, const QVariant&) override;

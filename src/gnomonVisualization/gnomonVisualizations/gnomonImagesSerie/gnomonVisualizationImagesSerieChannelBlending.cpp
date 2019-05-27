@@ -299,5 +299,11 @@ void gnomonVisualizationImagesSerieChannelBlending::setParameters(const QMap<QSt
     }
 }
 
+void gnomonVisualizationImagesSerieChannelBlending::onTimeChanged(double value)
+{
+    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    this->render();
+}
+
 //
 // gnomonVisualizationImagesSerieChannelBlending.cpp ends here

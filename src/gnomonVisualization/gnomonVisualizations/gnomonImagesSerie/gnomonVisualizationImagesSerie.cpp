@@ -280,5 +280,11 @@ void gnomonVisualizationImagesSerie::setParameters(const QMap<QString, gnomonCor
     }
 }
 
+void gnomonVisualizationImagesSerie::onTimeChanged(double value)
+{
+    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    this->render();
+}
+
 //
 // gnomonVisualizationImagesSerie.cpp ends here

@@ -47,7 +47,12 @@ signals:
 public slots:
     virtual void update(void) = 0;
     virtual void render(void) = 0;
-    virtual void clear(void) = 0;
+
+public slots:
+    void clear(void);
+
+public slots:
+    virtual void onTimeChanged(double) = 0;
 
 protected:
     class gnomonAbstractVisualizationPrivate *d;

@@ -307,6 +307,8 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
 
 void gnomonVisualizationCellImageMarchingCubes::clear(void)
 {
+    gnomonAbstractVisualization::clear();
+
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -321,8 +323,6 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
         dd->actor2D = nullptr;
     }
 
-    disconnect(d->connectTime);
-
     disconnect(d->connect3D);
     disconnect(d->connect2D);
     disconnect(d->connectXY);
@@ -333,6 +333,8 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
     qDebug()<<"Changed interactor style";
 //    dd->interactor_style->Delete();
+
+
 }
 
 void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeries *cellImage)
@@ -408,7 +410,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
 
     disconnect(d->connectSliceOrientation);
     disconnect(d->connectSlice);
-    disconnect(d->connectTime);
+//    disconnect(d->connectTime);
     disconnect(d->connect3D);
     disconnect(d->connect2D);
     disconnect(d->connectXY);
@@ -469,14 +471,14 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         this->render();
     });
 
-    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-        qDebug()<<"Time changed"<<value;
-        if (dd->cellImageSeries->times().contains(value)) {
-            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
-            this->update();
-            this->render();
-        }
-    });
+//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
+//        qDebug()<<"Time changed"<<value;
+//        if (dd->cellImageSeries->times().contains(value)) {
+//            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+//            this->update();
+//            this->render();
+//        }
+//    });
 
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
 
@@ -549,6 +551,16 @@ QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long
     }
 
     return info;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onTimeChanged(double value)
+{
+    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    if (dd->cellImageSeries->times().contains(value)) {
+        dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+        this->update();
+    }
+    this->render();
 }
 
 //

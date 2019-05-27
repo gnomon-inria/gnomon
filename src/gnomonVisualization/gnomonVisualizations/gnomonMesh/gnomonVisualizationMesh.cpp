@@ -276,5 +276,11 @@ void gnomonVisualizationMesh::setParameters(const QMap<QString, gnomonCoreParame
     }
 }
 
+void gnomonVisualizationMesh::onTimeChanged(double value)
+{
+    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    this->render();
+}
+
 //
 // gnomonVisualizationMesh.cpp ends here

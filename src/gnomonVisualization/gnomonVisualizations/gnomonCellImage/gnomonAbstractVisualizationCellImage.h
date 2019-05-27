@@ -50,7 +50,9 @@ public:
 public slots:
     virtual void update(void) override = 0;
     virtual void render(void) override = 0;
-    virtual void clear(void) override = 0;
+
+public slots:
+    virtual void onTimeChanged(double) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
