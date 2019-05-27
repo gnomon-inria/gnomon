@@ -44,6 +44,7 @@ public:
 
 public:
     virtual void run(void) override = 0;
+    virtual QString documentation(void) override = 0;
 
 };
 
