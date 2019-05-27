@@ -60,6 +60,7 @@ template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane
 {
     QComboBox *combo_box = new QComboBox(parent);
     QStringList combo_box_keys = this->keys();
+    QLabel *doc = new QLabel(parent);
     for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
         combo_box->addItem(*it);
     }
@@ -74,13 +75,14 @@ template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane
         this->command = new T(algorithm);
         emit algorithmChanged(algorithm);
         this->configure(parent, algorithm);
+
+        doc->setText(this->command->documentation());
      });
 
     gnomonOverlayPaneItem *pane_item_algorithm = new gnomonOverlayPaneItem(parent);
-    QLabel *doc = new QLabel(parent);
-    QString doc_string = this->command->documentation();
-    doc->setText(doc_string);
 
+    doc->setText(this->command->documentation());
+    
     pane_item_algorithm->setTitle("Algorithm");
     pane_item_algorithm->addWidget(combo_box);
     pane_item_algorithm->addWidget(doc);
