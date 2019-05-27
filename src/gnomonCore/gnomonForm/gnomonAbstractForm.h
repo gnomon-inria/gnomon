@@ -18,6 +18,12 @@
 
 #include <dtkCore>
 
+class gnomonCellComplex;
+class gnomonCellGraph;
+class gnomonCellImage;
+class gnomonMesh;
+class gnomonPointCloud;
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -37,6 +43,13 @@ public:
 public:
     virtual QString name(void) const = 0;
     virtual QMap<QString,QString> metadata(void) const = 0;
+
+public:
+    gnomonCellComplex *asCellComplex();
+    gnomonCellGraph *asCellGraph();
+    gnomonCellImage *asCellImage();
+    gnomonMesh *asMesh();
+    gnomonPointCloud *asPointCloud();
 };
 
 // ///////////////////////////////////////////////////////////////////
