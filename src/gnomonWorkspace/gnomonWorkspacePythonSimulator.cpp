@@ -383,9 +383,9 @@ void gnomonWorkspacePythonSimulator::run(void)
 
     double t = initial_time;
     while (t<final_time ) {
-        t = t + dt;
         qDebug()<<"Step: "<<t;
         d->model->step(t,dt);
+        t = t + dt;
 
         if (animate) {
             forms = d->model->forms();
@@ -393,6 +393,7 @@ void gnomonWorkspacePythonSimulator::run(void)
             {
                 d->view->setForm(name,forms[name]);
             }
+            d->view->onTimeChanged(t);
             QCoreApplication::processEvents();
         }
     }
@@ -403,6 +404,7 @@ void gnomonWorkspacePythonSimulator::run(void)
         {
             d->view->setForm(name,forms[name]);
         }
+        d->view->onTimeChanged(t);
     }
 
 }
@@ -416,6 +418,7 @@ void gnomonWorkspacePythonSimulator::step(void)
     double t = initial_time;
 
     d->model->step(t,dt);
+    t = t + dt;
 
     QMap<QString, gnomonAbstractDynamicForm *> forms = d->model->forms();
 
@@ -424,6 +427,7 @@ void gnomonWorkspacePythonSimulator::step(void)
     {
         d->view->setForm(name,forms[name]);
     }
+            d->view->onTimeChanged(t);
 }
 
 void gnomonWorkspacePythonSimulator::reset(void)
