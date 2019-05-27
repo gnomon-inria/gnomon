@@ -44,6 +44,7 @@ public:
 
 public:
     virtual void run(void) = 0;
+    virtual QString documentation(void) = 0;
 
 };
 

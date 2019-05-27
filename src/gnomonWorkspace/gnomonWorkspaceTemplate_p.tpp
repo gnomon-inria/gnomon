@@ -77,8 +77,13 @@ template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane
      });
 
     gnomonOverlayPaneItem *pane_item_algorithm = new gnomonOverlayPaneItem(parent);
+    QLabel *doc = new QLabel(parent);
+    QString doc_string = this->command->documentation();
+    doc->setText(doc_string);
+
     pane_item_algorithm->setTitle("Algorithm");
     pane_item_algorithm->addWidget(combo_box);
+    pane_item_algorithm->addWidget(doc);
     pane_item_algorithm->toggle();
 
     this->pane_item_params_layout = new QFormLayout;
