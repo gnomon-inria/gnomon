@@ -413,7 +413,7 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
                     gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
-                    formVisualizationMesh->setMesh((gnomonMesh *)mesh->current());
+                    formVisualizationMesh->setMesh((gnomonMeshSeries *)mesh->current());
                     formVisualizationMesh->update();
                 } else if (key == "gnomonPointCloud") {
                     this->formVisualization[key] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
@@ -1020,10 +1020,10 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
     emit formAdded("gnomonCellComplex");
 }
 
-gnomonMesh *gnomonViewForm::mesh(void)
+gnomonMeshSeries *gnomonViewForm::mesh(void)
 {
     if (d->forms.contains("gnomonMesh")) {
-        return dynamic_cast<gnomonMesh *>(d->forms["gnomonMesh"]->current());
+        return dynamic_cast<gnomonMeshSeries *>(d->forms["gnomonMesh"]);
     } else {
         return nullptr;
     }
@@ -1088,7 +1088,7 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization
     }
 
     gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)d->formVisualization["gnomonMesh"];
-    formVisualizationMesh->setMesh(dynamic_cast<gnomonMesh *>(mesh->current()));
+    formVisualizationMesh->setMesh(mesh);
     if (visualization) {
         formVisualizationMesh->setParameters(visualization->parameters());
     }

@@ -8,7 +8,7 @@ public:
     QMap<QString, QVariant> parameters;
 
 public:
-    gnomonMesh* mesh = nullptr;
+    gnomonMeshSeries* mesh = nullptr;
 };
 
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
@@ -45,7 +45,7 @@ void gnomonFemSolverCommand::undo(void)
     ((gnomonAbstractFemSolver *) this->action)->setMesh(nullptr);
 }
 
-void gnomonFemSolverCommand::setMesh(gnomonMesh *mesh)
+void gnomonFemSolverCommand::setMesh(gnomonMeshSeries *mesh)
 {
     d->mesh = mesh;
     qDebug()<<"setmesh"<<d->mesh;
@@ -56,7 +56,7 @@ void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVaria
     this->action->setParameter(parameter, value);
 }
 
-gnomonMesh *gnomonFemSolverCommand::updatedMesh(void)
+gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh(void)
 {
     return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
 }

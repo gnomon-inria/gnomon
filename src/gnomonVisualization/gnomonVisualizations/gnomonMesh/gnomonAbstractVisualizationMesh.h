@@ -24,7 +24,7 @@
 
 class gnomonViewForm;
 
-class gnomonMesh;
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractVisualization
@@ -36,7 +36,7 @@ public:
     virtual ~gnomonAbstractVisualizationMesh(void) = default;
 
 public:
-	virtual void setMesh(gnomonMesh *cellComplex) = 0;
+	virtual void setMesh(gnomonMeshSeries *cellComplex) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

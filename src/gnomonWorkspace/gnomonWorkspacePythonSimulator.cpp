@@ -325,7 +325,7 @@ void gnomonWorkspacePythonSimulator::apply(void)
 
     if(d->view->mesh()){
         // d->model->setForm("mesh", d->view->form("gnomonMesh"));
-        d->model->setForm("mesh", d->view->mesh());
+        d->model->setForm("mesh", dynamic_cast<gnomonMesh *> (d->view->mesh()->current()));
     }
 
     if(d->view->cellComplex()){

@@ -22,7 +22,7 @@
 
 class gnomonViewForm;
 
-class gnomonMesh;
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisualizationMesh
@@ -34,12 +34,12 @@ public:
     ~gnomonVisualizationMesh(void);
 
 public:
-	void setMesh(gnomonMesh *mesh) override;
+	void setMesh(gnomonMeshSeries *mesh) override;
 
 public slots:
     void updateOpacity(void);
     void updateValueRange(void);
-    
+
 public:
     QImage imageRendering(void) override;
 

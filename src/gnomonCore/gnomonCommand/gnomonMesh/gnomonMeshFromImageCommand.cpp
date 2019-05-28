@@ -65,7 +65,7 @@ gnomonImagesSerie *gnomonMeshFromImageCommand::input(void)
     return ((gnomonAbstractMeshFromImage *) this->action)->input();
 }
 
-gnomonMesh *gnomonMeshFromImageCommand::output(void)
+gnomonMeshSeries *gnomonMeshFromImageCommand::output(void)
 {
     return ((gnomonAbstractMeshFromImage *) this->action)->output();
 }

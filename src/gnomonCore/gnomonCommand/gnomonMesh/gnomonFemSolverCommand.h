@@ -1,6 +1,6 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonMesh;
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
 class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {
@@ -14,11 +14,11 @@ public:
     void undo(void) override;
 
 public:
-    void setMesh(gnomonMesh *mesh);
+    void setMesh(gnomonMeshSeries *mesh);
     void setParameter(const QString&, const QVariant&);
 
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
-    gnomonMesh *updatedMesh(void);
+    gnomonMeshSeries *updatedMesh(void);
 
 private:
     class gnomonFemSolverCommandPrivate *d;

@@ -1,7 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 class gnomonImagesSerie;
-class gnomonMesh;
 
 class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
 {
@@ -18,7 +18,7 @@ public:
     void setInput(gnomonImagesSerie *images_serie);
     gnomonImagesSerie *input(void);
 
-    gnomonMesh *output(void);
+    gnomonMeshSeries *output(void);
 
     virtual void setParameter(const QString&, const QVariant&);
 

@@ -91,7 +91,7 @@ public:
     gnomonImagesSerie *imagesSerie(void);
     gnomonCellImageSeries *cellImage(void);
     gnomonCellComplexSeries *cellComplex(void);
-    gnomonMesh *mesh(void);
+    gnomonMeshSeries *mesh(void);
     gnomonPointCloud *pointCloud(void);
 
 public:

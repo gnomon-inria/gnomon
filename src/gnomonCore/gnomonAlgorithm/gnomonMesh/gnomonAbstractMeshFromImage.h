@@ -21,9 +21,9 @@
 #include <dtkCore>
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
 class dtkImage;
-class gnomonMesh;
 class gnomonCellImage;
 class gnomonImagesSerie;
 
@@ -38,7 +38,7 @@ public:
 
     // Outputs
 public:
-    virtual gnomonMesh *output() const = 0;
+    virtual gnomonMeshSeries *output() const = 0;
     virtual gnomonImagesSerie *input() const = 0;
 
 public:
