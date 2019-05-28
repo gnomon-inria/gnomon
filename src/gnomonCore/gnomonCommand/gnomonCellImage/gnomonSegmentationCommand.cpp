@@ -54,7 +54,7 @@ gnomonImagesSerie *gnomonSegmentationCommand::input()
     return ((gnomonAbstractCellImageFromImage *) this->action)->input();
 }
 
-gnomonCellImage *gnomonSegmentationCommand::output()
+gnomonCellImageSeries *gnomonSegmentationCommand::output()
 {
     return ((gnomonAbstractCellImageFromImage *) this->action)->computedImage();
 }

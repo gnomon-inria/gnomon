@@ -23,7 +23,7 @@
 
 class gnomonCoreParameter;
 class gnomonImagesSerie;
-class gnomonCellImage;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstractAlgorithm
 {
@@ -43,7 +43,7 @@ public:
 public:
     virtual gnomonImagesSerie *input() = 0;
     virtual gnomonImagesSerie *output() = 0;
-    virtual gnomonCellImage *computedImage(void) const = 0;
+    virtual gnomonCellImageSeries *computedImage(void) const = 0;
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)
