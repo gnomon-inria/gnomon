@@ -65,7 +65,7 @@ gnomonImagesSerie *gnomonPointCloudFromImageCommand::input(void)
     return ((gnomonAbstractPointCloudFromImage *) this->action)->input();
 }
 
-gnomonPointCloud *gnomonPointCloudFromImageCommand::output(void)
+gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
 {
     return ((gnomonAbstractPointCloudFromImage *) this->action)->output();
 }

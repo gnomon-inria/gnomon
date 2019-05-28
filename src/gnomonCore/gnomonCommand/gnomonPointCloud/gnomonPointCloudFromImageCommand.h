@@ -1,7 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 class gnomonImagesSerie;
-class gnomonPointCloud;
 
 class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
 {
@@ -18,7 +18,7 @@ public:
     void setInput(gnomonImagesSerie *images_serie);
     gnomonImagesSerie *input(void);
 
-    gnomonPointCloud *output(void);
+    gnomonPointCloudSeries *output(void);
 
     virtual void setParameter(const QString&, const QVariant&);
 

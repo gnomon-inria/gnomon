@@ -21,10 +21,10 @@
 #include <dtkCore>
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 
 class dtkImage;
-class gnomonPointCloud;
-class gnomonCellImage;
 class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonAbstractPointCloudFromImage : public gnomonAbstractAlgorithm
@@ -38,7 +38,7 @@ public:
 
     // Outputs
 public:
-    virtual gnomonPointCloud *output() const = 0;
+    virtual gnomonPointCloudSeries *output() const = 0;
     virtual gnomonImagesSerie *input() const = 0;
 
 public:
