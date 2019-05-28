@@ -15,6 +15,8 @@
 #include "gnomonImage.h"
 
 #include <dtkImagingCore>
+#include <vtkImageData.h>
+
 
 class gnomonImagePrivate
 {
@@ -58,6 +60,37 @@ gnomonImage::~gnomonImage()
 {
     delete d;
 }
+
+QMap<QString,QString> gnomonImage::metadata(void) const
+{
+    QString channel = this->channels()[0];
+    dtkImage *image = this->image(channel);
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(image);
+    converter->convert();
+
+    vtkImageData *image_data = static_cast<vtkImageData *>(converter->output());
+
+    delete converter;
+
+    QMap<QString,QString> metadata;
+
+    qDebug()<<Q_FUNC_INFO<<this->channels().size();
+    metadata["Number of channels"] = QString::number(this->channels().size());
+    if (this->channels().size()>1) {
+        int i_channel = 0;
+        for (const auto& channel : this->channels()) {
+            metadata["Channel "+QString::number(i_channel)] = channel;
+            i_channel++;
+        }
+    }
+    metadata["Dimensions"] = "("+QString::number(image_data->GetDimensions()[0])+", "+QString::number(image_data->GetDimensions()[1])+","+QString::number(image_data->GetDimensions()[2])+")";
+    metadata["Voxel Type"] = QString(QVariant::typeToName(image->storageType()));
+    metadata["Voxel Size"] = "("+QString::number(image_data->GetSpacing()[0])+", "+QString::number(image_data->GetSpacing()[1])+","+QString::number(image_data->GetSpacing()[2])+")";
+
+    return metadata;
+}
+
 
 dtkImage * gnomonImage::image(QString channel) const
 {

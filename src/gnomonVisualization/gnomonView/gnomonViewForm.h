@@ -32,6 +32,7 @@ class gnomonTimeSeries;
 class gnomonImagesSerie;
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
@@ -78,6 +79,7 @@ public slots:
 public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setImage(gnomonImageSeries *, gnomonAbstractVisualization *  = nullptr);
     void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
     void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
     void setMesh(gnomonMeshSeries *, gnomonAbstractVisualization *  = nullptr);
@@ -85,6 +87,7 @@ public:
 
 public:
     gnomonAbstractForm *form(const QString&);
+    gnomonImage *image(void);
     gnomonImagesSerie *imagesSerie(void);
     gnomonCellImageSeries *cellImage(void);
     gnomonCellComplexSeries *cellComplex(void);
