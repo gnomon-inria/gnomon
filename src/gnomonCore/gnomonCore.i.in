@@ -47,6 +47,7 @@
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
@@ -67,6 +68,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h>
@@ -672,6 +674,7 @@
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+%include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 %include <gnomonCore/gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
@@ -692,6 +695,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h>
@@ -739,6 +743,7 @@ namespace std {
 %template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
 %template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
 %template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;
+%template(gnomonImageSeries) gnomonTimeSeries<gnomonImage>;
 %template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
 %template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
 %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
