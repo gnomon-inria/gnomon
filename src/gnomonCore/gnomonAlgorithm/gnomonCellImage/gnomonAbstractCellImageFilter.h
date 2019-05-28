@@ -23,7 +23,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class dtkImage;
-class gnomonCellImage;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFilter : public gnomonAbstractAlgorithm
 {
@@ -32,12 +32,12 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageFilter : public gnomonAbstractAlg
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
   virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
-  virtual void setInput(gnomonCellImage *images) = 0;
+  virtual void setInput(gnomonCellImageSeries *images) = 0;
 
     // Outputs
 public:
-    virtual gnomonCellImage *output() const = 0;
-    virtual gnomonCellImage *input() const = 0;
+    virtual gnomonCellImageSeries *output() const = 0;
+    virtual gnomonCellImageSeries *input() const = 0;
 
 public:
     virtual void run(void) override = 0;

@@ -1,5 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-class gnomonCellImage;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
 class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
 {
@@ -14,9 +14,9 @@ public:
 
 public:
     void setImage(gnomonImagesSerie *image);
-    void setCellImage(gnomonCellImage *cellimage);
+    void setCellImage(gnomonCellImageSeries *cellimage);
 
-    gnomonCellImage *cellImage(void);
+    gnomonCellImageSeries *cellImage(void);
     gnomonDataFrame *dataFrame(void);
 
     virtual void setParameter(const QString&, const QVariant&);

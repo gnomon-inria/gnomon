@@ -21,8 +21,10 @@
 #include <dtkCore>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCellImage;
-class gnomonCellComplex;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
+// class gnomonCellImageSeries;
+// class gnomonCellComplexSeries;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellComplexFromCellImage : public gnomonAbstractAlgorithm
 {
@@ -35,12 +37,12 @@ public:
 
     //Inputs
 public:
-    virtual void setInput(gnomonCellImage *cellimage) = 0;
+    virtual void setInput(gnomonCellImageSeries *cellimage) = 0;
 
     // Outputs
 public:
-    virtual gnomonCellImage *input(void) = 0;
-    virtual gnomonCellComplex *output(void) const = 0;
+    virtual gnomonCellImageSeries *input(void) = 0;
+    virtual gnomonCellComplexSeries *output(void) const = 0;
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexFromCellImage *)

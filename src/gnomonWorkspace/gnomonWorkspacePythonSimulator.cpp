@@ -329,7 +329,7 @@ void gnomonWorkspacePythonSimulator::apply(void)
     }
 
     if(d->view->cellComplex()){
-        d->model->setForm("cellComplex", d->view->cellComplex());
+        d->model->setForm("cellComplex", dynamic_cast<gnomonCellComplex *> (d->view->cellComplex()->current()));
     }
 
     d->model->reset();

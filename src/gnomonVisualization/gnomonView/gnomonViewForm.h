@@ -86,8 +86,8 @@ public:
 public:
     gnomonAbstractForm *form(const QString&);
     gnomonImagesSerie *imagesSerie(void);
-    gnomonCellImage *cellImage(void);
-    gnomonCellComplex *cellComplex(void);
+    gnomonCellImageSeries *cellImage(void);
+    gnomonCellComplexSeries *cellComplex(void);
     gnomonMesh *mesh(void);
     gnomonPointCloud *pointCloud(void);
 

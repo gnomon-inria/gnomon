@@ -924,10 +924,10 @@ void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstr
     emit formAdded("gnomonImagesSerie");
 }
 
-gnomonCellImage *gnomonViewForm::cellImage(void)
+gnomonCellImageSeries *gnomonViewForm::cellImage(void)
 {
     if (d->forms.contains("gnomonCellImage")) {
-        return dynamic_cast<gnomonCellImage *>(d->forms["gnomonCellImage"]->current());
+        return dynamic_cast<gnomonCellImageSeries *>(d->forms["gnomonCellImage"]);
     } else {
         return nullptr;
     }
@@ -965,10 +965,10 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstra
     emit formAdded("gnomonCellImage");
 }
 
-gnomonCellComplex *gnomonViewForm::cellComplex(void)
+gnomonCellComplexSeries *gnomonViewForm::cellComplex(void)
 {
     if (d->forms.contains("gnomonCellComplex")) {
-        return dynamic_cast<gnomonCellComplex *>(d->forms["gnomonCellComplex"]->current());
+        return dynamic_cast<gnomonCellComplexSeries *>(d->forms["gnomonCellComplex"]);
     } else {
         return nullptr;
     }
