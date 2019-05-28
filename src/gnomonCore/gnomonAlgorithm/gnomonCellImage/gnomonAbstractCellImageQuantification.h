@@ -22,8 +22,9 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonImagesSerie;
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonImage/gnomonImage.h"
+
 class gnomonDataFrame;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageQuantification : public gnomonAbstractAlgorithm
@@ -34,7 +35,7 @@ public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
   virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
 
-  virtual void setImage(gnomonImagesSerie *image) = 0;
+  virtual void setImage(gnomonImageSeries *image) = 0;
   virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
 
     // Outputs

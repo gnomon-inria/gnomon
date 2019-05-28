@@ -68,7 +68,10 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h>
@@ -695,7 +698,10 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h>
