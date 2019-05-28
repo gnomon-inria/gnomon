@@ -114,7 +114,7 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
     settings.endGroup();
 
     QString export_file_path;
-    export_file_path = QFileDialog::getSaveFileName(this, tr("Save figure"), path, tr("Figures (*.png)"));
+    export_file_path = QFileDialog::getSaveFileName(this, tr("Save figure"), path, tr("Figures (*.png *.eps *.pdf *.svg)"));
 
     QString figure_number = "0";
     for(int row = 0, max_row = this->layout->count(); row < max_row; ++row) {
