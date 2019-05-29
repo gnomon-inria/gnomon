@@ -18,9 +18,8 @@ public:
 
     gnomonImageSeries *output();
     
-    virtual QMap<QString, gnomonCoreParameter*> parameters(void) const;
-
-    virtual void setParameter(const QString&, const QVariant&);
+    QMap<QString, gnomonCoreParameter*> parameters(void) const;
+    void setParameter(const QString&, const QVariant&);
 
 private:
     class gnomonImageRegistrationCommandPrivate *d;

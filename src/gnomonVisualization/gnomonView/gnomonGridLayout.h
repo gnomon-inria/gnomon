@@ -39,6 +39,9 @@ protected:
     void clear(void);
     void update(void);
 
+signals:
+    void formAdded(const QString&);
+
 private:
     class gnomonGridLayoutPrivate *d;
 };

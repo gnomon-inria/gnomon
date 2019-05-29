@@ -32,22 +32,22 @@ void gnomonImageRegistrationCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    for(auto& images_serie : d->images_series) {
-        ((gnomonAbstractImageRegistration *) this->action)->addImage(images_serie);
-    };
-
     this->action->run();
 }
 
 void gnomonImageRegistrationCommand::undo(void)
 {
-    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
     d->images_series.clear();
 }
 
 void gnomonImageRegistrationCommand::addImage(gnomonImageSeries *image_series)
 {
     d->images_series.push_back(image_series);
+
+    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
+    for(auto& images_serie : d->images_series) {
+        ((gnomonAbstractImageRegistration *) this->action)->addImage(images_serie);
+    };
 }
 
 gnomonImageSeries* gnomonImageRegistrationCommand::output()

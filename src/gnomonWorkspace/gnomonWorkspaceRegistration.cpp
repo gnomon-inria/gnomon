@@ -41,7 +41,7 @@ QString gnomonWorkspaceRegistrationPrivate::workspace() const
 
 QStringList gnomonWorkspaceRegistrationPrivate::keys() const
 {
-    return gnomonCore::imagesRegistration::pluginFactory().keys();
+    return gnomonCore::imageRegistration::pluginFactory().keys();
 }
 
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnomonWorkspace(parent)
@@ -72,6 +72,17 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
     layout->setSpacing(0);
     layout->addWidget(splitter);
     layout->addWidget(d->pane(this));
+
+    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] () {
+        d->command->undo();
+        for(gnomonViewForm *view : d->sources_layout->views()) {
+            if (view->image()) {
+                qDebug()<<"Add image"<<view->image();
+                d->command->addImage(view->image());
+            }
+        }
+        d->configure(this, d->algorithm);
+    });
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
@@ -87,11 +98,11 @@ void gnomonWorkspaceRegistration::apply(void)
 
     d->command->undo();
     for(gnomonViewForm *view : d->sources_layout->views()) {
-               d->command->addImage(view->image());
+        d->command->addImage(view->image());
     }
     d->command->redo();
 
-    d->target->setImage(d->command->output());
+    d->target->setForm("gnomonImage",d->command->output());
 }
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)

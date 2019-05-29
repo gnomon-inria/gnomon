@@ -132,8 +132,6 @@ void gnomonWorkspaceSegmentation::apply(void)
     Q_ASSERT(d->command);
 
 
-    d->target->render();
-
     if(d->command->input() != d->source->image())
         d->command->setInput(d->source->image());
     else
@@ -142,6 +140,7 @@ void gnomonWorkspaceSegmentation::apply(void)
     d->command->redo();
 
     d->target->setForm("gnomonCellImage",d->command->output());
+    d->target->render();
 }
 //
 // gnomonWorkspaceSegmentation.cpp ends here
