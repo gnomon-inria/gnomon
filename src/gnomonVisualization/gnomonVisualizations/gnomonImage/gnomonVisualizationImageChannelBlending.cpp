@@ -310,6 +310,10 @@ void gnomonVisualizationImageChannelBlending::setParameters(const QMap<QString, 
 void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
 {
     qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+    if (dd->imageSeries->times().contains(value)) {
+        dd->image = dynamic_cast<gnomonImage *>(dd->imageSeries->at(value));
+        this->update();
+    }
     this->render();
 }
 
