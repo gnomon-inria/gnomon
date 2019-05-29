@@ -120,7 +120,7 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
 
     d->command->redo();
 
-//    d->target->setCellComplex(d->command->output());
+    d->target->setCellComplex(d->command->output());
 }
 
 void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm)

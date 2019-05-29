@@ -141,7 +141,7 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->command->redo();
 
-//    d->target->setForm("Segmented Image",d->command->output());
+    d->target->setForm("gnomonCellImage",d->command->output());
 }
 //
 // gnomonWorkspaceSegmentation.cpp ends here

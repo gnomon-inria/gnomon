@@ -119,7 +119,7 @@ void gnomonWorkspaceMeshFromImage::apply(void)
 
     d->command->redo();
 
-//    d->target->setMesh(d->command->output());
+    d->target->setMesh(d->command->output());
 }
 
 void gnomonWorkspaceMeshFromImage::configure(const QString& algorithm)
