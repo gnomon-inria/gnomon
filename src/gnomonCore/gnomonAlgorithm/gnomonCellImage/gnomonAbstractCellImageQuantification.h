@@ -23,6 +23,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 
 class gnomonDataFrame;
@@ -41,7 +42,7 @@ public:
     // Outputs
 public:
     virtual gnomonCellImageSeries *cellImage() const = 0;
-    virtual gnomonDataFrame *dataFrame() const = 0;
+    virtual gnomonDataFrameSeries *dataFrame() const = 0;
 
 public:
     virtual void run(void) override = 0;

@@ -18,7 +18,7 @@
 
 #include <QtWidgets>
 
-class gnomonAbstractForm;
+class gnomonAbstractDynamicForm;
 class gnomonAbstractMatplotlibVisualization;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewMatplotlib : public QFrame
@@ -30,7 +30,7 @@ public:
     ~gnomonViewMatplotlib(void);
 
 public:
-    void setForm(const QString&, gnomonAbstractForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
+    void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
 
 public:
     void addWidget(QWidget *);
