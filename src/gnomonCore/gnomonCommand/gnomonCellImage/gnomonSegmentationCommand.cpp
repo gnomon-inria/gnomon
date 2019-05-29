@@ -56,7 +56,7 @@ gnomonImageSeries *gnomonSegmentationCommand::input()
 
 gnomonCellImageSeries *gnomonSegmentationCommand::output()
 {
-    return ((gnomonAbstractCellImageFromImage *) this->action)->computedImage();
+    return ((gnomonAbstractCellImageFromImage *) this->action)->output();
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const
