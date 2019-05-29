@@ -77,7 +77,7 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
 
 void gnomonVisualizationCellImageVolume::clear(void)
 {
-    gnomonAbstractVisualization::clear();
+//    gnomonAbstractVisualization::clear();
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);

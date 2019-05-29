@@ -557,6 +557,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
         for (const auto& key : d->formVisualization.keys()) {
             d->formVisualization[key]->disconnect();
+            d->formVisualization[key]->clearConnections();
             d->formVisualization[key]->clear();
             delete d->formVisualization[key];
             d->parameterLayouts[key]->disconnect();
@@ -1343,6 +1344,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
+    this->renderer3D()->ResetCamera();
+    this->render();
 }
 
 // ///////////////////////////////////////////////////////////////////

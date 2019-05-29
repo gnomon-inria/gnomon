@@ -158,7 +158,7 @@ gnomonViewForm* gnomonAbstractVisualization::view(void)
 //    return;
 //}
 
-void gnomonAbstractVisualization::clear(void)
+void gnomonAbstractVisualization::clearConnections(void)
 {
     disconnect(d->connectTime);
 }

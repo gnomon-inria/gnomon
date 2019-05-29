@@ -49,7 +49,8 @@ public slots:
     virtual void render(void) = 0;
 
 public slots:
-    void clear(void);
+    void clearConnections(void);
+    virtual void clear(void) = 0;
 
 public slots:
     virtual void onTimeChanged(double) = 0;

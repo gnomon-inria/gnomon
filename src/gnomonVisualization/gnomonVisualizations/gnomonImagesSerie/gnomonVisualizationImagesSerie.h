@@ -48,7 +48,7 @@ public slots:
     void render(void) override;
 
 public slots:
-    void clear(void);
+    void clear(void) override;
 
 public slots:
     void onTimeChanged(double) override;
