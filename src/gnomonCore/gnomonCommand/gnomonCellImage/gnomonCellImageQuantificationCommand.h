@@ -13,7 +13,7 @@ public:
     void undo(void) override;
 
 public:
-    void setImage(gnomonImagesSerie *image);
+    void setImage(gnomonImageSeries *image);
     void setCellImage(gnomonCellImageSeries *cellimage);
 
     gnomonCellImageSeries *cellImage(void);

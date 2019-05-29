@@ -1,7 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
+#include "gnomonForm/gnomonImage/gnomonImage.h"
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
-class gnomonImagesSerie;
 
 class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
 {
@@ -15,8 +15,8 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonImagesSerie *images_serie);
-    gnomonImagesSerie *input(void);
+    void setInput(gnomonImageSeries *images_serie);
+    gnomonImageSeries *input(void);
 
     gnomonPointCloudSeries *output(void);
 

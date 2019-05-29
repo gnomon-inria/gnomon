@@ -19,12 +19,21 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonImageFilterCommand
+    gnomonImageFilterCommand.h
+    gnomonImageFusionCommand
+    gnomonImageFusionCommand.h
     gnomonImageReaderCommand
-    gnomonImageReaderCommand.h)
+    gnomonImageReaderCommand.h
+    gnomonImageRegistrationCommand
+    gnomonImageRegistrationCommand.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonImageReaderCommand.cpp)
+    gnomonImageFilterCommand.cpp
+    gnomonImageFusionCommand.cpp
+    gnomonImageReaderCommand.cpp
+    gnomonImageRegistrationCommand.cpp)
 
 
 ######################################################################

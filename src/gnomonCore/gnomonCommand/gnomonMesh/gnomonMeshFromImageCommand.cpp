@@ -7,7 +7,7 @@
 class gnomonMeshFromImageCommandPrivate
 {
 public:
-    gnomonImagesSerie* input = nullptr;
+    gnomonImageSeries* input = nullptr;
 };
 
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonMeshFromImageCommand::undo(void)
     ((gnomonAbstractMeshFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonMeshFromImageCommand::setInput(gnomonImagesSerie *input)
+void gnomonMeshFromImageCommand::setInput(gnomonImageSeries *input)
 {
     d->input = input;
 
@@ -60,7 +60,7 @@ QMap<QString, gnomonCoreParameter *> gnomonMeshFromImageCommand::parameters(void
     return this->action->parameters();
 }
 
-gnomonImagesSerie *gnomonMeshFromImageCommand::input(void)
+gnomonImageSeries *gnomonMeshFromImageCommand::input(void)
 {
     return ((gnomonAbstractMeshFromImage *) this->action)->input();
 }

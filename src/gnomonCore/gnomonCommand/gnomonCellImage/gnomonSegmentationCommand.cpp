@@ -7,7 +7,7 @@
 class gnomonSegmentationCommandPrivate
 {
 public:
-    gnomonImagesSerie *images_serie = nullptr;
+    gnomonImageSeries *images_serie = nullptr;
 };
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
@@ -43,13 +43,13 @@ void gnomonSegmentationCommand::undo(void)
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonSegmentationCommand::setInput(gnomonImagesSerie* images_serie)
+void gnomonSegmentationCommand::setInput(gnomonImageSeries* images_serie)
 {
     d->images_serie = images_serie;
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->images_serie);
 }
 
-gnomonImagesSerie *gnomonSegmentationCommand::input()
+gnomonImageSeries *gnomonSegmentationCommand::input()
 {
     return ((gnomonAbstractCellImageFromImage *) this->action)->input();
 }

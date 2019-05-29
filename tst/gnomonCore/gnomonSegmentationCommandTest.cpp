@@ -3,20 +3,19 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
-#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonSegmentationCommand>
 
 #include <dtkScript>
 
 #include <dtkImage>
 
-using gnomonImagesSeriePtr = QSharedPointer<gnomonImagesSerie>;
 
 class gnomonSegmentationCommandTestCasePrivate
 {
 public:
-    gnomonImagesSeriePtr           images_serie = gnomonImagesSeriePtr(nullptr);
-    gnomonSegmentationCommand      *command_segmentation = nullptr;
+    gnomonImageSeries * image_series = nullptr;
+    gnomonSegmentationCommand * command_segmentation = nullptr;
 };
 
 gnomonSegmentationCommandTestCase::gnomonSegmentationCommandTestCase(void) : d(new gnomonSegmentationCommandTestCasePrivate)
@@ -41,18 +40,18 @@ void gnomonSegmentationCommandTestCase::init(void)
 
 void gnomonSegmentationCommandTestCase::redo(void)
 {
-    gnomonImagesSerieReaderCommand* command = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
+    gnomonImageReaderCommand* command = new gnomonImageReaderCommand("gnomonImageReader");
     Q_ASSERT(command);
 
     QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
     command->setPath(image_file_path);
     command->redo();
-    d->images_serie = gnomonImagesSeriePtr(command->imagesSerie());
-    d->images_serie->setChannel("Ch2_PI");
+    d->image_series = command->image();
 
-    d->command_segmentation->setInput(d->images_serie.data());
+    d->command_segmentation->setInput(d->image_series);
 
     d->command_segmentation->setParameter("hmin", 1500);
+    d->command_segmentation->setParameter("channel", "CH2_PI");
     d->command_segmentation->setParameter("gaussian_sigma", 0.5);
     d->command_segmentation->setParameter("segmentation_gaussian_sigma", 0.25);
     d->command_segmentation->setParameter("volume_threshold", 1000);

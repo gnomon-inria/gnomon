@@ -45,8 +45,8 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void addImagesSerie(gnomonImageSeries *) = 0;
-    virtual void removeImageSeries(void) = 0;
+    virtual void addImage(gnomonImageSeries *) = 0;
+    virtual void removeImages(void) = 0;
 
     virtual void addLandmarks(const std::vector<gnomonLandmark>&) = 0;
     virtual void removeLandmarks(void) = 0;

@@ -7,7 +7,7 @@
 class gnomonCellImageQuantificationCommandPrivate
 {
 public:
-    gnomonImagesSerie* image = nullptr;
+    gnomonImageSeries* image = nullptr;
     gnomonCellImageSeries* cellImage = nullptr;
 };
 
@@ -44,7 +44,7 @@ void gnomonCellImageQuantificationCommand::undo(void)
     ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(nullptr);
 }
 
-void gnomonCellImageQuantificationCommand::setImage(gnomonImagesSerie *image)
+void gnomonCellImageQuantificationCommand::setImage(gnomonImageSeries *image)
 {
     d->image = image;
 

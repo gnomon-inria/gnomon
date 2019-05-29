@@ -20,12 +20,12 @@
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 
-#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesRegistrationCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageRegistrationCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
 
-class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImagesRegistrationCommand >
+class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImageRegistrationCommand >
 {
 public:
     QString workspace() const override;
@@ -48,7 +48,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
 {
     int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesRegistration", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageRegistration", &stat);
 
     d = new gnomonWorkspaceRegistrationPrivate;
 
@@ -87,11 +87,11 @@ void gnomonWorkspaceRegistration::apply(void)
 
     d->command->undo();
     for(gnomonViewForm *view : d->sources_layout->views()) {
-               d->command->addImagesSerie(view->imagesSerie());
+               d->command->addImage(view->image());
     }
     d->command->redo();
 
-    d->target->setImagesSerie(d->command->output());
+    d->target->setImage(d->command->output());
 }
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)

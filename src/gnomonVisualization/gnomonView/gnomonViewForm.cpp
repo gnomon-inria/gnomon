@@ -1020,19 +1020,11 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
     emit formAdded("gnomonCellComplex");
 }
 
-gnomonMeshSeries *gnomonViewForm::mesh(void)
-{
-    if (d->forms.contains("gnomonMesh")) {
-        return dynamic_cast<gnomonMeshSeries *>(d->forms["gnomonMesh"]);
-    } else {
-        return nullptr;
-    }
-}
 
-gnomonImage *gnomonViewForm::image(void)
+gnomonImageSeries *gnomonViewForm::image(void)
 {
     if (d->forms.contains("gnomonImage")) {
-        return dynamic_cast<gnomonImage *>(d->forms["gnomonImage"]->current());
+        return dynamic_cast<gnomonImageSeries *>(d->forms["gnomonImage"]);
     } else {
         return nullptr;
     }
@@ -1072,6 +1064,15 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualizat
     }
 
     emit formAdded("gnomonImage");
+}
+
+gnomonMeshSeries *gnomonViewForm::mesh(void)
+{
+    if (d->forms.contains("gnomonMesh")) {
+        return dynamic_cast<gnomonMeshSeries *>(d->forms["gnomonMesh"]);
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization *visualization)

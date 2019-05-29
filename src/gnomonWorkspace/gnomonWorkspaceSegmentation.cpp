@@ -109,9 +109,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(pane);
 
     connect(d->source, &gnomonViewForm::formAdded, [=] () {
-        qDebug()<<Q_FUNC_INFO<<d->source->imagesSerie()->channels();
-        if(d->command->input() != d->source->imagesSerie())
-            d->command->setInput(d->source->imagesSerie());
+        if(d->command->input() != d->source->image())
+            d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
         d->configure(this, d->algorithm);
@@ -135,8 +134,8 @@ void gnomonWorkspaceSegmentation::apply(void)
 
     d->target->render();
 
-    if(d->command->input() != d->source->imagesSerie())
-        d->command->setInput(d->source->imagesSerie());
+    if(d->command->input() != d->source->image())
+        d->command->setInput(d->source->image());
     else
         qDebug() << "Not changed";
 

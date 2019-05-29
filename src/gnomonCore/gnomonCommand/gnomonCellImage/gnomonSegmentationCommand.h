@@ -14,7 +14,7 @@
 
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonImagesSerie;
+#include "gnomonForm/gnomonImage/gnomonImage.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
 class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand
@@ -29,8 +29,8 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonImagesSerie *images_serie);
-    gnomonImagesSerie *input();
+    void setInput(gnomonImageSeries *images_serie);
+    gnomonImageSeries *input();
 
     void setParameter(const QString&, const QVariant&);
 

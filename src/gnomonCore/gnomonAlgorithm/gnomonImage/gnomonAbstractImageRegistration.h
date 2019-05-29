@@ -41,8 +41,8 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void addImageSeries(gnomonImageSeries *) = 0;
-    virtual void removeImageSeries(void) = 0;
+    virtual void addImage(gnomonImageSeries *) = 0;
+    virtual void removeImages(void) = 0;
 
     virtual gnomonImageSeries* output() = 0;
 

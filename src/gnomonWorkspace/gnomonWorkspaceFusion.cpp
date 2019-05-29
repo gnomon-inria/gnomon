@@ -20,12 +20,12 @@
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 
-#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesFusionCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFusionCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
 
-class gnomonWorkspaceFusionPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImagesFusionCommand >
+class gnomonWorkspaceFusionPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImageFusionCommand >
 {
 public:
     QString workspace() const override;
@@ -50,7 +50,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
 {
     int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesFusion", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFusion", &stat);
 
     d = new gnomonWorkspaceFusionPrivate;
 
@@ -83,17 +83,17 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 void gnomonWorkspaceFusion::apply(void)
 {
     if(d->layout->views().isEmpty()) return;
-    d->command->removeImagesSeries();
+    d->command->removeImages();
     d->command->removeLandmarks();
 
     d->command->undo();
     for(gnomonViewForm *view : d->layout->views()) {
-        d->command->addImagesSerie(view->imagesSerie());
+        d->command->addImage(view->image());
 //        d->command->addLandmarks(view->landmarks());
     }
 
     d->command->redo();
-    d->target->setImagesSerie(d->command->output());
+    d->target->setImage(d->command->output());
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)
