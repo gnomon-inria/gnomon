@@ -199,7 +199,7 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
-        gnomonFormManager::instance()->addForm(this->forms[key]->current(), this->export_color, this->formVisualization[key]);
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
     }
 }
 
@@ -856,10 +856,10 @@ void gnomonViewForm::toggleVisualizationPane(void)
     d->formVisualizationPane->toggle();
 }
 
-gnomonAbstractForm *gnomonViewForm::form(const QString& name)
+gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 {
     if (d->forms.contains(name)) {
-        return d->forms[name]->current();
+        return d->forms[name];
     } else {
         return nullptr;
     }
@@ -1269,7 +1269,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
+        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
 //        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
         // gnomonImagesSerie * images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
         // emit channelsChanged(images_serie->channels());
@@ -1288,7 +1288,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractForm> *) cellImage);
+            this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellImage);
 
         } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz") || path.endsWith("tif") || (path.endsWith("czi"))) {
             if ((!d->formReaderCommand.contains("gnomonImage"))||(!d->formReaderCommand["gnomonImage"]))
@@ -1322,7 +1322,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonCellComplex",(gnomonTimeSeries<gnomonAbstractForm> *) cellComplex);
+            this->setForm("gnomonCellComplex",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellComplex);
         } else if(path.endsWith("ply")) {
             if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
                 d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
@@ -1336,7 +1336,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonMesh",(gnomonTimeSeries<gnomonAbstractForm> *) mesh);
+            this->setForm("gnomonMesh",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) mesh);
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }

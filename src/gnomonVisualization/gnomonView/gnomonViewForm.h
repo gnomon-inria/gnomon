@@ -24,6 +24,7 @@ class gnomonLandmark;
 class gnomonOverlayPane;
 
 class gnomonAbstractForm;
+class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
 
 template <typename T>
@@ -86,7 +87,7 @@ public:
     void setPointCloud(gnomonPointCloudSeries *, gnomonAbstractVisualization *  = nullptr);
 
 public:
-    gnomonAbstractForm *form(const QString&);
+    gnomonAbstractDynamicForm *form(const QString&);
     gnomonImageSeries *image(void);
     gnomonImagesSerie *imagesSerie(void);
     gnomonCellImageSeries *cellImage(void);

@@ -6,7 +6,7 @@ class gnomonCellComplexWriterCommandPrivate
 {
 public:
     QString path;
-    gnomonCellComplex* cellComplex = nullptr;
+    gnomonCellComplexSeries* cellComplex = nullptr;
 };
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(const QString& key) : d(new gnomonCellComplexWriterCommandPrivate)
@@ -47,7 +47,7 @@ void gnomonCellComplexWriterCommand::setPath(const QString& path)
     d->path = path;
 }
 
-void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplex *cellComplex)
+void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cellComplex)
 {
     d->cellComplex = cellComplex;
 }

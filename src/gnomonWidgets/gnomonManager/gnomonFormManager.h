@@ -20,6 +20,7 @@
 #include <QtWidgets>
 
 class gnomonAbstractForm;
+class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
 class gnomonAbstractVisualization;
 class gnomonAbstractMatplotlibVisualization;
@@ -41,14 +42,14 @@ public:
     QSize sizeHint(void) const;
 
 public slots:
-    void addForm(gnomonAbstractForm *, const QColor&, gnomonAbstractVisualization* visualization);
-    void addForm(gnomonAbstractForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
+    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization);
+    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
 
 public slots:
     void present(gnomonFormManagerItem *);
 
 public:
-    gnomonAbstractForm * get(int index);
+    gnomonAbstractDynamicForm * get(int index);
     gnomonAbstractVisualization * getVisualization(int index);
 
 public:
