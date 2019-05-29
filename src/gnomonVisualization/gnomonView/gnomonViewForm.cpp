@@ -1270,10 +1270,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
     if(path.startsWith(":")) {
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
-//        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
-        // gnomonImagesSerie * images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
-        // emit channelsChanged(images_serie->channels());
-        // this->setImagesSerie(images_serie);
+        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
     } else {
         if((path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz")  || path.endsWith("tif"))&&(path.contains("seg",Qt::CaseInsensitive))) {
             if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
