@@ -165,7 +165,6 @@ void gnomonImageDataChannelBlending::update(void)
 
     vtkSmartPointer<vtkImageBlend> blend = vtkSmartPointer<vtkImageBlend>::New();
     blend->SetBlendModeToNormal();
-    // blend->SetBlendModeToCompound();
 
     for (const auto& channelName : d->imageChannels.keys()) {
         if(d->channelLookupTables[channelName].visibility()) {

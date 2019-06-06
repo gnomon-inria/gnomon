@@ -438,6 +438,13 @@ void gnomonViewFormPrivate::refresh(void)
 
 void gnomonViewFormPrivate::updateTimeSlider(void)
 {
+    this->forms_times.clear();
+    for (const auto& key : this->forms.keys()) {
+        for(auto time : this->forms[key]->times()) {
+            this->forms_times.insert(time);
+        }
+    }
+
     qDebug()<<Q_FUNC_INFO<<"Times :"<<forms_times;
 
     if(this->forms_times.size() < 2) {
@@ -543,6 +550,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
+        d->updateTimeSlider();
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
@@ -575,10 +583,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         d->formVisualizationPane->addWidget(d->paneItemButton);
 
         this->render();
-    });
-
-    connect(this, &gnomonViewForm::formAdded, [=] () {
-        d->updateTimeSlider();
     });
 
     this->setAcceptDrops(true);
@@ -888,14 +892,6 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
     } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         this->setPointCloud(pointCloud);
     }
-
-    d->forms_times.clear();
-    for (const auto& key : d->forms.keys()) {
-        for(auto time : d->forms[key]->times()) {
-            d->forms_times.insert(time);
-        }
-    }
-
     return;
 }
 
