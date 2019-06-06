@@ -819,6 +819,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
     connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
     connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+    connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 }
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
@@ -854,6 +855,7 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     disconnect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
     disconnect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+    disconnect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 }
 
 
