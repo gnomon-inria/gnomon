@@ -377,6 +377,7 @@ void gnomonViewFormPrivate::refresh(void)
                 q->switchTo3D();
                 qDebug()<<"Visualization changed"<<visu;
                 if (this->formVisualization[key]) {
+                    this->formVisualization[key]->clear();
                     delete this->formVisualization[key];
                     this->formVisualization[key] = nullptr;
                 }

@@ -20,6 +20,7 @@
 
 class gnomonViewForm;
 class gnomonCoreParameter;
+class vtkRenderer;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 {
@@ -54,6 +55,13 @@ public slots:
 
 public slots:
     virtual void onTimeChanged(double) = 0;
+
+public:
+    vtkRenderer *offscreenRenderer(void);
+
+public slots:
+    void updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax);
+    QImage offscreenImageRendering(void);
 
 protected:
     class gnomonAbstractVisualizationPrivate *d;

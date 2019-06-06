@@ -54,10 +54,6 @@ public:
 public:
     vtkSmartPointer<vtkRenderer> offscreenRenderer;
     vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
-
-public slots:
-    void updateOffscreenRenderer(double bounds[6]);
-    QImage offscreenImageRendering(void);
 };
 
 

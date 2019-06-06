@@ -164,11 +164,13 @@ void gnomonVisualizationMesh::updateValueRange(void)
 
 QImage gnomonVisualizationMesh::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->polydata->GetBounds());
+    double bounds[6];
+    dd->polydata->GetBounds(bounds);
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    d->offscreenRenderer->AddActor(dd->actor);
+    this->offscreenRenderer()->AddActor(dd->actor);
 
-    return d->offscreenImageRendering();
+    return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationMesh::update(void)

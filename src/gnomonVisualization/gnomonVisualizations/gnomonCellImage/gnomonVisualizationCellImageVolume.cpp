@@ -136,14 +136,16 @@ void gnomonVisualizationCellImageVolume::updateValueRange(void)
 
 QImage gnomonVisualizationCellImageVolume::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->image->GetBounds());
+    double bounds[6];
+    dd->image->GetBounds(bounds);
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
     d->view->renderer3D()->RemoveActor(dd->actor);
-    d->offscreenRenderer->AddActor(dd->actor);
+    this->offscreenRenderer()->AddActor(dd->actor);
 
-    QImage image = d->offscreenImageRendering();
+    QImage image = this->offscreenImageRendering();
 
-    d->offscreenRenderer->RemoveActor(dd->actor);
+    this->offscreenRenderer()->RemoveActor(dd->actor);
     d->view->renderer3D()->AddActor(dd->actor);
     dd->actor->setInteractor(d->view->interactor());
 

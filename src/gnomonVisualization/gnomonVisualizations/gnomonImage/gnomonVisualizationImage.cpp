@@ -168,11 +168,13 @@ void gnomonVisualizationImage::updateChannelColorMap(void)
 
 QImage gnomonVisualizationImage::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->image_data->GetBounds());
+    double bounds[6];
+    dd->image_data->GetBounds(bounds);
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    d->offscreenRenderer->AddActor(dd->volume);
+    this->offscreenRenderer()->AddActor(dd->volume);
 
-    return d->offscreenImageRendering();
+    return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationImage::update(void)

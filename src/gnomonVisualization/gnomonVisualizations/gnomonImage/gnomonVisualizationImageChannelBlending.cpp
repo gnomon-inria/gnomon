@@ -178,11 +178,13 @@ void gnomonVisualizationImageChannelBlending::updateOpacity(void)
 
 QImage gnomonVisualizationImageChannelBlending::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->image_data->GetBounds());
+    double bounds[6];
+    dd->image_data->GetBounds(bounds);
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    d->offscreenRenderer->AddActor(dd->volume);
+    this->offscreenRenderer()->AddActor(dd->volume);
 
-    return d->offscreenImageRendering();
+    return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationImageChannelBlending::update(void)
