@@ -462,6 +462,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationImage", &stat);
     dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationPointCloud", &stat);
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
@@ -573,6 +574,10 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         d->formVisualizationPane->addWidget(d->paneItemButton);
 
         this->render();
+    });
+
+    connect(this, &gnomonViewForm::formAdded, [=] () {
+        d->updateTimeSlider();
     });
 
     this->setAcceptDrops(true);
@@ -889,7 +894,6 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
             d->forms_times.insert(time);
         }
     }
-    d->updateTimeSlider();
 
     return;
 }

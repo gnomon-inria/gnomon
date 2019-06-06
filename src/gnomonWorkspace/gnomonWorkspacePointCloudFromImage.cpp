@@ -119,7 +119,7 @@ void gnomonWorkspacePointCloudFromImage::apply(void)
 
     d->command->redo();
 
-    d->target->setPointCloud(d->command->output());
+    d->target->setForm("gnomonPointCloud",d->command->output());
 }
 
 void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
