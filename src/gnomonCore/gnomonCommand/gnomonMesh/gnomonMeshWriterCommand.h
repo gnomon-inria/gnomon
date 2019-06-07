@@ -1,6 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-
-class gnomonMesh;
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractCommand
 {
@@ -15,7 +14,7 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setMesh(gnomonMesh *images_serie);
+    void setMesh(gnomonMeshSeries *mesh);
 
 private:
     class gnomonMeshWriterCommandPrivate *d;

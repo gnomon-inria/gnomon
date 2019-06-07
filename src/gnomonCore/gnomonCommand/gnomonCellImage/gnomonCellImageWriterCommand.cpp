@@ -6,7 +6,7 @@ class gnomonCellImageWriterCommandPrivate
 {
 public:
     QString path;
-    gnomonCellImage* cellImage = nullptr;
+    gnomonCellImageSeries* cellImage = nullptr;
 };
 
 gnomonCellImageWriterCommand::gnomonCellImageWriterCommand(const QString& key) : d(new gnomonCellImageWriterCommandPrivate)
@@ -47,7 +47,7 @@ void gnomonCellImageWriterCommand::setPath(const QString& path)
     d->path = path;
 }
 
-void gnomonCellImageWriterCommand::setCellImage(gnomonCellImage *cellImage)
+void gnomonCellImageWriterCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
     d->cellImage = cellImage;
 }
