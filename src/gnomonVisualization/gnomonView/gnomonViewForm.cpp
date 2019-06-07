@@ -148,6 +148,9 @@ public:
 public:
     double c_t = 0;
 
+public:
+    bool empty = true;
+
 signals:
     void sliceOrientationChanged(int);
 
@@ -551,6 +554,11 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
         d->updateTimeSlider();
+        if (d->empty) {
+            d->renderer3D->ResetCamera();
+        }
+        d->empty = false;
+        this->render();
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
@@ -581,6 +589,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         d->formVisualizationPaneItems.clear();
 
         d->formVisualizationPane->addWidget(d->paneItemButton);
+        d->empty = true;
 
         this->render();
     });

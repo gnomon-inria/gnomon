@@ -33,9 +33,9 @@ void gnomonImageFusionCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    for(auto& images_serie : d->images_series) {
-        ((gnomonAbstractImageFusion *) this->action)->addImage(images_serie);
-    };
+//    for(auto& images_serie : d->images_series) {
+//        ((gnomonAbstractImageFusion *) this->action)->addImage(images_serie);
+//    };
 
     for(auto& landmarks : d->landmarks) {
         ((gnomonAbstractImageFusion *) this->action)->addLandmarks(landmarks);
@@ -46,7 +46,7 @@ void gnomonImageFusionCommand::redo(void)
 
 void gnomonImageFusionCommand::undo(void)
 {
-    ((gnomonAbstractImageFusion *) this->action)->removeImages();
+    d->images_series.clear();
     ((gnomonAbstractImageFusion *) this->action)->removeLandmarks();
 }
 
@@ -59,6 +59,11 @@ void gnomonImageFusionCommand::setParameter(const QString& parameter, const QVar
 void gnomonImageFusionCommand::addImage(gnomonImageSeries *image_series)
 {
     d->images_series.push_back(image_series);
+
+    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
+    for(auto& images_serie : d->images_series) {
+        ((gnomonAbstractImageRegistration *) this->action)->addImage(images_serie);
+    };
 }
 
 void gnomonImageFusionCommand::removeImages(void)

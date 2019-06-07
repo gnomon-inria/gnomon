@@ -62,7 +62,7 @@ QString gnomonWorkspacePreprocessPrivate::workspace(void) const
 
 QStringList gnomonWorkspacePreprocessPrivate::keys(void) const
 {
-    return gnomonCore::imagesSerieFilter::pluginFactory().keys();
+    return gnomonCore::imageFilter::pluginFactory().keys();
 }
 
 gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWorkspace(parent)
