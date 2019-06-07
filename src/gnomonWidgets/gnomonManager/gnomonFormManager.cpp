@@ -80,7 +80,7 @@ QSize gnomonFormManagerPrivate::sizeHint(void) const
 
 gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicForm * form, const QColor& color, const QImage& image)
 {
-    gnomonFormManagerItem *item = new gnomonFormManagerItem(color, QPixmap::fromImage(image), this);
+    gnomonFormManagerItem *item = new gnomonFormManagerItem(color, QPixmap::fromImage(image), form->times().size(), this);
 
     connect(item, &gnomonFormManagerItem::destroy, [=] () {
         this->contents->layout()->removeWidget(item);
