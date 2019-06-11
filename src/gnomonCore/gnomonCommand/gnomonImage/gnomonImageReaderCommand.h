@@ -1,5 +1,4 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-class gnomonImage;
 
 class GNOMONCORE_EXPORT gnomonImageReaderCommand : public gnomonAbstractCommand
 {

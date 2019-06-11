@@ -20,7 +20,7 @@ add_subdirectory(gnomonActorLegacy)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonImageData)
-add_subdirectory(gnomonImagesSerie)
+add_subdirectory(gnomonImage)
 add_subdirectory(gnomonMesh)
 add_subdirectory(gnomonPolyData)
 
@@ -36,7 +36,7 @@ ADD_GNOMON_HEADERS(
     ${${PROJECT_NAME}_ACTOR_CELLCOMPLEX_HEADERS}
     ${${PROJECT_NAME}_ACTOR_CELLIMAGE_HEADERS}
     ${${PROJECT_NAME}_ACTOR_IMAGEDATA_HEADERS}
-    ${${PROJECT_NAME}_ACTOR_IMAGESSERIE_HEADERS}
+    ${${PROJECT_NAME}_ACTOR_IMAGE_HEADERS}
     ${${PROJECT_NAME}_ACTOR_MESH_HEADERS}
     ${${PROJECT_NAME}_ACTOR_POLYDATA_HEADERS})
 
@@ -48,7 +48,7 @@ ADD_GNOMON_SOURCES(
     ${${PROJECT_NAME}_ACTOR_CELLCOMPLEX_SOURCES}
     ${${PROJECT_NAME}_ACTOR_CELLIMAGE_SOURCES}
     ${${PROJECT_NAME}_ACTOR_IMAGEDATA_SOURCES}
-    ${${PROJECT_NAME}_ACTOR_IMAGESSERIE_SOURCES}
+    ${${PROJECT_NAME}_ACTOR_IMAGE_SOURCES}
     ${${PROJECT_NAME}_ACTOR_MESH_SOURCES}
     ${${PROJECT_NAME}_ACTOR_POLYDATA_SOURCES})
 

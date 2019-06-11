@@ -14,9 +14,6 @@
 
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-#include "gnomonForm/gnomonImage/gnomonImage.h"
-#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
-
 class GNOMONCORE_EXPORT gnomonSegmentationCommand : public gnomonAbstractCommand
 {
 public:

@@ -1,7 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonImagesSerie;
-
 class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractCommand
 {
 public:

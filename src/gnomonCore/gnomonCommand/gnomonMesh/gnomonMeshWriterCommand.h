@@ -1,5 +1,4 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractCommand
 {

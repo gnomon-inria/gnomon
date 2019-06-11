@@ -1,7 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonDataFrame;
-
 class GNOMONCORE_EXPORT gnomonDataFrameReaderCommand : public gnomonAbstractCommand
 {
 public:

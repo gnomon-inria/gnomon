@@ -1,5 +1,4 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 
 class GNOMONCORE_EXPORT gnomonCellComplexWriterCommand : public gnomonAbstractCommand
 {

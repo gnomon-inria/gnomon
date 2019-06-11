@@ -1,7 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
-
 class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {
 public:

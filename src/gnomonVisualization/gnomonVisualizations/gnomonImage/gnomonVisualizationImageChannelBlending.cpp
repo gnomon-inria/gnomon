@@ -22,7 +22,7 @@
 #include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
-#include "gnomonActor/gnomonImagesSerie/gnomonImageDataChannelBlending.h"
+#include "gnomonActor/gnomonImage/gnomonImageDataChannelBlending.h"
 #include "gnomonActor/gnomonImageData/gnomonActorImageRGBAVolume.h"
 #include "gnomonActor/gnomonImageData/gnomonActor2DImageRGBAWidget.h"
 

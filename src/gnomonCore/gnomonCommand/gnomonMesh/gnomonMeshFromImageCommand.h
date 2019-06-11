@@ -1,8 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-#include "gnomonForm/gnomonImage/gnomonImage.h"
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
-
 class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
 {
 public:

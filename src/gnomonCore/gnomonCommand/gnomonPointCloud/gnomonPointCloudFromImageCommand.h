@@ -1,8 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-#include "gnomonForm/gnomonImage/gnomonImage.h"
-#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
-
 class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
 {
 public:

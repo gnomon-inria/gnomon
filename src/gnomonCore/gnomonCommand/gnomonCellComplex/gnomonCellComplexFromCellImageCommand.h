@@ -1,8 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
-#include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
-
 class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractCommand
 {
 public:
