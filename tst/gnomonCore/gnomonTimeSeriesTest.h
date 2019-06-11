@@ -17,13 +17,13 @@
 
 #include <QtCore>
 
-class gnomonDiscreteDynamicFormTestCase : public QObject
+class gnomonTimeSeriesTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-    gnomonDiscreteDynamicFormTestCase(void);
-    ~gnomonDiscreteDynamicFormTestCase(void);
+    gnomonTimeSeriesTestCase(void);
+    ~gnomonTimeSeriesTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -37,6 +37,6 @@ private slots:
     void cleanup(void);
 
 private:
-    class gnomonDiscreteDynamicFormTestCasePrivate *d;
+    class gnomonTimeSeriesTestCasePrivate *d;
 
 };

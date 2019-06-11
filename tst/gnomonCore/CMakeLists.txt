@@ -12,25 +12,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonDataManagerTest.h
-  # gnomonDiscreteDynamicFormTest.h
   gnomonFileSystemFormReaderTest.h
-  gnomonImagesFusionCommandTest.h
-  gnomonImagesRegistrationCommandTest.h
-  gnomonImagesSerieFilterCommandTest.h
-  gnomonImagesSerieReaderCommandTest.h
+  gnomonImageFusionCommandTest.h
+  gnomonImageRegistrationCommandTest.h
+  gnomonImageFilterCommandTest.h
+  gnomonImageReaderCommandTest.h
   gnomonSegmentationCommandTest.h
-  gnomonSystemScenarioTest.h)
+  gnomonSystemScenarioTest.h
+  gnomonTimeSeriesTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonDataManagerTest.cpp
-  # gnomonDiscreteDynamicFormTest.cpp
   gnomonFileSystemFormReaderTest.cpp
-  gnomonImagesFusionCommandTest.cpp
-  gnomonImagesRegistrationCommandTest.cpp
-  gnomonImagesSerieFilterCommandTest.cpp
-  gnomonImagesSerieReaderCommandTest.cpp
+  gnomonImageFusionCommandTest.cpp
+  gnomonImageRegistrationCommandTest.cpp
+  gnomonImageFilterCommandTest.cpp
+  gnomonImageReaderCommandTest.cpp
   gnomonSegmentationCommandTest.cpp
-  gnomonSystemScenarioTest.cpp)
+  gnomonSystemScenarioTest.cpp
+  gnomonTimeSeriesTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -63,11 +63,11 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## ###################################################################
 
 add_test(gnomonDataManagerTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDataManagerTest)
-add_test(gnomonDiscreteDynamicFormTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonDiscreteDynamicFormTest)
 add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
-add_test(gnomonImagesFusionCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesFusionCommandTest)
-add_test(gnomonImagesRegistrationCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesRegistrationCommandTest)
-add_test(gnomonImagesSerieFilterCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesSerieFilterCommandTest)
-add_test(gnomonImagesSerieReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImagesSerieReaderCommandTest)
+add_test(gnomonImageFusionCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageFusionCommandTest)
+add_test(gnomonImageRegistrationCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageRegistrationCommandTest)
+add_test(gnomonImageFilterCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageFilterCommandTest)
+add_test(gnomonImageReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageReaderCommandTest)
 add_test(gnomonSegmentationCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSegmentationCommandTest)
 add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)
+add_test(gnomonTimeSeriesTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonTimeSeriesTest)

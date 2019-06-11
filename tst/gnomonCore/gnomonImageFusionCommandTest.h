@@ -2,13 +2,13 @@
 
 #include <QtCore>
 
-class gnomonImagesSerieFilterCommandTestCase : public QObject
+class gnomonImageFusionCommandTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-    gnomonImagesSerieFilterCommandTestCase(void);
-    ~gnomonImagesSerieFilterCommandTestCase(void);
+    gnomonImageFusionCommandTestCase(void);
+    ~gnomonImageFusionCommandTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -23,5 +23,5 @@ private slots:
     void cleanup(void);
 
 private:
-    class gnomonImagesSerieFilterCommandTestCasePrivate *d;
+    class gnomonImageFusionCommandTestCasePrivate *d;
 };

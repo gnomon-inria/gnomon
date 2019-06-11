@@ -46,7 +46,7 @@ void gnomonSegmentationCommandTestCase::redo(void)
     QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
     command->setPath(image_file_path);
     command->redo();
-    d->image_series = command->image();
+    d->image_series = (gnomonImageSeries *) command->image()->clone();
 
     d->command_segmentation->setInput(d->image_series);
 

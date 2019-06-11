@@ -30,7 +30,6 @@
 #include <gnomonVisualization/gnomonView/gnomonView.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-#include <gnomonVisualization/gnomonView/gnomonViewVolumic.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
@@ -243,7 +242,6 @@
 %include <gnomonVisualization/gnomonView/gnomonView.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-%include <gnomonVisualization/gnomonView/gnomonViewVolumic.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>

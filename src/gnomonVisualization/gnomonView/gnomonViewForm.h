@@ -30,7 +30,6 @@ class gnomonAbstractVisualization;
 template <typename T>
 class gnomonTimeSeries;
 
-class gnomonImagesSerie;
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
@@ -81,7 +80,6 @@ public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
     void setImage(gnomonImageSeries *, gnomonAbstractVisualization *  = nullptr);
-    void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
     void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
     void setMesh(gnomonMeshSeries *, gnomonAbstractVisualization *  = nullptr);
     void setPointCloud(gnomonPointCloudSeries *, gnomonAbstractVisualization *  = nullptr);
@@ -89,7 +87,6 @@ public:
 public:
     gnomonAbstractDynamicForm *form(const QString&);
     gnomonImageSeries *image(void);
-    gnomonImagesSerie *imagesSerie(void);
     gnomonCellImageSeries *cellImage(void);
     gnomonCellComplexSeries *cellComplex(void);
     gnomonMeshSeries *mesh(void);

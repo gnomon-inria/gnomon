@@ -48,7 +48,6 @@
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
-#include <gnomonCore/gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
@@ -73,12 +72,6 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
-#include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h>
-#include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h>
-#include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h>
-#include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieReader.h>
-#include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieWriter.h>
-#include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractSurfaceImageFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
@@ -679,7 +672,6 @@
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
-%include <gnomonCore/gnomonForm/gnomonImagesSerie/gnomonImagesSerie.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
@@ -704,12 +696,6 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesFusion.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesRegistration.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieFilter.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieReader.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractImagesSerieWriter.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonImagesSerie/gnomonAbstractSurfaceImageFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
