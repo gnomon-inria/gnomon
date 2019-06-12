@@ -21,9 +21,11 @@
 class gnomonCellComplex;
 class gnomonCellGraph;
 class gnomonCellImage;
+class gnomonDataFrame;
 class gnomonImage;
 class gnomonMesh;
 class gnomonPointCloud;
+class gnomonTree;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -49,9 +51,11 @@ public:
     gnomonCellComplex *asCellComplex();
     gnomonCellGraph *asCellGraph();
     gnomonCellImage *asCellImage();
+    gnomonDataFrame *asDataFrame();
     gnomonImage *asImage();
     gnomonMesh *asMesh();
     gnomonPointCloud *asPointCloud();
+    gnomonTree *asTree();
 };
 
 // ///////////////////////////////////////////////////////////////////
