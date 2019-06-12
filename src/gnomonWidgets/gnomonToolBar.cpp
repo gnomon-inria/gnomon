@@ -86,9 +86,9 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
 
     QMenu * image_menu = this->menu->addMenu(this->font->icon(fa::image),"Image Processing");
 
-    this->action_fusion        = image_menu->addAction("Fusion");
+    this->action_fusion        = image_menu->addAction("Image Fusion");
     this->action_preprocess    = image_menu->addAction("Preprocess");
-    this->action_registration  = image_menu->addAction("Registration");
+    this->action_registration  = image_menu->addAction("Time Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
     this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");

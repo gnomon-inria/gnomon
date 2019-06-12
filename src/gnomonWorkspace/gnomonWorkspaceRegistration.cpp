@@ -37,7 +37,7 @@ public:
 };
 
 QString gnomonWorkspaceRegistrationPrivate::workspace() const
-{ return "Registration"; }
+{ return "Time Registration"; }
 
 QStringList gnomonWorkspaceRegistrationPrivate::keys() const
 {
@@ -82,6 +82,16 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
             }
         }
         d->configure(this, d->algorithm);
+    });
+
+    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->undo();
+        for(gnomonViewForm *view : d->sources_layout->views()) {
+            if (view->image()) {
+                d->command->addImage(view->image());
+            }
+        }
+        d->configure(this,algorithm);
     });
 }
 

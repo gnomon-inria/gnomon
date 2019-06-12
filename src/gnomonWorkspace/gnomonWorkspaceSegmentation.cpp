@@ -115,6 +115,11 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
             qDebug() << "Not changed";
         d->configure(this, d->algorithm);
     });
+
+    connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->setInput(d->source->image());
+        d->configure(this,algorithm);
+    });
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)

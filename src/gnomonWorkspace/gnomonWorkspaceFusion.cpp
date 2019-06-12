@@ -39,7 +39,7 @@ public:
 };
 
 QString gnomonWorkspaceFusionPrivate::workspace() const
-{ return "Fusion"; }
+{ return "Image Fusion"; }
 
 QStringList gnomonWorkspaceFusionPrivate::keys() const
 {
@@ -82,6 +82,16 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(
             }
         }
         d->configure(this, d->algorithm);
+    });
+
+    connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->undo();
+        for(gnomonViewForm *view : d->sources_layout->views()) {
+            if (view->image()) {
+                d->command->addImage(view->image());
+            }
+        }
+        d->configure(this,algorithm);
     });
 }
 
