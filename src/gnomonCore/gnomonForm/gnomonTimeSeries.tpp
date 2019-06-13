@@ -57,7 +57,7 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
 
 template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::at(double t) const
 {
-    Q_ASSERT_X(d->forms.contains(t), "seek", "Invalid time position : the form is not defined at this time");
+    Q_ASSERT_X(d->forms.contains(t), "at", "Invalid time position : the form is not defined at this time");
 
     d->current_time = t;
     return this->current();
@@ -67,22 +67,6 @@ template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::current(void) con
 {
     return d->forms[d->current_time];
 }
-
-/*template <typename T> T* gnomonTimeSeries<T>::next(void) const
-{
-    auto it = d->forms.upperBound(d->current_time);
-    Q_ASSERT_X(it==d->forms.end(), "next", "Invalid time position : the form is not defined at this time");
-    d->current_time = it.key();
-    return it.value();
-};
-
-template <typename T> T* gnomonTimeSeries<T>::prev(void) const
-{
-    auto it = d->forms.lowerBound(d->current_time);
-    Q_ASSERT_X(it--==d->forms.end(), "prev", "Invalid time position : the form is not defined at this time");
-    d->current_time = it.key();
-    return it.value();
-};*/
 
 template <typename T> double gnomonTimeSeries<T>::time(void) const
 {
@@ -96,7 +80,7 @@ template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
 
 template <typename T> void gnomonTimeSeries<T>::insert(double t, T* form)
 {
-    Q_ASSERT_X(d->forms.contains(t), "insert", "Invalid time position : the form is already defined at this time");
+    //Q_ASSERT_X(d->forms.contains(t), "insert", "Invalid time position : the form is already defined at this time");
     if (d->forms.size() == 0) {
         d->current_time = t;
     }

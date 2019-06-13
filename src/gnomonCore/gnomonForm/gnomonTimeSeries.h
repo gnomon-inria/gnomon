@@ -57,8 +57,6 @@ public:
 public:
     gnomonAbstractForm *at(double t) const override;
     gnomonAbstractForm *current(void) const override;
-//    T *next(void) const override;
-//    T *prev(void) const override;
     double time(void) const override;
     QList<double> times(void) const override;
 
