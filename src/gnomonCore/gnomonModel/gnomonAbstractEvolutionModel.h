@@ -17,13 +17,12 @@
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
+#include <gnomonCore>
 
 #include "gnomonAbstractModel.h"
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
-class gnomonMesh;
-class gnomonCellComplex;
 
 class GNOMONCORE_EXPORT gnomonAbstractEvolutionModel : public gnomonAbstractModel
 {
@@ -37,8 +36,8 @@ public:
 
 public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> forms() = 0;
-    virtual void setForm(QString, gnomonMesh *) = 0;
-    virtual void setForm(QString, gnomonCellComplex *) = 0;
+    virtual void setForm(QString, gnomonMeshSeries *) = 0;
+    virtual void setForm(QString, gnomonCellComplexSeries *) = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractEvolutionModel *)

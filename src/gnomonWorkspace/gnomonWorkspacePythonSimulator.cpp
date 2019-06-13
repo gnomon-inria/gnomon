@@ -324,12 +324,11 @@ void gnomonWorkspacePythonSimulator::apply(void)
     d->model = gnomonCore::evolutionModel::pluginFactory().create(key);
 
     if(d->view->mesh()){
-        // d->model->setForm("mesh", d->view->form("gnomonMesh"));
-        d->model->setForm("mesh", dynamic_cast<gnomonMesh *> (d->view->mesh()->current()));
+        d->model->setForm("mesh", d->view->mesh());
     }
 
     if(d->view->cellComplex()){
-        d->model->setForm("cellComplex", dynamic_cast<gnomonCellComplex *> (d->view->cellComplex()->current()));
+        d->model->setForm("cellComplex", d->view->cellComplex());
     }
 
     d->model->reset();
@@ -337,10 +336,6 @@ void gnomonWorkspacePythonSimulator::apply(void)
     QMap<QString, gnomonAbstractDynamicForm *> forms = d->model->forms();
     for (const auto& name : forms.keys())
     {
-        qDebug()<<Q_FUNC_INFO<<name<<forms[name];
-        if (name == "cellImage") {
-            qDebug()<<Q_FUNC_INFO<<((gnomonCellImage *)forms[name])->cellIds();
-        }
         d->view->setForm(name,forms[name]);
     }
 

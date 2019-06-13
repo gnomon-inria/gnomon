@@ -209,6 +209,9 @@ void gnomonVisualizationCellComplex::update(void)
     dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
 
+    qDebug()<<dd->cellComplex<<dd->cellComplex->elementCount(3)<<"Cells";
+    qDebug()<<dd->polydata<<dd->polydata->GetNumberOfCells()<<"Faces";
+
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
