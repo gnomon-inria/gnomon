@@ -36,6 +36,8 @@ public:
     explicit gnomonCellGraph(gnomonAbstractCellGraphData *data) : m_data(data) {}
              gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
 
+    gnomonAbstractForm *clone(void) { return new gnomonCellGraph(*this); };
+
     virtual ~gnomonCellGraph(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:

@@ -28,7 +28,9 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(void) : d(new gnomon
 
 template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeries<T>& o) : d(new gnomonTimeSeriesPrivate<T>)
 {
-    d->forms = o.d->forms;
+    for (const auto& time : o.d->forms.keys()) {
+        d->forms[time] = dynamic_cast<T *>(o.d->forms[time]->clone());
+    }
     d->current_time = o.d->current_time;
 }
 

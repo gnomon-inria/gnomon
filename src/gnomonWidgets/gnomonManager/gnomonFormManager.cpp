@@ -160,7 +160,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
 
-    d->forms.insert(item, form);
+    d->forms.insert(item, form->clone());
     d->formVisualizations.insert(item, visualization);
 
 
