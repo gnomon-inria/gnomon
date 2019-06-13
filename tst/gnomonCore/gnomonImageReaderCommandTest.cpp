@@ -76,7 +76,12 @@ void gnomonImageReaderCommandTestCase::readCzi(void)
 
     QStringList channels = dynamic_cast<gnomonImage *>(image_series->current())->channels();
 
-    QCOMPARE(channels, true_list);
+    for (auto& channel : channels) {
+        QVERIFY(true_list.contains(channel));
+    }
+    for (auto& channel : true_list) {
+        QVERIFY(channels.contains(channel));
+    }
 
     dtkImage* image = nullptr;
 
