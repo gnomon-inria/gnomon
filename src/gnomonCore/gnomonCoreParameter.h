@@ -52,7 +52,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameter *);
 // gnomonCoreParameterNumeric
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
+template <typename T>
 class GNOMONCORE_EXPORT gnomonCoreParameterNumeric : public gnomonCoreParameter
 {
 
@@ -125,7 +125,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameterDouble *);
 // gnomonCoreParameterNumericRange
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
+template <typename T>
 class GNOMONCORE_EXPORT gnomonCoreParameterNumericRange : public gnomonCoreParameter
 {
 public:
