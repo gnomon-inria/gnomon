@@ -374,7 +374,6 @@ void gnomonViewFormPrivate::refresh(void)
 
             QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
                 q->switchTo3D();
-                qDebug()<<"Visualization changed"<<visu;
                 if (this->formVisualization[key]) {
                     this->formVisualization[key]->clear();
                     delete this->formVisualization[key];
@@ -882,7 +881,6 @@ gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 
 void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
-    qDebug()<<Q_FUNC_INFO<<name<<form;
     if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         this->setCellImage(cellImage);
     } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
@@ -910,7 +908,6 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstra
 {
     d->forms["gnomonCellImage"] = cellImage;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellImage::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
@@ -1034,7 +1031,6 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization
 {
     d->forms["gnomonMesh"] = mesh;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationMesh::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
@@ -1075,7 +1071,6 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
 {
     d->forms["gnomonPointCloud"] = pointCloud;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
