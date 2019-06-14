@@ -207,9 +207,6 @@ void gnomonVisualizationCellComplex::update(void)
     dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
 
-    qDebug()<<dd->cellComplex<<dd->cellComplex->elementCount(3)<<"Cells";
-    qDebug()<<dd->polydata<<dd->polydata->GetNumberOfCells()<<"Faces";
-
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -262,7 +259,6 @@ void gnomonVisualizationCellComplex::update(void)
     double bounds[6];
     dd->polydata->GetBounds(bounds);
     d->view->setBounds(bounds);
-    qDebug()<<Q_FUNC_INFO<<bounds;
 
     this->render();
 }
@@ -300,7 +296,6 @@ void gnomonVisualizationCellComplex::setParameters(const QMap<QString, gnomonCor
 
 void gnomonVisualizationCellComplex::onTimeChanged(double value)
 {
-    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
     if (dd->cellComplexSeries->times().contains(value)) {
         dd->cellComplex = (gnomonCellComplex *) dd->cellComplexSeries->at(value);
         this->update();
