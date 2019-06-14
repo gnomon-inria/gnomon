@@ -209,20 +209,17 @@ void gnomonVisualizationCellImageVolume::update(void)
 
     disconnect(d->connectSliceOrientation);
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        qDebug()<<Q_FUNC_INFO<<"Slice orientation changed"<<value;
         dd->actor2D->setSliceOrientation(value);
     });
 
     disconnect(d->connectSlice);
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        qDebug()<<Q_FUNC_INFO<<"Slice changed"<<value;
         dd->actor2D->setSlice(value);
         this->render();
     });
 
 //    disconnect(d->connectTime);
 //    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-//        qDebug()<<"Time changed"<<value;
 //        if (dd->cellImageSeries->times().contains(value)) {
 //            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
 //            this->update();
@@ -232,14 +229,12 @@ void gnomonVisualizationCellImageVolume::update(void)
 
     disconnect(d->connect3D);
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
-        qDebug()<<Q_FUNC_INFO<<"Switched to 3D";
         dd->actor2D->hide();
         this->render();
     });
 
     disconnect(d->connect2D);
     d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
-        qDebug()<<Q_FUNC_INFO<<"Switched to 2D";
         dd->actor2D->show();
         this->render();
     });
@@ -297,7 +292,6 @@ void gnomonVisualizationCellImageVolume::setParameters(const QMap<QString, gnomo
 
 void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
 {
-    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
     if (dd->cellImageSeries->times().contains(value)) {
         dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
         this->update();
