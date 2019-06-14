@@ -329,9 +329,7 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
     disconnect(d->connectXZ);
     disconnect(d->connectYZ);
 
-    qDebug()<<"Changing interactor style"<<d->view->interactor();
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
-    qDebug()<<"Changed interactor style";
 //    dd->interactor_style->Delete();
 }
 
@@ -443,10 +441,8 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
-    qDebug()<<Q_FUNC_INFO<<"Actor 3D Ok!";
 
     dd->interactor_style->setActor(dd->actor);
-    qDebug()<<Q_FUNC_INFO<<"Interactor OK!";
 
     if (!dd->actor2D)
     {
@@ -455,11 +451,9 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     }
     dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.1);
-    qDebug()<<Q_FUNC_INFO<<"Actor 2D : SetPolyData "<<dd->polydata;
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
-    qDebug()<<Q_FUNC_INFO<<"Actor 2D Ok!";
 
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
@@ -472,7 +466,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     });
 
 //    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-//        qDebug()<<"Time changed"<<value;
 //        if (dd->cellImageSeries->times().contains(value)) {
 //            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
 //            this->update();
@@ -555,7 +548,6 @@ QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long
 
 void gnomonVisualizationCellImageMarchingCubes::onTimeChanged(double value)
 {
-    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
     if (dd->cellImageSeries->times().contains(value)) {
         dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
         this->update();
