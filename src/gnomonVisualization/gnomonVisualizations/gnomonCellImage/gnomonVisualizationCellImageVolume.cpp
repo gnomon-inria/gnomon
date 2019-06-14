@@ -132,6 +132,7 @@ void gnomonVisualizationCellImageVolume::updateValueRange(void)
 
      ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
      ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setValue(*(mm.first),*(mm.second));
 }
 
 QImage gnomonVisualizationCellImageVolume::imageRendering(void)

@@ -88,6 +88,7 @@ void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
 
     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
+    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setValue(*(mm.first),*(mm.second));
 }
 
 
@@ -146,8 +147,6 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cel
     dd->cellComplexSeries = cellComplexSeries;
     dd->cellComplex = (gnomonCellComplex *) cellComplexSeries->current();
 
-    qDebug()<<Q_FUNC_INFO<<dd->cellComplex->elementCount(3)<<"Cells";
-
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
         if(!dd->cellComplex)
@@ -192,7 +191,6 @@ void gnomonVisualizationCellComplex::update(void)
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
     double scale = ((gnomonCoreParameterDouble *)d->parameters["scale_factor"])->value();
-
 
     if(!dd->cellComplex)
         return;
