@@ -51,7 +51,9 @@ gnomonWorkspaceSimulationPrivate::~gnomonWorkspaceSimulationPrivate()
 }
 
 QString gnomonWorkspaceSimulationPrivate::workspace() const
-{ return "Simulation"; }
+{
+    return "FEM Simulation";
+}
 
 QStringList gnomonWorkspaceSimulationPrivate::keys() const
 {
