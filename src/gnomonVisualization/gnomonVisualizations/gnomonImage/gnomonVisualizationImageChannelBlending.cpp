@@ -146,8 +146,6 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         valueRange[1] = 65535;
     }
 
-    qDebug()<<Q_FUNC_INFO<<dd->image->channels();
-
     if(dd->image->channels().size()==1) {
         if (dd->channelLookupTables.contains("")) {
             dd->channelLookupTables.remove("");
@@ -157,7 +155,6 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
     } else {
         int iChannel = 0;
         for (const auto& channelName : dd->image->channels()) {
-            qDebug()<<Q_FUNC_INFO<<"Channel"<<channelName;
             if (dd->channelLookupTables.contains(channelName)) {
                 dd->channelLookupTables.remove(channelName);
             }
@@ -197,7 +194,6 @@ void gnomonVisualizationImageChannelBlending::update(void)
     // QMap<double, QColor> colormap = ((gnomonCoreParameterLookupTable *)d->parameters["colormap"])->value()->colorMap();
 
 
-    qDebug()<<Q_FUNC_INFO<<dd->image->channels();
     QMap<QString,vtkImageData *> channelImages;
     for (const auto& channelName : dd->image->channels()) {
         dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
@@ -206,7 +202,6 @@ void gnomonVisualizationImageChannelBlending::update(void)
         channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
         delete converter;
     }
-    qDebug()<<Q_FUNC_INFO<<channelImages.keys();
 
 
     dd->channelLookupTables.clear();
@@ -311,7 +306,6 @@ void gnomonVisualizationImageChannelBlending::setParameters(const QMap<QString, 
 
 void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
 {
-    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
     if (dd->imageSeries->times().contains(value)) {
         dd->image = dynamic_cast<gnomonImage *>(dd->imageSeries->at(value));
         this->update();
