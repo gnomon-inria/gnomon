@@ -239,7 +239,6 @@ void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
 void gnomonViewFormPrivate::updateOrientation(void)
 {
     if(!this->cameras.contains(this->ori)) {
-        qDebug()<<Q_FUNC_INFO<<"Updating camera"<<ori;
         vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
         cam->ParallelProjectionOn();
         cam->SetParallelScale(1);
@@ -315,7 +314,6 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
     if (this->formVisualization.contains(key)) {
         gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
-            qDebug()<<Q_FUNC_INFO<<key;
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
@@ -333,9 +331,7 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
             }
             this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
-            qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
-            qDebug()<<Q_FUNC_INFO<<parameters;
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
                 if (widget) {
@@ -440,8 +436,6 @@ void gnomonViewFormPrivate::updateTimeSlider(void)
             this->forms_times.insert(time);
         }
     }
-
-    qDebug()<<Q_FUNC_INFO<<"Times :"<<forms_times;
 
     if(this->forms_times.size() < 2) {
         this->time_slider->setVisible(false);
@@ -632,8 +626,6 @@ void gnomonViewForm::switchTo2D(void)
 {
     if (d->renderer2D_button->isToggled()) return;
 
-    qDebug()<<Q_FUNC_INFO;
-
     d->renderer2D_button->toggle(true);
     d->renderer2D_button->setEnabled(false);
 
@@ -800,7 +792,6 @@ void gnomonViewForm::timeIndexChange(int value)
     d->time_slider->blockSignals(false);
 
     if (valueChanged) {
-        qDebug()<<Q_FUNC_INFO<<"Time Changed !"<<time;
         emit timeChanged(time);
     }
 
@@ -960,7 +951,6 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
 {
     d->forms["gnomonCellComplex"] = cellComplex;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
 //    QString key = "gnomonVisualizationCellComplexTriangularMesh";
 
@@ -1003,7 +993,6 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualizat
 {
     d->forms["gnomonImage"] = image;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationImage::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
@@ -1014,14 +1003,11 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualizat
 
     gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
 
-    qDebug()<<Q_FUNC_INFO<<formVisualizationImage;
     formVisualizationImage->setImage(image);
     if (visualization) {
         formVisualizationImage->setParameters(visualization->parameters());
     }
-    qDebug()<<Q_FUNC_INFO<<"Set Image OK";
     formVisualizationImage->update();
-    qDebug()<<Q_FUNC_INFO<<"Update OK";
 
     if (d->renderer3D_button->isToggled()) {
         d->renderer3D_button->toggle(false);
