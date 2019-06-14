@@ -131,7 +131,6 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
             }
         }
     }
-    qDebug()<<figure_number;
 
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
@@ -187,7 +186,6 @@ void gnomonViewMatplotlibPrivate::configure(QWidget *parent, const QString& key)
     if (this->formVisualization.contains(key)) {
         gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
         if(v) {
-            qDebug()<<Q_FUNC_INFO<<key;
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
@@ -205,9 +203,7 @@ void gnomonViewMatplotlibPrivate::configure(QWidget *parent, const QString& key)
             }
             this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
-            qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
-            qDebug()<<Q_FUNC_INFO<<parameters;
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
                 if (widget) {
@@ -243,7 +239,6 @@ void gnomonViewMatplotlibPrivate::refresh(void)
             combo_box->model()->sort(0);
 
             QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
-                qDebug()<<"Visualization changed"<<visu;
                 if (this->formVisualization[key]) {
                     delete this->formVisualization[key];
                     this->formVisualization[key] = nullptr;
@@ -337,7 +332,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
 
-        qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
@@ -359,7 +353,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame", &stat);
 
-        qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
