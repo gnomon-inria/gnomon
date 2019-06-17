@@ -775,7 +775,6 @@ void gnomonViewForm::timeIndexChange(int value)
 
     QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
     qSort(sorted_times);
-    qDebug()<<sorted_times;
 
     double time = sorted_times[value];
 
@@ -1258,10 +1257,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
                 d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
             gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
-            qDebug()<<Q_FUNC_INFO<<path.remove("file://");
             cellComplexCommand->setPath(path.remove("file://"));
             cellComplexCommand->redo();
-            qDebug()<<Q_FUNC_INFO<<cellComplexCommand;
 
             gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex()->clone();
             if (!cellComplex) {
