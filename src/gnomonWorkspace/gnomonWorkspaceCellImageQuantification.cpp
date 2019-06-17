@@ -110,13 +110,13 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     connect(d->view, &gnomonViewForm::formAdded, [=] () {
         d->command->setCellImage(d->view->cellImage());
-        d->command->setImage(d->view->imagesSerie());
+        d->command->setImage(d->view->image());
         d->configure(this, d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm) {
         d->command->setCellImage(d->view->cellImage());
-        d->command->setImage(d->view->imagesSerie());
+        d->command->setImage(d->view->image());
         d->configure(this,algorithm);
     });
 }
@@ -131,12 +131,12 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
     Q_ASSERT(d->command);
 
     d->command->setCellImage(d->view->cellImage());
-    d->command->setImage(d->view->imagesSerie());
+    d->command->setImage(d->view->image());
 
     d->command->redo();
 
     d->view->setCellImage(d->command->cellImage());
-    d->mpl_figure->setForm("gnomonDataFrame",(gnomonAbstractForm *) d->command->dataFrame());
+    d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
 }
 
 void gnomonWorkspaceCellImageQuantification::configure(const QString& algorithm)

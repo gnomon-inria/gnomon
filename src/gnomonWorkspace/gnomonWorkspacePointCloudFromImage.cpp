@@ -90,15 +90,15 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     layout->addWidget(d->pane(this));
 
     connect(d->source, &gnomonViewForm::formAdded, [=] () {
-        if(d->command->input() != d->source->imagesSerie())
-            d->command->setInput(d->source->imagesSerie());
+        if(d->command->input() != d->source->image())
+            d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
         d->configure(this, d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePointCloudFromImagePrivate::algorithmChanged, [=] (const QString& algorithm) {
-        d->command->setInput(d->source->imagesSerie());
+        d->command->setInput(d->source->image());
         d->configure(this,algorithm);
     });
 }
@@ -112,14 +112,14 @@ void gnomonWorkspacePointCloudFromImage::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->imagesSerie())
-        d->command->setInput(d->source->imagesSerie());
+    if(d->command->input() != d->source->image())
+        d->command->setInput(d->source->image());
     else
         qDebug() << "Not changed";
 
     d->command->redo();
 
-    d->target->setPointCloud(d->command->output());
+    d->target->setForm("gnomonPointCloud",d->command->output());
 }
 
 void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)

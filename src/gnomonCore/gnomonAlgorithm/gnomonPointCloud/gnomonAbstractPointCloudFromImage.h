@@ -22,10 +22,9 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class dtkImage;
-class gnomonPointCloud;
-class gnomonCellImage;
-class gnomonImagesSerie;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
+#include "gnomonForm/gnomonImage/gnomonImage.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractPointCloudFromImage : public gnomonAbstractAlgorithm
 {
@@ -34,12 +33,12 @@ class GNOMONCORE_EXPORT gnomonAbstractPointCloudFromImage : public gnomonAbstrac
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
   virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
-  virtual void setInput(gnomonImagesSerie *images) = 0;
+  virtual void setInput(gnomonImageSeries *image) = 0;
 
     // Outputs
 public:
-    virtual gnomonPointCloud *output() const = 0;
-    virtual gnomonImagesSerie *input() const = 0;
+    virtual gnomonPointCloudSeries *output() const = 0;
+    virtual gnomonImageSeries *input() const = 0;
 
 public:
     virtual void run(void) override = 0;

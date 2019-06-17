@@ -109,12 +109,16 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnom
     layout->addWidget(pane);
 
     connect(d->source, &gnomonViewForm::formAdded, [=] () {
-        qDebug()<<Q_FUNC_INFO<<d->source->imagesSerie()->channels();
-        if(d->command->input() != d->source->imagesSerie())
-            d->command->setInput(d->source->imagesSerie());
+        if(d->command->input() != d->source->image())
+            d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
         d->configure(this, d->algorithm);
+    });
+
+    connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->setInput(d->source->image());
+        d->configure(this,algorithm);
     });
 }
 
@@ -133,16 +137,15 @@ void gnomonWorkspaceSegmentation::apply(void)
     Q_ASSERT(d->command);
 
 
-    d->target->render();
-
-    if(d->command->input() != d->source->imagesSerie())
-        d->command->setInput(d->source->imagesSerie());
+    if(d->command->input() != d->source->image())
+        d->command->setInput(d->source->image());
     else
         qDebug() << "Not changed";
 
     d->command->redo();
 
-    d->target->setForm("Segmented Image",d->command->output());
+    d->target->setForm("gnomonCellImage",d->command->output());
+    d->target->render();
 }
 //
 // gnomonWorkspaceSegmentation.cpp ends here

@@ -7,7 +7,7 @@
 class gnomonCellImageFilterCommandPrivate
 {
 public:
-    gnomonCellImage* input = nullptr;
+    gnomonCellImageSeries* input = nullptr;
 };
 
 gnomonCellImageFilterCommand::gnomonCellImageFilterCommand(const QString& key) : d(new gnomonCellImageFilterCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonCellImageFilterCommand::undo(void)
     ((gnomonAbstractCellImageFilter *) this->action)->setInput(nullptr);
 }
 
-void gnomonCellImageFilterCommand::setInput(gnomonCellImage *input)
+void gnomonCellImageFilterCommand::setInput(gnomonCellImageSeries *input)
 {
     d->input = input;
 
@@ -60,12 +60,12 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageFilterCommand::parameters(vo
     return this->action->parameters();
 }
 
-gnomonCellImage *gnomonCellImageFilterCommand::input(void)
+gnomonCellImageSeries *gnomonCellImageFilterCommand::input(void)
 {
     return ((gnomonAbstractCellImageFilter *) this->action)->input();
 }
 
-gnomonCellImage *gnomonCellImageFilterCommand::output(void)
+gnomonCellImageSeries *gnomonCellImageFilterCommand::output(void)
 {
     return ((gnomonAbstractCellImageFilter *) this->action)->output();
 }

@@ -20,6 +20,7 @@
 
 #include <dtkCore>
 
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
 
 class gnomonViewForm;
@@ -36,7 +37,7 @@ public:
     virtual ~gnomonAbstractVisualizationPointCloud(void) = default;
 
 public:
-	virtual void setPointCloud(gnomonPointCloud *PointCloud) = 0;
+	virtual void setPointCloud(gnomonPointCloudSeries *PointCloud) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
@@ -50,6 +51,9 @@ public slots:
     virtual void update(void) override = 0;
     virtual void render(void) override = 0;
     virtual void clear(void) override = 0;
+
+public slots:
+    virtual void onTimeChanged(double) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -39,6 +39,7 @@
 class gnomonVisualizationCellComplexPrivate
 {
 public:
+    gnomonCellComplexSeries *cellComplexSeries;
     gnomonCellComplex *cellComplex;
 
 public:
@@ -87,6 +88,7 @@ void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
 
     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
+    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setValue(*(mm.first),*(mm.second));
 }
 
 
@@ -140,9 +142,10 @@ void gnomonVisualizationCellComplex::clear(void)
     disconnect(d->connectYZ);
 }
 
-void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellComplex)
+void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cellComplexSeries)
 {
-    dd->cellComplex = cellComplex;
+    dd->cellComplexSeries = cellComplexSeries;
+    dd->cellComplex = (gnomonCellComplex *) cellComplexSeries->current();
 
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
@@ -173,11 +176,20 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplex *cellCompl
 
 QImage gnomonVisualizationCellComplex::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->polydata->GetBounds());
+    double bounds[6];
+    dd->polydata->GetBounds(bounds);
 
-    d->offscreenRenderer->AddActor(dd->actor);
+    if (bounds[4]==bounds[5]) {
+        double size = ((bounds[1]-bounds[0])+(bounds[3]-bounds[2]))/4;
+        bounds[4] = bounds[4] - size/2.;
+        bounds[5] = bounds[5] + size/2.;
+    }
 
-    return d->offscreenImageRendering();
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
+
+    this->offscreenRenderer()->AddActor(dd->actor);
+
+    return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationCellComplex::update(void)
@@ -187,11 +199,8 @@ void gnomonVisualizationCellComplex::update(void)
     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
     double scale = ((gnomonCoreParameterDouble *)d->parameters["scale_factor"])->value();
 
-
     if(!dd->cellComplex)
         return;
-
-    qDebug()<<Q_FUNC_INFO<<dd->cellComplex<<dd->cellComplex->elementCount(2)<<"Faces";
 
     if (dd->polydata) {
         dd->polydata->Delete();
@@ -204,7 +213,6 @@ void gnomonVisualizationCellComplex::update(void)
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
-
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -243,7 +251,7 @@ void gnomonVisualizationCellComplex::update(void)
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
     });
-//
+
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
         dd->actor2D->setSlice(value);
         this->render();
@@ -291,6 +299,15 @@ void gnomonVisualizationCellComplex::setParameters(const QMap<QString, gnomonCor
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationCellComplex::onTimeChanged(double value)
+{
+    if (dd->cellComplexSeries->times().contains(value)) {
+        dd->cellComplex = (gnomonCellComplex *) dd->cellComplexSeries->at(value);
+        this->update();
+    }
+    this->render();
 }
 
 //

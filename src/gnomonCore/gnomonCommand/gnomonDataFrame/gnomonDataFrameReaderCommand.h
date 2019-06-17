@@ -1,7 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonDataFrame;
-
 class GNOMONCORE_EXPORT gnomonDataFrameReaderCommand : public gnomonAbstractCommand
 {
 public:
@@ -16,7 +14,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonDataFrame *dataFrame(void);
+    gnomonDataFrameSeries *dataFrame(void);
 
 private:
     class gnomonDataFrameReaderCommandPrivate *d;

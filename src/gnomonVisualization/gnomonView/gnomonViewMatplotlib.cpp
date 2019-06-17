@@ -23,6 +23,10 @@
 #include <gnomonStyle>
 #include <gnomonWidgets>
 
+//
+//#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+//#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 #include "gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h"
 #include "gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h"
@@ -65,7 +69,7 @@ public slots:
     void saveFigure(void);
 
 public:
-    QMap<QString, gnomonAbstractForm *> forms;
+    QMap<QString, gnomonAbstractDynamicForm *> forms;
     QMap<QString, gnomonAbstractMatplotlibVisualization *> formVisualization;
     QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
@@ -127,7 +131,6 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
             }
         }
     }
-    qDebug()<<figure_number;
 
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
@@ -183,7 +186,6 @@ void gnomonViewMatplotlibPrivate::configure(QWidget *parent, const QString& key)
     if (this->formVisualization.contains(key)) {
         gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
         if(v) {
-            qDebug()<<Q_FUNC_INFO<<key;
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
@@ -201,9 +203,7 @@ void gnomonViewMatplotlibPrivate::configure(QWidget *parent, const QString& key)
             }
             this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
-            qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
-            qDebug()<<Q_FUNC_INFO<<parameters;
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
                 if (widget) {
@@ -239,7 +239,6 @@ void gnomonViewMatplotlibPrivate::refresh(void)
             combo_box->model()->sort(0);
 
             QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
-                qDebug()<<"Visualization changed"<<visu;
                 if (this->formVisualization[key]) {
                     delete this->formVisualization[key];
                     this->formVisualization[key] = nullptr;
@@ -325,15 +324,14 @@ gnomonViewMatplotlib::~gnomonViewMatplotlib(void)
     delete d;
 }
 
-void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form, gnomonAbstractMatplotlibVisualization *visualization)
+void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractMatplotlibVisualization *visualization)
 {
-    if (gnomonTree *tree = dynamic_cast<gnomonTree *>(form)) {
+    if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
         d->forms["gnomonTree"] = tree;
 
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
 
-        qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
@@ -342,20 +340,19 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form
             d->formVisualization["gnomonTree"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)d->formVisualization["gnomonTree"];
-        formVisualizationTree->setTree(tree);
+        formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
         if (visualization) {
             formVisualizationTree->setParameters(visualization->parameters());
         }
         formVisualizationTree->update();
 
         emit formAdded("gnomonTree");
-    } else if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+    } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
         d->forms["gnomonDataFrame"] = dataFrame;
 
         int stat;
         dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame", &stat);
 
-        qDebug()<<Q_FUNC_INFO<<gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
@@ -364,7 +361,7 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractForm *form
             d->formVisualization["gnomonDataFrame"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)d->formVisualization["gnomonDataFrame"];
-        formVisualizationDataFrame->setDataFrame(dataFrame);
+        formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
         if (visualization) {
             formVisualizationDataFrame->setParameters(visualization->parameters());
         }
@@ -406,8 +403,8 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
-        this->setForm("formManager",form);
+        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
+//        this->setForm("formManager",form);
 
     } else {
         if ((path.endsWith("xml")) || (path.endsWith("txt")))   {
@@ -417,7 +414,7 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
             treeCommand->setPath(path.remove("file://"));
             treeCommand->redo();
 
-            gnomonTree * tree = (gnomonTree *) treeCommand->tree()->clone();
+            gnomonTreeSeries * tree = (gnomonTreeSeries *) treeCommand->tree()->clone();
             if (!tree) {
                 qWarning() << Q_FUNC_INFO << "Resulting tree is void.";
                 event->ignore();
@@ -431,7 +428,7 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
             dataFrameCommand->setPath(path.remove("file://"));
             dataFrameCommand->redo();
 
-            gnomonDataFrame * dataFrame = (gnomonDataFrame *) dataFrameCommand->dataFrame()->clone();
+            gnomonDataFrameSeries * dataFrame = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame()->clone();
             if (!dataFrame) {
                 qWarning() << Q_FUNC_INFO << "Resulting dataframe is void.";
                 event->ignore();

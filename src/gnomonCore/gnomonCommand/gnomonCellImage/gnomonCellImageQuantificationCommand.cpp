@@ -7,8 +7,8 @@
 class gnomonCellImageQuantificationCommandPrivate
 {
 public:
-    gnomonImagesSerie* image = nullptr;
-    gnomonCellImage* cellImage = nullptr;
+    gnomonImageSeries* image = nullptr;
+    gnomonCellImageSeries* cellImage = nullptr;
 };
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(const QString& key) : d(new gnomonCellImageQuantificationCommandPrivate)
@@ -44,7 +44,7 @@ void gnomonCellImageQuantificationCommand::undo(void)
     ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(nullptr);
 }
 
-void gnomonCellImageQuantificationCommand::setImage(gnomonImagesSerie *image)
+void gnomonCellImageQuantificationCommand::setImage(gnomonImageSeries *image)
 {
     d->image = image;
 
@@ -53,7 +53,7 @@ void gnomonCellImageQuantificationCommand::setImage(gnomonImagesSerie *image)
 }
 
 
-void gnomonCellImageQuantificationCommand::setCellImage(gnomonCellImage *cellImage)
+void gnomonCellImageQuantificationCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
     d->cellImage = cellImage;
 
@@ -71,12 +71,12 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageQuantificationCommand::param
     return this->action->parameters();
 }
 
-gnomonCellImage *gnomonCellImageQuantificationCommand::cellImage(void)
+gnomonCellImageSeries *gnomonCellImageQuantificationCommand::cellImage(void)
 {
     return ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
 }
 
-gnomonDataFrame *gnomonCellImageQuantificationCommand::dataFrame(void)
+gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
 {
     return ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
 }

@@ -24,13 +24,17 @@ class gnomonLandmark;
 class gnomonOverlayPane;
 
 class gnomonAbstractForm;
+class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
 
-class gnomonImagesSerie;
-class gnomonCellImage;
-class gnomonCellComplex;
-class gnomonMesh;
-class gnomonPointCloud;
+template <typename T>
+class gnomonTimeSeries;
+
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
 class vtkRenderer;
 class vtkRenderWindowInteractor;
@@ -67,28 +71,25 @@ public slots:
     void unlink(gnomonViewForm *other);
 
 public slots:
-    void sliceChange(int);
-
-public slots:
     void setExportColor(const QColor& color);
 
 public slots:
     void toggleVisualizationPane(void);
 
 public:
-    void setForm(const QString&, gnomonAbstractForm *, gnomonAbstractVisualization *  = nullptr);
-    void setCellImage(gnomonCellImage *, gnomonAbstractVisualization *  = nullptr);
-    void setImagesSerie(gnomonImagesSerie *, gnomonAbstractVisualization *  = nullptr);
-    void setCellComplex(gnomonCellComplex *, gnomonAbstractVisualization *  = nullptr);
-    void setMesh(gnomonMesh *, gnomonAbstractVisualization *  = nullptr);
-    void setPointCloud(gnomonPointCloud *, gnomonAbstractVisualization *  = nullptr);
+    void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
+    void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setImage(gnomonImageSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setMesh(gnomonMeshSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setPointCloud(gnomonPointCloudSeries *, gnomonAbstractVisualization *  = nullptr);
 
 public:
-    gnomonAbstractForm *form(const QString&); 
-    gnomonImagesSerie *imagesSerie(void);
-    gnomonCellImage *cellImage(void);
-    gnomonCellComplex *cellComplex(void);
-    gnomonMesh *mesh(void);
+    gnomonAbstractDynamicForm *form(const QString&);
+    gnomonImageSeries *image(void);
+    gnomonCellImageSeries *cellImage(void);
+    gnomonCellComplexSeries *cellComplex(void);
+    gnomonMeshSeries *mesh(void);
     gnomonPointCloud *pointCloud(void);
 
 public:
@@ -117,11 +118,23 @@ public slots:
 public slots:
     void onSliceChanged(int);
 
+public slots:
+    void sliceChange(int);
+
 signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
 
     void formAdded(const QString&);
+
+signals:
+    void timeChanged(double);
+
+public slots:
+    void timeIndexChange(int);
+
+public slots:
+    void onTimeChanged(double);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);

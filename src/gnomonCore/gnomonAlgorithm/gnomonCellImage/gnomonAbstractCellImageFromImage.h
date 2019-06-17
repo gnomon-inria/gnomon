@@ -22,8 +22,9 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class gnomonCoreParameter;
-class gnomonImagesSerie;
-class gnomonCellImage;
+
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonImage/gnomonImage.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstractAlgorithm
 {
@@ -35,15 +36,11 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setInput(gnomonImagesSerie *images_serie) = 0;
-    virtual void setUseMargins(bool use_margins) = 0;
-    virtual void setBackgroundLabel(long label) = 0;
-    virtual void setPredefinedProperties(const QStringList& names) = 0;
+    virtual void setInput(gnomonImageSeries *images_serie) = 0;
 
 public:
-    virtual gnomonImagesSerie *input() = 0;
-    virtual gnomonImagesSerie *output() = 0;
-    virtual gnomonCellImage *computedImage(void) const = 0;
+    virtual gnomonImageSeries *input(void) const = 0;
+    virtual gnomonCellImageSeries *output(void) const = 0;
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)

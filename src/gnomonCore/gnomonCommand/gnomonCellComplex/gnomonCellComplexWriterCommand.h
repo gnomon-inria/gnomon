@@ -1,5 +1,4 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-class gnomonCellComplex;
 
 class GNOMONCORE_EXPORT gnomonCellComplexWriterCommand : public gnomonAbstractCommand
 {
@@ -14,7 +13,7 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setCellComplex(gnomonCellComplex *cellcomplex);
+    void setCellComplex(gnomonCellComplexSeries *cellcomplex);
 
 private:
     class gnomonCellComplexWriterCommandPrivate *d;

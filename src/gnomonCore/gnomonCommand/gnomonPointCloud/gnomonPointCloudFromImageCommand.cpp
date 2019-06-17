@@ -7,7 +7,7 @@
 class gnomonPointCloudFromImageCommandPrivate
 {
 public:
-    gnomonImagesSerie* input = nullptr;
+    gnomonImageSeries* input = nullptr;
 };
 
 gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonPointCloudFromImageCommand::undo(void)
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonPointCloudFromImageCommand::setInput(gnomonImagesSerie *input)
+void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *input)
 {
     d->input = input;
 
@@ -60,12 +60,12 @@ QMap<QString, gnomonCoreParameter *> gnomonPointCloudFromImageCommand::parameter
     return this->action->parameters();
 }
 
-gnomonImagesSerie *gnomonPointCloudFromImageCommand::input(void)
+gnomonImageSeries *gnomonPointCloudFromImageCommand::input(void)
 {
     return ((gnomonAbstractPointCloudFromImage *) this->action)->input();
 }
 
-gnomonPointCloud *gnomonPointCloudFromImageCommand::output(void)
+gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
 {
     return ((gnomonAbstractPointCloudFromImage *) this->action)->output();
 }

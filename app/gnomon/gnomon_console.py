@@ -51,9 +51,9 @@ import importlib
 
 plugin_names = []
 
-plugin_names += ['gnomonImagesSerieReader']
-plugin_names += ['gnomonImagesSerieWriter']
-plugin_names += ['gnomonImagesSerieFilter']
+plugin_names += ['gnomonImageReader']
+plugin_names += ['gnomonImageWriter']
+plugin_names += ['gnomonImageFilter']
 plugin_names += ['gnomonCellComplexData']
 plugin_names += ['gnomonCellComplexReader']
 plugin_names += ['gnomonCellComplexFromImage']

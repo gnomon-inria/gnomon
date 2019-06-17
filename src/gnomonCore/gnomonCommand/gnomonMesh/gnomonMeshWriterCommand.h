@@ -1,7 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonMesh;
-
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractCommand
 {
 public:
@@ -15,7 +13,7 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setMesh(gnomonMesh *images_serie);
+    void setMesh(gnomonMeshSeries *mesh);
 
 private:
     class gnomonMeshWriterCommandPrivate *d;

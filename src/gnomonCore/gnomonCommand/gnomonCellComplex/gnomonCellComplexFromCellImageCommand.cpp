@@ -7,7 +7,7 @@
 class gnomonCellComplexFromCellImageCommandPrivate
 {
 public:
-    gnomonCellImage* input = nullptr;
+    gnomonCellImageSeries* input = nullptr;
 };
 
 gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(const QString& key) : d(new gnomonCellComplexFromCellImageCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonCellComplexFromCellImageCommand::undo(void)
     ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonCellComplexFromCellImageCommand::setInput(gnomonCellImage *input)
+void gnomonCellComplexFromCellImageCommand::setInput(gnomonCellImageSeries *input)
 {
     d->input = input;
     
@@ -60,12 +60,12 @@ QMap<QString, gnomonCoreParameter *> gnomonCellComplexFromCellImageCommand::para
     return this->action->parameters();
 }
 
-gnomonCellImage *gnomonCellComplexFromCellImageCommand::input(void)
+gnomonCellImageSeries *gnomonCellComplexFromCellImageCommand::input(void)
 {
     return ((gnomonAbstractCellComplexFromCellImage *) this->action)->input();
 }
 
-gnomonCellComplex *gnomonCellComplexFromCellImageCommand::output(void)
+gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output(void)
 {
     return ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
 }

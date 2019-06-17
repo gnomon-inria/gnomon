@@ -1,5 +1,4 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
 {
@@ -13,11 +12,11 @@ public:
     void undo(void) override;
 
 public:
-    void setImage(gnomonImagesSerie *image);
-    void setCellImage(gnomonCellImage *cellimage);
+    void setImage(gnomonImageSeries *image);
+    void setCellImage(gnomonCellImageSeries *cellimage);
 
-    gnomonCellImage *cellImage(void);
-    gnomonDataFrame *dataFrame(void);
+    gnomonCellImageSeries *cellImage(void);
+    gnomonDataFrameSeries *dataFrame(void);
 
     virtual void setParameter(const QString&, const QVariant&);
 

@@ -27,7 +27,7 @@
 
 #include <gnomonCore>
 
-#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
@@ -78,9 +78,9 @@ QSize gnomonFormManagerPrivate::sizeHint(void) const
     return QSize(200, 130);
 }
 
-gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * form, const QColor& color, const QImage& image)
+gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicForm * form, const QColor& color, const QImage& image)
 {
-    gnomonFormManagerItem *item = new gnomonFormManagerItem(color, QPixmap::fromImage(image), this);
+    gnomonFormManagerItem *item = new gnomonFormManagerItem(color, QPixmap::fromImage(image), form->times().size(), this);
 
     connect(item, &gnomonFormManagerItem::destroy, [=] () {
         this->contents->layout()->removeWidget(item);
@@ -95,22 +95,22 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
         QString path = settings.value("last_saved_file", QDir::homePath()).toString();
         settings.endGroup();
 
-        gnomonAbstractForm *form = this->forms[item];
+        gnomonAbstractDynamicForm *form = this->forms[item];
 
         QString export_file_path;
-        if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
-            export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"), path, tr("Images (*.inr.gz *.inr *.tif)"));
-            static_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setImagesSerie(images_serie);
-            static_cast<gnomonImagesSerieWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
-        } else if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+        if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save image"), path, tr("Images (*.tif)"));
+            static_cast<gnomonImageWriterCommand *>(this->formWriterCommand[item])->setImage(image);
+            static_cast<gnomonImageWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save mesh"), path, tr("Meshes (*.ply)"));
             static_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setMesh(mesh);
             static_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
-        } else if (gnomonCellImage *cellimage = dynamic_cast<gnomonCellImage *>(form)) {
+        } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell image"), path, tr("Images (*.tif)"));
             static_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[item])->setCellImage(cellimage);
             static_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
-        } else if (gnomonCellComplex *cellcomplex = dynamic_cast<gnomonCellComplex *>(form)) {
+        } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell complex"), path, tr("Meshes (*.ply)"));
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setCellComplex(cellcomplex);
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
@@ -134,7 +134,7 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractForm * for
 
     gnomonFormManagerData *data = new gnomonFormManagerData(this);
     data->reference = item;
-    data->data = form->metadata();
+    data->data = form->current()->metadata();
     this->formData.insert(item, data);
 
 
@@ -153,28 +153,28 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, gnomonAbstractVisualization* visualization)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractVisualization* visualization)
 {
 
     QImage image = visualization->imageRendering();
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
 
-    d->forms.insert(item, form);
+    d->forms.insert(item, form->clone());
     d->formVisualizations.insert(item, visualization);
 
 
     QString writerPlugin;
-    if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
-        d->formWriterCommand[item] = new gnomonImagesSerieWriterCommand("gnomonImagesSerieWriter");
-        static_cast<gnomonImagesSerieWriterCommand *>(d->formWriterCommand[item])->setImagesSerie(images_serie);
-    } else if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
+    if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
+        d->formWriterCommand[item] = new gnomonImageWriterCommand("gnomonImageWriter");
+        static_cast<gnomonImageWriterCommand *>(d->formWriterCommand[item])->setImage(image);
+    } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         d->formWriterCommand[item] = new gnomonMeshWriterCommand("gnomonMeshWriterPropertyTopomesh");
         static_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
-    } else if (gnomonCellImage *cellimage = dynamic_cast<gnomonCellImage *>(form)) {
+    } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         d->formWriterCommand[item] = new gnomonCellImageWriterCommand("gnomonCellImageWriterPropertySpatialImage");
         static_cast<gnomonCellImageWriterCommand *>(d->formWriterCommand[item])->setCellImage(cellimage);
-    } else if (gnomonCellComplex *cellcomplex = dynamic_cast<gnomonCellComplex *>(form)) {
+    } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
         d->formWriterCommand[item] = new gnomonCellComplexWriterCommand("gnomonCellComplexWriterPropertyTopomesh");
         static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
     }
@@ -182,7 +182,7 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
     d->contents->layout()->addWidget(item);
 }
 
-void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
 {
     qDebug()<<Q_FUNC_INFO;
     QImage image = visualization->imageRendering();
@@ -206,7 +206,7 @@ void gnomonFormManager::addForm(gnomonAbstractForm * form, const QColor& color, 
     d->contents->layout()->addWidget(item);
 }
 
-gnomonAbstractForm * gnomonFormManager::get(int index)
+gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {

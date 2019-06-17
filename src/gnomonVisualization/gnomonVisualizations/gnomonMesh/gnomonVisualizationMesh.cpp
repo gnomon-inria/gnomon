@@ -38,7 +38,9 @@
 class gnomonVisualizationMeshPrivate
 {
 public:
+    gnomonMeshSeries *meshSeries;
     gnomonMesh *mesh;
+
 
 public:
     gnomonPolyDataMesh *polydata = nullptr;
@@ -96,9 +98,10 @@ void gnomonVisualizationMesh::clear(void)
     }
 }
 
-void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
+void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
 {
-    dd->mesh = mesh;
+    dd->meshSeries = mesh;
+    dd->mesh = (gnomonMesh *) mesh->current();
 
     this->setParameter("alpha",1.0);
 
@@ -118,14 +121,14 @@ void gnomonVisualizationMesh::setMesh(gnomonMesh *mesh)
         propertyParam->setValue(QString(""));
     }
 
-    
+
     this->updateValueRange();
 }
 
 void gnomonVisualizationMesh::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    
+
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
     }
@@ -151,7 +154,7 @@ void gnomonVisualizationMesh::updateValueRange(void)
     QList<double> vertexScalarPropertyValues;
     for (const auto& vertexId : dd->mesh->vertexIds()) {
         vertexScalarPropertyValues.append(vertexProperty[vertexId].value<double>());
-    } 
+    }
     auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
 
 
@@ -161,11 +164,20 @@ void gnomonVisualizationMesh::updateValueRange(void)
 
 QImage gnomonVisualizationMesh::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->polydata->GetBounds());
+    double bounds[6];
+    dd->polydata->GetBounds(bounds);
 
-    d->offscreenRenderer->AddActor(dd->actor);
+    if (bounds[4]==bounds[5]) {
+        double size = ((bounds[1]-bounds[0])+(bounds[3]-bounds[2]))/4;
+        bounds[4] = bounds[4] - size/2.;
+        bounds[5] = bounds[5] + size/2.;
+    }
 
-    return d->offscreenImageRendering();
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
+
+    this->offscreenRenderer()->AddActor(dd->actor);
+
+    return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationMesh::update(void)
@@ -187,7 +199,7 @@ void gnomonVisualizationMesh::update(void)
     dd->polydata->setMesh((gnomonMesh *)dd->mesh->clone());
     dd->polydata->setPropertyName(property_name);
     dd->polydata->update();
-    
+
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -274,6 +286,15 @@ void gnomonVisualizationMesh::setParameters(const QMap<QString, gnomonCoreParame
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationMesh::onTimeChanged(double value)
+{
+    if (dd->meshSeries->times().contains(value)) {
+        dd->mesh = (gnomonMesh *) dd->meshSeries->at(value);
+        this->update();
+    }
+    this->render();
 }
 
 //

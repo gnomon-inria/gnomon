@@ -51,7 +51,9 @@ gnomonWorkspaceSimulationPrivate::~gnomonWorkspaceSimulationPrivate()
 }
 
 QString gnomonWorkspaceSimulationPrivate::workspace() const
-{ return "Simulation"; }
+{
+    return "FEM Simulation";
+}
 
 QStringList gnomonWorkspaceSimulationPrivate::keys() const
 {
@@ -88,12 +90,10 @@ gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 
 void gnomonWorkspaceSimulation::apply(void)
 {
-    qDebug()<<"----- Apply -----";
     Q_ASSERT(d->command);
-    qDebug()<<"Command OK";
     d->command->setMesh(d->source->mesh());
     d->command->redo();
-    d->target->setMesh((gnomonMesh *)d->command->updatedMesh()->clone());
+    d->target->setMesh(d->command->updatedMesh());
 
 }
 

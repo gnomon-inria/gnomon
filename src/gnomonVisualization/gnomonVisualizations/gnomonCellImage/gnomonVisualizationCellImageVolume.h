@@ -34,7 +34,7 @@ public:
     ~gnomonVisualizationCellImageVolume(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellImage) override;
+	void setCellImage(gnomonCellImageSeries *cellImage) override;
 
 public slots:
     void updateOpacity(void);
@@ -46,7 +46,12 @@ public:
 public slots:
     void update(void) override;
     void render(void) override;
+
+public slots:
     void clear(void) override;
+
+public slots:
+    void onTimeChanged(double) override;
 
 public:
     void setParameter(const QString&, const QVariant&) override;

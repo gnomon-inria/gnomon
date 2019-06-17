@@ -19,6 +19,8 @@
 #include "gnomonAbstractCellComplexData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
 
+#include "gnomonForm/gnomonTimeSeries.h"
+
 #include <QtCore>
 
 // ///////////////////////////////////////////////////////////////////
@@ -108,6 +110,12 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 DTK_DECLARE_OBJECT(gnomonCellComplex *)
+
+
+// ///////////////////////////////////////////////////////////////////
+
+typedef gnomonTimeSeries<gnomonCellComplex> gnomonCellComplexSeries;
+Q_DECLARE_METATYPE(gnomonCellComplexSeries *)
 
 //
 // gnomonCellComplex.h ends here

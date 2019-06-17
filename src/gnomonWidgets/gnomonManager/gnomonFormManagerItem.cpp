@@ -18,7 +18,7 @@
 
 #include <gnomonFonts>
 
-gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap& thumbnail, gnomonFormManagerPrivate *parent) : QLabel(parent)
+gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap& thumbnail, int n_times, gnomonFormManagerPrivate *parent) : QLabel(parent)
 {
     this->parent = parent;
 
@@ -32,15 +32,39 @@ gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap&
 
     int size  = 100;
     int space =   3;
-    QPixmap pix;
 
-    // pix = thumbnail;
-    // this->setPixmap(pix);
     this->image = thumbnail;
 
-    this->thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    this->transparent_thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    this->transparent_thumbnail.fill();
+    if (n_times>1) {
+        this->setBaseSize(size, size);
+
+        QPixmap pix(100,100);
+        pix.fill(Qt::transparent);
+
+        QPainter paint(&pix);
+        paint.setPen(color);
+        paint.drawRect(2*space,       0, size-2*space-1, size-2*space-1);
+        paint.fillRect(2*space+1,     1, size-2*space-2, size-2*space-2, Qt::black);
+        paint.drawRect(space,     space, size-2*space-1, size-2*space-1);
+        paint.fillRect(space+1, space+1, size-2*space-2, size-2*space-2, Qt::black);
+        paint.drawRect(0,       2*space, size-2*space-1, size-2*space-1);
+        QRectF target(1,      2*space+1, size-2*space-2, size-2*space-2);
+        QRectF source(0,              0, size-2*space-3, size-2*space-3);
+        paint.drawImage(target, thumbnail.scaled(size-2*space-3, size-2*space-3, Qt::KeepAspectRatio).toImage(), source);
+        paint.end();
+
+//        this->setPixmap(pix);
+        this->thumbnail = pix;
+
+        this->transparent_thumbnail = pix;
+        this->transparent_thumbnail.fill();
+    } else {
+    
+        this->thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+        this->transparent_thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        this->transparent_thumbnail.fill();
+    }
     
     QPainter painter;
     painter.begin(&transparent_thumbnail);
@@ -51,7 +75,9 @@ gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap&
 
     this->setPixmap(this->thumbnail);
 
-    this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
+    if (n_times==1) {
+        this->setStyleSheet(QString("border: 1px solid rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue()));
+    }
 
     connect(this->button_destroy, SIGNAL(clicked()), this, SIGNAL(destroy()));
     connect(this->button_save, SIGNAL(clicked()), this, SIGNAL(save()));

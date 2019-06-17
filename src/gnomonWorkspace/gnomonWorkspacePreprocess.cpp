@@ -20,12 +20,12 @@
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 
-#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieFilterCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFilterCommand>
 
 #include <dtkImagingCore>
 #include <dtkScript>
 
-class gnomonWorkspacePreprocessPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImagesSerieFilterCommand>
+class gnomonWorkspacePreprocessPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImageFilterCommand>
 {
 public:
      gnomonWorkspacePreprocessPrivate(void);
@@ -45,7 +45,7 @@ public:
     gnomonViewFormPool *pool = nullptr;
 };
 
-gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImagesSerieFilterCommand >()
+gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImageFilterCommand >()
 {
 
 }
@@ -62,14 +62,14 @@ QString gnomonWorkspacePreprocessPrivate::workspace(void) const
 
 QStringList gnomonWorkspacePreprocessPrivate::keys(void) const
 {
-    return gnomonCore::imagesSerieFilter::pluginFactory().keys();
+    return gnomonCore::imageFilter::pluginFactory().keys();
 }
 
 gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWorkspace(parent)
 {
     int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonImagesSerieFilter", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFilter", &stat);
 
     d = new gnomonWorkspacePreprocessPrivate;
 
@@ -90,15 +90,15 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWo
     layout->addWidget(d->pane(this));
 
     connect(d->source, &gnomonViewForm::formAdded, [=] () {
-        if(d->command->input() != d->source->imagesSerie())
-            d->command->setInput(d->source->imagesSerie());
+        if(d->command->input() != d->source->image())
+            d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
         d->configure(this, d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm) {
-        d->command->setInput(d->source->imagesSerie());
+        d->command->setInput(d->source->image());
         d->configure(this,algorithm);
     });
 }
@@ -112,14 +112,14 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->imagesSerie())
-        d->command->setInput(d->source->imagesSerie());
+    if(d->command->input() != d->source->image())
+        d->command->setInput(d->source->image());
     else
         qDebug() << "Not changed";
 
     d->command->redo();
 
-    d->target->setImagesSerie(d->command->output());
+    d->target->setImage(d->command->output());
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)

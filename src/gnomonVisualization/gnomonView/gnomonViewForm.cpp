@@ -15,9 +15,9 @@
 #include "gnomonViewForm.h"
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
-#include <gnomonCore/gnomonCommand/gnomonImagesSerie/gnomonImagesSerieReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 
 #include <dtkImagingCore>
@@ -28,7 +28,7 @@
 
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
-#include "gnomonVisualizations/gnomonImagesSerie/gnomonAbstractVisualizationImagesSerie.h"
+#include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
@@ -55,7 +55,8 @@ public:
     enum Orientation {
         SLICE_ORIENTATION_XY = 2,
         SLICE_ORIENTATION_XZ = 1,
-        SLICE_ORIENTATION_YZ = 0
+        SLICE_ORIENTATION_YZ = 0,
+        NONE = -1
     };
 
 public:
@@ -79,6 +80,9 @@ public:
     void updateOrientation(void);
 
 public:
+    void updateTimeSlider(void);
+
+public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
@@ -87,11 +91,11 @@ public:
     gnomonViewForm *q = nullptr;
 
 public:
-    Orientation ori;
+    Orientation ori = NONE;
     QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    QMap<QString, gnomonAbstractForm *> forms;
+    QMap<QString, gnomonAbstractDynamicForm *> forms;
     QMap<QString, gnomonAbstractVisualization *> formVisualization;
     QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
@@ -117,7 +121,11 @@ public:
     QColor export_color = QColor("#cccccc");
 
 public:
-    QSlider *slice_slider;
+    QSlider *slice_slider = nullptr;
+
+public:
+    QSlider *time_slider = nullptr;
+    QSet<double> forms_times;
 
 public:
     gnomonOverlayPaneItem *paneItemButton = nullptr;
@@ -135,6 +143,12 @@ public:
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
     double c_x = 0, c_y = 0, c_z = 0;
+
+public:
+    double c_t = 0;
+
+public:
+    bool empty = true;
 
 signals:
     void sliceOrientationChanged(int);
@@ -225,7 +239,6 @@ void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
 void gnomonViewFormPrivate::updateOrientation(void)
 {
     if(!this->cameras.contains(this->ori)) {
-        qDebug()<<Q_FUNC_INFO<<"Updating camera"<<ori;
         vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
         cam->ParallelProjectionOn();
         cam->SetParallelScale(1);
@@ -249,6 +262,9 @@ void gnomonViewFormPrivate::updateOrientation(void)
                 cam->SetPosition(xBounds[1],(yBounds[0]+yBounds[1])/2,(zBounds[0]+zBounds[1])/2);
                 cam->SetViewUp(0,0,1);
                 cam->SetClippingRange((xBounds[1] - xBounds[0]) - 3.0, (xBounds[1] - xBounds[0]) + 3.0);
+                break;
+
+            default:
                 break;
         }
         this->renderer2D->SetActiveCamera(cam);
@@ -298,7 +314,6 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
     if (this->formVisualization.contains(key)) {
         gnomonAbstractVisualization *v = this->formVisualization[key];
         if(v) {
-            qDebug()<<Q_FUNC_INFO<<key;
             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
@@ -316,9 +331,7 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
             }
             this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
-            qDebug()<<Q_FUNC_INFO<<v;
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
-            qDebug()<<Q_FUNC_INFO<<parameters;
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
                 if (widget) {
@@ -347,8 +360,8 @@ void gnomonViewFormPrivate::refresh(void)
                 combo_box_keys = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
             } else if (key == "gnomonCellImage") {
                 combo_box_keys = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
-            } else if (key == "gnomonImagesSerie") {
-                combo_box_keys = gnomonVisualization::visualizationImagesSerie::pluginFactory().keys();
+            } else if (key == "gnomonImage") {
+                combo_box_keys = gnomonVisualization::visualizationImage::pluginFactory().keys();
             } else if (key == "gnomonMesh") {
                 combo_box_keys = gnomonVisualization::visualizationMesh::pluginFactory().keys();
             } else if (key == "gnomonPointCloud") {
@@ -361,8 +374,8 @@ void gnomonViewFormPrivate::refresh(void)
 
             QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
                 q->switchTo3D();
-                qDebug()<<"Visualization changed"<<visu;
                 if (this->formVisualization[key]) {
+                    this->formVisualization[key]->clear();
                     delete this->formVisualization[key];
                     this->formVisualization[key] = nullptr;
                 }
@@ -370,35 +383,35 @@ void gnomonViewFormPrivate::refresh(void)
                     this->formVisualization[key] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
-                    gnomonCellComplex *cellComplex = (gnomonCellComplex *)this->forms[key];
+                    gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *)this->forms[key];
                     formVisualizationCellComplex->setCellComplex(cellComplex);
                     formVisualizationCellComplex->update();
                 } else if (key == "gnomonCellImage") {
                     this->formVisualization[key] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
-                    gnomonCellImage *cellImage = (gnomonCellImage *)this->forms[key];
+                    gnomonCellImageSeries *cellImage = (gnomonCellImageSeries *)this->forms[key];
                     formVisualizationCellImage->setCellImage(cellImage);
                     formVisualizationCellImage->update();
-                } else if (key == "gnomonImagesSerie") {
-                    this->formVisualization[key] = gnomonVisualization::visualizationImagesSerie::pluginFactory().create(visu);
+                } else if (key == "gnomonImage") {
+                    this->formVisualization[key] = gnomonVisualization::visualizationImage::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
-                    gnomonAbstractVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonAbstractVisualizationImagesSerie *)this->formVisualization[key];
-                    gnomonImagesSerie *imagesSerie = (gnomonImagesSerie *)this->forms[key];
-                    formVisualizationImagesSerie->setImagesSerie(imagesSerie);
-                    formVisualizationImagesSerie->update();
+                    gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)this->formVisualization[key];
+                    gnomonImageSeries *image = (gnomonImageSeries *)this->forms[key];
+                    formVisualizationImage->setImage(image);
+                    formVisualizationImage->update();
                 } else if (key == "gnomonMesh") {
                     this->formVisualization[key] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
-                    gnomonMesh *mesh = (gnomonMesh *)this->forms[key];
-                    formVisualizationMesh->setMesh(mesh);
+                    gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
+                    formVisualizationMesh->setMesh((gnomonMeshSeries *)mesh->current());
                     formVisualizationMesh->update();
                 } else if (key == "gnomonPointCloud") {
                     this->formVisualization[key] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
                     this->formVisualization[key]->setView(q);
                     gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)this->formVisualization[key];
-                    gnomonPointCloud *pointCloud = (gnomonPointCloud *)this->forms[key];
+                    gnomonPointCloudSeries *pointCloud = (gnomonPointCloudSeries *)this->forms[key];
                     formVisualizationPointCloud->setPointCloud(pointCloud);
                     formVisualizationPointCloud->update();
                 }
@@ -414,6 +427,27 @@ void gnomonViewFormPrivate::refresh(void)
     this->formVisualizationPane->addWidget(this->paneItemButton);
 }
 
+void gnomonViewFormPrivate::updateTimeSlider(void)
+{
+    this->forms_times.clear();
+    for (const auto& key : this->forms.keys()) {
+        for(auto time : this->forms[key]->times()) {
+            this->forms_times.insert(time);
+        }
+    }
+
+    if(this->forms_times.size() < 2) {
+        this->time_slider->setVisible(false);
+        return;
+    }
+    this->time_slider->setVisible(true);
+
+
+    this->time_slider->setOrientation(Qt::Horizontal);
+    this->time_slider->setMinimum(0);
+    this->time_slider->setMaximum(this->forms_times.size()-1);
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
@@ -425,6 +459,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationImage", &stat);
     dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationPointCloud", &stat);
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
@@ -449,6 +484,22 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d, &gnomonViewFormPrivate::sliceOrientationChanged, this, &gnomonViewForm::sliceOrientationChanged);
 
+    d->time_slider = new QSlider(this);
+    d->time_slider->setObjectName("Time Point");
+    d->time_slider->setOrientation(Qt::Horizontal);
+    d->time_slider->setMinimum(0);
+    d->time_slider->setPageStep(1);
+    d->time_slider->setMaximum(1);
+    d->time_slider->setValue(0);
+    d->time_slider->setEnabled(true);
+    d->time_slider->setVisible(true);
+    d->time_slider->setTickPosition(QSlider::TicksAbove);
+
+    connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
+//    connect(d->time_slider, &QSlider::valueChanged, [=] (int value) {
+//        this->timeChange((double) value);
+//    });
+
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -456,6 +507,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->addWidget(d->infoPane, 0, 1, 1, 1);
     layout->addWidget(d, 0, 2, 1, 1);
     layout->addWidget(d->pane(parent), 0, 3, 1, 1);
+    layout->addWidget(d->time_slider, 1, 0, 1, 3);
 
     connect(d->sync, &gnomonOverlayButton::iconClicked, [=] () {
         d->sync->toggle(!d->sync->isToggled());
@@ -487,6 +539,12 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
+        d->updateTimeSlider();
+        if (d->empty) {
+            d->renderer3D->ResetCamera();
+        }
+        d->empty = false;
+        this->render();
     });
 
     connect(d->renderButton, &QPushButton::clicked, [=] () {
@@ -503,6 +561,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
         for (const auto& key : d->formVisualization.keys()) {
             d->formVisualization[key]->disconnect();
+            d->formVisualization[key]->clearConnections();
             d->formVisualization[key]->clear();
             delete d->formVisualization[key];
             d->parameterLayouts[key]->disconnect();
@@ -516,6 +575,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         d->formVisualizationPaneItems.clear();
 
         d->formVisualizationPane->addWidget(d->paneItemButton);
+        d->empty = true;
 
         this->render();
     });
@@ -525,6 +585,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     this->switchTo2DXY();
     this->switchTo3D();
     d->updateOrientation();
+    d->updateTimeSlider();
 }
 
 gnomonViewForm::~gnomonViewForm(void)
@@ -564,8 +625,6 @@ void gnomonViewForm::switchTo2D(void)
 {
     if (d->renderer2D_button->isToggled()) return;
 
-    qDebug()<<Q_FUNC_INFO;
-
     d->renderer2D_button->toggle(true);
     d->renderer2D_button->setEnabled(false);
 
@@ -603,6 +662,9 @@ void gnomonViewForm::switchTo2D(void)
         case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
             this->switchTo2DYZ();
             break;
+
+        default:
+            break;
     }
 }
 
@@ -617,13 +679,15 @@ void gnomonViewForm::switchTo2DXY(void)
     d->slice_slider->setValue(d->c_z);
     emit sliceChanged(d->c_z);
 
+    bool hasChanged = d->ori != gnomonViewFormPrivate::SLICE_ORIENTATION_XY;
     d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XY);
 
     d->renderer2D_XY->toggle(true);
     d->renderer2D_XZ->toggle(false);
     d->renderer2D_YZ->toggle(false);
 
-    emit switchedTo2DXY();
+    if (hasChanged)
+        emit switchedTo2DXY();
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
@@ -637,13 +701,15 @@ void gnomonViewForm::switchTo2DXZ(void)
     d->slice_slider->setValue(d->c_y);
     emit sliceChanged(d->c_y);
 
+    bool hasChanged = d->ori != gnomonViewFormPrivate::SLICE_ORIENTATION_XZ;
     d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XZ);
 
     d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->toggle(true);
     d->renderer2D_YZ->toggle(false);
 
-    emit switchedTo2DXZ();
+    if (hasChanged)
+        emit switchedTo2DXZ();
 }
 
 void gnomonViewForm::switchTo2DYZ(void)
@@ -657,13 +723,15 @@ void gnomonViewForm::switchTo2DYZ(void)
     d->slice_slider->setValue(d->c_x);
     emit sliceChanged(d->c_x);
 
+    bool hasChanged = d->ori != gnomonViewFormPrivate::SLICE_ORIENTATION_YZ;
     d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_YZ);
 
     d->renderer2D_XY->toggle(false);
     d->renderer2D_XZ->toggle(false);
     d->renderer2D_YZ->toggle(true);
 
-    emit switchedTo2DYZ();
+    if (hasChanged)
+        emit switchedTo2DYZ();
 }
 
 void gnomonViewForm::sliceChange(int value)
@@ -701,6 +769,33 @@ void gnomonViewForm::sliceChange(int value)
     d->GetInteractor()->Render();
 }
 
+
+void gnomonViewForm::timeIndexChange(int value)
+{
+
+    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
+    qSort(sorted_times);
+
+    double time = sorted_times[value];
+
+    bool valueChanged = false;
+    if (d->c_t != time) {
+        valueChanged = true;
+        d->c_t = time;
+    }
+
+    d->time_slider->blockSignals(true);
+    d->time_slider->setValue(value);
+    d->time_slider->setToolTip(QString("current time: %1").arg(time));
+    d->time_slider->blockSignals(false);
+
+    if (valueChanged) {
+        emit timeChanged(time);
+    }
+
+    d->GetInteractor()->Render();
+}
+
 void gnomonViewForm::link(gnomonViewForm *other)
 {
     if (d->syncing_timer)
@@ -724,6 +819,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
     connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
     connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+    connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 }
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
@@ -759,6 +855,7 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     disconnect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
     disconnect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
+    disconnect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 }
 
 
@@ -772,7 +869,7 @@ void gnomonViewForm::toggleVisualizationPane(void)
     d->formVisualizationPane->toggle();
 }
 
-gnomonAbstractForm *gnomonViewForm::form(const QString& name)
+gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 {
     if (d->forms.contains(name)) {
         return d->forms[name];
@@ -781,83 +878,35 @@ gnomonAbstractForm *gnomonViewForm::form(const QString& name)
     }
 }
 
-void gnomonViewForm::setForm(const QString& name, gnomonAbstractForm *form, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
-    if (gnomonImagesSerie *images_serie = dynamic_cast<gnomonImagesSerie *>(form)) {
-        return this->setImagesSerie(images_serie, visualization);
+    if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
+        this->setCellImage(cellImage);
+    } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
+        this->setCellComplex(cellComplex);
+    } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
+        this->setImage(image);
+    } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
+        this->setMesh(mesh);
+    } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+        this->setPointCloud(pointCloud);
     }
-    if (gnomonCellImage *cellImage = dynamic_cast<gnomonCellImage *>(form)) {
-        return this->setCellImage(cellImage);
-    }
-    if (gnomonCellComplex *cellComplex = dynamic_cast<gnomonCellComplex *>(form)) {
-        return this->setCellComplex(cellComplex);
-    }
-    if (gnomonMesh *mesh = dynamic_cast<gnomonMesh *>(form)) {
-        return this->setMesh(mesh);
-    }
-    if (gnomonPointCloud *pointCloud = dynamic_cast<gnomonPointCloud *>(form)) {
-        return this->setPointCloud(pointCloud);
-    }
+    return;
 }
 
-gnomonImagesSerie *gnomonViewForm::imagesSerie(void)
-{
-    if (d->forms.contains("gnomonImagesSerie")) {
-        return dynamic_cast<gnomonImagesSerie *>(d->forms["gnomonImagesSerie"]);
-    } else {
-        return nullptr;
-    }
-}
-
-void gnomonViewForm::setImagesSerie(gnomonImagesSerie* images_serie, gnomonAbstractVisualization *visualization)
-{
-    d->forms["gnomonImagesSerie"] = images_serie;
-
-    // bool enable_slider = images_serie->times().count() > 1;
-    // d->time_slider->setVisible(enable_slider);
-
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationImagesSerie::pluginFactory().keys();
-    QString key = gnomonVisualization::visualizationImagesSerie::pluginFactory().keys()[0];
-
-    if ((!d->formVisualization.contains("gnomonImagesSerie"))||(!d->formVisualization["gnomonImagesSerie"]))
-    {
-        d->formVisualization["gnomonImagesSerie"] = gnomonVisualization::visualizationImagesSerie::pluginFactory().create(key);
-        d->formVisualization["gnomonImagesSerie"]->setView(this);
-    }
-
-    gnomonAbstractVisualizationImagesSerie *formVisualizationImagesSerie = (gnomonAbstractVisualizationImagesSerie *)d->formVisualization["gnomonImagesSerie"];
-    formVisualizationImagesSerie->setImagesSerie(images_serie);
-    if (visualization) {
-        formVisualizationImagesSerie->setParameters(visualization->parameters());
-    }
-    formVisualizationImagesSerie->update();
-
-    if (d->renderer3D_button->isToggled()) {
-        d->renderer3D_button->toggle(false);
-        this->switchTo3D();
-    }
-    else if (d->renderer2D_button->isToggled()) {
-        d->renderer2D_button->toggle(false);
-        this->switchTo2D();
-    }
-
-    emit formAdded("gnomonImagesSerie");
-}
-
-gnomonCellImage *gnomonViewForm::cellImage(void)
+gnomonCellImageSeries *gnomonViewForm::cellImage(void)
 {
     if (d->forms.contains("gnomonCellImage")) {
-        return dynamic_cast<gnomonCellImage *>(d->forms["gnomonCellImage"]);
+        return dynamic_cast<gnomonCellImageSeries *>(d->forms["gnomonCellImage"]);
     } else {
         return nullptr;
     }
 }
 
-void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstractVisualization *visualization)
 {
     d->forms["gnomonCellImage"] = cellImage;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellImage::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
@@ -885,20 +934,19 @@ void gnomonViewForm::setCellImage(gnomonCellImage* cellImage, gnomonAbstractVisu
     emit formAdded("gnomonCellImage");
 }
 
-gnomonCellComplex *gnomonViewForm::cellComplex(void)
+gnomonCellComplexSeries *gnomonViewForm::cellComplex(void)
 {
     if (d->forms.contains("gnomonCellComplex")) {
-        return dynamic_cast<gnomonCellComplex *>(d->forms["gnomonCellComplex"]);
+        return dynamic_cast<gnomonCellComplexSeries *>(d->forms["gnomonCellComplex"]);
     } else {
         return nullptr;
     }
 }
 
-void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomonAbstractVisualization *visualization)
 {
     d->forms["gnomonCellComplex"] = cellComplex;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
 //    QString key = "gnomonVisualizationCellComplexTriangularMesh";
 
@@ -927,20 +975,61 @@ void gnomonViewForm::setCellComplex(gnomonCellComplex *cellComplex, gnomonAbstra
     emit formAdded("gnomonCellComplex");
 }
 
-gnomonMesh *gnomonViewForm::mesh(void)
+
+gnomonImageSeries *gnomonViewForm::image(void)
 {
-    if (d->forms.contains("gnomonMesh")) {
-        return dynamic_cast<gnomonMesh *>(d->forms["gnomonMesh"]);
+    if (d->forms.contains("gnomonImage")) {
+        return dynamic_cast<gnomonImageSeries *>(d->forms["gnomonImage"]);
     } else {
         return nullptr;
     }
 }
 
-void gnomonViewForm::setMesh(gnomonMesh *mesh, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualization *visualization)
+{
+    d->forms["gnomonImage"] = image;
+
+    QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
+
+    if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
+    {
+        d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
+        d->formVisualization["gnomonImage"]->setView(this);
+    }
+
+    gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
+
+    formVisualizationImage->setImage(image);
+    if (visualization) {
+        formVisualizationImage->setParameters(visualization->parameters());
+    }
+    formVisualizationImage->update();
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonImage");
+}
+
+gnomonMeshSeries *gnomonViewForm::mesh(void)
+{
+    if (d->forms.contains("gnomonMesh")) {
+        return dynamic_cast<gnomonMeshSeries *>(d->forms["gnomonMesh"]);
+    } else {
+        return nullptr;
+    }
+}
+
+void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization *visualization)
 {
     d->forms["gnomonMesh"] = mesh;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationMesh::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
@@ -977,11 +1066,10 @@ gnomonPointCloud *gnomonViewForm::pointCloud(void)
     }
 }
 
-void gnomonViewForm::setPointCloud(gnomonPointCloud *pointCloud, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbstractVisualization *visualization)
 {
     d->forms["gnomonPointCloud"] = pointCloud;
 
-    qDebug()<<Q_FUNC_INFO<<gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
@@ -1049,7 +1137,7 @@ void gnomonViewForm::setBounds(double bounds[6])
     }
 
     d->renderer2D->ResetCamera();
-    d->renderer3D->ResetCamera();
+//    d->renderer3D->ResetCamera();
 
 }
 
@@ -1094,6 +1182,17 @@ void gnomonViewForm::onSliceChanged(int slice)
     d->slice_slider->setValue(slice);
 }
 
+void gnomonViewForm::onTimeChanged(double time)
+{
+    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
+
+    if (sorted_times.contains(time)) {
+        qSort(sorted_times);
+        int value = sorted_times.indexOf(time);
+        d->time_slider->setValue(value);
+    }
+}
+
 void gnomonViewForm::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasText()) {
@@ -1119,11 +1218,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        gnomonAbstractForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
+        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
         this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
-        // gnomonImagesSerie * images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
-        // emit channelsChanged(images_serie->channels());
-        // this->setImagesSerie(images_serie);
     } else {
         if((path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz")  || path.endsWith("tif"))&&(path.contains("seg",Qt::CaseInsensitive))) {
             if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
@@ -1132,22 +1228,22 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             cellImageCommand->setPath(path.remove("file://"));
             cellImageCommand->redo();
 
-            gnomonCellImage * cellImage = (gnomonCellImage *) cellImageCommand->cellImage()->clone();
+            gnomonCellImageSeries * cellImage = (gnomonCellImageSeries *) cellImageCommand->cellImage()->clone();
             if (!cellImage) {
                 qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonCellImage",cellImage);
+            this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellImage);
 
         } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz") || path.endsWith("tif") || (path.endsWith("czi"))) {
-            if ((!d->formReaderCommand.contains("gnomonImagesSerie"))||(!d->formReaderCommand["gnomonImagesSerie"]))
-                d->formReaderCommand["gnomonImagesSerie"] = new gnomonImagesSerieReaderCommand("gnomonImagesSerieReader");
-            gnomonImagesSerieReaderCommand *imageCommand = (gnomonImagesSerieReaderCommand *) d->formReaderCommand["gnomonImagesSerie"];
+            if ((!d->formReaderCommand.contains("gnomonImage"))||(!d->formReaderCommand["gnomonImage"]))
+                d->formReaderCommand["gnomonImage"] = new gnomonImageReaderCommand("gnomonImageReader");
+            gnomonImageReaderCommand *imageCommand = (gnomonImageReaderCommand *) d->formReaderCommand["gnomonImage"];
             imageCommand->setPath(path.remove("file://"));
             imageCommand->redo();
 
-            gnomonImagesSerie * images_serie = imageCommand->imagesSerie()->copy();
+            gnomonImageSeries * images_serie = (gnomonImageSeries *) imageCommand->image()->clone();
             if (!images_serie) {
                 qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
                 event->ignore();
@@ -1155,24 +1251,22 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             }
             // emit channelsChanged(images_serie->channels());
             // emit timeChanged(images_serie->time());
-            this->setForm("gnomonImagesSerie",images_serie);
+            this->setForm("gnomonImage",images_serie);
 
         } else if((path.endsWith("ply")) and (d->acceptCellComplex)) {
             if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
                 d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
             gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
-            qDebug()<<Q_FUNC_INFO<<path.remove("file://");
             cellComplexCommand->setPath(path.remove("file://"));
             cellComplexCommand->redo();
-            qDebug()<<Q_FUNC_INFO<<cellComplexCommand;
 
-            gnomonCellComplex *cellComplex = (gnomonCellComplex *) cellComplexCommand->cellComplex()->clone();
+            gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex()->clone();
             if (!cellComplex) {
                 qWarning() << Q_FUNC_INFO << "Resulting cellComplex is void.";
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonCellComplex",cellComplex);
+            this->setForm("gnomonCellComplex",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellComplex);
         } else if(path.endsWith("ply")) {
             if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
                 d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
@@ -1180,13 +1274,13 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             meshCommand->setPath(path.remove("file://"));
             meshCommand->redo();
 
-            gnomonMesh *mesh = (gnomonMesh *) meshCommand->mesh()->clone();
+            gnomonMeshSeries *mesh = (gnomonMeshSeries *) meshCommand->mesh()->clone();
             if (!mesh) {
                 qWarning() << Q_FUNC_INFO << "Resulting mesh is void.";
                 event->ignore();
                 return;
             }
-            this->setForm("gnomonMesh",mesh);
+            this->setForm("gnomonMesh",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) mesh);
         } else {
             qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
         }
@@ -1196,6 +1290,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
+    this->renderer3D()->ResetCamera();
+    this->render();
 }
 
 // ///////////////////////////////////////////////////////////////////

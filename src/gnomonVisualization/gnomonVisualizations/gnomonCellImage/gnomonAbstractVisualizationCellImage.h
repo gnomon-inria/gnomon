@@ -20,6 +20,7 @@
 
 #include <dtkCore>
 
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
 
 class gnomonViewForm;
@@ -36,7 +37,7 @@ public:
     virtual ~gnomonAbstractVisualizationCellImage(void) = default;
 
 public:
-	virtual void setCellImage(gnomonCellImage *cellImage) = 0;
+	virtual void setCellImage(gnomonCellImageSeries *cellImage) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
@@ -50,6 +51,9 @@ public slots:
     virtual void update(void) override = 0;
     virtual void render(void) override = 0;
     virtual void clear(void) override = 0;
+
+public slots:
+    virtual void onTimeChanged(double) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -25,7 +25,7 @@ class gnomonFormManagerItem : public QLabel
     Q_OBJECT
 
 public:
-    gnomonFormManagerItem(const QColor&, const QPixmap& thumbnail, gnomonFormManagerPrivate *parent);
+    gnomonFormManagerItem(const QColor&, const QPixmap& thumbnail, int n_times, gnomonFormManagerPrivate *parent);
     ~gnomonFormManagerItem(void);
 
 signals:

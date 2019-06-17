@@ -212,6 +212,7 @@ vtkStandardNewMacro(gnomonInteractorStyleCellImageMarchingCubes);
 class gnomonVisualizationCellImageMarchingCubesPrivate
 {
 public:
+    gnomonCellImageSeries *cellImageSeries;
     gnomonCellImage *cellImage;
 
 public:
@@ -279,6 +280,7 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
 gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
     dd->q = this;
+    dd->cellImageSeries = Q_NULLPTR;
     dd->cellImage = Q_NULLPTR;
 
     d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
@@ -305,6 +307,8 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
 
 void gnomonVisualizationCellImageMarchingCubes::clear(void)
 {
+//    gnomonAbstractVisualization::clear();
+
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -325,15 +329,14 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
     disconnect(d->connectXZ);
     disconnect(d->connectYZ);
 
-    qDebug()<<"Changing interactor style"<<d->view->interactor();
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
-    qDebug()<<"Changed interactor style";
 //    dd->interactor_style->Delete();
 }
 
-void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *cellImage)
+void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    dd->cellImage = cellImage;
+    dd->cellImageSeries = cellImage;
+    dd->cellImage = (gnomonCellImage *) cellImage->current();
 
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
@@ -381,11 +384,13 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImage *ce
 
 QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->polydata->GetBounds());
+    double bounds[6];
+    dd->polydata->GetBounds(bounds);
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    d->offscreenRenderer->AddActor(dd->actor);
+    this->offscreenRenderer()->AddActor(dd->actor);
 
-    return d->offscreenImageRendering();
+    return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationCellImageMarchingCubes::update(void)
@@ -401,15 +406,34 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     if(!dd->cellImage)
         return;
 
-    if (!dd->polydata)
+    disconnect(d->connectSliceOrientation);
+    disconnect(d->connectSlice);
+//    disconnect(d->connectTime);
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+    disconnect(d->connectXY);
+    disconnect(d->connectXZ);
+    disconnect(d->connectYZ);
+
+    if (dd->polydata) {
+        dd->polydata->Delete();
+        dd->polydata = nullptr;
+    }
+    if (!dd->polydata) {
         dd->polydata = gnomonPolyDataCellImage::New();
+    }
     dd->polydata->setCellImage(dd->cellImage);
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setSliceRanges(x_range, y_range, z_range);
     dd->polydata->update();
 
-    if (!dd->actor)
-    {
+    if (dd->actor) {
+        d->view->renderer3D()->RemoveActor(dd->actor);
+        dd->actor->Delete();
+        dd->actor = nullptr;
+    }
+    if (!dd->actor) {
+
         dd->actor = gnomonActorPolyData::New();
         d->view->renderer3D()->AddActor(dd->actor);
     }
@@ -417,10 +441,8 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
-    qDebug()<<Q_FUNC_INFO<<"Actor 3D Ok!";
 
     dd->interactor_style->setActor(dd->actor);
-    qDebug()<<Q_FUNC_INFO<<"Interactor OK!";
 
     if (!dd->actor2D)
     {
@@ -429,11 +451,10 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     }
     dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.1);
-    qDebug()<<Q_FUNC_INFO<<"Actor 2D : SetPolyData "<<dd->polydata;
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
-    qDebug()<<Q_FUNC_INFO<<"Actor 2D Ok!";
+
 
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
         dd->actor2D->setSliceOrientation(value);
@@ -444,10 +465,22 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         this->render();
     });
 
+//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
+//        if (dd->cellImageSeries->times().contains(value)) {
+//            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+//            this->update();
+//            this->render();
+//        }
+//    });
+
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
+
     d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
+
     d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+
     d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+
     d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
@@ -511,6 +544,15 @@ QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long
     }
 
     return info;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onTimeChanged(double value)
+{
+    if (dd->cellImageSeries->times().contains(value)) {
+        dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+        this->update();
+    }
+    this->render();
 }
 
 //

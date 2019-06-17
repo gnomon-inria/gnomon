@@ -30,10 +30,7 @@ ADD_GNOMON_HEADERS(
     gnomonViewManager
     gnomonViewManager.h
     gnomonViewMatplotlib
-    gnomonViewMatplotlib.h
-    gnomonViewVolumic
-    gnomonViewVolumic.h
-    gnomonViewVolumicPool.h)
+    gnomonViewMatplotlib.h)
 
 
 ADD_GNOMON_SOURCES(
@@ -42,9 +39,7 @@ ADD_GNOMON_SOURCES(
     gnomonViewForm.cpp
     gnomonViewFormPool.cpp
     gnomonViewManager.cpp
-    gnomonViewMatplotlib.cpp
-    gnomonViewVolumic.cpp
-    gnomonViewVolumicPool.cpp)
+    gnomonViewMatplotlib.cpp)
 
 
 ######################################################################

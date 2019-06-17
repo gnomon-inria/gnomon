@@ -20,7 +20,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCellImage;
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -38,7 +38,7 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setCellImage(gnomonCellImage *cellimage) = 0;
+    virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
     virtual void setPath(const QString& path) = 0;
 
 };

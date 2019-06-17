@@ -19,7 +19,7 @@
 #include <gnomonCoreExport>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonMesh;
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 class gnomonCoreParameter;
 
 //  ///////////////////////////////////////////////////////////////////
@@ -35,10 +35,10 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-	virtual void setMesh(gnomonMesh *mesh) = 0;
+	virtual void setMesh(gnomonMeshSeries *mesh) = 0;
 
 public:
-    virtual gnomonMesh *updatedMesh(void) const = 0;
+    virtual gnomonMeshSeries *updatedMesh(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

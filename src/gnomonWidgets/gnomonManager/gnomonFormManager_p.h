@@ -18,7 +18,7 @@
 #include <QtWidgets>
 
 
-class gnomonAbstractForm;
+class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
 class gnomonAbstractVisualization;
 class gnomonAbstractMatplotlibVisualization;
@@ -44,10 +44,10 @@ public:
     QSize sizeHint(void) const;
 
 public:
-    gnomonFormManagerItem *create(gnomonAbstractForm *, const QColor&, const QImage& image);
+    gnomonFormManagerItem *create(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
 public:
-    QHash<gnomonFormManagerItem *, gnomonAbstractForm *> forms;
+    QHash<gnomonFormManagerItem *, gnomonAbstractDynamicForm *> forms;
     QHash<gnomonFormManagerItem *, gnomonAbstractVisualization *> formVisualizations;
     QHash<gnomonFormManagerItem *, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
     QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;

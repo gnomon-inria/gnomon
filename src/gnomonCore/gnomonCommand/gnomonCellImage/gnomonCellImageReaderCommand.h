@@ -1,5 +1,4 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-class gnomonCellImage;
 
 class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractCommand
 {
@@ -15,7 +14,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonCellImage *cellImage(void);
+    gnomonCellImageSeries *cellImage(void);
 
 private:
     class gnomonCellImageReaderCommandPrivate *d;

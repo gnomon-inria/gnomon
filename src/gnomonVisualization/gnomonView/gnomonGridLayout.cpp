@@ -107,6 +107,8 @@ void gnomonGridLayout::addView(void)
 //        connect(view, &gnomonViewForm::landmarkRemoved, new_view, &gnomonViewForm::removeLandmark);
 //    }
 
+    connect(new_view, &gnomonViewForm::formAdded, this, &gnomonGridLayout::formAdded);
+
     d->views << new_view;
 
     this->update();

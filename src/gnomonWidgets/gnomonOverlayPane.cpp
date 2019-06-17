@@ -232,7 +232,6 @@ void gnomonOverlayPane::addInfoPaneItem(const QString& title, QMap<QString, QVar
     d->pane_items[title]->setTitle(title);
 
     if (!d->pane_item_layouts.contains(title)) {
-        qDebug()<<Q_FUNC_INFO<<"Create Layout"<<title;
         d->pane_item_layouts[title] = new QFormLayout;
         d->pane_item_layouts[title]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         d->pane_items[title]->addLayout(d->pane_item_layouts[title]);
@@ -246,7 +245,6 @@ void gnomonOverlayPane::addInfoPaneItem(const QString& title, QMap<QString, QVar
     }
 
     for(QMap<QString, QVariant>::iterator it = info.begin(), it_end = info.end(); it != it_end; ++it) {
-        qDebug()<<Q_FUNC_INFO<<it.key()<<it.value().toString();
         d->pane_item_layouts[title]->addRow(it.key(), new QLabel(it.value().toString()));
     }
 

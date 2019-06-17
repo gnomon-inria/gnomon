@@ -13,7 +13,7 @@
 // Code:
 
 #include "gnomonDropSite.h"
-#include "gnomonManager/gnomonImageManager.h"
+#include "gnomonManager/gnomonFormManager.h"
 
 class gnomonDropSitePrivate
 {
@@ -85,7 +85,7 @@ void gnomonDropSite::dropEvent(QDropEvent *event)
 
     d->index = path.remove(":").toInt();
 
-    d->label->setPixmap(gnomonImageManager::instance()->thumbnail(d->index));
+    d->label->setPixmap(gnomonFormManager::instance()->thumbnail(d->index));
 
     qDebug() << Q_FUNC_INFO << "done";
 }

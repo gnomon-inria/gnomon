@@ -86,9 +86,9 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
 
     QMenu * image_menu = this->menu->addMenu(this->font->icon(fa::image),"Image Processing");
 
-    this->action_fusion        = image_menu->addAction("Fusion");
+    this->action_fusion        = image_menu->addAction("Image Fusion");
     this->action_preprocess    = image_menu->addAction("Preprocess");
-    this->action_registration  = image_menu->addAction("Registration");
+    this->action_registration  = image_menu->addAction("Time Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
     this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
@@ -103,9 +103,9 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
 //    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
 
     QMenu * simu_menu = this->menu->addMenu(this->font->icon(fa::sync),"Simulation");
-    this->action_simulation    = simu_menu->addAction("Simulation");
-    this->action_lsystem       = simu_menu->addAction("LSystem simulator");
-    this->action_python_simulation = simu_menu->addAction("Python simulator");
+    this->action_simulation    = simu_menu->addAction("FEM Simulation");
+    this->action_lsystem       = simu_menu->addAction("LSystem Simulator");
+    this->action_python_simulation = simu_menu->addAction("Python Model");
 
     connect(this->menu, SIGNAL(triggered(QAction *)), this, SLOT(create(QAction *)));
 }
@@ -317,7 +317,7 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::fusion_color.red()).arg(gnomonToolBar::fusion_color.green()).arg(gnomonToolBar::fusion_color.blue()));
         else if(item->text() == "LSystem simulator")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::lsystem_color.red()).arg(gnomonToolBar::lsystem_color.green()).arg(gnomonToolBar::lsystem_color.blue()));
-        else if(item->text() == "Python simulator")
+        else if(item->text() == "Python Model")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::python_simulation_color.red()).arg(gnomonToolBar::python_simulation_color.green()).arg(gnomonToolBar::python_simulation_color.blue()));
         else if(item->text() == "Segmentation")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
@@ -325,7 +325,7 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
         else if(item->text() == "Cell Quantification")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::cellImageQuantification_color.red()).arg(gnomonToolBar::cellImageQuantification_color.green()).arg(gnomonToolBar::cellImageQuantification_color.blue()));
-        else if(item->text() == "Registration")
+        else if(item->text() == "Time Registration")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
         else if(item->text() == "MeshFromImage")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::meshFromImage_color.red()).arg(gnomonToolBar::meshFromImage_color.green()).arg(gnomonToolBar::meshFromImage_color.blue()));
@@ -416,14 +416,14 @@ void gnomonToolBar::setCurrentIndex(int i)
 
 void gnomonToolBar::onCreateFusion(void)
 {
-    d->createWorkspace(fusion_color, "Fusion");
+    d->createWorkspace(fusion_color, "Image Fusion");
 
     emit createFusion();
 }
 
 void gnomonToolBar::onCreatePythonSimulator(void)
 {
-    d->createWorkspace(python_simulation_color, "Python simulator");
+    d->createWorkspace(python_simulation_color, "Python Model");
 
     emit createPythonSimulator();
 }
@@ -472,7 +472,7 @@ void gnomonToolBar::onCreateCellImageQuantification(void)
 
 void gnomonToolBar::onCreateRegistration(void)
 {
-    d->createWorkspace(registration_color, "Registration");
+    d->createWorkspace(registration_color, "Time Registration");
 
     emit createRegistration();
 }
@@ -493,7 +493,7 @@ void gnomonToolBar::onCreatePointCloudFromImage(void)
 
 void gnomonToolBar::onCreateSimulation(void)
 {
-    d->createWorkspace(simulation_color, "Simulation");
+    d->createWorkspace(simulation_color, "FEM Simulation");
 
     emit createSimulation();
 }

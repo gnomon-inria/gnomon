@@ -34,7 +34,7 @@ public:
     ~gnomonVisualizationCellComplex(void);
 
 public:
-	void setCellComplex(gnomonCellComplex *cellComplex) override;
+	void setCellComplex(gnomonCellComplexSeries *cellComplex) override;
 
 public:
     QImage imageRendering(void) override;
@@ -42,7 +42,12 @@ public:
 public slots:
     void update(void) override;
     void render(void) override;
+
+public slots:
     void clear(void) override;
+
+public slots:
+    void onTimeChanged(double) override;
 
 public:
     void setParameter(const QString&, const QVariant&) override;

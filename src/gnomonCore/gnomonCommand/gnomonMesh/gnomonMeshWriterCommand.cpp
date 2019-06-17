@@ -6,7 +6,7 @@ class gnomonMeshWriterCommandPrivate
 {
 public:
     QString path;
-    gnomonMesh* mesh = nullptr;
+    gnomonMeshSeries* mesh = nullptr;
 };
 
 gnomonMeshWriterCommand::gnomonMeshWriterCommand(const QString& key) : d(new gnomonMeshWriterCommandPrivate)
@@ -47,7 +47,7 @@ void gnomonMeshWriterCommand::setPath(const QString& path)
     d->path = path;
 }
 
-void gnomonMeshWriterCommand::setMesh(gnomonMesh *mesh)
+void gnomonMeshWriterCommand::setMesh(gnomonMeshSeries *mesh)
 {
     d->mesh = mesh;
 }

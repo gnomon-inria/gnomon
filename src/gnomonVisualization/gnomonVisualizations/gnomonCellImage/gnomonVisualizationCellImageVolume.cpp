@@ -43,6 +43,7 @@
 class gnomonVisualizationCellImageVolumePrivate
 {
 public:
+    gnomonCellImageSeries *cellImageSeries;
     gnomonCellImage *cellImage;
 
 public:
@@ -76,6 +77,8 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
 
 void gnomonVisualizationCellImageVolume::clear(void)
 {
+//    gnomonAbstractVisualization::clear();
+
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
@@ -90,6 +93,8 @@ void gnomonVisualizationCellImageVolume::clear(void)
         dd->actor2D = nullptr;
     }
 
+//    disconnect(d->connectTime);
+
     disconnect(d->connect3D);
     disconnect(d->connect2D);
     disconnect(d->connectXY);
@@ -97,9 +102,10 @@ void gnomonVisualizationCellImageVolume::clear(void)
     disconnect(d->connectYZ);
 }
 
-void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImage *cellImage)
+void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    dd->cellImage = cellImage;
+    dd->cellImageSeries = cellImage;
+    dd->cellImage = (gnomonCellImage *) cellImage->current();
 
     this->setParameter("alpha",1.0);
 
@@ -126,18 +132,21 @@ void gnomonVisualizationCellImageVolume::updateValueRange(void)
 
      ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
      ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setValue(*(mm.first),*(mm.second));
 }
 
 QImage gnomonVisualizationCellImageVolume::imageRendering(void)
 {
-    d->updateOffscreenRenderer(dd->image->GetBounds());
+    double bounds[6];
+    dd->image->GetBounds(bounds);
+    this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
     d->view->renderer3D()->RemoveActor(dd->actor);
-    d->offscreenRenderer->AddActor(dd->actor);
+    this->offscreenRenderer()->AddActor(dd->actor);
 
-    QImage image = d->offscreenImageRendering();
+    QImage image = this->offscreenImageRendering();
 
-    d->offscreenRenderer->RemoveActor(dd->actor);
+    this->offscreenRenderer()->RemoveActor(dd->actor);
     d->view->renderer3D()->AddActor(dd->actor);
     dd->actor->setInteractor(d->view->interactor());
 
@@ -198,31 +207,43 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->actor2D->setFlatRendering(true);
     dd->actor2D->update();
 
+    disconnect(d->connectSliceOrientation);
     d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        qDebug()<<Q_FUNC_INFO<<"Slice orientation changed"<<value;
         dd->actor2D->setSliceOrientation(value);
     });
 
+    disconnect(d->connectSlice);
     d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        qDebug()<<Q_FUNC_INFO<<"Slice changed"<<value;
         dd->actor2D->setSlice(value);
         this->render();
     });
 
+//    disconnect(d->connectTime);
+//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
+//        if (dd->cellImageSeries->times().contains(value)) {
+//            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+//            this->update();
+//            this->render();
+//        }
+//    });
+
+    disconnect(d->connect3D);
     d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
-        qDebug()<<Q_FUNC_INFO<<"Switched to 3D";
         dd->actor2D->hide();
         this->render();
     });
 
+    disconnect(d->connect2D);
     d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
-        qDebug()<<Q_FUNC_INFO<<"Switched to 2D";
         dd->actor2D->show();
         this->render();
     });
 
+    disconnect(d->connectXY);
     d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
+    disconnect(d->connectXZ);
     d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
+    disconnect(d->connectYZ);
     d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
@@ -267,6 +288,15 @@ void gnomonVisualizationCellImageVolume::setParameters(const QMap<QString, gnomo
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
+{
+    if (dd->cellImageSeries->times().contains(value)) {
+        dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+        this->update();
+    }
+    this->render();
 }
 
 //

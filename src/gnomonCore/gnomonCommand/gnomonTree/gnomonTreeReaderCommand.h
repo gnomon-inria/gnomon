@@ -1,7 +1,5 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonImagesSerie;
-
 class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractCommand
 {
 public:
@@ -16,7 +14,7 @@ public:
 public:
     void setPath(const QString& path);
 
-    gnomonTree *tree(void);
+    gnomonTreeSeries *tree(void);
 
 private:
     class gnomonTreeReaderCommandPrivate *d;

@@ -42,6 +42,9 @@ public:
     QMetaObject::Connection connectSlice;
 
 public:
+    QMetaObject::Connection connectTime;
+
+public:
     QMetaObject::Connection connect3D;
     QMetaObject::Connection connect2D;
     QMetaObject::Connection connectXY;
@@ -51,10 +54,6 @@ public:
 public:
     vtkSmartPointer<vtkRenderer> offscreenRenderer;
     vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
-
-public slots:
-    void updateOffscreenRenderer(double bounds[6]);
-    QImage offscreenImageRendering(void);
 };
 
 

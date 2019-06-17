@@ -74,7 +74,6 @@ gnomonInspectorViewTree::~gnomonInspectorViewTree(void)
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellComplex *actor)
 {
     if(!actor) {
-        qDebug() << Q_FUNC_INFO << "actor is NULL";
         return nullptr;
     }
 
@@ -98,7 +97,6 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellComplex *act
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellgraph_actor)
 {
     if(!cellgraph_actor) {
-        qDebug() << Q_FUNC_INFO << "cellgraph_actor is NULL";
         return nullptr;
     }
 
@@ -122,7 +120,6 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellGraph *cellg
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellImage *actor)
 {
     if(!actor) {
-        qDebug() << Q_FUNC_INFO << "actor is NULL";
         return nullptr;
     }
 
@@ -146,7 +143,6 @@ QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorMeshCellImage *actor
 QTreeWidgetItem *gnomonInspectorViewTree::insert(gnomonActorVolume *actor)
 {
     if(!actor) {
-        qDebug() << Q_FUNC_INFO << "actor is NULL";
         return nullptr;
     }
 

@@ -30,12 +30,12 @@
 #include <gnomonVisualization/gnomonView/gnomonView.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-#include <gnomonVisualization/gnomonView/gnomonViewVolumic.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
@@ -183,6 +183,44 @@
     }
 }
 
+%typemap(out) QImage {
+    int rows = $1.width();
+    int cols = $1.height();
+    $result = PyList_New(rows);
+    for(int row=0; row<rows; ++row) {
+        PyObject *py_row = PyList_New(cols);
+        for(int col=0;col<cols; ++col) {
+            QColor color = $1.pixelColor(col,row);
+            PyObject *py_color = PyList_New(3);
+            PyList_SET_ITEM(py_color, 0, PyFloat_FromDouble(color.red()));
+            PyList_SET_ITEM(py_color, 1, PyFloat_FromDouble(color.green()));
+            PyList_SET_ITEM(py_color, 2, PyFloat_FromDouble(color.blue()));
+            PyList_SET_ITEM(py_row, col, py_color);
+        }
+        PyList_SET_ITEM($result, row, py_row);
+    }
+}
+
+%typemap(directorin) QImage {
+    int rows = $1.width();
+    int cols = $1.height();
+    PyObject *list = PyList_New(rows);
+    for(int row=0; row<rows; ++row) {
+        PyObject *py_row = PyList_New(cols);
+        for(int col=0;col<cols; ++col) {
+            QColor color = $1.pixelColor(col,row);
+            PyObject *py_color = PyList_New(3);
+            PyList_SET_ITEM(py_color, 0, PyFloat_FromDouble(color.red()));
+            PyList_SET_ITEM(py_color, 1, PyFloat_FromDouble(color.green()));
+            PyList_SET_ITEM(py_color, 2, PyFloat_FromDouble(color.blue()));
+            PyList_SET_ITEM(py_row, col, py_color);
+        }
+        PyList_SET_ITEM($result, row, py_row);
+    }
+    $input = list;
+}
+
+
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
 // /////////////////////////////////////////////////////////////////
@@ -204,12 +242,12 @@
 %include <gnomonVisualization/gnomonView/gnomonView.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-%include <gnomonVisualization/gnomonView/gnomonViewVolumic.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 

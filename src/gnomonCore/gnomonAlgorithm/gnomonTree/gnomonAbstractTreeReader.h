@@ -20,6 +20,8 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
+#include "gnomonForm/gnomonTree/gnomonTree.h"
+
 class gnomonTree;
 
 // ///////////////////////////////////////////////////////////////////
@@ -41,7 +43,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonTree *tree(void) = 0;
+    virtual gnomonTreeSeries *tree(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

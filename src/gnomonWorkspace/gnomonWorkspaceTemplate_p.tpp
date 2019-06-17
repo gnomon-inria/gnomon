@@ -59,9 +59,11 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget 
 template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
 {
     QComboBox *combo_box = new QComboBox(parent);
-    QStringList combo_box_keys = this->keys();
+
     QLabel *doc = new QLabel(parent);
     doc->setWordWrap(true);
+
+    QStringList combo_box_keys = this->keys();
     for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
         combo_box->addItem(*it);
     }
