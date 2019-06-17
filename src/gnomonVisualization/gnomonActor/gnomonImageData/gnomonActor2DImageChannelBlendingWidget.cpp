@@ -62,7 +62,7 @@ public slots:
 
 void gnomonActor2DImageChannelBlendingWidgetPrivate::updateOpacity(void)
 {
-    qDebug()<<Q_FUNC_INFO<<this->alpha;
+    qDebug()<<Q_FUNC_INFO<<this->alpha<<" : Not implemented yet.";
 }
 
 // /////////////////////////////////////////////////////////////////
