@@ -90,9 +90,7 @@ gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 
 void gnomonWorkspaceSimulation::apply(void)
 {
-    qDebug()<<"----- Apply -----";
     Q_ASSERT(d->command);
-    qDebug()<<"Command OK";
     d->command->setMesh(d->source->mesh());
     d->command->redo();
     d->target->setMesh(d->command->updatedMesh());
