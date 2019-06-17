@@ -77,7 +77,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
         d->command->undo();
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
-                qDebug()<<"Add image"<<view->image();
                 d->command->addImage(view->image());
             }
         }
