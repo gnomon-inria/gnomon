@@ -166,6 +166,13 @@ QImage gnomonVisualizationMesh::imageRendering(void)
 {
     double bounds[6];
     dd->polydata->GetBounds(bounds);
+
+    if (bounds[4]==bounds[5]) {
+        double size = ((bounds[1]-bounds[0])+(bounds[3]-bounds[2]))/4;
+        bounds[4] = bounds[4] - size/2.;
+        bounds[5] = bounds[5] + size/2.;
+    }
+
     this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
     this->offscreenRenderer()->AddActor(dd->actor);
