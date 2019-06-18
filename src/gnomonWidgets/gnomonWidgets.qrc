@@ -2,12 +2,13 @@
 <RCC version="1.0">
   <qresource prefix="gnomon">
     <file>jupyter_console.py</file>
-    <file>gnomonViewVolumic-XY.png</file>
-    <file>gnomonViewVolumic-XZ.png</file>
-    <file>gnomonViewVolumic-YZ.png</file>
-    <file>gnomonViewVolumic-XY-off.png</file>
-    <file>gnomonViewVolumic-XZ-off.png</file>
-    <file>gnomonViewVolumic-YZ-off.png</file>
+
+    <file>gnomonButton-XY.png</file>
+    <file>gnomonButton-XZ.png</file>
+    <file>gnomonButton-YZ.png</file>
+    <file>gnomonButton-XY-off.png</file>
+    <file>gnomonButton-XZ-off.png</file>
+    <file>gnomonButton-YZ-off.png</file>
 
     <file>cluts/0CMY_cyan.clut</file>
     <file>cluts/0CMY_magenta.clut</file>
@@ -48,6 +49,7 @@
     <file>cluts/chestnut.clut</file>
     <file>cluts/cold.clut</file>
     <file>cluts/curvature.clut</file>
+    <file>cluts/cividis.clut</file>
     <file>cluts/density.clut</file>
     <file>cluts/geo_jet.clut</file>
     <file>cluts/glasbey.clut</file>

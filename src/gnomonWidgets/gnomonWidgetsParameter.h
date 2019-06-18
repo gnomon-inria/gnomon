@@ -18,8 +18,10 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCoreParameter>
-#include "gnomonCoreParameterColor.h"
+#include <gnomonCore>
+
+class gnomonCoreParameterLookupTable;
+class gnomonCoreParameterColorMap;
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameter
@@ -85,6 +87,19 @@ public:
     static QString style;
     static QWidget *widget(gnomonCoreParameterBool *parameter, QWidget *parent);
 };
+
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonWidgetsParameterText
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterText
+{
+public:
+    static QString style;
+    static QWidget *widget(gnomonCoreParameterText *parameter, QWidget *parent);
+};
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameterString

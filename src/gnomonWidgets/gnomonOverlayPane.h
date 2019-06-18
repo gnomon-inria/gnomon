@@ -40,6 +40,9 @@ public:
 public:
     void setWidth(int);
 
+public:
+    bool isToggled(void);
+
 public slots:
     void toggle(void);
 
@@ -48,6 +51,9 @@ public slots:
 
 public:
     void addLayout(QLayout *);
+
+public:
+    void addInfoPaneItem(const QString& title, QMap<QString, QVariant> info);
 
 public:
     void addWidget(QWidget *);

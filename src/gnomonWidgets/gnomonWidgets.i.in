@@ -19,57 +19,17 @@
 %include <dtk_base.i>
 
 %import <dtkCore.i>
+%import <dtkImagingCore.i>
+// %import <gnomonCore.i>
 
 %{
 
-#include <gnomonWidgets/gnomonViewVolumic.h>
+#include <dtkImagingCore>
+#include <gnomonCore>
+#include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+#include <gnomonWidgets/gnomonOverlayPane.h>
 
 %}
-
-%{
-// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
-// with SWIG's preprocessor macro
-#if PY_VERSION_HEX < 0x3020000
-#ifdef Py_hash_t
-#undef Py_hash_t
-#endif
-#endif
-
-#include <vtkPythonUtil.h>
-
-%}
-
-%typemap(out) vtkRenderer* {
-
-    PyImport_ImportModule("vtk");
-
-    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
-}
-
-%typemap(in) vtkRenderer* {
-
-    $1 = (vtkRenderer *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderer");
-
-    if ($1 == NULL) {
-        SWIG_fail;
-    }
-}
-
-%typemap(out) vtkRenderWindowInteractor* {
-
-    PyImport_ImportModule("vtk");
-
-    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
-}
-
-%typemap(in) vtkRenderWindowInteractor* {
-
-    $1 = (vtkRenderWindowInteractor *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderWindowInteractor");
-
-    if ($1 == NULL) {
-        SWIG_fail;
-    }
-}
 
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
@@ -79,10 +39,227 @@
 #define GNOMONWIDGETS_EXPORT
 
 // /////////////////////////////////////////////////////////////////
+// Typemaps
+// /////////////////////////////////////////////////////////////////
+
+// QMap<QString, QVariant>
+
+%typemap(in) QMap<QString, QVariant> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QVariant v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            if (PyString_Check(value)) {
+                v = QVariant::fromValue(QString(PyString_AsString(value)));
+            } else if (PyBool_Check(value)) {
+                bool b = (value == Py_True);
+                v = QVariant::fromValue(b);
+            } else if (PyLong_Check(value)) {
+                v = QVariant::fromValue(PyInt_AsLong(value));
+            } else if (PyFloat_Check(value)) {
+                v = QVariant::fromValue(PyFloat_AsDouble(value));
+            } else {
+                qDebug("Value type is not handled. Empty QVariant is set.");
+            }
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QVariant> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, QVariant>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<QString, QVariant>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QVariant v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            if (PyString_Check(value)) {
+                v = QVariant::fromValue(QString(PyString_AsString(value)));
+            } else if (PyBool_Check(value)) {
+                bool b = (value == Py_True);
+                v = QVariant::fromValue(b);
+            } else if (PyLong_Check(value)) {
+                v = QVariant::fromValue(PyInt_AsLong(value));
+            } else if (PyFloat_Check(value)) {
+                v = QVariant::fromValue(PyFloat_AsDouble(value));
+            } else {
+                qDebug("Value type is not handled. Empty QVariant is set.");
+            }
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QVariant> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<QString, QVariant>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<QString, QVariant> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QVariant v;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyString_AsString(key));
+            if (PyString_Check(value)) {
+                v = QVariant::fromValue(QString(PyString_AsString(value)));
+            } else if (PyBool_Check(value)) {
+                bool b = (value == Py_True);
+                v = QVariant::fromValue(b);
+            } else if (PyInt_Check(value) || PyLong_Check(value)) {
+                v = QVariant::fromValue(PyInt_AsLong(value));
+            } else if (PyFloat_Check(value)) {
+                v = QVariant::fromValue(PyFloat_AsDouble(value));
+            } else {
+                qDebug("Value type is not handled. Empty QVariant is set.");
+            }
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QVariant> is returned.");
+    }
+}
+
+// /////////////////////////////////////////////////////////////////
+// QMap of colors
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<double, QColor> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            double k = double(PyFloat_AsDouble(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyInt_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyInt_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyInt_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<double, QColor> is returned.");
+    }
+}
+
+%typemap(in) const QMap<double, QColor>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<double, QColor>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            double k = double(PyFloat_AsDouble(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyInt_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyInt_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyInt_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<double, QColor> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<double, QColor>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<double, QColor> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            double k = double(PyFloat_AsDouble(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyInt_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyInt_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyInt_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<double, QColor> is returned.");
+    }
+}
+
+
+%typemap(out) QMap<double, QColor> {
+  $result = PyDict_New();
+  QColor c;
+  double k;
+
+  QList<double> keys = $1.keys();
+  for (auto it = keys.begin(); it != keys.end(); ++it) {
+    k = *it;
+    c = $1[k];
+
+    PyObject *value = PyList_New(3);
+    PyList_SET_ITEM(value, 0, PyInt_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyInt_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyInt_FromLong(c.blue()));
+    PyDict_SetItem($result, PyFloat_FromDouble(k), value);
+  }
+}
+
+%typemap(directorin) QMap<double, QColor> {
+  PyObject *dict = PyDict_New();
+  QColor c;
+  double k;
+
+  QList<double> keys = $1.keys();
+  for (auto it = keys.begin(); it != keys.end(); ++it) {
+    k = *it;
+    c = $1[k];
+    PyObject *value = PyList_New(3);
+    PyList_SET_ITEM(value, 0, PyInt_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyInt_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyInt_FromLong(c.blue()));
+    PyDict_SetItem($result, PyFloat_FromDouble(k), value);
+  }
+  $input = dict;
+}
+
+%rename(ParameterLookupTable)  gnomonCoreParameterLookupTable;
+%rename(ParameterColorMap)     gnomonCoreParameterColorMap;
+// %rename(OverlayPane)           gnomonOverlayPane;
+
+// /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%include <gnomonWidgets/gnomonViewVolumic.h>
+%include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+%include <gnomonWidgets/gnomonOverlayPane.h>
+
+
 
 //
-// gnomonVisualization.i.in ends here
+// gnomonWidgets.i.in ends here

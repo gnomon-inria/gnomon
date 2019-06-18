@@ -1,6 +1,7 @@
 #include "gnomonFileSystemFormReaderTest.h"
 
 #include <gnomonCore>
+#include <gnomonCore/gnomonForm/gnomonIntensityImage/gnomonIntensityImage>
 #include <gnomonTest>
 
 #include <dtkCore>
@@ -9,7 +10,6 @@
 
 #include <gnomonFileSystemFormReader.h>
 #include <gnomonTime.h>
-#include <gnomonIntensityImage.h>
 
 class gnomonFileSystemFormReaderTestCasePrivate
 {

@@ -14,10 +14,12 @@
 
 #include "gnomonWidgetsParameter.h"
 
-#include <gnomonVisualization/gnomonColorMapEditor.h>
-#include <gnomonVisualization/gnomonDoubleRangeEditor.h>
-#include <gnomonVisualization/gnomonStringListEditor.h>
-#include "gnomonLookupTableEditor.h"
+#include "gnomonColor/gnomonCoreParameterColor.h"
+
+#include "gnomonEditor/gnomonColorMapEditor.h"
+#include "gnomonEditor/gnomonDoubleRangeEditor.h"
+#include "gnomonEditor/gnomonStringListEditor.h"
+#include "gnomonEditor/gnomonLookupTableEditor.h"
 
 QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)
 {
@@ -35,6 +37,9 @@ QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget 
     }
     if (gnomonCoreParameterBool *p = dynamic_cast<gnomonCoreParameterBool *>(parameter)) {
         return gnomonWidgetsParameterBool::widget(p, parent);
+    }
+    if (gnomonCoreParameterText *p = dynamic_cast<gnomonCoreParameterText *>(parameter)) {
+        return gnomonWidgetsParameterText::widget(p, parent);
     }
     if (gnomonCoreParameterString *p = dynamic_cast<gnomonCoreParameterString *>(parameter)) {
         return gnomonWidgetsParameterString::widget(p, parent);
@@ -183,6 +188,27 @@ QWidget *gnomonWidgetsParameterBool::widget(gnomonCoreParameterBool *parameter, 
     }
 }
 
+
+QString gnomonWidgetsParameterText::style = QStringLiteral("textedit");
+
+QWidget *gnomonWidgetsParameterText::widget(gnomonCoreParameterText *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("textedit")) {
+        QTextEdit *widget = new QTextEdit(parent);
+        widget->setToolTip(parameter->doc());
+        widget->setText(parameter->value());
+
+        QObject::connect(widget, &QTextEdit::textChanged, [=](void) {
+            parameter->setValue(widget->toPlainText());
+        });
+
+        return widget;
+
+    } else {
+        return nullptr;
+    }
+}
+
 QString gnomonWidgetsParameterString::style = QStringLiteral("combobox");
 
 QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *parameter, QWidget *parent)
@@ -256,6 +282,7 @@ QWidget *gnomonWidgetsParameterColorMap::widget(gnomonCoreParameterColorMap *par
 
         QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
             parameter->setValue(val);
+            parameter->setName(widget->name());
         });
 
         return widget;

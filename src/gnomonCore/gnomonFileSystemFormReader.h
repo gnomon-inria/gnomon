@@ -19,7 +19,7 @@
 #include <QtCore>
 
 #include "gnomonTime.h"
-#include "gnomonAbstractForm.h"
+#include "gnomonForm/gnomonAbstractForm.h"
 
 //#pragma message "will inherit gnomonAbstractFormReader"
 class GNOMONCORE_EXPORT gnomonFileSystemFormReader

@@ -35,8 +35,10 @@ signals:
     void createLSystemSimulator(void);
     void createPythonSimulator(void);
     void createPreprocess(void);
+    void createCellImageQuantification(void);
     void createRegistration(void);
     void createMeshFromImage(void);
+    void createPointCloudFromImage(void);
     void createSegmentation(void);
     void createCellComplexFromCellImage(void);
     void createCellImageFilter(void);
@@ -48,8 +50,10 @@ public slots:
     void onCreateLSystemSimulator(void);
     void onCreatePythonSimulator(void);
     void onCreatePreprocess(void);
+    void onCreateCellImageQuantification(void);
     void onCreateRegistration(void);
     void onCreateMeshFromImage(void);
+    void onCreatePointCloudFromImage(void);
     void onCreateSegmentation(void);
     void onCreateCellComplexFromCellImage(void);
     void onCreateCellImageFilter(void);
@@ -72,8 +76,10 @@ public:
     static QColor python_simulation_color;
     static QColor fusion_color;
     static QColor preprocess_color;
+    static QColor cellImageQuantification_color;
     static QColor registration_color;
     static QColor meshFromImage_color;
+    static QColor pointCloudFromImage_color;
     static QColor segmentation_color;
     static QColor cellComplexFromCellImage_color;
     static QColor cellImageFilter_color;

@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonOverlayPane.h"
+#include "gnomonOverlayPaneItem.h"
 
 #include <gnomonFonts>
 
@@ -87,6 +88,10 @@ public:
 
 public:
     QPropertyAnimation *animation;
+
+public:
+    QMap<QString, gnomonOverlayPaneItem *> pane_items;
+    QMap<QString, QFormLayout *> pane_item_layouts;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -154,6 +159,11 @@ void gnomonOverlayPane::setWidth(int width)
     emit widthChanged();
 }
 
+bool gnomonOverlayPane::isToggled(void)
+{
+    return d->on;
+}
+
 void gnomonOverlayPane::toggle(void)
 {
     if (d->deactivate)
@@ -212,6 +222,35 @@ void gnomonOverlayPane::addLayout(QLayout *layout)
     d->layout->addLayout(layout);
 }
 
+void gnomonOverlayPane::addInfoPaneItem(const QString& title, QMap<QString, QVariant> info)
+{
+    if (!d->pane_items.contains(title))
+    {
+        d->pane_items[title] = new gnomonOverlayPaneItem((QWidget *) this->parent());
+        d->pane_items[title]->toggle();
+    }
+    d->pane_items[title]->setTitle(title);
+
+    if (!d->pane_item_layouts.contains(title)) {
+        d->pane_item_layouts[title] = new QFormLayout;
+        d->pane_item_layouts[title]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        d->pane_items[title]->addLayout(d->pane_item_layouts[title]);
+    } else {
+        for(int row = 0, max_row = d->pane_item_layouts[title]->count(); row < max_row; ++row) {
+            QLayoutItem *forDeletion = d->pane_item_layouts[title]->takeAt(0);
+            forDeletion->widget()->disconnect();
+            delete forDeletion->widget();
+            delete forDeletion;
+        }
+    }
+
+    for(QMap<QString, QVariant>::iterator it = info.begin(), it_end = info.end(); it != it_end; ++it) {
+        d->pane_item_layouts[title]->addRow(it.key(), new QLabel(it.value().toString()));
+    }
+
+    d->layout->addWidget(d->pane_items[title]);
+}
+
 void gnomonOverlayPane::addWidget(QWidget *widget)
 {
     d->layout->addWidget(widget);
@@ -225,6 +264,9 @@ void gnomonOverlayPane::clear(void)
         delete child->widget();
         delete child;
     }
+
+    d->pane_items.clear();
+    d->pane_item_layouts.clear();
 }
 
 void gnomonOverlayPane::clearLayout(void)

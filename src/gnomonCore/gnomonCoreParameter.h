@@ -52,7 +52,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameter *);
 // gnomonCoreParameterNumeric
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
+template <typename T>
 class GNOMONCORE_EXPORT gnomonCoreParameterNumeric : public gnomonCoreParameter
 {
 
@@ -125,7 +125,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameterDouble *);
 // gnomonCoreParameterNumericRange
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
+template <typename T>
 class GNOMONCORE_EXPORT gnomonCoreParameterNumericRange : public gnomonCoreParameter
 {
 public:
@@ -163,7 +163,7 @@ public:
     void setValue(T valMin, T valMax) { if((m_value[0] != valMin)||(m_value[1] != valMax)) { m_value = QList<T>({valMin, valMax});  emit valueChanged(); } }
     void setValue(const QVariant& v) { if(m_value != v.value<QList<T> >()) { m_value = v.value<QList<T> >(); emit valueChanged(); } }
     void setMinimumValue(T min) { m_min = min; if(m_value[0]<min) m_value[0]=min; if(m_value[1]<min) m_value[1]=min; emit valueChanged(); }
-    void setMaximumValue(T max) { m_max = max; if(m_value[0]>max) m_value[0]=max; if(m_value[0]<max) m_value[1]=max; emit valueChanged(); }
+    void setMaximumValue(T max) { m_max = max; if(m_value[0]>max) m_value[0]=max; if(m_value[0]>max) m_value[1]=max; emit valueChanged(); }
     void setAccuracy(int accuracy) { m_accuracy = accuracy; }
 
     void copy(gnomonCoreParameter *other) {
@@ -223,6 +223,29 @@ private:
 
 Q_DECLARE_METATYPE(gnomonCoreParameterBool *);
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterText
+// ///////////////////////////////////////////////////////////////////
+
+
+class GNOMONCORE_EXPORT gnomonCoreParameterText : public gnomonCoreParameter
+{
+public:
+     gnomonCoreParameterText(const QString& val, const QString& doc = QString());
+    ~gnomonCoreParameterText(void) = default;
+    
+    QString value(void) const;
+    
+    void setValue(QString&);
+    void setValue(const QVariant&);
+    
+    void copy(gnomonCoreParameter *other);
+    
+private:
+    QString m_value = "";
+};
+
+Q_DECLARE_METATYPE(gnomonCoreParameterText *);
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterString

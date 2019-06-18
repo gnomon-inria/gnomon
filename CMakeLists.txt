@@ -23,7 +23,7 @@ project(gnomon)
 ## ###################################################################
 
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 10)
+set(${PROJECT_NAME}_VERSION_MINOR 11)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -69,6 +69,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(UNIX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -Wno-deprecated-register -Wno-unused-value")
+endif(UNIX)
 
 ## ###################################################################
 ## Test setup
@@ -134,6 +138,15 @@ endif()
 
 option(GNOMON_BUILD_COMPOSER "Build composer layer" false)
 
+
+
+## #################################################################
+## Targets
+## #################################################################
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+include(gnomonSubdirectoryAddFiles)
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
@@ -150,6 +163,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
 include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
+include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWorkspace)
 
 ## ###################################################################
 ## Input

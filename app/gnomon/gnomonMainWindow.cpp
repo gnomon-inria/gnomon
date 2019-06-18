@@ -11,24 +11,13 @@
 
 // Code:
 
-#include <gnomonImageManager.h>
-#include <gnomonFormManager.h>
 #include <gnomonMainWindow.h>
-#include <gnomonToolBar.h>
-#include <gnomonWorkspaceBrowser.h>
-#include <gnomonWorkspaceFusion.h>
-#include <gnomonWorkspaceLSystemSimulator.h>
-#include <gnomonWorkspacePythonSimulator.h>
-#include <gnomonWorkspacePreprocess.h>
-#include <gnomonWorkspaceRegistration.h>
-#include <gnomonWorkspaceMeshFromImage.h>
-#include <gnomonWorkspaceSegmentation.h>
-#include <gnomonWorkspaceCellComplexFromCellImage.h>
-#include <gnomonWorkspaceCellImageFilter.h>
-#include <gnomonWorkspaceSimulation.h>
-//#include <gnomonWorkspaceTreeAnalysis.h>
 
 #include <gnomonStyle>
+#include <gnomonCore>
+#include <gnomonVisualization>
+#include <gnomonWidgets>
+#include <gnomonWorkspace>
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -166,6 +155,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         d->stack->setCurrentWidget(workspace);
     });
 
+    connect(d->menu, &gnomonToolBar::createCellImageQuantification, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspaceCellImageQuantification(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+
     connect(d->menu, &gnomonToolBar::createRegistration, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceRegistration(this);
@@ -178,6 +176,15 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     connect(d->menu, &gnomonToolBar::createMeshFromImage, [=] (void) {
 
         gnomonWorkspace *workspace = new gnomonWorkspaceMeshFromImage(this);
+        workspace->enter();
+
+        d->stack->addWidget(workspace);
+        d->stack->setCurrentWidget(workspace);
+    });
+    
+    connect(d->menu, &gnomonToolBar::createPointCloudFromImage, [=] (void) {
+
+        gnomonWorkspace *workspace = new gnomonWorkspacePointCloudFromImage(this);
         workspace->enter();
 
         d->stack->addWidget(workspace);
