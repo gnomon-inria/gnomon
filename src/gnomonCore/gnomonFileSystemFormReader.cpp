@@ -1,7 +1,30 @@
-#include "gnomonFileSystemFormReader.h"
-#include "gnomonForm/gnomonIntensityImage/gnomonIntensityImage.h"
+// Version: $Id$
+//
+//
 
-#include <dtkImagingCore>
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonFileSystemFormReader.h"
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include "gnomonForm/gnomonIntensityImage/gnomonIntensityImage.h"
+
+// #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonFileSystemFormReaderPrivate {
 public:
@@ -9,6 +32,10 @@ public:
 
     QMap<gnomonTime, QString> files_paths;
 };
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 //#pragma message "Make it possible to have more parameters than just a file path"
 // gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
@@ -88,6 +115,10 @@ gnomonFileSystemFormReader::~gnomonFileSystemFormReader(void)
     delete d;
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
 // gnomonAbstractFormPtr gnomonFileSystemFormReader::read(const gnomonTime& time)
 {
@@ -104,28 +135,29 @@ gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
     }
 
     //#pragma message "The type of the form should be specified in the dyform file"
-    dtkImageReader *image_reader = dtkImaging::reader::pluginFactory().create("dtkVtkImageReader");
-    if(!image_reader) {
-        qWarning() << Q_FUNC_INFO << "The vtkImageReader plugin could lot be loaded, make sure you have compiled the VTK plugins and added them the the dtkImaging plugins path";
-        // return gnomonAbstractFormPtr();
-        return NULL;
-    }
+    // dtkImageReader *image_reader = dtkImaging::reader::pluginFactory().create("dtkVtkImageReader");
+    // if(!image_reader) {
+    //     qWarning() << Q_FUNC_INFO << "The vtkImageReader plugin could lot be loaded, make sure you have compiled the VTK plugins and added them the the dtkImaging plugins path";
+    //     // return gnomonAbstractFormPtr();
+    //     return NULL;
+    // }
 
-    dtkImage *dtk_image = image_reader->read(d->files_paths[time]);
-    if(!dtk_image) {
-        qWarning() << Q_FUNC_INFO << "The image could not be properly read.";
-        // return gnomonAbstractFormPtr();
-        delete image_reader;
-        return NULL;
-    }
+    // dtkImage *dtk_image = image_reader->read(d->files_paths[time]);
+    // if(!dtk_image) {
+    //     qWarning() << Q_FUNC_INFO << "The image could not be properly read.";
+    //     // return gnomonAbstractFormPtr();
+    //     delete image_reader;
+    //     return NULL;
+    // }
 
-    gnomonIntensityImage *image= new gnomonIntensityImage();
-    image->setData(dtk_image);
+    // gnomonIntensityImage *image= new gnomonIntensityImage();
+    // image->setData(dtk_image);
 
     // gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
 
-    delete image_reader;
-    return image;
+    // delete image_reader;
+
+    return 0; // image;
     // return form;
 }
 
@@ -133,3 +165,6 @@ gnomonTime::Mode gnomonFileSystemFormReader::timeMode(void)
 {
     return d->time_mode;
 }
+
+// 
+// gnomonFileSystemFormReader.cpp ends here

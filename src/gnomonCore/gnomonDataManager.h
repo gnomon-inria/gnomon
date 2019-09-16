@@ -1,3 +1,16 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
 
 #pragma once
 
@@ -17,16 +30,16 @@ public:
 protected:
     static gnomonDataManager *s_instance;
 
-    //public:
-    //void insert();
-    
 public:
     dtkImage *get(const QString& name);
 
 private:
-    gnomonDataManager(void);
+     gnomonDataManager(void);
     ~gnomonDataManager(void);
 
 private:
     class gnomonDataManagerPrivate *d;
 };
+
+// 
+// gnomonDataManager.h ends here

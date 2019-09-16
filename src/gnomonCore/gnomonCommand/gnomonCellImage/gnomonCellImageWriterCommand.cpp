@@ -1,23 +1,51 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonCellImageWriterCommand.h"
 
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonCellImageWriterCommandPrivate
 {
 public:
     QString path;
+
+public:
     gnomonCellImageSeries* cellImage = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonCellImageWriterCommand::gnomonCellImageWriterCommand(const QString& key) : d(new gnomonCellImageWriterCommandPrivate)
 {
-    QString command = "import gnomonCellImageWriter";
+    // QString command = "import gnomonCellImageWriter";
 
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::cellImageWriter::pluginFactory().create(key);
 
@@ -51,3 +79,6 @@ void gnomonCellImageWriterCommand::setCellImage(gnomonCellImageSeries *cellImage
 {
     d->cellImage = cellImage;
 }
+
+// 
+// gnomonCellImageWriterCommand.cpp ends here

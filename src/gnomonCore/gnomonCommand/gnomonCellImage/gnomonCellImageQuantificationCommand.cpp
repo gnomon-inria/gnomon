@@ -1,8 +1,26 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonCellImageQuantificationCommand.h"
 
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <dtkImagingCore>
+// #include <dtkScript>
+
+// #include <dtkImagingCore>
 
 class gnomonCellImageQuantificationCommandPrivate
 {
@@ -13,13 +31,13 @@ public:
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(const QString& key) : d(new gnomonCellImageQuantificationCommandPrivate)
 {
-    QString command = "import gnomonCellImageQuantification";
+    // QString command = "import gnomonCellImageQuantification";
 
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(key);
 
@@ -80,3 +98,6 @@ gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
 {
     return ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
 }
+
+// 
+// gnomonCellImageQuantificationCommand.cpp ends here

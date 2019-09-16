@@ -1,8 +1,30 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonSegmentationCommand.h"
 
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <dtkScript>
-#include <dtkImagingCore>
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Imaging
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkImagingCore>
 
 class gnomonSegmentationCommandPrivate
 {
@@ -12,12 +34,13 @@ public:
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
-    QString command = "import gnomonCellImageFromImage";
-    int stat;
+    // QString command = "import gnomonCellImageFromImage";
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // int stat;
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
 
@@ -68,3 +91,6 @@ void gnomonSegmentationCommand::setParameter(const QString& parameter, const QVa
 {
     this->action->setParameter(parameter, value);
 }
+
+// 
+// gnomonSegmentationCommand.cpp ends here

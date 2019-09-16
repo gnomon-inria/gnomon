@@ -1,6 +1,28 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonImageFusionCommand.h"
 
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonImageFusionCommandPrivate
 {
@@ -9,15 +31,19 @@ public:
     QVector<std::vector<gnomonLandmark>> landmarks;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
 {
-    QString command = "import gnomonImageFusion";
+    // QString command = "import gnomonImageFusion";
 
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::imageFusion::pluginFactory().create(key);
 
@@ -90,3 +116,6 @@ gnomonImageSeries *gnomonImageFusionCommand::output(void)
 {
     return ((gnomonAbstractImageFusion *) this->action)->output();
 }
+
+// 
+// gnomonImageFusionCommand.cpp ends here

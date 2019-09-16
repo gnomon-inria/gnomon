@@ -12,6 +12,8 @@
 
 // Code:
 
+#include <gnomonConfig.h>
+
 #include "gnomonCore.h"
 #include "gnomonCoreSettings.h"
 
@@ -23,7 +25,7 @@ DTK_DEFINE_LAYER_MANAGER;
 
 void activateObjectManager(void)
 {
-    manager().setObjectManager(dtkObjectManager::instance());
+    manager().setObjectManager(dtkCoreObjectManager::instance());
 }
 
 void initialize(const QString& path)
@@ -38,7 +40,7 @@ void initialize(const QString& path)
         settings.endGroup();
 
         if (realpath.isEmpty()) {
-            realpath = QDir(DTK_INSTALL_PREFIX).filePath("plugins/gnomonCore");
+            realpath = QDir(GNOMON_INSTALL_PREFIX).filePath("plugins/gnomonCore");
             dtkDebug() << "no plugin path configured for gnomonCore, using default" << realpath;
         }
 

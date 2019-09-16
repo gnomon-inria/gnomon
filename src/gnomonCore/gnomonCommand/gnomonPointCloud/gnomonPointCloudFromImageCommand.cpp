@@ -1,8 +1,34 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonPointCloudFromImageCommand.h"
 
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <dtkImagingCore>
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonPointCloudFromImageCommandPrivate
 {
@@ -10,15 +36,19 @@ public:
     gnomonImageSeries* input = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
 {
-    QString command = "import gnomonPointCloudFromImage";
+    // QString command = "import gnomonPointCloudFromImage";
 
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(key);
 
@@ -69,3 +99,6 @@ gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
 {
     return ((gnomonAbstractPointCloudFromImage *) this->action)->output();
 }
+
+// 
+// gnomonPointCloudFromImageCommand.cpp ends here

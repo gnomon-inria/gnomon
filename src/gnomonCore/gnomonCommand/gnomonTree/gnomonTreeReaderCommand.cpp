@@ -1,6 +1,28 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonTreeReaderCommand.h"
 
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonTreeReaderCommandPrivate
 {
@@ -8,15 +30,19 @@ public:
     QString path;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonTreeReaderCommand::gnomonTreeReaderCommand(const QString& key) : d(new gnomonTreeReaderCommandPrivate)
 {
-    QString command = "import gnomonTreeReader";
+    // QString command = "import gnomonTreeReader";
 
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::treeReader::pluginFactory().create(key);
 
@@ -49,3 +75,6 @@ gnomonTreeSeries *gnomonTreeReaderCommand::tree(void)
 {
     return ((gnomonAbstractTreeReader *) this->action)->tree();
 }
+
+// 
+// gnomonTreeReaderCommand.cpp ends here

@@ -1,8 +1,30 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonMeshFromImageCommand.h"
 
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <dtkImagingCore>
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkImagingCore>
 
 class gnomonMeshFromImageCommandPrivate
 {
@@ -10,15 +32,19 @@ public:
     gnomonImageSeries* input = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
 {
-    QString command = "import gnomonMeshFromImage";
+    // QString command = "import gnomonMeshFromImage";
 
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::meshFromImage::pluginFactory().create(key);
 
@@ -69,3 +95,6 @@ gnomonMeshSeries *gnomonMeshFromImageCommand::output(void)
 {
     return ((gnomonAbstractMeshFromImage *) this->action)->output();
 }
+
+// 
+// gnomonMeshFromImageCommand.cpp ends here

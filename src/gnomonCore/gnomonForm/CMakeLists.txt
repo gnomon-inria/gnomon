@@ -12,16 +12,15 @@
 ##
 ### Code:
 
-
 ## #################################################################
 ## Inputs
 ## #################################################################
 
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellGraph)
-add_subdirectory(gnomonCellImage)
+# add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonDataFrame)
-add_subdirectory(gnomonImage)
+# add_subdirectory(gnomonImage)
 add_subdirectory(gnomonLString)
 add_subdirectory(gnomonMesh)
 add_subdirectory(gnomonPointCloud)
@@ -67,7 +66,6 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_FORM_MESH_SOURCES}
   ${${PROJECT_NAME}_FORM_POINTCLOUD_SOURCES}
   ${${PROJECT_NAME}_FORM_TREE_SOURCES})
-
 
 ######################################################################
 ### CMakeLists.txt ends here
