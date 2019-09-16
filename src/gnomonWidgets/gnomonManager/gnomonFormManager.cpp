@@ -12,8 +12,12 @@
 
 // Code:
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
-#include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
+// /////////////////////////////////////////////////////////////////////////////
+// FIXME: What da fuck ?
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include "gnomonVisualizations/gnomonAbstractVisualization.h"
+// #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
@@ -23,8 +27,6 @@
 #include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
 
-#include <gnomonFonts>
-
 #include <gnomonCore>
 
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
@@ -33,7 +35,13 @@
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 
-#include <dtkScript>
+#include <dtkFonts>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManagerPrivate
@@ -155,8 +163,14 @@ gnomonFormManager *gnomonFormManager::instance(void)
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractVisualization* visualization)
 {
+// /////////////////////////////////////////////////////////////////////////////
+// FIXME: Dependency cycle
+// /////////////////////////////////////////////////////////////////////////////
 
-    QImage image = visualization->imageRendering();
+    // QImage image = visualization->imageRendering();
+
+    QImage image;
+
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
 
@@ -184,9 +198,16 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
 {
-    qDebug()<<Q_FUNC_INFO;
-    QImage image = visualization->imageRendering();
-    qDebug()<<Q_FUNC_INFO<<image;
+    qDebug() << Q_FUNC_INFO;
+
+// /////////////////////////////////////////////////////////////////////////////
+// FIXME: Dependency cycle
+// /////////////////////////////////////////////////////////////////////////////
+    
+    // QImage image = visualization->imageRendering();
+    QImage image;
+
+    qDebug() << Q_FUNC_INFO << image;
 
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
@@ -194,14 +215,13 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->forms.insert(item, form);
     d->formMatplotlibVisualizations.insert(item, visualization);
 
-
     QString writerPlugin;
+
     if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
         qDebug()<<Q_FUNC_INFO<<dataFrame;
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
     }
-
 
     d->contents->layout()->addWidget(item);
 }

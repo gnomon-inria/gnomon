@@ -13,10 +13,12 @@
 // Code:
 
 #include "gnomonColorMapEditor.h"
+
+#include <dtkThemes>
+
 #include <cmath>
 
 #include <QtXml>
-#include <gnomonStyle>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonColorMapTable

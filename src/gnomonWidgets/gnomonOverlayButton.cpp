@@ -14,6 +14,8 @@
 
 #include "gnomonOverlayButton.h"
 
+#include <dtkThemes>
+
 gnomonOverlayButtonIcon::gnomonOverlayButtonIcon(QWidget *parent) : QLabel(parent)
 {
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -48,7 +50,7 @@ QSize gnomonOverlayButtonText::sizeHint(void) const
 {
     QFontMetrics metrics(qApp->font());
 
-    return QSize(metrics.width(this->text()), 24);
+    return QSize(metrics.horizontalAdvance(this->text()), 24);
 }
 
 
@@ -63,15 +65,14 @@ gnomonOverlayButton::gnomonOverlayButton(fa::icon icon, QString text, QWidget *p
 
     QColor color = Qt::gray;
 
-    this->font = new gnomonFontAwesome(this);
-    this->font->initFontAwesome();
-    this->font->setDefaultOption("color", color);
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", color);
 
     if (!text.isEmpty())
         this->label_text  = new gnomonOverlayButtonText(text, this);
 
     this->label_icon = new gnomonOverlayButtonIcon(this);
-    this->label_icon->setPixmap(this->font->icon(icon).pixmap(24, 24));
+    this->label_icon->setPixmap(dtkFontAwesome::instance()->icon(icon).pixmap(24, 24));
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setAlignment(Qt::AlignRight);
@@ -86,7 +87,7 @@ gnomonOverlayButton::gnomonOverlayButton(fa::icon icon, QString text, QWidget *p
 
     if(this->label_text)
         connect(this->label_text, &gnomonOverlayButtonText::clicked, this, &gnomonOverlayButton::textClicked);
-
+    
     int w = this->label_icon->sizeHint().width();
 
     if(this->label_text) {
@@ -109,9 +110,8 @@ gnomonOverlayButton::gnomonOverlayButton(const QString& path_on, const QString& 
 
     QColor color = Qt::gray;
 
-    this->font = new gnomonFontAwesome(this);
-    this->font->initFontAwesome();
-    this->font->setDefaultOption("color", color);
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", color);
 
     if(!text.isEmpty())
         this->label_text  = new gnomonOverlayButtonText(text, this);
@@ -159,14 +159,14 @@ void gnomonOverlayButton::changePaths(const QString& path_on, const QString& pat
 
 void gnomonOverlayButton::changeColor(const QColor& color)
 {
-    this->font->setDefaultOption("color", color);
-    this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+    dtkFontAwesome::instance()->setDefaultOption("color", color);
+    this->label_icon->setPixmap(dtkFontAwesome::instance()->icon(this->icon).pixmap(24, 24));
 }
 
 void gnomonOverlayButton::changeIcon(fa::icon icon)
 {
     this->icon = icon;
-    this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+    this->label_icon->setPixmap(dtkFontAwesome::instance()->icon(this->icon).pixmap(24, 24));
 }
 
 void gnomonOverlayButton::toggle(bool toggled)
@@ -174,22 +174,21 @@ void gnomonOverlayButton::toggle(bool toggled)
     this->toggled = toggled;
 
     if(this->toggled) {;
-        QColor color = Qt::white;
-        if (GNOMON_STYLE == "ONELIGHT")
-            color = Qt::black;
+        QColor color = dtkThemesEngine::instance()->color("@fg");
+
         if (this->pixmap) {
             this->label_icon->setPixmap(QPixmap(path_on));
         } else {
-            this->font->setDefaultOption("color", color);
-            this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+            dtkFontAwesome::instance()->setDefaultOption("color", color);
+            this->label_icon->setPixmap(dtkFontAwesome::instance()->icon(this->icon).pixmap(24, 24));
         }
     } else {
-        QColor color = Qt::gray;
+        QColor color = dtkThemesEngine::instance()->color("@grey");
         if (this->pixmap) {
             this->label_icon->setPixmap(QPixmap(path_off));
         } else  {
-            this->font->setDefaultOption("color", color);
-            this->label_icon->setPixmap(this->font->icon(this->icon).pixmap(24, 24));
+            dtkFontAwesome::instance()->setDefaultOption("color", color);
+            this->label_icon->setPixmap(dtkFontAwesome::instance()->icon(this->icon).pixmap(24, 24));
         }
     }
 }

@@ -16,11 +16,11 @@
 #include "gnomonDoubleRangeEditor.h"
 #include "gnomonLookupTableEditor.h"
 
+#include <dtkThemes>
+
 #include <cmath>
 
 #include <QtXml>
-#include <gnomonStyle>
-
 
 // /////////////////////////////////////////////////////////////////
 // gnomonLookupTableEditor

@@ -16,7 +16,7 @@
 #include "gnomonFormManagerItem.h"
 #include "gnomonItemButton.h"
 
-#include <gnomonFonts>
+#include <dtkFonts>
 
 gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap& thumbnail, int n_times, gnomonFormManagerPrivate *parent) : QLabel(parent)
 {

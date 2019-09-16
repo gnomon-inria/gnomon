@@ -14,7 +14,7 @@
 
 #include "gnomonClutEditor.h"
 
-#include <gnomonStyle>
+#include <dtkThemes>
 
 #include <QtXml>
 
@@ -715,38 +715,29 @@ gnomonClutEditor::gnomonClutEditor(QWidget *parent) : QWidget(parent), d(new gno
     d->button_log = new QCheckBox("Logarithmic scale");
     d->button_log->setPalette(palette);
     d->button_log->setAutoFillBackground(false);
-    d->button_log->setStyleSheet(gnomonStyleSheet());
 
     d->button_apply = new QCheckBox("Applied");
     d->button_apply->setPalette(palette);
     d->button_apply->setAutoFillBackground(false);
-    d->button_apply->setStyleSheet(gnomonStyleSheet());
 
     d->label_value = new QLineEdit("v:");
-    d->label_value->setStyleSheet(gnomonStyleSheet());
-
     d->label_alpha = new QLineEdit("α:");
-    d->label_alpha->setStyleSheet(gnomonStyleSheet());
 
     d->button_auto = new QPushButton("Interpolate");
     d->button_auto->setPalette(palette);
     d->button_auto->setAutoFillBackground(false);
-    d->button_auto->setStyleSheet(gnomonStyleSheet());
 
     d->button_color = new QPushButton("Color");
     d->button_color->setPalette(palette);
     d->button_color->setAutoFillBackground(false);
-    d->button_color->setStyleSheet(gnomonStyleSheet());
 
     d->button_export = new QPushButton("Export");
     d->button_export->setPalette(palette);
     d->button_export->setAutoFillBackground(false);
-    d->button_export->setStyleSheet(gnomonStyleSheet());
 
     d->button_import = new QPushButton("Import");
     d->button_import->setPalette(palette);
     d->button_import->setAutoFillBackground(false);
-    d->button_import->setStyleSheet(gnomonStyleSheet());
 
     // --
 

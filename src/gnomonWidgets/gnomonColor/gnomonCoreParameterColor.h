@@ -15,6 +15,7 @@
 #pragma once
 
 #include <gnomonWidgetsExport.h>
+
 #include <gnomonCore/gnomonCoreParameter>
 
 #include "gnomonLookupTable.h"
