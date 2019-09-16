@@ -575,7 +575,7 @@ void gnomonFinderPathBar::paintEvent(QPaintEvent *event)
         painter.drawPixmap(x, y, item->icon.pixmap(16, 16));
         painter.drawText(x + 16 + 4, y + 14, item->text);
 
-        int delta = 16 + 4 + painter.fontMetrics().horizontalAdvance(item->text) + 10;
+        int delta = 16 + 4 + painter.fontMetrics().width(item->text) + 10;
 
         item->rect = QRect(x, 0, delta, rect.height());
 

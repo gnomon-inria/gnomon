@@ -50,7 +50,7 @@ QSize gnomonOverlayButtonText::sizeHint(void) const
 {
     QFontMetrics metrics(qApp->font());
 
-    return QSize(metrics.horizontalAdvance(this->text()), 24);
+    return QSize(metrics.width(this->text()), 24);
 }
 
 
@@ -87,7 +87,7 @@ gnomonOverlayButton::gnomonOverlayButton(fa::icon icon, QString text, QWidget *p
 
     if(this->label_text)
         connect(this->label_text, &gnomonOverlayButtonText::clicked, this, &gnomonOverlayButton::textClicked);
-    
+
     int w = this->label_icon->sizeHint().width();
 
     if(this->label_text) {
