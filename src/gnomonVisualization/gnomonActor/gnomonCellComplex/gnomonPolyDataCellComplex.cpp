@@ -17,7 +17,8 @@
 
 #include <gnomonCore>
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtWidgets>
 

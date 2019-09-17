@@ -14,13 +14,13 @@
 
 #include "gnomonViewMatplotlib.h"
 
+#include <dtkThemes>
+
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
 
 #include <gnomonCore>
-#include <gnomonFonts>
-#include <gnomonStyle>
 #include <gnomonWidgets>
 
 //
@@ -32,7 +32,8 @@
 #include "gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h"
 
 
-#include <dtkScript>
+//TODO: Script
+//#include <dtkScript>
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -132,15 +133,16 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
         }
     }
 
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
-    QString figure_statement = "figure = plt.figure("+figure_number+")";
-    dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
-    QString save_statement = "figure.savefig('"+export_file_path+"')";
-    dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+    //TODO: Script
+    // int stat;
+    // dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
+    // QString figure_statement = "figure = plt.figure("+figure_number+")";
+    // dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
+    // QString save_statement = "figure.savefig('"+export_file_path+"')";
+    // dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
 
 }
 
@@ -294,14 +296,15 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 
     QFile file(":gnomon/matplotlib_figure.py");
 
-    if (file.open(QIODevice::ReadOnly)) {
-        int stat;
-        QString matplotlib_script  = file.readAll();
-        file.close();
-        dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
-    } else {
-        qWarning() << "Can't open matplotlib figure script";
-    }
+    //TODO: Script
+    // if (file.open(QIODevice::ReadOnly)) {
+    //     int stat;
+    //     QString matplotlib_script  = file.readAll();
+    //     file.close();
+    //     dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
+    // } else {
+    //     qWarning() << "Can't open matplotlib figure script";
+    // }
 
     connect(this, &gnomonViewMatplotlib::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
@@ -329,8 +332,9 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
         d->forms["gnomonTree"] = tree;
 
-        int stat;
-        dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
+        //TODO: Script
+        // int stat;
+        // dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
 
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
@@ -350,8 +354,9 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
         d->forms["gnomonDataFrame"] = dataFrame;
 
-        int stat;
-        dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame", &stat);
+        //TODO: Script
+        // int stat;
+        // dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame",                                                          &stat);
 
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
@@ -374,7 +379,9 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
 
 void gnomonViewMatplotlib::addWidget(QWidget *widget)
 {
-    widget->setStyleSheet(gnomonStyleSheet());
+    //TODO
+    //dtkThemesEngine::instance()->color("@bg")
+    //widget->setStyleSheet( gnomonStyleSheet());
     d->layout->addWidget(widget);
     this->resize(800,this->height());
 }

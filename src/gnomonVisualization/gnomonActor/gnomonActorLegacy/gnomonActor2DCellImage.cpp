@@ -17,7 +17,8 @@
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
 #include <gnomonCore>
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtWidgets>
 

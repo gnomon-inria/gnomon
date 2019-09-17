@@ -14,7 +14,8 @@
 
 #include "gnomonActor2DImageWidget.h"
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -50,7 +51,7 @@ public:
 
 public:
     int orientation;
-    
+
     double alpha;
     int value_range[2];
     QMap<double,QColor> colormap;
@@ -176,7 +177,7 @@ void gnomonActor2DImageWidget::update(void)
         d->planeWidget[i]->DisplayTextOn();
         d->planeWidget[i]->InteractionOn();
     }
-    
+
     d->modified = false;
 }
 
@@ -193,7 +194,7 @@ void gnomonActor2DImageWidget::setSlice(int value)
 }
 
 void gnomonActor2DImageWidget::hide(void)
-{        
+{
     for (int o=0;o<3;o++)
         d->planeWidget[o]->Off();
 }
