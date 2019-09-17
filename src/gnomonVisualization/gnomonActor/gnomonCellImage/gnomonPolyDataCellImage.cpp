@@ -17,8 +17,7 @@
 
 #include <gnomonCore>
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include <QtWidgets>
 
@@ -117,16 +116,15 @@ void gnomonPolyDataCellImage::update(void)
          cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
      }
 
-     //TODO: Image
-    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    // if(!converter)
-    //     return;
+     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    if(!converter)
+        return;
 
-    // dtkImage *image = d->cellimage->image();
-    // converter->setInput(image);
-    // if(!converter->convert())
-    //     return;
-     vtkImageData *volume = nullptr; //static_cast<vtkImageData *>(converter->output());
+    dtkImage *image = d->cellimage->image();
+    converter->setInput(image);
+    if(!converter->convert())
+        return;
+     vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
 
     float v_x = volume->GetSpacing()[0];
     float v_y = volume->GetSpacing()[1];

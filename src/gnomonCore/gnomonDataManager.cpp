@@ -13,7 +13,7 @@
 // Code:
 
 #include <dtkCore>
-// #include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include "gnomonDataManager.h"
 
@@ -27,7 +27,7 @@ class gnomonDataManagerPrivate
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonDataManager *gnomonDataManager::instance(void)
@@ -40,9 +40,8 @@ gnomonDataManager *gnomonDataManager::instance(void)
 
 dtkImage *gnomonDataManager::get(const QString& name)
 {
-    // TODO: Image
-    // if(dtkCoreObjectManager::instance()->keys().contains(name))
-    //     return dtkCoreObjectManager::instance()->value(name).value<dtkImage *>();
+    if(dtkCoreObjectManager::instance()->keys().contains(name))
+        return dtkCoreObjectManager::instance()->value(name).value<dtkImage *>();
 
     qWarning() << "object " << name << " is not in the object Manager";
 
@@ -61,5 +60,5 @@ gnomonDataManager::~gnomonDataManager(void)
     delete d;
 }
 
-// 
+//
 // gnomonDataManager.cpp ends here

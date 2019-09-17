@@ -84,6 +84,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)

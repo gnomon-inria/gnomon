@@ -19,17 +19,9 @@
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudFromImageCommand>
 #include <gnomonWidgets>
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Visualization
-// /////////////////////////////////////////////////////////////////////////////
+#include <gnomonVisualization>
 
-// #include <gnomonVisualization>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Image
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkImagingCore>
+#include <dtkImagingCore>
 
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Script
@@ -38,7 +30,7 @@
 // #include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspacePointCloudFromImagePrivate : public gnomonWorkspaceTemplatePrivate<gnomonPointCloudFromImageCommand>
@@ -89,7 +81,7 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
 
     // d->source = new gnomonViewForm(this);
     // d->source->setExportColor(gnomonToolBar::pointCloudFromImage_color);
-    
+
     // d->target = new gnomonViewForm(this);
     // d->target->setExportColor(gnomonToolBar::pointCloudFromImage_color);
 

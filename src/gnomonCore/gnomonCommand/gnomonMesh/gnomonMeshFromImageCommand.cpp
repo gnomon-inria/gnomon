@@ -20,11 +20,7 @@
 
 // #include <dtkScript>
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Image
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkImagingCore>
+#include <dtkImagingCore>
 
 class gnomonMeshFromImageCommandPrivate
 {
@@ -33,7 +29,7 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
@@ -96,5 +92,5 @@ gnomonMeshSeries *gnomonMeshFromImageCommand::output(void)
     return ((gnomonAbstractMeshFromImage *) this->action)->output();
 }
 
-// 
+//
 // gnomonMeshFromImageCommand.cpp ends here

@@ -15,8 +15,7 @@
 #include "gnomonActorPolyData.h"
 #include "gnomonPolyData.h"
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include <QtWidgets>
 

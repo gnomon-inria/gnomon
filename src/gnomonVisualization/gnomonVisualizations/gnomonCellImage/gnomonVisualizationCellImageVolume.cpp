@@ -20,8 +20,7 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -168,18 +167,17 @@ void gnomonVisualizationCellImageVolume::update(void)
         dd->image = nullptr;
     }
 
-    //TODO: Image
-    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    // converter->setInput(dd->cellImage->image());
-    // converter->convert();
-    // dd->image = static_cast<vtkImageData *>(converter->output());
-    //delete converter;
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(dd->cellImage->image());
+    converter->convert();
+    dd->image = static_cast<vtkImageData *>(converter->output());
+    delete converter;
 
-//    if (dd->actor) {
-//        d->view->renderer3D()->RemoveActor(dd->actor);
-//        dd->actor->Delete();
-//        dd->actor = nullptr;
-//    }
+   if (dd->actor) {
+       d->view->renderer3D()->RemoveActor(dd->actor);
+       dd->actor->Delete();
+       dd->actor = nullptr;
+   }
 
     if (!dd->actor)
         dd->actor = gnomonActorImageVolume::New();
@@ -190,13 +188,13 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->actor->setValueRange(value_range);
     dd->actor->setFlatRendering(true);
 
-//    if (dd->actor2D) {
-//        disconnect(d->connectSliceOrientation);
-//        disconnect(d->connectSlice);
-//        d->view->renderer2D()->RemoveActor(dd->actor2D);
-//        dd->actor2D->Delete();
-//        dd->actor2D = nullptr;
-//    }
+   if (dd->actor2D) {
+       disconnect(d->connectSliceOrientation);
+       disconnect(d->connectSlice);
+       d->view->renderer2D()->RemoveActor(dd->actor2D);
+       dd->actor2D->Delete();
+       dd->actor2D = nullptr;
+   }
 
     if (!dd->actor2D)
     {

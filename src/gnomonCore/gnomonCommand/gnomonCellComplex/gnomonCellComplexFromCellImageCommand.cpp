@@ -20,11 +20,7 @@
 
 // #include <dtkScript>
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Image
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkImagingCore>
+#include <dtkImagingCore>
 
 class gnomonCellComplexFromCellImageCommandPrivate
 {
@@ -67,7 +63,7 @@ void gnomonCellComplexFromCellImageCommand::undo(void)
 void gnomonCellComplexFromCellImageCommand::setInput(gnomonCellImageSeries *input)
 {
     d->input = input;
-    
+
     Q_ASSERT(this->action);
     ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(d->input);
 }
@@ -92,5 +88,5 @@ gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output(void)
     return ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
 }
 
-// 
+//
 // gnomonCellComplexFromCellImageCommand.cpp ends here
