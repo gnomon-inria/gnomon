@@ -20,15 +20,12 @@
 
 #include <gnomonLandmark.h>
 
-class gnomonLandmark;
-class gnomonOverlayPane;
-
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
+class gnomonLandmark;
 
-template <typename T>
-class gnomonTimeSeries;
+template <typename T> class gnomonTimeSeries;
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
@@ -46,7 +43,6 @@ class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QFrame
 public:
      gnomonViewForm(QWidget *parent = nullptr);
     ~gnomonViewForm(void);
-
 
 signals:
     void switchedTo3D  (void);
@@ -74,7 +70,7 @@ public slots:
     void setExportColor(const QColor& color);
 
 public slots:
-    void toggleVisualizationPane(void);
+    // void toggleVisualizationPane(void);
 
 public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
@@ -97,7 +93,7 @@ public:
     vtkRenderer *renderer3D(void);
 
 public:
-    gnomonOverlayPane *infoPane(void);
+    // gnomonOverlayPane *infoPane(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);

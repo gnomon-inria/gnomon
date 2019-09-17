@@ -52,7 +52,6 @@ set(${PROJECT_NAME}_SOURCES_QRC
 
 set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
 
-
 ## #################################################################
 ## Wrapping
 ## #################################################################
@@ -65,7 +64,7 @@ set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
 
 #   set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS})
 
-#   if (DTK_WRAPPING_PYTHON)
+#   if (DTK_WRAPPING_PYTON)
 #     if(DTK_PYTHON_WRAPPER MATCHES "SIP")
 
 #       set(${PROJECT_NAME}_SIP_WRAPPERS
@@ -99,14 +98,15 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES_RCC})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Gui)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkVisualization)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
-
 
 # TODO: Image
 #target_link_libraries(${PROJECT_NAME} dtkImagingCore)
@@ -125,7 +125,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_BINARY_DIR}>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
   $<INSTALL_INTERFACE:include>)
-
 
 # if(DTK_BUILD_WRAPPERS)
 #   if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)

@@ -1480,7 +1480,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
 
     if(path.startsWith(":")) {
         gnomonImagesSeriePtr images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());
-        emit channelsChanged(images_serie->channels());
+        // emit channelsChanged(images_serie->channels());
         this->setImagesSerie(images_serie);
     } else {
 
@@ -1509,7 +1509,7 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
                 event->ignore();
                 return;
             }
-            emit channelsChanged(images_serie->channels());
+            // emit channelsChanged(images_serie->channels());
             emit timeChanged(images_serie->time());
             this->setImagesSerie(images_serie);
         }
@@ -1539,7 +1539,8 @@ void gnomonViewVolumic::dropEvent(QDropEvent *event)
         d->layers.clear();
         d->channels_lut.clear();
 
-        QStringList layer_names = d->images_serie->channels();
+        QStringList layer_names; // = d->images_serie->channels();
+
         if(layer_names.size() > 1)
             d->stack->toggle(true);
 

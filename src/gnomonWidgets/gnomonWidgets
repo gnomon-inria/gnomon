@@ -12,8 +12,6 @@
 #include "gnomonFinder.h"
 #include "gnomonInterpreterJupyter.h"
 #include "gnomonOverlayButton.h"
-#include "gnomonOverlayPane.h"
-#include "gnomonOverlayPaneItem.h"
 #include "gnomonToolBar.h"
 #include "gnomonWidgets.h"
 #include "gnomonWidgetsParameter.h"
