@@ -41,9 +41,9 @@ add_library(${PROJECT_NAME}_backend SHARED
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
-target_link_libraries(${PROJECT_NAME}_backend PUBLIC Core)
-target_link_libraries(${PROJECT_NAME}_backend PUBLIC Widgets)
-target_link_libraries(${PROJECT_NAME}_backend PUBLIC OpenGL)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::OpenGL)
 
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkCore)
 # target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkScript)
@@ -51,11 +51,14 @@ target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
 
 # target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkImagingCore)
 
-target_link_libraries(${PROJECT_NAME}_backend PRIVATE gnomonCore)
-target_link_libraries(${PROJECT_NAME}_backend PRIVATE gnomonWidgets)
-target_link_libraries(${PROJECT_NAME}_backend PRIVATE gnomonWorkspace)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWidgets)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWorkspace)
 
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE ${VTK_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_backend)
 

@@ -284,7 +284,6 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
     });
 
     this->setCentralWidget(central);
-    this->setStyleSheet(gnomonStyleSheet());
 
     d->setup();
 }

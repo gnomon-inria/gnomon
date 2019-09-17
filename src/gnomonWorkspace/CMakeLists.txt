@@ -86,9 +86,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonWidgets)
-# target_link_libraries(${PROJECT_NAME} PRIVATE gnomonVisualization)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 
