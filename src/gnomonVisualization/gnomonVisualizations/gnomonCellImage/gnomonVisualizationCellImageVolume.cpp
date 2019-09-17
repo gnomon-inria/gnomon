@@ -106,10 +106,10 @@ void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cel
 {
     dd->cellImageSeries = cellImage;
     dd->cellImage = (gnomonCellImage *) cellImage->current();
-
     this->setParameter("alpha",1.0);
 
-    this->updateValueRange();
+    if (dd->cellImage)
+        this->updateValueRange();
 }
 
 void gnomonVisualizationCellImageVolume::updateOpacity(void)

@@ -39,7 +39,8 @@ public:
     gnomonCodeEditor *editor;
 
 public:
-    gnomonViewForm *view;
+//    gnomonViewForm *view = nullptr;
+    gnomonViewMatplotlib *mpl_figure = nullptr;
 
 public:
     gnomonInterpreterJupyter *terminal;
@@ -74,7 +75,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->editor = new gnomonCodeEditor(this);
     d->editor->resize(800, d->editor->height());
 
-    d->view = new gnomonViewForm(this);
+//    d->view = new gnomonViewForm(this);
+    d->mpl_figure = new gnomonViewMatplotlib(this);
 
     d->terminal = new gnomonInterpreterJupyter(this);
 //    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
@@ -83,7 +85,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->viewer_layout = new QVBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
-    d->viewer_layout->addWidget(d->view);
+//    d->viewer_layout->addWidget(d->view);
+    d->viewer_layout->addWidget(d->mpl_figure);
     d->viewer_layout->addWidget(d->terminal);
 
     QWidget *viewer = new QWidget(this);
@@ -104,7 +107,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QWidget *finder = new QWidget(this);
     finder->setLayout(finder_layout);
     finder->resize(600, finder->height());
-
 
     d->pane = new gnomonOverlayPane(this);
 
@@ -184,36 +186,40 @@ void gnomonWorkspaceLSystemSimulator::apply(void)
 
     d->model->reset();
 
-    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+    gnomonLStringSeries *lstring = (gnomonLStringSeries *)d->model->forms()["lstring"];
 
     if (d->terminal)
-        d->terminal->output(lstring->toString());
+        d->terminal->output(((gnomonLString *)lstring->current())->toString());
     else
-        qDebug() << Q_FUNC_INFO << lstring->toString();
+        qDebug() << Q_FUNC_INFO << ((gnomonLString *)lstring->current())->toString();
+    d->mpl_figure->setForm("gnomonLString",lstring);
 }
 
 void gnomonWorkspaceLSystemSimulator::step(void)
 {
-    d->model->step(0, 1);
+    gnomonLStringSeries *lstring = (gnomonLStringSeries *)d->model->forms()["lstring"];
 
-    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+    double time =  lstring->time();
+    d->model->step(time, 1);
 
     if (d->terminal)
-        d->terminal->output(lstring->toString());
+        d->terminal->output(((gnomonLString *)lstring->current())->toString());
     else
-        qDebug() << Q_FUNC_INFO << lstring->toString();
+        qDebug() << Q_FUNC_INFO << ((gnomonLString *)lstring->current())->toString();
+    d->mpl_figure->setForm("gnomonLString",lstring);
 }
 
 void gnomonWorkspaceLSystemSimulator::reset(void)
 {
     d->model->reset();
 
-    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+    gnomonLStringSeries *lstring = (gnomonLStringSeries *)d->model->forms()["lstring"];
 
     if (d->terminal)
-        d->terminal->output(lstring->toString());
+        d->terminal->output(((gnomonLString *)lstring->current())->toString());
     else
-        qDebug() << Q_FUNC_INFO << lstring->toString();
+        qDebug() << Q_FUNC_INFO << ((gnomonLString *)lstring->current())->toString();
+    d->mpl_figure->setForm("gnomonLString",lstring);
 }
 
 //

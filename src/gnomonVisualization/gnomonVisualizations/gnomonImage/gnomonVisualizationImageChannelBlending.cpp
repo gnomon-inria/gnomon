@@ -79,12 +79,13 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
 
 
-    dd->defaultColormaps[0] = "0CMY_cyan";
-    dd->defaultColormaps[1] = "0CMY_yellow";
+    dd->defaultColormaps[0] = "grey";
+    dd->defaultColormaps[1] = "0CMY_cyan";
     dd->defaultColormaps[2] = "0CMY_magenta";
-    dd->defaultColormaps[3] = "0RGB_green";
-    dd->defaultColormaps[4] = "0RGB_red";
-    dd->defaultColormaps[5] = "0RGB_blue";
+    dd->defaultColormaps[3] = "0CMY_yellow";
+    dd->defaultColormaps[4] = "0RGB_green";
+    dd->defaultColormaps[5] = "0RGB_red";
+    dd->defaultColormaps[6] = "0RGB_blue";
 
 }
 

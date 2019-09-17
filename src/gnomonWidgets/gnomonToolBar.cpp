@@ -92,7 +92,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_segmentation  = image_menu->addAction("Segmentation");
     this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
-    this->action_cellImageQuantification  = image_menu->addAction("Cell Quantification");
+    this->action_cellImageQuantification  = image_menu->addAction("Cell Analysis");
 
     QMenu * mesh_menu = this->menu->addMenu(this->font->icon(fa::play),"Meshing");
 
@@ -323,7 +323,7 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
         else if(item->text() == "Preprocess")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
-        else if(item->text() == "Cell Quantification")
+        else if(item->text() == "Cell Analysis")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::cellImageQuantification_color.red()).arg(gnomonToolBar::cellImageQuantification_color.green()).arg(gnomonToolBar::cellImageQuantification_color.blue()));
         else if(item->text() == "Time Registration")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
@@ -465,7 +465,7 @@ void gnomonToolBar::onCreatePreprocess(void)
 
 void gnomonToolBar::onCreateCellImageQuantification(void)
 {
-    d->createWorkspace(cellImageQuantification_color, "Cell Quantification");
+    d->createWorkspace(cellImageQuantification_color, "Cell Analysis");
 
     emit createCellImageQuantification();
 }

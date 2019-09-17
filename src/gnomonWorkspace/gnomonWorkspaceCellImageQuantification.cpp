@@ -65,7 +65,7 @@ gnomonWorkspaceCellImageQuantificationPrivate::~gnomonWorkspaceCellImageQuantifi
 
 QString gnomonWorkspaceCellImageQuantificationPrivate::workspace(void) const
 {
-    return "Cell Quantification";
+    return "Cell Analysis";
 }
 
 QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
