@@ -19,7 +19,8 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonActor/gnomonImage/gnomonImageDataChannelBlending.h"
@@ -140,29 +141,30 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
 
     QString channel = dd->image->channels()[0];
     QList<double> valueRange = {0,1};
-    if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
-        valueRange[1] = 255;
-    } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
-        valueRange[1] = 65535;
-    }
+    //TODO: Image
+    // if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
+    //     valueRange[1] = 255;
+    // } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
+    //     valueRange[1] = 65535;
+    // }
 
-    if(dd->image->channels().size()==1) {
-        if (dd->channelLookupTables.contains("")) {
-            dd->channelLookupTables.remove("");
-        }
-        dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
-        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[""], "Lookuptable to apply to the image");
-    } else {
-        int iChannel = 0;
-        for (const auto& channelName : dd->image->channels()) {
-            if (dd->channelLookupTables.contains(channelName)) {
-                dd->channelLookupTables.remove(channelName);
-            }
-            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
-            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
-            iChannel++;
-        }
-    }
+    // if(dd->image->channels().size()==1) {
+    //     if (dd->channelLookupTables.contains("")) {
+    //         dd->channelLookupTables.remove("");
+    //     }
+    //     dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
+    //     d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[""], "Lookuptable to apply to the image");
+    // } else {
+    //     int iChannel = 0;
+    //     for (const auto& channelName : dd->image->channels()) {
+    //         if (dd->channelLookupTables.contains(channelName)) {
+    //             dd->channelLookupTables.remove(channelName);
+    //         }
+    //         dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
+    //         d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
+    //         iChannel++;
+    //     }
+    // }
 }
 
 void gnomonVisualizationImageChannelBlending::updateOpacity(void)
@@ -195,13 +197,14 @@ void gnomonVisualizationImageChannelBlending::update(void)
 
 
     QMap<QString,vtkImageData *> channelImages;
-    for (const auto& channelName : dd->image->channels()) {
-        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-        converter->setInput(dd->image->image(channelName));
-        converter->convert();
-        channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
-        delete converter;
-    }
+    //TODO: Image
+    // for (const auto& channelName : dd->image->channels()) {
+    //     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    //     converter->setInput(dd->image->image(channelName));
+    //     converter->convert();
+    //     channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
+    //     delete converter;
+    // }
 
 
     dd->channelLookupTables.clear();

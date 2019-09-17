@@ -8,7 +8,6 @@
 #include "gnomonEditor/gnomonStringListEditor.h"
 #include "gnomonManager/gnomonFormManager.h"
 #include "gnomonManager/gnomonImageManager.h"
-#include "gnomonCodeEditor.h"
 #include "gnomonDropSite.h"
 #include "gnomonFinder.h"
 #include "gnomonInterpreterJupyter.h"

@@ -20,8 +20,13 @@
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 
-#include <dtkImagingCore>
-#include <dtkScript>
+//TODO: Image
+//#include <dtkImagingCore>
+
+// TODO: Script
+//#include <dtkScript>
+
+#include <dtkThemes>
 
 #include <gnomonCore>
 #include <gnomonWidgets>
@@ -163,7 +168,9 @@ public slots:
 
 gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
 {
-    QColor background_color = QColor(GNOMON_STYLE_BACKGROUNDCOLOR);
+
+
+    QColor background_color = dtkThemesEngine::instance()->color("@bg");
 
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer2D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
@@ -458,9 +465,10 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->q = this;
 
     int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationImage", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationPointCloud", &stat);
+    //TODO: Script
+    // dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationImage", &stat);
+    //dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationPointCloud", &stat);
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
     connect(d->renderer3D_button, SIGNAL(iconClicked()), this, SLOT(switchTo3D()));

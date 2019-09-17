@@ -20,7 +20,8 @@
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
 #include <gnomonCore>
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtWidgets>
 
@@ -88,7 +89,7 @@ void gnomonActorMeshCellImage::update(void)
         this->AddPart(d->actor);
     }
     d->actor->Modified();
-    
+
     dd->modified = false;
 }
 

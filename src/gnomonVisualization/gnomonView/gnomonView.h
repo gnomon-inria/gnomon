@@ -20,6 +20,7 @@
 
 #include <dtkCore>
 #include <dtkWidgets>
+#include <dtkVisualization>
 
 #include <gnomonVisualizationExport.h>
 
@@ -28,7 +29,7 @@ class gnomonInspector;
 class gnomonViewManager;
 class gnomonViewPrivate;
 
-class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkViewWidget
+class GNOMONVISUALIZATION_EXPORT gnomonView : public dtkVisualizationView3D
 {
     Q_OBJECT
 

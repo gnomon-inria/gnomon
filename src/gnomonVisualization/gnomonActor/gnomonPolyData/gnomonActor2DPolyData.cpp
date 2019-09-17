@@ -16,7 +16,8 @@
 
 #include "gnomonPolyData.h"
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtWidgets>
 

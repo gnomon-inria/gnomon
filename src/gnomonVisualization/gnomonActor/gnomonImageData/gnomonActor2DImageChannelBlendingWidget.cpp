@@ -14,7 +14,8 @@
 
 #include "gnomonActor2DImageChannelBlendingWidget.h"
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -43,14 +44,14 @@ class gnomonActor2DImageChannelBlendingWidgetPrivate
 {
 public:
     vtkSmartPointer<vtkImageData> image;
-    
+
     vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
 
     vtkRenderWindowInteractor *interactor;
 
 public:
     int orientation;
-    
+
     double alpha;
 
     bool modified;
@@ -99,7 +100,7 @@ void gnomonActor2DImageChannelBlendingWidget::update(void)
     if(!d->image)
         return;
 
-    int imageDims[3]; 
+    int imageDims[3];
     d->image->GetDimensions(imageDims);
 
     for(int i = 0; i < 3; i++) {
@@ -121,7 +122,7 @@ void gnomonActor2DImageChannelBlendingWidget::update(void)
         d->planeWidget[i]->DisplayTextOn();
         d->planeWidget[i]->InteractionOn();
     }
-    
+
     d->modified = false;
 }
 
@@ -138,7 +139,7 @@ void gnomonActor2DImageChannelBlendingWidget::setSlice(int value)
 }
 
 void gnomonActor2DImageChannelBlendingWidget::hide(void)
-{        
+{
     for (int o=0;o<3;o++)
         d->planeWidget[o]->Off();
 }

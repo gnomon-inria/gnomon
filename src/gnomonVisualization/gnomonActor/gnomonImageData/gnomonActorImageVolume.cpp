@@ -14,7 +14,8 @@
 
 #include "gnomonActorImageVolume.h"
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -165,7 +166,7 @@ void gnomonActorImageVolume::update(void)
     d->volume->Update();
 
     d->updateOpacity();
-    
+
     d->modified = false;
 }
 

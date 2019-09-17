@@ -19,7 +19,9 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
-#include <dtkImagingCore>
+
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -115,7 +117,7 @@ void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cel
 void gnomonVisualizationCellImageVolume::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    
+
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
     }
@@ -166,11 +168,12 @@ void gnomonVisualizationCellImageVolume::update(void)
         dd->image = nullptr;
     }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(dd->cellImage->image());
-    converter->convert();
-    dd->image = static_cast<vtkImageData *>(converter->output());
-    delete converter;
+    //TODO: Image
+    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    // converter->setInput(dd->cellImage->image());
+    // converter->convert();
+    // dd->image = static_cast<vtkImageData *>(converter->output());
+    //delete converter;
 
 //    if (dd->actor) {
 //        d->view->renderer3D()->RemoveActor(dd->actor);

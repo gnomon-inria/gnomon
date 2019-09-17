@@ -24,8 +24,7 @@
 #include "gnomonView.h"
 #include "gnomonViewManager.h"
 
-#include <gnomonStyle>
-
+#include <dtkThemes>
 #include <dtkWidgets>
 
 #include <QtWidgets>
@@ -102,9 +101,9 @@ public:
 // gnomonView
 // ///////////////////////////////////////////////////////////////////
 
-gnomonView::gnomonView(QWidget *parent) : dtkViewWidget(parent)
+gnomonView::gnomonView(QWidget *parent) : dtkVisualizationView3D(parent)
 {
-    QColor background_color = QColor(GNOMON_STYLE_BACKGROUNDCOLOR);
+    QColor background_color = dtkThemesEngine::instance()->color("@bg");
 
     d = new gnomonViewPrivate;
 

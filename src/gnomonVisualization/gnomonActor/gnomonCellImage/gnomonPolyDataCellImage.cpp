@@ -17,7 +17,8 @@
 
 #include <gnomonCore>
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <QtWidgets>
 
@@ -116,16 +117,16 @@ void gnomonPolyDataCellImage::update(void)
          cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
      }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    if(!converter)
-        return;
+     //TODO: Image
+    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    // if(!converter)
+    //     return;
 
-    dtkImage *image = d->cellimage->image();
-    converter->setInput(image);
-    if(!converter->convert())
-        return;
-
-    vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
+    // dtkImage *image = d->cellimage->image();
+    // converter->setInput(image);
+    // if(!converter->convert())
+    //     return;
+     vtkImageData *volume = nullptr; //static_cast<vtkImageData *>(converter->output());
 
     float v_x = volume->GetSpacing()[0];
     float v_y = volume->GetSpacing()[1];
@@ -159,7 +160,7 @@ void gnomonPolyDataCellImage::update(void)
             // qDebug()<<"Cell "<<cellId<<" marching cubes : "<<contour->GetOutput()->GetNumberOfCells()<<" faces";
 
             if (contour->GetOutput()->GetNumberOfCells()>0)
-            { 
+            {
                 int smooth_iterations = int(d->smoothingFactor*8);
 
                 vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoother = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
@@ -181,7 +182,7 @@ void gnomonPolyDataCellImage::update(void)
                 decimate->Update();
 
                 d->cell_mesh[cellId] = decimate->GetOutput();
-     
+
                 double center[3];
                 vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter = vtkSmartPointer<vtkCenterOfMass>::New();
                 centerOfMassFilter->SetInputData(d->cell_mesh[cellId]);
@@ -241,7 +242,7 @@ void gnomonPolyDataCellImage::update(void)
     this->SetPoints(d->mesh->GetPoints());
     this->SetPolys(d->mesh->GetPolys());
     this->GetCellData()->SetScalars(d->mesh->GetCellData()->GetScalars());
-    
+
     d->modified = false;
 }
 

@@ -21,7 +21,8 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -87,7 +88,7 @@ public:
     virtual void OnLeftButtonUp(void) override
     {
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
-        
+
         int *pos = this->GetInteractor()->GetEventPosition();
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
@@ -227,7 +228,7 @@ public:
 
 public:
     bool is2D = false;
-    
+
 public slots:
     void updateOpacity(void);
     void updateValueRange(void);
@@ -237,7 +238,7 @@ public slots:
 void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
-    
+
     if(this->actor) {
         this->actor->setOpacity(alpha);
     }
@@ -367,18 +368,22 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
     gnomonCoreParameterDoubleRange *xRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["x_range"];
     xRangeParam->setMinimumValue(0);
-    xRangeParam->setMaximumValue(dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
-    xRangeParam->setValue(0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+    //TODO: Image
+    //xRangeParam->setMaximumValue(dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+    //xRangeParam->setValue(0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
 
     gnomonCoreParameterDoubleRange *yRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["y_range"];
     yRangeParam->setMinimumValue(0);
-    yRangeParam->setMaximumValue(dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
-    yRangeParam->setValue(0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+
+    //TODO: Image
+    //yRangeParam->setMaximumValue(dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+    //yRangeParam->setValue(0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
 
     gnomonCoreParameterDoubleRange *zRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["z_range"];
     zRangeParam->setMinimumValue(0);
-    zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
-    zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+    //TODO: Image
+    //zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+    //zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
 
 }
 

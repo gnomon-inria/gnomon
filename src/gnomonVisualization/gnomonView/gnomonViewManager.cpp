@@ -25,7 +25,8 @@
 
 #include <gnomonCore>
 
-#include <dtkImagingCore>
+//TODO: Image
+//#include <dtkImagingCore>
 
 #include <vtkImageData.h>
 
@@ -69,16 +70,17 @@ gnomonInspector *gnomonViewManager::inspector(void)
 
 gnomonActor *gnomonViewManager::insert(dtkImage *data)
 {
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    // TODO: Image
+    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
 
-    if (!converter) {
-        qWarning() << "can't create vtk converter!";
-        return nullptr;
-    }
-    converter->setInput(data);
-    converter->convert();
+    // if (!converter) {
+    //     qWarning() << "can't create vtk converter!";
+    //     return nullptr;
+    // }
+    // converter->setInput(data);
+    // converter->convert();
 
-    vtkImageData *image = static_cast<vtkImageData*>(converter->output());
+    vtkImageData *image = nullptr; //static_cast<vtkImageData*>(converter->output());
 
     if(!image) {
         qWarning() << "Can't convert image to vtkImageData !";
