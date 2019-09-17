@@ -20,7 +20,7 @@
 
 #include <QtCore>
 
-// #include <dtkImagingCore>
+#include <dtkImagingCore>
 
 class GNOMONCORE_EXPORT gnomonIntensityImage : public gnomonAbstractForm
 {

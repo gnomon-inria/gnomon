@@ -14,8 +14,7 @@
 
 #include "gnomonActor2DImageChannelBlendingWidget.h"
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include <QtCore>
 #include <QtWidgets>

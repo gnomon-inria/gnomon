@@ -21,8 +21,7 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -129,7 +128,7 @@ public:
 
         // if(!this->q->view()->infoPane()->isToggled())
         //     this->q->view()->infoPane()->toggle();
-        
+
         // this->q->view()->infoPane()->addInfoPaneItem(text, cellInfo);
     }
 
@@ -366,22 +365,18 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
     gnomonCoreParameterDoubleRange *xRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["x_range"];
     xRangeParam->setMinimumValue(0);
-    //TODO: Image
-    //xRangeParam->setMaximumValue(dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
-    //xRangeParam->setValue(0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+    xRangeParam->setMaximumValue(dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+    xRangeParam->setValue(0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
 
     gnomonCoreParameterDoubleRange *yRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["y_range"];
     yRangeParam->setMinimumValue(0);
-
-    //TODO: Image
-    //yRangeParam->setMaximumValue(dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
-    //yRangeParam->setValue(0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+    yRangeParam->setMaximumValue(dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+    yRangeParam->setValue(0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
 
     gnomonCoreParameterDoubleRange *zRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["z_range"];
     zRangeParam->setMinimumValue(0);
-    //TODO: Image
-    //zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
-    //zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+    zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+    zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
 
 }
 

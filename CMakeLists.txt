@@ -104,13 +104,11 @@ find_package(dtkLog           REQUIRED)
 find_package(dtkFonts         REQUIRED)
 find_package(dtkThemes        REQUIRED)
 find_package(dtkCore          REQUIRED)
+find_package(dtkImaging       REQUIRED)
 find_package(dtkWidgets       REQUIRED)
 find_package(dtkVisualization REQUIRED)
 
-# TODO: Package this one
-# find_package(dtkImaging REQUIRED)
-# include_directories(${dtkImaging_INCLUDE_DIRS})
-
+find_package(xtensor REQUIRED)
 find_package(VTK REQUIRED)
 
 include(${VTK_USE_FILE})

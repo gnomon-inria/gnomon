@@ -18,7 +18,10 @@
 
 #include <gnomonCoreExport>
 
-class dtkImage;
+//class dtkImage;
+#include <dtkImagingCore>
+
+Q_DECLARE_METATYPE(dtkImage *);
 
 class GNOMONCORE_EXPORT gnomonDataManager: public QObject
 {
@@ -41,5 +44,5 @@ private:
     class gnomonDataManagerPrivate *d;
 };
 
-// 
+//
 // gnomonDataManager.h ends here

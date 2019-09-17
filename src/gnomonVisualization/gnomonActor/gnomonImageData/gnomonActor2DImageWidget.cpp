@@ -14,8 +14,7 @@
 
 #include "gnomonActor2DImageWidget.h"
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include <QtCore>
 #include <QtWidgets>

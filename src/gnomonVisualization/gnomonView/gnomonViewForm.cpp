@@ -20,9 +20,7 @@
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 
-// TODO: Image
-
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 // TODO: Script
 //#include <dtkScript>
@@ -34,7 +32,7 @@
 
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
-// #include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
+#include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
@@ -466,7 +464,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->q = this;
 
     int stat;
-    
+
     //TODO: Script
 
     // dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);

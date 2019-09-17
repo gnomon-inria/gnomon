@@ -14,8 +14,7 @@
 
 #include "gnomonActorImageRGBAVolume.h"
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include <QtCore>
 #include <QtWidgets>

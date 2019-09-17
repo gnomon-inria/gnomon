@@ -20,8 +20,7 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 
-//TODO: Image
-//#include <dtkImagingCore>
+#include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonActor/gnomonImageData/gnomonActorImageVolume.h"
@@ -140,14 +139,13 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
     valueRangeParam->setMinimumValue(0);
 
     QString channel = dd->image->channels()[0];
-    //TODO: Image
-    // if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
-    //     valueRangeParam->setMaximumValue(255);
-    //     valueRangeParam->setValue(0,255);
-    // } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
-    //     valueRangeParam->setMaximumValue(65535);
-    //     valueRangeParam->setValue(0,65535);
-    // }
+    if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
+        valueRangeParam->setMaximumValue(255);
+        valueRangeParam->setValue(0,255);
+    } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
+        valueRangeParam->setMaximumValue(65535);
+        valueRangeParam->setValue(0,65535);
+     }
 }
 
 void gnomonVisualizationImage::updateOpacity(void)
@@ -197,13 +195,11 @@ void gnomonVisualizationImage::update(void)
         channel = "";
     }
 
-    //TODO: Image
-    // dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    // converter->setInput(dd->image->image(channel));
-    // converter->convert();
-    // dd->image_data = static_cast<vtkImageData *>(converter->output());
-    // delete converter;
-
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    converter->setInput(dd->image->image(channel));
+    converter->convert();
+    dd->image_data = static_cast<vtkImageData *>(converter->output());
+    delete converter;
 
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageWidget::New();

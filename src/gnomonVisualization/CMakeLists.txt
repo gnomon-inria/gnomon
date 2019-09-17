@@ -108,8 +108,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkVisualization)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 
-# TODO: Image
-#target_link_libraries(${PROJECT_NAME} dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
 #target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
