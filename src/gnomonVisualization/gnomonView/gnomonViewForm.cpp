@@ -34,7 +34,7 @@
 
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
-#include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
+// #include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
@@ -1000,34 +1000,34 @@ gnomonImageSeries *gnomonViewForm::image(void)
 
 void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualization *visualization)
 {
-    d->forms["gnomonImage"] = image;
+    // d->forms["gnomonImage"] = image;
 
-    QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
+    // QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
 
-    if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
-    {
-        d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
-        d->formVisualization["gnomonImage"]->setView(this);
-    }
+    // if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
+    // {
+    //     d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
+    //     d->formVisualization["gnomonImage"]->setView(this);
+    // }
 
-    gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
+    // gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
 
-    formVisualizationImage->setImage(image);
-    if (visualization) {
-        formVisualizationImage->setParameters(visualization->parameters());
-    }
-    formVisualizationImage->update();
+    // formVisualizationImage->setImage(image);
+    // if (visualization) {
+    //     formVisualizationImage->setParameters(visualization->parameters());
+    // }
+    // formVisualizationImage->update();
 
-    if (d->renderer3D_button->isToggled()) {
-        d->renderer3D_button->toggle(false);
-        this->switchTo3D();
-    }
-    else if (d->renderer2D_button->isToggled()) {
-        d->renderer2D_button->toggle(false);
-        this->switchTo2D();
-    }
+    // if (d->renderer3D_button->isToggled()) {
+    //     d->renderer3D_button->toggle(false);
+    //     this->switchTo3D();
+    // }
+    // else if (d->renderer2D_button->isToggled()) {
+    //     d->renderer2D_button->toggle(false);
+    //     this->switchTo2D();
+    // }
 
-    emit formAdded("gnomonImage");
+    // emit formAdded("gnomonImage");
 }
 
 gnomonMeshSeries *gnomonViewForm::mesh(void)

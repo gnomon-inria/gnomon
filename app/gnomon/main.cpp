@@ -97,11 +97,13 @@ int main(int argc, char **argv)
 
     delete window;
 
-    dtkImaging::uninitialize();
+    // dtkImaging::uninitialize();
+
     gnomonCore::uninitialize();
     gnomonVisualization::uninitialize();
     gnomonWidgets::uninitialize();
-    dtkScriptInterpreterPython::instance()->release();
+
+    // dtkScriptInterpreterPython::instance()->release();
 
     return status;
 }

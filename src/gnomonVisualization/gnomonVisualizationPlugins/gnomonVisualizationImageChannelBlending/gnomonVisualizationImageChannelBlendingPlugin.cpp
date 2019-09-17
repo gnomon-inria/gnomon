@@ -21,13 +21,12 @@
 
 void gnomonVisualizationImageChannelBlendingPlugin::initialize(void)
 {
-    QString plugin_name = "gnomonVisualizationImageChannelBlending";
-    gnomonVisualization::visualizationImage::pluginFactory().record(plugin_name, gnomonVisualizationImageChannelBlendingCreator);
+    // QString plugin_name = "gnomonVisualizationImageChannelBlending";
 
-    if (gnomonVisualization::visualizationImage::pluginFactory().keys().contains(plugin_name)) {
-        qDebug()<<"C++ plugin"<<plugin_name<<"has been successfully loaded!";
-    }
+    // gnomonVisualization::visualizationImage::pluginFactory().record(plugin_name, gnomonVisualizationImageChannelBlendingCreator);
 
+    // if (gnomonVisualization::visualizationImage::pluginFactory().keys().contains(plugin_name))
+    //     qDebug()<<"C++ plugin"<<plugin_name<<"has been successfully loaded!";
 }
 
 void gnomonVisualizationImageChannelBlendingPlugin::uninitialize(void)
@@ -35,9 +34,7 @@ void gnomonVisualizationImageChannelBlendingPlugin::uninitialize(void)
 
 }
 
-
 DTK_DEFINE_PLUGIN(gnomonVisualizationImageChannelBlending)
-
 
 //
 // gnomonVisualizationImageChannelBlendingPlugin.cpp ends here
