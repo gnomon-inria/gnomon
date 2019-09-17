@@ -15,7 +15,16 @@
 #include "gnomonWorkspaceBrowser.h"
 
 #include <gnomonWidgets>
-#include <gnomonVisualization>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Visualization
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <gnomonVisualization>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Use dtkWidgetsFinder
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceBrowserPrivate
 {
@@ -26,8 +35,7 @@ public:
 
 public:
     // gnomonViewVolumic *browse_view;
-    gnomonViewForm *browse_view;
-
+    // gnomonViewForm *browse_view;
 };
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
@@ -45,9 +53,9 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     d->toolbar->setPath(QDir::currentPath());
 
     // d->browse_view = new gnomonViewVolumic(this);
-    d->browse_view = new gnomonViewForm(this);
-    d->browse_view->setExportColor(gnomonToolBar::browser_color);
-    d->browse_view->toggleVisualizationPane();
+    // d->browse_view = new gnomonViewForm(this);
+    // d->browse_view->setExportColor(gnomonToolBar::browser_color);
+    // d->browse_view->toggleVisualizationPane();
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
@@ -77,7 +85,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
-    splitter->addWidget(d->browse_view);
+    // splitter->addWidget(d->browse_view);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

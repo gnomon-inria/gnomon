@@ -13,74 +13,92 @@
 // Code:
 
 #include "gnomonWorkspaceSimulation.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonFemSolverCommand>
 #include <gnomonWidgets>
 
-#include <dtkImagingCore>
-#include <dtkScript>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Visualization
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonFemSolverCommand>
+// #include <gnomonVisualization>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
 
 #include <vtkImageData.h>
 
-class gnomonWorkspaceSimulationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonWorkspaceSimulationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonFemSolverCommand>
 {
 public:
-    gnomonWorkspaceSimulationPrivate();
-    virtual ~gnomonWorkspaceSimulationPrivate();
+     gnomonWorkspaceSimulationPrivate(void);
+    ~gnomonWorkspaceSimulationPrivate(void);
 
 public:
-    QString workspace() const override;
-    QStringList keys() const override;
+    QString workspace(void) const override;
+    QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *source = nullptr;
-    gnomonViewForm *target = nullptr;
+    // gnomonViewForm *source = nullptr;
+    // gnomonViewForm *target = nullptr;
 };
 
-gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate() : gnomonWorkspaceTemplatePrivate< gnomonFemSolverCommand >()
+gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonFemSolverCommand>()
 {
+
 }
 
-gnomonWorkspaceSimulationPrivate::~gnomonWorkspaceSimulationPrivate()
+gnomonWorkspaceSimulationPrivate::~gnomonWorkspaceSimulationPrivate(void)
 {
+    
 }
 
-QString gnomonWorkspaceSimulationPrivate::workspace() const
+QString gnomonWorkspaceSimulationPrivate::workspace(void) const
 {
     return "FEM Simulation";
 }
 
-QStringList gnomonWorkspaceSimulationPrivate::keys() const
+QStringList gnomonWorkspaceSimulationPrivate::keys(void) const
 {
     return gnomonCore::femSolver::pluginFactory().keys();
 }
 
 gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWorkspace(parent)
 {
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonFemSolver", &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("import gnomonFemSolver", &stat);
 
     d = new gnomonWorkspaceSimulationPrivate;
 
-    d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::registration_color);
-    d->source->setAcceptCellComplex(false);
+    // d->source = new gnomonViewForm(this);
+    // d->source->setExportColor(gnomonToolBar::registration_color);
+    // d->source->setAcceptCellComplex(false);
 
-    d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::registration_color);
+    // d->target = new gnomonViewForm(this);
+    // d->target->setExportColor(gnomonToolBar::registration_color);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
-    layout->addWidget(d->pane(this));
+    // layout->addWidget(d->source);
+    // layout->addWidget(d->target);
+    // layout->addWidget(d->pane(this));
 }
 
 gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
@@ -91,10 +109,11 @@ gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 void gnomonWorkspaceSimulation::apply(void)
 {
     Q_ASSERT(d->command);
-    d->command->setMesh(d->source->mesh());
-    d->command->redo();
-    d->target->setMesh(d->command->updatedMesh());
 
+    // d->command->setMesh(d->source->mesh());
+    // d->command->redo();
+
+    // d->target->setMesh(d->command->updatedMesh());
 }
 
 void gnomonWorkspaceSimulation::configure(const QString& algorithm)

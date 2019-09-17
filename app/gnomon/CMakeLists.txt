@@ -41,25 +41,23 @@ add_library(${PROJECT_NAME}_backend SHARED
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
-qt5_use_modules(${PROJECT_NAME}_backend Core)
-qt5_use_modules(${PROJECT_NAME}_backend Widgets)
-qt5_use_modules(${PROJECT_NAME}_backend OpenGL)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Core)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Widgets)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC OpenGL)
 
-target_link_libraries(${PROJECT_NAME}_backend dtkCore)
-target_link_libraries(${PROJECT_NAME}_backend dtkScript)
-target_link_libraries(${PROJECT_NAME}_backend dtkWidgets)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkCore)
+# target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkScript)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
 
-target_link_libraries(${PROJECT_NAME}_backend dtkImagingCore)
+# target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkImagingCore)
 
-target_link_libraries(${PROJECT_NAME}_backend gnomonCore)
-target_link_libraries(${PROJECT_NAME}_backend gnomonStyle)
-target_link_libraries(${PROJECT_NAME}_backend gnomonFonts)
-target_link_libraries(${PROJECT_NAME}_backend gnomonWidgets)
-target_link_libraries(${PROJECT_NAME}_backend gnomonWorkspace)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE gnomonCore)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE gnomonWidgets)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE gnomonWorkspace)
 
-target_link_libraries(${PROJECT_NAME}_backend ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE ${VTK_LIBRARIES})
 
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_backend)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_backend)
 
 ## #################################################################
 ## Bundle setup
@@ -86,8 +84,7 @@ install(TARGETS ${PROJECT_NAME}_backend
   EXPORT gnomonDepends
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  )
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 install(TARGETS ${PROJECT_NAME}
    BUNDLE DESTINATION bin

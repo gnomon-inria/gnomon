@@ -13,26 +13,41 @@
 // Code:
 
 #include "gnomonWorkspaceSegmentation.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonSegmentationCommand.h>
 #include <gnomonWidgets>
 
-#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonSegmentationCommand.h>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Visualization
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <dtkImagingCore>
-#include <dtkScript>
+// #include <gnomonVisualization>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
 
 #include <QtWidgets>
 
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>
 {
-
 public:
      gnomonWorkspaceSegmentationPrivate(void);
     ~gnomonWorkspaceSegmentationPrivate(void);
@@ -42,16 +57,14 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *source = nullptr;
-    gnomonViewForm *target = nullptr;
-//    gnomonViewVolumic *source = nullptr;
-//    gnomonViewVolumic *target = nullptr;
+    // gnomonViewForm *source = nullptr;
+    // gnomonViewForm *target = nullptr;
 
 public:
-    gnomonViewFormPool *pool = nullptr;
+    // gnomonViewFormPool *pool = nullptr;
 
 public:
-    gnomonCellImage *cellimage = nullptr;
+    // gnomonCellImage *cellimage = nullptr;
 
 public:
     QMetaObject::Connection c_o;
@@ -84,42 +97,45 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnomonWorkspace(parent)
 {
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFromImage", &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFromImage", &stat);
 
     d = new gnomonWorkspaceSegmentationPrivate;
 
-    d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::segmentation_color);
-    d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::segmentation_color);
+    // d->source = new gnomonViewForm(this);
+    // d->source->setExportColor(gnomonToolBar::segmentation_color);
 
-    d->pool = new gnomonViewFormPool(this);
-    d->pool->addView(d->source);
-    d->pool->addView(d->target);
+    // d->target = new gnomonViewForm(this);
+    // d->target->setExportColor(gnomonToolBar::segmentation_color);
 
-    gnomonOverlayPane *pane = d->pane(this);
+    // d->pool = new gnomonViewFormPool(this);
+    // d->pool->addView(d->source);
+    // d->pool->addView(d->target);
+
+    // gnomonOverlayPane *pane = d->pane(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
-    layout->addWidget(pane);
+    // layout->addWidget(d->source);
+    // layout->addWidget(d->target);
+    // layout->addWidget(pane);
 
-    connect(d->source, &gnomonViewForm::formAdded, [=] () {
-        if(d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
-        else
-            qDebug() << "Not changed";
-        d->configure(this, d->algorithm);
-    });
+    // connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    // {
+    //     if (d->command->input() != d->source->image())
+    //         d->command->setInput(d->source->image());
+    //     else
+    //         qDebug() << "Not changed";
+    //     d->configure(this, d->algorithm);
+    // });
 
-    connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm) {
-        d->command->setInput(d->source->image());
-        d->configure(this,algorithm);
-    });
+    // connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm)
+    // {
+    //     d->command->setInput(d->source->image());
+    //     d->configure(this,algorithm);
+    // });
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
@@ -134,18 +150,18 @@ void gnomonWorkspaceSegmentation::configure(const QString& algorithm)
 
 void gnomonWorkspaceSegmentation::apply(void)
 {
-    Q_ASSERT(d->command);
+    // Q_ASSERT(d->command);
 
+    // if (d->command->input() != d->source->image())
+    //     d->command->setInput(d->source->image());
+    // else
+    //     qDebug() << "Not changed";
 
-    if(d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
-    else
-        qDebug() << "Not changed";
+    // d->command->redo();
 
-    d->command->redo();
-
-    d->target->setForm("gnomonCellImage",d->command->output());
-    d->target->render();
+    // d->target->setForm("gnomonCellImage",d->command->output());
+    // d->target->render();
 }
+
 //
 // gnomonWorkspaceSegmentation.cpp ends here

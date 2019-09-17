@@ -17,19 +17,23 @@
 #include <QtCore>
 #include <QtWidgets>
 
-class gnomonOverlayPane;
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Wazza ?
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspacePrivateSignals : public QObject
 {
     Q_OBJECT
 
-
 signals:
     void algorithmChanged(const QString& algorithm);
 };
 
-template <typename T>
-class gnomonWorkspaceTemplatePrivate : public gnomonWorkspacePrivateSignals
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+template <typename T> class gnomonWorkspaceTemplatePrivate : public gnomonWorkspacePrivateSignals
 {
 public:
              gnomonWorkspaceTemplatePrivate(void);
@@ -40,14 +44,21 @@ public:
     virtual QStringList keys(void) const = 0;
 
 public:
-    gnomonOverlayPane *pane(QWidget *parent);
+    // TODO: Substitute with Menu Framework
+    // --
+    // gnomonOverlayPane *pane(QWidget *parent);
+
+public:
     void configure(QWidget *widget, const QString& algorithm);
 
 public:
     QString algorithm;
-    T *command = nullptr;
-    QFormLayout *pane_item_params_layout = nullptr;
 
+public:
+    T *command = nullptr;
+
+public:
+    QFormLayout *pane_item_params_layout = nullptr;
 };
 
 #include "gnomonWorkspaceTemplate_p.tpp"

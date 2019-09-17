@@ -13,9 +13,10 @@
 // Code:
 
 #include <gnomonCore/gnomonCoreParameter.h>
+
 #include <gnomonWidgets/gnomonWidgetsParameter.h>
-#include <gnomonWidgets/gnomonOverlayPane.h>
-#include <gnomonWidgets/gnomonOverlayPaneItem.h>
+// #include <gnomonWidgets/gnomonOverlayPane.h>
+// #include <gnomonWidgets/gnomonOverlayPaneItem.h>
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
@@ -42,8 +43,7 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget 
         this->pane_item_params_layout = new QFormLayout(parent);
     }
 
-    this->algorithm=algorithm;
-
+    this->algorithm = algorithm;
 
     if (!algorithm.isEmpty()) {
         QMap<QString, gnomonCoreParameter *> parameters = this->command->parameters();
@@ -56,73 +56,73 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(QWidget 
     }
 }
 
-template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
-{
-    QComboBox *combo_box = new QComboBox(parent);
+// template <typename T> gnomonOverlayPane *gnomonWorkspaceTemplatePrivate<T>::pane(QWidget *parent)
+// {
+//     QComboBox *combo_box = new QComboBox(parent);
 
-    QLabel *doc = new QLabel(parent);
-    doc->setWordWrap(true);
+//     QLabel *doc = new QLabel(parent);
+//     doc->setWordWrap(true);
 
-    QStringList combo_box_keys = this->keys();
-    for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
-        combo_box->addItem(*it);
-    }
-    combo_box->model()->sort(0);
-    this->command = new T(combo_box->currentText());
+//     QStringList combo_box_keys = this->keys();
+//     for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
+//         combo_box->addItem(*it);
+//     }
+//     combo_box->model()->sort(0);
+//     this->command = new T(combo_box->currentText());
 
-    QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm) {
-        if (this->command) {
-            delete this->command;
-            this->command = nullptr;
-        }
-        this->command = new T(algorithm);
-        emit algorithmChanged(algorithm);
-        this->configure(parent, algorithm);
+//     QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm) {
+//         if (this->command) {
+//             delete this->command;
+//             this->command = nullptr;
+//         }
+//         this->command = new T(algorithm);
+//         emit algorithmChanged(algorithm);
+//         this->configure(parent, algorithm);
 
-        doc->setText(this->command->documentation());
-     });
+//         doc->setText(this->command->documentation());
+//      });
 
-    gnomonOverlayPaneItem *pane_item_algorithm = new gnomonOverlayPaneItem(parent);
+//     gnomonOverlayPaneItem *pane_item_algorithm = new gnomonOverlayPaneItem(parent);
 
-    doc->setText(this->command->documentation());
+//     doc->setText(this->command->documentation());
     
-    pane_item_algorithm->setTitle("Algorithm");
-    pane_item_algorithm->addWidget(combo_box);
-    pane_item_algorithm->addWidget(doc);
-    pane_item_algorithm->toggle();
+//     pane_item_algorithm->setTitle("Algorithm");
+//     pane_item_algorithm->addWidget(combo_box);
+//     pane_item_algorithm->addWidget(doc);
+//     pane_item_algorithm->toggle();
 
-    this->pane_item_params_layout = new QFormLayout;
+//     this->pane_item_params_layout = new QFormLayout;
 
-    gnomonOverlayPaneItem *pane_item_parameters = new gnomonOverlayPaneItem;
-    pane_item_parameters->setTitle("Parameters");
-    pane_item_parameters->addLayout(pane_item_params_layout);
-    pane_item_parameters->toggle();
+//     gnomonOverlayPaneItem *pane_item_parameters = new gnomonOverlayPaneItem;
+//     pane_item_parameters->setTitle("Parameters");
+//     pane_item_parameters->addLayout(pane_item_params_layout);
+//     pane_item_parameters->toggle();
 
-    QPushButton *button = new QPushButton("Apply", parent);
-    button->setCheckable(true);
+//     QPushButton *button = new QPushButton("Apply", parent);
+//     button->setCheckable(true);
 
-    gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
-    pane_item_button->setTitle(this->workspace());
-    pane_item_button->addWidget(button);
-    pane_item_button->toggle();
+//     gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
+//     pane_item_button->setTitle(this->workspace());
+//     pane_item_button->addWidget(button);
+//     pane_item_button->toggle();
 
-    gnomonOverlayPane *pane = new gnomonOverlayPane(parent);
-    pane->addWidget(pane_item_algorithm);
-    pane->addWidget(pane_item_parameters);
-    pane->addWidget(pane_item_button);
-    pane->toggle();
-    pane->toggle();
+//     gnomonOverlayPane *pane = new gnomonOverlayPane(parent);
+//     pane->addWidget(pane_item_algorithm);
+//     pane->addWidget(pane_item_parameters);
+//     pane->addWidget(pane_item_button);
+//     pane->toggle();
+//     pane->toggle();
 
-    QObject::connect(button, &QPushButton::clicked, [=] () {
-        parent->setCursor(Qt::BusyCursor);
-        dynamic_cast<gnomonWorkspace*>(parent)->apply();
-        parent->setCursor(Qt::ArrowCursor);
-    });
+//     QObject::connect(button, &QPushButton::clicked, [=] () {
+//         parent->setCursor(Qt::BusyCursor);
+//         dynamic_cast<gnomonWorkspace*>(parent)->apply();
+//         parent->setCursor(Qt::ArrowCursor);
+//     });
 
-    configure(parent, combo_box->currentText());
+//     configure(parent, combo_box->currentText());
 
-    return pane;
-}
+//     return pane;
+// }
 
 //
 // gnomonWorkspaceTemplate_p.tpp ends here

@@ -13,85 +13,103 @@
 // Code:
 
 #include "gnomonWorkspaceRegistration.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageRegistrationCommand>
 #include <gnomonWidgets>
 
-#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageRegistrationCommand>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Visualization
+// /////////////////////////////////////////////////////////////////////////////
 
-#include <dtkImagingCore>
-#include <dtkScript>
+// #include <gnomonVisualization>
 
-class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImageRegistrationCommand >
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Image
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
+
+// #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImageRegistrationCommand>
 {
 public:
-    QString workspace() const override;
-    QStringList keys() const override;
+    QString workspace(void) const override;
+    QStringList keys(void) const override;
 
 public:
-    gnomonGridLayout *sources_layout;
-    gnomonViewForm *target = nullptr;
+    // gnomonGridLayout *sources_layout;
+    // gnomonViewForm *target = nullptr;
 };
 
-QString gnomonWorkspaceRegistrationPrivate::workspace() const
-{ return "Time Registration"; }
+QString gnomonWorkspaceRegistrationPrivate::workspace(void) const
+{
+    return "Time Registration";
+}
 
-QStringList gnomonWorkspaceRegistrationPrivate::keys() const
+QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
 {
     return gnomonCore::imageRegistration::pluginFactory().keys();
 }
 
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnomonWorkspace(parent)
 {
-    int stat;
+    // int stat;
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageRegistration", &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("import gnomonImageRegistration", &stat);
 
     d = new gnomonWorkspaceRegistrationPrivate;
 
-    d->sources_layout = new gnomonGridLayout;
-    d->sources_layout->addView();
-    d->sources_layout->addView();
-    d->sources_layout->addView();
+    // d->sources_layout = new gnomonGridLayout;
+    // d->sources_layout->addView();
+    // d->sources_layout->addView();
+    // d->sources_layout->addView();
 
-    QWidget *sources_dummy = new QWidget(this);
-    sources_dummy->setLayout(d->sources_layout);
+    // QWidget *sources_dummy = new QWidget(this);
+    // sources_dummy->setLayout(d->sources_layout);
 
-    d->target  = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::registration_color);
+    // d->target  = new gnomonViewForm(this);
+    // d->target->setExportColor(gnomonToolBar::registration_color);
 
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(sources_dummy);
-    splitter->addWidget(d->target);
+    // QSplitter *splitter = new QSplitter(this);
+    // splitter->addWidget(sources_dummy);
+    // splitter->addWidget(d->target);
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(splitter);
-    layout->addWidget(d->pane(this));
+    // QHBoxLayout *layout = new QHBoxLayout(this);
+    // layout->setContentsMargins(0, 0, 0, 0);
+    // layout->setSpacing(0);
+    // layout->addWidget(splitter);
+    // layout->addWidget(d->pane(this));
 
-    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] () {
-        d->command->undo();
-        for(gnomonViewForm *view : d->sources_layout->views()) {
-            if (view->image()) {
-                d->command->addImage(view->image());
-            }
-        }
-        d->configure(this, d->algorithm);
-    });
+    // connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] () {
+    //     d->command->undo();
+    //     for(gnomonViewForm *view : d->sources_layout->views()) {
+    //         if (view->image()) {
+    //             d->command->addImage(view->image());
+    //         }
+    //     }
+    //     d->configure(this, d->algorithm);
+    // });
 
-    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm) {
-        d->command->undo();
-        for(gnomonViewForm *view : d->sources_layout->views()) {
-            if (view->image()) {
-                d->command->addImage(view->image());
-            }
-        }
-        d->configure(this,algorithm);
-    });
+    // connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+    //     d->command->undo();
+    //     for(gnomonViewForm *view : d->sources_layout->views()) {
+    //         if (view->image()) {
+    //             d->command->addImage(view->image());
+    //         }
+    //     }
+    //     d->configure(this,algorithm);
+    // });
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
@@ -101,17 +119,19 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 
 void gnomonWorkspaceRegistration::apply(void)
 {
-    Q_ASSERT(d->command);
+    // Q_ASSERT(d->command);
 
-    if(d->sources_layout->views().isEmpty()) return;
+    // if(d->sources_layout->views().isEmpty())
+    //     return;
 
-    d->command->undo();
-    for(gnomonViewForm *view : d->sources_layout->views()) {
-        d->command->addImage(view->image());
-    }
-    d->command->redo();
+    // d->command->undo();
 
-    d->target->setForm("gnomonImage",d->command->output());
+    // for(gnomonViewForm *view : d->sources_layout->views())
+    //     d->command->addImage(view->image());
+
+    // d->command->redo();
+
+    // d->target->setForm("gnomonImage",d->command->output());
 }
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)

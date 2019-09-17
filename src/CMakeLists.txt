@@ -24,7 +24,7 @@ add_subdirectory(gnomonCore)
 # add_subdirectory(gnomonFonts)
 # add_subdirectory(gnomonVisualization)
 add_subdirectory(gnomonWidgets)
-# add_subdirectory(gnomonWorkspace)
+add_subdirectory(gnomonWorkspace)
 
 ## #################################################################
 ## Targets
