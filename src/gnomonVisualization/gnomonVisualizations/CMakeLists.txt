@@ -19,7 +19,7 @@
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonDataFrame)
-# add_subdirectory(gnomonImage)
+add_subdirectory(gnomonImage)
 add_subdirectory(gnomonMesh)
 add_subdirectory(gnomonPointCloud)
 add_subdirectory(gnomonTree)

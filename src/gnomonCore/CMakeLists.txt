@@ -20,7 +20,7 @@ project(gnomonCore)
 
 add_subdirectory(gnomonAlgorithm)
 add_subdirectory(gnomonCommand)
-# add_subdirectory(gnomonForm)
+add_subdirectory(gnomonForm)
 add_subdirectory(gnomonModel)
 
 ## #################################################################

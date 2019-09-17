@@ -16,8 +16,8 @@
 // FIXME: What da fuck ?
 // /////////////////////////////////////////////////////////////////////////////
 
-// #include "gnomonVisualizations/gnomonAbstractVisualization.h"
-// #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
+//#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+//#include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
@@ -203,7 +203,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
 // /////////////////////////////////////////////////////////////////////////////
 // FIXME: Dependency cycle
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     // QImage image = visualization->imageRendering();
     QImage image;
 
