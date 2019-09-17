@@ -18,7 +18,9 @@
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellComplexFromCellImage : public gnomonWorkspace
+#include <dtkWidgets>
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellComplexFromCellImage : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 

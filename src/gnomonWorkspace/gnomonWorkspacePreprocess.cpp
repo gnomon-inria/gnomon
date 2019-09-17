@@ -79,7 +79,7 @@ QStringList gnomonWorkspacePreprocessPrivate::keys(void) const
     return gnomonCore::imageFilter::pluginFactory().keys();
 }
 
-gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

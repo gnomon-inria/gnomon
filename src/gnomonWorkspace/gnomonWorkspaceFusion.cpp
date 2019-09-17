@@ -65,7 +65,7 @@ QStringList gnomonWorkspaceFusionPrivate::keys(void) const
     return gnomonCore::imageFusion::pluginFactory().keys();
 }
 
-gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

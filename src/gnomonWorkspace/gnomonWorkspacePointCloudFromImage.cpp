@@ -79,7 +79,7 @@ QStringList gnomonWorkspacePointCloudFromImagePrivate::keys(void) const
     return gnomonCore::pointCloudFromImage::pluginFactory().keys();
 }
 
-gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

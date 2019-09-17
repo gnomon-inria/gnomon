@@ -62,7 +62,7 @@ QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
     return gnomonCore::imageRegistration::pluginFactory().keys();
 }
 
-gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

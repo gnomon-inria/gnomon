@@ -58,6 +58,7 @@ target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWorkspace)
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE ${VTK_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_backend)

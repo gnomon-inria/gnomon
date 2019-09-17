@@ -85,7 +85,7 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 // gnomonWorkspaceCellImageQuantification
 // ///////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

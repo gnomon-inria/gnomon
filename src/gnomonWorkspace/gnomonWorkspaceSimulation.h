@@ -18,7 +18,9 @@
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSimulation : public gnomonWorkspace
+#include <dtkWidgets>
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSimulation : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 

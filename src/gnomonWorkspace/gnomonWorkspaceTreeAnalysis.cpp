@@ -28,7 +28,7 @@ public:
     // gnomonViewForm *target = nullptr;
 };
 
-gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspaceTreeAnalysisPrivate;
 

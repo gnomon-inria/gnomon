@@ -54,7 +54,7 @@ public:
     gnomonAbstractEvolutionModel * model = nullptr;
 };
 
-gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

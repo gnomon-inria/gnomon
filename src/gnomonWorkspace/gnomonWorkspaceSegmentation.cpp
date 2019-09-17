@@ -95,7 +95,7 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 //
 // ///////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

@@ -38,7 +38,7 @@ public:
     // gnomonViewForm *browse_view;
 };
 
-gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspaceBrowserPrivate;
 

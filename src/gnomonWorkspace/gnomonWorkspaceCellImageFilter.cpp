@@ -79,7 +79,7 @@ QStringList gnomonWorkspaceCellImageFilterPrivate::keys(void) const
     return gnomonCore::cellImageFilter::pluginFactory().keys();
 }
 
-gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     int stat;
 

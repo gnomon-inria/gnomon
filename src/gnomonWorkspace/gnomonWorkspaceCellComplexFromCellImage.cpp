@@ -85,7 +85,11 @@ QStringList gnomonWorkspaceCellComplexFromCellImagePrivate::keys(void) const
     return gnomonCore::cellComplexFromCellImage::pluginFactory().keys();
 }
 
-gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage(QWidget *parent) : gnomonWorkspace(parent)
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 

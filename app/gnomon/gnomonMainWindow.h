@@ -16,7 +16,9 @@
 
 #include <QtWidgets>
 
-class gnomonMainWindow : public QMainWindow
+#include <dtkWidgets>
+
+class gnomonMainWindow : public dtkWidgetsMainWindow
 {
     Q_OBJECT
 

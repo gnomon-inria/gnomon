@@ -25,6 +25,7 @@
 // #include <dtkScript>
 
 #include <dtkLog>
+#include <dtkThemes>
 #include <dtkWidgets>
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -52,6 +53,8 @@ int main(int argc, char **argv)
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+    dtkThemesEngine::instance()->apply();
+    
     dtkApplication *application = dtkApplication::create(argc, argv);
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");

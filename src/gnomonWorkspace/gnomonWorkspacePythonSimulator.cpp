@@ -115,7 +115,7 @@ public:
     gnomonAbstractEvolutionModel * model = nullptr;
 };
 
-gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
 

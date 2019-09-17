@@ -18,7 +18,9 @@
 
 #include "gnomonWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public gnomonWorkspace
+#include <dtkWidgets>
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 
@@ -37,7 +39,6 @@ public slots:
 private:
     class gnomonWorkspaceCellImageQuantificationPrivate *d;
 };
-
 
 //
 // gnomonWorkspaceCellImageQuantification.h ends here

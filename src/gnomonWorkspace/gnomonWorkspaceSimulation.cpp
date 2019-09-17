@@ -78,7 +78,7 @@ QStringList gnomonWorkspaceSimulationPrivate::keys(void) const
     return gnomonCore::femSolver::pluginFactory().keys();
 }
 
-gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
 
