@@ -33,6 +33,8 @@ signals:
 // 
 // /////////////////////////////////////////////////////////////////////////////
 
+class gnomonWorkspace;
+
 template <typename T> class gnomonWorkspaceTemplatePrivate : public gnomonWorkspacePrivateSignals
 {
 public:
@@ -44,7 +46,7 @@ public:
     virtual QStringList keys(void) const = 0;
 
 public:
-    dtkWidgetsMenu *menu(void);
+    dtkWidgetsMenu *menu(dtkWidgetsWorkspace *);
 
 public:
     void configure(const QString& algorithm);

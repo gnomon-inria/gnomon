@@ -59,11 +59,11 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
     }
 }
 
-template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(void)
+template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dtkWidgetsWorkspace *parent)
 {
-    QComboBox *combo_box = new QComboBox(parent);
+    QComboBox *combo_box = new QComboBox;
 
-    QLabel *doc = new QLabel(parent);
+    QLabel *doc = new QLabel;
     doc->setWordWrap(true);
 
     QStringList combo_box_keys = this->keys();
@@ -73,7 +73,8 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(vo
     }
     combo_box->model()->sort(0);
 
-    this->command = new T(combo_box->currentText());
+    // TODO: Script
+    // this->command = new T(combo_box->currentText());
 
     QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm)
     {
@@ -81,14 +82,17 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(vo
             delete this->command;
             this->command = nullptr;
         }
-        this->command = new T(algorithm);
+        // TODO: Script
+        // this->command = new T(algorithm);
         emit algorithmChanged(algorithm);
         this->configure(algorithm);
 
-        doc->setText(this->command->documentation());
+        // TODO: Script
+        // doc->setText(this->command->documentation());
      });
 
-    doc->setText(this->command->documentation());
+    // TODO: Script
+    // doc->setText(this->command->documentation());
     
     QVBoxLayout *pane_item_algorithm_layout = new QVBoxLayout;
     pane_item_algorithm_layout->addWidget(combo_box);
@@ -96,7 +100,7 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(vo
 
     this->layout = new QFormLayout;
 
-    QPushButton *pane_item_button = new QPushButton("Apply", parent);
+    QPushButton *pane_item_button = new QPushButton("Apply");
     pane_item_button->setCheckable(true);
 
     QWidget *pane_item_algorithm = new QWidget;
@@ -108,7 +112,7 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(vo
     dtkWidgetsMenuItem *menu_algorithm = new dtkWidgetsMenuItem("Algorithm", pane_item_algorithm);
     dtkWidgetsMenuItem *menu_parameters = new dtkWidgetsMenuItem("Parameters", pane_item_parameters);
     dtkWidgetsMenuItem *menu_button = new dtkWidgetsMenuItemDIY(this->workspace(), pane_item_button);
-    
+
     dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Generic Gnomon Menu");
     pane->addItem(menu_algorithm);
     pane->addItem(menu_parameters);
