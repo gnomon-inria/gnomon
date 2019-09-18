@@ -556,14 +556,14 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         this->render();
     });
 
-    connect(d->renderButton, &QPushButton::clicked, [=] () {
-        for (const auto& key : d->formVisualization.keys()) {
-            gnomonAbstractVisualization *v = d->formVisualization[key];
-            if(v) {
-                v->update();
-            }
-        }
-    });
+    // connect(d->renderButton, &QPushButton::clicked, [=] () {
+    //     for (const auto& key : d->formVisualization.keys()) {
+    //         gnomonAbstractVisualization *v = d->formVisualization[key];
+    //         if(v) {
+    //             v->update();
+    //         }
+    //     }
+    // });
 
     // connect(d->clearButton, &QPushButton::clicked, [=] ()
     // {
