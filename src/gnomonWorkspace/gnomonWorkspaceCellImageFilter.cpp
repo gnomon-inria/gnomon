@@ -100,12 +100,12 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
             d->command->setInput(d->source->cellImage());
         else
             qDebug() << "Not changed";
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellImageFilterPrivate::algorithmChanged, [=] (const QString& algorithm) {
         d->command->setInput(d->source->cellImage());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -130,7 +130,7 @@ void gnomonWorkspaceCellImageFilter::apply(void)
 
 void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

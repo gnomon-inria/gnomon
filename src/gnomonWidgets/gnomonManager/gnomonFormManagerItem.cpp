@@ -117,6 +117,8 @@ void gnomonFormManagerItem::mousePressEvent(QMouseEvent *)
         drag->setHotSpot(QPoint(drag->pixmap().width()/2, drag->pixmap().height()/2));
 
         Qt::DropAction dropAction = drag->exec();
+        
+        Q_UNUSED(dropAction);
 
     } else {
 

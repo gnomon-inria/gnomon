@@ -70,6 +70,8 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
     double max = root.attribute("max").toDouble();
     int    log = root.attribute("log").toInt();
 
+    Q_UNUSED(log);
+    
     QDomNode n = root.firstChild();
     while(!n.isNull()) {
         QDomElement e = n.toElement();
@@ -78,6 +80,8 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
             qreal v = e.attribute("v").toDouble();
             qreal a = e.attribute("a").toDouble();
 
+            Q_UNUSED(a);
+            
             int r = e.attribute("r").toInt();
             int g = e.attribute("g").toInt();
             int b = e.attribute("b").toInt();

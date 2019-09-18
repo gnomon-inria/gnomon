@@ -50,7 +50,7 @@ gnomonInterpreterJupyter::gnomonInterpreterJupyter(QWidget *parent) : QFrame(par
     QFile file(":gnomon/jupyter_console.py");
 
     if (file.open(QIODevice::ReadOnly)) {
-        int stat;
+        int stat; Q_UNUSED(stat);
         QString jupyter_script  = file.readAll();
         file.close();
         //TODO: script

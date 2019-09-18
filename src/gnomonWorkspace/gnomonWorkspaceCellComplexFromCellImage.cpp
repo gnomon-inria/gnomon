@@ -48,6 +48,9 @@ public:
 
 public:
     gnomonViewFormPool *pool = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +83,8 @@ QStringList gnomonWorkspaceCellComplexFromCellImagePrivate::keys(void) const
 
 gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    //TODO: script
+    // TODO: script
+    
     // int stat;
     // dtkScriptInterpreterPython::instance()->interpret("import gnomonCellComplexFromCellImage", &stat);
 
@@ -88,6 +92,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
+
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
 
@@ -100,7 +105,12 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(d->pane(this));
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
 
     connect(d->source, &gnomonViewForm::formAdded, [=] () {
         if (d->command->input() != d->source->cellImage())
@@ -108,19 +118,37 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
         else
             qDebug() << "Not changed";
 
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellComplexFromCellImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
         d->command->setInput(d->source->cellImage());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceCellComplexFromCellImage::~gnomonWorkspaceCellComplexFromCellImage(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceCellComplexFromCellImage::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceCellComplexFromCellImage::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceCellComplexFromCellImage::apply(void)
@@ -139,7 +167,7 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
 
 void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

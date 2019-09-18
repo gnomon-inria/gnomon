@@ -110,7 +110,7 @@ void gnomonWorkspaceSimulation::apply(void)
 
 void gnomonWorkspaceSimulation::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

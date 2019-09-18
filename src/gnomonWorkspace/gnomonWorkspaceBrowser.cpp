@@ -29,7 +29,6 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    // gnomonViewVolumic *browse_view;
     gnomonViewForm *browse_view;
 };
 
@@ -47,10 +46,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
 
-    // d->browse_view = new gnomonViewVolumic(this);
-
     d->browse_view = new gnomonViewForm(this);
-    // d->browse_view->setExportColor(gnomonToolBar::browser_color);
+    d->browse_view->setExportColor(gnomonToolBar::browser_color);
     // d->browse_view->toggleVisualizationPane();
 
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
