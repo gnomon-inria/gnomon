@@ -4,7 +4,6 @@
 #include "gnomonActor/gnomonActorLegacy/gnomonActorMesh.h"
 #include "gnomonActor/gnomonActorLegacy/gnomonActorVolume.h"
 #include "gnomonView/gnomonGridLayout.h"
-#include "gnomonView/gnomonView.h"
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonView/gnomonViewFormPool.h"
 #include "gnomonView/gnomonViewManager.h"
