@@ -15,7 +15,7 @@
 #include "gnomonWorkspaceLSystemSimulator.h"
 
 #include <gnomonCore>
-// #include <gnomonVisualization>
+#include <gnomonVisualization>
 #include <gnomonWidgets>
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 // #include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceLSystemSimulatorPrivate
@@ -36,13 +36,13 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    // gnomonCodeEditor *editor;
+    //gnomonCodeEditor *editor;
 
 public:
-    // gnomonViewForm *view;
+    gnomonViewForm *view;
 
 public:
-    // gnomonInterpreterJupyter *terminal;
+    //gnomonInterpreterJupyter *terminal;
 
 public:
     QVBoxLayout *viewer_layout = nullptr;
@@ -75,17 +75,17 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     // d->editor = new gnomonCodeEditor(this);
     // d->editor->resize(800, d->editor->height());
 
-    // d->view = new gnomonViewForm(this);
+    d->view = new gnomonViewForm(this);
 
     // d->terminal = new gnomonInterpreterJupyter(this);
     // d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
     // -- Organizing the viewer column --
-    
+
     d->viewer_layout = new QVBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
-    // d->viewer_layout->addWidget(d->view);
+    d->viewer_layout->addWidget(d->view);
     // d->viewer_layout->addWidget(d->terminal);
 
     QWidget *viewer = new QWidget(this);
@@ -109,14 +109,14 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     // d->pane = new gnomonOverlayPane(this);
 
-    QPushButton *button = new QPushButton("Load", parent);
-    button->setCheckable(true);
+    // QPushButton *button = new QPushButton("Load", parent);
+    // button->setCheckable(true);
 
-    QPushButton *button_s = new QPushButton("Step", parent);
-    button_s->setCheckable(false);
+    // QPushButton *button_s = new QPushButton("Step", parent);
+    // button_s->setCheckable(false);
 
-    QPushButton *button_r = new QPushButton("Reset", parent);
-    button_r->setCheckable(false);
+    // QPushButton *button_r = new QPushButton("Reset", parent);
+    // button_r->setCheckable(false);
 
     // QObject::connect(button, &QPushButton::clicked, [=] ()
     // {
@@ -164,7 +164,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
     // splitter->addWidget(d->editor);
-    // splitter->addWidget(viewer);
+    splitter->addWidget(viewer);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

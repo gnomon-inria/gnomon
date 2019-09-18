@@ -43,11 +43,11 @@ public:
     QStringList keys(void) const override;
 
 public:
-    // gnomonViewForm *source = nullptr;
-    // gnomonViewForm *target = nullptr;
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
 
 public:
-    // gnomonViewFormPool *pool = nullptr;
+    gnomonViewFormPool *pool = nullptr;
 };
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImageFilterCommand >()
@@ -78,38 +78,38 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
 
     d = new gnomonWorkspacePreprocessPrivate;
 
-    // d->source = new gnomonViewForm(this);
-    // d->source->setExportColor(gnomonToolBar::preprocess_color);
+    d->source = new gnomonViewForm(this);
+    d->source->setExportColor(gnomonToolBar::preprocess_color);
 
-    // d->target = new gnomonViewForm(this);
-    // d->target->setExportColor(gnomonToolBar::preprocess_color);
+    d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::preprocess_color);
 
-    // d->pool = new gnomonViewFormPool(this);
-    // d->pool->addView(d->source);
-    // d->pool->addView(d->target);
+    d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    // layout->addWidget(d->source);
-    // layout->addWidget(d->target);
+    layout->addWidget(d->source);
+    layout->addWidget(d->target);
     // layout->addWidget(d->pane(this));
 
-    // connect(d->source, &gnomonViewForm::formAdded, [=] ()
-    // {
-    //     if(d->command->input() != d->source->image())
-    //         d->command->setInput(d->source->image());
-    //     else
-    //         qDebug() << "Not changed";
+    connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    {
+        if(d->command->input() != d->source->image())
+            d->command->setInput(d->source->image());
+        else
+            qDebug() << "Not changed";
 
-    //     d->configure(this, d->algorithm);
-    // });
+        d->configure(this, d->algorithm);
+    });
 
-    // connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm)
-    // {
-    //     d->command->setInput(d->source->image());
-    //     d->configure(this,algorithm);
-    // });
+    connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
+        d->command->setInput(d->source->image());
+        d->configure(this,algorithm);
+    });
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
@@ -121,14 +121,14 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    // if (d->command->input() != d->source->image())
-    //     d->command->setInput(d->source->image());
-    // else
-    //     qDebug() << "Not changed";
+    if (d->command->input() != d->source->image())
+        d->command->setInput(d->source->image());
+    else
+        qDebug() << "Not changed";
 
-    // d->command->redo();
+    d->command->redo();
 
-    // d->target->setImage(d->command->output());
+    d->target->setImage(d->command->output());
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)

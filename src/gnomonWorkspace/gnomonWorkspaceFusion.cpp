@@ -40,11 +40,10 @@ public:
     QStringList keys(void) const override;
 
 public:
-    // FIXME: Dependency cycle
-    // gnomonGridLayout *sources_layout;
+    gnomonGridLayout *sources_layout;
 
 public:
-    // gnomonViewForm *target;
+    gnomonViewForm *target;
 };
 
 QString gnomonWorkspaceFusionPrivate::workspace(void) const
@@ -65,19 +64,19 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
 
     d = new gnomonWorkspaceFusionPrivate;
 
-    // d->sources_layout = new gnomonGridLayout;
-    // d->sources_layout->addView();
+    d->sources_layout = new gnomonGridLayout;
+    d->sources_layout->addView();
 
-    // d->target = new gnomonViewForm(this);
-    // d->target->setExportColor(gnomonToolBar::fusion_color);
-    // d->target->setMinimumWidth(250);
+    d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::fusion_color);
+    d->target->setMinimumWidth(250);
 
     QWidget *dummy = new QWidget(this);
-    // dummy->setLayout(d->sources_layout);
+    dummy->setLayout(d->sources_layout);
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(dummy);
-    // splitter->addWidget(d->target);
+    splitter->addWidget(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -85,26 +84,26 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     layout->addWidget(splitter);
     // layout->addWidget(d->pane(this));
 
-    // connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
-    // {
-    //     d->command->undo();
-    //     for(gnomonViewForm *view : d->sources_layout->views()) {
-    //         if (view->image()) {
-    //             d->command->addImage(view->image());
-    //         }
-    //     }
-    //     d->configure(this, d->algorithm);
-    // });
+    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
+    {
+        d->command->undo();
+        for(gnomonViewForm *view : d->sources_layout->views()) {
+            if (view->image()) {
+                d->command->addImage(view->image());
+            }
+        }
+        d->configure(this, d->algorithm);
+    });
 
-    // connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
-    //     d->command->undo();
-    //     for(gnomonViewForm *view : d->sources_layout->views()) {
-    //         if (view->image()) {
-    //             d->command->addImage(view->image());
-    //         }
-    //     }
-    //     d->configure(this,algorithm);
-    // });
+    connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->undo();
+        for(gnomonViewForm *view : d->sources_layout->views()) {
+            if (view->image()) {
+                d->command->addImage(view->image());
+            }
+        }
+        d->configure(this,algorithm);
+    });
 }
 
 gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
@@ -114,21 +113,21 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 
 void gnomonWorkspaceFusion::apply(void)
 {
-    // if(d->sources_layout->views().isEmpty())
-    //     return;
+    if(d->sources_layout->views().isEmpty())
+        return;
 
-//     d->command->removeImages();
-//     d->command->removeLandmarks();
-//     d->command->undo();
+    d->command->removeImages();
+    //d->command->removeLandmarks();
+    d->command->undo();
 
-//     for(gnomonViewForm *view : d->sources_layout->views()) {
-//         d->command->addImage(view->image());
-// //        d->command->addLandmarks(view->landmarks());
-//     }
+    for(gnomonViewForm *view : d->sources_layout->views()) {
+        d->command->addImage(view->image());
+//        d->command->addLandmarks(view->landmarks());
+    }
 
-//     d->command->redo();
+    d->command->redo();
 
-//     d->target->setImage(d->command->output());
+    d->target->setImage(d->command->output());
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

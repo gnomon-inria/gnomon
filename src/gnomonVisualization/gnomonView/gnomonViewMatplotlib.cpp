@@ -311,14 +311,14 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
         d->configure((QWidget *)this->parent(), key);
     });
 
-    connect(d->renderButton, &QPushButton::clicked, [=] () {
-        for (const auto& key : d->formVisualization.keys()) {
-            gnomonAbstractMatplotlibVisualization *v = d->formVisualization[key];
-            if(v) {
-                v->update();
-            }
-        }
-    });
+    // connect(d->renderButton, &QPushButton::clicked, [=] () {
+    //     for (const auto& key : d->formVisualization.keys()) {
+    //         gnomonAbstractMatplotlibVisualization *v = d->formVisualization[key];
+    //         if(v) {
+    //             v->update();
+    //         }
+    //     }
+    // });
 
     this->setAcceptDrops(true);
 }

@@ -16,12 +16,7 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Visualization
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <gnomonVisualization>
+#include <gnomonVisualization>
 
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Script
@@ -100,7 +95,7 @@ public:
     // gnomonInterpreterJupyter *terminal;
 
 public:
-    // gnomonViewForm *view;
+    gnomonViewForm *view;
 
 public:
     // gnomonOverlayPane *pane;
@@ -140,7 +135,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     // });
 
     // -- Organizing the editor column --
-    
+
     // QVBoxLayout *editor_layout = new QVBoxLayout;
     // editor_layout->setContentsMargins(0, 0, 0, 0);
     // editor_layout->setSpacing(0);
@@ -156,16 +151,16 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     // editor_widget->setLayout(editor_layout);
     // editor_widget->resize(800, editor_widget->height());
 
-    // d->view = new gnomonViewForm(this);
+    d->view = new gnomonViewForm(this);
 
     // -- Organizing the viewer column --
-    // d->viewer_layout = new QVBoxLayout;
-    // d->viewer_layout->setContentsMargins(0, 0, 0, 0);
-    // d->viewer_layout->setSpacing(0);
-    // d->viewer_layout->addWidget(d->view);
+    d->viewer_layout = new QVBoxLayout;
+    d->viewer_layout->setContentsMargins(0, 0, 0, 0);
+    d->viewer_layout->setSpacing(0);
+    d->viewer_layout->addWidget(d->view);
 
-    // QWidget *viewer = new QWidget(this);
-    // viewer->setLayout(d->viewer_layout);
+    QWidget *viewer = new QWidget(this);
+    viewer->setLayout(d->viewer_layout);
 
 //     d->pane = new gnomonOverlayPane(this);
 
@@ -238,15 +233,15 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 //     d->pane->addWidget(pane_item_button);
 
 //     // -- Organizing the whole workspace --
-//     QSplitter *splitter = new QSplitter(this);
-// //    splitter->addWidget(finder);
-//     splitter->addWidget(editor_widget);
-//     splitter->addWidget(viewer);
+    QSplitter *splitter = new QSplitter(this);
+//    splitter->addWidget(finder);
+    //splitter->addWidget(editor_widget);
+    splitter->addWidget(viewer);
 
-//     QHBoxLayout *layout = new QHBoxLayout(this);
-//     layout->setContentsMargins(0, 0, 0, 0);
-//     layout->setSpacing(0);
-//     layout->addWidget(splitter);
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(splitter);
 //     layout->addWidget(d->pane);
 }
 

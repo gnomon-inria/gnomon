@@ -43,11 +43,11 @@ public:
     QStringList keys(void) const override;
 
 public:
-    // gnomonViewForm *source = nullptr;
-    // gnomonViewForm *target = nullptr;
+    gnomonViewForm *source = nullptr;
+    gnomonViewForm *target = nullptr;
 
 public:
-    // gnomonViewFormPool *pool = nullptr;
+    gnomonViewFormPool *pool = nullptr;
 };
 
 gnomonWorkspaceCellImageFilterPrivate::gnomonWorkspaceCellImageFilterPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellImageFilterCommand >()
@@ -78,35 +78,35 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
 
     d = new gnomonWorkspaceCellImageFilterPrivate;
 
-    // d->source = new gnomonViewForm(this);
-    // d->source->setExportColor(gnomonToolBar::meshFromImage_color);
+    d->source = new gnomonViewForm(this);
+    d->source->setExportColor(gnomonToolBar::meshFromImage_color);
 
-    // d->target = new gnomonViewForm(this);
-    // d->target->setExportColor(gnomonToolBar::meshFromImage_color);
+    d->target = new gnomonViewForm(this);
+    d->target->setExportColor(gnomonToolBar::meshFromImage_color);
 
-    // d->pool = new gnomonViewFormPool(this);
-    // d->pool->addView(d->source);
-    // d->pool->addView(d->target);
+    d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    // layout->addWidget(d->source);
-    // layout->addWidget(d->target);
+    layout->addWidget(d->source);
+    layout->addWidget(d->target);
     // layout->addWidget(d->pane(this));
 
-    // connect(d->source, &gnomonViewForm::formAdded, [=] () {
-    //     if(d->command->input() != d->source->cellImage())
-    //         d->command->setInput(d->source->cellImage());
-    //     else
-    //         qDebug() << "Not changed";
-    //     d->configure(this, d->algorithm);
-    // });
+    connect(d->source, &gnomonViewForm::formAdded, [=] () {
+        if(d->command->input() != d->source->cellImage())
+            d->command->setInput(d->source->cellImage());
+        else
+            qDebug() << "Not changed";
+        d->configure(this, d->algorithm);
+    });
 
-    // connect(d, &gnomonWorkspaceCellImageFilterPrivate::algorithmChanged, [=] (const QString& algorithm) {
-    //     d->command->setInput(d->source->cellImage());
-    //     d->configure(this,algorithm);
-    // });
+    connect(d, &gnomonWorkspaceCellImageFilterPrivate::algorithmChanged, [=] (const QString& algorithm) {
+        d->command->setInput(d->source->cellImage());
+        d->configure(this,algorithm);
+    });
 }
 
 gnomonWorkspaceCellImageFilter::~gnomonWorkspaceCellImageFilter(void)
@@ -118,14 +118,14 @@ void gnomonWorkspaceCellImageFilter::apply(void)
 {
     Q_ASSERT(d->command);
 
-    // if(d->command->input() != d->source->cellImage())
-    //     d->command->setInput(d->source->cellImage());
-    // else
-    //     qDebug() << "Not changed";
+    if(d->command->input() != d->source->cellImage())
+        d->command->setInput(d->source->cellImage());
+    else
+        qDebug() << "Not changed";
 
-    // d->command->redo();
+    d->command->redo();
 
-    // d->target->setCellImage(d->command->output());
+    d->target->setCellImage(d->command->output());
 }
 
 void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)
