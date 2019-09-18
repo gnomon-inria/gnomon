@@ -101,13 +101,13 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
             d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceMeshFromImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
         d->command->setInput(d->source->image());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -132,7 +132,7 @@ void gnomonWorkspaceMeshFromImage::apply(void)
 
 void gnomonWorkspaceMeshFromImage::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

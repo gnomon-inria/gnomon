@@ -108,13 +108,13 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
         else
             qDebug() << "Not changed";
 
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellComplexFromCellImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
         d->command->setInput(d->source->cellImage());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -139,7 +139,7 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
 
 void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

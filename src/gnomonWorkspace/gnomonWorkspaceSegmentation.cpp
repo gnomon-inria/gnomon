@@ -119,13 +119,13 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
             d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
         d->command->setInput(d->source->image());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -136,7 +136,7 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 
 void gnomonWorkspaceSegmentation::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 void gnomonWorkspaceSegmentation::apply(void)

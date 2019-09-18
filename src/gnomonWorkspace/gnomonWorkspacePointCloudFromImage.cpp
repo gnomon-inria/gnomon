@@ -103,13 +103,13 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
         else
             qDebug() << "Not changed";
 
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePointCloudFromImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
         d->command->setInput(d->source->image());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -134,7 +134,7 @@ void gnomonWorkspacePointCloudFromImage::apply(void)
 
 void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

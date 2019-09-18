@@ -23,7 +23,8 @@
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
-class gnomonLandmark;
+
+struct gnomonLandmark;
 
 template <typename T> class gnomonTimeSeries;
 

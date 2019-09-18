@@ -89,7 +89,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
                 d->command->addImage(view->image());
             }
         }
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm) {
@@ -99,7 +99,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
                 d->command->addImage(view->image());
             }
         }
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -127,7 +127,7 @@ void gnomonWorkspaceRegistration::apply(void)
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

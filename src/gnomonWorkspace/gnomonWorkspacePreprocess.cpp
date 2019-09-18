@@ -102,13 +102,13 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
         else
             qDebug() << "Not changed";
 
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
         d->command->setInput(d->source->image());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -133,7 +133,7 @@ void gnomonWorkspacePreprocess::apply(void)
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

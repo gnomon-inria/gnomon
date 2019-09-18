@@ -43,7 +43,7 @@ public:
 
     void setName(const QString&);
 
-    void copy(gnomonCoreParameter *other);
+    void copy(gnomonCoreParameter *other) override;
 
 private:
     QMap<double, QColor> m_c;

@@ -98,16 +98,23 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->setStack(d->stack);
     d->workspace_bar->setDynamic(true);
     d->workspace_bar->buildFromFactory();
+    d->workspace_bar->createWorkspace("Browser", "Browser", false);
 
     d->manager = gnomonFormManager::instance();
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout *i_layout = new QVBoxLayout;
+    i_layout->setContentsMargins(0, 0, 0, 0);
+    i_layout->setSpacing(0);
+    i_layout->addWidget(d->manager);
+    i_layout->addWidget(d->stack);
+    i_layout->addWidget(d->workspace_bar);
+
+    QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->manager);
-    layout->addWidget(d->stack);
-    layout->addWidget(d->workspace_bar);
-
+    layout->addWidget(this->menubar());
+    layout->addLayout(i_layout);
+    
     central->setLayout(layout);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -158,32 +165,30 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     this->setCentralWidget(central);
 
     d->setup();
-    this->populate(); // setup themes
+
+    this->populate();
+    
     this->menubar()->touch();
 }
-
-void gnomonMainWindow::resizeEvent(QResizeEvent *event)
-{
-    dtkWidgetsMainWindow::resizeEvent(event);
-
-    this->menubar()->setFixedHeight(event->size().height() - d->workspace_bar->sizeHint().height());
-    d->workspace_bar->setFixedWidth(event->size().width() - 16);
-}
-
-void gnomonMainWindow::mouseMoveEvent(QMouseEvent *event)
-{
-    // do not show title bar when over the menu. use hardcoded values of menu :-(
-    if (event->pos().x() < 300 + 32 + 12)
-        return;
-    dtkWidgetsMainWindow::mouseMoveEvent(event);
-}
-
 
 gnomonMainWindow::~gnomonMainWindow(void)
 {
     d->setdw();
 
     delete d;
+}
+
+void gnomonMainWindow::resizeEvent(QResizeEvent *event)
+{
+    dtkWidgetsMainWindow::resizeEvent(event);
+}
+
+void gnomonMainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->pos().x() < 300 + 32 + 12)
+        return;
+
+    dtkWidgetsMainWindow::mouseMoveEvent(event);
 }
 
 //

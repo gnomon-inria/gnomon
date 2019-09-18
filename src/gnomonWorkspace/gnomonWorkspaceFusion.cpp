@@ -92,7 +92,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
                 d->command->addImage(view->image());
             }
         }
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
@@ -102,7 +102,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
                 d->command->addImage(view->image());
             }
         }
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
 }
 
@@ -132,7 +132,7 @@ void gnomonWorkspaceFusion::apply(void)
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

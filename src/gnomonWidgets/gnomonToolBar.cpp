@@ -95,8 +95,8 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_cellComplexFromCellImage  = mesh_menu->addAction("Cell Reconstruction");
     this->action_meshFromImage = mesh_menu->addAction("Surface Meshing");
 
-//    QMenu * tree_menu = this->menu->addMenu(this->font->icon(fa::sitemap), "Tree Processing");
-//    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
+    QMenu * tree_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::sitemap), "Tree Processing");
+    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
 
     QMenu * simu_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::lock), "Simulation");
     this->action_simulation    = simu_menu->addAction("FEM Simulation");

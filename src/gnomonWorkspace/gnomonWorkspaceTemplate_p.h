@@ -18,7 +18,7 @@
 #include <QtWidgets>
 
 // /////////////////////////////////////////////////////////////////////////////
-// TODO: Wazza ?
+// 
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspacePrivateSignals : public QObject
@@ -44,12 +44,10 @@ public:
     virtual QStringList keys(void) const = 0;
 
 public:
-    // TODO: Substitute with Menu Framework
-    // --
-    // gnomonOverlayPane *pane(QWidget *parent);
+    dtkWidgetsMenu *menu(void);
 
 public:
-    void configure(QWidget *widget, const QString& algorithm);
+    void configure(const QString& algorithm);
 
 public:
     QString algorithm;
@@ -58,7 +56,7 @@ public:
     T *command = nullptr;
 
 public:
-    QFormLayout *pane_item_params_layout = nullptr;
+    QFormLayout *layout = nullptr;
 };
 
 #include "gnomonWorkspaceTemplate_p.tpp"
