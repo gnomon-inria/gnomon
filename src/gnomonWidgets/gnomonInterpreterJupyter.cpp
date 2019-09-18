@@ -53,6 +53,7 @@ gnomonInterpreterJupyter::gnomonInterpreterJupyter(QWidget *parent) : QFrame(par
         int stat;
         QString jupyter_script  = file.readAll();
         file.close();
+        //TODO: script
         // dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat);
     } else {
         qWarning() << "Can't open jupyter console script";

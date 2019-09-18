@@ -1,0 +1,43 @@
+{
+    "contents": [
+        {
+            "group": {
+                "uid":  "Simulation",
+                "icon": "bars",
+                "advanced": false,
+                "contents": [
+                    {
+                        "parameter": {"uid": "python/initial_time", "widget": "dtkWidgetsParameterDoubleSpinBox", "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/final_time", "widget": "dtkWidgetsParameterDoubleSpinBox", "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/dt", "widget": "dtkWidgetsParameterDoubleSpinBox", "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/animate", "widget": "dtkWidgetsParameterBoolCheckBox", "advanced": false}
+                    }
+                ]
+            }
+        },
+        {
+            "group": {
+                "uid":  "Files",
+                "icon": "cogs",
+                "advanced": false,
+                "contents": [
+                    {
+                        "parameter": {"uid": "python/load", "widget": "dtkWidgetsParameterFileBrowse",    "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/save", "widget": "dtkWidgetsParameterBoolPushButton",    "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/play", "widget": "dtkWidgetsParameterBoolPushButton", "advanced": false}
+                    }
+                ]
+            }
+        }
+    ]
+}

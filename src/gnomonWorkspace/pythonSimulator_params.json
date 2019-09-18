@@ -1,0 +1,58 @@
+{
+    "contents": {
+        "python/initial_time": {
+            "type": "dtk::d_real",
+            "doc": "Starting time for the simulation of the model",
+            "label": "Initial time",
+            "min":   0.0,
+            "value": 0.0,
+            "max": 1000.0,
+            "decimals": 2
+        },
+        "python/final_time": {
+            "type": "dtk::d_real",
+            "doc": "Last time for the simulation of the model",
+            "label": "Final time",
+            "min":   0.0,
+            "value": 1.0,
+            "max": 1000.0,
+            "decimals": 2
+        },
+        "python/dt": {
+            "type": "dtk::d_real",
+            "doc": "Time increment used for the step function of the model",
+            "label": "Dt",
+            "min":   0.0,
+            "value": 1.0,
+            "max": 1.0,
+            "decimals": 2
+        },
+        "python/animate": {
+            "type": "dtk::d_bool",
+            "label": "Animate",
+            "doc": "Whether to display the model results at each step",
+            "value": false
+        },
+        "python/load": {
+            "label": "Load File",
+            "doc": "Open a python script file",
+            "path": ".",
+            "filters": [
+                "Python (*.py)"
+            ],
+            "type": "dtk::d_path"
+        },
+        "python/save": {
+            "type": "dtk::d_bool",
+            "label": "Save File",
+            "doc": "Save a python script file",
+            "value": false
+        },
+        "python/play": {
+            "type": "dtk::d_bool",
+            "label": "Play",
+            "doc": "Play script",
+            "value": false
+        }
+    }
+}

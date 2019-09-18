@@ -25,6 +25,7 @@
 // #include <dtkScript>
 
 #include <dtkFonts>
+#include <dtkMacs>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCodeEditorToolBar
@@ -88,23 +89,21 @@ void gnomonCodeEditorToolBar::addStretch(void)
 class gnomonWorkspacePythonSimulatorPrivate
 {
 public:
-    // gnomonCodeEditor *editor;
-    // gnomonCodeEditorToolBar *editor_toolbar;
+    dtkMacsWidget *editor = nullptr;
+    dtkWidgetsMenu *menu_simulation = nullptr;
+    dtkWidgetsMenu *menu_file = nullptr;
 
-public:
-    // gnomonInterpreterJupyter *terminal;
+    gnomonInterpreterJupyter *terminal;
 
 public:
     gnomonViewForm *view;
 
 public:
-    // gnomonOverlayPane *pane;
-
     QFormLayout *parameter_layout = nullptr;
     QVBoxLayout *viewer_layout = nullptr;
 
 public:
-    // QMap<QString, gnomonCoreParameter *> parameters;
+    QHash<QString, dtkCoreParameter *> parameters;
 
 public:
     gnomonAbstractEvolutionModel * model = nullptr;
@@ -113,43 +112,99 @@ public:
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
+    d->editor = new dtkMacsWidget(this);
 
-    // d->parameters["initial_time"] = new gnomonCoreParameterDouble(0., 0., 1000., 2., "Starting time for the simulation of the model");
-    // d->parameters["final_time"] = new gnomonCoreParameterDouble(1., 0., 1000., 2., "Last time for the simulation of the model");
-    // d->parameters["dt"] = new gnomonCoreParameterDouble(1., 0., 1., 2., "Time increment used for the step function of the model");
-    // d->parameters["animate"] = new gnomonCoreParameterBool(true, "Whether to display the model results at each step");
+    dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
+    dtkWidgetsParameterMenuBarGenerator menubar_generator(":pythonSimulator_menu.json", ":pythonSimulator_params.json");
+    menubar_generator.populate(menubar);
+    menubar->touch();
 
-    // d->editor = new gnomonCodeEditor(this);
+    d->parameters = menubar_generator.parameters();
+
+    if(menubar->menu("Simulation")) {
+        d->menu_simulation = menubar->menu("Simulation");
+    } else {
+        qWarning() << Q_FUNC_INFO << "Menu Simulation does not exist";
+    }
+
+    if(menubar->menu("Files")) {
+        d->menu_file = menubar->menu("Files");
+    } else {
+        qWarning() << Q_FUNC_INFO << "Menu Files does not exist";
+    }
+
+
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    d->parameters["python/load"]->setValue(settings.value("Python/load", ".").toString());
+    d->parameters["python/load"]->connect([=] (QVariant v) {
+        QString path = v.value<dtk::d_path>().path();
+        if(path.isEmpty())
+            return;
+
+        //d->font_awesome->icon(fa::folderopen)
+        QFile f(path);
+        if(f.open(QIODevice::ReadOnly)) {
+            QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+            settings.setValue("Python/load", path);
+
+            QTextStream s(&f);
+            d->editor->setText(s.readAll());
+        } else {
+            qInfo() << "couldn't load file " << path;
+        }
+     });
+
+    d->parameters["python/save"]->connect([=] (QVariant v) {
+        bool start = v.value<dtk::d_bool>().value();
+        if (start) {
+            QWidget::setCursor(Qt::BusyCursor);
+            QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+            QString old_path = settings.value("Python/save", QDir::homePath()).toString();
+            QString file_path = QFileDialog::getSaveFileName(nullptr,
+                                                  tr("Save Python File"),
+                                                  old_path,
+                                                  tr("Python (*.py)"));
+
+            //if the user press cancel, do nothing
+            if(!file_path.isEmpty()) {
+                qDebug() << Q_FUNC_INFO << "TODO save";
+                //     d->editor->saveScript();
+                settings.setValue("Python/save", file_path);
+            }
+            QWidget::setCursor(Qt::ArrowCursor);
+            d->parameters["python/save"]->setValue(false);
+        }
+
+    });
+
+    d->parameters["python/play"]->connect([=] (QVariant v) {
+        bool start = v.value<dtk::d_bool>().value();
+        if (start) {
+            QWidget::setCursor(Qt::BusyCursor);
+            this->apply();
+            QWidget::setCursor(Qt::ArrowCursor);
+            d->parameters["python/play"]->setValue(false);
+        }
+
+    });
 
     // connect(d->editor, SIGNAL(scriptLoaded()), this, SLOT(apply()));
 
-    // d->editor_toolbar = new gnomonCodeEditorToolBar(this);
-    // d->editor_toolbar->addAction(d->font_awesome->icon(fa::folderopen), this, "Open script", [=] () {
-    //     d->editor->openScript();
-    // });
-    // d->editor_toolbar->addAction(d->font_awesome->icon(fa::file), this, "Save script", [=] () {
-    //     d->editor->saveScript();
-    // });
-    // d->editor_toolbar->addAction(d->font_awesome->icon(fa::play), this, "Play script", [=] () {
-    //     this->apply();
-    // });
-
     // -- Organizing the editor column --
 
-    // QVBoxLayout *editor_layout = new QVBoxLayout;
-    // editor_layout->setContentsMargins(0, 0, 0, 0);
-    // editor_layout->setSpacing(0);
-    // editor_layout->addWidget(d->editor_toolbar);
-    // editor_layout->addWidget(d->editor);
+    QVBoxLayout *editor_layout = new QVBoxLayout;
+    editor_layout->setContentsMargins(0, 0, 0, 0);
+    editor_layout->setSpacing(0);
+    editor_layout->addWidget(d->editor);
 
-    // d->terminal = new gnomonInterpreterJupyter(this);
-    // d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+    d->terminal = new gnomonInterpreterJupyter(this);
+    //d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
-    // editor_layout->addWidget(d->terminal);
+    editor_layout->addWidget(d->terminal);
 
-    // QWidget *editor_widget = new QWidget(this);
-    // editor_widget->setLayout(editor_layout);
-    // editor_widget->resize(800, editor_widget->height());
+    QWidget *editor_widget = new QWidget(this);
+    editor_widget->setLayout(editor_layout);
+    editor_widget->resize(800, editor_widget->height());
 
     d->view = new gnomonViewForm(this);
 
@@ -235,7 +290,7 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 //     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
 //    splitter->addWidget(finder);
-    //splitter->addWidget(editor_widget);
+    splitter->addWidget(editor_widget);
     splitter->addWidget(viewer);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -248,6 +303,24 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 {
     delete d;
+}
+
+
+void gnomonWorkspacePythonSimulator::enter(void)
+{
+    dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
+
+    menubar->insertMenu(0, d->menu_file );
+    menubar->insertMenu(0, d->menu_simulation);
+    menubar->touch();
+}
+
+void gnomonWorkspacePythonSimulator::leave(void)
+{
+    dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
+    menubar->removeMenu(d->menu_file);
+    menubar->removeMenu(d->menu_simulation);
+    menubar->touch();
 }
 
 void gnomonWorkspacePythonSimulator::apply(void)
