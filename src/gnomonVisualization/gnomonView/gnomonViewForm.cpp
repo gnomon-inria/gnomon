@@ -317,20 +317,20 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
 void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
 {
-    // if (this->formVisualization.contains(key)) {
-    //     gnomonAbstractVisualization *v = this->formVisualization[key];
-    //     if(v) {
-    //         if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
-    //             for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
-    //                 QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
-    //                 forDeletion->widget()->disconnect();
-    //                 delete forDeletion->widget();
-    //                 delete forDeletion;
-    //             }
-    //         } else {
-    //             this->parameterLayouts[key] = new QFormLayout;
-    //             this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    //         }
+    if (this->formVisualization.contains(key)) {
+        gnomonAbstractVisualization *v = this->formVisualization[key];
+        if(v) {
+            if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
+                for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
+                    QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
+                    forDeletion->widget()->disconnect();
+                    delete forDeletion->widget();
+                    delete forDeletion;
+                }
+            } else {
+                this->parameterLayouts[key] = new QFormLayout;
+                this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+            }
 
     //         if (!this->formVisualizationPaneItems.contains(key)) {
     //             this->refresh();
@@ -344,8 +344,8 @@ void gnomonViewFormPrivate::configure(QWidget *parent, const QString& key)
     //                 this->parameterLayouts[key]->addRow(it.key(), widget);
     //             }
     //         }
-    //     }
-    // }
+        }
+    }
 
     this->refresh();
 }
@@ -998,34 +998,34 @@ gnomonImageSeries *gnomonViewForm::image(void)
 
 void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualization *visualization)
 {
-    // d->forms["gnomonImage"] = image;
+    d->forms["gnomonImage"] = image;
 
-    // QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
+    QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
 
-    // if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
-    // {
-    //     d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
-    //     d->formVisualization["gnomonImage"]->setView(this);
-    // }
+    if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
+        {
+            d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
+            d->formVisualization["gnomonImage"]->setView(this);
+        }
 
-    // gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
+    gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
 
-    // formVisualizationImage->setImage(image);
-    // if (visualization) {
-    //     formVisualizationImage->setParameters(visualization->parameters());
-    // }
-    // formVisualizationImage->update();
+    formVisualizationImage->setImage(image);
+    if (visualization) {
+        formVisualizationImage->setParameters(visualization->parameters());
+    }
+    formVisualizationImage->update();
 
-    // if (d->renderer3D_button->isToggled()) {
-    //     d->renderer3D_button->toggle(false);
-    //     this->switchTo3D();
-    // }
-    // else if (d->renderer2D_button->isToggled()) {
-    //     d->renderer2D_button->toggle(false);
-    //     this->switchTo2D();
-    // }
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
 
-    // emit formAdded("gnomonImage");
+    emit formAdded("gnomonImage");
 }
 
 gnomonMeshSeries *gnomonViewForm::mesh(void)
