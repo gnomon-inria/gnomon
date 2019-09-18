@@ -24,15 +24,12 @@
 
 // #include <dtkScript>
 
+#include <dtkImagingCore>
 #include <dtkLog>
 #include <dtkThemes>
+#include <dtkVisualization>
 #include <dtkWidgets>
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Image
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkImagingCore>
 
 #include <gnomonCore>
 #include <gnomonVisualization>
@@ -47,6 +44,11 @@
 
 int main(int argc, char **argv)
 {
+    dtk::core::registerParameters();
+    dtk::widgets::initialize();
+    dtkImaging::initialize();
+    dtk::visualization::initialize();
+
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
 
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
@@ -54,15 +56,14 @@ int main(int argc, char **argv)
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     dtkThemesEngine::instance()->apply();
-    
+
     dtkApplication *application = dtkApplication::create(argc, argv);
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
-    application->setApplicationVersion("0.9.1");
 
     QCommandLineOption jupyterOption("jupyter", QCoreApplication::translate("main", "start jupyter console"));
-    
+
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");
     parser->addOption(jupyterOption);
@@ -72,13 +73,13 @@ int main(int argc, char **argv)
     QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
 
     if (parser->isSet(verboseOption)) {
-        // dtkImaging::setVerboseLoading(true);
+        dtkImaging::setVerboseLoading(true);
+        dtk::widgets::setVerboseLoading(true);
+        dtk::visualization::setVerboseLoading(true);
         gnomonCore::setVerboseLoading(true);
         gnomonVisualization::setVerboseLoading(true);
         gnomonWidgets::setVerboseLoading(true);
     }
-
-    // dtkImaging::initialize();
 
     gnomonCore::initialize();
     gnomonVisualization::initialize();
@@ -100,7 +101,8 @@ int main(int argc, char **argv)
 
     delete window;
 
-    // dtkImaging::uninitialize();
+    dtkWidgetsController::instance()->clear();
+    dtkImaging::uninitialize();
 
     gnomonCore::uninitialize();
     gnomonVisualization::uninitialize();

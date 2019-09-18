@@ -93,14 +93,14 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->stack = new QStackedWidget(this);
 
     QWidget *central = new QWidget(this);
-    
+
     d->workspace_bar = new dtkWidgetsWorkspaceBar(central);
     d->workspace_bar->setStack(d->stack);
     d->workspace_bar->setDynamic(true);
     d->workspace_bar->buildFromFactory();
 
     d->manager = gnomonFormManager::instance();
-    
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -113,7 +113,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
- 
+
     static int l_h = 0;
 
     connect(d->manager, &gnomonFormManager::expand, [=] (void)
@@ -158,7 +158,26 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     this->setCentralWidget(central);
 
     d->setup();
+    this->populate(); // setup themes
+    this->menubar()->touch();
 }
+
+void gnomonMainWindow::resizeEvent(QResizeEvent *event)
+{
+    dtkWidgetsMainWindow::resizeEvent(event);
+
+    this->menubar()->setFixedHeight(event->size().height() - d->workspace_bar->sizeHint().height());
+    d->workspace_bar->setFixedWidth(event->size().width() - 16);
+}
+
+void gnomonMainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    // do not show title bar when over the menu. use hardcoded values of menu :-(
+    if (event->pos().x() < 300 + 32 + 12)
+        return;
+    dtkWidgetsMainWindow::mouseMoveEvent(event);
+}
+
 
 gnomonMainWindow::~gnomonMainWindow(void)
 {

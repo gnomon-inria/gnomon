@@ -26,6 +26,10 @@ public:
      gnomonMainWindow(QWidget *parent = nullptr);
     ~gnomonMainWindow(void);
 
+protected:
+    void resizeEvent(QResizeEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+
 private:
     class gnomonMainWindowPrivate *d;
 };
