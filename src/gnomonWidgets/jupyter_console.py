@@ -19,7 +19,7 @@ from gnomonWidgets import *
 try:
     import qtconsole
 except:
-    print "Install Jupyter to get QtConsole as Python Interpreter"
+    print("Install Jupyter to get QtConsole as Python Interpreter")
 else:
     from qtconsole.rich_jupyter_widget import RichJupyterWidget
     from qtconsole.inprocess import QtInProcessKernelManager

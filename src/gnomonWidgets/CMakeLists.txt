@@ -89,6 +89,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 

@@ -22,12 +22,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -61,9 +56,8 @@ QStringList gnomonWorkspaceFusionPrivate::keys(void) const
 
 gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFusion", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFusion", &stat);
 
     d = new gnomonWorkspaceFusionPrivate;
 
@@ -96,7 +90,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
     {
         d->command->undo();
@@ -119,7 +113,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     });
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();

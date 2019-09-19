@@ -22,12 +22,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 #include <vtkImageData.h>
 
@@ -74,14 +69,13 @@ QStringList gnomonWorkspaceSimulationPrivate::keys(void) const
 }
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonFemSolver", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonFemSolver", &stat);
 
     d = new gnomonWorkspaceSimulationPrivate;
 
@@ -99,7 +93,7 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
     layout->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);

@@ -14,11 +14,7 @@
 
 #include "gnomonDataFrameReaderCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -31,18 +27,18 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(const QString& key) : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    // QString command = "import gnomonDataFrameReader";
+    QString command = "import gnomonDataFrameReader";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::dataFrameReader::pluginFactory().create(key);
 
@@ -76,5 +72,5 @@ gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame(void)
     return ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
 }
 
-// 
+//
 // gnomonDataFrameReaderCommand.cpp ends here

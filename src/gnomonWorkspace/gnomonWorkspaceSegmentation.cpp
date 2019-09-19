@@ -21,12 +21,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 #include <QtWidgets>
 
@@ -91,9 +86,8 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFromImage", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFromImage", &stat);
 
     d = new gnomonWorkspaceSegmentationPrivate;
 
@@ -114,7 +108,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
     layout->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);
@@ -122,7 +116,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
         if (d->command->input() != d->source->image())

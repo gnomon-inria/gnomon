@@ -21,12 +21,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,8 +71,7 @@ QStringList gnomonWorkspaceCellImageFilterPrivate::keys(void) const
 gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFilter", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFilter", &stat);
 
     d = new gnomonWorkspaceCellImageFilterPrivate;
 
@@ -98,7 +92,7 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     layout->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);
@@ -123,7 +117,7 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     });
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();
@@ -145,7 +139,7 @@ void gnomonWorkspaceCellImageFilter::leave(void)
     dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
-                                                        
+
 void gnomonWorkspaceCellImageFilter::apply(void)
 {
     Q_ASSERT(d->command);

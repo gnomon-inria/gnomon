@@ -14,11 +14,7 @@
 
 #include "gnomonCellComplexWriterCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 class gnomonCellComplexWriterCommandPrivate
 {
@@ -31,13 +27,13 @@ public:
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(const QString& key) : d(new gnomonCellComplexWriterCommandPrivate)
 {
-    // QString command = "import gnomonCellComplexWriter";
+    QString command = "import gnomonCellComplexWriter";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::cellComplexWriter::pluginFactory().create(key);
 
@@ -72,5 +68,5 @@ void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cel
     d->cellComplex = cellComplex;
 }
 
-// 
+//
 // gnomonCellComplexWriterCommand.cpp ends here

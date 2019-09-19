@@ -14,11 +14,7 @@
 
 #include "gnomonImageWriterCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -32,18 +28,18 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonImageWriterCommand::gnomonImageWriterCommand(const QString& key) : d(new gnomonImageWriterCommandPrivate)
 {
-    // QString command = "import gnomonImageWriter";
+    QString command = "import gnomonImageWriter";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::imageWriter::pluginFactory().create(key);
 
@@ -78,5 +74,5 @@ void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)
     d->image = image;
 }
 
-// 
+//
 // gnomonImageWriterCommand.cpp ends here

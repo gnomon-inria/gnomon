@@ -106,6 +106,7 @@ find_package(dtkThemes        REQUIRED)
 find_package(dtkCore          REQUIRED)
 find_package(dtkMacs          REQUIRED)
 find_package(dtkImaging       REQUIRED)
+find_package(dtkScript        REQUIRED)
 find_package(dtkWidgets       REQUIRED)
 find_package(dtkVisualization REQUIRED)
 

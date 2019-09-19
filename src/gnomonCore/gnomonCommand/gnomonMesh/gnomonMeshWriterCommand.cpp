@@ -13,15 +13,10 @@
 // Code:
 
 #include "gnomonMeshWriterCommand.h"
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
-
-// /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonMeshWriterCommandPrivate
@@ -32,18 +27,18 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonMeshWriterCommand::gnomonMeshWriterCommand(const QString& key) : d(new gnomonMeshWriterCommandPrivate)
 {
-    // QString command = "import gnomonMeshWriter";
+    QString command = "import gnomonMeshWriter";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::meshWriter::pluginFactory().create(key);
 
@@ -78,5 +73,5 @@ void gnomonMeshWriterCommand::setMesh(gnomonMeshSeries *mesh)
     d->mesh = mesh;
 }
 
-// 
+//
 // gnomonMeshWriterCommand.cpp ends here
