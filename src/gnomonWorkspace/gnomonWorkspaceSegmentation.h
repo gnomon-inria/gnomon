@@ -29,8 +29,8 @@ public:
     ~gnomonWorkspaceSegmentation(void);
 
 public:
-    void enter(void) override {}
-    void leave(void) override {}
+    void enter(void) override;
+    void leave(void) override;
 
 public slots:
     void apply(void) override;

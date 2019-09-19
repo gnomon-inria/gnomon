@@ -60,6 +60,9 @@ public:
 public:
     QMetaObject::Connection c_o;
     QMetaObject::Connection c_s;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>()
@@ -104,15 +107,22 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
     d->pool->addView(d->source);
     d->pool->addView(d->target);
 
-    // gnomonOverlayPane *pane = d->pane(this);
-
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(pane);
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
         if (d->command->input() != d->source->image())
@@ -127,11 +137,29 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
         d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceSegmentation::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceSegmentation::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceSegmentation::configure(const QString& algorithm)

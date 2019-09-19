@@ -47,6 +47,9 @@ public:
     gnomonViewMatplotlib *mpl_figure = nullptr;
 
 public:
+    dtkWidgetsMenu *menu_;
+    
+public:
     QVBoxLayout *mpl_layout = nullptr;
     QWidget *mpl_view = nullptr;
 };
@@ -102,24 +105,53 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     layout->setSpacing(0);
     layout->addWidget(d->view);
     layout->addWidget(d->mpl_view);
-    // layout->addWidget(d->pane(this));
 
-    connect(d->view, &gnomonViewForm::formAdded, [=] () {
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(d->view, &gnomonViewForm::formAdded, [=] ()
+    {
         d->command->setCellImage(d->view->cellImage());
         d->command->setImage(d->view->image());
         d->configure(d->algorithm);
     });
 
-    connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+    connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
         d->command->setCellImage(d->view->cellImage());
         d->command->setImage(d->view->image());
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceCellImageQuantification::~gnomonWorkspaceCellImageQuantification(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceCellImageQuantification::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceCellImageQuantification::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceCellImageQuantification::apply(void)

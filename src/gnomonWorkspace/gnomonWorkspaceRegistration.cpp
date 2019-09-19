@@ -41,6 +41,9 @@ public:
 public:
     gnomonGridLayout *sources_layout;
     gnomonViewForm *target = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 QString gnomonWorkspaceRegistrationPrivate::workspace(void) const
@@ -52,6 +55,10 @@ QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
 {
     return gnomonCore::imageRegistration::pluginFactory().keys();
 }
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -80,9 +87,20 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
-    // layout->addWidget(d->pane(this));
 
-    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] () {
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
+    {
         d->command->undo();
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
@@ -92,7 +110,8 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
         d->configure(d->algorithm);
     });
 
-    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
         d->command->undo();
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
@@ -101,11 +120,29 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
         }
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceRegistration::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceRegistration::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceRegistration::apply(void)

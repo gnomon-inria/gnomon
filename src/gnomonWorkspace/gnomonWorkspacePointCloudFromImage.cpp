@@ -49,6 +49,9 @@ public:
 
 public:
     gnomonViewFormPool *pool = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 gnomonWorkspacePointCloudFromImagePrivate::gnomonWorkspacePointCloudFromImagePrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonPointCloudFromImageCommand >()
@@ -70,6 +73,10 @@ QStringList gnomonWorkspacePointCloudFromImagePrivate::keys(void) const
 {
     return gnomonCore::pointCloudFromImage::pluginFactory().keys();
 }
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -94,11 +101,20 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(d->pane(this));
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if(d->command->input() != d->source->image())
+        if (d->command->input() != d->source->image())
             d->command->setInput(d->source->image());
         else
             qDebug() << "Not changed";
@@ -111,11 +127,29 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
         d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspacePointCloudFromImage::~gnomonWorkspacePointCloudFromImage(void)
 {
     delete d;
+}
+
+void gnomonWorkspacePointCloudFromImage::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspacePointCloudFromImage::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePointCloudFromImage::apply(void)

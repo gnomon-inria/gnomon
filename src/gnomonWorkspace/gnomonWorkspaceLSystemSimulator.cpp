@@ -48,8 +48,8 @@ public:
     QVBoxLayout *viewer_layout = nullptr;
 
 public:
-    // gnomonOverlayPane *pane;
-
+    dtkWidgetsMenu *menu_;
+    
 public:
     gnomonAbstractEvolutionModel * model = nullptr;
 };
@@ -107,48 +107,54 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     finder->setLayout(finder_layout);
     finder->resize(600, finder->height());
 
-    // d->pane = new gnomonOverlayPane(this);
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
-    // QPushButton *button = new QPushButton("Load", parent);
-    // button->setCheckable(true);
+    QPushButton *button = new QPushButton("Load", parent);
+    button->setCheckable(true);
 
-    // QPushButton *button_s = new QPushButton("Step", parent);
-    // button_s->setCheckable(false);
+    QPushButton *button_s = new QPushButton("Step", parent);
+    button_s->setCheckable(false);
 
-    // QPushButton *button_r = new QPushButton("Reset", parent);
-    // button_r->setCheckable(false);
+    QPushButton *button_r = new QPushButton("Reset", parent);
+    button_r->setCheckable(false);
 
-    // QObject::connect(button, &QPushButton::clicked, [=] ()
-    // {
-    //     parent->setCursor(Qt::BusyCursor);
-    //     this->apply();
-    //     button_s->setCheckable(true);
-    //     button_r->setCheckable(true);
-    //     parent->setCursor(Qt::ArrowCursor);
-    // });
+    QObject::connect(button, &QPushButton::clicked, [=] ()
+    {
+        parent->setCursor(Qt::BusyCursor);
+        this->apply();
+        button_s->setCheckable(true);
+        button_r->setCheckable(true);
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
-    // QObject::connect(button_s, &QPushButton::clicked, [=] ()
-    // {
-    //     parent->setCursor(Qt::BusyCursor);
-    //     this->step();
-    //     parent->setCursor(Qt::ArrowCursor);
-    // });
+    QObject::connect(button_s, &QPushButton::clicked, [=] ()
+    {
+        parent->setCursor(Qt::BusyCursor);
+        this->step();
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
-    // QObject::connect(button_r, &QPushButton::clicked, [=] ()
-    // {
-    //     parent->setCursor(Qt::BusyCursor);
-    //     this->reset();
-    //     parent->setCursor(Qt::ArrowCursor);
-    // });
+    QObject::connect(button_r, &QPushButton::clicked, [=] ()
+    {
+        parent->setCursor(Qt::BusyCursor);
+        this->reset();
+        parent->setCursor(Qt::ArrowCursor);
+    });
 
-    // gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
-    // pane_item_button->setTitle("Simulation");
-    // pane_item_button->addWidget(button);
-    // pane_item_button->addWidget(button_s);
-    // pane_item_button->addWidget(button_r);
-    // pane_item_button->toggle();
+    QVBoxLayout *menu_item_layout = new QVBoxLayout;
+    menu_item_layout->addWidget(button);
+    menu_item_layout->addWidget(button_s);
+    menu_item_layout->addWidget(button_r);
 
-    // d->pane->addWidget(pane_item_button);
+    QWidget *menu_item_widget = new QWidget;
+    menu_item_widget->setLayout(menu_item_layout);
+
+    dtkWidgetsMenuItem *menu_item_buttons = new dtkWidgetsMenuItem("Simulation", menu_item_widget);
+    
+    d->menu_ = new dtkWidgetsMenu(fa::circlethin, "LSystems");
+    d->menu_->addItem(menu_item_buttons);
 
     connect(d->finder, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
     connect(d->finder, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
@@ -170,12 +176,29 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
-    // layout->addWidget(d->pane);
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceLSystemSimulator::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceLSystemSimulator::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceLSystemSimulator::apply(void)

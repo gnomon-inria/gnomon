@@ -44,6 +44,9 @@ public:
 
 public:
     gnomonViewForm *target;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 QString gnomonWorkspaceFusionPrivate::workspace(void) const
@@ -84,6 +87,16 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     layout->addWidget(splitter);
     // layout->addWidget(d->pane(this));
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+        d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    
     connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
     {
         d->command->undo();
@@ -104,11 +117,29 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
         }
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceFusion::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceFusion::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceFusion::apply(void)

@@ -29,8 +29,10 @@ public:
     ~gnomonWorkspaceLSystemSimulator(void);
 
 public:
-    void enter(void) override {};
-    void leave(void) override {};
+    void enter(void) override;
+    void leave(void) override;
+
+public:
     void apply(void) override;
 
 public slots:

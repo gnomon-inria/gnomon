@@ -112,7 +112,12 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     d->menu_ = d->menu(this);
 
-    connect(d->source, &gnomonViewForm::formAdded, [=] () {
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    
+    connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    {
         if (d->command->input() != d->source->cellImage())
             d->command->setInput(d->source->cellImage());
         else

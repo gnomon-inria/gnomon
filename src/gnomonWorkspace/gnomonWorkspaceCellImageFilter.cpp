@@ -48,6 +48,9 @@ public:
 
 public:
     gnomonViewFormPool *pool = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 gnomonWorkspaceCellImageFilterPrivate::gnomonWorkspaceCellImageFilterPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellImageFilterCommand >()
@@ -93,9 +96,19 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(d->pane(this));
 
-    connect(d->source, &gnomonViewForm::formAdded, [=] () {
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    {
         if(d->command->input() != d->source->cellImage())
             d->command->setInput(d->source->cellImage());
         else
@@ -103,10 +116,17 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
         d->configure(d->algorithm);
     });
 
-    connect(d, &gnomonWorkspaceCellImageFilterPrivate::algorithmChanged, [=] (const QString& algorithm) {
+    connect(d, &gnomonWorkspaceCellImageFilterPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
         d->command->setInput(d->source->cellImage());
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceCellImageFilter::~gnomonWorkspaceCellImageFilter(void)
@@ -114,6 +134,18 @@ gnomonWorkspaceCellImageFilter::~gnomonWorkspaceCellImageFilter(void)
     delete d;
 }
 
+void gnomonWorkspaceCellImageFilter::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceCellImageFilter::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+                                                        
 void gnomonWorkspaceCellImageFilter::apply(void)
 {
     Q_ASSERT(d->command);

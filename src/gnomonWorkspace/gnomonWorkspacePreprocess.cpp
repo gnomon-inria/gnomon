@@ -48,6 +48,9 @@ public:
 
 public:
     gnomonViewFormPool *pool = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 gnomonWorkspacePreprocessPrivate::gnomonWorkspacePreprocessPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImageFilterCommand >()
@@ -93,7 +96,16 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(d->pane(this));
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
@@ -110,11 +122,29 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
         d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
 {
     delete d;
+}
+
+void gnomonWorkspacePreprocess::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspacePreprocess::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePreprocess::apply(void)

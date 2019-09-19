@@ -48,6 +48,9 @@ public:
 public:
     gnomonViewForm *source = nullptr;
     gnomonViewForm *target = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
 };
 
 gnomonWorkspaceSimulationPrivate::gnomonWorkspaceSimulationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonFemSolverCommand>()
@@ -70,6 +73,10 @@ QStringList gnomonWorkspaceSimulationPrivate::keys(void) const
     return gnomonCore::femSolver::pluginFactory().keys();
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     // int stat;
@@ -90,12 +97,35 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(d->pane(this));
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceSimulation::~gnomonWorkspaceSimulation(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceSimulation::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceSimulation::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceSimulation::apply(void)

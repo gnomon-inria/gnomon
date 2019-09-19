@@ -48,6 +48,9 @@ public:
 
 public:
     gnomonViewFormPool *pool = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;    
 };
 
 gnomonWorkspaceMeshFromImagePrivate::gnomonWorkspaceMeshFromImagePrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonMeshFromImageCommand >()
@@ -93,8 +96,17 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
-    // layout->addWidget(d->pane(this));
 
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->menu_ = d->menu(this);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
         if(d->command->input() != d->source->image())
@@ -109,6 +121,12 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
         d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceMeshFromImage::~gnomonWorkspaceMeshFromImage(void)
@@ -116,11 +134,23 @@ gnomonWorkspaceMeshFromImage::~gnomonWorkspaceMeshFromImage(void)
     delete d;
 }
 
+void gnomonWorkspaceMeshFromImage::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceMeshFromImage::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->menu_);
+    dtkApp->window()->menubar()->touch();
+}
+
 void gnomonWorkspaceMeshFromImage::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->image())
+    if (d->command->input() != d->source->image())
         d->command->setInput(d->source->image());
     else
         qDebug() << "Not changed";
