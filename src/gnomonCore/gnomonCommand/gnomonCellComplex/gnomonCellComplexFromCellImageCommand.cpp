@@ -15,7 +15,6 @@
 #include "gnomonCellComplexFromCellImageCommand.h"
 
 #include <dtkScript>
-
 #include <dtkImagingCore>
 
 class gnomonCellComplexFromCellImageCommandPrivate
