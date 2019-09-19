@@ -14,14 +14,10 @@
 
 #include "gnomonFemSolverCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonFemSolverCommandPrivate
@@ -34,18 +30,18 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
 {
-    // QString command = "import gnomonFemSolver";
+    QString command = "import gnomonFemSolver";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::femSolver::pluginFactory().create(key);
 
@@ -92,5 +88,5 @@ QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) co
     return this->action->parameters();
 }
 
-// 
+//
 // gnomonFemSolverCommand.cpp ends here

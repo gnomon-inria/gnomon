@@ -21,12 +21,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -50,7 +45,7 @@ public:
     gnomonViewFormPool *pool = nullptr;
 
 public:
-    dtkWidgetsMenu *menu_;    
+    dtkWidgetsMenu *menu_;
 };
 
 gnomonWorkspaceMeshFromImagePrivate::gnomonWorkspaceMeshFromImagePrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonMeshFromImageCommand >()
@@ -75,9 +70,8 @@ QStringList gnomonWorkspaceMeshFromImagePrivate::keys(void) const
 
 gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonMeshFromImage", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonMeshFromImage", &stat);
 
     d = new gnomonWorkspaceMeshFromImagePrivate;
 
@@ -98,7 +92,7 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     layout->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);
@@ -106,7 +100,7 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
         if(d->command->input() != d->source->image())
@@ -123,7 +117,7 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     });
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();

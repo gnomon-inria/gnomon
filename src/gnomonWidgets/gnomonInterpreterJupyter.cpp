@@ -16,12 +16,7 @@
 
 #include <dtkFonts>
 #include <dtkThemes>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -53,8 +48,7 @@ gnomonInterpreterJupyter::gnomonInterpreterJupyter(QWidget *parent) : QFrame(par
         int stat; Q_UNUSED(stat);
         QString jupyter_script  = file.readAll();
         file.close();
-        //TODO: script
-        // dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat);
+        dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat);
     } else {
         qWarning() << "Can't open jupyter console script";
     }

@@ -18,11 +18,9 @@
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
+#include <dtkScript>
 
-// #include <dtkScript>
+//TODO
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -49,7 +47,7 @@ public:
 
 public:
     dtkWidgetsMenu *menu_;
-    
+
 public:
     gnomonAbstractEvolutionModel * model = nullptr;
 };
@@ -108,7 +106,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     finder->resize(600, finder->height());
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     QPushButton *button = new QPushButton("Load", parent);
@@ -152,7 +150,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     menu_item_widget->setLayout(menu_item_layout);
 
     dtkWidgetsMenuItem *menu_item_buttons = new dtkWidgetsMenuItem("Simulation", menu_item_widget);
-    
+
     d->menu_ = new dtkWidgetsMenu(fa::circlethin, "LSystems");
     d->menu_->addItem(menu_item_buttons);
 
@@ -178,7 +176,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     layout->addWidget(splitter);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();

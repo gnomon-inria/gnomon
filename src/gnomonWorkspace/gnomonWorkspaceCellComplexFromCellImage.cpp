@@ -21,12 +21,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -83,10 +78,8 @@ QStringList gnomonWorkspaceCellComplexFromCellImagePrivate::keys(void) const
 
 gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // TODO: script
-    
-    // int stat;
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonCellComplexFromCellImage", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellComplexFromCellImage", &stat);
 
     d = new gnomonWorkspaceCellComplexFromCellImagePrivate;
 
@@ -107,7 +100,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     layout->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);
@@ -115,7 +108,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
         if (d->command->input() != d->source->cellImage())
@@ -133,7 +126,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     });
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();

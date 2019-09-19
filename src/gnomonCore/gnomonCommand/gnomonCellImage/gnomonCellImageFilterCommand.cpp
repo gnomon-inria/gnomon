@@ -14,13 +14,8 @@
 
 #include "gnomonCellImageFilterCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
-
-// #include <dtkImagingCore>
+#include <dtkScript>
+#include <dtkImagingCore>
 
 class gnomonCellImageFilterCommandPrivate
 {
@@ -30,13 +25,13 @@ public:
 
 gnomonCellImageFilterCommand::gnomonCellImageFilterCommand(const QString& key) : d(new gnomonCellImageFilterCommandPrivate)
 {
-    // QString command = "import gnomonCellImageFilter";
+    QString command = "import gnomonCellImageFilter";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::cellImageFilter::pluginFactory().create(key);
 
@@ -88,5 +83,5 @@ gnomonCellImageSeries *gnomonCellImageFilterCommand::output(void)
     return ((gnomonAbstractCellImageFilter *) this->action)->output();
 }
 
-// 
+//
 // gnomonCellImageFilterCommand.cpp ends here

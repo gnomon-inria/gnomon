@@ -14,17 +14,8 @@
 
 #include "gnomonImageFilterCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Imaging
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkImagingCore>
+#include <dtkScript>
+#include <dtkImagingCore>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -37,18 +28,18 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
 {
-    // QString command = "import gnomonImageFilter";
+    QString command = "import gnomonImageFilter";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::imageFilter::pluginFactory().create(key);
 
@@ -75,7 +66,7 @@ void gnomonImageFilterCommand::undo(void)
 void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
 {
     d->input = input;
-    
+
     Q_ASSERT(this->action);
     ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
 }
@@ -100,5 +91,5 @@ gnomonImageSeries *gnomonImageFilterCommand::output(void)
     return ((gnomonAbstractImageFilter *) this->action)->output();
 }
 
-// 
+//
 // gnomonImageFilterCommand.cpp ends here

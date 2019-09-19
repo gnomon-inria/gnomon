@@ -14,11 +14,7 @@
 
 #include "gnomonImageRegistrationCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -31,18 +27,18 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
 {
-    // QString command = "import gnomonImageRegistration";
+    QString command = "import gnomonImageRegistration";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
 
@@ -91,5 +87,5 @@ void gnomonImageRegistrationCommand::setParameter(const QString& parameter, cons
     this->action->setParameter(parameter, value);
 }
 
-// 
+//
 // gnomonImageRegistrationCommand.cpp ends here

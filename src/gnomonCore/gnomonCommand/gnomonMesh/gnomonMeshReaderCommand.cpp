@@ -14,11 +14,7 @@
 
 #include "gnomonMeshReaderCommand.h"
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 class gnomonMeshReaderCommandPrivate
 {
@@ -28,13 +24,13 @@ public:
 
 gnomonMeshReaderCommand::gnomonMeshReaderCommand(const QString& key) : d(new gnomonMeshReaderCommandPrivate)
 {
-    // QString command = "import gnomonMeshReader";
+    QString command = "import gnomonMeshReader";
 
-    // int stat;
+    int stat;
 
-    // dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
 
-    // Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 
     this->action = gnomonCore::meshReader::pluginFactory().create(key);
 
@@ -68,5 +64,5 @@ gnomonMeshSeries *gnomonMeshReaderCommand::mesh(void)
     return ((gnomonAbstractMeshReader *) this->action)->mesh();
 }
 
-// 
+//
 // gnomonMeshReaderCommand.cpp ends here

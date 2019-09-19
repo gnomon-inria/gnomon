@@ -21,12 +21,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -75,9 +70,8 @@ QStringList gnomonWorkspacePreprocessPrivate::keys(void) const
 
 gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFilter", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFilter", &stat);
 
     d = new gnomonWorkspacePreprocessPrivate;
 
@@ -98,7 +92,7 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     layout->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);
@@ -124,7 +118,7 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     });
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();

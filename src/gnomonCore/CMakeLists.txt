@@ -86,6 +86,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)

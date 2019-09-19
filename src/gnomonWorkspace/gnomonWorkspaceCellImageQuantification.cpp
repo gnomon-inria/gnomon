@@ -21,12 +21,7 @@
 #include <gnomonVisualization>
 
 #include <dtkImagingCore>
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
+#include <dtkScript>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageQuantificationPrivate
@@ -48,7 +43,7 @@ public:
 
 public:
     dtkWidgetsMenu *menu_;
-    
+
 public:
     QVBoxLayout *mpl_layout = nullptr;
     QWidget *mpl_view = nullptr;
@@ -81,9 +76,8 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // int stat;
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageQuantification", &stat);
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageQuantification", &stat);
 
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
@@ -107,7 +101,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     layout->addWidget(d->mpl_view);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     d->menu_ = d->menu(this);
@@ -131,7 +125,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     });
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();

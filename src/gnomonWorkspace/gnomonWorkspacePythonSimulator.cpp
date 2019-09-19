@@ -18,12 +18,7 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Script
-// /////////////////////////////////////////////////////////////////////////////
-
-// #include <dtkScript>
-
+#include <dtkScript>
 #include <dtkFonts>
 #include <dtkMacs>
 
@@ -296,9 +291,8 @@ void gnomonWorkspacePythonSimulator::leave(void)
 void gnomonWorkspacePythonSimulator::apply(void)
 {
     //gnomonCore::evolutionModel::pluginFactory().clear();
-    //TODO: Script
-    // int stat;
-    // QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
+    int stat;
+    QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
     // qDebug()<< output;
 
     QString key = gnomonCore::evolutionModel::pluginFactory().keys()[0];
