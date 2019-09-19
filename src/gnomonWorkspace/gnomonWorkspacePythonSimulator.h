@@ -38,12 +38,6 @@ public:
     void step(void);
     void reset(void);
 
-public:
-    void configure(QWidget *);
-
-signals:
-    void modelLoaded(void);
-
 private:
     class gnomonWorkspacePythonSimulatorPrivate *d;
 };
