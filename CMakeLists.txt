@@ -108,9 +108,6 @@ find_package(dtkMacs          REQUIRED)
 find_package(dtkImaging       REQUIRED)
 find_package(dtkScript        REQUIRED)
 find_package(dtkWidgets       REQUIRED)
-find_package(dtkVisualization REQUIRED)
-
-include_directories(${dtkScript_INCLUDE_DIRS})
 
 find_package(xtensor REQUIRED)
 find_package(VTK REQUIRED)

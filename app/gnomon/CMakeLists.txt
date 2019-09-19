@@ -63,6 +63,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_backend)
 
+target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
+
 ## #################################################################
 ## Bundle setup
 ## #################################################################

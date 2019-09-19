@@ -37,6 +37,7 @@ target_link_libraries(${PROJECT_NAME} gnomonVisualization)
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkLog)
 
+target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
 
 ## #################################################################
 ## Install rules
