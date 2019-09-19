@@ -20,6 +20,8 @@
 
 #include <gnomonLandmark.h>
 
+class dtkWidgetsMenu;
+
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
@@ -70,9 +72,6 @@ public slots:
 public slots:
     void setExportColor(const QColor& color);
 
-public slots:
-    // void toggleVisualizationPane(void);
-
 public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
@@ -94,7 +93,7 @@ public:
     vtkRenderer *renderer3D(void);
 
 public:
-    // gnomonOverlayPane *infoPane(void);
+    dtkWidgetsMenu *menu(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
