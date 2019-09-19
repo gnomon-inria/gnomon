@@ -50,8 +50,27 @@
         },
         "python/play": {
             "type": "dtk::d_bool",
-            "label": "Play",
+            "label": "Apply",
             "doc": "Play script",
+            "value": false
+        },
+        "python/run": {
+            "type": "dtk::d_bool",
+            "label": "Run",
+            "doc": "",
+            "type": "dtk::d_bool",
+            "value": false
+        },
+        "python/step": {
+            "type": "dtk::d_bool",
+            "label": "Step",
+            "doc": "",
+            "value": false
+        },
+        "python/reset": {
+            "type": "dtk::d_bool",
+            "label": "Reset",
+            "doc": "",
             "value": false
         }
     }
