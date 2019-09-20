@@ -28,6 +28,7 @@
 #include <dtkThemes>
 #include <dtkWidgets>
 #include <dtkImagingCore>
+#include <dtkScript>
 
 #include <gnomonCore>
 #include <gnomonVisualization>
@@ -71,7 +72,7 @@ int main(int argc, char **argv)
 
     if (parser->isSet(verboseOption)) {
         dtkImaging::setVerboseLoading(true);
-        
+
         dtk::widgets::setVerboseLoading(true);
 
         gnomonCore::setVerboseLoading(true);
@@ -85,7 +86,7 @@ int main(int argc, char **argv)
 
     bool redirect_io = false; int stat;
 
-    // dtkScriptInterpreterPython::instance()->init(redirect_io, "gnomon-core");
+    dtkScriptInterpreterPython::instance()->init("gnomon-core");
 
     // if (parser->isSet(jupyterOption))
     //     dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);

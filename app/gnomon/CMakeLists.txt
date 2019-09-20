@@ -46,7 +46,6 @@ target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::OpenGL)
 
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkCore)
-# target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkScript)
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
 
 # target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkImagingCore)
@@ -58,6 +57,7 @@ target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWorkspace)
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE ${VTK_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
