@@ -643,7 +643,7 @@
 %pythoncode %{
     def world():
         import dtkcore
-        return dtkcore.dtkObjectManager_instance()
+        return dtkcore.dtkCoreObjectManager_instance()
 %}
 
 %rename(ParameterBool)       gnomonCoreParameterBool;

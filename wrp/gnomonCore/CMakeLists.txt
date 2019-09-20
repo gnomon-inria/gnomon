@@ -1,4 +1,4 @@
-project(gnomonCorePython)
+project(gnomoncore)
 
 set(LAYER_NAME gnomonCore)
 
@@ -18,13 +18,14 @@ set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i PROPERTI
 set(SWIG_MODULE_NAME     ${PROJECT_NAME})
 
 list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
-swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i)
+swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
   ${PYTHON_LIBRARIES}
   dtkCore
   dtkImagingCore)
-
 
 # install rules
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_${PROJECT_NAME}.so ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
