@@ -31,6 +31,7 @@
 #endif
 #endif
 
+#include <dtkCore>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
@@ -338,42 +339,42 @@
 
 %extend QVariant {
     void setValue(gnomonCellComplex *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
+        $self->setValue(dtk::variantFromValue(value));
     }
     gnomonCellComplex* tognomonCellComplex() const {
         return $self->value<gnomonCellComplex *>();
     }
 
     void setValue(gnomonCellImage *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
+        $self->setValue(dtk::variantFromValue(value));
     }
     gnomonCellImage* tognomonCellImage() const {
         return $self->value<gnomonCellImage *>();
     }
 
     void setValue(gnomonCellGraph *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
+        $self->setValue(dtk::variantFromValue(value));
     }
     gnomonCellGraph* tognomonCellGraph() const {
         return $self->value<gnomonCellGraph *>();
     }
 
     /* void setValue(gnomonDiscreteDynamicForm *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
+        $self->setValue(dtkCoreMetaType::variantFromValue(value));
     }
     gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
         return $self->value<gnomonDiscreteDynamicForm *>();
     } */
 
     void setValue(gnomonSphereForm *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
+        $self->setValue(dtk::variantFromValue(value));
     }
     gnomonSphereForm* tognomonSphereForm() const {
         return $self->value<gnomonSphereForm *>();
     }
 
     void setValue(gnomonWallForm *value) {
-        $self->setValue(dtkMetaType::variantFromValue(value));
+        $self->setValue(dtk::variantFromValue(value));
     }
     gnomonWallForm* tognomonWallForm() const {
         return $self->value<gnomonWallForm *>();
@@ -466,7 +467,7 @@
         int i = 0;
         int end = PyList_Size($input);
         for(i;i!=end; ++i) {
-            $1 << PyInt_AsLong(PyList_GET_ITEM($input, i));
+            $1 << PyLong_AsLong(PyList_GET_ITEM($input, i));
         }
     } else {
         qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
@@ -479,7 +480,7 @@
         int end = PyList_Size($input);
         $1 = new QList<unsigned long>;
         for(i;i!=end; ++i) {
-            ($1)->append(PyInt_AsLong(PyList_GET_ITEM($input, i)));
+            ($1)->append(PyLong_AsLong(PyList_GET_ITEM($input, i)));
         }
     } else {
         qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
@@ -499,7 +500,7 @@
         int end = PyList_Size(list);
         for(i;i<end; ++i) {
             PyObject *o = PyList_GET_ITEM(list, i);
-            $result << PyInt_AsLong(o);
+            $result << PyLong_AsLong(o);
         }
     } else {
         qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
@@ -511,7 +512,7 @@
     auto it  = $1.cbegin();
     auto end = $1.cend();
     for(int i = 0; it != end; ++it, ++i) {
-        PyObject* v = PyInt_FromLong(*it);
+        PyObject* v = PyLong_FromLong(*it);
         PyList_SET_ITEM($result, i, v);
     }
 }
@@ -521,7 +522,7 @@
     auto it  = $1.cbegin();
     auto end = $1.cend();
     for(int i = 0; it != end; ++it, ++i) {
-        PyObject* v = PyInt_FromLong(*it);
+        PyObject* v = PyLong_FromLong(*it);
         PyList_SET_ITEM(list, i, v);
     }
     $input = list;
