@@ -16,10 +16,10 @@
 
 %module(directors="1") gnomoncore
 
-%include <dtk_base.i>
-%import <dtkCore.i>
+%include <dtkBase/dtkBase.i>
+%import <dtkCore/dtkCore.i>
 
-%import <dtkImagingCore.i>
+%import <dtkImagingCore/dtkImagingCore.i>
 
 %{
 
@@ -30,8 +30,6 @@
 #undef Py_hash_t
 #endif
 #endif
-
-#include <dtkImagingCore>
 
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
@@ -718,7 +716,7 @@
 %include <gnomonCore/gnomonLandmark.h>
 %include <gnomonCore/gnomonTime.h>
 %include <gnomonCore/gnomonTypeDef.h>
-%include <QVariant.i>
+%include <QtCore/QVariant.i>
 
 %include "std_array.i"
 %include "std_vector.i"
