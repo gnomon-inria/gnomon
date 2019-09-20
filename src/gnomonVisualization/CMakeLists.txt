@@ -104,8 +104,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkVisualization)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)

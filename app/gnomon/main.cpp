@@ -24,12 +24,10 @@
 
 // #include <dtkScript>
 
-#include <dtkImagingCore>
 #include <dtkLog>
 #include <dtkThemes>
-#include <dtkVisualization>
 #include <dtkWidgets>
-
+#include <dtkImagingCore>
 
 #include <gnomonCore>
 #include <gnomonVisualization>
@@ -47,7 +45,6 @@ int main(int argc, char **argv)
     dtk::core::registerParameters();
     dtk::widgets::initialize();
     dtkImaging::initialize();
-    dtk::visualization::initialize();
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
 
@@ -74,8 +71,9 @@ int main(int argc, char **argv)
 
     if (parser->isSet(verboseOption)) {
         dtkImaging::setVerboseLoading(true);
+        
         dtk::widgets::setVerboseLoading(true);
-        dtk::visualization::setVerboseLoading(true);
+
         gnomonCore::setVerboseLoading(true);
         gnomonVisualization::setVerboseLoading(true);
         gnomonWidgets::setVerboseLoading(true);

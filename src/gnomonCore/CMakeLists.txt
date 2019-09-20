@@ -91,6 +91,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 ## #############################################################################
