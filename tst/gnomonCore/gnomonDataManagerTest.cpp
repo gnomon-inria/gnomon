@@ -24,7 +24,7 @@ gnomonDataManagerTestCase::~gnomonDataManagerTestCase(void)
 void gnomonDataManagerTestCase::initTestCase(void)
 {
     dtkImage *the_image = new dtkImage();
-    dtkObjectManager::instance()->add(QVariant::fromValue(the_image), "image");
+    dtkCoreObjectManager::instance()->add(QVariant::fromValue(the_image), "image");
 }
 
 void gnomonDataManagerTestCase::init(void)
