@@ -1,6 +1,6 @@
-project(gnomoncore)
+project(gnomonwidgets)
 
-set(LAYER_NAME gnomonCore)
+set(LAYER_NAME gnomonWidgets)
 
 # get include dir from layer
 get_property(LAYER_INCLUDES TARGET ${LAYER_NAME} PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
@@ -25,7 +25,8 @@ swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
   ${PYTHON_LIBRARIES}
   dtkCore
-  dtkImagingCore)
+  dtkImagingCore
+  gnomonCore)
 
 # To copy file at build time
 add_custom_command(

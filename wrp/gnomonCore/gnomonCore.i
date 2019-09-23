@@ -149,8 +149,8 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
-            QString v = QString(PyString_AsString(value));
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
             $1.insert(k, v);
         }
     } else {
@@ -165,8 +165,8 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
-            QString v = QString(PyString_AsString(value));
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
             $1->insert(k, v);
         }
     } else {
@@ -187,8 +187,8 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next(dict, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
-            QString v = QString(PyString_AsString(value));
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
             $result.insert(k, v);
         }
     } else {
@@ -207,7 +207,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonCoreParameter *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCoreParameter, 0);
@@ -227,7 +227,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonCoreParameter *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCoreParameter, 0);
@@ -253,7 +253,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next(dict, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonCoreParameter *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCoreParameter, 0);
@@ -277,7 +277,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonAbstractForm *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
@@ -297,7 +297,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonAbstractForm *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
@@ -323,7 +323,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next(dict, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonAbstractForm *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
@@ -392,7 +392,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonAbstractDynamicForm *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractDynamicForm, 0);
@@ -412,7 +412,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonAbstractDynamicForm *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractDynamicForm, 0);
@@ -438,7 +438,7 @@
         Py_ssize_t pos = 0;
         int r;
         while (PyDict_Next(dict, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
+            QString k = QString(PyUnicode_AsUTF8(key));
             gnomonAbstractDynamicForm *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractDynamicForm, 0);

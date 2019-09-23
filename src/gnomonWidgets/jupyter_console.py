@@ -14,7 +14,7 @@
 
 import gnomoncore
 
-from gnomonWidgets import *
+from gnomonwidgets import *
 
 try:
     import qtconsole

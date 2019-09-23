@@ -16,10 +16,10 @@
 
 %module gnomonwidgets
 
-%include <dtk_base.i>
+%include <dtkBase/dtkBase.i>
 
-%import <dtkCore.i>
-%import <dtkImagingCore.i>
+%import <dtkCore/dtkCore.i>
+%import <dtkImagingCore/dtkImagingCore.i>
 // %import <gnomonCore.i>
 
 %{
@@ -27,8 +27,6 @@
 #include <dtkImagingCore>
 #include <gnomonCore>
 #include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
-#include <gnomonWidgets/gnomonOverlayPane.h>
-
 %}
 
 // /////////////////////////////////////////////////////////////////
@@ -50,14 +48,14 @@
         Py_ssize_t pos = 0;
         QVariant v;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
-            if (PyString_Check(value)) {
-                v = QVariant::fromValue(QString(PyString_AsString(value)));
+            QString k = QString(PyUnicode_AsUTF8(key));
+            if (PyUnicode_Check(value)) {
+                v = QVariant::fromValue(QString(PyUnicode_AsUTF8(value)));
             } else if (PyBool_Check(value)) {
                 bool b = (value == Py_True);
                 v = QVariant::fromValue(b);
             } else if (PyLong_Check(value)) {
-                v = QVariant::fromValue(PyInt_AsLong(value));
+                v = QVariant::fromValue(PyLong_AsLong(value));
             } else if (PyFloat_Check(value)) {
                 v = QVariant::fromValue(PyFloat_AsDouble(value));
             } else {
@@ -77,14 +75,14 @@
         Py_ssize_t pos = 0;
         QVariant v;
         while (PyDict_Next($input, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
-            if (PyString_Check(value)) {
-                v = QVariant::fromValue(QString(PyString_AsString(value)));
+            QString k = QString(PyUnicode_AsUTF8(key));
+            if (PyUnicode_Check(value)) {
+                v = QVariant::fromValue(QString(PyUnicode_AsUTF8(value)));
             } else if (PyBool_Check(value)) {
                 bool b = (value == Py_True);
                 v = QVariant::fromValue(b);
             } else if (PyLong_Check(value)) {
-                v = QVariant::fromValue(PyInt_AsLong(value));
+                v = QVariant::fromValue(PyLong_AsLong(value));
             } else if (PyFloat_Check(value)) {
                 v = QVariant::fromValue(PyFloat_AsDouble(value));
             } else {
@@ -110,14 +108,14 @@
         Py_ssize_t pos = 0;
         QVariant v;
         while (PyDict_Next(dict, &pos, &key, &value)) {
-            QString k = QString(PyString_AsString(key));
-            if (PyString_Check(value)) {
-                v = QVariant::fromValue(QString(PyString_AsString(value)));
+            QString k = QString(PyUnicode_AsUTF8(key));
+            if (PyUnicode_Check(value)) {
+                v = QVariant::fromValue(QString(PyUnicode_AsUTF8(value)));
             } else if (PyBool_Check(value)) {
                 bool b = (value == Py_True);
                 v = QVariant::fromValue(b);
-            } else if (PyInt_Check(value) || PyLong_Check(value)) {
-                v = QVariant::fromValue(PyInt_AsLong(value));
+            } else if (PyLong_Check(value) || PyLong_Check(value)) {
+                v = QVariant::fromValue(PyLong_AsLong(value));
             } else if (PyFloat_Check(value)) {
                 v = QVariant::fromValue(PyFloat_AsDouble(value));
             } else {
@@ -143,9 +141,9 @@
             double k = double(PyFloat_AsDouble(key));
             if (PyList_Check(value)) {
                 int r, g, b;
-                r = PyInt_AsLong(PyList_GET_ITEM(value, 0));
-                g = PyInt_AsLong(PyList_GET_ITEM(value, 1));
-                b = PyInt_AsLong(PyList_GET_ITEM(value, 2));
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
                 v = QColor::fromRgb(r,g,b);
             } else {
                 qDebug("Value type is not handled. Empty QColor is set.");
@@ -167,9 +165,9 @@
             double k = double(PyFloat_AsDouble(key));
             if (PyList_Check(value)) {
                 int r, g, b;
-                r = PyInt_AsLong(PyList_GET_ITEM(value, 0));
-                g = PyInt_AsLong(PyList_GET_ITEM(value, 1));
-                b = PyInt_AsLong(PyList_GET_ITEM(value, 2));
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
                 v = QColor::fromRgb(r,g,b);
             } else {
                 qDebug("Value type is not handled. Empty QColor is set.");
@@ -197,9 +195,9 @@
             double k = double(PyFloat_AsDouble(key));
             if (PyList_Check(value)) {
                 int r, g, b;
-                r = PyInt_AsLong(PyList_GET_ITEM(value, 0));
-                g = PyInt_AsLong(PyList_GET_ITEM(value, 1));
-                b = PyInt_AsLong(PyList_GET_ITEM(value, 2));
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
                 v = QColor::fromRgb(r,g,b);
             } else {
                 qDebug("Value type is not handled. Empty QColor is set.");
@@ -223,9 +221,9 @@
     c = $1[k];
 
     PyObject *value = PyList_New(3);
-    PyList_SET_ITEM(value, 0, PyInt_FromLong(c.red()));
-    PyList_SET_ITEM(value, 1, PyInt_FromLong(c.green()));
-    PyList_SET_ITEM(value, 2, PyInt_FromLong(c.blue()));
+    PyList_SET_ITEM(value, 0, PyLong_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyLong_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyLong_FromLong(c.blue()));
     PyDict_SetItem($result, PyFloat_FromDouble(k), value);
   }
 }
@@ -240,9 +238,9 @@
     k = *it;
     c = $1[k];
     PyObject *value = PyList_New(3);
-    PyList_SET_ITEM(value, 0, PyInt_FromLong(c.red()));
-    PyList_SET_ITEM(value, 1, PyInt_FromLong(c.green()));
-    PyList_SET_ITEM(value, 2, PyInt_FromLong(c.blue()));
+    PyList_SET_ITEM(value, 0, PyLong_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyLong_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyLong_FromLong(c.blue()));
     PyDict_SetItem($result, PyFloat_FromDouble(k), value);
   }
   $input = dict;
@@ -257,8 +255,6 @@
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
-%include <gnomonWidgets/gnomonOverlayPane.h>
-
 
 
 //

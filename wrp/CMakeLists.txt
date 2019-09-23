@@ -55,10 +55,10 @@ endif(APPLE)
 ## Dependencies - external
 ## #################################################################
 
-set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages/)
-
+set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL_PATH})
 
 add_subdirectory(gnomonCore)
+add_subdirectory(gnomonWidgets)
 
 
 
