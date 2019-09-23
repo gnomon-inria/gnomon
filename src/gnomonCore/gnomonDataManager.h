@@ -21,8 +21,6 @@
 //class dtkImage;
 #include <dtkImagingCore>
 
-Q_DECLARE_METATYPE(dtkImage *);
-
 class GNOMONCORE_EXPORT gnomonDataManager: public QObject
 {
     Q_OBJECT
