@@ -1,4 +1,22 @@
+## Version: $Id$
+##
+######################################################################
+##
+### Commentary:
+##
+######################################################################
+##
+### Change Log:
+##
+######################################################################
+##
+### Code:
+
 project(gnomoncore)
+
+## #############################################################################
+##
+## #############################################################################
 
 set(LAYER_NAME gnomonCore)
 
@@ -15,7 +33,10 @@ list(INSERT LAYER_INCLUDES 0 ${DTK_SWIG_INCLUDE_PATH})
 # swig stuff
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i PROPERTIES CPLUSPLUS ON)
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i PROPERTIES INCLUDE_DIRECTORIES  "${LAYER_INCLUDES}")
-set(SWIG_MODULE_NAME     ${PROJECT_NAME})
+
+set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${LAYER_NAME}PYTHON_wrap.cxx PROPERTY SKIP_AUTOMOC ON)
+
+set(SWIG_MODULE_NAME ${PROJECT_NAME})
 
 list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
