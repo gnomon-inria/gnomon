@@ -68,6 +68,7 @@ public:
 
 public slots:
     void exportToManager(void);
+    void clear(void);
 
 public:
     QSize sizeHint(void) const;
@@ -296,14 +297,57 @@ void gnomonViewFormPrivate::updateOrientation(void)
     this->GetInteractor()->Render();
 }
 
+void gnomonViewFormPrivate::clear(void)
+{
+    //TODO: clear parameter widget menu
+
+    for (const auto& key : this->formVisualization.keys()) {
+         this->formVisualization[key]->disconnect();
+         this->formVisualization[key]->clearConnections();
+         this->formVisualization[key]->clear();
+         delete this->formVisualization[key];
+         this->parameterLayouts[key]->disconnect();
+         delete this->parameterLayouts[key];
+         this->formVisualizationPaneItems[key]->disconnect();
+         delete this->formVisualizationPaneItems[key];
+    }
+    this->formVisualization.clear();
+    this->forms.clear();
+    this->parameterLayouts.clear();
+
+    this->formVisualizationPaneItems.clear();
+
+    this->empty = true;
+
+     q->render();
+}
+
 dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
 {
     if(!this->renderButton)
+    {
         this->renderButton = new QPushButton("Render");
 
+        connect(this->renderButton, &QPushButton::clicked, [=] () {
+            for (const auto& key : this->formVisualization.keys()) {
+                gnomonAbstractVisualization *v = this->formVisualization[key];
+                if(v) {
+                    v->update();
+                }
+            }
+        });
+    }
+
     if(!this->clearButton)
+    {
         this->clearButton = new QPushButton("Clear");
 
+        connect(this->clearButton, &QPushButton::clicked, [=] ()
+        {
+            this->clear();
+        });
+     }
+     
     this->renderButton->setCheckable(true);
     this->clearButton->setCheckable(true);
 
@@ -560,39 +604,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         this->render();
     });
 
-    // connect(d->renderButton, &QPushButton::clicked, [=] () {
-    //     for (const auto& key : d->formVisualization.keys()) {
-    //         gnomonAbstractVisualization *v = d->formVisualization[key];
-    //         if(v) {
-    //             v->update();
-    //         }
-    //     }
-    // });
-
-    // connect(d->clearButton, &QPushButton::clicked, [=] ()
-    // {
-    //     d->formVisualizationPane->clearLayout();
-
-    //     for (const auto& key : d->formVisualization.keys()) {
-    //         d->formVisualization[key]->disconnect();
-    //         d->formVisualization[key]->clearConnections();
-    //         d->formVisualization[key]->clear();
-    //         delete d->formVisualization[key];
-    //         d->parameterLayouts[key]->disconnect();
-    //         delete d->parameterLayouts[key];
-    //         d->formVisualizationPaneItems[key]->disconnect();
-    //         delete d->formVisualizationPaneItems[key];
-    //     }
-    //     d->formVisualization.clear();
-    //     d->forms.clear();
-    //     d->parameterLayouts.clear();
-    //     d->formVisualizationPaneItems.clear();
-
-    //     d->formVisualizationPane->addWidget(d->paneItemButton);
-    //     d->empty = true;
-
-    //     this->render();
-    // });
 
     this->setAcceptDrops(true);
     this->switchTo2D();
