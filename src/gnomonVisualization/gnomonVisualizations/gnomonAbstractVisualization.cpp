@@ -163,7 +163,5 @@ QImage gnomonAbstractVisualization::offscreenImageRendering(void)
     return image;
 }
 
-
-
 //
 // gnomonAbstractVisualization.cpp ends here

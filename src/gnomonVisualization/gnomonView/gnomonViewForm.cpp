@@ -256,6 +256,7 @@ void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
 void gnomonViewFormPrivate::updateOrientation(void)
 {
     if(!this->cameras.contains(this->ori)) {
+
         vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
         cam->ParallelProjectionOn();
         cam->SetParallelScale(1);
@@ -308,11 +309,12 @@ dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
 
     if(!this->paneItemButton)
         this->paneItemButton = new dtkWidgetsMenuItemDIY("Controls");
+
     this->paneItemButton->addWidget(this->renderButton);
     this->paneItemButton->addWidget(this->clearButton);
 
     this->refresh();
-
+    
     return this->view_menu;
 }
 
@@ -360,10 +362,14 @@ void gnomonViewFormPrivate::refresh(void)
     for (const auto& key : this->formVisualization.keys()) {
 
         if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
+
             this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key + " Visualization");
 
-            QComboBox *combo_box = new QComboBox(this);
+            QComboBox *combo_box = new QComboBox;
+            QWidget *contents = new QWidget;
+            
             QStringList combo_box_keys = {};
+
             if (key == "gnomonCellComplex") {
                 combo_box_keys = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
             } else if (key == "gnomonCellImage") {
@@ -380,8 +386,10 @@ void gnomonViewFormPrivate::refresh(void)
             }
             combo_box->model()->sort(0);
 
-            QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
+            connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu)
+            {
                 q->switchTo3D();
+
                 if (this->formVisualization[key]) {
                     this->formVisualization[key]->clear();
                     delete this->formVisualization[key];
@@ -423,11 +431,11 @@ void gnomonViewFormPrivate::refresh(void)
                     formVisualizationPointCloud->setPointCloud(pointCloud);
                     formVisualizationPointCloud->update();
                 }
-                this->configure((QWidget *) q->parent(), key);
+                this->configure(contents, key);
             });
 
             this->formVisualizationPaneItems[key]->addWidget(combo_box);
-            this->formVisualizationPaneItems[key]->toggle();
+            this->formVisualizationPaneItems[key]->addWidget(contents);
         }
 
         this->view_menu->addItem(this->formVisualizationPaneItems[key]);

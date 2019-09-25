@@ -110,7 +110,6 @@ public slots:
 public slots:
     void setAcceptCellComplex(bool);
 
-
 public slots:
     void onSliceChanged(int);
 
@@ -121,6 +120,7 @@ signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
 
+signals:
     void formAdded(const QString&);
 
 signals:
