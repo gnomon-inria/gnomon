@@ -63,5 +63,6 @@ else:
                     print("replace terminal with jupyter console")
                     window = gnomonInterpreterJupyter.downcast(subwidget)
                     window.addWidget(console)
+
 #
 # create_jupyter_console.py ends here
