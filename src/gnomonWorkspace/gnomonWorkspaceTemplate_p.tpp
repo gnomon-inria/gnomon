@@ -120,7 +120,7 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
 
     QObject::connect(pane_item_button, &QPushButton::clicked, [=] () {
         dtkApp->window()->setCursor(Qt::BusyCursor);
-        dynamic_cast<gnomonWorkspace*>(parent)->apply();
+        dynamic_cast<dtkWidgetsWorkspace*>(parent)->apply();
         dtkApp->window()->setCursor(Qt::ArrowCursor);
     });
 

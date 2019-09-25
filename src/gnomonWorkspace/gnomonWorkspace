@@ -1,4 +1,3 @@
-#include "gnomonWorkspace.h"
 #include "gnomonWorkspaceLSystemSimulator.h"
 #include "gnomonWorkspaceBrowser.h"
 #include "gnomonWorkspacePythonSimulator.h"

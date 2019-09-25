@@ -16,8 +16,6 @@
 
 #include <gnomonWorkspaceExport>
 
-#include "gnomonWorkspace.h"
-
 #include <dtkWidgets>
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSimulation : public dtkWidgetsWorkspace
