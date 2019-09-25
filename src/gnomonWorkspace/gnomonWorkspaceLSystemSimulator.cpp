@@ -221,12 +221,14 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 
 void gnomonWorkspaceLSystemSimulator::enter(void)
 {
+    dtkApp->window()->menubar()->addMenu(d->view->menu());
     dtkApp->window()->menubar()->addMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceLSystemSimulator::leave(void)
 {
+    dtkApp->window()->menubar()->removeMenu(d->view->menu());
     dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }

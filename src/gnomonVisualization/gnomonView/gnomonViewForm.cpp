@@ -206,7 +206,9 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 // 
 // /////////////////////////////////////////////////////////////////////////////
 
-    this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View");
+    static int count = 0;
+    
+    this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View " + QString::number(count++));
 }
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)

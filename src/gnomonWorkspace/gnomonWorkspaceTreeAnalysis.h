@@ -27,8 +27,8 @@ public:
     ~gnomonWorkspaceTreeAnalysis(void);
 
 public:
-    void enter(void) override {};
-    void leave(void) override {};
+    void enter(void) override;
+    void leave(void) override;
     void apply(void) override;
 
 private:

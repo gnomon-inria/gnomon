@@ -179,12 +179,16 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
 
 void gnomonWorkspaceSegmentation::enter(void)
 {
+    dtkApp->window()->menubar()->addMenu(d->source->menu());
+    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->addMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceSegmentation::leave(void)
 {
+    dtkApp->window()->menubar()->removeMenu(d->source->menu());
+    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
