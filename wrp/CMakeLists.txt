@@ -59,6 +59,7 @@ set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL
 
 add_subdirectory(gnomonCore)
 add_subdirectory(gnomonWidgets)
+add_subdirectory(gnomonVisualization)
 
 
 

@@ -16,18 +16,15 @@
 
 %module gnomonvisualization
 
-%include <dtk_base.i>
+%include <dtkBase/dtkBase.i>
 
-%import <dtkCore.i>
-%import <dtkWidgets.i>
-%import <gnomonCore.i>
+%import <dtkCore/dtkCore.i>
 
 %{
 
 #include <dtkImagingCore>
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
-#include <gnomonVisualization/gnomonView/gnomonView.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
@@ -239,7 +236,6 @@
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
-%include <gnomonVisualization/gnomonView/gnomonView.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
