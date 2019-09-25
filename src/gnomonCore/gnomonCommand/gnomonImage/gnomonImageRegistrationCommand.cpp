@@ -32,7 +32,7 @@ public:
 
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
 {
-    QString command = "import gnomonImageRegistration";
+    QString command = "import gnomonplugins.core.algorithm.gnomonImageRegistration";
 
     int stat;
 

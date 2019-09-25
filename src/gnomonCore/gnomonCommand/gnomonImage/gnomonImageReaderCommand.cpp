@@ -32,7 +32,7 @@ public:
 
 gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
 {
-    QString command = "import gnomonImageReader";
+    QString command = "import gnomonplugins.core.io.gnomonImageReader";
 
     int stat;
 

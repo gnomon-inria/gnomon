@@ -33,7 +33,7 @@ public:
 
 gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
 {
-    QString command = "import gnomonImageFilter";
+    QString command = "import gnomonplugins.core.algorithm.gnomonImageFilter";
 
     int stat;
 

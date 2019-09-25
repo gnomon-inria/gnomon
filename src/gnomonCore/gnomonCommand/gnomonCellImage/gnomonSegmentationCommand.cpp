@@ -25,7 +25,7 @@ public:
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
-    QString command = "import gnomonCellImageFromImage";
+    QString command = "import gnomonplugins.core.algorithm.gnomonCellImageFromImage";
 
     int stat;
 

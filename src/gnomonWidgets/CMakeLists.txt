@@ -20,15 +20,12 @@ project(gnomonWidgets)
 
 add_subdirectory(gnomonColor)
 add_subdirectory(gnomonEditor)
-add_subdirectory(gnomonManager)
 
 ## #################################################################
 ## Sources
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonDropSite
-  gnomonDropSite.h
   gnomonFinder
   gnomonFinder.h
   gnomonInterpreterJupyter
@@ -43,10 +40,9 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWidgetsParameter.h
   ${${PROJECT_NAME}_COLOR_HEADERS}
   ${${PROJECT_NAME}_EDITOR_HEADERS}
-  ${${PROJECT_NAME}_MANAGER_HEADERS})
+)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonDropSite.cpp
   gnomonFinder.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
@@ -56,7 +52,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWidgetsParameter.cpp
   ${${PROJECT_NAME}_COLOR_SOURCES}
   ${${PROJECT_NAME}_EDITOR_SOURCES}
-  ${${PROJECT_NAME}_MANAGER_SOURCES})
+  )
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomonWidgets.qrc)

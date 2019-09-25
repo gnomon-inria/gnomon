@@ -33,7 +33,7 @@ public:
 
 gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
 {
-    QString command = "import gnomonImageFusion";
+    QString command = "import gnomonplugins.core.algorithm.gnomonImageFusion";
 
     int stat;
 

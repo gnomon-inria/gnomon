@@ -33,7 +33,7 @@ public:
 
 gnomonImageWriterCommand::gnomonImageWriterCommand(const QString& key) : d(new gnomonImageWriterCommandPrivate)
 {
-    QString command = "import gnomonImageWriter";
+    QString command = "import gnomonplugins.core.io.gnomonImageWriter";
 
     int stat;
 

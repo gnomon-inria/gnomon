@@ -12,12 +12,8 @@
 
 // Code:
 
-// /////////////////////////////////////////////////////////////////////////////
-// FIXME: What da fuck ?
-// /////////////////////////////////////////////////////////////////////////////
-
-//#include "gnomonVisualizations/gnomonAbstractVisualization.h"
-//#include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
@@ -55,7 +51,7 @@ gnomonFormManagerPrivate::gnomonFormManagerPrivate(QWidget *parent) : QScrollAre
     this->setWidget(this->contents);
     this->setWidgetResizable(true);
 
-    // QString plugin_save = "gnomonAbstractFormWriter";
+    // QString plugin_save = "gnomonplugins.core.io.gnomonAbstractFormWriter";
     // QString command = "import " + plugin_save;
 
     // int stat;
@@ -195,12 +191,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
 {
     qDebug() << Q_FUNC_INFO;
 
-// /////////////////////////////////////////////////////////////////////////////
-// FIXME: Dependency cycle
-// /////////////////////////////////////////////////////////////////////////////
-
-    // QImage image = visualization->imageRendering();
-    QImage image;
+    QImage image = visualization->imageRendering();
 
     qDebug() << Q_FUNC_INFO << image;
 

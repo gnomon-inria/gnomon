@@ -27,6 +27,7 @@
 //#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 //#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
+#include "gnomonManager/gnomonFormManager.h"
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 #include "gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h"
 #include "gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h"

@@ -32,7 +32,7 @@ public:
 
 gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(const QString& key) : d(new gnomonCellImageReaderCommandPrivate)
 {
-    QString command = "import gnomonCellImageReader";
+    QString command = "import gnomonplugins.core.io.gnomonCellImageReader";
 
     int stat;
 
