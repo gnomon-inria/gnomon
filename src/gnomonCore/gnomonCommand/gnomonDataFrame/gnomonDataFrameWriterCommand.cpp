@@ -35,13 +35,7 @@ public:
 
 gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand(const QString& key) : d(new gnomonDataFrameWriterCommandPrivate)
 {
-    QString command = "import gnomonDataFrameWriter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonDataFrameWriter");
 
     this->action = gnomonCore::dataFrameWriter::pluginFactory().create(key);
 

@@ -48,8 +48,8 @@ public:
     dtkWidgetsMenu *menu_;
 
 public:
-    dtkWidgetsMenuBarContainer *dashboard;    
-    
+    dtkWidgetsMenuBarContainer *dashboard;
+
 public:
     QVBoxLayout *mpl_layout = nullptr;
     QWidget *mpl_view = nullptr;
@@ -82,8 +82,7 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageQuantification", &stat);
+    loadPluginGroup("gnomonCellImageQuantification");
 
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
@@ -103,7 +102,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
     dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
     menu_1->addItem(fa::circleo, "SubLevel 1-2");
@@ -122,9 +121,9 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
     d->dashboard->setFixedWidth(300);
-    
+
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);

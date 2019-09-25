@@ -24,13 +24,7 @@ public:
 
 gnomonMeshReaderCommand::gnomonMeshReaderCommand(const QString& key) : d(new gnomonMeshReaderCommandPrivate)
 {
-    QString command = "import gnomonMeshReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonMeshReader");
 
     this->action = gnomonCore::meshReader::pluginFactory().create(key);
 

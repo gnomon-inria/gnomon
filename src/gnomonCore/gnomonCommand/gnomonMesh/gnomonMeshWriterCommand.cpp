@@ -32,13 +32,7 @@ public:
 
 gnomonMeshWriterCommand::gnomonMeshWriterCommand(const QString& key) : d(new gnomonMeshWriterCommandPrivate)
 {
-    QString command = "import gnomonMeshWriter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonMeshWriter");
 
     this->action = gnomonCore::meshWriter::pluginFactory().create(key);
 

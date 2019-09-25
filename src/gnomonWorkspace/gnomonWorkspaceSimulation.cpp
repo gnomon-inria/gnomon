@@ -80,8 +80,7 @@ QStringList gnomonWorkspaceSimulationPrivate::keys(void) const
 
 gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonFemSolver", &stat);
+    loadPluginGroup("gnomonFemSolver");
 
     d = new gnomonWorkspaceSimulationPrivate;
 
@@ -95,7 +94,7 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
     dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
     menu_1->addItem(fa::circleo, "SubLevel 1-2");
@@ -114,9 +113,9 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
     d->dashboard->setFixedWidth(300);
-    
+
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);

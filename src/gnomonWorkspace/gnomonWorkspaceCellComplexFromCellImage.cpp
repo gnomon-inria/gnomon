@@ -84,9 +84,7 @@ QStringList gnomonWorkspaceCellComplexFromCellImagePrivate::keys(void) const
 
 gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellComplexFromCellImage", &stat);
+    loadPluginGroup("gnomonCellComplexFromCellImage");
 
     d = new gnomonWorkspaceCellComplexFromCellImagePrivate;
 
@@ -103,7 +101,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
     dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
     menu_1->addItem(fa::circleo, "SubLevel 1-2");
@@ -122,9 +120,9 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
     d->dashboard->setFixedWidth(300);
-    
+
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);

@@ -32,13 +32,7 @@ public:
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(const QString& key) : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    QString command = "import gnomonDataFrameReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonDataFrameReader");
 
     this->action = gnomonCore::dataFrameReader::pluginFactory().create(key);
 
