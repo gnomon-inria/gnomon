@@ -25,13 +25,7 @@ public:
 
 gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(const QString& key) : d(new gnomonCellComplexFromCellImageCommandPrivate)
 {
-    QString command = "import gnomonCellComplexFromCellImage";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellComplexFromCellImage");
 
     this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(key);
 

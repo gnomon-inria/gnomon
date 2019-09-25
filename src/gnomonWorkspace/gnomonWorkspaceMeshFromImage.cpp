@@ -76,9 +76,8 @@ QStringList gnomonWorkspaceMeshFromImagePrivate::keys(void) const
 
 gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonMeshFromImage", &stat);
-
+    loadPluginGroup("meshFromImage");
+    
     d = new gnomonWorkspaceMeshFromImagePrivate;
 
     d->source = new gnomonViewForm(this);
@@ -94,7 +93,7 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
     dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
     menu_1->addItem(fa::circleo, "SubLevel 1-2");
@@ -113,9 +112,9 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
     d->dashboard->setFixedWidth(300);
-    
+
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -171,7 +170,7 @@ void gnomonWorkspaceMeshFromImage::enter(void)
 void gnomonWorkspaceMeshFromImage::leave(void)
 {
     dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());    
+    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }

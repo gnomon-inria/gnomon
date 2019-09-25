@@ -26,13 +26,7 @@ public:
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(const QString& key) : d(new gnomonCellImageQuantificationCommandPrivate)
 {
-    QString command = "import gnomonCellImageQuantification";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellImageQuantification");
 
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(key);
 

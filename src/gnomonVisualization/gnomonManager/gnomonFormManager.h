@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <gnomonWidgetsExport>
+#include <gnomonVisualizationExport>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -27,7 +27,7 @@ class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManagerItem;
 
-class GNOMONWIDGETS_EXPORT gnomonFormManager : public QFrame
+class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QFrame
 {
     Q_OBJECT
 

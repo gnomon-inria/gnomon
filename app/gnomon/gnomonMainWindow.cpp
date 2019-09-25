@@ -14,6 +14,7 @@
 #include <gnomonMainWindow.h>
 
 #include <gnomonCore>
+#include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
 
@@ -108,7 +109,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     layout->setSpacing(0);
     layout->addWidget(this->menubar());
     layout->addLayout(i_layout);
-    
+
     central->setLayout(layout);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -161,7 +162,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->setup();
 
     this->populate();
-    
+
     this->menubar()->touch();
 }
 

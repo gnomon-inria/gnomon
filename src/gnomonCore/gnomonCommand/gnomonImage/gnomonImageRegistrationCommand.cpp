@@ -32,13 +32,7 @@ public:
 
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
 {
-    QString command = "import gnomonImageRegistration";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("imageRegistration");
 
     this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
 

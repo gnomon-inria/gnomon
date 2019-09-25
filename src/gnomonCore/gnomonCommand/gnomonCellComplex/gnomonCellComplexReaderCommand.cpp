@@ -24,13 +24,7 @@ public:
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(const QString& key) : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    QString command = "import gnomonCellComplexReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellComplexReader");
 
     this->action = gnomonCore::cellComplexReader::pluginFactory().create(key);
 

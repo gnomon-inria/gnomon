@@ -29,13 +29,7 @@ public:
 
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
 {
-    QString command = "import gnomonMeshFromImage";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("meshFromImage");
 
     this->action = gnomonCore::meshFromImage::pluginFactory().create(key);
 

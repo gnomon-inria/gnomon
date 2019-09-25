@@ -62,3 +62,4 @@
 #include "gnomonLandmark.h"
 #include "gnomonTime.h"
 #include "gnomonTypeDef.h"
+#include "gnomonPythonPluginLoader.h"
