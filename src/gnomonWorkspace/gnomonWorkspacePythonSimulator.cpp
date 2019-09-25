@@ -102,8 +102,12 @@ public:
     QHash<QString, dtkCoreParameter *> parameters;
 
 public:
-    gnomonAbstractEvolutionModel * model = nullptr;
+    gnomonAbstractEvolutionModel *model = nullptr;
 };
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
