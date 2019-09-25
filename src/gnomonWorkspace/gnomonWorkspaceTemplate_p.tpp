@@ -93,7 +93,7 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
 
     // TODO: Script
     // doc->setText(this->command->documentation());
-    
+
     QVBoxLayout *pane_item_algorithm_layout = new QVBoxLayout;
     pane_item_algorithm_layout->addWidget(combo_box);
     pane_item_algorithm_layout->addWidget(doc);
@@ -105,10 +105,10 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
 
     QWidget *pane_item_algorithm = new QWidget;
     pane_item_algorithm->setLayout(pane_item_algorithm_layout);
-    
+
     QWidget *pane_item_parameters = new QWidget;
     pane_item_parameters->setLayout(this->layout);
-    
+
     dtkWidgetsMenuItem *menu_algorithm = new dtkWidgetsMenuItem("Algorithm", pane_item_algorithm);
     dtkWidgetsMenuItem *menu_parameters = new dtkWidgetsMenuItem("Parameters", pane_item_parameters);
     dtkWidgetsMenuItem *menu_button = new dtkWidgetsMenuItemDIY(this->workspace(), pane_item_button);

@@ -30,6 +30,7 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 
+#include "gnomonManager/gnomonFormManager.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 #include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
@@ -130,7 +131,7 @@ public:
 public:
     QSlider *time_slider = nullptr;
     QSet<double> forms_times;
-    
+
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
     double c_x = 0, c_y = 0, c_z = 0;
@@ -159,12 +160,12 @@ public:
     QMap<QString, QFormLayout *> parameterLayouts;
 
     QMap<QString, dtkWidgetsMenuItemDIY *> formVisualizationPaneItems;
-    
+
     dtkWidgetsMenuItemDIY *paneItemButton = nullptr;
 
 public:
     dtkWidgetsMenu *menu(void);
-    
+
 public:
     dtkWidgetsMenu *view_menu;
 
@@ -204,7 +205,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     static int count = 0;
@@ -484,7 +485,7 @@ void gnomonViewFormPrivate::refresh(void)
 
         this->view_menu->addItem(this->formVisualizationPaneItems[key]);
     }
-    
+
     this->view_menu->addItem(this->paneItemButton);
 }
 
@@ -1015,6 +1016,7 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualizat
 {
     d->forms["gnomonImage"] = image;
 
+    qDebug() << gnomonVisualization::visualizationImage::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
@@ -1284,7 +1286,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             // emit timeChanged(images_serie->time());
 
 // /////////////////////////////////////////////////////////////////////////////
-            
+
             this->setForm("gnomonImage",images_serie);
 
         } else if((path.endsWith("ply")) and (d->acceptCellComplex)) {
