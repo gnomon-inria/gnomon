@@ -23,6 +23,9 @@
 
 #include <dtkImagingCore>
 #include <dtkScript>
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -42,6 +45,9 @@ public:
 
 public:
     dtkWidgetsMenu *menu_;
+
+public:
+    dtkWidgetsMenuBarContainer *dashboard;
 };
 
 QString gnomonWorkspaceFusionPrivate::workspace(void) const
@@ -56,8 +62,7 @@ QStringList gnomonWorkspaceFusionPrivate::keys(void) const
 
 gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageFusion", &stat);
+    loadPluginGroup("gnomonImageFusion");
 
     d = new gnomonWorkspaceFusionPrivate;
 
@@ -75,11 +80,36 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     splitter->addWidget(dummy);
     splitter->addWidget(d->target);
 
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Dashboard inception
+// /////////////////////////////////////////////////////////////////////////////
+
+    dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
+    dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
+    menu_1->addItem(fa::circleo, "SubLevel 1-2");
+    menu_1->addItem(fa::circleo, "SubLevel 1-3");
+    menu_1->addSeparator();
+    menu_1->addItem(fa::circleo, "SubLevel 1-4");
+
+    dtkWidgetsMenu *menu_2 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 2");
+    menu_2->addItem(fa::circleo, "SubLevel 2-1");
+
+    dtkWidgetsMenu *menu_3 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 3");
+    menu_3->addItem(fa::circleo, "Sublevel 3-1");
+    menu_3->addItem(fa::circleo, "Sublevel 3-2");
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
+    d->dashboard->setFixedWidth(300);
+
+// /////////////////////////////////////////////////////////////////////////////
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
-    // layout->addWidget(d->pane(this));
+    layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -100,6 +130,8 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
             }
         }
         d->configure(d->algorithm);
+        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
+        dtkApp->window()->menubar()->touch();
     });
 
     connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
@@ -126,12 +158,18 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 
 void gnomonWorkspaceFusion::enter(void)
 {
+    foreach(gnomonViewForm *form, d->sources_layout->views())
+        dtkApp->window()->menubar()->addMenu(form->menu());
+    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->addMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceFusion::leave(void)
 {
+    foreach(gnomonViewForm *form, d->sources_layout->views())
+        dtkApp->window()->menubar()->removeMenu(form->menu());
+    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }

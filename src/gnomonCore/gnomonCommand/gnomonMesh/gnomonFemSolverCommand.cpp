@@ -35,13 +35,7 @@ public:
 
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
 {
-    QString command = "import gnomonFemSolver";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonFemSolver");
 
     this->action = gnomonCore::femSolver::pluginFactory().create(key);
 

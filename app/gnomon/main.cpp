@@ -59,17 +59,15 @@ int main(int argc, char **argv)
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
 
-    QCommandLineOption jupyterOption("jupyter", QCoreApplication::translate("main", "start jupyter console"));
-
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");
-    parser->addOption(jupyterOption);
 
     application->initialize();
 
     QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
 
     if (parser->isSet(verboseOption)) {
+
         dtkImaging::setVerboseLoading(true);
 
         dtk::widgets::setVerboseLoading(true);
@@ -87,9 +85,6 @@ int main(int argc, char **argv)
     bool redirect_io = false; int stat;
 
     dtkScriptInterpreterPython::instance()->init("gnomon-core");
-
-    // if (parser->isSet(jupyterOption))
-    //     dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
 
     gnomonMainWindow *window = new gnomonMainWindow;
     window->setWindowTitle("gnomon");

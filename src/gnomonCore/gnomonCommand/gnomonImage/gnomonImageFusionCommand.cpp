@@ -33,13 +33,7 @@ public:
 
 gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
 {
-    QString command = "import gnomonplugins.core.algorithm.gnomonImageFusion";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonImageFusion");
 
     this->action = gnomonCore::imageFusion::pluginFactory().create(key);
 

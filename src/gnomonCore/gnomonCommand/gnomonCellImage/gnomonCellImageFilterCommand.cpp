@@ -25,13 +25,7 @@ public:
 
 gnomonCellImageFilterCommand::gnomonCellImageFilterCommand(const QString& key) : d(new gnomonCellImageFilterCommandPrivate)
 {
-    QString command = "import gnomonCellImageFilter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonCellImageFilter");
 
     this->action = gnomonCore::cellImageFilter::pluginFactory().create(key);
 

@@ -32,13 +32,7 @@ public:
 
 gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
 {
-    QString command = "import gnomonplugins.core.io.gnomonImageReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonImageReader");
 
     this->action = gnomonCore::imageReader::pluginFactory().create(key);
 

@@ -102,17 +102,24 @@ public:
     QHash<QString, dtkCoreParameter *> parameters;
 
 public:
-    gnomonAbstractEvolutionModel * model = nullptr;
+    gnomonAbstractEvolutionModel *model = nullptr;
 };
+
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspacePythonSimulatorPrivate;
+
     d->editor = new dtkMacsWidget(this);
 
     dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
+
     dtkWidgetsParameterMenuBarGenerator menubar_generator(":pythonSimulator_menu.json", ":pythonSimulator_params.json");
     menubar_generator.populate(menubar);
+
     menubar->touch();
 
     d->parameters = menubar_generator.parameters();
@@ -272,8 +279,8 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 void gnomonWorkspacePythonSimulator::enter(void)
 {
     dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
-
-    menubar->insertMenu(0, d->menu_file );
+    menubar->insertMenu(0, d->view->menu());
+    menubar->insertMenu(0, d->menu_file);
     menubar->insertMenu(0, d->menu_simulation);
     menubar->insertMenu(0, d->menu_ubi_simulation);
     menubar->touch();
@@ -282,6 +289,7 @@ void gnomonWorkspacePythonSimulator::enter(void)
 void gnomonWorkspacePythonSimulator::leave(void)
 {
     dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
+    menubar->removeMenu(d->view->menu());
     menubar->removeMenu(d->menu_file);
     menubar->removeMenu(d->menu_simulation);
     menubar->removeMenu(d->menu_ubi_simulation);

@@ -17,6 +17,10 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
+
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use dtkWidgetsFinder
 // /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +34,9 @@ public:
 
 public:
     gnomonViewForm *browse_view;
+
+public:
+    dtkWidgetsMenuBarContainer *dashboard;
 };
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
@@ -48,8 +55,32 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(gnomonToolBar::browser_color);
-    // d->browse_view->toggleVisualizationPane();
 
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Dashboard inception
+// /////////////////////////////////////////////////////////////////////////////
+    
+    dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
+    dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
+    menu_1->addItem(fa::circleo, "SubLevel 1-2");
+    menu_1->addItem(fa::circleo, "SubLevel 1-3");
+    menu_1->addSeparator();
+    menu_1->addItem(fa::circleo, "SubLevel 1-4");
+
+    dtkWidgetsMenu *menu_2 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 2");
+    menu_2->addItem(fa::circleo, "SubLevel 2-1");
+
+    dtkWidgetsMenu *menu_3 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 3");
+    menu_3->addItem(fa::circleo, "Sublevel 3-1");
+    menu_3->addItem(fa::circleo, "Sublevel 3-2");
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
+    d->dashboard->setFixedWidth(300);
+    
+// /////////////////////////////////////////////////////////////////////////////
+    
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
     toolbar_layout->setSpacing(0);
@@ -80,10 +111,11 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     splitter->addWidget(finder);
     splitter->addWidget(d->browse_view);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
+    layout->addWidget(d->dashboard);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)

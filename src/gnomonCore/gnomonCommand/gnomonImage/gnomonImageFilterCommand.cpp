@@ -33,13 +33,7 @@ public:
 
 gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
 {
-    QString command = "import gnomonplugins.core.algorithm.gnomonImageFilter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("gnomonImageFilter");
 
     this->action = gnomonCore::imageFilter::pluginFactory().create(key);
 
