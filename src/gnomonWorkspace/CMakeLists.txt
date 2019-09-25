@@ -20,7 +20,6 @@ project(gnomonWorkspace)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonWorkspace
-  gnomonWorkspace.h
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
   gnomonWorkspaceCellComplexFromCellImage
@@ -51,7 +50,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceCellComplexFromCellImage.cpp
   gnomonWorkspaceCellImageFilter.cpp
