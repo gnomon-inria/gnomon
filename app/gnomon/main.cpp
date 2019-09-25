@@ -45,7 +45,6 @@ int main(int argc, char **argv)
 {
     dtk::core::registerParameters();
     dtk::widgets::initialize();
-    dtkImaging::initialize();
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
 
@@ -80,6 +79,7 @@ int main(int argc, char **argv)
         gnomonWidgets::setVerboseLoading(true);
     }
 
+    dtkImaging::initialize();
     gnomonCore::initialize();
     gnomonVisualization::initialize();
     gnomonWidgets::initialize();
