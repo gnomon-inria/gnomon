@@ -76,10 +76,8 @@ QStringList gnomonWorkspaceCellImageFilterPrivate::keys(void) const
 
 gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageFilter", &stat);
-
+    loadPluginGroup("cellImageFilter");
+    
     d = new gnomonWorkspaceCellImageFilterPrivate;
 
     d->source = new gnomonViewForm(this);
@@ -95,7 +93,7 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
     dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
     menu_1->addItem(fa::circleo, "SubLevel 1-2");
@@ -114,9 +112,9 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
     d->dashboard->setFixedWidth(300);
-    
+
 // /////////////////////////////////////////////////////////////////////////////
-    
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -164,7 +162,7 @@ gnomonWorkspaceCellImageFilter::~gnomonWorkspaceCellImageFilter(void)
 void gnomonWorkspaceCellImageFilter::enter(void)
 {
     dtkApp->window()->menubar()->addMenu(d->source->menu());
-    dtkApp->window()->menubar()->addMenu(d->target->menu());    
+    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->addMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
@@ -172,7 +170,7 @@ void gnomonWorkspaceCellImageFilter::enter(void)
 void gnomonWorkspaceCellImageFilter::leave(void)
 {
     dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());    
+    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }

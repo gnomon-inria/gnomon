@@ -32,13 +32,7 @@ public:
 
 gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(const QString& key) : d(new gnomonCellImageReaderCommandPrivate)
 {
-    QString command = "import gnomonCellImageReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellImageReader");
 
     this->action = gnomonCore::cellImageReader::pluginFactory().create(key);
 

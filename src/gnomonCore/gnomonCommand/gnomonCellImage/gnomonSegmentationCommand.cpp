@@ -25,13 +25,7 @@ public:
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
-    QString command = "import gnomonCellImageFromImage";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellImageFromImage");
 
     this->action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
 

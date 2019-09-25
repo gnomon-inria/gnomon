@@ -33,13 +33,7 @@ public:
 
 gnomonImageWriterCommand::gnomonImageWriterCommand(const QString& key) : d(new gnomonImageWriterCommandPrivate)
 {
-    QString command = "import gnomonImageWriter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("imageWriter");
 
     this->action = gnomonCore::imageWriter::pluginFactory().create(key);
 

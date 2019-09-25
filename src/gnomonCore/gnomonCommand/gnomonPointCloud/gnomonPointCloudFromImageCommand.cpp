@@ -33,13 +33,7 @@ public:
 
 gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
 {
-    QString command = "import gnomonPointCloudFromImage";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("pointCloudFromImage");
 
     this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(key);
 

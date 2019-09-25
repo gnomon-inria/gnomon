@@ -47,12 +47,7 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     this->setWidget(this->contents);
     this->setWidgetResizable(true);
 
-    QString plugin_save = "gnomonImagesSerieWriter";
-    QString command = "import " + plugin_save;
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
+    loadPluginGroup("imagesSerieWriter");
 
     this->writer =  gnomonCore::imagesSerieWriter::pluginFactory().create(plugin_save);
 

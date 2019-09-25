@@ -32,13 +32,7 @@ public:
 
 gnomonTreeReaderCommand::gnomonTreeReaderCommand(const QString& key) : d(new gnomonTreeReaderCommandPrivate)
 {
-    QString command = "import gnomonTreeReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("treeReader");
 
     this->action = gnomonCore::treeReader::pluginFactory().create(key);
 
