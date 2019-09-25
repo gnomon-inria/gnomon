@@ -154,13 +154,8 @@ gnomonFormManager *gnomonFormManager::instance(void)
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractVisualization* visualization)
 {
-// /////////////////////////////////////////////////////////////////////////////
-// FIXME: Dependency cycle
-// /////////////////////////////////////////////////////////////////////////////
 
-    // QImage image = visualization->imageRendering();
-
-    QImage image;
+    QImage image = visualization->imageRendering();
 
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
