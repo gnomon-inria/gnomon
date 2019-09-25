@@ -63,7 +63,7 @@ QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
 
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonImageRegistration");
+    loadPluginGroup("imageRegistration");
 
     d = new gnomonWorkspaceRegistrationPrivate;
 

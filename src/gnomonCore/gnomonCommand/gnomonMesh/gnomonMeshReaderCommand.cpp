@@ -24,7 +24,7 @@ public:
 
 gnomonMeshReaderCommand::gnomonMeshReaderCommand(const QString& key) : d(new gnomonMeshReaderCommandPrivate)
 {
-    loadPluginGroup("gnomonMeshReader");
+    loadPluginGroup("meshReader");
 
     this->action = gnomonCore::meshReader::pluginFactory().create(key);
 

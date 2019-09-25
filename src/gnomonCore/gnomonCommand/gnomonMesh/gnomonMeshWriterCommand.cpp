@@ -32,7 +32,7 @@ public:
 
 gnomonMeshWriterCommand::gnomonMeshWriterCommand(const QString& key) : d(new gnomonMeshWriterCommandPrivate)
 {
-    loadPluginGroup("gnomonMeshWriter");
+    loadPluginGroup("meshWriter");
 
     this->action = gnomonCore::meshWriter::pluginFactory().create(key);
 

@@ -33,7 +33,7 @@ public:
 
 gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
 {
-    loadPluginGroup("gnomonPointCloudFromImage");
+    loadPluginGroup("pointCloudFromImage");
 
     this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(key);
 

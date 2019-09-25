@@ -92,7 +92,7 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonCellImageFromImage");
+    loadPluginGroup("cellImageFromImage");
 
     d = new gnomonWorkspaceSegmentationPrivate;
 

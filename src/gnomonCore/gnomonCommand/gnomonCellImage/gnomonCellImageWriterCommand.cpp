@@ -35,7 +35,7 @@ public:
 
 gnomonCellImageWriterCommand::gnomonCellImageWriterCommand(const QString& key) : d(new gnomonCellImageWriterCommandPrivate)
 {
-    loadPluginGroup("gnomonCellImageWriter");
+    loadPluginGroup("cellImageWriter");
 
     this->action = gnomonCore::cellImageWriter::pluginFactory().create(key);
 

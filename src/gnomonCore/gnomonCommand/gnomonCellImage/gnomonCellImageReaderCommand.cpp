@@ -32,7 +32,7 @@ public:
 
 gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(const QString& key) : d(new gnomonCellImageReaderCommandPrivate)
 {
-    loadPluginGroup("gnomonCellImageReader");
+    loadPluginGroup("cellImageReader");
 
     this->action = gnomonCore::cellImageReader::pluginFactory().create(key);
 

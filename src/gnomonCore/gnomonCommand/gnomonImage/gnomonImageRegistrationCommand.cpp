@@ -32,7 +32,7 @@ public:
 
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
 {
-    loadPluginGroup("gnomonImageRegistration");
+    loadPluginGroup("imageRegistration");
 
     this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
 

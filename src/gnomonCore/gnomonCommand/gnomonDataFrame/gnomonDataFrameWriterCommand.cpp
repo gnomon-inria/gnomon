@@ -35,7 +35,7 @@ public:
 
 gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand(const QString& key) : d(new gnomonDataFrameWriterCommandPrivate)
 {
-    loadPluginGroup("gnomonDataFrameWriter");
+    loadPluginGroup("dataFrameWriter");
 
     this->action = gnomonCore::dataFrameWriter::pluginFactory().create(key);
 

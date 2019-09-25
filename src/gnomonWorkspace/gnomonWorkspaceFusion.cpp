@@ -62,7 +62,7 @@ QStringList gnomonWorkspaceFusionPrivate::keys(void) const
 
 gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonImageFusion");
+    loadPluginGroup("imageFusion");
 
     d = new gnomonWorkspaceFusionPrivate;
 

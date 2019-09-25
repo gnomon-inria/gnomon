@@ -27,7 +27,7 @@ public:
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(const QString& key) : d(new gnomonCellComplexWriterCommandPrivate)
 {
-    loadPluginGroup("gnomonCellComplexWriter");
+    loadPluginGroup("cellComplexWriter");
 
     this->action = gnomonCore::cellComplexWriter::pluginFactory().create(key);
 

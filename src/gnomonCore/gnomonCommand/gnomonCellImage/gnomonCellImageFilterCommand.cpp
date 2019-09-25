@@ -25,7 +25,7 @@ public:
 
 gnomonCellImageFilterCommand::gnomonCellImageFilterCommand(const QString& key) : d(new gnomonCellImageFilterCommandPrivate)
 {
-    loadPluginGroup("gnomonCellImageFilter");
+    loadPluginGroup("cellImageFilter");
 
     this->action = gnomonCore::cellImageFilter::pluginFactory().create(key);
 

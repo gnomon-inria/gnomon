@@ -82,7 +82,7 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonCellImageQuantification");
+    loadPluginGroup("cellImageQuantification");
 
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 

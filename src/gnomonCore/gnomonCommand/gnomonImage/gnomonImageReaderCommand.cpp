@@ -32,7 +32,7 @@ public:
 
 gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
 {
-    loadPluginGroup("gnomonImageReader");
+    loadPluginGroup("imageReader");
 
     this->action = gnomonCore::imageReader::pluginFactory().create(key);
 

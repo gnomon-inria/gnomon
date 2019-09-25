@@ -33,7 +33,7 @@ public:
 
 gnomonImageWriterCommand::gnomonImageWriterCommand(const QString& key) : d(new gnomonImageWriterCommandPrivate)
 {
-    loadPluginGroup("gnomonImageWriter");
+    loadPluginGroup("imageWriter");
 
     this->action = gnomonCore::imageWriter::pluginFactory().create(key);
 

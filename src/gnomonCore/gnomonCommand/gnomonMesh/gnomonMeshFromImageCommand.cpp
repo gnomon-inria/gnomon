@@ -29,7 +29,7 @@ public:
 
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
 {
-    loadPluginGroup("gnomonMeshFromImage");
+    loadPluginGroup("meshFromImage");
 
     this->action = gnomonCore::meshFromImage::pluginFactory().create(key);
 

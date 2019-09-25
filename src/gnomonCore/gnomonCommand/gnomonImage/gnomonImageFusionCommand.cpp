@@ -33,7 +33,7 @@ public:
 
 gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
 {
-    loadPluginGroup("gnomonImageFusion");
+    loadPluginGroup("imageFusion");
 
     this->action = gnomonCore::imageFusion::pluginFactory().create(key);
 

@@ -84,7 +84,7 @@ QStringList gnomonWorkspaceCellComplexFromCellImagePrivate::keys(void) const
 
 gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonCellComplexFromCellImage");
+    loadPluginGroup("cellComplexFromCellImage");
 
     d = new gnomonWorkspaceCellComplexFromCellImagePrivate;
 

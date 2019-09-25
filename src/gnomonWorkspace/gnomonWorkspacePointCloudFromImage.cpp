@@ -81,7 +81,7 @@ QStringList gnomonWorkspacePointCloudFromImagePrivate::keys(void) const
 
 gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonPointCloudFromImage");
+    loadPluginGroup("pointCloudFromImage");
 
     d = new gnomonWorkspacePointCloudFromImagePrivate;
 

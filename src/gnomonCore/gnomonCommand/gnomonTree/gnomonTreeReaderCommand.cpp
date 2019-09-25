@@ -32,7 +32,7 @@ public:
 
 gnomonTreeReaderCommand::gnomonTreeReaderCommand(const QString& key) : d(new gnomonTreeReaderCommandPrivate)
 {
-    loadPluginGroup("gnomonTreeReader");
+    loadPluginGroup("treeReader");
 
     this->action = gnomonCore::treeReader::pluginFactory().create(key);
 

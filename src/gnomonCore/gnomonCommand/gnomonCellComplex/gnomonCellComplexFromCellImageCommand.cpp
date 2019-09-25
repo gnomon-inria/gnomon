@@ -25,7 +25,7 @@ public:
 
 gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(const QString& key) : d(new gnomonCellComplexFromCellImageCommandPrivate)
 {
-    loadPluginGroup("gnomonCellComplexFromCellImage");
+    loadPluginGroup("cellComplexFromCellImage");
 
     this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(key);
 

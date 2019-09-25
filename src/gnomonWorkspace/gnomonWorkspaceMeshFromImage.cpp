@@ -76,7 +76,7 @@ QStringList gnomonWorkspaceMeshFromImagePrivate::keys(void) const
 
 gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonMeshFromImage");
+    loadPluginGroup("meshFromImage");
     
     d = new gnomonWorkspaceMeshFromImagePrivate;
 

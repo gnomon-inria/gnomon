@@ -25,7 +25,7 @@ public:
 
 gnomonSegmentationCommand::gnomonSegmentationCommand(const QString& key) : d(new gnomonSegmentationCommandPrivate)
 {
-    loadPluginGroup("gnomonCellImageFromImage");
+    loadPluginGroup("cellImageFromImage");
 
     this->action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
 

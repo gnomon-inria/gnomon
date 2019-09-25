@@ -24,7 +24,7 @@ public:
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(const QString& key) : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    loadPluginGroup("gnomonCellComplexReader");
+    loadPluginGroup("cellComplexReader");
 
     this->action = gnomonCore::cellComplexReader::pluginFactory().create(key);
 

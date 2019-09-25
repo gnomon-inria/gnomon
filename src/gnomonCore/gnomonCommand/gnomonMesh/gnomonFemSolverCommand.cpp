@@ -35,7 +35,7 @@ public:
 
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
 {
-    loadPluginGroup("gnomonFemSolver");
+    loadPluginGroup("femSolver");
 
     this->action = gnomonCore::femSolver::pluginFactory().create(key);
 

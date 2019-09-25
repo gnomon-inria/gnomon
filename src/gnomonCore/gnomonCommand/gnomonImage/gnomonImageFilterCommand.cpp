@@ -33,7 +33,7 @@ public:
 
 gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
 {
-    loadPluginGroup("gnomonImageFilter");
+    loadPluginGroup("imageFilter");
 
     this->action = gnomonCore::imageFilter::pluginFactory().create(key);
 

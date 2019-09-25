@@ -32,7 +32,7 @@ public:
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(const QString& key) : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    loadPluginGroup("gnomonDataFrameReader");
+    loadPluginGroup("dataFrameReader");
 
     this->action = gnomonCore::dataFrameReader::pluginFactory().create(key);
 

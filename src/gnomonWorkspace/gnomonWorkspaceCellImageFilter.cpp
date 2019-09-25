@@ -76,7 +76,7 @@ QStringList gnomonWorkspaceCellImageFilterPrivate::keys(void) const
 
 gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonCellImageFilter");
+    loadPluginGroup("cellImageFilter");
     
     d = new gnomonWorkspaceCellImageFilterPrivate;
 

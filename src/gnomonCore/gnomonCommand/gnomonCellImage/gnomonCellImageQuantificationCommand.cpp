@@ -26,7 +26,7 @@ public:
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(const QString& key) : d(new gnomonCellImageQuantificationCommandPrivate)
 {
-    loadPluginGroup("gnomonCellImageQuantification");
+    loadPluginGroup("cellImageQuantification");
 
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(key);
 

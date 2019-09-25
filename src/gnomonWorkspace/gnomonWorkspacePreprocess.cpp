@@ -76,7 +76,7 @@ QStringList gnomonWorkspacePreprocessPrivate::keys(void) const
 
 gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonImageFilter");
+    loadPluginGroup("imageFilter");
 
     d = new gnomonWorkspacePreprocessPrivate;
 

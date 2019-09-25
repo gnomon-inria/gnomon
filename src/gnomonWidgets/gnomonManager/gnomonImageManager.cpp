@@ -47,7 +47,7 @@ gnomonImageManagerPrivate::gnomonImageManagerPrivate(QWidget *parent) : QScrollA
     this->setWidget(this->contents);
     this->setWidgetResizable(true);
 
-    loadPluginGroup("gnomonImagesSerieWriter");
+    loadPluginGroup("imagesSerieWriter");
 
     this->writer =  gnomonCore::imagesSerieWriter::pluginFactory().create(plugin_save);
 

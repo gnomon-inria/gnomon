@@ -80,7 +80,7 @@ QStringList gnomonWorkspaceSimulationPrivate::keys(void) const
 
 gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("gnomonFemSolver");
+    loadPluginGroup("femSolver");
 
     d = new gnomonWorkspaceSimulationPrivate;
 
