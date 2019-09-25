@@ -375,19 +375,19 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
         gnomonAbstractVisualization *v = this->formVisualization[key];
 
         if(v) {
-            // if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
-            //     for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
-            //         QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
-            //         forDeletion->widget()->disconnect();
-            //         delete forDeletion->widget();
-            //         delete forDeletion;
-            //     }
-            // } else {
+             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
+                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
+                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
+                     forDeletion->widget()->disconnect();
+                     delete forDeletion->widget();
+                     delete forDeletion;
+                 }
+             } else {
                 this->parameterLayouts[key] = new QFormLayout;
                 this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 
                 parent->addLayout(this->parameterLayouts[key]);
-             // }
+             }
 
             if (!this->formVisualizationPaneItems.contains(key)) {
                 this->refresh();
