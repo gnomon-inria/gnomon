@@ -534,13 +534,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d = new gnomonViewFormPrivate;
     d->q = this;
 
-    int stat;
-
-    //TODO: Script
-
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationCellComplex", &stat);
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationImage", &stat);
-    // dtkScriptInterpreterPython::instance()->interpret("import gnomonVisualizationPointCloud", &stat);
+    loadPluginGroup("visualizationCellComplex");
+    loadPluginGroup("visualizationImage");
+    loadPluginGroup("visualizationPointCloud");
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
     connect(d->renderer3D_button, SIGNAL(iconClicked()), this, SLOT(switchTo3D()));

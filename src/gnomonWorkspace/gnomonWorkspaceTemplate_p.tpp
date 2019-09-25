@@ -74,7 +74,7 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     combo_box->model()->sort(0);
 
     // TODO: Script
-    // this->command = new T(combo_box->currentText());
+    this->command = new T(combo_box->currentText());
 
     QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm)
     {
@@ -83,16 +83,17 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
             this->command = nullptr;
         }
         // TODO: Script
-        // this->command = new T(algorithm);
+        this->command = new T(algorithm);
         emit algorithmChanged(algorithm);
         this->configure(algorithm);
 
         // TODO: Script
-        // doc->setText(this->command->documentation());
+        doc->setText(this->command->documentation());
      });
 
     // TODO: Script
-    // doc->setText(this->command->documentation());
+
+    doc->setText(this->command->documentation());
 
     QVBoxLayout *pane_item_algorithm_layout = new QVBoxLayout;
     pane_item_algorithm_layout->addWidget(combo_box);
