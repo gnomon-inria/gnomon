@@ -94,20 +94,6 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
 
-//    dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
-//    dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
-//    menu_1->addItem(fa::circleo, "SubLevel 1-2");
-//    menu_1->addItem(fa::circleo, "SubLevel 1-3");
-//    menu_1->addSeparator();
-//    menu_1->addItem(fa::circleo, "SubLevel 1-4");
-//
-//    dtkWidgetsMenu *menu_2 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 2");
-//    menu_2->addItem(fa::circleo, "SubLevel 2-1");
-//
-//    dtkWidgetsMenu *menu_3 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 3");
-//    menu_3->addItem(fa::circleo, "Sublevel 3-1");
-//    menu_3->addItem(fa::circleo, "Sublevel 3-2");
-
     d->dashboard = new dtkWidgetsMenuBarContainer(this);
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
@@ -158,7 +144,6 @@ void gnomonWorkspacePreprocess::enter(void)
 {
     dtkApp->window()->menubar()->addMenu(d->source->menu());
     dtkApp->window()->menubar()->addMenu(d->target->menu());
-//    dtkApp->window()->menubar()->addMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 
@@ -166,7 +151,6 @@ void gnomonWorkspacePreprocess::leave(void)
 {
     dtkApp->window()->menubar()->removeMenu(d->source->menu());
     dtkApp->window()->menubar()->removeMenu(d->target->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 
