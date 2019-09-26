@@ -14,15 +14,18 @@
 
 #pragma once
 
-%module gnomonvisualization
+%module(directors="1") gnomonvisualization
 
 %include <dtkBase/dtkBase.i>
+%include <gnomonCore/gnomonCoreParameter.i>
 
-%import <dtkCore/dtkCore.i>
+ %import <dtkCore/dtkCore.i>
+ %import <gnomonCore/gnomonCore.i>
 
 %{
 
 #include <dtkImagingCore>
+#include <dtkCore>
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
@@ -37,6 +40,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
 %}
+
 
 %{
 // VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
@@ -55,6 +59,20 @@
 #include <vtkPythonUtil.h>
 
 %}
+
+%feature("autodoc","1");
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMONVISUALIZATION_EXPORT
+#define GNOMONVISUALIZATION_EXPORT
+
+// /////////////////////////////////////////////////////////////////
+// typemaps
+// /////////////////////////////////////////////////////////////////
+
 
 %typemap(out) vtkRenderer* {
 
@@ -218,12 +236,6 @@
 }
 
 
-// /////////////////////////////////////////////////////////////////
-// Macro undefinition
-// /////////////////////////////////////////////////////////////////
-
-#undef  GNOMONVISUALIZATION_EXPORT
-#define GNOMONVISUALIZATION_EXPORT
 
 // ///////////////////////////////////////////////////////////////////
 // Ignore rules
@@ -234,7 +246,6 @@
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
-
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
@@ -246,7 +257,6 @@
 %include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
-
 
 //
 // gnomonVisualization.i.in ends here
