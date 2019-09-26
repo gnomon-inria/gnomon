@@ -84,13 +84,10 @@ add_library(${PROJECT_NAME} SHARED
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 
