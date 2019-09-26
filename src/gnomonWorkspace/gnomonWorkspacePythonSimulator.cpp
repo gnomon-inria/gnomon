@@ -21,6 +21,9 @@
 #include <dtkScript>
 #include <dtkFonts>
 #include <dtkMacs>
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCodeEditorToolBar
@@ -89,6 +92,9 @@ public:
     dtkWidgetsMenu *menu_simulation = nullptr;
     dtkWidgetsMenu *menu_file = nullptr;
 
+public:
+    dtkWidgetsMenuBarContainer *dashboard;
+
     gnomonInterpreterJupyter *terminal;
 
 public:
@@ -115,33 +121,20 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
 
     d->editor = new dtkMacsWidget(this);
 
-    dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Dashboard inception
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
 
     dtkWidgetsParameterMenuBarGenerator menubar_generator(":pythonSimulator_menu.json", ":pythonSimulator_params.json");
-    menubar_generator.populate(menubar);
-
-    menubar->touch();
+    menubar_generator.populate(d->dashboard);
 
     d->parameters = menubar_generator.parameters();
 
-    if(menubar->menu("Ubiquitous Simulation Parameters")) {
-        d->menu_ubi_simulation = menubar->menu("Ubiquitous Simulation Parameters");
-    } else {
-        qWarning() << Q_FUNC_INFO << "Menu Ubiquitous Simulation does not exist";
-    }
-
-    if(menubar->menu("Files")) {
-        d->menu_file = menubar->menu("Files");
-    } else {
-        qWarning() << Q_FUNC_INFO << "Menu Files does not exist";
-    }
-
-    if(menubar->menu("Simulation")) {
-        d->menu_simulation = menubar->menu("Simulation");
-    } else {
-        qWarning() << Q_FUNC_INFO << "Menu Simulation does not exist";
-    }
-
+    d->dashboard->setFixedWidth(300);
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     d->parameters["python/load"]->setValue(settings.value("Python/load", ".").toString());
@@ -264,10 +257,12 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     splitter->addWidget(editor_widget);
     splitter->addWidget(viewer);
 
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
+    layout->addWidget(d->dashboard);
 }
 
 gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
@@ -278,22 +273,14 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 
 void gnomonWorkspacePythonSimulator::enter(void)
 {
-    dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
-    menubar->insertMenu(0, d->view->menu());
-    menubar->insertMenu(0, d->menu_file);
-    menubar->insertMenu(0, d->menu_simulation);
-    menubar->insertMenu(0, d->menu_ubi_simulation);
-    menubar->touch();
+    dtkApp->window()->menubar()->insertMenu(0, d->view->menu());
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePythonSimulator::leave(void)
 {
-    dtkWidgetsMenuBar *menubar = dtkApp->window()->menubar();
-    menubar->removeMenu(d->view->menu());
-    menubar->removeMenu(d->menu_file);
-    menubar->removeMenu(d->menu_simulation);
-    menubar->removeMenu(d->menu_ubi_simulation);
-    menubar->touch();
+    dtkApp->window()->menubar()->removeMenu(d->view->menu());
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePythonSimulator::apply(void)

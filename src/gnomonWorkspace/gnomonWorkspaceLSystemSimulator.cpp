@@ -179,26 +179,12 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
-    
-    dtkWidgetsMenu *menu_1 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 1");
-    dtkWidgetsMenuItem *menuitem_11 = menu_1->addItem(fa::circleo, "Cycle through background");
-    menu_1->addItem(fa::circleo, "SubLevel 1-2");
-    menu_1->addItem(fa::circleo, "SubLevel 1-3");
-    menu_1->addSeparator();
-    menu_1->addItem(fa::circleo, "SubLevel 1-4");
-
-    dtkWidgetsMenu *menu_2 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 2");
-    menu_2->addItem(fa::circleo, "SubLevel 2-1");
-
-    dtkWidgetsMenu *menu_3 = new dtkWidgetsMenu(fa::circlethin, "MainLevel 3");
-    menu_3->addItem(fa::circleo, "Sublevel 3-1");
-    menu_3->addItem(fa::circleo, "Sublevel 3-2");
 
     d->dashboard = new dtkWidgetsMenuBarContainer(this);
     d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << menu_1 << menu_2 << menu_3);
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu_);
     d->dashboard->setFixedWidth(300);
-    
+
 // /////////////////////////////////////////////////////////////////////////////
     
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -222,14 +208,12 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 void gnomonWorkspaceLSystemSimulator::enter(void)
 {
     dtkApp->window()->menubar()->addMenu(d->view->menu());
-    dtkApp->window()->menubar()->addMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceLSystemSimulator::leave(void)
 {
     dtkApp->window()->menubar()->removeMenu(d->view->menu());
-    dtkApp->window()->menubar()->removeMenu(d->menu_);
     dtkApp->window()->menubar()->touch();
 }
 

@@ -73,7 +73,6 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     }
     combo_box->model()->sort(0);
 
-    // TODO: Script
     this->command = new T(combo_box->currentText());
 
     QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm)
@@ -82,16 +81,12 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
             delete this->command;
             this->command = nullptr;
         }
-        // TODO: Script
         this->command = new T(algorithm);
         emit algorithmChanged(algorithm);
         this->configure(algorithm);
 
-        // TODO: Script
         doc->setText(this->command->documentation());
      });
-
-    // TODO: Script
 
     doc->setText(this->command->documentation());
 
@@ -110,8 +105,13 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     QWidget *pane_item_parameters = new QWidget;
     pane_item_parameters->setLayout(this->layout);
 
-    dtkWidgetsMenuItem *menu_algorithm = new dtkWidgetsMenuItem("Algorithm", pane_item_algorithm);
-    dtkWidgetsMenuItem *menu_parameters = new dtkWidgetsMenuItem("Parameters", pane_item_parameters);
+    dtkWidgetsMenuItemDIY *menu_algorithm = new dtkWidgetsMenuItemDIY("Algorithm");
+    menu_algorithm->addWidget(pane_item_algorithm);
+    menu_algorithm->setSizePolicy(QSizePolicy::Expanding);
+
+    dtkWidgetsMenuItemDIY *menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
+    menu_parameters->addWidget(pane_item_parameters);
+
     dtkWidgetsMenuItem *menu_button = new dtkWidgetsMenuItemDIY(this->workspace(), pane_item_button);
 
     dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Generic Gnomon Menu");

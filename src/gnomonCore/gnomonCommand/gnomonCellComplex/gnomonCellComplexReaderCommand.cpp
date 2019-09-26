@@ -14,8 +14,6 @@
 
 #include "gnomonCellComplexReaderCommand.h"
 
-#include <dtkScript>
-
 class gnomonCellComplexReaderCommandPrivate
 {
 public:

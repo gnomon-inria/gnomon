@@ -26,24 +26,16 @@
                 "uid":  "Files",
                 "icon": "cogs",
                 "advanced": false,
-                "contents": [
+                "contents":
+                [
                     {
-                        "group": {
-                            "uid":  "Files Parameters",
-                            "icon": "cogs",
-                            "advanced": false,
-                            "contents": [
-                                {
-                                    "parameter": {"uid": "python/load", "widget": "dtkWidgetsParameterFileBrowse",    "advanced": false}
-                                },
-                                {
-                                    "parameter": {"uid": "python/save", "widget": "dtkWidgetsParameterBoolPushButton",    "advanced": false}
-                                },
-                                {
-                                    "parameter": {"uid": "python/play", "widget": "dtkWidgetsParameterBoolPushButton", "advanced": false}
-                                }
-                            ]
-                        }
+                        "parameter": {"uid": "python/load", "widget": "dtkWidgetsParameterFileBrowse",    "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/save", "widget": "dtkWidgetsParameterBoolPushButton",    "advanced": false}
+                    },
+                    {
+                        "parameter": {"uid": "python/play", "widget": "dtkWidgetsParameterBoolPushButton", "advanced": false}
                     }
                 ]
             }
@@ -55,7 +47,7 @@
                 "advanced": false,
                 "contents": [
                     {
-                        "parameter": {"uid": "python/run", "widget": "dtkWidgetsParameterBoolPushButton",    "advanced": false}
+                        "parameter": {"uid": "python/run", "widget": "dtkWidgetsParameterBoolPushButton",  "advanced": false}
                     },
                     {
                         "parameter": {"uid": "python/step", "widget": "dtkWidgetsParameterBoolPushButton",    "advanced": false}
