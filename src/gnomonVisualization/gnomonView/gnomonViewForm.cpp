@@ -429,9 +429,7 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
 }
 
 void gnomonViewFormPrivate::refresh(void)
-{
-    this->view_menu->addItem(this->view_item);
-    
+{    
     for (const auto& key : this->formVisualization.keys()) {
         
         if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
@@ -516,6 +514,7 @@ void gnomonViewFormPrivate::refresh(void)
             this->formVisualizationPaneItems[key]->addWidget(contents);
 
             this->view_menu->addItem(this->formVisualizationPaneItems[key]);
+            this->view_menu->addItem(this->view_item);
         }
     }
 
@@ -600,6 +599,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     static int count = 0;
     
     d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
+    d->view_item->setShowTitle(false);
     
     connect(d->sync, &gnomonOverlayButton::iconClicked, [=] ()
     {
