@@ -110,8 +110,12 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     QWidget *pane_item_parameters = new QWidget;
     pane_item_parameters->setLayout(this->layout);
 
-    dtkWidgetsMenuItem *menu_algorithm = new dtkWidgetsMenuItem("Algorithm", pane_item_algorithm);
-    dtkWidgetsMenuItem *menu_parameters = new dtkWidgetsMenuItem("Parameters", pane_item_parameters);
+    dtkWidgetsMenuItemDIY *menu_algorithm = new dtkWidgetsMenuItemDIY("Algorithm");
+    menu_algorithm->addWidget(pane_item_algorithm);
+
+    dtkWidgetsMenuItemDIY *menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
+    menu_parameters->addWidget(pane_item_parameters);
+
     dtkWidgetsMenuItem *menu_button = new dtkWidgetsMenuItemDIY(this->workspace(), pane_item_button);
 
     dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Generic Gnomon Menu");
