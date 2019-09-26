@@ -175,7 +175,7 @@ public:
 
 gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
 {
-    QColor background_color = dtkThemesEngine::instance()->color("@bg");
+    QColor background_color = dtkThemesEngine::instance()->color("@bgalt");
 
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer2D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
@@ -212,6 +212,18 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     static int count = 0;
     
     this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View " + QString::number(count++));
+    
+// /////////////////////////////////////////////////////////////////////////////
+// 
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(dtkThemesEngine::instance(), &dtkThemesEngine::changed, [=] (void) -> void
+    {
+        QColor bg = dtkThemesEngine::instance()->color("@bgalt");
+            
+        this->renderer2D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
+        this->renderer2D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
+    });
 }
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
@@ -220,9 +232,8 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 
 void gnomonViewFormPrivate::exportToManager(void)
 {
-    for (const auto& key : this->forms.keys()) {
+    for (const auto& key : this->forms.keys())
         gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
-    }
 }
 
 QSize gnomonViewFormPrivate::sizeHint(void) const
@@ -301,27 +312,36 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
 void gnomonViewFormPrivate::clear(void)
 {
-    //TODO: clear parameter widget menu
-
     for (const auto& key : this->formVisualization.keys()) {
-         this->formVisualization[key]->disconnect();
-         this->formVisualization[key]->clearConnections();
-         this->formVisualization[key]->clear();
-         delete this->formVisualization[key];
-         this->parameterLayouts[key]->disconnect();
-         delete this->parameterLayouts[key];
-         this->formVisualizationPaneItems[key]->disconnect();
-         delete this->formVisualizationPaneItems[key];
+
+        qDebug() << Q_FUNC_INFO << key;
+        
+        this->formVisualization[key]->disconnect();
+        this->formVisualization[key]->clearConnections();
+        this->formVisualization[key]->clear();
+        delete this->formVisualization[key];
+        this->parameterLayouts[key]->disconnect();
+        delete this->parameterLayouts[key];
+        
+        this->view_menu->removeItem(this->formVisualizationPaneItems[key]);
+        this->view_menu->removeItem(view_item);
+         
+        this->formVisualizationPaneItems[key]->disconnect();
+        this->formVisualizationPaneItems[key]->clear();
+        
+        delete this->formVisualizationPaneItems[key];
     }
+    
     this->formVisualization.clear();
     this->forms.clear();
     this->parameterLayouts.clear();
-
     this->formVisualizationPaneItems.clear();
 
     this->empty = true;
 
-     q->render();
+    dtkApp->window()->menubar()->touch();
+    
+    q->render();
 }
 
 dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
@@ -330,7 +350,8 @@ dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
     {
         this->renderButton = new QPushButton("Render");
 
-        connect(this->renderButton, &QPushButton::clicked, [=] () {
+        connect(this->renderButton, &QPushButton::clicked, [=] ()
+        {
             for (const auto& key : this->formVisualization.keys()) {
                 gnomonAbstractVisualization *v = this->formVisualization[key];
                 if(v) {
@@ -353,9 +374,11 @@ dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
     this->renderButton->setCheckable(true);
     this->clearButton->setCheckable(true);
 
+    static int count = 0;
+    
     if(!this->paneItemButton) {
-        this->paneItemButton = new dtkWidgetsMenuItemDIY("View controls");
-        // this->paneItemButton->setShowTitle(false);
+        this->paneItemButton = new dtkWidgetsMenuItemDIY("View controls" + QString::number(count));
+        this->paneItemButton->setShowTitle(false);
     }
 
     this->paneItemButton->addWidget(this->renderButton);
@@ -368,14 +391,12 @@ dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
 
 void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QString& key)
 {
-    qDebug() << Q_FUNC_INFO << key;
-    
     if (this->formVisualization.contains(key)) {
 
         gnomonAbstractVisualization *v = this->formVisualization[key];
 
         if(v) {
-             if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
+             if ((this->parameterLayouts.contains(key)) && (this->parameterLayouts[key])) {
                  for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
                      QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
                      forDeletion->widget()->disconnect();
@@ -383,15 +404,15 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
                      delete forDeletion;
                  }
              } else {
+            
                 this->parameterLayouts[key] = new QFormLayout;
                 this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 
                 parent->addLayout(this->parameterLayouts[key]);
-             }
-
-            if (!this->formVisualizationPaneItems.contains(key)) {
-                this->refresh();
             }
+
+            if(!this->formVisualizationPaneItems.contains(key))
+                this->refresh();
 
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
 
@@ -409,18 +430,19 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
 
 void gnomonViewFormPrivate::refresh(void)
 {
+    this->view_menu->addItem(this->view_item);
+    
     for (const auto& key : this->formVisualization.keys()) {
         
         if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
 
-            qDebug() << Q_FUNC_INFO << key << "created";
-
             static int count = 0;
             
             this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(QString("Form pane") + QString::number(count++));
-            // this->formVisualizationPaneItems[key]->setShowTitle(false);
+            this->formVisualizationPaneItems[key]->setShowTitle(false);
 
             QComboBox *combo_box = new QComboBox;
+
             QWidget *contents = new QWidget;
             
             QStringList combo_box_keys = {};
@@ -447,6 +469,7 @@ void gnomonViewFormPrivate::refresh(void)
 
                 if (this->formVisualization[key]) {
                     this->formVisualization[key]->clear();
+                    // TODO:
                     delete this->formVisualization[key];
                     this->formVisualization[key] = nullptr;
                 }
@@ -492,16 +515,13 @@ void gnomonViewFormPrivate::refresh(void)
             this->formVisualizationPaneItems[key]->addWidget(combo_box);
             this->formVisualizationPaneItems[key]->addWidget(contents);
 
-            this->formVisualizationPaneItems[key]->widget()->show();
-            
             this->view_menu->addItem(this->formVisualizationPaneItems[key]);
-
-            qDebug() << Q_FUNC_INFO << key << "added";
         }
     }
 
-    this->view_menu->addItem(this->view_item);
     this->view_menu->addItem(this->paneItemButton);
+    
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonViewFormPrivate::updateTimeSlider(void)
@@ -580,7 +600,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     static int count = 0;
     
     d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
-    // d->view_item->setShowTitle(false);
     
     connect(d->sync, &gnomonOverlayButton::iconClicked, [=] ()
     {
@@ -620,7 +639,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         d->empty = false;
         this->render();
     });
-
 
     this->setAcceptDrops(true);
     this->switchTo2D();
