@@ -744,5 +744,7 @@ namespace std {
 %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
 %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
+%pythoncode "gnomonCore/gnomonPlugin.py"
+
 //
 // gnomonCore.i.in ends here
