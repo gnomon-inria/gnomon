@@ -35,8 +35,8 @@ public:
 public:
     gnomonViewForm *browse_view;
 
-public:
-    dtkWidgetsMenuBarContainer *dashboard;
+//public:
+//    dtkWidgetsMenuBarContainer *dashboard;
 };
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
@@ -56,14 +56,14 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(gnomonToolBar::browser_color);
 
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Dashboard inception
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->dashboard = new dtkWidgetsMenuBarContainer(this);
-    d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->browse_view->menu());
-    d->dashboard->setFixedWidth(300);
+//// /////////////////////////////////////////////////////////////////////////////
+//// NOTE: Dashboard inception
+//// /////////////////////////////////////////////////////////////////////////////
+//
+//    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+//    d->dashboard->navigator->deleteLater();
+//    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->browse_view->menu());
+//    d->dashboard->setFixedWidth(300);
 
 // /////////////////////////////////////////////////////////////////////////////
     
@@ -94,14 +94,14 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
     QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(finder);
     splitter->addWidget(d->browse_view);
+    splitter->addWidget(finder);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
-    layout->addWidget(d->dashboard);
+//    layout->addWidget(d->dashboard);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
@@ -111,13 +111,13 @@ gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 
 void gnomonWorkspaceBrowser::enter(void)
 {
-//    dtkApp->window()->menubar()->addMenu(d->browse_view->menu());
+    dtkApp->window()->menubar()->addMenu(d->browse_view->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceBrowser::leave(void)
 {
-//    dtkApp->window()->menubar()->removeMenu(d->browse_view->menu());
+    dtkApp->window()->menubar()->removeMenu(d->browse_view->menu());
     dtkApp->window()->menubar()->touch();
 }
 
