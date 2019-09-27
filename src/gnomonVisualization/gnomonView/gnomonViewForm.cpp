@@ -210,19 +210,20 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 // /////////////////////////////////////////////////////////////////////////////
 
     static int count = 0;
-    
+
     this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View " + QString::number(count++));
-    
+
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
     connect(dtkThemesEngine::instance(), &dtkThemesEngine::changed, [=] (void) -> void
     {
         QColor bg = dtkThemesEngine::instance()->color("@bgalt");
-            
+
         this->renderer2D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
-        this->renderer2D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
+        this->renderer3D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
+        this->GetInteractor()->Render();
     });
 }
 
@@ -315,23 +316,23 @@ void gnomonViewFormPrivate::clear(void)
     for (const auto& key : this->formVisualization.keys()) {
 
         qDebug() << Q_FUNC_INFO << key;
-        
+
         this->formVisualization[key]->disconnect();
         this->formVisualization[key]->clearConnections();
         this->formVisualization[key]->clear();
         delete this->formVisualization[key];
         this->parameterLayouts[key]->disconnect();
         delete this->parameterLayouts[key];
-        
+
         this->view_menu->removeItem(this->formVisualizationPaneItems[key]);
         this->view_menu->removeItem(view_item);
-         
+
         this->formVisualizationPaneItems[key]->disconnect();
         this->formVisualizationPaneItems[key]->clear();
-        
+
         delete this->formVisualizationPaneItems[key];
     }
-    
+
     this->formVisualization.clear();
     this->forms.clear();
     this->parameterLayouts.clear();
@@ -340,7 +341,7 @@ void gnomonViewFormPrivate::clear(void)
     this->empty = true;
 
     dtkApp->window()->menubar()->touch();
-    
+
     q->render();
 }
 
@@ -370,12 +371,12 @@ dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
             this->clear();
         });
      }
-     
+
     this->renderButton->setCheckable(true);
     this->clearButton->setCheckable(true);
 
     static int count = 0;
-    
+
     if(!this->paneItemButton) {
         this->paneItemButton = new dtkWidgetsMenuItemDIY("View controls" + QString::number(count));
         this->paneItemButton->setShowTitle(false);
@@ -385,7 +386,7 @@ dtkWidgetsMenu *gnomonViewFormPrivate::menu(void)
     this->paneItemButton->addWidget(this->clearButton);
 
     this->refresh();
-    
+
     return this->view_menu;
 }
 
@@ -404,7 +405,7 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
                      delete forDeletion;
                  }
              } else {
-            
+
                 this->parameterLayouts[key] = new QFormLayout;
                 this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 
@@ -429,20 +430,20 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
 }
 
 void gnomonViewFormPrivate::refresh(void)
-{    
+{
     for (const auto& key : this->formVisualization.keys()) {
-        
+
         if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
 
             static int count = 0;
-            
+
             this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(QString("Form pane") + QString::number(count++));
             this->formVisualizationPaneItems[key]->setShowTitle(false);
 
             QComboBox *combo_box = new QComboBox;
 
             QWidget *contents = new QWidget;
-            
+
             QStringList combo_box_keys = {};
 
             if (key == "gnomonCellComplex") {
@@ -519,7 +520,7 @@ void gnomonViewFormPrivate::refresh(void)
     }
 
     this->view_menu->addItem(this->paneItemButton);
-    
+
     dtkApp->window()->menubar()->touch();
 }
 
@@ -597,10 +598,10 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->addWidget(d->time_slider, 1, 0, 1, 3);
 
     static int count = 0;
-    
+
     d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
     d->view_item->setShowTitle(false);
-    
+
     connect(d->sync, &gnomonOverlayButton::iconClicked, [=] ()
     {
         d->sync->toggle(!d->sync->isToggled());
