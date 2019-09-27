@@ -86,7 +86,7 @@ gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
     this->action_preprocess    = image_menu->addAction("Preprocess");
     this->action_registration  = image_menu->addAction("Time Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
-    this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
+    this->action_pointCloudFromImage  = image_menu->addAction("Cell Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
     this->action_cellImageQuantification  = image_menu->addAction("Cell Quantification");
 
@@ -479,7 +479,7 @@ void gnomonToolBar::onCreateMeshFromImage(void)
 
 void gnomonToolBar::onCreatePointCloudFromImage(void)
 {
-    d->createWorkspace(meshFromImage_color, "Nuclei Detection");
+    d->createWorkspace(meshFromImage_color, "Cell Detection");
 
     emit createPointCloudFromImage();
 }

@@ -44,6 +44,7 @@ def gnomon_declare_plugins(path):
 
     for module, file in zip(path_form, script):
         with open(file) as f:
+            print("  --> Parsing "+str(file))
             datafile = f.readlines()
             for line in datafile:
                 if 'class' in line and 'gnomonAbstract' in line:

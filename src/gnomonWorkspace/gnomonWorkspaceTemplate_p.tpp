@@ -111,10 +111,13 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
 
     dtkWidgetsMenuItemDIY *menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
     menu_parameters->addWidget(pane_item_parameters);
+    menu_parameters->setSizePolicy(QSizePolicy::Expanding);
 
-    dtkWidgetsMenuItem *menu_button = new dtkWidgetsMenuItemDIY(this->workspace(), pane_item_button);
+    dtkWidgetsMenuItemDIY *menu_button = new dtkWidgetsMenuItemDIY(this->workspace(), pane_item_button);
+    menu_button->setShowTitle(false);
+    menu_button->setSizePolicy(QSizePolicy::Expanding);
 
-    dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Generic Gnomon Menu");
+    dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, this->workspace());
     pane->addItem(menu_algorithm);
     pane->addItem(menu_parameters);
     pane->addItem(menu_button);

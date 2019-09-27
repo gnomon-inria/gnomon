@@ -77,7 +77,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record(             "Fusion", creator<gnomonWorkspaceFusion>);
     dtk::widgets::workspace::pluginFactory().record(            "LSystem", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record(    "Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
-    dtk::widgets::workspace::pluginFactory().record(   "Nuclei Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record(     "Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
     dtk::widgets::workspace::pluginFactory().record(             "Python", creator<gnomonWorkspacePythonSimulator>);
     dtk::widgets::workspace::pluginFactory().record(       "Registration", creator<gnomonWorkspaceRegistration>);
     dtk::widgets::workspace::pluginFactory().record(       "Segmentation", creator<gnomonWorkspaceSegmentation>);

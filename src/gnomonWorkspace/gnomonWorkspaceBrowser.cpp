@@ -45,6 +45,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     d->finder = new gnomonFinder(this);
     d->finder->switchToTreeView();
+    d->finder->setFixedWidth(300);
 
     d->path = new gnomonFinderPathBar(this);
     d->path->setPath(QDir::currentPath());

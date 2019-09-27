@@ -67,7 +67,7 @@ gnomonWorkspacePointCloudFromImagePrivate::~gnomonWorkspacePointCloudFromImagePr
 
 QString gnomonWorkspacePointCloudFromImagePrivate::workspace(void) const
 {
-    return "Nuclei Detection";
+    return "Cell Detection";
 }
 
 QStringList gnomonWorkspacePointCloudFromImagePrivate::keys(void) const
