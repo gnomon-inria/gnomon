@@ -205,6 +205,8 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
 
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
