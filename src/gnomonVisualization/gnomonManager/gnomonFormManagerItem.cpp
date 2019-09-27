@@ -22,15 +22,17 @@ gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap&
 {
     this->parent = parent;
 
+    int size  = 100;
+    int pos   = size - 20;
+
     this->button_destroy = new gnomonItemButton(color, fa::times, this);
-    this->button_destroy->move(79, 5);
+    this->button_destroy->move(pos, pos);
     this->button_destroy->setVisible(false);
 
     this->button_save = new gnomonItemButton(color, fa::save, this);
-    this->button_save->move(5, 5);
+    this->button_save->move(5, pos);
     this->button_save->setVisible(false);
 
-    int size  = 100;
     int space =   3;
 
     this->image = thumbnail;
@@ -59,13 +61,13 @@ gnomonFormManagerItem::gnomonFormManagerItem(const QColor& color, const QPixmap&
         this->transparent_thumbnail = pix;
         this->transparent_thumbnail.fill();
     } else {
-    
+
         this->thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         this->transparent_thumbnail = thumbnail.scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         this->transparent_thumbnail.fill();
     }
-    
+
     QPainter painter;
     painter.begin(&transparent_thumbnail);
     painter.setOpacity(0.5);
@@ -117,7 +119,7 @@ void gnomonFormManagerItem::mousePressEvent(QMouseEvent *)
         drag->setHotSpot(QPoint(drag->pixmap().width()/2, drag->pixmap().height()/2));
 
         Qt::DropAction dropAction = drag->exec();
-        
+
         Q_UNUSED(dropAction);
 
     } else {
