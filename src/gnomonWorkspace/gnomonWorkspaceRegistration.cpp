@@ -151,6 +151,7 @@ void gnomonWorkspaceRegistration::leave(void)
 {
     foreach(gnomonViewForm *form, d->sources_layout->views())
         dtkApp->window()->menubar()->removeMenu(form->menu());
+    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
