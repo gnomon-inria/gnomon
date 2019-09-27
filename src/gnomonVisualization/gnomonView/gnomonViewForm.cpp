@@ -205,6 +205,8 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
 
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -239,7 +241,7 @@ void gnomonViewFormPrivate::exportToManager(void)
 
 QSize gnomonViewFormPrivate::sizeHint(void) const
 {
-    return QSize(800, 600);
+    return QSize(1200, 800);
 }
 
 void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
@@ -431,6 +433,8 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
 
 void gnomonViewFormPrivate::refresh(void)
 {
+    this->view_menu->removeItem(this->paneItemButton);
+
     for (const auto& key : this->formVisualization.keys()) {
 
         if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {

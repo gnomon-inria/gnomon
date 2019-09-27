@@ -8,6 +8,8 @@ import re
 from functools import wraps
 from pkg_resources import iter_entry_points
 
+from setuptools import findall
+
 import gnomoncore
 
 __PLUGINS__ = []
@@ -31,6 +33,28 @@ def import_plugins(file, excludes=[]):
 def load_plugin_group(group_name):
     for entry_point in iter_entry_points(group=group_name, name=None):
         importlib.import_module(entry_point.module_name)
+
+def gnomon_declare_plugins(path):
+    script = findall(path)
+    script = [f for f in script if '.pyc' not in f and '__init__' not in f]
+
+    module_dict = {}
+
+    path_form = [f.replace('/', '.').replace('src.', '') for f in script]
+
+    for module, file in zip(path_form, script):
+        with open(file) as f:
+            datafile = f.readlines()
+            for line in datafile:
+                if 'class' in line and 'gnomonAbstract' in line:
+                    cls = line.split('gnomonAbstract')[1].split(')')[0]
+                    name = line.split('class ')[1].split('(')[0]
+                    cls = cls[0].lower()+cls[1:]
+                    if cls not in module_dict.keys():
+                        module_dict[cls] = []
+                    module_dict[cls].append(name+' = ' + module.replace('.py', ''))
+
+    return module_dict
 
 def gnomonParametric(cls):
     # -----------------------------------------------------
