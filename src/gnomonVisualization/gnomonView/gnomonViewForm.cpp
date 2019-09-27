@@ -147,6 +147,7 @@ signals:
 
 public slots:
     void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
+    void addFormMenu(const QString& key);
     void refresh(void);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -159,9 +160,10 @@ public:
 
     QMap<QString, QFormLayout *> parameterLayouts;
 
+    QMap<QString, dtkWidgetsMenu *> formVisualizationMenus;
     QMap<QString, dtkWidgetsMenuItemDIY *> formVisualizationPaneItems;
 
-    dtkWidgetsMenuItemDIY *view_item;
+//    dtkWidgetsMenuItemDIY *view_item;
     dtkWidgetsMenuItemDIY *paneItemButton = nullptr;
 
 public:
@@ -212,7 +214,6 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 // /////////////////////////////////////////////////////////////////////////////
 
     static int count = 0;
-
     this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View " + QString::number(count++));
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -326,18 +327,24 @@ void gnomonViewFormPrivate::clear(void)
         this->parameterLayouts[key]->disconnect();
         delete this->parameterLayouts[key];
 
-        this->view_menu->removeItem(this->formVisualizationPaneItems[key]);
-        this->view_menu->removeItem(view_item);
+        this->formVisualizationMenus[key]->removeItem(this->formVisualizationPaneItems[key]);
 
         this->formVisualizationPaneItems[key]->disconnect();
         this->formVisualizationPaneItems[key]->clear();
-
         delete this->formVisualizationPaneItems[key];
+
+        this->view_menu->removeMenu(this->formVisualizationMenus[key]);
+//        this->view_menu->removeItem(view_item);
+
+        this->formVisualizationMenus[key]->disconnect();
+        this->formVisualizationMenus[key]->clear();
+        delete this->formVisualizationMenus[key];
     }
 
     this->formVisualization.clear();
     this->forms.clear();
     this->parameterLayouts.clear();
+    this->formVisualizationMenus.clear();
     this->formVisualizationPaneItems.clear();
 
     this->empty = true;
@@ -414,9 +421,6 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
                 parent->addLayout(this->parameterLayouts[key]);
             }
 
-            if(!this->formVisualizationPaneItems.contains(key))
-                this->refresh();
-
             QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
 
             for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
@@ -431,101 +435,117 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
     this->refresh();
 }
 
+void gnomonViewFormPrivate::addFormMenu(const QString& key)
+{
+    if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key]))
+    {
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::circlethin, key);
+        this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
+
+        this->formVisualizationPaneItems[key]->setShowTitle(false);
+        this->formVisualizationMenus[key]->addItem(this->formVisualizationPaneItems[key]);
+
+        QComboBox *combo_box = new QComboBox;
+
+        QWidget *contents = new QWidget;
+
+        QStringList combo_box_keys = {};
+
+        if (key == "gnomonCellComplex") {
+            combo_box_keys = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
+        } else if (key == "gnomonCellImage") {
+            combo_box_keys = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
+        } else if (key == "gnomonImage") {
+            combo_box_keys = gnomonVisualization::visualizationImage::pluginFactory().keys();
+        } else if (key == "gnomonMesh") {
+            combo_box_keys = gnomonVisualization::visualizationMesh::pluginFactory().keys();
+        } else if (key == "gnomonPointCloud") {
+            combo_box_keys = gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
+        }
+        for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
+            combo_box->addItem(*it);
+        }
+        combo_box->model()->sort(0);
+
+        connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu)
+        {
+            q->switchTo3D();
+
+            if (this->formVisualization[key]) {
+                this->formVisualization[key]->clear();
+                // TODO:
+                delete this->formVisualization[key];
+                this->formVisualization[key] = nullptr;
+            }
+            if (key == "gnomonCellComplex") {
+                this->formVisualization[key] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
+                gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *)this->forms[key];
+                formVisualizationCellComplex->setCellComplex(cellComplex);
+                formVisualizationCellComplex->update();
+            } else if (key == "gnomonCellImage") {
+                this->formVisualization[key] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
+                gnomonCellImageSeries *cellImage = (gnomonCellImageSeries *)this->forms[key];
+                formVisualizationCellImage->setCellImage(cellImage);
+                formVisualizationCellImage->update();
+            } else if (key == "gnomonImage") {
+                this->formVisualization[key] = gnomonVisualization::visualizationImage::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)this->formVisualization[key];
+                gnomonImageSeries *image = (gnomonImageSeries *)this->forms[key];
+                formVisualizationImage->setImage(image);
+                formVisualizationImage->update();
+            } else if (key == "gnomonMesh") {
+                this->formVisualization[key] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
+                gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
+                formVisualizationMesh->setMesh((gnomonMeshSeries *)mesh->current());
+                formVisualizationMesh->update();
+            } else if (key == "gnomonPointCloud") {
+                this->formVisualization[key] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)this->formVisualization[key];
+                gnomonPointCloudSeries *pointCloud = (gnomonPointCloudSeries *)this->forms[key];
+                formVisualizationPointCloud->setPointCloud(pointCloud);
+                formVisualizationPointCloud->update();
+            }
+
+            this->configure(formVisualizationPaneItems[key], key);
+        });
+
+        this->formVisualizationPaneItems[key]->addWidget(combo_box);
+        this->formVisualizationPaneItems[key]->addWidget(contents);
+
+        qDebug()<<Q_FUNC_INFO<<"Insert new menu "<<key;
+
+//        this->formVisualizationMenus[key]->addItem(this->view_item);
+        this->view_menu->addMenu(this->formVisualizationMenus[key]);
+
+        dtkApp->window()->menubar()->touch();
+    }
+
+}
+
 void gnomonViewFormPrivate::refresh(void)
 {
     this->view_menu->removeItem(this->paneItemButton);
 
-    for (const auto& key : this->formVisualization.keys()) {
+    for (const auto& menu : this->view_menu->menus()) {
+        this->view_menu->removeMenu(menu);
+    }
 
-        if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
-
-            static int count = 0;
-
-            this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(QString("Form pane") + QString::number(count++));
-            this->formVisualizationPaneItems[key]->setShowTitle(false);
-
-            QComboBox *combo_box = new QComboBox;
-
-            QWidget *contents = new QWidget;
-
-            QStringList combo_box_keys = {};
-
-            if (key == "gnomonCellComplex") {
-                combo_box_keys = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
-            } else if (key == "gnomonCellImage") {
-                combo_box_keys = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
-            } else if (key == "gnomonImage") {
-                combo_box_keys = gnomonVisualization::visualizationImage::pluginFactory().keys();
-            } else if (key == "gnomonMesh") {
-                combo_box_keys = gnomonVisualization::visualizationMesh::pluginFactory().keys();
-            } else if (key == "gnomonPointCloud") {
-                combo_box_keys = gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
-            }
-            for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
-                combo_box->addItem(*it);
-            }
-            combo_box->model()->sort(0);
-
-            connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu)
-            {
-                q->switchTo3D();
-
-                if (this->formVisualization[key]) {
-                    this->formVisualization[key]->clear();
-                    // TODO:
-                    delete this->formVisualization[key];
-                    this->formVisualization[key] = nullptr;
-                }
-                if (key == "gnomonCellComplex") {
-                    this->formVisualization[key] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[key];
-                    gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *)this->forms[key];
-                    formVisualizationCellComplex->setCellComplex(cellComplex);
-                    formVisualizationCellComplex->update();
-                } else if (key == "gnomonCellImage") {
-                    this->formVisualization[key] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[key];
-                    gnomonCellImageSeries *cellImage = (gnomonCellImageSeries *)this->forms[key];
-                    formVisualizationCellImage->setCellImage(cellImage);
-                    formVisualizationCellImage->update();
-                } else if (key == "gnomonImage") {
-                    this->formVisualization[key] = gnomonVisualization::visualizationImage::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)this->formVisualization[key];
-                    gnomonImageSeries *image = (gnomonImageSeries *)this->forms[key];
-                    formVisualizationImage->setImage(image);
-                    formVisualizationImage->update();
-                } else if (key == "gnomonMesh") {
-                    this->formVisualization[key] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
-                    gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
-                    formVisualizationMesh->setMesh((gnomonMeshSeries *)mesh->current());
-                    formVisualizationMesh->update();
-                } else if (key == "gnomonPointCloud") {
-                    this->formVisualization[key] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)this->formVisualization[key];
-                    gnomonPointCloudSeries *pointCloud = (gnomonPointCloudSeries *)this->forms[key];
-                    formVisualizationPointCloud->setPointCloud(pointCloud);
-                    formVisualizationPointCloud->update();
-                }
-                this->configure(formVisualizationPaneItems[key], key);
-            });
-
-            this->formVisualizationPaneItems[key]->addWidget(combo_box);
-            this->formVisualizationPaneItems[key]->addWidget(contents);
-
-            this->view_menu->addItem(this->formVisualizationPaneItems[key]);
-            this->view_menu->addItem(this->view_item);
-        }
+    for (const auto& key : this->formVisualizationMenus.keys()) {
+        this->view_menu->addMenu(this->formVisualizationMenus[key]);
     }
 
     this->view_menu->addItem(this->paneItemButton);
 
     dtkApp->window()->menubar()->touch();
+
 }
 
 void gnomonViewFormPrivate::updateTimeSlider(void)
@@ -603,8 +623,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     static int count = 0;
 
-    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
-    d->view_item->setShowTitle(false);
+//    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
+//    d->view_item->setShowTitle(false);
 
     connect(d->sync, &gnomonOverlayButton::iconClicked, [=] ()
     {
@@ -636,7 +656,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     });
 
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
-        d->configure(d->view_item, key);
+        d->addFormMenu(key);
+        d->configure(d->formVisualizationPaneItems[key], key);
         d->updateTimeSlider();
         if (d->empty) {
             d->renderer3D->ResetCamera();
