@@ -1,6 +1,24 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonFemSolverCommand.h"
 
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonFemSolverCommandPrivate
 {
@@ -11,15 +29,13 @@ public:
     gnomonMeshSeries* mesh = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
 {
-    QString command = "import gnomonFemSolver";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("femSolver");
 
     this->action = gnomonCore::femSolver::pluginFactory().create(key);
 
@@ -65,3 +81,6 @@ QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) co
 {
     return this->action->parameters();
 }
+
+//
+// gnomonFemSolverCommand.cpp ends here

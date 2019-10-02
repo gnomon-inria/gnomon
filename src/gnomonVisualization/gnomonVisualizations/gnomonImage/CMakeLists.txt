@@ -12,11 +12,9 @@
 ##
 ### Code:
 
-
 ## #################################################################
 ## Sources
 ## #################################################################
-
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonAbstractVisualizationImage.h
@@ -26,12 +24,10 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonVisualizationImageChannelBlending
     gnomonVisualizationImageChannelBlending.h)
 
-
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonAbstractVisualizationImage.cpp
     gnomonVisualizationImage.cpp
     gnomonVisualizationImageChannelBlending.cpp)
-
 
 ######################################################################
 ### CMakeLists.txt ends here

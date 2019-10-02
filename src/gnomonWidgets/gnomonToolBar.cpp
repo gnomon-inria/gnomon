@@ -12,11 +12,11 @@
 
 // Code:
 
+#include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
 
-#include "gnomonItemButton.h"
-
-#include <gnomonFonts>
+#include <dtkFonts>
+#include <dtkThemes>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonToolBarButton
@@ -52,9 +52,6 @@ protected:
     void mousePressEvent(QMouseEvent *);
 
 private:
-    gnomonFontAwesome *font = nullptr;
-
-private:
     QMenu *menu;
     QAction *action_fusion;
     QAction *action_lsystem;
@@ -73,36 +70,35 @@ private:
 
 gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
 {
-    this->font = new gnomonFontAwesome(this);
-    this->font->initFontAwesome();
-    this->font->setDefaultOption("color", QColor("#ffffff"));
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", QColor("#ffffff"));
 
     this->setAlignment(Qt::AlignCenter);
-    this->setPixmap(this->font->icon(fa::plussquare).pixmap(32, 32));
+    this->setPixmap(dtkFontAwesome::instance()->icon(fa::plussquare).pixmap(32, 32));
     this->setFixedWidth(32);
 
     this->menu = new QMenu(this);
     this->menu->setStyleSheet("QMenu::item {padding: 2px 20px 2px 30px; border: 1px solid transparent; spacing: 10px; height: 50px; width: 300px; font-size: 16pt;} QMenu::icon {width: 50px; height:50px;}");
 
-    QMenu * image_menu = this->menu->addMenu(this->font->icon(fa::image),"Image Processing");
+    QMenu * image_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::image),"Image Processing");
 
     this->action_fusion        = image_menu->addAction("Image Fusion");
     this->action_preprocess    = image_menu->addAction("Preprocess");
     this->action_registration  = image_menu->addAction("Time Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
-    this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
+    this->action_pointCloudFromImage  = image_menu->addAction("Cell Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
     this->action_cellImageQuantification  = image_menu->addAction("Cell Analysis");
 
-    QMenu * mesh_menu = this->menu->addMenu(this->font->icon(fa::play),"Meshing");
+    QMenu * mesh_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::play),"Meshing");
 
     this->action_cellComplexFromCellImage  = mesh_menu->addAction("Cell Reconstruction");
     this->action_meshFromImage = mesh_menu->addAction("Surface Meshing");
 
-//    QMenu * tree_menu = this->menu->addMenu(this->font->icon(fa::sitemap), "Tree Processing");
-//    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
+    QMenu * tree_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::sitemap), "Tree Processing");
+    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
 
-    QMenu * simu_menu = this->menu->addMenu(this->font->icon(fa::sync),"Simulation");
+    QMenu * simu_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::lock), "Simulation");
     this->action_simulation    = simu_menu->addAction("FEM Simulation");
     this->action_lsystem       = simu_menu->addAction("LSystem Simulator");
     this->action_python_simulation = simu_menu->addAction("Python Model");
@@ -229,18 +225,15 @@ private:
 class gnomonToolBarSeparator : public QLabel
 {
 public:
-    gnomonToolBarSeparator(QWidget *parent) : QLabel(parent) {
-        this->font = new gnomonFontAwesome(this);
-        this->font->initFontAwesome();
-        this->font->setDefaultOption("color", QColor("#777777"));
+    gnomonToolBarSeparator(QWidget *parent) : QLabel(parent)
+    {
+        dtkFontAwesome::instance()->initFontAwesome();
+        dtkFontAwesome::instance()->setDefaultOption("color", QColor("#777777"));
 
         this->setAlignment(Qt::AlignCenter);
-        this->setPixmap(this->font->icon(fa::chevronright).pixmap(32, 32));
+        this->setPixmap(dtkFontAwesome::instance()->icon(fa::chevronright).pixmap(32, 32));
         this->setFixedWidth(32);
     }
-
-private:
-    gnomonFontAwesome *font = nullptr;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -486,7 +479,7 @@ void gnomonToolBar::onCreateMeshFromImage(void)
 
 void gnomonToolBar::onCreatePointCloudFromImage(void)
 {
-    d->createWorkspace(meshFromImage_color, "Nuclei Detection");
+    d->createWorkspace(meshFromImage_color, "Cell Detection");
 
     emit createPointCloudFromImage();
 }

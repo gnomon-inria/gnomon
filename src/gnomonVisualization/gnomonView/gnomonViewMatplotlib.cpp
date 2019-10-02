@@ -14,14 +14,16 @@
 
 #include "gnomonViewMatplotlib.h"
 
+#include <dtkThemes>
+
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
 
 #include <gnomonCore>
-#include <gnomonFonts>
-#include <gnomonStyle>
 #include <gnomonWidgets>
+
+#include "gnomonManager/gnomonFormManager.h"
 
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 #include "gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h"
@@ -29,7 +31,8 @@
 #include "gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h"
 
 
-#include <dtkScript>
+//TODO: Script
+//#include <dtkScript>
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -71,16 +74,17 @@ public:
     QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
 public:
-    gnomonOverlayPaneItem *paneItemButton = nullptr;
+    // gnomonOverlayPaneItem *paneItemButton = nullptr;
+
     QPushButton *renderButton = nullptr;
 
     QMap<QString, QFormLayout *> parameterLayouts;
-    QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
+    // QMap<QString, gnomonOverlayPaneItem *> formVisualizationPaneItems;
 
-    gnomonOverlayPane *formVisualizationPane = nullptr;
+    // gnomonOverlayPane *formVisualizationPane = nullptr;
 
 public:
-    gnomonOverlayPane *pane(QWidget *parent);
+    // gnomonOverlayPane *pane(QWidget *parent);
 
 public slots:
     void configure(QWidget *parent, const QString& key);
@@ -129,15 +133,16 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
         }
     }
 
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
-    QString figure_statement = "figure = plt.figure("+figure_number+")";
-    dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
-    QString save_statement = "figure.savefig('"+export_file_path+"')";
-    dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+    //TODO: Script
+    // int stat;
+    // dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
+    // QString figure_statement = "figure = plt.figure("+figure_number+")";
+    // dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
+    // QString save_statement = "figure.savefig('"+export_file_path+"')";
+    // dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
+    // dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
 
 }
 
@@ -154,70 +159,70 @@ void gnomonViewMatplotlibPrivate::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
-gnomonOverlayPane *gnomonViewMatplotlibPrivate::pane(QWidget *parent)
-{
-    if(!this->formVisualizationPane) {
-        this->formVisualizationPane = new gnomonOverlayPane(parent);
-    }
+// gnomonOverlayPane *gnomonViewMatplotlibPrivate::pane(QWidget *parent)
+// {
+//     if(!this->formVisualizationPane) {
+//         this->formVisualizationPane = new gnomonOverlayPane(parent);
+//     }
 
-    if(!this->renderButton) {
-        this->renderButton = new QPushButton("Plot",parent);
-    }
-    this->renderButton->setCheckable(true);
+//     if(!this->renderButton) {
+//         this->renderButton = new QPushButton("Plot",parent);
+//     }
+//     this->renderButton->setCheckable(true);
 
-    if(!this->paneItemButton) {
-        this->paneItemButton = new gnomonOverlayPaneItem(parent);
-    }
-    this->paneItemButton->setTitle("View Form");
-    this->paneItemButton->addWidget(this->renderButton);
-    this->paneItemButton->toggle();
+//     if(!this->paneItemButton) {
+//         this->paneItemButton = new gnomonOverlayPaneItem(parent);
+//     }
+//     this->paneItemButton->setTitle("View Form");
+//     this->paneItemButton->addWidget(this->renderButton);
+//     this->paneItemButton->toggle();
 
-    this->refresh();
-    this->formVisualizationPane->toggle();
+//     this->refresh();
+//     this->formVisualizationPane->toggle();
 
-    return this->formVisualizationPane;
-}
+//     return this->formVisualizationPane;
+// }
 
 void gnomonViewMatplotlibPrivate::configure(QWidget *parent, const QString& key)
 {
-    if (this->formVisualization.contains(key)) {
-        gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
-        if(v) {
-            if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
-                for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
-                    QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
-                    forDeletion->widget()->disconnect();
-                    delete forDeletion->widget();
-                    delete forDeletion;
-                }
-            } else {
-                this->parameterLayouts[key] = new QFormLayout;
-                this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-            }
+    // if (this->formVisualization.contains(key)) {
+    //     gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
+    //     if(v) {
+    //         if ((this->parameterLayouts.contains(key))&&(this->parameterLayouts[key])) {
+    //             for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
+    //                 QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
+    //                 forDeletion->widget()->disconnect();
+    //                 delete forDeletion->widget();
+    //                 delete forDeletion;
+    //             }
+    //         } else {
+    //             this->parameterLayouts[key] = new QFormLayout;
+    //             this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    //         }
 
-            if (!this->formVisualizationPaneItems.contains(key)) {
-                this->refresh();
-            }
-            this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
+    //         if (!this->formVisualizationPaneItems.contains(key)) {
+    //             this->refresh();
+    //         }
+    //         this->formVisualizationPaneItems[key]->addLayout(this->parameterLayouts[key]);
 
-            QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
-            for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-                QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
-                if (widget) {
-                    this->parameterLayouts[key]->addRow(it.key(), widget);
-                }
-            }
-        }
-    }
+    //         QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+    //         for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+    //             QWidget *widget = gnomonWidgetsParameter::widget(it.value(), parent);
+    //             if (widget) {
+    //                 this->parameterLayouts[key]->addRow(it.key(), widget);
+    //             }
+    //         }
+    //     }
+    // }
 
-    this->refresh();
+    // this->refresh();
 }
 
 void gnomonViewMatplotlibPrivate::refresh(void)
 {
     this->formVisualizationPane->clearLayout();
 
-        for (const auto& key : this->formVisualization.keys()) {
+    for (const auto& key : this->formVisualization.keys()) {
 
         if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
             this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem((QWidget *) q->parent());
@@ -291,7 +296,7 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d, 0, 0, 1, 1);
-    layout->addWidget(d->pane(parent), 0, 1, 1, 1);
+    // layout->addWidget(d->pane(parent), 0, 1, 1, 1);
 
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
     connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
@@ -300,27 +305,28 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 
     QFile file(":gnomon/matplotlib_figure.py");
 
-    if (file.open(QIODevice::ReadOnly)) {
-        int stat;
-        QString matplotlib_script  = file.readAll();
-        file.close();
-        dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
-    } else {
-        qWarning() << "Can't open matplotlib figure script";
-    }
+    //TODO: Script
+    // if (file.open(QIODevice::ReadOnly)) {
+    //     int stat;
+    //     QString matplotlib_script  = file.readAll();
+    //     file.close();
+    //     dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
+    // } else {
+    //     qWarning() << "Can't open matplotlib figure script";
+    // }
 
     connect(this, &gnomonViewMatplotlib::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
     });
 
-    connect(d->renderButton, &QPushButton::clicked, [=] () {
-        for (const auto& key : d->formVisualization.keys()) {
-            gnomonAbstractMatplotlibVisualization *v = d->formVisualization[key];
-            if(v) {
-                v->update();
-            }
-        }
-    });
+    // connect(d->renderButton, &QPushButton::clicked, [=] () {
+    //     for (const auto& key : d->formVisualization.keys()) {
+    //         gnomonAbstractMatplotlibVisualization *v = d->formVisualization[key];
+    //         if(v) {
+    //             v->update();
+    //         }
+    //     }
+    // });
 
     this->setAcceptDrops(true);
 }
@@ -335,8 +341,9 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
         d->forms["gnomonTree"] = tree;
 
-        int stat;
-        dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
+        //TODO: Script
+        // int stat;
+        // dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
 
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
@@ -356,8 +363,9 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
         d->forms["gnomonDataFrame"] = dataFrame;
 
-        int stat;
-        dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame", &stat);
+        //TODO: Script
+        // int stat;
+        // dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame",                                                          &stat);
 
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
@@ -401,7 +409,9 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
 
 void gnomonViewMatplotlib::addWidget(QWidget *widget)
 {
-    widget->setStyleSheet(gnomonStyleSheet());
+    //TODO
+    //dtkThemesEngine::instance()->color("@bg")
+    //widget->setStyleSheet( gnomonStyleSheet());
     d->layout->addWidget(widget);
     this->resize(800,this->height());
 }

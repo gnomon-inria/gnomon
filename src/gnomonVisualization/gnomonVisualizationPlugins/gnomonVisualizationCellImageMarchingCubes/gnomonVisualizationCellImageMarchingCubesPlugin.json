@@ -1,6 +1,0 @@
-{
-            "name" : "gnomonVisualizationCellImageMarchingCubesPlugin",
-         "concept" : "gnomonAbstractVisualizationCellImage",
-         "version" : "0.0.1",
-    "dependencies" : []
-}

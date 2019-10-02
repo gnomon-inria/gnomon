@@ -1,6 +1,23 @@
-#include "gnomonMeshWriterCommand.h"
+// Version: $Id$
+//
+//
 
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonMeshWriterCommand.h"
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonMeshWriterCommandPrivate
 {
@@ -9,15 +26,13 @@ public:
     gnomonMeshSeries* mesh = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonMeshWriterCommand::gnomonMeshWriterCommand(const QString& key) : d(new gnomonMeshWriterCommandPrivate)
 {
-    QString command = "import gnomonMeshWriter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("meshWriter");
 
     this->action = gnomonCore::meshWriter::pluginFactory().create(key);
 
@@ -51,3 +66,6 @@ void gnomonMeshWriterCommand::setMesh(gnomonMeshSeries *mesh)
 {
     d->mesh = mesh;
 }
+
+//
+// gnomonMeshWriterCommand.cpp ends here

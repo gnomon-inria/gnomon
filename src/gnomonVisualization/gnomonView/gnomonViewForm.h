@@ -20,15 +20,15 @@
 
 #include <gnomonLandmark.h>
 
-class gnomonLandmark;
-class gnomonOverlayPane;
+class dtkWidgetsMenu;
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
 
-template <typename T>
-class gnomonTimeSeries;
+struct gnomonLandmark;
+
+template <typename T> class gnomonTimeSeries;
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
@@ -46,7 +46,6 @@ class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QFrame
 public:
      gnomonViewForm(QWidget *parent = nullptr);
     ~gnomonViewForm(void);
-
 
 signals:
     void switchedTo3D  (void);
@@ -73,9 +72,6 @@ public slots:
 public slots:
     void setExportColor(const QColor& color);
 
-public slots:
-    void toggleVisualizationPane(void);
-
 public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
@@ -97,7 +93,7 @@ public:
     vtkRenderer *renderer3D(void);
 
 public:
-    gnomonOverlayPane *infoPane(void);
+    dtkWidgetsMenu *menu(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
@@ -114,7 +110,6 @@ public slots:
 public slots:
     void setAcceptCellComplex(bool);
 
-
 public slots:
     void onSliceChanged(int);
 
@@ -125,6 +120,7 @@ signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
 
+signals:
     void formAdded(const QString&);
 
 signals:

@@ -19,6 +19,7 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
+
 #include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
@@ -144,7 +145,7 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
     } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
         valueRangeParam->setMaximumValue(65535);
         valueRangeParam->setValue(0,65535);
-    }
+     }
 }
 
 void gnomonVisualizationImage::updateOpacity(void)
@@ -199,7 +200,6 @@ void gnomonVisualizationImage::update(void)
     converter->convert();
     dd->image_data = static_cast<vtkImageData *>(converter->output());
     delete converter;
-
 
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageWidget::New();

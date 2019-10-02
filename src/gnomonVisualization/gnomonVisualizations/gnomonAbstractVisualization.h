@@ -32,6 +32,8 @@ public:
 
 public:
     void setView(gnomonViewForm *view);
+
+public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) = 0;
 

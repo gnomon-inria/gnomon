@@ -1,9 +1,21 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include <gnomonWidgetsExport.h>
 
 #include <QtCore>
-#include <QLabel>
-
-class gnomonFontAwesome;
+#include <QtWidgets>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonItemButton
@@ -22,7 +34,7 @@ signals:
 
 protected:
     void mousePressEvent(QMouseEvent *);
-
-private:
-    gnomonFontAwesome *font;
 };
+
+// 
+// gnomonItemButton.h ends here

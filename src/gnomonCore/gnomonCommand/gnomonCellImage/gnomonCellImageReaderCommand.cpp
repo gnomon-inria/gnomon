@@ -1,6 +1,24 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonCellImageReaderCommand.h"
 
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonCellImageReaderCommandPrivate
 {
@@ -8,15 +26,13 @@ public:
     QString path;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(const QString& key) : d(new gnomonCellImageReaderCommandPrivate)
 {
-    QString command = "import gnomonCellImageReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellImageReader");
 
     this->action = gnomonCore::cellImageReader::pluginFactory().create(key);
 
@@ -49,3 +65,6 @@ gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage(void)
 {
     return ((gnomonAbstractCellImageReader *) this->action)->cellImage();
 }
+
+//
+// gnomonCellImageReaderCommand.cpp ends here

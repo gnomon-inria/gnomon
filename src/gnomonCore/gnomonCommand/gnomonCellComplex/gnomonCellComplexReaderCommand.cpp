@@ -1,6 +1,18 @@
-#include "gnomonCellComplexReaderCommand.h"
+// Version: $Id$
+//
+//
 
-#include <dtkScript>
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonCellComplexReaderCommand.h"
 
 class gnomonCellComplexReaderCommandPrivate
 {
@@ -10,13 +22,7 @@ public:
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(const QString& key) : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    QString command = "import gnomonCellComplexReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellComplexReader");
 
     this->action = gnomonCore::cellComplexReader::pluginFactory().create(key);
 
@@ -31,7 +37,9 @@ gnomonCellComplexReaderCommand::~gnomonCellComplexReaderCommand()
 void gnomonCellComplexReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
+
     ((gnomonAbstractCellComplexReader *) this->action)->setPath(d->path);
+
     this->action->run();
 }
 
@@ -49,3 +57,6 @@ gnomonCellComplexSeries *gnomonCellComplexReaderCommand::cellComplex(void)
 {
     return ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
 }
+
+//
+// gnomonCellComplexReaderCommand.cpp ends here

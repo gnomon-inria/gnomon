@@ -45,7 +45,6 @@ ADD_GNOMON_HEADERS(
     ${${PROJECT_NAME}_VISUALIZATIONS_POINTCLOUD_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_TREE_HEADERS})
 
-
 ADD_GNOMON_SOURCES(
     gnomonAbstractMatplotlibVisualization.cpp
     gnomonAbstractVisualization.cpp
@@ -57,7 +56,6 @@ ADD_GNOMON_SOURCES(
     ${${PROJECT_NAME}_VISUALIZATIONS_MESH_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_POINTCLOUD_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_TREE_SOURCES})
-
 
 ######################################################################
 ### CMakeLists.txt ends here

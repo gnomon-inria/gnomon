@@ -19,6 +19,7 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
+
 #include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"

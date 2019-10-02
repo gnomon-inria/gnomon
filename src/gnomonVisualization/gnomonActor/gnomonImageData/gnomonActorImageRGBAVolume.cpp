@@ -132,7 +132,7 @@ void gnomonActorImageRGBAVolume::update(void)
     d->volume->Update();
 
     d->updateOpacity();
-    
+
     d->modified = false;
 }
 

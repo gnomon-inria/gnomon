@@ -66,7 +66,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
     gnomonIntensityImage* form = (gnomonIntensityImage *) d->reader->read(time);
     QVERIFY(form);
 
-    QVERIFY(form->data()->dim() == 3);
+    QVERIFY(form->data()->dims() == 3);
     QVERIFY(form->data()->xDim() == 7);
     QVERIFY(form->data()->yDim() == 5);
     QVERIFY(form->data()->zDim() == 3);
@@ -76,7 +76,7 @@ void gnomonFileSystemFormReaderTestCase::read(void)
     form = (gnomonIntensityImage *) d->reader->read(time);
     QVERIFY(form);
 
-    QVERIFY(form->data()->dim() == 3);
+    QVERIFY(form->data()->dims() == 3);
     QVERIFY(form->data()->xDim() == 7);
     QVERIFY(form->data()->yDim() == 5);
     QVERIFY(form->data()->zDim() == 3);

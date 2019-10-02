@@ -19,6 +19,7 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
+
 #include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
@@ -115,7 +116,7 @@ void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cel
 void gnomonVisualizationCellImageVolume::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    
+
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
     }
@@ -172,11 +173,11 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->image = static_cast<vtkImageData *>(converter->output());
     delete converter;
 
-//    if (dd->actor) {
-//        d->view->renderer3D()->RemoveActor(dd->actor);
-//        dd->actor->Delete();
-//        dd->actor = nullptr;
-//    }
+   if (dd->actor) {
+       d->view->renderer3D()->RemoveActor(dd->actor);
+       dd->actor->Delete();
+       dd->actor = nullptr;
+   }
 
     if (!dd->actor)
         dd->actor = gnomonActorImageVolume::New();
@@ -187,13 +188,13 @@ void gnomonVisualizationCellImageVolume::update(void)
     dd->actor->setValueRange(value_range);
     dd->actor->setFlatRendering(true);
 
-//    if (dd->actor2D) {
-//        disconnect(d->connectSliceOrientation);
-//        disconnect(d->connectSlice);
-//        d->view->renderer2D()->RemoveActor(dd->actor2D);
-//        dd->actor2D->Delete();
-//        dd->actor2D = nullptr;
-//    }
+   if (dd->actor2D) {
+       disconnect(d->connectSliceOrientation);
+       disconnect(d->connectSlice);
+       d->view->renderer2D()->RemoveActor(dd->actor2D);
+       dd->actor2D->Delete();
+       dd->actor2D = nullptr;
+   }
 
     if (!dd->actor2D)
     {

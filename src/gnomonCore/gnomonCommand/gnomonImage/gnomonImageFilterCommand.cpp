@@ -1,8 +1,25 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonImageFilterCommand.h"
 
 #include <dtkScript>
-
 #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonImageFilterCommandPrivate
 {
@@ -10,15 +27,13 @@ public:
     gnomonImageSeries* input = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
 {
-    QString command = "import gnomonImageFilter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("imageFilter");
 
     this->action = gnomonCore::imageFilter::pluginFactory().create(key);
 
@@ -45,7 +60,7 @@ void gnomonImageFilterCommand::undo(void)
 void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
 {
     d->input = input;
-    
+
     Q_ASSERT(this->action);
     ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
 }
@@ -69,3 +84,6 @@ gnomonImageSeries *gnomonImageFilterCommand::output(void)
 {
     return ((gnomonAbstractImageFilter *) this->action)->output();
 }
+
+//
+// gnomonImageFilterCommand.cpp ends here

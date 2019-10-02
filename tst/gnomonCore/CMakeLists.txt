@@ -53,10 +53,16 @@ add_executable(${PROJECT_NAME}
 ## Link rules
 ## ###################################################################
 
-target_link_libraries(${PROJECT_NAME} gnomonCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core)
-target_link_libraries(${PROJECT_NAME} Qt5::Test)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Test)
 
 ## ###################################################################
 ## Test rules

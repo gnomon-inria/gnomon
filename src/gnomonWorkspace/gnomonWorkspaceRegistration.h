@@ -16,9 +16,9 @@
 
 #include <gnomonWorkspaceExport>
 
-#include "gnomonWorkspace.h"
+#include <dtkWidgets>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 
@@ -27,8 +27,8 @@ public:
     ~gnomonWorkspaceRegistration(void);
 
 public:
-    void enter(void) override {}
-    void leave(void) override {}
+    void enter(void) override;
+    void leave(void) override;
 
 public slots:
     void apply(void) override;

@@ -15,7 +15,8 @@
 #include "gnomonGridLayout.h"
 #include "gnomonViewForm.h"
 
-#include <gnomonFonts>
+#include <dtkFonts>
+#include <dtkThemes>
 
 #include <math.h>
 
@@ -29,13 +30,11 @@ class gnomonGridLayoutButton : public QLabel
 
 public:
     gnomonGridLayoutButton(QWidget *parent = nullptr) : QLabel(parent) {
-
-        this->font = new gnomonFontAwesome(this);
-        this->font->initFontAwesome();
-        this->font->setDefaultOption("color", QColor("#ffffff"));
+        dtkFontAwesome::instance()->initFontAwesome();
+        dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
 
         this->setAlignment(Qt::AlignCenter);
-        this->setPixmap(this->font->icon(fa::plus).pixmap(64, 64));
+        this->setPixmap(dtkFontAwesome::instance()->icon(fa::plus).pixmap(64, 64));
         this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         this->setStyleSheet("background: #777777");
     }
@@ -52,9 +51,6 @@ protected:
     void mousePressEvent(QMouseEvent *) {
         emit increase();
     }
-
-private:
-    gnomonFontAwesome *font;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -123,7 +119,7 @@ void gnomonGridLayout::removeAllViews(void)
 {
     d->views.clear();
     this->update();
-} 
+}
 
 void gnomonGridLayout::clear(void)
 {

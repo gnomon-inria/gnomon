@@ -111,7 +111,7 @@ void gnomonActorPolyData::update(void)
         d->mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     }
     d->mapper->SetInputData(d->polydata);
-    
+
     if (!d->colorFunction)
     {
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
@@ -129,7 +129,7 @@ void gnomonActorPolyData::update(void)
     d->actor->Modified();
 
     d->updateOpacity();
-    
+
     d->modified = false;
 }
 

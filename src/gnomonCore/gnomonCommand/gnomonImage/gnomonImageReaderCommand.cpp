@@ -1,6 +1,24 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonImageReaderCommand.h"
 
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonImageReaderCommandPrivate
 {
@@ -8,15 +26,13 @@ public:
     QString path;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
 {
-    QString command = "import gnomonImageReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("imageReader");
 
     this->action = gnomonCore::imageReader::pluginFactory().create(key);
 
@@ -49,3 +65,6 @@ gnomonImageSeries *gnomonImageReaderCommand::image(void)
 {
     return ((gnomonAbstractImageReader *) this->action)->image();
 }
+
+//
+// gnomonImageReaderCommand.cpp ends here

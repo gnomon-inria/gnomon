@@ -14,12 +14,12 @@
 
 import gnomoncore
 
-from gnomonWidgets import *
+from gnomonwidgets import *
 
 try:
     import qtconsole
 except:
-    print "Install Jupyter to get QtConsole as Python Interpreter"
+    print("Install Jupyter to get QtConsole as Python Interpreter")
 else:
     from qtconsole.rich_jupyter_widget import RichJupyterWidget
     from qtconsole.inprocess import QtInProcessKernelManager
@@ -63,5 +63,6 @@ else:
                     print("replace terminal with jupyter console")
                     window = gnomonInterpreterJupyter.downcast(subwidget)
                     window.addWidget(console)
+
 #
 # create_jupyter_console.py ends here

@@ -13,42 +13,57 @@
 // Code:
 
 #include "gnomonWorkspaceRegistration.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonVisualization>
-#include <gnomonWidgets>
-
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageRegistrationCommand>
+#include <gnomonWidgets>
+#include <gnomonVisualization>
 
 #include <dtkImagingCore>
 #include <dtkScript>
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
 
-class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate< gnomonImageRegistrationCommand >
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImageRegistrationCommand>
 {
 public:
-    QString workspace() const override;
-    QStringList keys() const override;
+    QString workspace(void) const override;
+    QStringList keys(void) const override;
 
 public:
     gnomonGridLayout *sources_layout;
     gnomonViewForm *target = nullptr;
+
+public:
+    dtkWidgetsMenu *menu_;
+
+public:
+    dtkWidgetsMenuBarContainer *dashboard;
 };
 
-QString gnomonWorkspaceRegistrationPrivate::workspace() const
-{ return "Time Registration"; }
+QString gnomonWorkspaceRegistrationPrivate::workspace(void) const
+{
+    return "Time Registration";
+}
 
-QStringList gnomonWorkspaceRegistrationPrivate::keys() const
+QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
 {
     return gnomonCore::imageRegistration::pluginFactory().keys();
 }
 
-gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnomonWorkspace(parent)
-{
-    int stat;
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonImageRegistration", &stat);
+gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkWidgetsWorkspace(parent)
+{
+    loadPluginGroup("imageRegistration");
 
     d = new gnomonWorkspaceRegistrationPrivate;
 
@@ -67,31 +82,56 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : gnom
     splitter->addWidget(sources_dummy);
     splitter->addWidget(d->target);
 
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Dashboard inception
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
+    d->dashboard->setFixedWidth(300);
+
+// /////////////////////////////////////////////////////////////////////////////
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
-    layout->addWidget(d->pane(this));
+    layout->addWidget(d->dashboard);
 
-    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] () {
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
+    {
         d->command->undo();
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
             }
         }
-        d->configure(this, d->algorithm);
+        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
+        dtkApp->window()->menubar()->touch();
+        d->configure(d->algorithm);
     });
 
-    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
         d->command->undo();
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
             }
         }
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
@@ -99,16 +139,34 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
     delete d;
 }
 
+void gnomonWorkspaceRegistration::enter(void)
+{
+    foreach(gnomonViewForm *form, d->sources_layout->views())
+        dtkApp->window()->menubar()->addMenu(form->menu());
+    dtkApp->window()->menubar()->addMenu(d->target->menu());
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceRegistration::leave(void)
+{
+    foreach(gnomonViewForm *form, d->sources_layout->views())
+        dtkApp->window()->menubar()->removeMenu(form->menu());
+    dtkApp->window()->menubar()->removeMenu(d->target->menu());
+    dtkApp->window()->menubar()->touch();
+}
+
 void gnomonWorkspaceRegistration::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->sources_layout->views().isEmpty()) return;
+    if(d->sources_layout->views().isEmpty())
+        return;
 
     d->command->undo();
-    for(gnomonViewForm *view : d->sources_layout->views()) {
+
+    for(gnomonViewForm *view : d->sources_layout->views())
         d->command->addImage(view->image());
-    }
+
     d->command->redo();
 
     d->target->setForm("gnomonImage",d->command->output());
@@ -116,7 +174,7 @@ void gnomonWorkspaceRegistration::apply(void)
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

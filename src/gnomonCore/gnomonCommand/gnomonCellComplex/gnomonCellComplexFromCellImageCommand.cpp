@@ -1,7 +1,20 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonCellComplexFromCellImageCommand.h"
 
 #include <dtkScript>
-
 #include <dtkImagingCore>
 
 class gnomonCellComplexFromCellImageCommandPrivate
@@ -12,13 +25,7 @@ public:
 
 gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(const QString& key) : d(new gnomonCellComplexFromCellImageCommandPrivate)
 {
-    QString command = "import gnomonCellComplexFromCellImage";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellComplexFromCellImage");
 
     this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(key);
 
@@ -45,7 +52,7 @@ void gnomonCellComplexFromCellImageCommand::undo(void)
 void gnomonCellComplexFromCellImageCommand::setInput(gnomonCellImageSeries *input)
 {
     d->input = input;
-    
+
     Q_ASSERT(this->action);
     ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(d->input);
 }
@@ -69,3 +76,6 @@ gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output(void)
 {
     return ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
 }
+
+//
+// gnomonCellComplexFromCellImageCommand.cpp ends here

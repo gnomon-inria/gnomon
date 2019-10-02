@@ -1,6 +1,24 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonImageFusionCommand.h"
 
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonImageFusionCommandPrivate
 {
@@ -9,15 +27,13 @@ public:
     QVector<std::vector<gnomonLandmark>> landmarks;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
 {
-    QString command = "import gnomonImageFusion";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("imageFusion");
 
     this->action = gnomonCore::imageFusion::pluginFactory().create(key);
 
@@ -90,3 +106,6 @@ gnomonImageSeries *gnomonImageFusionCommand::output(void)
 {
     return ((gnomonAbstractImageFusion *) this->action)->output();
 }
+
+//
+// gnomonImageFusionCommand.cpp ends here

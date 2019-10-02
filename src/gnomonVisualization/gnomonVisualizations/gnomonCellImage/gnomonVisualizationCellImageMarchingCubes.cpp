@@ -75,19 +75,19 @@ public:
         if (vtkId == -1) {
             this->clicks = 0;
 
-            if (this->q->view()->infoPane()->isToggled()) {
-                this->q->view()->infoPane()->toggle();
-                this->q->view()->infoPane()->clear();
-                this->infoPaneItem = nullptr;
-                this->infoLayout = nullptr;
-            }
+            // if (this->q->view()->infoPane()->isToggled()) {
+            //     this->q->view()->infoPane()->toggle();
+            //     this->q->view()->infoPane()->clear();
+            //     this->infoPaneItem = nullptr;
+            //     this->infoLayout = nullptr;
+            // }
         }
     }
 
     virtual void OnLeftButtonUp(void) override
     {
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
-        
+
         int *pos = this->GetInteractor()->GetEventPosition();
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
@@ -118,19 +118,18 @@ public:
 
     void OnDoubleClick(long vtkId)
     {
-        this->q->view()->infoPane()->clear();
+        // this->q->view()->infoPane()->clear();
 
         long cellId = q->cellId(vtkId);
         QString text = "Cell ";
         text.append(QString::number(cellId));
 
-        QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
+        // QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
 
+        // if(!this->q->view()->infoPane()->isToggled())
+        //     this->q->view()->infoPane()->toggle();
 
-        if (!this->q->view()->infoPane()->isToggled()) {
-            this->q->view()->infoPane()->toggle();
-        }
-        this->q->view()->infoPane()->addInfoPaneItem(text, cellInfo);
+        // this->q->view()->infoPane()->addInfoPaneItem(text, cellInfo);
     }
 
     void updateTextActor(long vtkId)
@@ -172,16 +171,16 @@ public:
         this->picker->Delete();
         this->picker = nullptr;
 
-        if (this->q->view()->infoPane()->isToggled()) {
-            this->q->view()->infoPane()->toggle();
-            this->q->view()->infoPane()->clear();
-        }
+        // if (this->q->view()->infoPane()->isToggled()) {
+        //     this->q->view()->infoPane()->toggle();
+        //     this->q->view()->infoPane()->clear();
+        // }
 
         delete this->infoLayout;
         this->infoLayout = nullptr;
 
-        delete this->infoPaneItem;
-        this->infoPaneItem = nullptr;
+        // delete this->infoPaneItem;
+        // this->infoPaneItem = nullptr;
 
         this->q = nullptr;
     }
@@ -190,7 +189,7 @@ public:
     gnomonVisualizationCellImageMarchingCubes *q = nullptr;
 
 public:
-    gnomonOverlayPaneItem *infoPaneItem = nullptr;
+    // gnomonOverlayPaneItem *infoPaneItem = nullptr;
     QFormLayout *infoLayout = nullptr;
 
 public:
@@ -200,7 +199,6 @@ public:
 
 private:
     unsigned int clicks = 0;
-
 };
 
 vtkStandardNewMacro(gnomonInteractorStyleCellImageMarchingCubes);
@@ -227,7 +225,7 @@ public:
 
 public:
     bool is2D = false;
-    
+
 public slots:
     void updateOpacity(void);
     void updateValueRange(void);
@@ -237,7 +235,7 @@ public slots:
 void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
-    
+
     if(this->actor) {
         this->actor->setOpacity(alpha);
     }

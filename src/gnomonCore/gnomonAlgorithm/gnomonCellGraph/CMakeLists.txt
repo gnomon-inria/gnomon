@@ -12,11 +12,9 @@
 ##
 ### Code:
 
-
 ## #################################################################
 ## Sources
 ## #################################################################
-
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonAbstractCellGraphFromImage
@@ -25,7 +23,6 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonAbstractCellGraphFromImage.cpp)
-
 
 ######################################################################
 ### CMakeLists.txt ends here

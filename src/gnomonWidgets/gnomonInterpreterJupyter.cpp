@@ -14,11 +14,9 @@
 
 #include "gnomonInterpreterJupyter.h"
 
-#include <gnomonFonts>
-#include <gnomonStyle>
-
+#include <dtkFonts>
+#include <dtkThemes>
 #include <dtkScript>
-
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -47,7 +45,7 @@ gnomonInterpreterJupyter::gnomonInterpreterJupyter(QWidget *parent) : QFrame(par
     QFile file(":gnomon/jupyter_console.py");
 
     if (file.open(QIODevice::ReadOnly)) {
-        int stat;
+        int stat; Q_UNUSED(stat);
         QString jupyter_script  = file.readAll();
         file.close();
         dtkScriptInterpreterPython::instance()->interpret(jupyter_script, &stat);
@@ -63,16 +61,15 @@ gnomonInterpreterJupyter::~gnomonInterpreterJupyter(void)
 
 void gnomonInterpreterJupyter::output(const QString& result)
 {
-    qDebug()<<Q_FUNC_INFO<<result;
+    qDebug() << Q_FUNC_INFO << result;
 }
 
 void gnomonInterpreterJupyter::addWidget(QWidget *widget)
 {
-    widget->setStyleSheet(gnomonStyleSheet());
     d->layout->addWidget(widget);
-    this->resize(800,this->height());
-}
 
+    this->resize(800, this->height());
+}
 
 //
 // gnomonInterpreterJupyter.cpp ends here

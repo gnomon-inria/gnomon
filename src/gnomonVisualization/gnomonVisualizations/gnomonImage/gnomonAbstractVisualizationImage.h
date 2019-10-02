@@ -25,7 +25,6 @@
 
 class gnomonViewForm;
 
-class gnomonImage;
 class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationImage : public gnomonAbstractVisualization
@@ -33,11 +32,11 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationImage : public gnomo
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationImage(void) : gnomonAbstractVisualization() {}
+             gnomonAbstractVisualizationImage(void) : gnomonAbstractVisualization() {}
     virtual ~gnomonAbstractVisualizationImage(void) = default;
 
 public:
-	virtual void setImage(gnomonImageSeries *image) = 0;
+    virtual void setImage(gnomonImageSeries *image) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

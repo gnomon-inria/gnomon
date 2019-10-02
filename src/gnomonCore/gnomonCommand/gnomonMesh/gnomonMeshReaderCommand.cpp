@@ -1,3 +1,17 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonMeshReaderCommand.h"
 
 #include <dtkScript>
@@ -10,13 +24,7 @@ public:
 
 gnomonMeshReaderCommand::gnomonMeshReaderCommand(const QString& key) : d(new gnomonMeshReaderCommandPrivate)
 {
-    QString command = "import gnomonMeshReader";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("meshReader");
 
     this->action = gnomonCore::meshReader::pluginFactory().create(key);
 
@@ -49,3 +57,6 @@ gnomonMeshSeries *gnomonMeshReaderCommand::mesh(void)
 {
     return ((gnomonAbstractMeshReader *) this->action)->mesh();
 }
+
+//
+// gnomonMeshReaderCommand.cpp ends here

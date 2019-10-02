@@ -12,7 +12,6 @@
 ##
 ### Code:
 
-
 ## #################################################################
 ## Inputs
 ## #################################################################
@@ -42,7 +41,6 @@ ADD_GNOMON_HEADERS(
   ${${PROJECT_NAME}_ALGORITHM_POINTCLOUD_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_TREE_HEADERS})
 
-
 ADD_GNOMON_SOURCES(
   gnomonAbstractAlgorithm.cpp
   ${${PROJECT_NAME}_ALGORITHM_CELLCOMPLEX_SOURCES}
@@ -53,7 +51,6 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_ALGORITHM_MESH_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_POINTCLOUD_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_TREE_SOURCES})
-
 
 ######################################################################
 ### CMakeLists.txt ends here
