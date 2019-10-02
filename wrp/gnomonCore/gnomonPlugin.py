@@ -36,7 +36,7 @@ def load_plugin_group(group_name):
 
 def gnomon_declare_plugins(path):
     script = findall(path)
-    script = [f for f in script if '.pyc' not in f and '__init__' not in f]
+    script = [f for f in script if (f.endswith('.py'))  and ('__init__' not in f)]
 
     module_dict = {}
 
