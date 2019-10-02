@@ -44,7 +44,7 @@ public:
     gnomonViewMatplotlib *mpl_figure = nullptr;
 
 public:
-    //gnomonInterpreterJupyter *terminal;
+    gnomonInterpreterJupyter *terminal;
 
 public:
     QVBoxLayout *viewer_layout = nullptr;
@@ -114,7 +114,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     finder->setLayout(finder_layout);
     finder->resize(600, finder->height());
 
-    d->pane = new gnomonOverlayPane(this);
 
     QPushButton *button = new QPushButton("Load", parent);
     button->setCheckable(true);
@@ -208,13 +207,13 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 
 void gnomonWorkspaceLSystemSimulator::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->view->menu());
+//    dtkApp->window()->menubar()->addMenu(d->view->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceLSystemSimulator::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->view->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->view->menu());
     dtkApp->window()->menubar()->touch();
 }
 

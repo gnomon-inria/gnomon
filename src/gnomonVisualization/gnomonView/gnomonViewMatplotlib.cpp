@@ -32,7 +32,7 @@
 
 
 //TODO: Script
-//#include <dtkScript>
+#include <dtkScript>
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -220,67 +220,67 @@ void gnomonViewMatplotlibPrivate::configure(QWidget *parent, const QString& key)
 
 void gnomonViewMatplotlibPrivate::refresh(void)
 {
-    this->formVisualizationPane->clearLayout();
-
-    for (const auto& key : this->formVisualization.keys()) {
-
-        if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
-            this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem((QWidget *) q->parent());
-            this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
-
-            QComboBox *combo_box = new QComboBox(this);
-            QStringList combo_box_keys = {};
-            if (key == "gnomonTree") {
-                combo_box_keys = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
-            } else  if (key == "gnomonDataFrame") {
-                combo_box_keys = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
-            } else  if (key == "gnomonLString") {
-                combo_box_keys = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys();
-            }
-            for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
-                combo_box->addItem(*it);
-            }
-            combo_box->model()->sort(0);
-
-            QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
-                if (this->formVisualization[key]) {
-                    delete this->formVisualization[key];
-                    this->formVisualization[key] = nullptr;
-                }
-
-                if (key == "gnomonTree") {
-                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)this->formVisualization[key];
-                    gnomonTree *tree = (gnomonTree *)this->forms[key];
-                    formVisualizationTree->setTree(tree);
-                    formVisualizationTree->update();
-                } else if (key == "gnomonDataFrame") {
-                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
-                    gnomonDataFrame *dataFrame = (gnomonDataFrame *)this->forms[key];
-                    formVisualizationDataFrame->setDataFrame(dataFrame);
-                    formVisualizationDataFrame->update();
-                } else if (key == "gnomonLString") {
-                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
-                    this->formVisualization[key]->setView(q);
-                    gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)this->formVisualization[key];
-                    gnomonLString *lString = (gnomonLString *)this->forms[key];
-                    formVisualizationLString->setLString(lString);
-                    formVisualizationLString->update();
-                }
-                this->configure((QWidget *) q->parent(), key);
-            });
-
-            this->formVisualizationPaneItems[key]->addWidget(combo_box);
-            this->formVisualizationPaneItems[key]->toggle();
-        }
-
-        this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
-    }
-
-    this->formVisualizationPane->addWidget(this->paneItemButton);
+//    this->formVisualizationPane->clearLayout();
+//
+//    for (const auto& key : this->formVisualization.keys()) {
+//
+//        if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key])) {
+//            this->formVisualizationPaneItems[key] = new gnomonOverlayPaneItem((QWidget *) q->parent());
+//            this->formVisualizationPaneItems[key]->setTitle(key+" Visualization");
+//
+//            QComboBox *combo_box = new QComboBox(this);
+//            QStringList combo_box_keys = {};
+//            if (key == "gnomonTree") {
+//                combo_box_keys = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
+//            } else  if (key == "gnomonDataFrame") {
+//                combo_box_keys = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
+//            } else  if (key == "gnomonLString") {
+//                combo_box_keys = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys();
+//            }
+//            for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
+//                combo_box->addItem(*it);
+//            }
+//            combo_box->model()->sort(0);
+//
+//            QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu) {
+//                if (this->formVisualization[key]) {
+//                    delete this->formVisualization[key];
+//                    this->formVisualization[key] = nullptr;
+//                }
+//
+//                if (key == "gnomonTree") {
+//                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu);
+//                    this->formVisualization[key]->setView(q);
+//                    gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)this->formVisualization[key];
+//                    gnomonTree *tree = (gnomonTree *)this->forms[key];
+//                    formVisualizationTree->setTree(tree);
+//                    formVisualizationTree->update();
+//                } else if (key == "gnomonDataFrame") {
+//                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
+//                    this->formVisualization[key]->setView(q);
+//                    gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
+//                    gnomonDataFrame *dataFrame = (gnomonDataFrame *)this->forms[key];
+//                    formVisualizationDataFrame->setDataFrame(dataFrame);
+//                    formVisualizationDataFrame->update();
+//                } else if (key == "gnomonLString") {
+//                    this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
+//                    this->formVisualization[key]->setView(q);
+//                    gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)this->formVisualization[key];
+//                    gnomonLString *lString = (gnomonLString *)this->forms[key];
+//                    formVisualizationLString->setLString(lString);
+//                    formVisualizationLString->update();
+//                }
+//                this->configure((QWidget *) q->parent(), key);
+//            });
+//
+//            this->formVisualizationPaneItems[key]->addWidget(combo_box);
+//            this->formVisualizationPaneItems[key]->toggle();
+//        }
+//
+//        this->formVisualizationPane->addWidget(this->formVisualizationPaneItems[key]);
+//    }
+//
+//    this->formVisualizationPane->addWidget(this->paneItemButton);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -410,8 +410,8 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
 void gnomonViewMatplotlib::addWidget(QWidget *widget)
 {
     //TODO
-    //dtkThemesEngine::instance()->color("@bg")
-    //widget->setStyleSheet( gnomonStyleSheet());
+    dtkThemesEngine::instance()->color("@bg");
+//    widget->setStyleSheet( gnomonStyleSheet());
     d->layout->addWidget(widget);
     this->resize(800,this->height());
 }
