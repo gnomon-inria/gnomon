@@ -27,6 +27,7 @@
 #include <dtkImagingCore>
 #include <gnomonCore>
 #include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+#include <gnomonWidgets/gnomonInterpreterJupyter.h>
 %}
 
 // /////////////////////////////////////////////////////////////////
@@ -35,6 +36,26 @@
 
 #undef  GNOMONWIDGETS_EXPORT
 #define GNOMONWIDGETS_EXPORT
+
+// /////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////
+
+%inline %{
+void foo(PyObject *widget, PyObject *console)
+{
+    qDebug()<<"OhYeh";
+    qDebug()<<(QWidget *)(widget);
+    QWidget *w;
+    int status = SWIG_ConvertPtr(widget, (void **) &w, SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | SWIG_POINTER_DISOWN);
+    qDebug()<<status;
+    return;
+    //qDebug()<<w;
+    //qDebug()<<(QWidget *)(console);
+    //qDebug()<<"OhNo";
+}
+%}
+
 
 // /////////////////////////////////////////////////////////////////
 // Typemaps
@@ -255,6 +276,7 @@
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+%include <gnomonWidgets/gnomonInterpreterJupyter.h>
 
 
 //

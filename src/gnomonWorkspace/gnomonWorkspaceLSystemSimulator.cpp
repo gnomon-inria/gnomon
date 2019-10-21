@@ -19,6 +19,7 @@
 #include <gnomonWidgets>
 
 #include <dtkScript>
+#include <dtkMacs>
 #include <dtkWidgets>
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
@@ -37,7 +38,7 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    //gnomonCodeEditor *editor;
+    dtkMacsWidget *editor = nullptr;
 
 public:
 //    gnomonViewForm *view = nullptr;
@@ -77,14 +78,14 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
 
-    // d->editor = new gnomonCodeEditor(this);
-    // d->editor->resize(800, d->editor->height());
+    d->editor = new dtkMacsWidget(this);
+    d->editor->resize(800, d->editor->height());
 
 //    d->view = new gnomonViewForm(this);
     d->mpl_figure = new gnomonViewMatplotlib(this);
 
-    // d->terminal = new gnomonInterpreterJupyter(this);
-    // d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+    d->terminal = new gnomonInterpreterJupyter(this);
+    //d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
     // -- Organizing the viewer column --
 
@@ -93,7 +94,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->viewer_layout->setSpacing(0);
     // d->viewer_layout->addWidget(d->view);
     d->viewer_layout->addWidget(d->mpl_figure);
-    // d->viewer_layout->addWidget(d->terminal);
+    d->viewer_layout->addWidget(d->terminal);
 
     QWidget *viewer = new QWidget(this);
     viewer->setLayout(d->viewer_layout);
@@ -173,7 +174,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(finder);
-    // splitter->addWidget(d->editor);
+    splitter->addWidget(d->editor);
     splitter->addWidget(viewer);
 
 // /////////////////////////////////////////////////////////////////////////////
