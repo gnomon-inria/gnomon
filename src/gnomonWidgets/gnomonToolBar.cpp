@@ -149,8 +149,8 @@ void gnomonToolBarButton::create(QAction *action)
     if(action == this->action_simulation)
         emit createSimulation();
 
-//    if(action == this->action_tree_analysis)
-//        emit createTreeAnalysis();
+    if(action == this->action_tree_analysis)
+        emit createTreeAnalysis();
 }
 
 void gnomonToolBarButton::mousePressEvent(QMouseEvent *event)

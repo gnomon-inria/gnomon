@@ -50,9 +50,6 @@ public:
     gnomonViewMatplotlib *target = nullptr;
 
 public:
-    // gnomonCellImage *cellimage = nullptr;
-
-public:
     QMetaObject::Connection c_o;
     QMetaObject::Connection c_s;
 
@@ -90,7 +87,6 @@ QStringList gnomonWorkspaceTreeAnalysisPrivate::keys(void) const
 gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     loadPluginGroup("treeTransform");
-    qDebug()<<"Loaded Tree Transform plugins";
 
     d = new gnomonWorkspaceTreeAnalysisPrivate;
 
@@ -129,11 +125,11 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
         d->configure(d->algorithm);
     });
 
-    connect(d, &gnomonWorkspaceTreeAnalysisPrivate::algorithmChanged, [=] (const QString& algorithm)
-    {
-        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-        d->configure(algorithm);
-    });
+//    connect(d, &gnomonWorkspaceTreeAnalysisPrivate::algorithmChanged, [=] (const QString& algorithm)
+//    {
+//        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+//        d->configure(algorithm);
+//    });
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -149,15 +145,15 @@ gnomonWorkspaceTreeAnalysis::~gnomonWorkspaceTreeAnalysis(void)
 
 void gnomonWorkspaceTreeAnalysis::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->source->menu());
-    dtkApp->window()->menubar()->addMenu(d->target->menu());
+//    dtkApp->window()->menubar()->addMenu(d->source->menu());
+//    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceTreeAnalysis::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->source->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 

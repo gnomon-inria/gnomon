@@ -67,7 +67,6 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     doc->setWordWrap(true);
 
     QStringList combo_box_keys = this->keys();
-    qDebug()<<combo_box_keys;
 
     for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
         combo_box->addItem(*it);
@@ -75,7 +74,6 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     combo_box->model()->sort(0);
 
     this->command = new T(combo_box->currentText());
-    qDebug()<<combo_box->currentText();
 
     QObject::connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& algorithm)
     {
