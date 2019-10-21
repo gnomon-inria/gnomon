@@ -15,6 +15,7 @@
 #include "gnomonViewMatplotlib.h"
 
 #include <dtkThemes>
+#include <dtkWidgets>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
@@ -84,7 +85,11 @@ public:
     // gnomonOverlayPane *formVisualizationPane = nullptr;
 
 public:
+    dtkWidgetsMenu *menu(void);
+    
+public:
     // gnomonOverlayPane *pane(QWidget *parent);
+    dtkWidgetsMenu *view_menu;
 
 public slots:
     void configure(QWidget *parent, const QString& key);
@@ -98,6 +103,9 @@ gnomonViewMatplotlibPrivate::gnomonViewMatplotlibPrivate(QWidget *parent) : QWid
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", parent);
     this->save_button = new gnomonOverlayButton(fa::save, "", parent);
+
+    static int count = 0;
+    this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View " + QString::number(count++));
 }
 
 gnomonViewMatplotlibPrivate::~gnomonViewMatplotlibPrivate(void)
@@ -283,6 +291,13 @@ void gnomonViewMatplotlibPrivate::refresh(void)
 //    this->formVisualizationPane->addWidget(this->paneItemButton);
 }
 
+dtkWidgetsMenu *gnomonViewMatplotlibPrivate::menu(void)
+{
+    this->refresh();
+
+    return this->view_menu;
+}
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -406,6 +421,10 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     }
 }
 
+gnomonAbstractDynamicForm *gnomonViewMatplotlib::form(const QString& name)
+{
+  return d->forms[name];
+}
 
 void gnomonViewMatplotlib::addWidget(QWidget *widget)
 {
@@ -414,6 +433,11 @@ void gnomonViewMatplotlib::addWidget(QWidget *widget)
 //    widget->setStyleSheet( gnomonStyleSheet());
     d->layout->addWidget(widget);
     this->resize(800,this->height());
+}
+
+dtkWidgetsMenu *gnomonViewMatplotlib::menu(void)
+{
+    return d->menu();
 }
 
 void gnomonViewMatplotlib::dragEnterEvent(QDragEnterEvent *event)

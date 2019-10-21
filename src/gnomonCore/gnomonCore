@@ -23,6 +23,7 @@
 #include "gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h"
 #include "gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h"
+#include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h"
 
 #include "gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"

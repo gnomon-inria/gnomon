@@ -13,30 +13,133 @@
 // Code:
 
 #include "gnomonWorkspaceTreeAnalysis.h"
+#include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
+#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeTransformCommand.h>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
-class gnomonWorkspaceTreeAnalysisPrivate
+#include <dtkImagingCore>
+#include <dtkScript>
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
+
+#include <QtWidgets>
+
+#include <vtkImageData.h>
+#include <vtkRenderer.h>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonWorkspaceTreeAnalysisPrivate : public gnomonWorkspaceTemplatePrivate<gnomonTreeTransformCommand>
 {
 public:
-    gnomonViewForm *source = nullptr;
-    gnomonViewForm *target = nullptr;
+     gnomonWorkspaceTreeAnalysisPrivate(void);
+    ~gnomonWorkspaceTreeAnalysisPrivate(void);
+
+public:
+    QString workspace(void) const override;
+    QStringList keys(void) const override;
+
+public:
+    gnomonViewMatplotlib *source = nullptr;
+    gnomonViewMatplotlib *target = nullptr;
+
+public:
+    // gnomonCellImage *cellimage = nullptr;
+
+public:
+    QMetaObject::Connection c_o;
+    QMetaObject::Connection c_s;
+
+public:
+    dtkWidgetsMenu *menu_;
+
+public:
+    dtkWidgetsMenuBarContainer *dashboard;
 };
+
+gnomonWorkspaceTreeAnalysisPrivate::gnomonWorkspaceTreeAnalysisPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonTreeTransformCommand>()
+{
+
+}
+
+gnomonWorkspaceTreeAnalysisPrivate::~gnomonWorkspaceTreeAnalysisPrivate(void)
+{
+
+}
+
+QString gnomonWorkspaceTreeAnalysisPrivate::workspace(void) const
+{
+    return "TreeAnalysis";
+}
+
+QStringList gnomonWorkspaceTreeAnalysisPrivate::keys(void) const
+{
+    return gnomonCore::treeTransform::pluginFactory().keys();
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
+    loadPluginGroup("treeTransform");
+    qDebug()<<"Loaded Tree Transform plugins";
+
     d = new gnomonWorkspaceTreeAnalysisPrivate;
 
-    d->source = new gnomonViewForm(this);
-    d->target = new gnomonViewForm(this);
+    d->source = new gnomonViewMatplotlib(this);
+    d->target = new gnomonViewMatplotlib(this);
+
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Dashboard inception
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
+    d->dashboard->setFixedWidth(300);
+
+// /////////////////////////////////////////////////////////////////////////////
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->source);
     layout->addWidget(d->target);
+    layout->addWidget(d->dashboard);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(d->source, &gnomonViewMatplotlib::formAdded, [=] ()
+    {
+        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
+            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        else
+            qDebug() << "Not changed";
+        d->configure(d->algorithm);
+    });
+
+    connect(d, &gnomonWorkspaceTreeAnalysisPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
+        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        d->configure(algorithm);
+    });
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceTreeAnalysis::~gnomonWorkspaceTreeAnalysis(void)
@@ -58,9 +161,23 @@ void gnomonWorkspaceTreeAnalysis::leave(void)
     dtkApp->window()->menubar()->touch();
 }
 
+void gnomonWorkspaceTreeAnalysis::configure(const QString& algorithm)
+{
+    d->configure(algorithm);
+}
+
 void gnomonWorkspaceTreeAnalysis::apply(void)
 {
+    Q_ASSERT(d->command);
 
+    if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
+        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+    else
+        qDebug() << "Not changed";
+
+    d->command->redo();
+
+    d->target->setForm("gnomonTree",d->command->output());
 }
 
 //

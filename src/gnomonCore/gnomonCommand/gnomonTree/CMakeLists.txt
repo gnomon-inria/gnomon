@@ -20,11 +20,14 @@
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonTreeReaderCommand
-    gnomonTreeReaderCommand.h)
+    gnomonTreeReaderCommand.h
+    gnomonTreeTransformCommand
+    gnomonTreeTransformCommand.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonTreeReaderCommand.cpp)
+    gnomonTreeReaderCommand.cpp
+    gnomonTreeTransformCommand.cpp)
 
 
 ######################################################################

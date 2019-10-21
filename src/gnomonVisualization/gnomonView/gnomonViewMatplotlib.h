@@ -18,6 +18,8 @@
 
 #include <QtWidgets>
 
+class dtkWidgetsMenu;
+
 class gnomonAbstractDynamicForm;
 class gnomonAbstractMatplotlibVisualization;
 
@@ -31,7 +33,7 @@ public:
 
 public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
-
+    gnomonAbstractDynamicForm *form (const QString&);
 public:
     void addWidget(QWidget *);
 
@@ -40,6 +42,9 @@ public:
     {
         return dynamic_cast<gnomonViewMatplotlib *>(widget);
     }
+
+public:
+    dtkWidgetsMenu *menu(void);
 
 signals:
     void formAdded(const QString&);
