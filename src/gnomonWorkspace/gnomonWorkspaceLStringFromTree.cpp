@@ -112,7 +112,7 @@ gnomonWorkspaceLStringFromTree::gnomonWorkspaceLStringFromTree(QWidget *parent) 
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    connect(d->source, &gnomonViewMatplotlib::formAdded, [=] ()
     {
         if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
             d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
@@ -166,7 +166,7 @@ void gnomonWorkspaceLStringFromTree::apply(void)
 
     d->command->redo();
 
-    d->target->setCellComplex(d->command->output());
+    d->target->setForm("gnomonLString",d->command->output());
 }
 
 void gnomonWorkspaceLStringFromTree::configure(const QString& algorithm)
