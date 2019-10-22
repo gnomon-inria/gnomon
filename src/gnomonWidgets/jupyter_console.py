@@ -13,11 +13,8 @@
 # Code:
 
 import sip
-import gnomoncore
 
-from gnomonwidgets import gnomonInterpreterJupyter, foo
-
-print("Ohhhh")
+from gnomonwidgets import setupConsole
 
 try:
     import qtconsole
@@ -51,24 +48,6 @@ else:
     console.font = QtGui.QFont("Source Code Pro", 12)
     console.kernel_manager = kernel_manager
     console.kernel_client = kernel_client
-
-
-#     # interpreter = QtWidgets.qApp.findChild(QtWidgets.QWidget,"InterpreterJupyter")
-#     # print(interpreter)
-#
-#     toplevels = QtWidgets.qApp.topLevelWidgets()
-#     for widget in toplevels:
-#         sublevels = widget.children()
-#         for w in widget.children():
-#             sublevels += w.children()
-#         for subwidget in sublevels:
-#             if (subwidget.objectName() == "InterpreterJupyter"):
-#                 print(subwidget)
-#                 foo(subwidget,console)
-#
-#                 print("Replaced terminal with jupyter console")
-#                 # window = gnomonInterpreterJupyter.downcast(subwidget)
-#                 # window.addWidget(console)
 
     setupConsole(sip.unwrapinstance(console))
 
