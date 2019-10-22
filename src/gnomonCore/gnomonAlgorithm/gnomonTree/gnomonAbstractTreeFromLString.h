@@ -45,10 +45,10 @@ public:
     virtual void setLSystem(const QString& lsystem) = 0;
 
 public:
-    virtual void setInput(gnomonTreeSeries *) = 0;
-    virtual gnomonTreeSeries *input() = 0;
+    virtual void setInput(gnomonLStringSeries *) = 0;
+    virtual gnomonLStringSeries *input() = 0;
 
-    virtual gnomonLStringSeries *output() = 0;
+    virtual gnomonTreeSeries *output() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
