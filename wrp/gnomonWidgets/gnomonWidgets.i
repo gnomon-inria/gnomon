@@ -24,9 +24,12 @@
 
 %{
 
+#include <dtkWidgets>
 #include <dtkImagingCore>
 #include <gnomonCore>
+#include <gnomonWidgets/gnomonInterpreterJupyter.h>
 #include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+
 %}
 
 // /////////////////////////////////////////////////////////////////
@@ -251,11 +254,35 @@
 // %rename(OverlayPane)           gnomonOverlayPane;
 
 // /////////////////////////////////////////////////////////////////
+// SIP/SWIG connection
+// /////////////////////////////////////////////////////////////////
+
+%inline
+%{
+
+void setupConsole(qlonglong console_address)
+{
+    qDebug() << Q_FUNC_INFO << "console" << console_address;
+
+    QWidget *widget = reinterpret_cast<QWidget *>(console_address);
+
+    qDebug() << Q_FUNC_INFO << "widget" << widget;
+
+    foreach(QWidget *top, qApp->topLevelWidgets()) {
+        foreach(gnomonInterpreterJupyter *interpreter, top->findChildren<gnomonInterpreterJupyter *>()) {
+            qDebug() << Q_FUNC_INFO << "interp" << interpreter;
+            interpreter->addWidget(widget);
+        }
+    }
+}
+
+%}
+
+// /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
-
 
 //
 // gnomonWidgets.i.in ends here

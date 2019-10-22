@@ -28,6 +28,7 @@ swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
   ${PYTHON_LIBRARIES}
   dtkCore
+  dtkWidgets
   dtkImagingCore
   gnomonCore)
 

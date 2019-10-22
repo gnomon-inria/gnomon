@@ -35,6 +35,10 @@ add_library(${PROJECT_NAME}_backend SHARED
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
+if(NOT APPLE)
+  target_link_libraries(${PROJECT_NAME} PUBLIC uuid)
+endif()
+
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Core)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::OpenGL)

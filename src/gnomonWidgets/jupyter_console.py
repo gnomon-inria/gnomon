@@ -12,9 +12,12 @@
 
 # Code:
 
+import sip
 import gnomoncore
 
 from gnomonwidgets import *
+
+print("Ohhhh")
 
 try:
     import qtconsole
@@ -49,20 +52,7 @@ else:
     console.kernel_manager = kernel_manager
     console.kernel_client = kernel_client
 
-    toplevels = qApp.topLevelWidgets()
-
-    for widget in toplevels:
-        if isinstance(widget, QMainWindow):
-            sublevels = widget.children()
-
-            for w in widget.children():
-                sublevels += w.children()
-
-            for subwidget in sublevels:
-                if (subwidget.objectName() == "InterpreterJupyter"):
-                    print("replace terminal with jupyter console")
-                    window = gnomonInterpreterJupyter.downcast(subwidget)
-                    window.addWidget(console)
+    setupConsole(sip.unwrapinstance(console))
 
 #
 # create_jupyter_console.py ends here

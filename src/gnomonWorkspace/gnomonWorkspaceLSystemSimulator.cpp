@@ -43,7 +43,7 @@ public:
     gnomonViewForm *view;
 
 public:
-    //gnomonInterpreterJupyter *terminal;
+    gnomonInterpreterJupyter *terminal;
 
 public:
     QVBoxLayout *viewer_layout = nullptr;
@@ -81,7 +81,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->view = new gnomonViewForm(this);
 
-    // d->terminal = new gnomonInterpreterJupyter(this);
+    d->terminal = new gnomonInterpreterJupyter(this);
     // d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
     // -- Organizing the viewer column --
@@ -90,7 +90,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
     d->viewer_layout->addWidget(d->view);
-    // d->viewer_layout->addWidget(d->terminal);
+    d->viewer_layout->addWidget(d->terminal);
 
     QWidget *viewer = new QWidget(this);
     viewer->setLayout(d->viewer_layout);
