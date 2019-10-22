@@ -85,15 +85,16 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->mpl_figure = new gnomonViewMatplotlib(this);
 
     d->terminal = new gnomonInterpreterJupyter(this);
-    //d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 
     // -- Organizing the viewer column --
 
     d->viewer_layout = new QVBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
+
     // d->viewer_layout->addWidget(d->view);
     d->viewer_layout->addWidget(d->mpl_figure);
+
     d->viewer_layout->addWidget(d->terminal);
 
     QWidget *viewer = new QWidget(this);

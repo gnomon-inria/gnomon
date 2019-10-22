@@ -16,6 +16,7 @@
 
 #include <dtkThemes>
 #include <dtkWidgets>
+#include <dtkScript>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
@@ -30,10 +31,6 @@
 #include "gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
 #include "gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h"
-
-
-//TODO: Script
-#include <dtkScript>
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -320,15 +317,14 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 
     QFile file(":gnomon/matplotlib_figure.py");
 
-    //TODO: Script
-    // if (file.open(QIODevice::ReadOnly)) {
-    //     int stat;
-    //     QString matplotlib_script  = file.readAll();
-    //     file.close();
-    //     dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
-    // } else {
-    //     qWarning() << "Can't open matplotlib figure script";
-    // }
+    if (file.open(QIODevice::ReadOnly)) {
+        int stat;
+        QString matplotlib_script  = file.readAll();
+        file.close();
+        dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
+    } else {
+        qWarning() << "Can't open matplotlib figure script";
+    }
 
     connect(this, &gnomonViewMatplotlib::formAdded, [=] (const QString& key) {
         d->configure((QWidget *)this->parent(), key);
@@ -431,7 +427,9 @@ void gnomonViewMatplotlib::addWidget(QWidget *widget)
     //TODO
     dtkThemesEngine::instance()->color("@bg");
 //    widget->setStyleSheet( gnomonStyleSheet());
+
     d->layout->addWidget(widget);
+
     this->resize(800,this->height());
 }
 

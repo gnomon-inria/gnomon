@@ -114,7 +114,6 @@ set(${PROJECT_NAME}_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
-
 ## ###################################################################
 ## Install rules - files
 ## ###################################################################

@@ -19,8 +19,8 @@
 %include <dtkBase/dtkBase.i>
 %include <gnomonCore/gnomonCoreParameter.i>
 
- %import <dtkCore/dtkCore.i>
- %import <gnomonCore/gnomonCore.i>
+%import <dtkCore/dtkCore.i>
+%import <gnomonCore/gnomonCore.i>
 
 %{
 
@@ -28,6 +28,7 @@
 #include <dtkCore>
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
+#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
@@ -236,7 +237,25 @@
     $input = list;
 }
 
+/* **************************************************************************
+ *
+ * ************************************************************************** */
 
+%inline
+%{
+
+void setupMatplotlib(qlonglong view_address)
+{
+    QWidget *widget = reinterpret_cast<QWidget *>(view_address);
+
+    foreach(QWidget *top, qApp->topLevelWidgets()) {
+        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
+            view->addWidget(widget);
+        }
+    }
+}
+
+%}
 
 // ///////////////////////////////////////////////////////////////////
 // Ignore rules
@@ -247,6 +266,7 @@
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
+
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
