@@ -72,6 +72,9 @@ public:
     QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
 public:
+    int figureNumber;
+
+public:
     // gnomonOverlayPaneItem *paneItemButton = nullptr;
 
     QPushButton *renderButton = nullptr;
@@ -87,6 +90,7 @@ public:
 public:
     // gnomonOverlayPane *pane(QWidget *parent);
     dtkWidgetsMenu *view_menu;
+
 
 public slots:
     void configure(QWidget *parent, const QString& key);
@@ -304,6 +308,9 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     d = new gnomonViewMatplotlibPrivate(this);
     d->q = this;
 
+    static int count = 0;
+    d->figureNumber = count++;
+
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -319,6 +326,8 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 
     if (file.open(QIODevice::ReadOnly)) {
         int stat;
+        QString numberStatement = "num = " + QString::number(d->figureNumber);
+        dtkScriptInterpreterPython::instance()->interpret(numberStatement, &stat);
         QString matplotlib_script  = file.readAll();
         file.close();
         dtkScriptInterpreterPython::instance()->interpret(matplotlib_script, &stat);
@@ -427,6 +436,11 @@ void gnomonViewMatplotlib::addWidget(QWidget *widget)
     d->layout->addWidget(widget);
 
     this->resize(800,this->height());
+}
+
+int gnomonViewMatplotlib::figureNumber(void)
+{
+    return d->figureNumber;
 }
 
 dtkWidgetsMenu *gnomonViewMatplotlib::menu(void)

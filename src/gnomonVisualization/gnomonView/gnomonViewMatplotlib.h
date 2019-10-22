@@ -44,6 +44,9 @@ public:
     }
 
 public:
+    int figureNumber(void);
+
+public:
     dtkWidgetsMenu *menu(void);
 
 signals:
