@@ -352,9 +352,8 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
         d->forms["gnomonTree"] = tree;
 
-        //TODO: Script
-        // int stat;
-        // dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationTree", &stat);
+        loadPluginGroup("matplotlibVisualizationTree");
+
 
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
@@ -374,9 +373,7 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
         d->forms["gnomonDataFrame"] = dataFrame;
 
-        //TODO: Script
-        // int stat;
-        // dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationDataFrame",                                                          &stat);
+        loadPluginGroup("matplotlibVisualizationDataFrame");
 
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
@@ -396,8 +393,7 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonLStringSeries *lString = dynamic_cast<gnomonLStringSeries *>(form)) {
         d->forms["gnomonLString"] = lString;
 
-        int stat;
-        dtkScriptInterpreterPython::instance()->interpret("import gnomonMatplotlibVisualizationLString", &stat);
+        loadPluginGroup("matplotlibVisualizationLString");
 
         QString key = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys()[0];
 
