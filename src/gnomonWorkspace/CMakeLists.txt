@@ -30,6 +30,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceFusion.h
   gnomonWorkspaceLSystemSimulator
   gnomonWorkspaceLSystemSimulator.h
+  gnomonWorkspaceLStringFromTree
+  gnomonWorkspaceLStringFromTree.h
   gnomonWorkspaceMeshFromImage
   gnomonWorkspaceMeshFromImage.h
   gnomonWorkspacePointCloudFromImage
@@ -58,6 +60,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceCellImageQuantification.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
+  gnomonWorkspaceLStringFromTree.cpp
   gnomonWorkspaceMeshFromImage.cpp
   gnomonWorkspacePointCloudFromImage.cpp
   gnomonWorkspacePreprocess.cpp

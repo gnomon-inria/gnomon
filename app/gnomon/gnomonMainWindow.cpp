@@ -84,6 +84,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record(         "Simulation", creator<gnomonWorkspaceSimulation>);
     dtk::widgets::workspace::pluginFactory().record(      "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
     dtk::widgets::workspace::pluginFactory().record( "LString Conversion", creator<gnomonWorkspaceTreeFromLString>);
+    dtk::widgets::workspace::pluginFactory().record(  "LString From Tree", creator<gnomonWorkspaceLStringFromTree>);
+
 
     dtkApp->setWindow(this);
 

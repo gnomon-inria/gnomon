@@ -25,6 +25,7 @@
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h"
+#include "gnomonAlgorithm/gnomonLString/gnomonAbstractLStringFromTree.h"
 
 #include "gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
