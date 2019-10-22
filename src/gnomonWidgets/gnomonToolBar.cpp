@@ -44,6 +44,7 @@ signals:
     void createCellImageFilter(void);
     void createSimulation(void);
     void createTreeAnalysis(void);
+    void createTreeFromLString(void);
 
 public slots:
     void create(QAction *);
@@ -66,6 +67,7 @@ private:
     QAction *action_cellImageFilter;
     QAction *action_simulation;
     QAction *action_tree_analysis;
+    QAction *action_treeFromLString;
 };
 
 gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
@@ -151,6 +153,9 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_tree_analysis)
         emit createTreeAnalysis();
+
+    if(action == this->action_treeFromLString)
+        emit createTreeFromLString();
 }
 
 void gnomonToolBarButton::mousePressEvent(QMouseEvent *event)
@@ -334,6 +339,9 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::simulation_color.red()).arg(gnomonToolBar::simulation_color.green()).arg(gnomonToolBar::simulation_color.blue()));
         else if(item->text() == "Tree analysis")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::tree_analysis_color.red()).arg(gnomonToolBar::tree_analysis_color.green()).arg(gnomonToolBar::tree_analysis_color.blue()));
+        else if(item->text() == "TreefromLString")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::treeFromLString_color.red()).arg(gnomonToolBar::treeFromLString_color.green()).arg(gnomonToolBar::treeFromLString_color.blue()));
+        
     }
 }
 
@@ -372,6 +380,7 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     connect(button, SIGNAL(createCellImageFilter()), this, SLOT(onCreateCellImageFilter()));
     connect(button, SIGNAL(createSimulation()), this, SLOT(onCreateSimulation()));
     connect(button, SIGNAL(createTreeAnalysis()), this, SLOT(onCreateTreeAnalysis()));
+    connect(button, SIGNAL(createTreeFromLString()), this, SLOT(onCreateTreeFromLString()));
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setMouseTracking(true);
@@ -498,6 +507,13 @@ void gnomonToolBar::onCreateTreeAnalysis(void)
     emit createTreeAnalysis();
 }
 
+void gnomonToolBar::onCreateTreeFromLString(void)
+{
+    d->createWorkspace(treeFromLString_color, "LString Conversion");
+
+    emit createTreeFromLString();
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 QColor gnomonToolBar::browser_color = QColor("#ff3b30");
@@ -514,6 +530,7 @@ QColor gnomonToolBar::cellComplexFromCellImage_color = QColor("#dc143c");
 QColor gnomonToolBar::cellImageFilter_color = QColor("#dc143c");
 QColor gnomonToolBar::simulation_color = QColor("#5856d6");
 QColor gnomonToolBar::tree_analysis_color = QColor("#734906");
+QColor gnomonToolBar::treeFromLString_color = QColor("#734906");
 
 // ///////////////////////////////////////////////////////////////////
 

@@ -83,6 +83,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record(       "Segmentation", creator<gnomonWorkspaceSegmentation>);
     dtk::widgets::workspace::pluginFactory().record(         "Simulation", creator<gnomonWorkspaceSimulation>);
     dtk::widgets::workspace::pluginFactory().record(      "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
+    dtk::widgets::workspace::pluginFactory().record( "LString Conversion", creator<gnomonWorkspaceTreeFromLString>);
 
     dtkApp->setWindow(this);
 

@@ -44,6 +44,7 @@ signals:
     void createCellImageFilter(void);
     void createSimulation(void);
     void createTreeAnalysis(void);
+    void createTreeFromLString(void);
 
 public slots:
     void onCreateFusion(void);
@@ -59,6 +60,7 @@ public slots:
     void onCreateCellImageFilter(void);
     void onCreateSimulation(void);
     void onCreateTreeAnalysis(void);
+    void onCreateTreeFromLString(void);
 
 protected:
     void enterEvent(QEvent *);
@@ -85,6 +87,7 @@ public:
     static QColor cellImageFilter_color;
     static QColor simulation_color;
     static QColor tree_analysis_color;
+    static QColor treeFromLString_color;
 
 private:
     class gnomonToolBarPrivate *d;

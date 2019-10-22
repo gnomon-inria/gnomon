@@ -46,6 +46,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceSegmentation.h
   gnomonWorkspaceTreeAnalysis
   gnomonWorkspaceTreeAnalysis.h
+  gnomonWorkspaceTreeFromLString
+  gnomonWorkspaceTreeFromLString.h
   gnomonWorkspaceTemplate_p.h
   gnomonWorkspaceTemplate_p.tpp)
 
@@ -63,7 +65,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
   gnomonWorkspaceSimulation.cpp
-  gnomonWorkspaceTreeAnalysis.cpp)
+  gnomonWorkspaceTreeAnalysis.cpp
+  gnomonWorkspaceTreeFromLString.cpp)
 
 set(${PROJECT_NAME}_SOURCES_QRC gnomonWorkspace.qrc)
 
