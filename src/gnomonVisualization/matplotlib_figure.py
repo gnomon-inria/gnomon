@@ -43,7 +43,7 @@ else:
     widget = all_widgets[num]
     print(widget)
 
-    setupMatplotlib(sip.unwrapinstance(widget))
+    setupMatplotlib(sip.unwrapinstance(widget),num)
 
 #
 # matplotlib_figure.py ends here

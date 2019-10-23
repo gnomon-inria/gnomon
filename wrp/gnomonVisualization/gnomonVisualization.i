@@ -245,13 +245,16 @@
 %inline
 %{
 
-void setupMatplotlib(qlonglong view_address)
+void setupMatplotlib(qlonglong view_address, int num)
 {
     QWidget *widget = reinterpret_cast<QWidget *>(view_address);
 
     foreach(QWidget *top, qApp->topLevelWidgets()) {
         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
-            view->addWidget(widget);
+            if(view->figureNumber() == num)
+            {
+                view->addWidget(widget);
+            }
         }
     }
 }
