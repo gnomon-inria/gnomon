@@ -306,6 +306,20 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
                 gnomonTreeSeries *tree = (gnomonTreeSeries *)this->forms[key];
                 formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
                 formVisualizationTree->update();
+            } else if (key == "gnomonDataFrame") {
+                this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
+                gnomonDataFrameSeries *dataFrame = (gnomonDataFrameSeries *)this->forms[key];
+                formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
+                formVisualizationDataFrame->update();
+            } else if (key == "gnomonLString") {
+                this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
+                this->formVisualization[key]->setView(q);
+                gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)this->formVisualization[key];
+                gnomonLStringSeries *lString = (gnomonLStringSeries *)this->forms[key];
+                formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
+                formVisualizationLString->update();
             }
 
             this->configure(formVisualizationPaneItems[key], key);
