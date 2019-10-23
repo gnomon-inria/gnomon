@@ -82,12 +82,12 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // loadPluginGroup("cellImageQuantification");
+    loadPluginGroup("cellImageQuantification");
 
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
     d->view = new gnomonViewForm(this);
-    // d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
+    d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
 

@@ -154,8 +154,6 @@ void gnomonViewMatplotlibPrivate::clear(void)
 {
     for (const auto& key : this->formVisualization.keys()) {
 
-        qDebug() << Q_FUNC_INFO << key;
-
         this->formVisualization[key]->disconnect();
 //        this->formVisualization[key]->clearConnections();
 //        this->formVisualization[key]->clear();
@@ -192,7 +190,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
 
 QSize gnomonViewMatplotlibPrivate::sizeHint(void) const
 {
-    return QSize(800, 600);
+    return QSize(1200, 800);
 }
 
 void gnomonViewMatplotlibPrivate::resizeEvent(QResizeEvent *event)
@@ -327,8 +325,6 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
 
         this->formVisualizationPaneItems[key]->addWidget(combo_box);
         this->formVisualizationPaneItems[key]->addWidget(contents);
-
-        qDebug()<<Q_FUNC_INFO<<"Insert new menu "<<key;
 
 //        this->formVisualizationMenus[key]->addItem(this->view_item);
         this->view_menu->addMenu(this->formVisualizationMenus[key]);
@@ -601,7 +597,7 @@ void gnomonViewMatplotlib::addWidget(QWidget *widget)
 
     d->layout->addWidget(widget);
 
-    this->resize(800,this->height());
+    this->resize(1200,this->height());
 }
 
 int gnomonViewMatplotlib::figureNumber(void)
