@@ -24,11 +24,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from openalea.lpy.gui.lpystudio import LPyWindow
+from openalea.lpy.gui.lpystudio import LPyWindow, Viewer
 
 workspace = LPyWindow()
 
 setupLPY(sip.unwrapinstance(workspace))
+setupLPY(sip.unwrapinstance(Viewer))
 
 # 
 # lpy.py ends here

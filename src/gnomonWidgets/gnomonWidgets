@@ -9,6 +9,7 @@
 #include "gnomonFinder.h"
 #include "gnomonInterpreterJupyter.h"
 #include "gnomonOverlayButton.h"
+#include "gnomonSpinner.h"
 #include "gnomonToolBar.h"
 #include "gnomonWidgets.h"
 #include "gnomonWidgetsParameter.h"

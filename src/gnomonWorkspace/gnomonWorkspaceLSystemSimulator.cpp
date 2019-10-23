@@ -30,6 +30,9 @@
 class gnomonWorkspaceLSystemSimulatorPrivate
 {
 public:
+   gnomonSpinner *spinner;
+
+public:
     QSplitter *splitter;
 };
 
@@ -37,11 +40,15 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 {
     d = new gnomonWorkspaceLSystemSimulatorPrivate;
 
+    d->spinner = new gnomonSpinner(this);
+    d->spinner->start();
+   
     d->splitter = new QSplitter(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+    layout->addWidget(d->spinner);
     layout->addWidget(d->splitter);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -98,6 +105,10 @@ void gnomonWorkspaceLSystemSimulator::reset(void)
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
+    d->spinner->stop();
+    d->spinner->hide();
+    d->splitter->show();
+
     widget->setParent(d->splitter);
 
     d->splitter->addWidget(widget);
