@@ -39,8 +39,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWidgetsParameter
   gnomonWidgetsParameter.h
   ${${PROJECT_NAME}_COLOR_HEADERS}
-  ${${PROJECT_NAME}_EDITOR_HEADERS}
-)
+  ${${PROJECT_NAME}_EDITOR_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
   gnomonFinder.cpp
@@ -51,8 +50,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp
   ${${PROJECT_NAME}_COLOR_SOURCES}
-  ${${PROJECT_NAME}_EDITOR_SOURCES}
-  )
+  ${${PROJECT_NAME}_EDITOR_SOURCES})
 
 set(${PROJECT_NAME}_SOURCES_QRC
   gnomonWidgets.qrc)

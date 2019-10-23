@@ -3,5 +3,6 @@
   <qresource prefix="">
     <file>pythonSimulator_menu.json</file>
     <file>pythonSimulator_params.json</file>
+    <file>lpy.py</file>
   </qresource>
 </RCC>

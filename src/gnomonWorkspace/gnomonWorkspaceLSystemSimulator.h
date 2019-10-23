@@ -37,6 +37,9 @@ public slots:
     void step(void);
     void reset(void);
 
+public:
+    void fill(QWidget *);
+
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;
 };

@@ -27,12 +27,9 @@ find_package(PythonLibs 3 QUIET)
 
 get_filename_component(PYTHON_PATH ${PYTHON_LIBRARIES} PATH)
 
-include_directories(${PYTHON_INCLUDE_PATH}
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  )
+include_directories(${PYTHON_INCLUDE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
-
 
 ## ###################################################################
 ## swig rules
@@ -40,8 +37,6 @@ set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJO
 
 find_package(SWIG 4 REQUIRED)
 include(${SWIG_USE_FILE})
-
-#set(CMAKE_SWIG_FLAGS "-c++;-threads;-python")
 
 mark_as_advanced(SWIG_DIR)
 mark_as_advanced(SWIG_EXECUTABLE)
@@ -60,17 +55,7 @@ set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL
 add_subdirectory(gnomonCore)
 add_subdirectory(gnomonWidgets)
 add_subdirectory(gnomonVisualization)
+add_subdirectory(gnomonWorkspace)
 
-
-
-## TODO
-
-## ###################################################################
-## Export configuration
-## ###################################################################
-
-#set(${PROJECT_NAME}_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE
-#  STRING "install path for ${PROJECT_NAME}Config.cmake")
-
-#set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
-#set(GNOMON_CORE_SWIG_PYTHON_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/wrp)
+######################################################################
+### CMakeLists.txt ends here
