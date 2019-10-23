@@ -45,12 +45,7 @@
 void setupLPY(qlonglong address)
 {
     QWidget *widget = reinterpret_cast<QWidget *>(address);
-
-    foreach(QWidget *top, qApp->topLevelWidgets()) {
-        foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
-            simulator->fill(widget);
-        }
-    }
+    widget->show();
 }
 
 %}

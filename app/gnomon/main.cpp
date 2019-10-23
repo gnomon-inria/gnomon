@@ -38,6 +38,54 @@
 #include <QtWidgets>
 
 // /////////////////////////////////////////////////////////////////////////////
+// TODO: Generic event filter
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonEventFilter: public QObject
+{
+    Q_OBJECT
+
+public:
+     gnomonEventFilter(void) {}
+    ~gnomonEventFilter(void) {}
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event)
+    {
+        if(event->type() != QEvent::Show)
+            return false;
+
+        static bool first = true;
+      
+        if(QMainWindow *window = dynamic_cast<QMainWindow *>(object)) {
+
+            if (first) {
+                first = false;
+                embedded << window;
+                return false;
+            }
+
+            if(!embedded.contains(window)) {
+
+                window->statusBar()->setSizeGripEnabled(false);
+
+                foreach(QWidget *top, qApp->topLevelWidgets()) {
+                    foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+                            simulator->fill(window);
+                    }
+                }
+                embedded << window;
+            }
+        }
+       
+        return false;
+    }
+
+private:
+    QList<QMainWindow *> embedded;
+};
+
+// /////////////////////////////////////////////////////////////////////////////
 // Entry point
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -58,6 +106,7 @@ int main(int argc, char **argv)
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
+    application->installEventFilter(new gnomonEventFilter());
 
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");
@@ -106,6 +155,10 @@ int main(int argc, char **argv)
 
     return status;
 }
+
+// /////////////////////////////////////////////////////////////////////////////
+
+#include "main.moc"
 
 //
 // main.cpp ends here

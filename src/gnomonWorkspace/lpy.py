@@ -29,7 +29,6 @@ from openalea.lpy.gui.lpystudio import LPyWindow, Viewer
 workspace = LPyWindow()
 
 setupLPY(sip.unwrapinstance(workspace))
-setupLPY(sip.unwrapinstance(Viewer))
 
 # 
 # lpy.py ends here
