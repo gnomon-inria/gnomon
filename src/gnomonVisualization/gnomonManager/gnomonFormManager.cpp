@@ -226,38 +226,38 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->contents->layout()->addWidget(item);
 }
 
-void gnomonFormManager::addForm(const QString& data, const QColor& color, QWidget* visualization)
-{
-    qDebug() << Q_FUNC_INFO;
+// void gnomonFormManager::addForm(const QString& data, const QColor& color, QWidget* visualization)
+// {
+//     qDebug() << Q_FUNC_INFO;
 
-    QImage image(128, 128, QImage::Format_ARGB32);
+//     QImage image(128, 128, QImage::Format_ARGB32);
 
-    visualization->render(&image);
+//     visualization->render(&image);
 
-    qDebug() << Q_FUNC_INFO << image;
+//     qDebug() << Q_FUNC_INFO << image;
 
-    gnomonFormManagerItem *item = d->create(data, color, image);
-    item->id = d->item_counter++;
+//     gnomonFormManagerItem *item = d->create(data, color, image);
+//     item->id = d->item_counter++;
 
-// /////////////////////////////////////////////////////////////////////////////
-// TODO
-// /////////////////////////////////////////////////////////////////////////////
+// // /////////////////////////////////////////////////////////////////////////////
+// // TODO
+// // /////////////////////////////////////////////////////////////////////////////
 
-    // d->forms.insert(item, form);
-    // d->formMatplotlibVisualizations.insert(item, visualization);
+//     // d->forms.insert(item, form);
+//     // d->formMatplotlibVisualizations.insert(item, visualization);
 
-    // QString writerPlugin;
+//     // QString writerPlugin;
 
-    // if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
-    //     qDebug()<<Q_FUNC_INFO<<dataFrame;
-    //     d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
-    //     static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
-    // }
+//     // if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+//     //     qDebug()<<Q_FUNC_INFO<<dataFrame;
+//     //     d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
+//     //     static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
+//     // }
 
-// /////////////////////////////////////////////////////////////////////////////
+// // /////////////////////////////////////////////////////////////////////////////
 
-    d->contents->layout()->addWidget(item);
-}
+//     d->contents->layout()->addWidget(item);
+// }
 
 gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
 {
