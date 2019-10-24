@@ -21,6 +21,7 @@
 #include "gnomonCellImage/gnomonCellImage.h"
 #include "gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonImage/gnomonImage.h"
+#include "gnomonLString/gnomonLString.h"
 #include "gnomonMesh/gnomonMesh.h"
 #include "gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonTree/gnomonTree.h"
@@ -46,6 +47,9 @@ gnomonDataFrame *gnomonAbstractForm::asDataFrame()
 
 gnomonImage *gnomonAbstractForm::asImage()
 { return dynamic_cast<gnomonImage *>(this); }
+
+gnomonLString *gnomonAbstractForm::asLString()
+{ return dynamic_cast<gnomonLString *>(this); }
 
 gnomonMesh *gnomonAbstractForm::asMesh()
 { return dynamic_cast<gnomonMesh *>(this); }
