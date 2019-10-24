@@ -74,11 +74,18 @@ void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;
 
-    disconnect(d->connectTime);
+    this->clearConnections();
+
+    d->connect3D = connect(d->view, SIGNAL(switchedTo3D(void)), this , SLOT(on3D(void)));
+    d->connect2D = connect(d->view, SIGNAL(switchedTo2D(void)), this , SLOT(on2D(void)));
+    d->connectXY = connect(d->view, SIGNAL(switchedTo2DXY(void)), this , SLOT(onXY(void)));
+    d->connectYZ= connect(d->view, SIGNAL(switchedTo2DYZ(void)), this , SLOT(onYZ(void)));
+    d->connectXZ = connect(d->view, SIGNAL(switchedTo2DXZ(void)), this , SLOT(onXZ(void)));
+
+    d->connectSliceOrientation = connect(d->view, SIGNAL(sliceOrientationChanged(int)), this, SLOT(onSliceOrientationChanged(int)));
+    d->connectSlice = connect(d->view, SIGNAL(sliceChanged(int)), this, SLOT(onSliceChanged(int)));
+
     d->connectTime = connect(d->view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
-//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-//        this->onTimeChanged(value);
-//    });
 }
 
 gnomonViewForm* gnomonAbstractVisualization::view(void)
@@ -86,15 +93,17 @@ gnomonViewForm* gnomonAbstractVisualization::view(void)
     return d->view;
 }
 
-
-//void gnomonAbstractVisualization::onTimeChanged(double)
-//{
-//    this->render();
-//    return;
-//}
-
 void gnomonAbstractVisualization::clearConnections(void)
 {
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
+
+    disconnect(d->connectXY);
+    disconnect(d->connectYZ);
+    disconnect(d->connectXZ);
+
+    disconnect(d->connectSliceOrientation);
+    disconnect(d->connectSlice);
     disconnect(d->connectTime);
 }
 

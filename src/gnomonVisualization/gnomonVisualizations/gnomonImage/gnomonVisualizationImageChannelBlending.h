@@ -50,6 +50,13 @@ public slots:
     void clear(void) override;
 
 public slots:
+    void on2D(void) override;
+    void on3D(void) override;
+    void onXY(void) override;
+    void onXZ(void) override;
+    void onYZ(void) override;
+    void onSliceChanged(double) override;
+    void onSliceOrientationChanged(double) override;
     void onTimeChanged(double) override;
 
 public:

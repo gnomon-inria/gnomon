@@ -53,6 +53,13 @@ public slots:
     virtual void clear(void) override = 0;
 
 public slots:
+    virtual void on2D(void) override = 0;
+    virtual void on3D(void) override = 0;
+    virtual void onXY(void) override = 0;
+    virtual void onXZ(void) override = 0;
+    virtual void onYZ(void) override = 0;
+    virtual void onSliceChanged(double) override = 0;
+    virtual void onSliceOrientationChanged(double) override = 0;
     virtual void onTimeChanged(double) override = 0;
 };
 
