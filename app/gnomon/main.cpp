@@ -89,7 +89,7 @@ protected:
 
                             connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
                             {
-                                gnomonFormManager::instance()->addForm(QString("prout"), QColor(Qt::green), widget);
+                                // gnomonFormManager::instance()->addForm(QString("prout"), QColor(Qt::green), widget);
 
                                 qDebug() << "Exporting";
                             });
