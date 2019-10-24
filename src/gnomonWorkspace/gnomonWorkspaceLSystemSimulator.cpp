@@ -72,6 +72,12 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 // /////////////////////////////////////////////////////////////////////////////
 
     this->enter();
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    loadPluginGroup("lStringData");
 }
 
 gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
@@ -97,27 +103,45 @@ void gnomonWorkspaceLSystemSimulator::apply(void)
     qDebug()<<current_lstring;
 }
 
-void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
-{
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// /////////////////////////////////////////////////////////////////////////////
+void gnomonWorkspaceLSystemSimulator::apply(QWidget *view) {
+  // /////////////////////////////////////////////////////////////////////////////
+  // TODO: HERE
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // /////////////////////////////////////////////////////////////////////////////
 
-    int stat;
-    QString current_lstring = dtkScriptInterpreterPython::instance()->interpret("str(lstring)",&stat);
+  qDebug() << Q_FUNC_INFO << 1 << view;
 
-    gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
-    gnomonLString *lstring = new gnomonLString();
-    lstring_series->insert(0,lstring);
-    gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
-    lstring_data->fromString(current_lstring);
-    lstring->setData(lstring_data);
+  int stat;
+  QString current_lstring =
+      dtkScriptInterpreterPython::instance()->interpret("str(lstring)", &stat);
 
-    QImage image(128, 128, QImage::Format_ARGB32);
-    image.fill(Qt::black);
-    view->render(&image);
+  qDebug() << Q_FUNC_INFO << 2 << current_lstring;
 
-    gnomonFormManager::instance()->addForm(lstring_series, gnomonToolBar::lsystem_color, image);
+  gnomonLString *lstring = new gnomonLString();
+
+  gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+  lstring_series->insert(0, lstring);
+
+  qDebug() << Q_FUNC_INFO << 3 << current_lstring << gnomonCore::lStringData::pluginFactory().keys();
+
+  gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+
+  qDebug() << Q_FUNC_INFO << lstring_data;
+
+  lstring_data->fromString(current_lstring);
+  lstring->setData(lstring_data);
+
+  qDebug() << Q_FUNC_INFO << 4 << current_lstring;
+
+  QImage image(128, 128, QImage::Format_ARGB32);
+  image.fill(Qt::black);
+  view->render(&image);
+
+  qDebug() << Q_FUNC_INFO << 5;
+
+  gnomonFormManager::instance()->addForm(lstring_series, gnomonToolBar::lsystem_color, image);
+
+  qDebug() << Q_FUNC_INFO << "Done";
 }
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
