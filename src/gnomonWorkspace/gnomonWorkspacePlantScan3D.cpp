@@ -55,7 +55,7 @@ gnomonWorkspacePlantScan3D::gnomonWorkspacePlantScan3D(QWidget *parent) : dtkWid
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    QFile file(":ps3d.py");
+    QFile file(":ps3D.py");
     file.open(QIODevice::ReadOnly);
     QString script = file.readAll();
     file.close();
