@@ -97,10 +97,7 @@ void gnomonWorkspaceLSystemSimulator::leave(void)
 
 void gnomonWorkspaceLSystemSimulator::apply(void)
 {
-    int stat;
-    QString current_lstring = dtkScriptInterpreterPython::instance()->interpret("str(lstring)",&stat);
 
-    qDebug()<<current_lstring;
 }
 
 void gnomonWorkspaceLSystemSimulator::apply(QWidget *view) {
@@ -113,7 +110,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view) {
 
   int stat;
   QString current_lstring =
-      dtkScriptInterpreterPython::instance()->interpret("str(lstring)", &stat);
+      dtkScriptInterpreterPython::instance()->interpret("print(str(lstring))", &stat);
 
   qDebug() << Q_FUNC_INFO << 2 << current_lstring;
 

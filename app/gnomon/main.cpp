@@ -57,7 +57,7 @@ protected:
 
         static bool first = true;
 
-        qDebug() << Q_FUNC_INFO << object->objectName();
+        // qDebug() << Q_FUNC_INFO << object->objectName();
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(object)) {
 
@@ -71,17 +71,17 @@ protected:
 
                 window->statusBar()->setSizeGripEnabled(false);
 
-                qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << window->objectName();
+                // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << window->objectName();
 
                 if(window->objectName() == "PGLMainWindow" || window->objectName() == "LPYMainWindow") {
 
-                    qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
+                    // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
 
                     foreach(QWidget *widget, window->findChildren<QWidget*>()) {
 
                         if(widget->objectName() == "PGLFrameGL") {
 
-                            qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
+                            // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
 
                             gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
                             export_button->move(10,10);
@@ -89,15 +89,15 @@ protected:
 
                             connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
                             {
-                                qDebug() << Q_FUNC_INFO << 0 << widget;
+                                // qDebug() << Q_FUNC_INFO << 0 << widget;
 
                                 foreach(QWidget *top, qApp->topLevelWidgets()) {
 
-                                    qDebug() << Q_FUNC_INFO << 1 << widget;
+                                    // qDebug() << Q_FUNC_INFO << 1 << widget;
 
                                     foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
 
-                                        qDebug() << Q_FUNC_INFO << 2 << widget;
+                                        // qDebug() << Q_FUNC_INFO << 2 << widget;
 
                                         simulator->apply(widget);
                                     }
