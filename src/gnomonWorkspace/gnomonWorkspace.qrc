@@ -4,5 +4,6 @@
     <file>pythonSimulator_menu.json</file>
     <file>pythonSimulator_params.json</file>
     <file>lpy.py</file>
+    <file>ps3D.py</file>
   </qresource>
 </RCC>

@@ -73,7 +73,7 @@ protected:
 
                 qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << window->objectName();
 
-                if(window->objectName() == "PGLMainWindow") {
+                if(window->objectName() == "PGLMainWindow" || window->objectName() == "LPYMainWindow") {
 
                     qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
 
@@ -105,11 +105,19 @@ protected:
                             });
                         }
                     }
+
+                    foreach(QWidget *top, qApp->topLevelWidgets()) {
+                        foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+                            simulator->fill(window);
+                        }
+                    }
                 }
 
-                foreach(QWidget *top, qApp->topLevelWidgets()) {
-                    foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
-                            simulator->fill(window);
+                if(window->objectName() == "PS3DMainWindow") {
+                    foreach(QWidget *top, qApp->topLevelWidgets()) {
+                        foreach(gnomonWorkspacePlantScan3D *scanner, top->findChildren<gnomonWorkspacePlantScan3D *>()) {
+                            scanner->fill(window);
+                        }
                     }
                 }
 

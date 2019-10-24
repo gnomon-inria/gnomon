@@ -53,7 +53,7 @@ add_executable(${PROJECT_NAME}
 ## Link rules
 ## ###################################################################
 
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)

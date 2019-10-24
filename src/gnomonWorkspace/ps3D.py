@@ -24,12 +24,13 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from openalea.lpy.gui.lpystudio import LPyWindow, Viewer
+from openalea.plantscan3d import main_window
 
-workspace = LPyWindow()
-workspace.setObjectName("LPYMainWindow")
+workspace = main_window.MainWindow()
+workspace.setObjectName("PS3DMainWindow")
+workspace.show();
 
-setupLPY(sip.unwrapinstance(workspace))
+# setupPS3D(sip.unwrapinstance(workspace))
 
-# 
-# lpy.py ends here
+#
+# ps3D.py ends here
