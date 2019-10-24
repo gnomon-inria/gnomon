@@ -121,8 +121,9 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
         } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
             // qDebug() << Q_FUNC_INFO<< "FORM MANAGER TREE";
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save tree"), path, tr("Comma separated value (*.xml)"));
-            static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setInput(tree);
             static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+            static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setInput(tree);
+
         }
 
         if(!export_file_path.isEmpty()) {
@@ -227,6 +228,10 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
         qDebug()<<Q_FUNC_INFO<<dataFrame;
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
+    } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
+      qDebug()<<Q_FUNC_INFO<<tree;
+      d->formWriterCommand[item] = new gnomonTreeWriterCommand("gnomonTreeWriterTreex");
+      static_cast<gnomonTreeWriterCommand *>(d->formWriterCommand[item])->setInput(tree);
     }
 
     d->contents->layout()->addWidget(item);
