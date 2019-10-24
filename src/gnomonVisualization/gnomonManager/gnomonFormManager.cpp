@@ -30,6 +30,7 @@
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
 
 #include <dtkFonts>
 #include <dtkScript>
@@ -117,6 +118,11 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save data frame"), path, tr("Comma separated value (*.csv)"));
             static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setDataFrame(dataFrame);
             static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
+            // qDebug() << Q_FUNC_INFO<< "FORM MANAGER TREE";
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save tree"), path, tr("Comma separated value (*.xml)"));
+            static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setInput(tree);
+            static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         }
 
         if(!export_file_path.isEmpty()) {

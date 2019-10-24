@@ -81,6 +81,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>
 
 #include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
@@ -632,6 +633,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>
 
 %include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
 %include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
