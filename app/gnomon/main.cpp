@@ -56,7 +56,9 @@ protected:
             return false;
 
         static bool first = true;
-      
+
+        qDebug() << Q_FUNC_INFO << object->objectName();
+
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(object)) {
 
             if (first) {
@@ -69,11 +71,38 @@ protected:
 
                 window->statusBar()->setSizeGripEnabled(false);
 
+                qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << window->objectName();
+
+                if(window->objectName() == "PGLMainWindow") {
+
+                    qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
+
+                    foreach(QWidget *widget, window->findChildren<QWidget*>()) {
+
+                        if(widget->objectName() == "PGLFrameGL") {
+
+                            qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
+
+                            gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
+                            export_button->move(10,10);
+                            export_button->show();
+
+                            connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
+                            {
+                                gnomonFormManager::instance()->addForm(QString("prout"), QColor(Qt::green), widget);
+
+                                qDebug() << "Exporting";
+                            });
+                        }
+                    }
+                }
+
                 foreach(QWidget *top, qApp->topLevelWidgets()) {
                     foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
                             simulator->fill(window);
                     }
                 }
+
                 embedded << window;
             }
         }

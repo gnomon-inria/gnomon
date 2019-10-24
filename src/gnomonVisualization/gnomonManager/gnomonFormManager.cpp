@@ -136,6 +136,27 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
     data->data = form->current()->metadata();
     this->formData.insert(item, data);
 
+    return item;
+}
+
+gnomonFormManagerItem *gnomonFormManagerPrivate::create(const QString& contents, const QColor& color, const QImage& image)
+{
+    gnomonFormManagerItem *item = new gnomonFormManagerItem(color, QPixmap::fromImage(image), 1, this);
+
+    connect(item, &gnomonFormManagerItem::destroy, [=] () {
+        this->contents->layout()->removeWidget(item);
+        this->forms.remove(item);
+        this->formWriterCommand.remove(item);
+        delete item;
+    });
+
+    connect(item, &gnomonFormManagerItem::clicked, [=] () {
+        q->present(item);
+    });
+
+    gnomonFormManagerData *data = new gnomonFormManagerData(this);
+    data->contents = contents;
+    this->formData.insert(item, data);
 
     return item;
 }
@@ -152,9 +173,8 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractVisualization* visualization)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization)
 {
-
     QImage image = visualization->imageRendering();
 
     gnomonFormManagerItem *item = d->create(form, color, image);
@@ -162,7 +182,6 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
 
     d->forms.insert(item, form->clone());
     d->formVisualizations.insert(item, visualization);
-
 
     QString writerPlugin;
     if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
@@ -203,6 +222,39 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
     }
+
+    d->contents->layout()->addWidget(item);
+}
+
+void gnomonFormManager::addForm(const QString& data, const QColor& color, QWidget* visualization)
+{
+    qDebug() << Q_FUNC_INFO;
+
+    QImage image(128, 128, QImage::Format_ARGB32);
+
+    visualization->render(&image);
+
+    qDebug() << Q_FUNC_INFO << image;
+
+    gnomonFormManagerItem *item = d->create(data, color, image);
+    item->id = d->item_counter++;
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO
+// /////////////////////////////////////////////////////////////////////////////
+
+    // d->forms.insert(item, form);
+    // d->formMatplotlibVisualizations.insert(item, visualization);
+
+    // QString writerPlugin;
+
+    // if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+    //     qDebug()<<Q_FUNC_INFO<<dataFrame;
+    //     d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
+    //     static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
+    // }
+
+// /////////////////////////////////////////////////////////////////////////////
 
     d->contents->layout()->addWidget(item);
 }

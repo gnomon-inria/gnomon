@@ -32,6 +32,7 @@ public slots:
 
 public:
     gnomonFormManagerItem *reference;
+    QString contents;
 
 public:
     QMap<QString,QString> data;

@@ -17,7 +17,6 @@
 #include <QtCore>
 #include <QtWidgets>
 
-
 class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
 class gnomonAbstractVisualization;
@@ -45,6 +44,7 @@ public:
 
 public:
     gnomonFormManagerItem *create(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
+    gnomonFormManagerItem *create(const QString&, const QColor&, const QImage& image);
 
 public:
     QHash<gnomonFormManagerItem *, gnomonAbstractDynamicForm *> forms;
