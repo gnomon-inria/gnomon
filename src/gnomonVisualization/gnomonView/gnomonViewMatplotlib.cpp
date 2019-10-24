@@ -635,7 +635,7 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
 
     if(path.startsWith(":")) {
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
-//        this->setForm("formManager",form);
+        this->setForm("formManager",form);
 
     } else {
         if ((path.endsWith("xml")) || (path.endsWith("txt")))   {
