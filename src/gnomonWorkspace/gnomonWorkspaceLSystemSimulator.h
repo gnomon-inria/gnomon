@@ -32,6 +32,7 @@ public:
 
 public:
     void apply(void) override;
+    void apply(QWidget *);
 
 public:
     void fill(QWidget *);
