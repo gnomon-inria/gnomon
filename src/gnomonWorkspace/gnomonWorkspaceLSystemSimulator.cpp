@@ -19,6 +19,7 @@
 #include <gnomonWidgets>
 
 #include <dtkScript>
+#include <dtkMacs>
 #include <dtkWidgets>
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
@@ -90,17 +91,13 @@ void gnomonWorkspaceLSystemSimulator::leave(void)
 
 void gnomonWorkspaceLSystemSimulator::apply(void)
 {
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// /////////////////////////////////////////////////////////////////////////////
 
-}
+    // gnomonLStringSeries *lstring = (gnomonLStringSeries *)d->model->forms()["lstring"];
 
-void gnomonWorkspaceLSystemSimulator::step(void)
-{
-
-}
-
-void gnomonWorkspaceLSystemSimulator::reset(void)
-{
-
+    // gnomonFormManager::instance()->addForm()
 }
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)

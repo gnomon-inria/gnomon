@@ -13,11 +13,8 @@
 # Code:
 
 import sip
-import gnomoncore
 
-from gnomonwidgets import *
-
-print("Ohhhh")
+from gnomonwidgets import setupConsole
 
 try:
     import qtconsole
@@ -27,9 +24,9 @@ else:
     from qtconsole.rich_jupyter_widget import RichJupyterWidget
     from qtconsole.inprocess import QtInProcessKernelManager
 
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
+    from PyQt5 import QtWidgets, QtGui, QtCore
+
+    print("Try to replace terminal with jupyter console")
 
     kernel_manager = QtInProcessKernelManager()
     kernel_manager.start_kernel()
@@ -48,11 +45,12 @@ else:
     console.style_sheet += ".in-prompt-number { color: lightgreen; font-weight: bold; }"
     console.style_sheet += ".out-prompt { color: orange; }"
     console.style_sheet += ".out-prompt-number { color: orange; font-weight: bold; }"
-    console.font = QFont("Source Code Pro", 12)
+    console.font = QtGui.QFont("Source Code Pro", 12)
     console.kernel_manager = kernel_manager
     console.kernel_client = kernel_client
 
     setupConsole(sip.unwrapinstance(console))
+
 
 #
 # create_jupyter_console.py ends here

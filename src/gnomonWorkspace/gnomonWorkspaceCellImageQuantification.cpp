@@ -67,7 +67,7 @@ gnomonWorkspaceCellImageQuantificationPrivate::~gnomonWorkspaceCellImageQuantifi
 
 QString gnomonWorkspaceCellImageQuantificationPrivate::workspace(void) const
 {
-    return "Cell Quantification";
+    return "Cell Analysis";
 }
 
 QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
@@ -82,12 +82,12 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    // loadPluginGroup("cellImageQuantification");
+    loadPluginGroup("cellImageQuantification");
 
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
     d->view = new gnomonViewForm(this);
-    // d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
+    d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
 
@@ -150,12 +150,14 @@ gnomonWorkspaceCellImageQuantification::~gnomonWorkspaceCellImageQuantification(
 void gnomonWorkspaceCellImageQuantification::enter(void)
 {
     dtkApp->window()->menubar()->addMenu(d->view->menu());
+    dtkApp->window()->menubar()->addMenu(d->mpl_figure->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceCellImageQuantification::leave(void)
 {
     dtkApp->window()->menubar()->removeMenu(d->view->menu());
+    dtkApp->window()->menubar()->removeMenu(d->mpl_figure->menu());
     dtkApp->window()->menubar()->touch();
 }
 

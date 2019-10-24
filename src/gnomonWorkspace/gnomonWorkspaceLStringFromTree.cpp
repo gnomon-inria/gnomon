@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "gnomonWorkspaceTreeAnalysis.h"
+#include "gnomonWorkspaceLStringFromTree.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeTransformCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringFromTreeCommand>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -26,20 +26,15 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
-#include <QtWidgets>
-
-#include <vtkImageData.h>
-#include <vtkRenderer.h>
-
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-class gnomonWorkspaceTreeAnalysisPrivate : public gnomonWorkspaceTemplatePrivate<gnomonTreeTransformCommand>
+class gnomonWorkspaceLStringFromTreePrivate : public gnomonWorkspaceTemplatePrivate<gnomonLStringFromTreeCommand>
 {
 public:
-     gnomonWorkspaceTreeAnalysisPrivate(void);
-    ~gnomonWorkspaceTreeAnalysisPrivate(void);
+     gnomonWorkspaceLStringFromTreePrivate(void);
+    ~gnomonWorkspaceLStringFromTreePrivate(void);
 
 public:
     QString workspace(void) const override;
@@ -50,47 +45,48 @@ public:
     gnomonViewMatplotlib *target = nullptr;
 
 public:
-    QMetaObject::Connection c_o;
-    QMetaObject::Connection c_s;
-
-public:
     dtkWidgetsMenu *menu_;
 
 public:
     dtkWidgetsMenuBarContainer *dashboard;
 };
 
-gnomonWorkspaceTreeAnalysisPrivate::gnomonWorkspaceTreeAnalysisPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonTreeTransformCommand>()
-{
-
-}
-
-gnomonWorkspaceTreeAnalysisPrivate::~gnomonWorkspaceTreeAnalysisPrivate(void)
-{
-
-}
-
-QString gnomonWorkspaceTreeAnalysisPrivate::workspace(void) const
-{
-    return "TreeAnalysis";
-}
-
-QStringList gnomonWorkspaceTreeAnalysisPrivate::keys(void) const
-{
-    return gnomonCore::treeTransform::pluginFactory().keys();
-}
-
-// ///////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 //
-// ///////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspaceLStringFromTreePrivate::gnomonWorkspaceLStringFromTreePrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonLStringFromTreeCommand >()
 {
-    loadPluginGroup("treeTransform");
 
-    d = new gnomonWorkspaceTreeAnalysisPrivate;
+}
+
+gnomonWorkspaceLStringFromTreePrivate::~gnomonWorkspaceLStringFromTreePrivate(void)
+{
+
+}
+
+QString gnomonWorkspaceLStringFromTreePrivate::workspace(void) const
+{
+    return "LString From Tree";
+}
+
+QStringList gnomonWorkspaceLStringFromTreePrivate::keys(void) const
+{
+    return gnomonCore::lStringFromTree::pluginFactory().keys();
+}
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+gnomonWorkspaceLStringFromTree::gnomonWorkspaceLStringFromTree(QWidget *parent) : dtkWidgetsWorkspace(parent)
+{
+    loadPluginGroup("lStringFromTree");
+
+    d = new gnomonWorkspaceLStringFromTreePrivate;
 
     d->source = new gnomonViewMatplotlib(this);
+
     d->target = new gnomonViewMatplotlib(this);
 
 
@@ -122,14 +118,15 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
             d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
         else
             qDebug() << "Not changed";
+
         d->configure(d->algorithm);
     });
 
-//    connect(d, &gnomonWorkspaceTreeAnalysisPrivate::algorithmChanged, [=] (const QString& algorithm)
-//    {
-//        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-//        d->configure(algorithm);
-//    });
+    connect(d, &gnomonWorkspaceLStringFromTreePrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
+        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        d->configure(algorithm);
+    });
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -138,43 +135,44 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     this->enter();
 }
 
-gnomonWorkspaceTreeAnalysis::~gnomonWorkspaceTreeAnalysis(void)
+gnomonWorkspaceLStringFromTree::~gnomonWorkspaceLStringFromTree(void)
 {
     delete d;
 }
 
-void gnomonWorkspaceTreeAnalysis::enter(void)
+void gnomonWorkspaceLStringFromTree::enter(void)
 {
     dtkApp->window()->menubar()->addMenu(d->source->menu());
     dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceTreeAnalysis::leave(void)
+void gnomonWorkspaceLStringFromTree::leave(void)
 {
     dtkApp->window()->menubar()->removeMenu(d->source->menu());
     dtkApp->window()->menubar()->removeMenu(d->target->menu());
+
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceTreeAnalysis::configure(const QString& algorithm)
-{
-    d->configure(algorithm);
-}
-
-void gnomonWorkspaceTreeAnalysis::apply(void)
+void gnomonWorkspaceLStringFromTree::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
+    if(d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
         d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
     else
         qDebug() << "Not changed";
 
     d->command->redo();
 
-    d->target->setForm("gnomonTree",d->command->output());
+    d->target->setForm("gnomonLString",d->command->output());
+}
+
+void gnomonWorkspaceLStringFromTree::configure(const QString& algorithm)
+{
+    d->configure(algorithm);
 }
 
 //
-// gnomonWorkspaceTreeAnalysis.cpp ends here
+// gnomonWorkspaceLStringFromTree.cpp ends here

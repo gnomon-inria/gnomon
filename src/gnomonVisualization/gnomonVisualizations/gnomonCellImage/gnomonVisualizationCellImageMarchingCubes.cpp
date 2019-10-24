@@ -336,6 +336,9 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
     dd->cellImageSeries = cellImage;
     dd->cellImage = (gnomonCellImage *) cellImage->current();
 
+    if(!dd->cellImage)
+        return;
+
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
         if(!dd->cellImage)

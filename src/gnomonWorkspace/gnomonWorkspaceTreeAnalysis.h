@@ -31,6 +31,8 @@ public:
     void leave(void) override;
     void apply(void) override;
 
+    void configure(const QString& text);
+
 private:
     class gnomonWorkspaceTreeAnalysisPrivate *d;
 };

@@ -73,7 +73,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record(            "Browser", creator<gnomonWorkspaceBrowser>);
     dtk::widgets::workspace::pluginFactory().record("Cell Reconstruction", creator<gnomonWorkspaceCellComplexFromCellImage>);
     dtk::widgets::workspace::pluginFactory().record(         "CellFilter", creator<gnomonWorkspaceCellImageFilter>);
-    dtk::widgets::workspace::pluginFactory().record("Cell Quantification", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record(      "Cell Analysis", creator<gnomonWorkspaceCellImageQuantification>);
     dtk::widgets::workspace::pluginFactory().record(             "Fusion", creator<gnomonWorkspaceFusion>);
     dtk::widgets::workspace::pluginFactory().record(            "LSystem", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record(    "Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
@@ -83,6 +83,9 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record(       "Segmentation", creator<gnomonWorkspaceSegmentation>);
     dtk::widgets::workspace::pluginFactory().record(         "Simulation", creator<gnomonWorkspaceSimulation>);
     dtk::widgets::workspace::pluginFactory().record(      "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
+    dtk::widgets::workspace::pluginFactory().record( "LString Conversion", creator<gnomonWorkspaceTreeFromLString>);
+    dtk::widgets::workspace::pluginFactory().record(  "LString From Tree", creator<gnomonWorkspaceLStringFromTree>);
+
 
     dtkApp->setWindow(this);
 

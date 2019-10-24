@@ -12,3 +12,5 @@
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspaceSimulation.h"
 #include "gnomonWorkspaceTreeAnalysis.h"
+#include "gnomonWorkspaceTreeFromLString.h"
+#include "gnomonWorkspaceLStringFromTree.h"

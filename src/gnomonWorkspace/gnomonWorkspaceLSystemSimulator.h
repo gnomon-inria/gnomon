@@ -33,10 +33,6 @@ public:
 public:
     void apply(void) override;
 
-public slots:
-    void step(void);
-    void reset(void);
-
 public:
     void fill(QWidget *);
 
