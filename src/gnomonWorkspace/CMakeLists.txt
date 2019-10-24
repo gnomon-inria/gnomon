@@ -34,6 +34,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceLStringFromTree.h
   gnomonWorkspaceMeshFromImage
   gnomonWorkspaceMeshFromImage.h
+  gnomonWorkspacePlantScan3D
+  gnomonWorkspacePlantScan3D.h
   gnomonWorkspacePointCloudFromImage
   gnomonWorkspacePointCloudFromImage.h
   gnomonWorkspacePreprocess
@@ -62,6 +64,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspaceLStringFromTree.cpp
   gnomonWorkspaceMeshFromImage.cpp
+  gnomonWorkspacePlantScan3D.cpp
   gnomonWorkspacePointCloudFromImage.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspacePythonSimulator.cpp
@@ -93,10 +96,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkMacs)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)

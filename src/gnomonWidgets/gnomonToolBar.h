@@ -46,6 +46,7 @@ signals:
     void createTreeAnalysis(void);
     void createTreeFromLString(void);
     void createLStringFromTree(void);
+    void createPlantScan3D(void);
 
 public slots:
     void onCreateFusion(void);
@@ -63,6 +64,7 @@ public slots:
     void onCreateTreeAnalysis(void);
     void onCreateTreeFromLString(void);
     void onCreateLStringFromTree(void);
+    void onCreatePlantScan3D(void);
 
 protected:
     void enterEvent(QEvent *);
@@ -91,6 +93,7 @@ public:
     static QColor tree_analysis_color;
     static QColor treeFromLString_color;
     static QColor lStringFromTree_color;
+    static QColor plant_scan_3D_color;
 
 private:
     class gnomonToolBarPrivate *d;
