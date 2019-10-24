@@ -432,6 +432,8 @@ void gnomonToolBar::onCreateFusion(void)
     d->createWorkspace(fusion_color, "Image Fusion");
 
     emit createFusion();
+
+    emit created("Fusion");
 }
 
 void gnomonToolBar::onCreatePythonSimulator(void)
@@ -439,6 +441,8 @@ void gnomonToolBar::onCreatePythonSimulator(void)
     d->createWorkspace(python_simulation_color, "Python Model");
 
     emit createPythonSimulator();
+
+    emit created("Python Simulator");
 }
 
 void gnomonToolBar::onCreateLSystemSimulator(void)
@@ -446,6 +450,8 @@ void gnomonToolBar::onCreateLSystemSimulator(void)
     d->createWorkspace(lsystem_color, "LSystem simulator");
 
     emit createLSystemSimulator();
+
+    emit created("LSystem simulator");
 }
 
 void gnomonToolBar::onCreateSegmentation(void)
@@ -453,6 +459,8 @@ void gnomonToolBar::onCreateSegmentation(void)
     d->createWorkspace(segmentation_color, "Segmentation");
 
     emit createSegmentation();
+
+    emit created("Segmentation");
 }
 
 void gnomonToolBar::onCreateCellComplexFromCellImage(void)
@@ -460,6 +468,8 @@ void gnomonToolBar::onCreateCellComplexFromCellImage(void)
     d->createWorkspace(cellComplexFromCellImage_color, "Cell Reconstruction");
 
     emit createCellComplexFromCellImage();
+
+    emit created("Cell Complex From Image");
 }
 
 void gnomonToolBar::onCreateCellImageFilter(void)
@@ -467,6 +477,8 @@ void gnomonToolBar::onCreateCellImageFilter(void)
     d->createWorkspace(cellImageFilter_color, "Label Postprocess");
 
     emit createCellImageFilter();
+
+    emit created("Cell Image Filter");
 }
 
 void gnomonToolBar::onCreatePreprocess(void)
@@ -474,6 +486,8 @@ void gnomonToolBar::onCreatePreprocess(void)
     d->createWorkspace(preprocess_color, "Preprocess");
 
     emit createPreprocess();
+
+    emit created("Preprocess");
 }
 
 void gnomonToolBar::onCreateCellImageQuantification(void)
@@ -481,6 +495,8 @@ void gnomonToolBar::onCreateCellImageQuantification(void)
     d->createWorkspace(cellImageQuantification_color, "Cell Analysis");
 
     emit createCellImageQuantification();
+
+    emit created("Cell Image Quantification");
 }
 
 void gnomonToolBar::onCreateRegistration(void)
@@ -488,6 +504,8 @@ void gnomonToolBar::onCreateRegistration(void)
     d->createWorkspace(registration_color, "Time Registration");
 
     emit createRegistration();
+
+    emit created("Tine Registration");
 }
 
 void gnomonToolBar::onCreateMeshFromImage(void)
@@ -495,6 +513,8 @@ void gnomonToolBar::onCreateMeshFromImage(void)
     d->createWorkspace(meshFromImage_color, "Surface Meshing");
 
     emit createMeshFromImage();
+
+    emit created("Surface Meshing");
 }
 
 void gnomonToolBar::onCreatePointCloudFromImage(void)
@@ -502,6 +522,8 @@ void gnomonToolBar::onCreatePointCloudFromImage(void)
     d->createWorkspace(meshFromImage_color, "Cell Detection");
 
     emit createPointCloudFromImage();
+
+    emit created("Point Cloud From Image");
 }
 
 void gnomonToolBar::onCreateSimulation(void)
@@ -509,6 +531,8 @@ void gnomonToolBar::onCreateSimulation(void)
     d->createWorkspace(simulation_color, "FEM Simulation");
 
     emit createSimulation();
+
+    emit created("Fem Simulation");
 }
 
 void gnomonToolBar::onCreateTreeAnalysis(void)
@@ -516,6 +540,8 @@ void gnomonToolBar::onCreateTreeAnalysis(void)
     d->createWorkspace(tree_analysis_color, "Tree analysis");
 
     emit createTreeAnalysis();
+
+    emit created("Tree Analysis");
 }
 
 void gnomonToolBar::onCreateTreeFromLString(void)
@@ -523,6 +549,8 @@ void gnomonToolBar::onCreateTreeFromLString(void)
     d->createWorkspace(treeFromLString_color, "LString Conversion");
 
     emit createTreeFromLString();
+
+    emit created("LString Conversion");
 }
 
 void gnomonToolBar::onCreateLStringFromTree(void)
@@ -530,6 +558,8 @@ void gnomonToolBar::onCreateLStringFromTree(void)
     d->createWorkspace(lStringFromTree_color, "LString From Tree");
 
     emit createLStringFromTree();
+
+    emit created("LString From Tree");
 }
 
 void gnomonToolBar::onCreatePlantScan3D(void)
@@ -537,6 +567,8 @@ void gnomonToolBar::onCreatePlantScan3D(void)
     d->createWorkspace(plant_scan_3D_color, "Plant Scan 3D");
 
     emit createPlantScan3D();
+
+    emit created("Plant Scan 3D");
 }
 
 // ///////////////////////////////////////////////////////////////////

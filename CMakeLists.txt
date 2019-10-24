@@ -100,27 +100,21 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent Test)
 
-find_package(dtkLog           REQUIRED)
-find_package(dtkFonts         REQUIRED)
-find_package(dtkThemes        REQUIRED)
-find_package(dtkCore          REQUIRED)
-find_package(dtkMacs          REQUIRED)
-find_package(dtkImaging       REQUIRED)
-find_package(dtkScript        REQUIRED)
-find_package(dtkWidgets       REQUIRED)
+find_package(dtkLog      REQUIRED)
+find_package(dtkFonts    REQUIRED)
+find_package(dtkThemes   REQUIRED)
+find_package(dtkCore     REQUIRED)
+find_package(dtkMacs     REQUIRED)
+find_package(dtkImaging  REQUIRED)
+find_package(dtkScript   REQUIRED)
+find_package(dtkWidgets  REQUIRED)
+find_package(dtkComposer REQUIRED)
 
 find_package(xtensor REQUIRED)
+
 find_package(VTK REQUIRED)
 
 include(${VTK_USE_FILE})
-
-## #############################################################################
-## TODO: Use upcoming dtk-script layers
-## #############################################################################
-
-# if(DTK_BUILD_WRAPPERS)
-#   include(dtkWrap)
-# endif()
 
 ## ###################################################################
 ## Compiling options

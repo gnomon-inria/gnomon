@@ -48,6 +48,9 @@ signals:
     void createLStringFromTree(void);
     void createPlantScan3D(void);
 
+signals:
+    void created(const QString&);
+
 public slots:
     void onCreateFusion(void);
     void onCreateLSystemSimulator(void);

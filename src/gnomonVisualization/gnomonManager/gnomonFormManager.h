@@ -45,7 +45,6 @@ public slots:
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
-    // void addForm(const QString&, const QColor&, QWidget *);
 
 public slots:
     void present(gnomonFormManagerItem *);

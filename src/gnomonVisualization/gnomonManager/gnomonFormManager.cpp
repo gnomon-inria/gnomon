@@ -33,6 +33,7 @@
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
 
 #include <dtkFonts>
+#include <dtkThemes>
 #include <dtkScript>
 
 // ///////////////////////////////////////////////////////////////////
@@ -257,40 +258,6 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->contents->layout()->addWidget(item);
 }
 
-
-// void gnomonFormManager::addForm(const QString& data, const QColor& color, QWidget* visualization)
-// {
-//     qDebug() << Q_FUNC_INFO;
-
-//     QImage image(128, 128, QImage::Format_ARGB32);
-
-//     visualization->render(&image);
-
-//     qDebug() << Q_FUNC_INFO << image;
-
-//     gnomonFormManagerItem *item = d->create(data, color, image);
-//     item->id = d->item_counter++;
-
-// // /////////////////////////////////////////////////////////////////////////////
-// // TODO
-// // /////////////////////////////////////////////////////////////////////////////
-
-//     // d->forms.insert(item, form);
-//     // d->formMatplotlibVisualizations.insert(item, visualization);
-
-//     // QString writerPlugin;
-
-//     // if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
-//     //     qDebug()<<Q_FUNC_INFO<<dataFrame;
-//     //     d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
-//     //     static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
-//     // }
-
-// // /////////////////////////////////////////////////////////////////////////////
-
-//     d->contents->layout()->addWidget(item);
-// }
-
 gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
@@ -496,10 +463,13 @@ void gnomonFormManager::paintEvent(QPaintEvent *event)
 {
     QFrame::paintEvent(event);
 
+    QPainter painter(this);
+    painter.setPen(dtkThemesEngine::instance()->color("@bgalt"));
+    painter.drawLine(event->rect().bottomLeft(), event->rect().bottomRight());
+
     if(!d->inside)
         return;
 
-    QPainter painter(this);
     painter.setBrush(Qt::white);
     painter.drawRoundedRect(event->rect().width() / 2 - 100, event->rect().height() - 10, 200, 6, 3, 3);
 }

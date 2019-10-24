@@ -51,6 +51,7 @@ target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonCore)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWidgets)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWorkspace)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonComposer)
 
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE ${VTK_LIBRARIES})
 

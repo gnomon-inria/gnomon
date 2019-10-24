@@ -17,71 +17,30 @@
 #include <QtCore>
 #include <QtWidgets>
 
-class dtkComposerWidget;
-class dtkComposerControls;
-class dtkComposerNodeFactoryView;
-class dtkComposerSceneModel;
-class dtkComposerSceneNodeEditor;
-class dtkComposerSceneView;
-class dtkComposerStackView;
-
-class dtkDistributor;
-
-class dtkRecentFilesMenu;
-
-class dtkComposerViewManager;
-class dtkPlotViewSettings;
-
+class    dtkComposerScenePort;
+class    dtkComposerWidget;
 class gnomonComposerWidget;
+class gnomonComposerNodeWorkspace;
 
 class gnomonComposerWidgetPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    bool maySave(void);
+    enum State {
+        Collapsed,
+        Expanded
+    };
 
 public:
-    void setCurrentFile(const QString& file);
+    bool maySave(void);
 
 public slots:
     void setModified(bool modified);
-
+    void setCurrentFile(const QString &file);
+  
 public:
     dtkComposerWidget *composer;
-    dtkComposerControls *controls;
-    dtkComposerNodeFactoryView *nodes;
-    dtkComposerSceneModel *model;
-    dtkComposerSceneNodeEditor *editor;
-    dtkComposerSceneView *scene;
-    dtkComposerStackView *stack;
-
-public:
-    dtkDistributor *distributor;
-
-public:
-    dtkComposerViewManager *view_manager;
-    dtkPlotViewSettings *plot_view_settings;
-
-public:
-    QMenu *composition_menu;
-    QAction *composition_open_action;
-    QAction *composition_save_action;
-    QAction *composition_saveas_action;
-    QAction *composition_insert_action;
-    QAction *composition_quit_action;
-
-    QMenu *edit_menu;
-    QAction *undo_action;
-    QAction *redo_action;
-
-    dtkRecentFilesMenu *recent_compositions_menu;
-
-public:
-    QPushButton *compo_button;
-    QPushButton *distr_button;
-    QPushButton *debug_button;
-    QPushButton *view_button;
 
 public:
     bool closing;
@@ -90,7 +49,17 @@ public:
     QString current_composition;
 
 public:
+    bool inside = false;
+
+public:
+    State state = Collapsed;
+
+public:
     gnomonComposerWidget *q;
+    gnomonComposerNodeWorkspace *last_node = nullptr;
+
+public:
+    dtkComposerScenePort *last_port = nullptr;
 };
 
 //

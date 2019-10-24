@@ -14,6 +14,7 @@
 #include <gnomonMainWindow.h>
 
 #include <gnomonCore>
+#include <gnomonComposer>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
@@ -31,11 +32,23 @@ public:
 public:
     dtkWidgetsWorkspaceBar *workspace_bar = nullptr;
 
+// /////////////////////////////////////////////////////////////////////////////
+// Top level - World
+// /////////////////////////////////////////////////////////////////////////////
+public:
+    gnomonFormManager *manager;
+
+// /////////////////////////////////////////////////////////////////////////////
+// Inner level - Workspaces
+// /////////////////////////////////////////////////////////////////////////////
 public:
     QStackedWidget *stack;
 
+// /////////////////////////////////////////////////////////////////////////////
+// Bottom level - Workflow
+// /////////////////////////////////////////////////////////////////////////////
 public:
-    gnomonFormManager *manager;
+    gnomonComposerWidget *workflow;
 
 public:
     gnomonMainWindow *q;
@@ -100,12 +113,14 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->createWorkspace("Browser", "Browser", false);
 
     d->manager = gnomonFormManager::instance();
+    d->workflow = gnomonComposerWidget::instance();
 
     QVBoxLayout *i_layout = new QVBoxLayout;
     i_layout->setContentsMargins(0, 0, 0, 0);
     i_layout->setSpacing(0);
     i_layout->addWidget(d->manager);
     i_layout->addWidget(d->stack);
+    i_layout->addWidget(d->workflow);
     i_layout->addWidget(d->workspace_bar);
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -124,6 +139,9 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     connect(d->manager, &gnomonFormManager::expand, [=] (void)
     {
+        if(d->stack->height() < 10)
+            return;
+
         int m_h = d->manager->height();
         int s_h = d->stack->height();
 
@@ -145,6 +163,9 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     connect(d->manager, &gnomonFormManager::shrink, [=] (void)
     {
+        if(d->manager->height() < 10)
+            return;
+
         int m_h = d->manager->height();
 
         QVariantAnimation *animation = new QVariantAnimation(this);
@@ -160,6 +181,55 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     });
+
+    connect(d->workflow, &gnomonComposerWidget::expand, [=] (void)
+    {
+        if(d->stack->height() < 10)
+            return;
+
+        int m_h = d->workflow->height();
+        int s_h = d->stack->height();
+
+        l_h = s_h;
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(d->stack->height());
+        animation->setEndValue(0);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->workflow->setFixedHeight(m_h + s_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(d->workflow, &gnomonComposerWidget::shrink, [=] (void)
+    {
+        if(d->workflow->height() < 10)
+            return;
+
+        int m_h = d->workflow->height();
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(0);
+        animation->setEndValue(l_h);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->workflow->setFixedHeight(m_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
+
+// /////////////////////////////////////////////////////////////////////////////
 
     this->setCentralWidget(central);
 
