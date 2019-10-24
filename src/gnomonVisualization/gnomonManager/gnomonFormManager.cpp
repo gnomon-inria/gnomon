@@ -226,6 +226,27 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->contents->layout()->addWidget(item);
 }
 
+
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, const QImage& image)
+{
+    gnomonFormManagerItem *item = d->create(form, color, image);
+    item->id = d->item_counter++;
+
+    d->forms.insert(item, form);
+    d->formMatplotlibVisualizations.insert(item, nullptr);
+
+    QString writerPlugin;
+
+    if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+        qDebug()<<Q_FUNC_INFO<<dataFrame;
+        d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
+        static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
+    }
+
+    d->contents->layout()->addWidget(item);
+}
+
+
 // void gnomonFormManager::addForm(const QString& data, const QColor& color, QWidget* visualization)
 // {
 //     qDebug() << Q_FUNC_INFO;
