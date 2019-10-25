@@ -100,18 +100,18 @@ void gnomonVisualizationImage::clear(void)
     }
 
     if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
+//        disconnect(d->connectSliceOrientation);
+//        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
 
-    disconnect(d->connect3D);
-    disconnect(d->connect2D);
-    disconnect(d->connectXY);
-    disconnect(d->connectXZ);
-    disconnect(d->connectYZ);
+//    disconnect(d->connect3D);
+//    disconnect(d->connect2D);
+//    disconnect(d->connectXY);
+//    disconnect(d->connectXZ);
+//    disconnect(d->connectYZ);
 }
 
 void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
@@ -220,28 +220,6 @@ void gnomonVisualizationImage::update(void)
     dd->volume->setColorMap(colormap);
     dd->volume->setValueRange(value_range);
 
-    d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        dd->actor2D->setSliceOrientation(value);
-    });
-
-    d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        dd->actor2D->setSlice(value);
-        this->render();
-    });
-
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
-        dd->actor2D->hide();
-        this->render();
-    });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
-        dd->actor2D->show();
-        this->render();
-    });
-
-    connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
-
     double bounds[6];
     bounds[0] = 0;
     bounds[1] = (dd->image_data->GetDimensions()[0]-1)*dd->image_data->GetSpacing()[0];
@@ -283,6 +261,45 @@ void gnomonVisualizationImage::setParameters(const QMap<QString, gnomonCoreParam
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationImage::onSliceOrientationChanged(int value)
+{
+    dd->actor2D->setSliceOrientation(value);
+}
+
+
+void gnomonVisualizationImage::onSliceChanged(int value)
+{
+    dd->actor2D->setSlice(value);
+    this->render();
+}
+
+void gnomonVisualizationImage::on3D(void)
+{
+    dd->actor2D->hide();
+    this->render();
+}
+
+void gnomonVisualizationImage::on2D(void)
+{
+    dd->actor2D->show();
+    this->render();
+}
+
+void gnomonVisualizationImage::onXY(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationImage::onYZ(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationImage::onXZ(void)
+{
+    this->render();
 }
 
 void gnomonVisualizationImage::onTimeChanged(double value)

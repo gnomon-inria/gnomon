@@ -1229,6 +1229,18 @@ void gnomonViewForm::setBounds(double bounds[6])
 
 }
 
+void gnomonViewForm::setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
+{
+    double bounds[6];
+    bounds[0] = xMin;
+    bounds[1] = xMax;
+    bounds[2] = yMin;
+    bounds[3] = yMax;
+    bounds[4] = zMin;
+    bounds[5] = zMax;
+    this->setBounds(bounds);
+}
+
 void gnomonViewForm::setAcceptCellComplex(bool accept)
 {
     d->acceptCellComplex = accept;

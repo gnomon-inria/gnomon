@@ -314,18 +314,10 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
     }
 
     if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
-
-    disconnect(d->connect3D);
-    disconnect(d->connect2D);
-    disconnect(d->connectXY);
-    disconnect(d->connectXZ);
-    disconnect(d->connectYZ);
 
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
 //    dd->interactor_style->Delete();
@@ -407,15 +399,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     if(!dd->cellImage)
         return;
 
-    disconnect(d->connectSliceOrientation);
-    disconnect(d->connectSlice);
-//    disconnect(d->connectTime);
-    disconnect(d->connect3D);
-    disconnect(d->connect2D);
-    disconnect(d->connectXY);
-    disconnect(d->connectXZ);
-    disconnect(d->connectYZ);
-
     if (dd->polydata) {
         dd->polydata->Delete();
         dd->polydata = nullptr;
@@ -455,34 +438,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
-
-
-    d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        dd->actor2D->setSliceOrientation(value);
-    });
-
-    d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        dd->actor2D->setSlice(value);
-        this->render();
-    });
-
-//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-//        if (dd->cellImageSeries->times().contains(value)) {
-//            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
-//            this->update();
-//            this->render();
-//        }
-//    });
-
-    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
-
-    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
-
-    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-
-    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-
-    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     dd->polydata->GetBounds(bounds);
@@ -545,6 +500,44 @@ QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long
     }
 
     return info;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onSliceOrientationChanged(int value)
+{
+    dd->actor2D->setSliceOrientation(value);
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onSliceChanged(int value)
+{
+    dd->actor2D->setSlice(value);
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::on3D(void)
+{
+    dd->is2D=false;
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::on2D(void)
+{
+    dd->is2D=true;
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onXY(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onYZ(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onXZ(void)
+{
+    this->render();
 }
 
 void gnomonVisualizationCellImageMarchingCubes::onTimeChanged(double value)
