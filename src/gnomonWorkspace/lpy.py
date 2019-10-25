@@ -28,8 +28,9 @@ from openalea.lpy.gui.lpystudio import LPyWindow, Viewer
 
 workspace = LPyWindow()
 workspace.setObjectName("LPYMainWindow")
+workspace.show();
 
-setupLPY(sip.unwrapinstance(workspace))
+# setupLPY(sip.unwrapinstance(workspace))
 
 # 
 # lpy.py ends here
