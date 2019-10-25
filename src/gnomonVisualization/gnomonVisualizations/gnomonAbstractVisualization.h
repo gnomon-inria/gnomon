@@ -61,8 +61,8 @@ public slots:
     virtual void onXY(void) = 0;
     virtual void onXZ(void) = 0;
     virtual void onYZ(void) = 0;
-    virtual void onSliceChanged(double) = 0;
-    virtual void onSliceOrientationChanged(double) = 0;
+    virtual void onSliceChanged(int) = 0;
+    virtual void onSliceOrientationChanged(int) = 0;
     virtual void onTimeChanged(double) = 0;
 
 public:

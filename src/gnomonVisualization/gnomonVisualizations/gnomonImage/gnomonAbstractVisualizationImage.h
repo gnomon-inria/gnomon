@@ -57,8 +57,8 @@ public slots:
     virtual void onXY(void) override = 0;
     virtual void onXZ(void) override = 0;
     virtual void onYZ(void) override = 0;
-    virtual void onSliceChanged(double) override = 0;
-    virtual void onSliceOrientationChanged(double) override = 0;
+    virtual void onSliceChanged(int) override = 0;
+    virtual void onSliceOrientationChanged(int) override = 0;
     virtual void onTimeChanged(double) override = 0;
 };
 
