@@ -33,18 +33,18 @@ set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeWorkspace.cpp
   gnomonComposerWidget.cpp)
 
-set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
+## set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
 
 ## #################################################################
 ## Build rules
 ## #################################################################
 
-qt5_add_resources(${PROJECT_NAME}_SOURCES_QRC ${${PROJECT_NAME}_RESOURCES})
+## qt5_add_resources(${PROJECT_NAME}_SOURCES_QRC ${${PROJECT_NAME}_RESOURCES})
 
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_SOURCES_QRC})
+  ${${PROJECT_NAME}_SOURCES})
+  ##${${PROJECT_NAME}_SOURCES_QRC})
 
 ## ###################################################################
 ## Link rules
