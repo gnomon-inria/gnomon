@@ -16,9 +16,9 @@
 
 #include <gnomonWorkspaceExport>
 
-#include "gnomonWorkspace.h"
+#include <dtkWidgets>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 
@@ -27,8 +27,8 @@ public:
     ~gnomonWorkspaceCellImageQuantification(void);
 
 public:
-    void enter(void) override {}
-    void leave(void) override {}
+    void enter(void) override;
+    void leave(void) override;
 
 public slots:
     void apply(void) override;
@@ -37,7 +37,6 @@ public slots:
 private:
     class gnomonWorkspaceCellImageQuantificationPrivate *d;
 };
-
 
 //
 // gnomonWorkspaceCellImageQuantification.h ends here

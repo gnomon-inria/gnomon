@@ -1,0 +1,673 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+%module(directors="1") gnomoncore
+
+%include <dtkBase/dtkBase.i>
+%include <gnomonCore/gnomonCoreParameter.i>
+%import <dtkCore/dtkCore.i>
+
+%import <dtkImagingCore/dtkImagingCore.i>
+
+%{
+
+// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
+// with SWIG's preprocessor macro
+#if PY_VERSION_HEX < 0x3020000
+#ifdef Py_hash_t
+#undef Py_hash_t
+#endif
+#endif
+
+#include <dtkCore>
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+#include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+#include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
+#include <gnomonCore/gnomonForm/gnomonWallForm.h>
+
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+#include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
+#include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
+
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellGraph/gnomonAbstractCellGraphFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFilter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>
+
+#include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
+#include <gnomonCore/gnomonModel/gnomonSystem.h>
+
+#include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonDataManager.h>
+#include <gnomonCore/gnomonFileSystemFormReader.h>
+#include <gnomonCore/gnomonFormVisitor.h>
+#include <gnomonCore/gnomonLandmark.h>
+#include <gnomonCore/gnomonTime.h>
+#include <gnomonCore/gnomonTypeDef.h>
+#include <vtkPythonUtil.h>
+#include <vtkImageData.h>
+
+%}
+
+%feature("director");
+%feature("autodoc","1");
+
+// /////////////////////////////////////////////////////////////////
+// Macro undefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMONCORE_EXPORT
+#define GNOMONCORE_EXPORT
+
+%typemap(out) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(directorin) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $input = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(in) vtkImageData* {
+
+    $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
+
+    if ( $1 == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
+%typemap(directorout) vtkImageData* {
+
+    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
+
+    if ( $result == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
+// /////////////////////////////////////////////////////////////////
+// String dictionary
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<QString, QString> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QString> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, QString>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<QString, QString>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QString> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<QString, QString>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<QString, QString> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QString> is returned.");
+    }
+}
+
+
+// /////////////////////////////////////////////////////////////////
+// Form dictionary
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<QString, gnomonAbstractForm *> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            gnomonAbstractForm *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonAbstractForm *>(s_v);
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractForm*> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, gnomonAbstractForm *>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<QString, gnomonAbstractForm *>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            gnomonAbstractForm *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonAbstractForm *>(s_v);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractForm*> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<QString, gnomonAbstractForm *>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<QString, gnomonAbstractForm *> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            gnomonAbstractForm *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonAbstractForm *>(s_v);
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractForm*> is returned.");
+    }
+}
+
+
+%extend QVariant {
+    void setValue(gnomonCellComplex *value) {
+        $self->setValue(dtk::variantFromValue(value));
+    }
+    gnomonCellComplex* tognomonCellComplex() const {
+        return $self->value<gnomonCellComplex *>();
+    }
+
+    void setValue(gnomonCellImage *value) {
+        $self->setValue(dtk::variantFromValue(value));
+    }
+    gnomonCellImage* tognomonCellImage() const {
+        return $self->value<gnomonCellImage *>();
+    }
+
+    void setValue(gnomonCellGraph *value) {
+        $self->setValue(dtk::variantFromValue(value));
+    }
+    gnomonCellGraph* tognomonCellGraph() const {
+        return $self->value<gnomonCellGraph *>();
+    }
+
+    /* void setValue(gnomonDiscreteDynamicForm *value) {
+        $self->setValue(dtkCoreMetaType::variantFromValue(value));
+    }
+    gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
+        return $self->value<gnomonDiscreteDynamicForm *>();
+    } */
+
+    void setValue(gnomonSphereForm *value) {
+        $self->setValue(dtk::variantFromValue(value));
+    }
+    gnomonSphereForm* tognomonSphereForm() const {
+        return $self->value<gnomonSphereForm *>();
+    }
+
+    void setValue(gnomonWallForm *value) {
+        $self->setValue(dtk::variantFromValue(value));
+    }
+    gnomonWallForm* tognomonWallForm() const {
+        return $self->value<gnomonWallForm *>();
+    }
+ }
+
+
+// /////////////////////////////////////////////////////////////////
+// Form Series dictionary
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<QString, gnomonAbstractDynamicForm *> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            gnomonAbstractDynamicForm *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractDynamicForm, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonAbstractDynamicForm *>(s_v);
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractDynamicForm*> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, gnomonAbstractDynamicForm *>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<QString, gnomonAbstractDynamicForm *>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            gnomonAbstractDynamicForm *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractDynamicForm, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonAbstractDynamicForm *>(s_v);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractDynamicForm*> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<QString, gnomonAbstractDynamicForm *>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<QString, gnomonAbstractDynamicForm *> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            gnomonAbstractDynamicForm *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonAbstractDynamicForm, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonAbstractDynamicForm *>(s_v);
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractDynamicForm*> is returned.");
+    }
+}
+
+
+
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) std::vector<gnomonLandmark, std::allocator< gnomonLandmark > > {
+    $1 = PyList_Check($input) ? 1 : 0;
+}
+
+ %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) const std::vector<gnomonLandmark, std::allocator< gnomonLandmark > >& {
+    $1 = PyList_Check($input) ? 1 : 0;
+}
+
+
+%typemap(in) QList<unsigned long> {
+    if (PyList_Check($input)) {
+        int i = 0;
+        int end = PyList_Size($input);
+        for(i;i!=end; ++i) {
+            $1 << PyLong_AsLong(PyList_GET_ITEM($input, i));
+        }
+    } else {
+        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
+    }
+}
+
+%typemap(in) const QList<unsigned long>& {
+    if (PyList_Check($input)) {
+        int i = 0;
+        int end = PyList_Size($input);
+        $1 = new QList<unsigned long>;
+        for(i;i!=end; ++i) {
+            ($1)->append(PyLong_AsLong(PyList_GET_ITEM($input, i)));
+        }
+    } else {
+        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
+    }
+}
+
+%typemap(freearg) const QList<unsigned long>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QList<unsigned long> {
+    PyObject *list = static_cast<PyObject *>($1);
+    if (PyList_Check(list)) {
+        int i = 0;
+        int end = PyList_Size(list);
+        for(i;i<end; ++i) {
+            PyObject *o = PyList_GET_ITEM(list, i);
+            $result << PyLong_AsLong(o);
+        }
+    } else {
+        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
+    }
+}
+
+%typemap(out) QList<unsigned long> {
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0; it != end; ++it, ++i) {
+        PyObject* v = PyLong_FromLong(*it);
+        PyList_SET_ITEM($result, i, v);
+    }
+}
+
+%typemap(directorin) QList<unsigned long> {
+    PyObject *list = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0; it != end; ++it, ++i) {
+        PyObject* v = PyLong_FromLong(*it);
+        PyList_SET_ITEM(list, i, v);
+    }
+    $input = list;
+}
+
+
+%typemap(in) QList<double> {
+    if (PyList_Check($input)) {
+        int i = 0;
+        int end = PyList_Size($input);
+        for(i;i!=end; ++i) {
+            $1 << PyFloat_AsDouble(PyList_GET_ITEM($input, i));
+        }
+    } else {
+        qDebug("PyList of floats is expected as input. Empty QList<double> is returned.");
+    }
+}
+
+%typemap(in) const QList<double>& {
+    if (PyList_Check($input)) {
+        int i = 0;
+        int end = PyList_Size($input);
+        $1 = new QList<double>;
+        for(i;i!=end; ++i) {
+            ($1)->append(PyFloat_AsDouble(PyList_GET_ITEM($input, i)));
+        }
+    } else {
+        qDebug("PyList of floats is expected as input. Empty QList<double> is returned.");
+    }
+}
+
+%typemap(freearg) const QList<double>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QList<double> {
+    PyObject *list = static_cast<PyObject *>($1);
+    if (PyList_Check(list)) {
+        int i = 0;
+        int end = PyList_Size(list);
+        for(i;i<end; ++i) {
+            PyObject *o = PyList_GET_ITEM(list, i);
+            $result << PyFloat_AsDouble(o);
+        }
+    } else {
+        qDebug("PyList of floats is expected as input. Empty QList<double> is returned.");
+    }
+}
+
+%typemap(out) QList<double> {
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0; it != end; ++it, ++i) {
+        PyObject* v = PyFloat_FromDouble(*it);
+        PyList_SET_ITEM($result, i, v);
+    }
+}
+
+%typemap(directorin) QList<double> {
+    PyObject *list = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0; it != end; ++it, ++i) {
+        PyObject* v = PyFloat_FromDouble(*it);
+        PyList_SET_ITEM(list, i, v);
+    }
+    $input = list;
+}
+
+
+
+%typemap(out) std::vector<gnomonLandmark, std::allocator<gnomonLandmark>>
+{
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0 ; it != end; ++it, ++i)  {
+        PyObject *point = PyList_New(3);
+        PyList_SET_ITEM(point, 0, PyFloat_FromDouble(it->pos[0]));
+        PyList_SET_ITEM(point, 1, PyFloat_FromDouble(it->pos[1]));
+        PyList_SET_ITEM(point, 2, PyFloat_FromDouble(it->pos[2]));
+        PyList_SET_ITEM($result, i, point);
+    }
+}
+
+%typemap(out) const std::vector<gnomonLandmark, std:allocator<gnomonLandmark>>&
+{
+    $result = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0 ; it != end; ++it, ++i)  {
+        PyObject *point = PyList_New(3);
+        PyList_SET_ITEM(point, 0, PyFloat_FromDouble(it->pos[0]));
+        PyList_SET_ITEM(point, 1, PyFloat_FromDouble(it->pos[1]));
+        PyList_SET_ITEM(point, 2, PyFloat_FromDouble(it->pos[2]));
+        PyList_SET_ITEM($result, i, point);
+    }
+}
+
+%typemap(directorin) const std::vector<gnomonLandmark, std::allocator< gnomonLandmark > >&
+{
+    PyObject *list = PyList_New($1.size());
+    auto it  = $1.cbegin();
+    auto end = $1.cend();
+    for(int i = 0 ; it != end; ++it, ++i)  {
+        PyObject *point = PyList_New(3);
+        PyList_SET_ITEM(point, 0, PyFloat_FromDouble(it->pos[0]));
+        PyList_SET_ITEM(point, 1, PyFloat_FromDouble(it->pos[1]));
+        PyList_SET_ITEM(point, 2, PyFloat_FromDouble(it->pos[2]));
+        PyList_SET_ITEM(list, i, point);
+    }
+    $input = list;
+}
+
+%pythoncode %{
+    def world():
+        import dtkcore
+        return dtkcore.dtkCoreObjectManager_instance()
+%}
+
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+
+
+%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+%include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+%include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
+%include <gnomonCore/gnomonForm/gnomonWallForm.h>
+
+%include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
+%include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+%include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
+%include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+%include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
+%include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+%include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+%include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
+%include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
+%include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
+%include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+%include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
+%include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+%include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
+%include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
+
+%include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellGraph/gnomonAbstractCellGraphFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFilter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>
+
+%include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
+%include <gnomonCore/gnomonModel/gnomonSystem.h>
+
+%include <gnomonCore/gnomonCore.h>
+%include <gnomonCore/gnomonDataManager.h>
+%include <gnomonCore/gnomonFileSystemFormReader.h>
+%include <gnomonCore/gnomonFormVisitor.h>
+%include <gnomonCore/gnomonLandmark.h>
+%include <gnomonCore/gnomonTime.h>
+%include <gnomonCore/gnomonTypeDef.h>
+%include <QtCore/QVariant.i>
+
+%include "std_array.i"
+%include "std_vector.i"
+
+namespace std {
+    %template(vec3_t) array<double, 3>;
+}
+
+
+%template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;
+%template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
+%template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
+%template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;
+%template(gnomonImageSeries) gnomonTimeSeries<gnomonImage>;
+%template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
+%template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
+%template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
+%template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
+
+%pythoncode "gnomonCore/gnomonPlugin.py"
+
+//
+// gnomonCore.i.in ends here

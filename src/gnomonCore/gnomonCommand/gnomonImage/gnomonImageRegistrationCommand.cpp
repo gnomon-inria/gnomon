@@ -1,6 +1,24 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonImageRegistrationCommand.h"
 
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonImageRegistrationCommandPrivate
 {
@@ -8,15 +26,13 @@ public:
     QVector<gnomonImageSeries *> images_series;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
 {
-    QString command = "import gnomonImageRegistration";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("imageRegistration");
 
     this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
 
@@ -64,3 +80,6 @@ void gnomonImageRegistrationCommand::setParameter(const QString& parameter, cons
 {
     this->action->setParameter(parameter, value);
 }
+
+//
+// gnomonImageRegistrationCommand.cpp ends here

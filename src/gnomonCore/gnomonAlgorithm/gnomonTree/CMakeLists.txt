@@ -19,12 +19,20 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonAbstractTreeFromLString
+    gnomonAbstractTreeFromLString.h
     gnomonAbstractTreeReader
-    gnomonAbstractTreeReader.h)
-
+    gnomonAbstractTreeReader.h
+    gnomonAbstractTreeTransform
+    gnomonAbstractTreeTransform.h
+    gnomonAbstractTreeWriter
+    gnomonAbstractTreeWriter.h)
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractTreeReader.cpp)
+    gnomonAbstractTreeFromLString.cpp
+    gnomonAbstractTreeReader.cpp
+    gnomonAbstractTreeTransform.cpp
+    gnomonAbstractTreeWriter.cpp)
 
 
 ######################################################################

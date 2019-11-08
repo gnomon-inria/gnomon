@@ -33,7 +33,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellComplex : public
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationCellComplex(void) : gnomonAbstractVisualization() {}
+             gnomonAbstractVisualizationCellComplex(void) : gnomonAbstractVisualization() {}
     virtual ~gnomonAbstractVisualizationCellComplex(void) = default;
 
 public:
@@ -53,6 +53,13 @@ public slots:
     virtual void clear(void) override = 0;
 
 public slots:
+    virtual void on2D(void) override = 0;
+    virtual void on3D(void) override = 0;
+    virtual void onXY(void) override = 0;
+    virtual void onXZ(void) override = 0;
+    virtual void onYZ(void) override = 0;
+    virtual void onSliceChanged(int) override = 0;
+    virtual void onSliceOrientationChanged(int) override = 0;
     virtual void onTimeChanged(double) override = 0;
 };
 

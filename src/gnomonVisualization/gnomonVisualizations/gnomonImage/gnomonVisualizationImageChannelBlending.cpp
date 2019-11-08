@@ -19,6 +19,7 @@
 
 #include <gnomonCore>
 #include <gnomonWidgets>
+
 #include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
@@ -79,12 +80,13 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
 
 
-    dd->defaultColormaps[0] = "0CMY_cyan";
-    dd->defaultColormaps[1] = "0CMY_yellow";
+    dd->defaultColormaps[0] = "grey";
+    dd->defaultColormaps[1] = "0CMY_cyan";
     dd->defaultColormaps[2] = "0CMY_magenta";
-    dd->defaultColormaps[3] = "0RGB_green";
-    dd->defaultColormaps[4] = "0RGB_red";
-    dd->defaultColormaps[5] = "0RGB_blue";
+    dd->defaultColormaps[3] = "0CMY_yellow";
+    dd->defaultColormaps[4] = "0RGB_green";
+    dd->defaultColormaps[5] = "0RGB_red";
+    dd->defaultColormaps[6] = "0RGB_blue";
 
 }
 
@@ -106,18 +108,18 @@ void gnomonVisualizationImageChannelBlending::clear(void)
     }
 
     if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
+//        disconnect(d->connectSliceOrientation);
+//        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
 
-    disconnect(d->connect3D);
-    disconnect(d->connect2D);
-    disconnect(d->connectXY);
-    disconnect(d->connectXZ);
-    disconnect(d->connectYZ);
+//    disconnect(d->connect3D);
+//    disconnect(d->connect2D);
+//    disconnect(d->connectXY);
+//    disconnect(d->connectXZ);
+//    disconnect(d->connectYZ);
 }
 
 void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
@@ -238,28 +240,6 @@ void gnomonVisualizationImageChannelBlending::update(void)
     dd->volume->setInteractor(d->view->interactor());
     dd->volume->setImage(dd->image_data);
 
-    d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        dd->actor2D->setSliceOrientation(value);
-    });
-
-    d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        dd->actor2D->setSlice(value);
-        this->render();
-    });
-
-    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () {
-        dd->actor2D->hide();
-        this->render();
-    });
-    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () {
-        dd->actor2D->show();
-        this->render();
-    });
-
-    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
-
     double bounds[6];
     bounds[0] = 0;
     bounds[1] = (dd->image_data->GetDimensions()[0]-1)*dd->image_data->GetSpacing()[0];
@@ -302,6 +282,44 @@ void gnomonVisualizationImageChannelBlending::setParameters(const QMap<QString, 
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationImageChannelBlending::onSliceOrientationChanged(int value)
+{
+    dd->actor2D->setSliceOrientation(value);
+}
+
+void gnomonVisualizationImageChannelBlending::onSliceChanged(int value)
+{
+    dd->actor2D->setSlice(value);
+    this->render();
+}
+
+void gnomonVisualizationImageChannelBlending::on3D(void)
+{
+    dd->actor2D->hide();
+    this->render();
+}
+
+void gnomonVisualizationImageChannelBlending::on2D(void)
+{
+    dd->actor2D->show();
+    this->render();
+}
+
+void gnomonVisualizationImageChannelBlending::onXY(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationImageChannelBlending::onYZ(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationImageChannelBlending::onXZ(void)
+{
+    this->render();
 }
 
 void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)

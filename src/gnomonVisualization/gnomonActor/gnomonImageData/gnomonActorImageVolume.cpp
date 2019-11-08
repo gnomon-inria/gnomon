@@ -165,7 +165,7 @@ void gnomonActorImageVolume::update(void)
     d->volume->Update();
 
     d->updateOpacity();
-    
+
     d->modified = false;
 }
 

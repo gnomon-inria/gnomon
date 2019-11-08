@@ -12,40 +12,25 @@
 
 # Code:
 
+import sip
 import sys
 
 import gnomoncore
-from gnomonVisualization import gnomonViewMatplotlib
+
+from gnomonvisualization import setupMatplotlib
 
 import matplotlib.pyplot as plt
 
 try:
-    from gnomonMatplotlib.gnomonMplTabWidget import gnomonMplTabWidget
+    from gnomonplugins.treegeneration.visualization.utils.gnomonMatplotlib.gnomonMplTabWidget import all_widgets
 except:
-    print "Could not import mpl view class", sys.exc_info()
+    print("Could not import mpl view class", sys.exc_info())
 else:
+    figure = plt.figure(num)
+    widget = all_widgets[num]
+    print(widget)
 
-    from PyQt5.QtWidgets import qApp, QMainWindow
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-
-    mpl_tabs = gnomonMplTabWidget()
-
-    toplevels = qApp.topLevelWidgets()
-
-    for widget in toplevels:
-        if isinstance(widget, QMainWindow):
-            sublevels = widget.children()
-
-            for w in widget.children():
-                sublevels += w.children()
-
-            for subwidget in sublevels:
-                if (subwidget.objectName() == "ViewMatplotlib"):
-                    print("add matplotlib figure")
-                    widget = gnomonViewMatplotlib.downcast(subwidget)
-                    widget.addWidget(mpl_tabs)
-
+    setupMatplotlib(sip.unwrapinstance(widget),num)
 
 #
 # matplotlib_figure.py ends here

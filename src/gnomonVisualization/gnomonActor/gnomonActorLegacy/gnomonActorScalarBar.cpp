@@ -14,8 +14,8 @@
 
 #include "gnomonActorScalarBar.h"
 
-#include <gnomonFonts>
-#include <gnomonStyle>
+#include <dtkFonts>
+#include <dtkThemes>
 
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkActor.h>
@@ -60,8 +60,6 @@ public:
 public:
     bool scalarbar_state;
 
-public:
-    gnomonFontSourceSansPro *font_source_sans_pro;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -119,11 +117,11 @@ void gnomonActorScalarBar::update(void)
         d->scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
         d->scalarBar->SetWidth(0.035);
         d->scalarBar->SetHeight(0.7);
-        d->scalarBar->GetAnnotationTextProperty()->SetFontFamilyAsString(qPrintable(d->font_source_sans_pro->fontName()));
+        d->scalarBar->GetAnnotationTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
         d->scalarBar->GetAnnotationTextProperty()->SetFontSize(11);
-        d->scalarBar->GetLabelTextProperty()->SetFontFamilyAsString(qPrintable(d->font_source_sans_pro->fontName()));
+        d->scalarBar->GetLabelTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
         d->scalarBar->GetLabelTextProperty()->SetFontSize(11);
-        d->scalarBar->GetTitleTextProperty()->SetFontFamilyAsString(qPrintable(d->font_source_sans_pro->fontName()));
+        d->scalarBar->GetTitleTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
         d->scalarBar->GetTitleTextProperty()->SetFontSize(11);
 
         vtkRenderer *renderer = d->interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer();
@@ -205,8 +203,8 @@ gnomonActorScalarBar::gnomonActorScalarBar(void) : gnomonActor(), d(new gnomonAc
     d->scalarBar = NULL;
 
     d->scalarbar_state = false;
-    d->font_source_sans_pro = new gnomonFontSourceSansPro(this);
-    d->font_source_sans_pro->initFontSourceSansPro();
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
 }
 
 gnomonActorScalarBar::~gnomonActorScalarBar(void)

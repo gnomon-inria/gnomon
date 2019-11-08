@@ -90,8 +90,6 @@ void gnomonVisualizationMesh::clear(void)
     }
 
     if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
@@ -217,8 +215,6 @@ void gnomonVisualizationMesh::update(void)
     dd->actor->setValueRange(value_range);
 
     if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
@@ -234,21 +230,6 @@ void gnomonVisualizationMesh::update(void)
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
-
-    d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        dd->actor2D->setSliceOrientation(value);
-    });
-
-    d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        dd->actor2D->setSlice(value);
-        this->render();
-    });
-
-    connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-    connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     dd->polydata->GetBounds(bounds);
@@ -286,6 +267,42 @@ void gnomonVisualizationMesh::setParameters(const QMap<QString, gnomonCoreParame
             d->parameters[param]->copy(parameters[param]);
         }
     }
+}
+
+void gnomonVisualizationMesh::onSliceOrientationChanged(int value)
+{
+    dd->actor2D->setSliceOrientation(value);
+}
+
+void gnomonVisualizationMesh::onSliceChanged(int value)
+{
+    dd->actor2D->setSlice(value);
+    this->render();
+}
+
+void gnomonVisualizationMesh::on3D(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationMesh::on2D(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationMesh::onXY(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationMesh::onYZ(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationMesh::onXZ(void)
+{
+    this->render();
 }
 
 void gnomonVisualizationMesh::onTimeChanged(double value)

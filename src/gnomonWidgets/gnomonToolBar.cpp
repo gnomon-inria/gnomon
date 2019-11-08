@@ -12,11 +12,11 @@
 
 // Code:
 
+#include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
 
-#include "gnomonItemButton.h"
-
-#include <gnomonFonts>
+#include <dtkFonts>
+#include <dtkThemes>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonToolBarButton
@@ -44,15 +44,15 @@ signals:
     void createCellImageFilter(void);
     void createSimulation(void);
     void createTreeAnalysis(void);
+    void createTreeFromLString(void);
+    void createLStringFromTree(void);
+    void createPlantScan3D(void);
 
 public slots:
     void create(QAction *);
 
 protected:
     void mousePressEvent(QMouseEvent *);
-
-private:
-    gnomonFontAwesome *font = nullptr;
 
 private:
     QMenu *menu;
@@ -69,40 +69,41 @@ private:
     QAction *action_cellImageFilter;
     QAction *action_simulation;
     QAction *action_tree_analysis;
+    QAction *action_treeFromLString;
+    QAction *action_lStringFromTree;
+    QAction *action_plant_scan_3D;
 };
 
 gnomonToolBarButton::gnomonToolBarButton(QWidget *parent)
 {
-    this->font = new gnomonFontAwesome(this);
-    this->font->initFontAwesome();
-    this->font->setDefaultOption("color", QColor("#ffffff"));
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", QColor("#ffffff"));
 
     this->setAlignment(Qt::AlignCenter);
-    this->setPixmap(this->font->icon(fa::plussquare).pixmap(32, 32));
+    this->setPixmap(dtkFontAwesome::instance()->icon(fa::plussquare).pixmap(32, 32));
     this->setFixedWidth(32);
 
     this->menu = new QMenu(this);
     this->menu->setStyleSheet("QMenu::item {padding: 2px 20px 2px 30px; border: 1px solid transparent; spacing: 10px; height: 50px; width: 300px; font-size: 16pt;} QMenu::icon {width: 50px; height:50px;}");
 
-    QMenu * image_menu = this->menu->addMenu(this->font->icon(fa::image),"Image Processing");
-
+    QMenu * image_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::image),"Image Processing");
     this->action_fusion        = image_menu->addAction("Image Fusion");
     this->action_preprocess    = image_menu->addAction("Preprocess");
     this->action_registration  = image_menu->addAction("Time Registration");
     this->action_segmentation  = image_menu->addAction("Segmentation");
-    this->action_pointCloudFromImage  = image_menu->addAction("Nuclei Detection");
+    this->action_pointCloudFromImage  = image_menu->addAction("Cell Detection");
     this->action_cellImageFilter  = image_menu->addAction("Label Postprocess");
-    this->action_cellImageQuantification  = image_menu->addAction("Cell Quantification");
+    this->action_cellImageQuantification  = image_menu->addAction("Cell Analysis");
 
-    QMenu * mesh_menu = this->menu->addMenu(this->font->icon(fa::play),"Meshing");
-
+    QMenu * mesh_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::play),"Meshing");
     this->action_cellComplexFromCellImage  = mesh_menu->addAction("Cell Reconstruction");
     this->action_meshFromImage = mesh_menu->addAction("Surface Meshing");
 
-//    QMenu * tree_menu = this->menu->addMenu(this->font->icon(fa::sitemap), "Tree Processing");
-//    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
+    QMenu * tree_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::sitemap), "Tree Processing");
+    this->action_tree_analysis = tree_menu->addAction("Tree analysis");
+    this->action_plant_scan_3D = tree_menu->addAction("Plant Scan 3D");
 
-    QMenu * simu_menu = this->menu->addMenu(this->font->icon(fa::sync),"Simulation");
+    QMenu * simu_menu = this->menu->addMenu(dtkFontAwesome::instance()->icon(fa::lock), "Simulation");
     this->action_simulation    = simu_menu->addAction("FEM Simulation");
     this->action_lsystem       = simu_menu->addAction("LSystem Simulator");
     this->action_python_simulation = simu_menu->addAction("Python Model");
@@ -140,7 +141,7 @@ void gnomonToolBarButton::create(QAction *action)
 
     if(action == this->action_segmentation)
         emit createSegmentation();
-        
+
     if(action == this->action_pointCloudFromImage)
         emit createPointCloudFromImage();
 
@@ -153,8 +154,14 @@ void gnomonToolBarButton::create(QAction *action)
     if(action == this->action_simulation)
         emit createSimulation();
 
-//    if(action == this->action_tree_analysis)
-//        emit createTreeAnalysis();
+    if(action == this->action_tree_analysis)
+        emit createTreeAnalysis();
+
+    if(action == this->action_treeFromLString)
+        emit createTreeFromLString();
+
+    if(action == this->action_lStringFromTree)
+        emit createLStringFromTree();
 }
 
 void gnomonToolBarButton::mousePressEvent(QMouseEvent *event)
@@ -229,18 +236,15 @@ private:
 class gnomonToolBarSeparator : public QLabel
 {
 public:
-    gnomonToolBarSeparator(QWidget *parent) : QLabel(parent) {
-        this->font = new gnomonFontAwesome(this);
-        this->font->initFontAwesome();
-        this->font->setDefaultOption("color", QColor("#777777"));
+    gnomonToolBarSeparator(QWidget *parent) : QLabel(parent)
+    {
+        dtkFontAwesome::instance()->initFontAwesome();
+        dtkFontAwesome::instance()->setDefaultOption("color", QColor("#777777"));
 
         this->setAlignment(Qt::AlignCenter);
-        this->setPixmap(this->font->icon(fa::chevronright).pixmap(32, 32));
+        this->setPixmap(dtkFontAwesome::instance()->icon(fa::chevronright).pixmap(32, 32));
         this->setFixedWidth(32);
     }
-
-private:
-    gnomonFontAwesome *font = nullptr;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -323,7 +327,7 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::segmentation_color.red()).arg(gnomonToolBar::segmentation_color.green()).arg(gnomonToolBar::segmentation_color.blue()));
         else if(item->text() == "Preprocess")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::preprocess_color.red()).arg(gnomonToolBar::preprocess_color.green()).arg(gnomonToolBar::preprocess_color.blue()));
-        else if(item->text() == "Cell Quantification")
+        else if(item->text() == "Cell Analysis")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::cellImageQuantification_color.red()).arg(gnomonToolBar::cellImageQuantification_color.green()).arg(gnomonToolBar::cellImageQuantification_color.blue()));
         else if(item->text() == "Time Registration")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::registration_color.red()).arg(gnomonToolBar::registration_color.green()).arg(gnomonToolBar::registration_color.blue()));
@@ -341,6 +345,12 @@ void gnomonToolBarPrivate::onItemClicked(int index)
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::simulation_color.red()).arg(gnomonToolBar::simulation_color.green()).arg(gnomonToolBar::simulation_color.blue()));
         else if(item->text() == "Tree analysis")
             item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::tree_analysis_color.red()).arg(gnomonToolBar::tree_analysis_color.green()).arg(gnomonToolBar::tree_analysis_color.blue()));
+        else if(item->text() == "TreefromLString")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::treeFromLString_color.red()).arg(gnomonToolBar::treeFromLString_color.green()).arg(gnomonToolBar::treeFromLString_color.blue()));
+        else if(item->text() == "LStringfromTree")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::lStringFromTree_color.red()).arg(gnomonToolBar::lStringFromTree_color.green()).arg(gnomonToolBar::lStringFromTree_color.blue()));
+        else if(item->text() == "Plant Scan 3D")
+            item->setStyleSheet(QString("font-size: %1px; font-style: %2; color: rgb(%3,%4,%5);").arg(current_index == index ? "24" : "12").arg(current_index == index ? "bold" : "normal").arg(gnomonToolBar::plant_scan_3D_color.red()).arg(gnomonToolBar::plant_scan_3D_color.green()).arg(gnomonToolBar::plant_scan_3D_color.blue()));
     }
 }
 
@@ -379,6 +389,9 @@ gnomonToolBar::gnomonToolBar(QWidget *parent) : QFrame(parent)
     connect(button, SIGNAL(createCellImageFilter()), this, SLOT(onCreateCellImageFilter()));
     connect(button, SIGNAL(createSimulation()), this, SLOT(onCreateSimulation()));
     connect(button, SIGNAL(createTreeAnalysis()), this, SLOT(onCreateTreeAnalysis()));
+    connect(button, SIGNAL(createTreeFromLString()), this, SLOT(onCreateTreeFromLString()));
+    connect(button, SIGNAL(createLStringFromTree()), this, SLOT(onCreateLStringFromTree()));
+    connect(button, SIGNAL(createPlantScan3D()), this, SLOT(onCreatePlantScan3D()));
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setMouseTracking(true);
@@ -419,6 +432,8 @@ void gnomonToolBar::onCreateFusion(void)
     d->createWorkspace(fusion_color, "Image Fusion");
 
     emit createFusion();
+
+    emit created("Fusion");
 }
 
 void gnomonToolBar::onCreatePythonSimulator(void)
@@ -426,6 +441,8 @@ void gnomonToolBar::onCreatePythonSimulator(void)
     d->createWorkspace(python_simulation_color, "Python Model");
 
     emit createPythonSimulator();
+
+    emit created("Python Simulator");
 }
 
 void gnomonToolBar::onCreateLSystemSimulator(void)
@@ -433,6 +450,8 @@ void gnomonToolBar::onCreateLSystemSimulator(void)
     d->createWorkspace(lsystem_color, "LSystem simulator");
 
     emit createLSystemSimulator();
+
+    emit created("LSystem simulator");
 }
 
 void gnomonToolBar::onCreateSegmentation(void)
@@ -440,6 +459,8 @@ void gnomonToolBar::onCreateSegmentation(void)
     d->createWorkspace(segmentation_color, "Segmentation");
 
     emit createSegmentation();
+
+    emit created("Segmentation");
 }
 
 void gnomonToolBar::onCreateCellComplexFromCellImage(void)
@@ -447,6 +468,8 @@ void gnomonToolBar::onCreateCellComplexFromCellImage(void)
     d->createWorkspace(cellComplexFromCellImage_color, "Cell Reconstruction");
 
     emit createCellComplexFromCellImage();
+
+    emit created("Cell Complex From Image");
 }
 
 void gnomonToolBar::onCreateCellImageFilter(void)
@@ -454,6 +477,8 @@ void gnomonToolBar::onCreateCellImageFilter(void)
     d->createWorkspace(cellImageFilter_color, "Label Postprocess");
 
     emit createCellImageFilter();
+
+    emit created("Cell Image Filter");
 }
 
 void gnomonToolBar::onCreatePreprocess(void)
@@ -461,13 +486,17 @@ void gnomonToolBar::onCreatePreprocess(void)
     d->createWorkspace(preprocess_color, "Preprocess");
 
     emit createPreprocess();
+
+    emit created("Preprocess");
 }
 
 void gnomonToolBar::onCreateCellImageQuantification(void)
 {
-    d->createWorkspace(cellImageQuantification_color, "Cell Quantification");
+    d->createWorkspace(cellImageQuantification_color, "Cell Analysis");
 
     emit createCellImageQuantification();
+
+    emit created("Cell Image Quantification");
 }
 
 void gnomonToolBar::onCreateRegistration(void)
@@ -475,6 +504,8 @@ void gnomonToolBar::onCreateRegistration(void)
     d->createWorkspace(registration_color, "Time Registration");
 
     emit createRegistration();
+
+    emit created("Tine Registration");
 }
 
 void gnomonToolBar::onCreateMeshFromImage(void)
@@ -482,13 +513,17 @@ void gnomonToolBar::onCreateMeshFromImage(void)
     d->createWorkspace(meshFromImage_color, "Surface Meshing");
 
     emit createMeshFromImage();
+
+    emit created("Surface Meshing");
 }
 
 void gnomonToolBar::onCreatePointCloudFromImage(void)
 {
-    d->createWorkspace(meshFromImage_color, "Nuclei Detection");
+    d->createWorkspace(meshFromImage_color, "Cell Detection");
 
     emit createPointCloudFromImage();
+
+    emit created("Point Cloud From Image");
 }
 
 void gnomonToolBar::onCreateSimulation(void)
@@ -496,6 +531,8 @@ void gnomonToolBar::onCreateSimulation(void)
     d->createWorkspace(simulation_color, "FEM Simulation");
 
     emit createSimulation();
+
+    emit created("Fem Simulation");
 }
 
 void gnomonToolBar::onCreateTreeAnalysis(void)
@@ -503,6 +540,35 @@ void gnomonToolBar::onCreateTreeAnalysis(void)
     d->createWorkspace(tree_analysis_color, "Tree analysis");
 
     emit createTreeAnalysis();
+
+    emit created("Tree Analysis");
+}
+
+void gnomonToolBar::onCreateTreeFromLString(void)
+{
+    d->createWorkspace(treeFromLString_color, "LString Conversion");
+
+    emit createTreeFromLString();
+
+    emit created("LString Conversion");
+}
+
+void gnomonToolBar::onCreateLStringFromTree(void)
+{
+    d->createWorkspace(lStringFromTree_color, "LString From Tree");
+
+    emit createLStringFromTree();
+
+    emit created("LString From Tree");
+}
+
+void gnomonToolBar::onCreatePlantScan3D(void)
+{
+    d->createWorkspace(plant_scan_3D_color, "Plant Scan 3D");
+
+    emit createPlantScan3D();
+
+    emit created("Plant Scan 3D");
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -521,6 +587,10 @@ QColor gnomonToolBar::cellComplexFromCellImage_color = QColor("#dc143c");
 QColor gnomonToolBar::cellImageFilter_color = QColor("#dc143c");
 QColor gnomonToolBar::simulation_color = QColor("#5856d6");
 QColor gnomonToolBar::tree_analysis_color = QColor("#734906");
+QColor gnomonToolBar::treeFromLString_color = QColor("#734906");
+QColor gnomonToolBar::lStringFromTree_color = QColor("#734906");
+QColor gnomonToolBar::plant_scan_3D_color = QColor("#213984");
+
 
 // ///////////////////////////////////////////////////////////////////
 

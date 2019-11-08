@@ -43,14 +43,14 @@ class gnomonActor2DImageRGBAWidgetPrivate
 {
 public:
     vtkSmartPointer<vtkImageData> image;
-    
+
     vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
 
     vtkRenderWindowInteractor *interactor;
 
 public:
     int orientation;
-    
+
     double alpha;
 
     bool modified;
@@ -99,7 +99,7 @@ void gnomonActor2DImageRGBAWidget::update(void)
     if(!d->image)
         return;
 
-    int imageDims[3]; 
+    int imageDims[3];
     d->image->GetDimensions(imageDims);
 
     for(int i = 0; i < 3; i++) {
@@ -114,8 +114,8 @@ void gnomonActor2DImageRGBAWidget::update(void)
         d->planeWidget[i]->GetPlaneProperty()->SetColor(color);
         d->planeWidget[i]->GetColorMap()->SetLookupTable(NULL);
         d->planeWidget[i]->GetColorMap()->SetOutputFormatToRGBA();
-        d->planeWidget[i]->SetResliceInterpolateToNearestNeighbour(); 
-        d->planeWidget[i]->TextureInterpolateOff();   
+        d->planeWidget[i]->SetResliceInterpolateToNearestNeighbour();
+        d->planeWidget[i]->TextureInterpolateOff();
         // d->planeWidget[i]->SetLeftButtonAction(vtkImagePlaneWidget::VTK_SLICE_MOTION_ACTION);
         d->planeWidget[i]->SetMarginSizeX(0);
         d->planeWidget[i]->SetMarginSizeY(0);
@@ -123,7 +123,7 @@ void gnomonActor2DImageRGBAWidget::update(void)
         d->planeWidget[i]->DisplayTextOn();
         d->planeWidget[i]->InteractionOn();
     }
-    
+
     d->modified = false;
 }
 
@@ -140,7 +140,7 @@ void gnomonActor2DImageRGBAWidget::setSlice(int value)
 }
 
 void gnomonActor2DImageRGBAWidget::hide(void)
-{        
+{
     for (int o=0;o<3;o++)
         d->planeWidget[o]->Off();
 }

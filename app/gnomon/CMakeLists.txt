@@ -24,42 +24,45 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonMainWindow.cpp)
 
-set(${PROJECT_NAME}_SOURCES_QRC
-  gnomon.qrc)
-
 ## #################################################################
 ## Build rules
 ## #################################################################
 
-qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
-
 add_library(${PROJECT_NAME}_backend SHARED
   ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_SOURCES_RCC})
+  ${${PROJECT_NAME}_SOURCES})
 
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
 
-qt5_use_modules(${PROJECT_NAME}_backend Core)
-qt5_use_modules(${PROJECT_NAME}_backend Widgets)
-qt5_use_modules(${PROJECT_NAME}_backend OpenGL)
+if(NOT APPLE)
+  target_link_libraries(${PROJECT_NAME} PUBLIC uuid)
+endif()
 
-target_link_libraries(${PROJECT_NAME}_backend dtkCore)
-target_link_libraries(${PROJECT_NAME}_backend dtkScript)
-target_link_libraries(${PROJECT_NAME}_backend dtkWidgets)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::OpenGL)
 
-target_link_libraries(${PROJECT_NAME}_backend dtkImagingCore)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkCore)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
 
-target_link_libraries(${PROJECT_NAME}_backend gnomonCore)
-target_link_libraries(${PROJECT_NAME}_backend gnomonStyle)
-target_link_libraries(${PROJECT_NAME}_backend gnomonFonts)
-target_link_libraries(${PROJECT_NAME}_backend gnomonWidgets)
-target_link_libraries(${PROJECT_NAME}_backend gnomonWorkspace)
+# target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkImagingCore)
 
-target_link_libraries(${PROJECT_NAME}_backend ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWidgets)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWorkspace)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonComposer)
 
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_backend)
+target_link_libraries(${PROJECT_NAME}_backend PRIVATE ${VTK_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_backend)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 
 ## #################################################################
 ## Bundle setup
@@ -86,8 +89,7 @@ install(TARGETS ${PROJECT_NAME}_backend
   EXPORT gnomonDepends
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  )
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 install(TARGETS ${PROJECT_NAME}
    BUNDLE DESTINATION bin

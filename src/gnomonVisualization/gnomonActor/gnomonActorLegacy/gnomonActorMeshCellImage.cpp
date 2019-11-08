@@ -88,7 +88,7 @@ void gnomonActorMeshCellImage::update(void)
         this->AddPart(d->actor);
     }
     d->actor->Modified();
-    
+
     dd->modified = false;
 }
 

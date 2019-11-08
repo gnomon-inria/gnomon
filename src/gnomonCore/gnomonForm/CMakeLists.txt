@@ -12,7 +12,6 @@
 ##
 ### Code:
 
-
 ## #################################################################
 ## Inputs
 ## #################################################################
@@ -67,7 +66,6 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_FORM_MESH_SOURCES}
   ${${PROJECT_NAME}_FORM_POINTCLOUD_SOURCES}
   ${${PROJECT_NAME}_FORM_TREE_SOURCES})
-
 
 ######################################################################
 ### CMakeLists.txt ends here

@@ -16,9 +16,9 @@
 
 #include <gnomonWorkspaceExport>
 
-#include "gnomonWorkspace.h"
+#include <dtkWidgets>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 
@@ -27,8 +27,10 @@ public:
     ~gnomonWorkspaceBrowser(void);
 
 public:
-    void enter(void) override {};
-    void leave(void) override {};
+    void enter(void) override;
+    void leave(void) override;
+
+public:
     void apply(void) override;
 
 private:

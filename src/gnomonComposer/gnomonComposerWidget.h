@@ -30,30 +30,50 @@ class GNOMONCOMPOSER_EXPORT gnomonComposerWidget : public QFrame
     Q_OBJECT
 
 public:
-     gnomonComposerWidget(QWidget *parent = 0);
-    ~gnomonComposerWidget(void);
+    static gnomonComposerWidget *instance(void);
+
+signals:
+    void shrink(void);
+    void expand(void);
+
+public:
+    QSize sizeHint(void) const;
 
 public:
     dtkComposerWidget* composerWidget(void);
 
 public slots:
-    bool compositionOpen(void);
-    bool compositionOpen(const QString& file);
+    void addWorkspace(const QString&);
+
+public slots:
     bool compositionSave(void);
     bool compositionSaveAs(void);
     bool compositionSaveAs(const QString& file, dtkComposerWriter::Type type = dtkComposerWriter::Ascii);
     bool compositionInsert(void);
     bool compositionInsert(const QString& file);
 
-protected slots:
-    void showControls(void);
-    void onComposerNodeFlagged(dtkComposerSceneNode *);
+protected:
+     gnomonComposerWidget(QWidget *parent = 0);
+    ~gnomonComposerWidget(void);
+
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+protected:
+    void paintEvent(QPaintEvent *);
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private:
     gnomonComposerWidgetPrivate *d;
+
+private:
+    static gnomonComposerWidget *s_instance;
 };
 
 //

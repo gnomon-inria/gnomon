@@ -13,21 +13,18 @@
 // Code:
 
 #include "gnomonWorkspaceCellImageQuantification.h"
-
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonVisualization>
-#include <gnomonWidgets>
-
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageQuantificationCommand>
+#include <gnomonWidgets>
+#include <gnomonVisualization>
 
-#include <gnomonStyle>
-
-#include <dtkWidgets>
 #include <dtkImagingCore>
 #include <dtkScript>
-
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageQuantificationPrivate
@@ -48,9 +45,14 @@ public:
     gnomonViewMatplotlib *mpl_figure = nullptr;
 
 public:
+    dtkWidgetsMenu *menu_;
+
+public:
+    dtkWidgetsMenuBarContainer *dashboard;
+
+public:
     QVBoxLayout *mpl_layout = nullptr;
     QWidget *mpl_view = nullptr;
-    
 };
 
 gnomonWorkspaceCellImageQuantificationPrivate::gnomonWorkspaceCellImageQuantificationPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellImageQuantificationCommand >()
@@ -65,7 +67,7 @@ gnomonWorkspaceCellImageQuantificationPrivate::~gnomonWorkspaceCellImageQuantifi
 
 QString gnomonWorkspaceCellImageQuantificationPrivate::workspace(void) const
 {
-    return "Cell Quantification";
+    return "Cell Analysis";
 }
 
 QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
@@ -78,11 +80,9 @@ QStringList gnomonWorkspaceCellImageQuantificationPrivate::keys(void) const
 // gnomonWorkspaceCellImageQuantification
 // ///////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonCellImageQuantification", &stat);
+    loadPluginGroup("cellImageQuantification");
 
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
@@ -98,32 +98,67 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     d->mpl_view = new QWidget(this);
     d->mpl_view->setLayout(d->mpl_layout);
-//    d->mpl_view->resize(800,d->mpl_view->height());
-//    d->mpl_view->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum));
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Dashboard inception
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
+    d->dashboard->setFixedWidth(300);
+
+// /////////////////////////////////////////////////////////////////////////////
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->view);
     layout->addWidget(d->mpl_view);
-    layout->addWidget(d->pane(this));
+    layout->addWidget(d->dashboard);
 
-    connect(d->view, &gnomonViewForm::formAdded, [=] () {
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(d->view, &gnomonViewForm::formAdded, [=] ()
+    {
         d->command->setCellImage(d->view->cellImage());
         d->command->setImage(d->view->image());
-        d->configure(this, d->algorithm);
+        d->configure(d->algorithm);
     });
 
-    connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm) {
+    connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm)
+    {
         d->command->setCellImage(d->view->cellImage());
         d->command->setImage(d->view->image());
-        d->configure(this,algorithm);
+        d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
 }
 
 gnomonWorkspaceCellImageQuantification::~gnomonWorkspaceCellImageQuantification(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceCellImageQuantification::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->view->menu());
+    dtkApp->window()->menubar()->addMenu(d->mpl_figure->menu());
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceCellImageQuantification::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->view->menu());
+    dtkApp->window()->menubar()->removeMenu(d->mpl_figure->menu());
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceCellImageQuantification::apply(void)
@@ -136,12 +171,13 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
     d->command->redo();
 
     d->view->setCellImage(d->command->cellImage());
+
     d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
 }
 
 void gnomonWorkspaceCellImageQuantification::configure(const QString& algorithm)
 {
-    d->configure(this, algorithm);
+    d->configure(algorithm);
 }
 
 //

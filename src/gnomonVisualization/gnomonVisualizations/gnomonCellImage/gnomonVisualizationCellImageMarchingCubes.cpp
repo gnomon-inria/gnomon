@@ -75,19 +75,19 @@ public:
         if (vtkId == -1) {
             this->clicks = 0;
 
-            if (this->q->view()->infoPane()->isToggled()) {
-                this->q->view()->infoPane()->toggle();
-                this->q->view()->infoPane()->clear();
-                this->infoPaneItem = nullptr;
-                this->infoLayout = nullptr;
-            }
+            // if (this->q->view()->infoPane()->isToggled()) {
+            //     this->q->view()->infoPane()->toggle();
+            //     this->q->view()->infoPane()->clear();
+            //     this->infoPaneItem = nullptr;
+            //     this->infoLayout = nullptr;
+            // }
         }
     }
 
     virtual void OnLeftButtonUp(void) override
     {
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
-        
+
         int *pos = this->GetInteractor()->GetEventPosition();
         this->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
 
@@ -118,19 +118,18 @@ public:
 
     void OnDoubleClick(long vtkId)
     {
-        this->q->view()->infoPane()->clear();
+        // this->q->view()->infoPane()->clear();
 
         long cellId = q->cellId(vtkId);
         QString text = "Cell ";
         text.append(QString::number(cellId));
 
-        QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
+        // QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
 
+        // if(!this->q->view()->infoPane()->isToggled())
+        //     this->q->view()->infoPane()->toggle();
 
-        if (!this->q->view()->infoPane()->isToggled()) {
-            this->q->view()->infoPane()->toggle();
-        }
-        this->q->view()->infoPane()->addInfoPaneItem(text, cellInfo);
+        // this->q->view()->infoPane()->addInfoPaneItem(text, cellInfo);
     }
 
     void updateTextActor(long vtkId)
@@ -172,16 +171,16 @@ public:
         this->picker->Delete();
         this->picker = nullptr;
 
-        if (this->q->view()->infoPane()->isToggled()) {
-            this->q->view()->infoPane()->toggle();
-            this->q->view()->infoPane()->clear();
-        }
+        // if (this->q->view()->infoPane()->isToggled()) {
+        //     this->q->view()->infoPane()->toggle();
+        //     this->q->view()->infoPane()->clear();
+        // }
 
         delete this->infoLayout;
         this->infoLayout = nullptr;
 
-        delete this->infoPaneItem;
-        this->infoPaneItem = nullptr;
+        // delete this->infoPaneItem;
+        // this->infoPaneItem = nullptr;
 
         this->q = nullptr;
     }
@@ -190,7 +189,7 @@ public:
     gnomonVisualizationCellImageMarchingCubes *q = nullptr;
 
 public:
-    gnomonOverlayPaneItem *infoPaneItem = nullptr;
+    // gnomonOverlayPaneItem *infoPaneItem = nullptr;
     QFormLayout *infoLayout = nullptr;
 
 public:
@@ -200,7 +199,6 @@ public:
 
 private:
     unsigned int clicks = 0;
-
 };
 
 vtkStandardNewMacro(gnomonInteractorStyleCellImageMarchingCubes);
@@ -227,7 +225,7 @@ public:
 
 public:
     bool is2D = false;
-    
+
 public slots:
     void updateOpacity(void);
     void updateValueRange(void);
@@ -237,7 +235,7 @@ public slots:
 void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
 {
     double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
-    
+
     if(this->actor) {
         this->actor->setOpacity(alpha);
     }
@@ -316,18 +314,10 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
     }
 
     if (dd->actor2D) {
-        disconnect(d->connectSliceOrientation);
-        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
-
-    disconnect(d->connect3D);
-    disconnect(d->connect2D);
-    disconnect(d->connectXY);
-    disconnect(d->connectXZ);
-    disconnect(d->connectYZ);
 
     d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
 //    dd->interactor_style->Delete();
@@ -337,6 +327,9 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 {
     dd->cellImageSeries = cellImage;
     dd->cellImage = (gnomonCellImage *) cellImage->current();
+
+    if(!dd->cellImage)
+        return;
 
     this->setParameter("alpha",1.0);
     connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
@@ -406,15 +399,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     if(!dd->cellImage)
         return;
 
-    disconnect(d->connectSliceOrientation);
-    disconnect(d->connectSlice);
-//    disconnect(d->connectTime);
-    disconnect(d->connect3D);
-    disconnect(d->connect2D);
-    disconnect(d->connectXY);
-    disconnect(d->connectXZ);
-    disconnect(d->connectYZ);
-
     if (dd->polydata) {
         dd->polydata->Delete();
         dd->polydata = nullptr;
@@ -454,34 +438,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     dd->actor2D->setPolyData(dd->polydata);
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
-
-
-    d->connectSliceOrientation = connect(d->view, &gnomonViewForm::sliceOrientationChanged, [=] (int value) {
-        dd->actor2D->setSliceOrientation(value);
-    });
-
-    d->connectSlice = connect(d->view, &gnomonViewForm::sliceChanged, [=] (int value) {
-        dd->actor2D->setSlice(value);
-        this->render();
-    });
-
-//    d->connectTime = connect(d->view, &gnomonViewForm::timeChanged, [=] (double value) {
-//        if (dd->cellImageSeries->times().contains(value)) {
-//            dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
-//            this->update();
-//            this->render();
-//        }
-//    });
-
-    d->connect3D = connect(d->view, &gnomonViewForm::switchedTo3D, [=] () { dd->is2D=false; this->render(); });
-
-    d->connect2D = connect(d->view, &gnomonViewForm::switchedTo2D, [=] () { dd->is2D=true; this->render(); });
-
-    d->connectXY = connect(d->view, &gnomonViewForm::switchedTo2DXY, [=] () { this->render(); });
-
-    d->connectXZ = connect(d->view, &gnomonViewForm::switchedTo2DYZ, [=] () { this->render(); });
-
-    d->connectYZ = connect(d->view, &gnomonViewForm::switchedTo2DXZ, [=] () { this->render(); });
 
     double bounds[6];
     dd->polydata->GetBounds(bounds);
@@ -544,6 +500,44 @@ QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long
     }
 
     return info;
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onSliceOrientationChanged(int value)
+{
+    dd->actor2D->setSliceOrientation(value);
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onSliceChanged(int value)
+{
+    dd->actor2D->setSlice(value);
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::on3D(void)
+{
+    dd->is2D=false;
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::on2D(void)
+{
+    dd->is2D=true;
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onXY(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onYZ(void)
+{
+    this->render();
+}
+
+void gnomonVisualizationCellImageMarchingCubes::onXZ(void)
+{
+    this->render();
 }
 
 void gnomonVisualizationCellImageMarchingCubes::onTimeChanged(double value)

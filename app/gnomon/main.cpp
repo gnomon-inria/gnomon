@@ -12,82 +12,175 @@
 
 // Code:
 
-#include <QtWidgets>
-
-#include <dtkLog>
-
 #include <vtkGenericOpenGLRenderWindow.h>
 
 #include <QVTKOpenGLWidget.h>
 
 #include "gnomonMainWindow.h"
 
-#include <dtkScript>
-#include <dtkWidgets>
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Script
+// /////////////////////////////////////////////////////////////////////////////
 
+// #include <dtkScript>
+
+#include <dtkLog>
+#include <dtkThemes>
+#include <dtkWidgets>
 #include <dtkImagingCore>
+#include <dtkScript>
+
 #include <gnomonCore>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
 
-QString gnomonReadFile(const QString& path)
+#include <QtWidgets>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Generic event filter
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonEventFilter: public QObject
 {
-    QFile file(path);
+    Q_OBJECT
 
-    if(!file.open(QIODevice::ReadOnly))
-        return QString();
+public:
+     gnomonEventFilter(void) {}
+    ~gnomonEventFilter(void) {}
 
-    QString contents = file.readAll();
+protected:
+    bool eventFilter(QObject *object, QEvent *event)
+    {
+        if(event->type() != QEvent::Show)
+            return false;
 
-    file.close();
+        static bool first = true;
 
-    return contents;
-}
+        // qDebug() << Q_FUNC_INFO << object->objectName();
+
+        if(QMainWindow *window = dynamic_cast<QMainWindow *>(object)) {
+
+            if (first) {
+                first = false;
+                embedded << window;
+                return false;
+            }
+
+            if(!embedded.contains(window)) {
+
+                window->statusBar()->setSizeGripEnabled(false);
+
+                // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << window->objectName();
+
+                if(window->objectName() == "PGLMainWindow" || window->objectName() == "LPYMainWindow") {
+
+                    // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
+
+                    foreach(QWidget *widget, window->findChildren<QWidget*>()) {
+
+                        if(widget->objectName() == "PGLFrameGL") {
+
+                            // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
+
+                            gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
+                            export_button->move(10,10);
+                            export_button->show();
+
+                            connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
+                            {
+                                // qDebug() << Q_FUNC_INFO << 0 << widget;
+
+                                foreach(QWidget *top, qApp->topLevelWidgets()) {
+
+                                    // qDebug() << Q_FUNC_INFO << 1 << widget;
+
+                                    foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+
+                                        // qDebug() << Q_FUNC_INFO << 2 << widget;
+
+                                        simulator->apply(widget);
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    foreach(QWidget *top, qApp->topLevelWidgets()) {
+                        foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+                            simulator->fill(window);
+                        }
+                    }
+                }
+
+                if(window->objectName() == "PS3DMainWindow") {
+                    foreach(QWidget *top, qApp->topLevelWidgets()) {
+                        foreach(gnomonWorkspacePlantScan3D *scanner, top->findChildren<gnomonWorkspacePlantScan3D *>()) {
+                            scanner->fill(window);
+                        }
+                    }
+                }
+
+                embedded << window;
+            }
+        }
+       
+        return false;
+    }
+
+private:
+    QList<QMainWindow *> embedded;
+};
+
+// /////////////////////////////////////////////////////////////////////////////
+// Entry point
+// /////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char **argv)
 {
+    dtk::core::registerParameters();
+    dtk::widgets::initialize();
+
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
 
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    dtkThemesEngine::instance()->apply();
+
     dtkApplication *application = dtkApplication::create(argc, argv);
     application->setApplicationName("gnomon");
     application->setOrganizationName("inria");
     application->setOrganizationDomain("fr");
-    application->setApplicationVersion("0.9.1");
+    application->installEventFilter(new gnomonEventFilter());
 
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");
-
-    QCommandLineOption jupyterOption("jupyter", QCoreApplication::translate("main", "start jupyter console"));
-    parser->addOption(jupyterOption);
 
     application->initialize();
 
     QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
 
     if (parser->isSet(verboseOption)) {
+
         dtkImaging::setVerboseLoading(true);
+
+        dtk::widgets::setVerboseLoading(true);
+
         gnomonCore::setVerboseLoading(true);
         gnomonVisualization::setVerboseLoading(true);
         gnomonWidgets::setVerboseLoading(true);
     }
-
-    int stat;
 
     dtkImaging::initialize();
     gnomonCore::initialize();
     gnomonVisualization::initialize();
     gnomonWidgets::initialize();
 
-    bool redirect_io = false;
-//    bool redirect_io = true;
-    dtkScriptInterpreterPython::instance()->init(redirect_io,"gnomon-core");
-    if (parser->isSet(jupyterOption)) {
-        dtkScriptInterpreterPython::instance()->interpret(gnomonReadFile(":gnomon/gnomon_console.py"), &stat);
-    }
+    bool redirect_io = false; int stat;
+
+    dtkScriptInterpreterPython::instance()->init("gnomon-core");
 
     gnomonMainWindow *window = new gnomonMainWindow;
     window->setWindowTitle("gnomon");
@@ -98,14 +191,21 @@ int main(int argc, char **argv)
 
     delete window;
 
+    dtkWidgetsController::instance()->clear();
     dtkImaging::uninitialize();
+
     gnomonCore::uninitialize();
     gnomonVisualization::uninitialize();
     gnomonWidgets::uninitialize();
-    dtkScriptInterpreterPython::instance()->release();
+
+    // dtkScriptInterpreterPython::instance()->release();
 
     return status;
 }
+
+// /////////////////////////////////////////////////////////////////////////////
+
+#include "main.moc"
 
 //
 // main.cpp ends here

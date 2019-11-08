@@ -1,2 +1,1 @@
-#include "gnomonComposerNodeView.h"
 #include "gnomonComposerWidget.h"

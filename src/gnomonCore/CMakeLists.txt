@@ -40,6 +40,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormVisitor
   gnomonFormVisitor.h
   gnomonLandmark.h
+  gnomonPythonPluginLoader.h
   gnomonTypeDef
   gnomonTypeDef.h
   gnomonTime
@@ -56,32 +57,18 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDataManager.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonPythonPluginLoader.cpp
   gnomonTime.cpp
   ${${PROJECT_NAME}_ALGORITHM_SOURCES}
   ${${PROJECT_NAME}_COMMAND_SOURCES}
   ${${PROJECT_NAME}_FORM_SOURCES}
   ${${PROJECT_NAME}_MODEL_SOURCES})
 
-## #################################################################
-## Wrapping
-## #################################################################
+## #############################################################################
+##
+## #############################################################################
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${dtk_MODULE_PATH})
-
-set(${PROJECT_NAME}_SOURCES_WRAP)
-
-if(DTK_BUILD_WRAPPERS)
-
-  set(${PROJECT_NAME}_WRAP_DEPENDS ${${PROJECT_NAME}_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i.in)
-
-  if (DTK_WRAPPING_PYTHON AND DTK_PYTHON_WRAPPER MATCHES "SWIG")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gnomonCore.i.in ${CMAKE_BINARY_DIR}/gnomonCore.i @ONLY)
-    dtk_wrap(${PROJECT_NAME} ${PROJECT_NAME}_SOURCES_WRAP gnomoncore python ${CMAKE_BINARY_DIR}/gnomonCore.i "${${PROJECT_NAME}_WRAP_DEPENDS}" "${dtk_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/src/;${dtkImaging_INCLUDE_DIRS};${dtk_WRAP_PREFIX}/dtkBase;${dtk_WRAP_PREFIX}/dtkCore;${dtk_WRAP_PREFIX}/QtCore;${dtkImaging_WRAP_PREFIX}/dtkImagingCore/;${CMAKE_SOURCE_DIR}/src")
-
-    set_property(SOURCE gnomonCore_wrap_python.cpp PROPERTY SKIP_AUTOMOC ON)
-  endif()
-endif()
-
+set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
 
 ## #################################################################
 ## Build rules
@@ -96,21 +83,28 @@ add_library(${PROJECT_NAME} SHARED
 ## Link rules
 ## ###################################################################
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core)
-target_link_libraries(${PROJECT_NAME} Qt5::Gui)
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 
-target_link_libraries(${PROJECT_NAME} dtkCore)
-target_link_libraries(${PROJECT_NAME} dtkWidgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC  dtkCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
-target_link_libraries(${PROJECT_NAME} dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 
-if(DTK_BUILD_WRAPPERS)
-  if(DTK_WRAPPING_PYTHON)
-    target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
-    target_link_libraries(${PROJECT_NAME} vtkWrappingPythonCore)
-  endif(DTK_WRAPPING_PYTHON)
-endif(DTK_BUILD_WRAPPERS)
+target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
+
+## #############################################################################
+##
+## #############################################################################
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${layer_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>)
 
 # #################################################################
 ## Target properties
@@ -135,77 +129,21 @@ set(${PROJECT_NAME}_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
-## #################################################################
-## Handling of generated script modules
-## #################################################################
-
-set(${PROJECT_NAME}_MODULES)
-
-if(DTK_BUILD_WRAPPERS)
-
-  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
-
-    if(DTK_PYTHON_WRAPPER MATCHES "SWIG")
-
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        DEPENDS ${PROJECT_SOURCE_DIR}/gnomonCore.i
-        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
-        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${${PROJECT_NAME}_BINARY_DIR}/gnomoncore.py ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}
-        COMMENT "-- Moving python modules to ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}")
-
-      set(${PROJECT_NAME}_MODULES ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomoncore.py)
-
-      if(APPLE)
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-          DEPENDS ${PROJECT_SOURCE_DIR}/gnomonCore.i
-          COMMAND ln -sf ../../libgnomonCore.dylib _gnomoncore.so
-          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
-
-        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomoncore.so)
-      endif(APPLE)
-
-      if(UNIX AND NOT APPLE)
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-          DEPENDS ${PROJECT_SOURCE_DIR}/gnomonCore.i
-          COMMAND ln -fs ../../libgnomonCore.so _gnomoncore.so
-          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH})
-
-        set(${PROJECT_NAME}_MODULES ${${PROJECT_NAME}_MODULES} ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomoncore.so)
-      endif(UNIX AND NOT APPLE)
-
-    endif()
-
-  endif(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
-
-endif(DTK_BUILD_WRAPPERS)
-
 ## ###################################################################
 ## Install rules - files
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/gnomon
-  COMPONENT gnomon-core)
+  DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT gnomon-core
-         EXPORT gnomonDepends)
-
-## ###################################################################
-## Install rules - modules
-## ###################################################################
-
-if(SWIG_FOUND)
-  if (DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
-    install(FILES ${${PROJECT_NAME}_MODULES} DESTINATION ${DTK_PYTHON_INSTALL_PATH})
-    install(FILES ${CMAKE_BINARY_DIR}/gnomonCore.i DESTINATION wrp/gnomonCore/)
-  endif()
-endif()
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 ######################################################################
 ### CMakeLists.txt ends here

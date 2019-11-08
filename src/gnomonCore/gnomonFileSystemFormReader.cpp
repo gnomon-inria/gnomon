@@ -1,7 +1,25 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonForm/gnomonIntensityImage/gnomonIntensityImage.h"
 
 #include <dtkImagingCore>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonFileSystemFormReaderPrivate {
 public:
@@ -9,6 +27,10 @@ public:
 
     QMap<gnomonTime, QString> files_paths;
 };
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 //#pragma message "Make it possible to have more parameters than just a file path"
 // gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QVariantHash& parameters) : d(new gnomonFileSystemFormReaderPrivate)
@@ -94,13 +116,13 @@ gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
     if(time.getMode() != d->time_mode) {
         qWarning() << Q_FUNC_INFO << "The time mode does not match the underlying dyform time mode";
         // return gnomonAbstractFormPtr();
-        return NULL;
+        return nullptr;
     }
 
     if(!d->files_paths.contains(time)) {
         qWarning() << Q_FUNC_INFO << "The requested time is not available";
         // return gnomonAbstractFormPtr();
-        return NULL;
+        return nullptr;
     }
 
     //#pragma message "The type of the form should be specified in the dyform file"
@@ -122,9 +144,10 @@ gnomonAbstractForm * gnomonFileSystemFormReader::read(const gnomonTime& time)
     gnomonIntensityImage *image= new gnomonIntensityImage();
     image->setData(dtk_image);
 
-    // gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
+    //gnomonAbstractFormPtr form = gnomonAbstractFormPtr(image);
 
     delete image_reader;
+
     return image;
     // return form;
 }
@@ -133,3 +156,6 @@ gnomonTime::Mode gnomonFileSystemFormReader::timeMode(void)
 {
     return d->time_mode;
 }
+
+//
+// gnomonFileSystemFormReader.cpp ends here

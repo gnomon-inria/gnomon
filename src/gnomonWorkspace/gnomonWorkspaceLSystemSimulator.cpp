@@ -12,161 +12,75 @@
 
 // Code:
 
-#include <dtkConfig.h>
-#include <dtkScript>
-#include <dtkWidgets>
-
 #include "gnomonWorkspaceLSystemSimulator.h"
 
 #include <gnomonCore>
-#include <gnomonStyle>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 
+#include <dtkScript>
+#include <dtkMacs>
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
 
-// ///////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 //
-// ///////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceLSystemSimulatorPrivate
 {
 public:
-    gnomonFinder *finder;
-    gnomonFinderPathBar *path;
-    gnomonFinderToolBar *toolbar;
+    gnomonSpinner *spinner;
 
 public:
-    gnomonCodeEditor *editor;
+    QSplitter *splitter;
 
 public:
-    gnomonViewForm *view;
-
-public:
-    gnomonInterpreterJupyter *terminal;
-
-public:
-    QVBoxLayout *viewer_layout = nullptr;
-
-public:
-    gnomonOverlayPane *pane;
-
-public:
-    gnomonAbstractEvolutionModel * model = nullptr;
+    QList<dtkWidgetsMenu *> menus;
 };
 
-gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomonEvolutionModel", &stat);
-
     d = new gnomonWorkspaceLSystemSimulatorPrivate;
 
-    d->finder = new gnomonFinder(this);
-    d->finder->switchToTreeView();
+    d->spinner = new gnomonSpinner(this);
+    d->spinner->start();
 
-    d->path = new gnomonFinderPathBar(this);
-    d->path->setPath(QDir::currentPath());
-    d->path->setFixedHeight(32);
-
-    d->toolbar = new gnomonFinderToolBar(this);
-    d->toolbar->setPath(QDir::currentPath());
-
-    d->editor = new gnomonCodeEditor(this);
-    d->editor->resize(800, d->editor->height());
-
-    d->view = new gnomonViewForm(this);
-
-    d->terminal = new gnomonInterpreterJupyter(this);
-//    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
-
-    // -- Organizing the viewer column --
-    d->viewer_layout = new QVBoxLayout;
-    d->viewer_layout->setContentsMargins(0, 0, 0, 0);
-    d->viewer_layout->setSpacing(0);
-    d->viewer_layout->addWidget(d->view);
-    d->viewer_layout->addWidget(d->terminal);
-
-    QWidget *viewer = new QWidget(this);
-    viewer->setLayout(d->viewer_layout);
-
-    QHBoxLayout *toolbar_layout = new QHBoxLayout;
-    toolbar_layout->setContentsMargins(0, 0, 0, 0);
-    toolbar_layout->setSpacing(0);
-    toolbar_layout->addWidget(d->toolbar);
-    toolbar_layout->addWidget(d->path);
-
-    QVBoxLayout *finder_layout = new QVBoxLayout;
-    finder_layout->setContentsMargins(0, 0, 0, 0);
-    finder_layout->setSpacing(0);
-    finder_layout->addLayout(toolbar_layout);
-    finder_layout->addWidget(d->finder);
-
-    QWidget *finder = new QWidget(this);
-    finder->setLayout(finder_layout);
-    finder->resize(600, finder->height());
-
-
-    d->pane = new gnomonOverlayPane(this);
-
-    QPushButton *button = new QPushButton("Load", parent);
-    button->setCheckable(true);
-
-    QPushButton *button_s = new QPushButton("Step", parent);
-    button_s->setCheckable(false);
-
-    QPushButton *button_r = new QPushButton("Reset", parent);
-    button_r->setCheckable(false);
-
-    QObject::connect(button, &QPushButton::clicked, [=] () {
-        parent->setCursor(Qt::BusyCursor);
-        this->apply();
-        button_s->setCheckable(true);
-        button_r->setCheckable(true);
-        parent->setCursor(Qt::ArrowCursor);
-    });
-
-    QObject::connect(button_s, &QPushButton::clicked, [=] () {
-        parent->setCursor(Qt::BusyCursor);
-        this->step();
-        parent->setCursor(Qt::ArrowCursor);
-    });
-
-    QObject::connect(button_r, &QPushButton::clicked, [=] () {
-        parent->setCursor(Qt::BusyCursor);
-        this->reset();
-        parent->setCursor(Qt::ArrowCursor);
-    });
-
-    gnomonOverlayPaneItem *pane_item_button = new gnomonOverlayPaneItem(parent);
-    pane_item_button->setTitle("Simulation");
-    pane_item_button->addWidget(button);
-    pane_item_button->addWidget(button_s);
-    pane_item_button->addWidget(button_r);
-    pane_item_button->toggle();
-
-    d->pane->addWidget(pane_item_button);
-
-    connect(d->finder, SIGNAL(changed(QString)), d->path,    SLOT(setPath(QString)));
-    connect(d->finder, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
-
-    connect(d->path, SIGNAL(changed(QString)), d->finder,  SLOT(setPath(QString)));
-    connect(d->path, SIGNAL(changed(QString)), d->toolbar, SLOT(setPath(QString)));
-
-    connect(d->toolbar, SIGNAL(changed(QString)), d->finder, SLOT(setPath(QString)));
-    connect(d->toolbar, SIGNAL(changed(QString)), d->path,   SLOT(setPath(QString)));
-    connect(d->toolbar, SIGNAL(treeView()),       d->finder, SLOT(switchToTreeView()));
-    connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
-
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(finder);
-    splitter->addWidget(d->editor);
-    splitter->addWidget(viewer);
+    d->splitter = new QSplitter(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(splitter);
-    layout->addWidget(d->pane);
+    layout->addWidget(d->spinner);
+    layout->addWidget(d->splitter);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    QFile file(":lpy.py");
+    file.open(QIODevice::ReadOnly);
+    QString script = file.readAll();
+    file.close();
+
+    QTimer::singleShot(500, [=] (void) -> void
+    {
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret(script, &stat);
+    });
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    this->enter();
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    loadPluginGroup("lStringData");
 }
 
 gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
@@ -174,46 +88,97 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
     delete d;
 }
 
+void gnomonWorkspaceLSystemSimulator::enter(void)
+{
+    qDebug() << Q_FUNC_INFO << 1;
+
+    foreach(dtkWidgetsMenu *menu, d->menus)
+        dtkApp->window()->menubar()->addMenu(menu);
+
+    qDebug() << Q_FUNC_INFO << 2;
+
+    dtkApp->window()->menubar()->touch();
+
+    qDebug() << Q_FUNC_INFO << 3;
+}
+
+void gnomonWorkspaceLSystemSimulator::leave(void)
+{
+    foreach(dtkWidgetsMenu *menu, d->menus)
+        dtkApp->window()->menubar()->removeMenu(menu);
+
+    dtkApp->window()->menubar()->touch();
+}
+
 void gnomonWorkspaceLSystemSimulator::apply(void)
 {
-    d->model = gnomonCore::evolutionModel::pluginFactory().create("gnomonLStringEvolutionModelLPy");
 
-    gnomonCoreParameterString *file = ((gnomonCoreParameterString *)d->model->parameters()["lpy_file"]);
-    file->addValue(d->editor->fileName());
-    file->setValue(d->editor->fileName());
-
-    d->model->reset();
-
-    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
-
-    if (d->terminal)
-        d->terminal->output(lstring->toString());
-    else
-        qDebug() << Q_FUNC_INFO << lstring->toString();
 }
 
-void gnomonWorkspaceLSystemSimulator::step(void)
+void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
 {
-    d->model->step(0, 1);
+    qDebug() << Q_FUNC_INFO << 1 << view;
 
-    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+    int stat;
+    QString current_lstring = dtkScriptInterpreterPython::instance()->interpret("print(str(lstring))", &stat);
 
-    if (d->terminal)
-        d->terminal->output(lstring->toString());
-    else
-        qDebug() << Q_FUNC_INFO << lstring->toString();
+    qDebug() << Q_FUNC_INFO << 2 << current_lstring;
+
+    gnomonLString *lstring = new gnomonLString();
+
+    gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+    lstring_series->insert(0, lstring);
+
+    qDebug() << Q_FUNC_INFO << 3 << current_lstring << gnomonCore::lStringData::pluginFactory().keys();
+
+    gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+
+    qDebug() << Q_FUNC_INFO << lstring_data;
+
+    lstring_data->fromString(current_lstring);
+    lstring->setData(lstring_data);
+
+    qDebug() << Q_FUNC_INFO << 4 << current_lstring;
+
+    QImage image(128, 128, QImage::Format_ARGB32);
+    image.fill(Qt::black);
+    view->render(&image);
+
+    qDebug() << Q_FUNC_INFO << 5;
+
+    gnomonFormManager::instance()->addForm(lstring_series, gnomonToolBar::lsystem_color, image);
+
+    qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void gnomonWorkspaceLSystemSimulator::reset(void)
+void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
-    d->model->reset();
+    static QList<QWidget *> filled;
 
-    gnomonLString *lstring = (gnomonLString *)d->model->forms()["lstring"];
+    if(filled.contains(widget))
+        return;
 
-    if (d->terminal)
-        d->terminal->output(lstring->toString());
-    else
-        qDebug() << Q_FUNC_INFO << lstring->toString();
+    d->spinner->stop();
+    d->spinner->hide();
+    d->splitter->show();
+
+    widget->setParent(d->splitter);
+
+    if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
+
+        d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+
+        window->menuBar()->hide();
+        window->menuWidget()->hide();
+
+        this->enter();
+    }
+
+    d->splitter->addWidget(widget);
+
+    widget->show();
+
+    filled << widget;
 }
 
 //

@@ -22,7 +22,6 @@
 
 class gnomonViewForm;
 
-class gnomonImage;
 class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImage : public gnomonAbstractVisualizationImage
@@ -34,7 +33,7 @@ public:
     ~gnomonVisualizationImage(void);
 
 public:
-	void setImage(gnomonImageSeries *image) override;
+    void setImage(gnomonImageSeries *image) override;
 
 public slots:
     void updateOpacity(void);
@@ -51,6 +50,13 @@ public slots:
     void clear(void) override;
 
 public slots:
+    void on2D(void) override;
+    void on3D(void) override;
+    void onXY(void) override;
+    void onXZ(void) override;
+    void onYZ(void) override;
+    void onSliceChanged(int) override;
+    void onSliceOrientationChanged(int) override;
     void onTimeChanged(double) override;
 
 public:
@@ -59,7 +65,7 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 private:
-	class gnomonVisualizationImagePrivate *dd;
+    class gnomonVisualizationImagePrivate *dd;
 };
 
 inline gnomonAbstractVisualizationImage *gnomonVisualizationImageCreator(void)

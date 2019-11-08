@@ -17,9 +17,6 @@
 #include <gnomonCoreExport>
 
 #include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
-
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameter
@@ -202,7 +199,7 @@ Q_DECLARE_METATYPE(gnomonCoreParameterDoubleRange *);
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterBool
 // ///////////////////////////////////////////////////////////////////
- 
+
 
 class GNOMONCORE_EXPORT gnomonCoreParameterBool : public gnomonCoreParameter
 {
@@ -233,14 +230,14 @@ class GNOMONCORE_EXPORT gnomonCoreParameterText : public gnomonCoreParameter
 public:
      gnomonCoreParameterText(const QString& val, const QString& doc = QString());
     ~gnomonCoreParameterText(void) = default;
-    
+
     QString value(void) const;
-    
+
     void setValue(QString&);
     void setValue(const QVariant&);
-    
+
     void copy(gnomonCoreParameter *other);
-    
+
 private:
     QString m_value = "";
 };

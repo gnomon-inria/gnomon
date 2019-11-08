@@ -14,12 +14,10 @@
 
 #pragma once
 
-#include <QUndoCommand>
-
 #include <gnomonCore>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonAbstractCommand : public QUndoCommand
+class gnomonAbstractCommand
 {
 public:
      gnomonAbstractCommand(void) = default;

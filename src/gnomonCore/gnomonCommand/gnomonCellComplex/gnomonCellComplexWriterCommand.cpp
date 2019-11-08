@@ -1,3 +1,17 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonCellComplexWriterCommand.h"
 
 #include <dtkScript>
@@ -6,18 +20,14 @@ class gnomonCellComplexWriterCommandPrivate
 {
 public:
     QString path;
+
+public:
     gnomonCellComplexSeries* cellComplex = nullptr;
 };
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(const QString& key) : d(new gnomonCellComplexWriterCommandPrivate)
 {
-    QString command = "import gnomonCellComplexWriter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("cellComplexWriter");
 
     this->action = gnomonCore::cellComplexWriter::pluginFactory().create(key);
 
@@ -51,3 +61,6 @@ void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cel
 {
     d->cellComplex = cellComplex;
 }
+
+//
+// gnomonCellComplexWriterCommand.cpp ends here

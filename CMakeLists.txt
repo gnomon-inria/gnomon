@@ -22,8 +22,8 @@ project(gnomon)
 ## Version setup
 ## ###################################################################
 
-set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 11)
+set(${PROJECT_NAME}_VERSION_MAJOR 1)
+set(${PROJECT_NAME}_VERSION_MINOR 9)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -92,78 +92,43 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-if(NOT APPLE)
-  find_package(OpenSSL)
-endif()
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 
-find_package(Ice COMPONENTS Ice IceUtil Glacier2 IceXML QUIET)
-find_package(omero-ice QUIET)
-find_package(omero-client QUIET)
-
-if(Ice_FOUND)
-  include_directories(${Ice_INCLUDE_DIRS})
-endif()
-
-if (OMERO_CLIENT_FOUND)
-  include_directories(${OMERO_CLIENT_INCLUDE_DIR})
-endif()
-
-if (OMERO_ICE_FOUND)
-  include_directories(${OMERO_ICE_INCLUDE_DIR})
-endif()
+## #################################################################
+## Dependencies - external
+## #################################################################
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent Test)
 
-find_package(dtk REQUIRED)
-find_package(dtkImaging REQUIRED)
+find_package(dtkLog      REQUIRED)
+find_package(dtkFonts    REQUIRED)
+find_package(dtkThemes   REQUIRED)
+find_package(dtkCore     REQUIRED)
+find_package(dtkMacs     REQUIRED)
+find_package(dtkImaging  REQUIRED)
+find_package(dtkScript   REQUIRED)
+find_package(dtkWidgets  REQUIRED)
+find_package(dtkComposer REQUIRED)
 
-include_directories(${dtk_INCLUDE_DIRS})
-include_directories(${dtkImaging_INCLUDE_DIRS})
+find_package(xtensor REQUIRED)
 
-find_package(VTK)
+find_package(VTK REQUIRED)
 
-if(NOT VTK_FOUND)
-  message(WARNING "VTK_DIR not found")
-else()
-  include(${VTK_USE_FILE})
-endif()
-
-if(DTK_BUILD_WRAPPERS)
-  include(dtkWrap)
-endif()
+include(${VTK_USE_FILE})
 
 ## ###################################################################
-## compiling options
+## Compiling options
 ## ###################################################################
 
-option(GNOMON_BUILD_COMPOSER "Build composer layer" false)
-
-
+option(GNOMON_BUILD_COMPOSER "Build composer layer" FALSE)
 
 ## #################################################################
 ## Targets
 ## #################################################################
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+
 include(gnomonSubdirectoryAddFiles)
-
-## #################################################################
-## Dependencies - internal
-## #################################################################
-
-include_directories(${CMAKE_BINARY_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomon)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonCore)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonStyle)
-if(GNOMON_BUILD_COMPOSER)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonComposer)
-endif(GNOMON_BUILD_COMPOSER)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonFonts)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonOmero)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonVisualization)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWidgets)
-include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWorkspace)
 
 ## ###################################################################
 ## Input
@@ -171,30 +136,48 @@ include_directories(${CMAKE_SOURCE_DIR}/src/gnomonWorkspace)
 
 add_subdirectory(src)
 add_subdirectory(app)
+add_subdirectory(wrp)
 add_subdirectory(tst)
-add_subdirectory(tst-py)
+# add_subdirectory(tst-py)
+
+## ###################################################################
+## Export configuration
+## ###################################################################
+
+include(CMakePackageConfigHelpers)
+
+set(${PROJECT_NAME}_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE
+  STRING "install path for ${PROJECT_NAME}Config.cmake")
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
+configure_package_config_file(cmake/${PROJECT_NAME}Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION "${${PROJECT_NAME}_CMAKE_INSTALL_DIR}"
+  PATH_VARS ${PROJECT_NAME}_INCLUDE_DIRS)
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
+configure_package_config_file(cmake/${PROJECT_NAME}Config.cmake.in
+  ${PROJECT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION "${${PROJECT_NAME}_CMAKE_INSTALL_DIR}"
+  PATH_VARS ${PROJECT_NAME}_INCLUDE_DIRS)
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  VERSION ${${PROJECT_NAME}_VERSION}
+  COMPATIBILITY AnyNewerVersion)
 
 ## ###################################################################
 ## Exporting
 ## ###################################################################
 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
+
+install(EXPORT layer-targets
+  FILE ${PROJECT_NAME}Targets.cmake
+  DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
+
 export(PACKAGE ${PROJECT_NAME})
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in
-  "${PROJECT_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake" @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
-
-install(FILES
-  "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake"
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/gnomon)
-
-install(EXPORT gnomonDepends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/gnomon)
 
 ## ###################################################################
 ## Beautifying

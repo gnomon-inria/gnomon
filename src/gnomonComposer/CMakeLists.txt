@@ -24,67 +24,66 @@ project(gnomonComposer)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonComposer
-  gnomonComposerNodeView
-  gnomonComposerNodeView.h
+  gnomonComposerNodeWorkspace
+  gnomonComposerNodeWorkspace.h
   gnomonComposerWidget_p.h
-  gnomonComposerWidget.h
-  gnomonCellGraphFromImageNode.h
-  gnomonCellComplexFromImageNode.h
-  gnomonCellImageFromImageNode.h
-  gnomonCellComplexReaderNode.h
-  gnomonTissueGrowthModelNode.h)
+  gnomonComposerWidget.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonComposerNodeView.cpp
-  gnomonComposerWidget.cpp
-  gnomonCellGraphFromImageNode.cpp
-  gnomonCellComplexFromImageNode.cpp
-  gnomonCellImageFromImageNode.cpp
-  gnomonCellComplexReaderNode.cpp
-  gnomonTissueGrowthModelNode.cpp)
+  gnomonComposerNodeWorkspace.cpp
+  gnomonComposerWidget.cpp)
 
-set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
+## set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
 
 ## #################################################################
 ## Build rules
 ## #################################################################
 
-qt5_add_resources(${PROJECT_NAME}_SOURCES_QRC ${${PROJECT_NAME}_RESOURCES})
+## qt5_add_resources(${PROJECT_NAME}_SOURCES_QRC ${${PROJECT_NAME}_RESOURCES})
 
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_SOURCES_QRC})
+  ${${PROJECT_NAME}_SOURCES})
+  ##${${PROJECT_NAME}_SOURCES_QRC})
 
 ## ###################################################################
 ## Link rules
 ## ###################################################################
 
-qt5_use_modules(${PROJECT_NAME} Core)
-qt5_use_modules(${PROJECT_NAME} Widgets)
-qt5_use_modules(${PROJECT_NAME} Network)
-qt5_use_modules(${PROJECT_NAME} Svg)
-qt5_use_modules(${PROJECT_NAME} Xml)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Network)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Svg)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Xml)
 
-target_link_libraries(${PROJECT_NAME} dtkCore)
-target_link_libraries(${PROJECT_NAME} dtkComposer)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 
-target_link_libraries(${PROJECT_NAME} dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} dtkImagingFilters)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
 
-target_link_libraries(${PROJECT_NAME} gnomonCore)
-target_link_libraries(${PROJECT_NAME} gnomonVisualization)
+## #############################################################################
+##
+## #############################################################################
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${layer_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>)
 
 # #################################################################
 ## Target properties
 ## #################################################################
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
-set_target_properties(${PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
 set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 0)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVERSION ${gnomon_VERSION_MAJOR})
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION   ${gnomon_VERSION}
+                                                 SOVERSION ${gnomon_VERSION_MAJOR})
 
 ## #################################################################
 ## Export header file
@@ -110,16 +109,10 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME}
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  COMPONENT gnomon-composer
-  EXPORT gnomonDepends)
-
-## ###################################################################
-## Composer extension factory
-## ###################################################################
-
-add_subdirectory(extension)
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 ######################################################################
 ### CMakeLists.txt ends here

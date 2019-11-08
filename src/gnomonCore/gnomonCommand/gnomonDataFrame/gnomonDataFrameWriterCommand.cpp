@@ -1,23 +1,41 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonDataFrameWriterCommand.h"
 
 #include <dtkScript>
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
 
 class gnomonDataFrameWriterCommandPrivate
 {
 public:
     QString path;
+
+public:
     gnomonDataFrame* dataFrame = nullptr;
 };
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand(const QString& key) : d(new gnomonDataFrameWriterCommandPrivate)
 {
-    QString command = "import gnomonDataFrameWriter";
-
-    int stat;
-
-    dtkScriptInterpreterPython::instance()->interpret(command, &stat);
-
-    Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    loadPluginGroup("dataFrameWriter");
 
     this->action = gnomonCore::dataFrameWriter::pluginFactory().create(key);
 
@@ -51,3 +69,6 @@ void gnomonDataFrameWriterCommand::setDataFrame(gnomonDataFrame *dataFrame)
 {
     d->dataFrame = dataFrame;
 }
+
+//
+// gnomonDataFrameWriterCommand.cpp ends here

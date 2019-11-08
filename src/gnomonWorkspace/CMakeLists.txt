@@ -20,7 +20,6 @@ project(gnomonWorkspace)
 
 set(${PROJECT_NAME}_HEADERS
   gnomonWorkspace
-  gnomonWorkspace.h
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
   gnomonWorkspaceCellComplexFromCellImage
@@ -31,8 +30,12 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceFusion.h
   gnomonWorkspaceLSystemSimulator
   gnomonWorkspaceLSystemSimulator.h
+  gnomonWorkspaceLStringFromTree
+  gnomonWorkspaceLStringFromTree.h
   gnomonWorkspaceMeshFromImage
   gnomonWorkspaceMeshFromImage.h
+  gnomonWorkspacePlantScan3D
+  gnomonWorkspacePlantScan3D.h
   gnomonWorkspacePointCloudFromImage
   gnomonWorkspacePointCloudFromImage.h
   gnomonWorkspacePreprocess
@@ -47,26 +50,31 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceSegmentation.h
   gnomonWorkspaceTreeAnalysis
   gnomonWorkspaceTreeAnalysis.h
+  gnomonWorkspaceTreeFromLString
+  gnomonWorkspaceTreeFromLString.h
   gnomonWorkspaceTemplate_p.h
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceCellComplexFromCellImage.cpp
   gnomonWorkspaceCellImageFilter.cpp
   gnomonWorkspaceCellImageQuantification.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
+  gnomonWorkspaceLStringFromTree.cpp
   gnomonWorkspaceMeshFromImage.cpp
+  gnomonWorkspacePlantScan3D.cpp
   gnomonWorkspacePointCloudFromImage.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
   gnomonWorkspaceSimulation.cpp
-  gnomonWorkspaceTreeAnalysis.cpp)
+  gnomonWorkspaceTreeAnalysis.cpp
+  gnomonWorkspaceTreeFromLString.cpp)
 
+set(${PROJECT_NAME}_SOURCES_QRC gnomonWorkspace.qrc)
 
 ## #################################################################
 ## Build rules
@@ -79,29 +87,44 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS}
   ${${PROJECT_NAME}_SOURCES_RCC})
 
-qt5_use_modules(${PROJECT_NAME} Core)
-qt5_use_modules(${PROJECT_NAME} Widgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 
-target_link_libraries(${PROJECT_NAME} gnomonCore)
-target_link_libraries(${PROJECT_NAME} gnomonWidgets)
-target_link_libraries(${PROJECT_NAME} gnomonVisualization)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkMacs)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 
-target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 
-if(DTK_BUILD_WRAPPERS)
-  if(DTK_WRAPPING_PYTHON AND PYTHONLIBS_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
-  endif()
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
+
+## #############################################################################
+##
+## #############################################################################
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${layer_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>)
 
 ## ###################################################################
 ## Target properties
 ## ###################################################################
 
-if(NOT SIP_FOUND)
-  set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
-  set_target_properties(${PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
-endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 0)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
@@ -132,11 +155,10 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME}
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  COMPONENT gnomon-workspace
-  EXPORT gnomonDepends)
-
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 ######################################################################
 ### CMakeLists.txt ends here

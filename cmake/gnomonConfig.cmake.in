@@ -12,21 +12,7 @@
 ##
 ### Code:
 
-## ###################################################################
-## Defines:
-## - gnomon_INCLUDE_DIRS
-## ###################################################################
-
-set(gnomon_INCLUDE_DIRS
-  "@CMAKE_CURRENT_SOURCE_DIR@/src/gnomonCore"
-  "@CMAKE_CURRENT_SOURCE_DIR@/src"
-  "@CMAKE_CURRENT_BINARY_DIR@")
-
-## ###################################################################
-## Options
-## ###################################################################
-
-include("@CMAKE_BINARY_DIR@/gnomonDepends.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 ######################################################################
-### gnomon.cmake.in ends here
+### dtkCoreConfig.cmake.in ends here

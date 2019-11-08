@@ -32,6 +32,8 @@ public:
 
 public:
     void setView(gnomonViewForm *view);
+
+public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) = 0;
 
@@ -54,6 +56,13 @@ public slots:
     virtual void clear(void) = 0;
 
 public slots:
+    virtual void on2D(void) = 0;
+    virtual void on3D(void) = 0;
+    virtual void onXY(void) = 0;
+    virtual void onXZ(void) = 0;
+    virtual void onYZ(void) = 0;
+    virtual void onSliceChanged(int) = 0;
+    virtual void onSliceOrientationChanged(int) = 0;
     virtual void onTimeChanged(double) = 0;
 
 public:

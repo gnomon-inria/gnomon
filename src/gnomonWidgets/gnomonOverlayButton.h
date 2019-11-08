@@ -16,8 +16,7 @@
 
 #include <gnomonWidgetsExport>
 
-#include <gnomonStyle>
-#include <gnomonFonts>
+#include <dtkFonts>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -36,7 +35,7 @@ public:
 public:
     QSize sizeHint(void) const override;
 
- signals:
+signals:
     void clicked(void);
 
 protected:
@@ -102,7 +101,6 @@ public:
     gnomonOverlayButtonText *label_text = nullptr;
 
 public:
-    gnomonFontAwesome *font = nullptr;
     fa::icon           icon;
     QString            path_on;
     QString            path_off;

@@ -17,6 +17,14 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
+#include <dtkWidgets>
+#include <dtkWidgetsMenuBar_p.h>
+#include <dtkWidgetsMenu+ux.h>
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Use dtkWidgetsFinder
+// /////////////////////////////////////////////////////////////////////////////
+
 class gnomonWorkspaceBrowserPrivate
 {
 public:
@@ -25,17 +33,19 @@ public:
     gnomonFinderToolBar *toolbar;
 
 public:
-    // gnomonViewVolumic *browse_view;
     gnomonViewForm *browse_view;
 
+//public:
+//    dtkWidgetsMenuBarContainer *dashboard;
 };
 
-gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspace(parent)
+gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspaceBrowserPrivate;
 
     d->finder = new gnomonFinder(this);
     d->finder->switchToTreeView();
+    d->finder->setFixedWidth(300);
 
     d->path = new gnomonFinderPathBar(this);
     d->path->setPath(QDir::currentPath());
@@ -44,11 +54,20 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     d->toolbar = new gnomonFinderToolBar(this);
     d->toolbar->setPath(QDir::currentPath());
 
-    // d->browse_view = new gnomonViewVolumic(this);
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(gnomonToolBar::browser_color);
-    d->browse_view->toggleVisualizationPane();
 
+//// /////////////////////////////////////////////////////////////////////////////
+//// NOTE: Dashboard inception
+//// /////////////////////////////////////////////////////////////////////////////
+//
+//    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+//    d->dashboard->navigator->deleteLater();
+//    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->browse_view->menu());
+//    d->dashboard->setFixedWidth(300);
+
+// /////////////////////////////////////////////////////////////////////////////
+    
     QHBoxLayout *toolbar_layout = new QHBoxLayout;
     toolbar_layout->setContentsMargins(0, 0, 0, 0);
     toolbar_layout->setSpacing(0);
@@ -76,18 +95,31 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : gnomonWorkspac
     connect(d->toolbar, SIGNAL(listView()),       d->finder, SLOT(switchToListView()));
 
     QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(finder);
     splitter->addWidget(d->browse_view);
+    splitter->addWidget(finder);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
+//    layout->addWidget(d->dashboard);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 {
     delete d;
+}
+
+void gnomonWorkspaceBrowser::enter(void)
+{
+    dtkApp->window()->menubar()->addMenu(d->browse_view->menu());
+    dtkApp->window()->menubar()->touch();
+}
+
+void gnomonWorkspaceBrowser::leave(void)
+{
+    dtkApp->window()->menubar()->removeMenu(d->browse_view->menu());
+    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceBrowser::apply(void)

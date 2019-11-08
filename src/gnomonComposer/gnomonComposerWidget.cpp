@@ -12,11 +12,9 @@
 
 // Code:
 
+#include "gnomonComposerNodeWorkspace.h"
 #include "gnomonComposerWidget.h"
 #include "gnomonComposerWidget_p.h"
-
-#include <gnomonCore>
-#include <gnomonStyle>
 
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
@@ -28,6 +26,7 @@
 #include <dtkComposer/dtkComposerNodeFactory.h>
 #include <dtkComposer/dtkComposerNodeFactoryView.h>
 #include <dtkComposer/dtkComposerGraph.h>
+#include <dtkComposer/dtkComposerPath.h>
 #include <dtkComposer/dtkComposerScene.h>
 #include <dtkComposer/dtkComposerSceneModel.h>
 #include <dtkComposer/dtkComposerSceneNodeEditor.h>
@@ -37,17 +36,10 @@
 #include <dtkComposer/dtkComposerView.h>
 #include <dtkComposer/dtkComposerViewController.h>
 
-#include <dtkCore/dtkCore.h>
-#include <dtkCore/dtkCorePluginManager.h>
-
-#include <dtkLog/dtkLog.h>
-
-#include <dtkWidgets/dtkWidgetsLogView.h>
-#include <dtkWidgets/dtkNotification.h>
-#include <dtkWidgets/dtkNotificationDisplay.h>
-#include <dtkWidgets/dtkScreenMenu.h>
-#include <dtkWidgets/dtkRecentFilesMenu.h>
-#include <dtkWidgets/dtkSpacer.h>
+#include <dtkCore>
+#include <dtkLog>
+#include <dtkWidgets>
+#include <dtkThemes>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -104,6 +96,19 @@ void gnomonComposerWidgetPrivate::setModified(bool modified)
 // gnomonComposerWidget
 // /////////////////////////////////////////////////////////////////
 
+gnomonComposerWidget *gnomonComposerWidget::instance(void)
+{
+    if(!s_instance)
+        s_instance = new gnomonComposerWidget;
+
+    return s_instance;
+}
+
+QSize gnomonComposerWidget::sizeHint(void) const
+{
+    return QSize(200, 10);
+}
+
 gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonComposerWidgetPrivate;
@@ -112,155 +117,39 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     // -- Elements
 
     d->composer = new dtkComposerWidget;
-    d->composer->view()->setBackgroundBrush(QColor(GNOMON_STYLE_BACKGROUNDCOLOR));
-
-    d->composer->compass()->setBackgroundBrush(QColor(GNOMON_STYLE_BACKGROUNDALTCOLOR));
-
-    d->controls = nullptr;
-
-    d->editor = new dtkComposerSceneNodeEditor(this);
-    d->editor->setScene(d->composer->scene());
-    d->editor->setStack(d->composer->stack());
-    d->editor->setGraph(d->composer->graph());
-
-    d->model = new dtkComposerSceneModel(this);
-    d->model->setScene(d->composer->scene());
-
-    d->scene = new dtkComposerSceneView(this);
-    d->scene->setScene(d->composer->scene());
-    d->scene->setModel(d->model);
-
-    d->stack = new dtkComposerStackView(this);
-    d->stack->setStack(d->composer->stack());
-
-    d->nodes = new dtkComposerNodeFactoryView(this);
-    d->nodes->setFactory(d->composer->factory());
-    if(GNOMON_STYLE == "ONEDARK")
-        d->nodes->setDoom();
-
-    connect(d->composer->scene(), SIGNAL(flagged(dtkComposerSceneNode *)), this, SLOT(onComposerNodeFlagged(dtkComposerSceneNode *)));
+    d->composer->view()->setBackgroundBrush(QColor(dtkThemesEngine::instance()->color("@bg")));
 
     d->closing = false;
 
-    // -- Actions
-
-    d->composition_open_action = new QAction("Open", this);
-    d->composition_open_action->setShortcut(QKeySequence::Open);
-
-    d->composition_save_action = new QAction("Save", this);
-    d->composition_save_action->setShortcut(QKeySequence::Save);
-
-    d->composition_saveas_action = new QAction("Save As...", this);
-    d->composition_saveas_action->setShortcut(QKeySequence::SaveAs);
-
-    d->composition_insert_action = new QAction("Insert", this);
-    d->composition_insert_action->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_I);
-
-    d->undo_action = d->composer->stack()->createUndoAction(this);
-    d->undo_action->setShortcut(QKeySequence::Undo);
-
-    d->redo_action = d->composer->stack()->createRedoAction(this);
-    d->redo_action->setShortcut(QKeySequence::Redo);
-
-    // -- Menus
-
-    QMenuBar *menu_bar = new QMenuBar(0);
-
-    d->recent_compositions_menu = new dtkRecentFilesMenu("Open recent...", this);
-
-    d->composition_menu = menu_bar->addMenu("Composition");
-    d->composition_menu->addAction(d->composition_open_action);
-    d->composition_menu->addMenu(d->recent_compositions_menu);
-    d->composition_menu->addAction(d->composition_save_action);
-    d->composition_menu->addAction(d->composition_saveas_action);
-    d->composition_menu->addSeparator();
-    d->composition_menu->addAction(d->composition_insert_action);
-
-    d->edit_menu = menu_bar->addMenu("Edit");
-    d->edit_menu->addAction(d->composer->view()->searchAction());
-    d->edit_menu->addSeparator();
-    d->edit_menu->addAction(d->undo_action);
-    d->edit_menu->addAction(d->redo_action);
-    d->edit_menu->addSeparator();
-    d->edit_menu->addAction(d->composer->scene()->flagAsBlueAction());
-    d->edit_menu->addAction(d->composer->scene()->flagAsGrayAction());
-    d->edit_menu->addAction(d->composer->scene()->flagAsGreenAction());
-    d->edit_menu->addAction(d->composer->scene()->flagAsOrangeAction());
-    d->edit_menu->addAction(d->composer->scene()->flagAsPinkAction());
-    d->edit_menu->addAction(d->composer->scene()->flagAsRedAction());
-    d->edit_menu->addAction(d->composer->scene()->flagAsYellowAction());
-    d->edit_menu->addAction(d->composer->scene()->setBreakPointAction());
-    d->edit_menu->addSeparator();
-    d->edit_menu->addAction(d->composer->scene()->maskEdgesAction());
-    d->edit_menu->addAction(d->composer->scene()->unmaskEdgesAction());
-
-    dtkScreenMenu *screen_menu = new dtkScreenMenu("Screen",this);
-    menu_bar->addMenu(screen_menu);
-
-    QAction *showControlsAction = new QAction("Show controls", this);
-    showControlsAction->setShortcut(QKeySequence(Qt::ShiftModifier + Qt::ControlModifier + Qt::AltModifier + Qt::Key_C));
-
-    QMenu *window_menu = menu_bar->addMenu("Window");
-    window_menu->addAction(showControlsAction);
-
     // -- Connections
-
-    connect(showControlsAction, SIGNAL(triggered()), this, SLOT(showControls()));
 
     connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(close()));
 
     connect(d->composer, SIGNAL(modified(bool)), d, SLOT(setModified(bool)));
 
-    connect(d->composition_open_action, SIGNAL(triggered()), this, SLOT(compositionOpen()));
-    connect(d->composition_save_action, SIGNAL(triggered()), this, SLOT(compositionSave()));
-    connect(d->composition_saveas_action, SIGNAL(triggered()), this, SLOT(compositionSaveAs()));
-    connect(d->composition_insert_action, SIGNAL(triggered()), this, SLOT(compositionInsert()));
-
-    connect(d->recent_compositions_menu, SIGNAL(recentFileTriggered(const QString&)), this, SLOT(compositionOpen(const QString&)));
-
     // -- Layout
-
-    QSplitter *right = new QSplitter(this);
-    right->setHandleWidth(2);
-    right->setOrientation(Qt::Vertical);
-    right->addWidget(d->scene);
-    right->addWidget(d->editor);
-    right->addWidget(d->stack);
-    right->addWidget(d->composer->compass());
-    right->setSizes(QList<int>()
-                    << this->size().height()/4
-                    << this->size().height()/4
-                    << this->size().height()/4
-                    << this->size().height()/4);
-
-    int wl = 300;
-    int wr = 300;
-    int wc = parent->size().width() - wl - wr;
-
-    QSplitter *inner = new QSplitter(this);
-    inner->setHandleWidth(2);
-    inner->setOrientation(Qt::Horizontal);
-    inner->addWidget(d->nodes);
-    inner->addWidget(d->composer);
-    inner->addWidget(right);
-    inner->setSizes(QList<int>() << wl << wc << wr);
 
     QVBoxLayout* main_layout = new QVBoxLayout;
     main_layout->setContentsMargins(0, 0, 0, 0);
-    main_layout->addWidget(inner);
+    main_layout->setSpacing(0);
+    main_layout->addWidget(d->composer);
 
     this->setLayout(main_layout);
 
     d->setCurrentFile("");
 
-    // Set up composition workspace.
+    // ---
 
     d->composer->setVisible(true);
-    d->composer->compass()->setVisible(true);
-    d->nodes->setVisible(true);
-    d->scene->setVisible(true);
-    d->editor->setVisible(true);
-    d->stack->setVisible(false);
+
+    // --
+
+    this->setMouseTracking(true);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    // --
+
+    this->addWorkspace("Browser");
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)
@@ -268,47 +157,51 @@ gnomonComposerWidget::~gnomonComposerWidget(void)
     delete d;
 }
 
-bool gnomonComposerWidget::compositionOpen(void)
+void gnomonComposerWidget::addWorkspace(const QString& title)
 {
-    if(!d->maySave())
-        return true;
+    qDebug() << Q_FUNC_INFO << title;
 
-    QString path;
+    gnomonComposerNodeWorkspace *node = new gnomonComposerNodeWorkspace(title);
 
-    gnomonCoreSettings settings;
-    settings.beginGroup("editor");
-    path = settings.value("last_open_composition_path").toString();
-    settings.endGroup();
+    dtkComposerScenePort *i_port = 0;
 
-    QFileDialog *dialog = new QFileDialog(this, tr("Open composition"), path, QString("dtk composition (*.dtk)"));
-    dialog->setStyleSheet("");
-    dialog->setAcceptMode(QFileDialog::AcceptOpen);
-    dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->open(this, SLOT(compositionOpen(const QString&)));
+    if (d->last_node) {
+        i_port = new dtkComposerScenePort(dtkComposerScenePort::Input, node);
 
-    return true;
-}
+        node->addInputPort(i_port);
 
-bool gnomonComposerWidget::compositionOpen(const QString& file)
-{
-    if(sender() == d->recent_compositions_menu && !d->maySave())
-        return true;
-
-    bool status = d->composer->open(file);
-
-    if(status) {
-        d->recent_compositions_menu->addRecentFile(file);
-        d->setCurrentFile(file);
+        node->setPos(d->last_node->pos() + QPointF(300, 0));
     }
 
-    QFileInfo info(file);
+    dtkComposerScenePort *port = new dtkComposerScenePort(dtkComposerScenePort::Output, node);
 
-    gnomonCoreSettings settings;
-    settings.beginGroup("editor");
-    settings.setValue("last_open_composition_path", info.absolutePath());
-    settings.endGroup();
+    node->addOutputPort(port);
+    node->layout();
+   
+    dtkComposerSceneEdge *edge = 0;
 
-    return status;
+    if (d->last_port) {
+        qDebug() << Q_FUNC_INFO << "Adding edge";
+        edge = new dtkComposerSceneEdge;
+        edge->setSource(d->last_port);
+        edge->setDestination(i_port);
+        edge->link(true);
+
+        d->last_node->addEdge(edge);
+    }
+
+
+    d->composer->scene()->addItem(node);
+
+    if (edge) {
+        qDebug() << Q_FUNC_INFO << "Creating edge";
+
+        d->composer->scene()->root()->addEdge(edge);
+        d->composer->scene()->addItem(edge);
+    }
+
+    d->last_node = node;
+    d->last_port = port;
 }
 
 bool gnomonComposerWidget::compositionSave(void)
@@ -322,9 +215,6 @@ bool gnomonComposerWidget::compositionSave(void)
 
     if(status)
         this->setWindowModified(false);
-
-    if(status)
-        dtkNotify(QString("<div style=\"color: #006600\">Saved %1</div>").arg(d->current_composition), 3000);
 
     return status;
 }
@@ -382,9 +272,6 @@ bool gnomonComposerWidget::compositionSaveAs(const QString& file, dtkComposerWri
     settings.setValue("last_open_dir", info.absolutePath());
     settings.endGroup();
 
-    if(status)
-        dtkNotify(QString("<div style=\"color: #006600\">Saved as %1</div>").arg(info.baseName()), 3000);
-
     return status;
 }
 
@@ -421,23 +308,6 @@ bool gnomonComposerWidget::compositionInsert(const QString& file)
     return status;
 }
 
-void gnomonComposerWidget::showControls(void)
-{
-    if(!d->controls) {
-        d->controls = new dtkComposerControls(this);
-        d->controls->setScene(d->composer->scene());
-        d->controls->setWindowFlags(Qt::Dialog);
-        d->controls->setWindowTitle("Composer Controls");
-
-        if(!this->isFullScreen()) {
-            d->controls->resize(d->controls->size().width(), this->size().height());
-            d->controls->move(this->rect().topRight() + QPoint(10, 0));
-        }
-    }
-
-    d->controls->show();
-}
-
 void gnomonComposerWidget::closeEvent(QCloseEvent *event)
 {
     if (d->maySave()) {
@@ -448,15 +318,58 @@ void gnomonComposerWidget::closeEvent(QCloseEvent *event)
      }
 }
 
-void gnomonComposerWidget::onComposerNodeFlagged(dtkComposerSceneNode *node)
-{
-    dtkComposerViewController::instance()->insert(node);
-}
-
-dtkComposerWidget* gnomonComposerWidget::composerWidget()
+dtkComposerWidget *gnomonComposerWidget::composerWidget(void)
 {
     return d->composer;
 }
+
+void gnomonComposerWidget::enterEvent(QEvent *)
+{
+    d->inside = true;
+
+    this->repaint();
+}
+
+void gnomonComposerWidget::leaveEvent(QEvent *)
+{
+    d->inside = false;
+
+    this->repaint();
+}
+
+void gnomonComposerWidget::mousePressEvent(QMouseEvent *event)
+{
+    QRect handle = QRect(this->size().width() / 2 - 100, 0, 200, 14);
+
+    if (handle.contains(event->pos())) {
+
+        if(this->size().height() < 150) {
+            emit expand();
+            d->state = gnomonComposerWidgetPrivate::Expanded;
+        } else {
+            emit shrink();
+            d->state = gnomonComposerWidgetPrivate::Collapsed;
+        }
+    }
+}
+
+void gnomonComposerWidget::paintEvent(QPaintEvent *event)
+{
+    QFrame::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setPen(dtkThemesEngine::instance()->color("@bgalt"));
+    painter.drawLine(event->rect().topLeft(), event->rect().topRight());
+    painter.drawLine(event->rect().bottomLeft(), event->rect().bottomRight());
+
+    if(!d->inside)
+        return;
+
+    painter.setBrush(Qt::red);
+    painter.drawRoundedRect(event->rect().width() / 2 - 100, 6, 200, 6, 3, 3);
+}
+
+gnomonComposerWidget *gnomonComposerWidget::s_instance = nullptr;
 
 //
 // gnomonComposerWidget.cpp ends here

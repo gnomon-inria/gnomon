@@ -1,14 +1,27 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
 #include "gnomonItemButton.h"
 
-#include <gnomonFonts>
+#include <dtkFonts>
 
 gnomonItemButton::gnomonItemButton(const QColor& color, int icon, QWidget *parent) : QLabel(parent)
 {
-    this->font = new gnomonFontAwesome(this);
-    this->font->initFontAwesome();
-    this->font->setDefaultOption("color", color);
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", color);
 
-    this->setPixmap(this->font->icon(icon).pixmap(16, 16));
+    this->setPixmap(dtkFontAwesome::instance()->icon(icon).pixmap(16, 16));
 
     this->setStyleSheet("background: none; border: none;");
 }
@@ -22,3 +35,6 @@ void gnomonItemButton::mousePressEvent(QMouseEvent *)
 {
     emit clicked();
 }
+
+// 
+// gnomonItemButton.cpp ends here

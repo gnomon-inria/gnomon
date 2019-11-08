@@ -14,12 +14,12 @@
 
 #include "gnomonFinder.h"
 
-#include <gnomonFonts>
-#include <gnomonStyle>
-
 #ifdef Q_WS_WIN
 #include <qt_windows.h>
 #endif
+
+#include <dtkFonts>
+#include <dtkThemes>
 
 #include <QListIterator>
 
@@ -38,15 +38,12 @@ public:
 
     QLinkedList<QString> pathList;
     QLinkedList<QString>::iterator iterator;
-
-    gnomonFontAwesome *font_awesome;
 };
 
 gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QFrame(parent), d(new gnomonFinderToolBarPrivate)
 {
-    d->font_awesome = new gnomonFontAwesome(this);
-    d->font_awesome->initFontAwesome();
-    d->font_awesome->setDefaultOption("color", QColor(GNOMON_STYLE_ACCENTCOLOR));
+    dtkFontAwesome::instance()->initFontAwesome();
+    dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
 
     d->prevButton = new QToolButton(this);
     d->prevButton->setArrowType(Qt::LeftArrow);
@@ -63,19 +60,19 @@ gnomonFinderToolBar::gnomonFinderToolBar(QWidget *parent) : QFrame(parent), d(ne
     d->listViewButton = new QToolButton(this);
     d->listViewButton->setCheckable(true);
     d->listViewButton->setChecked(true);
-    d->listViewButton->setIcon(d->font_awesome->icon(fa::th));
+    d->listViewButton->setIcon(dtkFontAwesome::instance()->icon(fa::th));
     d->listViewButton->setIconSize(QSize(16, 16));
     d->listViewButton->setToolTip(tr("Icon view"));
 
     d->treeViewButton = new QToolButton(this);
     d->treeViewButton->setCheckable(true);
-    d->treeViewButton->setIcon(d->font_awesome->icon(fa::list));
+    d->treeViewButton->setIcon(dtkFontAwesome::instance()->icon(fa::list));
     d->treeViewButton->setIconSize(QSize(16, 16));
     d->treeViewButton->setToolTip(tr("List view"));
 
     d->showHiddenFilesButton = new QToolButton(this);
     d->showHiddenFilesButton->setCheckable(true);
-    d->showHiddenFilesButton->setIcon(d->font_awesome->icon(fa::eye));
+    d->showHiddenFilesButton->setIcon(dtkFontAwesome::instance()->icon(fa::eye));
     d->showHiddenFilesButton->setIconSize(QSize(16, 16));
     d->showHiddenFilesButton->setToolTip(tr("Show/Hide hidden files"));
 #ifdef Q_WS_MAC
@@ -587,7 +584,7 @@ void gnomonFinderPathBar::paintEvent(QPaintEvent *event)
 
     if(d->items.last()->rect.right() >= this->width()) {
         QRect prect(this->width()-30, 0, 30, rect.height());
-        painter.fillRect(prect, this->palette().background());
+        painter.fillRect(prect, this->palette().window());
         painter.drawText(prect.left(), y+14, "...");
     }
 }

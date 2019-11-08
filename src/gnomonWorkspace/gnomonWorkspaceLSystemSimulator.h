@@ -16,9 +16,9 @@
 
 #include <gnomonWorkspaceExport>
 
-#include "gnomonWorkspace.h"
+#include <dtkWidgets>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLSystemSimulator : public gnomonWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLSystemSimulator : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 
@@ -27,13 +27,15 @@ public:
     ~gnomonWorkspaceLSystemSimulator(void);
 
 public:
-    void enter(void) override {};
-    void leave(void) override {};
-    void apply(void) override;
+    void enter(void) override;
+    void leave(void) override;
 
-public slots:
-    void step(void);
-    void reset(void);
+public:
+    void apply(void) override;
+    void apply(QWidget *);
+
+public:
+    void fill(QWidget *);
 
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;

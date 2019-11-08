@@ -23,6 +23,7 @@ class gnomonCellGraph;
 class gnomonCellImage;
 class gnomonDataFrame;
 class gnomonImage;
+class gnomonLString;
 class gnomonMesh;
 class gnomonPointCloud;
 class gnomonTree;
@@ -53,6 +54,7 @@ public:
     gnomonCellImage *asCellImage();
     gnomonDataFrame *asDataFrame();
     gnomonImage *asImage();
+    gnomonLString *asLString();
     gnomonMesh *asMesh();
     gnomonPointCloud *asPointCloud();
     gnomonTree *asTree();

@@ -13,8 +13,8 @@
 
 #include <gnomonMainWindow.h>
 
-#include <gnomonStyle>
 #include <gnomonCore>
+#include <gnomonComposer>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
@@ -30,14 +30,25 @@ public:
     void setup(void);
 
 public:
-    gnomonToolBar *menu;
+    dtkWidgetsWorkspaceBar *workspace_bar = nullptr;
 
+// /////////////////////////////////////////////////////////////////////////////
+// Top level - World
+// /////////////////////////////////////////////////////////////////////////////
+public:
+    gnomonFormManager *manager;
+
+// /////////////////////////////////////////////////////////////////////////////
+// Inner level - Workspaces
+// /////////////////////////////////////////////////////////////////////////////
 public:
     QStackedWidget *stack;
 
+// /////////////////////////////////////////////////////////////////////////////
+// Bottom level - Workflow
+// /////////////////////////////////////////////////////////////////////////////
 public:
-    // gnomonImageManager *manager;
-    gnomonFormManager *manager;
+    gnomonComposerWidget *workflow;
 
 public:
     gnomonMainWindow *q;
@@ -57,189 +68,79 @@ void gnomonMainWindowPrivate::setdw(void)
     settings.setValue("size", q->size());
 }
 
+template <typename T> dtkWidgetsWorkspace *creator(void)
+{
+    return new T;
+}
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
+gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(parent)
 {
     d = new gnomonMainWindowPrivate;
     d->q = this;
 
-    // d->manager = gnomonImageManager::instance();
-    d->manager = gnomonFormManager::instance();
+    dtk::widgets::workspace::pluginFactory().record(      "PreProcessing", creator<gnomonWorkspacePreprocess>);
+    dtk::widgets::workspace::pluginFactory().record(            "Browser", creator<gnomonWorkspaceBrowser>);
+    dtk::widgets::workspace::pluginFactory().record("Cell Reconstruction", creator<gnomonWorkspaceCellComplexFromCellImage>);
+    dtk::widgets::workspace::pluginFactory().record(         "CellFilter", creator<gnomonWorkspaceCellImageFilter>);
+    dtk::widgets::workspace::pluginFactory().record(      "Cell Analysis", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record(             "Fusion", creator<gnomonWorkspaceFusion>);
+    dtk::widgets::workspace::pluginFactory().record(            "LSystem", creator<gnomonWorkspaceLSystemSimulator>);
+    dtk::widgets::workspace::pluginFactory().record(    "Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
+    dtk::widgets::workspace::pluginFactory().record(     "Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record(             "Python", creator<gnomonWorkspacePythonSimulator>);
+    dtk::widgets::workspace::pluginFactory().record(       "Registration", creator<gnomonWorkspaceRegistration>);
+    dtk::widgets::workspace::pluginFactory().record(       "Segmentation", creator<gnomonWorkspaceSegmentation>);
+    dtk::widgets::workspace::pluginFactory().record(         "Simulation", creator<gnomonWorkspaceSimulation>);
+    dtk::widgets::workspace::pluginFactory().record(      "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
+    dtk::widgets::workspace::pluginFactory().record( "LString Conversion", creator<gnomonWorkspaceTreeFromLString>);
+    dtk::widgets::workspace::pluginFactory().record(  "LString From Tree", creator<gnomonWorkspaceLStringFromTree>);
+    dtk::widgets::workspace::pluginFactory().record(      "Plant Scan 3D", creator<gnomonWorkspacePlantScan3D>);
+
+    dtkApp->setWindow(this);
 
     d->stack = new QStackedWidget(this);
-    d->stack->addWidget(new gnomonWorkspaceBrowser(this));
-    d->stack->setCurrentIndex(0);
-
-    d->menu = new gnomonToolBar(this);
-
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d->manager);
-    layout->addWidget(d->stack);
-    layout->addWidget(d->menu);
 
     QWidget *central = new QWidget(this);
+
+    d->workspace_bar = new dtkWidgetsWorkspaceBar(central);
+    d->workspace_bar->setStack(d->stack);
+    d->workspace_bar->setDynamic(true);
+    d->workspace_bar->buildFromFactory();
+    d->workspace_bar->createWorkspace("Browser", "Browser", false);
+
+    d->manager = gnomonFormManager::instance();
+    d->workflow = gnomonComposerWidget::instance();
+
+    QVBoxLayout *i_layout = new QVBoxLayout;
+    i_layout->setContentsMargins(0, 0, 0, 0);
+    i_layout->setSpacing(0);
+    i_layout->addWidget(d->manager);
+    i_layout->addWidget(d->stack);
+    i_layout->addWidget(d->workflow);
+    i_layout->addWidget(d->workspace_bar);
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(this->menubar());
+    layout->addLayout(i_layout);
+
     central->setLayout(layout);
 
-    QAction *nextTabAction = new QAction("Switch to next workspace", this);
-    QAction *prevTabAction = new QAction("Switch to previous workspace", this);
-
-    nextTabAction->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_PageDown);
-    prevTabAction->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_PageUp);
-
-    this->addAction(nextTabAction);
-    this->addAction(prevTabAction);
-
-    connect(nextTabAction, &QAction::triggered, [=] (void) {
-        int count = d->stack->count();
-        int index = (d->stack->currentIndex()+1) % count ;
-        d->menu->setCurrentIndex(index);
-    });
-
-    connect(prevTabAction, &QAction::triggered, [=] (void) {
-        int count = d->stack->count();
-        int index = (d->stack->currentIndex()+count-1) % count;
-        d->menu->setCurrentIndex(index);
-    });
-
-    connect(d->menu, SIGNAL(indexChanged(int)), d->stack, SLOT(setCurrentIndex(int)));
-
-    connect(d->menu, &gnomonToolBar::indexDeleted, [=] (int index) {
-        QWidget * widget = d->stack->widget(index);
-        if (d->stack->currentIndex() == index) {
-            d->menu->setCurrentIndex(0);
-        }
-        if (widget) {
-            d->stack->removeWidget(widget);
-            delete widget;
-        }
-    });
-
-    connect(d->menu, &gnomonToolBar::createFusion, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceFusion(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createLSystemSimulator, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceLSystemSimulator(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createPythonSimulator, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspacePythonSimulator(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createPreprocess, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspacePreprocess(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createCellImageQuantification, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceCellImageQuantification(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createRegistration, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceRegistration(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createMeshFromImage, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceMeshFromImage(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-    
-    connect(d->menu, &gnomonToolBar::createPointCloudFromImage, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspacePointCloudFromImage(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createSegmentation, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceSegmentation(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createCellComplexFromCellImage, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceCellComplexFromCellImage(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createCellImageFilter, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceCellImageFilter(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-    connect(d->menu, &gnomonToolBar::createSimulation, [=] (void) {
-
-        gnomonWorkspace *workspace = new gnomonWorkspaceSimulation(this);
-        workspace->enter();
-
-        d->stack->addWidget(workspace);
-        d->stack->setCurrentWidget(workspace);
-    });
-
-//    connect(d->menu, &gnomonToolBar::createTreeAnalysis, [=] (void) {
+// /////////////////////////////////////////////////////////////////////////////
 //
-//        gnomonWorkspace *workspace = new gnomonWorkspaceTreeAnalysis(this);
-//        workspace->enter();
-//
-//        d->stack->addWidget(workspace);
-//        d->stack->setCurrentWidget(workspace);
-//    });
+// /////////////////////////////////////////////////////////////////////////////
 
     static int l_h = 0;
 
-    // connect(d->manager, &gnomonImageManager::expand, [=] (void) {
-    connect(d->manager, &gnomonFormManager::expand, [=] (void) {
+    connect(d->manager, &gnomonFormManager::expand, [=] (void)
+    {
+        if(d->stack->height() < 10)
+            return;
 
         int m_h = d->manager->height();
         int s_h = d->stack->height();
@@ -260,8 +161,10 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     });
 
-    // connect(d->manager, &gnomonImageManager::shrink, [=] (void) {
-    connect(d->manager, &gnomonFormManager::shrink, [=] (void) {
+    connect(d->manager, &gnomonFormManager::shrink, [=] (void)
+    {
+        if(d->manager->height() < 10)
+            return;
 
         int m_h = d->manager->height();
 
@@ -279,10 +182,62 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : QMainWindow(parent)
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     });
 
+    connect(d->workflow, &gnomonComposerWidget::expand, [=] (void)
+    {
+        if(d->stack->height() < 10)
+            return;
+
+        int m_h = d->workflow->height();
+        int s_h = d->stack->height();
+
+        l_h = s_h;
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(d->stack->height());
+        animation->setEndValue(0);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->workflow->setFixedHeight(m_h + s_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(d->workflow, &gnomonComposerWidget::shrink, [=] (void)
+    {
+        if(d->workflow->height() < 10)
+            return;
+
+        int m_h = d->workflow->height();
+
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setDuration(500);
+        animation->setStartValue(0);
+        animation->setEndValue(l_h);
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+
+        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+            d->stack->setFixedHeight(value.toInt());
+            d->workflow->setFixedHeight(m_h - value.toInt());
+        });
+
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
+
+// /////////////////////////////////////////////////////////////////////////////
+
     this->setCentralWidget(central);
-    this->setStyleSheet(gnomonStyleSheet());
 
     d->setup();
+
+    this->populate();
+
+    this->menubar()->touch();
 }
 
 gnomonMainWindow::~gnomonMainWindow(void)
@@ -290,6 +245,19 @@ gnomonMainWindow::~gnomonMainWindow(void)
     d->setdw();
 
     delete d;
+}
+
+void gnomonMainWindow::resizeEvent(QResizeEvent *event)
+{
+    dtkWidgetsMainWindow::resizeEvent(event);
+}
+
+void gnomonMainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->pos().x() < 300 + 32 + 12)
+        return;
+
+    dtkWidgetsMainWindow::mouseMoveEvent(event);
 }
 
 //
