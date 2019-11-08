@@ -30,7 +30,8 @@ swig_link_libraries(${PROJECT_NAME}
   dtkCore
   dtkImagingCore
   gnomonVisualization
-  gnomonCore)
+  gnomonCore
+  ${VTK_LIBRARIES})
 
 # To copy file at build time
 add_custom_command(
