@@ -1336,7 +1336,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             }
             this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellImage);
 
-        } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz") || path.endsWith("tif") || (path.endsWith("czi"))) {
+        } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz") || path.endsWith("tif") || path.endsWith("czi")|| path.endsWith("lsm")) {
             if ((!d->formReaderCommand.contains("gnomonImage"))||(!d->formReaderCommand["gnomonImage"]))
                 d->formReaderCommand["gnomonImage"] = new gnomonImageReaderCommand("gnomonImageReader");
             gnomonImageReaderCommand *imageCommand = (gnomonImageReaderCommand *) d->formReaderCommand["gnomonImage"];
