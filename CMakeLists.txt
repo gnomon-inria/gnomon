@@ -88,6 +88,16 @@ enable_testing()
 
 include(GenerateExportHeader)
 
+## ###################################################################
+## Dependencies - Python
+## ###################################################################
+
+find_package (Python3 COMPONENTS Interpreter Development)
+
+include_directories(${Python3_INCLUDE_DIRS})
+
+set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+
 ## #################################################################
 ## Dependencies - external
 ## #################################################################
@@ -130,12 +140,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL_PATH})
-
-## ###################################################################
-## Compiling options
-## ###################################################################
-
-option(GNOMON_BUILD_COMPOSER "Build composer layer" FALSE)
 
 ## #################################################################
 ## Targets
