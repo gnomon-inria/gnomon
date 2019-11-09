@@ -116,6 +116,21 @@ find_package(VTK REQUIRED)
 
 include(${VTK_USE_FILE})
 
+## #################################################################
+## Install prefix
+ ## #################################################################
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  if (DEFINED ENV{CONDA_PREFIX})
+    set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "${PROJECT_NAME} libdir" FORCE)
+    set(CMAKE_INSTALL_PREFIX "$ENV{CONDA_PREFIX}" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
+  else()
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
+  endif()
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
+set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL_PATH})
+
 ## ###################################################################
 ## Compiling options
 ## ###################################################################
@@ -137,7 +152,7 @@ include(gnomonSubdirectoryAddFiles)
 add_subdirectory(src)
 add_subdirectory(app)
 add_subdirectory(wrp)
-add_subdirectory(tst)
+# add_subdirectory(tst)
 # add_subdirectory(tst-py)
 
 ## ###################################################################

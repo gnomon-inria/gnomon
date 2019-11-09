@@ -39,7 +39,7 @@ set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${LAYER_NAME}PYTHON_wrap.cxx PRO
 
 set(SWIG_MODULE_NAME ${PROJECT_NAME})
 
-list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
+list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++ -threads)
 
 ## #############################################################################
 ## Build rules
@@ -48,15 +48,15 @@ list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 swig_link_libraries(${PROJECT_NAME}
-  ${LAYER_NAME}
-  ${PYTHON_LIBRARIES}
+  Python3::Python
   dtkCore
   dtkImagingCore)
+
+target_link_libraries(${PROJECT_NAME} ${LAYER_NAME})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-# set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVERSION ${gnomon_VERSION_MAJOR})
 
 ## #############################################################################
 ## Install rules
