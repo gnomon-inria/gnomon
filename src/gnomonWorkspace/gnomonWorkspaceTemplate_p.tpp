@@ -88,7 +88,7 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
         doc->setText(this->command->documentation());
      });
 
-    doc->setText(this->command->documentation());
+    // doc->setText(this->command->documentation());
 
     QVBoxLayout *pane_item_algorithm_layout = new QVBoxLayout;
     pane_item_algorithm_layout->addWidget(combo_box);

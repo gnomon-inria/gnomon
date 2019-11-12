@@ -93,7 +93,6 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     d->source = new gnomonViewMatplotlib(this);
     d->target = new gnomonViewMatplotlib(this);
 
-
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
