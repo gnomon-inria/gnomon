@@ -1,9 +1,0 @@
-.. |coord| replace:: Christophe Godin, Guillaume Cerutti, Olivier Ali
-.. |contrib| replace:: Ghada Bahloul, Tristan Cabel, Pierre Fournier, Thibaud Kloczko, Côme Le Breton, Nicolas Niclausse, Jean Luc Szpyrka, Julien Wintz
-.. |release| replace:: 0.9.0
-.. |licence| replace:: Inria licence
-.. |name| replace:: Gnomon
-.. |sname| replace:: Gnomon
-.. |gitlab_url| replace:: git@gitlab.inria.fr:gnomon/gnomon.git
-.. |description| replace:: |name| a computational platform to analyse and simulate the development of life forms in 3D..
-.. |short_description| replace:: a computational platform to analyse and simulate the development of life forms in 3D..

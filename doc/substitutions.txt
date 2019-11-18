@@ -1,0 +1,8 @@
+.. |coord| replace:: Christophe Godin, Guillaume Cerutti, Olivier Ali, Jonathan Legrand
+.. |contrib| replace:: Julien Wintz, Thibaud Kloczko, Nicolas Niclausse, Tristan Cabel, Florian Gacon, Jean Luc Szpyrka, Ghada Bahloul, Pierre Fernique, Côme Le Breton
+.. |release| replace:: 0.11.0
+.. |name| replace:: Gnomon
+.. |sname| replace:: Gnomon
+.. |gitlab_url| replace:: git@gitlab.inria.fr:gnomon/gnomon.git
+.. |description| replace:: |name| is a computational platform to analyze and simulate the development of living forms in 3D.
+.. |short_description| replace:: A computational platform to study 3D form development.

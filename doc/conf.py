@@ -12,10 +12,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
 
+cwd = os.getcwd()
+project_root = os.path.dirname(cwd)
+src_dir = os.path.abspath(os.path.join(project_root, "build-dev/lib/python3.7/site-packages/"))
+print(src_dir)
+sys.path.insert(0, src_dir)
 
 # -- Project information -----------------------------------------------------
 
@@ -24,9 +28,9 @@ copyright = '2018, Inria'
 author = 'AMDT Team'
 
 # The short X.Y version
-version = ''
+version = '0.11'
 # The full version, including alpha/beta/rc tags
-release = '0.9.0'
+release = '0.11.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,11 +44,18 @@ release = '0.9.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.coverage',
     'sphinx.ext.doctest',
-    'sphinx.ext.todo',
-    'sphinx.ext.mathjax',
+    'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.plot_directive',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -80,13 +91,15 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinxdoc'
+html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 # html_theme_options = {}
+html_theme_options = {'body_max_width': '66%'}
+
 html_logo = '_static/gnomon_logo.png'
 
 # html_favicon = '_static/icon_gnomon.ico'
@@ -96,6 +109,7 @@ html_logo = '_static/gnomon_logo.png'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_style = 'style.css'
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
@@ -170,3 +184,18 @@ texinfo_documents = [
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+
+# use apidoc to generate developer doc
+try:
+    from sphinx.ext.apidoc import main
+except ImportError:
+    from sphinx.apidoc import main
+
+destdir = os.path.abspath(os.path.join(project_root, "doc", "_dvlpt"))
+
+if not os.path.isdir(destdir):
+    os.makedirs(destdir)
+
+main(['-e', '-o', destdir, '-d', '4', '-s', source_suffix[1:], '--force', src_dir])
+
