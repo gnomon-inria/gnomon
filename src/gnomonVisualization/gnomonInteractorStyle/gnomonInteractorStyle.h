@@ -44,7 +44,6 @@ public:
     virtual void OnChar(void) override;
 
 public slots:
-    void setMode(QString);
     void setView(gnomonViewForm *);
 
 private:

@@ -36,10 +36,13 @@ int upperCase(int keycode)
 class gnomonInteractorStylePrivate
 {
     public:
-        QString mode = "3D";
+        QString mode;
 
     public:
         QMap<int, QString> keymap;
+
+    public slots:
+        void setMode(QString);
 
     public:
         gnomonInteractorStylePrivate(void);
@@ -47,11 +50,26 @@ class gnomonInteractorStylePrivate
 
 gnomonInteractorStylePrivate::gnomonInteractorStylePrivate(void)
 {
-    this->keymap[Qt::Key_R] = "Reset camera";
-    this->keymap[Qt::Key_Control] = "Rotate around camera axis";
-    this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
-    this->keymap[Qt::Key_S] = "Switch to surface rendering";
-    this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+    this->setMode("3D");
+}
+
+void gnomonInteractorStylePrivate::setMode(QString mode)
+{
+    this->mode = mode;
+    if(this->mode == "2D") {
+        this->keymap.clear();
+        this->keymap[Qt::Key_R] = "Reset camera";
+        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
+        this->keymap[Qt::Key_S] = "Switch to surface rendering";
+        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+    } else if(this->mode == "3D") {
+        this->keymap.clear();
+        this->keymap[Qt::Key_R] = "Reset camera";
+        this->keymap[Qt::Key_Control] = "Rotate around camera axis";
+        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
+        this->keymap[Qt::Key_S] = "Switch to surface rendering";
+        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -150,21 +168,16 @@ void gnomonInteractorStyle::OnChar(void)
     }
 }
 
-void gnomonInteractorStyle::setMode(QString mode)
-{
-    d->mode = mode;
-}
-
 void gnomonInteractorStyle::setView(gnomonViewForm *view)
 {
     view->interactor()->SetInteractorStyle(this);
 
     connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
-        d->mode = "3D";
+        d->setMode("3D");
     });
 
     connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
-        d->mode = "2D";
+        d->setMode("2D");
     });
 }
 

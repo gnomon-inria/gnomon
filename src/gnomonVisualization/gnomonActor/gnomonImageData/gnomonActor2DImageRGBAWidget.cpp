@@ -121,7 +121,7 @@ void gnomonActor2DImageRGBAWidget::update(void)
         d->planeWidget[i]->SetMarginSizeY(0);
         d->planeWidget[i]->SetSliceIndex(imageDims[i]/2);
         d->planeWidget[i]->DisplayTextOn();
-        d->planeWidget[i]->InteractionOn();
+        d->planeWidget[i]->InteractionOff();
     }
 
     d->modified = false;
