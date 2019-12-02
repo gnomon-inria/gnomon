@@ -25,7 +25,7 @@
 #include "gnomonView/gnomonViewForm.h"
 
 #include "gnomonActor/gnomonImageData/gnomonActorImageVolume.h"
-#include "gnomonActor/gnomonImageData/gnomonActor2DImageWidget.h"
+#include "gnomonActor/gnomonImageData/gnomonActor2DImage.h"
 
 #include <vtkDataArray.h>
 #include <vtkImageData.h>
@@ -51,7 +51,7 @@ public:
     vtkSmartPointer<vtkImageData> image = nullptr;
 
     gnomonActorImageVolume *actor = nullptr;
-    gnomonActor2DImageWidget *actor2D = nullptr;
+    gnomonActor2DImage *actor2D = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ void gnomonVisualizationCellImageVolume::update(void)
 
     if (!dd->actor2D)
     {
-        dd->actor2D = gnomonActor2DImageWidget::New();
+        dd->actor2D = gnomonActor2DImage::New();
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
     dd->actor2D->setImage(dd->image);
