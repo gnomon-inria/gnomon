@@ -37,9 +37,10 @@
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
+#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
+
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
@@ -697,7 +698,7 @@ void gnomonViewForm::switchTo3D(void)
     d->renderer2D->DrawOff();
     d->renderer2D->InteractiveOff();
 
-    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    gnomonInteractorStyle *style = new gnomonInteractorStyle();
     d->GetInteractor()->SetInteractorStyle(style);
 
     d->renderer3D->InteractiveOn();
