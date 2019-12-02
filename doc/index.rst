@@ -5,6 +5,10 @@
 
 .. include:: substitutions.txt
 
+======
+Gnomon
+======
+
 .. image:: https://anaconda.org/gnomon/gnomon/badges/version.svg
    :target: https://anaconda.org/gnomon/gnomon
 
@@ -20,16 +24,13 @@
 .. image:: https://anaconda.org/gnomon/gnomon/badges/downloads.svg
    :target: https://anaconda.org/gnomon/gnomon
 
-Welcome to Gnomon's documentation!
-==================================
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
 |description|
 
-.. sidebar:: |sname|
+.. sidebar:: **Gnomon**
 
    :Coordination: |coord|
 
@@ -37,6 +38,7 @@ Welcome to Gnomon's documentation!
 
    :Active teams:
       * Inria team `Mosaic <https://team.inria.fr/mosaic/>`_
+      * Inria Sophia `SED <https://www.inria.fr/centre/sophia/innovation/plates-formes-technologiques/>`_
 
    :Stable release: |release|
 
@@ -44,9 +46,27 @@ Welcome to Gnomon's documentation!
 
    :Supported OS: Linux, Mac OS
 
-   :Licence: |licence|, TODO
+   :Licence: `CeCILL-C licence <https://cecill.info/licences/Licence_CeCILL-C_V1-en.html>`_
 
 
+Installation
+============
+
+.. toctree::
+    :maxdepth: 2
+
+    installation
+
+
+Contents
+========
+
+.. toctree::
+    :maxdepth: 2
+
+   concepts
+   user-tutorials
+   extension-tutorials
 
 
 Indices and tables

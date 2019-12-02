@@ -115,9 +115,10 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell complex"), path, tr("Meshes (*.ply)"));
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setCellComplex(cellcomplex);
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
-        } else if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
+        } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save data frame"), path, tr("Comma separated value (*.csv)"));
-            static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setDataFrame(dataFrame);
+            gnomonDataFrame * df = dynamic_cast<gnomonDataFrame *>(dataFrame->current());
+            static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setDataFrame(df);
             static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
             // qDebug() << Q_FUNC_INFO<< "FORM MANAGER TREE";
@@ -225,10 +226,10 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
 
     QString writerPlugin;
 
-    if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
-        qDebug()<<Q_FUNC_INFO<<dataFrame;
+    if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
+        gnomonDataFrame * df = dynamic_cast<gnomonDataFrame *>(dataFrame->current());
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
-        static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
+        static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(df);
     } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
       qDebug()<<Q_FUNC_INFO<<tree;
       d->formWriterCommand[item] = new gnomonTreeWriterCommand("gnomonTreeWriterTreex");

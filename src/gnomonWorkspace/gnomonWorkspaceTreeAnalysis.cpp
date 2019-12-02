@@ -46,6 +46,9 @@ public:
     QStringList keys(void) const override;
 
 public:
+    QSplitter *splitter;
+
+public:
     gnomonViewMatplotlib *source = nullptr;
     gnomonViewMatplotlib *target = nullptr;
 
@@ -93,6 +96,10 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     d->source = new gnomonViewMatplotlib(this);
     d->target = new gnomonViewMatplotlib(this);
 
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target);
+
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
@@ -107,8 +114,9 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+//    layout->addWidget(d->source);
+//    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
