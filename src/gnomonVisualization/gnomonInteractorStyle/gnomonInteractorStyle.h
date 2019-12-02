@@ -20,6 +20,8 @@
 
 #include <vtkInteractorStyleTrackballCamera.h>
 
+class gnomonViewForm;
+
 class GNOMONVISUALIZATION_EXPORT gnomonInteractorStyle : public QObject, public vtkInteractorStyleTrackballCamera
 {
 public:
@@ -40,6 +42,10 @@ public:
 
 public:
     virtual void OnChar(void) override;
+
+public slots:
+    void setMode(QString);
+    void setView(gnomonViewForm *);
 
 private:
 	class gnomonInteractorStylePrivate *d;

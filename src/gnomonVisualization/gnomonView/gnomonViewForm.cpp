@@ -94,6 +94,9 @@ public:
     vtkSmartPointer<vtkRenderer> renderer3D;
 
 public:
+    gnomonInteractorStyle *style = nullptr;
+
+public:
     gnomonViewForm *q = nullptr;
 
 public:
@@ -189,6 +192,8 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->window = vtkGenericOpenGLRenderWindow::New();
     this->window->AddRenderer(this->renderer2D);
     this->window->AddRenderer(this->renderer3D);
+
+    this->style = new gnomonInteractorStyle();
 
     this->SetRenderWindow(this->window);
     this->setEnableHiDPI(true);
@@ -579,6 +584,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d = new gnomonViewFormPrivate;
     d->q = this;
 
+    d->style->setView(this);
+
     loadPluginGroup("visualizationCellComplex");
     loadPluginGroup("visualizationImage");
     loadPluginGroup("visualizationPointCloud");
@@ -698,9 +705,6 @@ void gnomonViewForm::switchTo3D(void)
     d->renderer2D->DrawOff();
     d->renderer2D->InteractiveOff();
 
-    gnomonInteractorStyle *style = new gnomonInteractorStyle();
-    d->GetInteractor()->SetInteractorStyle(style);
-
     d->renderer3D->InteractiveOn();
     d->renderer3D->DrawOn();
 
@@ -728,9 +732,6 @@ void gnomonViewForm::switchTo2D(void)
 
     d->renderer3D->DrawOff();
     d->renderer3D->InteractiveOff();
-
-    vtkSmartPointer<vtkInteractorStyleImage> style = vtkSmartPointer<vtkInteractorStyleImage>::New();
-    d->GetInteractor()->SetInteractorStyle(style);
 
     d->renderer2D->InteractiveOn();
     d->renderer2D->DrawOn();

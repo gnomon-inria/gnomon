@@ -14,7 +14,11 @@
 
 #include "gnomonInteractorStyle.h"
 
+#include "gnomonView/gnomonViewForm.h"
+
 #include <vtkRenderWindowInteractor.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkInteractorStyleImage.h>
 
 int upperCase(int keycode)
 {
@@ -25,13 +29,15 @@ int upperCase(int keycode)
     }
 }
 
-
 // ///////////////////////////////////////////////////////////////////
 // gnomonInteractorStylePrivate
 // ///////////////////////////////////////////////////////////////////
 
 class gnomonInteractorStylePrivate
 {
+    public:
+        QString mode = "3D";
+
     public:
         QMap<int, QString> keymap;
 
@@ -52,7 +58,7 @@ gnomonInteractorStylePrivate::gnomonInteractorStylePrivate(void)
 // gnomonInteractorStyle
 // ///////////////////////////////////////////////////////////////////
 
-gnomonInteractorStyle::gnomonInteractorStyle(void)
+gnomonInteractorStyle::gnomonInteractorStyle(void) : vtkInteractorStyleTrackballCamera()
 {
     d = new gnomonInteractorStylePrivate;
 }
@@ -70,7 +76,16 @@ QMap<int, QString> gnomonInteractorStyle::keyMap(void) const
 
 void gnomonInteractorStyle::OnMouseMove(void)
 {
-    vtkInteractorStyleTrackballCamera::OnMouseMove();
+    if(d->mode == "3D") {
+        vtkInteractorStyleTrackballCamera::OnMouseMove();
+    } else if (d->mode == "2D") {
+        QString key = this->Interactor->GetKeySym();
+        if((key=="Shift_L")||(key=="Shift_R")) {
+            vtkInteractorStyleTrackballCamera::OnMouseMove();
+        } else {
+            vtkInteractorStyle::OnMouseMove();
+        }
+    }
 }
 
 void gnomonInteractorStyle::OnKeyDown(void)
@@ -133,6 +148,24 @@ void gnomonInteractorStyle::OnChar(void)
     } else {
         vtkInteractorStyleTrackballCamera::OnChar();
     }
+}
+
+void gnomonInteractorStyle::setMode(QString mode)
+{
+    d->mode = mode;
+}
+
+void gnomonInteractorStyle::setView(gnomonViewForm *view)
+{
+    view->interactor()->SetInteractorStyle(this);
+
+    connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
+        d->mode = "3D";
+    });
+
+    connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
+        d->mode = "2D";
+    });
 }
 
 //
