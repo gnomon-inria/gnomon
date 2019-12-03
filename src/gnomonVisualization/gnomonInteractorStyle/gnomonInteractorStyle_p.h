@@ -16,13 +16,18 @@
 
 #include <QtCore>
 
+class gnomonViewForm;
+
 class gnomonInteractorStylePrivate
 {
     public:
         QString mode;
 
     public:
-        QMap<int, QString> keymap;
+        gnomonViewForm *view;
+
+    public:
+        QMap<QShortcut *, QString> keymap;
 
     public slots:
         void setMode(QString);

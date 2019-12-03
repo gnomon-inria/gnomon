@@ -34,10 +34,8 @@ int upperCase(int keycode)
 // gnomonInteractorStylePrivate
 // ///////////////////////////////////////////////////////////////////
 
-
 gnomonInteractorStylePrivate::gnomonInteractorStylePrivate(void)
 {
-    this->setMode("3D");
 }
 
 void gnomonInteractorStylePrivate::setMode(QString mode)
@@ -45,17 +43,17 @@ void gnomonInteractorStylePrivate::setMode(QString mode)
     this->mode = mode;
     if(this->mode == "2D") {
         this->keymap.clear();
-        this->keymap[Qt::Key_R] = "Reset camera";
-        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
-        this->keymap[Qt::Key_S] = "Switch to surface rendering";
-        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+        this->keymap[new QShortcut(Qt::Key_R,       this->view)] = "Reset camera";
+        this->keymap[new QShortcut(Qt::Key_Shift,   this->view)] = "Translate parallel to camera";
+        this->keymap[new QShortcut(Qt::Key_S,       this->view)] = "Switch to surface rendering";
+        this->keymap[new QShortcut(Qt::Key_W,       this->view)] = "Switch to wireframe rendering";
     } else if(this->mode == "3D") {
         this->keymap.clear();
-        this->keymap[Qt::Key_R] = "Reset camera";
-        this->keymap[Qt::Key_Control] = "Rotate around camera axis";
-        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
-        this->keymap[Qt::Key_S] = "Switch to surface rendering";
-        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+        this->keymap[new QShortcut(Qt::Key_R,       this->view)] = "Reset camera";
+        this->keymap[new QShortcut(Qt::Key_Control, this->view)] = "Rotate around camera axis";
+        this->keymap[new QShortcut(Qt::Key_Shift,   this->view)] = "Translate parallel to camera";
+        this->keymap[new QShortcut(Qt::Key_S,       this->view)] = "Switch to surface rendering";
+        this->keymap[new QShortcut(Qt::Key_W,       this->view)] = "Switch to wireframe rendering";
     }
 }
 
@@ -74,7 +72,7 @@ gnomonInteractorStyle::~gnomonInteractorStyle(void)
     this->SetReferenceCount(0);
 }
 
-QMap<int, QString> gnomonInteractorStyle::keyMap(void) const
+QMap<QShortcut *, QString> gnomonInteractorStyle::keyMap(void) const
 {
     return d->keymap;
 }
@@ -157,6 +155,7 @@ void gnomonInteractorStyle::OnChar(void)
 
 void gnomonInteractorStyle::setView(gnomonViewForm *view)
 {
+    d->view = view;
     view->interactor()->SetInteractorStyle(this);
 
     connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {

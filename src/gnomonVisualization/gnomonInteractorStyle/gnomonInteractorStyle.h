@@ -15,6 +15,7 @@
 #pragma once
 
 #include <QtCore>
+#include <QtWidgets>
 
 #include <gnomonVisualizationExport>
 
@@ -29,7 +30,7 @@ public:
     ~gnomonInteractorStyle(void);
 
 public:
-    QMap<int, QString> keyMap(void) const;
+    QMap<QShortcut *, QString> keyMap(void) const;
 
 public:
     virtual void OnMouseMove(void) override;
