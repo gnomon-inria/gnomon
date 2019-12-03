@@ -62,7 +62,7 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
-    long cellId(long vtkId);
+    long cellId(long vtkId) override;
     QMap<QString, QVariant> cellInfo(long cellId);
 
 public:

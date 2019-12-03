@@ -46,7 +46,7 @@ public:
 public slots:
     void setView(gnomonViewForm *);
 
-private:
+protected:
 	class gnomonInteractorStylePrivate *d;
 };
 

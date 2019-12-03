@@ -287,5 +287,10 @@ void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
     this->render();
 }
 
+long gnomonVisualizationCellImageVolume::cellId(long vtkId)
+{
+    return vtkId;
+}
+
 //
 // gnomonVisualizationCellImageVolume.cpp ends here

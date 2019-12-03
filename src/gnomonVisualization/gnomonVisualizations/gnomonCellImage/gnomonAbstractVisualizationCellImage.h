@@ -61,9 +61,12 @@ public slots:
     virtual void onSliceChanged(int) override = 0;
     virtual void onSliceOrientationChanged(int) override = 0;
     virtual void onTimeChanged(double) override = 0;
+
+public:
+    virtual long cellId(long vtkId) = 0;
 };
 
-// ///////////////////////////////////////////////////////////////////
+// /////////////////    //////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 

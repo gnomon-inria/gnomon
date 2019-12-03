@@ -12,25 +12,19 @@
 ##
 ### Code:
 
-## #################################################################
-## Inputs
-## #################################################################
-
-add_subdirectory(gnomonCellImage)
 
 ## #################################################################
 ## Sources
 ## #################################################################
 
-ADD_GNOMON_HEADERS(
-    gnomonInteractorStyle
-    gnomonInteractorStyle.h
-    ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_HEADERS})
+
+ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonInteractorStyleCellImageMarchingCubes
+    gnomonInteractorStyleCellImageMarchingCubes.h)
 
 
-ADD_GNOMON_SOURCES(
-    gnomonInteractorStyle.cpp
-    ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_SOURCES})
+ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonInteractorStyleCellImageMarchingCubes.cpp)
 
 
 ######################################################################

@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonInteractorStyle.h"
+#include "gnomonInteractorStyle_p.h"
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -33,20 +34,6 @@ int upperCase(int keycode)
 // gnomonInteractorStylePrivate
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonInteractorStylePrivate
-{
-    public:
-        QString mode;
-
-    public:
-        QMap<int, QString> keymap;
-
-    public slots:
-        void setMode(QString);
-
-    public:
-        gnomonInteractorStylePrivate(void);
-};
 
 gnomonInteractorStylePrivate::gnomonInteractorStylePrivate(void)
 {

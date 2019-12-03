@@ -65,6 +65,8 @@ public:
     void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
     QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
+public:
+    long cellId(long vtkId) override;
 
 private:
 	class gnomonVisualizationCellImageVolumePrivate *dd;
