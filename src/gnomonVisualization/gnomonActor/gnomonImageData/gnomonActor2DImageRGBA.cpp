@@ -26,6 +26,7 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 #include <vtkImageActor.h>
+#include <vtkImageProperty.h>
 #include <vtkLookupTable.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPointData.h>
@@ -134,12 +135,12 @@ void gnomonActor2DImageRGBA::update(void)
         }
 
 //        d->plane[i]->RestrictPlaneToVolumeOn();
-//        d->plane[i]->GetPlaneProperty()->SetColor(color);
+        d->plane[i]->GetProperty()->UseLookupTableScalarRangeOn();
 //        d->plane[i]->GetColorMap()->SetLookupTable(NULL);
 //        d->plane[i]->GetColorMap()->SetOutputFormatToRGBA();
 //        d->plane[i]->SetResliceInterpolateToNearestNeighbour();
 //        d->plane[i]->TextureInterpolateOff();
-          d->plane[i]->InterpolateOff();
+        d->plane[i]->InterpolateOff();
 //        // d->plane[i]->SetLeftButtonAction(vtkImageActor::VTK_SLICE_MOTION_ACTION);
 //        d->plane[i]->SetMarginSizeX(0);
 //        d->plane[i]->SetMarginSizeY(0);

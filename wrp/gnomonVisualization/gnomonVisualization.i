@@ -28,6 +28,7 @@
 #include <dtkCore>
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
+#include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
@@ -272,6 +273,7 @@ void setupMatplotlib(qlonglong view_address, int num)
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
+%include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
