@@ -72,6 +72,7 @@ class GNOMONWIDGETS_EXPORT gnomonOverlayButton : public QFrame
     Q_OBJECT
 
 public:
+     gnomonOverlayButton(QChar, QString = "", QWidget *parent = nullptr);
      gnomonOverlayButton(fa::icon, QString = "", QWidget *parent = nullptr);
      gnomonOverlayButton(const QString& path_on, const QString& path_off, QString = "", QWidget *parent = nullptr);
     ~gnomonOverlayButton(void);
@@ -102,6 +103,8 @@ public:
 
 public:
     fa::icon           icon;
+    QPixmap            pix_on;
+    QPixmap            pix_off;
     QString            path_on;
     QString            path_off;
     bool               pixmap = false;

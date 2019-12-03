@@ -117,6 +117,9 @@ public:
 
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
+    gnomonOverlayButton *help_button = nullptr;
+
+    QList<gnomonOverlayButton *> shortcut_keys;
 
 public:
     int syncing_count = 0;
@@ -153,6 +156,9 @@ public slots:
     void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
     void addFormMenu(const QString& key);
     void refresh(void);
+
+public:
+    void updateKeys(void);
 
 // /////////////////////////////////////////////////////////////////////////////
 // Menu stuff
@@ -213,6 +219,9 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
 
+    this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
+    this->help_button->toggle(false);
+
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -261,6 +270,11 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 
     this->sync->move(event->size().width() - 80, 10);
     this->export_button->move(event->size().width() - 40, 10);
+    this->help_button->move(event->size().width() - 120, 10);
+
+    for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
+        this->shortcut_keys[i_key]->move(event->size().width() - 240, 50 + 40*i_key);
+    }
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -575,6 +589,35 @@ void gnomonViewFormPrivate::updateTimeSlider(void)
     this->time_slider->setMaximum(this->forms_times.size()-1);
 }
 
+void gnomonViewFormPrivate::updateKeys(void)
+{
+    for (int i_key=0;i_key<this->shortcut_keys.size();i_key++) {
+        delete this->shortcut_keys[i_key];
+    }
+    this->shortcut_keys.clear();
+
+    QMap<QShortcut *,QString> keymap = this->style->keyMap();
+    for(const auto& key : keymap.keys()) {
+        QChar key_char;
+        if (key->key().toString().size()==1) {
+            key_char = key->key().toString().at(0);
+        } else {
+            if (key->key() == Qt::Key_Shift) {
+                key_char = QChar(0x21E7);
+            } else if (key->key() == Qt::Key_Control) {
+                key_char = QChar(0x2318);
+            } else {
+                key_char = ' ';
+            }
+        }
+        gnomonOverlayButton *shortcut_key = new gnomonOverlayButton(key_char, keymap[key], this);
+        shortcut_key->setFixedWidth(240);
+        shortcut_key->setVisible(this->help_button->isToggled());
+        this->shortcut_keys.push_back(shortcut_key);
+    }
+    this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
@@ -597,6 +640,14 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->renderer2D_YZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DYZ()));
 
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
+
+    connect(d->help_button, & gnomonOverlayButton::iconClicked, [=] ()
+    {
+        d->help_button->toggle(!d->help_button->isToggled());
+        for(int i_key=0; i_key<d->shortcut_keys.size(); i_key++) {
+            d->shortcut_keys[i_key]->setVisible(d->help_button->isToggled());
+        }
+    });
 
     d->slice_slider = new QSlider(this);
     d->slice_slider->setObjectName("Slice Position");
@@ -630,6 +681,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     layout->addWidget(d->time_slider, 1, 0, 1, 3);
 
     static int count = 0;
+
 
 //    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
 //    d->view_item->setShowTitle(false);
@@ -708,9 +760,10 @@ void gnomonViewForm::switchTo3D(void)
     d->renderer3D->InteractiveOn();
     d->renderer3D->DrawOn();
 
-    d->slice_slider->setEnabled(false);
-
     emit switchedTo3D();
+
+    d->slice_slider->setEnabled(false);
+    d->slice_slider->setVisible(false);
 }
 
 void gnomonViewForm::switchTo2D(void)
@@ -735,7 +788,6 @@ void gnomonViewForm::switchTo2D(void)
 
     d->renderer2D->InteractiveOn();
     d->renderer2D->DrawOn();
-    d->slice_slider->setEnabled(true);
 
     emit switchedTo2D();
 
@@ -755,6 +807,9 @@ void gnomonViewForm::switchTo2D(void)
         default:
             break;
     }
+
+    d->slice_slider->setVisible(true);
+    d->slice_slider->setEnabled(true);
 }
 
 void gnomonViewForm::switchTo2DXY(void)
@@ -1293,6 +1348,11 @@ void gnomonViewForm::onTimeChanged(double time)
         int value = sorted_times.indexOf(time);
         d->time_slider->setValue(value);
     }
+}
+
+void gnomonViewForm::updateShortcutKeys(void)
+{
+    d->updateKeys();
 }
 
 void gnomonViewForm::dragEnterEvent(QDragEnterEvent *event)

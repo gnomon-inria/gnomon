@@ -133,6 +133,9 @@ public slots:
 public slots:
     void onTimeChanged(double);
 
+public slots:
+    void updateShortcutKeys(void);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dragLeaveEvent(QDragLeaveEvent *);

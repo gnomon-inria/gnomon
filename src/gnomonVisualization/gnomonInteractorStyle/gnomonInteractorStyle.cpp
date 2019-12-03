@@ -36,6 +36,7 @@ int upperCase(int keycode)
 
 gnomonInteractorStylePrivate::gnomonInteractorStylePrivate(void)
 {
+    this->keymap.clear();
 }
 
 void gnomonInteractorStylePrivate::setMode(QString mode)
@@ -160,10 +161,12 @@ void gnomonInteractorStyle::setView(gnomonViewForm *view)
 
     connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
         d->setMode("3D");
+        d->view->updateShortcutKeys();
     });
 
     connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
         d->setMode("2D");
+        d->view->updateShortcutKeys();
     });
 }
 
