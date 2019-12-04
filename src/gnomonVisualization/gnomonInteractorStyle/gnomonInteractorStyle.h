@@ -30,7 +30,7 @@ public:
     ~gnomonInteractorStyle(void);
 
 public:
-    QMap<QShortcut *, QString> keyMap(void) const;
+    QMap<int, QString> keyMap(void) const;
 
 public:
     virtual void OnMouseMove(void) override;

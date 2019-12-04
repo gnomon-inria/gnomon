@@ -27,7 +27,7 @@ class gnomonInteractorStylePrivate
         gnomonViewForm *view;
 
     public:
-        QMap<QShortcut *, QString> keymap;
+        QMap<int, QString> keymap;
 
     public slots:
         void setMode(QString);

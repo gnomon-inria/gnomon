@@ -596,15 +596,15 @@ void gnomonViewFormPrivate::updateKeys(void)
     }
     this->shortcut_keys.clear();
 
-    QMap<QShortcut *,QString> keymap = this->style->keyMap();
+    QMap<int, QString> keymap = this->style->keyMap();
     for(const auto& key : keymap.keys()) {
         QChar key_char;
-        if (key->key().toString().size()==1) {
-            key_char = key->key().toString().at(0);
+        if (QKeySequence(key).toString().size()==1) {
+            key_char = QKeySequence(key).toString().at(0);
         } else {
-            if (key->key() == Qt::Key_Shift) {
+            if (key == Qt::Key_Shift) {
                 key_char = QChar(0x21E7);
-            } else if (key->key() == Qt::Key_Control) {
+            } else if (key == Qt::Key_Control) {
                 key_char = QChar(0x2318);
             } else {
                 key_char = ' ';

@@ -44,17 +44,17 @@ void gnomonInteractorStylePrivate::setMode(QString mode)
     this->mode = mode;
     if(this->mode == "2D") {
         this->keymap.clear();
-        this->keymap[new QShortcut(Qt::Key_R,       this->view)] = "Reset camera";
-        this->keymap[new QShortcut(Qt::Key_Shift,   this->view)] = "Translate parallel to camera";
-        this->keymap[new QShortcut(Qt::Key_S,       this->view)] = "Switch to surface rendering";
-        this->keymap[new QShortcut(Qt::Key_W,       this->view)] = "Switch to wireframe rendering";
+        this->keymap[Qt::Key_R] = "Reset camera";
+        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
+        this->keymap[Qt::Key_S] = "Switch to surface rendering";
+        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
     } else if(this->mode == "3D") {
         this->keymap.clear();
-        this->keymap[new QShortcut(Qt::Key_R,       this->view)] = "Reset camera";
-        this->keymap[new QShortcut(Qt::Key_Control, this->view)] = "Rotate around camera axis";
-        this->keymap[new QShortcut(Qt::Key_Shift,   this->view)] = "Translate parallel to camera";
-        this->keymap[new QShortcut(Qt::Key_S,       this->view)] = "Switch to surface rendering";
-        this->keymap[new QShortcut(Qt::Key_W,       this->view)] = "Switch to wireframe rendering";
+        this->keymap[Qt::Key_R] = "Reset camera";
+        this->keymap[Qt::Key_Control] = "Rotate around camera axis";
+        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
+        this->keymap[Qt::Key_S] = "Switch to surface rendering";
+        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
     }
 }
 
@@ -73,7 +73,7 @@ gnomonInteractorStyle::~gnomonInteractorStyle(void)
     this->SetReferenceCount(0);
 }
 
-QMap<QShortcut *, QString> gnomonInteractorStyle::keyMap(void) const
+QMap<int, QString> gnomonInteractorStyle::keyMap(void) const
 {
     return d->keymap;
 }
