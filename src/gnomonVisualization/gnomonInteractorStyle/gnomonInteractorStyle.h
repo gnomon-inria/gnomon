@@ -30,7 +30,7 @@ public:
     ~gnomonInteractorStyle(void);
 
 public:
-    QMap<int, QString> keyMap(void) const;
+    virtual QMap<int, QString> keyMap(void) const;
 
 public:
     virtual void OnMouseMove(void) override;
@@ -46,6 +46,7 @@ public:
 
 public slots:
     void setView(gnomonViewForm *);
+    void setMode(QString);
 
 protected:
 	class gnomonInteractorStylePrivate *d;

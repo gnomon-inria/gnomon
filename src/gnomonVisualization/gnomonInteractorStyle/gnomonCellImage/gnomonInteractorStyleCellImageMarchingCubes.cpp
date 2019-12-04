@@ -91,20 +91,21 @@ gnomonInteractorStyleCellImageMarchingCubes::~gnomonInteractorStyleCellImageMarc
 
 void gnomonInteractorStyleCellImageMarchingCubes::OnMouseMove(void)
 {
-    vtkInteractorStyleTrackballCamera::OnMouseMove();
+    gnomonInteractorStyle::OnMouseMove();
     dd->clicks = 0;
     this->updateTextActor(-1);
 }
 
 void gnomonInteractorStyleCellImageMarchingCubes::OnLeftButtonDown(void)
 {
-    vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
+    gnomonInteractorStyle::OnLeftButtonDown();
 
     int *pos = this->GetInteractor()->GetEventPosition();
 
     dd->clicks++;
 
     dd->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
+
     long vtkId = -1;
     if (dd->picker->GetViewProp()==dd->actor) {
         vtkId = dd->picker->GetCellId();
@@ -124,7 +125,7 @@ void gnomonInteractorStyleCellImageMarchingCubes::OnLeftButtonDown(void)
 
 void gnomonInteractorStyleCellImageMarchingCubes::OnLeftButtonUp(void)
 {
-    vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+    gnomonInteractorStyle::OnLeftButtonUp();
 
     int *pos = this->GetInteractor()->GetEventPosition();
     dd->picker->Pick(pos[0], pos[1], 0, this->GetDefaultRenderer());
@@ -170,6 +171,13 @@ void gnomonInteractorStyleCellImageMarchingCubes::OnDoubleClick(long vtkId)
     // this->visu->view()->infoPane()->addInfoPaneItem(text, cellInfo);
 }
 
+QMap<int, QString> gnomonInteractorStyleCellImageMarchingCubes::keyMap(void) const
+{
+    d->keymap[-Qt::LeftButton] = "Display cell ID";
+    return gnomonInteractorStyle::keyMap();
+}
+
+
 void gnomonInteractorStyleCellImageMarchingCubes::updateTextActor(long vtkId)
 {
     if (!dd->textActor) {
@@ -177,8 +185,8 @@ void gnomonInteractorStyleCellImageMarchingCubes::updateTextActor(long vtkId)
         dd->textActor->SetPosition2(10, 40);
         dd->textActor->GetTextProperty()->SetFontSize(24);
         dd->textActor->GetTextProperty()->SetColor (1.0, 1.0, 1.0);
-        this->GetDefaultRenderer()->AddActor2D(dd->textActor);
     }
+    this->GetDefaultRenderer()->AddActor2D(dd->textActor);
 
     if (vtkId > -1) {
         long cellId = dd->visu->cellId(vtkId);

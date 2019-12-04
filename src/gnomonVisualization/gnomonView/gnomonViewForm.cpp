@@ -606,6 +606,12 @@ void gnomonViewFormPrivate::updateKeys(void)
                 key_char = QChar(0x21E7);
             } else if (key == Qt::Key_Control) {
                 key_char = QChar(0x2318);
+            } else if (key == -Qt::LeftButton) { //Mouse click
+                key_char = QChar(0x2196);
+            } else if (key == -2*Qt::LeftButton) { //Mouse double click
+                key_char = QChar(0x21b8);
+            } else if (key == -3*Qt::LeftButton) { //Mouse scroll
+                key_char = QChar(0x2195);
             } else {
                 key_char = ' ';
             }
@@ -1348,6 +1354,22 @@ void gnomonViewForm::onTimeChanged(double time)
         int value = sorted_times.indexOf(time);
         d->time_slider->setValue(value);
     }
+}
+
+void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
+{
+    d->style = style;
+    d->style->setView(this);
+    if (d->renderer3D_button->isToggled()) {
+        d->style->SetDefaultRenderer(this->renderer3D());
+        d->style->setMode("3D");
+    } else {
+        d->style->SetDefaultRenderer(this->renderer2D());
+        d->style->setMode("2D");
+    }
+    this->interactor()->SetInteractorStyle(d->style);
+    this->interactor()->Enable();
+    d->updateKeys();
 }
 
 void gnomonViewForm::updateShortcutKeys(void)

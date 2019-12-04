@@ -160,7 +160,7 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
         dd->actor2D = nullptr;
     }
 
-    d->view->interactor()->SetInteractorStyle(vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New());
+    d->view->setInteractorStyle(new gnomonInteractorStyle());
 //    dd->interactor_style->Delete();
 }
 
@@ -291,11 +291,12 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
 {
-    if (!dd->is2D) {
-        dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
-        d->view->interactor()->SetInteractorStyle(dd->interactor_style);
-        d->view->interactor()->Enable();
-    }
+//    if (!dd->is2D) {
+//        dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
+//        d->view->interactor()->SetInteractorStyle(dd->interactor_style);
+//        d->view->interactor()->Enable();
+//    }
+    d->view->setInteractorStyle(dd->interactor_style);
 
     dd->updateOpacity();
     d->view->render();
@@ -359,12 +360,14 @@ void gnomonVisualizationCellImageMarchingCubes::onSliceChanged(int value)
 void gnomonVisualizationCellImageMarchingCubes::on3D(void)
 {
     dd->is2D=false;
+    dd->interactor_style->setActor(dd->actor);
     this->render();
 }
 
 void gnomonVisualizationCellImageMarchingCubes::on2D(void)
 {
     dd->is2D=true;
+    dd->interactor_style->setActor(dd->actor2D);
     this->render();
 }
 

@@ -39,24 +39,6 @@ gnomonInteractorStylePrivate::gnomonInteractorStylePrivate(void)
     this->keymap.clear();
 }
 
-void gnomonInteractorStylePrivate::setMode(QString mode)
-{
-    this->mode = mode;
-    if(this->mode == "2D") {
-        this->keymap.clear();
-        this->keymap[Qt::Key_R] = "Reset camera";
-        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
-        this->keymap[Qt::Key_S] = "Switch to surface rendering";
-        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
-    } else if(this->mode == "3D") {
-        this->keymap.clear();
-        this->keymap[Qt::Key_R] = "Reset camera";
-        this->keymap[Qt::Key_Control] = "Rotate around camera axis";
-        this->keymap[Qt::Key_Shift] = "Translate parallel to camera";
-        this->keymap[Qt::Key_S] = "Switch to surface rendering";
-        this->keymap[Qt::Key_W] = "Switch to wireframe rendering";
-    }
-}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonInteractorStyle
@@ -157,17 +139,43 @@ void gnomonInteractorStyle::OnChar(void)
 void gnomonInteractorStyle::setView(gnomonViewForm *view)
 {
     d->view = view;
+
     view->interactor()->SetInteractorStyle(this);
 
     connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
-        d->setMode("3D");
+        this->setMode("3D");
+        this->SetDefaultRenderer(d->view->renderer3D());
         d->view->updateShortcutKeys();
     });
 
     connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
-        d->setMode("2D");
+        this->setMode("2D");
+        this->SetDefaultRenderer(d->view->renderer2D());
         d->view->updateShortcutKeys();
     });
+}
+
+void gnomonInteractorStyle::setMode(QString mode)
+{
+    d->mode = mode;
+    if(d->mode == "2D") {
+        d->keymap.clear();
+        d->keymap[Qt::Key_R] = "Reset camera";
+        d->keymap[Qt::Key_Shift] = "Translate parallel to camera";
+        d->keymap[Qt::Key_S] = "Switch to surface rendering";
+        d->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+        d->keymap[-2*Qt::LeftButton] = "Nothing";
+        d->keymap[-3*Qt::LeftButton] = "Zoom in and out";
+    } else if(d->mode == "3D") {
+        d->keymap.clear();
+        d->keymap[Qt::Key_R] = "Reset camera";
+        d->keymap[Qt::Key_Control] = "Rotate around camera axis";
+        d->keymap[Qt::Key_Shift] = "Translate parallel to camera";
+        d->keymap[Qt::Key_S] = "Switch to surface rendering";
+        d->keymap[Qt::Key_W] = "Switch to wireframe rendering";
+        d->keymap[-2*Qt::LeftButton] = "Nothing";
+        d->keymap[-3*Qt::LeftButton] = "Zoom in and out";
+    }
 }
 
 //

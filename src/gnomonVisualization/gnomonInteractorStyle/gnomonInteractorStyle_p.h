@@ -29,9 +29,6 @@ class gnomonInteractorStylePrivate
     public:
         QMap<int, QString> keymap;
 
-    public slots:
-        void setMode(QString);
-
     public:
         gnomonInteractorStylePrivate(void);
 };

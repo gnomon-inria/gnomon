@@ -37,6 +37,9 @@ public:
 public:
     void OnDoubleClick(long vtkId);
 
+public:
+    virtual QMap<int, QString> keyMap(void) const override;
+
 public slots:
     void updateTextActor(long vtkId);
     void setActor(vtkProp *actor);

@@ -26,6 +26,8 @@ class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
 
+class gnomonInteractorStyle;
+
 struct gnomonLandmark;
 
 template <typename T> class gnomonTimeSeries;
@@ -134,6 +136,7 @@ public slots:
     void onTimeChanged(double);
 
 public slots:
+    void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
 protected:
