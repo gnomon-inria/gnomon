@@ -209,3 +209,13 @@ void gnomonInteractorStyleCellImageMarchingCubes::setVisualization(gnomonAbstrac
     dd->visu = visu;
 }
 
+QString gnomonInteractorStyleCellImageMarchingCubes::description(void) const
+{
+    return "Cell picker";
+}
+
+fa::icon gnomonInteractorStyleCellImageMarchingCubes::icon(void) const
+{
+    return fa::pluscircle;
+}
+

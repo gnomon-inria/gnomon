@@ -31,6 +31,9 @@ class gnomonInteractorStylePrivate
 
     public:
         gnomonInteractorStylePrivate(void);
+
+    public:
+        int upperCase(int keycode);
 };
 
 //

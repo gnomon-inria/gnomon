@@ -21,18 +21,16 @@
 
 #include <gnomonVisualizationExport>
 
-#include <vtkInteractorStyleTrackballCamera.h>
+#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 class gnomonViewForm;
 
-class GNOMONVISUALIZATION_EXPORT gnomonInteractorStyle : public QObject, public vtkInteractorStyleTrackballCamera
+class GNOMONVISUALIZATION_EXPORT gnomonInteractorStyleXYZ : public gnomonInteractorStyle
 {
 public:
-     gnomonInteractorStyle(void);
-    ~gnomonInteractorStyle(void);
+     gnomonInteractorStyleXYZ(void);
+    ~gnomonInteractorStyleXYZ(void);
 
-public:
-    virtual QMap<int, QString> keyMap(void) const;
 
 public:
     virtual void OnMouseMove(void) override;
@@ -47,16 +45,21 @@ public:
     virtual void OnChar(void) override;
 
 public slots:
-    virtual void setView(gnomonViewForm *);
-    void setMode(QString);
+    void setView(gnomonViewForm *) override;
+
+public slots:
+    void updateCamera(void);
 
 public:
-    virtual QString description(void) const;
-    virtual fa::icon icon(void) const;
+    virtual QMap<int, QString> keyMap(void) const override;
+
+public:
+    virtual QString description(void) const override;
+    virtual fa::icon icon(void) const override;
 
 protected:
-	class gnomonInteractorStylePrivate *d;
+	class gnomonInteractorStyleXYZPrivate *dd;
 };
 
 //
-// gnomonInteractorStyle.h ends here
+// gnomonInteractorStyleXYZ.h ends here

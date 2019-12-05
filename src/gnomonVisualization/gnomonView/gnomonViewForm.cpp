@@ -38,6 +38,7 @@
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
+#include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -206,6 +207,8 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     this->style = new gnomonInteractorStyle();
     this->available_styles.push_back(this->style);
+    this->available_styles.push_back(new gnomonInteractorStyleXYZ());
+
 
     this->SetRenderWindow(this->window);
     this->setEnableHiDPI(true);
@@ -613,7 +616,9 @@ void gnomonViewFormPrivate::updateKeys(void)
         } else {
             if (key == Qt::Key_Shift) {
                 key_char = QChar(0x21E7);
-            } else if (key == Qt::Key_Control) {
+            } else if (key == Qt::Key_Alt) {
+                key_char = QChar(0x2325);
+            }  else if (key == Qt::Key_Control) {
                 key_char = QChar(0x2318);
             } else if (key == -Qt::LeftButton) { //Mouse click
                 key_char = QChar(0x2196);
@@ -693,6 +698,11 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     for (const auto& style : d->available_styles) {
         d->style_menus[style] = d->style_menubar->addMenu(style->icon(), style->description());
     }
+    connect(d->style_menubar, &dtkWidgetsMenuBar::clicked, [=] (int i_style)
+    {
+        gnomonInteractorStyle* style = d->available_styles[i_style];
+        this->setInteractorStyle(style);
+    });
     d->style_menubar->touch();
 
     QGridLayout *layout  = new QGridLayout(this);
@@ -1321,6 +1331,16 @@ void gnomonViewForm::setBounds(double xMin, double xMax, double yMin, double yMa
     this->setBounds(bounds);
 }
 
+void gnomonViewForm::getBounds(double bounds[6])
+{
+    bounds[0] = d->xBounds[0];
+    bounds[1] = d->xBounds[1];
+    bounds[2] = d->yBounds[0];
+    bounds[3] = d->yBounds[1];
+    bounds[4] = d->zBounds[0];
+    bounds[5] = d->zBounds[1];
+}
+
 void gnomonViewForm::setAcceptCellComplex(bool accept)
 {
     d->acceptCellComplex = accept;
@@ -1378,11 +1398,11 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
     d->style = style;
     d->style->setView(this);
     if (d->renderer3D_button->isToggled()) {
-        d->style->SetDefaultRenderer(this->renderer3D());
         d->style->setMode("3D");
+        d->style->SetDefaultRenderer(this->renderer3D());
     } else {
-        d->style->SetDefaultRenderer(this->renderer2D());
         d->style->setMode("2D");
+        d->style->SetDefaultRenderer(this->renderer2D());
     }
     this->interactor()->SetInteractorStyle(d->style);
     this->interactor()->Enable();

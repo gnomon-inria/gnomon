@@ -45,6 +45,10 @@ public slots:
     void setActor(vtkProp *actor);
     void setVisualization(gnomonAbstractVisualizationCellImage *visu);
 
+public:
+    virtual QString description(void) const override;
+    virtual fa::icon icon(void) const override;
+
 private:
     class gnomonInteractorStyleCellImageMarchingCubesPrivate *dd;
 };
