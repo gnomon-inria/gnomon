@@ -93,8 +93,6 @@ public:
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
 
-public:
-    gnomonInteractorStyle *style = nullptr;
 
 public:
     gnomonViewForm *q = nullptr;
@@ -118,6 +116,13 @@ public:
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
     gnomonOverlayButton *help_button = nullptr;
+
+public:
+    gnomonInteractorStyle *style = nullptr;
+    QList<gnomonInteractorStyle *> available_styles;
+
+    dtkWidgetsMenuBar *style_menubar = nullptr;
+    QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
 
     QList<gnomonOverlayButton *> shortcut_keys;
 
@@ -200,6 +205,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->window->AddRenderer(this->renderer3D);
 
     this->style = new gnomonInteractorStyle();
+    this->available_styles.push_back(this->style);
 
     this->SetRenderWindow(this->window);
     this->setEnableHiDPI(true);
@@ -275,6 +281,9 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - 240, 50 + 40*i_key);
     }
+
+    if (this->style_menubar)
+        this->style_menubar->setFixedHeight(event->size().height());
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -679,12 +688,20 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
+    d->style_menubar = new dtkWidgetsMenuBar(this);
+
+    for (const auto& style : d->available_styles) {
+        d->style_menus[style] = d->style_menubar->addMenu(style->icon(), style->description());
+    }
+    d->style_menubar->touch();
+
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
     layout->addWidget(d, 0, 2, 1, 1);
     layout->addWidget(d->time_slider, 1, 0, 1, 3);
+    layout->addWidget(d->style_menubar, 0, 3, 2, 1);
 
     static int count = 0;
 

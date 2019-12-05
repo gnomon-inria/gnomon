@@ -17,6 +17,8 @@
 #include <QtCore>
 #include <QtWidgets>
 
+#include <dtkFonts/dtkFontAwesome>
+
 #include <gnomonVisualizationExport>
 
 #include <vtkInteractorStyleTrackballCamera.h>
@@ -47,6 +49,10 @@ public:
 public slots:
     void setView(gnomonViewForm *);
     void setMode(QString);
+
+public:
+    virtual QString description(void) const;
+    virtual fa::icon icon(void) const;
 
 protected:
 	class gnomonInteractorStylePrivate *d;

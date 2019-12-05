@@ -178,5 +178,15 @@ void gnomonInteractorStyle::setMode(QString mode)
     }
 }
 
+QString gnomonInteractorStyle::description(void) const
+{
+    return "Default interactor";
+}
+
+fa::icon gnomonInteractorStyle::icon(void) const
+{
+    return fa::mousepointer;
+}
+
 //
 // gnomonInteractorStyle.cpp ends here
