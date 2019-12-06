@@ -35,7 +35,10 @@ public:
 
 public:
 	void setCellImage(gnomonCellImageSeries *cellImage) override;
-    
+
+public:
+    QList<gnomonInteractorStyle *> interactorStyles(void) override;
+
 public:
     QImage imageRendering(void) override;
 

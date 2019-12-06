@@ -119,8 +119,11 @@ public:
     gnomonOverlayButton *help_button = nullptr;
 
 public:
-    gnomonInteractorStyle *style = nullptr;
+    gnomonInteractorStyle *default_style = nullptr;
+    gnomonInteractorStyle *xyz_style = nullptr;
     QList<gnomonInteractorStyle *> available_styles;
+
+    gnomonInteractorStyle *style = nullptr;
 
     dtkWidgetsMenuBar *style_menubar = nullptr;
     QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
@@ -165,6 +168,7 @@ public slots:
 
 public:
     void updateKeys(void);
+    void updateInteractorStyleMenu(void);
 
 // /////////////////////////////////////////////////////////////////////////////
 // Menu stuff
@@ -205,11 +209,6 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->window->AddRenderer(this->renderer2D);
     this->window->AddRenderer(this->renderer3D);
 
-    this->style = new gnomonInteractorStyle();
-    this->available_styles.push_back(this->style);
-    this->available_styles.push_back(new gnomonInteractorStyleXYZ());
-
-
     this->SetRenderWindow(this->window);
     this->setEnableHiDPI(true);
 
@@ -232,6 +231,12 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->help_button->toggle(false);
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    this->default_style = new gnomonInteractorStyle();
+    this->xyz_style = new gnomonInteractorStyleXYZ();
+
+    this->available_styles.push_back(this->default_style);
+    this->available_styles.push_back(this->xyz_style);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -378,6 +383,8 @@ void gnomonViewFormPrivate::clear(void)
     this->parameterLayouts.clear();
     this->formVisualizationMenus.clear();
     this->formVisualizationPaneItems.clear();
+
+    this->updateInteractorStyleMenu();
 
     this->empty = true;
 
@@ -547,6 +554,7 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
             }
 
             this->configure(formVisualizationPaneItems[key], key);
+            this->updateInteractorStyleMenu();
         });
 
         this->formVisualizationPaneItems[key]->addWidget(combo_box);
@@ -638,6 +646,31 @@ void gnomonViewFormPrivate::updateKeys(void)
     this->resizeEvent(new QResizeEvent(this->size(), QSize()));
 }
 
+
+void gnomonViewFormPrivate::updateInteractorStyleMenu(void)
+{
+    this->available_styles.clear();
+    this->available_styles.push_back(this->default_style);
+    this->available_styles.push_back(this->xyz_style);
+    for(const auto& visu : this->formVisualization.values()) {
+        this->available_styles.append(visu->interactorStyles());
+    }
+
+    for (const auto& menu : this->style_menus.values()) {
+        this->style_menubar->removeMenu(menu);
+    }
+    this->style_menus.clear();
+    for (const auto& style : this->available_styles) {
+        this->style_menus[style] = this->style_menubar->addMenu(style->icon(), style->description());
+    }
+    connect(this->style_menubar, &dtkWidgetsMenuBar::clicked, [=] (int i_style)
+    {
+        gnomonInteractorStyle* style = this->available_styles[i_style];
+        this->q->setInteractorStyle(style);
+    });
+    this->style_menubar->touch();
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
@@ -646,8 +679,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonViewFormPrivate;
     d->q = this;
-
-    d->style->setView(this);
 
     loadPluginGroup("visualizationCellComplex");
     loadPluginGroup("visualizationImage");
@@ -694,16 +725,8 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
     d->style_menubar = new dtkWidgetsMenuBar(this);
-
-    for (const auto& style : d->available_styles) {
-        d->style_menus[style] = d->style_menubar->addMenu(style->icon(), style->description());
-    }
-    connect(d->style_menubar, &dtkWidgetsMenuBar::clicked, [=] (int i_style)
-    {
-        gnomonInteractorStyle* style = d->available_styles[i_style];
-        this->setInteractorStyle(style);
-    });
-    d->style_menubar->touch();
+    d->updateInteractorStyleMenu();
+    this->setInteractorStyle(d->default_style);
 
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -751,6 +774,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->addFormMenu(key);
         d->configure(d->formVisualizationPaneItems[key], key);
+        d->updateInteractorStyleMenu();
         d->updateTimeSlider();
         if (d->empty) {
             d->renderer3D->ResetCamera();
@@ -1395,7 +1419,11 @@ void gnomonViewForm::onTimeChanged(double time)
 
 void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
 {
-    d->style = style;
+    if (style) {
+        d->style = style;
+    } else {
+        d->style = d->default_style;
+    }
     d->style->setView(this);
     if (d->renderer3D_button->isToggled()) {
         d->style->setMode("3D");

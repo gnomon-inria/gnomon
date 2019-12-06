@@ -216,6 +216,6 @@ QString gnomonInteractorStyleCellImageMarchingCubes::description(void) const
 
 fa::icon gnomonInteractorStyleCellImageMarchingCubes::icon(void) const
 {
-    return fa::pluscircle;
+    return fa::crosshairs;
 }
 

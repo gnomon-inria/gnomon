@@ -160,7 +160,7 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
         dd->actor2D = nullptr;
     }
 
-    d->view->setInteractorStyle(new gnomonInteractorStyle());
+    d->view->setInteractorStyle(nullptr);
 //    dd->interactor_style->Delete();
 }
 
@@ -216,6 +216,13 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
     zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
     zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
 
+}
+
+QList<gnomonInteractorStyle *> gnomonVisualizationCellImageMarchingCubes::interactorStyles(void)
+{
+    QList<gnomonInteractorStyle *> styles;
+    styles.append(dd->interactor_style);
+    return styles;
 }
 
 QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
@@ -296,7 +303,7 @@ void gnomonVisualizationCellImageMarchingCubes::render(void)
 //        d->view->interactor()->SetInteractorStyle(dd->interactor_style);
 //        d->view->interactor()->Enable();
 //    }
-    d->view->setInteractorStyle(dd->interactor_style);
+//    d->view->setInteractorStyle(dd->interactor_style);
 
     dd->updateOpacity();
     d->view->render();
