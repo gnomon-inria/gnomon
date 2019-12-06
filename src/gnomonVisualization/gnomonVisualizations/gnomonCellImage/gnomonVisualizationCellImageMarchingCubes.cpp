@@ -218,11 +218,9 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
 }
 
-QList<gnomonInteractorStyle *> gnomonVisualizationCellImageMarchingCubes::interactorStyles(void)
+gnomonInteractorStyle *gnomonVisualizationCellImageMarchingCubes::interactorStyle(void)
 {
-    QList<gnomonInteractorStyle *> styles;
-    styles.append(dd->interactor_style);
-    return styles;
+    return dd->interactor_style;
 }
 
 QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)

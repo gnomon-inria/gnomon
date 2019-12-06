@@ -40,7 +40,7 @@ public:
 
 public:
     gnomonViewForm* view(void);
-    virtual QList<gnomonInteractorStyle *> interactorStyles(void);
+    virtual gnomonInteractorStyle * interactorStyle(void);
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 
 public:

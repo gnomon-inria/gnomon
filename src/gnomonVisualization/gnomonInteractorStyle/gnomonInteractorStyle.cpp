@@ -72,6 +72,16 @@ void gnomonInteractorStyle::OnMouseMove(void)
     }
 }
 
+void gnomonInteractorStyle::OnLeftButtonDown(void)
+{
+    vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
+}
+
+void gnomonInteractorStyle::OnLeftButtonUp(void)
+{
+    vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+}
+
 void gnomonInteractorStyle::OnKeyDown(void)
 {
     vtkInteractorStyleTrackballCamera::OnKeyDown();
@@ -103,6 +113,16 @@ void gnomonInteractorStyle::OnChar(void)
         vtkInteractorStyleTrackballCamera::OnChar();
     }
 }
+
+vtkRenderer *gnomonInteractorStyle::GetDefaultRenderer(void)
+{
+    return vtkInteractorStyle::GetDefaultRenderer();
+}
+
+//void gnomonInteractorStyle::SetDefaultRenderer(vtkRenderer * renderer)
+//{
+//    vtkInteractorStyle::SetDefaultRenderer(renderer);
+//}
 
 void gnomonInteractorStyle::setView(gnomonViewForm *view)
 {
@@ -149,7 +169,7 @@ QString gnomonInteractorStyle::description(void) const
     return "Default interactor";
 }
 
-fa::icon gnomonInteractorStyle::icon(void) const
+int gnomonInteractorStyle::icon(void) const
 {
     return fa::mousepointer;
 }

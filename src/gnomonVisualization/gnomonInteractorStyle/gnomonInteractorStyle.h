@@ -36,6 +36,8 @@ public:
 
 public:
     virtual void OnMouseMove(void) override;
+    virtual void OnLeftButtonDown(void) override;
+    virtual void OnLeftButtonUp(void) override;
 
 public:
     virtual void OnKeyDown(void) override;
@@ -46,13 +48,18 @@ public:
 public:
     virtual void OnChar(void) override;
 
+public:
+    virtual vtkRenderer *GetDefaultRenderer(void) override;
+//    virtual void SetDefaultRenderer(vtkRenderer *) override;
+
+
 public slots:
     virtual void setView(gnomonViewForm *);
-    void setMode(QString);
+    virtual void setMode(QString);
 
 public:
     virtual QString description(void) const;
-    virtual fa::icon icon(void) const;
+    virtual int icon(void) const;
 
 protected:
 	class gnomonInteractorStylePrivate *d;

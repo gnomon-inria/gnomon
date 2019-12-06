@@ -94,10 +94,9 @@ gnomonViewForm* gnomonAbstractVisualization::view(void)
     return d->view;
 }
 
-QList<gnomonInteractorStyle *> gnomonAbstractVisualization::interactorStyles(void)
+gnomonInteractorStyle * gnomonAbstractVisualization::interactorStyle(void)
 {
-    QList<gnomonInteractorStyle *> styles;
-    return styles;
+    return nullptr;
 }
 
 void gnomonAbstractVisualization::clearConnections(void)

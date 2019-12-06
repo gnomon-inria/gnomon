@@ -653,7 +653,9 @@ void gnomonViewFormPrivate::updateInteractorStyleMenu(void)
     this->available_styles.push_back(this->default_style);
     this->available_styles.push_back(this->xyz_style);
     for(const auto& visu : this->formVisualization.values()) {
-        this->available_styles.append(visu->interactorStyles());
+        if(gnomonInteractorStyle *style = visu->interactorStyle()) {
+            this->available_styles.append(style);
+        }
     }
 
     for (const auto& menu : this->style_menus.values()) {
