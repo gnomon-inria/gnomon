@@ -1,4 +1,4 @@
-image: registry.gitlab.inria.fr/dtk/dtk/conda
+image: conda/miniconda3
 
 pages:
   script:
@@ -12,3 +12,4 @@ pages:
     - public
   only:
   - master
+  - develop
