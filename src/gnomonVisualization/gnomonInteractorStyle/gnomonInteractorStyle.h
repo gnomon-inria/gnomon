@@ -52,10 +52,12 @@ public:
     virtual vtkRenderer *GetDefaultRenderer(void) override;
 //    virtual void SetDefaultRenderer(vtkRenderer *) override;
 
-
 public slots:
     virtual void setView(gnomonViewForm *);
     virtual void setMode(QString);
+
+public slots:
+    virtual void disable(void);
 
 public:
     virtual QString description(void) const;

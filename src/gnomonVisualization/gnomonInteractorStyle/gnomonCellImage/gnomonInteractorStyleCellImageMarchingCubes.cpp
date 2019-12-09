@@ -209,6 +209,14 @@ void gnomonInteractorStyleCellImageMarchingCubes::setVisualization(gnomonAbstrac
     dd->visu = visu;
 }
 
+void gnomonInteractorStyleCellImageMarchingCubes::disable(void)
+{
+    if (dd->textActor) {
+        this->GetDefaultRenderer()->RemoveActor2D(dd->textActor);
+    }
+    gnomonInteractorStyle::disable();
+}
+
 QString gnomonInteractorStyleCellImageMarchingCubes::description(void) const
 {
     return "Cell picker";

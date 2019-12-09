@@ -128,7 +128,7 @@ void gnomonInteractorStyle::setView(gnomonViewForm *view)
 {
     d->view = view;
 
-    view->interactor()->SetInteractorStyle(this);
+//    view->interactor()->SetInteractorStyle(this);
 
     connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
         this->setMode("3D");
@@ -162,6 +162,11 @@ void gnomonInteractorStyle::setMode(QString mode)
         d->keymap[Qt::Key_W] = "Switch to wireframe rendering";
         d->keymap[-3*Qt::LeftButton] = "Zoom in and out";
     }
+}
+
+void gnomonInteractorStyle::disable(void)
+{
+    return;
 }
 
 QString gnomonInteractorStyle::description(void) const

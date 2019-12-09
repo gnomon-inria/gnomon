@@ -45,6 +45,9 @@ public slots:
     void setActor(vtkProp *actor);
     void setVisualization(gnomonAbstractVisualizationCellImage *visu);
 
+public slots:
+    virtual void disable(void) override;
+
 public:
     virtual QString description(void) const override;
     virtual int icon(void) const override;

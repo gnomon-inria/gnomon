@@ -661,6 +661,7 @@ void gnomonViewFormPrivate::updateInteractorStyleMenu(void)
     for (const auto& menu : this->style_menus.values()) {
         this->style_menubar->removeMenu(menu);
     }
+    this->style_menubar->disconnect();
     this->style_menus.clear();
     for (const auto& style : this->available_styles) {
         this->style_menus[style] = this->style_menubar->addMenu(style->icon(), style->description());
@@ -1421,11 +1422,17 @@ void gnomonViewForm::onTimeChanged(double time)
 
 void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
 {
+    gnomonInteractorStyle *new_style;
     if (style) {
-        d->style = style;
+        new_style = style;
     } else {
-        d->style = d->default_style;
+        new_style = d->default_style;
     }
+    if(d->style) {
+        d->style->disable();
+    }
+    d->style = new_style;
+    this->interactor()->SetInteractorStyle(d->style);
     d->style->setView(this);
     if (d->renderer3D_button->isToggled()) {
         d->style->setMode("3D");
@@ -1434,7 +1441,6 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
         d->style->setMode("2D");
         d->style->SetDefaultRenderer(this->renderer2D());
     }
-    this->interactor()->SetInteractorStyle(d->style);
     this->interactor()->Enable();
     d->updateKeys();
 }
