@@ -5,7 +5,7 @@ pages:
   script:
   - cd doc
   - conda update -n base -c defaults conda
-  - conda install sphinx make
+  - conda install sphinx make matplotlib
   - make html
   - mv build/html ../public
   artifacts:
