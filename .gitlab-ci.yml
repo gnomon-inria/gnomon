@@ -4,9 +4,7 @@ pages:
   stage: deploy
   script:
   - cd doc
-  - conda update --all
-  - conda create -n gnomon
-  - conda activate gnomon
+  - conda update -n base -c defaults conda
   - conda install sphinx make
   - make html
   - mv build/html ../public
