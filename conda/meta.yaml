@@ -8,13 +8,12 @@ source:
 
 build:
   number: {{ GIT_DESCRIBE_NUMBER }}
-  preserve_egg_dir: True
 
 requirements:
   build:
     - cmake >=3.2.0
     - binutils_impl_linux-64<2.31.0      # [linux]
-    - {{ compiler('cxx') }}
+    - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
     - {{ cdt('mesa-libegl-devel') }}     # [linux]
@@ -90,6 +89,6 @@ app:
   type: desk
 
 about:
-  home: https://team.inria.fr/morphogenetics/software/
-  license: TODO
+  home: https://gnomon.gitlabpages.inria.fr/gnomon
+  license: CECILL-C
   summary:  Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
