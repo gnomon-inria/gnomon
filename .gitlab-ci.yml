@@ -1,10 +1,13 @@
 image: conda/miniconda3
 
 pages:
+  stage: deploy
   script:
   - cd doc
   - conda update --all
-  - conda install -c sphinx make
+  - conda create -n gnomon
+  - conda activate gnomon
+  - conda install sphinx make
   - make html
   - mv build/html ../public
   artifacts:
