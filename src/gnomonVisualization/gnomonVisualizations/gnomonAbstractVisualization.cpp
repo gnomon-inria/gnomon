@@ -22,6 +22,7 @@
 //#include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonView/gnomonViewForm.h"
+#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 #include <vtkCamera.h>
 #include <vtkImageData.h>
@@ -91,6 +92,11 @@ void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 gnomonViewForm* gnomonAbstractVisualization::view(void)
 {
     return d->view;
+}
+
+gnomonInteractorStyle * gnomonAbstractVisualization::interactorStyle(void)
+{
+    return nullptr;
 }
 
 void gnomonAbstractVisualization::clearConnections(void)

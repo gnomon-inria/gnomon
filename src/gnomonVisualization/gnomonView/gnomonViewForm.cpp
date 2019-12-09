@@ -37,9 +37,11 @@
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
+#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
+#include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
+
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
@@ -92,6 +94,7 @@ public:
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
 
+
 public:
     gnomonViewForm *q = nullptr;
 
@@ -113,6 +116,19 @@ public:
 
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
+    gnomonOverlayButton *help_button = nullptr;
+
+public:
+    gnomonInteractorStyle *default_style = nullptr;
+    gnomonInteractorStyle *xyz_style = nullptr;
+    QList<gnomonInteractorStyle *> available_styles;
+
+    gnomonInteractorStyle *style = nullptr;
+
+    dtkWidgetsMenuBar *style_menubar = nullptr;
+    QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
+
+    QList<gnomonOverlayButton *> shortcut_keys;
 
 public:
     int syncing_count = 0;
@@ -149,6 +165,10 @@ public slots:
     void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
     void addFormMenu(const QString& key);
     void refresh(void);
+
+public:
+    void updateKeys(void);
+    void updateInteractorStyleMenu(void);
 
 // /////////////////////////////////////////////////////////////////////////////
 // Menu stuff
@@ -207,7 +227,16 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
 
+    this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
+    this->help_button->toggle(false);
+
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    this->default_style = new gnomonInteractorStyle();
+    this->xyz_style = new gnomonInteractorStyleXYZ();
+
+    this->available_styles.push_back(this->default_style);
+    this->available_styles.push_back(this->xyz_style);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -255,6 +284,14 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 
     this->sync->move(event->size().width() - 80, 10);
     this->export_button->move(event->size().width() - 40, 10);
+    this->help_button->move(event->size().width() - 120, 10);
+
+    for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
+        this->shortcut_keys[i_key]->move(event->size().width() - 240, 50 + 40*i_key);
+    }
+
+    if (this->style_menubar)
+        this->style_menubar->setFixedHeight(event->size().height());
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -346,6 +383,8 @@ void gnomonViewFormPrivate::clear(void)
     this->parameterLayouts.clear();
     this->formVisualizationMenus.clear();
     this->formVisualizationPaneItems.clear();
+
+    this->updateInteractorStyleMenu();
 
     this->empty = true;
 
@@ -515,6 +554,7 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
             }
 
             this->configure(formVisualizationPaneItems[key], key);
+            this->updateInteractorStyleMenu();
         });
 
         this->formVisualizationPaneItems[key]->addWidget(combo_box);
@@ -569,6 +609,71 @@ void gnomonViewFormPrivate::updateTimeSlider(void)
     this->time_slider->setMaximum(this->forms_times.size()-1);
 }
 
+void gnomonViewFormPrivate::updateKeys(void)
+{
+    for (int i_key=0;i_key<this->shortcut_keys.size();i_key++) {
+        delete this->shortcut_keys[i_key];
+    }
+    this->shortcut_keys.clear();
+
+    QMap<int, QString> keymap = this->style->keyMap();
+    for(const auto& key : keymap.keys()) {
+        QChar key_char;
+        if (QKeySequence(key).toString().size()==1) {
+            key_char = QKeySequence(key).toString().at(0);
+        } else {
+            if (key == Qt::Key_Shift) {
+                key_char = QChar(0x21E7);
+            } else if (key == Qt::Key_Alt) {
+                key_char = QChar(0x2325);
+            }  else if (key == Qt::Key_Control) {
+                key_char = QChar(0x2318);
+            } else if (key == -Qt::LeftButton) { //Mouse click
+                key_char = QChar(0x2196);
+            } else if (key == -2*Qt::LeftButton) { //Mouse double click
+                key_char = QChar(0x21b8);
+            } else if (key == -3*Qt::LeftButton) { //Mouse scroll
+                key_char = QChar(0x2195);
+            } else {
+                key_char = ' ';
+            }
+        }
+        gnomonOverlayButton *shortcut_key = new gnomonOverlayButton(key_char, keymap[key], this);
+        shortcut_key->setFixedWidth(240);
+        shortcut_key->setVisible(this->help_button->isToggled());
+        this->shortcut_keys.push_back(shortcut_key);
+    }
+    this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+}
+
+
+void gnomonViewFormPrivate::updateInteractorStyleMenu(void)
+{
+    this->available_styles.clear();
+    this->available_styles.push_back(this->default_style);
+    this->available_styles.push_back(this->xyz_style);
+    for(const auto& visu : this->formVisualization.values()) {
+        if(gnomonInteractorStyle *style = visu->interactorStyle()) {
+            this->available_styles.append(style);
+        }
+    }
+
+    for (const auto& menu : this->style_menus.values()) {
+        this->style_menubar->removeMenu(menu);
+    }
+    this->style_menubar->disconnect();
+    this->style_menus.clear();
+    for (const auto& style : this->available_styles) {
+        this->style_menus[style] = this->style_menubar->addMenu(style->icon(), style->description());
+    }
+    connect(this->style_menubar, &dtkWidgetsMenuBar::clicked, [=] (int i_style)
+    {
+        gnomonInteractorStyle* style = this->available_styles[i_style];
+        this->q->setInteractorStyle(style);
+    });
+    this->style_menubar->touch();
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
@@ -589,6 +694,14 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->renderer2D_YZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DYZ()));
 
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
+
+    connect(d->help_button, & gnomonOverlayButton::iconClicked, [=] ()
+    {
+        d->help_button->toggle(!d->help_button->isToggled());
+        for(int i_key=0; i_key<d->shortcut_keys.size(); i_key++) {
+            d->shortcut_keys[i_key]->setVisible(d->help_button->isToggled());
+        }
+    });
 
     d->slice_slider = new QSlider(this);
     d->slice_slider->setObjectName("Slice Position");
@@ -614,14 +727,20 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
+    d->style_menubar = new dtkWidgetsMenuBar(this);
+    d->updateInteractorStyleMenu();
+    this->setInteractorStyle(d->default_style);
+
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->slice_slider, 0, 0, 1, 1);
     layout->addWidget(d, 0, 2, 1, 1);
     layout->addWidget(d->time_slider, 1, 0, 1, 3);
+    layout->addWidget(d->style_menubar, 0, 3, 2, 1);
 
     static int count = 0;
+
 
 //    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
 //    d->view_item->setShowTitle(false);
@@ -658,6 +777,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
         d->addFormMenu(key);
         d->configure(d->formVisualizationPaneItems[key], key);
+        d->updateInteractorStyleMenu();
         d->updateTimeSlider();
         if (d->empty) {
             d->renderer3D->ResetCamera();
@@ -697,15 +817,13 @@ void gnomonViewForm::switchTo3D(void)
     d->renderer2D->DrawOff();
     d->renderer2D->InteractiveOff();
 
-    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-    d->GetInteractor()->SetInteractorStyle(style);
-
     d->renderer3D->InteractiveOn();
     d->renderer3D->DrawOn();
 
-    d->slice_slider->setEnabled(false);
-
     emit switchedTo3D();
+
+    d->slice_slider->setEnabled(false);
+    d->slice_slider->setVisible(false);
 }
 
 void gnomonViewForm::switchTo2D(void)
@@ -728,12 +846,8 @@ void gnomonViewForm::switchTo2D(void)
     d->renderer3D->DrawOff();
     d->renderer3D->InteractiveOff();
 
-    vtkSmartPointer<vtkInteractorStyleImage> style = vtkSmartPointer<vtkInteractorStyleImage>::New();
-    d->GetInteractor()->SetInteractorStyle(style);
-
     d->renderer2D->InteractiveOn();
     d->renderer2D->DrawOn();
-    d->slice_slider->setEnabled(true);
 
     emit switchedTo2D();
 
@@ -753,6 +867,9 @@ void gnomonViewForm::switchTo2D(void)
         default:
             break;
     }
+
+    d->slice_slider->setVisible(true);
+    d->slice_slider->setEnabled(true);
 }
 
 void gnomonViewForm::switchTo2DXY(void)
@@ -1241,6 +1358,16 @@ void gnomonViewForm::setBounds(double xMin, double xMax, double yMin, double yMa
     this->setBounds(bounds);
 }
 
+void gnomonViewForm::getBounds(double bounds[6])
+{
+    bounds[0] = d->xBounds[0];
+    bounds[1] = d->xBounds[1];
+    bounds[2] = d->yBounds[0];
+    bounds[3] = d->yBounds[1];
+    bounds[4] = d->zBounds[0];
+    bounds[5] = d->zBounds[1];
+}
+
 void gnomonViewForm::setAcceptCellComplex(bool accept)
 {
     d->acceptCellComplex = accept;
@@ -1291,6 +1418,36 @@ void gnomonViewForm::onTimeChanged(double time)
         int value = sorted_times.indexOf(time);
         d->time_slider->setValue(value);
     }
+}
+
+void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
+{
+    gnomonInteractorStyle *new_style;
+    if (style) {
+        new_style = style;
+    } else {
+        new_style = d->default_style;
+    }
+    if(d->style) {
+        d->style->disable();
+    }
+    d->style = new_style;
+    this->interactor()->SetInteractorStyle(d->style);
+    d->style->setView(this);
+    if (d->renderer3D_button->isToggled()) {
+        d->style->setMode("3D");
+        d->style->SetDefaultRenderer(this->renderer3D());
+    } else {
+        d->style->setMode("2D");
+        d->style->SetDefaultRenderer(this->renderer2D());
+    }
+    this->interactor()->Enable();
+    d->updateKeys();
+}
+
+void gnomonViewForm::updateShortcutKeys(void)
+{
+    d->updateKeys();
 }
 
 void gnomonViewForm::dragEnterEvent(QDragEnterEvent *event)

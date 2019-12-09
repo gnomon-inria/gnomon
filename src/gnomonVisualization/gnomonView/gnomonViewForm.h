@@ -26,6 +26,8 @@ class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
 
+class gnomonInteractorStyle;
+
 struct gnomonLandmark;
 
 template <typename T> class gnomonTimeSeries;
@@ -105,6 +107,8 @@ public slots:
     void setBounds(double bounds[6]);
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
+    void getBounds(double bounds[6]);
+
 public slots:
     void render(void);
 
@@ -132,6 +136,10 @@ public slots:
 
 public slots:
     void onTimeChanged(double);
+
+public slots:
+    void setInteractorStyle(gnomonInteractorStyle *);
+    void updateShortcutKeys(void);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
