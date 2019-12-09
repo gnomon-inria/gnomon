@@ -1,5 +1,10 @@
 image: conda/miniconda3
 
+.template_retry:
+  retry:
+    max: 2
+    when: runner_system_failure
+
 pages:
   stage: deploy
   script:
@@ -8,6 +13,7 @@ pages:
   - conda install sphinx make matplotlib
   - make html
   - mv build/html ../public
+  extends: .template_retry
   artifacts:
     paths:
     - public
