@@ -126,16 +126,14 @@ public:
     gnomonInteractorStyle *style = nullptr;
 
     dtkWidgetsMenuBar *view_menubar = nullptr;
-
     dtkWidgetsMenuBar *style_menubar = nullptr;
+
     QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
 
     QList<gnomonOverlayButton *> shortcut_keys;
 
 public:
-    int syncing_count = 0;
-    QTimer *syncing_timer = nullptr;
-    bool synced = false;
+    int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false;
 
 public:
     bool acceptCellComplex = true;
@@ -732,10 +730,10 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
-    d->view_menubar = new dtkWidgetsMenuBar(this);
+    d->view_menubar = new dtkWidgetsMenuBar(d);
     d->view_menubar->touch();
 
-    d->style_menubar = new dtkWidgetsMenuBar(this);
+    d->style_menubar = new dtkWidgetsMenuBar(d);
     d->updateInteractorStyleMenu();
     this->setInteractorStyle(d->default_style);
 
