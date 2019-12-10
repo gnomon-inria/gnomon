@@ -29,3 +29,24 @@ About Conda
 From sources
 =============
 
+=================
+Launching Gnomon
+=================
+
+
+.. code-block::
+
+    conda activate gnomon
+    gnomon
+
+=================
+Updating Gnomon
+=================
+
+
+
+.. code-block::
+
+    conda activate gnomon
+    conda update -c dtk -c mosaic -c gnomon gnomon gnomon-plugins
+
