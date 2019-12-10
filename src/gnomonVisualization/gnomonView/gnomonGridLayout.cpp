@@ -108,6 +108,8 @@ void gnomonGridLayout::addView(void)
     d->views << new_view;
 
     this->update();
+
+    emit viewAdded(new_view);
 }
 
 QList<gnomonViewForm *> gnomonGridLayout::views(void)

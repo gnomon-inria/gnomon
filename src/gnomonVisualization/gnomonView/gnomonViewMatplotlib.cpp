@@ -95,7 +95,7 @@ public:
 public:
     // gnomonOverlayPane *pane(QWidget *parent);
     dtkWidgetsMenu *view_menu;
-
+    dtkWidgetsMenuBar *view_menubar;
 
 public slots:
     void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
@@ -113,7 +113,7 @@ gnomonViewMatplotlibPrivate::gnomonViewMatplotlibPrivate(QWidget *parent) : QWid
 
     static int count = 0;
     this->figureNumber = count++;
-    this->view_menu = new dtkWidgetsMenu(fa::circlethin, "Figure " + QString::number(this->figureNumber));
+    this->view_menu = new dtkWidgetsMenu(fa::square, "Matplotlib Figure " + QString::number(this->figureNumber));
 }
 
 gnomonViewMatplotlibPrivate::~gnomonViewMatplotlibPrivate(void)
@@ -167,7 +167,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
         this->formVisualizationPaneItems[key]->clear();
         delete this->formVisualizationPaneItems[key];
 
-        this->view_menu->removeMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
 
         this->formVisualizationMenus[key]->disconnect();
         this->formVisualizationMenus[key]->clear();
@@ -182,8 +182,6 @@ void gnomonViewMatplotlibPrivate::clear(void)
 
 //    this->empty = true;
 
-    dtkApp->window()->menubar()->touch();
-
 //    q->render();
 }
 
@@ -197,6 +195,9 @@ void gnomonViewMatplotlibPrivate::resizeEvent(QResizeEvent *event)
 {
     this->export_button->move(event->size().width() - 40, 10);
     this->save_button->move(event->size().width() -80, 10);
+
+    if (this->view_menubar)
+        this->view_menubar->setFixedHeight(event->size().height());
 
     QWidget::resizeEvent(event);
 }
@@ -265,7 +266,7 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
 {
     if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key]))
     {
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::circlethin, key);
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::file, key);
         this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
 
         this->formVisualizationPaneItems[key]->setShowTitle(false);
@@ -327,9 +328,8 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
         this->formVisualizationPaneItems[key]->addWidget(contents);
 
 //        this->formVisualizationMenus[key]->addItem(this->view_item);
-        this->view_menu->addMenu(this->formVisualizationMenus[key]);
-
-        dtkApp->window()->menubar()->touch();
+        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->touch();
     }
 
 }
@@ -400,17 +400,18 @@ void gnomonViewMatplotlibPrivate::refresh(void)
 
     this->view_menu->removeItem(this->paneItemButton);
 
-    for (const auto& menu : this->view_menu->menus()) {
-        this->view_menu->removeMenu(menu);
+    for (const auto& menu : this->view_menubar->menus()) {
+        this->view_menubar->removeMenu(menu);
     }
 
     for (const auto& key : this->formVisualizationMenus.keys()) {
-        this->view_menu->addMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
     }
 
+    this->view_menubar->addMenu(this->view_menu);
     this->view_menu->addItem(this->paneItemButton);
 
-    dtkApp->window()->menubar()->touch();
+    this->view_menubar->touch();
 
 }
 
@@ -471,12 +472,6 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 //    static int count = 0;
 //    d->figureNumber = count++;
 
-    QGridLayout *layout  = new QGridLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d, 0, 0, 1, 1);
-    // layout->addWidget(d->pane(parent), 0, 1, 1, 1);
-
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
     connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
 
@@ -509,6 +504,17 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     //         }
     //     }
     // });
+
+    d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->addMenu(d->menu());
+    d->view_menubar->touch();
+
+    QGridLayout *layout  = new QGridLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(d->view_menubar, 0, 0, 1, 1);
+    layout->addWidget(d, 0, 1, 1, 1);
+    // layout->addWidget(d->pane(parent), 0, 1, 1, 1);
 
     this->setAcceptDrops(true);
 }

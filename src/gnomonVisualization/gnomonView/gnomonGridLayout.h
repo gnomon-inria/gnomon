@@ -41,6 +41,7 @@ protected:
 
 signals:
     void formAdded(const QString&);
+    void viewAdded(gnomonViewForm *);
 
 private:
     class gnomonGridLayoutPrivate *d;
