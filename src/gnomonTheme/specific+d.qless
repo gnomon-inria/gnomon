@@ -14,9 +14,13 @@
 /* Code: */
 
 /* // ///////////////////////////////////////////////////////////////////////////// */
-/* //                                                                               */
+/* // dtkWidgetsMenu framework                                                      */
 /* // ///////////////////////////////////////////////////////////////////////////// */
 
-
+dtkWidgetsMenuBar#RHS
+{
+    background: alpha(@base0, dd);
+    border-left: 1px solid @base1;
+}
 
 /* specific+d.qless ends here */

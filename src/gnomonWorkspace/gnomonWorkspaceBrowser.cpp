@@ -63,12 +63,6 @@ gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent),
     this->setGridSize(QSize(64, 64));
     this->setFrameStyle(QFrame::NoFrame);
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
-
-    connect(this, &gnomonFinderListView::changed, [=] (const QString& path) -> void
-    {
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("path", path);
-    });
 }
 
 gnomonFinderListView::~gnomonFinderListView(void)
@@ -180,13 +174,61 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     browser->setFixedWidth(300);
     browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
 
+    QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
+
+    QToolButton *up = new QToolButton(this);
+    up->setIcon(dtkFontAwesome::instance()->icon(fa::arrowup)); // , 16, 16));
+
+    QHBoxLayout *t_layout = new QHBoxLayout;
+    t_layout->addWidget(up);
+    t_layout->addWidget(path);
+
+    QVBoxLayout *r_layout = new QVBoxLayout;
+    r_layout->setContentsMargins(0, 0, 0, 0);
+    r_layout->setSpacing(0);
+    r_layout->addLayout(t_layout);
+    r_layout->addWidget(browser);
+
 // /////////////////////////////////////////////////////////////////////////////
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->browse_view);
-    layout->addWidget(browser);
+    layout->addLayout(r_layout);
+
+// /////////////////////////////////////////////////////////////////////////////
+
+    connect(browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
+    {
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+        settings.setValue("path", value);
+
+        path->setText(value);
+    });
+
+    connect(path, &QLineEdit::editingFinished, [=] (void) -> void
+    {
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+        settings.setValue("path", path->text());
+
+        browser->setRootIndex(model->setRootPath(path->text()));
+    });
+
+    connect(up, &QToolButton::clicked, [=] (void) -> void
+    {
+        QDir dir = QDir(model->filePath(browser->rootIndex()));
+        dir.cdUp();
+
+        qDebug() << Q_FUNC_INFO << dir.absolutePath();
+
+        browser->setRootIndex(model->index(dir.absolutePath()));
+
+        path->setText(dir.absolutePath());
+
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+        settings.setValue("path", dir.absolutePath());
+    });
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)

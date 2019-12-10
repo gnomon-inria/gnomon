@@ -760,6 +760,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->style_menubar->setStandalone(true);
     d->style_menubar->setWidth(16);
     d->style_menubar->setMargins(6);
+    d->style_menubar->setObjectName("RHS");
 
     d->updateInteractorStyleMenu();
 
