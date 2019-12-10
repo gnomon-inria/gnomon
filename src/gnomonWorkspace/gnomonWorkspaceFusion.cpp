@@ -110,8 +110,8 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
             }
         }
         d->configure(d->algorithm);
-        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
-        dtkApp->window()->menubar()->touch();
+//        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
+//        dtkApp->window()->menubar()->touch();
     });
 
     connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
