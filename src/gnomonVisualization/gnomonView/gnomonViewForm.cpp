@@ -276,18 +276,21 @@ QSize gnomonViewFormPrivate::sizeHint(void) const
 
 void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 {
-    this->renderer2D_button->move(10, 10);
-    this->renderer3D_button->move(50, 10);
-    this->renderer2D_XY->move(10,  50);
-    this->renderer2D_XZ->move(10,  90);
-    this->renderer2D_YZ->move(10, 130);
+    static int l_margin = 22;
+    static int r_margin = 22;
 
-    this->sync->move(event->size().width() - 80, 10);
-    this->export_button->move(event->size().width() - 40, 10);
-    this->help_button->move(event->size().width() - 120, 10);
+    this->renderer2D_button->move(l_margin + 10, 10);
+    this->renderer3D_button->move(l_margin + 50, 10);
+    this->renderer2D_XY->move(l_margin + 10,  50);
+    this->renderer2D_XZ->move(l_margin + 10,  90);
+    this->renderer2D_YZ->move(l_margin + 10, 130);
+
+    this->sync->move(event->size().width() - r_margin - 80, 10);
+    this->export_button->move(event->size().width() - r_margin - 40, 10);
+    this->help_button->move(event->size().width() - r_margin - 120, 10);
 
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
-        this->shortcut_keys[i_key]->move(event->size().width() - 240, 50 + 40*i_key);
+        this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
     }
 
     if (this->view_menubar)
@@ -746,16 +749,17 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
     d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->setInteractive(false);
     d->view_menubar->setWidth(16);
     d->view_menubar->setMargins(6);
-    d->view_menubar->setOffset(-16-2*6);
     d->view_menubar->addMenu(d->menu());
     d->view_menubar->touch();
 
     d->style_menubar = new dtkWidgetsMenuBar(d);
+    d->style_menubar->setInteractive(false);
+    d->style_menubar->setStandalone(true);
     d->style_menubar->setWidth(16);
     d->style_menubar->setMargins(6);
-    d->style_menubar->setOffset(-16-2*6);
 
     d->updateInteractorStyleMenu();
 
@@ -764,11 +768,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->view_menubar, 0, 0, 2, 1);
     layout->addWidget(d->slice_slider, 0, 1, 1, 1);
     layout->addWidget(d, 0, 3, 1, 1);
     layout->addWidget(d->time_slider, 1, 1, 1, 3);
-    layout->addWidget(d->style_menubar, 0, 4, 2, 1);
 
     static int count = 0;
 
@@ -1592,6 +1594,11 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
     this->renderer3D()->ResetCamera();
     this->render();
+}
+
+void gnomonViewForm::resizeEvent(QResizeEvent *event)
+{
+    d->style_menubar->move(QPoint(event->size().width() - d->style_menubar->width(), 0));
 }
 
 // ///////////////////////////////////////////////////////////////////

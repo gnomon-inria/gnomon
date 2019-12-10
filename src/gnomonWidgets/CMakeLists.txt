@@ -26,8 +26,6 @@ add_subdirectory(gnomonEditor)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonFinder
-  gnomonFinder.h
   gnomonInterpreterJupyter
   gnomonInterpreterJupyter.h
   gnomonItemButton.h
@@ -44,7 +42,6 @@ set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_EDITOR_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonFinder.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
   gnomonOverlayButton.cpp

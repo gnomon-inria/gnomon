@@ -148,7 +148,8 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *);
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
-
+    void resizeEvent(QResizeEvent *);
+   
 private:
     class gnomonViewFormPrivate *d;
 };
