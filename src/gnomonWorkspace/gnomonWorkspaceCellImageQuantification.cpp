@@ -149,15 +149,15 @@ gnomonWorkspaceCellImageQuantification::~gnomonWorkspaceCellImageQuantification(
 
 void gnomonWorkspaceCellImageQuantification::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->view->menu());
-    dtkApp->window()->menubar()->addMenu(d->mpl_figure->menu());
+//    dtkApp->window()->menubar()->addMenu(d->view->menu());
+//    dtkApp->window()->menubar()->addMenu(d->mpl_figure->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceCellImageQuantification::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->view->menu());
-    dtkApp->window()->menubar()->removeMenu(d->mpl_figure->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->view->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->mpl_figure->menu());
     dtkApp->window()->menubar()->touch();
 }
 
