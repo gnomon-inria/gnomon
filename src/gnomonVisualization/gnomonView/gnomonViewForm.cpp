@@ -125,6 +125,8 @@ public:
 
     gnomonInteractorStyle *style = nullptr;
 
+    dtkWidgetsMenuBar *view_menubar = nullptr;
+
     dtkWidgetsMenuBar *style_menubar = nullptr;
     QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
 
@@ -289,6 +291,9 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - 240, 50 + 40*i_key);
     }
+
+    if (this->view_menubar)
+        this->view_menubar->setFixedHeight(event->size().height());
 
     if (this->style_menubar)
         this->style_menubar->setFixedHeight(event->size().height());
@@ -727,6 +732,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
+    d->view_menubar = new dtkWidgetsMenuBar(this);
+    d->view_menubar->touch();
+
     d->style_menubar = new dtkWidgetsMenuBar(this);
     d->updateInteractorStyleMenu();
     this->setInteractorStyle(d->default_style);
@@ -734,13 +742,13 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->slice_slider, 0, 0, 1, 1);
-    layout->addWidget(d, 0, 2, 1, 1);
-    layout->addWidget(d->time_slider, 1, 0, 1, 3);
-    layout->addWidget(d->style_menubar, 0, 3, 2, 1);
+    layout->addWidget(d->view_menubar, 0, 0, 2, 1);
+    layout->addWidget(d->slice_slider, 0, 1, 1, 1);
+    layout->addWidget(d, 0, 3, 1, 1);
+    layout->addWidget(d->time_slider, 1, 1, 1, 3);
+    layout->addWidget(d->style_menubar, 0, 4, 2, 1);
 
     static int count = 0;
-
 
 //    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
 //    d->view_item->setShowTitle(false);
@@ -1391,6 +1399,11 @@ vtkRenderer *gnomonViewForm::renderer3D(void)
 dtkWidgetsMenu *gnomonViewForm::menu(void)
 {
     return d->menu();
+}
+
+dtkWidgetsMenuBar *gnomonViewForm::menubar(void)
+{
+    return d->view_menubar;
 }
 
 int gnomonViewForm::orientation(void)

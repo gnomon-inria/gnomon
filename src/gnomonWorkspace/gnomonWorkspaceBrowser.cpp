@@ -112,8 +112,10 @@ gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 
 void gnomonWorkspaceBrowser::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->browse_view->menu());
-    dtkApp->window()->menubar()->touch();
+    d->browse_view->menubar()->addMenu(d->browse_view->menu());
+    d->browse_view->menubar()->touch();
+//    dtkApp->window()->menubar()->addMenu(d->browse_view->menu());
+//    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceBrowser::leave(void)
