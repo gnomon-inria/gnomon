@@ -731,10 +731,18 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
     d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->setWidth(16);
+    d->view_menubar->setMargins(6);
+    d->view_menubar->setOffset(-16-2*6);
     d->view_menubar->touch();
 
     d->style_menubar = new dtkWidgetsMenuBar(d);
+    d->style_menubar->setWidth(16);
+    d->style_menubar->setMargins(6);
+    d->style_menubar->setOffset(-16-2*6);
+
     d->updateInteractorStyleMenu();
+
     this->setInteractorStyle(d->default_style);
 
     QGridLayout *layout  = new QGridLayout(this);
