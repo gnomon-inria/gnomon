@@ -114,17 +114,22 @@ gnomonWorkspaceLStringFromTree::gnomonWorkspaceLStringFromTree(QWidget *parent) 
 
     connect(d->source, &gnomonViewMatplotlib::formAdded, [=] ()
     {
-        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
-            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-        else
+        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+                d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+            }
+        } else {
             qDebug() << "Not changed";
+        }
 
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceLStringFromTreePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        }
         d->configure(algorithm);
     });
 
@@ -158,14 +163,19 @@ void gnomonWorkspaceLStringFromTree::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
-        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-    else
+    if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+        if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setForm("gnomonLString",d->command->output());
+    if (d->command->output()) {
+        d->target->setForm("gnomonLString",d->command->output());
+    }
 }
 
 void gnomonWorkspaceLStringFromTree::configure(const QString& algorithm)

@@ -63,7 +63,12 @@ void gnomonCellImageReaderCommand::setPath(const QString& path)
 
 gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage(void)
 {
-    return ((gnomonAbstractCellImageReader *) this->action)->cellImage();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        return nullptr;
+    } else {
+        return cellImage;
+    }
 }
 
 //

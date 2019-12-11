@@ -115,16 +115,22 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if(d->command->input() != d->source->cellImage())
-            d->command->setInput(d->source->cellImage());
-        else
+        if(d->command->input() != d->source->cellImage()) {
+
+            if (d->source->cellImage()) {
+                d->command->setInput(d->source->cellImage());
+            }
+        } else {
             qDebug() << "Not changed";
+        }
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellImageFilterPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->cellImage());
+        if (d->source->cellImage()) {
+            d->command->setInput(d->source->cellImage());
+        }
         d->configure(algorithm);
     });
 
@@ -158,14 +164,19 @@ void gnomonWorkspaceCellImageFilter::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->cellImage())
-        d->command->setInput(d->source->cellImage());
-    else
+    if(d->command->input() != d->source->cellImage()) {
+        if (d->source->cellImage()) {
+            d->command->setInput(d->source->cellImage());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setCellImage(d->command->output());
+    if (d->command->output()) {
+        d->target->setCellImage(d->command->output());
+    }
 }
 
 void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)

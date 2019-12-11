@@ -122,17 +122,22 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if (d->command->input() != d->source->cellImage())
-            d->command->setInput(d->source->cellImage());
-        else
+        if (d->command->input() != d->source->cellImage()) {
+            if (d->source->cellImage()) {
+                d->command->setInput(d->source->cellImage());
+            }
+        } else {
             qDebug() << "Not changed";
+        }
 
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellComplexFromCellImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->cellImage());
+        if (d->source->cellImage()) {
+            d->command->setInput(d->source->cellImage());
+        }
         d->configure(algorithm);
     });
 
@@ -166,14 +171,19 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->cellImage())
-        d->command->setInput(d->source->cellImage());
-    else
+    if(d->command->input() != d->source->cellImage()) {
+        if (d->source->cellImage()) {
+            d->command->setInput(d->source->cellImage());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setCellComplex(d->command->output());
+    if (d->command->output()) {
+        d->target->setCellComplex(d->command->output());
+    }
 }
 
 void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm)

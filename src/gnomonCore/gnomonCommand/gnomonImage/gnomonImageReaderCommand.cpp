@@ -63,7 +63,12 @@ void gnomonImageReaderCommand::setPath(const QString& path)
 
 gnomonImageSeries *gnomonImageReaderCommand::image(void)
 {
-    return ((gnomonAbstractImageReader *) this->action)->image();
+    gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 //

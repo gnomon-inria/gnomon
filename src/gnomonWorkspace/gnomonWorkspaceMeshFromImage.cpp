@@ -114,16 +114,21 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if(d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
-        else
+        if (d->command->input() != d->source->image()) {
+            if (d->source->image()) {
+                d->command->setInput(d->source->image());
+            }
+        } else {
             qDebug() << "Not changed";
+        }
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceMeshFromImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->image());
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
         d->configure(algorithm);
     });
 
@@ -157,14 +162,19 @@ void gnomonWorkspaceMeshFromImage::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
-    else
+    if (d->command->input() != d->source->image()) {
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setMesh(d->command->output());
+    if (d->command->output()) {
+        d->target->setMesh(d->command->output());
+    }
 }
 
 void gnomonWorkspaceMeshFromImage::configure(const QString& algorithm)

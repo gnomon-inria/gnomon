@@ -162,13 +162,17 @@ void gnomonWorkspaceFusion::apply(void)
     d->command->undo();
 
     for(gnomonViewForm *view : d->sources_layout->views()) {
-        d->command->addImage(view->image());
+        if (view->image()) {
+            d->command->addImage(view->image());
 //        d->command->addLandmarks(view->landmarks());
+        }
     }
 
     d->command->redo();
 
-    d->target->setImage(d->command->output());
+    if (d->command->output()) {
+        d->target->setImage(d->command->output());
+    }
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

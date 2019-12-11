@@ -125,10 +125,14 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
 
     connect(d->source, &gnomonViewMatplotlib::formAdded, [=] ()
     {
-        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
-            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-        else
+
+        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+                d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+            }
+        } else {
             qDebug() << "Not changed";
+        }
         d->configure(d->algorithm);
     });
 
@@ -173,14 +177,20 @@ void gnomonWorkspaceTreeAnalysis::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
-        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-    else
+
+    if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+        if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setForm("gnomonTree",d->command->output());
+    if (d->command->output()) {
+        d->target->setForm("gnomonTree",d->command->output());
+    }
 }
 
 //
