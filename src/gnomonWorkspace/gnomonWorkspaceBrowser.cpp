@@ -313,8 +313,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     t_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
 
     QStackedWidget *browser = new QStackedWidget(this);
-    browser->addWidget(l_browser);
     browser->addWidget(t_browser);
+    browser->addWidget(l_browser);
 
     QVBoxLayout *r_layout = new QVBoxLayout;
     r_layout->setContentsMargins(0, 0, 0, 0);
@@ -404,7 +404,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 // /////////////////////////////////////////////////////////////////////////////
 
     d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
-    t_browser->header()->resizeSection(0,400);
+    t_browser->header()->resizeSection(0,300);
 
 }
 
