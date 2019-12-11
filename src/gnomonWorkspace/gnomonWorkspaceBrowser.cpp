@@ -48,8 +48,6 @@ protected:
 gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
 {
     this->setViewMode(QListView::IconMode);
-    // this->setWordWrap(true);
-    // this->setWrapping(true);
     this->setResizeMode(QListView::Adjust);
     this->setGridSize(QSize(64, 64));
     this->setFrameStyle(QFrame::NoFrame);
@@ -176,7 +174,7 @@ gnomonFinderTreeView::gnomonFinderTreeView(QWidget *parent) : QTreeView(parent)
     this->setSortingEnabled(true);
     this->sortByColumn(0, Qt::AscendingOrder);
 
-    this->header()->setSectionResizeMode(QHeaderView::Stretch);
+    this->header()->setSectionResizeMode(QHeaderView::Interactive);
 }
 
 gnomonFinderTreeView::~gnomonFinderTreeView(void)
@@ -337,14 +335,14 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& value) -> void
+    connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
     {
-        // TODO: Help yourself
+        d->browse_view->addFormFromFile(filename);
     });
 
-    connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& value) -> void
+    connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
     {
-        // TODO: Help yourself
+        d->browse_view->addFormFromFile(filename);
     });
     
     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
@@ -403,6 +401,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 // /////////////////////////////////////////////////////////////////////////////
 
     d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
+
+    t_browser->header()->resizeSection(0,400);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
