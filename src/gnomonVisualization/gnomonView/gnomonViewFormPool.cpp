@@ -79,10 +79,12 @@ gnomonViewFormPool::~gnomonViewFormPool(void)
 
 void gnomonViewFormPool::addView(gnomonViewForm *view)
 {
-    d->views << view;
+    if(!d->views.contains(view)) {
+        d->views << view;
 
-    connect(view, SIGNAL(  linking()), d, SLOT(  linking()));
-    connect(view, SIGNAL(unlinking()), d, SLOT(unlinking()));
+        connect(view, SIGNAL(  linking()), d, SLOT(  linking()));
+        connect(view, SIGNAL(unlinking()), d, SLOT(unlinking()));
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////

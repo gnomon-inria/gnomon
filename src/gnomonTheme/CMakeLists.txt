@@ -12,54 +12,13 @@
 ##
 ### Code:
 
-project(gnomonWidgets)
-
-## #################################################################
-## Inputs
-## #################################################################
-
-add_subdirectory(gnomonColor)
-add_subdirectory(gnomonEditor)
+project(gnomonTheme)
 
 ## #################################################################
 ## Sources
 ## #################################################################
 
-set(${PROJECT_NAME}_HEADERS
-  gnomonInterpreterJupyter
-  gnomonInterpreterJupyter.h
-  gnomonItemButton.h
-  gnomonOverlayButton.h
-  gnomonSpinner
-  gnomonSpinner.h
-  gnomonToolBar
-  gnomonToolBar.h
-  gnomonWidgets
-  gnomonWidgets.h
-  gnomonWidgetsParameter
-  gnomonWidgetsParameter.h
-  ${${PROJECT_NAME}_COLOR_HEADERS}
-  ${${PROJECT_NAME}_EDITOR_HEADERS})
-
-set(${PROJECT_NAME}_SOURCES
-  gnomonInterpreterJupyter.cpp
-  gnomonItemButton.cpp
-  gnomonOverlayButton.cpp
-  gnomonSpinner.cpp
-  gnomonToolBar.cpp
-  gnomonWidgets.cpp
-  gnomonWidgetsParameter.cpp
-  ${${PROJECT_NAME}_COLOR_SOURCES}
-  ${${PROJECT_NAME}_EDITOR_SOURCES})
-
-set(${PROJECT_NAME}_SOURCES_QRC
-  gnomonWidgets.qrc)
-
-## #############################################################################
-##
-## #############################################################################
-
-set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
+set(${PROJECT_NAME}_SOURCES_QRC gnomonTheme.qrc)
 
 ## #################################################################
 ## Build rules
@@ -67,27 +26,15 @@ set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
 
 qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
 
-add_library(${PROJECT_NAME} SHARED
-  ${${PROJECT_NAME}_SOURCES_WRAP}
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES_RCC})
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES_RCC})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Xml)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
+## #############################################################################
+##
+## #############################################################################
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
@@ -125,7 +72,7 @@ set(${PROJECT_NAME}_HEADERS
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
   DESTINATION include/gnomon
-  COMPONENT gnomon-widgets)
+  COMPONENT gnomon-theme)
 
 ## ###################################################################
 ## Install rules - targets
