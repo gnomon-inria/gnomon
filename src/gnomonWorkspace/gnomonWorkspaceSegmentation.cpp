@@ -31,6 +31,7 @@
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
 
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +49,12 @@ public:
 public:
     gnomonViewForm *source = nullptr;
     gnomonViewForm *target = nullptr;
+
+public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
 
 public:
     gnomonViewFormPool *pool = nullptr;
@@ -107,6 +114,16 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
     d->pool->addView(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+// /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -117,11 +134,14 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
 // /////////////////////////////////////////////////////////////////////////////
 
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +151,10 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
         if (d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
+            if(d->source->image()) {
+                d->command->setInput(d->source->image());
+                d->target_message->setMessage("Press Apply to display the result of the algorithm");
+            }
         else
             qDebug() << "Not changed";
         d->configure(d->algorithm);
@@ -139,7 +162,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->image());
+        if(d->source->image())
+            d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
 
@@ -179,14 +203,21 @@ void gnomonWorkspaceSegmentation::apply(void)
     Q_ASSERT(d->command);
 
     if (d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
+        if(d->source->image())
+            d->command->setInput(d->source->image());
     else
         qDebug() << "Not changed";
 
     d->command->redo();
 
-    d->target->setForm("gnomonCellImage",d->command->output());
-    d->target->render();
+    if (d->command->output())
+    {
+        d->target->setForm("gnomonCellImage",d->command->output());
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
 }
 
 //

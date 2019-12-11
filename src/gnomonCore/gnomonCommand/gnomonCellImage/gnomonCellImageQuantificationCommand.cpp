@@ -84,7 +84,7 @@ gnomonCellImageSeries *gnomonCellImageQuantificationCommand::cellImage(void)
     if ((!cellImage)||(cellImage->times().size())==0) {
         return nullptr;
     } else {
-        return ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+        return cellImage;
     }
 }
 
@@ -95,7 +95,7 @@ gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
         return nullptr;
     }
     else {
-        return ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+        return dataFrame;
     }
 }
 

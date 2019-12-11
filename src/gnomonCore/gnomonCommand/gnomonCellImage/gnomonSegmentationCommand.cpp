@@ -59,12 +59,22 @@ void gnomonSegmentationCommand::setInput(gnomonImageSeries* images_serie)
 
 gnomonImageSeries *gnomonSegmentationCommand::input()
 {
-    return ((gnomonAbstractCellImageFromImage *) this->action)->input();
+    gnomonImageSeries *image = ((gnomonAbstractCellImageFromImage *) this->action)->input();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 gnomonCellImageSeries *gnomonSegmentationCommand::output()
 {
-    return ((gnomonAbstractCellImageFromImage *) this->action)->output();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFromImage *) this->action)->output();
+    if ((!cellImage)||(cellImage->times().size())==0) {
+        return nullptr;
+    } else {
+        return cellImage;
+    }
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonSegmentationCommand::parameters(void) const
