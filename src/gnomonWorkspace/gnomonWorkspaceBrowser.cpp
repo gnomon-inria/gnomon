@@ -49,7 +49,7 @@ gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
 {
     this->setViewMode(QListView::IconMode);
     this->setResizeMode(QListView::Adjust);
-    this->setGridSize(QSize(64, 64));
+    this->setGridSize(QSize(96, 96));
     this->setFrameStyle(QFrame::NoFrame);
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
