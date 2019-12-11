@@ -142,16 +142,15 @@ gnomonWorkspaceLStringFromTree::~gnomonWorkspaceLStringFromTree(void)
 
 void gnomonWorkspaceLStringFromTree::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->source->menu());
-    dtkApp->window()->menubar()->addMenu(d->target->menu());
+//    dtkApp->window()->menubar()->addMenu(d->source->menu());
+//    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceLStringFromTree::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-
+//    dtkApp->window()->menubar()->removeMenu(d->source->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 

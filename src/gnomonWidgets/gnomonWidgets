@@ -6,7 +6,6 @@
 #include "gnomonEditor/gnomonLookupTableEditor.h"
 #include "gnomonEditor/gnomonStringEditor.h"
 #include "gnomonEditor/gnomonStringListEditor.h"
-#include "gnomonFinder.h"
 #include "gnomonInterpreterJupyter.h"
 #include "gnomonOverlayButton.h"
 #include "gnomonSpinner.h"

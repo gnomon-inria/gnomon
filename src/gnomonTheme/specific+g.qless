@@ -1,0 +1,41 @@
+/*
+;; Version: $Id$
+;;
+*/
+
+/* Commentary:
+;;
+*/
+
+/* Change Log:
+;;
+*/
+
+/* Code: */
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+gnomonWorkspaceBrowser > QLineEdit
+{
+    border: none;
+    border-bottom: 1px solid @base1;
+    border-radius: 0;
+
+    font-weight: normal;
+    font-size: 12px;
+}
+
+gnomonWorkspaceBrowser > QToolButton
+{
+    border: none;
+}
+
+gnomonWorkspaceBrowser > QListView::item
+{
+    font-weight: normal;
+    font-size: 10px;
+}
+
+/* specific+g.qless ends here */

@@ -49,6 +49,7 @@ target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
 # target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkImagingCore)
 
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonTheme)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWidgets)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonWorkspace)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC gnomonComposer)

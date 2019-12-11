@@ -273,13 +273,13 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 
 void gnomonWorkspacePythonSimulator::enter(void)
 {
-    dtkApp->window()->menubar()->insertMenu(0, d->view->menu());
+//    dtkApp->window()->menubar()->insertMenu(0, d->view->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePythonSimulator::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->view->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->view->menu());
     dtkApp->window()->menubar()->touch();
 }
 

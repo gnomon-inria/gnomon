@@ -125,15 +125,15 @@ public:
 
     gnomonInteractorStyle *style = nullptr;
 
+    dtkWidgetsMenuBar *view_menubar = nullptr;
     dtkWidgetsMenuBar *style_menubar = nullptr;
+
     QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
 
     QList<gnomonOverlayButton *> shortcut_keys;
 
 public:
-    int syncing_count = 0;
-    QTimer *syncing_timer = nullptr;
-    bool synced = false;
+    int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false;
 
 public:
     bool acceptCellComplex = true;
@@ -183,7 +183,6 @@ public:
     QMap<QString, dtkWidgetsMenu *> formVisualizationMenus;
     QMap<QString, dtkWidgetsMenuItemDIY *> formVisualizationPaneItems;
 
-//    dtkWidgetsMenuItemDIY *view_item;
     dtkWidgetsMenuItemDIY *paneItemButton = nullptr;
 
 public:
@@ -243,7 +242,8 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 // /////////////////////////////////////////////////////////////////////////////
 
     static int count = 0;
-    this->view_menu = new dtkWidgetsMenu(fa::circlethin, "View " + QString::number(count++));
+//    this->view_menu = new dtkWidgetsMenu(fa::image, "View " + QString::number(count++));
+    this->view_menu = new dtkWidgetsMenu(fa::cubes, "3D Form Viewer");
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -276,19 +276,25 @@ QSize gnomonViewFormPrivate::sizeHint(void) const
 
 void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 {
-    this->renderer2D_button->move(10, 10);
-    this->renderer3D_button->move(50, 10);
-    this->renderer2D_XY->move(10,  50);
-    this->renderer2D_XZ->move(10,  90);
-    this->renderer2D_YZ->move(10, 130);
+    static int l_margin = 38;
+    static int r_margin = 38;
 
-    this->sync->move(event->size().width() - 80, 10);
-    this->export_button->move(event->size().width() - 40, 10);
-    this->help_button->move(event->size().width() - 120, 10);
+    this->renderer2D_button->move(l_margin + 10, 10);
+    this->renderer3D_button->move(l_margin + 50, 10);
+    this->renderer2D_XY->move(l_margin + 10,  50);
+    this->renderer2D_XZ->move(l_margin + 10,  90);
+    this->renderer2D_YZ->move(l_margin + 10, 130);
+
+    this->sync->move(event->size().width() - r_margin - 80, 10);
+    this->export_button->move(event->size().width() - r_margin - 40, 10);
+    this->help_button->move(event->size().width() - r_margin - 120, 10);
 
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
-        this->shortcut_keys[i_key]->move(event->size().width() - 240, 50 + 40*i_key);
+        this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
     }
+
+    if (this->view_menubar)
+        this->view_menubar->setFixedHeight(event->size().height());
 
     if (this->style_menubar)
         this->style_menubar->setFixedHeight(event->size().height());
@@ -370,8 +376,7 @@ void gnomonViewFormPrivate::clear(void)
         this->formVisualizationPaneItems[key]->clear();
         delete this->formVisualizationPaneItems[key];
 
-        this->view_menu->removeMenu(this->formVisualizationMenus[key]);
-//        this->view_menu->removeItem(view_item);
+        this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
 
         this->formVisualizationMenus[key]->disconnect();
         this->formVisualizationMenus[key]->clear();
@@ -388,7 +393,7 @@ void gnomonViewFormPrivate::clear(void)
 
     this->empty = true;
 
-    dtkApp->window()->menubar()->touch();
+    this->view_menubar->touch();
 
     q->render();
 }
@@ -478,7 +483,24 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
 {
     if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key]))
     {
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::circlethin, key);
+        int icon = fa::circlethin;
+        if (key == "gnomonCellComplex") {
+//            icon = fa::bordernone;
+            icon = fa::image;
+        } else if (key == "gnomonCellImage") {
+//            icon = fa::borderall;
+            icon = fa::image;
+        } else if (key == "gnomonImage") {
+            icon = fa::image;
+        } else if (key == "gnomonMesh") {
+//            icon = fa::dice-d20;
+            icon = fa::image;
+        } else if (key == "gnomonPointCloud") {
+//            icon = fa::braille;
+            icon = fa::image;
+        }
+
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(icon, key);
         this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
 
         this->formVisualizationPaneItems[key]->setShowTitle(false);
@@ -562,10 +584,8 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
 
         qDebug()<<Q_FUNC_INFO<<"Insert new menu "<<key;
 
-//        this->formVisualizationMenus[key]->addItem(this->view_item);
-        this->view_menu->addMenu(this->formVisualizationMenus[key]);
-
-        dtkApp->window()->menubar()->touch();
+        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->touch();
     }
 
 }
@@ -574,17 +594,18 @@ void gnomonViewFormPrivate::refresh(void)
 {
     this->view_menu->removeItem(this->paneItemButton);
 
-    for (const auto& menu : this->view_menu->menus()) {
-        this->view_menu->removeMenu(menu);
+    for (const auto& menu : this->view_menubar->menus()) {
+        this->view_menubar->removeMenu(menu);
     }
 
     for (const auto& key : this->formVisualizationMenus.keys()) {
-        this->view_menu->addMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
     }
 
     this->view_menu->addItem(this->paneItemButton);
 
-    dtkApp->window()->menubar()->touch();
+    this->view_menubar->addMenu(this->view_menu);
+    this->view_menubar->touch();
 
 }
 
@@ -727,20 +748,32 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
-    d->style_menubar = new dtkWidgetsMenuBar(this);
+    d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->setInteractive(false);
+    d->view_menubar->setWidth(32);
+    d->view_menubar->setMargins(6);
+    d->view_menubar->addMenu(d->menu());
+    d->view_menubar->touch();
+
+    d->style_menubar = new dtkWidgetsMenuBar(d);
+    d->style_menubar->setInteractive(false);
+    d->style_menubar->setStandalone(true);
+    d->style_menubar->setWidth(32);
+    d->style_menubar->setMargins(6);
+    d->style_menubar->setObjectName("RHS");
+
     d->updateInteractorStyleMenu();
+
     this->setInteractorStyle(d->default_style);
 
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->slice_slider, 0, 0, 1, 1);
-    layout->addWidget(d, 0, 2, 1, 1);
-    layout->addWidget(d->time_slider, 1, 0, 1, 3);
-    layout->addWidget(d->style_menubar, 0, 3, 2, 1);
+    layout->addWidget(d->slice_slider, 0, 1, 1, 1);
+    layout->addWidget(d, 0, 3, 1, 1);
+    layout->addWidget(d->time_slider, 1, 1, 1, 3);
 
     static int count = 0;
-
 
 //    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
 //    d->view_item->setShowTitle(false);
@@ -1393,6 +1426,11 @@ dtkWidgetsMenu *gnomonViewForm::menu(void)
     return d->menu();
 }
 
+dtkWidgetsMenuBar *gnomonViewForm::menubar(void)
+{
+    return d->view_menubar;
+}
+
 int gnomonViewForm::orientation(void)
 {
     return d->ori;
@@ -1557,6 +1595,11 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
     this->renderer3D()->ResetCamera();
     this->render();
+}
+
+void gnomonViewForm::resizeEvent(QResizeEvent *event)
+{
+    d->style_menubar->move(QPoint(event->size().width() - d->style_menubar->width(), 0));
 }
 
 // ///////////////////////////////////////////////////////////////////

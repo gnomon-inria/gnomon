@@ -21,6 +21,7 @@
 #include <gnomonLandmark.h>
 
 class dtkWidgetsMenu;
+class dtkWidgetsMenuBar;
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
@@ -96,6 +97,7 @@ public:
 
 public:
     dtkWidgetsMenu *menu(void);
+    dtkWidgetsMenuBar *menubar(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
@@ -146,7 +148,8 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *);
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
-
+    void resizeEvent(QResizeEvent *);
+   
 private:
     class gnomonViewFormPrivate *d;
 };
