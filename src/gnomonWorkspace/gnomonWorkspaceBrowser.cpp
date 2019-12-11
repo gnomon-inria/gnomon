@@ -404,6 +404,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 // /////////////////////////////////////////////////////////////////////////////
 
     d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
+    t_browser->header()->resizeSection(0,400);
+
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
