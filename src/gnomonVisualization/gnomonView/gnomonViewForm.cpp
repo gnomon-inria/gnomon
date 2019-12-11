@@ -297,7 +297,7 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
         this->view_menubar->setFixedHeight(event->size().height());
 
     if (this->style_menubar)
-        this->style_menubar->setFixedHeight(event->size().height());
+        this->style_menubar->setFixedHeight(event->size().height()/3.);
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -500,7 +500,9 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
             icon = fa::image;
         }
 
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(icon, key);
+        QString menu_name = key;
+        menu_name.remove("gnomon");
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(icon, menu_name);
         this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
 
         this->formVisualizationPaneItems[key]->setShowTitle(false);
@@ -581,8 +583,6 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
 
         this->formVisualizationPaneItems[key]->addWidget(combo_box);
         this->formVisualizationPaneItems[key]->addWidget(contents);
-
-        qDebug()<<Q_FUNC_INFO<<"Insert new menu "<<key;
 
         this->view_menubar->addMenu(this->formVisualizationMenus[key]);
         this->view_menubar->touch();
@@ -1599,7 +1599,10 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
 void gnomonViewForm::resizeEvent(QResizeEvent *event)
 {
-    d->style_menubar->move(QPoint(event->size().width() - d->style_menubar->width(), 0));
+    d->view_menubar->move(QPoint(0, 0));
+    d->view_menubar->setFixedHeight(event->size().height());
+    d->style_menubar->move(QPoint(0, event->size().height()/3.));
+    d->style_menubar->setFixedHeight(event->size().height()/3.);
 }
 
 // ///////////////////////////////////////////////////////////////////
