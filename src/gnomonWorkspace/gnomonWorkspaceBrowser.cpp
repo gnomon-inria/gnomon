@@ -177,7 +177,7 @@ gnomonFinderTreeView::gnomonFinderTreeView(QWidget *parent) : QTreeView(parent)
     this->setSortingEnabled(true);
     this->sortByColumn(0, Qt::AscendingOrder);
 
-    this->header()->setSectionResizeMode(QHeaderView::Stretch);
+    this->header()->setSectionResizeMode(QHeaderView::Interactive);
 }
 
 gnomonFinderTreeView::~gnomonFinderTreeView(void)
