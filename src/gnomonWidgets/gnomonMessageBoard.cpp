@@ -18,7 +18,7 @@
 
 gnomonMessageBoard::gnomonMessageBoard(QWidget *parent) : QWidget(parent)
 {
-    this->message_label = new QLabel("Load a Form from the top bar to set the input");
+    this->message_label = new QLabel("");
 
     this->message_label->setAlignment(Qt::AlignCenter);
     QColor color = dtkThemesEngine::instance()->color("@base0");

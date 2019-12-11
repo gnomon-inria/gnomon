@@ -118,6 +118,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 // /////////////////////////////////////////////////////////////////////////////
 
     d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Load a Form from the top bar to set the input");
 
     d->target_stack = new QStackedWidget(this);
     d->target_stack->addWidget(d->target_message);
@@ -150,13 +151,14 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if (d->command->input() != d->source->image())
+        if (d->command->input() != d->source->image()) {
             if(d->source->image()) {
                 d->command->setInput(d->source->image());
                 d->target_message->setMessage("Press Apply to display the result of the algorithm");
             }
-        else
+        } else {
             qDebug() << "Not changed";
+        }
         d->configure(d->algorithm);
     });
 
@@ -202,11 +204,13 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != d->source->image())
-        if(d->source->image())
+    if (d->command->input() != d->source->image()) {
+        if(d->source->image()) {
             d->command->setInput(d->source->image());
-    else
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
