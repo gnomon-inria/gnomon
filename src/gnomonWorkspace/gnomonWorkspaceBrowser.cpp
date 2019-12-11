@@ -50,8 +50,9 @@ gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
     this->setViewMode(QListView::IconMode);
     // this->setWordWrap(true);
     // this->setWrapping(true);
+    this->setIconSize(QSize(64, 64));
     this->setResizeMode(QListView::Adjust);
-    this->setGridSize(QSize(64, 64));
+    this->setGridSize(QSize(96, 96));
     this->setFrameStyle(QFrame::NoFrame);
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
@@ -337,14 +338,14 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& value) -> void
+    connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
     {
-        // TODO: Help yourself
+        d->browse_view->addFormFromFile(filename);
     });
 
-    connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& value) -> void
+    connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
     {
-        // TODO: Help yourself
+        d->browse_view->addFormFromFile(filename);
     });
     
     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void

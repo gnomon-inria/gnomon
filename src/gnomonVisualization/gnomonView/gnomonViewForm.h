@@ -149,7 +149,10 @@ protected:
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
     void resizeEvent(QResizeEvent *);
-   
+
+public:
+    void addFormFromFile(const QString& filename);
+
 private:
     class gnomonViewFormPrivate *d;
 };
