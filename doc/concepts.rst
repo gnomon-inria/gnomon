@@ -7,14 +7,37 @@ Gnomon provides a new *integrated modeling environment* (IME) for studying morph
 
 This IME provides a *project manager*, a *session manager*, *workspaces* to apply families of algorithms to forms (to transform them), *plugins* corresponding to algorithms able to transform forms, a data bus called *the world* to handle computed forms, and *abstractions* that formalize and unify in the system the notion of :math:`(DS)^2` simulation.
 
+.. figure:: Images/gnomon-screenshot.png
+    :align: center
+    :scale: 15
+    :alt: alternate text
+    :figclass: align-center
+
+    A typical screen of a Gnomon Session
+
 Forms
 =====
 
-In Gnomon, a biological organism or organ is represented as *a form*. Formally, a form is a combinatorial object such as a string, a tree, a graph, a cell complex, an hyper-graph, *etc.*, representing the structure of a developing system in terms of its components and their arrangement. These components may be overloaded with attributes representing geometric, biological or physical properties and often themselves represented as scalar or vectorial values. Altogether the form defines the state of the biological system.
+In Gnomon, a biological organism or organ is represented as *a form*. Formally, a form is a combinatorial object such as an image, a string, a tree, a graph, a matrix, a multiscale graph, a cell complex, an hyper-graph, *etc.*, representing the structure of a developing system in terms of its components and their arrangement at some scale(s) or a measure of this structure. These components may be overloaded with attributes representing geometric, biological or physical properties and often themselves represented as scalar or vectorial values. Altogether the form defines the state of the biological system or a measure of this state.
 
-A form can evolve in time and its components, their organization or their properties can vary. This is called dynamical systems with dynamical structure, :math:`(DS)^2`.
+.. figure:: Images/forms.png
+    :align: center
+    :alt: alternate text
+    :figclass: align-center
 
-Measures make it possible to infer system's form (state) from real data. For example, in the case of a developing embryo where the system's state is represented by a graph of cells, light sheet microscope images of a true embryo can be used to segment the cells, construct their topological graph, and possibly load them with some geometrical attributes such as shape envelope, volume or compactness.
+    Different example of forms in Gnomon:
+    **top row from left to right** - microscope image of a meristem, confocal image of a meristem, mesh constructed from a segmented meristem, segmented ascidian embryo; **bottom row from left to right** - cell lineages of ascidian development, tree graph and its DAG compression, plant simulated branching structure)
+
+A form can evolve in time and its components, their organization or their properties can vary. This defines dynamical systems with dynamical structure, :math:`(DS)^2`.
+
+.. figure:: Images/dynamical-form.png
+    :align: center
+    :alt: alternate text
+    :figclass: align-center
+
+    Sequence of segmented images including cell lineages (cell colors) of a young growing flower primordium.
+
+Measures make it possible to get partial information on system's form (state) from real data. For example, in the case of a developing embryo where the system's state is represented by a graph of cells, a measure of the state may be carried out using a light sheet microscope, providing images of the embryo state. These images can then be used to segment the cells, construct their topological graph, and possibly extract cell geometrical attributes (such as shape envelope, volume or compactness) or biologically-related attributes (such as genetic activity, hormone concentration, cell polarity, *etc.*).
 
 Gnomon provides a new computational environment dedicated to the modeling and simulation of morphogenesis to manipulate these dynamical forms, construct them, explore them, simulate them.
 
@@ -24,22 +47,6 @@ Interestingly, Gnomon manipulates natively not only forms, but also sequences of
 .. math::(parenthese a virer)
 
 ..    n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
-
-
-Model (experimental)
-====================
-
-Model abstraction is defined in Gnomon to ease the manipulation and simulation of :math:`(DS)^2`. It consists of a Python class that make it possible to define standard functions that are required to run the simulation of a form development in Gnomon such as init(), step(), run(), animate(), rewind(), interpret(), set\_simulation\_param(), doc(), test().
-
-* **init()**: defines the initial form of a simulation at time :math:`t_0`.
-* step(): launches a step of simulation during a time :math:`\Delta  t` defined by set\_simulation\_param().
-* **run()**: run :math:`N` steps of simulation during a time :math:`\Delta t` and interpret the result at the end of the simulation. Both :math:`N` and :math:`\Delta  t` are defined in the simulation context using set\_simulation\_param().
-* **animate()**: run :math:`N` steps of simulation during a time :math:`\Delta  t` (or until a end condition becomes true) and interpret the result at each step of the simulation.
-* **rewind()**: reset the simulation state with the initial state and parameters.
-* **interpret()**: provides an interpretation of the current state that can be further exploited by other tools. This can be graphical for instance, *i.e.* a transformation of the form state into an object that can be interpreted by a graphical engine. But it can also be mechanical, etc.
-* **set\_simulation\_param()**: makes it possible to set various parameters used by the simulation engine: :math:`\Delta t`, stop condition, time pause between two steps, etc.
-* **doc()**: provides the documentation of the model and meta information such as authors names and contributions, copyright, references, complementary urls, ...
-* **test()**: define tests that should be successful for the model to be considered as working properly.
 
 
 Form manager
@@ -85,6 +92,21 @@ Gnomon plugins refer to algorithms that can be used in the different workspace t
     :figclass: align-center
 
     The workspace right panel offers a selection of plugins (see popup menu) that are available in this workspace. The parameters below correspond to the parameters of the currently selected plugin.
+
+Model (experimental)
+====================
+
+Model abstraction is defined in Gnomon to ease the manipulation and simulation of :math:`(DS)^2`. It consists of a Python class that make it possible to define standard functions that are required to run the simulation of a form development in Gnomon such as init(), step(), run(), animate(), rewind(), interpret(), set\_simulation\_param(), doc(), test().
+
+* **init()**: defines the initial form of a simulation at time :math:`t_0`.
+* step(): launches a step of simulation during a time :math:`\Delta  t` defined by set\_simulation\_param().
+* **run()**: run :math:`N` steps of simulation during a time :math:`\Delta t` and interpret the result at the end of the simulation. Both :math:`N` and :math:`\Delta  t` are defined in the simulation context using set\_simulation\_param().
+* **animate()**: run :math:`N` steps of simulation during a time :math:`\Delta  t` (or until a end condition becomes true) and interpret the result at each step of the simulation.
+* **rewind()**: reset the simulation state with the initial state and parameters.
+* **interpret()**: provides an interpretation of the current state that can be further exploited by other tools. This can be graphical for instance, *i.e.* a transformation of the form state into an object that can be interpreted by a graphical engine. But it can also be mechanical, etc.
+* **set\_simulation\_param()**: makes it possible to set various parameters used by the simulation engine: :math:`\Delta t`, stop condition, time pause between two steps, etc.
+* **doc()**: provides the documentation of the model and meta information such as authors names and contributions, copyright, references, complementary urls, ...
+* **test()**: define tests that should be successful for the model to be considered as working properly.
 
 Dataflow (Not yet implemented)
 ==============================
