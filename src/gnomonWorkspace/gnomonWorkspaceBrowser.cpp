@@ -58,9 +58,9 @@ gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent),
     this->setViewMode(QListView::IconMode);
     this->setWordWrap(true);
     this->setWrapping(true);
-    // this->setIconSize(QSize(128, 128));
+    this->setIconSize(QSize(64, 64));
     this->setResizeMode(QListView::Adjust);
-    this->setGridSize(QSize(64, 64));
+    this->setGridSize(QSize(96, 96));
     this->setFrameStyle(QFrame::NoFrame);
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
@@ -171,7 +171,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     gnomonFinderListView *browser = new gnomonFinderListView(this);
     browser->setModel(model);
-    browser->setFixedWidth(300);
+//    browser->setFixedWidth(300);
     browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
 
     QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);

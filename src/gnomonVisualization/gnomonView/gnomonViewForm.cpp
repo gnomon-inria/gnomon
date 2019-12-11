@@ -276,8 +276,8 @@ QSize gnomonViewFormPrivate::sizeHint(void) const
 
 void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 {
-    static int l_margin = 22;
-    static int r_margin = 22;
+    static int l_margin = 38;
+    static int r_margin = 38;
 
     this->renderer2D_button->move(l_margin + 10, 10);
     this->renderer3D_button->move(l_margin + 50, 10);
@@ -750,7 +750,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     d->view_menubar = new dtkWidgetsMenuBar(d);
     d->view_menubar->setInteractive(false);
-    d->view_menubar->setWidth(16);
+    d->view_menubar->setWidth(32);
     d->view_menubar->setMargins(6);
     d->view_menubar->addMenu(d->menu());
     d->view_menubar->touch();
@@ -758,7 +758,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->style_menubar = new dtkWidgetsMenuBar(d);
     d->style_menubar->setInteractive(false);
     d->style_menubar->setStandalone(true);
-    d->style_menubar->setWidth(16);
+    d->style_menubar->setWidth(32);
     d->style_menubar->setMargins(6);
     d->style_menubar->setObjectName("RHS");
 
