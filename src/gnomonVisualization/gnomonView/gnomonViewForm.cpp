@@ -277,7 +277,7 @@ QSize gnomonViewFormPrivate::sizeHint(void) const
 void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 {
     static int l_margin = 38;
-    static int r_margin = 38;
+    static int r_margin = 0;
 
     this->renderer2D_button->move(l_margin + 10, 10);
     this->renderer3D_button->move(l_margin + 50, 10);
@@ -296,8 +296,10 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     if (this->view_menubar)
         this->view_menubar->setFixedHeight(event->size().height());
 
-    if (this->style_menubar)
-        this->style_menubar->setFixedHeight(event->size().height());
+    if (this->style_menubar){
+        this->style_menubar->setFixedHeight(32*(1+this->available_styles.size())+32);
+        this->style_menubar->move(QPoint(0, 32*(1+this->formVisualizationMenus.size())+32));
+    }
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -393,6 +395,7 @@ void gnomonViewFormPrivate::clear(void)
 
     this->empty = true;
 
+    this->refresh();
     this->view_menubar->touch();
 
     q->render();
@@ -500,7 +503,9 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
             icon = fa::image;
         }
 
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(icon, key);
+        QString menu_name = key;
+        menu_name.remove("gnomon");
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(icon, menu_name);
         this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
 
         this->formVisualizationPaneItems[key]->setShowTitle(false);
@@ -582,8 +587,6 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
         this->formVisualizationPaneItems[key]->addWidget(combo_box);
         this->formVisualizationPaneItems[key]->addWidget(contents);
 
-        qDebug()<<Q_FUNC_INFO<<"Insert new menu "<<key;
-
         this->view_menubar->addMenu(this->formVisualizationMenus[key]);
         this->view_menubar->touch();
     }
@@ -605,6 +608,9 @@ void gnomonViewFormPrivate::refresh(void)
     this->view_menu->addItem(this->paneItemButton);
 
     this->view_menubar->addMenu(this->view_menu);
+
+    this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+
     this->view_menubar->touch();
 
 }
@@ -692,6 +698,7 @@ void gnomonViewFormPrivate::updateInteractorStyleMenu(void)
         gnomonInteractorStyle* style = this->available_styles[i_style];
         this->q->setInteractorStyle(style);
     });
+    this->refresh();
     this->style_menubar->touch();
 }
 
@@ -1599,7 +1606,8 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
 void gnomonViewForm::resizeEvent(QResizeEvent *event)
 {
-    d->style_menubar->move(QPoint(event->size().width() - d->style_menubar->width(), 0));
+      d->style_menubar->setFixedHeight(32*(1+d->available_styles.size())+32);
+      d->style_menubar->move(QPoint(0, 32*(1+d->formVisualizationMenus.size())+32));
 }
 
 // ///////////////////////////////////////////////////////////////////

@@ -171,7 +171,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     gnomonFinderListView *browser = new gnomonFinderListView(this);
     browser->setModel(model);
-//    browser->setFixedWidth(300);
+//    browser->setFixedWidth(400);
     browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
 
     QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
@@ -194,8 +194,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->browse_view);
     layout->addLayout(r_layout);
+    layout->addWidget(d->browse_view);
 
 // /////////////////////////////////////////////////////////////////////////////
 
