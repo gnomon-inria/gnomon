@@ -1523,85 +1523,92 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
         this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
     } else {
-        if((path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz")  || path.endsWith("tif"))&&(path.contains("seg",Qt::CaseInsensitive))) {
-            if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
-                d->formReaderCommand["gnomonCellImage"] = new gnomonCellImageReaderCommand("gnomonCellImageReaderPropertySpatialImage");
-            gnomonCellImageReaderCommand *cellImageCommand = (gnomonCellImageReaderCommand *) d->formReaderCommand["gnomonCellImage"];
-            cellImageCommand->setPath(path.remove("file://"));
-            cellImageCommand->redo();
-
-            gnomonCellImageSeries * cellImage = (gnomonCellImageSeries *) cellImageCommand->cellImage()->clone();
-            if (!cellImage) {
-                qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
-                event->ignore();
-                return;
-            }
-            this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellImage);
-
-        } else if(path.endsWith("inr") || path.endsWith("inr.gz") || path.endsWith("mha") || path.endsWith("mha.gz") || path.endsWith("tif") || path.endsWith("czi")|| path.endsWith("lsm")) {
-            if ((!d->formReaderCommand.contains("gnomonImage"))||(!d->formReaderCommand["gnomonImage"]))
-                d->formReaderCommand["gnomonImage"] = new gnomonImageReaderCommand("gnomonImageReader");
-            gnomonImageReaderCommand *imageCommand = (gnomonImageReaderCommand *) d->formReaderCommand["gnomonImage"];
-            imageCommand->setPath(path.remove("file://"));
-            imageCommand->redo();
-
-            gnomonImageSeries * images_serie = (gnomonImageSeries *) imageCommand->image()->clone();
-            if (!images_serie) {
-                qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
-                event->ignore();
-                return;
-            }
-
-// /////////////////////////////////////////////////////////////////////////////
-// FIXME: Is it still relevant ?
-// /////////////////////////////////////////////////////////////////////////////
-
-            // emit channelsChanged(images_serie->channels());
-            // emit timeChanged(images_serie->time());
-
-// /////////////////////////////////////////////////////////////////////////////
-
-            this->setForm("gnomonImage",images_serie);
-
-        } else if((path.endsWith("ply")) and (d->acceptCellComplex)) {
-            if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
-                d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
-            gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
-            cellComplexCommand->setPath(path.remove("file://"));
-            cellComplexCommand->redo();
-
-            gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex()->clone();
-            if (!cellComplex) {
-                qWarning() << Q_FUNC_INFO << "Resulting cellComplex is void.";
-                event->ignore();
-                return;
-            }
-            this->setForm("gnomonCellComplex",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellComplex);
-        } else if(path.endsWith("ply")) {
-            if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
-                d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
-            gnomonMeshReaderCommand *meshCommand = (gnomonMeshReaderCommand *) d->formReaderCommand["gnomonMesh"];
-            meshCommand->setPath(path.remove("file://"));
-            meshCommand->redo();
-
-            gnomonMeshSeries *mesh = (gnomonMeshSeries *) meshCommand->mesh()->clone();
-            if (!mesh) {
-                qWarning() << Q_FUNC_INFO << "Resulting mesh is void.";
-                event->ignore();
-                return;
-            }
-            this->setForm("gnomonMesh",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) mesh);
-        } else {
-            qWarning() << Q_FUNC_INFO << "No reader founds for input: " << path;
-        }
+        this->addFormFromFile(path);
     }
-
     // ///////////////////////////////////////////////////////////////
 
     event->accept();
 
     this->renderer3D()->ResetCamera();
     this->render();
+}
+
+void gnomonViewForm::addFormFromFile(const QString& path)
+{
+    QString filename = path;
+
+    if((filename.endsWith("inr") || filename.endsWith("inr.gz") || filename.endsWith("mha") || filename.endsWith("mha.gz")  || filename.endsWith("tif"))&&(filename.contains("seg",Qt::CaseInsensitive))) {
+        if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
+            d->formReaderCommand["gnomonCellImage"] = new gnomonCellImageReaderCommand("gnomonCellImageReaderPropertySpatialImage");
+        gnomonCellImageReaderCommand *cellImageCommand = (gnomonCellImageReaderCommand *) d->formReaderCommand["gnomonCellImage"];
+        cellImageCommand->setPath(filename.remove("file://"));
+        cellImageCommand->redo();
+
+        gnomonCellImageSeries * cellImage = (gnomonCellImageSeries *) cellImageCommand->cellImage()->clone();
+        if (!cellImage) {
+            qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
+//            event->ignore();
+            return;
+        }
+        this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellImage);
+
+    } else if(filename.endsWith("inr") || filename.endsWith("inr.gz") || filename.endsWith("mha") || filename.endsWith("mha.gz") || filename.endsWith("tif") || filename.endsWith("czi")|| filename.endsWith("lsm")) {
+        if ((!d->formReaderCommand.contains("gnomonImage"))||(!d->formReaderCommand["gnomonImage"]))
+            d->formReaderCommand["gnomonImage"] = new gnomonImageReaderCommand("gnomonImageReader");
+        gnomonImageReaderCommand *imageCommand = (gnomonImageReaderCommand *) d->formReaderCommand["gnomonImage"];
+        imageCommand->setPath(filename.remove("file://"));
+        imageCommand->redo();
+
+        gnomonImageSeries * images_serie = (gnomonImageSeries *) imageCommand->image()->clone();
+        if (!images_serie) {
+            qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
+//            event->ignore();
+            return;
+        }
+
+// /////////////////////////////////////////////////////////////////////////////
+// FIXME: Is it still relevant ?
+// /////////////////////////////////////////////////////////////////////////////
+
+        // emit channelsChanged(images_serie->channels());
+        // emit timeChanged(images_serie->time());
+
+// /////////////////////////////////////////////////////////////////////////////
+
+        this->setForm("gnomonImage",images_serie);
+
+    } else if((filename.endsWith("ply")) and (d->acceptCellComplex)) {
+        if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
+            d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
+        gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
+        cellComplexCommand->setPath(filename.remove("file://"));
+        cellComplexCommand->redo();
+
+        gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex()->clone();
+        if (!cellComplex) {
+            qWarning() << Q_FUNC_INFO << "Resulting cellComplex is void.";
+//            event->ignore();
+            return;
+        }
+        this->setForm("gnomonCellComplex",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellComplex);
+    } else if(filename.endsWith("ply")) {
+        if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
+            d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
+        gnomonMeshReaderCommand *meshCommand = (gnomonMeshReaderCommand *) d->formReaderCommand["gnomonMesh"];
+        meshCommand->setPath(filename.remove("file://"));
+        meshCommand->redo();
+
+        gnomonMeshSeries *mesh = (gnomonMeshSeries *) meshCommand->mesh()->clone();
+        if (!mesh) {
+            qWarning() << Q_FUNC_INFO << "Resulting mesh is void.";
+//            event->ignore();
+            return;
+        }
+        this->setForm("gnomonMesh",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) mesh);
+    } else {
+        qWarning() << Q_FUNC_INFO << "No reader founds for input: " << filename;
+    }
+
 }
 
 void gnomonViewForm::resizeEvent(QResizeEvent *event)

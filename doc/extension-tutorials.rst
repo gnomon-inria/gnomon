@@ -2,8 +2,8 @@
 Extending Gnomon
 ================
 
-Crating new plugins
-===================
+Creating new plugins
+====================
 
 Defining new workspaces
 =======================

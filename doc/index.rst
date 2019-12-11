@@ -62,7 +62,6 @@ Contents
 ========
 
 .. toctree::
-    :maxdepth: 2
 
    concepts
    user-tutorials
