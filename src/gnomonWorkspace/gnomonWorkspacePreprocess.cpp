@@ -114,17 +114,22 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if(d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
-        else
+        if(d->command->input() != d->source->image()) {
+            if (d->source->image()) {
+                d->command->setInput(d->source->image());
+            }
+        } else {
             qDebug() << "Not changed";
+        }
 
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->image());
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
         d->configure(algorithm);
     });
 
@@ -158,14 +163,19 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
-    else
+    if (d->command->input() != d->source->image()) {
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setImage(d->command->output());
+    if (d->command->output()) {
+        d->target->setImage(d->command->output());
+    }
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)
