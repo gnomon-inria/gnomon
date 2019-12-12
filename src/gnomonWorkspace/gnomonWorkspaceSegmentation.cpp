@@ -105,6 +105,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(gnomonToolBar::segmentation_color);
+    d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::segmentation_color);
@@ -118,7 +119,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 // /////////////////////////////////////////////////////////////////////////////
 
     d->target_message = new gnomonMessageBoard(this);
-    d->target_message->setMessage("Load a Form from the top bar to set the input");
+//    d->target_message->setMessage("Load a Form from the top bar to set the input");
+    d->target_message->setMessage("Result will be displayed here");
 
     d->target_stack = new QStackedWidget(this);
     d->target_stack->addWidget(d->target_message);
@@ -154,7 +156,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
         if (d->command->input() != d->source->image()) {
             if(d->source->image()) {
                 d->command->setInput(d->source->image());
-                d->target_message->setMessage("Press Apply to display the result of the algorithm");
+//                d->target_message->setMessage("Press Apply to display the result of the algorithm");
+                d->target_message->setMessage("Result will be displayed here");
             }
         } else {
             qDebug() << "Not changed";

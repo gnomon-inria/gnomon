@@ -76,7 +76,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
 
     d->sources_layout = new gnomonGridLayout;
     d->sources_layout->addView();
-//    d->sources_layout->addView();
+    d->sources_layout->addView();
     d->sources_layout->addView();
 
     QWidget *sources_dummy = new QWidget(this);
@@ -87,6 +87,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
 
     d->pool = new gnomonViewFormPool(this);
     for(gnomonViewForm *view : d->sources_layout->views()) {
+        view->setInputView(true);
         d->pool->addView(view);
     }
     d->pool->addView(d->target);
@@ -96,7 +97,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
 // /////////////////////////////////////////////////////////////////////////////
 
     d->target_message = new gnomonMessageBoard(this);
-    d->target_message->setMessage("Load a Form from the top bar to set the input");
+    d->target_message->setMessage("Result will be displayed here");
 
     d->target_stack = new QStackedWidget(this);
     d->target_stack->addWidget(d->target_message);
@@ -131,11 +132,11 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
     {
         d->command->undo();
-    d->target_message->setMessage("Load a Form from the top bar to set the input");
+        d->target_message->setMessage("Result will be displayed here");
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
-                d->target_message->setMessage("Press Apply to display the result of the algorithm");
+                d->target_message->setMessage("Result will be displayed here");
             }
         }
 //        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
@@ -146,6 +147,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
     {
         d->pool->addView(view);
+        view->setInputView(true);
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
