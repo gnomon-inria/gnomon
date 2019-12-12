@@ -38,4 +38,10 @@ gnomonWorkspaceBrowser > QListView::item
     font-size: 10px;
 }
 
+gnomonMessageBoard > QLabel
+{
+    color: @base1;
+    font-size: 32px;
+}
+
 /* specific+g.qless ends here */

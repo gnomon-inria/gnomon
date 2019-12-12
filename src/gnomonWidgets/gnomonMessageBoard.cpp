@@ -21,9 +21,9 @@ gnomonMessageBoard::gnomonMessageBoard(QWidget *parent) : QWidget(parent)
     this->message_label = new QLabel("");
 
     this->message_label->setAlignment(Qt::AlignCenter);
-    QColor color = dtkThemesEngine::instance()->color("@base1");
-    QString stylesheet = QString("color:rgb(%1,%2,%3); font: bold 32pt;").arg(color.red()).arg(color.green()).arg(color.blue());
-    this->message_label->setStyleSheet(stylesheet);
+//    QColor color = dtkThemesEngine::instance()->color("@base1");
+//    QString stylesheet = QString("color:rgb(%1,%2,%3); font: bold 32pt;").arg(color.red()).arg(color.green()).arg(color.blue());
+//    this->message_label->setStyleSheet(stylesheet);
     this->message_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
     this->message_label->setWordWrap(true);
 
