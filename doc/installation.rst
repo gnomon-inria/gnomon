@@ -32,8 +32,43 @@ About Conda
 From sources
 =============
 
-The documentation to install Gnomon from the sources is not yet available.
-(You may want to see how this was done for previous version of Gnomon `here <https://gitlab.inria.fr/gnomon/gnomon/blob/develop/README.md>`_)
+Clone `gnomon` sources:
+.. code-block::
+
+    $ git clone https://gitlab.inria.fr/gnomon/gnomon.git
+
+Create a conda environment:
+.. code-block::
+
+    $ conda env create -f conda/env.yaml 
+
+Activate the newly created environment:
+.. code-block::
+
+    $ conda activate gnomon-dev
+
+(OPTIONAL) check the libuuid has been taken from `dtk` channel:
+.. code-block::
+
+    $ conda list libuuid
+
+If not:
+.. code-block::
+
+    $ conda install -c dtk libuuid
+
+Then we compile and install the sources:
+.. code-block::
+
+    $ mkdir build
+    $ cd build
+    $ cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX_PATH=$CONDA_PREFIX ..
+    $ make -j install
+
+If all went well, you can nom start the app:
+.. code-block::
+
+    $ ./bin/gnomon 
 
 =================
 Launching Gnomon
