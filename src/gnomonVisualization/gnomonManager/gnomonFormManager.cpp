@@ -36,6 +36,8 @@
 #include <dtkThemes>
 #include <dtkScript>
 
+#include <vtkCamera.h>
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManagerPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -182,7 +184,7 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkCamera *cam)
 {
     QImage image = visualization->imageRendering();
 
@@ -191,6 +193,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 
     d->forms.insert(item, form->clone());
     d->formVisualizations.insert(item, visualization);
+    d->formCameras.insert(item, cam);
 
     QString writerPlugin;
     if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {

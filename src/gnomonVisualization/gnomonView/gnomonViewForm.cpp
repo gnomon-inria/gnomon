@@ -267,7 +267,7 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys())
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
 }
 
 QSize gnomonViewFormPrivate::sizeHint(void) const
@@ -1412,6 +1412,14 @@ void gnomonViewForm::getBounds(double bounds[6])
     bounds[3] = d->yBounds[1];
     bounds[4] = d->zBounds[0];
     bounds[5] = d->zBounds[1];
+}
+
+void gnomonViewForm::setCamera(vtkCamera *cam)
+{
+    vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
+    camera3D->DeepCopy(cam);
+
+    d->renderer3D->SetActiveCamera(camera3D);
 }
 
 void gnomonViewForm::setAcceptCellComplex(bool accept)

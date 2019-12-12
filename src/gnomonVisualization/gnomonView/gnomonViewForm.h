@@ -39,6 +39,7 @@ template <typename T> class gnomonTimeSeries;
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
+class vtkCamera;
 class vtkRenderer;
 class vtkRenderWindowInteractor;
 
@@ -110,6 +111,9 @@ public slots:
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
     void getBounds(double bounds[6]);
+
+public:
+    void setCamera(vtkCamera *);
 
 public slots:
     void render(void);
