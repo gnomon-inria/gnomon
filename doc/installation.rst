@@ -33,31 +33,37 @@ From sources
 =============
 
 Clone `gnomon` sources:
+
 .. code-block::
 
     $ git clone https://gitlab.inria.fr/gnomon/gnomon.git
 
 Create a conda environment:
+
 .. code-block::
 
     $ conda env create -f conda/env.yaml 
 
 Activate the newly created environment:
+
 .. code-block::
 
     $ conda activate gnomon-dev
 
 (OPTIONAL) check the libuuid has been taken from `dtk` channel:
+
 .. code-block::
 
     $ conda list libuuid
 
 If not:
+
 .. code-block::
 
     $ conda install -c dtk libuuid
 
 Then we compile and install the sources:
+
 .. code-block::
 
     $ mkdir build
@@ -66,6 +72,7 @@ Then we compile and install the sources:
     $ make -j install
 
 If all went well, you can nom start the app:
+
 .. code-block::
 
     $ ./bin/gnomon 
