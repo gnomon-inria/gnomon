@@ -375,7 +375,7 @@ void gnomonWorkspacePythonSimulator::step(void)
     {
         d->view->setForm(name,forms[name]);
     }
-            d->view->onTimeChanged(t);
+    d->view->onTimeChanged(t);
 }
 
 void gnomonWorkspacePythonSimulator::reset(void)

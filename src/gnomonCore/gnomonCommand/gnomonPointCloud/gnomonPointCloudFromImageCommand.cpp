@@ -77,12 +77,22 @@ QMap<QString, gnomonCoreParameter *> gnomonPointCloudFromImageCommand::parameter
 
 gnomonImageSeries *gnomonPointCloudFromImageCommand::input(void)
 {
-    return ((gnomonAbstractPointCloudFromImage *) this->action)->input();
+    gnomonImageSeries *image = ((gnomonAbstractPointCloudFromImage *) this->action)->input();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
 {
-    return ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+        return nullptr;
+    } else {
+        return pointCloud;
+    }
 }
 
 //

@@ -77,12 +77,22 @@ QMap<QString, gnomonCoreParameter *> gnomonTreeTransformCommand::parameters(void
 
 gnomonTreeSeries *gnomonTreeTransformCommand::input(void)
 {
-    return ((gnomonAbstractTreeTransform *) this->action)->input();
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeTransform *) this->action)->input();
+    if ((!tree)||(tree->times().size()==0)) {
+        return nullptr;
+    } else {
+        return tree;
+    }
 }
 
 gnomonTreeSeries *gnomonTreeTransformCommand::output(void)
 {
-    return ((gnomonAbstractTreeTransform *) this->action)->output();
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeTransform *) this->action)->output();
+    if ((!tree)||(tree->times().size()==0)) {
+        return nullptr;
+    } else {
+        return tree;
+    }
 }
 
 //

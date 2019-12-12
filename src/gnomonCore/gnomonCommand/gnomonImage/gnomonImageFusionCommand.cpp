@@ -104,7 +104,12 @@ QMap<QString, gnomonCoreParameter *> gnomonImageFusionCommand::parameters(void) 
 
 gnomonImageSeries *gnomonImageFusionCommand::output(void)
 {
-    return ((gnomonAbstractImageFusion *) this->action)->output();
+    gnomonImageSeries *image = ((gnomonAbstractImageFusion *) this->action)->output();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 //

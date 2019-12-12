@@ -45,6 +45,12 @@ public:
     gnomonViewMatplotlib *mpl_figure = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -88,6 +94,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
+    d->view->setInputView(false);
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
 
@@ -98,6 +105,22 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     d->mpl_view = new QWidget(this);
     d->mpl_view->setLayout(d->mpl_layout);
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->mpl_figure);
+
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->view);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -113,8 +136,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->view);
-    layout->addWidget(d->mpl_view);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -123,15 +145,19 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     connect(d->view, &gnomonViewForm::formAdded, [=] ()
     {
-        d->command->setCellImage(d->view->cellImage());
-        d->command->setImage(d->view->image());
+        if(d->view->cellImage())
+            d->command->setCellImage(d->view->cellImage());
+        if(d->view->image())
+            d->command->setImage(d->view->image());
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setCellImage(d->view->cellImage());
-        d->command->setImage(d->view->image());
+        if(d->view->cellImage())
+            d->command->setCellImage(d->view->cellImage());
+        if(d->view->image())
+            d->command->setImage(d->view->image());
         d->configure(algorithm);
     });
 
@@ -165,14 +191,26 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
 {
     Q_ASSERT(d->command);
 
-    d->command->setCellImage(d->view->cellImage());
-    d->command->setImage(d->view->image());
+    if(d->view->cellImage()) {
+        d->command->setCellImage(d->view->cellImage());
+    }
+    if(d->view->image()) {
+        d->command->setImage(d->view->image());
+    }
 
     d->command->redo();
 
-    d->view->setCellImage(d->command->cellImage());
+    if(d->command->cellImage()) {
+        d->view->setCellImage(d->command->cellImage());
+        d->view->setInputView(false);
+    }
 
-    d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
+    if(d->command->dataFrame()) {
+        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
+        d->target_stack->setCurrentWidget(d->mpl_figure);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
 }
 
 void gnomonWorkspaceCellImageQuantification::configure(const QString& algorithm)

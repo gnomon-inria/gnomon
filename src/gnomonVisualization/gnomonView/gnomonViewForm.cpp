@@ -225,6 +225,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->sync->toggle(false);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
+    this->export_button->toggle(true);
 
     this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
     this->help_button->toggle(false);
@@ -721,9 +722,14 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->renderer2D_XZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DXZ()));
     connect(d->renderer2D_YZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DYZ()));
 
-    connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
+    connect(d->export_button, &gnomonOverlayButton::iconClicked, [=] ()
+    {
+        if (d->export_button->isToggled()) {
+            d->exportToManager();
+        }
+    });
 
-    connect(d->help_button, & gnomonOverlayButton::iconClicked, [=] ()
+    connect(d->help_button, &gnomonOverlayButton::iconClicked, [=] ()
     {
         d->help_button->toggle(!d->help_button->isToggled());
         for(int i_key=0; i_key<d->shortcut_keys.size(); i_key++) {
@@ -1462,6 +1468,19 @@ void gnomonViewForm::onTimeChanged(double time)
         qSort(sorted_times);
         int value = sorted_times.indexOf(time);
         d->time_slider->setValue(value);
+    }
+}
+
+void gnomonViewForm::setInputView(bool input)
+{
+    if (input) {
+        d->export_button->changeIcon(fa::arrowcircledown);
+        d->export_button->toggle(false);
+        d->export_button->activate(false);
+    } else {
+        d->export_button->changeIcon(fa::arrowcircleup);
+        d->export_button->toggle(true);
+        d->export_button->activate(true);
     }
 }
 

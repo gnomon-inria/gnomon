@@ -77,12 +77,22 @@ QMap<QString, gnomonCoreParameter *> gnomonImageFilterCommand::parameters(void) 
 
 gnomonImageSeries *gnomonImageFilterCommand::input(void)
 {
-    return ((gnomonAbstractImageFilter *) this->action)->input();
+    gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->input();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 gnomonImageSeries *gnomonImageFilterCommand::output(void)
 {
-    return ((gnomonAbstractImageFilter *) this->action)->output();
+    gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->output();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 //

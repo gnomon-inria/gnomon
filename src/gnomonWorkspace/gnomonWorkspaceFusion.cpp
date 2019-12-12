@@ -44,6 +44,12 @@ public:
     gnomonViewForm *target;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -69,6 +75,11 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     d->sources_layout = new gnomonGridLayout;
     d->sources_layout->addView();
 
+    for(gnomonViewForm *view : d->sources_layout->views()) {
+        view->setInputView(true);
+    }
+
+
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::fusion_color);
     d->target->setMinimumWidth(250);
@@ -76,9 +87,20 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     QWidget *dummy = new QWidget(this);
     dummy->setLayout(d->sources_layout);
 
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(dummy);
-    splitter->addWidget(d->target);
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(dummy);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -94,7 +116,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(splitter);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -113,6 +135,12 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
 //        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
 //        dtkApp->window()->menubar()->touch();
     });
+
+    connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
+    {
+        view->setInputView(true);
+    });
+
 
     connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
         d->command->undo();
@@ -162,13 +190,20 @@ void gnomonWorkspaceFusion::apply(void)
     d->command->undo();
 
     for(gnomonViewForm *view : d->sources_layout->views()) {
-        d->command->addImage(view->image());
+        if (view->image()) {
+            d->command->addImage(view->image());
 //        d->command->addLandmarks(view->landmarks());
+        }
     }
 
     d->command->redo();
 
-    d->target->setImage(d->command->output());
+    if (d->command->output()) {
+        d->target->setImage(d->command->output());
+        d->target_stack->setCurrentWidget(d->target);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
 }
 
 void gnomonWorkspaceFusion::configure(const QString& algorithm)

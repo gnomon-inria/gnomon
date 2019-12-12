@@ -80,12 +80,23 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageQuantificationCommand::param
 
 gnomonCellImageSeries *gnomonCellImageQuantificationCommand::cellImage(void)
 {
-    return ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+    if ((!cellImage)||(cellImage->times().size())==0) {
+        return nullptr;
+    } else {
+        return cellImage;
+    }
 }
 
 gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
 {
-    return ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+        return nullptr;
+    }
+    else {
+        return dataFrame;
+    }
 }
 
 //

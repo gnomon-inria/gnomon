@@ -41,6 +41,12 @@ public:
     gnomonViewForm *target = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     gnomonViewFormPool *pool = nullptr;
 
 public:
@@ -83,13 +89,25 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
 
     d->pool = new gnomonViewFormPool(this);
     for(gnomonViewForm *view : d->sources_layout->views()) {
+        view->setInputView(true);
         d->pool->addView(view);
     }
     d->pool->addView(d->target);
 
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(sources_dummy);
-    splitter->addWidget(d->target);
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(sources_dummy);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -105,7 +123,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(splitter);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -115,9 +133,11 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
     {
         d->command->undo();
+        d->target_message->setMessage("Result will be displayed here");
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
+                d->target_message->setMessage("Result will be displayed here");
             }
         }
 //        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
@@ -128,6 +148,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
     {
         d->pool->addView(view);
+        view->setInputView(true);
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
@@ -179,11 +200,17 @@ void gnomonWorkspaceRegistration::apply(void)
     d->command->undo();
 
     for(gnomonViewForm *view : d->sources_layout->views())
-        d->command->addImage(view->image());
+        if (view->image())
+            d->command->addImage(view->image());
 
     d->command->redo();
 
-    d->target->setForm("gnomonImage",d->command->output());
+    if (d->command->output()) {
+        d->target->setForm("gnomonImage",d->command->output());
+        d->target_stack->setCurrentWidget(d->target);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
 }
 
 void gnomonWorkspaceRegistration::configure(const QString& algorithm)
