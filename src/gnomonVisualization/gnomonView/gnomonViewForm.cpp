@@ -1090,11 +1090,10 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
 
     vtkSmartPointer<vtkCamera> camera2D = vtkCamera::New();
     camera2D->ShallowCopy(d->renderer2D->GetActiveCamera());
+    d->renderer2D->SetActiveCamera(camera2D);
 
     vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
-    camera3D->ShallowCopy(d->renderer2D->GetActiveCamera());
-
-    d->renderer2D->SetActiveCamera(camera2D);
+    camera3D->ShallowCopy(d->renderer3D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(camera3D);
 
     // ///////////////////////////////////////////////////////////////
@@ -1416,10 +1415,11 @@ void gnomonViewForm::getBounds(double bounds[6])
 
 void gnomonViewForm::setCamera(vtkCamera *cam)
 {
-    vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
-    camera3D->DeepCopy(cam);
-
-    d->renderer3D->SetActiveCamera(camera3D);
+    vtkSmartPointer<vtkCamera> camera3D = d->renderer3D->GetActiveCamera();
+//    camera3D->DeepCopy(cam);
+    camera3D->SetFocalPoint(cam->GetFocalPoint());
+    camera3D->SetViewUp(cam->GetViewUp());
+    camera3D->SetPosition(cam->GetPosition());
 }
 
 void gnomonViewForm::setAcceptCellComplex(bool accept)
@@ -1547,8 +1547,13 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
-        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
+        int form_index = path.remove(":").toInt();
+        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(form_index);
+        if (d->forms.isEmpty()) {
+            vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index);
+            this->setCamera(cam);
+        }
+        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(form_index));
     } else {
         this->addFormFromFile(path);
     }

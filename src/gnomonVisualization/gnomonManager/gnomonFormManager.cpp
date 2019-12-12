@@ -262,7 +262,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->contents->layout()->addWidget(item);
 }
 
-gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
+gnomonAbstractDynamicForm *gnomonFormManager::get(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
@@ -272,9 +272,19 @@ gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
     return nullptr;
 }
 
-gnomonAbstractVisualization * gnomonFormManager::getVisualization(int index)
+gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
 {
     for (auto it = d->formVisualizations.begin(); it != d->formVisualizations.end(); ++it) {
+        if (index == it.key()->id) {
+            return *it;
+        }
+    }
+    return nullptr;
+}
+
+vtkCamera *gnomonFormManager::getCamera(int index)
+{
+    for (auto it = d->formCameras.begin(); it != d->formCameras.end(); ++it) {
         if (index == it.key()->id) {
             return *it;
         }
