@@ -8,7 +8,7 @@ from gnomoncore import (gnomonImage, gnomonImageSeries, gnomonLString,
 from dtkTimagetkConverter.dtkTimagetkConverter import dtk_img_to_sp_img
 from dtkTimagetkConverter.dtkTimagetkConverter import sp_img_to_dtk_img
 
-from gnomoncore import load_plugin_group
+from .gnomonPlugin import load_plugin_group
 
 # ------------------------------------------------------------------------------
 # --------------------------------- Tree ----------------------------------
