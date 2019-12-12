@@ -29,6 +29,8 @@ class gnomonViewFormPoolPrivate : public QObject
 public:
     QList<gnomonViewForm *> views;
 
+    bool linked;
+
 //public:
 //    gnomonViewForm *source = nullptr;
 //    gnomonViewForm *target = nullptr;
@@ -98,6 +100,7 @@ void gnomonViewFormPool::linkAll(void)
             }
         }
     }
+    d->linked = true;
 }
 
 void gnomonViewFormPool::unlinkAll(void)
@@ -109,6 +112,12 @@ void gnomonViewFormPool::unlinkAll(void)
             }
         }
     }
+    d->linked = false;
+}
+
+bool gnomonViewFormPool::isLinked(void)
+{
+    return d->linked;
 }
 
 // ///////////////////////////////////////////////////////////////////

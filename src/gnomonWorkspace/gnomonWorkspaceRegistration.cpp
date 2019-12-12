@@ -93,6 +93,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
         d->pool->addView(view);
     }
     d->pool->addView(d->target);
+    d->pool->linkAll();
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -149,6 +150,10 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     {
         d->pool->addView(view);
         view->setInputView(true);
+        if (d->pool->isLinked()) {
+            d->pool->unlinkAll();
+            d->pool->linkAll();
+        }
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)

@@ -101,6 +101,7 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+    d->pool->linkAll();
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view

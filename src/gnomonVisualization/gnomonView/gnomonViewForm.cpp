@@ -1549,7 +1549,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     if(path.startsWith(":")) {
         int form_index = path.remove(":").toInt();
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(form_index);
-        if (d->forms.isEmpty()) {
+        if (d->empty) {
             vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index);
             this->setCamera(cam);
         }
@@ -1561,7 +1561,6 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
     event->accept();
 
-    this->renderer3D()->ResetCamera();
     this->render();
 }
 

@@ -79,7 +79,6 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
         view->setInputView(true);
     }
 
-
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::fusion_color);
     d->target->setMinimumWidth(250);

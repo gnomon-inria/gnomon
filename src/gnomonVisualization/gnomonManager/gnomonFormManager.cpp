@@ -274,9 +274,13 @@ gnomonAbstractDynamicForm *gnomonFormManager::get(int index)
 
 gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
 {
-    for (auto it = d->formVisualizations.begin(); it != d->formVisualizations.end(); ++it) {
+    for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
-            return *it;
+            if (d->formVisualizations.contains(it.key())) {
+                return d->formVisualizations.value(it.key());
+            } else {
+                return nullptr;
+            }
         }
     }
     return nullptr;
@@ -284,9 +288,13 @@ gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
 
 vtkCamera *gnomonFormManager::getCamera(int index)
 {
-    for (auto it = d->formCameras.begin(); it != d->formCameras.end(); ++it) {
+    for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
-            return *it;
+            if (d->formCameras.contains(it.key())) {
+                return d->formCameras.value(it.key());
+            } else {
+                return nullptr;
+            }
         }
     }
     return nullptr;
