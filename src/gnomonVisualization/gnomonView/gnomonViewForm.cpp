@@ -137,6 +137,7 @@ public:
 
 public:
     bool acceptCellComplex = true;
+    bool enableLink = false;
 
 public:
     QColor export_color = QColor("#cccccc");
@@ -286,10 +287,15 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(l_margin + 10,  90);
     this->renderer2D_YZ->move(l_margin + 10, 130);
 
-    this->sync->move(event->size().width() - r_margin - 80, 10);
     this->export_button->move(event->size().width() - r_margin - 40, 10);
-    this->help_button->move(event->size().width() - r_margin - 120, 10);
-
+    if (this->enableLink) {
+        this->sync->setVisible(true);
+        this->sync->move(event->size().width() - r_margin - 80, 10);
+        this->help_button->move(event->size().width() - r_margin - 120, 10);
+    } else {
+        this->sync->setVisible(false);
+        this->help_button->move(event->size().width() - r_margin - 80, 10);
+    }
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
     }
@@ -1425,6 +1431,13 @@ void gnomonViewForm::setCamera(vtkCamera *cam)
 void gnomonViewForm::setAcceptCellComplex(bool accept)
 {
     d->acceptCellComplex = accept;
+}
+
+
+void gnomonViewForm::setEnableLinking(bool enable)
+{
+    d->enableLink = enable;
+    d->refresh();
 }
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)

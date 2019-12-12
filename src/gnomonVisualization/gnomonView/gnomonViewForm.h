@@ -122,6 +122,9 @@ public slots:
     void setAcceptCellComplex(bool);
 
 public slots:
+    void setEnableLinking(bool);
+
+public slots:
     void onSliceChanged(int);
 
 public slots:
