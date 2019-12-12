@@ -48,6 +48,12 @@ public:
     gnomonViewFormPool *pool = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -90,6 +96,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
+    d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
@@ -97,6 +104,21 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -112,8 +134,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -183,6 +204,10 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
 
     if (d->command->output()) {
         d->target->setCellComplex(d->command->output());
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
     }
 }
 

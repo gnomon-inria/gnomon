@@ -44,6 +44,8 @@ public:
     QStackedWidget *target_stack = nullptr;
     gnomonMessageBoard *target_message = nullptr;
 
+    QSplitter *splitter = nullptr;
+
 public:
     gnomonViewFormPool *pool = nullptr;
 
@@ -103,10 +105,9 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     d->target_stack->addWidget(d->target_message);
     d->target_stack->addWidget(d->target);
 
-
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(sources_dummy);
-    splitter->addWidget(d->target_stack);
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(sources_dummy);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -122,7 +123,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(splitter);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////

@@ -46,11 +46,15 @@ public:
     QStringList keys(void) const override;
 
 public:
-    QSplitter *splitter;
-
-public:
     gnomonViewMatplotlib *source = nullptr;
     gnomonViewMatplotlib *target = nullptr;
+
+public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
 
 public:
     QMetaObject::Connection c_o;
@@ -96,9 +100,20 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     d->source = new gnomonViewMatplotlib(this);
     d->target = new gnomonViewMatplotlib(this);
 
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->source);
-    d->splitter->addWidget(d->target);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -190,6 +205,9 @@ void gnomonWorkspaceTreeAnalysis::apply(void)
 
     if (d->command->output()) {
         d->target->setForm("gnomonTree",d->command->output());
+        d->target_stack->setCurrentWidget(d->target);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
     }
 }
 
