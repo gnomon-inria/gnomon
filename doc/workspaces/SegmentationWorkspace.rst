@@ -48,7 +48,7 @@ Example of use
 
 Clicking on the Apply button runs the plugin algorithm on the input image. After completion, the resulting segmented image appears on the right viewer of the workspace.
 
-**Visualizing the result:** Users can then select their preferred visualization option in the visualization menu of the left viewer. For instance, they can change the colormap used to identify each segmented object, or they can toggle on/off the surface mesh visualization option.
+**Visualizing the result:** Users can then select their preferred visualization option in the visualization menu of the right viewer. For instance, they can change the colormap used to identify each segmented object, or they can toggle on/off the surface mesh visualization option.
 
 When surface meshes are visualized, a Reticle button appears on the left among the possible user-image interaction styles. By activating this style, users can click on each segmented object to obtain information associated with it (such as, for instance, its unique numerical ID).
 
