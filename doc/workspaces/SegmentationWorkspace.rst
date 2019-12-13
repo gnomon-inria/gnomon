@@ -46,7 +46,7 @@ Example of use
 
 **Selecting, setting and running a plugin:** After selecting the desired segmentation algorithm on the plugin Panel on the rightmost part of the Workspace, users can set the parameters to specific values or leave them to their default values.
 
-Clicking on the Apply button runs the plugin algorithm on the input image. After completion, the resulting segmented image appears on the left viewer of the workspace.
+Clicking on the Apply button runs the plugin algorithm on the input image. After completion, the resulting segmented image appears on the right viewer of the workspace.
 
 **Visualizing the result:** Users can then select their preferred visualization option in the visualization menu of the left viewer. For instance, they can change the colormap used to identify each segmented object, or they can toggle on/off the surface mesh visualization option.
 
