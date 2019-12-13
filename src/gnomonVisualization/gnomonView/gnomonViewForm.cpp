@@ -1064,16 +1064,30 @@ void gnomonViewForm::link(gnomonViewForm *other)
 
     // ///////////////////////////////////////////////////////////////
 
-    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+//    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
     other->d->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
     connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
-    connect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
-    connect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
-    connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
-    connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    connect(other, &gnomonViewForm::switchedTo2D, [=] () {
+        this->switchTo2D();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+    connect(other, &gnomonViewForm::switchedTo2DXY, [=] () {
+        this->switchTo2DXY();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+    connect(other, &gnomonViewForm::switchedTo2DXZ, [=] () {
+        this->switchTo2DXZ();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+    connect(other, &gnomonViewForm::switchedTo2DYZ, [=] () {
+        this->switchTo2DYZ();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+//    connect(other, &gnomonViewForm::switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+//    connect(other, &gnomonViewForm::switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 }
