@@ -77,11 +77,13 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
 
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
+        view->setEnableLinking(false);
     }
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::fusion_color);
     d->target->setMinimumWidth(250);
+    d->target->setEnableLinking(false);
 
     QWidget *dummy = new QWidget(this);
     dummy->setLayout(d->sources_layout);
@@ -138,6 +140,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
     {
         view->setInputView(true);
+        view->setEnableLinking(false);
     });
 
 

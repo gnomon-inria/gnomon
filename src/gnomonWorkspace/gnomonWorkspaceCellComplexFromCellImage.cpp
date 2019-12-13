@@ -207,8 +207,12 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
         d->target->setCellComplex(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
+        d->source->setEnableLinking(false);
+        d->target->setEnableLinking(false);
     }
 }
 
