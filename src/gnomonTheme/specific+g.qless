@@ -40,7 +40,7 @@ gnomonWorkspaceBrowser > QListView::item
 
 gnomonMessageBoard > QLabel
 {
-    color: @base1;
+    color: @base2;
     font-size: 32px;
 }
 

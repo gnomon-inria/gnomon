@@ -90,6 +90,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     d->pool = new gnomonViewFormPool(this);
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
+        view->setEnableLinking(false);
         d->pool->addView(view);
     }
     d->pool->addView(d->target);
@@ -149,6 +150,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     {
         d->pool->addView(view);
         view->setInputView(true);
+        view->setEnableLinking(false);
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
