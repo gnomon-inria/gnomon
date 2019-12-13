@@ -14,7 +14,6 @@
 #include <gnomonMainWindow.h>
 
 #include <gnomonCore>
-//#include <gnomonComposer>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
@@ -245,6 +244,25 @@ gnomonMainWindow::~gnomonMainWindow(void)
     d->setdw();
 
     delete d;
+}
+
+void gnomonMainWindow::populate(void)
+{
+    dtkWidgetsMainWindow::populate();
+
+    dtkWidgetsMenu *menu_website = this->menubar()->addMenu(fa::globe, "Gnomon website");
+    dtkWidgetsMenuItemDIY *website = new dtkWidgetsMenuItemDIY("Access the documentation");
+    menu_website->addItem(website);
+//     website->setShowTitle(false);
+    website->setSizePolicy(QSizePolicy::Minimum);
+
+    connect(website, &dtkWidgetsMenuItem::clicked, [=] ()
+    {
+        QDesktopServices::openUrl(QUrl("https://gnomon.gitlabpages.inria.fr/gnomon/"));
+    });
+
+
+    dtkWidgetsMenu *menu_about = this->menubar()->addMenu(fa::questioncircle, "About this workspace");
 }
 
 void gnomonMainWindow::resizeEvent(QResizeEvent *event)

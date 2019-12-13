@@ -36,6 +36,8 @@
 #include <dtkThemes>
 #include <dtkScript>
 
+#include <vtkCamera.h>
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManagerPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -182,7 +184,7 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkCamera *cam)
 {
     QImage image = visualization->imageRendering();
 
@@ -191,6 +193,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 
     d->forms.insert(item, form->clone());
     d->formVisualizations.insert(item, visualization);
+    d->formCameras.insert(item, cam);
 
     QString writerPlugin;
     if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
@@ -259,7 +262,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->contents->layout()->addWidget(item);
 }
 
-gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
+gnomonAbstractDynamicForm *gnomonFormManager::get(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
@@ -269,11 +272,29 @@ gnomonAbstractDynamicForm * gnomonFormManager::get(int index)
     return nullptr;
 }
 
-gnomonAbstractVisualization * gnomonFormManager::getVisualization(int index)
+gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
 {
-    for (auto it = d->formVisualizations.begin(); it != d->formVisualizations.end(); ++it) {
+    for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
-            return *it;
+            if (d->formVisualizations.contains(it.key())) {
+                return d->formVisualizations.value(it.key());
+            } else {
+                return nullptr;
+            }
+        }
+    }
+    return nullptr;
+}
+
+vtkCamera *gnomonFormManager::getCamera(int index)
+{
+    for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
+        if (index == it.key()->id) {
+            if (d->formCameras.contains(it.key())) {
+                return d->formCameras.value(it.key());
+            } else {
+                return nullptr;
+            }
         }
     }
     return nullptr;

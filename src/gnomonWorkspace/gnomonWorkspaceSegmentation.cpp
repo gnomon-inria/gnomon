@@ -31,6 +31,7 @@
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
 
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +49,12 @@ public:
 public:
     gnomonViewForm *source = nullptr;
     gnomonViewForm *target = nullptr;
+
+public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
 
 public:
     gnomonViewFormPool *pool = nullptr;
@@ -98,6 +105,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(gnomonToolBar::segmentation_color);
+    d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(gnomonToolBar::segmentation_color);
@@ -105,6 +113,19 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+    d->pool->linkAll();
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+//    d->target_message->setMessage("Load a Form from the top bar to set the input");
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -117,11 +138,14 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
 // /////////////////////////////////////////////////////////////////////////////
 
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -130,16 +154,22 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if (d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
-        else
+        if (d->command->input() != d->source->image()) {
+            if(d->source->image()) {
+                d->command->setInput(d->source->image());
+//                d->target_message->setMessage("Press Apply to display the result of the algorithm");
+                d->target_message->setMessage("Result will be displayed here");
+            }
+        } else {
             qDebug() << "Not changed";
+        }
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->image());
+        if(d->source->image())
+            d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
 
@@ -178,15 +208,28 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
-    else
+    if (d->command->input() != d->source->image()) {
+        if(d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setForm("gnomonCellImage",d->command->output());
-    d->target->render();
+    if (d->command->output())
+    {
+        d->target->setForm("gnomonCellImage",d->command->output());
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+        d->source->setEnableLinking(false);
+        d->target->setEnableLinking(false);
+    }
 }
 
 //

@@ -506,13 +506,16 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     // });
 
     d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->setInteractive(false);
+    d->view_menubar->setWidth(32);
+    d->view_menubar->setMargins(6);
     d->view_menubar->addMenu(d->menu());
     d->view_menubar->touch();
 
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->view_menubar, 0, 0, 1, 1);
+//    layout->addWidget(d->view_menubar, 0, 0, 1, 1);
     layout->addWidget(d, 0, 1, 1, 1);
     // layout->addWidget(d->pane(parent), 0, 1, 1, 1);
 

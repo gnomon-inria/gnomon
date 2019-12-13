@@ -45,6 +45,12 @@ public:
     gnomonViewMatplotlib *target = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -89,6 +95,21 @@ gnomonWorkspaceLStringFromTree::gnomonWorkspaceLStringFromTree(QWidget *parent) 
 
     d->target = new gnomonViewMatplotlib(this);
 
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -104,8 +125,7 @@ gnomonWorkspaceLStringFromTree::gnomonWorkspaceLStringFromTree(QWidget *parent) 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -114,17 +134,22 @@ gnomonWorkspaceLStringFromTree::gnomonWorkspaceLStringFromTree(QWidget *parent) 
 
     connect(d->source, &gnomonViewMatplotlib::formAdded, [=] ()
     {
-        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
-            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-        else
+        if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+                d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+            }
+        } else {
             qDebug() << "Not changed";
+        }
 
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceLStringFromTreePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        }
         d->configure(algorithm);
     });
 
@@ -158,14 +183,22 @@ void gnomonWorkspaceLStringFromTree::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")))
-        d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
-    else
+    if (d->command->input() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+        if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
+            d->command->setInput(dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree")));
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setForm("gnomonLString",d->command->output());
+    if (d->command->output()) {
+        d->target->setForm("gnomonLString",d->command->output());
+        d->target_stack->setCurrentWidget(d->target);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
 }
 
 void gnomonWorkspaceLStringFromTree::configure(const QString& algorithm)

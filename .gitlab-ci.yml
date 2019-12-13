@@ -1,4 +1,4 @@
-image: conda/miniconda3
+image: conda/miniconda3-centos6
 
 stages:
   - build

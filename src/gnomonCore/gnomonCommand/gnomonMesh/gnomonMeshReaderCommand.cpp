@@ -55,7 +55,12 @@ void gnomonMeshReaderCommand::setPath(const QString& path)
 
 gnomonMeshSeries *gnomonMeshReaderCommand::mesh(void)
 {
-    return ((gnomonAbstractMeshReader *) this->action)->mesh();
+    gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
+    if ((!mesh)||(mesh->times().size()==0)) {
+        return nullptr;
+    } else {
+        return mesh;
+    }
 }
 
 //

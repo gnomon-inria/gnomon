@@ -137,6 +137,7 @@ public:
 
 public:
     bool acceptCellComplex = true;
+    bool enableLink = false;
 
 public:
     QColor export_color = QColor("#cccccc");
@@ -225,6 +226,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->sync->toggle(false);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
+    this->export_button->toggle(true);
 
     this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
     this->help_button->toggle(false);
@@ -266,7 +268,7 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys())
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
 }
 
 QSize gnomonViewFormPrivate::sizeHint(void) const
@@ -285,10 +287,15 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_XZ->move(l_margin + 10,  90);
     this->renderer2D_YZ->move(l_margin + 10, 130);
 
-    this->sync->move(event->size().width() - r_margin - 80, 10);
     this->export_button->move(event->size().width() - r_margin - 40, 10);
-    this->help_button->move(event->size().width() - r_margin - 120, 10);
-
+    if (this->enableLink) {
+        this->sync->setVisible(true);
+        this->sync->move(event->size().width() - r_margin - 80, 10);
+        this->help_button->move(event->size().width() - r_margin - 120, 10);
+    } else {
+        this->sync->setVisible(false);
+        this->help_button->move(event->size().width() - r_margin - 80, 10);
+    }
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
     }
@@ -721,9 +728,14 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->renderer2D_XZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DXZ()));
     connect(d->renderer2D_YZ, SIGNAL(iconClicked()), this, SLOT(switchTo2DYZ()));
 
-    connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
+    connect(d->export_button, &gnomonOverlayButton::iconClicked, [=] ()
+    {
+        if (d->export_button->isToggled()) {
+            d->exportToManager();
+        }
+    });
 
-    connect(d->help_button, & gnomonOverlayButton::iconClicked, [=] ()
+    connect(d->help_button, &gnomonOverlayButton::iconClicked, [=] ()
     {
         d->help_button->toggle(!d->help_button->isToggled());
         for(int i_key=0; i_key<d->shortcut_keys.size(); i_key++) {
@@ -1052,16 +1064,30 @@ void gnomonViewForm::link(gnomonViewForm *other)
 
     // ///////////////////////////////////////////////////////////////
 
-    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+//    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
     other->d->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
     connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
-    connect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
-    connect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
-    connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
-    connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    connect(other, &gnomonViewForm::switchedTo2D, [=] () {
+        this->switchTo2D();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+    connect(other, &gnomonViewForm::switchedTo2DXY, [=] () {
+        this->switchTo2DXY();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+    connect(other, &gnomonViewForm::switchedTo2DXZ, [=] () {
+        this->switchTo2DXZ();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+    connect(other, &gnomonViewForm::switchedTo2DYZ, [=] () {
+        this->switchTo2DYZ();
+        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    });
+//    connect(other, &gnomonViewForm::switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+//    connect(other, &gnomonViewForm::switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 }
@@ -1084,11 +1110,10 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
 
     vtkSmartPointer<vtkCamera> camera2D = vtkCamera::New();
     camera2D->ShallowCopy(d->renderer2D->GetActiveCamera());
+    d->renderer2D->SetActiveCamera(camera2D);
 
     vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
-    camera3D->ShallowCopy(d->renderer2D->GetActiveCamera());
-
-    d->renderer2D->SetActiveCamera(camera2D);
+    camera3D->ShallowCopy(d->renderer3D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(camera3D);
 
     // ///////////////////////////////////////////////////////////////
@@ -1408,9 +1433,25 @@ void gnomonViewForm::getBounds(double bounds[6])
     bounds[5] = d->zBounds[1];
 }
 
+void gnomonViewForm::setCamera(vtkCamera *cam)
+{
+    vtkSmartPointer<vtkCamera> camera3D = d->renderer3D->GetActiveCamera();
+//    camera3D->DeepCopy(cam);
+    camera3D->SetFocalPoint(cam->GetFocalPoint());
+    camera3D->SetViewUp(cam->GetViewUp());
+    camera3D->SetPosition(cam->GetPosition());
+}
+
 void gnomonViewForm::setAcceptCellComplex(bool accept)
 {
     d->acceptCellComplex = accept;
+}
+
+
+void gnomonViewForm::setEnableLinking(bool enable)
+{
+    d->enableLink = enable;
+    d->refresh();
 }
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
@@ -1462,6 +1503,19 @@ void gnomonViewForm::onTimeChanged(double time)
         qSort(sorted_times);
         int value = sorted_times.indexOf(time);
         d->time_slider->setValue(value);
+    }
+}
+
+void gnomonViewForm::setInputView(bool input)
+{
+    if (input) {
+        d->export_button->changeIcon(fa::arrowcircledown);
+        d->export_button->toggle(false);
+        d->export_button->activate(false);
+    } else {
+        d->export_button->changeIcon(fa::arrowcircleup);
+        d->export_button->toggle(true);
+        d->export_button->activate(true);
     }
 }
 
@@ -1520,8 +1574,13 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
     QString path = event->mimeData()->text();
 
     if(path.startsWith(":")) {
-        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
-        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(path.remove(":").toInt()));
+        int form_index = path.remove(":").toInt();
+        gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(form_index);
+        if (d->empty) {
+            vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index);
+            this->setCamera(cam);
+        }
+        this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(form_index));
     } else {
         this->addFormFromFile(path);
     }
@@ -1529,7 +1588,6 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 
     event->accept();
 
-    this->renderer3D()->ResetCamera();
     this->render();
 }
 
