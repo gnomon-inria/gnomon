@@ -14,7 +14,7 @@ Installation by creating a new conda environment (recommended)
 
 note: the name of the new environment (here: 'gnomon') is defined by the option -n
 
-Installation in an existing conda environment containing already Python 3.6+
+Installation in an existing conda environment containing already Python 3.7.5+
 -----------------------------------------------------------------------------
 
 .. code-block::
@@ -38,7 +38,7 @@ Clone `gnomon` sources:
 
     $ git clone https://gitlab.inria.fr/gnomon/gnomon.git
 
-Create a conda environment:
+Within the cloned `gnomon/` folder, create a conda environment:
 
 .. code-block::
 
@@ -50,7 +50,7 @@ Activate the newly created environment:
 
     $ conda activate gnomon-dev
 
-(OPTIONAL) check the libuuid has been taken from `dtk` channel:
+(OPTIONAL) check the `libuuid has been taken from `dtk` channel:
 
 .. code-block::
 
@@ -62,7 +62,7 @@ If not:
 
     $ conda install -c dtk libuuid
 
-Then we compile and install the sources:
+Then, compile and install the sources:
 
 .. code-block::
 
@@ -72,11 +72,15 @@ Then we compile and install the sources:
     $ make -j install
 
 If all went well, you can nom start the app:
+* On linux:
 
 .. code-block::
 
     $ ./bin/gnomon
 
+* On macOs:
+.. code-block::
+    $ ./bin/gnomon.app/Contents/MacOS/gnomon
 =================
 Launching Gnomon
 =================
