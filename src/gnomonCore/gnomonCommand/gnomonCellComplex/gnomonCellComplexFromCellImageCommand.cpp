@@ -69,12 +69,22 @@ QMap<QString, gnomonCoreParameter *> gnomonCellComplexFromCellImageCommand::para
 
 gnomonCellImageSeries *gnomonCellComplexFromCellImageCommand::input(void)
 {
-    return ((gnomonAbstractCellComplexFromCellImage *) this->action)->input();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellComplexFromCellImage *) this->action)->input();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        return nullptr;
+    } else {
+        return cellImage;
+    }
 }
 
 gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output(void)
 {
-    return ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
+    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
+    if ((!cellComplex)||(cellComplex->times().size()==0)) {
+        return nullptr;
+    } else {
+        return cellComplex;
+    }
 }
 
 //
