@@ -6,4 +6,5 @@ Using Gnomon
 .. toctree::
     :maxdepth: 2
 
-    workspaces/workspacename
+    workspaces/PreprocessingWorkspace
+    workspaces/SegmentationWorkspace

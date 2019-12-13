@@ -67,8 +67,6 @@ Contents
    user-tutorials
    extension-tutorials
 
-   workspaces/SegmentationWorkspace
-
 
 Indices and tables
 ==================
