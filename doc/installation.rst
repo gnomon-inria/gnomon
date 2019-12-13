@@ -46,11 +46,11 @@ Within the cloned `gnomon/` folder, create a conda environment:
 
 Activate the newly created environment:
 
-.. code-block::
+.. code-block:
 
     $ conda activate gnomon-dev
 
-(OPTIONAL) check the `libuuid has been taken from `dtk` channel:
+(OPTIONAL) check the `libuuid` has been taken from `dtk` channel:
 
 .. code-block::
 
@@ -79,8 +79,11 @@ If all went well, you can nom start the app:
     $ ./bin/gnomon
 
 * On macOs:
+
 .. code-block::
+
     $ ./bin/gnomon.app/Contents/MacOS/gnomon
+
 =================
 Launching Gnomon
 =================
