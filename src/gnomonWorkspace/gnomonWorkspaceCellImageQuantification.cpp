@@ -95,6 +95,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
     d->view->setInputView(false);
+    d->view->setEnableLinking(false);
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
 

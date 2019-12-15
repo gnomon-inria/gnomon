@@ -27,6 +27,8 @@ class gnomonFormManagerItem;
 class gnomonFormManagerFocus;
 class gnomonFormManagerData;
 
+class vtkCamera;
+
 class gnomonFormManagerPrivate : public QScrollArea
 {
 public:
@@ -52,6 +54,7 @@ public:
     QHash<gnomonFormManagerItem *, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
     QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;
     QHash<gnomonFormManagerItem *, gnomonFormManagerData *> formData;
+    QHash<gnomonFormManagerItem *, vtkCamera *> formCameras;
 
 public:
     gnomonFormManager *q;

@@ -33,6 +33,11 @@ gnomonMessageBoard::gnomonMessageBoard(QWidget *parent) : QWidget(parent)
     layout->addWidget(this->message_label,Qt::AlignCenter);
 
     this->setLayout(layout);
+
+    connect(dtkThemesEngine::instance(), &dtkThemesEngine::changed, [=]()
+    {
+        dtkThemesEngine::instance()->polish(this);
+    });
 }
 
 gnomonMessageBoard::~gnomonMessageBoard(void)

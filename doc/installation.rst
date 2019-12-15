@@ -10,16 +10,16 @@ Installation by creating a new conda environment (recommended)
 
 .. code-block::
 
-    > conda create -n gnomon -c dtk -c mosaic -c gnomon gnomon gnomon-plugins
+    > conda create -n gnomon -c dtk -c mosaic -c gnomon -c conda-forge gnomon plugin_tissueimagemesh
 
 note: the name of the new environment (here: 'gnomon') is defined by the option -n
 
-Installation in an existing conda environment containing already Python 3.6+
+Installation in an existing conda environment containing already Python 3.7.5+
 -----------------------------------------------------------------------------
 
 .. code-block::
 
-    > conda install -c dtk -c mosaic -c gnomon gnomon gnomon-plugins
+    > conda install -c dtk -c mosaic -c gnomon -c conda-forge gnomon plugin_tissueimagemesh
 
 
 About Conda
@@ -38,19 +38,19 @@ Clone `gnomon` sources:
 
     $ git clone https://gitlab.inria.fr/gnomon/gnomon.git
 
-Create a conda environment:
+Within the cloned `gnomon/` folder, create a conda environment:
 
 .. code-block::
 
-    $ conda env create -f conda/env.yaml 
+    $ conda env create -f conda/env.yaml
 
 Activate the newly created environment:
 
-.. code-block::
+.. code-block:
 
     $ conda activate gnomon-dev
 
-(OPTIONAL) check the libuuid has been taken from `dtk` channel:
+(OPTIONAL) check the `libuuid` has been taken from `dtk` channel:
 
 .. code-block::
 
@@ -62,7 +62,7 @@ If not:
 
     $ conda install -c dtk libuuid
 
-Then we compile and install the sources:
+Then, compile and install the sources:
 
 .. code-block::
 
@@ -72,10 +72,17 @@ Then we compile and install the sources:
     $ make -j install
 
 If all went well, you can nom start the app:
+* On linux:
 
 .. code-block::
 
-    $ ./bin/gnomon 
+    $ ./bin/gnomon
+
+* On macOs:
+
+.. code-block::
+
+    $ ./bin/gnomon.app/Contents/MacOS/gnomon
 
 =================
 Launching Gnomon

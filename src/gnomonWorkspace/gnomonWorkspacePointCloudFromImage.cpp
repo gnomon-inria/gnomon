@@ -101,6 +101,7 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+    d->pool->linkAll();
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -203,8 +204,12 @@ void gnomonWorkspacePointCloudFromImage::apply(void)
         d->target->setForm("gnomonPointCloud",d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
+        d->source->setEnableLinking(false);
+        d->target->setEnableLinking(false);
     }
 }
 
