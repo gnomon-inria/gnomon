@@ -72,7 +72,7 @@ requirements:
     - dtk-imaging >=2.0.4
     - dtk-imaging-python >=2.0.4
     - dtk-plugins-imaging >=2.0.2
-    - dtk-widgets >=2.16.3
+    - dtk-widgets >=2.16.6
     - dtk-composer >=2.0.0
     - qt >=5.9.0
     - jupyter
