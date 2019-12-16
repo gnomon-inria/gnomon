@@ -310,6 +310,26 @@ def gnomonImageInput(cls=None, attr=None, method='input', setter_method='setInpu
         return wrapper
 
 
+def _gnomonImageOutput(cls, attr, method):
+    def func(self):
+        self.image_series, self.image = buildImageSeries(getattr(self, attr))
+        return self.image_series
+
+    setattr(cls, method, func)
+
+    return cls
+
+
+def gnomonImageOutput(cls=None, attr=None, method='output'):
+    if cls is not None:
+        return _gnomonImageOutput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonImageOutput(cls, attr, method)
+
+        return wrapper
+
+
 # ------------------------------------------------------------------------------
 # --------------------------------- FormDict ----------------------------------
 # ------------------------------------------------------------------------------
