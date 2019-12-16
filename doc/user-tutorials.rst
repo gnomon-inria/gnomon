@@ -7,4 +7,5 @@ Using Gnomon
     :maxdepth: 2
 
     workspaces/PreprocessingWorkspace
+    workspaces/RegistrationWorkspace
     workspaces/SegmentationWorkspace
