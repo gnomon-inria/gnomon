@@ -1,7 +1,10 @@
 import gnomoncore
 
-from gnomoncore import (gnomonImage, gnomonImageSeries, gnomonLString,
-                        gnomonLStringSeries, gnomonMesh, gnomonMeshSeries,
+from gnomoncore import (gnomonImage, gnomonImageSeries,  
+                        gnomonCellComplex, gnomonCellComplexSeries,
+                        gnomonCellImage, gnomonCellImageSeries,
+                        gnomonLString, gnomonLStringSeries, 
+                        gnomonMesh, gnomonMeshSeries,
                         gnomonPointCloud, gnomonPointCloudSeries,
                         gnomonTree, gnomonTreeSeries)
 
@@ -33,6 +36,16 @@ def buildTreeSeries(tree_dict, data_plugin="gnomonTreeDataTreex", data_setter="s
     return tree_series, tree, tree_data
 
 
+def treeDictFromSeries(tree_series, data_attr='_tree'):
+    tree = {}
+    tree_dict = {}
+    for time in tree_series.times():
+        tree[time] = tree_series.at(time).asTree()
+        tree_dict[time] = getattr(tree[time].data(), data_attr)
+
+    return tree_dict, tree
+
+
 def _gnomonTreeInput(cls, attr, method, setter_method):
     def func(self):
         if not hasattr(self ,"tree_series"):
@@ -47,11 +60,9 @@ def _gnomonTreeInput(cls, attr, method, setter_method):
         setattr(self, attr, {})
 
         if self.tree_series is not None:
-
-            for time in self.tree_series.times():
-                self.tree[time] = self.tree_series.at(time).asTree()
-                getattr(self, attr)[time] = self.tree[time].data()._tree
-
+            tree_dict, self.tree = treeDictFromSeries(self.tree_series)
+            setattr(self, attr, tree_dict)
+            
             if hasattr(self ,"refresh_parameters"):
                 self.refresh_parameters()
 
@@ -89,6 +100,178 @@ def gnomonTreeOutput(cls=None, attr=None, method='output'):
 
         return wrapper
 
+# ------------------------------------------------------------------------------
+# --------------------------------- CellImage -------------------------------------
+# ------------------------------------------------------------------------------
+
+load_plugin_group("cellImageData")
+
+
+def buildCellImageSeries(cellImage_dict, data_plugin="gnomonCellImageDataPropertySpatialImage", data_setter="set_property_image"):
+    cellImage_series = gnomonCellImageSeries()
+    cellImage = {}
+    cellImage_data = {}
+
+    for time in cellImage_dict.keys():
+        cellImage[time] = gnomonCellImage()
+        cellImage_series.insert(time, cellImage[time])
+        cellImage_data[time] = gnomoncore.cellImageData_pluginFactory().create(data_plugin)
+        getattr(cellImage_data[time],data_setter)(cellImage_dict[time])
+        cellImage[time].setData(cellImage_data[time])
+
+    return cellImage_series, cellImage, cellImage_data
+
+
+def cellImageDictFromSeries(cellImage_series, data_attr='_p_img'):
+    cellImage = {}
+    cellImage_dict = {}
+    for time in cellImage_series.times():
+        cellImage[time] = cellImage_series.at(time).asCellImage()
+        cellImage_dict[time] = getattr(cellImage[time].data(), data_attr)
+
+    return cellImage_dict, cellImage
+
+
+def _gnomonCellImageInput(cls, attr, method, setter_method):
+    def func(self):
+        if not hasattr(self ,"cellImage_series"):
+            self.cellImage_series, self.cellImage, self.cellImage_data = buildCellImageSeries(getattr(self, attr))
+        return self.cellImage_series
+
+    setattr(cls, method, func)
+
+    def setter_func(self, cellImage_series):
+        self.cellImage_series = cellImage_series
+        self.cellImage = {}
+        setattr(self, attr, {})
+
+        if self.cellImage_series is not None:
+            cellImage_dict, self.cellImage = cellImageDictFromSeries(self.cellImage_series)
+            setattr(self, attr, cellImage_dict)
+
+            if hasattr(self, "refresh_parameters"):
+                self.refresh_parameters()
+
+    setattr(cls, setter_method, setter_func)
+
+    return cls
+
+
+def gnomonCellImageInput(cls=None, attr=None, method='input', setter_method='setInput'):
+    if cls is not None:
+        return _gnomonCellImageInput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonCellImageInput(cls, attr, method, setter_method)
+
+        return wrapper
+
+
+def _gnomonCellImageOutput(cls, attr, method):
+    def func(self):
+        self.cellImage_series, self.cellImage, self.cellImage_data = buildCellImageSeries(getattr(self ,attr))
+        return self.cellImage_series
+
+    setattr(cls, method, func)
+
+    return cls
+
+
+def gnomonCellImageOutput(cls=None, attr=None, method='output'):
+    if cls is not None:
+        return _gnomonCellImageOutput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonCellImageOutput(cls, attr, method)
+
+        return wrapper
+    
+
+# ------------------------------------------------------------------------------
+# --------------------------------- CellComplex -------------------------------------
+# ------------------------------------------------------------------------------
+
+load_plugin_group("cellComplexData")
+
+
+def buildCellComplexSeries(cellComplex_dict, data_plugin="gnomonCellComplexDataPropertyTopomesh", data_setter="set_property_topomesh"):
+    cellComplex_series = gnomonCellComplexSeries()
+    cellComplex = {}
+    cellComplex_data = {}
+
+    for time in cellComplex_dict.keys():
+        cellComplex[time] = gnomonCellComplex()
+        cellComplex_series.insert(time, cellComplex[time])
+        cellComplex_data[time] = gnomoncore.cellComplexData_pluginFactory().create(data_plugin)
+        getattr(cellComplex_data[time],data_setter)(cellComplex_dict[time])
+        cellComplex[time].setData(cellComplex_data[time])
+
+    return cellComplex_series, cellComplex, cellComplex_data
+
+
+def cellComplexDictFromSeries(cellComplex_series, data_attr='_topomesh'):
+    cellComplex = {}
+    cellComplex_dict = {}
+    for time in cellComplex_series.times():
+        cellComplex[time] = cellComplex_series.at(time).asCellComplex()
+        cellComplex_dict[time] = getattr(cellComplex[time].data(), data_attr)
+
+    return cellComplex_dict, cellComplex
+
+
+def _gnomonCellComplexInput(cls, attr, method, setter_method):
+    def func(self):
+        if not hasattr(self ,"cellComplex_series"):
+            self.cellComplex_series, self.cellComplex, self.cellComplex_data = buildCellComplexSeries(getattr(self, attr))
+        return self.cellComplex_series
+
+    setattr(cls, method, func)
+
+    def setter_func(self, cellComplex_series):
+        self.cellComplex_series = cellComplex_series
+        self.cellComplex = {}
+        setattr(self, attr, {})
+
+        if self.cellComplex_series is not None:
+            cellComplex_dict, self.cellComplex = cellComplexDictFromSeries(self.cellComplex_series)
+            setattr(self, attr, cellComplex_dict)
+
+            if hasattr(self, "refresh_parameters"):
+                self.refresh_parameters()
+
+    setattr(cls, setter_method, setter_func)
+
+    return cls
+
+
+def gnomonCellComplexInput(cls=None, attr=None, method='input', setter_method='setInput'):
+    if cls is not None:
+        return _gnomonCellComplexInput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonCellComplexInput(cls, attr, method, setter_method)
+
+        return wrapper
+
+
+def _gnomonCellComplexOutput(cls, attr, method):
+    def func(self):
+        self.cellComplex_series, self.cellComplex, self.cellComplex_data = buildCellComplexSeries(getattr(self ,attr))
+        return self.cellComplex_series
+
+    setattr(cls, method, func)
+
+    return cls
+
+
+def gnomonCellComplexOutput(cls=None, attr=None, method='output'):
+    if cls is not None:
+        return _gnomonCellComplexOutput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonCellComplexOutput(cls, attr, method)
+
+        return wrapper
 
 # ------------------------------------------------------------------------------
 # --------------------------------- PointCloud -------------------------------
@@ -110,6 +293,51 @@ def buildPointCloudSeries(pointCloud_dict, data_plugin="gnomonPointCloudDataProp
         pointCloud[time].setData(pointCloud_data[time])
 
     return pointCloud_series, pointCloud, pointCloud_data
+
+
+def pointCloudDictFromSeries(pointCloud_series, data_attr='_topomesh'):
+    pointCloud = {}
+    pointCloud_dict = {}
+    for time in pointCloud_series.times():
+        pointCloud[time] = pointCloud_series.at(time).asPointCloud()
+        pointCloud_dict[time] = getattr(pointCloud[time].data(),data_attr)
+        
+    return pointCloud_dict, pointCloud
+    
+
+def _gnomonPointCloudInput(cls, attr, method, setter_method):
+    def func(self):
+        if not hasattr(self ,"pointCloud_series"):
+            self.pointCloud_series, self.pointCloud, self.pointCloud_data = buildPointCloudSeries(getattr(self, attr))
+        return self.pointCloud_series
+
+    setattr(cls, method, func)
+
+    def setter_func(self, pointCloud_series):
+        self.pointCloud_series = pointCloud_series
+        self.pointCloud = {}
+        setattr(self, attr, {})
+
+        if self.pointCloud_series is not None:
+            pointCloud_dict, self.pointCloud = pointCloudDictFromSeries(self.pointCloud_series)
+            setattr(self, attr, pointCloud_dict)
+
+            if hasattr(self, "refresh_parameters"):
+                self.refresh_parameters()
+
+    setattr(cls, setter_method, setter_func)
+
+    return cls
+
+
+def gnomonPointCloudInput(cls=None, attr=None, method='input', setter_method='setInput'):
+    if cls is not None:
+        return _gnomonPointCloudInput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonPointCloudInput(cls, attr, method, setter_method)
+
+        return wrapper
 
 
 def _gnomonPointCloudOutput(cls, attr, method):
@@ -152,6 +380,52 @@ def buildMeshSeries(mesh_dict, data_plugin="gnomonMeshDataPropertyTopomesh", dat
         mesh[time].setData(mesh_data[time])
 
     return mesh_series, mesh, mesh_data
+
+
+def meshDictFromSeries(mesh_series, data_attr='_mesh'):
+    mesh = {}
+    mesh_dict = {}
+    for time in mesh_series.times():
+        mesh[time] = mesh_series.at(time).asMesh()
+        mesh_dict[time] = getattr(mesh[time].data(), data_attr)
+
+    return mesh_dict, mesh
+
+
+def _gnomonMeshInput(cls, attr, method, setter_method):
+    def func(self):
+        if not hasattr(self ,"mesh_series"):
+            self.mesh_series, self.mesh, self.mesh_data = buildMeshSeries(getattr(self, attr))
+        return self.mesh_series
+
+    setattr(cls, method, func)
+
+    def setter_func(self, mesh_series):
+        self.mesh_series = mesh_series
+        self.mesh = {}
+        setattr(self, attr, {})
+
+        if self.mesh_series is not None:
+
+            mesh_dict, self.mesh = meshDictFromSeries(self.mesh_series)
+            setattr(self, attr, mesh_dict)
+
+            if hasattr(self ,"refresh_parameters"):
+                self.refresh_parameters()
+
+    setattr(cls, setter_method, setter_func)
+
+    return cls
+
+
+def gnomonMeshInput(cls=None, attr=None, method='input', setter_method='setInput'):
+    if cls is not None:
+        return _gnomonMeshInput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonMeshInput(cls, attr, method, setter_method)
+
+        return wrapper
 
 
 def _gnomonMeshOutput(cls, attr, method):
@@ -271,6 +545,17 @@ def buildImageSeries(image_dict):
     return image_series, image
 
 
+def imageDictFromSeries(image_series, converter_func=dtk_img_to_sp_img):
+    image = {}
+    image_dict = {}
+    for time in image_series.times():
+        image[time] = image_series.at(time).asImage()
+        image_dict[time] = {}
+        for channel in image[time].channels():
+            image_dict[time][channel] = converter_func(image[time].image(channel))
+    return image_dict, image
+
+
 def _gnomonImageInput(cls, attr, method, setter_method):
     def func(self):
         if not hasattr(self, "image_series"):
@@ -286,13 +571,10 @@ def _gnomonImageInput(cls, attr, method, setter_method):
 
         if self.image_series is not None:
 
-            for time in self.image_series.times():
-                self.image[time] = self.image_series.at(time).asImage()
-                getattr(self, attr)[time] = {}
-                for channel in self.image[time].channels():
-                    getattr(self, attr)[time][channel] = dtk_img_to_sp_img(self.image[time].image(channel))
+            image_dict, self.image = imageDictFromSeries(image_series)
+            setattr(self, attr, image_dict)
 
-            if hasattr(self ,"refresh_parameters"):
+            if hasattr(self, "refresh_parameters"):
                 self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
