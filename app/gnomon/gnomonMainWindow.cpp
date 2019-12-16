@@ -81,23 +81,23 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d = new gnomonMainWindowPrivate;
     d->q = this;
 
-    dtk::widgets::workspace::pluginFactory().record(      "PreProcessing", creator<gnomonWorkspacePreprocess>);
-    dtk::widgets::workspace::pluginFactory().record(            "Browser", creator<gnomonWorkspaceBrowser>);
-    dtk::widgets::workspace::pluginFactory().record("Cell Reconstruction", creator<gnomonWorkspaceCellComplexFromCellImage>);
-    dtk::widgets::workspace::pluginFactory().record(         "CellFilter", creator<gnomonWorkspaceCellImageFilter>);
-    dtk::widgets::workspace::pluginFactory().record(      "Cell Analysis", creator<gnomonWorkspaceCellImageQuantification>);
-    dtk::widgets::workspace::pluginFactory().record(             "Fusion", creator<gnomonWorkspaceFusion>);
-    dtk::widgets::workspace::pluginFactory().record(            "LSystem", creator<gnomonWorkspaceLSystemSimulator>);
-    dtk::widgets::workspace::pluginFactory().record(    "Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
-    dtk::widgets::workspace::pluginFactory().record(     "Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
-    dtk::widgets::workspace::pluginFactory().record(             "Python", creator<gnomonWorkspacePythonSimulator>);
-    dtk::widgets::workspace::pluginFactory().record(       "Registration", creator<gnomonWorkspaceRegistration>);
-    dtk::widgets::workspace::pluginFactory().record(       "Segmentation", creator<gnomonWorkspaceSegmentation>);
-    dtk::widgets::workspace::pluginFactory().record(         "Simulation", creator<gnomonWorkspaceSimulation>);
-    dtk::widgets::workspace::pluginFactory().record(      "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
-    dtk::widgets::workspace::pluginFactory().record( "LString Conversion", creator<gnomonWorkspaceTreeFromLString>);
+    dtk::widgets::workspace::pluginFactory().record("Image Preprocessing", creator<gnomonWorkspacePreprocess>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Browser", creator<gnomonWorkspaceBrowser>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Reconstruction", creator<gnomonWorkspaceCellComplexFromCellImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Filter", creator<gnomonWorkspaceCellImageFilter>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Analysis", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
+    dtk::widgets::workspace::pluginFactory().record( "Tree L-Systems", creator<gnomonWorkspaceLSystemSimulator>);
+    dtk::widgets::workspace::pluginFactory().record("Cell Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Python Shell", creator<gnomonWorkspacePythonSimulator>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
+    dtk::widgets::workspace::pluginFactory().record( "Simulation", creator<gnomonWorkspaceSimulation>);
+    dtk::widgets::workspace::pluginFactory().record( "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
+    dtk::widgets::workspace::pluginFactory().record( "LString to Tree", creator<gnomonWorkspaceTreeFromLString>);
     dtk::widgets::workspace::pluginFactory().record(  "LString From Tree", creator<gnomonWorkspaceLStringFromTree>);
-    dtk::widgets::workspace::pluginFactory().record(      "Plant Scan 3D", creator<gnomonWorkspacePlantScan3D>);
+    dtk::widgets::workspace::pluginFactory().record( "Tree Scanner", creator<gnomonWorkspacePlantScan3D>);
 
     dtkApp->setWindow(this);
 
@@ -105,13 +105,33 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     QWidget *central = new QWidget(this);
 
-    d->workspace_bar = new dtkWidgetsWorkspaceBar(central);
+    d->workspace_bar = new dtkWidgetsWorkspaceBar(this);
     d->workspace_bar->setStack(d->stack);
     d->workspace_bar->setDynamic(true);
-    d->workspace_bar->buildFromFactory();
-    d->workspace_bar->createWorkspace("Browser", "Browser", false);
+    d->workspace_bar->addWorkspaceInMenu("General", "Image Browser", "Image Browser");
+    d->workspace_bar->addWorkspaceInMenu("General", "Python Shell", "Python Shell");
+
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Analysis", "Cell Analysis");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Detection", "Cell Detection");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Reconstruction", "Cell Reconstruction");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Filter", "Cell Filter");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Surface Meshing", "Cell Surface Meshing");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Fusion", "Image Fusion");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Preprocessing", "Image Preprocessing");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Segmentation", "Image Segmentation");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Registration", "Image Registation");
+
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", "Tree Analysis", "Tree Analysis");
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", "Tree L-Systems", "Tree L-Systems");
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", "Tree Scanner", "Tree Scanner");
+
+    d->workspace_bar->addWorkspaceInMenu("Converting Forms", "LString to Tree", "LString to Tree");
+    d->workspace_bar->addWorkspaceInMenu("Converting Forms", "LString from Tree", "LString from Tree");
+
+    d->workspace_bar->createWorkspace("Image Browser", "Image Browser", false);
 
     d->manager = gnomonFormManager::instance();
+
 //    d->workflow = gnomonComposerWidget::instance();
 
     QVBoxLayout *i_layout = new QVBoxLayout;
