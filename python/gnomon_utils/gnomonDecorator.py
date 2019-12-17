@@ -21,7 +21,6 @@ from .gnomonPlugin import load_plugin_group
 
 load_plugin_group("treeData")
 
-
 def buildTreeSeries(tree_dict, data_plugin="gnomonTreeDataTreex", data_setter="set_tree"):
     tree_series = gnomonTreeSeries()
     tree = {}
@@ -49,19 +48,19 @@ def treeDictFromSeries(tree_series, data_attr='_tree'):
 
 def _gnomonTreeInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self ,"tree_series"):
-            self._tree_series, self._tree, self._tree_data = buildTreeSeries(getattr(self, attr))
-        return self._tree_series
+        if not hasattr(self ,"_in_tree_series"):
+            self._in_tree_series, self._in_tree, self._in_tree_data = buildTreeSeries(getattr(self, attr))
+        return self._in_tree_series
 
     setattr(cls, method, func)
 
     def setter_func(self, tree_series):
-        self._tree_series = tree_series
-        self._tree = {}
+        self._in_tree_series = tree_series
+        self._in_tree = {}
         setattr(self, attr, {})
 
-        if self._tree_series is not None:
-            tree_dict, self._tree = treeDictFromSeries(self._tree_series)
+        if self._in_tree_series is not None:
+            tree_dict, self._in_tree = treeDictFromSeries(self._in_tree_series)
             setattr(self, attr, tree_dict)
             
             if hasattr(self ,"refresh_parameters"):
@@ -84,8 +83,8 @@ def gnomonTreeInput(cls=None, attr=None, method='input', setter_method='setInput
 
 def _gnomonTreeOutput(cls, attr, method):
     def func(self):
-        self._tree_series, self._tree, self._tree_data = buildTreeSeries(getattr(self, attr))
-        return self._tree_series
+        self._out_tree_series, self._out_tree, self._out_tree_data = buildTreeSeries(getattr(self, attr))
+        return self._out_tree_series
 
     setattr(cls, method, func)
 
@@ -135,19 +134,19 @@ def cellImageDictFromSeries(cellImage_series, data_attr='_p_img'):
 
 def _gnomonCellImageInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self ,"cellImage_series"):
-            self._cellImage_series, self._cellImage, self._cellImage_data = buildCellImageSeries(getattr(self, attr))
-        return self._cellImage_series
+        if not hasattr(self ,"_in_cellImage_series"):
+            self._in_cellImage_series, self._in_cellImage, self._in_cellImage_data = buildCellImageSeries(getattr(self, attr))
+        return self._in_cellImage_series
 
     setattr(cls, method, func)
 
     def setter_func(self, cellImage_series):
-        self._cellImage_series = cellImage_series
-        self._cellImage = {}
+        self._in_cellImage_series = cellImage_series
+        self._in_cellImage = {}
         setattr(self, attr, {})
 
-        if self._cellImage_series is not None:
-            cellImage_dict, self._cellImage = cellImageDictFromSeries(self._cellImage_series)
+        if self._in_cellImage_series is not None:
+            cellImage_dict, self._in_cellImage = cellImageDictFromSeries(self._in_cellImage_series)
             setattr(self, attr, cellImage_dict)
 
             if hasattr(self, "refresh_parameters"):
@@ -170,8 +169,8 @@ def gnomonCellImageInput(cls=None, attr=None, method='input', setter_method='set
 
 def _gnomonCellImageOutput(cls, attr, method):
     def func(self):
-        self._cellImage_series, self._cellImage, self._cellImage_data = buildCellImageSeries(getattr(self ,attr))
-        return self._cellImage_series
+        self._out_cellImage_series, self._out_cellImage, self._out_cellImage_data = buildCellImageSeries(getattr(self ,attr))
+        return self._out_cellImage_series
 
     setattr(cls, method, func)
 
@@ -222,19 +221,19 @@ def cellComplexDictFromSeries(cellComplex_series, data_attr='_topomesh'):
 
 def _gnomonCellComplexInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self ,"cellComplex_series"):
-            self._cellComplex_series, self._cellComplex, self._cellComplex_data = buildCellComplexSeries(getattr(self, attr))
-        return self._cellComplex_series
+        if not hasattr(self ,"_in_cellComplex_series"):
+            self._in_cellComplex_series, self._in_cellComplex, self._in_cellComplex_data = buildCellComplexSeries(getattr(self, attr))
+        return self._in_cellComplex_series
 
     setattr(cls, method, func)
 
     def setter_func(self, cellComplex_series):
-        self._cellComplex_series = cellComplex_series
-        self._cellComplex = {}
+        self._in_cellComplex_series = cellComplex_series
+        self._in_cellComplex = {}
         setattr(self, attr, {})
 
         if self._cellComplex_series is not None:
-            cellComplex_dict, self._cellComplex = cellComplexDictFromSeries(self._cellComplex_series)
+            cellComplex_dict, self._in_cellComplex = cellComplexDictFromSeries(self._in_cellComplex_series)
             setattr(self, attr, cellComplex_dict)
 
             if hasattr(self, "refresh_parameters"):
@@ -257,8 +256,8 @@ def gnomonCellComplexInput(cls=None, attr=None, method='input', setter_method='s
 
 def _gnomonCellComplexOutput(cls, attr, method):
     def func(self):
-        self._cellComplex_series, self._cellComplex, self._cellComplex_data = buildCellComplexSeries(getattr(self ,attr))
-        return self._cellComplex_series
+        self._out_cellComplex_series, self._out_cellComplex, self._out_cellComplex_data = buildCellComplexSeries(getattr(self ,attr))
+        return self._out_cellComplex_series
 
     setattr(cls, method, func)
 
@@ -309,19 +308,19 @@ def dataFrameDictFromSeries(dataFrame_series, data_attr='_df'):
 
 def _gnomonDataFrameInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self, "dataFrame_series"):
-            self._dataFrame_series, self._dataFrame, self._dataFrame_data = buildDataFrameSeries(getattr(self, attr))
-        return self._dataFrame_series
+        if not hasattr(self, "_in_dataFrame_series"):
+            self._in_dataFrame_series, self._in_dataFrame, self._in_dataFrame_data = buildDataFrameSeries(getattr(self, attr))
+        return self._in_dataFrame_series
 
     setattr(cls, method, func)
 
     def setter_func(self, dataFrame_series):
-        self._dataFrame_series = dataFrame_series
-        self._dataFrame = {}
+        self._in_dataFrame_series = dataFrame_series
+        self._in_dataFrame = {}
         setattr(self, attr, {})
 
-        if self._dataFrame_series is not None:
-            dataFrame_dict, self._dataFrame = dataFrameDictFromSeries(self._dataFrame_series)
+        if self._in_dataFrame_series is not None:
+            dataFrame_dict, self._in_dataFrame = dataFrameDictFromSeries(self._in_dataFrame_series)
             setattr(self, attr, dataFrame_dict)
 
             if hasattr(self, "refresh_parameters"):
@@ -344,8 +343,8 @@ def gnomonDataFrameInput(cls=None, attr=None, method='input', setter_method='set
 
 def _gnomonDataFrameOutput(cls, attr, method):
     def func(self):
-        self._dataFrame_series, self._dataFrame, self._dataFrame_data = buildDataFrameSeries(getattr(self, attr))
-        return self._dataFrame_series
+        self._out_dataFrame_series, self._out_dataFrame, self._out_dataFrame_data = buildDataFrameSeries(getattr(self, attr))
+        return self._out_dataFrame_series
 
     setattr(cls, method, func)
 
@@ -396,19 +395,19 @@ def pointCloudDictFromSeries(pointCloud_series, data_attr='_topomesh'):
 
 def _gnomonPointCloudInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self ,"pointCloud_series"):
-            self._pointCloud_series, self._pointCloud, self._pointCloud_data = buildPointCloudSeries(getattr(self, attr))
-        return self._pointCloud_series
+        if not hasattr(self ,"_in_pointCloud_series"):
+            self._in_pointCloud_series, self._in_pointCloud, self._in_pointCloud_data = buildPointCloudSeries(getattr(self, attr))
+        return self._in_pointCloud_series
 
     setattr(cls, method, func)
 
     def setter_func(self, pointCloud_series):
-        self._pointCloud_series = pointCloud_series
-        self._pointCloud = {}
+        self._in_pointCloud_series = pointCloud_series
+        self._in_pointCloud = {}
         setattr(self, attr, {})
 
         if self._pointCloud_series is not None:
-            pointCloud_dict, self._pointCloud = pointCloudDictFromSeries(self._pointCloud_series)
+            pointCloud_dict, self._in_pointCloud = pointCloudDictFromSeries(self._in_pointCloud_series)
             setattr(self, attr, pointCloud_dict)
 
             if hasattr(self, "refresh_parameters"):
@@ -431,8 +430,8 @@ def gnomonPointCloudInput(cls=None, attr=None, method='input', setter_method='se
 
 def _gnomonPointCloudOutput(cls, attr, method):
     def func(self):
-        self._pointCloud_series, self._pointCloud, self._pointCloud_data = buildPointCloudSeries(getattr(self, attr))
-        return self._pointCloud_series
+        self._out_pointCloud_series, self._out_pointCloud, self._out_pointCloud_data = buildPointCloudSeries(getattr(self, attr))
+        return self._out_pointCloud_series
 
     setattr(cls, method, func)
 
@@ -483,23 +482,23 @@ def meshDictFromSeries(mesh_series, data_attr='_mesh'):
 
 def _gnomonMeshInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self ,"mesh_series"):
-            self._mesh_series, self._mesh, self._mesh_data = buildMeshSeries(getattr(self, attr))
-        return self._mesh_series
+        if not hasattr(self,"_in_mesh_series"):
+            self._in_mesh_series, self._in_mesh, self._in_mesh_data = buildMeshSeries(getattr(self, attr))
+        return self._in_mesh_series
 
     setattr(cls, method, func)
 
     def setter_func(self, mesh_series):
-        self._mesh_series = mesh_series
-        self._mesh = {}
+        self._in_mesh_series = mesh_series
+        self._in_mesh = {}
         setattr(self, attr, {})
 
         if self._mesh_series is not None:
 
-            mesh_dict, self._mesh = meshDictFromSeries(self._mesh_series)
+            mesh_dict, self._in_mesh = meshDictFromSeries(self._in_mesh_series)
             setattr(self, attr, mesh_dict)
 
-            if hasattr(self ,"refresh_parameters"):
+            if hasattr(self,"refresh_parameters"):
                 self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
@@ -519,8 +518,8 @@ def gnomonMeshInput(cls=None, attr=None, method='input', setter_method='setInput
 
 def _gnomonMeshOutput(cls, attr, method):
     def func(self):
-        self._mesh_series, self._mesh, self._mesh_data = buildMeshSeries(getattr(self ,attr))
-        return self._mesh_series
+        self._out_mesh_series, self._out_mesh, self._out_mesh_data = buildMeshSeries(getattr(self ,attr))
+        return self._out_mesh_series
 
     setattr(cls, method, func)
 
@@ -560,23 +559,23 @@ def buildLStringSeries(lString_dict, data_plugin="gnomonLStringDataLPy", data_se
 
 def _gnomonLStringInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self ,"lString_series"):
-            self._lString_series, self._lString, self._lString_data = buildLStringSeries(getattr(self, attr))
+        if not hasattr(self ,"_in_lString_series"):
+            self._in_lString_series, self._in_lString, self._in_lString_data = buildLStringSeries(getattr(self, attr))
 
         return self._lString_series
 
     setattr(cls, method, func)
 
     def setter_func(self, lString_series):
-        self._lString_series = lString_series
-        self._lString = {}
+        self._in_lString_series = lString_series
+        self._in_lString = {}
         setattr(self, attr, {})
 
-        if self._lString_series is not None:
+        if self._in_lString_series is not None:
 
-            for time in self._lString_series.times():
-                self._lString[time] = self._lString_series.at(time).asLString()
-                getattr(self, attr)[time] = self._lString[time].data()._lString
+            for time in self._in_lString_series.times():
+                self._in_lString[time] = self._in_lString_series.at(time).asLString()
+                getattr(self, attr)[time] = self._in_lString[time].data()._lString
 
             if hasattr(self ,"refresh_parameters"):
                 self.refresh_parameters()
@@ -598,8 +597,8 @@ def gnomonLStringInput(cls=None, attr=None, method='input', setter_method='setIn
 
 def _gnomonLStringOutput(cls, attr, method):
     def func(self):
-        self._lString_series, self._lString, self._lString_data = buildLStringSeries(getattr(self, attr))
-        return self._lString_series
+        self._out_lString_series, self._out_lString, self._out_lString_data = buildLStringSeries(getattr(self, attr))
+        return self._out_lString_series
 
     setattr(cls, method, func)
 
@@ -647,20 +646,20 @@ def imageDictFromSeries(image_series, converter_func=dtk_img_to_sp_img):
 
 def _gnomonImageInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self, "image_series"):
-            self._image_series, self._image = buildImageSeries(getattr(self ,attr))
-        return self._image_series
+        if not hasattr(self, "_in_image_series"):
+            self._in_image_series, self._in_image = buildImageSeries(getattr(self ,attr))
+        return self._in_image_series
 
     setattr(cls, method, func)
 
     def setter_func(self, image_series):
-        self._image_series = image_series
-        self._image = {}
+        self._in_image_series = image_series
+        self._in_image = {}
         setattr(self, attr, {})
 
-        if self._image_series is not None:
+        if self._in_image_series is not None:
 
-            image_dict, self._image = imageDictFromSeries(image_series)
+            image_dict, self._in_image = imageDictFromSeries(image_series)
             setattr(self, attr, image_dict)
 
             if hasattr(self, "refresh_parameters"):
@@ -683,8 +682,8 @@ def gnomonImageInput(cls=None, attr=None, method='input', setter_method='setInpu
 
 def _gnomonImageOutput(cls, attr, method):
     def func(self):
-        self._image_series, self._image = buildImageSeries(getattr(self, attr))
-        return self._image_series
+        self._out_image_series, self._out_image = buildImageSeries(getattr(self, attr))
+        return self._out_image_series
 
     setattr(cls, method, func)
 
