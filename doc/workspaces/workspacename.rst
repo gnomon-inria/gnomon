@@ -25,13 +25,11 @@ The workspace comprises of three main  areas:
 * A file tree area showing the files contained within the directory gnomon-data (right side pane)
 * Form manager area (top).
 
-A file can be imported to the 3D viewer space by dragging and dropping a file from the file tree on the right. The visualisation parameters can be set in the viewer menu by clicking on the "Image" item on top left of the viewer area. This opens up a panel with different visualization parameters. After setting the parameters, clicking “Render” will apply the desired visualisation settings on the imported file in the viewer area. 
+A file can be imported to the 3D viewer space by dragging and dropping a file from the file tree on the right to the viewer area on the left pane. The visualisation parameters can be set in the viewer menu by clicking on the "Image" item on top left of the viewer area. This opens up a panel with different visualization parameters. After setting the parameters (values for color channels, alpha) , clicking “Render” will apply the desired visualisation settings on the imported file in the viewer area. Clicking "Clear" will erase the imported file from the viewer area.
 
 Clicking the “XYZ axes” item on the viewer menu (top left) will enable setting the view of the imported object to one of the XY, YZ or ZX planes. Clicking the "cube" item beside this will bring back the 3D visualization.
 
-Clicking the “question mark” item on top right of the viewer area shows a list of keyboard shortcuts for user interaction with the imported dataset. The “Up arrow” button alongside this item may be clicked, which would result in a thumbnail being created in the form manager at the top of the main window with the image as it is currently rendered in the viewer.
-
-
+Clicking the “question mark” item on top right of the viewer area shows a list of keyboard shortcuts for user interaction with the imported dataset. These include shortcuts for zooming in and out, switching to surface or wireframe rendering, resetting camera focus, rotation and translation of the imported object. The “Up arrow” button alongside this item may be clicked, which would result in a thumbnail being created in the form manager at the top of the main window with the image as it is currently rendered in the viewer.
 
 
 Example of use
