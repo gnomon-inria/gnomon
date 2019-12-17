@@ -1,5 +1,5 @@
 =================
-Workspace_Name
+Browser Workspace
 =================
 
 Context of use
