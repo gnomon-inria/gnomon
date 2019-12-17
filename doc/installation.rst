@@ -10,7 +10,7 @@ Installation by creating a new conda environment (recommended)
 
 .. code-block::
 
-    > conda create -n gnomon -c dtk -c mosaic -c gnomon -c conda-forge gnomon plugin_tissueimagemesh
+    > conda create -n gnomon -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
 
 note: the name of the new environment (here: 'gnomon') is defined by the option -n
 
@@ -19,7 +19,7 @@ Installation in an existing conda environment containing already Python 3.7.5+
 
 .. code-block::
 
-    > conda install -c dtk -c mosaic -c gnomon -c conda-forge gnomon plugin_tissueimagemesh
+    > conda install -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
 
 
 About Conda
@@ -104,4 +104,4 @@ First activate the gnomon environment, then update the environnement from conda 
 .. code-block::
 
     > conda activate gnomon
-    > conda update -c dtk -c mosaic -c gnomon gnomon gnomon-plugins
+    > conda update -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
