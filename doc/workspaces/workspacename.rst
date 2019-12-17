@@ -37,6 +37,8 @@ Example of use
 
 **Importing a file and changing visualisation settings**  Select a file name in the file tree on the right. Drag and drop the file to the viewer area on the on the left. In the viewer menu bar on the left click on the "Image” item. A panel with the visualization parameters opens. Alter the parameter values  (e.g set Range : (50 ,200)) and click “Render”. The representation on the viewer area is updated with the new range settings. The viewer menu can be toggled back by clicking the “<“ button on bottom left.
 
+**Switch between 2D and 3D views**  After importing a file, click the square button on top left of the viewer menu. With this the representation changes to a 2D image slice view with a slider to the left. To view the XZ plane, click the “XZ” button and move the slider up/down to see the updates in the image slice with each slider position. To bring back the 3D representation, click on the “cube” button next to the square button.
+
 
 
 Typical follow-ups
