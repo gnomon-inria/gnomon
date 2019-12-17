@@ -48,9 +48,6 @@ protected:
 gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
 {
     this->setViewMode(QListView::IconMode);
-    // this->setWordWrap(true);
-    // this->setWrapping(true);
-    this->setIconSize(QSize(64, 64));
     this->setResizeMode(QListView::Adjust);
     this->setGridSize(QSize(96, 96));
     this->setFrameStyle(QFrame::NoFrame);
@@ -145,9 +142,9 @@ void gnomonFinderListView::startDrag(Qt::DropActions supportedActions)
     }
 }
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
 
 class gnomonFinderTreeView : public QTreeView
 {
@@ -160,14 +157,14 @@ public:
 signals:
     void changed(const QString& path);
     void opened(const QString& path);
-       
+
 protected:
      void keyPressEvent(QKeyEvent *event);
      void mouseDoubleClickEvent(QMouseEvent *event);
      void startDrag(Qt::DropActions supportedActions);
 };
 
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 gnomonFinderTreeView::gnomonFinderTreeView(QWidget *parent) : QTreeView(parent)
 {
@@ -268,7 +265,7 @@ void gnomonFinderTreeView::startDrag(Qt::DropActions supportedActions)
     }
 }
 
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceBrowserPrivate
 {
@@ -286,7 +283,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(gnomonToolBar::browser_color);
 
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
 
@@ -329,14 +326,14 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->splitter->addWidget(d->browse_view);
     d->splitter->addWidget(finder);
 
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(d->splitter);
 
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
     {
@@ -347,7 +344,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     {
         d->browse_view->addFormFromFile(filename);
     });
-    
+
     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
     {
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
@@ -401,11 +398,11 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
         browser->setCurrentWidget(t_browser);
     });
 
-// /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
     d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
-    t_browser->header()->resizeSection(0,300);
 
+    t_browser->header()->resizeSection(0,300);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
