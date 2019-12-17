@@ -245,7 +245,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
     static int count = 0;
 //    this->view_menu = new dtkWidgetsMenu(fa::image, "View " + QString::number(count++));
-    this->view_menu = new dtkWidgetsMenu(fa::cubes, "3D Form Viewer");
+    this->view_menu = new dtkWidgetsMenu(fa::cubes, "3D Form Viewer", this);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -263,6 +263,12 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 {
+    // the mother-ViewForm is called in the FormManager to display detailed views of the stored items.
+    // it can be destroyed at runtime, so we need to destroy its fields.
+    delete this->default_style;
+    delete this->xyz_style;
+    // the rest is deleted by parent-relationship.
+
 }
 
 void gnomonViewFormPrivate::exportToManager(void)

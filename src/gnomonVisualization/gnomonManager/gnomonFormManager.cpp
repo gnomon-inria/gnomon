@@ -22,6 +22,7 @@
 #include "gnomonFormManagerItem.h"
 #include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
+#include "gnomonView/gnomonViewForm.h"
 
 #include <gnomonCore>
 
@@ -73,7 +74,7 @@ gnomonFormManagerPrivate::gnomonFormManagerPrivate(QWidget *parent) : QScrollAre
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 {
-
+    
 }
 
 QSize gnomonFormManagerPrivate::sizeHint(void) const
@@ -425,6 +426,19 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
             d->focus_item->resize(value.toSize());
             // d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
             d->focus_item->setPixmap(item->image.scaled(value.toSize().width(), value.toSize().height()));
+        });
+
+        connect(s_animation, &QAbstractAnimation::finished, [=] () {
+            // when animation is done, display the ViewForm
+            if (d->view != nullptr)
+                delete d->view;
+                
+            d->view = new gnomonViewForm(this);
+            gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(item->id);
+            d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
+            d->view->resize(d->focus_item->size());
+            d->view->move(d->focus_item->pos());
+            d->view->show();
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {
