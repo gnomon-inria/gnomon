@@ -39,9 +39,9 @@ Example of use
 
 **Switch between 2D and 3D views**  After importing a file, click the square button on top left of the viewer menu. With this the representation changes to a 2D image slice view with a slider to the left. To view the XZ plane, click the “XZ” button and move the slider up/down to see the updates in the image slice with each slider position. To bring back the 3D representation, click on the “cube” button next to the square button.
 
+**Creating thumbnail in form manager** After importing a file and setting visualisation parameters, press the UP arrow button on the top right of the viewer. This creates a thumbnail in the form manager at the top of the main window with the image as it is currently rendered in the viewer.
 
-
-Typical follow-ups
+Usage with other workspaces
 ==============
 
-Explain how this is linked to the work in other workspaces (by citing their documentation pages).
+To implement functions of other Gnomon workspaces, one must first import a file into the browser workspace and create its thumbnail in the form manager. Then the file can be used on other workspaces by dragging and dropping the thumbnail into respective workspaces.
