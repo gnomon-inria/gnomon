@@ -14,7 +14,7 @@ Create a new conda environment (recommended)
 
 .. code-block::
 
-    > conda create -n gnomon -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
+    $ conda create -n gnomon -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
 
 .. note:: the name of the new environment (here: 'gnomon') is defined by the option -n
 
@@ -24,7 +24,7 @@ In an existing conda environment containing already Python 3.7.5+
 
 .. code-block::
 
-    > conda install -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
+    $ conda install -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
 
 Launching Gnomon
 --------------------------------------------------------------------------------
@@ -32,8 +32,8 @@ First activate the ``gnomon`` environment, then launch the executable:
 
 .. code-block::
 
-    > conda activate gnomon
-    > gnomon
+    $ conda activate gnomon
+    $ gnomon
 
 .. note:: On linux, it is possible to defines an alias to simplify this step:
 
@@ -53,16 +53,15 @@ First activate the ``gnomon`` environment, then launch the executable:
 
 Updating Gnomon
 --------------------------------------------------------------------------------
-First activate the gnomon environment, then update the environnement from conda channels dtk, mosaic, gnomon:
+First activate the *gnomon* environment, then update the environment from conda channels dtk, mosaic & gnomon:
 
 .. code-block::
 
-    > conda activate gnomon
-    > conda update -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
+    $ conda activate gnomon
+    $ conda update -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
 
 About Conda
 --------------------------------------------------------------------------------
-
 **Conda** is an open source package management system and environment management system that runs on Windows, macOS and Linux. Conda quickly installs, runs and updates packages and their dependencies.
 Conda easily creates, saves, loads and switches between environments on your local computer.
 See `<https://docs.conda.io/en/latest/>`_
@@ -91,7 +90,7 @@ Within the cloned `gnomon/` folder, create a conda environment:
 
 Activate the newly created environment:
 
-.. code-block:
+.. code-block::
 
     $ conda activate gnomon-dev
 
