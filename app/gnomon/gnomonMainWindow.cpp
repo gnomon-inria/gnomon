@@ -83,13 +83,13 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     dtk::widgets::workspace::pluginFactory().record("Image Preprocessing", creator<gnomonWorkspacePreprocess>);
     dtk::widgets::workspace::pluginFactory().record( "Form Browser", creator<gnomonWorkspaceBrowser>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Reconstruction", creator<gnomonWorkspaceCellComplexFromCellImage>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Filter", creator<gnomonWorkspaceCellImageFilter>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Meshing", creator<gnomonWorkspaceCellComplexFromCellImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Morpho Filterr", creator<gnomonWorkspaceCellImageFilter>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Analysis", creator<gnomonWorkspaceCellImageQuantification>);
     dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
     dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record("Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
     dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
     dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
@@ -113,7 +113,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Analysis", "Cell Analysis");
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Meshing", "Cell Meshing");
-//    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Morpho Filter", "Cell Morpho Filter");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Morpho Filter", "Cell Morpho Filter");
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Cell Detection", "Image Cell Detection");
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Fusion", "Image Fusion");
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Preprocessing", "Image Preprocessing");
