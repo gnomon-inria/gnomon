@@ -3,6 +3,7 @@ import gnomoncore
 from gnomoncore import (gnomonImage, gnomonImageSeries,  
                         gnomonCellComplex, gnomonCellComplexSeries,
                         gnomonCellImage, gnomonCellImageSeries,
+                        gnomonDataFrame, gnomonDataFrameSeries,
                         gnomonLString, gnomonLStringSeries, 
                         gnomonMesh, gnomonMeshSeries,
                         gnomonPointCloud, gnomonPointCloudSeries,
@@ -272,6 +273,94 @@ def gnomonCellComplexOutput(cls=None, attr=None, method='output'):
             return _gnomonCellComplexOutput(cls, attr, method)
 
         return wrapper
+
+
+# ------------------------------------------------------------------------------
+# --------------------------------- DataFrame -------------------------------------
+# ------------------------------------------------------------------------------
+
+load_plugin_group("dataFrameData")
+
+
+def buildDataFrameSeries(dataFrame_dict, data_plugin="gnomonDataFrameDataPandas", data_setter="set_dataframe"):
+    dataFrame_series = gnomonDataFrameSeries()
+    dataFrame = {}
+    dataFrame_data = {}
+
+    for time in dataFrame_dict.keys():
+        dataFrame[time] = gnomonDataFrame()
+        dataFrame_series.insert(time, dataFrame[time])
+        dataFrame_data[time] = gnomoncore.dataFrameData_pluginFactory().create(data_plugin)
+        getattr(dataFrame_data[time], data_setter)(dataFrame_dict[time])
+        dataFrame[time].setData(dataFrame_data[time])
+
+    return dataFrame_series, dataFrame, dataFrame_data
+
+
+def dataFrameDictFromSeries(dataFrame_series, data_attr='_df'):
+    dataFrame = {}
+    dataFrame_dict = {}
+    for time in dataFrame_series.times():
+        dataFrame[time] = dataFrame_series.at(time).asDataFrame()
+        dataFrame_dict[time] = getattr(dataFrame[time].data(), data_attr)
+
+    return dataFrame_dict, dataFrame
+
+
+def _gnomonDataFrameInput(cls, attr, method, setter_method):
+    def func(self):
+        if not hasattr(self, "dataFrame_series"):
+            self.dataFrame_series, self.dataFrame, self.dataFrame_data = buildDataFrameSeries(getattr(self, attr))
+        return self.dataFrame_series
+
+    setattr(cls, method, func)
+
+    def setter_func(self, dataFrame_series):
+        self.dataFrame_series = dataFrame_series
+        self.dataFrame = {}
+        setattr(self, attr, {})
+
+        if self.dataFrame_series is not None:
+            dataFrame_dict, self.dataFrame = dataFrameDictFromSeries(self.dataFrame_series)
+            setattr(self, attr, dataFrame_dict)
+
+            if hasattr(self, "refresh_parameters"):
+                self.refresh_parameters()
+
+    setattr(cls, setter_method, setter_func)
+
+    return cls
+
+
+def gnomonDataFrameInput(cls=None, attr=None, method='input', setter_method='setInput'):
+    if cls is not None:
+        return _gnomonDataFrameInput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonDataFrameInput(cls, attr, method, setter_method)
+
+        return wrapper
+
+
+def _gnomonDataFrameOutput(cls, attr, method):
+    def func(self):
+        self.dataFrame_series, self.dataFrame, self.dataFrame_data = buildDataFrameSeries(getattr(self, attr))
+        return self.dataFrame_series
+
+    setattr(cls, method, func)
+
+    return cls
+
+
+def gnomonDataFrameOutput(cls=None, attr=None, method='output'):
+    if cls is not None:
+        return _gnomonDataFrameOutput(cls, attr)
+    else:
+        def wrapper(cls):
+            return _gnomonDataFrameOutput(cls, attr, method)
+
+        return wrapper
+
 
 # ------------------------------------------------------------------------------
 # --------------------------------- PointCloud -------------------------------
