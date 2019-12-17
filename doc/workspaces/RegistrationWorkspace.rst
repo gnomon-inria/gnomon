@@ -23,7 +23,7 @@ See [1] for more details.
 Outlay of the workspace
 =======================
 
-.. figure:: gnomon.png
+.. figure:: Images/RegistrationWorkspace.png
     :width: 200px
     :align: center
     :height: 100px
