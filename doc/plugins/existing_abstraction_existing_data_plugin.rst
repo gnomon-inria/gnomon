@@ -234,3 +234,52 @@ Edit the setup.py of the Python package
 .. warning::
 
     You need to make sure that the path passed to the ``gnomon_declare_plugins`` function contains the sources of the package, or at least all modules defining Gnomon plugins.
+
+
+Complete plugin module
+======================
+
+.. code-block::
+    python
+
+    import gnomoncore
+    from gnomoncore import gnomonAbstractImageFilter
+    
+    from gnomon_utils import gnomonPlugin
+    from gnomon_utils import gnomonParametric
+    from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+
+    from timagetk.plugins.linear_filtering import linear_filtering
+
+    @gnomonPlugin(namespace=gnomoncore)
+    @gnomonParametric
+    @gnomonImageInput(attr="images",method='input',setter_method='setInput')
+    @gnomonImageOutput(attr="filtered_images",method='output')
+    class linearFilterTimagetk(gnomonAbstractImageFilter):
+        """Compute the Gaussian smoothing of an image.
+
+        The algorithm performs a filtering of all the channels of a 3D image by an
+        isotropic Gaussian kernel of standard deviation equal to the value of the
+        gaussian_sigma parameter.
+        """
+
+        def __init__(self):
+            super(linearFilterTimagetk, self).__init__()
+
+            self.images = {}
+            self.filtered_images = {}
+
+            self._parameters = {}
+            self._parameters['gaussian_sigma'] = gnomoncore.ParameterDouble(1., 0, 10., 2,
+                "Standard deviation of the Gaussian kernel")
+
+        def run(self):
+            self.filtered_images = {}
+
+            for time in self.images.keys():
+                self.filtered_images[time] = {}
+
+                for channel in self.images[time].keys():
+                    img = self.images[time][channel]
+                    filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
+                    self.filtered_images[time][channel] = filtered_img
