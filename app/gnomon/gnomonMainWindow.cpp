@@ -84,7 +84,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record("Image Preprocessing", creator<gnomonWorkspacePreprocess>);
     dtk::widgets::workspace::pluginFactory().record( "Form Browser", creator<gnomonWorkspaceBrowser>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Meshing", creator<gnomonWorkspaceCellComplexFromCellImage>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Morpho Filterr", creator<gnomonWorkspaceCellImageFilter>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Analysis", creator<gnomonWorkspaceCellImageQuantification>);
     dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
     dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);

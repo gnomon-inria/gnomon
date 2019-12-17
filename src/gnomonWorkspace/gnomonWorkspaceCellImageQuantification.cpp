@@ -146,19 +146,23 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     connect(d->view, &gnomonViewForm::formAdded, [=] ()
     {
-        if(d->view->cellImage())
+        if(d->view->cellImage()) {
             d->command->setCellImage(d->view->cellImage());
-        if(d->view->image())
+        }
+        if(d->view->image()) {
             d->command->setImage(d->view->image());
+        }
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellImageQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        if(d->view->cellImage())
+        if(d->view->cellImage()) {
             d->command->setCellImage(d->view->cellImage());
-        if(d->view->image())
+        }
+        if(d->view->image()) {
             d->command->setImage(d->view->image());
+        }
         d->configure(algorithm);
     });
 
@@ -201,8 +205,9 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
 
     d->command->redo();
 
+    qDebug()<<Q_FUNC_INFO<<d->command->cellImage();
     if(d->command->cellImage()) {
-        d->view->setCellImage(d->command->cellImage());
+        d->view->setCellImage(dynamic_cast<gnomonCellImageSeries *>(d->command->cellImage()->clone()));
         d->view->setInputView(false);
     }
 
