@@ -16,8 +16,7 @@ Outlay of the Browser workspace
 
 .. image::
 
-    gnomon_browser1.png
-    gnomon_browser2.png
+    gnomon_browser_view.png
 
 The workspace comprises of three main  areas:
 
