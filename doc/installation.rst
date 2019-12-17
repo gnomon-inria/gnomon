@@ -32,6 +32,8 @@ About Conda
 From sources
 =============
 
+Install `gnomon`
+----------------
 Clone `gnomon` sources:
 
 .. code-block::
@@ -71,7 +73,7 @@ Then, compile and install the sources:
     $ cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX_PATH=$CONDA_PREFIX ..
     $ make -j install
 
-If all went well, you can nom start the app:
+If all went well, you can now start the app:
 * On linux:
 
 .. code-block::
@@ -83,6 +85,29 @@ If all went well, you can nom start the app:
 .. code-block::
 
     $ ./bin/gnomon.app/Contents/MacOS/gnomon
+
+
+Install `gnomon-packages-tissueimage`
+-------------------------------------
+To perform tissue image analysis, you need to clone & install the `gnomon-packages-tissueimage` sources:
+
+.. code-block::
+
+    $ git clone https://gitlab.inria.fr/gnomon/gnomon-packages/gnomon-package-tissueimage.git
+    $ cd gnomon-package-tissueimage
+    $ python setup.py develop
+
+
+Install `gnomon-package-data` (OPTIONAL)
+----------------------------------------
+To test `gnomon` or use example scritps you need to clone & install the `gnomon-data` sources:
+
+.. code-block::
+
+    $ git clone https://gitlab.inria.fr/gnomon/gnomon-packages/gnomon-package-data.git
+    $ cd gnomon-package-data
+    $ python setup.py develop
+
 
 =================
 Launching Gnomon
