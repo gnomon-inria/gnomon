@@ -303,22 +303,28 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)this->formVisualization[key];
                 gnomonTreeSeries *tree = (gnomonTreeSeries *)this->forms[key];
+                dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
                 formVisualizationTree->update();
+                dtkApp->window()->setCursor(Qt::ArrowCursor);
             } else if (key == "gnomonDataFrame") {
                 this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
                 gnomonDataFrameSeries *dataFrame = (gnomonDataFrameSeries *)this->forms[key];
+                dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
                 formVisualizationDataFrame->update();
+                dtkApp->window()->setCursor(Qt::ArrowCursor);
             } else if (key == "gnomonLString") {
                 this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)this->formVisualization[key];
                 gnomonLStringSeries *lString = (gnomonLStringSeries *)this->forms[key];
+                dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
                 formVisualizationLString->update();
+                dtkApp->window()->setCursor(Qt::ArrowCursor);
             }
 
             this->configure(formVisualizationPaneItems[key], key);
@@ -426,7 +432,9 @@ dtkWidgetsMenu *gnomonViewMatplotlibPrivate::menu(void)
             for (const auto& key : this->formVisualization.keys()) {
                 gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
                 if(v) {
+                    dtkApp->window()->setCursor(Qt::BusyCursor);
                     v->update();
+                    dtkApp->window()->setCursor(Qt::ArrowCursor);
                 }
             }
         });
@@ -543,11 +551,13 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
             d->formVisualization["gnomonTree"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)d->formVisualization["gnomonTree"];
+        dtkApp->window()->setCursor(Qt::BusyCursor);
         formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
         if (visualization) {
             formVisualizationTree->setParameters(visualization->parameters());
         }
         formVisualizationTree->update();
+        dtkApp->window()->setCursor(Qt::ArrowCursor);
 
         emit formAdded("gnomonTree");
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
@@ -563,11 +573,13 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
             d->formVisualization["gnomonDataFrame"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)d->formVisualization["gnomonDataFrame"];
+        dtkApp->window()->setCursor(Qt::BusyCursor);
         formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
         if (visualization) {
             formVisualizationDataFrame->setParameters(visualization->parameters());
         }
         formVisualizationDataFrame->update();
+        dtkApp->window()->setCursor(Qt::ArrowCursor);
 
         emit formAdded("gnomonDataFrame");
     } else if (gnomonLStringSeries *lString = dynamic_cast<gnomonLStringSeries *>(form)) {
@@ -583,11 +595,13 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
             d->formVisualization["gnomonLString"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)d->formVisualization["gnomonLString"];
+        dtkApp->window()->setCursor(Qt::BusyCursor);
         formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
         if (visualization) {
             formVisualizationLString->setParameters(visualization->parameters());
         }
         formVisualizationLString->update();
+        dtkApp->window()->setCursor(Qt::ArrowCursor);
 
         emit formAdded("gnomonLString");
     }
