@@ -492,7 +492,7 @@ void gnomonFormManager::paintEvent(QPaintEvent *event)
     if(!d->inside)
         return;
 
-    painter.setBrush(Qt::white);
+    painter.setBrush(dtkThemesEngine::instance()->color("@fgalt"));
     painter.drawRoundedRect(event->rect().width() / 2 - 100, event->rect().height() - 10, 200, 6, 3, 3);
 }
 
