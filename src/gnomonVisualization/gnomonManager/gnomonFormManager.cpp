@@ -74,7 +74,7 @@ gnomonFormManagerPrivate::gnomonFormManagerPrivate(QWidget *parent) : QScrollAre
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 {
-
+    
 }
 
 QSize gnomonFormManagerPrivate::sizeHint(void) const
@@ -430,13 +430,15 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
 
         connect(s_animation, &QAbstractAnimation::finished, [=] () {
             // when animation is done, display the ViewForm
-            gnomonViewForm *view = new gnomonViewForm(this);
+            if (d->view != nullptr)
+                delete d->view;
+                
+            d->view = new gnomonViewForm(this);
             gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(item->id);
-
-            view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
-            view->resize(d->focus_item->size());
-            view->move(d->focus_item->pos());
-            view->show();
+            d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
+            d->view->resize(d->focus_item->size());
+            d->view->move(d->focus_item->pos());
+            d->view->show();
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {

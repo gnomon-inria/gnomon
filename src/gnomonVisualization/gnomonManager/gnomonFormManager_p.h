@@ -26,6 +26,7 @@ class gnomonFormManager;
 class gnomonFormManagerItem;
 class gnomonFormManagerFocus;
 class gnomonFormManagerData;
+class gnomonViewForm;
 
 class vtkCamera;
 
@@ -61,6 +62,9 @@ public:
 
 public:
     gnomonFormManagerFocus *focus_item = nullptr;
+
+public:
+    gnomonViewForm *view = nullptr;
 
 public:
     QScrollArea *focus_area = nullptr;
