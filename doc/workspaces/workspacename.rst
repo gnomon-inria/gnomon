@@ -35,7 +35,9 @@ Clicking the “question mark” item on top right of the viewer area shows a li
 Example of use
 ==============
 
-Describe the flow of user interactions/operations focusing on the "default" algorithm of the workspace.
+**Importing a file and changing visualisation settings**  Select a file name in the file tree on the right. Drag and drop the file to the viewer area on the on the left. In the viewer menu bar on the left click on the "Image” item. A panel with the visualization parameters opens. Alter the parameter values  (e.g set Range : (50 ,200)) and click “Render”. The representation on the viewer area is updated with the new range settings. The viewer menu can be toggled back by clicking the “<“ button on bottom left.
+
+
 
 Typical follow-ups
 ==============
