@@ -103,30 +103,33 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     d->stack = new QStackedWidget(this);
 
+    const QString package_desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet dictum arcu vitae ultrices.";
+    const QString workspace_desc = "Duis risus felis, suscipit ut libero id, sollicitudin sagittis est. Etiam blandit feugiat est id luctus. Quisque a ante erat.";
+
     QWidget *central = new QWidget(this);
 
     d->workspace_bar = new dtkWidgetsWorkspaceBar(this);
     d->workspace_bar->setStack(d->stack);
     d->workspace_bar->setDynamic(true);
-    d->workspace_bar->addWorkspaceInMenu("General", "Form Browser", "Form Browser");
-    d->workspace_bar->addWorkspaceInMenu("General", "Python Simulation", "Python Simulation");
+    d->workspace_bar->addWorkspaceInMenu("General", package_desc, "Form Browser",      workspace_desc, "Form Browser");
+    d->workspace_bar->addWorkspaceInMenu("General", package_desc, "Python Simulation", workspace_desc, "Python Simulation");
 
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Analysis", "Cell Analysis");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Meshing", "Cell Meshing");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Cell Morpho Filter", "Cell Morpho Filter");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Cell Detection", "Image Cell Detection");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Fusion", "Image Fusion");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Preprocessing", "Image Preprocessing");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Segmentation", "Image Segmentation");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Surface Meshing", "Image Surface Meshing");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", "Image Registration", "Image Registation");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Cell Analysis",         workspace_desc, "Cell Analysis");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Cell Meshing",          workspace_desc, "Cell Meshing");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Cell Morpho Filter",    workspace_desc, "Cell Morpho Filter");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Image Cell Detection",  workspace_desc, "Image Cell Detection");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Image Fusion",          workspace_desc, "Image Fusion");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Image Preprocessing",   workspace_desc, "Image Preprocessing");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Image Segmentation",    workspace_desc, "Image Segmentation");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Image Surface Meshing", workspace_desc, "Image Surface Meshing");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", package_desc, "Image Registration",    workspace_desc, "Image Registation");
 
-    d->workspace_bar->addWorkspaceInMenu("Branching Forms", "Tree Analysis", "Tree Analysis");
-    d->workspace_bar->addWorkspaceInMenu("Branching Forms", "LPy", "LPy");
-    d->workspace_bar->addWorkspaceInMenu("Branching Forms", "PlantScan3D", "PlantScan3D");
+    // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
+    // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "LPy",           workspace_desc, "LPy");
+    // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D");
 
-    d->workspace_bar->addWorkspaceInMenu("Form Converters", "LString to Tree", "LString to Tree");
-    d->workspace_bar->addWorkspaceInMenu("Form Converters", "Tree to LString", "Tree to LString");
+    // d->workspace_bar->addWorkspaceInMenu("Form Converters", package_desc, "LString to Tree", workspace_desc, "LString to Tree");
+    // d->workspace_bar->addWorkspaceInMenu("Form Converters", package_desc, "Tree to LString", workspace_desc, "Tree to LString");
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
 
@@ -257,6 +260,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     this->populate();
 
     this->menubar()->touch();
+
+    central->stackUnder(this->titlebar());
 }
 
 gnomonMainWindow::~gnomonMainWindow(void)
