@@ -41,7 +41,7 @@ Example of use
 
 **Creating thumbnail in form manager** After importing a file and setting visualisation parameters, press the UP arrow button on the top right of the viewer. This creates a thumbnail in the form manager at the top of the main window with the image as it is currently rendered in the viewer.
 
-Usage with other workspaces
+Link with other workspaces
 ==============
 
 To implement functions of other Gnomon workspaces, one must first import a file into the browser workspace and create its thumbnail in the form manager. Then the file can be used on other workspaces by dragging and dropping the thumbnail into respective workspaces.
