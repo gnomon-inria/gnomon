@@ -22,6 +22,7 @@
 #include "gnomonFormManagerItem.h"
 #include "gnomonItemButton.h"
 #include "gnomonToolBar.h"
+#include "gnomonView/gnomonViewForm.h"
 
 #include <gnomonCore>
 
@@ -425,6 +426,17 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
             d->focus_item->resize(value.toSize());
             // d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
             d->focus_item->setPixmap(item->image.scaled(value.toSize().width(), value.toSize().height()));
+        });
+
+        connect(s_animation, &QAbstractAnimation::finished, [=] () {
+            // when animation is done, display the ViewForm
+            gnomonViewForm *view = new gnomonViewForm(this);
+            gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(item->id);
+
+            view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
+            view->resize(d->focus_item->size());
+            view->move(d->focus_item->pos());
+            view->show();
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {
