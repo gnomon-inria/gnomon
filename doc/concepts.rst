@@ -5,7 +5,7 @@ Key Gnomon Concepts
 
 Gnomon provides a new *integrated modeling environment* (IME) for studying morphogenesis in biology.
 
-This IME provides a *project manager*, a *session manager*, *workspaces* to apply families of algorithms to forms (to transform them), *plugins* corresponding to algorithms able to transform forms, a data bus called *the world* to handle computed forms, and *abstractions* that formalize and unify in the system the notion of :math:`(DS)^2` simulation.
+This IME provides a *project manager*, a *session manager*, *workspaces* to apply families of algorithms to forms (to transform them), *plugins* corresponding to algorithms able to transform forms, a data bus called the *form manager* to handle computed forms, and *abstractions* that formalize and unify in the system the notion of :math:`(DS)^2` simulation.
 
 .. figure:: Images/gnomon-screenshot.png
     :align: center
@@ -51,7 +51,9 @@ Interestingly, Gnomon manipulates natively not only forms, but also sequences of
 
 Form manager
 ============
-The form manager is a bus of data structures representing forms and containing the objects and state variables shared by the different models. It is a set of data structures that can be globally accessed by all the workspaces. World objects are augmented with meta-data that indicate their characteristics and provenance.
+The form manager is a bus of data structures representing forms and containing the objects and state variables shared by the different models. It is a set of data structures that can be globally accessed by all the workspaces. Form manager objects are augmented with meta-data that indicate their characteristics and provenance.
+
+Forms stored in the form manager can be explored by expanding down thee form manager. This provides detailed metadata associated with the form together with the possibility to explore it with a 2D/3D viewer.
 
 .. figure:: Images/form-manager.png
     :align: center
@@ -59,7 +61,6 @@ The form manager is a bus of data structures representing forms and containing t
     :figclass: align-center
 
     Form manager (top row of icons: stores the state of different forms that have previously been computed in different workspaces)
-
 
 Workspaces
 ==========
@@ -75,11 +76,11 @@ For example, a specific workspace is defined for 3D image segmentation operation
 
     Workspace dedicated to 3D image segmentation
 
-Other workspaces make it possible to run simulations. A LPy workspace for example is used to grow an initial tree structure (that may  be provided through the world by a file or another workspace) based on L-system rules implementing the evolution function :math:`F` in equation  into a new tree structure representing the form development at some specified time point.
+Other workspaces make it possible to run simulations. A LPy workspace for example is used to grow an initial tree structure (that may be provided through the form manager by a file or another workspace) based on L-system rules implementing an evolution function into a new tree structure representing the form development at some specified time point.
 
-Work in a workspace mainly consists in importing a form coming from the world (or from a file), choosing a plugin (dedicated algorithm for processing the form offered by the workspace) from a predefined list, setting the algorithm parameters, apply the algorithm to the form, and upload the final result back to the world.
+Work in a workspace mainly consists in importing a form coming from the form manager (or from a file), choosing a plugin (dedicated algorithm for processing the form offered by the workspace) from a predefined list, setting the algorithm parameters, apply the algorithm to the form, and upload the final result back to the form manager.
 
-Workspaces can import input forms or export computed output forms using drag-and-drop operation from and to the world.
+Workspaces can import input forms or export computed output forms using drag-and-drop operation from and to the form manager.
 
 Plugins
 =======
@@ -110,7 +111,7 @@ Model abstraction is defined in Gnomon to ease the manipulation and simulation o
 
 Dataflow (Not yet implemented)
 ==============================
-During a session, the user manipulates workspaces to process input forms and transform them as output stored in the world. In fact, the import/export operations carried out in each workspace from and to the world, are interpreted by Gnomon as the creation of links beween corresponding workspaces. The result is a graph whose nodes are the workspace and edges corresponds to data input and output by the different workspaces. This graph is called a \textitw{dataflow}. Its current state can be vizualize at any moment by bringing it to the front of the Gnomon display, manipulated to change some node attributes, etc.
+During a session, the user manipulates workspaces to process input forms and transform them as output stored in the form manager. In fact, the import/export operations carried out in each workspace from and to the form manager, are interpreted by Gnomon as the creation of links beween corresponding workspaces. The result is a graph whose nodes are the workspace and edges corresponds to data input and output by the different workspaces. This graph is called a \textitw{dataflow}. Its current state can be vizualize at any moment by bringing it to the front of the Gnomon display, manipulated to change some node attributes, etc.
 
 The dataflow can be exported so that the whole simulation is run in batch in a shell on a series of new input data. This process is called \textit{dataflow iteration}.
 
