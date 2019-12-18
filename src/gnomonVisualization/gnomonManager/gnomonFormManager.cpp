@@ -331,14 +331,17 @@ QPixmap gnomonFormManager::thumbnail(int index)
 
 void gnomonFormManager::present(gnomonFormManagerItem *item)
 {
+    if(d->animation)
+    {
+        d->deleteAnimation();
+        d->dismissView();
+    }
+
     if(!d->focus_item)
         d->focus_item = new gnomonFormManagerFocus(this);
 
     // if (d->focus_area)
     //     delete d->focus_area;
-
-    if(d->animation)
-        delete d->animation;
 
     d->animation = new QSequentialAnimationGroup(this);
 
@@ -483,11 +486,7 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
                 d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
 
             } else {
-                delete d->focus_item;
-                d->focus_item = nullptr;
-
-                delete d->animation;
-                d->animation = nullptr;
+                d->deleteAnimation();
 
                 if (d->focus_area)
                     d->focus_area->hide();
@@ -557,11 +556,7 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
                 d->animation->start();
             }
 
-            if (d->view)
-                d->view->hide();
-
-            if (d->focus_area)
-                d->focus_area->hide();
+            d->dismissView();
         }
     }
 
@@ -582,6 +577,24 @@ void gnomonFormManager::paintEvent(QPaintEvent *event)
 
     painter.setBrush(dtkThemesEngine::instance()->color("@fgalt"));
     painter.drawRoundedRect(event->rect().width() / 2 - 100, event->rect().height() - 10, 200, 6, 3, 3);
+}
+
+void gnomonFormManagerPrivate::deleteAnimation(void)
+{
+    delete focus_item;
+    focus_item = nullptr;
+
+    delete animation;
+    animation = nullptr;
+}
+
+void gnomonFormManagerPrivate::dismissView(void)
+{
+    if (view)
+        view->hide();
+
+    if (focus_area)
+        focus_area->hide();
 }
 
 gnomonFormManager *gnomonFormManager::s_instance = nullptr;

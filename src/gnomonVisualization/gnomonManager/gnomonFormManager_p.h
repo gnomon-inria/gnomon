@@ -83,6 +83,10 @@ public:
 
 public:
     State state = Collapsed;
+
+public:
+    void deleteAnimation(void);
+    void dismissView(void);
 };
 
 //
