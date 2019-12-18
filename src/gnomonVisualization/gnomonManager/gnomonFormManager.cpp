@@ -534,11 +534,16 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
 
         qDebug() << Q_FUNC_INFO << 1;
 
-        if (d->view)
-            d->view->hide();
+        if (event->pos().y() > d->sizeHint().height()) {
+            d->animation->setDirection(QAbstractAnimation::Backward);
+            d->animation->start();
 
-        if (d->focus_area)
-            d->focus_area->hide();
+            if (d->view)
+                d->view->hide();
+
+            if (d->focus_area)
+                d->focus_area->hide();
+        }
     }
 
     QFrame::mousePressEvent(event);
