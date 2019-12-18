@@ -266,6 +266,12 @@ long gnomonPolyDataCellImage::cellId(long vtkId)
     return cellIds->GetValue(vtkId);
 }
 
+void gnomonPolyDataCellImage::setResamplingSpacing(double spacing)
+{
+    d->resamplingSpacing = spacing;
+    this->modified();
+}
+
 gnomonPolyDataCellImage::gnomonPolyDataCellImage(void) : gnomonPolyData(), d(new gnomonPolyDataCellImagePrivate)
 {
     d->cellimage = Q_NULLPTR;

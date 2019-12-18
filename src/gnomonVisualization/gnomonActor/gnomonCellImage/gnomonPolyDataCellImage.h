@@ -44,6 +44,9 @@ public:
     long cellId(long vtkId);
 
 public:
+    void setResamplingSpacing(double);
+
+public:
      gnomonPolyDataCellImage(void);
     ~gnomonPolyDataCellImage(void);
 

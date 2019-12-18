@@ -126,6 +126,7 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
     d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
+    d->parameters["resolution"] = new gnomonCoreParameterDouble(1.5, 0.1, 5., 1, "Resampling voxelsize for computing the Marching Cubes");
 
     d->parameters["x_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of x positions of cells to display");
     d->parameters["y_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of y positions of cells to display");
@@ -247,6 +248,8 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     if(!dd->cellImage)
         return;
 
+    double resampling_voxelsize =  ((gnomonCoreParameterDouble *)d->parameters["resolution"])->value();
+
     if (dd->polydata) {
         dd->polydata->Delete();
         dd->polydata = nullptr;
@@ -256,6 +259,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
     }
     dd->polydata->setCellImage(dd->cellImage);
     dd->polydata->setPropertyName(property_name);
+    dd->polydata->setResamplingSpacing(resampling_voxelsize);
     dd->polydata->setSliceRanges(x_range, y_range, z_range);
     dd->polydata->update();
 
