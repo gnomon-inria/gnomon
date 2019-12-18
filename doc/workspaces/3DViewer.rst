@@ -1,4 +1,4 @@
-.. _3DViewer
+.. _Viewer:
 
 =========
 3D Viewer

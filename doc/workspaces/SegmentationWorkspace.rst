@@ -23,7 +23,7 @@ Outlay of the Image Segmentation workspace
 
 The workspace consists of three main specific zones:
 
-* input :ref:`3DViewer`,
+* input :ref:`Viewer`,
 * output 3D viewer and
 * configuration panel.
 
@@ -34,11 +34,26 @@ Once the parameters are set to their desired values, users can apply the algorit
 Example of use: Watershed segmentation of an intensity image
 ============================================================
 
-**Prerequisite:** The form manager (LINK) must contain at least one intensity image.
+**Prerequisite:** The form manager must contain at least one intensity image.
 
-**Step 1: selection of input intensity image**
+**Step 1:** Open an Image Segmentation workspace.
 
-**Step 5: Overlaying intensity and segmentation images:** The original intensity image from the Form Manager can be drag-and-dropped into the right viewer. As a  result, the intensity and segmented images are overlayed, facilitating the assessment of the quality of segmentation achieved.
+**Step 2:** Drag and drop one intensity image from the form manager to the
+input 3D viewer.
+
+**Step 3:** Select the *seededWatershedSegmentation* algorithm at the top
+of the configuration panel.
+
+**Step 4:** Click on the *Apply* button at the bottom of the configuration
+panel.
+
+**Step 5:** Drag and drop the input image into the output viewer. The intensity and
+segmented images will overlay, facilitating the assessment of the quality of segmentation achieved.
+
+**Step 6:** (Optional) You can then play with the h-min parameter in order to modify
+the number of seeds. The more h-min is small the more the number of seeds increase (and vice-versa).
+
+**Step 7:** Segmented image can be saved using the up-arrow at the top-left corner of the output 3d viewer.
 
 Related workspaces
 ==================
