@@ -3,7 +3,7 @@ Browser Workspace
 =================
 
 Description
-==============
+===========
 
 The browser workspace is the place to find and import data in order to implement different functionalities of the Gnomon platform. It enables a user to interactively view a data file and change/set visualisation parameters. In this workspace one can create thumbnails of an imported dataset on the form manager which can then be used with other workspaces.
 
@@ -11,8 +11,8 @@ The browser workspace is the place to find and import data in order to implement
 
 * **Output**: A 3D representation of the image on the viewer, with possibility to interact with it (rotation, zoom, translation).
 
-Outlay of the Browser workspace 
-=======================
+Outlay of the Browser workspace
+===============================
 
 .. image::
 
@@ -41,6 +41,6 @@ Example of use
 **Creating thumbnail in form manager** After importing a file and setting visualisation parameters, press the UP arrow button on the top right of the viewer. This creates a thumbnail in the form manager at the top of the main window with the image as it is currently rendered in the viewer.
 
 Link with other workspaces
-==============
+==========================
 
 To implement functions of other Gnomon workspaces, one must first import a file into the browser workspace and create its thumbnail in the form manager. Then the file can be used in other workspaces by dragging and dropping the thumbnail into respective workspaces.
