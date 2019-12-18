@@ -1,5 +1,5 @@
 ======================
-Segmentation Workspace
+Image Segmentation Workspace
 ======================
 
 General presentation
@@ -10,7 +10,7 @@ This workspace produces segmentations of intensity images using different algori
 * **Input**: intensity image (typically coming from microscopy (confocal, light-sheet) data, representing either 2D or 3D samples).
 * **Output**: a segmented image, in which each compartment of the original intensity image is identified and labeled with a unique numerical ID.
 
-Outlay of the Segmentation workspace
+Outlay of the Image Segmentation workspace
 ====================================
 
 .. figure:: Images/SegmentationWorkspace.png
@@ -19,7 +19,7 @@ Outlay of the Segmentation workspace
     :alt: alternate text
     :figclass: align-center
 
-    Segmentation workspace
+    Image Segmentation workspace
 
 The workspace consists of three main specific zones:
 
