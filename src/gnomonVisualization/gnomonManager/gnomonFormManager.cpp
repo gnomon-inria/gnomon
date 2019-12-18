@@ -333,8 +333,11 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
 {
     if(d->animation)
     {
-        d->deleteAnimation();
+        d->deferredFocus = item;
+        d->animation->setDirection(QAbstractAnimation::Backward);
+        d->animation->start();
         d->dismissView();
+        return;
     }
 
     if(!d->focus_item)
@@ -344,56 +347,6 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
     //     delete d->focus_area;
 
     d->animation = new QSequentialAnimationGroup(this);
-
-    // if (d->focus_item->presented) {
-
-    //     QVariantAnimation *p_animation = new QVariantAnimation(this);
-    //     p_animation->setDuration(250);
-    //     p_animation->setStartValue(d->focus_item->destnt);
-    //     p_animation->setEndValue(d->focus_item->source);
-    //     p_animation->setEasingCurve(QEasingCurve::OutQuad);
-
-    //     QVariantAnimation *s_animation = new QVariantAnimation(this);
-    //     s_animation->setDuration(250);
-    //     s_animation->setStartValue(d->focus_item->d_size);
-    //     s_animation->setEndValue(d->focus_item->s_size);
-    //     s_animation->setEasingCurve(QEasingCurve::OutQuad);
-
-    //     QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
-    //     g_animation->addAnimation(p_animation);
-    //     g_animation->addAnimation(s_animation);
-
-    //     connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) -> void
-    //     {
-    //         d->focus_item->move(value.toPoint());
-    //     });
-
-    //     connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) -> void
-    //     {
-    //         d->focus_item->resize(value.toSize());
-    //         d->focus_item->setPixmap(d->focus_item->pixmap()->scaled(value.toSize().width(), value.toSize().height()));
-    //     });
-
-    //     connect(g_animation, &QAbstractAnimation::finished, [=] (void) -> void
-    //     {
-    //         qDebug() << Q_FUNC_INFO << "finished";
-
-    //         if(d->view) {
-    //             delete d->view;
-    //             d->view = 0;
-    //         }
-
-    //         d->focus_area->setVisible(false);
-    //         d->focus_area->deleteLater();
-    //         d->focus_item->presented = false;
-
-    //         this->repaint();
-    //     });
-
-    //     d->animation->addAnimation(g_animation);
-
-    //     return;
-    // }
 
     QRect focus_item_dest_rect;
     {
@@ -488,6 +441,14 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
             } else {
                 d->deleteAnimation();
                 d->dismissView();
+
+                if (d->deferredFocus)
+                {
+                    this->present(d->deferredFocus);
+                    d->animation->setDirection(QAbstractAnimation::Forward);
+                    d->animation->start();
+                    d->deferredFocus = nullptr;
+                }
             }
         });
 

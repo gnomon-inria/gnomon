@@ -85,6 +85,9 @@ public:
     State state = Collapsed;
 
 public:
+    gnomonFormManagerItem *deferredFocus = nullptr;
+
+public:
     void deleteAnimation(void);
     void dismissView(void);
 };
