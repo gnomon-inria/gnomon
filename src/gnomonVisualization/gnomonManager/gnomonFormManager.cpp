@@ -471,6 +471,7 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
 
                 d->view = new gnomonViewForm(this);
                 d->view->setInputView(true);
+                d->view->setEnableMenus(false);
                 d->view->resize(QSize(2*this->height()/4, 2*this->height()/4));
                 d->view->move(d->focus_item->pos());
                 d->view->hide();

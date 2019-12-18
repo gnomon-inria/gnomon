@@ -150,6 +150,9 @@ public slots:
     void setInputView(bool);
 
 public slots:
+    void setEnableMenus(bool);
+
+public slots:
     void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
