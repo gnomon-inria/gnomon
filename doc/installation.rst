@@ -149,3 +149,13 @@ To test ``gnomon`` or use example scripts you need to clone & install the ``gnom
     $ git clone https://gitlab.inria.fr/gnomon/gnomon-packages/gnomon-package-data.git
     $ cd gnomon-package-data
     $ python setup.py develop
+
+Desinstall a gnomon environment
+--------------------------------------------------------------------------------
+
+.. code-block::
+
+    $ conda deactivate (if you are not already in (base) environment)
+    $ conda env remove -n gnomon
+    $ conda create -n gnomon -c dtk -c gnomon -c mosaic gnomon plugin-tissueimage
+    $ conda activate gnomon
