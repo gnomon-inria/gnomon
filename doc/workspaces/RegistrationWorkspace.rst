@@ -12,8 +12,7 @@ as *reference* and other images are iteratively registered on it.
 
 - **input**: two or more intensity images (from microscopy confocal, light-sheet, ...) either 2D, 3D samples.
 
-- **output**: two or more stacked intensity images registered. The number of output images is equaled to the number
-of input images.
+- **output**: two or more stacked intensity images registered. The number of output images is equaled to the number of input images.
 
 Outlay of the workspace
 =======================
@@ -67,9 +66,9 @@ from bottom to top (the first image is at the top-left corner while the last ima
 Related Workspace
 =================
 
-**Upstream of the Registration workspace**: 2D/3D multiple intensity images (different view angles, time-series,...)
+**Upstream of the Image Registration workspace**: 2D/3D multiple intensity images (different view angles, time-series,...)
 might  directly come from a file via the :ref:`BrowserWorkspace` or might have been produced as outputs of the
 **Pre-Processing workspace**.
 
-**Downstream of the Registration workspace**: registered images, can then be used in the **Fusion workspace** or
+**Downstream of the Image Registration workspace**: registered images, can then be used in the **Fusion workspace** or
 in the :ref:`SegmentationWorkspace`.
