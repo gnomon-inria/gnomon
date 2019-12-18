@@ -157,6 +157,7 @@ add_subdirectory(src)
 add_subdirectory(app)
 add_subdirectory(wrp)
 add_subdirectory(python)
+add_subdirectory(doc)
 # add_subdirectory(tst)
 # add_subdirectory(tst-py)
 
