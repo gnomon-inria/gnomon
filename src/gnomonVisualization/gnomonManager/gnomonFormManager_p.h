@@ -70,6 +70,9 @@ public:
     QScrollArea *focus_area = nullptr;
 
 public:
+    QSequentialAnimationGroup *animation = nullptr;
+
+public:
     static int item_counter;
 
 public:

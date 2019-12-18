@@ -25,7 +25,6 @@
 #include "gnomonView/gnomonViewForm.h"
 
 #include <gnomonCore>
-
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
@@ -74,7 +73,7 @@ gnomonFormManagerPrivate::gnomonFormManagerPrivate(QWidget *parent) : QScrollAre
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 {
-    
+
 }
 
 QSize gnomonFormManagerPrivate::sizeHint(void) const
@@ -124,11 +123,9 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
             static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setDataFrame(df);
             static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
-            // qDebug() << Q_FUNC_INFO<< "FORM MANAGER TREE";
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save tree"), path, tr("Comma separated value (*.xml)"));
             static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
             static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setInput(tree);
-
         }
 
         if(!export_file_path.isEmpty()) {
@@ -185,6 +182,35 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
+gnomonFormManager::gnomonFormManager(QWidget *parent) : QFrame(parent)
+{
+    d = new gnomonFormManagerPrivate;
+    d->q = this;
+
+    QHBoxLayout *t_layout = new QHBoxLayout;
+    t_layout->setContentsMargins(0, 0, 0, 0);
+    t_layout->setSpacing(0);
+    t_layout->addWidget(d);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setAlignment(Qt::AlignTop);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addLayout(t_layout);
+
+    this->setMouseTracking(true);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+}
+
+gnomonFormManager::~gnomonFormManager(void)
+{
+    delete d;
+}
+
+QSize gnomonFormManager::sizeHint(void) const
+{
+    return QSize(200, 140);
+}
+
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkCamera *cam)
 {
     QImage image = visualization->imageRendering();
@@ -197,6 +223,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     d->formCameras.insert(item, cam);
 
     QString writerPlugin;
+
     if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         d->formWriterCommand[item] = new gnomonImageWriterCommand("gnomonImageWriter");
         static_cast<gnomonImageWriterCommand *>(d->formWriterCommand[item])->setImage(image);
@@ -216,11 +243,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
 {
-    qDebug() << Q_FUNC_INFO;
-
     QImage image = visualization->imageRendering();
-
-    qDebug() << Q_FUNC_INFO << image;
 
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
@@ -235,14 +258,12 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(df);
     } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
-      qDebug()<<Q_FUNC_INFO<<tree;
-      d->formWriterCommand[item] = new gnomonTreeWriterCommand("gnomonTreeWriterTreex");
-      static_cast<gnomonTreeWriterCommand *>(d->formWriterCommand[item])->setInput(tree);
+        d->formWriterCommand[item] = new gnomonTreeWriterCommand("gnomonTreeWriterTreex");
+        static_cast<gnomonTreeWriterCommand *>(d->formWriterCommand[item])->setInput(tree);
     }
 
     d->contents->layout()->addWidget(item);
 }
-
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, const QImage& image)
 {
@@ -255,7 +276,6 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     QString writerPlugin;
 
     if (gnomonDataFrame *dataFrame = dynamic_cast<gnomonDataFrame *>(form)) {
-        qDebug()<<Q_FUNC_INFO<<dataFrame;
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
     }
@@ -265,11 +285,10 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
 
 gnomonAbstractDynamicForm *gnomonFormManager::get(int index)
 {
-    for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
-        if (index == it.key()->id) {
+    for (auto it = d->forms.begin(); it != d->forms.end(); ++it)
+        if (index == it.key()->id)
             return *it;
-        }
-    }
+
     return nullptr;
 }
 
@@ -277,13 +296,13 @@ gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
-            if (d->formVisualizations.contains(it.key())) {
+            if (d->formVisualizations.contains(it.key()))
                 return d->formVisualizations.value(it.key());
-            } else {
+            else
                 return nullptr;
-            }
         }
     }
+
     return nullptr;
 }
 
@@ -291,54 +310,23 @@ vtkCamera *gnomonFormManager::getCamera(int index)
 {
     for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
         if (index == it.key()->id) {
-            if (d->formCameras.contains(it.key())) {
+            if (d->formCameras.contains(it.key()))
                 return d->formCameras.value(it.key());
-            } else {
+            else
                 return nullptr;
-            }
         }
     }
+
     return nullptr;
 }
 
 QPixmap gnomonFormManager::thumbnail(int index)
 {
-    for (auto it = d->forms.begin(); it != d->forms.end(); ++it) {
-        if (index == it.key()->id) {
+    for (auto it = d->forms.begin(); it != d->forms.end(); ++it)
+        if (index == it.key()->id)
             return *(it.key()->pixmap());
-        }
-    }
+
     return QPixmap();
-}
-
-gnomonFormManager::gnomonFormManager(QWidget *parent) : QFrame(parent)
-{
-    d = new gnomonFormManagerPrivate;
-    d->q = this;
-
-    QHBoxLayout *t_layout = new QHBoxLayout;
-    t_layout->setContentsMargins(0, 0, 0, 0);
-    t_layout->setSpacing(0);
-    t_layout->addWidget(d);
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setAlignment(Qt::AlignTop);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addLayout(t_layout);
-
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    this->setMouseTracking(true);
-}
-
-gnomonFormManager::~gnomonFormManager(void)
-{
-    delete d;
-}
-
-QSize gnomonFormManager::sizeHint(void) const
-{
-    return QSize(200, 140);
 }
 
 void gnomonFormManager::present(gnomonFormManagerItem *item)
@@ -346,59 +334,75 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
     if(!d->focus_item)
         d->focus_item = new gnomonFormManagerFocus(this);
 
-    if (d->focus_area)
-        delete d->focus_area;
+    // if (d->focus_area)
+    //     delete d->focus_area;
 
-    QSequentialAnimationGroup *animation = new QSequentialAnimationGroup(this);
+    if(d->animation)
+        delete d->animation;
 
-    if (d->focus_item->presented) {
+    d->animation = new QSequentialAnimationGroup(this);
 
-        QVariantAnimation *p_animation = new QVariantAnimation(this);
-        p_animation->setDuration(250);
-        p_animation->setStartValue(d->focus_item->destnt);
-        p_animation->setEndValue(d->focus_item->source);
-        p_animation->setEasingCurve(QEasingCurve::OutQuad);
+    // if (d->focus_item->presented) {
 
-        QVariantAnimation *s_animation = new QVariantAnimation(this);
-        s_animation->setDuration(250);
-        s_animation->setStartValue(d->focus_item->d_size);
-        s_animation->setEndValue(d->focus_item->s_size);
-        s_animation->setEasingCurve(QEasingCurve::OutQuad);
+    //     QVariantAnimation *p_animation = new QVariantAnimation(this);
+    //     p_animation->setDuration(250);
+    //     p_animation->setStartValue(d->focus_item->destnt);
+    //     p_animation->setEndValue(d->focus_item->source);
+    //     p_animation->setEasingCurve(QEasingCurve::OutQuad);
 
-        QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
-        g_animation->addAnimation(p_animation);
-        g_animation->addAnimation(s_animation);
+    //     QVariantAnimation *s_animation = new QVariantAnimation(this);
+    //     s_animation->setDuration(250);
+    //     s_animation->setStartValue(d->focus_item->d_size);
+    //     s_animation->setEndValue(d->focus_item->s_size);
+    //     s_animation->setEasingCurve(QEasingCurve::OutQuad);
 
-        connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
-            d->focus_item->move(value.toPoint());
-        });
+    //     QParallelAnimationGroup *g_animation = new QParallelAnimationGroup(this);
+    //     g_animation->addAnimation(p_animation);
+    //     g_animation->addAnimation(s_animation);
 
-        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
-            d->focus_item->resize(value.toSize());
-            d->focus_item->setPixmap(d->focus_item->pixmap()->scaled(value.toSize().width(), value.toSize().height()));
-        });
+    //     connect(p_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) -> void
+    //     {
+    //         d->focus_item->move(value.toPoint());
+    //     });
 
-        connect(g_animation, &QAbstractAnimation::finished, [=] () {
-            d->focus_item->presented = false;
-        });
+    //     connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) -> void
+    //     {
+    //         d->focus_item->resize(value.toSize());
+    //         d->focus_item->setPixmap(d->focus_item->pixmap()->scaled(value.toSize().width(), value.toSize().height()));
+    //     });
 
-        animation->addAnimation(g_animation);
+    //     connect(g_animation, &QAbstractAnimation::finished, [=] (void) -> void
+    //     {
+    //         qDebug() << Q_FUNC_INFO << "finished";
 
-    }
+    //         if(d->view) {
+    //             delete d->view;
+    //             d->view = 0;
+    //         }
+
+    //         d->focus_area->setVisible(false);
+    //         d->focus_area->deleteLater();
+    //         d->focus_item->presented = false;
+
+    //         this->repaint();
+    //     });
+
+    //     d->animation->addAnimation(g_animation);
+
+    //     return;
+    // }
 
     QRect focus_item_dest_rect;
-
     {
-
         d->focus_item->move(item->pos());
         d->focus_item->resize(item->size());
         d->focus_item->setStyleSheet("border: 2px solid white;");
         d->focus_item->show();
 
         d->focus_item->source = d->focus_item->pos();
-        d->focus_item->destnt = QPoint(this->size().width() / 2 - 8 * d->focus_item->width() / 2, this->size().height() / 2 - 6 * d->focus_item->height() / 2);
+        d->focus_item->destnt = QPoint(this->width() / 4 - this->width() / 8, this->size().height() / 4 + 50);
         d->focus_item->s_size = d->focus_item->size();
-        d->focus_item->d_size = d->focus_item->size() * 6;
+        d->focus_item->d_size = QSize(this->width()/2, this->height() * 1/2);
 
         focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->size() * 6);
 
@@ -422,47 +426,63 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
             d->focus_item->move(value.toPoint());
         });
 
-        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+        connect(s_animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value)
+        {
             d->focus_item->resize(value.toSize());
             // d->focus_item->setPixmap(item->thumbnail.scaled(value.toSize().width(), value.toSize().height()));
             d->focus_item->setPixmap(item->image.scaled(value.toSize().width(), value.toSize().height()));
+
+            this->repaint();
         });
 
-        connect(s_animation, &QAbstractAnimation::finished, [=] () {
-            // when animation is done, display the ViewForm
-            if (d->view != nullptr)
-                delete d->view;
-                
-            d->view = new gnomonViewForm(this);
-            gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(item->id);
-            d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
-            d->view->resize(d->focus_item->size());
-            d->view->move(d->focus_item->pos());
-            d->view->show();
+        connect(s_animation, &QAbstractAnimation::finished, [=] (void) -> void
+        {
+            // if (d->view != nullptr) {
+
+            //     d->view->hide();
+
+            //     delete d->view;
+            // }
+
+            this->repaint();
         });
 
         connect(g_animation, &QAbstractAnimation::finished, [=] () {
-            d->focus_area = d->formData[item]->compute();
-            d->focus_area->setParent(this);
-            d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
-            d->focus_area->resize(d->focus_item->size());
-            d->focus_area->show();
-            d->focus_item->presented = true;
+
+            qDebug() << Q_FUNC_INFO << "In here";
+
+            if(g_animation->direction() == QAbstractAnimation::Forward) {
+
+                QScrollArea *data = d->formData[item]->compute();
+
+                d->focus_item->presented = true;
+
+                d->focus_area = data;
+                d->focus_area->setParent(this);
+                d->focus_area->setEnabled(d->focus_item->presented ? true : false);
+                d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
+                d->focus_area->resize(QSize(2*this->width()/8, d->focus_item->size().height()));
+                d->focus_area->setVisible(true);
+                d->focus_area->setStyleSheet(QString("QScrollArea { border: 1px solid %1; border-radius: 10; }").arg(dtkThemesEngine::instance()->value("@hl")));
+
+                gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(item->id);
+
+                d->view = new gnomonViewForm(this);
+                d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
+                d->view->resize(d->focus_item->size());
+                d->view->move(d->focus_item->pos());
+                d->view->show();
+            } else {
+
+                d->focus_area->hide();
+                d->view->hide();
+            }
         });
 
-        animation->addAnimation(g_animation);
+        d->animation->addAnimation(g_animation);
     }
 
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
-
-    connect(animation, &QAbstractAnimation::finished, [=] {
-        d->focus_area = new QScrollArea(0);
-        d->focus_area->setParent(this);
-        d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
-        d->focus_area->resize(d->focus_item->size());
-        d->focus_area->show();
-        d->show();
-    });
+    d->animation->start();
 }
 
 void gnomonFormManager::enterEvent(QEvent *)
@@ -481,6 +501,8 @@ void gnomonFormManager::leaveEvent(QEvent *)
 
 void gnomonFormManager::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << Q_FUNC_INFO << event->pos();
+
     QRect handle = QRect(this->size().width() / 2 - 100, this->size().height() - 10, 200, 10);
 
     if (handle.contains(event->pos())) {
@@ -492,7 +514,33 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
             emit shrink();
             d->state = gnomonFormManagerPrivate::Collapsed;
         }
+
+    } else {
+
+        qDebug() << Q_FUNC_INFO << 0;
+
+        if(gnomonFormManagerItem *item = dynamic_cast<gnomonFormManagerItem *>(childAt(event->pos()))) {
+
+            qDebug() << Q_FUNC_INFO << 10;
+
+            d->animation->setDirection(d->focus_item->presented ? QAbstractAnimation::Backward : QAbstractAnimation::Forward);
+
+            d->animation->start();
+
+            event->ignore();
+
+            return QFrame::mousePressEvent(event);
+        }
+
+        qDebug() << Q_FUNC_INFO << 1;
+
+        if (d->view)
+            d->view->hide();
+
+        d->focus_area->hide();
     }
+
+    QFrame::mousePressEvent(event);
 }
 
 void gnomonFormManager::paintEvent(QPaintEvent *event)
@@ -500,6 +548,7 @@ void gnomonFormManager::paintEvent(QPaintEvent *event)
     QFrame::paintEvent(event);
 
     QPainter painter(this);
+    painter.fillRect(event->rect(), dtkThemesEngine::instance()->color("@bg"));
     painter.setPen(dtkThemesEngine::instance()->color("@bgalt"));
     painter.drawLine(event->rect().bottomLeft(), event->rect().bottomRight());
 

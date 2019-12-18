@@ -106,8 +106,12 @@ void gnomonFormManagerItem::leaveEvent(QEvent *)
     this->setPixmap(this->thumbnail);
 }
 
-void gnomonFormManagerItem::mousePressEvent(QMouseEvent *)
+void gnomonFormManagerItem::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << Q_FUNC_INFO << event->pos();
+
+    event->accept();
+
     if(parent->state == gnomonFormManagerPrivate::Collapsed) {
 
         QMimeData *mimeData = new QMimeData;
