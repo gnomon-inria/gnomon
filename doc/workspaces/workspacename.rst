@@ -11,8 +11,8 @@ The Gnomon browser workspace is the place to find, import and open datasets in o
 
 * **Output**: A 3D representation of the image on the viewer, with possibility to interact with it (rotation, zoom, translation).
 
-Outlay of the Browser workspace 
-=======================
+Outlay of the Browser workspace
+===============================
 
 .. image::
 
@@ -26,6 +26,6 @@ Example of use
 Describe the flow of user interactions/operations focusing on the "default" algorithm of the workspace.
 
 Typical follow-ups
-==============
+==================
 
 Explain how this is linked to the work in other workspaces (by citing their documentation pages).

@@ -15,7 +15,7 @@ Installation by creating a new conda environment (recommended)
 note: the name of the new environment (here: 'gnomon') is defined by the option -n
 
 Installation in an existing conda environment containing already Python 3.7.5+
------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 .. code-block::
 
