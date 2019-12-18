@@ -138,6 +138,7 @@ public:
 public:
     bool acceptCellComplex = true;
     bool enableLink = false;
+    bool enableMenus = true;
 
 public:
     QColor export_color = QColor("#cccccc");
@@ -284,7 +285,12 @@ QSize gnomonViewFormPrivate::sizeHint(void) const
 
 void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 {
-    static int l_margin = 38;
+    static int l_margin;
+    if (this->enableMenus) {
+        l_margin = 38;
+    } else {
+        l_margin = 0;
+    }
     static int r_margin = 0;
 
     this->renderer2D_button->move(l_margin + 10, 10);
@@ -306,13 +312,26 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
         this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
     }
 
-    if (this->view_menubar)
+    if (this->view_menubar) {
         this->view_menubar->setFixedHeight(event->size().height());
+        if (this->enableMenus) {
+            this->view_menubar->show();
+        } else {
+            this->view_menubar->hide();
+        }
+    }
 
     if (this->style_menubar){
         this->style_menubar->setFixedHeight(32*(1+this->available_styles.size())+32);
         this->style_menubar->move(QPoint(0, 32*(1+this->formVisualizationMenus.size())+32));
+        if (this->enableMenus) {
+            this->style_menubar->show();
+        } else {
+            this->style_menubar->hide();
+        }
     }
+
+
 
     QVTKOpenGLWidget::resizeEvent(event);
 }
@@ -637,7 +656,6 @@ void gnomonViewFormPrivate::refresh(void)
     this->resizeEvent(new QResizeEvent(this->size(), QSize()));
 
     this->view_menubar->touch();
-
 }
 
 void gnomonViewFormPrivate::updateTimeSlider(void)
@@ -786,6 +804,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     connect(d->time_slider, SIGNAL(valueChanged(int)), this, SLOT(timeIndexChange(int)));
 
     d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->hide();
     d->view_menubar->setInteractive(false);
     d->view_menubar->setWidth(32);
     d->view_menubar->setMargins(6);
@@ -793,6 +812,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->view_menubar->touch();
 
     d->style_menubar = new dtkWidgetsMenuBar(d);
+    d->style_menubar->hide();
     d->style_menubar->setInteractive(false);
     d->style_menubar->setStandalone(true);
     d->style_menubar->setWidth(32);
@@ -1478,6 +1498,12 @@ void gnomonViewForm::setAcceptCellComplex(bool accept)
 void gnomonViewForm::setEnableLinking(bool enable)
 {
     d->enableLink = enable;
+    d->refresh();
+}
+
+void gnomonViewForm::setEnableMenus(bool enable)
+{
+    d->enableMenus = enable;
     d->refresh();
 }
 
