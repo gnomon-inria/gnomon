@@ -487,11 +487,7 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
 
             } else {
                 d->deleteAnimation();
-
-                if (d->focus_area)
-                    d->focus_area->hide();
-                if (d->view)
-                    d->view->hide();
+                d->dismissView();
             }
         });
 
