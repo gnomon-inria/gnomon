@@ -400,9 +400,11 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
         d->focus_item->show();
 
         d->focus_item->source = d->focus_item->pos();
-        d->focus_item->destnt = QPoint(this->width() / 4 - this->width() / 8, this->size().height() / 4 + 50);
+//        d->focus_item->destnt = QPoint(this->width() / 4 - this->width() / 8, this->size().height() / 4 + 50);
+        d->focus_item->destnt = QPoint(this->width()/2 - this->size().height()/2, this->size().height()/4);
         d->focus_item->s_size = d->focus_item->size();
-        d->focus_item->d_size = QSize(this->width()/2, this->height() * 1/2);
+//        d->focus_item->d_size = QSize(this->width()/2, this->height() * 1/2);
+        d->focus_item->d_size = QSize(2*this->height()/4, 2*this->height()/4);
 
         focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->size() * 6);
 
@@ -461,21 +463,30 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
                 d->focus_area->setParent(this);
                 d->focus_area->setEnabled(d->focus_item->presented ? true : false);
                 d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
-                d->focus_area->resize(QSize(2*this->width()/8, d->focus_item->size().height()));
+                d->focus_area->resize(QSize(2*this->height()/4, 2*this->height()/4));
                 d->focus_area->setVisible(true);
                 d->focus_area->setStyleSheet(QString("QScrollArea { border: 1px solid %1; border-radius: 10; }").arg(dtkThemesEngine::instance()->value("@hl")));
 
                 gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(item->id);
 
                 d->view = new gnomonViewForm(this);
-                d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
-                d->view->resize(d->focus_item->size());
+                d->view->setInputView(true);
+                d->view->setEnableMenus(false);
+                d->view->resize(QSize(2*this->height()/4, 2*this->height()/4));
                 d->view->move(d->focus_item->pos());
-                d->view->show();
-            } else {
-
-                d->focus_area->hide();
                 d->view->hide();
+
+                connect(d->view, &gnomonViewForm::formAdded, [=] () {
+                    d->view->show();
+                });
+
+                d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
+
+            } else {
+                if (d->focus_area)
+                    d->focus_area->hide();
+                if (d->view)
+                    d->view->hide();
             }
         });
 
@@ -534,10 +545,16 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
 
         qDebug() << Q_FUNC_INFO << 1;
 
-        if (d->view)
-            d->view->hide();
+        if (event->pos().y() > d->sizeHint().height()) {
+            d->animation->setDirection(QAbstractAnimation::Backward);
+            d->animation->start();
 
-        d->focus_area->hide();
+            if (d->view)
+                d->view->hide();
+
+            if (d->focus_area)
+                d->focus_area->hide();
+        }
     }
 
     QFrame::mousePressEvent(event);
