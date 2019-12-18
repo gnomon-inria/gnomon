@@ -1,3 +1,5 @@
+.. _SegmentationWorkspace:
+
 ============================
 Image Segmentation Workspace
 ============================
@@ -5,7 +7,8 @@ Image Segmentation Workspace
 General presentation
 ====================
 
-This workspace produces segmentations of intensity images using different algorithms. It is particularly adapted to segment 3D images of multicellular tissues at cell resolution.
+This workspace produces segmentations of intensity images using different algorithms.
+It is particularly adapted to segment 3D images of multicellular tissues at cell resolution.
 
 * **Input**: intensity image (typically coming from microscopy (confocal, light-sheet) data, representing either 2D or 3D samples).
 * **Output**: a segmented image, in which each compartment of the original intensity image is identified and labeled with a unique numerical ID.
@@ -24,22 +27,25 @@ Outlay of the Image Segmentation workspace
 The workspace consists of three main specific zones:
 
 * input :ref:`Viewer`,
-* output 3D viewer and
+* output :ref:`Viewer` and
 * configuration panel.
 
-The input 3D viewer (left) contains the intensity image to be segmented, while the output (rightmost) viewer displays the result of the selected segmentation plugin.
-Once the parameters are set to their desired values, users can apply the algorithm to the intensity image shown in the leftmost viewer by clicking on the "Apply" button. The result is displayed on the rightmost viewer (note that depending on the algorithm and the input image, this operation may take a variable amount of time).
+The input :ref:`Viewer` (left) contains the intensity image to be segmented, while the output (rightmost)
+viewer displays the result of the selected segmentation plugin.
+Once the parameters are set to their desired values, users can apply the algorithm to the intensity image
+shown in the leftmost viewer by clicking on the "Apply" button. The result is displayed on the rightmost
+viewer (note that depending on the algorithm and the input image, this operation may take a variable amount of time).
 
 
 Example of use: Watershed segmentation of an intensity image
 ============================================================
 
-**Prerequisite:** The form manager must contain at least one intensity image.
+**Prerequisite:** The :ref:`FormManager` must contain at least one intensity image.
 
 **Step 1:** Open an Image Segmentation workspace.
 
 **Step 2:** Drag and drop one intensity image from the form manager to the
-input 3D viewer.
+input :ref:`Viewer`.
 
 **Step 3:** Select the *seededWatershedSegmentation* algorithm at the top
 of the configuration panel.
@@ -53,11 +59,14 @@ segmented images will overlay, facilitating the assessment of the quality of seg
 **Step 6:** (Optional) You can then play with the h-min parameter in order to modify
 the number of seeds. The more h-min is small the more the number of seeds increase (and vice-versa).
 
-**Step 7:** Segmented image can be saved using the up-arrow at the top-left corner of the output 3d viewer.
+**Step 7:** Segmented image can be saved using the up-arrow at the top-left corner of the output :ref:`Viewer`.
 
 Related workspaces
 ==================
 
-**Upstream of the Image Segmentation workspace:** Three-dimensional intensity images, inputs of the Segmentation Workspace, might  directly come from a file via the **Browser workspace** or might have been produced as outputs of the **Fusion workspace**.
+**Upstream of the Image Segmentation workspace:** Three-dimensional intensity images, inputs of the Segmentation
+Workspace, might  directly come from a file via the :ref:`BrowserWorkspace` or might have been produced as outputs
+of the **Fusion workspace**.
 
-**Downstream of the Image Segmentation workspace:** segmented images, can then be quantitatively analyzed in the **Cell analysis workspace** or further processed in the **Cell reconstruction workspace**.
+**Downstream of the Image Segmentation workspace:** segmented images, can then be quantitatively analyzed in
+the **Cell analysis workspace** or further processed in the **Cell reconstruction workspace**.

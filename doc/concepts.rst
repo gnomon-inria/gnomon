@@ -49,6 +49,8 @@ Interestingly, Gnomon manipulates natively not only forms, but also sequences of
 ..    n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
 
 
+.. _FormManager:
+
 Form manager
 ============
 The form manager is a bus of data structures representing forms and containing the objects and state variables shared by the different models. It is a set of data structures that can be globally accessed by all the workspaces. Form manager objects are augmented with meta-data that indicate their characteristics and provenance.

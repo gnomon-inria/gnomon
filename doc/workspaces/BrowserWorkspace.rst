@@ -1,9 +1,11 @@
+.. _BrowserWorkspace:
+
 =================
 Browser Workspace
 =================
 
 General presentation
-===========
+====================
 
 The browser workspace is the place to find and import data in order to implement different functionalities of the Gnomon platform. It enables a user to interactively view a data file and change/set visualisation parameters. In this workspace one can create thumbnails of an imported dataset on the form manager which can then be used with other workspaces.
 
