@@ -1,6 +1,6 @@
-======================
-Segmentation Workspace
-======================
+============================
+Image Segmentation Workspace
+============================
 
 General presentation
 ====================
@@ -10,8 +10,8 @@ This workspace produces segmentations of intensity images using different algori
 * **Input**: intensity image (typically coming from microscopy (confocal, light-sheet) data, representing either 2D or 3D samples).
 * **Output**: a segmented image, in which each compartment of the original intensity image is identified and labeled with a unique numerical ID.
 
-Outlay of the Segmentation workspace
-====================================
+Outlay of the Image Segmentation workspace
+==========================================
 
 .. figure:: Images/SegmentationWorkspace.png
     :align: center
@@ -19,44 +19,45 @@ Outlay of the Segmentation workspace
     :alt: alternate text
     :figclass: align-center
 
-    Segmentation workspace
+    Image Segmentation workspace
 
 The workspace consists of three main specific zones:
 
-* input 3D viewer,
+* input :ref:`Viewer`,
 * output 3D viewer and
 * configuration panel.
 
-The input 3D viewer (left) contains the intensity image to be segmented, while the output (rightmost) viewer displays the result of the selected segmentation plugin.  Users can select the plugin from a plugin list appearing in the drop-down menu on the right-hand side configuration panel. A brief description of the plugin appears below together with a set of parameters with default values that control the plugin algorithm. Once the parameters are set to their desired values, users can apply the algorithm to the intensity image shown in the leftmost viewer by clicking on the "Apply" button. The result is displayed on the rightmost viewer (note that depending on the algorithm and the input image, this operation may take a variable amount of time).
-
-Each 3D viewer is equipped with two user bars:
-
-* a vertical bar for visualization options on the left and
-* a horizontal bar on top.
-
-The visualization options are accessible in a menu from the vertical bar on the left of each figure. There, users can set the colormap used to display each image, or switch between the different ways of interacting with each image. For segmented images, users may also toggle between the volumetric and the surface-mesh representations of segmented objects.
-
-On top of each viewer, the horizontal bars provides icons to switch between a full 3D and a 2D-cut view of each image (for three-dimensional data). Also, the visualization of the input and output images can be synchronized by activating the two lock icons in each viewer. In this way, rotations, translations and zooms applied to the image in one viewer is automatically reported on the image in the other viewer. In the same bar, users find a help button and the option to export each image to the form manager through the UP arrow button.
+The input 3D viewer (left) contains the intensity image to be segmented, while the output (rightmost) viewer displays the result of the selected segmentation plugin.
+Once the parameters are set to their desired values, users can apply the algorithm to the intensity image shown in the leftmost viewer by clicking on the "Apply" button. The result is displayed on the rightmost viewer (note that depending on the algorithm and the input image, this operation may take a variable amount of time).
 
 
-Example of use
-==============
+Example of use: Watershed segmentation of an intensity image
+============================================================
 
-**Importing an intensity image:**  After opening an intensity image in the Browser Workspace and having exported it to the form manager, users can import it into the left viewer of the Segmentation Workspace by drag-and-drop or through the DOWN arrow button on the image icon.
+**Prerequisite:** The form manager must contain at least one intensity image.
 
-**Selecting, setting and running a plugin:** After selecting the desired segmentation algorithm on the plugin Panel on the rightmost part of the Workspace, users can set the parameters to specific values or leave them to their default values.
+**Step 1:** Open an Image Segmentation workspace.
 
-Clicking on the Apply button runs the plugin algorithm on the input image. After completion, the resulting segmented image appears on the right viewer of the workspace.
+**Step 2:** Drag and drop one intensity image from the form manager to the
+input 3D viewer.
 
-**Visualizing the result:** Users can then select their preferred visualization option in the visualization menu of the right viewer. For instance, they can change the colormap used to identify each segmented object, or they can toggle on/off the surface mesh visualization option.
+**Step 3:** Select the *seededWatershedSegmentation* algorithm at the top
+of the configuration panel.
 
-When surface meshes are visualized, a Reticle button appears on the left among the possible user-image interaction styles. By activating this style, users can click on each segmented object to obtain information associated with it (such as, for instance, its unique numerical ID).
+**Step 4:** Click on the *Apply* button at the bottom of the configuration
+panel.
 
-**Overlaying intensity and segmentation images:** The original intensity image from the Form Manager can be drag-and-dropped into the right viewer. As a  result, the intensity and segmented images are overlayed, facilitating the assessment of the quality of segmentation achieved.
+**Step 5:** Drag and drop the input image into the output viewer. The intensity and
+segmented images will overlay, facilitating the assessment of the quality of segmentation achieved.
+
+**Step 6:** (Optional) You can then play with the h-min parameter in order to modify
+the number of seeds. The more h-min is small the more the number of seeds increase (and vice-versa).
+
+**Step 7:** Segmented image can be saved using the up-arrow at the top-left corner of the output 3d viewer.
 
 Related workspaces
 ==================
 
-**Upstream of the Segmentation workspace:** Three-dimensional intensity images, inputs of the Segmentation Workspace, might  directly come from a file via the **Browser workspace** or might have been produced as outputs of the **Fusion workspace**.
+**Upstream of the Image Segmentation workspace:** Three-dimensional intensity images, inputs of the Segmentation Workspace, might  directly come from a file via the **Browser workspace** or might have been produced as outputs of the **Fusion workspace**.
 
-**Downstream of the segmentation workspace:** segmented images, can then be quantitatively analyzed in the **Cell analysis workspace** or further processed in the **Cell reconstruction workspace**.
+**Downstream of the Image Segmentation workspace:** segmented images, can then be quantitatively analyzed in the **Cell analysis workspace** or further processed in the **Cell reconstruction workspace**.

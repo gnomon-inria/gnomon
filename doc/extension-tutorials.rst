@@ -34,5 +34,11 @@ Existing plugins
 Creating new plugins
 ====================
 
+
+.. toctree::
+    :maxdepth: 2
+
+    plugins/existing_abstraction_existing_data_plugin
+
 Defining new workspaces
 =======================

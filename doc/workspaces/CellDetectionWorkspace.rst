@@ -5,11 +5,10 @@ Cell Detection Workspace
 General presentation
 =========================
 
-This workspace performs two types of cell detection: nuclei detection and seed detection of each cell of a 3D 
-tissue image. 
+This workspace performs two types of cell detection: nuclei detection and seed detection of each cell of a 3D
+tissue image.
 
-* **Input**: 3D tissue image. For the nucliei detection, the image should be in the form of 3 colour channels,
-whereas for seed detection, the image should be in grayscale and the membranes in the image should be marked clearly. 
+* **Input**: 3D tissue image. For the nucliei detection, the image should be in the form of 3 colour channels, whereas for seed detection, the image should be in grayscale and the membranes in the image should be marked clearly.
 * **Output**: Detected nuclei or seeds in point cloud format.
 
 Outlay of the Cell Detection workspace
@@ -17,7 +16,7 @@ Outlay of the Cell Detection workspace
 
 .. figure:: Images/CellDetectionWorkspace.png
     :align: center
-    :scale: 25
+    :scale: 75
     :alt: alternate text
     :figclass: align-center
 
@@ -36,7 +35,7 @@ Each 3D viewer is equipped with two user bars:
 
 The visualization options are accessible in a menu from the vertical bar on the left of each figure. There, users can set the colormap used to display each image, or switch between the different ways of interacting with each image. For detected nuclei
 and/or seeds in point cloud format, users can choose the opacity, colormap, zooming and other properties to visualize the
-cloud of points. 
+cloud of points.
 
 On top of each viewer, the horizontal bars provides icons to switch between a full 3D and a 2D-cut view of each image (for three-dimensional data). Also, the visualization of the input and output images can be synchronized by activating the two lock icons in each viewer. In this way, rotations, translations and zooms applied to the image in one viewer is automatically reflected on the image in the other viewer. In the same bar, users find a help button and the option to export each image to the form manager through the UP arrow button.
 
@@ -49,6 +48,6 @@ Example of use
 
 Clicking on the Apply button runs the plugin algorithm on the input image. After completion, the resulting point cloud appears on the right viewer of the workspace.
 
-**Visualizing the result:** Users can then select their preferred visualization option in the visualization menu of the right viewer. For instance, they can change the colormap to identify each point in the cloud, change the opacity, change the axis orientation view, etc. 
+**Visualizing the result:** Users can then select their preferred visualization option in the visualization menu of the right viewer. For instance, they can change the colormap to identify each point in the cloud, change the opacity, change the axis orientation view, etc.
 
 **Overlaying input 3D image and detected cell point cloud:** The original 3D tissue image from the Form Manager can be drag-and-dropped into the right viewer. As a  result, the 3D tissue image and the detected cell point cloud are overlayed, facilitating the assessment of the quality of detection achieved.
