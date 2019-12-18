@@ -333,7 +333,7 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
 {
     if(d->animation)
     {
-        d->deferredFocus = item;
+        d->deferred_focus = item;
         d->animation->setDirection(QAbstractAnimation::Backward);
         d->animation->start();
         d->dismissView();
@@ -442,12 +442,12 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
                 d->deleteAnimation();
                 d->dismissView();
 
-                if (d->deferredFocus)
+                if (d->deferred_focus)
                 {
-                    this->present(d->deferredFocus);
+                    this->present(d->deferred_focus);
                     d->animation->setDirection(QAbstractAnimation::Forward);
                     d->animation->start();
-                    d->deferredFocus = nullptr;
+                    d->deferred_focus = nullptr;
                 }
             }
         });
