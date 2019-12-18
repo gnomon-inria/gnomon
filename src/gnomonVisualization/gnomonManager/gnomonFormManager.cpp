@@ -483,6 +483,12 @@ void gnomonFormManager::present(gnomonFormManagerItem *item)
                 d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
 
             } else {
+                delete d->focus_item;
+                d->focus_item = nullptr;
+
+                delete d->animation;
+                d->animation = nullptr;
+
                 if (d->focus_area)
                     d->focus_area->hide();
                 if (d->view)
