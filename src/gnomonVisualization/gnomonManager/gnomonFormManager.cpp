@@ -537,7 +537,8 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
         if (d->view)
             d->view->hide();
 
-        d->focus_area->hide();
+        if (d->focus_area)
+            d->focus_area->hide();
     }
 
     QFrame::mousePressEvent(event);
