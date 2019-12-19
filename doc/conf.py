@@ -17,6 +17,12 @@ import sys
 
 cwd = os.getcwd()
 project_root = os.path.dirname(cwd)
+src_dir = os.path.abspath(os.path.join(project_root, "python"))
+
+# Insert the project root dir as the first element in the PYTHONPATH.
+# This lets us ensure that the source package is imported, and that its
+# version is used.
+sys.path.insert(0, os.path.join(project_root, 'python'))
 
 # -- Project information -----------------------------------------------------
 
@@ -189,14 +195,14 @@ todo_include_todos = True
 
 
 # use apidoc to generate developer doc
-# try:
-#     from sphinx.ext.apidoc import main
-# except ImportError:
-#     from sphinx.apidoc import main
-#
-# destdir = os.path.abspath(os.path.join(project_root, "doc", "_dvlpt"))
-#
-# if not os.path.isdir(destdir):
-#     os.makedirs(destdir)
-#
-# main(['-e', '-o', destdir, '-d', '4', '-s', source_suffix[1:], '--force', src_dir])
+try:
+    from sphinx.ext.apidoc import main
+except ImportError:
+    from sphinx.apidoc import main
+
+destdir = os.path.abspath(os.path.join(project_root, "doc", "_dvlpt"))
+
+if not os.path.isdir(destdir):
+    os.makedirs(destdir)
+
+main(['-e', '-o', destdir, '-d', '4', '-s', source_suffix[1:], '--force', src_dir])
