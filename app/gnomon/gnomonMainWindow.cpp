@@ -295,7 +295,7 @@ void gnomonMainWindow::populate(void)
     });
 
 
-    dtkWidgetsMenu *menu_about = this->menubar()->addMenu(fa::questioncircle, "About this workspace");
+//    dtkWidgetsMenu *menu_about = this->menubar()->addMenu(fa::questioncircle, "About this workspace");
 }
 
 void gnomonMainWindow::resizeEvent(QResizeEvent *event)
