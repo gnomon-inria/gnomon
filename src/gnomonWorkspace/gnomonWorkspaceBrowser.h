@@ -33,6 +33,9 @@ public:
 public:
     void apply(void) override;
 
+public:
+    static const QColor color;
+
 private:
     class gnomonWorkspaceBrowserPrivate *d;
 };

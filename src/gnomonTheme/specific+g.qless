@@ -17,6 +17,42 @@
 /* //                                                                               */
 /* // ///////////////////////////////////////////////////////////////////////////// */
 
+dtkWidgetsMenuBar#RHS
+{
+    background: alpha(@base0, 00);
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+
+dtkWidgetsWorkspaceBar::tab
+{
+    width: 200px;
+    font-size: 18pt;
+    font-weight: normal;
+}
+
+dtkWidgetsWorkspaceBar::tab:!selected
+{
+    background-color: @base2;
+    font-weight: bold;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+gnomonViewForm > QSlider
+{
+    border: none;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
 gnomonWorkspaceBrowser > QLineEdit
 {
     border: none;
@@ -32,11 +68,21 @@ gnomonWorkspaceBrowser > QToolButton
     border: none;
 }
 
-gnomonWorkspaceBrowser > QListView::item
+gnomonFinderListView
 {
     font-weight: normal;
-    font-size: 10px;
+    font-size: 12px;
 }
+
+
+gnomonFinderListView::item
+{
+    height: 100px;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
 
 gnomonMessageBoard > QLabel
 {

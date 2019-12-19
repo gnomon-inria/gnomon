@@ -10,6 +10,5 @@
 #include "gnomonMessageBoard.h"
 #include "gnomonOverlayButton.h"
 #include "gnomonSpinner.h"
-#include "gnomonToolBar.h"
 #include "gnomonWidgets.h"
 #include "gnomonWidgetsParameter.h"

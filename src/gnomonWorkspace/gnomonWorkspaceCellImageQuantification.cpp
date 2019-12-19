@@ -93,7 +93,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d = new gnomonWorkspaceCellImageQuantificationPrivate;
 
     d->view = new gnomonViewForm(this);
-    d->view->setExportColor(gnomonToolBar::cellImageQuantification_color);
+    d->view->setExportColor(this->color);
     d->view->setInputView(false);
     d->view->setEnableLinking(false);
 
@@ -223,6 +223,8 @@ void gnomonWorkspaceCellImageQuantification::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceCellImageQuantification::color = QColor("#4c64d9");
 
 //
 // gnomonWorkspaceCellImageQuantification.cpp ends here

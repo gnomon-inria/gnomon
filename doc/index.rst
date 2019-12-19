@@ -37,7 +37,7 @@ Gnomon
    :Contributors: |contrib|
 
    :Active teams:
-      * Inria team `Mosaic <https://team.inria.fr/mosaic/>`_
+      * Inria project-team `Mosaic <https://team.inria.fr/mosaic/>`_
       * Inria Sophia `SED <https://www.inria.fr/centre/sophia/innovation/plates-formes-technologiques/>`_
 
    :Stable release: |release|
@@ -53,24 +53,42 @@ Installation
 ============
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
+   installation
 
 
-Contents
+Concepts
 ========
 
 .. toctree::
+   :maxdepth: 2
 
    concepts
+
+User-tutorials
+==============
+
+.. toctree::
+   :maxdepth: 2
+
    user-tutorials
+
+extension-tutorials
+===================
+
+.. toctree::
+   :maxdepth: 2
+
    extension-tutorials
 
 
 Indices and tables
 ==================
 
+.. toctree::
+  :maxdepth: 2
+
+  api
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

@@ -1,6 +1,6 @@
-================
+============
 Using Gnomon
-================
+============
 
 
 .. toctree::
@@ -9,7 +9,8 @@ Using Gnomon
     workspaces/GeneralWorkspace
     workspaces/3DViewer
     workspaces/BrowserWorkspace
-    workspaces/CellDetectionWorkspace
-    workspaces/PreprocessingWorkspace
     workspaces/RegistrationWorkspace
+    workspaces/PreprocessingWorkspace
+    workspaces/CellDetectionWorkspace
     workspaces/SegmentationWorkspace
+    workspaces/CellAnalysisWorkspace

@@ -104,11 +104,11 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
     d = new gnomonWorkspaceSegmentationPrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::segmentation_color);
+    d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::segmentation_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -231,6 +231,8 @@ void gnomonWorkspaceSegmentation::apply(void)
         d->target->setEnableLinking(false);
     }
 }
+
+const QColor gnomonWorkspaceSegmentation::color = QColor("#ffcc00");
 
 //
 // gnomonWorkspaceSegmentation.cpp ends here
