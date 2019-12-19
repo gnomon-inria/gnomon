@@ -43,6 +43,7 @@ pages:
   - cd doc
   - conda update -n base -c defaults conda
   - conda install sphinx make matplotlib
+  - conda install -c conda-forge doxygen breathe
   - make html
   - mv build/html ../public
   extends: .template_retry

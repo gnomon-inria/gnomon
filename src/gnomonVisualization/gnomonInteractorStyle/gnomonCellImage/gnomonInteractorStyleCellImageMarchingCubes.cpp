@@ -182,7 +182,7 @@ void gnomonInteractorStyleCellImageMarchingCubes::updateTextActor(long vtkId)
 {
     if (!dd->textActor) {
         dd->textActor = vtkSmartPointer<vtkTextActor>::New();
-        dd->textActor->SetPosition2(10, 40);
+        dd->textActor->SetPosition2(40, 40);
         dd->textActor->GetTextProperty()->SetFontSize(24);
         dd->textActor->GetTextProperty()->SetColor (1.0, 1.0, 1.0);
     }

@@ -20,7 +20,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonDataFrame;
+#include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -38,7 +38,7 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setDataFrame(gnomonDataFrame *DataFrame) = 0;
+    virtual void setDataFrame(gnomonDataFrameSeries *DataFrame) = 0;
     virtual void setPath(const QString& path) = 0;
 
 };

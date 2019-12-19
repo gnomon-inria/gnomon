@@ -107,6 +107,7 @@ public slots:
 gnomonViewMatplotlibPrivate::gnomonViewMatplotlibPrivate(QWidget *parent) : QWidget(parent)
 {
     this->layout = new QVBoxLayout(this);
+    this->layout->setContentsMargins(38,0,0,0);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", parent);
     this->save_button = new gnomonOverlayButton(fa::save, "", parent);
@@ -266,7 +267,7 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
 {
     if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key]))
     {
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::file, key);
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::table, key);
         this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
 
         this->formVisualizationPaneItems[key]->setShowTitle(false);
@@ -419,6 +420,11 @@ void gnomonViewMatplotlibPrivate::refresh(void)
 
     this->view_menubar->touch();
 
+    int stat;
+    QString refreshStatement = "import matplotlib.pyplot as plt\nfigure = plt.figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
+    dtkScriptInterpreterPython::instance()->interpret(refreshStatement, &stat);
+
+
 }
 
 dtkWidgetsMenu *gnomonViewMatplotlibPrivate::menu(void)
@@ -520,6 +526,18 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     d->view_menubar->addMenu(d->menu());
     d->view_menubar->touch();
 
+    connect(d->view_menubar, &dtkWidgetsMenuBar::clicked, [=] () {
+        this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+    });
+
+    connect(d->view_menubar, &dtkWidgetsMenuBar::left, [=] () {
+        this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+    });
+
+    connect(d->view_menubar, &dtkWidgetsMenuBar::entered, [=] () {
+        this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+    });
+
     QGridLayout *layout  = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -619,6 +637,8 @@ void gnomonViewMatplotlib::addWidget(QWidget *widget)
 //    widget->setStyleSheet( gnomonStyleSheet());
 
     d->layout->addWidget(widget);
+
+
 
     this->resize(1200,this->height());
 }
