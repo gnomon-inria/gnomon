@@ -64,22 +64,31 @@ move along the slices.
     3D view (left) and 2D view (right) of an intensity 3D image. Notice the left slider for the 2D view allowing to
     move along the z-slices.
 
-
-
-3d action tools
+3D action tools
 ===============
+
+3D action tools include two buttons allowing to:
+
+* Change the 3D point of view
+
+* Reset the 3D point of view (XY view)
+
+Save/Help options
+=================
+
+An help button is available at the top-right corner of the 3D Viewer. Clicking on that button display some shortcuts
+helping the interactive visualisation.
+
+A save button representing by a up-arrow allows to send the 3D data of the viewer into the :ref:`FormManager` where
+data can be reuse or export from Gnomon.
 
 Other options
 =============
 
-The visualization options are accessible in a menu from the vertical bar on the left of each figure. There, users
-can set the colormap used to display each image, or switch between the different ways of interacting with each image.
-For segmented images, users may also toggle between the volumetric and the surface-mesh representations of segmented
-objects.
+Some options are not available for all the forms:
 
-On top of each viewer, the horizontal bars provides icons to switch between a full 3D and a 2D-cut view of each image
-(for three-dimensional data). Also, the visualization of the images in a workspace can be synchronized/desynchronized
-by activating/deactivating the two lock icons in each viewer. In this way, rotations, translations and zooms applied to
-the image in one viewer is automatically reported on the image in the other viewer (by default views are often
-synchronized). In the same bar, users find a help button and the option to export each image to the form manager through
-the UP arrow button.
+* Bottom slider: Stacked 3D data (3D+t) have a bottom slider allowing to move along the stacks (i.e. along the time).
+
+* Locker icon: Some workspaces (ex: :ref:`SegmentationWorkspace`) use 3D Viewer with a locker button at the top-right corner. This locker allows to display the same 3D point of view between multiple 3D Viewer.
+
+* ...
