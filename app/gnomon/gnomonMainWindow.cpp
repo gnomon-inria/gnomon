@@ -144,13 +144,17 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
 //    d->workflow = gnomonComposerWidget::instance();
 
+    QHBoxLayout *b_layout = new QHBoxLayout;
+    b_layout->setContentsMargins(0, 0, 32, 0);
+    b_layout->addWidget(d->workspace_bar);
+
     QVBoxLayout *i_layout = new QVBoxLayout;
     i_layout->setContentsMargins(0, 0, 0, 0);
     i_layout->setSpacing(0);
     i_layout->addWidget(d->manager);
     i_layout->addWidget(d->stack);
 //    i_layout->addWidget(d->workflow);
-    i_layout->addWidget(d->workspace_bar);
+    i_layout->addLayout(b_layout);
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
