@@ -34,6 +34,9 @@ public slots:
     void apply(void) override;
     void configure(const QString& text);
 
+public:
+    static const QColor color;
+
 private:
     class gnomonWorkspaceMeshFromImagePrivate *d;
 };

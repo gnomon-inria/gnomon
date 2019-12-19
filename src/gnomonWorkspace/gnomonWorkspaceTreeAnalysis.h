@@ -31,7 +31,11 @@ public:
     void leave(void) override;
     void apply(void) override;
 
+public:
     void configure(const QString& text);
+
+public:
+    static const QColor color;
 
 private:
     class gnomonWorkspaceTreeAnalysisPrivate *d;

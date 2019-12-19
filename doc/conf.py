@@ -54,7 +54,11 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'matplotlib.sphinxext.plot_directive',
+    'breathe'
 ]
+breathe_projects = { '@PROJECT_NAME@': '@CMAKE_CURRENT_BINARY_DIR@/xml' }
+
+breathe_default_members = ('members', 'protected-members', 'private-members', 'undoc-members')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -98,14 +102,14 @@ html_theme = 'nature'
 # html_theme_options = {}
 html_theme_options = {'body_max_width': '66%'}
 
-html_logo = '_static/gnomon_logo.png'
+html_logo = '@CMAKE_CURRENT_SOURCE_DIR@/_static/gnomon_logo.png'
 
 # html_favicon = '_static/icon_gnomon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['@CMAKE_CURRENT_SOURCE_DIR@/_static']
 
 html_style = 'style.css'
 # Custom sidebar templates, must be a dictionary that maps document names

@@ -85,7 +85,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     sources_dummy->setLayout(d->sources_layout);
 
     d->target  = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::registration_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     for(gnomonViewForm *view : d->sources_layout->views()) {
@@ -219,6 +219,8 @@ void gnomonWorkspaceRegistration::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceRegistration::color = QColor("#ffcc00");
 
 //
 // gnomonWorkspaceRegistration.cpp ends here

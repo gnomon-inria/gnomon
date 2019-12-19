@@ -87,11 +87,11 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     d = new gnomonWorkspacePreprocessPrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::preprocess_color);
+    d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::preprocess_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -212,6 +212,8 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspacePreprocess::color = QColor("#4cd964");
 
 //
 // gnomonWorkspacePreprocess.cpp ends here

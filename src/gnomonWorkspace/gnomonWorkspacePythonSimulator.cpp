@@ -390,6 +390,8 @@ void gnomonWorkspacePythonSimulator::reset(void)
     }
 }
 
+const QColor gnomonWorkspacePythonSimulator::color = QColor("#a38948");
+
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspacePythonSimulator.moc"

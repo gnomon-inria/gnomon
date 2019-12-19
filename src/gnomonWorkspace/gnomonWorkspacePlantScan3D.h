@@ -40,6 +40,9 @@ public slots:
 public:
     void fill(QWidget *);
 
+public:
+    static const QColor color;
+
 private:
     class gnomonWorkspacePlantScan3DPrivate *d;
 };
