@@ -13,7 +13,7 @@
 
 .. figure:: Images/3DViewer_fig1.png
     :align: center
-    :scale: 25
+    :scale: 35
     :alt: alternate text
     :figclass: align-center
 
@@ -38,15 +38,33 @@ only the surface of one of the 3D channel data. This last option is better to ge
 
 .. figure:: Images/3DViewer_fig2.png
     :align: center
-    :scale: 25
+    :scale: 40
     :alt: alternate text
     :figclass: align-center
 
-    3D Data (multi-modal) visualization using *gnomonVisualisationImageChannelBlending* (Left) or
+    3D multi-modal data visualization using *gnomonVisualisationImageChannelBlending* (Left) or
     *gnomonVisualizationImageSurface* (Right)
+
+You can also use the left-arrow at the bottom-left corner of the 3D Viewer to access the **Image** and
+**3D Form Viewer** spaces.
 
 Orientation tools
 =================
+
+Orientation tools include two buttons corresponding to the 2D view (slice) or the default 3D view. When clicking on the
+2D view button, the XY plane is displayed by default. Also a slider at the left of the 3D Viewer appears allowing to
+move along the slices.
+
+.. figure:: Images/3DViewer_fig3.png
+    :align: center
+    :scale: 40
+    :alt: alternate text
+    :figclass: align-center
+
+    3D view (left) and 2D view (right) of an intensity 3D image. Notice the left slider for the 2D view allowing to
+    move along the z-slices.
+
+
 
 3d action tools
 ===============
