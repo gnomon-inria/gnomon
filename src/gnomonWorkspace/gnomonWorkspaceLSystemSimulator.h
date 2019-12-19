@@ -37,6 +37,9 @@ public:
 public:
     void fill(QWidget *);
 
+public:
+    static const QColor color;
+
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;
 };

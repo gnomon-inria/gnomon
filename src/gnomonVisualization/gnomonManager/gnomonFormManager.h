@@ -49,7 +49,7 @@ public slots:
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
 public slots:
-    void present(gnomonFormManagerItem *);
+    void present(gnomonFormManagerItem *, bool = false);
 
 public:
     gnomonAbstractDynamicForm *get(int index);

@@ -36,6 +36,9 @@ public:
     void step(void);
     void reset(void);
 
+public:
+    static const QColor color;
+
 private:
     class gnomonWorkspacePythonSimulatorPrivate *d;
 };

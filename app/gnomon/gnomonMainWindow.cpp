@@ -116,30 +116,29 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     const QString general_package_desc = "Workspaces of general interest for form manipulation.";
     const QString browser_desc = QString("Loads forms in Gnomon by reading them from the file system.");
-    d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Browser", browser_desc, "Form Browser");
+    d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Browser", browser_desc, "Form Browser", gnomonWorkspaceBrowser::color);
     //const QString python_model_desc = QString("Runs a dynamical system model on forms based on a Python code.");
     //d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Simulation", python_model_desc, "Python Simulation");
     const QString converter_desc = QString("Casts a form of one type into another type.");
-    d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Converter", converter_desc, "Form Converter");
+    d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Converter", converter_desc, "Form Converter", gnomonWorkspaceTreeFromLString::color);
     // d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Tree to LString", workspace_desc, "Tree to LString");
 
     const QString tissue_package_desc = QString("Workspaces dedicated to the analysis of 3D microscopy images of tissues.");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Analysis",         workspace_desc, "Cell Image Analysis");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Meshing",          workspace_desc, "Cell Image Meshing");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Morpho Filter",    workspace_desc, "Cell Image Morpho Filter");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Analysis",         workspace_desc, "Cell Image Analysis", gnomonWorkspaceCellImageFilter::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Meshing",          workspace_desc, "Cell Image Meshing", gnomonWorkspaceCellComplexFromCellImage::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Morpho Filter",    workspace_desc, "Cell Image Morpho Filter", gnomonWorkspaceCellImageFilter::color);
     const QString detection_desc = "Detects cells in a 3D intensity image of tissue as a 3D point cloud.";
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Cell Detection",  detection_desc, "Image Cell Detection");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Fusion",          workspace_desc, "Image Fusion");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Preprocessing",   workspace_desc, "Image Preprocessing");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Cell Detection",  detection_desc, "Image Cell Detection", gnomonWorkspacePointCloudFromImage::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Fusion",          workspace_desc, "Image Fusion", gnomonWorkspaceFusion::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Preprocessing",   workspace_desc, "Image Preprocessing", gnomonWorkspacePreprocess::color);
     const QString segmentation_desc = "Performs segmentation of 3D intensity images at cellular resolution.";
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Segmentation",    segmentation_desc, "Image Segmentation");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Surface Meshing", workspace_desc, "Image Surface Meshing");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Registration",    workspace_desc, "Image Registation");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Segmentation",    segmentation_desc, "Image Segmentation", gnomonWorkspaceSegmentation::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Surface Meshing", workspace_desc, "Image Surface Meshing", gnomonWorkspaceMeshFromImage::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Registration",    workspace_desc, "Image Registation", gnomonWorkspaceRegistration::color);
 
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "LPy",           workspace_desc, "LPy");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D");
-
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
 
@@ -263,6 +262,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
 // /////////////////////////////////////////////////////////////////////////////
 
+    this->setWindowFlag(Qt::FramelessWindowHint, true);
     this->setCentralWidget(central);
 
     d->setup();

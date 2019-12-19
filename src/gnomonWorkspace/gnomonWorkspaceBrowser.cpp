@@ -281,7 +281,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d = new gnomonWorkspaceBrowserPrivate;
 
     d->browse_view = new gnomonViewForm(this);
-    d->browse_view->setExportColor(gnomonToolBar::browser_color);
+    d->browse_view->setExportColor(this->color);
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -427,6 +427,8 @@ void gnomonWorkspaceBrowser::apply(void)
 {
 
 }
+
+const QColor gnomonWorkspaceBrowser::color = QColor("#ff3b30");
 
 // /////////////////////////////////////////////////////////////////////////////
 

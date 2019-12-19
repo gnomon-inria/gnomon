@@ -146,7 +146,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
 
     qDebug() << Q_FUNC_INFO << 5;
 
-    gnomonFormManager::instance()->addForm(lstring_series, gnomonToolBar::lsystem_color, image);
+    gnomonFormManager::instance()->addForm(lstring_series, this->color, image);
 
     qDebug() << Q_FUNC_INFO << "Done";
 }
@@ -180,6 +180,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     filled << widget;
 }
+
+const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
 //
 // gnomonWorkspaceLSystemSimulator.cpp ends here

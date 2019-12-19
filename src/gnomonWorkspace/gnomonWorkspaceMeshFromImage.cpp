@@ -87,11 +87,11 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     d = new gnomonWorkspaceMeshFromImagePrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::meshFromImage_color);
+    d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::meshFromImage_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -211,6 +211,8 @@ void gnomonWorkspaceMeshFromImage::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceMeshFromImage::color = QColor("#5f9ea0");
 
 //
 // gnomonWorkspaceMeshFromImage.cpp ends here

@@ -85,7 +85,7 @@ public:
     State state = Collapsed;
 
 public:
-    gnomonFormManagerItem *deferred_focus = nullptr;
+    gnomonFormManagerItem *current_focus = nullptr;
 
 public:
     void deleteAnimation(void);

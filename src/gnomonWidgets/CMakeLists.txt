@@ -33,8 +33,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonOverlayButton.h
   gnomonSpinner
   gnomonSpinner.h
-  gnomonToolBar
-  gnomonToolBar.h
   gnomonWidgets
   gnomonWidgets.h
   gnomonWidgetsParameter
@@ -48,7 +46,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonMessageBoard.cpp
   gnomonOverlayButton.cpp
   gnomonSpinner.cpp
-  gnomonToolBar.cpp
   gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp
   ${${PROJECT_NAME}_COLOR_SOURCES}
