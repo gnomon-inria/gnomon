@@ -4,7 +4,7 @@ Browser Workspace
 
 
 General presentation
-==============
+====================
 
 In the browser workspace one can navigate and import data in order to implement different functionalities of the Gnomon platform. Here one can create thumbnails of an imported image file on the form manager to be used with other workspaces.
 
@@ -12,7 +12,7 @@ In the browser workspace one can navigate and import data in order to implement 
 * **Output**: A 3D representation of the image on the viewer, with possibility to interact with it (rotation, zoom, translation).
 
 Outlay of the Browser workspace 
-=======================
+===============================
 
 .. figure:: Images/BrowserWorkspace.png
     :align: center
@@ -48,7 +48,7 @@ Example of use
 
 
 Related workspaces
-==============
+==================
 
 **Upstream of the Browser workspace:** Three-dimensional image data files that are inputs to the Browser Workspace might directly come from a directory on the user's computer.
 

@@ -66,7 +66,7 @@ Concepts
 
    concepts
 
-User-tutorials
+User tutorials
 ==============
 
 .. toctree::
@@ -74,7 +74,7 @@ User-tutorials
 
    user-tutorials
 
-extension-tutorials
+Extension tutorials
 ===================
 
 .. toctree::

@@ -35,21 +35,6 @@ First activate the ``gnomon`` environment, then launch the executable:
     $ conda activate gnomon
     $ gnomon
 
-.. note:: On linux, it is possible to defines an alias to simplify this step:
-
-    If you answered *yes* to "Do you wish the installer to initialize Miniconda3 by running conda init? [yes|no]" during miniconda3 installation or called ``conda init bash``:
-
-    .. code-block::
-
-        $ echo "conda activate gnomon && gnomon" >> ~./bashrc
-
-    Else:
-
-    .. code-block::
-
-        $ echo "source <path_to_miniconda3>/bin/activate && conda activate gnomon && gnomon" >> ~./bashrc
-
-    where ``<path_to_miniconda3>`` is your path to miniconda3 install: ``~/miniconda3`` by default.
 
 Updating Gnomon
 --------------------------------------------------------------------------------
