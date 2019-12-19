@@ -4,6 +4,7 @@
 Image Segmentation Workspace
 ============================
 
+
 General presentation
 ====================
 
@@ -11,7 +12,7 @@ This workspace produces segmentations of intensity images using different algori
 It is particularly adapted to segment 3D images of multicellular tissues at cell resolution.
 
 * **Input**: intensity image (typically coming from microscopy (confocal, light-sheet) data, representing either 2D or 3D samples).
-* **Output**: a segmented image, in which each compartment of the original intensity image is identified and labeled with a unique numerical ID.
+* **Output**: a segmented image, in which each compartment of the original intensity image is identified and labeled with a unique label (numerical Id).
 
 Outlay of the Image Segmentation workspace
 ==========================================
@@ -27,7 +28,7 @@ Outlay of the Image Segmentation workspace
 The workspace consists of three main specific zones:
 
 * input :ref:`Viewer`,
-* output :ref:`Viewer` and
+* output :ref:`Viewer`,
 * configuration panel.
 
 The input :ref:`Viewer` (left) contains the intensity image to be segmented, while the output (rightmost)
@@ -57,16 +58,13 @@ panel.
 segmented images will overlay, facilitating the assessment of the quality of segmentation achieved.
 
 **Step 6:** (Optional) You can then play with the h-min parameter in order to modify
-the number of seeds. The more h-min is small the more the number of seeds increase (and vice-versa).
+the number of seeds. The smaller h-min the higher the number of seeds (and vice-versa).
 
-**Step 7:** Segmented image can be saved using the up-arrow at the top-left corner of the output :ref:`Viewer`.
+**Step 7:** The segmented image can be exported to the form manager using the up-arrow at the top-right corner of the output 3d viewer.
 
 Related workspaces
 ==================
 
-**Upstream of the Image Segmentation workspace:** Three-dimensional intensity images, inputs of the Segmentation
-Workspace, might  directly come from a file via the :ref:`BrowserWorkspace` or might have been produced as outputs
-of the **Fusion workspace**.
+**Upstream of the Image Segmentation workspace:** Three-dimensional intensity images, inputs of the Segmentation Workspace, might  directly come from a file via the **Form Browser Workspace** or might have been produced as outputs of the **Image Fusion Workspace** or the **Image Preprocessing Workspace**.
 
-**Downstream of the Image Segmentation workspace:** segmented images, can then be quantitatively analyzed in
-the **Cell analysis workspace** or further processed in the **Cell reconstruction workspace**.
+**Downstream of the Image Segmentation workspace:** segmented images, can then be quantitatively analyzed in the **Cell Image Analysis Workspace** or further processed in the **Cell Image Meshing Workspace**.
