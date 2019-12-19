@@ -412,9 +412,9 @@ void gnomonFormManager::present(gnomonFormManagerItem *item, bool back)
             d->focus_item->show();
 
             d->focus_item->source = d->focus_item->pos();
-            d->focus_item->destnt = QPoint(this->width() / 4 - this->width() / 8, this->size().height() / 4 + 50);
+            d->focus_item->destnt = QPoint(this->width()/2 - this->height()/2, this->size().height()/4 + 50);
             d->focus_item->s_size = d->focus_item->size();
-            d->focus_item->d_size = QSize(this->width()/2, this->height() * 1/2);
+            d->focus_item->d_size = QSize(this->height()/2, this->height()/2);
 
             focus_item_dest_rect = QRect(d->focus_item->destnt, d->focus_item->d_size);
 
@@ -453,7 +453,7 @@ void gnomonFormManager::present(gnomonFormManagerItem *item, bool back)
                 d->focus_area = d->formData[item]->compute();
                 d->focus_area->setParent(this);
                 d->focus_area->move(focus_item_dest_rect.topRight() + QPoint(20, 0));
-                d->focus_area->resize(QSize(focus_item_dest_rect.width() / 2, focus_item_dest_rect.height()));
+                d->focus_area->resize(QSize(focus_item_dest_rect.width(), focus_item_dest_rect.height()));
                 d->focus_area->show();
                 d->focus_item->presented = true;
             });
@@ -467,10 +467,15 @@ void gnomonFormManager::present(gnomonFormManagerItem *item, bool back)
                 d->view = new gnomonViewForm(this);
                 d->view->setInputView(true);
                 d->view->setEnableMenus(false);
-                d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
                 d->view->resize(d->focus_item->size());
                 d->view->move(d->focus_item->pos());
-                d->view->show();
+                d->view->hide();
+
+                connect(d->view, &gnomonViewForm::formAdded, [=] () {
+                    d->view->show();
+                });
+
+                d->view->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(item->id));
 
                 this->repaint();
             });
@@ -523,13 +528,17 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
         }
 
     } else {
+        QRect focus_handle = QRect(this->width()/2 - this->height()/2, this->size().height()/4 + 50, this->height(), this->height()/2);
+        qDebug()<<Q_FUNC_INFO<<focus_handle.contains(event->pos());
+        if (!focus_handle.contains(event->pos())) {
+            this->present(d->current_focus, true);
 
-        this->present(d->current_focus, true);
+
+            if (d->focus_area)
+                d->focus_area->hide();
+        }
 
         event->ignore();
-
-        if (d->focus_area)
-            d->focus_area->hide();
     }
 
     QFrame::mousePressEvent(event);
