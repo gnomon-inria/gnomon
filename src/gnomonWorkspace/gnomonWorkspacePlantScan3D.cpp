@@ -116,5 +116,7 @@ void gnomonWorkspacePlantScan3D::fill(QWidget *widget)
     widget->show();
 }
 
+const QColor gnomonWorkspacePlantScan3D::color = QColor("#098412");
+
 //
 // gnomonWorkspacePlantScan3D.cpp ends here

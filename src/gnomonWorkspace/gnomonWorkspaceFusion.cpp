@@ -81,7 +81,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     }
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::fusion_color);
+    d->target->setExportColor(this->color);
     d->target->setMinimumWidth(250);
     d->target->setEnableLinking(false);
 
@@ -212,6 +212,8 @@ void gnomonWorkspaceFusion::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceFusion::color = QColor("#ff9500");
 
 //
 // gnomonWorkspaceFusion.cpp ends here

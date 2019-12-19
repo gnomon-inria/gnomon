@@ -92,11 +92,11 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     d = new gnomonWorkspacePointCloudFromImagePrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::pointCloudFromImage_color);
+    d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::pointCloudFromImage_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -217,6 +217,8 @@ void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspacePointCloudFromImage::color = QColor("#209820");
 
 //
 // gnomonWorkspacePointCloudFromImage.cpp ends here

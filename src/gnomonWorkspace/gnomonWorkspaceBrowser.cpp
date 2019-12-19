@@ -51,6 +51,7 @@ gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
     this->setResizeMode(QListView::Adjust);
     this->setGridSize(QSize(96, 96));
     this->setFrameStyle(QFrame::NoFrame);
+    this->setWordWrap(true);
     this->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
@@ -281,7 +282,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d = new gnomonWorkspaceBrowserPrivate;
 
     d->browse_view = new gnomonViewForm(this);
-    d->browse_view->setExportColor(gnomonToolBar::browser_color);
+    d->browse_view->setExportColor(this->color);
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -289,7 +290,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
 
-    QToolButton *up = new QToolButton(this); up->setIcon(dtkFontAwesome::instance()->icon(fa::arrowup));
+    QToolButton *up = new QToolButton(this); up->setIcon(dtkFontAwesome::instance()->icon(fa::arrowleft));
     QToolButton *ls = new QToolButton(this); ls->setIcon(dtkFontAwesome::instance()->icon(fa::th));
     QToolButton *tr = new QToolButton(this); tr->setIcon(dtkFontAwesome::instance()->icon(fa::list));
 
@@ -427,6 +428,8 @@ void gnomonWorkspaceBrowser::apply(void)
 {
 
 }
+
+const QColor gnomonWorkspaceBrowser::color = QColor("#ff3b30");
 
 // /////////////////////////////////////////////////////////////////////////////
 

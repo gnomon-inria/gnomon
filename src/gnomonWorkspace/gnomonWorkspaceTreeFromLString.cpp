@@ -242,5 +242,7 @@ void gnomonWorkspaceTreeFromLString::configure(const QString& algorithm)
     d->configure(algorithm);
 }
 
+const QColor gnomonWorkspaceTreeFromLString::color = QColor("#734906");
+
 //
 // gnomonWorkspaceTreeFromLString.cpp ends here

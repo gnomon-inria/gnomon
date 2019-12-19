@@ -95,11 +95,11 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     d = new gnomonWorkspaceCellComplexFromCellImagePrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
+    d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -220,6 +220,8 @@ void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceCellComplexFromCellImage::color = QColor("#982374");
 
 //
 // gnomonWorkspaceCellComplexFromCellImage.cpp ends here

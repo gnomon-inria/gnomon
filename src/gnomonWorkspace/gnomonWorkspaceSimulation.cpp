@@ -85,11 +85,11 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
     d = new gnomonWorkspaceSimulationPrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::registration_color);
+    d->source->setExportColor(this->color);
     d->source->setAcceptCellComplex(false);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::registration_color);
+    d->target->setExportColor(this->color);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -149,6 +149,8 @@ void gnomonWorkspaceSimulation::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceSimulation::color = QColor("#5856d6");
 
 //
 // gnomonWorkspaceSimulation.cpp ends here

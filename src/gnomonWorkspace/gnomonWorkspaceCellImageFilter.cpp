@@ -87,11 +87,11 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     d = new gnomonWorkspaceCellImageFilterPrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::meshFromImage_color);
+    d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::meshFromImage_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -215,6 +215,8 @@ void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceCellImageFilter::color = QColor("#dc143c");
 
 //
 // gnomonWorkspaceCellImageFilter.cpp ends here
