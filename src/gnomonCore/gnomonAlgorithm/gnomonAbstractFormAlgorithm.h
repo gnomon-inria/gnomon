@@ -48,51 +48,51 @@ public:
 
     // CellComplex
 public:
-    virtual void setInputCellComplex(gnomonCellComplexSeries *cellComplex) = 0;
-    virtual gnomonCellComplexSeries *inputCellComplex() const = 0;
-    virtual gnomonCellComplexSeries *outputCellComplex() const = 0;
+    virtual void setInputCellComplex(gnomonCellComplexSeries *cellComplex) { return; };
+    virtual gnomonCellComplexSeries *inputCellComplex() const { return nullptr; };
+    virtual gnomonCellComplexSeries *outputCellComplex() const { return nullptr; };
 
     // CellImage
 public:
-    virtual void setInputCellImage(gnomonCellImageSeries *cellImage) = 0;
-    virtual gnomonCellImageSeries *inputCellImage() const = 0;
-    virtual gnomonCellImageSeries *outputCellImage() const = 0;
-    
+    virtual void setInputCellImage(gnomonCellImageSeries *cellImage) { return; };
+    virtual gnomonCellImageSeries *inputCellImage() const { return nullptr; };
+    virtual gnomonCellImageSeries *outputCellImage() const { return nullptr; };
+
     // DataFrame
 public:
-    virtual void setInputDataFrame(gnomonDataFrameSeries *dataFrame) = 0;
-    virtual gnomonDataFrameSeries *inputDataFrame() const = 0;
-    virtual gnomonDataFrameSeries *outputDataFrame() const = 0;
-    
+    virtual void setInputDataFrame(gnomonDataFrameSeries *dataFrame) { return; };
+    virtual gnomonDataFrameSeries *inputDataFrame() const { return nullptr; };
+    virtual gnomonDataFrameSeries *outputDataFrame() const { return nullptr; };
+
     // Image
 public:
-    virtual void setInputImage(gnomonImageSeries *image) = 0;
-    virtual gnomonImageSeries *inputImage() const = 0;
-    virtual gnomonImageSeries *outputImage() const = 0;
-    
+    virtual void setInputImage(gnomonImageSeries *image) { return; };
+    virtual gnomonImageSeries *inputImage() const { return nullptr; };
+    virtual gnomonImageSeries *outputImage() const { return nullptr; };
+
     // LString
 public:
-    virtual void setInputLString(gnomonLStringSeries *lString) = 0;
-    virtual gnomonLStringSeries *inputLString() const = 0;
-    virtual gnomonLStringSeries *outputLString() const = 0;
-    
+    virtual void setInputLString(gnomonLStringSeries *lString) { return; };
+    virtual gnomonLStringSeries *inputLString() const { return nullptr; };
+    virtual gnomonLStringSeries *outputLString() const { return nullptr; };
+
     // Mesh
 public:
-    virtual void setInputMesh(gnomonMeshSeries *mesh) = 0;
-    virtual gnomonMeshSeries *inputMesh() const = 0;
-    virtual gnomonMeshSeries *outputMesh() const = 0;
-    
+    virtual void setInputMesh(gnomonMeshSeries *mesh) { return; };
+    virtual gnomonMeshSeries *inputMesh() const { return nullptr; };
+    virtual gnomonMeshSeries *outputMesh() const { return nullptr; };
+
     // PointCloud
 public:
-    virtual void setInputPointCloud(gnomonPointCloudSeries *pointCloud) = 0;
-    virtual gnomonPointCloudSeries *inputPointCloud() const = 0;
-    virtual gnomonPointCloudSeries *outputPointCloud() const = 0;
-    
+    virtual void setInputPointCloud(gnomonPointCloudSeries *pointCloud) { return; };
+    virtual gnomonPointCloudSeries *inputPointCloud() const { return nullptr; };
+    virtual gnomonPointCloudSeries *outputPointCloud() const { return nullptr; };
+
     // Tree
 public:
-    virtual void setInputTree(gnomonTreeSeries *tree) = 0;
-    virtual gnomonTreeSeries *inputTree() const = 0;
-    virtual gnomonTreeSeries *outputTree() const = 0;
+    virtual void setInputTree(gnomonTreeSeries *tree) { return; };
+    virtual gnomonTreeSeries *inputTree() const { return nullptr; };
+    virtual gnomonTreeSeries *outputTree() const { return nullptr; };
     
 public:
     virtual void run(void) override = 0;

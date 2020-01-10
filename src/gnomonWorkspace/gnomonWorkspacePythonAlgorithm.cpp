@@ -34,6 +34,7 @@ class gnomonWorkspacePythonAlgorithmPrivate
 {
 public:
     dtkWidgetsMenu *menu(dtkWidgetsWorkspace *);
+    void configure(void);
 
 public:
     dtkMacsWidget *editor = nullptr;
@@ -46,6 +47,11 @@ public:
     gnomonViewForm *source;
     gnomonViewForm *target;
 
+    gnomonViewFormPool *pool = nullptr;
+
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
 public:
     QFormLayout *layout = nullptr;
     QVBoxLayout *viewer_layout = nullptr;
@@ -54,7 +60,7 @@ public:
     QHash<QString, dtkCoreParameter *> parameters;
 
 public:
-    gnomonAbstractFormAlgorithm *algo = nullptr;
+    gnomonAbstractFormAlgorithm *algorithm = nullptr;
 };
 
 dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace *parent)
@@ -63,8 +69,30 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
 
     this->layout = new QFormLayout;
 
-    QPushButton *pane_item_button = new QPushButton("Apply");
-    pane_item_button->setCheckable(true);
+    QPushButton *open_button = new QPushButton("Open");
+    open_button->setCheckable(true);
+
+    QObject::connect(open_button, &QPushButton::clicked, [=] () {
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+
+        QString file_path;
+        file_path = QFileDialog::getOpenFileName(parent, "Load Python script", settings.value("Python/load", ".").toString(), "Python scripts (*.py)");
+
+        QFile f(file_path);
+        if(f.open(QIODevice::ReadOnly)) {
+            QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+            settings.setValue("Python/load", file_path);
+
+            QTextStream s(&f);
+            this->editor->setText(s.readAll());
+
+            this->configure();
+        }
+    });
+
+    dtkWidgetsMenuItemDIY *menu_load = new dtkWidgetsMenuItemDIY("Python Script", open_button);
+    menu_load->setShowTitle(false);
+    menu_load->setSizePolicy(QSizePolicy::Expanding);
 
     QWidget *pane_item_parameters = new QWidget;
     pane_item_parameters->setLayout(this->layout);
@@ -73,11 +101,15 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
     menu_parameters->addWidget(pane_item_parameters);
     menu_parameters->setSizePolicy(QSizePolicy::Expanding);
 
+    QPushButton *pane_item_button = new QPushButton("Apply");
+    pane_item_button->setCheckable(true);
+
     dtkWidgetsMenuItemDIY *menu_button = new dtkWidgetsMenuItemDIY("Python Algorithm", pane_item_button);
     menu_button->setShowTitle(false);
     menu_button->setSizePolicy(QSizePolicy::Expanding);
 
     dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Python Algorithm");
+    pane->addItem(menu_load);
     pane->addItem(menu_parameters);
     pane->addItem(menu_button);
 
@@ -90,6 +122,48 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
     return pane;
 }
 
+void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
+{
+    gnomonCore::formAlgorithm::pluginFactory().clear();
+    qDebug()<<Q_FUNC_INFO<<gnomonCore::formAlgorithm::pluginFactory().keys();
+
+    int stat;
+    QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->toPlainText(), &stat);
+
+    qDebug()<<Q_FUNC_INFO<<gnomonCore::formAlgorithm::pluginFactory().keys();
+
+    QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
+    qDebug()<<Q_FUNC_INFO<<key;
+
+    if (this->layout) {
+
+        for(int row = 0, max_row = this->layout->count(); row < max_row; ++row) {
+            QLayoutItem *forDeletion = this->layout->takeAt(0);
+            forDeletion->widget()->disconnect();
+            delete forDeletion->widget();
+            delete forDeletion;
+        }
+    } else {
+        this->layout = new QFormLayout;
+    }
+
+    this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(key);
+    Q_ASSERT(this->algorithm);
+
+    if (this->algorithm) {
+
+        QMap<QString, gnomonCoreParameter *> parameters = this->algorithm->parameters();
+
+        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
+            if (widget)
+                this->layout->addRow(it.key(), widget);
+        }
+
+        this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    }
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 // 
 // /////////////////////////////////////////////////////////////////////////////
@@ -99,7 +173,6 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d = new gnomonWorkspacePythonAlgorithmPrivate;
 
     d->editor = new dtkMacsWidget(this);
-
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -132,12 +205,29 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
 
+    d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(d->source);
+    d->pool->addView(d->target);
+    d->pool->linkAll();
+
+    // /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->setCurrentWidget(d->target_message);
+
     // -- Organizing the viewer column --
     d->viewer_layout = new QVBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
     d->viewer_layout->addWidget(d->source);
-    d->viewer_layout->addWidget(d->target);
+    d->viewer_layout->addWidget(d->target_stack);
 
     QWidget *viewer = new QWidget(this);
     viewer->setLayout(d->viewer_layout);
@@ -172,20 +262,92 @@ void gnomonWorkspacePythonAlgorithm::leave(void)
 
 void gnomonWorkspacePythonAlgorithm::apply(void)
 {
-    //gnomonCore::FormAlgorithm::pluginFactory().clear();
-    int stat;
-    QString output = dtkScriptInterpreterPython::instance()->interpret(d->editor->toPlainText(), &stat);
-    // qDebug()<< output;
-
-    QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
-
-    qDebug()<<Q_FUNC_INFO<<key;
+    d->configure();
 }
 
 void gnomonWorkspacePythonAlgorithm::run(void)
 {
-    qDebug()<<Q_FUNC_INFO;
+    Q_ASSERT(d->algorithm);
+
+    if (d->source->cellComplex()) {
+        d->algorithm->setInputCellComplex(d->source->cellComplex());
+    }
+    if (d->source->cellImage()) {
+        d->algorithm->setInputCellImage(d->source->cellImage());
+    }
+    if (d->source->image()) {
+        d->algorithm->setInputImage(d->source->image());
+    }
+    if (d->source->mesh()) {
+        d->algorithm->setInputMesh(d->source->mesh());
+    }
+    if (d->source->pointCloud()) {
+        d->algorithm->setInputPointCloud(d->source->pointCloud());
+    }
+
+    d->algorithm->run();
+
+    d->target_stack->setCurrentWidget(d->target_message);
+    d->source->setEnableLinking(false);
+    d->target->setEnableLinking(false);
+
+
+    gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
+    if ((!cellComplex)||(cellComplex->times().size()==0)) {
+        qDebug()<<"No CellComplex!";
+    } else {
+        d->target->setForm("gnomonCellComplex",cellComplex);
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    }
+
+    gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        qDebug()<<"No CellImage!";
+    } else {
+        d->target->setForm("gnomonCellImage",cellImage);
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    }
+
+    gnomonImageSeries *image = d->algorithm->outputImage();
+     if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        qDebug()<<"No Image!";
+    } else {
+        d->target->setForm("gnomonImage",image);
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    }
+
+    gnomonMeshSeries *mesh = d->algorithm->outputMesh();
+    if ((!mesh)||(mesh->times().size()==0)) {
+        qDebug()<<"No Mesh!";
+    } else {
+        d->target->setForm("gnomonMesh",mesh);
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    }
+
+    gnomonPointCloudSeries *pointCloud = d->algorithm->outputPointCloud();
+    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+        qDebug()<<"No PointCloud!";
+    } else {
+        d->target->setForm("gnomonPointCloud",pointCloud);
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    }
 }
+
 
 const QColor gnomonWorkspacePythonAlgorithm::color = QColor("#a38948");
 

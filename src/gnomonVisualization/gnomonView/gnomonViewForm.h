@@ -90,7 +90,7 @@ public:
     gnomonCellImageSeries *cellImage(void);
     gnomonCellComplexSeries *cellComplex(void);
     gnomonMeshSeries *mesh(void);
-    gnomonPointCloud *pointCloud(void);
+    gnomonPointCloudSeries *pointCloud(void);
 
 public:
     vtkRenderer *renderer2D(void);
