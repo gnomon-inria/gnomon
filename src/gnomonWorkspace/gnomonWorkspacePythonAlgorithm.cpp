@@ -125,18 +125,20 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
 void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
 {
     gnomonCore::formAlgorithm::pluginFactory().clear();
-    qDebug()<<Q_FUNC_INFO<<gnomonCore::formAlgorithm::pluginFactory().keys();
 
     int stat;
     QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->toPlainText(), &stat);
 
-    qDebug()<<Q_FUNC_INFO<<gnomonCore::formAlgorithm::pluginFactory().keys();
-
-    QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
-    qDebug()<<Q_FUNC_INFO<<key;
+    if (gnomonCore::formAlgorithm::pluginFactory().keys().size() > 0) {
+        QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
+        qDebug()<<Q_FUNC_INFO<<key;
+        this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(key);
+        Q_ASSERT(this->algorithm);
+    } else {
+        this->algorithm = nullptr;
+    }
 
     if (this->layout) {
-
         for(int row = 0, max_row = this->layout->count(); row < max_row; ++row) {
             QLayoutItem *forDeletion = this->layout->takeAt(0);
             forDeletion->widget()->disconnect();
@@ -146,9 +148,6 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     } else {
         this->layout = new QFormLayout;
     }
-
-    this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(key);
-    Q_ASSERT(this->algorithm);
 
     if (this->algorithm) {
 
