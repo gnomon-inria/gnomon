@@ -54,7 +54,7 @@ public:
 
 public:
     QFormLayout *layout = nullptr;
-    QVBoxLayout *viewer_layout = nullptr;
+    QHBoxLayout *viewer_layout = nullptr;
 
 public:
     QHash<QString, dtkCoreParameter *> parameters;
@@ -65,10 +65,6 @@ public:
 
 dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace *parent)
 {
-    qDebug()<<Q_FUNC_INFO<<"Set Algo";
-
-    this->layout = new QFormLayout;
-
     QPushButton *open_button = new QPushButton("Open");
     open_button->setCheckable(true);
 
@@ -89,11 +85,30 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
             this->configure();
         }
     });
+    
+    QPushButton *load_button = new QPushButton("Load");
+    load_button->setCheckable(true);
+    
+    QObject::connect(load_button, &QPushButton::clicked, [=] () {
+        this->configure();
+    });
+    
+    QVBoxLayout *button_layout = new QVBoxLayout();
+    button_layout->setContentsMargins(0, 0, 0, 0);
+    button_layout->setSpacing(0);
+    button_layout->addWidget(open_button);
+    button_layout->addWidget(load_button);
 
-    dtkWidgetsMenuItemDIY *menu_load = new dtkWidgetsMenuItemDIY("Python Script", open_button);
-    menu_load->setShowTitle(false);
-    menu_load->setSizePolicy(QSizePolicy::Expanding);
+    QWidget *pane_item_buttons = new QWidget;
+    pane_item_buttons->setLayout(button_layout);
+    
+    dtkWidgetsMenuItemDIY *menu_buttons = new dtkWidgetsMenuItemDIY("Python Script");
+    menu_buttons->addWidget(pane_item_buttons);
+    menu_buttons->setShowTitle(false);
+    menu_buttons->setSizePolicy(QSizePolicy::Expanding);
 
+    this->layout = new QFormLayout;
+    
     QWidget *pane_item_parameters = new QWidget;
     pane_item_parameters->setLayout(this->layout);
 
@@ -101,19 +116,19 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
     menu_parameters->addWidget(pane_item_parameters);
     menu_parameters->setSizePolicy(QSizePolicy::Expanding);
 
-    QPushButton *pane_item_button = new QPushButton("Apply");
-    pane_item_button->setCheckable(true);
+    QPushButton *pane_item_run = new QPushButton("Apply");
+    pane_item_run->setCheckable(true);
 
-    dtkWidgetsMenuItemDIY *menu_button = new dtkWidgetsMenuItemDIY("Python Algorithm", pane_item_button);
+    dtkWidgetsMenuItemDIY *menu_button = new dtkWidgetsMenuItemDIY("Python Algorithm", pane_item_run);
     menu_button->setShowTitle(false);
     menu_button->setSizePolicy(QSizePolicy::Expanding);
 
     dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Python Algorithm");
-    pane->addItem(menu_load);
+    pane->addItem(menu_buttons);
     pane->addItem(menu_parameters);
     pane->addItem(menu_button);
 
-    QObject::connect(pane_item_button, &QPushButton::clicked, [=] () {
+    QObject::connect(pane_item_run, &QPushButton::clicked, [=] () {
         dtkApp->window()->setCursor(Qt::BusyCursor);
         dynamic_cast<gnomonWorkspacePythonAlgorithm*>(parent)->run();
         dtkApp->window()->setCursor(Qt::ArrowCursor);
@@ -195,7 +210,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
     QWidget *editor_widget = new QWidget(this);
     editor_widget->setLayout(editor_layout);
-    editor_widget->resize(800, editor_widget->height());
+    editor_widget->resize(editor_widget->width(), 600);
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
@@ -222,7 +237,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->target_stack->setCurrentWidget(d->target_message);
 
     // -- Organizing the viewer column --
-    d->viewer_layout = new QVBoxLayout;
+    d->viewer_layout = new QHBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
     d->viewer_layout->addWidget(d->source);
@@ -233,9 +248,9 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
 //     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
-//    splitter->addWidget(finder);
-    splitter->addWidget(editor_widget);
+    splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(viewer);
+    splitter->addWidget(editor_widget);
 
 
     QHBoxLayout *layout = new QHBoxLayout(this);
