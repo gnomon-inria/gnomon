@@ -25,6 +25,80 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+class gnomonPythonScriptEditor : public QWidget
+{
+    Q_OBJECT
+
+public:
+     gnomonPythonScriptEditor(QWidget *parent = Q_NULLPTR);
+    ~gnomonPythonScriptEditor(void);
+
+protected:
+    void resizeEvent(QResizeEvent *);
+
+public:
+    dtkMacsWidget *editor = nullptr;
+    QVBoxLayout *layout = nullptr;
+    dtkWidgetsMenuBar* script_menubar;
+
+signals:
+    void openButtonClicked(void);
+    void saveButtonClicked(void);
+    void loadButtonClicked(void);
+};
+
+gnomonPythonScriptEditor::gnomonPythonScriptEditor(QWidget *parent) : QWidget(parent)
+{
+    this->editor = new dtkMacsWidget(this);
+
+    // -- Organizing the editor column --
+    this->layout = new QVBoxLayout;
+    this->layout->setContentsMargins(40, 0, 0, 0);
+    this->layout->setSpacing(0);
+    this->layout->addWidget(this->editor);
+
+    this->script_menubar = new dtkWidgetsMenuBar(this);
+    this->script_menubar->setInteractive(false);
+    this->script_menubar->setStandalone(true);
+    this->script_menubar->setWidth(32);
+    this->script_menubar->setMargins(6);
+
+    this->script_menubar->addMenu(fa::folder, "Open Python Script");
+    this->script_menubar->addMenu(fa::save, "Save Python Script");
+    this->script_menubar->addMenu(fa::play, "Load Python Script");
+
+    connect(this->script_menubar, &dtkWidgetsMenuBar::clicked, [=] (int i_style)
+    {
+        if (i_style==0) {
+            emit openButtonClicked();
+        } else if (i_style==1) {
+            emit saveButtonClicked();
+        } else if (i_style==2) {
+            emit loadButtonClicked();
+        }
+
+    });
+//    this->script_menubar->move(QPoint(0, 0));
+    this->script_menubar->touch();
+
+    this->setLayout(this->layout);
+}
+
+gnomonPythonScriptEditor::~gnomonPythonScriptEditor(void)
+{
+    delete this->editor;
+}
+
+void gnomonPythonScriptEditor::resizeEvent(QResizeEvent *event)
+{
+    if (this->script_menubar) {
+        this->script_menubar->setFixedHeight(event->size().height());
+        this->script_menubar->touch();
+    }
+
+    QWidget::resizeEvent(event);
+}
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
@@ -37,7 +111,7 @@ public:
     void configure(void);
 
 public:
-    dtkMacsWidget *editor = nullptr;
+    gnomonPythonScriptEditor *editor = nullptr;
 
 public:
     dtkWidgetsMenuBarContainer *dashboard;
@@ -65,10 +139,7 @@ public:
 
 dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace *parent)
 {
-    QPushButton *open_button = new QPushButton("Open");
-    open_button->setCheckable(true);
-
-    QObject::connect(open_button, &QPushButton::clicked, [=] () {
+    QObject::connect(this->editor, &gnomonPythonScriptEditor::openButtonClicked, [=] () {
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
 
         QString file_path;
@@ -80,32 +151,15 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
             settings.setValue("Python/load", file_path);
 
             QTextStream s(&f);
-            this->editor->setText(s.readAll());
+            this->editor->editor->setText(s.readAll());
 
             this->configure();
         }
     });
     
-    QPushButton *load_button = new QPushButton("Load");
-    load_button->setCheckable(true);
-    
-    QObject::connect(load_button, &QPushButton::clicked, [=] () {
+    QObject::connect(this->editor, &gnomonPythonScriptEditor::loadButtonClicked, [=] () {
         this->configure();
     });
-    
-    QVBoxLayout *button_layout = new QVBoxLayout();
-    button_layout->setContentsMargins(0, 0, 0, 0);
-    button_layout->setSpacing(0);
-    button_layout->addWidget(open_button);
-    button_layout->addWidget(load_button);
-
-    QWidget *pane_item_buttons = new QWidget;
-    pane_item_buttons->setLayout(button_layout);
-    
-    dtkWidgetsMenuItemDIY *menu_buttons = new dtkWidgetsMenuItemDIY("Python Script");
-    menu_buttons->addWidget(pane_item_buttons);
-    menu_buttons->setShowTitle(false);
-    menu_buttons->setSizePolicy(QSizePolicy::Expanding);
 
     this->layout = new QFormLayout;
     
@@ -124,7 +178,6 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
     menu_button->setSizePolicy(QSizePolicy::Expanding);
 
     dtkWidgetsMenu *pane = new dtkWidgetsMenu(fa::circlethin, "Python Algorithm");
-    pane->addItem(menu_buttons);
     pane->addItem(menu_parameters);
     pane->addItem(menu_button);
 
@@ -142,7 +195,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     gnomonCore::formAlgorithm::pluginFactory().clear();
 
     int stat;
-    QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->toPlainText(), &stat);
+    QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->editor->toPlainText(), &stat);
 
     if (gnomonCore::formAlgorithm::pluginFactory().keys().size() > 0) {
         QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
@@ -186,8 +239,27 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 {
     d = new gnomonWorkspacePythonAlgorithmPrivate;
 
-    d->editor = new dtkMacsWidget(this);
+    d->editor = new gnomonPythonScriptEditor(this);
+    d->editor->resize(this->width(), 600);
 
+    QString example = "import gnomoncore\n";
+    example += "\n";
+    example += "from gnomon_utils import gnomonPlugin, gnomonParametric\n";
+    example += "\n";
+    example += "@gnomonPlugin(namespace=gnomoncore)\n";
+    example += "@gnomonParametric\n";
+    example += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
+    example += "\n";
+    example += "    def __init__(self):\n";
+    example += "        super().__init__()\n";
+    example += "\n";
+    example += "        self._parameters = {}\n";
+    example += "\n";
+    example += "    def run(self):\n";
+    example += "        pass\n";
+
+    d->editor->editor->setText(example);
+    
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
@@ -198,19 +270,9 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
     d->dashboard->setFixedWidth(300);
 
-    // -- Organizing the editor column --
-    QVBoxLayout *editor_layout = new QVBoxLayout;
-    editor_layout->setContentsMargins(0, 0, 0, 0);
-    editor_layout->setSpacing(0);
-    editor_layout->addWidget(d->editor);
-
-    d->terminal = new gnomonInterpreterJupyter(this);
+//    d->terminal = new gnomonInterpreterJupyter(this);
     //d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 //    editor_layout->addWidget(d->terminal);
-
-    QWidget *editor_widget = new QWidget(this);
-    editor_widget->setLayout(editor_layout);
-    editor_widget->resize(editor_widget->width(), 600);
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
@@ -250,7 +312,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     QSplitter *splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(viewer);
-    splitter->addWidget(editor_widget);
+    splitter->addWidget(d->editor);
 
 
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -362,8 +424,11 @@ void gnomonWorkspacePythonAlgorithm::run(void)
     }
 }
 
-
 const QColor gnomonWorkspacePythonAlgorithm::color = QColor("#a38948");
+
+// ///////////////////////////////////////////////////////////////////
+
+#include "gnomonWorkspacePythonAlgorithm.moc"
 
 
 //
