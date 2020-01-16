@@ -40,6 +40,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspacePointCloudFromImage.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
+  gnomonWorkspacePythonAlgorithm
+  gnomonWorkspacePythonAlgorithm.h
   gnomonWorkspacePythonSimulator
   gnomonWorkspacePythonSimulator.h
   gnomonWorkspaceRegistration
@@ -67,6 +69,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspacePlantScan3D.cpp
   gnomonWorkspacePointCloudFromImage.cpp
   gnomonWorkspacePreprocess.cpp
+  gnomonWorkspacePythonAlgorithm.cpp
   gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp

@@ -1372,10 +1372,10 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization
     emit formAdded("gnomonMesh");
 }
 
-gnomonPointCloud *gnomonViewForm::pointCloud(void)
+gnomonPointCloudSeries *gnomonViewForm::pointCloud(void)
 {
     if (d->forms.contains("gnomonPointCloud")) {
-        return dynamic_cast<gnomonPointCloud *>(d->forms["gnomonPointCloud"]);
+        return dynamic_cast<gnomonPointCloudSeries *>(d->forms["gnomonPointCloud"]);
     } else {
         return nullptr;
     }
