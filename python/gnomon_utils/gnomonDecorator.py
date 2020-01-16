@@ -232,7 +232,7 @@ def _gnomonCellComplexInput(cls, attr, method, setter_method):
         self._in_cellComplex = {}
         setattr(self, attr, {})
 
-        if self._cellComplex_series is not None:
+        if self._in_cellComplex_series is not None:
             cellComplex_dict, self._in_cellComplex = cellComplexDictFromSeries(self._in_cellComplex_series)
             setattr(self, attr, cellComplex_dict)
 
