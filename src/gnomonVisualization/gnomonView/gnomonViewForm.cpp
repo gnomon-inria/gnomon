@@ -939,7 +939,6 @@ void gnomonViewForm::switchTo2D(void)
     d->renderer2D->InteractiveOn();
     d->renderer2D->DrawOn();
 
-    emit switchedTo2D();
 
     switch(d->ori) {
         case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
@@ -957,6 +956,8 @@ void gnomonViewForm::switchTo2D(void)
         default:
             break;
     }
+    
+    emit switchedTo2D();
 
     d->slice_slider->setVisible(true);
     d->slice_slider->setEnabled(true);
@@ -1032,26 +1033,29 @@ void gnomonViewForm::sliceChange(int value)
 {
     bool valueChanged = false;
 
-    if (d->renderer2D_XY->isToggled()) {
-        if (d->c_z != value) {
-            d->c_z = value;
-            valueChanged = true;
-        }
-    }
-
-    if (d->renderer2D_XZ->isToggled()) {
-        if (d->c_y != value) {
-            d->c_y = value;
-            valueChanged = true;
-        }
-    }
-
-    if (d->renderer2D_YZ->isToggled()) {
-        if (d->c_x != value){
-            d->c_x = value;
-            valueChanged = true;
-        }
-    }
+    switch(d->ori)
+    {
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+            if (d->c_z != value) {
+                d->c_z = value;
+                valueChanged = true;
+            }
+            break;
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+            if (d->c_y != value) {
+                d->c_y = value;
+                valueChanged = true;
+            }
+            break;
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+            if (d->c_x != value){
+                d->c_x = value;
+                valueChanged = true;
+            }
+            break;
+        default:
+            break;
+    };
 
     d->slice_slider->blockSignals(true);
     d->slice_slider->setValue(value);
@@ -1416,45 +1420,71 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
 
 void gnomonViewForm::setBounds(double bounds[6])
 {
-    d->xBounds[0] = bounds[0];
-    d->xBounds[1] = bounds[1];
-    d->yBounds[0] = bounds[2];
-    d->yBounds[1] = bounds[3];
-    d->zBounds[0] = bounds[4];
-    d->zBounds[1] = bounds[5];
+    bool changed = false;
 
-    d->c_x = (d->xBounds[0]+d->xBounds[1])/2;
-    d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
-    d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
-
-    d->cameras.clear();
-
-    if (d->renderer2D_XY->isToggled()) {
-        d->slice_slider->blockSignals(true);
-        d->slice_slider->setMinimum(d->zBounds[0]);
-        d->slice_slider->setMaximum(d->zBounds[1]);
-        d->slice_slider->setValue(d->c_z);
-        d->slice_slider->blockSignals(false);
+    if (bounds[0] != d->xBounds[0]) {
+        d->xBounds[0] = bounds[0];
+        changed = true;
+    }
+    if (bounds[1] != d->xBounds[1]) {
+        d->xBounds[1] = bounds[1];
+        changed = true;
+    }
+    if (bounds[2] != d->yBounds[0]) {
+        d->yBounds[0] = bounds[2];
+        changed = true;
+    }
+    if (bounds[3] != d->yBounds[1]) {
+        d->yBounds[1] = bounds[3];
+        changed = true;
+    }
+    if (bounds[4] != d->zBounds[0]) {
+        d->zBounds[0] = bounds[4];
+        changed = true;
+    }
+    if (bounds[5] != d->zBounds[1]) {
+        d->zBounds[1] = bounds[5];
+        changed = true;
     }
 
-    if (d->renderer2D_XZ->isToggled()) {
-        d->slice_slider->blockSignals(true);
-        d->slice_slider->setMinimum(d->yBounds[0]);
-        d->slice_slider->setMaximum(d->yBounds[1]);
-        d->slice_slider->setValue(d->c_y);
-        d->slice_slider->blockSignals(false);
-    }
+    if (changed) {
 
-    if (d->renderer2D_YZ->isToggled()) {
-        d->slice_slider->blockSignals(true);
-        d->slice_slider->setMinimum(d->xBounds[0]);
-        d->slice_slider->setMaximum(d->xBounds[1]);
-        d->slice_slider->setValue(d->c_x);
-        d->slice_slider->blockSignals(false);
-    }
+        d->c_x = (d->xBounds[0]+d->xBounds[1])/2;
+        d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
+        d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
 
-    d->renderer2D->ResetCamera();
-//    d->renderer3D->ResetCamera();
+        d->cameras.clear();
+
+        switch(d->ori)
+        {
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+                d->slice_slider->blockSignals(true);
+                d->slice_slider->setMinimum(d->zBounds[0]);
+                d->slice_slider->setMaximum(d->zBounds[1]);
+                d->slice_slider->setValue(d->c_z);
+                d->slice_slider->blockSignals(false);
+                break;
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+                d->slice_slider->blockSignals(true);
+                d->slice_slider->setMinimum(d->yBounds[0]);
+                d->slice_slider->setMaximum(d->yBounds[1]);
+                d->slice_slider->setValue(d->c_y);
+                d->slice_slider->blockSignals(false);
+                break;
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+                d->slice_slider->blockSignals(true);
+                d->slice_slider->setMinimum(d->xBounds[0]);
+                d->slice_slider->setMaximum(d->xBounds[1]);
+                d->slice_slider->setValue(d->c_x);
+                d->slice_slider->blockSignals(false);
+                break;
+            default:
+                break;
+        };
+
+        d->renderer2D->ResetCamera();
+//        d->renderer3D->ResetCamera();
+    }
 
 }
 
@@ -1539,7 +1569,7 @@ int gnomonViewForm::orientation(void)
 
 void gnomonViewForm::render(void)
 {
-    d->renderer2D->ResetCameraClippingRange();
+//    d->renderer2D->ResetCameraClippingRange();
     d->GetInteractor()->Render();
 }
 
