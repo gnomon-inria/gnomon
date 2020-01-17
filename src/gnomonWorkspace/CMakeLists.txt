@@ -32,6 +32,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceLSystemSimulator.h
   gnomonWorkspaceLStringFromTree
   gnomonWorkspaceLStringFromTree.h
+  gnomonWorkspaceMeshConstructor
+  gnomonWorkspaceMeshConstructor.h
   gnomonWorkspaceMeshFromImage
   gnomonWorkspaceMeshFromImage.h
   gnomonWorkspacePlantScan3D
@@ -65,6 +67,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspaceLStringFromTree.cpp
+  gnomonWorkspaceMeshConstructor.cpp
   gnomonWorkspaceMeshFromImage.cpp
   gnomonWorkspacePlantScan3D.cpp
   gnomonWorkspacePointCloudFromImage.cpp

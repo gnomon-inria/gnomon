@@ -4,6 +4,7 @@
 #include "gnomonWorkspacePythonSimulator.h"
 #include "gnomonWorkspaceFusion.h"
 #include "gnomonWorkspacePreprocess.h"
+#include "gnomonWorkspaceMeshConstructor.h"
 #include "gnomonWorkspaceMeshFromImage.h"
 #include "gnomonWorkspacePlantScan3D.h"
 #include "gnomonWorkspacePointCloudFromImage.h"
