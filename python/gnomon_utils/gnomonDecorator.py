@@ -1,5 +1,7 @@
 import gnomoncore
 
+import logging
+
 from gnomoncore import (gnomonImage, gnomonImageSeries,
                         gnomonCellComplex, gnomonCellComplexSeries,
                         gnomonCellImage, gnomonCellImageSeries,
@@ -8,9 +10,6 @@ from gnomoncore import (gnomonImage, gnomonImageSeries,
                         gnomonMesh, gnomonMeshSeries,
                         gnomonPointCloud, gnomonPointCloudSeries,
                         gnomonTree, gnomonTreeSeries)
-
-from dtkTimagetkConverter.dtkTimagetkConverter import dtk_img_to_sp_img
-from dtkTimagetkConverter.dtkTimagetkConverter import sp_img_to_dtk_img
 
 from .gnomonPlugin import load_plugin_group
 
@@ -618,6 +617,12 @@ def gnomonLStringOutput(cls=None, attr=None, method='output'):
 # ------------------------------------------------------------------------------
 # --------------------------------- Image -------------------------------------
 # ------------------------------------------------------------------------------
+
+try:
+    from dtkTimagetkConverter.dtkTimagetkConverter import dtk_img_to_sp_img
+    from dtkTimagetkConverter.dtkTimagetkConverter import sp_img_to_dtk_img
+except ImportError:
+    logging.warning('dtkTimagetkConverter not installed')
 
 def buildImageSeries(image_dict):
     image_series = gnomonImageSeries()
