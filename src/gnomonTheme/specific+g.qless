@@ -26,6 +26,23 @@ dtkWidgetsMenuBar#RHS
 /* //                                                                               */
 /* // ///////////////////////////////////////////////////////////////////////////// */
 
+dtkWidgetsWorkspaceBar::tab
+{
+    width: 200px;
+    font-size: 16pt;
+    font-weight: normal;
+}
+
+dtkWidgetsWorkspaceBar::tab:!selected
+{
+    background-color: @base2;
+    font-weight: bold;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
 gnomonViewForm > QSlider
 {
     border: none;
