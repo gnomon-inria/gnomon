@@ -87,6 +87,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     dtk::widgets::workspace::pluginFactory().record("Image Preprocessing", creator<gnomonWorkspacePreprocess>);
     dtk::widgets::workspace::pluginFactory().record( "Form Browser", creator<gnomonWorkspaceBrowser>);
+    dtk::widgets::workspace::pluginFactory().record( "Python Form Algorithm", creator<gnomonWorkspacePythonAlgorithm>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Meshing", creator<gnomonWorkspaceCellComplexFromCellImage>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
@@ -118,6 +119,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     const QString general_package_desc = "Workspaces of general interest for form manipulation.";
     const QString browser_desc = QString("Loads forms in Gnomon by reading them from the file system.");
     d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Browser", "Loads forms of different file formats into the application", "Form Browser", gnomonWorkspaceBrowser::color);
+    d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Form Algorithm", "Run a custom algorithm written in Python on any type of forms", "Python Form Algorithm", gnomonWorkspacePythonAlgorithm::color);
     //const QString python_model_desc = QString("Runs a dynamical system model on forms based on a Python code.");
     //d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Simulation", python_model_desc, "Python Simulation");
     //const QString converter_desc = QString("Casts a form of one type into another type.");

@@ -33,6 +33,8 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractAlgorithm
   gnomonAbstractAlgorithm.h
+  gnomonAbstractFormAlgorithm
+  gnomonAbstractFormAlgorithm.h
   ${${PROJECT_NAME}_ALGORITHM_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_CELLIMAGE_HEADERS}
@@ -45,6 +47,7 @@ ADD_GNOMON_HEADERS(
 
 ADD_GNOMON_SOURCES(
   gnomonAbstractAlgorithm.cpp
+  gnomonAbstractFormAlgorithm.cpp
   ${${PROJECT_NAME}_ALGORITHM_CELLCOMPLEX_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_CELLGRAPH_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_CELLIMAGE_SOURCES}

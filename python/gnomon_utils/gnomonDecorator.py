@@ -1,10 +1,10 @@
 import gnomoncore
 
-from gnomoncore import (gnomonImage, gnomonImageSeries,  
+from gnomoncore import (gnomonImage, gnomonImageSeries,
                         gnomonCellComplex, gnomonCellComplexSeries,
                         gnomonCellImage, gnomonCellImageSeries,
                         gnomonDataFrame, gnomonDataFrameSeries,
-                        gnomonLString, gnomonLStringSeries, 
+                        gnomonLString, gnomonLStringSeries,
                         gnomonMesh, gnomonMeshSeries,
                         gnomonPointCloud, gnomonPointCloudSeries,
                         gnomonTree, gnomonTreeSeries)
@@ -62,7 +62,7 @@ def _gnomonTreeInput(cls, attr, method, setter_method):
         if self._in_tree_series is not None:
             tree_dict, self._in_tree = treeDictFromSeries(self._in_tree_series)
             setattr(self, attr, tree_dict)
-            
+
             if hasattr(self ,"refresh_parameters"):
                 self.refresh_parameters()
 
@@ -185,7 +185,7 @@ def gnomonCellImageOutput(cls=None, attr=None, method='output'):
             return _gnomonCellImageOutput(cls, attr, method)
 
         return wrapper
-    
+
 
 # ------------------------------------------------------------------------------
 # --------------------------------- CellComplex -------------------------------------
@@ -232,7 +232,7 @@ def _gnomonCellComplexInput(cls, attr, method, setter_method):
         self._in_cellComplex = {}
         setattr(self, attr, {})
 
-        if self._cellComplex_series is not None:
+        if self._in_cellComplex_series is not None:
             cellComplex_dict, self._in_cellComplex = cellComplexDictFromSeries(self._in_cellComplex_series)
             setattr(self, attr, cellComplex_dict)
 
@@ -389,9 +389,9 @@ def pointCloudDictFromSeries(pointCloud_series, data_attr='_topomesh'):
     for time in pointCloud_series.times():
         pointCloud[time] = pointCloud_series.at(time).asPointCloud()
         pointCloud_dict[time] = getattr(pointCloud[time].data(),data_attr)
-        
+
     return pointCloud_dict, pointCloud
-    
+
 
 def _gnomonPointCloudInput(cls, attr, method, setter_method):
     def func(self):
@@ -406,7 +406,7 @@ def _gnomonPointCloudInput(cls, attr, method, setter_method):
         self._in_pointCloud = {}
         setattr(self, attr, {})
 
-        if self._pointCloud_series is not None:
+        if self._in_pointCloud_series is not None:
             pointCloud_dict, self._in_pointCloud = pointCloudDictFromSeries(self._in_pointCloud_series)
             setattr(self, attr, pointCloud_dict)
 
@@ -516,9 +516,9 @@ def gnomonMeshInput(cls=None, attr=None, method='input', setter_method='setInput
         return wrapper
 
 
-def _gnomonMeshOutput(cls, attr, method):
+def _gnomonMeshOutput(cls, attr, method, data_plugin="gnomonMeshDataPropertyTopomesh", data_setter="set_property_topomesh"):
     def func(self):
-        self._out_mesh_series, self._out_mesh, self._out_mesh_data = buildMeshSeries(getattr(self ,attr))
+        self._out_mesh_series, self._out_mesh, self._out_mesh_data = buildMeshSeries(getattr(self ,attr), data_plugin=data_plugin, data_setter=data_setter)
         return self._out_mesh_series
 
     setattr(cls, method, func)
@@ -526,12 +526,12 @@ def _gnomonMeshOutput(cls, attr, method):
     return cls
 
 
-def gnomonMeshOutput(cls=None, attr=None, method='output'):
+def gnomonMeshOutput(cls=None, attr=None, method='output', data_plugin="gnomonMeshDataPropertyTopomesh", data_setter="set_property_topomesh"):
     if cls is not None:
-        return _gnomonMeshOutput(cls, attr)
+        return _gnomonMeshOutput(cls, attr, data_plugin=data_plugin, data_setter=data_setter)
     else:
         def wrapper(cls):
-            return _gnomonMeshOutput(cls, attr, method)
+            return _gnomonMeshOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
 
