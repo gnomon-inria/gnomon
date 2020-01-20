@@ -208,9 +208,12 @@ void gnomonWorkspaceSegmentation::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != d->source->image()) {
-        if(d->source->image()) {
+    if ((d->command->input() != d->source->image()) || (d->command->cellPoints() != d->source->pointCloud())) {
+        if (d->source->image()) {
             d->command->setInput(d->source->image());
+        }
+        if (d->source->pointCloud()) {
+            d->command->setCellPoints(d->source->pointCloud());
         }
     } else {
         qDebug() << "Not changed";

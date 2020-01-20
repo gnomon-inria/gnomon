@@ -26,9 +26,14 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *images_serie);
+    void setInput(gnomonImageSeries *image_series);
     gnomonImageSeries *input();
 
+public:
+    void setCellPoints(gnomonPointCloudSeries *pointCloud_series);
+    gnomonPointCloudSeries *cellPoints();
+
+public:
     void setParameter(const QString&, const QVariant&);
 
 public:

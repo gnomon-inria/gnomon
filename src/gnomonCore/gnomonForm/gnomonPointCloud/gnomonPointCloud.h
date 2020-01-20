@@ -74,6 +74,11 @@ public:
     long pointCount(void) const { return m_data->pointCount(); }
 
 public:
+    void setPointPosition(long pointId, double x, double y, double z) { return m_data->setPointPosition(pointId,x,y,z); };
+    long addPoint(double x, double y, double z) { return m_data->addPoint(x,y,z); };
+    void removePoint(long pointId) { return m_data->removePoint(pointId); };
+
+public:
     QStringList pointPropertyNames(void) const { return m_data->pointPropertyNames(); }
     bool hasPointProperty(const QString& propertyName) const { return m_data->hasPointProperty(propertyName); }
     QMap<long, QVariant> pointProperty(const QString& propertyName) const { return m_data->pointProperty(propertyName); }
