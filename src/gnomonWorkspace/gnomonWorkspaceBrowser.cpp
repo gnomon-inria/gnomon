@@ -338,12 +338,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
     {
-        d->browse_view->addFormFromFile(filename);
+//        d->browse_view->addFormFromFile(filename);
     });
 
     connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
     {
-        d->browse_view->addFormFromFile(filename);
+//        d->browse_view->addFormFromFile(filename);
     });
 
     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
