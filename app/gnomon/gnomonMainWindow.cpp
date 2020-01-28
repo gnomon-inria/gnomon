@@ -94,6 +94,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record("Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
     dtk::widgets::workspace::pluginFactory().record( "Image Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Point Cloud Analysis", creator<gnomonWorkspacePointCloudQuantification>);
     dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
     dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
@@ -126,7 +127,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     // d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Tree to LString", workspace_desc, "Tree to LString");
 
     const QString tissue_package_desc = QString("Workspaces dedicated to the analysis of 3D microscopy images of tissues.");
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Analysis", "Computes out cell-level quantitative measures on multicellular segmented tissues", "Cell Image Analysis", gnomonWorkspaceCellImageFilter::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Analysis", "Computes cell-level quantitative measures on multicellular segmented tissues", "Cell Image Analysis", gnomonWorkspaceCellImageQuantification::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Meshing", "Provides plugins to mesh the cells of a multicellular segmented tisue", "Cell Image Meshing", gnomonWorkspaceCellComplexFromCellImage::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Morpho Filter", "Processes labelled images through various classsical morphological filters", "Cell Image Morpho Filter", gnomonWorkspaceCellImageFilter::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Cell Detection", "Detects cells in a 3D intensity image of tissue as a 3D point cloud.", "Image Cell Detection", gnomonWorkspacePointCloudFromImage::color);
@@ -134,7 +135,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Preprocessing",   "Provides various plugins to pre-process intensity images (noise, signal enhancement,...)", "Image Preprocessing", gnomonWorkspacePreprocess::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Segmentation",    "Performs segmentation of 3D intensity images at cellular resolution.", "Image Segmentation", gnomonWorkspaceSegmentation::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Surface Meshing", "Computes a mesh of the surface of a tissue based on intensity images", "Image Surface Meshing", gnomonWorkspaceMeshFromImage::color);
-    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Registration",  "Provides rigid, affine and non-linear plugins to optimally register close images together", "Image Registation", gnomonWorkspaceRegistration::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Image Registration",  "Provides rigid, affine and non-linear plugins to optimally register close images together", "Image Registration", gnomonWorkspaceRegistration::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Point Cloud Analysis",  "Computes quantitative measures on each point of a point cloud", "Point Cloud Analysis", gnomonWorkspacePointCloudQuantification::color);
 
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "LPy",           workspace_desc, "LPy");
