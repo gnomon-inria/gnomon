@@ -279,12 +279,13 @@ class gnomonWorkspaceBrowserPrivate
 {
 public:
     gnomonViewForm *browse_view;
+    gnomonWorkspaceBrowser *q;
 
 public:
     QSplitter *splitter;
 
 public:
-    QMap<QString, QList<gnomonAbstractCommand *> > fileReaderCommands;
+    QMap<QString, QMap<QString, gnomonAbstractCommand *> > fileReaderCommands;
 
 public:
      gnomonWorkspaceBrowserPrivate(void);
@@ -310,10 +311,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
-                QList<gnomonAbstractCommand *> empty_list;
+                QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
-            fileReaderCommands[ext].append(new gnomonImageReaderCommand(key));
+            fileReaderCommands[ext][key] = new gnomonImageReaderCommand(key);
         }
         delete reader;
     }
@@ -328,10 +329,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
-                QList<gnomonAbstractCommand *> empty_list;
+                QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
-            fileReaderCommands[ext].append(new gnomonCellImageReaderCommand(key));
+            fileReaderCommands[ext][key] = new gnomonCellImageReaderCommand(key);
         }
         delete reader;
     }
@@ -346,10 +347,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
-                QList<gnomonAbstractCommand *> empty_list;
+                QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
-            fileReaderCommands[ext].append(new gnomonCellComplexReaderCommand(key));
+            fileReaderCommands[ext][key] = new gnomonCellComplexReaderCommand(key);
         }
         delete reader;
     }
@@ -364,10 +365,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
-                QList<gnomonAbstractCommand *> empty_list;
+                QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
-            fileReaderCommands[ext].append(new gnomonMeshReaderCommand(key));
+            fileReaderCommands[ext][key] = new gnomonMeshReaderCommand(key);
         }
         delete reader;
     }
@@ -382,10 +383,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
-                QList<gnomonAbstractCommand *> empty_list;
+                QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
-            fileReaderCommands[ext].append(new gnomonPointCloudReaderCommand(key));
+            fileReaderCommands[ext][key] = new gnomonPointCloudReaderCommand(key);
         }
         delete reader;
     }
@@ -409,7 +410,38 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
     if (this->fileReaderCommands.contains(ext))
     {
         qDebug()<<this->fileReaderCommands[ext];
-        gnomonAbstractCommand *readerCommand = this->fileReaderCommands[ext][0];
+
+        gnomonAbstractCommand *readerCommand = nullptr;
+
+        if (this->fileReaderCommands[ext].size()==1) {
+            readerCommand = this->fileReaderCommands[ext].values()[0];
+        } else {
+            QDialog *dialog = new QDialog(this->q);
+            dialog->setFixedSize(QSize(400,200));
+
+            QVBoxLayout *layout = new QVBoxLayout();
+
+            QComboBox *combo_box = new QComboBox();
+            for (const auto &key : this->fileReaderCommands[ext].keys()) {
+                combo_box->addItem(key);
+            }
+            combo_box->model()->sort(0);
+            layout->addWidget(combo_box);
+
+            QPushButton *button = new QPushButton("OK");
+            QObject::connect(button, &QPushButton::clicked, [=] () {
+                dialog->accept();
+            });
+            layout->addWidget(button);
+
+            dialog->setLayout(layout);
+            int status = dialog->exec();
+
+            if (status == QDialog::Accepted) {
+                QString key = combo_box->currentText();
+                readerCommand = this->fileReaderCommands[ext][key];
+            }
+        }
 
         if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
         {
@@ -461,7 +493,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
             } else {
                 this->browse_view->setForm("gnomonPointCloud",pointCloud_series);
             }
-        }
+        } 
     } else {
         qWarning() << Q_FUNC_INFO << "File format"<<ext<<"is not supported.";
     }
@@ -476,6 +508,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspaceBrowserPrivate;
+    d->q = this;
 
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(this->color);
