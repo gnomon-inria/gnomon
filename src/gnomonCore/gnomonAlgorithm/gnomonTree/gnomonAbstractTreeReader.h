@@ -44,6 +44,9 @@ public:
 
 public:
     virtual gnomonTreeSeries *tree(void) = 0;
+
+public:
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

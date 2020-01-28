@@ -42,6 +42,9 @@ public:
 
 public:
     virtual gnomonCellImageSeries *cellImage(void) = 0;
+
+public:
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
