@@ -21,6 +21,13 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -275,7 +282,196 @@ public:
 
 public:
     QSplitter *splitter;
+
+public:
+    QMap<QString, QList<gnomonAbstractCommand *> > fileReaderCommands;
+
+public:
+     gnomonWorkspaceBrowserPrivate(void);
+    ~gnomonWorkspaceBrowserPrivate(void);
+
+public:
+    void addFormFromFile(const QString& path);
 };
+
+/////////////////////////////////////////////////////////////////////////////
+// gnomonWorkspaceBrowserPrivate
+/////////////////////////////////////////////////////////////////////////////
+
+gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
+{
+    loadPluginGroup("imageReader");
+    QStringList image_reader_plugins = gnomonCore::imageReader::pluginFactory().keys();
+    for (const auto& key : image_reader_plugins)
+    {
+        gnomonAbstractImageReader *reader = dynamic_cast<gnomonAbstractImageReader *>(gnomonCore::imageReader::pluginFactory().create(key));
+        qDebug()<<key<<reader->extensions();
+        for (const auto& ext : reader->extensions())
+        {
+            if (!this->fileReaderCommands.contains(ext))
+            {
+                QList<gnomonAbstractCommand *> empty_list;
+                fileReaderCommands[ext] = empty_list;
+            }
+            fileReaderCommands[ext].append(new gnomonImageReaderCommand(key));
+        }
+        delete reader;
+    }
+       
+    loadPluginGroup("cellImageReader");
+    QStringList cellImage_reader_plugins = gnomonCore::cellImageReader::pluginFactory().keys();
+    for (const auto& key : cellImage_reader_plugins)
+    {
+        gnomonAbstractCellImageReader *reader = dynamic_cast<gnomonAbstractCellImageReader *>(gnomonCore::cellImageReader::pluginFactory().create(key));
+        qDebug()<<key<<reader->extensions();
+        for (const auto& ext : reader->extensions())
+        {
+            if (!this->fileReaderCommands.contains(ext))
+            {
+                QList<gnomonAbstractCommand *> empty_list;
+                fileReaderCommands[ext] = empty_list;
+            }
+            fileReaderCommands[ext].append(new gnomonCellImageReaderCommand(key));
+        }
+        delete reader;
+    }
+    
+    loadPluginGroup("cellComplexReader");
+    QStringList cellComplex_reader_plugins = gnomonCore::cellComplexReader::pluginFactory().keys();
+    for (const auto& key : cellComplex_reader_plugins)
+    {
+        gnomonAbstractCellComplexReader *reader = dynamic_cast<gnomonAbstractCellComplexReader *>(gnomonCore::cellComplexReader::pluginFactory().create(key));
+        qDebug()<<key<<reader->extensions();
+        for (const auto& ext : reader->extensions())
+        {
+            if (!this->fileReaderCommands.contains(ext))
+            {
+                QList<gnomonAbstractCommand *> empty_list;
+                fileReaderCommands[ext] = empty_list;
+            }
+            fileReaderCommands[ext].append(new gnomonCellComplexReaderCommand(key));
+        }
+        delete reader;
+    }
+    
+    loadPluginGroup("meshReader");
+    QStringList mesh_reader_plugins = gnomonCore::meshReader::pluginFactory().keys();
+    for (const auto& key : mesh_reader_plugins)
+    {
+        gnomonAbstractMeshReader *reader = dynamic_cast<gnomonAbstractMeshReader *>(gnomonCore::meshReader::pluginFactory().create(key));
+        qDebug()<<key<<reader->extensions();
+        for (const auto& ext : reader->extensions())
+        {
+            if (!this->fileReaderCommands.contains(ext))
+            {
+                QList<gnomonAbstractCommand *> empty_list;
+                fileReaderCommands[ext] = empty_list;
+            }
+            fileReaderCommands[ext].append(new gnomonMeshReaderCommand(key));
+        }
+        delete reader;
+    }
+    
+    loadPluginGroup("pointCloudReader");
+    QStringList pointCloud_reader_plugins = gnomonCore::pointCloudReader::pluginFactory().keys();
+    for (const auto& key : pointCloud_reader_plugins)
+    {
+        gnomonAbstractPointCloudReader *reader = dynamic_cast<gnomonAbstractPointCloudReader *>(gnomonCore::pointCloudReader::pluginFactory().create(key));
+        qDebug()<<key<<reader->extensions();
+        for (const auto& ext : reader->extensions())
+        {
+            if (!this->fileReaderCommands.contains(ext))
+            {
+                QList<gnomonAbstractCommand *> empty_list;
+                fileReaderCommands[ext] = empty_list;
+            }
+            fileReaderCommands[ext].append(new gnomonPointCloudReaderCommand(key));
+        }
+        delete reader;
+    }
+}
+
+gnomonWorkspaceBrowserPrivate::~gnomonWorkspaceBrowserPrivate(void)
+{
+}
+
+void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
+{
+    QString filename = path;
+
+    QString ext;
+    if (filename.endsWith("gz")) {
+        ext = filename.split(".")[filename.split(".").size()-2] + ".gz";
+    } else {
+        ext = filename.split(".")[filename.split(".").size()-1];
+    }
+
+    if (this->fileReaderCommands.contains(ext))
+    {
+        qDebug()<<this->fileReaderCommands[ext];
+        gnomonAbstractCommand *readerCommand = this->fileReaderCommands[ext][0];
+
+        if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
+        {
+            imageCommand->setPath(filename.remove("file://"));
+            imageCommand->redo();
+            gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image()->clone();
+            if (!image_series) {
+                qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
+            } else {
+                this->browse_view->setForm("gnomonImage",image_series);
+            }
+        } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
+        {
+            cellImageCommand->setPath(filename.remove("file://"));
+            cellImageCommand->redo();
+            gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage()->clone();
+            if (!cellImage_series) {
+                qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
+            } else {
+                this->browse_view->setForm("gnomonCellImage",cellImage_series);
+            }
+        } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(readerCommand))
+        {
+            cellComplexCommand->setPath(filename.remove("file://"));
+            cellComplexCommand->redo();
+            gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex()->clone();
+            if (!cellComplex_series) {
+                qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
+            } else {
+                this->browse_view->setForm("gnomonCellComplex",cellComplex_series);
+            }
+        } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(readerCommand))
+        {
+            meshCommand->setPath(filename.remove("file://"));
+            meshCommand->redo();
+            gnomonMeshSeries * mesh_serie = (gnomonMeshSeries *) meshCommand->mesh()->clone();
+            if (!mesh_serie) {
+                qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
+            } else {
+                this->browse_view->setForm("gnomonMesh",mesh_serie);
+            }
+        } else if (gnomonPointCloudReaderCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudReaderCommand *>(readerCommand))
+        {
+            pointCloudCommand->setPath(filename.remove("file://"));
+            pointCloudCommand->redo();
+            gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud()->clone();
+            if (!pointCloud_series) {
+                qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
+            } else {
+                this->browse_view->setForm("gnomonPointCloud",pointCloud_series);
+            }
+        }
+    } else {
+        qWarning() << Q_FUNC_INFO << "File format"<<ext<<"is not supported.";
+    }
+
+    return;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// gnomonWorkspaceBrowser
+/////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -338,12 +534,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
     {
-//        d->browse_view->addFormFromFile(filename);
+        d->addFormFromFile(filename);
     });
 
     connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
     {
-//        d->browse_view->addFormFromFile(filename);
+        d->addFormFromFile(filename);
     });
 
     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
