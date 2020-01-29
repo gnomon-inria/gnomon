@@ -49,7 +49,6 @@ void gnomonMeshConstructorCommand::redo(void)
 
 void gnomonMeshConstructorCommand::undo(void)
 {
-    ((gnomonAbstractMeshFromImage *) this->action)->setInput(nullptr);
 }
 
 void gnomonMeshConstructorCommand::setParameter(const QString& parameter, const QVariant& value)

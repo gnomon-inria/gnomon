@@ -19,6 +19,8 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonPointCloudConstructorCommand
+    gnomonPointCloudConstructorCommand.h
     gnomonPointCloudFromImageCommand
     gnomonPointCloudFromImageCommand.h
     gnomonPointCloudQuantificationCommand
@@ -26,6 +28,7 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonPointCloudConstructorCommand.cpp
     gnomonPointCloudFromImageCommand.cpp
     gnomonPointCloudQuantificationCommand.cpp)
 
