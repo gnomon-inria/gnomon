@@ -22,6 +22,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspace
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
+  gnomonWorkspaceCellComplexConstructor
+  gnomonWorkspaceCellComplexConstructor.h
   gnomonWorkspaceCellComplexFromCellImage
   gnomonWorkspaceCellComplexFromCellImage.h
   gnomonWorkspaceCellImageFilter
@@ -63,6 +65,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
+  gnomonWorkspaceCellComplexConstructor.cpp
   gnomonWorkspaceCellComplexFromCellImage.cpp
   gnomonWorkspaceCellImageFilter.cpp
   gnomonWorkspaceCellImageQuantification.cpp

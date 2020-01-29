@@ -9,6 +9,7 @@
 #include "gnomonWorkspacePlantScan3D.h"
 #include "gnomonWorkspacePointCloudFromImage.h"
 #include "gnomonWorkspacePointCloudQuantification.h"
+#include "gnomonWorkspaceCellComplexConstructor.h"
 #include "gnomonWorkspaceCellComplexFromCellImage.h"
 #include "gnomonWorkspaceCellImageQuantification.h"
 #include "gnomonWorkspaceCellImageFilter.h"
