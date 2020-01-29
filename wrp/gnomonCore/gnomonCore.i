@@ -80,6 +80,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
@@ -201,6 +202,81 @@
     }
 }
 
+// /////////////////////////////////////////////////////////////////
+// Id -> Float dictionary
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<long, double> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            long k = PyInt_AsLong(key);
+            double v = PyFloat_AsDouble(value);
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, double> is returned.");
+    }
+}
+
+%typemap(in) const QMap<long, double>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<long, double>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            long k = PyInt_AsLong(key);
+            double v = PyFloat_AsDouble(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, double> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<long, double>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<long, double> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            long k = PyInt_AsLong(key);
+            double v = PyFloat_AsDouble(value);
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, double> is returned.");
+    }
+}
+
+%typemap(out) QMap<long, double> {
+    $result = PyDict_New();
+
+    QList<long> keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        PyDict_SetItem($result, PyLong_FromLong(*it), PyFloat_FromDouble($1[*it]));
+    }
+}
+
+%typemap(directorin) QMap<long, double> {
+    PyObject *dict = PyDict_New();
+
+    QList<long> keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        PyDict_SetItem($result, PyLong_FromLong(*it), PyFloat_FromDouble($1[*it]));
+    }
+    $input = dict;
+}
 
 // /////////////////////////////////////////////////////////////////
 // Form dictionary
@@ -634,6 +710,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>

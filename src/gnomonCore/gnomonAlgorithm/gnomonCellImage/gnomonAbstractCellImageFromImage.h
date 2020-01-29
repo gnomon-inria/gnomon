@@ -25,6 +25,7 @@ class gnomonCoreParameter;
 
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstractAlgorithm
 {
@@ -36,10 +37,12 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setInput(gnomonImageSeries *images_serie) = 0;
+    virtual void setInput(gnomonImageSeries *image_series) = 0;
+    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) = 0;
 
 public:
     virtual gnomonImageSeries *input(void) const = 0;
+    virtual gnomonPointCloudSeries *cellPoints(void) const = 0;
     virtual gnomonCellImageSeries *output(void) const = 0;
 };
 

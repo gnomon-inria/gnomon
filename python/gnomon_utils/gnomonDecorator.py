@@ -405,7 +405,7 @@ def _gnomonPointCloudInput(cls, attr, method, setter_method):
         self._in_pointCloud = {}
         setattr(self, attr, {})
 
-        if self._pointCloud_series is not None:
+        if self._in_pointCloud_series is not None:
             pointCloud_dict, self._in_pointCloud = pointCloudDictFromSeries(self._in_pointCloud_series)
             setattr(self, attr, pointCloud_dict)
 

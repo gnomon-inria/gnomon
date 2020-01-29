@@ -8,6 +8,7 @@
 #include "gnomonWorkspaceMeshFromImage.h"
 #include "gnomonWorkspacePlantScan3D.h"
 #include "gnomonWorkspacePointCloudFromImage.h"
+#include "gnomonWorkspacePointCloudQuantification.h"
 #include "gnomonWorkspaceCellComplexFromCellImage.h"
 #include "gnomonWorkspaceCellImageQuantification.h"
 #include "gnomonWorkspaceCellImageFilter.h"
