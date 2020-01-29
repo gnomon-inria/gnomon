@@ -12,9 +12,6 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *images_serie);
-    gnomonImageSeries *input(void);
-
     gnomonMeshSeries *output(void);
 
     virtual void setParameter(const QString&, const QVariant&);
