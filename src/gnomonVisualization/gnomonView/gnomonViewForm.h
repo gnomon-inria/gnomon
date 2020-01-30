@@ -140,9 +140,6 @@ signals:
 signals:
     void timeChanged(double);
 
-signals:
-    void fileDropped(const QString&);
-
 public slots:
     void timeIndexChange(int);
 
@@ -164,6 +161,11 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *);
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
+
+signals:
+    void fileDropped(const QString&);
+
+protected:
     void resizeEvent(QResizeEvent *);
 
 private:
