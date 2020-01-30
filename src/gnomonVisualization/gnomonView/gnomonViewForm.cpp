@@ -1650,7 +1650,7 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    if(path.startsWith(":")) {
+    if (path.startsWith(":")) {
         int form_index = path.remove(":").toInt();
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(form_index);
         if (d->empty) {
@@ -1658,12 +1658,15 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
             this->setCamera(cam);
         }
         this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(form_index));
+
+        event->accept();
+        this->render();
+    } else if (path.startsWith("file://")) {
+        emit fileDropped(path);
+        event->accept();
     }
     // ///////////////////////////////////////////////////////////////
 
-    event->accept();
-
-    this->render();
 }
 
 void gnomonViewForm::resizeEvent(QResizeEvent *event)

@@ -140,6 +140,9 @@ signals:
 signals:
     void timeChanged(double);
 
+signals:
+    void fileDropped(const QString&);
+
 public slots:
     void timeIndexChange(int);
 

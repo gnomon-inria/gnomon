@@ -282,6 +282,10 @@ public:
     gnomonWorkspaceBrowser *q;
 
 public:
+    QStackedWidget *view_stack = nullptr;
+    gnomonMessageBoard *view_message = nullptr;
+
+public:
     QSplitter *splitter;
 
 public:
@@ -452,6 +456,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
             } else {
                 this->browse_view->setForm("gnomonImage",image_series);
+                this->view_stack->setCurrentWidget(this->browse_view);
             }
         } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
         {
@@ -462,6 +467,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
             } else {
                 this->browse_view->setForm("gnomonCellImage",cellImage_series);
+                this->view_stack->setCurrentWidget(this->browse_view);
             }
         } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(readerCommand))
         {
@@ -472,6 +478,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
             } else {
                 this->browse_view->setForm("gnomonCellComplex",cellComplex_series);
+                this->view_stack->setCurrentWidget(this->browse_view);
             }
         } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(readerCommand))
         {
@@ -482,6 +489,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
             } else {
                 this->browse_view->setForm("gnomonMesh",mesh_serie);
+                this->view_stack->setCurrentWidget(this->browse_view);
             }
         } else if (gnomonPointCloudReaderCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudReaderCommand *>(readerCommand))
         {
@@ -492,6 +500,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
             } else {
                 this->browse_view->setForm("gnomonPointCloud",pointCloud_series);
+                this->view_stack->setCurrentWidget(this->browse_view);
             }
         } 
     } else {
@@ -512,6 +521,13 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(this->color);
+
+    d->view_message = new gnomonMessageBoard(this);
+    d->view_message->setMessage("Double-click or drop a file");
+
+    d->view_stack = new QStackedWidget(this);
+    d->view_stack->addWidget(d->view_message);
+    d->view_stack->addWidget(d->browse_view);
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -553,7 +569,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     finder->setLayout(r_layout);
 
     d->splitter = new QSplitter(this);
-    d->splitter->addWidget(d->browse_view);
+    d->splitter->addWidget(d->view_stack);
     d->splitter->addWidget(finder);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -564,6 +580,15 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     layout->addWidget(d->splitter);
 
 /////////////////////////////////////////////////////////////////////////////
+    connect(d->browse_view, &gnomonViewForm::fileDropped, [=] (const QString& filename)
+    {
+        d->addFormFromFile(filename);
+    });
+
+    connect(d->view_message, &gnomonMessageBoard::fileDropped, [=] (const QString& filename)
+    {
+        d->addFormFromFile(filename);
+    });
 
     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
     {
