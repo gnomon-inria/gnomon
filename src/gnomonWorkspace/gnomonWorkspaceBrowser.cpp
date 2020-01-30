@@ -595,6 +595,37 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->view_stack->addWidget(d->browse_view);
     d->view_stack->addWidget(d->browse_figure);
 
+    QToolButton *view_button = new QToolButton(this);
+    view_button->setIcon(dtkFontAwesome::instance()->icon(fa::cubes));
+    view_button->setToolTip("3D Form Viewer");
+    QToolButton *figure_button = new QToolButton(this);
+    figure_button->setIcon(dtkFontAwesome::instance()->icon(fa::square));
+    figure_button->setToolTip("2D Form Viewer");
+
+    QHBoxLayout *v_layout = new QHBoxLayout;
+    v_layout->addWidget(view_button);
+    v_layout->addWidget(figure_button);
+    v_layout->addStretch();
+
+    QVBoxLayout *viewers_layout = new QVBoxLayout;
+    viewers_layout->setContentsMargins(0, 0, 0, 0);
+    viewers_layout->setSpacing(0);
+    viewers_layout->addLayout(v_layout);
+    viewers_layout->addWidget(d->view_stack);
+
+    QWidget *viewers = new QWidget(this);
+    viewers->setLayout(viewers_layout);
+
+    connect(view_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->view_stack->setCurrentWidget(d->browse_view);
+    });
+
+    connect(figure_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->view_stack->setCurrentWidget(d->browse_figure);
+    });
+
 /////////////////////////////////////////////////////////////////////////////
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
@@ -635,7 +666,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     finder->setLayout(r_layout);
 
     d->splitter = new QSplitter(this);
-    d->splitter->addWidget(d->view_stack);
+    d->splitter->addWidget(viewers);
     d->splitter->addWidget(finder);
 
 /////////////////////////////////////////////////////////////////////////////
