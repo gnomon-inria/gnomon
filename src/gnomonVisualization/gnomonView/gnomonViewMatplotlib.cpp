@@ -177,7 +177,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
     this->formVisualizationPaneItems.clear();
 
 //    this->empty = true;
-
+    this->refresh();
 //    q->render();
 }
 
