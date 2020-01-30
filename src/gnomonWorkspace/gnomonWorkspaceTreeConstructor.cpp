@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "gnomonWorkspaceCellComplexConstructor.h"
+#include "gnomonWorkspaceTreeConstructor.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexConstructorCommand>
+#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeConstructorCommand>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -30,18 +30,18 @@
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-class gnomonWorkspaceCellComplexConstructorPrivate : public gnomonWorkspaceTemplatePrivate<gnomonCellComplexConstructorCommand>
+class gnomonWorkspaceTreeConstructorPrivate : public gnomonWorkspaceTemplatePrivate<gnomonTreeConstructorCommand>
 {
 public:
-     gnomonWorkspaceCellComplexConstructorPrivate(void);
-    ~gnomonWorkspaceCellComplexConstructorPrivate(void);
+     gnomonWorkspaceTreeConstructorPrivate(void);
+    ~gnomonWorkspaceTreeConstructorPrivate(void);
 
 public:
     QString workspace(void) const override;
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *target = nullptr;
+    gnomonViewMatplotlib *target = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -56,34 +56,33 @@ public:
     dtkWidgetsMenuBarContainer *dashboard;
 };
 
-gnomonWorkspaceCellComplexConstructorPrivate::gnomonWorkspaceCellComplexConstructorPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellComplexConstructorCommand >()
+gnomonWorkspaceTreeConstructorPrivate::gnomonWorkspaceTreeConstructorPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonTreeConstructorCommand >()
 {
 
 }
 
-gnomonWorkspaceCellComplexConstructorPrivate::~gnomonWorkspaceCellComplexConstructorPrivate(void)
+gnomonWorkspaceTreeConstructorPrivate::~gnomonWorkspaceTreeConstructorPrivate(void)
 {
 
 }
 
-QString gnomonWorkspaceCellComplexConstructorPrivate::workspace(void) const
+QString gnomonWorkspaceTreeConstructorPrivate::workspace(void) const
 {
-    return "CellComplex Constructor";
+    return "Tree Constructor";
 }
 
-QStringList gnomonWorkspaceCellComplexConstructorPrivate::keys(void) const
+QStringList gnomonWorkspaceTreeConstructorPrivate::keys(void) const
 {
-    return gnomonCore::cellComplexConstructor::pluginFactory().keys();
+    return gnomonCore::treeConstructor::pluginFactory().keys();
 }
 
-gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspaceTreeConstructor::gnomonWorkspaceTreeConstructor(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("cellComplexConstructor");
+    loadPluginGroup("treeConstructor");
 
-    d = new gnomonWorkspaceCellComplexConstructorPrivate;
+    d = new gnomonWorkspaceTreeConstructorPrivate;
 
-    d->target = new gnomonViewForm(this);
-    d->target->setExportColor(this->color);
+    d->target = new gnomonViewMatplotlib(this);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -128,22 +127,22 @@ gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWi
     this->enter();
 }
 
-gnomonWorkspaceCellComplexConstructor::~gnomonWorkspaceCellComplexConstructor(void)
+gnomonWorkspaceTreeConstructor::~gnomonWorkspaceTreeConstructor(void)
 {
     delete d;
 }
 
-void gnomonWorkspaceCellComplexConstructor::enter(void)
+void gnomonWorkspaceTreeConstructor::enter(void)
 {
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceCellComplexConstructor::leave(void)
+void gnomonWorkspaceTreeConstructor::leave(void)
 {
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceCellComplexConstructor::apply(void)
+void gnomonWorkspaceTreeConstructor::apply(void)
 {
     Q_ASSERT(d->command);
 
@@ -151,20 +150,19 @@ void gnomonWorkspaceCellComplexConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setCellComplex(d->command->output());
-        d->target->render();
+        d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
 }
 
-void gnomonWorkspaceCellComplexConstructor::configure(const QString& algorithm)
+void gnomonWorkspaceTreeConstructor::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
 
-const QColor gnomonWorkspaceCellComplexConstructor::color = QColor("#9e5fa0");
+const QColor gnomonWorkspaceTreeConstructor::color = QColor("#9e5fa0");
 
 //
-// gnomonWorkspaceCellComplexConstructor.cpp ends here
+// gnomonWorkspaceTreeConstructor.cpp ends here

@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "gnomonWorkspaceCellComplexConstructor.h"
+#include "gnomonWorkspaceImageConstructor.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexConstructorCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageConstructorCommand>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -30,11 +30,11 @@
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-class gnomonWorkspaceCellComplexConstructorPrivate : public gnomonWorkspaceTemplatePrivate<gnomonCellComplexConstructorCommand>
+class gnomonWorkspaceImageConstructorPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImageConstructorCommand>
 {
 public:
-     gnomonWorkspaceCellComplexConstructorPrivate(void);
-    ~gnomonWorkspaceCellComplexConstructorPrivate(void);
+     gnomonWorkspaceImageConstructorPrivate(void);
+    ~gnomonWorkspaceImageConstructorPrivate(void);
 
 public:
     QString workspace(void) const override;
@@ -56,31 +56,31 @@ public:
     dtkWidgetsMenuBarContainer *dashboard;
 };
 
-gnomonWorkspaceCellComplexConstructorPrivate::gnomonWorkspaceCellComplexConstructorPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellComplexConstructorCommand >()
+gnomonWorkspaceImageConstructorPrivate::gnomonWorkspaceImageConstructorPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonImageConstructorCommand >()
 {
 
 }
 
-gnomonWorkspaceCellComplexConstructorPrivate::~gnomonWorkspaceCellComplexConstructorPrivate(void)
+gnomonWorkspaceImageConstructorPrivate::~gnomonWorkspaceImageConstructorPrivate(void)
 {
 
 }
 
-QString gnomonWorkspaceCellComplexConstructorPrivate::workspace(void) const
+QString gnomonWorkspaceImageConstructorPrivate::workspace(void) const
 {
-    return "CellComplex Constructor";
+    return "Image Constructor";
 }
 
-QStringList gnomonWorkspaceCellComplexConstructorPrivate::keys(void) const
+QStringList gnomonWorkspaceImageConstructorPrivate::keys(void) const
 {
-    return gnomonCore::cellComplexConstructor::pluginFactory().keys();
+    return gnomonCore::imageConstructor::pluginFactory().keys();
 }
 
-gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspaceImageConstructor::gnomonWorkspaceImageConstructor(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("cellComplexConstructor");
+    loadPluginGroup("imageConstructor");
 
-    d = new gnomonWorkspaceCellComplexConstructorPrivate;
+    d = new gnomonWorkspaceImageConstructorPrivate;
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
@@ -128,22 +128,22 @@ gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWi
     this->enter();
 }
 
-gnomonWorkspaceCellComplexConstructor::~gnomonWorkspaceCellComplexConstructor(void)
+gnomonWorkspaceImageConstructor::~gnomonWorkspaceImageConstructor(void)
 {
     delete d;
 }
 
-void gnomonWorkspaceCellComplexConstructor::enter(void)
+void gnomonWorkspaceImageConstructor::enter(void)
 {
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceCellComplexConstructor::leave(void)
+void gnomonWorkspaceImageConstructor::leave(void)
 {
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceCellComplexConstructor::apply(void)
+void gnomonWorkspaceImageConstructor::apply(void)
 {
     Q_ASSERT(d->command);
 
@@ -151,7 +151,7 @@ void gnomonWorkspaceCellComplexConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setCellComplex(d->command->output());
+        d->target->setImage(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
     } else {
@@ -159,12 +159,12 @@ void gnomonWorkspaceCellComplexConstructor::apply(void)
     }
 }
 
-void gnomonWorkspaceCellComplexConstructor::configure(const QString& algorithm)
+void gnomonWorkspaceImageConstructor::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
 
-const QColor gnomonWorkspaceCellComplexConstructor::color = QColor("#9e5fa0");
+const QColor gnomonWorkspaceImageConstructor::color = QColor("#9e5fa0");
 
 //
-// gnomonWorkspaceCellComplexConstructor.cpp ends here
+// gnomonWorkspaceImageConstructor.cpp ends here

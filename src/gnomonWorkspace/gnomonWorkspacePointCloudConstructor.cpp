@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "gnomonWorkspaceCellComplexConstructor.h"
+#include "gnomonWorkspacePointCloudConstructor.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexConstructorCommand>
+#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudConstructorCommand>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -30,11 +30,11 @@
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-class gnomonWorkspaceCellComplexConstructorPrivate : public gnomonWorkspaceTemplatePrivate<gnomonCellComplexConstructorCommand>
+class gnomonWorkspacePointCloudConstructorPrivate : public gnomonWorkspaceTemplatePrivate<gnomonPointCloudConstructorCommand>
 {
 public:
-     gnomonWorkspaceCellComplexConstructorPrivate(void);
-    ~gnomonWorkspaceCellComplexConstructorPrivate(void);
+     gnomonWorkspacePointCloudConstructorPrivate(void);
+    ~gnomonWorkspacePointCloudConstructorPrivate(void);
 
 public:
     QString workspace(void) const override;
@@ -56,31 +56,31 @@ public:
     dtkWidgetsMenuBarContainer *dashboard;
 };
 
-gnomonWorkspaceCellComplexConstructorPrivate::gnomonWorkspaceCellComplexConstructorPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellComplexConstructorCommand >()
+gnomonWorkspacePointCloudConstructorPrivate::gnomonWorkspacePointCloudConstructorPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonPointCloudConstructorCommand >()
 {
 
 }
 
-gnomonWorkspaceCellComplexConstructorPrivate::~gnomonWorkspaceCellComplexConstructorPrivate(void)
+gnomonWorkspacePointCloudConstructorPrivate::~gnomonWorkspacePointCloudConstructorPrivate(void)
 {
 
 }
 
-QString gnomonWorkspaceCellComplexConstructorPrivate::workspace(void) const
+QString gnomonWorkspacePointCloudConstructorPrivate::workspace(void) const
 {
-    return "CellComplex Constructor";
+    return "Point Cloud Constructor";
 }
 
-QStringList gnomonWorkspaceCellComplexConstructorPrivate::keys(void) const
+QStringList gnomonWorkspacePointCloudConstructorPrivate::keys(void) const
 {
-    return gnomonCore::cellComplexConstructor::pluginFactory().keys();
+    return gnomonCore::pointCloudConstructor::pluginFactory().keys();
 }
 
-gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspacePointCloudConstructor::gnomonWorkspacePointCloudConstructor(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
-    loadPluginGroup("cellComplexConstructor");
+    loadPluginGroup("pointCloudConstructor");
 
-    d = new gnomonWorkspaceCellComplexConstructorPrivate;
+    d = new gnomonWorkspacePointCloudConstructorPrivate;
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
@@ -128,22 +128,22 @@ gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWi
     this->enter();
 }
 
-gnomonWorkspaceCellComplexConstructor::~gnomonWorkspaceCellComplexConstructor(void)
+gnomonWorkspacePointCloudConstructor::~gnomonWorkspacePointCloudConstructor(void)
 {
     delete d;
 }
 
-void gnomonWorkspaceCellComplexConstructor::enter(void)
+void gnomonWorkspacePointCloudConstructor::enter(void)
 {
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceCellComplexConstructor::leave(void)
+void gnomonWorkspacePointCloudConstructor::leave(void)
 {
     dtkApp->window()->menubar()->touch();
 }
 
-void gnomonWorkspaceCellComplexConstructor::apply(void)
+void gnomonWorkspacePointCloudConstructor::apply(void)
 {
     Q_ASSERT(d->command);
 
@@ -151,7 +151,7 @@ void gnomonWorkspaceCellComplexConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setCellComplex(d->command->output());
+        d->target->setPointCloud(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
     } else {
@@ -159,12 +159,12 @@ void gnomonWorkspaceCellComplexConstructor::apply(void)
     }
 }
 
-void gnomonWorkspaceCellComplexConstructor::configure(const QString& algorithm)
+void gnomonWorkspacePointCloudConstructor::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
 
-const QColor gnomonWorkspaceCellComplexConstructor::color = QColor("#9e5fa0");
+const QColor gnomonWorkspacePointCloudConstructor::color = QColor("#9e5fa0");
 
 //
-// gnomonWorkspaceCellComplexConstructor.cpp ends here
+// gnomonWorkspacePointCloudConstructor.cpp ends here

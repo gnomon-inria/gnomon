@@ -26,10 +26,14 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceCellComplexConstructor.h
   gnomonWorkspaceCellComplexFromCellImage
   gnomonWorkspaceCellComplexFromCellImage.h
+  gnomonWorkspaceCellImageConstructor
+  gnomonWorkspaceCellImageConstructor.h
   gnomonWorkspaceCellImageFilter
   gnomonWorkspaceCellImageFilter.h
   gnomonWorkspaceFusion
   gnomonWorkspaceFusion.h
+  gnomonWorkspaceImageConstructor
+  gnomonWorkspaceImageConstructor.h
   gnomonWorkspaceLSystemSimulator
   gnomonWorkspaceLSystemSimulator.h
   gnomonWorkspaceLStringFromTree
@@ -40,6 +44,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceMeshFromImage.h
   gnomonWorkspacePlantScan3D
   gnomonWorkspacePlantScan3D.h
+  gnomonWorkspacePointCloudConstructor
+  gnomonWorkspacePointCloudConstructor.h
   gnomonWorkspacePointCloudFromImage
   gnomonWorkspacePointCloudFromImage.h
   gnomonWorkspacePointCloudQuantification
@@ -58,6 +64,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceSegmentation.h
   gnomonWorkspaceTreeAnalysis
   gnomonWorkspaceTreeAnalysis.h
+  gnomonWorkspaceTreeConstructor
+  gnomonWorkspaceTreeConstructor.h
   gnomonWorkspaceTreeFromLString
   gnomonWorkspaceTreeFromLString.h
   gnomonWorkspaceTemplate_p.h
@@ -67,14 +75,17 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
   gnomonWorkspaceCellComplexConstructor.cpp
   gnomonWorkspaceCellComplexFromCellImage.cpp
+  gnomonWorkspaceCellImageConstructor.cpp
   gnomonWorkspaceCellImageFilter.cpp
   gnomonWorkspaceCellImageQuantification.cpp
+  gnomonWorkspaceImageConstructor.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
   gnomonWorkspaceLStringFromTree.cpp
   gnomonWorkspaceMeshConstructor.cpp
   gnomonWorkspaceMeshFromImage.cpp
   gnomonWorkspacePlantScan3D.cpp
+  gnomonWorkspacePointCloudConstructor.cpp
   gnomonWorkspacePointCloudFromImage.cpp
   gnomonWorkspacePointCloudQuantification.cpp
   gnomonWorkspacePreprocess.cpp
@@ -84,6 +95,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceSegmentation.cpp
   gnomonWorkspaceSimulation.cpp
   gnomonWorkspaceTreeAnalysis.cpp
+  gnomonWorkspaceTreeConstructor.cpp
   gnomonWorkspaceTreeFromLString.cpp)
 
 set(${PROJECT_NAME}_SOURCES_QRC gnomonWorkspace.qrc)

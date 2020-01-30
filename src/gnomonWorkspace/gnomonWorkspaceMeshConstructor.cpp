@@ -41,11 +41,7 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *source = nullptr;
     gnomonViewForm *target = nullptr;
-
-public:
-    gnomonViewFormPool *pool = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -88,10 +84,6 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
-
-    d->pool = new gnomonViewFormPool(this);
-    d->pool->addView(d->target);
-    d->pool->linkAll();
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -143,15 +135,11 @@ gnomonWorkspaceMeshConstructor::~gnomonWorkspaceMeshConstructor(void)
 
 void gnomonWorkspaceMeshConstructor::enter(void)
 {
-//    dtkApp->window()->menubar()->addMenu(d->source->menu());
-//    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceMeshConstructor::leave(void)
 {
-//    dtkApp->window()->menubar()->removeMenu(d->source->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
@@ -166,10 +154,8 @@ void gnomonWorkspaceMeshConstructor::apply(void)
         d->target->setMesh(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
-        d->target->setEnableLinking(true);
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
-        d->target->setEnableLinking(false);
     }
 }
 
