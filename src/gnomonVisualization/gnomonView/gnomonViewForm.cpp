@@ -1654,13 +1654,13 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
         int form_index = path.remove(":").toInt();
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(form_index);
         if (d->empty) {
-            vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index);
-            this->setCamera(cam);
+            if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index)) {
+                this->setCamera(cam);
+            }
         }
         this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(form_index));
 
         event->accept();
-        this->render();
     } else if (path.startsWith("file://")) {
         emit fileDropped(path);
         event->accept();
