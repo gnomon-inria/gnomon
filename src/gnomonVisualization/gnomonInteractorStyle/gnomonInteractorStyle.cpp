@@ -50,6 +50,7 @@ gnomonInteractorStyle::gnomonInteractorStyle(void) : vtkInteractorStyleTrackball
 
 gnomonInteractorStyle::~gnomonInteractorStyle(void)
 {
+    this->disable();
     delete d;
     this->SetReferenceCount(0);
 }
@@ -130,13 +131,13 @@ void gnomonInteractorStyle::setView(gnomonViewForm *view)
 
 //    view->interactor()->SetInteractorStyle(this);
 
-    connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
+    d->connect3D = connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
         this->setMode("3D");
         this->SetDefaultRenderer(d->view->renderer3D());
         d->view->updateShortcutKeys();
     });
 
-    connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
+    d->connect2D = connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
         this->setMode("2D");
         this->SetDefaultRenderer(d->view->renderer2D());
         d->view->updateShortcutKeys();
@@ -166,6 +167,8 @@ void gnomonInteractorStyle::setMode(QString mode)
 
 void gnomonInteractorStyle::disable(void)
 {
+    disconnect(d->connect3D);
+    disconnect(d->connect2D);
     return;
 }
 
