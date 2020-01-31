@@ -30,6 +30,10 @@ class gnomonInteractorStylePrivate
         QMap<int, QString> keymap;
 
     public:
+        QMetaObject::Connection connect3D;
+        QMetaObject::Connection connect2D;
+
+    public:
         gnomonInteractorStylePrivate(void);
 
     public:
