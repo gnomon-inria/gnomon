@@ -140,6 +140,10 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         }
     }
 
+    qDebug()<<Q_FUNC_INFO<<dd->image;
+    qDebug()<<Q_FUNC_INFO<<dd->image->data();
+    qDebug()<<Q_FUNC_INFO<<dd->image->channels();
+
     QString channel = dd->image->channels()[0];
     QList<double> valueRange = {0,1};
     if (dd->image->image(channel)->storageType() == QMetaType::UChar) {

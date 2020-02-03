@@ -190,6 +190,15 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     item->id = d->item_counter++;
 
     d->forms.insert(item, form->clone());
+
+    qDebug()<<Q_FUNC_INFO<<item<<d->forms[item]->current();
+    if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(d->forms[item])) {
+        qDebug()<<Q_FUNC_INFO<<item<<form->current()->asImage();
+        qDebug()<<Q_FUNC_INFO<<item<<form->current()->asImage()->data();
+        qDebug()<<Q_FUNC_INFO<<item<<d->forms[item]->current()->asImage();
+        qDebug()<<Q_FUNC_INFO<<item<<d->forms[item]->current()->asImage()->data();
+    }
+
     d->formVisualizations.insert(item, visualization);
     d->formCameras.insert(item, cam);
 

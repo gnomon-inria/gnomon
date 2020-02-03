@@ -45,9 +45,6 @@ public:
 public:
     gnomonImage& operator = (const gnomonImage& o)
     {
-        if (this == &o)
-            return *this;
-
         if (m_data != o.m_data) {
             if (m_data != nullptr) {
                 delete m_data;
@@ -69,7 +66,10 @@ public:
     const gnomonAbstractImageData *data(void) const { return m_data; }
           gnomonAbstractImageData *data(void)       { return m_data; }
     
-    void setData(gnomonAbstractImageData* data) { m_data = data; }
+    void setData(gnomonAbstractImageData* data)
+    {
+        m_data = data;
+    }
     
 public:
     dtkImage *image(QString channel="") const { return m_data->image(channel); };

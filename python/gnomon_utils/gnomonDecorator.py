@@ -62,7 +62,7 @@ def _gnomonTreeInput(cls, attr, method, setter_method):
             tree_dict, self._in_tree = treeDictFromSeries(self._in_tree_series)
             setattr(self, attr, tree_dict)
 
-            if hasattr(self ,"refresh_parameters"):
+            if hasattr(self, "refresh_parameters"):
                 self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
@@ -576,7 +576,7 @@ def _gnomonLStringInput(cls, attr, method, setter_method):
                 self._in_lString[time] = self._in_lString_series.at(time).asLString()
                 getattr(self, attr)[time] = self._in_lString[time].data()._lString
 
-            if hasattr(self ,"refresh_parameters"):
+            if hasattr(self, "refresh_parameters"):
                 self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
@@ -618,42 +618,40 @@ def gnomonLStringOutput(cls=None, attr=None, method='output'):
 # --------------------------------- Image -------------------------------------
 # ------------------------------------------------------------------------------
 
-try:
-    from dtkTimagetkConverter.dtkTimagetkConverter import dtk_img_to_sp_img
-    from dtkTimagetkConverter.dtkTimagetkConverter import sp_img_to_dtk_img
-except ImportError:
-    logging.warning('dtkTimagetkConverter not installed')
 
-def buildImageSeries(image_dict):
+load_plugin_group("imageData")
+
+def buildImageSeries(img_dict, data_plugin="gnomonImageDataSpatialImageDict", data_setter="set_image_dict"):
     image_series = gnomonImageSeries()
     image = {}
+    image_data = {}
 
-    for time in image_dict.keys():
+    for time in img_dict.keys():
         image[time] = gnomonImage()
         image_series.insert(time, image[time])
-        for channel in image_dict[time].keys():
-            dtk_img = sp_img_to_dtk_img(image_dict[time][channel])
-            image[time].setImage(dtk_img, channel)
+        image_data[time] = gnomoncore.imageData_pluginFactory().create(data_plugin)
+        getattr(image_data[time],data_setter)(img_dict[time])
+        image[time].setData(image_data[time])
 
-    return image_series, image
+    return image_series, image, image_data
 
 
-def imageDictFromSeries(image_series, converter_func=dtk_img_to_sp_img):
+def imageDictFromSeries(image_series, data_attr="_img_dict"):
     image = {}
     image_dict = {}
     for time in image_series.times():
         image[time] = image_series.at(time).asImage()
-        image_dict[time] = {}
-        for channel in image[time].channels():
-            image_dict[time][channel] = converter_func(image[time].image(channel))
+        image_dict[time] = getattr(image[time].data(), data_attr)
+
     return image_dict, image
 
 
 def _gnomonImageInput(cls, attr, method, setter_method):
     def func(self):
-        if not hasattr(self, "_in_image_series"):
-            self._in_image_series, self._in_image = buildImageSeries(getattr(self ,attr))
-        return self._in_image_series
+        if not hasattr(self ,"_in_image_series"):
+            self._in_image_series, self._in_image, self._in_image_data = buildImageSeries(getattr(self, attr))
+
+        return self._image_series
 
     setattr(cls, method, func)
 
@@ -663,8 +661,7 @@ def _gnomonImageInput(cls, attr, method, setter_method):
         setattr(self, attr, {})
 
         if self._in_image_series is not None:
-
-            image_dict, self._in_image = imageDictFromSeries(image_series)
+            image_dict, self._in_image = imageDictFromSeries(self._in_image_series)
             setattr(self, attr, image_dict)
 
             if hasattr(self, "refresh_parameters"):
@@ -685,9 +682,9 @@ def gnomonImageInput(cls=None, attr=None, method='input', setter_method='setInpu
         return wrapper
 
 
-def _gnomonImageOutput(cls, attr, method):
+def _gnomonImageOutput(cls, attr, method, data_plugin="gnomonImageDataSpatialImageDict", data_setter="set_image_dict"):
     def func(self):
-        self._out_image_series, self._out_image = buildImageSeries(getattr(self, attr))
+        self._out_image_series, self._out_image, self._out_image_data = buildImageSeries(getattr(self ,attr), data_plugin=data_plugin, data_setter=data_setter)
         return self._out_image_series
 
     setattr(cls, method, func)
@@ -695,12 +692,12 @@ def _gnomonImageOutput(cls, attr, method):
     return cls
 
 
-def gnomonImageOutput(cls=None, attr=None, method='output'):
+def gnomonImageOutput(cls=None, attr=None, method='output', data_plugin="gnomonImageDataSpatialImageDict", data_setter="set_image_dict"):
     if cls is not None:
-        return _gnomonImageOutput(cls, attr)
+        return _gnomonImageOutput(cls, attr, data_plugin=data_plugin, data_setter=data_setter)
     else:
         def wrapper(cls):
-            return _gnomonImageOutput(cls, attr, method)
+            return _gnomonImageOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
 
