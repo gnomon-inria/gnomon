@@ -16,65 +16,79 @@
 
 #include <gnomonCoreExport>
 
+#include "gnomonAbstractImageData.h"
 #include "gnomonForm/gnomonAbstractForm.h"
 #include "gnomonForm/gnomonTimeSeries.h"
 
-#include <dtkCore>
-
+#include <QtCore>
 
 class dtkImage;
 
-class gnomonImagePrivate;
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
 
 class GNOMONCORE_EXPORT gnomonImage : public gnomonAbstractForm
 {
-public:
-             gnomonImage();
-             gnomonImage(const gnomonImage&);
-            ~gnomonImage(void);
+protected:
+    gnomonAbstractImageData *m_data;
 
 public:
-    dtkImage *image(QString channel="") const;
+    explicit gnomonImage(void) : m_data(nullptr) {}
+    explicit gnomonImage(gnomonAbstractImageData *data) : m_data(data) {}
+             gnomonImage(const gnomonImage& o) : m_data(o.m_data->clone()) {}
 
-    void setImage(dtkImage *, QString channel="");
+    gnomonAbstractForm *clone(void) { return new gnomonImage(*this); };
+
+    ~gnomonImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
 public:
-    QStringList channels(void) const;
+    gnomonImage& operator = (const gnomonImage& o)
+    {
+        if (this == &o)
+            return *this;
 
-public:
-    gnomonAbstractForm *clone() const;
-
+        if (m_data != o.m_data) {
+            if (m_data != nullptr) {
+                delete m_data;
+            }
+            if(o.m_data != nullptr) {
+                m_data = o.m_data->clone();
+            } else {
+                m_data = nullptr;
+            }
+        }
+        return *this;
+    }
+    
 public:
     QString name() const override { return "gnomonImage"; };
-    QMap<QString,QString> metadata(void) const override;
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); };
+    
+public:
+    const gnomonAbstractImageData *data(void) const { return m_data; }
+          gnomonAbstractImageData *data(void)       { return m_data; }
+    
+    void setData(gnomonAbstractImageData* data) { m_data = data; }
+    
+public:
+    dtkImage *image(QString channel="") const { return m_data->image(channel); };
+    void setImage(dtkImage *image, QString channel="") { return m_data->setImage(image,channel); };
 
-private:
-    class gnomonImagePrivate *d;
+public:
+    QStringList channels(void) const { return m_data->channels(); };
 };
 
 
+// ///////////////////////////////////////////////////////////////////
+
 DTK_DECLARE_OBJECT(gnomonImage *)
+
 
 // ///////////////////////////////////////////////////////////////////
 
 typedef gnomonTimeSeries<gnomonImage> gnomonImageSeries;
 Q_DECLARE_METATYPE(gnomonImageSeries *)
-
-//class GNOMONCORE_EXPORT gnomonImageSeries : public gnomonTimeSeries<gnomonImage>
-//{
-//public:
-//    using gnomonTimeSeries<gnomonImage>::insert; // required for SWIG
-//    using gnomonTimeSeries<gnomonImage>::at; // required for SWIG
-//    using gnomonTimeSeries<gnomonImage>::times; // required for SWIG
-//    QStringList channels(void) const {
-//        QStringList channels;
-//        for (double time : this->times()) {
-//            channels.append(dynamic_cast<gnomonImage*>(this->at(time))->channels());
-//        }
-//        channels.removeDuplicates();
-//        return channels;
-//    };
-//};
 
 //
 // gnomonImage.h ends here

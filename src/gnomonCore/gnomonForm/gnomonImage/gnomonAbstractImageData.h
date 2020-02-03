@@ -1,0 +1,69 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+class dtkImage;
+
+#include <QtCore>
+
+#include <dtkCore>
+
+#include <gnomonCoreExport.h>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONCORE_EXPORT gnomonAbstractImageData
+{
+public:
+             gnomonAbstractImageData(void) = default;
+    virtual ~gnomonAbstractImageData(void) {};
+
+    virtual gnomonAbstractImageData* clone(void) const = 0;
+
+
+//  ///////////////////////////////////////////////////////////////////
+//  Metadata
+//  ///////////////////////////////////////////////////////////////////
+public:
+    virtual QMap<QString,QString> metadata(void) const = 0;
+
+public:
+    virtual dtkImage *image(QString channel="") const = 0;
+    virtual void setImage(dtkImage *, QString channel="") = 0;
+
+public:
+    virtual QStringList channels(void) const = 0;
+};
+
+// ///////////////////////////////////////////////////////////////////
+// Give the concept the plugin machinery
+// ///////////////////////////////////////////////////////////////////
+
+DTK_DECLARE_OBJECT        (gnomonAbstractImageData *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractImageData, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageData, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageData, GNOMONCORE_EXPORT)
+
+// /////////////////////////////////////////////////////////////////
+// Register to gnomonCore layer
+// /////////////////////////////////////////////////////////////////
+
+namespace gnomonCore {
+    DTK_DECLARE_CONCEPT(gnomonAbstractImageData, GNOMONCORE_EXPORT, imageData);
+}
+
+// gnomonAbstractImageData.h ends here
