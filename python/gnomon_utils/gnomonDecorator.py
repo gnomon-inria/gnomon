@@ -651,7 +651,7 @@ def _gnomonImageInput(cls, attr, method, setter_method):
         if not hasattr(self ,"_in_image_series"):
             self._in_image_series, self._in_image, self._in_image_data = buildImageSeries(getattr(self, attr))
 
-        return self._image_series
+        return self._in_image_series
 
     setattr(cls, method, func)
 

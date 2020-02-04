@@ -38,7 +38,7 @@ public:
     explicit gnomonImage(gnomonAbstractImageData *data) : m_data(data) {}
              gnomonImage(const gnomonImage& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonImage(*this); };
+    gnomonAbstractForm *clone(void) { qDebug()<<Q_FUNC_INFO<<this->data()<<this->data()->channels(); return new gnomonImage(*this); };
 
     ~gnomonImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
@@ -57,20 +57,23 @@ public:
         }
         return *this;
     }
-    
-public:
-    QString name() const override { return "gnomonImage"; };
-    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); };
-    
+
 public:
     const gnomonAbstractImageData *data(void) const { return m_data; }
           gnomonAbstractImageData *data(void)       { return m_data; }
-    
+
     void setData(gnomonAbstractImageData* data)
     {
+        if (m_data) {
+            delete m_data;
+        }
         m_data = data;
     }
-    
+
+public:
+    QString name(void) const override { return"gnomonImage";}
+    QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+
 public:
     dtkImage *image(QString channel="") const { return m_data->image(channel); };
     void setImage(dtkImage *image, QString channel="") { return m_data->setImage(image,channel); };

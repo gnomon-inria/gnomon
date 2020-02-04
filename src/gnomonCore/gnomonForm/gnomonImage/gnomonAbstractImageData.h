@@ -14,13 +14,13 @@
 
 #pragma once
 
-class dtkImage;
+#include <gnomonCoreExport.h>
 
 #include <QtCore>
 
 #include <dtkCore>
 
-#include <gnomonCoreExport.h>
+class dtkImage;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -66,4 +66,5 @@ namespace gnomonCore {
     DTK_DECLARE_CONCEPT(gnomonAbstractImageData, GNOMONCORE_EXPORT, imageData);
 }
 
+//
 // gnomonAbstractImageData.h ends here
