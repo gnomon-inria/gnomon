@@ -97,21 +97,6 @@ def gnomonParametric(cls):
         return {key : value.value() for key, value in self.parameters().iteritems()}
     cls.parameterDict = parameterDict
 
-    def documentation(self):
-        doc = self.__doc__
-        if doc is not None:
-            # doc = doc.replace("    ","")
-            doc = re.split("--+",doc)[0]
-            doc = re.split("\n  +[A-z]*\n",doc)[0]
-            doc = doc.replace("\n    \n","\n\n\n")
-            doc = doc.replace("\n\n","\n\n\n")
-            doc = doc.replace("\n    "," ")
-            doc = doc.replace("\n ","\n")
-            doc = "\n" + doc + "\n\n"
-        else:
-            doc = "This plugin has no documentation"
-        return doc
-    cls.documentation = documentation
 
     return cls
 
@@ -128,6 +113,22 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
     # -----------------------------------------------------
     # Python error management
     # -----------------------------------------------------
+
+    def documentation(self):
+        doc = self.__doc__
+        if doc is not None:
+            # doc = doc.replace("    ","")
+            doc = re.split("--+",doc)[0]
+            doc = re.split("\n  +[A-z]*\n",doc)[0]
+            doc = doc.replace("\n    \n","\n\n\n")
+            doc = doc.replace("\n\n","\n\n\n")
+            doc = doc.replace("\n    "," ")
+            doc = doc.replace("\n ","\n")
+            doc = "\n" + doc + "\n\n"
+        else:
+            doc = "\nThis plugin has no documentation\n\n"
+        return doc
+    cls.documentation = documentation
 
     def wrapper(f):
         @wraps(f)

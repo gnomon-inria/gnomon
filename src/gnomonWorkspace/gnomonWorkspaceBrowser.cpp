@@ -337,6 +337,7 @@ public:
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractCommand *> > fileReaderCommands;
+    QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
 
 public:
     QString filename;
@@ -373,9 +374,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonImageReaderCommand(key);
         }
         delete reader;
@@ -391,9 +395,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonCellImageReaderCommand(key);
         }
         delete reader;
@@ -409,9 +416,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonCellComplexReaderCommand(key);
         }
         delete reader;
@@ -427,9 +437,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonDataFrameReaderCommand(key);
         }
         delete reader;
@@ -445,9 +458,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonMeshReaderCommand(key);
         }
         delete reader;
@@ -463,9 +479,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         {
             if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonPointCloudReaderCommand(key);
         }
         delete reader;
@@ -479,11 +498,13 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         qDebug()<<key<<reader->extensions();
         for (const auto& ext : reader->extensions())
         {
-            if (!this->fileReaderCommands.contains(ext))
             {
+                QMap<QString, QString> empty_desc;
+                fileReaderDescriptions[ext] = empty_desc;
                 QMap<QString, gnomonAbstractCommand *> empty_list;
                 fileReaderCommands[ext] = empty_list;
             }
+            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
             fileReaderCommands[ext][key] = new gnomonTreeReaderCommand(key);
         }
         delete reader;
@@ -513,7 +534,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
         } else {
             QVariantMap reader_descs;
             for (const auto &key : this->fileReaderCommands[this->ext].keys()) {
-                reader_descs[key] = key;
+                reader_descs[key] = fileReaderDescriptions[ext][key];
             }
 
             this->menu = new gnomonBrowserReaderMenu(reader_descs);
