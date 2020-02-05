@@ -46,6 +46,9 @@ public:
     virtual void setImage(dtkImage *, QString channel="") = 0;
 
 public:
+    virtual void setChannelName(const QString& channel, const QString& name) = 0;
+
+public:
     virtual QStringList channels(void) const = 0;
 };
 

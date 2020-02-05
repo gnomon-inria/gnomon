@@ -79,6 +79,9 @@ public:
     void setImage(dtkImage *image, QString channel="") { return m_data->setImage(image,channel); };
 
 public:
+    void setChannelName(const QString& channel, const QString& name) { return m_data->setChannelName(channel,name); };
+
+public:
     QStringList channels(void) const { return m_data->channels(); };
 };
 
