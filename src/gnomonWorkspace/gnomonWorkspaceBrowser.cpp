@@ -498,6 +498,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         qDebug()<<key<<reader->extensions();
         for (const auto& ext : reader->extensions())
         {
+            if (!this->fileReaderCommands.contains(ext))
             {
                 QMap<QString, QString> empty_desc;
                 fileReaderDescriptions[ext] = empty_desc;
