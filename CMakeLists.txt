@@ -108,7 +108,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent Test)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkFonts    REQUIRED)
