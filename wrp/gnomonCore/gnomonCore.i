@@ -47,6 +47,7 @@
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
@@ -684,6 +685,7 @@
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+%include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
