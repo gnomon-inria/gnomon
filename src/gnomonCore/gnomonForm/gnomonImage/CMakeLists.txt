@@ -19,12 +19,14 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+  gnomonAbstractImageData
+  gnomonAbstractImageData.h
   gnomonImage
   gnomonImage.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-  gnomonImage.cpp)
+  gnomonAbstractImageData.cpp)
 
 
 ######################################################################

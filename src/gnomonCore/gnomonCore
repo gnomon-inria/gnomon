@@ -43,6 +43,7 @@
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
+#include "gnomonForm/gnomonImage/gnomonAbstractImageData.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 #include "gnomonForm/gnomonLString/gnomonAbstractLStringData.h"
 #include "gnomonForm/gnomonLString/gnomonLString.h"
