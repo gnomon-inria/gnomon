@@ -38,8 +38,10 @@
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkPNGWriter.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
@@ -66,6 +68,7 @@ public:
 
 public slots:
     void exportToManager(void);
+    void saveScreenshot(void);
     void clear(void);
 
 public:
@@ -110,6 +113,7 @@ public:
 
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
+    gnomonOverlayButton *save_button = nullptr;
     gnomonOverlayButton *help_button = nullptr;
 
 public:
@@ -223,6 +227,9 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
     this->export_button->toggle(true);
 
+    this->save_button = new gnomonOverlayButton(fa::save, "", this);
+    this->save_button->toggle(true);
+
     this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
     this->help_button->toggle(false);
 
@@ -272,6 +279,31 @@ void gnomonViewFormPrivate::exportToManager(void)
         gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
 }
 
+void gnomonViewFormPrivate::saveScreenshot(void)
+{
+    QSettings settings("inria", "gnomon");
+    settings.beginGroup("General");
+    QString path = settings.value("last_saved_file", QDir::homePath()).toString();
+    settings.endGroup();
+
+    QString export_file_path;
+    export_file_path = QFileDialog::getSaveFileName(this, tr("Save screenshot"), path, tr("PNG Image (*.png)"));
+
+    this->GetRenderWindow()->SetAlphaBitPlanes(1);
+
+    vtkSmartPointer<vtkWindowToImageFilter> screenshooter = vtkWindowToImageFilter::New();
+    screenshooter->SetInput(this->GetRenderWindow());
+    screenshooter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+    screenshooter->ReadFrontBufferOff();
+    screenshooter->Update();
+
+    vtkSmartPointer<vtkPNGWriter> writer = vtkPNGWriter::New();
+    writer->SetFileName(export_file_path.toStdString().c_str());
+    writer->SetInputConnection(screenshooter->GetOutputPort());
+    writer->Update();
+    writer->Write();
+}
+
 QSize gnomonViewFormPrivate::sizeHint(void) const
 {
     return QSize(1200, 800);
@@ -294,13 +326,14 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_YZ->move(l_margin + 10, 130);
 
     this->export_button->move(event->size().width() - r_margin - 40, 10);
+    this->save_button->move(event->size().width() - r_margin - 80, 10);
     if (this->enableLink) {
         this->sync->setVisible(true);
-        this->sync->move(event->size().width() - r_margin - 80, 10);
-        this->help_button->move(event->size().width() - r_margin - 120, 10);
+        this->sync->move(event->size().width() - r_margin - 120, 10);
+        this->help_button->move(event->size().width() - r_margin - 160, 10);
     } else {
         this->sync->setVisible(false);
-        this->help_button->move(event->size().width() - r_margin - 80, 10);
+        this->help_button->move(event->size().width() - r_margin - 120, 10);
     }
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
@@ -762,6 +795,13 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     {
         if (d->export_button->isToggled()) {
             d->exportToManager();
+        }
+    });
+
+    connect(d->save_button,  &gnomonOverlayButton::iconClicked, [=] ()
+    {
+        if (d->save_button->isToggled()) {
+            d->saveScreenshot();
         }
     });
 
