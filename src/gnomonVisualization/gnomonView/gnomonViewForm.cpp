@@ -43,8 +43,10 @@
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkPNGWriter.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLWidget.h>
@@ -71,6 +73,7 @@ public:
 
 public slots:
     void exportToManager(void);
+    void saveScreenshot(void);
     void clear(void);
 
 public:
@@ -280,6 +283,31 @@ void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys())
         gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
+}
+
+void gnomonViewFormPrivate::saveScreenshot(void)
+{
+    QSettings settings("inria", "gnomon");
+    settings.beginGroup("General");
+    QString path = settings.value("last_saved_file", QDir::homePath()).toString();
+    settings.endGroup();
+
+    QString export_file_path;
+    export_file_path = QFileDialog::getSaveFileName(this, tr("Save screenshot"), path, tr("PNG Image (*.png)"));
+
+    this->GetRenderWindow()->SetAlphaBitPlanes(1);
+
+    vtkSmartPointer<vtkWindowToImageFilter> screenshooter = vtkWindowToImageFilter::New();
+    screenshooter->SetInput(this->GetRenderWindow());
+    screenshooter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+    screenshooter->ReadFrontBufferOff();
+    screenshooter->Update();
+
+    vtkSmartPointer<vtkPNGWriter> writer = vtkPNGWriter::New();
+    writer->SetFileName(export_file_path.toStdString().c_str());
+    writer->SetInputConnection(screenshooter->GetOutputPort());
+    writer->Update();
+    writer->Write();
 }
 
 QSize gnomonViewFormPrivate::sizeHint(void) const
@@ -778,7 +806,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     connect(d->save_button,  &gnomonOverlayButton::iconClicked, [=] ()
     {
-        qDebug()<<this<<"Save screenshot";
+        if (d->save_button->isToggled()) {
+            d->saveScreenshot();
+        }
     });
 
     connect(d->help_button, &gnomonOverlayButton::iconClicked, [=] ()
