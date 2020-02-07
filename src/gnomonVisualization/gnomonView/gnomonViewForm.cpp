@@ -116,6 +116,7 @@ public:
 
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
+    gnomonOverlayButton *save_button = nullptr;
     gnomonOverlayButton *help_button = nullptr;
 
 public:
@@ -229,6 +230,9 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
     this->export_button->toggle(true);
 
+    this->save_button = new gnomonOverlayButton(fa::save, "", this);
+    this->save_button->toggle(true);
+
     this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
     this->help_button->toggle(false);
 
@@ -300,13 +304,14 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_YZ->move(l_margin + 10, 130);
 
     this->export_button->move(event->size().width() - r_margin - 40, 10);
+    this->save_button->move(event->size().width() - r_margin - 80, 10);
     if (this->enableLink) {
         this->sync->setVisible(true);
-        this->sync->move(event->size().width() - r_margin - 80, 10);
-        this->help_button->move(event->size().width() - r_margin - 120, 10);
+        this->sync->move(event->size().width() - r_margin - 120, 10);
+        this->help_button->move(event->size().width() - r_margin - 160, 10);
     } else {
         this->sync->setVisible(false);
-        this->help_button->move(event->size().width() - r_margin - 80, 10);
+        this->help_button->move(event->size().width() - r_margin - 120, 10);
     }
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
@@ -769,6 +774,11 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         if (d->export_button->isToggled()) {
             d->exportToManager();
         }
+    });
+
+    connect(d->save_button,  &gnomonOverlayButton::iconClicked, [=] ()
+    {
+        qDebug()<<this<<"Save screenshot";
     });
 
     connect(d->help_button, &gnomonOverlayButton::iconClicked, [=] ()
