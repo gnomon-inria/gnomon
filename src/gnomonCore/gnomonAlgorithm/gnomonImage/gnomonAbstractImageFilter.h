@@ -40,7 +40,7 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setInput(gnomonImageSeries *images_serie) = 0;
+    virtual void setInput(gnomonImageSeries *image_series) = 0;
     virtual gnomonImageSeries *input() = 0;
 
     virtual gnomonImageSeries *output() = 0;

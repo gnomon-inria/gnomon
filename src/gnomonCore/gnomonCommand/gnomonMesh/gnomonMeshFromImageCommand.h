@@ -12,7 +12,7 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *images_serie);
+    void setInput(gnomonImageSeries *image_series);
     gnomonImageSeries *input(void);
 
     gnomonMeshSeries *output(void);
