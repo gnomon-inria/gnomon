@@ -32,6 +32,15 @@ public:
 public:
     void setMessage(const QString& text);
 
+signals:
+    void fileDropped(const QString&);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *);
+    void dragLeaveEvent(QDragLeaveEvent *);
+    void dragMoveEvent(QDragMoveEvent *);
+    void dropEvent(QDropEvent *);
+
 protected:
     QLabel *message_label = nullptr;
 };

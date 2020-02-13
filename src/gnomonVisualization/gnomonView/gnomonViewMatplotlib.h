@@ -58,6 +58,9 @@ protected:
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
 
+signals:
+    void fileDropped(const QString&);
+
 private:
     class gnomonViewMatplotlibPrivate *d;
 };

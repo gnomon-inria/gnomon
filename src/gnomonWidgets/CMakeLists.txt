@@ -37,6 +37,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWidgets.h
   gnomonWidgetsParameter
   gnomonWidgetsParameter.h
+  gnomonWidgetsWorkspaceBar
+  gnomonWidgetsWorkspaceBar.h
   ${${PROJECT_NAME}_COLOR_HEADERS}
   ${${PROJECT_NAME}_EDITOR_HEADERS})
 
@@ -48,6 +50,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonSpinner.cpp
   gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp
+  gnomonWidgetsWorkspaceBar.cpp
   ${${PROJECT_NAME}_COLOR_SOURCES}
   ${${PROJECT_NAME}_EDITOR_SOURCES})
 
@@ -74,6 +77,8 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Xml)
 
@@ -83,6 +88,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 

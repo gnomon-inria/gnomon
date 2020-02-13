@@ -20,18 +20,18 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-#include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
+#include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 
-class gnomonDataFrame;
+class gnomonPointCloud;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractDataFrameReader : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractPointCloudReader : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractDataFrameReader(void) = default;
+    virtual ~gnomonAbstractPointCloudReader(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -43,7 +43,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonDataFrameSeries *dataFrame(void) = 0;
+    virtual gnomonPointCloudSeries *pointCloud(void) = 0;
 
 public:
     virtual QStringList extensions(void) = 0;
@@ -53,18 +53,18 @@ public:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractDataFrameReader *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractPointCloudReader *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT, dataFrameReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT, pointCloudReader);
 }
 
 //
-// gnomonAbstractDataFrameReader.h ends here
+// gnomonAbstractPointCloudReader.h ends here

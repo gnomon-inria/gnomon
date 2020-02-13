@@ -41,6 +41,8 @@ public:
     virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
     virtual void setPath(const QString& path) = 0;
 
+public:
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

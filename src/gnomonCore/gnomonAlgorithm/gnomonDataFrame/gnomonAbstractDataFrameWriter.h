@@ -41,6 +41,8 @@ public:
     virtual void setDataFrame(gnomonDataFrameSeries *DataFrame) = 0;
     virtual void setPath(const QString& path) = 0;
 
+public:
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
