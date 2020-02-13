@@ -29,7 +29,7 @@ public:
     void setup(void);
 
 public:
-    dtkWidgetsWorkspaceBar *workspace_bar = nullptr;
+    gnomonWidgetsWorkspaceBar *workspace_bar = nullptr;
 
 // /////////////////////////////////////////////////////////////////////////////
 // Top level - World
@@ -115,7 +115,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     QWidget *central = new QWidget(this);
 
-    d->workspace_bar = new dtkWidgetsWorkspaceBar(this);
+    d->workspace_bar = new gnomonWidgetsWorkspaceBar(this);
     d->workspace_bar->setStack(d->stack);
     d->workspace_bar->setDynamic(true);
 
