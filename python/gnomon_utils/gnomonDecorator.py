@@ -469,12 +469,16 @@ def buildMeshSeries(mesh_dict, data_plugin="gnomonMeshDataPropertyTopomesh", dat
     return mesh_series, mesh, mesh_data
 
 
-def meshDictFromSeries(mesh_series, data_attr='_topomesh'):
+def meshDictFromSeries(mesh_series, data_plugin="gnomonMeshDataPropertyTopomesh", data_attr='_topomesh'):
     mesh = {}
     mesh_dict = {}
     for time in mesh_series.times():
         mesh[time] = mesh_series.at(time).asMesh()
-        mesh_dict[time] = getattr(mesh[time].data(), data_attr)
+        if hasattr(mesh[time].data(), data_attr):
+            mesh_dict[time] = getattr(mesh[time].data(), data_attr)
+        else:
+            mesh_data = gnomoncore.meshData_pluginFactory().create(data_plugin).from_gnomonMesh(mesh[time])
+            mesh_dict[time] = getattr(mesh_data, data_attr)
 
     return mesh_dict, mesh
 
