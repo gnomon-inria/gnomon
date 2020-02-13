@@ -49,13 +49,17 @@ Rectangle {
                 Text {
                     width: parent.width;
 
-                    height: 40;
+                    height: 30;
 
-                    color: theme.value("@fg");
+                    color: theme.value("@fgalt");
 
                     text: title;
 
-                    font.pointSize: 24;
+                    font {
+                        weight: Font.Bold
+                        family: "Helvetica"
+                        pointSize: 20;
+                    }
 
                     padding: 6;
                 }
@@ -63,13 +67,15 @@ Rectangle {
                 TextArea {
                     width: parent.width;
 
-                    height: 40;
+                    height: 50;
 
-                    color: theme.value("@fgalt");
+                    color: theme.value("@fg");
 
                     text: description;
 
                     font.pointSize: 14;
+
+                    horizontalAlignment: Text.AlignRight
 
                     wrapMode: TextEdit.WordWrap;
                 }

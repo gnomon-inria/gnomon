@@ -136,8 +136,8 @@ void gnomonWidgetsWorkspaceBarPrivate::onItemClicked(int index)
 
         this->menu = new gnomonWidgetsWorkspaceBarMenu(this->groups, this->group_descs, this->works_descs);
         this->menu->setAttribute(Qt::WA_DeleteOnClose, true);
-        this->menu->resize(dtkApp->window()->width() * 1/2, dtkApp->window()->height() * 3/4);
-        this->menu->move(q->parentWidget()->frameGeometry().topLeft() + QPoint(q->parentWidget()->width() / 2 - this->menu->width() / 2, q->parentWidget()->height() / 2 - this->menu->height() / 2));
+        this->menu->resize(dtkApp->window()->width() * 1/3, dtkApp->window()->height() - 40);
+        this->menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
         this->menu->show();
 
         QObject *context = this->menu->rootObject();
