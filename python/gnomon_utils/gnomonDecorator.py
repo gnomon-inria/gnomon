@@ -469,7 +469,7 @@ def buildMeshSeries(mesh_dict, data_plugin="gnomonMeshDataPropertyTopomesh", dat
     return mesh_series, mesh, mesh_data
 
 
-def meshDictFromSeries(mesh_series, data_attr='_mesh'):
+def meshDictFromSeries(mesh_series, data_attr='_topomesh'):
     mesh = {}
     mesh_dict = {}
     for time in mesh_series.times():
@@ -492,7 +492,7 @@ def _gnomonMeshInput(cls, attr, method, setter_method):
         self._in_mesh = {}
         setattr(self, attr, {})
 
-        if self._mesh_series is not None:
+        if self._in_mesh_series is not None:
 
             mesh_dict, self._in_mesh = meshDictFromSeries(self._in_mesh_series)
             setattr(self, attr, mesh_dict)
@@ -561,7 +561,7 @@ def _gnomonLStringInput(cls, attr, method, setter_method):
         if not hasattr(self ,"_in_lString_series"):
             self._in_lString_series, self._in_lString, self._in_lString_data = buildLStringSeries(getattr(self, attr))
 
-        return self._lString_series
+        return self._in_lString_series
 
     setattr(cls, method, func)
 
