@@ -91,6 +91,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "Cell Complex Constructor", creator<gnomonWorkspaceCellComplexConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
     dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
     dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
@@ -130,6 +131,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     // d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Tree to LString", workspace_desc, "Tree to LString");
 
     const QString tissue_package_desc = QString("Workspaces dedicated to the analysis of 3D microscopy images of tissues.");
+    d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Tracking", "Estimates cell lineaging based on a segmented image series and its original image series", "Cell Image Tracking", gnomonWorkspaceCellImageTracking::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Analysis", "Computes cell-level quantitative measures on multicellular segmented tissues", "Cell Image Analysis", gnomonWorkspaceCellImageQuantification::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Image Meshing", "Provides plugins to mesh the cells of a multicellular segmented tisue", "Cell Image Meshing", gnomonWorkspaceCellComplexFromCellImage::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Forms", tissue_package_desc, "Cell Complex Constructor", "Create a virtual tissue represented by a 2D or 3D cell complex", "Cell Complex Constructor", gnomonWorkspaceCellComplexConstructor::color);
