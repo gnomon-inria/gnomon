@@ -36,7 +36,7 @@ public:
     virtual ~gnomonAbstractVisualizationMesh(void) = default;
 
 public:
-	virtual void setMesh(gnomonMeshSeries *cellComplex) = 0;
+	virtual void setMesh(gnomonMeshSeries *mesh) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
