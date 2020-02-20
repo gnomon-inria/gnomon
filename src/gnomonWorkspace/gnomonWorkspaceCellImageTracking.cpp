@@ -101,11 +101,35 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->prev_view->setExportColor(this->color);
     d->prev_view->setInputView(true);
     d->prev_view->setEnableLinking(false);
+
+    connect(d->prev_view, &gnomonViewForm::timeChanged, [=] (double time)
+    {
+        QList<double> prev_times = d->prev_view->times();
+        int time_index = prev_times.indexOf(time);
+        qDebug()<<Q_FUNC_INFO<<"Prev"<<time<<"("<<time_index<<")";
+        if (time_index < prev_times.size()-1) {
+            d->next_view->timeIndexChange(time_index+1);
+        } else {
+//            d->prev_view->timeIndexChange(time_index-1);
+        }
+    });
     
     d->next_view = new gnomonViewForm(this);
     d->next_view->setExportColor(this->color);
     d->next_view->setInputView(false);
     d->next_view->setEnableLinking(false);
+    
+    connect(d->next_view, &gnomonViewForm::timeChanged, [=] (double time)
+    {
+        QList<double> next_times = d->next_view->times();
+        int time_index = next_times.indexOf(time);
+        qDebug()<<Q_FUNC_INFO<<"Next"<<time<<"("<<time_index<<")";
+        if (time_index > 0) {
+            d->prev_view->timeIndexChange(time_index-1);
+        } else {
+//            d->next_view->timeIndexChange(time_index+1);
+        }
+    });
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
 
@@ -225,6 +249,7 @@ void gnomonWorkspaceCellImageTracking::apply(void)
     if(d->command->cellImage()) {
         d->next_view->setCellImage(dynamic_cast<gnomonCellImageSeries *>(d->command->cellImage()->clone()));
         d->next_view->setInputView(false);
+        d->next_view->timeIndexChange(1);
         d->next_stack->setCurrentWidget(d->next_view);
     } else {
         d->next_stack->setCurrentWidget(d->next_message);

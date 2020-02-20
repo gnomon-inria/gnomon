@@ -1105,9 +1105,7 @@ void gnomonViewForm::sliceChange(int value)
 
 void gnomonViewForm::timeIndexChange(int value)
 {
-
-    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
-    qSort(sorted_times);
+    QList<double> sorted_times = this->times();
 
     double time = sorted_times[value];
 
@@ -1127,6 +1125,14 @@ void gnomonViewForm::timeIndexChange(int value)
     }
 
     d->GetInteractor()->Render();
+}
+
+QList<double> gnomonViewForm::times(void)
+{
+    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
+    qSort(sorted_times);
+
+    return sorted_times;
 }
 
 void gnomonViewForm::link(gnomonViewForm *other)
