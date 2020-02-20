@@ -483,10 +483,10 @@ def meshDictFromSeries(mesh_series, data_plugin="gnomonMeshDataPropertyTopomesh"
     return mesh_dict, mesh
 
 
-def _gnomonMeshInput(cls, attr, method, setter_method):
+def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self):
         if not hasattr(self,"_in_mesh_series"):
-            self._in_mesh_series, self._in_mesh, self._in_mesh_data = buildMeshSeries(getattr(self, attr))
+            self._in_mesh_series, self._in_mesh, self._in_mesh_data = buildMeshSeries(getattr(self, attr), data_plugin, data_setter)
         return self._in_mesh_series
 
     setattr(cls, method, func)
@@ -498,7 +498,7 @@ def _gnomonMeshInput(cls, attr, method, setter_method):
 
         if self._in_mesh_series is not None:
 
-            mesh_dict, self._in_mesh = meshDictFromSeries(self._in_mesh_series)
+            mesh_dict, self._in_mesh = meshDictFromSeries(self._in_mesh_series, data_plugin, data_attr)
             setattr(self, attr, mesh_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -509,19 +509,19 @@ def _gnomonMeshInput(cls, attr, method, setter_method):
     return cls
 
 
-def gnomonMeshInput(cls=None, attr=None, method='input', setter_method='setInput'):
+def gnomonMeshInput(cls=None, attr=None, method='input', setter_method='setInput', data_plugin="gnomonMeshDataPropertyTopomesh", data_setter="set_property_topomesh", data_attr='_topomesh'):
     if cls is not None:
-        return _gnomonMeshInput(cls, attr)
+        return _gnomonMeshInput(cls, attr, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
     else:
         def wrapper(cls):
-            return _gnomonMeshInput(cls, attr, method, setter_method)
+            return _gnomonMeshInput(cls, attr, method, setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
 
         return wrapper
 
 
-def _gnomonMeshOutput(cls, attr, method, data_plugin="gnomonMeshDataPropertyTopomesh", data_setter="set_property_topomesh"):
+def _gnomonMeshOutput(cls, attr, method, data_plugin, data_setter):
     def func(self):
-        self._out_mesh_series, self._out_mesh, self._out_mesh_data = buildMeshSeries(getattr(self ,attr), data_plugin=data_plugin, data_setter=data_setter)
+        self._out_mesh_series, self._out_mesh, self._out_mesh_data = buildMeshSeries(getattr(self ,attr), data_plugin, data_setter)
         return self._out_mesh_series
 
     setattr(cls, method, func)
