@@ -140,7 +140,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Segmentation",    "Performs segmentation of 3D intensity images at cellular resolution.", "Image Segmentation", gnomonWorkspaceSegmentation::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Registration",  "Provides rigid, affine and non-linear plugins to optimally register close images together", "Image Registration", gnomonWorkspaceRegistration::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Cell Image Tracking", "Estimates cell lineaging based on a segmented image series and its original image series", "Cell Image Tracking", gnomonWorkspaceCellImageTracking::color);
-    d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Cell Point Analysis",  "Computes quantitative measures on each point of a point cloud", "Cell Point Analysis", gnomonWorkspacePointCloudQuantification::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Point Cloud Analysis",  "Computes quantitative measures on each point of a point cloud", "Point Cloud Analysis", gnomonWorkspacePointCloudQuantification::color);
 
     const QString tissue_mesh_package_desc = QString("Workspaces dedicated to the simulation of 3D geometrical representations of tissues.");
     d->workspace_bar->addWorkspaceInMenu("Tissue Mesh Forms", tissue_mesh_package_desc, "Cell Image Meshing", "Provides plugins to mesh the cells of a multicellular segmented tisue", "Cell Image Meshing", gnomonWorkspaceCellComplexFromCellImage::color);
