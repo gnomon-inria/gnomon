@@ -20,16 +20,18 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-#include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
+
+class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImageWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractMeshFilter : public gnomonAbstractAlgorithm
 {
 public:
-    virtual ~gnomonAbstractImageWriter(void) = default;
+    virtual ~gnomonAbstractMeshFilter(void) = default;
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
@@ -38,29 +40,28 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setImage(gnomonImageSeries *image_series) = 0;
-    virtual void setPath(const QString& path) = 0;
+    virtual void setInput(gnomonMeshSeries *mesh_series) = 0;
+    virtual gnomonMeshSeries *input() = 0;
 
-public:
-    virtual QStringList extensions(void) = 0;
+    virtual gnomonMeshSeries *output() = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractImageWriter *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageWriter, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractMeshFilter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractMeshFilter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImageWriter, GNOMONCORE_EXPORT, imageWriter);
+    DTK_DECLARE_CONCEPT(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT, meshFilter);
 }
 
 //
-// gnomonAbstractImageWriter.h ends here
+// gnomonAbstractMeshFilter.h ends here

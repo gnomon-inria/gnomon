@@ -636,7 +636,7 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
                 gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
-                formVisualizationMesh->setMesh((gnomonMeshSeries *)mesh->current());
+                formVisualizationMesh->setMesh(mesh);
                 dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationMesh->update();
                 dtkApp->window()->setCursor(Qt::ArrowCursor);
@@ -783,6 +783,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     loadPluginGroup("visualizationCellComplex");
     loadPluginGroup("visualizationImage");
+    loadPluginGroup("visualizationMesh");
     loadPluginGroup("visualizationPointCloud");
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
