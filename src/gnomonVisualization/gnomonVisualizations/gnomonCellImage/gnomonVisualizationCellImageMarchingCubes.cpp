@@ -238,6 +238,7 @@ QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
 void gnomonVisualizationCellImageMarchingCubes::update(void)
 {
      QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+     QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
 
@@ -258,10 +259,16 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         dd->polydata = gnomonPolyDataCellImage::New();
     }
     dd->polydata->setCellImage(dd->cellImage);
+    dd->polydata->setGlasbey(colormap_name=="glasbey");
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setResamplingSpacing(resampling_voxelsize);
     dd->polydata->setSliceRanges(x_range, y_range, z_range);
     dd->polydata->update();
+
+    if (colormap_name=="glasbey") {
+        value_range[0] = 0;
+        value_range[1] = 255;
+    }
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
