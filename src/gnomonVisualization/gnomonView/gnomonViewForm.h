@@ -140,6 +140,9 @@ signals:
 signals:
     void timeChanged(double);
 
+public:
+    QList<double> times(void);
+
 public slots:
     void timeIndexChange(int);
 

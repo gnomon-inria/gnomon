@@ -91,6 +91,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "Cell Complex Constructor", creator<gnomonWorkspaceCellComplexConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
     dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
     dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
@@ -138,6 +139,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Preprocessing",   "Provides various plugins to pre-process intensity images (noise, signal enhancement,...)", "Image Preprocessing", gnomonWorkspacePreprocess::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Segmentation",    "Performs segmentation of 3D intensity images at cellular resolution.", "Image Segmentation", gnomonWorkspaceSegmentation::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Registration",  "Provides rigid, affine and non-linear plugins to optimally register close images together", "Image Registration", gnomonWorkspaceRegistration::color);
+    d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Cell Image Tracking", "Estimates cell lineaging based on a segmented image series and its original image series", "Cell Image Tracking", gnomonWorkspaceCellImageTracking::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Point Cloud Analysis",  "Computes quantitative measures on each point of a point cloud", "Point Cloud Analysis", gnomonWorkspacePointCloudQuantification::color);
 
     const QString tissue_mesh_package_desc = QString("Workspaces dedicated to the simulation of 3D geometrical representations of tissues.");
@@ -146,6 +148,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->addWorkspaceInMenu("Tissue Mesh Forms", tissue_mesh_package_desc, "Image Surface Meshing", "Computes a mesh of the surface of a tissue based on intensity images", "Image Surface Meshing", gnomonWorkspaceMeshFromImage::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Mesh Forms", tissue_mesh_package_desc, "Mesh Constructor", "Create a synthetic triangular mesh using various parametric primitives", "Mesh Constructor", gnomonWorkspaceMeshConstructor::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Mesh Forms", tissue_mesh_package_desc, "Mesh Processing", "Provides plugins to process a 3D triangular mesh (smoothing, subdivision, decimation,...)", "Mesh Processing", gnomonWorkspaceMeshFilter::color);
+
 
     const QString branching_package_desc = QString("Workspaces dedicated to the generation and analysis of branching structures.");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");

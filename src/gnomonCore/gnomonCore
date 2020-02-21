@@ -11,6 +11,7 @@
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFilter.h"
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h"
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h"
+#include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageTracking.h"
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h"
 #include "gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h"
 #include "gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h"

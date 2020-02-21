@@ -30,6 +30,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceCellImageConstructor.h
   gnomonWorkspaceCellImageFilter
   gnomonWorkspaceCellImageFilter.h
+  gnomonWorkspaceCellImageTracking
+  gnomonWorkspaceCellImageTracking.h
   gnomonWorkspaceFusion
   gnomonWorkspaceFusion.h
   gnomonWorkspaceImageConstructor
@@ -80,6 +82,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceCellImageConstructor.cpp
   gnomonWorkspaceCellImageFilter.cpp
   gnomonWorkspaceCellImageQuantification.cpp
+  gnomonWorkspaceCellImageTracking.cpp
   gnomonWorkspaceImageConstructor.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp

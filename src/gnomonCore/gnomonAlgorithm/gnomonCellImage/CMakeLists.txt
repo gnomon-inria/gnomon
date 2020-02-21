@@ -29,6 +29,8 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonAbstractCellImageQuantification.h
     gnomonAbstractCellImageReader
     gnomonAbstractCellImageReader.h
+    gnomonAbstractCellImageTracking
+    gnomonAbstractCellImageTracking.h
     gnomonAbstractCellImageWriter
     gnomonAbstractCellImageWriter.h)
 
@@ -39,6 +41,7 @@ ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonAbstractCellImageFromImage.cpp
     gnomonAbstractCellImageQuantification.cpp
     gnomonAbstractCellImageReader.cpp
+    gnomonAbstractCellImageTracking.cpp
     gnomonAbstractCellImageWriter.cpp)
 
 
