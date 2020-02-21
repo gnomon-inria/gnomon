@@ -53,6 +53,9 @@ public:
     QStackedWidget *next_stack = nullptr;
     gnomonMessageBoard *next_message = nullptr;
 
+    QStackedWidget *mpl_stack = nullptr;
+    gnomonMessageBoard *mpl_message = nullptr;
+
     QSplitter *splitter = nullptr;
 
 public:
@@ -118,7 +121,7 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->next_view->setExportColor(this->color);
     d->next_view->setInputView(false);
     d->next_view->setEnableLinking(false);
-    
+
     connect(d->next_view, &gnomonViewForm::timeChanged, [=] (double time)
     {
         QList<double> next_times = d->next_view->times();
@@ -151,6 +154,13 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->next_stack = new QStackedWidget(this);
     d->next_stack->addWidget(d->next_message);
     d->next_stack->addWidget(d->next_view);
+    
+    d->mpl_message = new gnomonMessageBoard(this);
+    d->mpl_message->setMessage("Result will be displayed here");
+
+    d->mpl_stack = new QStackedWidget(this);
+    d->mpl_stack->addWidget(d->mpl_message);
+    d->mpl_stack->addWidget(d->mpl_view);
 
     d->view_layout = new QHBoxLayout;
     d->view_layout->setContentsMargins(0, 0, 0, 0);
@@ -164,7 +174,7 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->splitter = new QSplitter(this);
     d->splitter->setOrientation(Qt::Vertical);
     d->splitter->addWidget(d->view_widget);
-    d->splitter->addWidget(d->mpl_view);
+    d->splitter->addWidget(d->mpl_stack);
     d->splitter->setSizes(QList<int>({800, 200}));
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -257,6 +267,9 @@ void gnomonWorkspaceCellImageTracking::apply(void)
 
     if(d->command->tree()) {
         d->mpl_figure->setForm("gnomonTree",d->command->tree());
+        d->mpl_stack->setCurrentWidget(d->mpl_view);
+    } else {
+        d->mpl_stack->setCurrentWidget(d->mpl_message);
     }
 }
 
