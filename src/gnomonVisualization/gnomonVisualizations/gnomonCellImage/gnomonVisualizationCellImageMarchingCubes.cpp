@@ -148,6 +148,10 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
 void gnomonVisualizationCellImageMarchingCubes::clear(void)
 {
 //    gnomonAbstractVisualization::clear();
+    if (dd->polydata) {
+        dd->polydata->Delete();
+        dd->polydata = nullptr;
+    }
 
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
@@ -259,7 +263,7 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         dd->polydata = gnomonPolyDataCellImage::New();
     }
     dd->polydata->setCellImage(dd->cellImage);
-    dd->polydata->setGlasbey(colormap_name=="glasbey");
+    dd->polydata->set8Bit(colormap_name=="glasbey");
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setResamplingSpacing(resampling_voxelsize);
     dd->polydata->setSliceRanges(x_range, y_range, z_range);
@@ -270,11 +274,6 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
         value_range[1] = 255;
     }
 
-    if (dd->actor) {
-        d->view->renderer3D()->RemoveActor(dd->actor);
-        dd->actor->Delete();
-        dd->actor = nullptr;
-    }
     if (!dd->actor) {
 
         dd->actor = gnomonActorPolyData::New();

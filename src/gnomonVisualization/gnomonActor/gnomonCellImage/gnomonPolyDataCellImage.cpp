@@ -65,7 +65,7 @@ public:
     QMap<QString,QList<double>> slice;
 
     bool modified;
-    bool is_glasbey = false;
+    bool as_8bit = false;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ void gnomonPolyDataCellImage::update(void)
 
      QMap<long, double> cellScalarProperty;
      for (const auto& cellId : cellProperty.keys()) {
-         if (!d->is_glasbey) {
+         if (!d->as_8bit) {
             cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
          } else {
             cellScalarProperty[cellId] = int(cellProperty[cellId].value<double>())%256;
@@ -257,12 +257,12 @@ void gnomonPolyDataCellImage::setPropertyName(const QString& value)
     d->propertyName = value;
 }
 
-void gnomonPolyDataCellImage::setGlasbey(bool value)
+void gnomonPolyDataCellImage::set8Bit(bool value)
 {
-    if (d->is_glasbey != value)
+    if (d->as_8bit != value)
         this->modified();
 
-    d->is_glasbey = value;
+    d->as_8bit = value;
 }
 
 void gnomonPolyDataCellImage::setSliceRanges(const QList<double>& x_value, const QList<double>& y_value, const QList<double>& z_value)

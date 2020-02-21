@@ -187,6 +187,7 @@ QImage gnomonVisualizationCellComplex::imageRendering(void)
 void gnomonVisualizationCellComplex::update(void)
 {
     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
     double scale = ((gnomonCoreParameterDouble *)d->parameters["scale_factor"])->value();
@@ -202,15 +203,21 @@ void gnomonVisualizationCellComplex::update(void)
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellComplex::New();
     dd->polydata->setCellComplex((gnomonCellComplex *)dd->cellComplex->clone());
+    dd->polydata->set8Bit(colormap_name=="glasbey");
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
 
-    if (dd->actor) {
-        d->view->renderer3D()->RemoveActor(dd->actor);
-        dd->actor->Delete();
-        dd->actor = nullptr;
+    if (colormap_name == "glasbey") {
+        value_range[0] = 0;
+        value_range[1] = 255;
     }
+
+//    if (dd->actor) {
+//        d->view->renderer3D()->RemoveActor(dd->actor);
+//        dd->actor->Delete();
+//        dd->actor = nullptr;
+//    }
 
     if (!dd->actor) {
         dd->actor = gnomonActorPolyData::New();
@@ -221,11 +228,11 @@ void gnomonVisualizationCellComplex::update(void)
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
 
-    if (dd->actor2D) {
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
-    }
+//    if (dd->actor2D) {
+//        d->view->renderer2D()->RemoveActor(dd->actor2D);
+//        dd->actor2D->Delete();
+//        dd->actor2D = nullptr;
+//    }
 
     if (!dd->actor2D)
     {
