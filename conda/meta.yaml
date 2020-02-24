@@ -12,7 +12,7 @@ build:
 
 requirements:
   build:
-    - cmake >=3.2.0
+    - cmake
     - make
     - binutils_impl_linux-64<2.31.0      # [linux]
     - {{ compiler('cxx') }}              # [linux]
@@ -55,11 +55,11 @@ requirements:
     - dtk-imaging-python >=2.0.4
     - dtk-widgets =2.16.11
     - dtk-composer >=2.0.0
-    - python=3.7
-    - swig >3.0.0
+    - python=3.7.*
+    - swig >4.0.0
     - pyqt >=5.6.0
     - sip
-    - vtk=8.1.2
+    - vtk=8.2.0
     - zlib
 
   run:
@@ -78,10 +78,12 @@ requirements:
     - jupyter
     - numpy
     - matplotlib
-    - python=3.7
-    - vtk=8.1.2
+    - python=3.7.*
+    - vtk=8.2.0
     - zlib
 #   - fenics
+    - openalea.plantscan3d
+    - openalea.lpy
 
 app:
   entry: gnomon # [linux]
