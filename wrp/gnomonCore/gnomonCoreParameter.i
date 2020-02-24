@@ -109,6 +109,7 @@
 %rename(ParameterStringList) gnomonCoreParameterStringList;
 %rename(ParameterVariant)    gnomonCoreParameterVariant;
 %rename(ParameterText)       gnomonCoreParameterText;
+%rename(ParameterFile)       gnomonCoreParameterFile;
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input

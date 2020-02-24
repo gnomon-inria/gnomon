@@ -14,11 +14,6 @@
 
 #include "gnomonViewForm.h"
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
-#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
-#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
-#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
-#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 
 // TODO: Script
 
@@ -43,8 +38,10 @@
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkPNGWriter.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLNativeWidget.h>
@@ -71,6 +68,7 @@ public:
 
 public slots:
     void exportToManager(void);
+    void saveScreenshot(void);
     void clear(void);
 
 public:
@@ -105,7 +103,6 @@ public:
 public:
     QMap<QString, gnomonAbstractDynamicForm *> forms;
     QMap<QString, gnomonAbstractVisualization *> formVisualization;
-    QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
 public:
     gnomonOverlayButton *renderer2D_button = nullptr;
@@ -116,6 +113,7 @@ public:
 
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
+    gnomonOverlayButton *save_button = nullptr;
     gnomonOverlayButton *help_button = nullptr;
 
 public:
@@ -229,6 +227,9 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLNative
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
     this->export_button->toggle(true);
 
+    this->save_button = new gnomonOverlayButton(fa::save, "", this);
+    this->save_button->toggle(true);
+
     this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
     this->help_button->toggle(false);
 
@@ -278,6 +279,31 @@ void gnomonViewFormPrivate::exportToManager(void)
         gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
 }
 
+void gnomonViewFormPrivate::saveScreenshot(void)
+{
+    QSettings settings("inria", "gnomon");
+    settings.beginGroup("General");
+    QString path = settings.value("last_saved_file", QDir::homePath()).toString();
+    settings.endGroup();
+
+    QString export_file_path;
+    export_file_path = QFileDialog::getSaveFileName(this, tr("Save screenshot"), path, tr("PNG Image (*.png)"));
+
+    this->GetRenderWindow()->SetAlphaBitPlanes(1);
+
+    vtkSmartPointer<vtkWindowToImageFilter> screenshooter = vtkWindowToImageFilter::New();
+    screenshooter->SetInput(this->GetRenderWindow());
+    screenshooter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+    screenshooter->ReadFrontBufferOff();
+    screenshooter->Update();
+
+    vtkSmartPointer<vtkPNGWriter> writer = vtkPNGWriter::New();
+    writer->SetFileName(export_file_path.toStdString().c_str());
+    writer->SetInputConnection(screenshooter->GetOutputPort());
+    writer->Update();
+    writer->Write();
+}
+
 QSize gnomonViewFormPrivate::sizeHint(void) const
 {
     return QSize(1200, 800);
@@ -300,13 +326,14 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_YZ->move(l_margin + 10, 130);
 
     this->export_button->move(event->size().width() - r_margin - 40, 10);
+    this->save_button->move(event->size().width() - r_margin - 80, 10);
     if (this->enableLink) {
         this->sync->setVisible(true);
-        this->sync->move(event->size().width() - r_margin - 80, 10);
-        this->help_button->move(event->size().width() - r_margin - 120, 10);
+        this->sync->move(event->size().width() - r_margin - 120, 10);
+        this->help_button->move(event->size().width() - r_margin - 160, 10);
     } else {
         this->sync->setVisible(false);
-        this->help_button->move(event->size().width() - r_margin - 80, 10);
+        this->help_button->move(event->size().width() - r_margin - 120, 10);
     }
     for(int i_key=0; i_key<this->shortcut_keys.size(); i_key++) {
         this->shortcut_keys[i_key]->move(event->size().width() - r_margin - 240, 50 + 40*i_key);
@@ -609,7 +636,7 @@ void gnomonViewFormPrivate::addFormMenu(const QString& key)
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[key];
                 gnomonMeshSeries *mesh = (gnomonMeshSeries *)this->forms[key];
-                formVisualizationMesh->setMesh((gnomonMeshSeries *)mesh->current());
+                formVisualizationMesh->setMesh(mesh);
                 dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationMesh->update();
                 dtkApp->window()->setCursor(Qt::ArrowCursor);
@@ -756,6 +783,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
 
     loadPluginGroup("visualizationCellComplex");
     loadPluginGroup("visualizationImage");
+    loadPluginGroup("visualizationMesh");
     loadPluginGroup("visualizationPointCloud");
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
@@ -768,6 +796,13 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     {
         if (d->export_button->isToggled()) {
             d->exportToManager();
+        }
+    });
+
+    connect(d->save_button,  &gnomonOverlayButton::iconClicked, [=] ()
+    {
+        if (d->save_button->isToggled()) {
+            d->saveScreenshot();
         }
     });
 
@@ -939,7 +974,6 @@ void gnomonViewForm::switchTo2D(void)
     d->renderer2D->InteractiveOn();
     d->renderer2D->DrawOn();
 
-    emit switchedTo2D();
 
     switch(d->ori) {
         case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
@@ -957,6 +991,8 @@ void gnomonViewForm::switchTo2D(void)
         default:
             break;
     }
+    
+    emit switchedTo2D();
 
     d->slice_slider->setVisible(true);
     d->slice_slider->setEnabled(true);
@@ -1032,26 +1068,29 @@ void gnomonViewForm::sliceChange(int value)
 {
     bool valueChanged = false;
 
-    if (d->renderer2D_XY->isToggled()) {
-        if (d->c_z != value) {
-            d->c_z = value;
-            valueChanged = true;
-        }
-    }
-
-    if (d->renderer2D_XZ->isToggled()) {
-        if (d->c_y != value) {
-            d->c_y = value;
-            valueChanged = true;
-        }
-    }
-
-    if (d->renderer2D_YZ->isToggled()) {
-        if (d->c_x != value){
-            d->c_x = value;
-            valueChanged = true;
-        }
-    }
+    switch(d->ori)
+    {
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+            if (d->c_z != value) {
+                d->c_z = value;
+                valueChanged = true;
+            }
+            break;
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+            if (d->c_y != value) {
+                d->c_y = value;
+                valueChanged = true;
+            }
+            break;
+        case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+            if (d->c_x != value){
+                d->c_x = value;
+                valueChanged = true;
+            }
+            break;
+        default:
+            break;
+    };
 
     d->slice_slider->blockSignals(true);
     d->slice_slider->setValue(value);
@@ -1066,9 +1105,7 @@ void gnomonViewForm::sliceChange(int value)
 
 void gnomonViewForm::timeIndexChange(int value)
 {
-
-    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
-    qSort(sorted_times);
+    QList<double> sorted_times = this->times();
 
     double time = sorted_times[value];
 
@@ -1088,6 +1125,14 @@ void gnomonViewForm::timeIndexChange(int value)
     }
 
     d->GetInteractor()->Render();
+}
+
+QList<double> gnomonViewForm::times(void)
+{
+    QList<double> sorted_times = QList<double>::fromSet(d->forms_times);
+    qSort(sorted_times);
+
+    return sorted_times;
 }
 
 void gnomonViewForm::link(gnomonViewForm *other)
@@ -1416,45 +1461,71 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
 
 void gnomonViewForm::setBounds(double bounds[6])
 {
-    d->xBounds[0] = bounds[0];
-    d->xBounds[1] = bounds[1];
-    d->yBounds[0] = bounds[2];
-    d->yBounds[1] = bounds[3];
-    d->zBounds[0] = bounds[4];
-    d->zBounds[1] = bounds[5];
+    bool changed = false;
 
-    d->c_x = (d->xBounds[0]+d->xBounds[1])/2;
-    d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
-    d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
-
-    d->cameras.clear();
-
-    if (d->renderer2D_XY->isToggled()) {
-        d->slice_slider->blockSignals(true);
-        d->slice_slider->setMinimum(d->zBounds[0]);
-        d->slice_slider->setMaximum(d->zBounds[1]);
-        d->slice_slider->setValue(d->c_z);
-        d->slice_slider->blockSignals(false);
+    if (bounds[0] != d->xBounds[0]) {
+        d->xBounds[0] = bounds[0];
+        changed = true;
+    }
+    if (bounds[1] != d->xBounds[1]) {
+        d->xBounds[1] = bounds[1];
+        changed = true;
+    }
+    if (bounds[2] != d->yBounds[0]) {
+        d->yBounds[0] = bounds[2];
+        changed = true;
+    }
+    if (bounds[3] != d->yBounds[1]) {
+        d->yBounds[1] = bounds[3];
+        changed = true;
+    }
+    if (bounds[4] != d->zBounds[0]) {
+        d->zBounds[0] = bounds[4];
+        changed = true;
+    }
+    if (bounds[5] != d->zBounds[1]) {
+        d->zBounds[1] = bounds[5];
+        changed = true;
     }
 
-    if (d->renderer2D_XZ->isToggled()) {
-        d->slice_slider->blockSignals(true);
-        d->slice_slider->setMinimum(d->yBounds[0]);
-        d->slice_slider->setMaximum(d->yBounds[1]);
-        d->slice_slider->setValue(d->c_y);
-        d->slice_slider->blockSignals(false);
-    }
+    if (changed) {
 
-    if (d->renderer2D_YZ->isToggled()) {
-        d->slice_slider->blockSignals(true);
-        d->slice_slider->setMinimum(d->xBounds[0]);
-        d->slice_slider->setMaximum(d->xBounds[1]);
-        d->slice_slider->setValue(d->c_x);
-        d->slice_slider->blockSignals(false);
-    }
+        d->c_x = (d->xBounds[0]+d->xBounds[1])/2;
+        d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
+        d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
 
-    d->renderer2D->ResetCamera();
-//    d->renderer3D->ResetCamera();
+        d->cameras.clear();
+
+        switch(d->ori)
+        {
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+                d->slice_slider->blockSignals(true);
+                d->slice_slider->setMinimum(d->zBounds[0]);
+                d->slice_slider->setMaximum(d->zBounds[1]);
+                d->slice_slider->setValue(d->c_z);
+                d->slice_slider->blockSignals(false);
+                break;
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+                d->slice_slider->blockSignals(true);
+                d->slice_slider->setMinimum(d->yBounds[0]);
+                d->slice_slider->setMaximum(d->yBounds[1]);
+                d->slice_slider->setValue(d->c_y);
+                d->slice_slider->blockSignals(false);
+                break;
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+                d->slice_slider->blockSignals(true);
+                d->slice_slider->setMinimum(d->xBounds[0]);
+                d->slice_slider->setMaximum(d->xBounds[1]);
+                d->slice_slider->setValue(d->c_x);
+                d->slice_slider->blockSignals(false);
+                break;
+            default:
+                break;
+        };
+
+        d->renderer2D->ResetCamera();
+//        d->renderer3D->ResetCamera();
+    }
 
 }
 
@@ -1539,7 +1610,7 @@ int gnomonViewForm::orientation(void)
 
 void gnomonViewForm::render(void)
 {
-    d->renderer2D->ResetCameraClippingRange();
+//    d->renderer2D->ResetCameraClippingRange();
     d->GetInteractor()->Render();
 }
 
@@ -1626,99 +1697,22 @@ void gnomonViewForm::dropEvent(QDropEvent *event)
 {
     QString path = event->mimeData()->text();
 
-    if(path.startsWith(":")) {
+    if (path.startsWith(":")) {
         int form_index = path.remove(":").toInt();
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(form_index);
         if (d->empty) {
-            vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index);
-            this->setCamera(cam);
+            if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(form_index)) {
+                this->setCamera(cam);
+            }
         }
         this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(form_index));
-    } else {
-        this->addFormFromFile(path);
+
+        event->accept();
+    } else if (path.startsWith("file://")) {
+        emit fileDropped(path);
+        event->accept();
     }
     // ///////////////////////////////////////////////////////////////
-
-    event->accept();
-
-    this->render();
-}
-
-void gnomonViewForm::addFormFromFile(const QString& path)
-{
-    QString filename = path;
-
-    if((filename.endsWith("inr") || filename.endsWith("inr.gz") || filename.endsWith("mha") || filename.endsWith("mha.gz")  || filename.endsWith("tif"))&&(filename.contains("seg",Qt::CaseInsensitive))) {
-        if ((!d->formReaderCommand.contains("gnomonCellImage"))||(!d->formReaderCommand["gnomonCellImage"]))
-            d->formReaderCommand["gnomonCellImage"] = new gnomonCellImageReaderCommand("gnomonCellImageReaderPropertySpatialImage");
-        gnomonCellImageReaderCommand *cellImageCommand = (gnomonCellImageReaderCommand *) d->formReaderCommand["gnomonCellImage"];
-        cellImageCommand->setPath(filename.remove("file://"));
-        cellImageCommand->redo();
-
-        gnomonCellImageSeries * cellImage = (gnomonCellImageSeries *) cellImageCommand->cellImage()->clone();
-        if (!cellImage) {
-            qWarning() << Q_FUNC_INFO << "Resulting cell image is void.";
-//            event->ignore();
-            return;
-        }
-        this->setForm("gnomonCellImage",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellImage);
-
-    } else if(filename.endsWith("inr") || filename.endsWith("inr.gz") || filename.endsWith("mha") || filename.endsWith("mha.gz") || filename.endsWith("tif") || filename.endsWith("czi")|| filename.endsWith("lsm")) {
-        if ((!d->formReaderCommand.contains("gnomonImage"))||(!d->formReaderCommand["gnomonImage"]))
-            d->formReaderCommand["gnomonImage"] = new gnomonImageReaderCommand("gnomonImageReader");
-        gnomonImageReaderCommand *imageCommand = (gnomonImageReaderCommand *) d->formReaderCommand["gnomonImage"];
-        imageCommand->setPath(filename.remove("file://"));
-        imageCommand->redo();
-
-        gnomonImageSeries * images_serie = (gnomonImageSeries *) imageCommand->image()->clone();
-        if (!images_serie) {
-            qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
-//            event->ignore();
-            return;
-        }
-
-// /////////////////////////////////////////////////////////////////////////////
-// FIXME: Is it still relevant ?
-// /////////////////////////////////////////////////////////////////////////////
-
-        // emit channelsChanged(images_serie->channels());
-        // emit timeChanged(images_serie->time());
-
-// /////////////////////////////////////////////////////////////////////////////
-
-        this->setForm("gnomonImage",images_serie);
-
-    } else if((filename.endsWith("ply")) and (d->acceptCellComplex)) {
-        if ((!d->formReaderCommand.contains("gnomonCellComplex"))||(!d->formReaderCommand["gnomonCellComplex"]))
-            d->formReaderCommand["gnomonCellComplex"] = new gnomonCellComplexReaderCommand("gnomonCellComplexReaderPropertyTopomesh");
-        gnomonCellComplexReaderCommand *cellComplexCommand = (gnomonCellComplexReaderCommand *) d->formReaderCommand["gnomonCellComplex"];
-        cellComplexCommand->setPath(filename.remove("file://"));
-        cellComplexCommand->redo();
-
-        gnomonCellComplexSeries *cellComplex = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex()->clone();
-        if (!cellComplex) {
-            qWarning() << Q_FUNC_INFO << "Resulting cellComplex is void.";
-//            event->ignore();
-            return;
-        }
-        this->setForm("gnomonCellComplex",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) cellComplex);
-    } else if(filename.endsWith("ply")) {
-        if ((!d->formReaderCommand.contains("gnomonMesh"))||(!d->formReaderCommand["gnomonMesh"]))
-            d->formReaderCommand["gnomonMesh"] = new gnomonMeshReaderCommand("gnomonMeshReaderPropertyTopomesh");
-        gnomonMeshReaderCommand *meshCommand = (gnomonMeshReaderCommand *) d->formReaderCommand["gnomonMesh"];
-        meshCommand->setPath(filename.remove("file://"));
-        meshCommand->redo();
-
-        gnomonMeshSeries *mesh = (gnomonMeshSeries *) meshCommand->mesh()->clone();
-        if (!mesh) {
-            qWarning() << Q_FUNC_INFO << "Resulting mesh is void.";
-//            event->ignore();
-            return;
-        }
-        this->setForm("gnomonMesh",(gnomonTimeSeries<gnomonAbstractDynamicForm> *) mesh);
-    } else {
-        qWarning() << Q_FUNC_INFO << "No reader founds for input: " << filename;
-    }
 
 }
 

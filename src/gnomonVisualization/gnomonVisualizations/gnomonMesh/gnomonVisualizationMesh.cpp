@@ -45,6 +45,7 @@ public:
 public:
     gnomonPolyDataMesh *polydata = nullptr;
     gnomonActorPolyData *actor = nullptr;
+    gnomonActorPolyData *edge_actor = nullptr;
     gnomonActor2DPolyData *actor2D = nullptr;
 
 };
@@ -82,11 +83,16 @@ gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 
 void gnomonVisualizationMesh::clear(void)
 {
-
     if (dd->actor) {
         d->view->renderer3D()->RemoveActor(dd->actor);
         dd->actor->Delete();
         dd->actor = nullptr;
+    }
+
+    if (dd->edge_actor) {
+        d->view->renderer3D()->RemoveActor(dd->edge_actor);
+        dd->edge_actor->Delete();
+        dd->edge_actor = nullptr;
     }
 
     if (dd->actor2D) {
@@ -129,6 +135,11 @@ void gnomonVisualizationMesh::updateOpacity(void)
 
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
+    }
+
+    if(dd->edge_actor) {
+        dd->edge_actor->setWireframe(true);
+        dd->edge_actor->setOpacity(0.99*alpha);
     }
 
     if(dd->actor2D) {
@@ -213,6 +224,23 @@ void gnomonVisualizationMesh::update(void)
     dd->actor->setPolyData(dd->polydata);
     dd->actor->setColorMap(colormap);
     dd->actor->setValueRange(value_range);
+
+    if (dd->edge_actor) {
+        d->view->renderer3D()->RemoveActor(dd->edge_actor);
+        dd->edge_actor->Delete();
+        dd->edge_actor = nullptr;
+    }
+
+    if (!dd->edge_actor) {
+        dd->edge_actor = gnomonActorPolyData::New();
+        d->view->renderer3D()->AddActor(dd->edge_actor);
+    }
+    dd->edge_actor->setInteractor(d->view->interactor());
+    dd->edge_actor->setPolyData(dd->polydata);
+    dd->edge_actor->setColor(QColor(0,0,0));
+    dd->edge_actor->setValueRange(value_range);
+    dd->edge_actor->setWireframe(true);
+    dd->edge_actor->setLinewidth(2);
 
     if (dd->actor2D) {
         d->view->renderer2D()->RemoveActor(dd->actor2D);

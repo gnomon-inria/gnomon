@@ -12,3 +12,4 @@
 #include "gnomonSpinner.h"
 #include "gnomonWidgets.h"
 #include "gnomonWidgetsParameter.h"
+#include "gnomonWidgetsWorkspaceBar.h"

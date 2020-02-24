@@ -160,7 +160,7 @@ void gnomonInteractorStyleCellImageMarchingCubes::OnDoubleClick(long vtkId)
     // this->visu->view()->infoPane()->clear();
 
     long cellId = dd->visu->cellId(vtkId);
-    QString text = "Cell ";
+    QString text = "        Cell ";
     text.append(QString::number(cellId));
 
     // QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
@@ -190,7 +190,7 @@ void gnomonInteractorStyleCellImageMarchingCubes::updateTextActor(long vtkId)
 
     if (vtkId > -1) {
         long cellId = dd->visu->cellId(vtkId);
-        QString text = "Cell ";
+        QString text = "        Cell ";
         text.append(QString::number(cellId));
         dd->textActor->SetInput(text.toStdString().c_str());
     } else {

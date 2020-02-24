@@ -47,6 +47,9 @@ QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget 
     if (gnomonCoreParameterStringList *p = dynamic_cast<gnomonCoreParameterStringList *>(parameter)) {
         return gnomonWidgetsParameterStringList::widget(p, parent);
     }
+    if (gnomonCoreParameterFile *p = dynamic_cast<gnomonCoreParameterFile *>(parameter)) {
+        return gnomonWidgetsParameterFile::widget(p, parent);
+    }
     if (gnomonCoreParameterColorMap *p = dynamic_cast<gnomonCoreParameterColorMap *>(parameter)) {
         return gnomonWidgetsParameterColorMap::widget(p, parent);
     }
@@ -264,6 +267,46 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
         });
 
         return widget;
+    } else {
+        return nullptr;
+    }
+}
+
+QString gnomonWidgetsParameterFile::style = QStringLiteral("filedialog");
+
+QWidget *gnomonWidgetsParameterFile::widget(gnomonCoreParameterFile *parameter, QWidget *parent)
+{
+    if (style == QStringLiteral("filedialog")) {
+        QWidget *widget = new QWidget(parent);
+        QHBoxLayout *layout = new QHBoxLayout();
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+
+        QLabel *file_label = new QLabel(parameter->value());
+        layout->addWidget(file_label);
+
+        QPushButton *browse_button = new QPushButton("...");
+        browse_button->setFixedWidth(40);
+        layout->addWidget(browse_button);
+
+        widget->setLayout(layout);
+        widget->setToolTip(parameter->doc());
+
+        QObject::connect(browse_button, &QPushButton::clicked, [=](void) {
+            QString format_string = "File (";
+            for (const auto& format : parameter->formats()) {
+                format_string += "*."+format;
+            }
+            format_string += ")";
+            QString path;
+            path = QFileDialog::getOpenFileName(widget, "File path", path, format_string);
+
+            file_label->setText(QFileInfo(path).fileName());
+            parameter->setValue(path);
+        });
+
+        return widget;
+
     } else {
         return nullptr;
     }

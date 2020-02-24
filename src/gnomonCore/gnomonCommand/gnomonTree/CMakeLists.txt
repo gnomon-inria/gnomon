@@ -19,6 +19,8 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonTreeConstructorCommand
+    gnomonTreeConstructorCommand.h
     gnomonTreeFromLStringCommand
     gnomonTreeFromLStringCommand.h
     gnomonTreeReaderCommand
@@ -30,6 +32,7 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonTreeConstructorCommand.cpp
     gnomonTreeFromLStringCommand.cpp
     gnomonTreeReaderCommand.cpp
     gnomonTreeTransformCommand.cpp

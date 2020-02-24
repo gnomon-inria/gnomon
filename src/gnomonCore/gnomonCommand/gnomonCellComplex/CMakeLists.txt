@@ -19,6 +19,8 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonCellComplexConstructorCommand
+    gnomonCellComplexConstructorCommand.h
     gnomonCellComplexFromCellImageCommand
     gnomonCellComplexFromCellImageCommand.h
     gnomonCellComplexReaderCommand
@@ -28,6 +30,7 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonCellComplexConstructorCommand.cpp
     gnomonCellComplexFromCellImageCommand.cpp
     gnomonCellComplexReaderCommand.cpp
     gnomonCellComplexWriterCommand.cpp)
