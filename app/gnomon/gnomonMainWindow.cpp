@@ -141,7 +141,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
     d->workspace_bar->addWorkspaceInMenu("Branching Forms", branchg_desc, "LPy", workspace_desc, "LPy");
-    // d->workspace_bar->addWorkspaceInMenu("Branching Forms", package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D");
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", branchg_desc, "PlantScan3D", workspace_desc, "PlantScan3D");
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
 
