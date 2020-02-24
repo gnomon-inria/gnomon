@@ -61,7 +61,7 @@ requirements:
     - sip
     - vtk =8.2.0
     - zlib
-    - libnetcdf =4.6.1
+#    - libnetcdf =4.6.1
 
   run:
     - dtk-log >=2.0.0
@@ -82,8 +82,8 @@ requirements:
     - python=3.7
     - vtk =8.2.0
     - zlib
-    - libnetcdf =4.6.1
-#   - fenics
+#    - libnetcdf =4.6.1
+#    - fenics
 
 app:
   entry: gnomon # [linux]
