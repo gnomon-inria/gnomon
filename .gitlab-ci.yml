@@ -12,6 +12,8 @@ stages:
 conda_build_linux:
   stage: build
   script:
+  - apt update
+  - apt install libgl1 -y
   - conda update -n base -c defaults conda
   - conda install conda-build git anaconda-client conda-verify
   - mkdir conda-bld
