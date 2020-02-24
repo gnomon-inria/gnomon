@@ -222,7 +222,6 @@ mark_as_advanced(Qt5Test_DIR)
 mark_as_advanced(Qt5Widgets_DIR)
 mark_as_advanced(Qt5Xml_DIR)
 mark_as_advanced(Qt5Sql_DIR)
-mark_as_advanced(Qt5OpenGL_DIR)
 mark_as_advanced(Qt5Svg_DIR)
 
 mark_as_advanced(CMAKE_AR)
