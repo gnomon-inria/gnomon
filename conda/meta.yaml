@@ -61,6 +61,7 @@ requirements:
     - sip
     - vtk=8.1.2
     - zlib
+    - libnetcdf =4.6.1
 
   run:
     - dtk-log >=2.0.0
@@ -72,7 +73,7 @@ requirements:
     - dtk-imaging >=2.0.4
     - dtk-imaging-python >=2.0.4
     - dtk-plugins-imaging >=2.0.2
-    - dtk-widgets =2.16.10
+    - dtk-widgets =2.16.11
     - dtk-composer >=2.0.0
     - qt >=5.9.0
     - jupyter
@@ -81,6 +82,7 @@ requirements:
     - python=3.7
     - vtk=8.1.2
     - zlib
+    - libnetcdf =4.6.1
 #   - fenics
 
 app:
