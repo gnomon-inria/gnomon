@@ -13,7 +13,7 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setDataFrame(gnomonDataFrame *dataFrame);
+    void setDataFrame(gnomonDataFrameSeries *dataFrame);
 
 private:
     class gnomonDataFrameWriterCommandPrivate *d;

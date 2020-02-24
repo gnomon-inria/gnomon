@@ -1,14 +1,54 @@
-image: registry.gitlab.inria.fr/dtk/dtk/conda
+image: conda/miniconda3
+
+stages:
+  - build
+  - deploy
+
+.template_retry:
+  retry:
+    max: 2
+    when: runner_system_failure
+
+conda_build_linux:
+  stage: build
+  script:
+  - conda update -n base -c defaults conda
+  - conda install conda-build git anaconda-client conda-verify
+  - mkdir conda-bld
+  - conda build . -c dtk --output-folder conda-bld/
+  extends: .template_retry
+  allow_failure: true
+  artifacts:
+    paths:
+      - conda-bld
+  only:
+    - master
+    - develop
+
+anaconda_linux:
+  stage: deploy
+  script:
+  - conda update -n base -c defaults conda
+  - conda install conda-build anaconda-client
+  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
+  extends: .template_retry
+  allow_failure: true
+  only:
+  - master
 
 pages:
+  stage: deploy
   script:
   - cd doc
-  - conda update --all
-  - conda install -c sphinx make
+  - conda update -n base -c defaults conda
+  - conda install sphinx make matplotlib
+  - conda install -c conda-forge doxygen breathe
   - make html
   - mv build/html ../public
+  extends: .template_retry
   artifacts:
     paths:
     - public
   only:
   - master
+  - develop

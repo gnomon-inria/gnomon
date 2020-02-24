@@ -1,0 +1,96 @@
+package:
+  name: gnomon
+  version: {{ environ.get('GIT_DESCRIBE_TAG', 'default') }}
+
+source:
+  #git_url: git@gitlab.inria.fr:gnomon/gnomon.git
+  #git_tag: develop
+  path: ../
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER }}
+
+requirements:
+  build:
+    - cmake >=3.2.0
+    - make
+    - binutils_impl_linux-64<2.31.0      # [linux]
+    - {{ compiler('cxx') }}              # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('mesa-libgl-devel') }}      # [linux]
+    - {{ cdt('mesa-libegl-devel') }}     # [linux]
+    - {{ cdt('mesa-dri-drivers') }}      # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
+    - {{ cdt('libXt-devel') }}           # [linux]
+    - {{ cdt('libSM-devel') }}           # [linux]
+    - {{ cdt('libxext-devel') }}         # [linux]
+    - {{ cdt('libuuid-devel') }}         # [linux]
+    - {{ cdt('libICE-devel') }}          # [linux]
+    - {{ cdt('libxrender-devel') }}      # [linux]
+    - {{ cdt('libxau-devel') }}          # [linux]
+    - {{ cdt('libdrm-devel') }}          # [linux]
+    - {{ cdt('libxcomposite-devel') }}   # [linux]
+    - {{ cdt('libxcursor-devel') }}      # [linux]
+    - {{ cdt('libxi-devel') }}           # [linux]
+    - {{ cdt('libxrandr-devel') }}       # [linux]
+    - {{ cdt('pciutils-devel') }}        # [linux]
+    - {{ cdt('libxscrnsaver-devel') }}   # [linux]
+    - {{ cdt('libxtst-devel') }}         # [linux]
+    - {{ cdt('libselinux-devel') }}      # [linux]
+    - {{ cdt('libxdamage') }}            # [linux]
+    - {{ cdt('libxdamage-devel') }}      # [linux]
+    - {{ cdt('libxfixes') }}             # [linux]
+    - {{ cdt('libxfixes-devel') }}       # [linux]
+    - {{ cdt('libxxf86vm') }}            # [linux]
+
+  host:
+    - qt >=5.9.0
+    - dtk-log >=2.2.0
+    - dtk-macs >=2.0.3
+    - dtk-fonts >=2.1.1
+    - dtk-themes =2.1.7
+    - dtk-core >=2.7.1
+    - dtk-core-python >=2.5.4
+    - dtk-imaging >=2.0.4
+    - dtk-imaging-python >=2.0.4
+    - dtk-widgets =2.16.11
+    - dtk-composer >=2.0.0
+    - python=3.7
+    - swig >3.0.0
+    - pyqt >=5.6.0
+    - sip
+    - vtk=8.1.2
+    - zlib
+
+  run:
+    - dtk-log >=2.0.0
+    - dtk-macs >=2.0.3
+    - dtk-fonts >=2.1.1
+    - dtk-themes >=2.1.1
+    - dtk-core >=2.7.1
+    - dtk-core-python >=2.5.4
+    - dtk-imaging >=2.0.4
+    - dtk-imaging-python >=2.0.4
+    - dtk-plugins-imaging >=2.0.2
+    - dtk-widgets =2.16.10
+    - dtk-composer >=2.0.0
+    - qt >=5.9.0
+    - jupyter
+    - numpy
+    - matplotlib
+    - python=3.7
+    - vtk=8.1.2
+    - zlib
+#   - fenics
+
+app:
+  entry: gnomon # [linux]
+  entry: open ${PREFIX}/bin/gnomon # [osx]
+  summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
+  icon: gnomon_logo.png
+  type: desk
+
+about:
+  home: https://gnomon.gitlabpages.inria.fr/gnomon
+  license: CECILL-C
+  summary:  Gnomon is a computational platform to analyse and simulate the development of life forms in 3D

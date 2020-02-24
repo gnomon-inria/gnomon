@@ -48,6 +48,12 @@ public:
     gnomonViewFormPool *pool = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -81,14 +87,31 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     d = new gnomonWorkspacePreprocessPrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::preprocess_color);
+    d->source->setExportColor(this->color);
+    d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::preprocess_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+    d->pool->linkAll();
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -104,8 +127,7 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -114,17 +136,22 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if(d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
-        else
+        if(d->command->input() != d->source->image()) {
+            if (d->source->image()) {
+                d->command->setInput(d->source->image());
+            }
+        } else {
             qDebug() << "Not changed";
+        }
 
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePreprocessPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->image());
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
         d->configure(algorithm);
     });
 
@@ -142,15 +169,15 @@ gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
 
 void gnomonWorkspacePreprocess::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->source->menu());
-    dtkApp->window()->menubar()->addMenu(d->target->menu());
+//    dtkApp->window()->menubar()->addMenu(d->source->menu());
+//    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePreprocess::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->source->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
@@ -158,20 +185,35 @@ void gnomonWorkspacePreprocess::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if (d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
-    else
+    if (d->command->input() != d->source->image()) {
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setImage(d->command->output());
+    if (d->command->output()) {
+        d->target->setImage(d->command->output());
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+        d->source->setEnableLinking(false);
+        d->target->setEnableLinking(false);
+    }
 }
 
 void gnomonWorkspacePreprocess::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspacePreprocess::color = QColor("#4cd964");
 
 //
 // gnomonWorkspacePreprocess.cpp ends here

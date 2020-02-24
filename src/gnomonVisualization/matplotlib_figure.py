@@ -22,7 +22,7 @@ from gnomonvisualization import setupMatplotlib
 import matplotlib.pyplot as plt
 
 try:
-    from gnomonplugins.treegeneration.visualization.utils.gnomonMatplotlib.gnomonMplTabWidget import all_widgets
+    from gnomon_utils.gnomonMplTabWidget import all_widgets
 except:
     print("Could not import mpl view class", sys.exc_info())
 else:

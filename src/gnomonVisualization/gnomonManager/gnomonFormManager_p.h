@@ -26,6 +26,9 @@ class gnomonFormManager;
 class gnomonFormManagerItem;
 class gnomonFormManagerFocus;
 class gnomonFormManagerData;
+class gnomonViewForm;
+
+class vtkCamera;
 
 class gnomonFormManagerPrivate : public QScrollArea
 {
@@ -52,6 +55,7 @@ public:
     QHash<gnomonFormManagerItem *, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
     QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;
     QHash<gnomonFormManagerItem *, gnomonFormManagerData *> formData;
+    QHash<gnomonFormManagerItem *, vtkCamera *> formCameras;
 
 public:
     gnomonFormManager *q;
@@ -60,7 +64,13 @@ public:
     gnomonFormManagerFocus *focus_item = nullptr;
 
 public:
+    gnomonViewForm *view = nullptr;
+
+public:
     QScrollArea *focus_area = nullptr;
+
+public:
+    QSequentialAnimationGroup *animation = nullptr;
 
 public:
     static int item_counter;
@@ -73,6 +83,13 @@ public:
 
 public:
     State state = Collapsed;
+
+public:
+    gnomonFormManagerItem *current_focus = nullptr;
+
+public:
+    void deleteAnimation(void);
+    void dismissView(void);
 };
 
 //

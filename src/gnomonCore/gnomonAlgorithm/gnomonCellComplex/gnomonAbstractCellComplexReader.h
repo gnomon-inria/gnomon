@@ -44,7 +44,7 @@ public:
     virtual gnomonCellComplexSeries *cellComplex(void) = 0;
 
 public:
-    virtual QStringList types(void) = 0;
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

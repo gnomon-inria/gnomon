@@ -3,6 +3,7 @@
 #include "gnomonActor/gnomonActorLegacy/gnomonActorImage.h"
 #include "gnomonActor/gnomonActorLegacy/gnomonActorMesh.h"
 #include "gnomonActor/gnomonActorLegacy/gnomonActorVolume.h"
+#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 #include "gnomonManager/gnomonFormManager.h"
 #include "gnomonView/gnomonGridLayout.h"
 #include "gnomonView/gnomonViewForm.h"

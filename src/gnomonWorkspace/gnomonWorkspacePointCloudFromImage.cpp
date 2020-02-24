@@ -49,6 +49,12 @@ public:
     gnomonViewFormPool *pool = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -86,14 +92,31 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     d = new gnomonWorkspacePointCloudFromImagePrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::pointCloudFromImage_color);
+    d->source->setExportColor(this->color);
+    d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::pointCloudFromImage_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+    d->pool->linkAll();
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -109,8 +132,7 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -119,17 +141,21 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if (d->command->input() != d->source->image())
-            d->command->setInput(d->source->image());
-        else
+        if (d->command->input() != d->source->image()) {
+            if (d->source->image()) {
+                d->command->setInput(d->source->image());
+            }
+        } else {
             qDebug() << "Not changed";
-
+        }
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspacePointCloudFromImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->image());
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
         d->configure(algorithm);
     });
 
@@ -147,15 +173,15 @@ gnomonWorkspacePointCloudFromImage::~gnomonWorkspacePointCloudFromImage(void)
 
 void gnomonWorkspacePointCloudFromImage::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->source->menu());
-    dtkApp->window()->menubar()->addMenu(d->target->menu());
+//    dtkApp->window()->menubar()->addMenu(d->source->menu());
+//    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePointCloudFromImage::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->source->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
@@ -163,20 +189,35 @@ void gnomonWorkspacePointCloudFromImage::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->image())
-        d->command->setInput(d->source->image());
-    else
+    if (d->command->input() != d->source->image()) {
+        if (d->source->image()) {
+            d->command->setInput(d->source->image());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setForm("gnomonPointCloud",d->command->output());
+    if (d->command->output()) {
+        d->target->setForm("gnomonPointCloud",d->command->output());
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+        d->source->setEnableLinking(false);
+        d->target->setEnableLinking(false);
+    }
 }
 
 void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspacePointCloudFromImage::color = QColor("#209820");
 
 //
 // gnomonWorkspacePointCloudFromImage.cpp ends here

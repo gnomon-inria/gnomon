@@ -273,13 +273,13 @@ gnomonWorkspacePythonSimulator::~gnomonWorkspacePythonSimulator(void)
 
 void gnomonWorkspacePythonSimulator::enter(void)
 {
-    dtkApp->window()->menubar()->insertMenu(0, d->view->menu());
+//    dtkApp->window()->menubar()->insertMenu(0, d->view->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspacePythonSimulator::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->view->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->view->menu());
     dtkApp->window()->menubar()->touch();
 }
 
@@ -375,7 +375,7 @@ void gnomonWorkspacePythonSimulator::step(void)
     {
         d->view->setForm(name,forms[name]);
     }
-            d->view->onTimeChanged(t);
+    d->view->onTimeChanged(t);
 }
 
 void gnomonWorkspacePythonSimulator::reset(void)
@@ -389,6 +389,8 @@ void gnomonWorkspacePythonSimulator::reset(void)
         d->view->setForm(name,forms[name]);
     }
 }
+
+const QColor gnomonWorkspacePythonSimulator::color = QColor("#a38948");
 
 // ///////////////////////////////////////////////////////////////////
 

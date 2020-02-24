@@ -48,6 +48,12 @@ public:
     gnomonViewFormPool *pool = nullptr;
 
 public:
+    QStackedWidget *target_stack = nullptr;
+    gnomonMessageBoard *target_message = nullptr;
+
+    QSplitter *splitter = nullptr;
+
+public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -89,14 +95,31 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     d = new gnomonWorkspaceCellComplexFromCellImagePrivate;
 
     d->source = new gnomonViewForm(this);
-    d->source->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
+    d->source->setExportColor(this->color);
+    d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
-    d->target->setExportColor(gnomonToolBar::cellComplexFromCellImage_color);
+    d->target->setExportColor(this->color);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
+    d->pool->linkAll();
+
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE: Stacked target view
+// /////////////////////////////////////////////////////////////////////////////
+
+    d->target_message = new gnomonMessageBoard(this);
+    d->target_message->setMessage("Result will be displayed here");
+
+    d->target_stack = new QStackedWidget(this);
+    d->target_stack->addWidget(d->target_message);
+    d->target_stack->addWidget(d->target);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->source);
+    d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -112,8 +135,7 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->source);
-    layout->addWidget(d->target);
+    layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -122,17 +144,22 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-        if (d->command->input() != d->source->cellImage())
-            d->command->setInput(d->source->cellImage());
-        else
+        if (d->command->input() != d->source->cellImage()) {
+            if (d->source->cellImage()) {
+                d->command->setInput(d->source->cellImage());
+            }
+        } else {
             qDebug() << "Not changed";
+        }
 
         d->configure(d->algorithm);
     });
 
     connect(d, &gnomonWorkspaceCellComplexFromCellImagePrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        d->command->setInput(d->source->cellImage());
+        if (d->source->cellImage()) {
+            d->command->setInput(d->source->cellImage());
+        }
         d->configure(algorithm);
     });
 
@@ -150,16 +177,15 @@ gnomonWorkspaceCellComplexFromCellImage::~gnomonWorkspaceCellComplexFromCellImag
 
 void gnomonWorkspaceCellComplexFromCellImage::enter(void)
 {
-    dtkApp->window()->menubar()->addMenu(d->source->menu());
-    dtkApp->window()->menubar()->addMenu(d->target->menu());
+//    dtkApp->window()->menubar()->addMenu(d->source->menu());
+//    dtkApp->window()->menubar()->addMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceCellComplexFromCellImage::leave(void)
 {
-    dtkApp->window()->menubar()->removeMenu(d->source->menu());
-    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-
+//    dtkApp->window()->menubar()->removeMenu(d->source->menu());
+//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
     dtkApp->window()->menubar()->touch();
 }
 
@@ -167,20 +193,35 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->input() != d->source->cellImage())
-        d->command->setInput(d->source->cellImage());
-    else
+    if(d->command->input() != d->source->cellImage()) {
+        if (d->source->cellImage()) {
+            d->command->setInput(d->source->cellImage());
+        }
+    } else {
         qDebug() << "Not changed";
+    }
 
     d->command->redo();
 
-    d->target->setCellComplex(d->command->output());
+    if (d->command->output()) {
+        d->target->setCellComplex(d->command->output());
+        d->target->render();
+        d->target_stack->setCurrentWidget(d->target);
+        d->source->setEnableLinking(true);
+        d->target->setEnableLinking(true);
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+        d->source->setEnableLinking(false);
+        d->target->setEnableLinking(false);
+    }
 }
 
 void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm)
 {
     d->configure(algorithm);
 }
+
+const QColor gnomonWorkspaceCellComplexFromCellImage::color = QColor("#982374");
 
 //
 // gnomonWorkspaceCellComplexFromCellImage.cpp ends here

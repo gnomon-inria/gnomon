@@ -63,7 +63,12 @@ void gnomonDataFrameReaderCommand::setPath(const QString& path)
 
 gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame(void)
 {
-    return ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+        return nullptr;
+    } else {
+        return dataFrame;
+    }
 }
 
 //

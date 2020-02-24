@@ -69,12 +69,22 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageFilterCommand::parameters(vo
 
 gnomonCellImageSeries *gnomonCellImageFilterCommand::input(void)
 {
-    return ((gnomonAbstractCellImageFilter *) this->action)->input();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFilter *) this->action)->input();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        return nullptr;
+    } else {
+        return cellImage;
+    }
 }
 
 gnomonCellImageSeries *gnomonCellImageFilterCommand::output(void)
 {
-    return ((gnomonAbstractCellImageFilter *) this->action)->output();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFilter *) this->action)->output();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        return nullptr;
+    } else {
+        return cellImage;
+    }
 }
 
 //

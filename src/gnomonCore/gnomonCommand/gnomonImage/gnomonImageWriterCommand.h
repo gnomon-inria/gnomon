@@ -13,7 +13,7 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setImage(gnomonImageSeries *images_serie);
+    void setImage(gnomonImageSeries *image_series);
 
 private:
     class gnomonImageWriterCommandPrivate *d;

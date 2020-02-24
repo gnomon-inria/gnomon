@@ -27,6 +27,8 @@ class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManagerItem;
 
+class vtkCamera;
+
 class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QFrame
 {
     Q_OBJECT
@@ -42,16 +44,17 @@ public:
     QSize sizeHint(void) const;
 
 public slots:
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization);
+    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, vtkCamera *cam=0);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
 public slots:
-    void present(gnomonFormManagerItem *);
+    void present(gnomonFormManagerItem *, bool = false);
 
 public:
-    gnomonAbstractDynamicForm * get(int index);
-    gnomonAbstractVisualization * getVisualization(int index);
+    gnomonAbstractDynamicForm *get(int index);
+    gnomonAbstractVisualization *getVisualization(int index);
+    vtkCamera *getCamera(int index);
 
 public:
     QPixmap thumbnail(int index);

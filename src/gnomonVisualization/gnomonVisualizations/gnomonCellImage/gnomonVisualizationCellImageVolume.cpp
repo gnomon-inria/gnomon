@@ -25,7 +25,7 @@
 #include "gnomonView/gnomonViewForm.h"
 
 #include "gnomonActor/gnomonImageData/gnomonActorImageVolume.h"
-#include "gnomonActor/gnomonImageData/gnomonActor2DImageWidget.h"
+#include "gnomonActor/gnomonImageData/gnomonActor2DImage.h"
 
 #include <vtkDataArray.h>
 #include <vtkImageData.h>
@@ -51,7 +51,7 @@ public:
     vtkSmartPointer<vtkImageData> image = nullptr;
 
     gnomonActorImageVolume *actor = nullptr;
-    gnomonActor2DImageWidget *actor2D = nullptr;
+    gnomonActor2DImage *actor2D = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -146,6 +146,7 @@ QImage gnomonVisualizationCellImageVolume::imageRendering(void)
 
 void gnomonVisualizationCellImageVolume::update(void)
 {
+     QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
      QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
 
@@ -162,6 +163,25 @@ void gnomonVisualizationCellImageVolume::update(void)
     converter->convert();
     dd->image = static_cast<vtkImageData *>(converter->output());
     delete converter;
+
+    if (colormap_name=="glasbey") {
+        int shape[3];
+        dd->image->GetDimensions(shape);
+        for (int z=0; z<shape[2]; ++z)
+        {
+            for (int y=0; y<shape[1]; ++y)
+            {
+                for (int x=0; x<shape[0]; ++x)
+                {
+                    int label = int(dd->image->GetScalarComponentAsFloat(x,y,z,0))%256;
+                    dd->image->SetScalarComponentFromFloat(x,y,z,0,label);
+                }
+            }
+        }
+
+        value_range[0] = 0;
+        value_range[1] = 255;
+    }
 
    if (dd->actor) {
        d->view->renderer3D()->RemoveActor(dd->actor);
@@ -186,7 +206,7 @@ void gnomonVisualizationCellImageVolume::update(void)
 
     if (!dd->actor2D)
     {
-        dd->actor2D = gnomonActor2DImageWidget::New();
+        dd->actor2D = gnomonActor2DImage::New();
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
     dd->actor2D->setImage(dd->image);
@@ -285,6 +305,11 @@ void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
         this->update();
     }
     this->render();
+}
+
+long gnomonVisualizationCellImageVolume::cellId(long vtkId)
+{
+    return vtkId;
 }
 
 //

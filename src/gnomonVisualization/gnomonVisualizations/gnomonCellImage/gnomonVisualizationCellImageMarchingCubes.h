@@ -35,7 +35,10 @@ public:
 
 public:
 	void setCellImage(gnomonCellImageSeries *cellImage) override;
-    
+
+public:
+    gnomonInteractorStyle *interactorStyle(void) override;
+
 public:
     QImage imageRendering(void) override;
 
@@ -62,7 +65,7 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
-    long cellId(long vtkId);
+    long cellId(long vtkId) override;
     QMap<QString, QVariant> cellInfo(long cellId);
 
 public:

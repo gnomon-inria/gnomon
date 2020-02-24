@@ -21,10 +21,13 @@
 #include <gnomonLandmark.h>
 
 class dtkWidgetsMenu;
+class dtkWidgetsMenuBar;
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractVisualization;
+
+class gnomonInteractorStyle;
 
 struct gnomonLandmark;
 
@@ -36,6 +39,7 @@ template <typename T> class gnomonTimeSeries;
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
+class vtkCamera;
 class vtkRenderer;
 class vtkRenderWindowInteractor;
 
@@ -86,7 +90,7 @@ public:
     gnomonCellImageSeries *cellImage(void);
     gnomonCellComplexSeries *cellComplex(void);
     gnomonMeshSeries *mesh(void);
-    gnomonPointCloud *pointCloud(void);
+    gnomonPointCloudSeries *pointCloud(void);
 
 public:
     vtkRenderer *renderer2D(void);
@@ -94,6 +98,7 @@ public:
 
 public:
     dtkWidgetsMenu *menu(void);
+    dtkWidgetsMenuBar *menubar(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
@@ -105,11 +110,19 @@ public slots:
     void setBounds(double bounds[6]);
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
+    void getBounds(double bounds[6]);
+
+public:
+    void setCamera(vtkCamera *);
+
 public slots:
     void render(void);
 
 public slots:
     void setAcceptCellComplex(bool);
+
+public slots:
+    void setEnableLinking(bool);
 
 public slots:
     void onSliceChanged(int);
@@ -127,17 +140,36 @@ signals:
 signals:
     void timeChanged(double);
 
+public:
+    QList<double> times(void);
+
 public slots:
     void timeIndexChange(int);
 
 public slots:
     void onTimeChanged(double);
 
+public slots:
+    void setInputView(bool);
+
+public slots:
+    void setEnableMenus(bool);
+
+public slots:
+    void setInteractorStyle(gnomonInteractorStyle *);
+    void updateShortcutKeys(void);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dragLeaveEvent(QDragLeaveEvent *);
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
+
+signals:
+    void fileDropped(const QString&);
+
+protected:
+    void resizeEvent(QResizeEvent *);
 
 private:
     class gnomonViewFormPrivate *d;

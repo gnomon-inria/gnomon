@@ -26,32 +26,31 @@ add_subdirectory(gnomonEditor)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonFinder
-  gnomonFinder.h
   gnomonInterpreterJupyter
   gnomonInterpreterJupyter.h
   gnomonItemButton.h
+  gnomonMessageBoard.h
   gnomonOverlayButton.h
   gnomonSpinner
   gnomonSpinner.h
-  gnomonToolBar
-  gnomonToolBar.h
   gnomonWidgets
   gnomonWidgets.h
   gnomonWidgetsParameter
   gnomonWidgetsParameter.h
+  gnomonWidgetsWorkspaceBar
+  gnomonWidgetsWorkspaceBar.h
   ${${PROJECT_NAME}_COLOR_HEADERS}
   ${${PROJECT_NAME}_EDITOR_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonFinder.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
+  gnomonMessageBoard.cpp
   gnomonOverlayButton.cpp
   gnomonSpinner.cpp
-  gnomonToolBar.cpp
   gnomonWidgets.cpp
   gnomonWidgetsParameter.cpp
+  gnomonWidgetsWorkspaceBar.cpp
   ${${PROJECT_NAME}_COLOR_SOURCES}
   ${${PROJECT_NAME}_EDITOR_SOURCES})
 
@@ -78,6 +77,8 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Xml)
 
@@ -87,6 +88,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 

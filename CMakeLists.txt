@@ -22,8 +22,8 @@ project(gnomon)
 ## Version setup
 ## ###################################################################
 
-set(${PROJECT_NAME}_VERSION_MAJOR 1)
-set(${PROJECT_NAME}_VERSION_MINOR 9)
+set(${PROJECT_NAME}_VERSION_MAJOR 0)
+set(${PROJECT_NAME}_VERSION_MINOR 13)
 set(${PROJECT_NAME}_VERSION_PATCH 1)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -108,7 +108,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent Test)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkFonts    REQUIRED)
@@ -156,6 +156,8 @@ include(gnomonSubdirectoryAddFiles)
 add_subdirectory(src)
 add_subdirectory(app)
 add_subdirectory(wrp)
+add_subdirectory(python)
+add_subdirectory(doc)
 # add_subdirectory(tst)
 # add_subdirectory(tst-py)
 

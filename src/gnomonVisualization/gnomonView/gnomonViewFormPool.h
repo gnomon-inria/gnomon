@@ -31,6 +31,13 @@ public:
 public slots:
     void addView(gnomonViewForm *);
 
+public slots:
+    void linkAll(void);
+    void unlinkAll(void);
+
+public:
+    bool isLinked(void);
+
 private:
     class gnomonViewFormPoolPrivate *d;
 };

@@ -19,11 +19,23 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonAbstractPointCloudConstructor
+    gnomonAbstractPointCloudConstructor.h
     gnomonAbstractPointCloudFromImage
-    gnomonAbstractPointCloudFromImage.h)
+    gnomonAbstractPointCloudFromImage.h
+    gnomonAbstractPointCloudQuantification
+    gnomonAbstractPointCloudQuantification.h
+    gnomonAbstractPointCloudReader
+    gnomonAbstractPointCloudReader.h
+    gnomonAbstractPointCloudWriter
+    gnomonAbstractPointCloudWriter.h)
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractPointCloudFromImage.cpp)
+    gnomonAbstractPointCloudConstructor.cpp
+    gnomonAbstractPointCloudFromImage.cpp
+    gnomonAbstractPointCloudQuantification.cpp
+    gnomonAbstractPointCloudReader.cpp
+    gnomonAbstractPointCloudWriter.cpp)
 
 
 ######################################################################

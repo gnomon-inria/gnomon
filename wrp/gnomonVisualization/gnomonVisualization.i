@@ -28,6 +28,7 @@
 #include <dtkCore>
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
+#include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
@@ -38,6 +39,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
@@ -238,6 +240,62 @@
     $input = list;
 }
 
+
+// /////////////////////////////////////////////////////////////////
+// Map key (int) to strings
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<int, QString> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            int k = PyLong_AsLong(key);
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<int, QString> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, QString>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<QString, QString>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            int k = PyLong_AsLong(key);
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<int, QString> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<int, QString>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<int, QString> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            int k = PyLong_AsLong(key);
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<int, QString> is returned.");
+    }
+}
+
+
 /* **************************************************************************
  *
  * ************************************************************************** */
@@ -272,6 +330,7 @@ void setupMatplotlib(qlonglong view_address, int num)
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
+%include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
@@ -281,6 +340,7 @@ void setupMatplotlib(qlonglong view_address, int num)
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>

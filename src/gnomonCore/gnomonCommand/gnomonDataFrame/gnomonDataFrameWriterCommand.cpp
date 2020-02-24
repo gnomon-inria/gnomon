@@ -26,7 +26,7 @@ public:
     QString path;
 
 public:
-    gnomonDataFrame* dataFrame = nullptr;
+    gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ void gnomonDataFrameWriterCommand::setPath(const QString& path)
     d->path = path;
 }
 
-void gnomonDataFrameWriterCommand::setDataFrame(gnomonDataFrame *dataFrame)
+void gnomonDataFrameWriterCommand::setDataFrame(gnomonDataFrameSeries *dataFrame)
 {
     d->dataFrame = dataFrame;
 }

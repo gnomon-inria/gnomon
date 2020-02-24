@@ -1,0 +1,182 @@
+import os
+import traceback
+import logging
+import warnings
+import importlib
+import re
+
+from functools import wraps
+from pkg_resources import iter_entry_points
+
+from setuptools import findall
+
+import gnomoncore
+
+__PLUGINS__ = []
+
+def import_plugins(file, excludes=[]):
+    file = os.path.dirname(file)
+    module = os.path.basename(file)
+    path = file.split('/')
+    ind = [i for i, n in enumerate(path) if n == 'gnomonplugins'][-1]
+    module_path = '.'.join(path[ind:])
+
+    for submodule in os.listdir(file):
+        if submodule == '__init__.py' or submodule[-3:] != '.py' or submodule[:-3] in excludes:
+            continue
+        try:
+            __import__(module_path + "." + submodule[:-3], locals(), globals())
+        except:
+            logging.info(module_path + "." + submodule[:-3])
+            traceback.print_exc()
+
+def load_plugin_group(group_name):
+    for entry_point in iter_entry_points(group=group_name, name=None):
+        importlib.import_module(entry_point.module_name)
+
+def gnomon_declare_plugins(path):
+    script = findall(path)
+    script = [f for f in script if (f.endswith('.py'))  and ('__init__' not in f)]
+
+    module_dict = {}
+
+    path_form = [f.replace('/', '.').replace('src.', '') for f in script]
+
+    for module, file in zip(path_form, script):
+        with open(file) as f:
+            print("  --> Parsing "+str(file))
+            datafile = f.readlines()
+            for line in datafile:
+                if 'class' in line and 'gnomonAbstract' in line:
+                    cls = line.split('gnomonAbstract')[1].split(')')[0]
+                    name = line.split('class ')[1].split('(')[0]
+                    cls = cls[0].lower()+cls[1:]
+                    if cls not in module_dict.keys():
+                        module_dict[cls] = []
+                    module_dict[cls].append(name+' = ' + module.replace('.py', ''))
+
+    return module_dict
+
+def gnomonParametric(cls):
+    # -----------------------------------------------------
+    # Plugin parameters concept
+    # -----------------------------------------------------
+
+    def __setitem__(self, key, value):
+        self.setParameter(key, value)
+    cls.__setitem__ = __setitem__
+
+    def __getitem__(self, key):
+        if key in self._parameters:
+            return self._parameters[key].value()
+        else:
+            raise KeyError(str(key))
+    cls.__getitem__ = __getitem__
+
+    def setParameter(self, parameter_name, parameter_value):
+        if parameter_name in self._parameters:
+            if isinstance(parameter_value, gnomoncore.gnomonCoreParameter):
+                self._parameters[parameter_name] = parameter_value
+            else:
+                self._parameters[parameter_name].setValue(parameter_value)
+        else:
+            warnings.warn("'" + parameter_name + "' is not a valid parameter")
+
+    cls.setParameter = setParameter
+
+    def setParameters(self, params):
+        for (parameter_name,parameter_value) in params.items():
+            self.setParameter(parameter_name,parameter_value)
+    cls.setParameters = setParameters
+
+    def parameters(self):
+        return self._parameters
+    cls.parameters = parameters
+
+    def parameterDict(self):
+        return {key : value.value() for key, value in self.parameters().iteritems()}
+    cls.parameterDict = parameterDict
+
+
+    return cls
+
+
+def gnomonPlugin(cls=None, namespace=gnomoncore, base_class=None):
+    if cls is not None:
+        return _gnomonPlugin(cls, namespace=namespace, base_class=base_class)
+    else:
+        def wrapper(cls):
+            return _gnomonPlugin(cls, namespace=namespace, base_class=base_class)
+        return wrapper
+
+def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
+    # -----------------------------------------------------
+    # Python error management
+    # -----------------------------------------------------
+
+    def documentation(self):
+        doc = self.__doc__
+        if doc is not None:
+            # doc = doc.replace("    ","")
+            doc = re.split("--+",doc)[0]
+            doc = re.split("\n  +[A-z]*\n",doc)[0]
+            doc = doc.replace("\n    \n","\n\n\n")
+            doc = doc.replace("\n\n","\n\n\n")
+            doc = doc.replace("\n    "," ")
+            doc = doc.replace("\n ","\n")
+            doc = "\n" + doc + "\n\n"
+        else:
+            doc = "\nThis plugin has no documentation\n\n"
+        return doc
+    cls.documentation = documentation
+
+    def wrapper(f):
+        @wraps(f)
+        def func(self, *args, **kwargs):
+            try:
+                return f(self, *args, **kwargs)
+            except Exception as e:
+                traceback.print_exc()
+
+        return func
+
+    for key, value in cls.__dict__.items():
+        if callable(value):
+            setattr(cls, key, wrapper(value))
+
+    # -----------------------------------------------------
+    # Factory registration
+    # -----------------------------------------------------
+    if base_class is None:
+        base_class =  cls.__bases__[0]
+
+    gnomonPluginBaseClass = getattr(namespace, base_class.__name__ + "Plugin")
+
+    class gnomonPluginClass(gnomonPluginBaseClass):
+        def __init__(self):
+            super(gnomonPluginClass, self).__init__()
+            self.thisown = 0
+
+        def create(self):
+            try:
+                obj = cls()
+                obj.__disown__()
+                return obj
+            except Exception as e:
+                print(e)
+                raise e
+
+    __PLUGINS__.append(gnomonPluginClass())
+
+    plugin_factory_name = base_class.__name__.replace("gnomon", "", 1).replace("Abstract", "", 1)
+    plugin_factory_name = plugin_factory_name[0].lower() + plugin_factory_name[1:]
+    plugin_factory_name += '_pluginFactory'
+    factory = getattr(namespace, plugin_factory_name)()
+
+    plugin_name = cls.__name__
+    plugin_name = plugin_name[0].lower() + plugin_name[1:]
+    factory.recordPlugin(plugin_name, __PLUGINS__[-1])
+    if plugin_name in factory.keys():
+        logging.info("Python plugin "+str(plugin_name)+" has been successfully loaded!")
+
+    return cls

@@ -73,12 +73,22 @@ QMap<QString, gnomonCoreParameter *> gnomonMeshFromImageCommand::parameters(void
 
 gnomonImageSeries *gnomonMeshFromImageCommand::input(void)
 {
-    return ((gnomonAbstractMeshFromImage *) this->action)->input();
+    gnomonImageSeries *image = ((gnomonAbstractMeshFromImage *) this->action)->input();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        return nullptr;
+    } else {
+        return image;
+    }
 }
 
 gnomonMeshSeries *gnomonMeshFromImageCommand::output(void)
 {
-    return ((gnomonAbstractMeshFromImage *) this->action)->output();
+    gnomonMeshSeries *mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
+    if ((!mesh)||(mesh->times().size()==0)) {
+        return nullptr;
+    } else {
+        return mesh;
+    }
 }
 
 //

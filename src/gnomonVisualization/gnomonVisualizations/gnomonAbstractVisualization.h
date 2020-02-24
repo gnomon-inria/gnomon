@@ -19,6 +19,7 @@
 #include <gnomonVisualizationExport.h>
 
 class gnomonViewForm;
+class gnomonInteractorStyle;
 class gnomonCoreParameter;
 class vtkRenderer;
 
@@ -39,10 +40,13 @@ public:
 
 public:
     gnomonViewForm* view(void);
+    virtual gnomonInteractorStyle * interactorStyle(void);
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
 
 public:
     virtual QImage imageRendering(void) = 0;
+
+public:
 
 signals:
     void parametersChanged(void);

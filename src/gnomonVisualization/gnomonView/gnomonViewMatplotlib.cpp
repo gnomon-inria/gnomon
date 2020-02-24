@@ -18,10 +18,6 @@
 #include <dtkWidgets>
 #include <dtkScript>
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
-#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
-#include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
-
 #include <gnomonCore>
 #include <gnomonWidgets>
 
@@ -70,7 +66,6 @@ public slots:
 public:
     QMap<QString, gnomonAbstractDynamicForm *> forms;
     QMap<QString, gnomonAbstractMatplotlibVisualization *> formVisualization;
-    QMap<QString, gnomonAbstractCommand *> formReaderCommand;
 
 public:
     int figureNumber;
@@ -95,7 +90,7 @@ public:
 public:
     // gnomonOverlayPane *pane(QWidget *parent);
     dtkWidgetsMenu *view_menu;
-
+    dtkWidgetsMenuBar *view_menubar;
 
 public slots:
     void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
@@ -107,13 +102,14 @@ public slots:
 gnomonViewMatplotlibPrivate::gnomonViewMatplotlibPrivate(QWidget *parent) : QWidget(parent)
 {
     this->layout = new QVBoxLayout(this);
+    this->layout->setContentsMargins(38,0,0,0);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", parent);
     this->save_button = new gnomonOverlayButton(fa::save, "", parent);
 
     static int count = 0;
     this->figureNumber = count++;
-    this->view_menu = new dtkWidgetsMenu(fa::circlethin, "Figure " + QString::number(this->figureNumber));
+    this->view_menu = new dtkWidgetsMenu(fa::square, "Matplotlib Figure " + QString::number(this->figureNumber));
 }
 
 gnomonViewMatplotlibPrivate::~gnomonViewMatplotlibPrivate(void)
@@ -167,7 +163,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
         this->formVisualizationPaneItems[key]->clear();
         delete this->formVisualizationPaneItems[key];
 
-        this->view_menu->removeMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
 
         this->formVisualizationMenus[key]->disconnect();
         this->formVisualizationMenus[key]->clear();
@@ -181,9 +177,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
     this->formVisualizationPaneItems.clear();
 
 //    this->empty = true;
-
-    dtkApp->window()->menubar()->touch();
-
+    this->refresh();
 //    q->render();
 }
 
@@ -197,6 +191,9 @@ void gnomonViewMatplotlibPrivate::resizeEvent(QResizeEvent *event)
 {
     this->export_button->move(event->size().width() - 40, 10);
     this->save_button->move(event->size().width() -80, 10);
+
+    if (this->view_menubar)
+        this->view_menubar->setFixedHeight(event->size().height());
 
     QWidget::resizeEvent(event);
 }
@@ -265,7 +262,7 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
 {
     if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key]))
     {
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::circlethin, key);
+        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::table, key);
         this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
 
         this->formVisualizationPaneItems[key]->setShowTitle(false);
@@ -302,22 +299,28 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)this->formVisualization[key];
                 gnomonTreeSeries *tree = (gnomonTreeSeries *)this->forms[key];
+                dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
                 formVisualizationTree->update();
+                dtkApp->window()->setCursor(Qt::ArrowCursor);
             } else if (key == "gnomonDataFrame") {
                 this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
                 gnomonDataFrameSeries *dataFrame = (gnomonDataFrameSeries *)this->forms[key];
+                dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
                 formVisualizationDataFrame->update();
+                dtkApp->window()->setCursor(Qt::ArrowCursor);
             } else if (key == "gnomonLString") {
                 this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
                 this->formVisualization[key]->setView(q);
                 gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)this->formVisualization[key];
                 gnomonLStringSeries *lString = (gnomonLStringSeries *)this->forms[key];
+                dtkApp->window()->setCursor(Qt::BusyCursor);
                 formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
                 formVisualizationLString->update();
+                dtkApp->window()->setCursor(Qt::ArrowCursor);
             }
 
             this->configure(formVisualizationPaneItems[key], key);
@@ -327,9 +330,8 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
         this->formVisualizationPaneItems[key]->addWidget(contents);
 
 //        this->formVisualizationMenus[key]->addItem(this->view_item);
-        this->view_menu->addMenu(this->formVisualizationMenus[key]);
-
-        dtkApp->window()->menubar()->touch();
+        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->touch();
     }
 
 }
@@ -400,17 +402,23 @@ void gnomonViewMatplotlibPrivate::refresh(void)
 
     this->view_menu->removeItem(this->paneItemButton);
 
-    for (const auto& menu : this->view_menu->menus()) {
-        this->view_menu->removeMenu(menu);
+    for (const auto& menu : this->view_menubar->menus()) {
+        this->view_menubar->removeMenu(menu);
     }
 
     for (const auto& key : this->formVisualizationMenus.keys()) {
-        this->view_menu->addMenu(this->formVisualizationMenus[key]);
+        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
     }
 
+    this->view_menubar->addMenu(this->view_menu);
     this->view_menu->addItem(this->paneItemButton);
 
-    dtkApp->window()->menubar()->touch();
+    this->view_menubar->touch();
+
+    int stat;
+    QString refreshStatement = "import matplotlib.pyplot as plt\nfigure = plt.figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
+    dtkScriptInterpreterPython::instance()->interpret(refreshStatement, &stat);
+
 
 }
 
@@ -425,7 +433,9 @@ dtkWidgetsMenu *gnomonViewMatplotlibPrivate::menu(void)
             for (const auto& key : this->formVisualization.keys()) {
                 gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
                 if(v) {
+                    dtkApp->window()->setCursor(Qt::BusyCursor);
                     v->update();
+                    dtkApp->window()->setCursor(Qt::ArrowCursor);
                 }
             }
         });
@@ -471,12 +481,6 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 //    static int count = 0;
 //    d->figureNumber = count++;
 
-    QGridLayout *layout  = new QGridLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d, 0, 0, 1, 1);
-    // layout->addWidget(d->pane(parent), 0, 1, 1, 1);
-
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
     connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
 
@@ -510,6 +514,32 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     //     }
     // });
 
+    d->view_menubar = new dtkWidgetsMenuBar(d);
+    d->view_menubar->setInteractive(false);
+    d->view_menubar->setWidth(32);
+    d->view_menubar->setMargins(6);
+    d->view_menubar->addMenu(d->menu());
+    d->view_menubar->touch();
+
+    connect(d->view_menubar, &dtkWidgetsMenuBar::clicked, [=] () {
+        this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+    });
+
+    connect(d->view_menubar, &dtkWidgetsMenuBar::left, [=] () {
+        this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+    });
+
+    connect(d->view_menubar, &dtkWidgetsMenuBar::entered, [=] () {
+        this->resizeEvent(new QResizeEvent(this->size(), QSize()));
+    });
+
+    QGridLayout *layout  = new QGridLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+//    layout->addWidget(d->view_menubar, 0, 0, 1, 1);
+    layout->addWidget(d, 0, 1, 1, 1);
+    // layout->addWidget(d->pane(parent), 0, 1, 1, 1);
+
     this->setAcceptDrops(true);
 }
 
@@ -534,11 +564,13 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
             d->formVisualization["gnomonTree"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)d->formVisualization["gnomonTree"];
+        dtkApp->window()->setCursor(Qt::BusyCursor);
         formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
         if (visualization) {
             formVisualizationTree->setParameters(visualization->parameters());
         }
         formVisualizationTree->update();
+        dtkApp->window()->setCursor(Qt::ArrowCursor);
 
         emit formAdded("gnomonTree");
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
@@ -554,11 +586,13 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
             d->formVisualization["gnomonDataFrame"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)d->formVisualization["gnomonDataFrame"];
+        dtkApp->window()->setCursor(Qt::BusyCursor);
         formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
         if (visualization) {
             formVisualizationDataFrame->setParameters(visualization->parameters());
         }
         formVisualizationDataFrame->update();
+        dtkApp->window()->setCursor(Qt::ArrowCursor);
 
         emit formAdded("gnomonDataFrame");
     } else if (gnomonLStringSeries *lString = dynamic_cast<gnomonLStringSeries *>(form)) {
@@ -574,11 +608,13 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
             d->formVisualization["gnomonLString"]->setView(this);
         }
         gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)d->formVisualization["gnomonLString"];
+        dtkApp->window()->setCursor(Qt::BusyCursor);
         formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
         if (visualization) {
             formVisualizationLString->setParameters(visualization->parameters());
         }
         formVisualizationLString->update();
+        dtkApp->window()->setCursor(Qt::ArrowCursor);
 
         emit formAdded("gnomonLString");
     }
@@ -596,6 +632,8 @@ void gnomonViewMatplotlib::addWidget(QWidget *widget)
 //    widget->setStyleSheet( gnomonStyleSheet());
 
     d->layout->addWidget(widget);
+
+
 
     this->resize(1200,this->height());
 }
@@ -636,40 +674,11 @@ void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
     if(path.startsWith(":")) {
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());
         this->setForm("formManager",form);
-
-    } else {
-        if ((path.endsWith("xml")) || (path.endsWith("txt")))   {
-            if ((!d->formReaderCommand.contains("gnomonTree"))||(!d->formReaderCommand["gnomonTree"]))
-                d->formReaderCommand["gnomonTree"] = new gnomonTreeReaderCommand("gnomonTreeReaderTreex");
-            gnomonTreeReaderCommand *treeCommand = (gnomonTreeReaderCommand *) d->formReaderCommand["gnomonTree"];
-            treeCommand->setPath(path.remove("file://"));
-            treeCommand->redo();
-
-            gnomonTreeSeries * tree = (gnomonTreeSeries *) treeCommand->tree()->clone();
-            if (!tree) {
-                qWarning() << Q_FUNC_INFO << "Resulting tree is void.";
-                event->ignore();
-                return;
-            }
-            this->setForm("gnomonTree",tree);
-        } else if (path.endsWith("csv")) {
-            if ((!d->formReaderCommand.contains("gnomonDataFrame"))||(!d->formReaderCommand["gnomonDataFrame"]))
-                d->formReaderCommand["gnomonDataFrame"] = new gnomonDataFrameReaderCommand("gnomonDataFrameReaderPandas");
-            gnomonDataFrameReaderCommand *dataFrameCommand = (gnomonDataFrameReaderCommand *) d->formReaderCommand["gnomonDataFrame"];
-            dataFrameCommand->setPath(path.remove("file://"));
-            dataFrameCommand->redo();
-
-            gnomonDataFrameSeries * dataFrame = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame()->clone();
-            if (!dataFrame) {
-                qWarning() << Q_FUNC_INFO << "Resulting dataframe is void.";
-                event->ignore();
-                return;
-            }
-            this->setForm("gnomonDataFrame",dataFrame);
-        }
+        event->accept();
+    } else if (path.startsWith("file://")) {
+        emit fileDropped(path);
+        event->accept();
     }
-
-    event->accept();
 }
 
 // ///////////////////////////////////////////////////////////////////

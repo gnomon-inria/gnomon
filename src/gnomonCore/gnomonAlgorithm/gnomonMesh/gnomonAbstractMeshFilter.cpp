@@ -1,0 +1,28 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonAbstractMeshFilter.h"
+
+#include "gnomonCore.h"
+
+// /////////////////////////////////////////////////////////////////
+// Register to gnomonCore layer
+// /////////////////////////////////////////////////////////////////
+
+namespace gnomonCore {
+    DTK_DEFINE_CONCEPT(gnomonAbstractMeshFilter, meshFilter, gnomonCore);
+}
+
+//
+// gnomonAbstractMeshFilter.cpp ends here

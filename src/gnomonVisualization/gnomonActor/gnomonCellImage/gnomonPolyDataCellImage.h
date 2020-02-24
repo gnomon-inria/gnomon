@@ -40,8 +40,13 @@ public slots:
     void setPropertyName(const QString& value);
     void setSliceRanges(const QList<double>& x_value, const QList<double>& y_value, const QList<double>& z_value);
 
+    void set8Bit(bool value);
+
 public:
     long cellId(long vtkId);
+
+public:
+    void setResamplingSpacing(double);
 
 public:
      gnomonPolyDataCellImage(void);

@@ -59,12 +59,22 @@ void gnomonLStringFromTreeCommand::setInput(gnomonTreeSeries* tree_serie)
 
 gnomonTreeSeries *gnomonLStringFromTreeCommand::input()
 {
-    return ((gnomonAbstractLStringFromTree *) this->action)->input();
+    gnomonTreeSeries *tree = ((gnomonAbstractLStringFromTree *) this->action)->input();
+    if ((!tree)||(tree->times().size()==0)) {
+        return nullptr;
+    } else {
+        return tree;
+    }
 }
 
 gnomonLStringSeries *gnomonLStringFromTreeCommand::output()
 {
-    return ((gnomonAbstractLStringFromTree *) this->action)->output();
+    gnomonLStringSeries *lString = ((gnomonAbstractLStringFromTree *) this->action)->output();
+    if ((!lString)||(lString->times().size()==0)) {
+        return nullptr;
+    } else {
+        return lString;
+    }
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonLStringFromTreeCommand::parameters(void) const

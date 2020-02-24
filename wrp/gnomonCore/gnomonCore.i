@@ -47,6 +47,7 @@
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
@@ -57,27 +58,39 @@
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellGraph/gnomonAbstractCellGraphFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageConstructor.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFilter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageTracking.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageConstructor.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshConstructor.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFilter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudConstructor.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeConstructor.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
@@ -199,6 +212,81 @@
     }
 }
 
+// /////////////////////////////////////////////////////////////////
+// Id -> Float dictionary
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<long, double> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            long k = PyInt_AsLong(key);
+            double v = PyFloat_AsDouble(value);
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, double> is returned.");
+    }
+}
+
+%typemap(in) const QMap<long, double>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<long, double>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            long k = PyInt_AsLong(key);
+            double v = PyFloat_AsDouble(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, double> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<long, double>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<long, double> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            long k = PyInt_AsLong(key);
+            double v = PyFloat_AsDouble(value);
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, double> is returned.");
+    }
+}
+
+%typemap(out) QMap<long, double> {
+    $result = PyDict_New();
+
+    QList<long> keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        PyDict_SetItem($result, PyLong_FromLong(*it), PyFloat_FromDouble($1[*it]));
+    }
+}
+
+%typemap(directorin) QMap<long, double> {
+    PyObject *dict = PyDict_New();
+
+    QList<long> keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        PyDict_SetItem($result, PyLong_FromLong(*it), PyFloat_FromDouble($1[*it]));
+    }
+    $input = dict;
+}
 
 // /////////////////////////////////////////////////////////////////
 // Form dictionary
@@ -599,6 +687,7 @@
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+%include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
@@ -609,27 +698,39 @@
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
+%include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellGraph/gnomonAbstractCellGraphFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFilter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageTracking.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshConstructor.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFilter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
@@ -667,7 +768,7 @@ namespace std {
 %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
 %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
-%pythoncode "gnomonCore/gnomonPlugin.py"
+/* %pythoncode "gnomonCore/gnomonPlugin.py" */
 
 //
 // gnomonCore.i.in ends here

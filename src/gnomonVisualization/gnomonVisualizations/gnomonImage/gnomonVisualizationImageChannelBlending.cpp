@@ -25,7 +25,7 @@
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonActor/gnomonImage/gnomonImageDataChannelBlending.h"
 #include "gnomonActor/gnomonImageData/gnomonActorImageRGBAVolume.h"
-#include "gnomonActor/gnomonImageData/gnomonActor2DImageRGBAWidget.h"
+#include "gnomonActor/gnomonImageData/gnomonActor2DImageRGBA.h"
 
 #include <vtkDataArray.h>
 #include <vtkImageData.h>
@@ -55,7 +55,7 @@ public:
 
     gnomonImageDataChannelBlending *blending = nullptr;
 
-    gnomonActor2DImageRGBAWidget *actor2D = nullptr;
+    gnomonActor2DImageRGBA *actor2D = nullptr;
     gnomonActorImageRGBAVolume *volume = nullptr;
 
 public:
@@ -139,6 +139,10 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             d->parameters.remove(parameterName);
         }
     }
+
+    qDebug()<<Q_FUNC_INFO<<dd->image;
+    qDebug()<<Q_FUNC_INFO<<dd->image->data();
+    qDebug()<<Q_FUNC_INFO<<dd->image->channels();
 
     QString channel = dd->image->channels()[0];
     QList<double> valueRange = {0,1};
@@ -226,7 +230,8 @@ void gnomonVisualizationImageChannelBlending::update(void)
     dd->image_data = dd->blending;
 
     if (!dd->actor2D) {
-        dd->actor2D = gnomonActor2DImageRGBAWidget::New();
+        dd->actor2D = gnomonActor2DImageRGBA::New();
+        d->view->renderer2D()->AddActor(dd->actor2D);
     }
     dd->actor2D->setImage(dd->image_data);
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());

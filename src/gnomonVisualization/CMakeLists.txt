@@ -20,6 +20,7 @@ project(gnomonVisualization)
 
 add_subdirectory(gnomonActor)
 add_subdirectory(gnomonInspector)
+add_subdirectory(gnomonInteractorStyle)
 add_subdirectory(gnomonManager)
 add_subdirectory(gnomonView)
 add_subdirectory(gnomonVisualizations)
@@ -33,6 +34,7 @@ set(${PROJECT_NAME}_HEADERS
     gnomonVisualization.h
     ${${PROJECT_NAME}_ACTOR_HEADERS}
     ${${PROJECT_NAME}_INSPECTOR_HEADERS}
+    ${${PROJECT_NAME}_INTERACTORSTYLE_HEADERS}
     ${${PROJECT_NAME}_MANAGER_HEADERS}
     ${${PROJECT_NAME}_VIEW_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_HEADERS})
@@ -41,6 +43,7 @@ set(${PROJECT_NAME}_SOURCES
     gnomonVisualization.cpp
     ${${PROJECT_NAME}_ACTOR_SOURCES}
     ${${PROJECT_NAME}_INSPECTOR_SOURCES}
+    ${${PROJECT_NAME}_INTERACTORSTYLE_SOURCES}
     ${${PROJECT_NAME}_MANAGER_SOURCES}
     ${${PROJECT_NAME}_VIEW_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_SOURCES})

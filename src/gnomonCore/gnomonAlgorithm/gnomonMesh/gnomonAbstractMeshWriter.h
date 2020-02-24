@@ -41,6 +41,8 @@ public:
     virtual void setMesh(gnomonMeshSeries *mesh) = 0;
     virtual void setPath(const QString& path) = 0;
 
+public:
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
