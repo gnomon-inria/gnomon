@@ -22,8 +22,8 @@ conda_build_linux:
     paths:
       - conda-bld
   only:
-    - develop
     - master
+    - develop
 
 anaconda_linux:
   stage: deploy
@@ -35,7 +35,6 @@ anaconda_linux:
   allow_failure: true
   only:
   - master
-  - develop
 
 pages:
   stage: deploy
