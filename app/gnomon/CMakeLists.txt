@@ -41,7 +41,6 @@ endif()
 
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Core)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Widgets)
-target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::OpenGL)
 
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)
