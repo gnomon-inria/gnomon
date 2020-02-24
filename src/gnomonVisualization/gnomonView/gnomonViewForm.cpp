@@ -47,13 +47,13 @@
 #include <vtkRenderWindowInteractor.h>
 
 #include <QVTKInteractor.h>
-#include <QVTKOpenGLWidget.h>
+#include <QVTKOpenGLNativeWidget.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewFormPrivate
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonViewFormPrivate : public QVTKOpenGLWidget
+class gnomonViewFormPrivate : public QVTKOpenGLNativeWidget
 {
     Q_OBJECT
 
@@ -196,7 +196,7 @@ public:
 // /////////////////////////////////////////////////////////////////////////////
 };
 
-gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLWidget(parent)
+gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLNativeWidget(parent)
 {
     QColor background_color = dtkThemesEngine::instance()->color("@bgalt");
 
@@ -333,7 +333,7 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
 
 
 
-    QVTKOpenGLWidget::resizeEvent(event);
+    QVTKOpenGLNativeWidget::resizeEvent(event);
 }
 
 gnomonViewFormPrivate::Orientation gnomonViewFormPrivate::orientation(void)
