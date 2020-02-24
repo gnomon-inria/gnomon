@@ -1,6 +1,4 @@
-================
-Extending Gnomon
-================
+The official documentation can be found here: [Gnomon](https://gnomon.gitlabpages.inria.fr/gnomon).
 
 Existing plugins
 ====================
@@ -55,15 +53,3 @@ Existing plugins
 .. |AnaTree| image:: https://anaconda.org/gnomon/plugin_tree/badges/version.svg
 .. |AnaTreeLSystem| image:: https://anaconda.org/gnomon/plugin_treelsystem/badges/version.svg
 .. |AnaTreeGraph| image:: https://anaconda.org/gnomon/plugin_treegraph/badges/version.svg
-
-Creating new plugins
-====================
-
-
-.. toctree::
-    :maxdepth: 2
-
-    plugins/existing_abstraction_existing_data_plugin
-
-Defining new workspaces
-=======================
