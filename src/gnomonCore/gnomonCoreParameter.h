@@ -1,7 +1,6 @@
 // Version: $Id$
 //
 //
-
 // Commentary:
 //
 //

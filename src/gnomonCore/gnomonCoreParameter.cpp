@@ -344,6 +344,7 @@ QStringList gnomonCoreParameterFile::formats(void) const
 void gnomonCoreParameterFile::setFormats(const QStringList& formats)
 {
     m_formats.clear();
+
     for (const auto& f : formats) {
         if (!m_formats.contains(f)) {
             m_formats.append(f);
