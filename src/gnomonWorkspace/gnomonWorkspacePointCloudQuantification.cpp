@@ -226,5 +226,10 @@ void gnomonWorkspacePointCloudQuantification::configure(const QString& algorithm
 
 const QColor gnomonWorkspacePointCloudQuantification::color = QColor("#d94c64");
 
+bool gnomonWorkspacePointCloudQuantification::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudQuantificationPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspacePointCloudQuantification.cpp ends here

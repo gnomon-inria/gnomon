@@ -215,5 +215,10 @@ void gnomonWorkspaceFusion::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceFusion::color = QColor("#ff9500");
 
+bool gnomonWorkspaceFusion::isEmpty(void)
+{
+    return gnomonWorkspaceFusionPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceFusion.cpp ends here

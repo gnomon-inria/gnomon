@@ -226,5 +226,10 @@ void gnomonWorkspaceCellImageQuantification::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceCellImageQuantification::color = QColor("#4c64d9");
 
+bool gnomonWorkspaceCellImageQuantification::isEmpty(void)
+{
+    return gnomonWorkspaceCellImageQuantificationPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceCellImageQuantification.cpp ends here

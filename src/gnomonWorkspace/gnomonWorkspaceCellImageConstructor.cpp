@@ -166,5 +166,10 @@ void gnomonWorkspaceCellImageConstructor::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceCellImageConstructor::color = QColor("#9e5fa0");
 
+bool gnomonWorkspaceCellImageConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceCellImageConstructorPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceCellImageConstructor.cpp ends here

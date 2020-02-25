@@ -280,5 +280,10 @@ void gnomonWorkspaceCellImageTracking::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceCellImageTracking::color = QColor("#742ce1");
 
+bool gnomonWorkspaceCellImageTracking::isEmpty(void)
+{
+    return gnomonWorkspaceCellImageTrackingPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceCellImageTracking.cpp ends here

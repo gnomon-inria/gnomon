@@ -166,5 +166,10 @@ void gnomonWorkspaceMeshConstructor::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceMeshConstructor::color = QColor("#5f9ea0");
 
+bool gnomonWorkspaceMeshConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceMeshConstructorPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceMeshConstructor.cpp ends here

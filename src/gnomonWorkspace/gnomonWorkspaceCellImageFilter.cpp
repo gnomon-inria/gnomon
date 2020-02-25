@@ -218,5 +218,10 @@ void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceCellImageFilter::color = QColor("#dc143c");
 
+bool gnomonWorkspaceCellImageFilter::isEmpty(void)
+{
+    return gnomonWorkspaceCellImageFilterPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceCellImageFilter.cpp ends here
