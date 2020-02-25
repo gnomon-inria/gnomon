@@ -28,6 +28,7 @@ from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 
 Viewer.show()
+Viewer.hide()
 
 print(dir(Viewer))
 
@@ -47,6 +48,7 @@ workspace.materialDock.setObjectName("LPYMaterials")
 workspace.setObjectName("LPYMainWindow")
 
 workspace.show()
+workspace.hide()
 
 #
 # lpy.py ends here
