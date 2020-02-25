@@ -15,6 +15,9 @@ public:
     void setPath(const QString& path);
     void setInput(gnomonTreeSeries *tree_series);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonTreeWriterCommandPrivate *d;
 };

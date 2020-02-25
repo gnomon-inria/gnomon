@@ -70,5 +70,11 @@ void gnomonDataFrameWriterCommand::setDataFrame(gnomonDataFrameSeries *dataFrame
     d->dataFrame = dataFrame;
 }
 
+bool gnomonDataFrameWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("dataFrameWriter");
+    return gnomonCore::dataFrameWriter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonDataFrameWriterCommand.cpp ends here

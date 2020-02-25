@@ -95,5 +95,11 @@ gnomonMeshSeries *gnomonMeshFilterCommand::output(void)
     }
 }
 
+bool gnomonMeshFilterCommand::isEmpty(void)
+{
+    loadPluginGroup("meshFilter");
+    return gnomonCore::meshFilter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonMeshFilterCommand.cpp ends here

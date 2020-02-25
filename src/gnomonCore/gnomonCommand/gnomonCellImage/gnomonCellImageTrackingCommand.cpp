@@ -99,5 +99,11 @@ gnomonTreeSeries *gnomonCellImageTrackingCommand::tree(void)
     }
 }
 
+bool gnomonCellImageTrackingCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageTracking");
+    return gnomonCore::cellImageTracking::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellImageTrackingCommand.cpp ends here

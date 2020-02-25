@@ -18,6 +18,9 @@ public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
     gnomonMeshSeries *updatedMesh(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonFemSolverCommandPrivate *d;
 };

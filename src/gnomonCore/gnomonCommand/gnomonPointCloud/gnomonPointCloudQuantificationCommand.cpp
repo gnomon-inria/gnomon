@@ -99,5 +99,11 @@ gnomonDataFrameSeries *gnomonPointCloudQuantificationCommand::dataFrame(void)
     }
 }
 
+bool gnomonPointCloudQuantificationCommand::isEmpty(void)
+{
+    loadPluginGroup("pointCloudQuantification");
+    return gnomonCore::pointCloudQuantification::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonPointCloudQuantificationCommand.cpp ends here

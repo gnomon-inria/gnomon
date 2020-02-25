@@ -24,6 +24,9 @@ public:
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonMeshFilterCommandPrivate *d;
 };

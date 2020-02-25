@@ -91,5 +91,11 @@ gnomonMeshSeries *gnomonMeshFromImageCommand::output(void)
     }
 }
 
+bool gnomonMeshFromImageCommand::isEmpty(void)
+{
+    loadPluginGroup("meshFromImage");
+    return gnomonCore::meshFromImage::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonMeshFromImageCommand.cpp ends here

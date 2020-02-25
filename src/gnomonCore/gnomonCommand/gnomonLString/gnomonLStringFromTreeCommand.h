@@ -35,6 +35,9 @@ public:
     gnomonLStringSeries *output();
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonLStringFromTreeCommandPrivate *d;
 };

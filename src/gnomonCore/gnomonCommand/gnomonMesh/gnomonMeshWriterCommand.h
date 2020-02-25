@@ -15,6 +15,9 @@ public:
     void setPath(const QString& path);
     void setMesh(gnomonMeshSeries *mesh);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonMeshWriterCommandPrivate *d;
 };

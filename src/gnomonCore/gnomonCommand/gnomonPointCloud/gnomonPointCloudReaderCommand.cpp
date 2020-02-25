@@ -63,5 +63,10 @@ gnomonPointCloudSeries *gnomonPointCloudReaderCommand::pointCloud(void)
     }
 }
 
+bool gnomonPointCloudReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("pointCloudReader");
+    return gnomonCore::pointCloudReader::pluginFactory().keys().size() == 0;
+}
 //
 // gnomonPointCloudReaderCommand.cpp ends here

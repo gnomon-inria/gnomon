@@ -67,5 +67,11 @@ void gnomonMeshWriterCommand::setMesh(gnomonMeshSeries *mesh)
     d->mesh = mesh;
 }
 
+bool gnomonMeshWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("meshWriter");
+    return gnomonCore::meshWriter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonMeshWriterCommand.cpp ends here

@@ -28,6 +28,9 @@ public:
     void removeLandmarks(void);
 
 public:
+    static bool isEmpty(void);
+
+public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
     class gnomonImageFusionCommandPrivate *d;
 };

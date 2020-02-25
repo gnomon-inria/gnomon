@@ -72,5 +72,11 @@ gnomonCellImageSeries *gnomonCellImageConstructorCommand::output(void)
     }
 }
 
+bool gnomonCellImageConstructorCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageConstructor");
+    return gnomonCore::cellImageConstructor::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellImageConstructorCommand.cpp ends here
