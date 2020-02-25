@@ -34,26 +34,59 @@ public:
     gnomonSpinner *spinner;
 
 public:
+    QTabWidget *lhs;
+    QTabWidget *rhs;
+    QTabWidget *params;
     QSplitter *splitter;
 
 public:
     QList<dtkWidgetsMenu *> menus;
+
+public:
+    dtkWidgetsMenu *dashboard_menu;
+    dtkWidgetsMenuItemDIY *dashboard_menu_parameters;
+    dtkWidgetsMenuBarContainer *dashboard;
 };
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     d = new gnomonWorkspaceLSystemSimulatorPrivate;
 
-    d->spinner = new gnomonSpinner(this);
-    d->spinner->start();
+    // d->spinner = new gnomonSpinner(this);
+    // d->spinner->start();
+
+    d->lhs = new QTabWidget(this);
+    // d->lhs->addTab(new QWidget, "Code");
+    // d->lhs->addTab(new QWidget, "Axiom");
+
+    d->rhs = new QTabWidget(this);
+    // d->rhs->addTab(new QWidget, "2D");
+    // d->rhs->addTab(new QWidget, "3D");
 
     d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->lhs);
+    d->splitter->addWidget(d->rhs);
+
+    d->params = new QTabWidget(this);
+
+    d->dashboard_menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
+    d->dashboard_menu_parameters->addWidget(d->params);
+    d->dashboard_menu_parameters->setSizePolicy(QSizePolicy::Expanding);
+
+    d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
+    d->dashboard_menu->addItem(d->dashboard_menu_parameters);
+
+    d->dashboard = new dtkWidgetsMenuBarContainer(this);
+    d->dashboard->navigator->deleteLater();
+    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->dashboard_menu);
+    d->dashboard->setFixedWidth(300);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(d->spinner);
+    // layout->addWidget(d->spinner);
     layout->addWidget(d->splitter);
+    layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -63,6 +96,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     file.open(QIODevice::ReadOnly);
     QString script = file.readAll();
     file.close();
+
+    qDebug() << Q_FUNC_INFO << script;
 
     QTimer::singleShot(500, [=] (void) -> void
     {
@@ -90,16 +125,10 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 
 void gnomonWorkspaceLSystemSimulator::enter(void)
 {
-    qDebug() << Q_FUNC_INFO << 1;
-
     foreach(dtkWidgetsMenu *menu, d->menus)
         dtkApp->window()->menubar()->addMenu(menu);
 
-    qDebug() << Q_FUNC_INFO << 2;
-
     dtkApp->window()->menubar()->touch();
-
-    qDebug() << Q_FUNC_INFO << 3;
 }
 
 void gnomonWorkspaceLSystemSimulator::leave(void)
@@ -117,9 +146,8 @@ void gnomonWorkspaceLSystemSimulator::apply(void)
 
 void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
 {
-    qDebug() << Q_FUNC_INFO << 1 << view;
-
     int stat;
+
     QString current_lstring = dtkScriptInterpreterPython::instance()->interpret("print(str(lstring))", &stat);
 
     qDebug() << Q_FUNC_INFO << 2 << current_lstring;
@@ -153,30 +181,76 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
+    qDebug() << Q_FUNC_INFO << widget << widget->objectName();
+
     static QList<QWidget *> filled;
 
     if(filled.contains(widget))
         return;
 
-    d->spinner->stop();
-    d->spinner->hide();
-    d->splitter->show();
+// /////////////////////////////////////////////////////////////////////////////
+// LPYCodeEditor
+// /////////////////////////////////////////////////////////////////////////////
 
-    widget->setParent(d->splitter);
-
-    if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
-
-        d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
-
-        window->menuBar()->hide();
-        window->menuWidget()->hide();
-
-        this->enter();
+    if(widget->objectName() == "LPYCodeEditor") {
+        d->lhs->addTab(widget, "Code");
     }
 
-    d->splitter->addWidget(widget);
+// /////////////////////////////////////////////////////////////////////////////
+// LPYShell
+// /////////////////////////////////////////////////////////////////////////////
 
-    widget->show();
+    if(widget->objectName() == "LPYShell") {
+        d->rhs->addTab(widget, "Shell");
+    }
+
+    if(widget->objectName() == "LPYDebug") {
+        d->rhs->addTab(static_cast<QDockWidget *>(widget)->widget(), "Debug");
+    }
+
+    if(widget->objectName() == "LPYParameters") {
+        d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Parameters");
+    }
+
+    if(widget->objectName() == "LPYScalars") {
+        d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Scalars");
+        d->dashboard->update();
+    }
+
+    if(widget->objectName() == "LPYMaterials") {
+        d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Materials");
+        d->dashboard->update();
+    }
+
+    if(widget->objectName() == "LPYMainWindow") {
+
+        if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
+
+            d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+
+            window->menuBar()->hide();
+            window->menuWidget()->hide();
+
+            this->enter();
+        }
+    }
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+    // d->spinner->stop();
+    // d->spinner->hide();
+    // d->splitter->show();
+
+    // widget->setParent(d->splitter);
+
+
+    // d->splitter->addWidget(widget);
+
+// /////////////////////////////////////////////////////////////////////////////
+
+    // widget->show();
 
     filled << widget;
 }

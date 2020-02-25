@@ -73,4 +73,61 @@ gnomonMessageBoard > QLabel
     font-size: 32px;
 }
 
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+gnomonWorkspaceLSystemSimulator QTabWidget::pane
+{
+    background-color: transparent;
+
+    border: none;
+}
+
+gnomonWorkspaceLSystemSimulator QTabWidget::tab-bar
+{
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+
+    qproperty-drawBase: 0;
+
+    border: none;
+}
+
+gnomonWorkspaceLSystemSimulator QTabBar::tab
+{
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-left: 3px;
+    padding: 6px;
+    background-color: @bg;
+    border: none;
+    border-radius: 4px;
+    font-weight: normal;
+
+    width: 100;
+
+    color: @fg;
+}
+
+gnomonWorkspaceLSystemSimulator QTabBar::tab:last:selected
+{
+    background-color: @base3;
+}
+
+gnomonWorkspaceLSystemSimulator QTabBar::tab:selected, gnomonWorkspaceLSystemSimulator QTabBar::tab:hover
+{
+    background-color: @base3;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+gnomonWidgetsWorkspaceBar
+{
+    border-top: 1px solid @base0;
+}
+
 /* specific+g.qless ends here */

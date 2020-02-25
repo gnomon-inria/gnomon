@@ -76,6 +76,7 @@ requirements:
     - dtk-composer >=2.0.0
     - qt >=5.9.0
     - jupyter
+    - jupyter_client=5.3.4
     - numpy
     - matplotlib
     - python >=3.7

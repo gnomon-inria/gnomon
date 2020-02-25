@@ -55,73 +55,75 @@ protected:
         if(event->type() != QEvent::Show)
             return false;
 
-        static bool first = true;
+        // static bool first = true;
 
         // qDebug() << Q_FUNC_INFO << object->objectName();
 
-        if(QMainWindow *window = dynamic_cast<QMainWindow *>(object)) {
+        if(QWidget *widget = dynamic_cast<QWidget *>(object)) {
 
-            if (first) {
-                first = false;
-                embedded << window;
-                return false;
-            }
+            // if (first) {
+            //     first = false;
+            //     embedded << widget;
+            //     return true;
+            // }
 
-            if(!embedded.contains(window)) {
+            if(!embedded.contains(widget)) {
 
-                window->statusBar()->setSizeGripEnabled(false);
+                embedded << widget;
 
-                // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << window->objectName();
+                // widget->statusBar()->setSizeGripEnabled(false);
 
-                if(window->objectName() == "PGLMainWindow" || window->objectName() == "LPYMainWindow") {
+                qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << widget->objectName();
 
-                    // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
+                if(widget->objectName().startsWith("PGL") || widget->objectName().startsWith("LPY")) {
 
-                    foreach(QWidget *widget, window->findChildren<QWidget*>()) {
+                    qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
 
-                        if(widget->objectName() == "PGLFrameGL") {
+                    // foreach(QWidget *widget, widget->findChildren<QWidget*>()) {
 
-                            // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
+                    //     if(widget->objectName() == "PGLFrameGL") {
 
-                            gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
-                            export_button->move(10,10);
-                            export_button->show();
+                    //         // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
 
-                            connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
-                            {
-                                // qDebug() << Q_FUNC_INFO << 0 << widget;
+                    //         gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
+                    //         export_button->move(10,10);
+                    //         export_button->show();
 
-                                foreach(QWidget *top, qApp->topLevelWidgets()) {
+                    //         connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
+                    //         {
+                    //             // qDebug() << Q_FUNC_INFO << 0 << widget;
 
-                                    // qDebug() << Q_FUNC_INFO << 1 << widget;
+                    //             foreach(QWidget *top, qApp->topLevelWidgets()) {
 
-                                    foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+                    //                 // qDebug() << Q_FUNC_INFO << 1 << widget;
 
-                                        // qDebug() << Q_FUNC_INFO << 2 << widget;
+                    //                 foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
 
-                                        simulator->apply(widget);
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    //                     // qDebug() << Q_FUNC_INFO << 2 << widget;
+
+                    //                     simulator->apply(widget);
+                    //                 }
+                    //             }
+                    //         });
+                    //     }
+                    // }
 
                     foreach(QWidget *top, qApp->topLevelWidgets()) {
                         foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
-                            simulator->fill(window);
+                            simulator->fill(widget);
                         }
                     }
                 }
 
-                if(window->objectName() == "PS3DMainWindow") {
+                if(widget->objectName().startsWith("PS3D")) {
                     foreach(QWidget *top, qApp->topLevelWidgets()) {
                         foreach(gnomonWorkspacePlantScan3D *scanner, top->findChildren<gnomonWorkspacePlantScan3D *>()) {
-                            scanner->fill(window);
+                            ; // scanner->fill(widget);
                         }
                     }
                 }
 
-                embedded << window;
+                return true;
             }
         }
        
@@ -129,7 +131,7 @@ protected:
     }
 
 private:
-    QList<QMainWindow *> embedded;
+    QList<QWidget *> embedded;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -183,14 +185,14 @@ int main(int argc, char **argv)
 
     dtkScriptInterpreterPython::instance()->init("gnomon-core");
 
-    gnomonMainWindow *window = new gnomonMainWindow;
-    window->setWindowTitle("gnomon");
-    window->show();
-    window->raise();
+    gnomonMainWindow *widget = new gnomonMainWindow;
+    widget->setWindowTitle("gnomon");
+    widget->show();
+    widget->raise();
 
     int status = application->exec();
 
-    delete window;
+    delete widget;
 
     dtkWidgetsController::instance()->clear();
     dtkImaging::uninitialize();

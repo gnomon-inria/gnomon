@@ -93,7 +93,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
     dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
-    dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);
+    dtk::widgets::workspace::pluginFactory().record( "L-System Simulator", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Constructor", creator<gnomonWorkspaceMeshConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Processing", creator<gnomonWorkspaceMeshFilter>);
@@ -125,7 +125,6 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     const QString browser_desc = QString("Loads forms in Gnomon by reading them from the file system.");
     const QString branchg_desc = QString("Uhhhh.");
 
-
     d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Browser", "Loads forms of different file formats into the application", "Form Browser", gnomonWorkspaceBrowser::color);
     d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Form Algorithm", "Run a custom algorithm written in Python on any type of forms", "Python Form Algorithm", gnomonWorkspacePythonAlgorithm::color);
     //const QString python_model_desc = QString("Runs a dynamical system model on forms based on a Python code.");
@@ -152,12 +151,11 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->workspace_bar->addWorkspaceInMenu("Tissue Mesh Forms", tissue_mesh_package_desc, "Mesh Constructor", "Create a synthetic triangular mesh using various parametric primitives", "Mesh Constructor", gnomonWorkspaceMeshConstructor::color);
     d->workspace_bar->addWorkspaceInMenu("Tissue Mesh Forms", tissue_mesh_package_desc, "Mesh Processing", "Provides plugins to process a 3D triangular mesh (smoothing, subdivision, decimation,...)", "Mesh Processing", gnomonWorkspaceMeshFilter::color);
 
-
     const QString branching_package_desc = QString("Workspaces dedicated to the generation and analysis of branching structures.");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Constructor", "Create a synthetic branching structure based on random or determinsitc processes", "Tree Constructor");
-    d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "LPy",           workspace_desc, "LPy");
-    d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D");
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator", workspace_desc, "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D", workspace_desc, "PlantScan3D", gnomonWorkspacePlantScan3D::color);
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
 
