@@ -43,6 +43,9 @@ public:
 public:
     static const QColor color;
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonWorkspacePlantScan3DPrivate *d;
 };
