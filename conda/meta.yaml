@@ -42,6 +42,7 @@ requirements:
     - {{ cdt('libxfixes') }}             # [linux]
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
+    - {{ cdt('liblz4') }}                # [linux]
     - {{ cdt('liblz4-devel') }}          # [linux]
 
   host:
