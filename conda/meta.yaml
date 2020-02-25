@@ -42,6 +42,7 @@ requirements:
     - {{ cdt('libxfixes') }}             # [linux]
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
+    - {{ cdt('lz4-devel') }}             # [linux]
 
   host:
     - qt >=5.9.0
