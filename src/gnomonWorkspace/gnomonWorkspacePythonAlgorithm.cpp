@@ -259,7 +259,13 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     example += "        pass\n";
 
     d->editor->editor->setText(example);
-    
+
+    QHBoxLayout *editor_layout = new QHBoxLayout();
+    QWidget *editor_widget = new QWidget(this);
+    editor_widget->setLayout(editor_layout);
+
+    editor_layout->addWidget(d->editor);
+
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
 // /////////////////////////////////////////////////////////////////////////////
@@ -270,9 +276,9 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
     d->dashboard->setFixedWidth(300);
 
-//    d->terminal = new gnomonInterpreterJupyter(this);
-    //d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
-//    editor_layout->addWidget(d->terminal);
+    d->terminal = new gnomonInterpreterJupyter(this);
+//    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
+    editor_layout->addWidget(d->terminal);
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
@@ -312,7 +318,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     QSplitter *splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(viewer);
-    splitter->addWidget(d->editor);
+    splitter->addWidget(editor_widget);
 
 
     QHBoxLayout *layout = new QHBoxLayout(this);
