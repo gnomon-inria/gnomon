@@ -154,7 +154,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
 
     const QString branching_package_desc = QString("Workspaces dedicated to the generation and analysis of branching structures.");
-    // d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
+    qDebug()<<Q_FUNC_INFO<<gnomonWorkspaceTreeAnalysis::isEmpty();
+    d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Analysis", workspace_desc, "Tree Analysis");
     // d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Constructor", "Create a synthetic branching structure based on random or determinsitc processes", "Tree Constructor");
     d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "LPy",           workspace_desc, "LPy");
     d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D");
