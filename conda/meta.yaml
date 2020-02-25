@@ -61,6 +61,7 @@ requirements:
     - sip
     - vtk=8.2.0
     - zlib
+    - lz4
 
   run:
     - dtk-log >=2.0.0
@@ -82,6 +83,7 @@ requirements:
     - sip
     - vtk=8.2.0
     - zlib
+    - lz4
 #   - fenics
 #   - openalea.plantscan3d
 #   - openalea.lpy
