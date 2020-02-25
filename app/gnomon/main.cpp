@@ -79,34 +79,35 @@ protected:
 
                     qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
 
-                    // foreach(QWidget *widget, widget->findChildren<QWidget*>()) {
+                    if(widget->objectName() == "PGLFrameGL") {
 
-                    //     if(widget->objectName() == "PGLFrameGL") {
+                        qDebug() << "GOT THE VIEW";
 
-                    //         // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
+                        // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
 
-                    //         gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
-                    //         export_button->move(10,10);
-                    //         export_button->show();
+                        gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
+                        export_button->move(10,10);
+                        export_button->show();
 
-                    //         connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
-                    //         {
-                    //             // qDebug() << Q_FUNC_INFO << 0 << widget;
+                        connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
+                        {
+                            // qDebug() << Q_FUNC_INFO << 0 << widget;
 
-                    //             foreach(QWidget *top, qApp->topLevelWidgets()) {
+                            foreach(QWidget *top, qApp->topLevelWidgets()) {
 
-                    //                 // qDebug() << Q_FUNC_INFO << 1 << widget;
+                                // qDebug() << Q_FUNC_INFO << 1 << widget;
 
-                    //                 foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+                                foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
 
-                    //                     // qDebug() << Q_FUNC_INFO << 2 << widget;
+                                    // qDebug() << Q_FUNC_INFO << 2 << widget;
 
-                    //                     simulator->apply(widget);
-                    //                 }
-                    //             }
-                    //         });
-                    //     }
-                    // }
+                                    simulator->apply(widget);
+                                }
+                            }
+                        });
+
+
+                    }
 
                     foreach(QWidget *top, qApp->topLevelWidgets()) {
                         foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
