@@ -86,5 +86,11 @@ void gnomonImageRegistrationCommand::setParameter(const QString& parameter, cons
     this->action->setParameter(parameter, value);
 }
 
+bool gnomonImageRegistrationCommand::isEmpty(void)
+{
+    loadPluginGroup("imageRegistration");
+    return gnomonCore::imageRegistration::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonImageRegistrationCommand.cpp ends here

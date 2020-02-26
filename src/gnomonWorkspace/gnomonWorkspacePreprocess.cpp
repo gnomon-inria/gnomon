@@ -215,5 +215,10 @@ void gnomonWorkspacePreprocess::configure(const QString& algorithm)
 
 const QColor gnomonWorkspacePreprocess::color = QColor("#4cd964");
 
+bool gnomonWorkspacePreprocess::isEmpty(void)
+{
+    return gnomonWorkspacePreprocessPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspacePreprocess.cpp ends here

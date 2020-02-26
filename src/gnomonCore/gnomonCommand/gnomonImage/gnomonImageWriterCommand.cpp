@@ -68,5 +68,11 @@ void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)
     d->image = image;
 }
 
+bool gnomonImageWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("imageWriter");
+    return gnomonCore::imageWriter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonImageWriterCommand.cpp ends here

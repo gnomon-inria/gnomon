@@ -87,5 +87,11 @@ gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output(void)
     }
 }
 
+bool gnomonCellComplexFromCellImageCommand::isEmpty(void)
+{
+    loadPluginGroup("cellComplexFromCellImage");
+    return gnomonCore::cellComplexFromCellImage::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellComplexFromCellImageCommand.cpp ends here

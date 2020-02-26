@@ -183,5 +183,12 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
 const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
+bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
+{
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
+    return stat == 1;
+}
+
 //
 // gnomonWorkspaceLSystemSimulator.cpp ends here

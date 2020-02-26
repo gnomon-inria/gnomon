@@ -72,5 +72,11 @@ gnomonCellComplexSeries *gnomonCellComplexConstructorCommand::output(void)
     }
 }
 
+bool gnomonCellComplexConstructorCommand::isEmpty(void)
+{
+    loadPluginGroup("cellComplexConstructor");
+    return gnomonCore::cellComplexConstructor::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellComplexConstructorCommand.cpp ends here

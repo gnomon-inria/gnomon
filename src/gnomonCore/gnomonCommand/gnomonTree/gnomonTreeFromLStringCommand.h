@@ -23,6 +23,8 @@ public:
     void setParameter(const QString&, const QVariant&);
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
+public:
+    static bool isEmpty(void);
 
 private:
     class gnomonTreeFromLStringCommandPrivate *d;

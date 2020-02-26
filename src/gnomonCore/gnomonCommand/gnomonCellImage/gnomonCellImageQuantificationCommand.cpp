@@ -99,5 +99,11 @@ gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
     }
 }
 
+bool gnomonCellImageQuantificationCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageQuantification");
+    return gnomonCore::cellImageQuantification::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellImageQuantificationCommand.cpp ends here

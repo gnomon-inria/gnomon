@@ -166,5 +166,10 @@ void gnomonWorkspaceCellComplexConstructor::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceCellComplexConstructor::color = QColor("#9e5fa0");
 
+bool gnomonWorkspaceCellComplexConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceCellComplexConstructorPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceCellComplexConstructor.cpp ends here

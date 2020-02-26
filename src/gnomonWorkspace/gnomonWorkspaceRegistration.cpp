@@ -222,5 +222,10 @@ void gnomonWorkspaceRegistration::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceRegistration::color = QColor("#ffcc00");
 
+bool gnomonWorkspaceRegistration::isEmpty(void)
+{
+    return gnomonWorkspaceRegistrationPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceRegistration.cpp ends here

@@ -15,6 +15,9 @@ public:
     void setPath(const QString& path);
     void setPointCloud(gnomonPointCloudSeries *pointCloud);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonPointCloudWriterCommandPrivate *d;
 };

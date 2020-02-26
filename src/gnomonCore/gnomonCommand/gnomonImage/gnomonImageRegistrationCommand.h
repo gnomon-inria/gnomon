@@ -21,6 +21,9 @@ public:
     QMap<QString, gnomonCoreParameter*> parameters(void) const;
     void setParameter(const QString&, const QVariant&);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonImageRegistrationCommandPrivate *d;
 };

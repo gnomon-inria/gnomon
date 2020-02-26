@@ -72,5 +72,11 @@ gnomonMeshSeries *gnomonMeshConstructorCommand::output(void)
     }
 }
 
+bool gnomonMeshConstructorCommand::isEmpty(void)
+{
+    loadPluginGroup("meshConstructor");
+    return gnomonCore::meshConstructor::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonMeshConstructorCommand.cpp ends here

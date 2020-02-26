@@ -40,6 +40,9 @@ public:
 public:
     static const QColor color;
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;
 };

@@ -156,10 +156,21 @@ int main(int argc, char **argv)
     application->setOrganizationDomain("fr");
     application->installEventFilter(new gnomonEventFilter());
 
+    QPixmap pixmap(":gnomon/gnomon_logo.png");
+    qDebug()<<pixmap;
+    QSplashScreen *splash = new QSplashScreen(pixmap);
+    splash->show();
+
+    splash->showMessage("Preparing parsers",Qt::AlignRight|Qt::AlignBottom);
+    application->processEvents();
+
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");
 
     application->initialize();
+
+    splash->showMessage("Loading core functionalities",Qt::AlignRight|Qt::AlignBottom);
+    application->processEvents();
 
     QCommandLineOption verboseOption("verbose", QCoreApplication::translate("main", "verbose plugin initialization"));
 
@@ -179,14 +190,25 @@ int main(int argc, char **argv)
     gnomonVisualization::initialize();
     gnomonWidgets::initialize();
 
+    splash->showMessage("Initializing Python interpreter",Qt::AlignRight|Qt::AlignBottom);
+    application->processEvents();
+
     bool redirect_io = false; int stat;
 
     dtkScriptInterpreterPython::instance()->init("gnomon-core");
 
+    splash->showMessage("Loading reader plugins",Qt::AlignRight|Qt::AlignBottom);
+    application->processEvents();
+
     gnomonMainWindow *window = new gnomonMainWindow;
+
+    splash->showMessage("Assembling application window",Qt::AlignRight|Qt::AlignBottom);
+    application->processEvents();
+
     window->setWindowTitle("gnomon");
     window->show();
     window->raise();
+    splash->finish(window);
 
     int status = application->exec();
 

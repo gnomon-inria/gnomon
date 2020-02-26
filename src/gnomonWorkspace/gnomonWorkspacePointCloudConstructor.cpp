@@ -166,5 +166,10 @@ void gnomonWorkspacePointCloudConstructor::configure(const QString& algorithm)
 
 const QColor gnomonWorkspacePointCloudConstructor::color = QColor("#9e5fa0");
 
+bool gnomonWorkspacePointCloudConstructor::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudConstructorPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspacePointCloudConstructor.cpp ends here

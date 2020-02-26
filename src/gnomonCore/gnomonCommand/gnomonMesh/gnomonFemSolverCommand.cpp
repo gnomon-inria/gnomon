@@ -82,5 +82,11 @@ QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) co
     return this->action->parameters();
 }
 
+bool gnomonFemSolverCommand::isEmpty(void)
+{
+    loadPluginGroup("femSolver");
+    return gnomonCore::femSolver::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonFemSolverCommand.cpp ends here

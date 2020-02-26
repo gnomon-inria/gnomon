@@ -16,6 +16,9 @@ public:
 
     gnomonCellImageSeries *cellImage(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonCellImageReaderCommandPrivate *d;
 };

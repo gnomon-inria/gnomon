@@ -860,6 +860,11 @@ void gnomonWorkspaceBrowser::apply(void)
 
 const QColor gnomonWorkspaceBrowser::color = QColor("#ff3b30");
 
+bool gnomonWorkspaceBrowser::isEmpty(void)
+{
+    return false;
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"

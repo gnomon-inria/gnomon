@@ -112,5 +112,11 @@ gnomonImageSeries *gnomonImageFusionCommand::output(void)
     }
 }
 
+bool gnomonImageFusionCommand::isEmpty(void)
+{
+    loadPluginGroup("imageFusion");
+    return gnomonCore::imageFusion::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonImageFusionCommand.cpp ends here

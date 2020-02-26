@@ -219,5 +219,10 @@ void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
 
 const QColor gnomonWorkspacePointCloudFromImage::color = QColor("#209820");
 
+bool gnomonWorkspacePointCloudFromImage::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudFromImagePrivate::isEmpty();
+}
+
 //
 // gnomonWorkspacePointCloudFromImage.cpp ends here

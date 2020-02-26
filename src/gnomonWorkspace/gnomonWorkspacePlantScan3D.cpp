@@ -118,5 +118,12 @@ void gnomonWorkspacePlantScan3D::fill(QWidget *widget)
 
 const QColor gnomonWorkspacePlantScan3D::color = QColor("#098412");
 
+bool gnomonWorkspacePlantScan3D::isEmpty(void)
+{
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import openalea.plantscan3d", &stat);
+    return stat == 1;
+}
+
 //
 // gnomonWorkspacePlantScan3D.cpp ends here

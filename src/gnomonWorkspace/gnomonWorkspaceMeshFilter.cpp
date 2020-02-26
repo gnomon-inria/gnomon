@@ -215,5 +215,10 @@ void gnomonWorkspaceMeshFilter::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceMeshFilter::color = QColor("#4c64d9");
 
+bool gnomonWorkspaceMeshFilter::isEmpty(void)
+{
+    return gnomonWorkspaceMeshFilterPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceMeshFilter.cpp ends here
