@@ -242,6 +242,10 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 // /////////////////////////////////////////////////////////////////////////////
 
     if(widget->objectName() == "LPYCodeEditor") {
+
+        if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
+            edit->setFrameShape(QFrame::NoFrame);
+
         d->lhs->addTab(widget, "Code");
     }
 
