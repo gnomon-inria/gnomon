@@ -48,7 +48,8 @@ requirements:
     - dtk-log >=2.2.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
-    - dtk-themes =2.1.7
+    - dtk-themes >=2.1.9
+    - dtk-themes-python >=2.0.1
     - dtk-core >=2.7.1
     - dtk-core-python >=2.5.4
     - dtk-imaging >=2.0.4
@@ -66,7 +67,8 @@ requirements:
     - dtk-log >=2.0.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.1
+    - dtk-themes >=2.1.9
+    - dtk-themes-python >=2.0.1
     - dtk-core >=2.7.1
     - dtk-core-python >=2.5.4
     - dtk-imaging >=2.0.4

@@ -28,52 +28,42 @@ from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 from openalea.lpy.gui.lpyview3d import LpyView3D
 
+from dtkthemes import dtkThemesEngine
+
+base1 = QColor(dtkThemesEngine.instance().value("@base1"))
+
 Viewer.show()
-Viewer.frameGL.setBgColor(40, 42, 54) # Just a PoC !!! -> dtk-themes-python to go
-#Viewer.hide()
+Viewer.frameGL.setBgColor(base1.red(), base1.green(), base1.blue())
 
-
-
-# print(dir(Viewer))
-# print(dir(Viewer.frameGL))
 workspace = LPyWindow()
 
 axiomviewer = LpyView3D(workspace)
 axiomviewer.setObjectName('LPYAxiomViewer')
 axiomviewer.show()
 
-
-#viewer = LpyView3D(workspace)
-#viewer.setObjectName('LPYViewer')
-#viewer.show()
-#workspace.view3D = viewer
-#workspace.use_own_view3D = True
-
-
-class LpyPlotter:
-    def __init__(self):
-        pass
-    def plot(self,scene):
-        viewer.display(scene)
-    def selection(self):
-        pass
-    def waitSelection(self,txt):
-        pass
-    def save(self,fname,format):
-        viewer.saveToSnapshot(fname)
-
-#plotter = LpyPlotter()
-
-#from openalea.lpy import registerPlotter
-#registerPlotter(plotter)
-
-
 workspace.frame.setObjectName("LPYCodeEditor")
-workspace.shellwidget.setObjectName("LPYShell")
-workspace.debugDock.setObjectName("LPYDebug")
 
-# workspace.parameterDock.toggleViewAction().toggle()
-# 
+workspace.codeeditor.setStyleSheet(
+    ""
+    "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
+    "color: " + dtkThemesEngine.instance().value("@fg") + ";")
+
+workspace.shellwidget.setObjectName("LPYShell")
+workspace.shellwidget.setStyleSheet(
+    ""
+    "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
+    "color: " + dtkThemesEngine.instance().value("@fg") + ";")
+
+workspace.shellwidget._display_banner = False
+workspace.shellwidget.style_sheet  = ""
+workspace.shellwidget.style_sheet += ".error { color: orange; }"
+workspace.shellwidget.style_sheet += ".in-prompt { color: lightgreen; }"
+workspace.shellwidget.style_sheet += ".in-prompt-number { color: lightgreen; font-weight: bold; }"
+workspace.shellwidget.style_sheet += ".out-prompt { color: orange; }"
+workspace.shellwidget.style_sheet += ".out-prompt-number { color: orange; font-weight: bold; }"
+
+workspace.debugDock.setObjectName("LPYDebug")
+# workspace.parameterDock.toggleViewAction().toggle()# 
 
 workspace.scalarDock.setObjectName("LPYScalars")
 workspace.materialDock.setObjectName("LPYMaterials")
@@ -86,9 +76,10 @@ panels[0].setObjectName("LPYCurves")
 # workspace.viewer.setObjectName("PGLViewer")
 
 workspace.setObjectName("LPYMainWindow")
-
 workspace.show()
 workspace.hide()
+
+# dtkThemesEngine.instance().changed.connect(lambda: print("Oh yeah"))
 
 #
 # lpy.py ends here
@@ -122,3 +113,37 @@ workspace.hide()
 #     assert propertyname in ['lpykeyword', 'pykeyword', 'prod', 'delimiter', 'func', 'string', 'tab','space','number','comment']
 #     syntaxhighlighter = codeeditor.syntaxhighlighter
 #     return getattr(syntaxhighlighter, propertyname+'Format')
+
+# red = QColor(dtkThemesEngine.instance().value("@red"))
+# ... Same goes for:
+# @base0:
+# @base1:
+# @base2:
+# @base3:
+# @base4:
+# @base5:
+# @base6:
+# @base7:
+# @base8:
+#
+# @bg:
+# @bgalt:
+# @fg:
+# @fgalt:
+# @bd:
+# @bdalt:
+# @hl:
+# @hlalt:
+#
+# @grey:
+# @red:
+# @orange:
+# @green:
+# @teal:
+# @yellow:
+# @blue:
+# @darkblue:
+# @magenta:
+# @violet:
+# @cyan:
+# @darkcyan:
