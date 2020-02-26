@@ -221,7 +221,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     image.fill(Qt::black);
     view->render(&image);
 
-    qDebug() << Q_FUNC_INFO << 5;
+    qDebug() << Q_FUNC_INFO << 5 << image;
 
     gnomonFormManager::instance()->addForm(lstring_series, this->color, image);
 
@@ -338,7 +338,7 @@ bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 {
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
-    return stat == 1;
+    return (stat == 1) && (gnomonCore::lStringData::pluginFactory().keys().contains("gnomonLStringDataLPy"))
 }
 
 //
