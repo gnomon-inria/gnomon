@@ -253,8 +253,8 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void reparentAction(const char * menuLabel, const char * actionLabel, QAction * button) {
-    foreach(QAction *action, window->menuBar()->actions()) {
+void reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QWidget * self,  QPushButton * button) {
+    foreach(QAction *action, menu->actions()) {
 
         qDebug() << Q_FUNC_INFO << action->text();
         if(action->text() == menuLabel) {
@@ -263,7 +263,7 @@ void reparentAction(const char * menuLabel, const char * actionLabel, QAction * 
 
                 if(reaction->text() == actionLabel) {
 
-                    connect(button, &QPushButton::clicked, [=] (void) -> void
+                    self->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
                         reaction->trigger();
                     });
@@ -326,11 +326,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
            d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
 
-           reparentAction("L-systems", "Run", d->run_button);
-           reparentAction("L-systems", "Step", d->step_button);
-           reparentAction("L-systems", "Rewind", d->rewind_button);
-           reparentAction("L-systems", "Animate", d->animate_button);
-           reparentAction("L-systems", "Stop", d->stop_button);
+           reparentAction(window->menuBar(), "L-systems", "Run", this, d->run_button);
+           reparentAction(window->menuBar(), "L-systems", "Step", this, d->step_button);
+           reparentAction(window->menuBar(), "L-systems", "Rewind", this, d->rewind_button);
+           reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
+           reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
 
 /*            foreach(QAction *action, window->menuBar()->actions()) {
 
