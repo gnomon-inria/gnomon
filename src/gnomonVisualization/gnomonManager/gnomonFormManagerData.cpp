@@ -41,13 +41,27 @@ public:
 
 gnomonFormManagerDataPrivate::gnomonFormManagerDataPrivate(gnomonFormManagerData *data) : QScrollArea(0)
 {
-    QFormLayout *layout = new QFormLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
+
+    QFormLayout *metadata_layout = new QFormLayout;
 
     for(QString key : data->data.keys())
-        layout->addRow(key, gnomonFormManagerDataCreate(data->data.value(key)));
+        metadata_layout->addRow(key, gnomonFormManagerDataCreate(data->data.value(key)));
 
     this->contents = new QWidget(this);
     this->contents->setLayout(layout);
+
+    QString title(data->name);
+    title += " (";
+    title += data->data_name;
+    title += ")";
+
+    QLabel *title_label = new QLabel(title);
+    title_label->setAlignment(Qt::AlignCenter);
+    title_label->setStyleSheet("font-size: 20px; height: 50px; font-family: Helvetica");
+
+    layout->addWidget(title_label);
+    layout->addLayout(metadata_layout);
 
     this->setWidget(this->contents);
     this->setWidgetResizable(true);
