@@ -73,15 +73,15 @@ protected:
 
                 // widget->statusBar()->setSizeGripEnabled(false);
 
-                qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << widget->objectName();
+                // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 0 << widget->objectName();
 
                 if(widget->objectName().startsWith("PGL") || widget->objectName().startsWith("LPY")) {
 
-                    qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
+                    // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 1;
 
                     if(widget->objectName() == "PGLFrameGL") {
 
-                        qDebug() << "GOT THE VIEW";
+                        // qDebug() << "GOT THE VIEW";
 
                         // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
 
@@ -106,7 +106,7 @@ protected:
                             }
                         });
 
-
+                       
                     }
 
                     foreach(QWidget *top, qApp->topLevelWidgets()) {

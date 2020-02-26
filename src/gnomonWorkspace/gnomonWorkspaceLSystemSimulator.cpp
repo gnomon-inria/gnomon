@@ -18,6 +18,8 @@
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 
+#include <dtkFonts>
+#include <dtkThemes>
 #include <dtkScript>
 #include <dtkMacs>
 #include <dtkWidgets>
@@ -40,11 +42,19 @@ public:
     QSplitter *splitter;
 
 public:
+    QPushButton *run_button;
+    QPushButton *stop_button;
+    QPushButton *rewind_button;
+    QPushButton *animate_button;
+    QPushButton *step_button;
+
+public:
     QList<dtkWidgetsMenu *> menus;
 
 public:
     dtkWidgetsMenu *dashboard_menu;
     dtkWidgetsMenuItemDIY *dashboard_menu_parameters;
+    dtkWidgetsMenuItemDIY *dashboard_menu_controls;
     dtkWidgetsMenuBarContainer *dashboard;
 };
 
@@ -56,25 +66,66 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     // d->spinner->start();
 
     d->lhs = new QTabWidget(this);
-    // d->lhs->addTab(new QWidget, "Code");
-    // d->lhs->addTab(new QWidget, "Axiom");
+    d->lhs->setTabPosition(QTabWidget::South);
 
     d->rhs = new QTabWidget(this);
-    // d->rhs->addTab(new QWidget, "2D");
-    // d->rhs->addTab(new QWidget, "3D");
+    d->rhs->setTabPosition(QTabWidget::South);
 
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->lhs);
     d->splitter->addWidget(d->rhs);
 
     d->params = new QTabWidget(this);
+    d->params->setTabPosition(QTabWidget::South);
+    d->params->setFixedHeight(200);
 
     d->dashboard_menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
     d->dashboard_menu_parameters->addWidget(d->params);
     d->dashboard_menu_parameters->setSizePolicy(QSizePolicy::Expanding);
 
+    d->run_button = new QPushButton;
+    d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
+    d->run_button->setStyleSheet("background: none; border: none; color: @fg");
+
+    d->stop_button = new QPushButton;
+    d->stop_button->setIcon(dtkFontAwesome::instance()->icon(fa::pause));
+    d->stop_button->setStyleSheet("background: none; border: none; color: @fg");
+
+    d->rewind_button = new QPushButton;
+    d->rewind_button->setIcon(dtkFontAwesome::instance()->icon(fa::backward));
+    d->rewind_button->setStyleSheet("background: none; border: none; color: @fg");
+
+    dtkFontAwesome::instance()->setDefaultOption("color", QColor(Qt::red));
+
+    d->animate_button = new QPushButton;
+    d->animate_button->setIcon(dtkFontAwesome::instance()->icon(fa::play));
+    d->animate_button->setStyleSheet("background: none; border: none; color: @fg");
+
+    dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
+
+    d->step_button = new QPushButton;
+    d->step_button->setIcon(dtkFontAwesome::instance()->icon(fa::stepforward));
+    d->step_button->setStyleSheet("background: none; border: none; color: @fg");
+
+    QHBoxLayout *controls_layout = new QHBoxLayout;
+    controls_layout->setContentsMargins(0, 0, 0, 0);
+    controls_layout->addWidget(d->run_button);
+    controls_layout->addWidget(d->stop_button);
+    controls_layout->addWidget(d->rewind_button);
+    controls_layout->addWidget(d->animate_button);
+    controls_layout->addWidget(d->step_button);
+    controls_layout->setAlignment(Qt::AlignHCenter);
+
+    QWidget *controls = new QWidget(this);
+    controls->setLayout(controls_layout);
+
+    d->dashboard_menu_controls = new dtkWidgetsMenuItemDIY("Controls");
+    d->dashboard_menu_controls->addWidget(controls);
+    d->dashboard_menu_controls->setSizePolicy(QSizePolicy::Expanding);
+
     d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
     d->dashboard_menu->addItem(d->dashboard_menu_parameters);
+    d->dashboard_menu->addItem(d->dashboard_menu_controls);
 
     d->dashboard = new dtkWidgetsMenuBarContainer(this);
     d->dashboard->navigator->deleteLater();
@@ -96,8 +147,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     file.open(QIODevice::ReadOnly);
     QString script = file.readAll();
     file.close();
-
-    qDebug() << Q_FUNC_INFO << script;
 
     QTimer::singleShot(500, [=] (void) -> void
     {
@@ -228,6 +277,21 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
             d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
 
+            foreach(QAction *action, window->menuBar()->actions()) {
+
+                qDebug() << Q_FUNC_INFO << action->text();
+
+                if(action->text() == "Run") {
+
+                    qDebug() << Q_FUNC_INFO << "Boum";
+
+                    connect(d->run_button, &QPushButton::clicked, [=] (void) -> void
+                    {
+                        action->trigger();
+                    });
+                }
+            }
+
             window->menuBar()->hide();
             window->menuWidget()->hide();
 
@@ -236,7 +300,12 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     }
 
     if(widget->objectName() == "PGLFrameGL") {
+
+        // QWidget *window = widget->window();
+
         d->rhs->addTab(widget, "3D");
+
+        // window->hide();
     }
 
 // /////////////////////////////////////////////////////////////////////////////

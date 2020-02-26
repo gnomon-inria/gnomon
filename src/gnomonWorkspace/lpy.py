@@ -28,9 +28,11 @@ from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 
 Viewer.show()
+Viewer.frameGL.setBgColor(40, 42, 54) # Just a PoC !!! -> dtk-themes-python to go
 Viewer.hide()
 
-print(dir(Viewer))
+# print(dir(Viewer))
+# print(dir(Viewer.frameGL))
 
 workspace = LPyWindow()
 workspace.codeeditor.setObjectName("LPYCodeEditor")
