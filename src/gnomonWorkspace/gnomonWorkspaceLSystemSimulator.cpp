@@ -77,7 +77,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->params = new QTabWidget(this);
     d->params->setTabPosition(QTabWidget::South);
-    d->params->setFixedHeight(200);
 
     d->dashboard_menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
     d->dashboard_menu_parameters->addWidget(d->params);
@@ -126,7 +125,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->dashboard_menu_controls = new dtkWidgetsMenuItemDIY("Controls");
     d->dashboard_menu_controls->addWidget(controls);
-    d->dashboard_menu_controls->setSizePolicy(QSizePolicy::Expanding);
 
     d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
     d->dashboard_menu->addItem(d->dashboard_menu_parameters);
@@ -253,10 +251,12 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QWidget * self,  QPushButton * button) {
+void reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QWidget * self,  QPushButton * button)
+{
     foreach(QAction *action, menu->actions()) {
 
         qDebug() << Q_FUNC_INFO << action->text();
+
         if(action->text() == menuLabel) {
 
             foreach(QAction *reaction, action->menu()->actions()) {
@@ -324,13 +324,15 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
 
-           d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+            window->setParent(this);
 
-           reparentAction(window->menuBar(), "L-systems", "Run", this, d->run_button);
-           reparentAction(window->menuBar(), "L-systems", "Step", this, d->step_button);
-           reparentAction(window->menuBar(), "L-systems", "Rewind", this, d->rewind_button);
-           reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
-           reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
+            d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+
+            reparentAction(window->menuBar(), "L-systems", "Run", this, d->run_button);
+            reparentAction(window->menuBar(), "L-systems", "Step", this, d->step_button);
+            reparentAction(window->menuBar(), "L-systems", "Rewind", this, d->rewind_button);
+            reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
+            reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
 
 /*            foreach(QAction *action, window->menuBar()->actions()) {
 
