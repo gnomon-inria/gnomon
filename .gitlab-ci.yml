@@ -26,7 +26,7 @@ conda_build_linux:
     - master
     - develop
 
-anaconda_linux:
+anaconda_linux_master:
   stage: deploy
   script:
   - conda update -n base -c defaults conda
@@ -35,6 +35,19 @@ anaconda_linux:
   extends: .template_retry
   only:
   - master
+
+
+anaconda_linux_develop :
+  stage: deploy
+  script:
+  - conda update -n base -c defaults conda
+  - conda install conda-build anaconda-client
+  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
+  extends: .template_retry
+  when: manual
+  only:
+  - develop
+
 
 pages:
   stage: deploy
