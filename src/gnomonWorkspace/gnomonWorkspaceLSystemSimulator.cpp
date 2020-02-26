@@ -302,25 +302,30 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->rhs->addTab(widget, "Shell");
     }
 
-    if(widget->objectName() == "LPYDebug") {
+    else if(widget->objectName() == "LPYDebug") {
         d->rhs->addTab(static_cast<QDockWidget *>(widget)->widget(), "Debug");
     }
 
-    if(widget->objectName() == "LPYParameters") {
+    else if(widget->objectName() == "LPYParameters") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Parameters");
     }
 
-    if(widget->objectName() == "LPYScalars") {
+    else if(widget->objectName() == "LPYScalars") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Scalars");
         d->dashboard->update();
     }
 
-    if(widget->objectName() == "LPYMaterials") {
+    else if(widget->objectName() == "LPYCurves") {
+        d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Graphical Objects");
+        d->dashboard->update();
+    }
+
+    else if(widget->objectName() == "LPYMaterials") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Materials");
         d->dashboard->update();
     }
 
-    if(widget->objectName() == "LPYMainWindow") {
+    else if(widget->objectName() == "LPYMainWindow") {
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
 

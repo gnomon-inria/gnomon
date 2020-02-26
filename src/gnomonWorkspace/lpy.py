@@ -73,11 +73,16 @@ workspace.shellwidget.setObjectName("LPYShell")
 workspace.debugDock.setObjectName("LPYDebug")
 
 # workspace.parameterDock.toggleViewAction().toggle()
-# workspace.parameterDock.setObjectName("LPYParameters")
+# 
 
 workspace.scalarDock.setObjectName("LPYScalars")
 workspace.materialDock.setObjectName("LPYMaterials")
-
+workspace.parametersDock.setObjectName("LPYParameters")
+panels = workspace.panelmanager.getObjectPanels()
+if len(panels) == 0:
+    workspace.panelmanager.createNewPanel()
+    panels = workspace.panelmanager.getObjectPanels()
+panels[0].setObjectName("LPYCurves")
 # workspace.viewer.setObjectName("PGLViewer")
 
 workspace.setObjectName("LPYMainWindow")
