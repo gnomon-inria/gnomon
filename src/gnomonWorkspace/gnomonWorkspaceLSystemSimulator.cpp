@@ -434,7 +434,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->in_axiom_bar->setMargins(6);
         // d->view_menubar->addMenu(d->menu());
         d->in_axiom_bar->touch();
-        d->in_axiom_bar->setFixedHeight(d->in_axiom);
+        d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
 
         d->lhs->addTab(widget, "Axiom");
 
