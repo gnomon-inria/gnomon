@@ -51,9 +51,16 @@ gnomonFormManagerDataPrivate::gnomonFormManagerDataPrivate(gnomonFormManagerData
     this->contents = new QWidget(this);
     this->contents->setLayout(layout);
 
-    layout->addWidget(new QLabel(data->name));
-    layout->addWidget(new QLabel(data->data_name));
+    QString title(data->name);
+    title += " (";
+    title += data->data_name;
+    title += ")";
 
+    QLabel *title_label = new QLabel(title);
+    title_label->setAlignment(Qt::AlignCenter);
+    title_label->setStyleSheet("font-size: 20px; height: 50px; font-family: Helvetica");
+
+    layout->addWidget(title_label);
     layout->addLayout(metadata_layout);
 
     this->setWidget(this->contents);
