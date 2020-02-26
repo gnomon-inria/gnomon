@@ -71,5 +71,11 @@ gnomonTreeSeries *gnomonTreeReaderCommand::tree(void)
     }
 }
 
+bool gnomonTreeReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("treeReader");
+    return gnomonCore::treeReader::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonTreeReaderCommand.cpp ends here

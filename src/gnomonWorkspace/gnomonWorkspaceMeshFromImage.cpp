@@ -214,5 +214,10 @@ void gnomonWorkspaceMeshFromImage::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceMeshFromImage::color = QColor("#5f9ea0");
 
+bool gnomonWorkspaceMeshFromImage::isEmpty(void)
+{
+    return gnomonWorkspaceMeshFromImagePrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceMeshFromImage.cpp ends here

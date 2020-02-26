@@ -18,6 +18,9 @@ public:
 
     gnomonPointCloudSeries *pointCloud(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonPointCloudReaderCommandPrivate *d;
 };

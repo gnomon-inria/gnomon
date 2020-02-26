@@ -95,5 +95,11 @@ gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
     }
 }
 
+bool gnomonPointCloudFromImageCommand::isEmpty(void)
+{
+    loadPluginGroup("pointCloudFromImage");
+    return gnomonCore::pointCloudFromImage::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonPointCloudFromImageCommand.cpp ends here

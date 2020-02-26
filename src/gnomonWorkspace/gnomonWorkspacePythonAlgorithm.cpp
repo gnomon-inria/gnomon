@@ -432,6 +432,11 @@ void gnomonWorkspacePythonAlgorithm::run(void)
 
 const QColor gnomonWorkspacePythonAlgorithm::color = QColor("#a38948");
 
+bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
+{
+    return false;
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspacePythonAlgorithm.moc"

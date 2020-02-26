@@ -72,5 +72,11 @@ gnomonTreeSeries *gnomonTreeConstructorCommand::output(void)
     }
 }
 
+bool gnomonTreeConstructorCommand::isEmpty(void)
+{
+    loadPluginGroup("treeConstructor");
+    return gnomonCore::treeConstructor::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonTreeConstructorCommand.cpp ends here

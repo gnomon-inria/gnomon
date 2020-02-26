@@ -72,5 +72,11 @@ gnomonPointCloudSeries *gnomonPointCloudConstructorCommand::output(void)
     }
 }
 
+bool gnomonPointCloudConstructorCommand::isEmpty(void)
+{
+    loadPluginGroup("pointCloudConstructor");
+    return gnomonCore::pointCloudConstructor::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonPointCloudConstructorCommand.cpp ends here

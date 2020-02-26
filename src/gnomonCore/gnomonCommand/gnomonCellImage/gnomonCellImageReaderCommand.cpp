@@ -71,5 +71,11 @@ gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage(void)
     }
 }
 
+bool gnomonCellImageReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageReader");
+    return gnomonCore::cellImageReader::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellImageReaderCommand.cpp ends here

@@ -237,5 +237,10 @@ void gnomonWorkspaceSegmentation::apply(void)
 
 const QColor gnomonWorkspaceSegmentation::color = QColor("#ffcc00");
 
+bool gnomonWorkspaceSegmentation::isEmpty(void)
+{
+    return gnomonWorkspaceSegmentationPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceSegmentation.cpp ends here
