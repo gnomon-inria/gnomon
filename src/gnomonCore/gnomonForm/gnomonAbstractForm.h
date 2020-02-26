@@ -47,6 +47,7 @@ public:
 public:
     virtual QString name(void) const = 0;
     virtual QMap<QString,QString> metadata(void) const = 0;
+    virtual QString dataName(void) const = 0;
 
 public:
     gnomonCellComplex *asCellComplex();

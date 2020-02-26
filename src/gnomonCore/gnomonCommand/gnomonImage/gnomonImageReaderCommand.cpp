@@ -71,5 +71,11 @@ gnomonImageSeries *gnomonImageReaderCommand::image(void)
     }
 }
 
+bool gnomonImageReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("imageReader");
+    return gnomonCore::imageReader::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonImageReaderCommand.cpp ends here

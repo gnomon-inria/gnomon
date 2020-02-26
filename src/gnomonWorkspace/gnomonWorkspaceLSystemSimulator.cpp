@@ -195,36 +195,56 @@ void gnomonWorkspaceLSystemSimulator::apply(void)
 
 void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
 {
+
     int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
 
-    QString current_lstring = dtkScriptInterpreterPython::instance()->interpret("print(str(lstring))", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomonvisualization", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("manager = gnomonvisualization.gnomonFormManager.instance()", &stat);
 
-    qDebug() << Q_FUNC_INFO << 2 << current_lstring;
+    dtkScriptInterpreterPython::instance()->interpret("import numpy as np", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("canvas_img = np.zeros((600, 600, 3), float)", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("image = [[[rgb for rgb in c] for c in r] for r in canvas_img]", &stat);
 
-    gnomonLString *lstring = new gnomonLString();
+    QString red_string = QString::number(this->color.red());
+    QString green_string = QString::number(this->color.green());
+    QString blue_string = QString::number(this->color.blue());
+    QString color_statement = "color = ["+red_string+","+green_string+","+blue_string+"]";
+    dtkScriptInterpreterPython::instance()->interpret(color_statement, &stat);
 
-    gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
-    lstring_series->insert(0, lstring);
+    dtkScriptInterpreterPython::instance()->interpret("manager.addForm(gnomon_lstring_series, color, image)", &stat);
 
-    qDebug() << Q_FUNC_INFO << 3 << current_lstring << gnomonCore::lStringData::pluginFactory().keys();
-
-    gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
-
-    qDebug() << Q_FUNC_INFO << lstring_data;
-
-    lstring_data->fromString(current_lstring);
-    lstring->setData(lstring_data);
-
-    qDebug() << Q_FUNC_INFO << 4 << current_lstring;
-
-    QImage image(128, 128, QImage::Format_ARGB32);
-    image.fill(Qt::black);
-    view->render(&image);
-
-    qDebug() << Q_FUNC_INFO << 5;
-
-    gnomonFormManager::instance()->addForm(lstring_series, this->color, image);
-
+//    gnomonLString *lstring = new gnomonLString();
+//
+//    gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+//    lstring_series->insert(0, lstring);
+//
+//    qDebug() << Q_FUNC_INFO << 3 << current_lstring << gnomonCore::lStringData::pluginFactory().keys();
+//
+//    gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+//
+//    qDebug() << Q_FUNC_INFO << lstring_data;
+//
+//    lstring_data->fromString(current_lstring);
+//    lstring->setData(lstring_data);
+//
+//    qDebug() << Q_FUNC_INFO << 4 << current_lstring;
+//
+//    QImage image(128, 128, QImage::Format_ARGB32);
+//    image.fill(Qt::black);
+//    view->render(&image);
+//
+//    qDebug() << Q_FUNC_INFO << 5 << image;
+//
+//    gnomonFormManager::instance()->addForm(lstring_series, this->color, image);
+//
     qDebug() << Q_FUNC_INFO << "Done";
 }
 
@@ -333,6 +353,13 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 }
 
 const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
+
+bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
+{
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
+    return (stat == 1) && (gnomonCore::lStringData::pluginFactory().keys().contains("gnomonLStringDataLPy"));
+}
 
 //
 // gnomonWorkspaceLSystemSimulator.cpp ends here

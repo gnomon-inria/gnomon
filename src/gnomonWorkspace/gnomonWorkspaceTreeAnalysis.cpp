@@ -213,5 +213,10 @@ void gnomonWorkspaceTreeAnalysis::apply(void)
 
 const QColor gnomonWorkspaceTreeAnalysis::color = QColor("#734906");
 
+bool gnomonWorkspaceTreeAnalysis::isEmpty(void)
+{
+    return gnomonWorkspaceTreeAnalysisPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceTreeAnalysis.cpp ends here

@@ -100,5 +100,11 @@ void gnomonTreeFromLStringCommand::setParameter(const QString& parameter, const 
     this->action->setParameter(parameter, value);
 }
 
+bool gnomonTreeFromLStringCommand::isEmpty(void)
+{
+    loadPluginGroup("treeFromLString");
+    return gnomonCore::treeFromLString::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonTreeFromLStringCommand.cpp ends here

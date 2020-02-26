@@ -40,6 +40,7 @@ public:
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
+    virtual QString dataName(void) const = 0;
 
 
 public:

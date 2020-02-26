@@ -73,6 +73,7 @@ public:
 public:
     QString name(void) const override { return"gnomonImage";}
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+    QString dataName(void) const override { return m_data->dataName(); }
 
 public:
     dtkImage *image(QString channel="") const { return m_data->image(channel); };

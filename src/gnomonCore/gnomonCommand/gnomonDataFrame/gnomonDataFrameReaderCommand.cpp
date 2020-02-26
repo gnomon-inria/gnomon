@@ -71,5 +71,11 @@ gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame(void)
     }
 }
 
+bool gnomonDataFrameReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("dataFrameReader");
+    return gnomonCore::dataFrameReader::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonDataFrameReaderCommand.cpp ends here

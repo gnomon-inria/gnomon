@@ -71,6 +71,7 @@ public:
 public:
     QString name(void) const override { return"gnomonCellImage";}
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+    QString dataName(void) const override { return m_data->dataName(); }
 
 public:
     virtual void setImage(dtkImage *image) { return m_data->setImage(image); }

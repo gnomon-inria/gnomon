@@ -59,6 +59,9 @@ public:
 
 public:
     QFormLayout *layout = nullptr;
+
+public:
+    static bool isEmpty(void);
 };
 
 #include "gnomonWorkspaceTemplate_p.tpp"

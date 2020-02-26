@@ -87,5 +87,11 @@ gnomonCellImageSeries *gnomonCellImageFilterCommand::output(void)
     }
 }
 
+bool gnomonCellImageFilterCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageFilter");
+    return gnomonCore::cellImageFilter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellImageFilterCommand.cpp ends here

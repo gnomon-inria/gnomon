@@ -166,5 +166,10 @@ void gnomonWorkspaceImageConstructor::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceImageConstructor::color = QColor("#9e5fa0");
 
+bool gnomonWorkspaceImageConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceImageConstructorPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceImageConstructor.cpp ends here

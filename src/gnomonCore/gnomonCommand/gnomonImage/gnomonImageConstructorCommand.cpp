@@ -72,5 +72,11 @@ gnomonImageSeries *gnomonImageConstructorCommand::output(void)
     }
 }
 
+bool gnomonImageConstructorCommand::isEmpty(void)
+{
+    loadPluginGroup("imageConstructor");
+    return gnomonCore::imageConstructor::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonImageConstructorCommand.cpp ends here

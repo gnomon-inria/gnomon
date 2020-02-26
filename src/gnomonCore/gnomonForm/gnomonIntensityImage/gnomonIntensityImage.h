@@ -58,6 +58,7 @@ public:
 public:
     QString name(void) const override { return"gnomonIntensityImage";}
     QMap<QString,QString> metadata(void) const override { return QMap<QString,QString>(); }
+    QString dataName(void) const override { return "dtkImage"; }
 
 public:
     const dtkImage *data(void) const { return m_data; }

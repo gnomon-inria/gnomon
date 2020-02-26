@@ -37,6 +37,9 @@ public slots:
 public:
     static const QColor color;
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonWorkspaceLStringFromTreePrivate *d;
 };

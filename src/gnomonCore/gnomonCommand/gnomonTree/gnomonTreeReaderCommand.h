@@ -16,6 +16,9 @@ public:
 
     gnomonTreeSeries *tree(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonTreeReaderCommandPrivate *d;
 };

@@ -164,5 +164,10 @@ void gnomonWorkspaceTreeConstructor::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceTreeConstructor::color = QColor("#9e5fa0");
 
+bool gnomonWorkspaceTreeConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceTreeConstructorPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceTreeConstructor.cpp ends here

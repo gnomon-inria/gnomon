@@ -133,5 +133,10 @@ template <typename T> dtkWidgetsMenu *gnomonWorkspaceTemplatePrivate<T>::menu(dt
     return pane;
 }
 
+template <typename T>  bool gnomonWorkspaceTemplatePrivate<T>::isEmpty(void)
+{
+    return T::isEmpty();
+}
+
 //
 // gnomonWorkspaceTemplate_p.tpp ends here

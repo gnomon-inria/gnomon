@@ -152,5 +152,10 @@ void gnomonWorkspaceSimulation::configure(const QString& algorithm)
 
 const QColor gnomonWorkspaceSimulation::color = QColor("#5856d6");
 
+bool gnomonWorkspaceSimulation::isEmpty(void)
+{
+    return gnomonWorkspaceSimulationPrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceSimulation.cpp ends here

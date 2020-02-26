@@ -67,5 +67,10 @@ void gnomonPointCloudWriterCommand::setPointCloud(gnomonPointCloudSeries *pointC
     d->pointCloud = pointCloud;
 }
 
+bool gnomonPointCloudWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("pointCloudWriter");
+    return gnomonCore::pointCloudWriter::pluginFactory().keys().size() == 0;
+}
 //
 // gnomonPointCloudWriterCommand.cpp ends here

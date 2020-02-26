@@ -223,5 +223,10 @@ void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm
 
 const QColor gnomonWorkspaceCellComplexFromCellImage::color = QColor("#982374");
 
+bool gnomonWorkspaceCellComplexFromCellImage::isEmpty(void)
+{
+    return gnomonWorkspaceCellComplexFromCellImagePrivate::isEmpty();
+}
+
 //
 // gnomonWorkspaceCellComplexFromCellImage.cpp ends here
