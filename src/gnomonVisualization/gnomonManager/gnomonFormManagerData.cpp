@@ -51,6 +51,9 @@ gnomonFormManagerDataPrivate::gnomonFormManagerDataPrivate(gnomonFormManagerData
     this->contents = new QWidget(this);
     this->contents->setLayout(layout);
 
+    layout->addWidget(new QLabel(data->name));
+    layout->addWidget(new QLabel(data->data_name));
+
     layout->addLayout(metadata_layout);
 
     this->setWidget(this->contents);
