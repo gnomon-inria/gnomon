@@ -36,6 +36,8 @@ public:
 
 public:
     QMap<QString,QString> data;
+    QString name;
+    QString data_name;
 
 private:
     class gnomonFormManagerDataPrivate *d;

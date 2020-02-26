@@ -142,7 +142,12 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
 
     gnomonFormManagerData *data = new gnomonFormManagerData(this);
     data->reference = item;
+    data->name = form->current()->name();
+    qDebug()<<Q_FUNC_INFO<<data->name;
+    data->data_name = form->current()->dataName();
+    qDebug()<<Q_FUNC_INFO<<data->data_name;
     data->data = form->current()->metadata();
+    qDebug()<<Q_FUNC_INFO<<data->data;
     this->formData.insert(item, data);
 
     return item;
