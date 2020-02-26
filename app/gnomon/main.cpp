@@ -211,7 +211,7 @@ int main(int argc, char **argv)
     widget->setWindowTitle("gnomon");
     widget->show();
     widget->raise();
-    splash->finish(window);
+    splash->finish(widget);
 
     int status = application->exec();
 

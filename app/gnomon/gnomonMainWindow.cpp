@@ -195,11 +195,11 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Form Translation", workspace_desc, "Form Translation", gnomonWorkspaceTreeFromLString::color);
     }
     if (!gnomonWorkspaceLSystemSimulator::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);",           workspace_desc, "LPy");
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator",  workspace_desc, "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);
     }
     if (!gnomonWorkspacePlantScan3D::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D", gnomonWorkspacePlantScan3D::color);
-    }   
+    }
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
 
