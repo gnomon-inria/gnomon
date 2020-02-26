@@ -105,3 +105,37 @@ workspace.hide()
 #     assert propertyname in ['lpykeyword', 'pykeyword', 'prod', 'delimiter', 'func', 'string', 'tab','space','number','comment']
 #     syntaxhighlighter = codeeditor.syntaxhighlighter
 #     return getattr(syntaxhighlighter, propertyname+'Format')
+
+# red = QColor(dtkThemesEngine.instance().value("@red"))
+# ... Same goes for:
+# @base0:
+# @base1:
+# @base2:
+# @base3:
+# @base4:
+# @base5:
+# @base6:
+# @base7:
+# @base8:
+#
+# @bg:
+# @bgalt:
+# @fg:
+# @fgalt:
+# @bd:
+# @bdalt:
+# @hl:
+# @hlalt:
+#
+# @grey:
+# @red:
+# @orange:
+# @green:
+# @teal:
+# @yellow:
+# @blue:
+# @darkblue:
+# @magenta:
+# @violet:
+# @cyan:
+# @darkcyan:

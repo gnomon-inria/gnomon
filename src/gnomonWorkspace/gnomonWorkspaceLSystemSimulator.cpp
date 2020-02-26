@@ -56,6 +56,15 @@ public:
     dtkWidgetsMenuItemDIY *dashboard_menu_parameters;
     dtkWidgetsMenuItemDIY *dashboard_menu_controls;
     dtkWidgetsMenuBarContainer *dashboard;
+
+public:
+    QWidget *in_code = nullptr;
+    QWidget *in_axiom = nullptr;
+    QWidget *out_view = nullptr;
+
+    dtkWidgetsMenuBar *in_code_bar = nullptr;
+    dtkWidgetsMenuBar *in_axiom_bar = nullptr;
+    dtkWidgetsMenuBar *out_view_bar = nullptr;
 };
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
@@ -71,15 +80,16 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->rhs = new QTabWidget(this);
     d->rhs->setTabPosition(QTabWidget::South);
 
-    d->splitter = new QSplitter(this);
-    d->splitter->addWidget(d->lhs);
-    d->splitter->addWidget(d->rhs);
-
     d->params = new QTabWidget(this);
     d->params->setTabPosition(QTabWidget::South);
+    d->params->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    QVBoxLayout *params_layout = new QVBoxLayout;
+    params_layout->addWidget(d->params);
+    params_layout->addStretch();
+    
     d->dashboard_menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
-    d->dashboard_menu_parameters->addWidget(d->params);
+    d->dashboard_menu_parameters->addLayout(params_layout);
     d->dashboard_menu_parameters->setSizePolicy(QSizePolicy::Expanding);
 
     d->run_button = new QPushButton;
@@ -134,6 +144,10 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->dashboard_menu);
     d->dashboard->setFixedWidth(300);
+
+    d->splitter = new QSplitter(this);
+    d->splitter->addWidget(d->lhs);
+    d->splitter->addWidget(d->rhs);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -288,10 +302,27 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     if(widget->objectName() == "LPYCodeEditor") {
 
-        if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
-            edit->setFrameShape(QFrame::NoFrame);
+        d->in_code = new QWidget(this);
 
-        d->lhs->addTab(widget, "Code");
+        d->in_code_bar = new dtkWidgetsMenuBar(d->in_code);
+        d->in_code_bar->show();
+        d->in_code_bar->setInteractive(false);
+        d->in_code_bar->setWidth(32);
+        d->in_code_bar->setMargins(6);
+     // d->in_code_bar->addMenu(d->menu());
+        d->in_code_bar->touch();
+        d->in_code_bar->setFixedHeight(widget->height());
+
+        // if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
+        //     edit->setFrameShape(QFrame::NoFrame);
+
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+        layout->addWidget(d->in_code_bar);
+        layout->addWidget(widget);
+
+        d->lhs->addTab(d->in_code, "Code");
     }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -365,6 +396,17 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // QWidget *window = widget->window();
 
+        d->out_view = widget->parentWidget();
+
+        d->out_view_bar = new dtkWidgetsMenuBar(d->out_view);
+        d->out_view_bar->show();
+        d->out_view_bar->setInteractive(false);
+        d->out_view_bar->setWidth(32);
+        d->out_view_bar->setMargins(6);
+        // d->view_menubar->addMenu(d->menu());
+        d->out_view_bar->touch();
+        d->out_view_bar->setFixedHeight(widget->height());
+
         d->rhs->addTab(dynamic_cast<QWidget *>(widget->parent()), "3D");
 
         // window->hide();
@@ -382,6 +424,17 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     if(widget->objectName() == "LPYAxiomViewer") {
 
         // QWidget *window = widget->window();
+
+        d->in_axiom = widget->parentWidget();
+
+        d->in_axiom_bar = new dtkWidgetsMenuBar(d->in_axiom);
+        d->in_axiom_bar->show();
+        d->in_axiom_bar->setInteractive(false);
+        d->in_axiom_bar->setWidth(32);
+        d->in_axiom_bar->setMargins(6);
+        // d->view_menubar->addMenu(d->menu());
+        d->in_axiom_bar->touch();
+        d->in_axiom_bar->setFixedHeight(d->in_axiom);
 
         d->lhs->addTab(widget, "Axiom");
 
@@ -415,6 +468,22 @@ bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
     return (stat == 1) && (gnomonCore::lStringData::pluginFactory().keys().contains("gnomonLStringDataLPy"));
+}
+
+void gnomonWorkspaceLSystemSimulator::resizeEvent(QResizeEvent *event)
+{
+    d->params->setFixedHeight(event->size().height() - 250);
+
+    if (d->in_code && d->in_code_bar)
+        d->in_code_bar->setFixedHeight(d->in_code->height());
+
+    if (d->in_axiom && d->in_axiom_bar)
+        d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
+
+    if (d->out_view && d->out_view_bar)
+        d->out_view_bar->setFixedHeight(d->out_view->height());
+
+    dtkWidgetsWorkspace::resizeEvent(event);
 }
 
 //
