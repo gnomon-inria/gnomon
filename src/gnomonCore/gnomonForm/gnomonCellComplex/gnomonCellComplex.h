@@ -60,6 +60,7 @@ public:
 public:
     QString name(void) const override { return "gnomonCellComplex"; }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+    QString dataName(void) const override { return m_data->dataName(); }
 
 public:
     const gnomonAbstractCellComplexData *data(void) const { return m_data; }

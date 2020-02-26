@@ -62,3 +62,7 @@ Existing plugins
 .. |AnaTree| image:: https://anaconda.org/gnomon/plugin_tree/badges/version.svg
 .. |AnaTreeLSystem| image:: https://anaconda.org/gnomon/plugin_treelsystem/badges/version.svg
 .. |AnaTreeGraph| image:: https://anaconda.org/gnomon/plugin_treegraph/badges/version.svg
+
+
+
+To install a plugin : ``conda install <plugin_name> -c gnomon -c mosaic -c dtk-forge -c fredboudon -c conda-forge``
