@@ -26,16 +26,49 @@ from PyQt5.QtCore import *
 
 from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
+from openalea.lpy.gui.lpyview3d import LpyView3D
 
 Viewer.show()
 Viewer.frameGL.setBgColor(40, 42, 54) # Just a PoC !!! -> dtk-themes-python to go
-Viewer.hide()
+#Viewer.hide()
+
+
 
 # print(dir(Viewer))
 # print(dir(Viewer.frameGL))
-
 workspace = LPyWindow()
-workspace.codeeditor.setObjectName("LPYCodeEditor")
+
+axiomviewer = LpyView3D(workspace)
+axiomviewer.setObjectName('LPYAxiomViewer')
+axiomviewer.show()
+
+
+#viewer = LpyView3D(workspace)
+#viewer.setObjectName('LPYViewer')
+#viewer.show()
+#workspace.view3D = viewer
+#workspace.use_own_view3D = True
+
+
+class LpyPlotter:
+    def __init__(self):
+        pass
+    def plot(self,scene):
+        viewer.display(scene)
+    def selection(self):
+        pass
+    def waitSelection(self,txt):
+        pass
+    def save(self,fname,format):
+        viewer.saveToSnapshot(fname)
+
+#plotter = LpyPlotter()
+
+#from openalea.lpy import registerPlotter
+#registerPlotter(plotter)
+
+
+workspace.frame.setObjectName("LPYCodeEditor")
 workspace.shellwidget.setObjectName("LPYShell")
 workspace.debugDock.setObjectName("LPYDebug")
 

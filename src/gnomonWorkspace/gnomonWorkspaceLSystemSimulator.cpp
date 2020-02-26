@@ -86,26 +86,31 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->run_button = new QPushButton;
     d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
     d->run_button->setStyleSheet("background: none; border: none; color: @fg");
+    d->run_button->setIconSize(QSize(32,32));
 
     d->stop_button = new QPushButton;
     d->stop_button->setIcon(dtkFontAwesome::instance()->icon(fa::pause));
     d->stop_button->setStyleSheet("background: none; border: none; color: @fg");
+    d->stop_button->setIconSize(QSize(32,32));
 
     d->rewind_button = new QPushButton;
     d->rewind_button->setIcon(dtkFontAwesome::instance()->icon(fa::backward));
     d->rewind_button->setStyleSheet("background: none; border: none; color: @fg");
+    d->rewind_button->setIconSize(QSize(32,32));
 
     dtkFontAwesome::instance()->setDefaultOption("color", QColor(Qt::red));
 
     d->animate_button = new QPushButton;
     d->animate_button->setIcon(dtkFontAwesome::instance()->icon(fa::play));
     d->animate_button->setStyleSheet("background: none; border: none; color: @fg");
+    d->animate_button->setIconSize(QSize(32,32));
 
     dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
 
     d->step_button = new QPushButton;
     d->step_button->setIcon(dtkFontAwesome::instance()->icon(fa::stepforward));
     d->step_button->setStyleSheet("background: none; border: none; color: @fg");
+    d->step_button->setIconSize(QSize(32,32));
 
     QHBoxLayout *controls_layout = new QHBoxLayout;
     controls_layout->setContentsMargins(0, 0, 0, 0);
@@ -248,6 +253,26 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     qDebug() << Q_FUNC_INFO << "Done";
 }
 
+void reparentAction(const char * menuLabel, const char * actionLabel, QAction * button) {
+    foreach(QAction *action, window->menuBar()->actions()) {
+
+        qDebug() << Q_FUNC_INFO << action->text();
+        if(action->text() == menuLabel) {
+
+            foreach(QAction *reaction, action->menu()->actions()) {
+
+                if(reaction->text() == actionLabel) {
+
+                    connect(button, &QPushButton::clicked, [=] (void) -> void
+                    {
+                        reaction->trigger();
+                    });
+                }
+            }
+        }
+    }    
+}
+
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
     qDebug() << Q_FUNC_INFO << widget << widget->objectName();
@@ -299,22 +324,33 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
 
-            d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+           d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
 
-            foreach(QAction *action, window->menuBar()->actions()) {
+           reparentAction("L-systems", "Run", d->run_button);
+           reparentAction("L-systems", "Step", d->step_button);
+           reparentAction("L-systems", "Rewind", d->rewind_button);
+           reparentAction("L-systems", "Animate", d->animate_button);
+           reparentAction("L-systems", "Stop", d->stop_button);
+
+/*            foreach(QAction *action, window->menuBar()->actions()) {
 
                 qDebug() << Q_FUNC_INFO << action->text();
+                if(action->text() == "L-systems") {
 
-                if(action->text() == "Run") {
+                    foreach(QAction *reaction, action->menu()->actions()) {
 
-                    qDebug() << Q_FUNC_INFO << "Boum";
+                        if(reaction->text() == "Run") {
 
-                    connect(d->run_button, &QPushButton::clicked, [=] (void) -> void
-                    {
-                        action->trigger();
-                    });
+                            qDebug() << Q_FUNC_INFO << "Boum";
+
+                            connect(d->run_button, &QPushButton::clicked, [=] (void) -> void
+                            {
+                                reaction->trigger();
+                            });
+                        }
+                    }
                 }
-            }
+            }*/
 
             window->menuBar()->hide();
             window->menuWidget()->hide();
@@ -327,7 +363,25 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // QWidget *window = widget->window();
 
+        d->rhs->addTab(dynamic_cast<QWidget *>(widget->parent()), "3D");
+
+        // window->hide();
+    }
+
+    if(widget->objectName() == "LPYViewer") {
+
+        // QWidget *window = widget->window();
+
         d->rhs->addTab(widget, "3D");
+
+        // window->hide();
+    }
+
+    if(widget->objectName() == "LPYAxiomViewer") {
+
+        // QWidget *window = widget->window();
+
+        d->lhs->addTab(widget, "Axiom");
 
         // window->hide();
     }
