@@ -320,7 +320,7 @@ QSize gnomonWidgetsWorkspaceBar::sizeHint(void) const
 QSize gnomonWidgetsWorkspaceBar::tabSizeHint(int index) const
 {
     if(index == this->count() - 1) {
-        return QSize(40, 40);
+        return QSize(200, 40);
     } else {
         return QSize(200, 40);
     }
@@ -329,6 +329,7 @@ QSize gnomonWidgetsWorkspaceBar::tabSizeHint(int index) const
 void gnomonWidgetsWorkspaceBar::setCurrentIndex(int i)
 {
     d->onItemClicked(i);
+
     this->QTabBar::setCurrentIndex(i);
 }
 
