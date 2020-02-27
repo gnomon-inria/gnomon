@@ -110,11 +110,11 @@ gnomonWorkspaceLSystemSimulator QTabBar::tab
     border-right: 1px solid @base0;
 
     font-size: 12px;
-    font-weight: normal;
+    font-weight: bold;
 
     width: 100;
 
-    color: @fg;
+    color: @fgalt;
 }
 
 gnomonWorkspaceLSystemSimulator QTabBar::tab:last:selected

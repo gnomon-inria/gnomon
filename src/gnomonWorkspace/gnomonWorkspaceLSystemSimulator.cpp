@@ -143,7 +143,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->dashboard = new dtkWidgetsMenuBarContainer(this);
     d->dashboard->navigator->deleteLater();
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->dashboard_menu);
-    d->dashboard->setFixedWidth(400);
+    d->dashboard->setFixedWidth(300);
 
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->lhs);

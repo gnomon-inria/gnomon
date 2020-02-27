@@ -34,16 +34,30 @@ from dtkthemes import dtkThemesEngine, dtkThemesEngineCallBack
 #     def __init__(self):
 #         super(dtkThemesEngineCallBack, self).__init__()
 
-#     def execute:
-#         self.editor.set
+#     # def setWorkspace(self, workspace):
+#     #     self.workspace = workspace
 
+#     def execute(self):
+#         background_color = QColor(dtkThemesEngine.instance().value("@base1"))
+
+#         Viewer.frameGL.setBgColor(background_color.red(), background_color.green(), background_color.blue())
+#         Viewer.frameGL.update()
+
+#         # self.workspace.codeeditor.setStyleSheet(
+#         #     ""
+#         #     "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
+#         #     "color: " + dtkThemesEngine.instance().value("@fg") + ";")
 
 base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 
 Viewer.show()
 Viewer.frameGL.setBgColor(base1.red(), base1.green(), base1.blue())
+Viewer.update()
 
 workspace = LPyWindow()
+
+# cb1 = lpyThemesEngineCallBack()
+# cb1.setWorkspace(workspace)
 
 axiomviewer = LpyView3D(workspace)
 axiomviewer.setObjectName('LPYAxiomViewer')

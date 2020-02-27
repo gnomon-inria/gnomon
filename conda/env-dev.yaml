@@ -21,7 +21,7 @@ dependencies:
   - dtk-imaging >=2.0.4
   - dtk-imaging-python >=2.0.4
   - dtk-plugins-imaging >=2.0.2
-  - dtk-widgets >=2.17.1
+  - dtk-widgets >=2.17.2
   - dtk-composer >=2.0.0
   - vtk =8.2.0
   - tbb-devel
