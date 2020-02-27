@@ -28,7 +28,15 @@ from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 from openalea.lpy.gui.lpyview3d import LpyView3D
 
-from dtkthemes import dtkThemesEngine
+from dtkthemes import dtkThemesEngine, dtkThemesEngineCallBack
+
+# class lpyThemesEngineCallBack(dtkThemesEngineCallBack):
+#     def __init__(self):
+#         super(dtkThemesEngineCallBack, self).__init__()
+
+#     def execute:
+#         self.editor.set
+
 
 base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 
