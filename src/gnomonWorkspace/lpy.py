@@ -28,34 +28,23 @@ from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 from openalea.lpy.gui.lpyview3d import LpyView3D
 
-from dtkthemes import dtkThemesEngine, dtkThemesEngineCallBack
+from dtkthemes import dtkThemesEngine
+from dtkthemes import dtkThemesEngineCallBack
 
-# class lpyThemesEngineCallBack(dtkThemesEngineCallBack):
-#     def __init__(self):
-#         super(dtkThemesEngineCallBack, self).__init__()
-
-#     # def setWorkspace(self, workspace):
-#     #     self.workspace = workspace
-
-#     def execute(self):
-#         background_color = QColor(dtkThemesEngine.instance().value("@base1"))
-
-#         Viewer.frameGL.setBgColor(background_color.red(), background_color.green(), background_color.blue())
-#         Viewer.frameGL.update()
-
-#         # self.workspace.codeeditor.setStyleSheet(
-#         #     ""
-#         #     "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
-#         #     "color: " + dtkThemesEngine.instance().value("@fg") + ";")
-
+## #############################################################################
+##
+## #############################################################################
 
 base1 = QColor(dtkThemesEngine.instance().value("@base1"))
+
+## #############################################################################
+##
+## #############################################################################
 
 Viewer.show()
 Viewer.frameGL.setBgColor(base1.red(), base1.green(), base1.blue())
 
-#workspace = LPyWindow(withinterpreter=False) # To avoid redirection in the lpy shell
-workspace = LPyWindow()
+workspace = LPyWindow(withinterpreter=True)
 
 def set_theme_to_code_editor():
         workspace.codeeditor.setStyleSheet(
@@ -88,20 +77,22 @@ def set_theme_to_code_editor():
 
 class lpyThemesEngineCallBack(dtkThemesEngineCallBack):
     def __init__(self):
-        super(dtkThemesEngineCallBack, self).__init__()
+        super(lpyThemesEngineCallBack, self).__init__()
 
+    def register(self):
+        dtkThemesEngine.instance().addCallBack(self)
 
     def execute(self):
         background_color = QColor(dtkThemesEngine.instance().value("@base1"))
 
         Viewer.frameGL.setBgColor(background_color.red(), background_color.green(), background_color.blue())
-        Viewer.frameGL.update()
+        # Viewer.frameGL.update()
 
         set_theme_to_code_editor()
 
 
 cb1 = lpyThemesEngineCallBack()
-# cb1.setWorkspace(workspace)
+cb1.register()
 
 axiomviewer = LpyView3D(workspace)
 axiomviewer.setObjectName('LPYAxiomViewer')
