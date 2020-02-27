@@ -48,14 +48,59 @@ from dtkthemes import dtkThemesEngine, dtkThemesEngineCallBack
 #         #     "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
 #         #     "color: " + dtkThemesEngine.instance().value("@fg") + ";")
 
+
 base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 
 Viewer.show()
 Viewer.frameGL.setBgColor(base1.red(), base1.green(), base1.blue())
 
+#workspace = LPyWindow(withinterpreter=False) # To avoid redirection in the lpy shell
 workspace = LPyWindow()
 
-# cb1 = lpyThemesEngineCallBack()
+def set_theme_to_code_editor():
+        workspace.codeeditor.setStyleSheet(
+           ""
+           "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
+           "color: " + dtkThemesEngine.instance().value("@fg") + ";")
+
+        syntaxhighlighter = workspace.codeeditor.syntaxhighlighter
+
+        propertyname = ['lpykeyword', 'pykeyword', 'prod', 'delimiter', 'func', 'string', 'space','number','comment']
+        propertycolor = ["@violet",  "@blue",     "@fg",   "@darkblue", "@magenta", "@grey", "@bdalt", "@red", "@green"]
+
+        translation = { 'pykeyword' : 'keyword'}
+
+        for i, (name, color) in enumerate(zip(propertyname, propertycolor)):
+            name = translation.get(name,name)
+            if hasattr(syntaxhighlighter, name+'Format'):
+                oformat = getattr(syntaxhighlighter, name+'Format')
+
+                if name != 'space':
+                   oformat.setForeground(QColor(dtkThemesEngine.instance().value(color)))
+                else:
+                   oformat.setBackground(QColor(dtkThemesEngine.instance().value(color)))
+            else:
+                print('No format',name)
+
+        # To update the syntax highlighting on all the document.
+        workspace.codeeditor.syntaxhighlighter.setActivation(False)
+        workspace.codeeditor.syntaxhighlighter.setActivation(True)
+
+class lpyThemesEngineCallBack(dtkThemesEngineCallBack):
+    def __init__(self):
+        super(dtkThemesEngineCallBack, self).__init__()
+
+
+    def execute(self):
+        background_color = QColor(dtkThemesEngine.instance().value("@base1"))
+
+        Viewer.frameGL.setBgColor(background_color.red(), background_color.green(), background_color.blue())
+        Viewer.frameGL.update()
+
+        set_theme_to_code_editor()
+
+
+cb1 = lpyThemesEngineCallBack()
 # cb1.setWorkspace(workspace)
 
 axiomviewer = LpyView3D(workspace)
@@ -64,10 +109,7 @@ axiomviewer.show()
 
 workspace.frame.setObjectName("LPYCodeEditor")
 
-workspace.codeeditor.setStyleSheet(
-    ""
-    "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
-    "color: " + dtkThemesEngine.instance().value("@fg") + ";")
+set_theme_to_code_editor()
 
 workspace.shellwidget.setObjectName("LPYShell")
 workspace.shellwidget.setStyleSheet(
@@ -168,3 +210,5 @@ workspace.hide()
 # @violet:
 # @cyan:
 # @darkcyan:
+
+
