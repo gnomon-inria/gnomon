@@ -379,6 +379,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                     d->menus << dtkWidgetsMenuBar::build(action->menu());
                 }
 
+                if(action->text() == "Help") {
+
+                    d->menus << dtkWidgetsMenuBar::build(action->menu());
+               }
+
                 if(action->text() == "Edit") {
 
                     d->in_code_bar->addMenu(dtkWidgetsMenuBar::build(action->menu()));
@@ -391,7 +396,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             reparentAction(window->menuBar(), "L-systems", "Rewind", this, d->rewind_button);
             reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
             reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
-
 
             window->menuBar()->hide();
             window->menuWidget()->hide();
