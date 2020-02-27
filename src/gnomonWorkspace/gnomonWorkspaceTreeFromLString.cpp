@@ -51,8 +51,8 @@ public:
 
     QSplitter *splitter = nullptr;
 
-public:
-    dtkMacsWidget *editor = nullptr;
+//public:
+//    dtkMacsWidget *editor = nullptr;
 
 public:
     dtkWidgetsMenu *menu_;
@@ -225,7 +225,7 @@ void gnomonWorkspaceTreeFromLString::apply(void)
         qDebug() << "Not changed";
     }
 
-    d->command->setLSystem(d->editor->toPlainText());
+//    d->command->setLSystem(d->editor->toPlainText());
 
     d->command->redo();
 

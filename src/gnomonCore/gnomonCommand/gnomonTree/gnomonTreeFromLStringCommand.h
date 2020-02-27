@@ -11,9 +11,10 @@ public:
     void redo(void) override;
     void undo(void) override;
 
-public:
-    void setLSystem(const QString& lsystem);
+//public:
+//    void setLSystem(const QString& lsystem);
 
+public:
     void setInput(gnomonLStringSeries *);
     gnomonLStringSeries *input();
 
