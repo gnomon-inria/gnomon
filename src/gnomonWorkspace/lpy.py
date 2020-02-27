@@ -52,7 +52,6 @@ base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 
 Viewer.show()
 Viewer.frameGL.setBgColor(base1.red(), base1.green(), base1.blue())
-Viewer.update()
 
 workspace = LPyWindow()
 
@@ -79,10 +78,10 @@ workspace.shellwidget.setStyleSheet(
 workspace.shellwidget._display_banner = False
 workspace.shellwidget.style_sheet  = ""
 workspace.shellwidget.style_sheet += ".error { color: orange; }"
-workspace.shellwidget.style_sheet += ".in-prompt { color: lightgreen; }"
-workspace.shellwidget.style_sheet += ".in-prompt-number { color: lightgreen; font-weight: bold; }"
-workspace.shellwidget.style_sheet += ".out-prompt { color: orange; }"
-workspace.shellwidget.style_sheet += ".out-prompt-number { color: orange; font-weight: bold; }"
+workspace.shellwidget.style_sheet += ".in-prompt { color: " + dtkThemesEngine.instance().value("@green") + "; }"
+workspace.shellwidget.style_sheet += ".in-prompt-number { color: " + dtkThemesEngine.instance().value("@green") + "; font-weight: bold; }"
+workspace.shellwidget.style_sheet += ".out-prompt { color: " + dtkThemesEngine.instance().value("@red") + "; }"
+workspace.shellwidget.style_sheet += ".out-prompt-number { color: " + dtkThemesEngine.instance().value("@red") + "; font-weight: bold; }"
 
 workspace.debugDock.setObjectName("LPYDebug")
 # workspace.parameterDock.toggleViewAction().toggle()# 
