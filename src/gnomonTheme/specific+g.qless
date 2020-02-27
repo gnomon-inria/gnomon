@@ -136,4 +136,9 @@ gnomonWidgetsWorkspaceBar
     border-top: 1px solid @base0;
 }
 
+gnomonWidgetsWorkspaceBar::tab:last
+{
+    margin-left: 10px;
+}
+
 /* specific+g.qless ends here */
