@@ -311,7 +311,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->in_code_bar->setMargins(6);
      // d->in_code_bar->addMenu(d->menu());
         d->in_code_bar->touch();
-        d->in_code_bar->setFixedHeight(widget->height());
 
         // if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
         //     edit->setFrameShape(QFrame::NoFrame);
@@ -320,9 +319,16 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         layout->addWidget(d->in_code_bar);
+        layout->addWidget(d->in_code_bar->container());
         layout->addWidget(widget);
 
+        d->in_code->setLayout(layout);
+
+        d->in_code->stackUnder(d->in_code_bar);
+
         d->lhs->addTab(d->in_code, "Code");
+
+        // d->in_code_bar->setFixedHeight(widget->height());
     }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -362,7 +368,23 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
             window->setParent(this);
 
-            d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+            // d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+
+            foreach(QAction *action, window->menuBar()->actions()) {
+
+                qDebug() << Q_FUNC_INFO << action->text();
+
+                if(action->text() == "File") {
+
+                    d->menus << dtkWidgetsMenuBar::build(action->menu());
+                }
+
+                if(action->text() == "Edit") {
+
+                    d->in_code_bar->addMenu(dtkWidgetsMenuBar::build(action->menu()));
+                    d->in_code_bar->touch();
+                }
+            }
 
             reparentAction(window->menuBar(), "L-systems", "Run", this, d->run_button);
             reparentAction(window->menuBar(), "L-systems", "Step", this, d->step_button);
@@ -370,25 +392,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
             reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
 
-/*            foreach(QAction *action, window->menuBar()->actions()) {
-
-                qDebug() << Q_FUNC_INFO << action->text();
-                if(action->text() == "L-systems") {
-
-                    foreach(QAction *reaction, action->menu()->actions()) {
-
-                        if(reaction->text() == "Run") {
-
-                            qDebug() << Q_FUNC_INFO << "Boum";
-
-                            connect(d->run_button, &QPushButton::clicked, [=] (void) -> void
-                            {
-                                reaction->trigger();
-                            });
-                        }
-                    }
-                }
-            }*/
 
             window->menuBar()->hide();
             window->menuWidget()->hide();
@@ -401,7 +404,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // QWidget *window = widget->window();
 
-        d->out_view = widget->parentWidget();
+        d->out_view = new QWidget(this);
 
         d->out_view_bar = new dtkWidgetsMenuBar(d->out_view);
         d->out_view_bar->show();
@@ -410,10 +413,30 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->out_view_bar->setMargins(6);
         // d->view_menubar->addMenu(d->menu());
         d->out_view_bar->touch();
-        d->out_view_bar->setFixedHeight(widget->height());
 
-        d->rhs->addTab(dynamic_cast<QWidget *>(widget->parent()), "3D");
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+        layout->addWidget(d->out_view_bar);
+        layout->addWidget(d->out_view_bar->container());
+        layout->addWidget(widget->parentWidget());
 
+        d->out_view->setLayout(layout);
+
+        d->rhs->addTab(d->out_view, "3D");
+
+        if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
+
+            foreach(dtkWidgetsMenu *menu, dtkWidgetsMenuBar::build(window->objectName(), window->menuBar()))
+                d->out_view_bar->addMenu(menu);
+
+            d->out_view_bar->touch();
+        }
+            // d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
+
+
+        // d->out_view_bar->setFixedHeight(d->out_view->height());
+       
         // window->hide();
     }
 
@@ -430,7 +453,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // QWidget *window = widget->window();
 
-        d->in_axiom = widget->parentWidget();
+        d->in_axiom = new QWidget;
 
         d->in_axiom_bar = new dtkWidgetsMenuBar(d->in_axiom);
         d->in_axiom_bar->show();
@@ -439,10 +462,20 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->in_axiom_bar->setMargins(6);
         // d->view_menubar->addMenu(d->menu());
         d->in_axiom_bar->touch();
-        d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
 
-        d->lhs->addTab(widget, "Axiom");
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+        layout->addWidget(d->in_axiom_bar);
+        layout->addWidget(d->in_axiom_bar->container());
+        layout->addWidget(widget);
 
+        d->in_axiom->setLayout(layout);
+
+        d->lhs->addTab(d->in_axiom, "Axiom");
+
+        // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
+       
         // window->hide();
     }
 
@@ -477,16 +510,16 @@ bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 
 void gnomonWorkspaceLSystemSimulator::resizeEvent(QResizeEvent *event)
 {
-    d->params->setFixedHeight(event->size().height() - 250);
+    d->params->setFixedHeight(event->size().height() - 290);
 
-    if (d->in_code && d->in_code_bar)
-        d->in_code_bar->setFixedHeight(d->in_code->height());
+    // if (d->in_code && d->in_code_bar)
+    //     d->in_code_bar->setFixedHeight(d->in_code->height());
 
-    if (d->in_axiom && d->in_axiom_bar)
-        d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
+    // if (d->in_axiom && d->in_axiom_bar)
+    //     d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
 
-    if (d->out_view && d->out_view_bar)
-        d->out_view_bar->setFixedHeight(d->out_view->height());
+    // if (d->out_view && d->out_view_bar)
+    //     d->out_view_bar->setFixedHeight(d->out_view->height());
 
     dtkWidgetsWorkspace::resizeEvent(event);
 }

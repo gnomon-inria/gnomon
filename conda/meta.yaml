@@ -54,7 +54,7 @@ requirements:
     - dtk-core-python >=2.5.4
     - dtk-imaging >=2.0.4
     - dtk-imaging-python >=2.0.4
-    - dtk-widgets =2.17.1
+    - dtk-widgets =2.17.2
     - dtk-composer >=2.0.0
     - python >=3.7
     - swig >4.0.0
@@ -67,14 +67,14 @@ requirements:
     - dtk-log >=2.0.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.9
-    - dtk-themes-python >=2.0.1
+    - dtk-themes >=2.1.11
+    - dtk-themes-python >=2.0.2
     - dtk-core >=2.7.1
     - dtk-core-python >=2.5.4
     - dtk-imaging >=2.0.4
     - dtk-imaging-python >=2.0.4
     - dtk-plugins-imaging >=2.0.2
-    - dtk-widgets >=2.17.1
+    - dtk-widgets >=2.17.2
     - dtk-composer >=2.0.0
     - qt >=5.9.0
     - jupyter
