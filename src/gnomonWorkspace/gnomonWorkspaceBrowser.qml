@@ -53,7 +53,7 @@ Rectangle {
 
                     color: theme.value("@fgalt");
 
-                    text: title;
+                    text: description;
 
                     font {
                         weight: Font.Bold
@@ -71,7 +71,7 @@ Rectangle {
 
                     color: theme.value("@fg");
 
-                    text: description;
+                    text: title;
 
                     font.pointSize: 14;
 

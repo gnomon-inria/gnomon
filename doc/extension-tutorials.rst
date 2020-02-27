@@ -9,23 +9,23 @@ Existing plugins
 +---------------+------------------------+------------------+----------------+-----------------+
 |Plugins        |package                 |pipeline          |coverage        |conda            |
 +===============+========================+==================+================+=================+
-|Data           |*plugin_data*           ||PipeData|_       ||CovData|       ||AnaData|        |
+|Data           |*plugin_data*           ||PipeData|_       ||CovData|       ||AnaData|_       |
 +---------------+------------------------+------------------+----------------+-----------------+
-|TissueImage    |*plugin_tisssueimage*   ||PipeImage|_      ||CovImage|      ||AnaImage|       |
+|TissueImage    |*plugin_tisssueimage*   ||PipeImage|_      ||CovImage|      ||AnaImage|_      |
 +---------------+------------------------+------------------+----------------+-----------------+
-|TissueFem      |*plugin_tisssuefem*     ||PipeFem|_        ||CovFem|        ||AnaFem|         |
+|TissueFem      |*plugin_tisssuefem*     ||PipeFem|_        ||CovFem|        ||AnaFem|_        |
 +---------------+------------------------+------------------+----------------+-----------------+
-|TissueLineage  |*plugin_tissuelineage*  ||Pipelineage|_    ||Covlineage|    ||Analineage|     |
+|TissueLineage  |*plugin_tissuelineage*  ||Pipelineage|_    ||Covlineage|    ||Analineage|_    |
 +---------------+------------------------+------------------+----------------+-----------------+
-|TissueMesh     |*plugin_tissuemesh*     ||PipeMesh|_       ||CovMesh|       ||AnaMesh|        |
+|TissueMesh     |*plugin_tissuemesh*     ||PipeMesh|_       ||CovMesh|       ||AnaMesh|_       |
 +---------------+------------------------+------------------+----------------+-----------------+
-|TissueImageMesh|*plugin_tissueimagemesh*||PipeImageMesh|_  ||CovImageMesh|  ||AnaImageMesh|   |
+|TissueImageMesh|*plugin_tissueimagemesh*||PipeImageMesh|_  ||CovImageMesh|  ||AnaImageMesh|_  |
 +---------------+------------------------+------------------+----------------+-----------------+
-|Tree           |*plugin_tree*           ||PipeTree|_       ||CovTree|       ||AnaTree|        |
+|Tree           |*plugin_tree*           ||PipeTree|_       ||CovTree|       ||AnaTree|_       |
 +---------------+------------------------+------------------+----------------+-----------------+
-|TreeLSystem    |*plugin_treelsystem*    ||PipeTreeLSystem|_||CovTreeLSystem|||AnaTreeLSystem| |
+|TreeLSystem    |*plugin_treelsystem*    ||PipeTreeLSystem|_||CovTreeLSystem|||AnaTreeLSystem|_|
 +---------------+------------------------+------------------+----------------+-----------------+
-|TreeGraph      |*plugin_treegraph*      ||PipeTreeGraph|_  ||CovTreeGraph|  ||AnaTreeGraph|   |
+|TreeGraph      |*plugin_treegraph*      ||PipeTreeGraph|_  ||CovTreeGraph|  ||AnaTreeGraph|_  |
 +---------------+------------------------+------------------+----------------+-----------------+
 
 .. |PipeData| image:: https://gitlab.inria.fr/gnomon/gnomon-packages/gnomon-package-data/badges/master/pipeline.svg
@@ -56,14 +56,23 @@ Existing plugins
 .. |CovTreeLSystem| image:: https://gitlab.inria.fr/gnomon/gnomon-packages/gnomon-package-treelsystem/badges/master/coverage.svg
 .. |CovTreeGraph| image:: https://gitlab.inria.fr/gnomon/gnomon-packages/gnomon-package-treegraph/badges/master/coverage.svg
 .. |AnaData| image:: https://anaconda.org/gnomon/plugin_data/badges/version.svg
+.. _AnaData : https://anaconda.org/gnomon/plugin_data
 .. |AnaImage| image:: https://anaconda.org/gnomon/plugin_tissueimage/badges/version.svg
+.. _AnaImage : https://anaconda.org/gnomon/plugin_tissueimage
 .. |AnaFem| image:: https://anaconda.org/gnomon/plugin_tissuefem/badges/version.svg
+.. _AnaFem : https://anaconda.org/gnomon/plugin_tissuefem
 .. |Analineage| image:: https://anaconda.org/gnomon/plugin_tissuelineage/badges/version.svg
-.. |AnaMesh| image:: https://anaconda.org/gnomon/plugin_data/badges/version.svg
-.. |AnaImageMesh| image:: https://anaconda.org/gnomon/plugin_data/badges/version.svg
+.. _Analineage : https://anaconda.org/gnomon/plugin_tissuelineage
+.. |AnaMesh| image:: https://anaconda.org/gnomon/plugin_tissuemesh/badges/version.svg
+.. _AnaMesh : https://anaconda.org/gnomon/plugin_tissuemesh
+.. |AnaImageMesh| image:: https://anaconda.org/gnomon/plugin_tissueimagemesh/badges/version.svg
+.. _AnaImageMesh : https://anaconda.org/gnomon/plugin_tissueimagemesh
 .. |AnaTree| image:: https://anaconda.org/gnomon/plugin_tree/badges/version.svg
+.. _AnaTree : https://anaconda.org/gnomon/plugin_tree
 .. |AnaTreeLSystem| image:: https://anaconda.org/gnomon/plugin_treelsystem/badges/version.svg
+.. _AnaTreeLSystem : https://anaconda.org/gnomon/plugin_treelsystem
 .. |AnaTreeGraph| image:: https://anaconda.org/gnomon/plugin_treegraph/badges/version.svg
+.. _AnaTreeGraph : https://anaconda.org/gnomon/plugin_treegraph
 
 Creating new plugins
 ====================

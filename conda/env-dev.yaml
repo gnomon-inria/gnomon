@@ -8,6 +8,7 @@ dependencies:
   - cmake
   - ipython
   - qtconsole
+  - pillow
   - numpy
   - scipy
   - matplotlib

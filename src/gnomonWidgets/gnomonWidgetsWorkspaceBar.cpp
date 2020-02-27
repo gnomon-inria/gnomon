@@ -320,7 +320,7 @@ QSize gnomonWidgetsWorkspaceBar::sizeHint(void) const
 QSize gnomonWidgetsWorkspaceBar::tabSizeHint(int index) const
 {
     if(index == this->count() - 1) {
-        return QSize(200, 40);
+        return QSize(60, 40);
     } else {
         return QSize(200, 40);
     }
