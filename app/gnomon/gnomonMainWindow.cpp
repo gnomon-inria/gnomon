@@ -93,7 +93,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
     dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
-    dtk::widgets::workspace::pluginFactory().record( "LPy", creator<gnomonWorkspaceLSystemSimulator>);
+    dtk::widgets::workspace::pluginFactory().record( "L-System Simulator", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Constructor", creator<gnomonWorkspaceMeshConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Processing", creator<gnomonWorkspaceMeshFilter>);
@@ -125,11 +125,13 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     const QString browser_desc = QString("Loads forms in Gnomon by reading them from the file system.");
     const QString branchg_desc = QString("Uhhhh.");
 
-
-    //d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Browser", "Loads forms of different file formats into the application", "Form Browser", gnomonWorkspaceBrowser::color);
+    if (!gnomonWorkspaceBrowser::isEmpty()) {
+        d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Form Browser", "Loads forms of different file formats into the application", "Form Browser", gnomonWorkspaceBrowser::color);
+    }
     if (!gnomonWorkspacePythonAlgorithm::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Form Algorithm", "Run a custom algorithm written in Python on any type of forms", "Python Form Algorithm", gnomonWorkspacePythonAlgorithm::color);
     }
+
     //const QString python_model_desc = QString("Runs a dynamical system model on forms based on a Python code.");
     //d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Simulation", python_model_desc, "Python Simulation");
     //const QString converter_desc = QString("Casts a form of one type into another type.");
@@ -193,10 +195,10 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Form Translation", workspace_desc, "Form Translation", gnomonWorkspaceTreeFromLString::color);
     }
     if (!gnomonWorkspaceLSystemSimulator::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "LPy",           workspace_desc, "LPy");
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator",  workspace_desc, "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);
     }
     if (!gnomonWorkspacePlantScan3D::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D");
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D", gnomonWorkspacePlantScan3D::color);
     }
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);

@@ -43,6 +43,9 @@ public:
 public:
     static bool isEmpty(void);
 
+protected:
+    void resizeEvent(QResizeEvent *) override;
+
 private:
     class gnomonWorkspaceLSystemSimulatorPrivate *d;
 };

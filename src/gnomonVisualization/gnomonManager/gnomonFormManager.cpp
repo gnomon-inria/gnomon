@@ -531,11 +531,13 @@ void gnomonFormManager::mousePressEvent(QMouseEvent *event)
         }
 
     } else {
+
         QRect focus_handle = QRect(this->width()/2 - this->height()/2, this->size().height()/4 + 50, this->height(), this->height()/2);
-        qDebug()<<Q_FUNC_INFO<<focus_handle.contains(event->pos());
+
+        // qDebug()<<Q_FUNC_INFO<<focus_handle.contains(event->pos());
+
         if (!focus_handle.contains(event->pos())) {
             this->present(d->current_focus, true);
-
 
             if (d->focus_area)
                 d->focus_area->hide();
