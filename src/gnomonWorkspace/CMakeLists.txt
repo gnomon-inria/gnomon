@@ -38,8 +38,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceImageConstructor.h
   gnomonWorkspaceLSystemSimulator
   gnomonWorkspaceLSystemSimulator.h
-  gnomonWorkspaceLStringFromTree
-  gnomonWorkspaceLStringFromTree.h
+  gnomonWorkspaceLStringTranslation
+  gnomonWorkspaceLStringTranslation.h
   gnomonWorkspaceMeshConstructor
   gnomonWorkspaceMeshConstructor.h
   gnomonWorkspaceMeshFromImage
@@ -86,7 +86,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceImageConstructor.cpp
   gnomonWorkspaceFusion.cpp
   gnomonWorkspaceLSystemSimulator.cpp
-  gnomonWorkspaceLStringFromTree.cpp
+  gnomonWorkspaceLStringTranslation.cpp
   gnomonWorkspaceMeshConstructor.cpp
   gnomonWorkspaceMeshFilter.cpp
   gnomonWorkspaceMeshFromImage.cpp

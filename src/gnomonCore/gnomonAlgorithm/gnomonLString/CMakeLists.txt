@@ -19,12 +19,12 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractLStringFromTree
-    gnomonAbstractLStringFromTree.h)
+    gnomonAbstractLStringTranslation
+    gnomonAbstractLStringTranslation.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-  gnomonAbstractLStringFromTree.cpp)
+  gnomonAbstractLStringTranslation.cpp)
 
 
 ######################################################################

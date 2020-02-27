@@ -24,4 +24,4 @@
 #include "gnomonWorkspaceTreeAnalysis.h"
 #include "gnomonWorkspaceTreeConstructor.h"
 #include "gnomonWorkspaceTreeFromLString.h"
-#include "gnomonWorkspaceLStringFromTree.h"
+#include "gnomonWorkspaceLStringTranslation.h"
