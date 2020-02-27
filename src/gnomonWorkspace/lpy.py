@@ -58,8 +58,46 @@ workspace = LPyWindow()
 # cb1 = lpyThemesEngineCallBack()
 # cb1.setWorkspace(workspace)
 
-axiomviewer = LpyView3D(workspace)
+from gnomonvisualization import gnomonFormManager
+
+class gnomonLpyView3D(LpyView3D):
+
+    def __init__(self, parent):
+        super().__init__(parent)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasText():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragLeaveEvent(self, event):
+        event.accept()
+
+    def dragMoveEvent(self, event):
+        event.accept()
+
+    def dropEvent(self, event):
+        path = event.mimeData().text()
+        if path[0] == ":":
+            form_index = int(path[1:])
+            form = gnomonFormManager.instance().get(form_index)
+            print(form)
+
+            if form.current().asLString():
+                lstring = form.current().asLString()
+
+                lstring.toString()
+
+            event.accept()
+        else:
+            event.ignore()
+
+
+axiomviewer = gnomonLpyView3D(workspace)
 axiomviewer.setObjectName('LPYAxiomViewer')
+axiomviewer.setAcceptDrops(True)
+
 axiomviewer.show()
 
 workspace.frame.setObjectName("LPYCodeEditor")
