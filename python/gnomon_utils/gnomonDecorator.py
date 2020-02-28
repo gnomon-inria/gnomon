@@ -545,7 +545,7 @@ def gnomonMeshOutput(cls=None, attr=None, method='output', data_plugin="gnomonMe
 
 load_plugin_group("lStringData")
 
-def buildLStringSeries(lString_dict, data_plugin="gnomonLStringDataLPy", data_setter="set_lString"):
+def buildLStringSeries(lString_dict, data_plugin="gnomonLStringDataLPy", data_setter="set_lstring"):
     lString_series = gnomonLStringSeries()
     lString = {}
     lString_data = {}
@@ -578,7 +578,7 @@ def _gnomonLStringInput(cls, attr, method, setter_method):
 
             for time in self._in_lString_series.times():
                 self._in_lString[time] = self._in_lString_series.at(time).asLString()
-                getattr(self, attr)[time] = self._in_lString[time].data()._lString
+                getattr(self, attr)[time] = self._in_lString[time].data()._lstring
 
             if hasattr(self, "refresh_parameters"):
                 self.refresh_parameters()

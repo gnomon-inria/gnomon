@@ -105,8 +105,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "FEM Simulation", creator<gnomonWorkspaceSimulation>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Constructor", creator<gnomonWorkspaceTreeConstructor>);
-    dtk::widgets::workspace::pluginFactory().record( "Form Translation", creator<gnomonWorkspaceTreeFromLString>);
-    dtk::widgets::workspace::pluginFactory().record( "Tree to LString", creator<gnomonWorkspaceLStringFromTree>);
+    dtk::widgets::workspace::pluginFactory().record( "Tree Form Translation", creator<gnomonWorkspaceLStringTranslation>);
     dtk::widgets::workspace::pluginFactory().record( "PlantScan3D", creator<gnomonWorkspacePlantScan3D>);
 
     dtkApp->setWindow(this);
@@ -191,8 +190,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     if (!gnomonWorkspaceTreeConstructor::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Constructor", "Create a synthetic branching structure based on random or determinsitc processes", "Tree Constructor", gnomonWorkspaceTreeConstructor::color);
     }
-    if (!gnomonWorkspaceTreeFromLString::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Form Translation", workspace_desc, "Form Translation", gnomonWorkspaceTreeFromLString::color);
+    if (!gnomonWorkspaceLStringTranslation::isEmpty()) {
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Form Translation", workspace_desc, "Tree Form Translation", gnomonWorkspaceLStringTranslation::color);
     }
     if (!gnomonWorkspaceLSystemSimulator::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator",  workspace_desc, "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);

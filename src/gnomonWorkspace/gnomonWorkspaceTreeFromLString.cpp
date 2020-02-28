@@ -51,8 +51,8 @@ public:
 
     QSplitter *splitter = nullptr;
 
-public:
-    dtkMacsWidget *editor = nullptr;
+//public:
+//    dtkMacsWidget *editor = nullptr;
 
 public:
     dtkWidgetsMenu *menu_;
@@ -97,39 +97,39 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
 // NOTE: LSystem Editor
 // /////////////////////////////////////////////////////////////////////////////
 
-    d->editor = new dtkMacsWidget(this);
+//    d->editor = new dtkMacsWidget(this);
+//
+//    QString default_lsystem = "";
+//    default_lsystem += "derivation length: 1\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "production:\n";
+//    default_lsystem += "B(t, s, a, dur, alpha,order):\n";
+//    default_lsystem += "  nproduce\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "A(a):\n";
+//    default_lsystem += "  nproduce\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "I(t,s):\n";
+//    default_lsystem += "  nproduce S(t,s)\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "/(x) -->\n";
+//    default_lsystem += "f(x) -->\n";
+//    default_lsystem += "+(x) -->\n";
+//    default_lsystem += "-(x) -->\n";
+//    default_lsystem += "@Ts(x) --> \n";
+//    default_lsystem += "\n";
+//    default_lsystem += "endlsystem\n";
+//    d->editor->setText(default_lsystem);
 
-    QString default_lsystem = "";
-    default_lsystem += "derivation length: 1\n";
-    default_lsystem += "\n";
-    default_lsystem += "production:\n";
-    default_lsystem += "B(t, s, a, dur, alpha,order):\n";
-    default_lsystem += "  nproduce\n";
-    default_lsystem += "\n";
-    default_lsystem += "A(a):\n";
-    default_lsystem += "  nproduce\n";
-    default_lsystem += "\n";
-    default_lsystem += "I(t,s):\n";
-    default_lsystem += "  nproduce S(t,s)\n";
-    default_lsystem += "\n";
-    default_lsystem += "/(x) -->\n";
-    default_lsystem += "f(x) -->\n";
-    default_lsystem += "+(x) -->\n";
-    default_lsystem += "-(x) -->\n";
-    default_lsystem += "@Ts(x) --> \n";
-    default_lsystem += "\n";
-    default_lsystem += "endlsystem\n";
-    d->editor->setText(default_lsystem);
-
-    QVBoxLayout *input_layout = new QVBoxLayout;
-    input_layout->setContentsMargins(0, 0, 0, 0);
-    input_layout->setSpacing(0);
-    input_layout->addWidget(d->source);
-    input_layout->addWidget(d->editor);
-
-    QWidget *input_widget = new QWidget(this);
-    input_widget->setLayout(input_layout);
-    input_widget->resize(800, input_widget->height());
+//    QVBoxLayout *input_layout = new QVBoxLayout;
+//    input_layout->setContentsMargins(0, 0, 0, 0);
+//    input_layout->setSpacing(0);
+//    input_layout->addWidget(d->source);
+//    input_layout->addWidget(d->editor);
+//
+//    QWidget *input_widget = new QWidget(this);
+//    input_widget->setLayout(input_layout);
+//    input_widget->resize(800, input_widget->height());
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -143,7 +143,7 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     d->target_stack->addWidget(d->target);
 
     d->splitter = new QSplitter(this);
-    d->splitter->addWidget(input_widget);
+    d->splitter->addWidget(d->source);
     d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ void gnomonWorkspaceTreeFromLString::apply(void)
         qDebug() << "Not changed";
     }
 
-    d->command->setLSystem(d->editor->toPlainText());
+//    d->command->setLSystem(d->editor->toPlainText());
 
     d->command->redo();
 

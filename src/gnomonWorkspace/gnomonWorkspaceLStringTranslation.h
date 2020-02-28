@@ -18,13 +18,13 @@
 
 #include <dtkWidgets>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLStringFromTree : public dtkWidgetsWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLStringTranslation : public dtkWidgetsWorkspace
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceLStringFromTree(QWidget *parent = nullptr);
-    ~gnomonWorkspaceLStringFromTree(void);
+     gnomonWorkspaceLStringTranslation(QWidget *parent = nullptr);
+    ~gnomonWorkspaceLStringTranslation(void);
 
 public:
     void enter(void) override;
@@ -41,8 +41,8 @@ public:
     static bool isEmpty(void);
 
 private:
-    class gnomonWorkspaceLStringFromTreePrivate *d;
+    class gnomonWorkspaceLStringTranslationPrivate *d;
 };
 
 //
-// gnomonWorkspaceLStringFromTree.h ends here
+// gnomonWorkspaceLStringTranslation.h ends here
