@@ -141,6 +141,11 @@ public:
     QWidget *rhs_area;
 
 public:
+    gnomonViewMatplotlib *axiom = nullptr;
+    gnomonViewMatplotlib *target = nullptr;
+
+
+public:
     QPushButton *run_button;
     QPushButton *stop_button;
     QPushButton *rewind_button;
@@ -174,6 +179,9 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     // d->spinner = new gnomonSpinner(this);
     // d->spinner->start();
+
+    d->axiom = new gnomonViewMatplotlib(this);
+    d->target = new gnomonViewMatplotlib(this);
 
     d->lhs = new QTabWidget(this);
     d->lhs->setTabPosition(QTabWidget::South);
@@ -402,6 +410,8 @@ void reparentAction(QMenuBar * menu, const char * menuLabel, const char * action
                     self->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
                         reaction->trigger();
+
+                        qDebug()<<Q_FUNC_INFO<<"Run finished";
                     });
                 }
             }
@@ -547,7 +557,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
             reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
 
-            window->setMenuBar(0);
+//            window->setMenuBar(0);
 
             d->menus << d->tools_menu;
 
@@ -577,6 +587,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->out_view->setLayout(layout);
 
         d->rhs->addTab(d->out_view, "3D");
+
+        d->rhs->addTab(d->target, "LString");
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
 
@@ -621,26 +633,27 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // QWidget *window = widget->window();
 
-        d->in_axiom = new QWidget;
+//        d->in_axiom = new QWidget;
+//
+//        d->in_axiom_bar = new dtkWidgetsMenuBar(d->in_axiom);
+//        d->in_axiom_bar->show();
+//        d->in_axiom_bar->setInteractive(false);
+//        d->in_axiom_bar->setWidth(32);
+//        d->in_axiom_bar->setMargins(6);
+//        // d->view_menubar->addMenu(d->menu());
+//        d->in_axiom_bar->touch();
+//
+//        QHBoxLayout *layout = new QHBoxLayout;
+//        layout->setContentsMargins(0, 0, 0, 0);
+//        layout->setSpacing(0);
+//        layout->addWidget(d->in_axiom_bar);
+//        layout->addWidget(d->in_axiom_bar->container());
+//        layout->addWidget(widget);
+//
+//        d->in_axiom->setLayout(layout);
 
-        d->in_axiom_bar = new dtkWidgetsMenuBar(d->in_axiom);
-        d->in_axiom_bar->show();
-        d->in_axiom_bar->setInteractive(false);
-        d->in_axiom_bar->setWidth(32);
-        d->in_axiom_bar->setMargins(6);
-        // d->view_menubar->addMenu(d->menu());
-        d->in_axiom_bar->touch();
-
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
-        layout->addWidget(d->in_axiom_bar);
-        layout->addWidget(d->in_axiom_bar->container());
-        layout->addWidget(widget);
-
-        d->in_axiom->setLayout(layout);
-
-        d->lhs->addTab(d->in_axiom, "Axiom");
+//        d->lhs->addTab(d->in_axiom, "Axiom");
+        d->lhs->addTab(d->axiom, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
        
