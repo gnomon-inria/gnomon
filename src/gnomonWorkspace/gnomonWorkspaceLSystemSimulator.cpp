@@ -138,6 +138,7 @@ public:
     QTabWidget *rhs;
     QTabWidget *params;
     QSplitter *splitter;
+    QWidget *rhs_area;
 
 public:
     QPushButton *run_button;
@@ -176,6 +177,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->lhs = new QTabWidget(this);
     d->lhs->setTabPosition(QTabWidget::South);
+    d->lhs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     d->rhs = new QTabWidget(this);
     d->rhs->setTabPosition(QTabWidget::South);
@@ -247,9 +249,16 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->dashboard_menu);
     d->dashboard->setFixedWidth(300);
 
+    d->rhs_area = new QWidget(this);
+
+    QVBoxLayout *rhs_area_layout = new QVBoxLayout(d->rhs_area);
+    rhs_area_layout->setContentsMargins(0, 0, 0, 0);
+    rhs_area_layout->setSpacing(0);
+    rhs_area_layout->addWidget(d->rhs);
+
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->lhs);
-    d->splitter->addWidget(d->rhs);
+    d->splitter->addWidget(d->rhs_area);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -560,11 +569,32 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
 
+            foreach(QWidget *widget, window->findChildren<QToolBar *>()) {
+
+                if(widget->objectName() == "LocationBar")
+                    continue;
+
+                if(widget->objectName() == "LineWidthBar")
+                    continue;
+
+                if(widget->objectName() == "TransitionBar")
+                    continue;
+
+                widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+                widget->setVisible(true); // NOTE: Does the trick! Com'on ....
+
+                // dynamic_cast<QHBoxLayout *>(d->rhs_area->layout())->insertWidget(0, widget);
+               
+                qDebug() << "Got a toolbar!" << widget;
+            }
+
             foreach(dtkWidgetsMenu *menu, ::build("", window->menuBar()))
                 d->out_view_bar->addMenu(menu);
 
             d->out_view_bar->touch();
         }
+
+        d->splitter->setSizes(QList<int>() << this->width() / 2 << this->width() / 2);
     }
 
     if(widget->objectName() == "LPYViewer") {
