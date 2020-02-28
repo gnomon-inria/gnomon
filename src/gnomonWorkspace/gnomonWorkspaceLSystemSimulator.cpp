@@ -527,8 +527,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
             reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
 
-            window->menuBar()->hide();
-            window->menuWidget()->hide();
+            window->setMenuBar(0);
 
             d->menus << d->tools_menu;
 
