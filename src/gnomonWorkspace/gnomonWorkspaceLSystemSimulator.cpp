@@ -395,7 +395,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QWidget * self,  QPushButton * button)
+void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QPushButton * button)
 {
     foreach(QAction *action, menu->actions()) {
 
@@ -407,11 +407,28 @@ void reparentAction(QMenuBar * menu, const char * menuLabel, const char * action
 
                 if(reaction->text() == actionLabel) {
 
-                    self->connect(button, &QPushButton::clicked, [=] (void) -> void
+                    this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
                         reaction->trigger();
 
                         qDebug()<<Q_FUNC_INFO<<"Run finished";
+
+                        int stat;
+                        dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
+
+                        dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import addFormToFigure", &stat);
+                        QString add_statement = "addFormToFigure(gnomon_lstring_series,'gnomonLString',";
+                        add_statement += QString::number(d->target->figureNumber());
+                        add_statement += ")";
+                        dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
                     });
                 }
             }
@@ -551,11 +568,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 }
             }
 
-            reparentAction(window->menuBar(), "L-systems", "Run", this, d->run_button);
-            reparentAction(window->menuBar(), "L-systems", "Step", this, d->step_button);
-            reparentAction(window->menuBar(), "L-systems", "Rewind", this, d->rewind_button);
-            reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
-            reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Run", d->run_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Step", d->step_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Rewind", d->rewind_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Animate", d->animate_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Stop", d->stop_button);
 
 //            window->setMenuBar(0);
 
