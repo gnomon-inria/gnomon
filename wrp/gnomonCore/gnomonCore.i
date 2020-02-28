@@ -672,7 +672,6 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
