@@ -85,26 +85,26 @@ protected:
 
                         // qDebug() << Q_FUNC_INFO << "OHHHH YEAH ---------" << 2;
 
-                        gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
-                        export_button->move(10,10);
-                        export_button->show();
-
-                        connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
-                        {
-                            // qDebug() << Q_FUNC_INFO << 0 << widget;
-
-                            foreach(QWidget *top, qApp->topLevelWidgets()) {
-
-                                // qDebug() << Q_FUNC_INFO << 1 << widget;
-
-                                foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
-
-                                    // qDebug() << Q_FUNC_INFO << 2 << widget;
-
-                                    simulator->apply(widget);
-                                }
-                            }
-                        });
+//                        gnomonOverlayButton *export_button = new gnomonOverlayButton(fa::arrowcircleup, "", widget);
+//                        export_button->move(10,10);
+//                        export_button->show();
+//
+//                        connect(export_button, &gnomonOverlayButton::iconClicked, [=] (void) -> void
+//                        {
+//                            // qDebug() << Q_FUNC_INFO << 0 << widget;
+//
+//                            foreach(QWidget *top, qApp->topLevelWidgets()) {
+//
+//                                // qDebug() << Q_FUNC_INFO << 1 << widget;
+//
+//                                foreach(gnomonWorkspaceLSystemSimulator *simulator, top->findChildren<gnomonWorkspaceLSystemSimulator *>()) {
+//
+//                                    // qDebug() << Q_FUNC_INFO << 2 << widget;
+//
+//                                    simulator->apply(widget);
+//                                }
+//                            }
+//                        });
 
                        
                     }

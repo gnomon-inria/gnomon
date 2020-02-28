@@ -103,7 +103,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
     dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
     dtk::widgets::workspace::pluginFactory().record( "FEM Simulation", creator<gnomonWorkspaceSimulation>);
-    dtk::widgets::workspace::pluginFactory().record( "Tree Analysis", creator<gnomonWorkspaceTreeAnalysis>);
+    dtk::widgets::workspace::pluginFactory().record( "Tree Transform", creator<gnomonWorkspaceTreeAnalysis>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Constructor", creator<gnomonWorkspaceTreeConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Form Translation", creator<gnomonWorkspaceLStringTranslation>);
     dtk::widgets::workspace::pluginFactory().record( "PlantScan3D", creator<gnomonWorkspacePlantScan3D>);
@@ -185,19 +185,19 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
 
     const QString branching_package_desc = QString("Workspaces dedicated to the generation and analysis of branching structures.");
     if (!gnomonWorkspaceTreeAnalysis::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Analysis", workspace_desc, "Tree Analysis", gnomonWorkspaceTreeAnalysis::color);
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Transform", "Apply a topological transformation algorithm on a branching structure", "Tree Transform", gnomonWorkspaceTreeAnalysis::color);
     }
     if (!gnomonWorkspaceTreeConstructor::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Constructor", "Create a synthetic branching structure based on random or determinsitc processes", "Tree Constructor", gnomonWorkspaceTreeConstructor::color);
     }
     if (!gnomonWorkspaceLStringTranslation::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Form Translation", workspace_desc, "Tree Form Translation", gnomonWorkspaceLStringTranslation::color);
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "Tree Form Translation", "Perform a simple conversion between data structures representing branching forms", "Tree Form Translation", gnomonWorkspaceLStringTranslation::color);
     }
     if (!gnomonWorkspaceLSystemSimulator::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator",  workspace_desc, "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "L-System Simulator",  "Conceive and run L-System-based models to simulate branching structures", "L-System Simulator", gnomonWorkspaceLSystemSimulator::color);
     }
     if (!gnomonWorkspacePlantScan3D::isEmpty()) {
-        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D",   workspace_desc, "PlantScan3D", gnomonWorkspacePlantScan3D::color);
+        d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D", "Apply a set of algorithms to reconstruct branching structures based on a 3D point cloud", "PlantScan3D", gnomonWorkspacePlantScan3D::color);
     }
 
     d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
