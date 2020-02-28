@@ -415,11 +415,9 @@ void gnomonViewMatplotlibPrivate::refresh(void)
 
     this->view_menubar->touch();
 
-    int stat;
-    QString refreshStatement = "import matplotlib.pyplot as plt\nfigure = plt.figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
-    dtkScriptInterpreterPython::instance()->interpret(refreshStatement, &stat);
-
-
+//    int stat;
+//    QString refreshStatement = "import matplotlib.pyplot as plt\nfigure = plt.figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
+//    dtkScriptInterpreterPython::instance()->interpret(refreshStatement, &stat);
 }
 
 dtkWidgetsMenu *gnomonViewMatplotlibPrivate::menu(void)
@@ -480,6 +478,10 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
 //
 //    static int count = 0;
 //    d->figureNumber = count++;
+
+    loadPluginGroup("matplotlibVisualizationTree");
+    loadPluginGroup("matplotlibVisualizationDataFrame");
+    loadPluginGroup("matplotlibVisualizationLString");
 
     connect(d->export_button, SIGNAL(iconClicked()), d, SLOT(exportToManager()));
     connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
@@ -553,9 +555,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
         d->forms["gnomonTree"] = tree;
 
-        loadPluginGroup("matplotlibVisualizationTree");
-
-
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
@@ -576,8 +575,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
         d->forms["gnomonDataFrame"] = dataFrame;
 
-        loadPluginGroup("matplotlibVisualizationDataFrame");
-
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
@@ -597,8 +594,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
         emit formAdded("gnomonDataFrame");
     } else if (gnomonLStringSeries *lString = dynamic_cast<gnomonLStringSeries *>(form)) {
         d->forms["gnomonLString"] = lString;
-
-        loadPluginGroup("matplotlibVisualizationLString");
 
         QString key = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys()[0];
 

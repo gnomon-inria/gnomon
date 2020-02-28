@@ -141,4 +141,10 @@ gnomonWidgetsWorkspaceBar::tab:last
     margin-left: 10px;
 }
 
+gnomonWidgetsWorkspaceBar::tab:last QIcon, gnomonWidgetsWorkspaceBar::tab:last QPixmap
+{
+    width: 60px;
+    height: 60px;
+}
+
 /* specific+g.qless ends here */

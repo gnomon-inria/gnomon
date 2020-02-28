@@ -141,6 +141,11 @@ public:
     QWidget *rhs_area;
 
 public:
+    gnomonViewMatplotlib *axiom = nullptr;
+    gnomonViewMatplotlib *target = nullptr;
+
+
+public:
     QPushButton *run_button;
     QPushButton *stop_button;
     QPushButton *rewind_button;
@@ -174,6 +179,9 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     // d->spinner = new gnomonSpinner(this);
     // d->spinner->start();
+
+    d->axiom = new gnomonViewMatplotlib(this);
+    d->target = new gnomonViewMatplotlib(this);
 
     d->lhs = new QTabWidget(this);
     d->lhs->setTabPosition(QTabWidget::South);
@@ -332,6 +340,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
 
     dtkScriptInterpreterPython::instance()->interpret("import gnomonvisualization", &stat);
@@ -387,7 +396,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QWidget * self,  QPushButton * button)
+void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QPushButton * button)
 {
     foreach(QAction *action, menu->actions()) {
 
@@ -399,9 +408,51 @@ void reparentAction(QMenuBar * menu, const char * menuLabel, const char * action
 
                 if(reaction->text() == actionLabel) {
 
-                    self->connect(button, &QPushButton::clicked, [=] (void) -> void
+                    this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
+                        int stat;
+                        dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
+
+                        dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
+
+                        QString get_statement = "";
+                        get_statement += "form = getFigureForm('gnomonLString',";
+                        get_statement += QString::number(d->axiom->figureNumber());
+                        get_statement += ")";
+                        dtkScriptInterpreterPython::instance()->interpret(get_statement, &stat);
+
+                        QString axiom_statement = "";
+                        axiom_statement += "if form is not None:\n";
+                        axiom_statement += "  axiom_lstring = form.current().asLString()\n";
+                        axiom_statement += "  gnomon_axiom = axiom_lstring.toString()\n";
+                        axiom_statement += "else:\n";
+                        axiom_statement += "  gnomon_axiom = None\n";
+                        axiom_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                        axiom_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+                        axiom_statement += "    editor.setAxiom(gnomon_axiom)\n";
+                        dtkScriptInterpreterPython::instance()->interpret(axiom_statement, &stat);
+
                         reaction->trigger();
+
+                        qDebug()<<Q_FUNC_INFO<<"Run finished";
+
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
+
+                        QString add_statement = "";
+                        add_statement += "addFormToFigure(gnomon_lstring_series,'gnomonLString',";
+                        add_statement += QString::number(d->target->figureNumber());
+                        add_statement += ")";
+                        dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
                     });
                 }
             }
@@ -541,13 +592,13 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 }
             }
 
-            reparentAction(window->menuBar(), "L-systems", "Run", this, d->run_button);
-            reparentAction(window->menuBar(), "L-systems", "Step", this, d->step_button);
-            reparentAction(window->menuBar(), "L-systems", "Rewind", this, d->rewind_button);
-            reparentAction(window->menuBar(), "L-systems", "Animate", this, d->animate_button);
-            reparentAction(window->menuBar(), "L-systems", "Stop", this, d->stop_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Run", d->run_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Step", d->step_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Rewind", d->rewind_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Animate", d->animate_button);
+            this->reparentAction(window->menuBar(), "L-systems", "Stop", d->stop_button);
 
-            window->setMenuBar(0);
+//            window->setMenuBar(0);
 
             d->menus << d->tools_menu;
 
@@ -577,6 +628,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->out_view->setLayout(layout);
 
         d->rhs->addTab(d->out_view, "3D");
+
+        d->rhs->addTab(d->target, "LString");
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
 
@@ -621,26 +674,27 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // QWidget *window = widget->window();
 
-        d->in_axiom = new QWidget;
+//        d->in_axiom = new QWidget;
+//
+//        d->in_axiom_bar = new dtkWidgetsMenuBar(d->in_axiom);
+//        d->in_axiom_bar->show();
+//        d->in_axiom_bar->setInteractive(false);
+//        d->in_axiom_bar->setWidth(32);
+//        d->in_axiom_bar->setMargins(6);
+//        // d->view_menubar->addMenu(d->menu());
+//        d->in_axiom_bar->touch();
+//
+//        QHBoxLayout *layout = new QHBoxLayout;
+//        layout->setContentsMargins(0, 0, 0, 0);
+//        layout->setSpacing(0);
+//        layout->addWidget(d->in_axiom_bar);
+//        layout->addWidget(d->in_axiom_bar->container());
+//        layout->addWidget(widget);
+//
+//        d->in_axiom->setLayout(layout);
 
-        d->in_axiom_bar = new dtkWidgetsMenuBar(d->in_axiom);
-        d->in_axiom_bar->show();
-        d->in_axiom_bar->setInteractive(false);
-        d->in_axiom_bar->setWidth(32);
-        d->in_axiom_bar->setMargins(6);
-        // d->view_menubar->addMenu(d->menu());
-        d->in_axiom_bar->touch();
-
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
-        layout->addWidget(d->in_axiom_bar);
-        layout->addWidget(d->in_axiom_bar->container());
-        layout->addWidget(widget);
-
-        d->in_axiom->setLayout(layout);
-
-        d->lhs->addTab(d->in_axiom, "Axiom");
+//        d->lhs->addTab(d->in_axiom, "Axiom");
+        d->lhs->addTab(d->axiom, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
        

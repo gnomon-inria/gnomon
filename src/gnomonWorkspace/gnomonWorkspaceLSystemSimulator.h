@@ -35,6 +35,10 @@ public:
     void apply(QWidget *);
 
 public:
+    void reparentAction(QMenuBar * menu, const char * menuLabel, const char * actionLabel, QPushButton * button);
+
+
+public:
     void fill(QWidget *);
 
 public:
