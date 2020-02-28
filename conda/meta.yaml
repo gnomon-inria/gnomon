@@ -86,9 +86,6 @@ requirements:
     - sip
     - vtk=8.2.0
     - zlib
-#   - fenics
-#   - openalea.plantscan3d
-#   - openalea.lpy
 
 app:
   entry: gnomon # [linux]

@@ -217,6 +217,7 @@ int main(int argc, char **argv)
 
     delete widget;
 
+    dtkScriptInterpreterPython::instance()->release();
     dtkWidgetsController::instance()->clear();
     dtkImaging::uninitialize();
 
