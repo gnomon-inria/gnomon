@@ -337,9 +337,20 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     dtkScriptInterpreterPython::instance()->interpret("import gnomonvisualization", &stat);
     dtkScriptInterpreterPython::instance()->interpret("manager = gnomonvisualization.gnomonFormManager.instance()", &stat);
 
+    dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpystudio import Viewer", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import tempfile", &stat);
+
+    dtkScriptInterpreterPython::instance()->interpret("dir = tempfile.TemporaryDirectory()", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("Viewer.saveSnapshot(dir.name+'/snapshot.png')", &stat);
+
+    dtkScriptInterpreterPython::instance()->interpret("from imageio import imread", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("from PIL import Image", &stat);
     dtkScriptInterpreterPython::instance()->interpret("import numpy as np", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("canvas_img = np.zeros((600, 600, 3), float)", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("image = [[[rgb for rgb in c] for c in r] for r in canvas_img]", &stat);
+
+    dtkScriptInterpreterPython::instance()->interpret("viewer_img = imread(dir.name+'/snapshot.png')", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("viewer_img = np.array(Image.fromarray(viewer_img).resize((600,600)))", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("image = [[[rgb for rgb in c] for c in r] for r in viewer_img]", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("dir.cleanup()", &stat);
 
     QString red_string = QString::number(this->color.red());
     QString green_string = QString::number(this->color.green());
