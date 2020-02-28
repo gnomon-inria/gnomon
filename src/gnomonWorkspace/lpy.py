@@ -43,6 +43,36 @@ base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 
 Viewer.show()
 
+old_get_code = LpyCodeEditor.getCode
+
+def getCode(self):
+    code = str(self.toPlainText()).encode('iso-8859-1','replace').decode('iso-8859-1')
+    if hasattr(self,'axiom'):
+        print("Setting new axiom :",self.axiom)
+        result = ''
+        for line in code.splitlines(True):
+            l = line.strip()
+            if len(l) > 0:
+                firstword = l.split()[0]
+                if firstword == 'Axiom:':
+                    result += 'Axiom:'+self.axiom
+                else:
+                    result += line
+            else:
+                result += line
+        return result
+    else:
+        return code
+LpyCodeEditor.getCode = getCode
+
+def setAxiom(self,axiom=None):
+    if axiom is not None:
+        self.axiom = axiom
+    else:
+        if hasattr(self,'axiom'):
+            del self.axiom
+LpyCodeEditor.setAxiom = setAxiom
+
 workspace = LPyWindow(withinterpreter=True)
 
 def set_theme_to_code_editor():
@@ -173,7 +203,6 @@ workspace.hide()
 set_theme_to_code_editor()
 
 dtkThemesEngine.instance().apply()
-
 
 #
 # lpy.py ends here

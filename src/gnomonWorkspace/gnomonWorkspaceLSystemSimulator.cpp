@@ -340,6 +340,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
 
     dtkScriptInterpreterPython::instance()->interpret("import gnomonvisualization", &stat);
@@ -409,13 +410,36 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
 
                     this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
+                        int stat;
+                        dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
+
+                        dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
+
+                        QString get_statement = "";
+                        get_statement += "form = getFigureForm('gnomonLString',";
+                        get_statement += QString::number(d->axiom->figureNumber());
+                        get_statement += ")";
+                        dtkScriptInterpreterPython::instance()->interpret(get_statement, &stat);
+
+                        QString axiom_statement = "";
+                        axiom_statement += "if form is not None:\n";
+                        axiom_statement += "  axiom_lstring = form.current().asLString()\n";
+                        axiom_statement += "  gnomon_axiom = axiom_lstring.toString()\n";
+                        axiom_statement += "else:\n";
+                        axiom_statement += "  gnomon_axiom = None\n";
+                        axiom_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                        axiom_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+                        axiom_statement += "    editor.setAxiom(gnomon_axiom)\n";
+                        dtkScriptInterpreterPython::instance()->interpret(axiom_statement, &stat);
+
                         reaction->trigger();
 
                         qDebug()<<Q_FUNC_INFO<<"Run finished";
 
-                        int stat;
-                        dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
@@ -424,8 +448,8 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
 
-                        dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import addFormToFigure", &stat);
-                        QString add_statement = "addFormToFigure(gnomon_lstring_series,'gnomonLString',";
+                        QString add_statement = "";
+                        add_statement += "addFormToFigure(gnomon_lstring_series,'gnomonLString',";
                         add_statement += QString::number(d->target->figureNumber());
                         add_statement += ")";
                         dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);

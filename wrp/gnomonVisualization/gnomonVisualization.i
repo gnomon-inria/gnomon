@@ -414,6 +414,19 @@ void addFormToFigure(gnomonAbstractDynamicForm * form, const QString& name, int 
     }
 }
 
+gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number)
+{
+    foreach(QWidget *top, qApp->topLevelWidgets()) {
+        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
+            if(view->figureNumber() == figure_number)
+            {
+                return view->form(name);
+            }
+        }
+    }
+    return nullptr;
+}
+
 %}
 
 // ///////////////////////////////////////////////////////////////////
