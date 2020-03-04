@@ -27,6 +27,7 @@ from PyQt5.QtCore import *
 from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 from openalea.lpy.gui.lpyview3d import LpyView3D
+import openalea.lpy.gui.settings as lpysettings
 
 from dtkthemes import dtkThemesEngine
 from dtkthemes import dtkThemesEngineCallBack
@@ -40,6 +41,11 @@ base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 ## #############################################################################
 ##
 ## #############################################################################
+def getSettings():
+    settings = QSettings(QSettings.IniFormat, QSettings.UserScope,'Gnomon','LPy'+str(LPY_VERSION_MAJOR))
+    return settings
+
+lpysettings.getSettings = getSettings
 
 Viewer.show()
 
