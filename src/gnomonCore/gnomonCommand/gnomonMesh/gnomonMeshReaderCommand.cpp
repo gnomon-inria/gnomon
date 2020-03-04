@@ -63,5 +63,11 @@ gnomonMeshSeries *gnomonMeshReaderCommand::mesh(void)
     }
 }
 
+bool gnomonMeshReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("meshReader");
+    return gnomonCore::meshReader::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonMeshReaderCommand.cpp ends here

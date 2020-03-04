@@ -95,5 +95,11 @@ gnomonTreeSeries *gnomonTreeTransformCommand::output(void)
     }
 }
 
+bool gnomonTreeTransformCommand::isEmpty(void)
+{
+    loadPluginGroup("treeTransform");
+    return gnomonCore::treeTransform::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonTreeTransformCommand.cpp ends here

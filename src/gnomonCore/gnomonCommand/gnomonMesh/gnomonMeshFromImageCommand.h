@@ -12,7 +12,7 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *images_serie);
+    void setInput(gnomonImageSeries *image_series);
     gnomonImageSeries *input(void);
 
     gnomonMeshSeries *output(void);
@@ -21,6 +21,9 @@ public:
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
+
+public:
+    static bool isEmpty(void);
 
 private:
     class gnomonMeshFromImageCommandPrivate *d;

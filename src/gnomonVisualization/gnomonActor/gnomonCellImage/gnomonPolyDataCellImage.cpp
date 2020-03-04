@@ -65,6 +65,7 @@ public:
     QMap<QString,QList<double>> slice;
 
     bool modified;
+    bool as_8bit = false;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -113,10 +114,14 @@ void gnomonPolyDataCellImage::update(void)
 
      QMap<long, double> cellScalarProperty;
      for (const auto& cellId : cellProperty.keys()) {
-         cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
+         if (!d->as_8bit) {
+            cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
+         } else {
+            cellScalarProperty[cellId] = int(cellProperty[cellId].value<double>())%256;
+         }
      }
 
-     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     if(!converter)
         return;
 
@@ -252,13 +257,20 @@ void gnomonPolyDataCellImage::setPropertyName(const QString& value)
     d->propertyName = value;
 }
 
+void gnomonPolyDataCellImage::set8Bit(bool value)
+{
+    if (d->as_8bit != value)
+        this->modified();
+
+    d->as_8bit = value;
+}
+
 void gnomonPolyDataCellImage::setSliceRanges(const QList<double>& x_value, const QList<double>& y_value, const QList<double>& z_value)
 {
     d->slice["x"] = x_value;
     d->slice["y"] = y_value;
     d->slice["z"] = z_value;
 }
-
 
 long gnomonPolyDataCellImage::cellId(long vtkId)
 {

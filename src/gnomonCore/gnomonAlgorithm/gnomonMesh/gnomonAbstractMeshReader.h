@@ -46,7 +46,7 @@ public:
     virtual gnomonMeshSeries *mesh(void) = 0;
 
 public:
-    virtual QStringList types(void) = 0;
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

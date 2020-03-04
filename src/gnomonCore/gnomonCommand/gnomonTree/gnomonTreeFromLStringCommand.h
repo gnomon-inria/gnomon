@@ -11,9 +11,10 @@ public:
     void redo(void) override;
     void undo(void) override;
 
-public:
-    void setLSystem(const QString& lsystem);
+//public:
+//    void setLSystem(const QString& lsystem);
 
+public:
     void setInput(gnomonLStringSeries *);
     gnomonLStringSeries *input();
 
@@ -23,6 +24,8 @@ public:
     void setParameter(const QString&, const QVariant&);
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
 
+public:
+    static bool isEmpty(void);
 
 private:
     class gnomonTreeFromLStringCommandPrivate *d;

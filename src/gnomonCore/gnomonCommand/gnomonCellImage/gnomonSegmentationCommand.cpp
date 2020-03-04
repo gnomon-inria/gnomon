@@ -104,5 +104,11 @@ void gnomonSegmentationCommand::setParameter(const QString& parameter, const QVa
     this->action->setParameter(parameter, value);
 }
 
+bool gnomonSegmentationCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageFromImage");
+    return gnomonCore::cellImageFromImage::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonSegmentationCommand.cpp ends here

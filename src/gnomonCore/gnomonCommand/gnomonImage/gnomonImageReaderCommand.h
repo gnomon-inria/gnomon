@@ -16,6 +16,9 @@ public:
 
     gnomonImageSeries *image(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonImageReaderCommandPrivate *d;
 };

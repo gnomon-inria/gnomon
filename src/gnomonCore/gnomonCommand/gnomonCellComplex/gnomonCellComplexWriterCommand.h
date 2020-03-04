@@ -15,6 +15,9 @@ public:
     void setPath(const QString& path);
     void setCellComplex(gnomonCellComplexSeries *cellcomplex);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonCellComplexWriterCommandPrivate *d;
 };

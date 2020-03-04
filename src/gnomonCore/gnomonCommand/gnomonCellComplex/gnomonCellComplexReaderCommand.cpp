@@ -63,5 +63,11 @@ gnomonCellComplexSeries *gnomonCellComplexReaderCommand::cellComplex(void)
     }
 }
 
+bool gnomonCellComplexReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("cellComplexReader");
+    return gnomonCore::cellComplexReader::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellComplexReaderCommand.cpp ends here

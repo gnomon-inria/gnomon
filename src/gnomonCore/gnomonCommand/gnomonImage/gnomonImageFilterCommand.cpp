@@ -95,5 +95,11 @@ gnomonImageSeries *gnomonImageFilterCommand::output(void)
     }
 }
 
+bool gnomonImageFilterCommand::isEmpty(void)
+{
+    loadPluginGroup("imageFilter");
+    return gnomonCore::imageFilter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonImageFilterCommand.cpp ends here

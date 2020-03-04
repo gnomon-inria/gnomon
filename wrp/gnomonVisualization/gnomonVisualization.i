@@ -29,6 +29,7 @@
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
@@ -39,6 +40,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
@@ -119,25 +121,25 @@
         int rows = PyList_Size($input);
         if (PyList_Check(PyList_GET_ITEM($input, 0))) {
             int cols = PyList_Size(PyList_GET_ITEM($input, 0));
-            $1 = QImage(cols, rows, QImage::Format_RGB32);
-            QRgb *rgbPtr = reinterpret_cast<QRgb *>($1.bits());
+            $1 = new QImage(cols, rows, QImage::Format_RGB32);
+            QRgb *rgbPtr = reinterpret_cast<QRgb *>($1->bits());
             for(int row=0; row<rows; ++row) {
                 for(int col=0;col<cols; ++col) {
                     double r, g, b;
-                    r = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM(list, row), col), 0));
-                    g = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM(list, row), col), 1));
-                    b = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM(list, row), col), 2));
+                    r = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM($input, row), col), 0));
+                    g = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM($input, row), col), 1));
+                    b = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM($input, row), col), 2));
                     *(rgbPtr) = QColor(r,g,b).rgb();
                     ++rgbPtr;
                 }
             }
         } else {
             qDebug("PyList of integers is expected as input. Empty QImage is returned.");
-            $1 = QImage(600, 600, QImage::Format_RGB32);
+            $1 = new QImage(600, 600, QImage::Format_RGB32);
         }
     } else {
         qDebug("PyList of integers is expected as input. Empty QImage is returned.");
-        $1 = QImage(600, 600, QImage::Format_RGB32);
+        $1 = new QImage(600, 600, QImage::Format_RGB32);
     }
 }
 
@@ -146,25 +148,25 @@
         int rows = PyList_Size($input);
         if (PyList_Check(PyList_GET_ITEM($input, 0))) {
             int cols = PyList_Size(PyList_GET_ITEM($input, 0));
-            $1 = QImage(cols, rows, QImage::Format_RGB32);
-            QRgb *rgbPtr = reinterpret_cast<QRgb *>($1.bits());
+            $1 = new QImage(cols, rows, QImage::Format_RGB32);
+            QRgb *rgbPtr = reinterpret_cast<QRgb *>($1->bits());
             for(int row=0; row<rows; ++row) {
                 for(int col=0;col<cols; ++col) {
                     double r, g, b;
-                    r = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM(list, row), col), 0));
-                    g = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM(list, row), col), 1));
-                    b = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM(list, row), col), 2));
+                    r = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM($input, row), col), 0));
+                    g = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM($input, row), col), 1));
+                    b = PyFloat_AsDouble(PyList_GET_ITEM(PyList_GET_ITEM(PyList_GET_ITEM($input, row), col), 2));
                     *(rgbPtr) = QColor(r,g,b).rgb();
                     ++rgbPtr;
                 }
             }
         } else {
             qDebug("PyList of PyList is expected as input. Empty QImage is returned.");
-            $1 = QImage(600, 600, QImage::Format_RGB32);
+            $1 = new QImage(600, 600, QImage::Format_RGB32);
         }
     } else {
         qDebug("PyList of PyList is expected as input. Empty QImage is returned.");
-        $1 = QImage(600, 600, QImage::Format_RGB32);
+        $1 = new QImage(600, 600, QImage::Format_RGB32);
     }
 }
 
@@ -239,6 +241,90 @@
     $input = list;
 }
 
+
+// /////////////////////////////////////////////////////////////////
+// QColor <-> list
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QColor {
+    if (PyList_Check($input)) {
+        int dims = PyList_Size($input);
+        if (dims>=3) {
+            double r, g, b;
+            r = PyFloat_AsDouble(PyList_GET_ITEM($input, 0));
+            g = PyFloat_AsDouble(PyList_GET_ITEM($input, 1));
+            b = PyFloat_AsDouble(PyList_GET_ITEM($input, 2));
+            $1 = new QColor(r,g,b);
+        } else {
+            qDebug("PyList of 3 integers is expected as input. Empty QColor is returned.");
+            $1 = new QColor(0, 0, 0);
+        }
+    } else {
+        qDebug("PyList of 3 integers is expected as input. Empty QColor is returned.");
+        $1 = new QColor(0, 0, 0);
+    }
+}
+
+%typemap(in) const QColor& {
+    if (PyList_Check($input)) {
+        int dims = PyList_Size($input);
+        if (dims>=3) {
+            double r, g, b;
+            r = PyFloat_AsDouble(PyList_GET_ITEM($input, 0));
+            g = PyFloat_AsDouble(PyList_GET_ITEM($input, 1));
+            b = PyFloat_AsDouble(PyList_GET_ITEM($input, 2));
+            $1 = new QColor(r,g,b);
+        } else {
+            qDebug("PyList of 3 integers is expected as input. Empty QColor is returned.");
+            $1 = new QColor(0, 0, 0);
+        }
+    } else {
+        qDebug("PyList of 3 integers is expected as input. Empty QColor is returned.");
+        $1 = new QColor(0, 0, 0);
+    }
+}
+
+%typemap(freearg) const QColor {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QColor {
+
+    PyObject *list = static_cast<PyObject *>($1);
+    if (PyList_Check(list)) {
+        int dims = PyList_Size(list);
+        if (dims>=3) {
+            double r, g, b;
+            r = PyFloat_AsDouble(PyList_GET_ITEM(list, 0));
+            g = PyFloat_AsDouble(PyList_GET_ITEM(list, 1));
+            b = PyFloat_AsDouble(PyList_GET_ITEM(list, 2));
+            $result = QColor(r,g,b);
+        } else {
+            qDebug("PyList of 3 integers is expected as input. Empty QColor is returned.");
+            $result = QColor(0, 0, 0);
+        }
+    } else {
+        qDebug("PyList of 3 integers is expected as input. Empty QColor is returned.");
+        $result = QColor(0, 0, 0);
+    }
+}
+
+%typemap(out) QColor {
+    $result = PyList_New(3);
+    PyList_SET_ITEM($result, 0, PyFloat_FromDouble($1.red()));
+    PyList_SET_ITEM($result, 1, PyFloat_FromDouble($1.green()));
+    PyList_SET_ITEM($result, 2, PyFloat_FromDouble($1.blue()));
+}
+
+%typemap(directorin) QColor {
+    PyObject *list = PyList_New(3);
+    PyList_SET_ITEM($result, 0, PyFloat_FromDouble($1.red()));
+    PyList_SET_ITEM($result, 1, PyFloat_FromDouble($1.green()));
+    PyList_SET_ITEM($result, 2, PyFloat_FromDouble($1.blue()));
+    $input = list;
+}
 
 // /////////////////////////////////////////////////////////////////
 // Map key (int) to strings
@@ -316,6 +402,31 @@ void setupMatplotlib(qlonglong view_address, int num)
     }
 }
 
+void addFormToFigure(gnomonAbstractDynamicForm * form, const QString& name, int figure_number)
+{
+    foreach(QWidget *top, qApp->topLevelWidgets()) {
+        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
+            if(view->figureNumber() == figure_number)
+            {
+                view->setForm(name,form);
+            }
+        }
+    }
+}
+
+gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number)
+{
+    foreach(QWidget *top, qApp->topLevelWidgets()) {
+        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
+            if(view->figureNumber() == figure_number)
+            {
+                return view->form(name);
+            }
+        }
+    }
+    return nullptr;
+}
+
 %}
 
 // ///////////////////////////////////////////////////////////////////
@@ -330,6 +441,7 @@ void setupMatplotlib(qlonglong view_address, int num)
 
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
+%include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
@@ -339,6 +451,7 @@ void setupMatplotlib(qlonglong view_address, int num)
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>

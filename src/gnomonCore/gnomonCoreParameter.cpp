@@ -320,6 +320,64 @@ void gnomonCoreParameterStringList::copy(gnomonCoreParameter *other)
 }
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterFile
+// ///////////////////////////////////////////////////////////////////
+
+gnomonCoreParameterFile::gnomonCoreParameterFile(const QString& path, const QString& doc) : gnomonCoreParameter(doc), m_path(path)
+{
+}
+
+gnomonCoreParameterFile::gnomonCoreParameterFile(const QString& path, const QStringList& formats, const QString& doc) : gnomonCoreParameter(doc), m_path(path), m_formats(formats)
+{
+}
+
+QString gnomonCoreParameterFile::value(void) const
+{
+    return m_path;
+}
+
+QStringList gnomonCoreParameterFile::formats(void) const
+{
+    return m_formats;
+}
+
+void gnomonCoreParameterFile::setFormats(const QStringList& formats)
+{
+    m_formats.clear();
+
+    for (const auto& f : formats) {
+        if (!m_formats.contains(f)) {
+            m_formats.append(f);
+        }
+    }
+}
+
+void gnomonCoreParameterFile::setValue(QString& val)
+{
+    if(m_path != val) {
+        m_path = val;
+        emit valueChanged();
+    }
+}
+
+void gnomonCoreParameterFile::setValue(const QVariant& v)
+{
+    QString val = v.toString();
+    if(m_path != val) {
+        m_path = val;
+        emit valueChanged();
+    }
+}
+
+void gnomonCoreParameterFile::copy(gnomonCoreParameter *other)
+{
+    if (gnomonCoreParameterFile *param = dynamic_cast<gnomonCoreParameterFile *>(other)) {
+        m_path = param->value();
+        emit valueChanged();
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant
 // ///////////////////////////////////////////////////////////////////
 

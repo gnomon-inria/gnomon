@@ -248,24 +248,15 @@ class gnomonMplTabWidget(QtWidgets.QWidget):
     def activate_figure(self, tab_index):
         widget = self.tabs.widget(tab_index)
 
-        # self.mpl_toolbar = NavigationToolbar2QT(widget.canvas, None)
-        # widget.canvas.draw()
-
-        # cid = widget.manager.canvas.mpl_connect('button_press_event', make_active)
-        # widget.manager._cidgcf = cid
-        # _pylab_helpers.Gcf.set_active(widget.manager)
-
     def initialize(self):
         figure_containers.append(self)
 
     def toolbars(self):
         toolbar = QtWidgets.QToolBar("Matplotlib Figures")
-        # toolbar.addActions([self.action_save_figure])
         return [toolbar]
 
     def toolbar_actions(self):
         return []
-        # return [self.action_save_figure]
 
     def save_figure(self, filename):
         widget = self.tabs.currentWidget()

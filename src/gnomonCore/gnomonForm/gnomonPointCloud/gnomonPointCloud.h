@@ -62,6 +62,7 @@ public:
 public:
     QString name(void) const override { return"gnomonPointCloud";}
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+    QString dataName(void) const override { return m_data->dataName(); }
 
 public:
     const gnomonAbstractPointCloudData *data(void) const { return m_data; }

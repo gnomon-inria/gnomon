@@ -60,6 +60,7 @@ public:
     QString property_name;
 
     bool modified;
+    bool as_8bit;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -91,6 +92,13 @@ void gnomonPolyDataCellComplex::setScaleFactor(double scale_factor)
     this->modified();
 }
 
+void gnomonPolyDataCellComplex::set8Bit(bool value)
+{
+    if (d->as_8bit != value)
+        this->modified();
+
+    d->as_8bit = value;
+}
 
 void gnomonPolyDataCellComplex::modified(void)
 {
@@ -174,9 +182,12 @@ void gnomonPolyDataCellComplex::update(void)
 
     QMap<long, double> cellScalarProperty;
     for (const auto& cellId : cells) {
-        cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
+        if (!d->as_8bit) {
+            cellScalarProperty[cellId] = cellProperty[cellId].value<double>();
+        } else {
+            cellScalarProperty[cellId] = double(int(cellProperty[cellId].value<double>())%256);
+        }
     }
-
 
     for (const auto& cellId : cells) {
 
@@ -197,7 +208,6 @@ void gnomonPolyDataCellComplex::update(void)
                 long vtkId = cellPolydataPoints->InsertNextPoint(x,y,z);
                 cellVertexPoints[cellId][vertexId] = vtkId;
             }
-
 
             QList<long> cellFaces = d->cellComplex->incidentElementIds(3,cellId,2);
             for (const auto& faceId : cellFaces) {

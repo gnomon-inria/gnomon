@@ -13,6 +13,7 @@
 
 /* Code: */
 
+
 /* // ///////////////////////////////////////////////////////////////////////////// */
 /* //                                                                               */
 /* // ///////////////////////////////////////////////////////////////////////////// */
@@ -20,23 +21,6 @@
 dtkWidgetsMenuBar#RHS
 {
     background: alpha(@base0, 00);
-}
-
-/* // ///////////////////////////////////////////////////////////////////////////// */
-/* //                                                                               */
-/* // ///////////////////////////////////////////////////////////////////////////// */
-
-dtkWidgetsWorkspaceBar::tab
-{
-    width: 200px;
-    font-size: 16pt;
-    font-weight: normal;
-}
-
-dtkWidgetsWorkspaceBar::tab:!selected
-{
-    background-color: @base2;
-    font-weight: bold;
 }
 
 /* // ///////////////////////////////////////////////////////////////////////////// */
@@ -87,6 +71,80 @@ gnomonMessageBoard > QLabel
 {
     color: @base2;
     font-size: 32px;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+gnomonWorkspaceLSystemSimulator QTabWidget::pane
+{
+    background-color: transparent;
+
+    border: none;
+    border-bottom: 1px solid @base0;
+}
+
+gnomonWorkspaceLSystemSimulator QTabWidget::tab-bar
+{
+    margin: 0;
+    margin-top: 1;
+
+    padding: 0;
+
+    background-color: transparent;
+}
+
+gnomonWorkspaceLSystemSimulator QTabBar::tab
+{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+
+    padding: 6px;
+
+    background-color: @bg;
+
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid @base0;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    width: 100;
+
+    color: @fgalt;
+}
+
+gnomonWorkspaceLSystemSimulator QTabBar::tab:last:selected
+{
+    background-color: @base2;
+}
+
+gnomonWorkspaceLSystemSimulator QTabBar::tab:selected, gnomonWorkspaceLSystemSimulator QTabBar::tab:hover
+{
+    background-color: @base2;
+}
+
+/* // ///////////////////////////////////////////////////////////////////////////// */
+/* //                                                                               */
+/* // ///////////////////////////////////////////////////////////////////////////// */
+
+gnomonWidgetsWorkspaceBar
+{
+    border-top: 1px solid @base0;
+}
+
+gnomonWidgetsWorkspaceBar::tab:last
+{
+    margin-left: 10px;
+}
+
+gnomonWidgetsWorkspaceBar::tab:last QIcon, gnomonWidgetsWorkspaceBar::tab:last QPixmap
+{
+    width: 60px;
+    height: 60px;
 }
 
 /* specific+g.qless ends here */

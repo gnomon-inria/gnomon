@@ -1,7 +1,6 @@
 // Version: $Id$
 //
 //
-
 // Commentary:
 //
 //
@@ -310,6 +309,33 @@ private:
 };
 
 Q_DECLARE_METATYPE(gnomonCoreParameterStringList *);
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonCoreParameterFile
+// ///////////////////////////////////////////////////////////////////
+
+
+class GNOMONCORE_EXPORT gnomonCoreParameterFile : public gnomonCoreParameter
+{
+public:
+     gnomonCoreParameterFile(const QString& path, const QString& doc = QString());
+     gnomonCoreParameterFile(const QString& path, const QStringList& formats, const QString& doc = QString());
+    ~gnomonCoreParameterFile(void) = default;
+
+    QString value(void) const;
+    QStringList formats(void) const;
+
+    void setFormats(const QStringList&);
+
+    void setValue(QString&);
+    void setValue(const QVariant&);
+
+    void copy(gnomonCoreParameter *other);
+
+private:
+    QString m_path = "";
+    QStringList m_formats;
+};
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterVariant

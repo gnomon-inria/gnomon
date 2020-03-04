@@ -19,6 +19,8 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonAbstractImageConstructor
+    gnomonAbstractImageConstructor.h
     gnomonAbstractImageFilter
     gnomonAbstractImageFilter.h
     gnomonAbstractImageFusion
@@ -32,6 +34,7 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonAbstractImageConstructor.cpp
     gnomonAbstractImageFilter.cpp
     gnomonAbstractImageFusion.cpp
     gnomonAbstractImageReader.cpp

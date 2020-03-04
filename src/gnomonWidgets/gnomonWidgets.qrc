@@ -1,5 +1,8 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
+  <qresource prefix="">
+    <file>gnomonWidgetsWorkspaceBar.qml</file>
+  </qresource>
   <qresource prefix="gnomon">
     <file>jupyter_console.py</file>
 
@@ -9,6 +12,8 @@
     <file>gnomonButton-XY-off.png</file>
     <file>gnomonButton-XZ-off.png</file>
     <file>gnomonButton-YZ-off.png</file>
+    <file>next.png</file>
+    <file>prev.png</file>
 
     <file>cluts/0CMY_cyan.clut</file>
     <file>cluts/0CMY_magenta.clut</file>

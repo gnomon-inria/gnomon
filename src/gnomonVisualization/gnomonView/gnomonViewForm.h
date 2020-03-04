@@ -140,6 +140,9 @@ signals:
 signals:
     void timeChanged(double);
 
+public:
+    QList<double> times(void);
+
 public slots:
     void timeIndexChange(int);
 
@@ -161,10 +164,12 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *);
     void dragMoveEvent(QDragMoveEvent *);
     void dropEvent(QDropEvent *);
-    void resizeEvent(QResizeEvent *);
 
-public:
-    void addFormFromFile(const QString& filename);
+signals:
+    void fileDropped(const QString&);
+
+protected:
+    void resizeEvent(QResizeEvent *);
 
 private:
     class gnomonViewFormPrivate *d;

@@ -141,14 +141,13 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
 
     connect(d->source, &gnomonViewForm::formAdded, [=] ()
     {
-    if (d->command->input() != d->source->image()) {
-        if (d->source->image()) {
-            d->command->setInput(d->source->image());
+        if (d->command->input() != d->source->image()) {
+            if (d->source->image()) {
+                d->command->setInput(d->source->image());
+            }
+        } else {
+            qDebug() << "Not changed";
         }
-    } else {
-        qDebug() << "Not changed";
-    }
-
         d->configure(d->algorithm);
     });
 
@@ -219,6 +218,11 @@ void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspacePointCloudFromImage::color = QColor("#209820");
+
+bool gnomonWorkspacePointCloudFromImage::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudFromImagePrivate::isEmpty();
+}
 
 //
 // gnomonWorkspacePointCloudFromImage.cpp ends here

@@ -38,9 +38,11 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setImage(gnomonImageSeries *images_serie) = 0;
+    virtual void setImage(gnomonImageSeries *image_series) = 0;
     virtual void setPath(const QString& path) = 0;
 
+public:
+    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -39,6 +39,9 @@ public:
 public:
     static const QColor color;
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonWorkspacePythonSimulatorPrivate *d;
 };

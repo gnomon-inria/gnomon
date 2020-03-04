@@ -16,6 +16,9 @@ public:
 
     gnomonCellComplexSeries *cellComplex(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonCellComplexReaderCommandPrivate *d;
 };

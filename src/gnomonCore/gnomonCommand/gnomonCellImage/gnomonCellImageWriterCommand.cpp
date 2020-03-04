@@ -70,5 +70,11 @@ void gnomonCellImageWriterCommand::setCellImage(gnomonCellImageSeries *cellImage
     d->cellImage = cellImage;
 }
 
+bool gnomonCellImageWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("cellImageWriter");
+    return gnomonCore::cellImageWriter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellImageWriterCommand.cpp ends here

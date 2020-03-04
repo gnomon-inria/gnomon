@@ -13,7 +13,10 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setCellImage(gnomonCellImageSeries *images_serie);
+    void setCellImage(gnomonCellImageSeries *image_series);
+
+public:
+    static bool isEmpty(void);
 
 private:
     class gnomonCellImageWriterCommandPrivate *d;

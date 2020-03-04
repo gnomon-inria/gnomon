@@ -16,6 +16,9 @@ public:
 
     gnomonDataFrameSeries *dataFrame(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonDataFrameReaderCommandPrivate *d;
 };

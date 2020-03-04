@@ -18,6 +18,9 @@ public:
 
     gnomonMeshSeries *mesh(void);
 
+public:
+    static bool isEmpty(void);
+
 private:
     class gnomonMeshReaderCommandPrivate *d;
 };

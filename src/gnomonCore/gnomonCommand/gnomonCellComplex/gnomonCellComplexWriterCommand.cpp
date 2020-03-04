@@ -62,5 +62,11 @@ void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cel
     d->cellComplex = cellComplex;
 }
 
+bool gnomonCellComplexWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("cellComplexWriter");
+    return gnomonCore::cellComplexWriter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonCellComplexWriterCommand.cpp ends here

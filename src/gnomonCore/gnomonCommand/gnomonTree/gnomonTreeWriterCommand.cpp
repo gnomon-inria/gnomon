@@ -73,5 +73,11 @@ void gnomonTreeWriterCommand::setInput(gnomonTreeSeries *tree)
     qDebug() << Q_FUNC_INFO << "LA COMMAND TREE APRES";
 }
 
+bool gnomonTreeWriterCommand::isEmpty(void)
+{
+    loadPluginGroup("treeWriter");
+    return gnomonCore::treeWriter::pluginFactory().keys().size() == 0;
+}
+
 //
 // gnomonTreeWriterCommand.cpp ends here

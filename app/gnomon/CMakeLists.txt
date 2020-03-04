@@ -24,13 +24,19 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   gnomonMainWindow.cpp)
 
+set(${PROJECT_NAME}_SOURCES_QRC
+  gnomon.qrc)
+
 ## #################################################################
 ## Build rules
 ## #################################################################
 
+qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
+
 add_library(${PROJECT_NAME}_backend SHARED
   ${${PROJECT_NAME}_HEADERS}
-  ${${PROJECT_NAME}_SOURCES})
+  ${${PROJECT_NAME}_SOURCES}
+  ${${PROJECT_NAME}_SOURCES_RCC})
 
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp)
@@ -41,7 +47,6 @@ endif()
 
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Core)
 target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::Widgets)
-target_link_libraries(${PROJECT_NAME}_backend PUBLIC Qt5::OpenGL)
 
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME}_backend PRIVATE dtkWidgets)

@@ -12,7 +12,7 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonCellImageSeries *images_serie);
+    void setInput(gnomonCellImageSeries *image_series);
     gnomonCellImageSeries *input(void);
 
     gnomonCellImageSeries *output(void);
@@ -21,6 +21,9 @@ public:
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const;
+
+public:
+    static bool isEmpty(void);
 
 private:
     class gnomonCellImageFilterCommandPrivate *d;

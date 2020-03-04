@@ -140,6 +140,12 @@ void gnomonActorPolyData::setOpacity(double value)
     d->interactor->Render();
 }
 
+void gnomonActorPolyData::setLinewidth(double value)
+{
+    d->actor->GetProperty()->SetLineWidth(value);
+    d->interactor->Render();
+}
+
 void gnomonActorPolyData::setValueRange(const QList<double>& value)
 {
     d->value_range[0] = value[0];
@@ -153,6 +159,28 @@ void gnomonActorPolyData::setColorMap(const QMap<double,QColor>& value)
     d->colormap = value;
     d->updateColorFunction();
     d->interactor->Render();
+}
+
+void gnomonActorPolyData::setColor(const QColor& color)
+{
+    d->colormap.clear();
+    d->colormap[0] = color;
+    d->colormap[1] = color;
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
+void gnomonActorPolyData::setWireframe(bool on)
+{
+    if (on) {
+        d->actor->GetProperty()->SetRepresentationToWireframe();
+        d->mapper->SetResolveCoincidentTopologyPolygonOffsetParameters(1,1);
+        d->mapper->SetResolveCoincidentTopologyToPolygonOffset();
+    } else {
+        d->actor->GetProperty()->SetRepresentationToSurface();
+        d->mapper->SetResolveCoincidentTopologyPolygonOffsetParameters(0,1);
+        d->mapper->SetResolveCoincidentTopologyToPolygonOffset();
+    }
 }
 
 gnomonActorPolyData::gnomonActorPolyData(void) : gnomonActor(), d(new gnomonActorPolyDataPrivate)

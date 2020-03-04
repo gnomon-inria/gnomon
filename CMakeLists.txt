@@ -23,7 +23,7 @@ project(gnomon)
 ## ###################################################################
 
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 13)
+set(${PROJECT_NAME}_VERSION_MINOR 14)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -108,7 +108,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network Svg Xml Concurrent Test)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkFonts    REQUIRED)
@@ -222,7 +222,6 @@ mark_as_advanced(Qt5Test_DIR)
 mark_as_advanced(Qt5Widgets_DIR)
 mark_as_advanced(Qt5Xml_DIR)
 mark_as_advanced(Qt5Sql_DIR)
-mark_as_advanced(Qt5OpenGL_DIR)
 mark_as_advanced(Qt5Svg_DIR)
 
 mark_as_advanced(CMAKE_AR)

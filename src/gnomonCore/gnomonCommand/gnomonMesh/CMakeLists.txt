@@ -21,6 +21,10 @@
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonFemSolverCommand
     gnomonFemSolverCommand.h
+    gnomonMeshConstructorCommand
+    gnomonMeshConstructorCommand.h
+    gnomonMeshFilterCommand
+    gnomonMeshFilterCommand.h
     gnomonMeshFromImageCommand
     gnomonMeshFromImageCommand.h
     gnomonMeshReaderCommand
@@ -31,6 +35,8 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonFemSolverCommand.cpp
+    gnomonMeshConstructorCommand.cpp
+    gnomonMeshFilterCommand.cpp
     gnomonMeshFromImageCommand.cpp
     gnomonMeshReaderCommand.cpp
     gnomonMeshWriterCommand.cpp)
