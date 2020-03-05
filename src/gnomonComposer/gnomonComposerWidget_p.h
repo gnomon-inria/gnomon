@@ -20,6 +20,7 @@
 class    dtkComposerScenePort;
 class    dtkComposerWidget;
 class gnomonComposerWidget;
+class dtkComposerSceneNodeComposite;
 class gnomonComposerNodeWorkspace;
 
 class gnomonComposerWidgetPrivate : public QObject
@@ -56,7 +57,8 @@ public:
 
 public:
     gnomonComposerWidget *q;
-    gnomonComposerNodeWorkspace *last_node = nullptr;
+    dtkComposerSceneNodeComposite *last_node = nullptr;
+//    gnomonComposerNodeWorkspace *last_node = nullptr;
 
 public:
     dtkComposerScenePort *last_port = nullptr;

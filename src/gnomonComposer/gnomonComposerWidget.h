@@ -44,7 +44,7 @@ public:
 
 public slots:
     void addWorkspace(const QString&);
-    void addNode(dtkComposerSceneNode *node);
+    void addNode(dtkComposerSceneNodeComposite *node);
 
 public slots:
     bool compositionSave(void);

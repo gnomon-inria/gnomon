@@ -204,20 +204,21 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
     d->last_port = port;
 }
 
-void gnomonComposerWidget::addNode(dtkComposerSceneNode *node)
+void gnomonComposerWidget::addNode(dtkComposerSceneNodeComposite *node)
 {
+    if (d->last_node) {
+        node->setPos(d->last_node->pos() + QPointF(300, 0));
+    }
+    node->layout();
+
     d->composer->scene()->addItem(node);
 
-    qDebug()<<Q_FUNC_INFO<<node<<node->inputEdges();
     for (const auto& edge : node->inputEdges()) {
-        qDebug()<<Q_FUNC_INFO<<node<<edge;
-    }
-    qDebug()<<Q_FUNC_INFO<<node<<node->outputEdges();
-    for (const auto& edge : node->outputEdges()) {
-        qDebug()<<Q_FUNC_INFO<<node<<edge;
+//        d->composer->scene()->root()->addEdge(edge);
+        d->composer->scene()->addItem(edge);
     }
 
-
+    d->last_node = node;
 }
 
 bool gnomonComposerWidget::compositionSave(void)

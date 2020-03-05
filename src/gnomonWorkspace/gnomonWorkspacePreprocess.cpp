@@ -212,11 +212,12 @@ void gnomonWorkspacePreprocess::apply(void)
 
         QMap<QString, gnomonAbstractDynamicForm *> inputs;
         inputs["input"] = d->source->image();
+        qDebug()<<d->command->input()<<d->source->image();
 
         QMap<QString, gnomonAbstractDynamicForm *> outputs;
         outputs["output"] = d->target->image();
 
-        d->pipeline->addAlgorithm(inputs,outputs,"gnomonImagefilter",d->algorithm,d->command->parameters());
+        d->pipeline->addAlgorithm(inputs,outputs,"gnomonImageFilter",d->algorithm,d->command->parameters());
 
     } else {
         d->target_stack->setCurrentWidget(d->target_message);

@@ -18,7 +18,7 @@
 
 #include <QtCore>
 
-class dtkComposerSceneNode;
+class dtkComposerSceneNodeComposite;
 
 class gnomonAbstractDynamicForm;
 class gnomonCoreParameter;
@@ -36,8 +36,9 @@ public slots:
     void addReader(gnomonAbstractDynamicForm *form, const QString& algorithm_class, const QString& algorithm, const QString& path);
     void addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters);
     void addForm(gnomonAbstractDynamicForm *form);
+    void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
 signals:
-    void nodeAdded(dtkComposerSceneNode *);
+    void nodeAdded(dtkComposerSceneNodeComposite *);
 
 protected:
      gnomonComposition(void);
