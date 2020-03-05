@@ -53,22 +53,22 @@ bool gnomonComposerWidgetPrivate::maySave(void)
     if(this->closing)
         return true;
 
-    if (q->isWindowModified()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("gnomon");
-        msgBox.setText("The composition has been modified.");
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        msgBox.setStyleSheet("");
-        int ret = msgBox.exec();
-
-        if (ret == QMessageBox::Save)
-            return q->compositionSave();
-        else
-            if(ret == QMessageBox::Cancel)
-                return false;
-    }
+//    if (q->isWindowModified()) {
+//        QMessageBox msgBox;
+//        msgBox.setWindowTitle("gnomon");
+//        msgBox.setText("The composition has been modified.");
+//        msgBox.setInformativeText("Do you want to save your changes?");
+//        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+//        msgBox.setDefaultButton(QMessageBox::Save);
+//        msgBox.setStyleSheet("");
+//        int ret = msgBox.exec();
+//
+//        if (ret == QMessageBox::Save)
+//            return q->compositionSave();
+//        else
+//            if(ret == QMessageBox::Cancel)
+//                return false;
+//    }
 
     return true;
 }
@@ -149,7 +149,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // --
 
-    this->addWorkspace("Browser");
+//    this->addWorkspace("Browser");
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)
@@ -202,6 +202,22 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
 
     d->last_node = node;
     d->last_port = port;
+}
+
+void gnomonComposerWidget::addNode(dtkComposerSceneNode *node)
+{
+    d->composer->scene()->addItem(node);
+
+    qDebug()<<Q_FUNC_INFO<<node<<node->inputEdges();
+    for (const auto& edge : node->inputEdges()) {
+        qDebug()<<Q_FUNC_INFO<<node<<edge;
+    }
+    qDebug()<<Q_FUNC_INFO<<node<<node->outputEdges();
+    for (const auto& edge : node->outputEdges()) {
+        qDebug()<<Q_FUNC_INFO<<node<<edge;
+    }
+
+
 }
 
 bool gnomonComposerWidget::compositionSave(void)

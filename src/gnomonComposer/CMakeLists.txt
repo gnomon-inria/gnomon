@@ -27,11 +27,14 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposerNodeWorkspace
   gnomonComposerNodeWorkspace.h
   gnomonComposerWidget_p.h
-  gnomonComposerWidget.h)
+  gnomonComposerWidget.h
+  gnomonComposition
+  gnomonComposition.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeWorkspace.cpp
-  gnomonComposerWidget.cpp)
+  gnomonComposerWidget.cpp
+  gnomonComposition.cpp)
 
 ## set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
 
@@ -59,8 +62,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Xml)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 
 ## #############################################################################
 ##

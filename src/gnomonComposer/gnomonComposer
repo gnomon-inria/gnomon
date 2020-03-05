@@ -1,1 +1,2 @@
 #include "gnomonComposerWidget.h"
+#include "gnomonComposition.h"

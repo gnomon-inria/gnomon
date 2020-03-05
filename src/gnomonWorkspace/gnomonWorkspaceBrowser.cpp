@@ -16,6 +16,7 @@
 
 #include <gnomonWidgets>
 #include <gnomonVisualization>
+#include <gnomonComposer>
 
 #include <dtkThemes>
 #include <dtkWidgets>
@@ -325,6 +326,9 @@ class gnomonWorkspaceBrowserPrivate: public QObject
     Q_OBJECT
 
 public:
+   gnomonComposition *pipeline;
+
+public:
     gnomonViewForm *browse_view;
     gnomonViewMatplotlib *browse_figure;
 
@@ -565,7 +569,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
     {
-        imageCommand->setPath(filename.remove("file://"));
+        QString path = filename.remove("file://");
+        imageCommand->setPath(path);
         imageCommand->redo();
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
         if (!image_series) {
@@ -573,6 +578,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonImage",image_series->clone());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(this->browse_view->image(),"gnomonImageReader",reader_plugin,path);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
     {
@@ -655,8 +661,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d = new gnomonWorkspaceBrowserPrivate;
     d->q = this;
 
+    d->pipeline = gnomonComposition::instance();
+
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(this->color);
+
+    connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->browse_figure = new gnomonViewMatplotlib(this);
 

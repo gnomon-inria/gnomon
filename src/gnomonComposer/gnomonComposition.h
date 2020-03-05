@@ -1,0 +1,54 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <gnomonComposerExport.h>
+
+#include <QtCore>
+
+class dtkComposerSceneNode;
+
+class gnomonAbstractDynamicForm;
+class gnomonCoreParameter;
+
+class gnomonCompositionPrivate;
+
+class GNOMONCOMPOSER_EXPORT gnomonComposition : public QObject
+{
+    Q_OBJECT
+
+public:
+    static gnomonComposition *instance(void);
+
+public slots:
+    void addReader(gnomonAbstractDynamicForm *form, const QString& algorithm_class, const QString& algorithm, const QString& path);
+    void addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters);
+    void addForm(gnomonAbstractDynamicForm *form);
+signals:
+    void nodeAdded(dtkComposerSceneNode *);
+
+protected:
+     gnomonComposition(void);
+    ~gnomonComposition(void);
+
+private:
+    gnomonCompositionPrivate *d;
+
+private:
+    static gnomonComposition *s_instance;
+};
+
+//
+// gnomonComposition.h ends here

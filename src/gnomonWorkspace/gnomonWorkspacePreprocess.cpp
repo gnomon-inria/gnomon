@@ -19,6 +19,7 @@
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFilterCommand>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
+#include <gnomonComposer>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -39,6 +40,9 @@ public:
 public:
     QString workspace(void) const override;
     QStringList keys(void) const override;
+
+public:
+   gnomonComposition *pipeline;
 
 public:
     gnomonViewForm *source = nullptr;
@@ -86,12 +90,16 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
 
     d = new gnomonWorkspacePreprocessPrivate;
 
+    d->pipeline = gnomonComposition::instance();
+
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -201,6 +209,15 @@ void gnomonWorkspacePreprocess::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        QMap<QString, gnomonAbstractDynamicForm *> inputs;
+        inputs["input"] = d->source->image();
+
+        QMap<QString, gnomonAbstractDynamicForm *> outputs;
+        outputs["output"] = d->target->image();
+
+        d->pipeline->addAlgorithm(inputs,outputs,"gnomonImagefilter",d->algorithm,d->command->parameters());
+
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);

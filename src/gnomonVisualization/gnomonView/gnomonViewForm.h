@@ -62,6 +62,9 @@ signals:
     void   linking(void);
     void unlinking(void);
 
+signals:
+    void exportedForm(gnomonAbstractDynamicForm *);
+
 public slots:
     void switchTo3D  (void);
     void switchTo2D  (void);

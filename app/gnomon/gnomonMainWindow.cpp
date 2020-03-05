@@ -52,6 +52,7 @@ public:
 
 public:
    gnomonComposerWidget *workflow;
+   gnomonComposition *pipeline;
 
 public:
     gnomonMainWindow *q;
@@ -206,6 +207,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->manager = gnomonFormManager::instance();
 
     d->workflow = gnomonComposerWidget::instance();
+    d->pipeline = gnomonComposition::instance();
 
     QHBoxLayout *b_layout = new QHBoxLayout;
     b_layout->setContentsMargins(0, 0, 32, 0);
@@ -323,7 +325,8 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
        animation->start(QAbstractAnimation::DeleteWhenStopped);
    });
 
-   connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
+//   connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
+   connect(d->pipeline, SIGNAL(nodeAdded(dtkComposerSceneNode *)), d->workflow, SLOT(addNode(dtkComposerSceneNode *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 
