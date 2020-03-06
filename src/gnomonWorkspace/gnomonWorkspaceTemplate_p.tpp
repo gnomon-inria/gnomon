@@ -17,10 +17,11 @@
 #include <gnomonWidgets/gnomonWidgetsParameter.h>
 
 #include <dtkWidgets>
+#include <gnomonComposer>
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
-
+    this->pipeline = gnomonComposition::instance();
 }
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
@@ -56,6 +57,13 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
         }
 
         this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    }
+}
+
+template <typename T> void gnomonWorkspaceTemplatePrivate<T>::registerPipeline(void)
+{
+    if (this->command) {
+        this->pipeline->addAlgorithm(this->command->inputs(),this->command->outputs(),this->command->factoryName(),this->command->algorithmName(),this->command->parameters());
     }
 }
 

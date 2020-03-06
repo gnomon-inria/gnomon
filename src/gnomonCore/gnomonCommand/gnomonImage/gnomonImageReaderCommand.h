@@ -15,9 +15,13 @@ public:
     void setPath(const QString& path);
 
     gnomonImageSeries *image(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
 public:
     static bool isEmpty(void);
+
+public:
+    static const QString factoryName(void);
 
 private:
     class gnomonImageReaderCommandPrivate *d;

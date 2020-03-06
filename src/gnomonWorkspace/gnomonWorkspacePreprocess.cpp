@@ -19,7 +19,6 @@
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFilterCommand>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
-#include <gnomonComposer>
 
 #include <dtkImagingCore>
 #include <dtkScript>
@@ -40,9 +39,6 @@ public:
 public:
     QString workspace(void) const override;
     QStringList keys(void) const override;
-
-public:
-   gnomonComposition *pipeline;
 
 public:
     gnomonViewForm *source = nullptr;
@@ -89,8 +85,6 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QWidget *parent) : dtkWidge
     loadPluginGroup("imageFilter");
 
     d = new gnomonWorkspacePreprocessPrivate;
-
-    d->pipeline = gnomonComposition::instance();
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
@@ -210,14 +204,7 @@ void gnomonWorkspacePreprocess::apply(void)
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
 
-        QMap<QString, gnomonAbstractDynamicForm *> inputs;
-        inputs["input"] = d->source->image();
-        qDebug()<<d->command->input()<<d->source->image();
-
-        QMap<QString, gnomonAbstractDynamicForm *> outputs;
-        outputs["output"] = d->target->image();
-
-        d->pipeline->addAlgorithm(inputs,outputs,"gnomonImageFilter",d->algorithm,d->command->parameters());
+        d->registerPipeline();
 
     } else {
         d->target_stack->setCurrentWidget(d->target_message);

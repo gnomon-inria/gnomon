@@ -16,8 +16,10 @@ public:
 public:
     void setInput(gnomonImageSeries *image_series);
     gnomonImageSeries *input(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
     gnomonImageSeries *output(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
 
@@ -26,6 +28,9 @@ public:
 
 public:
     static bool isEmpty(void);
+
+public:
+    static const QString factoryName(void);
 
 private:
     class gnomonImageFilterCommandPrivate *d;

@@ -567,9 +567,9 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
 
+    QString path = filename.remove("file://");
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
     {
-        QString path = filename.remove("file://");
         imageCommand->setPath(path);
         imageCommand->redo();
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
@@ -578,11 +578,11 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonImage",image_series->clone());
             this->view_stack->setCurrentWidget(this->browse_view);
-            this->pipeline->addReader(this->browse_view->image(),"gnomonImageReader",reader_plugin,path);
+            this->pipeline->addReader(this->browse_view->image(),imageCommand->factoryName(),imageCommand->algorithmName(),path);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
     {
-        cellImageCommand->setPath(filename.remove("file://"));
+        cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
         if (!cellImage_series) {
@@ -590,10 +590,11 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(this->browse_view->cellImage(),cellImageCommand->factoryName(),cellImageCommand->algorithmName(),path);
         }
     } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(readerCommand))
     {
-        cellComplexCommand->setPath(filename.remove("file://"));
+        cellComplexCommand->setPath(path);
         cellComplexCommand->redo();
         gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex();
         if (!cellComplex_series) {
@@ -604,7 +605,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         }
     } else if (gnomonDataFrameReaderCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameReaderCommand *>(readerCommand))
     {
-        dataFrameCommand->setPath(filename.remove("file://"));
+        dataFrameCommand->setPath(path);
         dataFrameCommand->redo();
         gnomonDataFrameSeries * dataFrame_series = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame();
         if (!dataFrame_series) {
@@ -615,7 +616,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         }
     } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(readerCommand))
     {
-        meshCommand->setPath(filename.remove("file://"));
+        meshCommand->setPath(path);
         meshCommand->redo();
         gnomonMeshSeries * mesh_series = (gnomonMeshSeries *) meshCommand->mesh();
         if (!mesh_series) {
@@ -626,7 +627,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         }
     } else if (gnomonPointCloudReaderCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudReaderCommand *>(readerCommand))
     {
-        pointCloudCommand->setPath(filename.remove("file://"));
+        pointCloudCommand->setPath(path);
         pointCloudCommand->redo();
         gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud();
         if (!pointCloud_series) {
@@ -637,7 +638,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         }
     } else if (gnomonTreeReaderCommand *treeCommand = dynamic_cast<gnomonTreeReaderCommand *>(readerCommand))
     {
-        treeCommand->setPath(filename.remove("file://"));
+        treeCommand->setPath(path);
         treeCommand->redo();
         gnomonTreeSeries * tree_series = (gnomonTreeSeries *) treeCommand->tree();
         if (!tree_series) {
