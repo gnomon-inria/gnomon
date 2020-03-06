@@ -66,6 +66,7 @@ def getCode(self):
                     result += line
             else:
                 result += line
+        self.setAxiom(None)
         return result
     else:
         return code
