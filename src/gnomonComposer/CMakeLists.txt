@@ -28,13 +28,19 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposerNodeWorkspace.h
   gnomonComposerWidget_p.h
   gnomonComposerWidget.h
-  gnomonComposition
-  gnomonComposition.h)
+  gnomonPipeline
+  gnomonPipeline.h
+  gnomonPipelineNodeAlgorithm
+  gnomonPipelineNodeAlgorithm.h
+  gnomonPipelineNodeReader
+  gnomonPipelineNodeReader.h)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeWorkspace.cpp
   gnomonComposerWidget.cpp
-  gnomonComposition.cpp)
+  gnomonPipeline.cpp
+  gnomonPipelineNodeAlgorithm.cpp
+  gnomonPipelineNodeReader.cpp)
 
 ## set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
 

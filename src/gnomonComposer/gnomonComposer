@@ -1,2 +1,2 @@
 #include "gnomonComposerWidget.h"
-#include "gnomonComposition.h"
+#include "gnomonPipeline.h"

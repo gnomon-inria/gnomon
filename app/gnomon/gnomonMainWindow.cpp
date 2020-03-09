@@ -52,7 +52,7 @@ public:
 
 public:
    gnomonComposerWidget *workflow;
-   gnomonComposition *pipeline;
+   gnomonPipeline *pipeline;
 
 public:
     gnomonMainWindow *q;
@@ -207,7 +207,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d->manager = gnomonFormManager::instance();
 
     d->workflow = gnomonComposerWidget::instance();
-    d->pipeline = gnomonComposition::instance();
+    d->pipeline = gnomonPipeline::instance();
 
     QHBoxLayout *b_layout = new QHBoxLayout;
     b_layout->setContentsMargins(0, 0, 32, 0);

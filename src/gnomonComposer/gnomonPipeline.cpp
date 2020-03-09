@@ -12,7 +12,10 @@
 
 // Code:
 
-#include "gnomonComposition.h"
+#include "gnomonPipeline.h"
+
+#include "gnomonPipelineNodeAlgorithm.h"
+#include "gnomonPipelineNodeReader.h"
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
@@ -23,132 +26,49 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// gnomonComposerNodeReader
+// gnomonPipelinePrivate
 // /////////////////////////////////////////////////////////////////
 
-class GNOMONCOMPOSER_EXPORT gnomonComposerNodeReader : public dtkComposerSceneNodeComposite
-{
-public:
-     gnomonComposerNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path);
-    ~gnomonComposerNodeReader(void);
-
-public:
-    QString algorithm_class;
-    QString algorithm;
-    QString path;
-
-    dtkComposerScenePort *output_port;
-
-};
-
-gnomonComposerNodeReader::gnomonComposerNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path) : dtkComposerSceneNodeComposite()
-{
-    this->algorithm_class = algorithm_class;
-    this->algorithm = algorithm;
-    this->path = path;
-
-    this->setTitle(this->algorithm_class);
-
-    this->output_port = new dtkComposerScenePort(dtkComposerScenePort::Output, this);
-    this->addOutputPort(output_port);
-    this->layout();
-}
-
-gnomonComposerNodeReader::~gnomonComposerNodeReader(void)
-{
-
-}
-
-// /////////////////////////////////////////////////////////////////
-// gnomonComposerNodeAlgorithm
-// /////////////////////////////////////////////////////////////////
-
-class GNOMONCOMPOSER_EXPORT gnomonComposerNodeAlgorithm : public dtkComposerSceneNodeComposite
-{
-public:
-     gnomonComposerNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs, QList<QString> outputs);
-    ~gnomonComposerNodeAlgorithm(void);
-
-public:
-    QString algorithm_class;
-    QString algorithm;
-    QMap<QString, QVariant> parameters;
-
-    QMap<QString, dtkComposerScenePort *> input_ports;
-    QMap<QString, dtkComposerScenePort *> output_ports;
-};
-
-gnomonComposerNodeAlgorithm::gnomonComposerNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : dtkComposerSceneNodeComposite()
-{
-    this->algorithm_class = algorithm_class;
-    this->algorithm = algorithm;
-    this->parameters = parameters;
-
-    this->setTitle(this->algorithm_class);
-
-    for (const auto& input : inputs) {
-        this->input_ports[input] = new dtkComposerScenePort(dtkComposerScenePort::Input, this);
-        this->addInputPort(this->input_ports[input]);
-    }
-    for (const auto& output : outputs) {
-        this->output_ports[output] = new dtkComposerScenePort(dtkComposerScenePort::Output, this);
-        this->addOutputPort(this->output_ports[output]);
-    }
-    this->layout();
-}
-
-gnomonComposerNodeAlgorithm::~gnomonComposerNodeAlgorithm(void)
-{
-
-}
-
-
-// /////////////////////////////////////////////////////////////////
-// gnomonCompositionPrivate
-// /////////////////////////////////////////////////////////////////
-
-class gnomonCompositionPrivate
+class gnomonPipelinePrivate
 {
 public:
     QStringList pipeline_node_names;
     QMap<QString, int> node_type_count;
     QMap<QString, dtkComposerSceneNodeComposite *> pipeline_nodes;
 
-    QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeReader *> reader_nodes;
-    QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeAlgorithm *> algorithm_nodes;
+    QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
+    QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeAlgorithm *> algorithm_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> algorithm_output;
 
-    QMap<gnomonComposerNodeAlgorithm *, QMap<QString, gnomonAbstractDynamicForm *> > node_input_forms;
+    QMap<gnomonPipelineNodeAlgorithm *, QMap<QString, gnomonAbstractDynamicForm *> > node_input_forms;
 
     QMap<gnomonAbstractDynamicForm *, gnomonAbstractDynamicForm *> form_clones;
 };
 
-
-
 // /////////////////////////////////////////////////////////////////
-// gnomonComposition
+// gnomonPipeline
 // /////////////////////////////////////////////////////////////////
 
-gnomonComposition *gnomonComposition::instance(void)
+gnomonPipeline *gnomonPipeline::instance(void)
 {
     if(!s_instance)
-        s_instance = new gnomonComposition;
+        s_instance = new gnomonPipeline;
 
     return s_instance;
 }
 
 
-gnomonComposition::gnomonComposition(void)
+gnomonPipeline::gnomonPipeline(void)
 {
-    d = new gnomonCompositionPrivate;
+    d = new gnomonPipelinePrivate;
 }
 
-gnomonComposition::~gnomonComposition(void)
+gnomonPipeline::~gnomonPipeline(void)
 {
     delete d;
 }
 
-void gnomonComposition::addReader(gnomonAbstractReaderCommand *command)
+void gnomonPipeline::addReader(gnomonAbstractReaderCommand *command)
 {
     qDebug() << Q_FUNC_INFO << command->factoryName() << "[" << command->algorithmName() << "] : "<<command->path();
     QMap<QString, gnomonAbstractDynamicForm *> forms = command->outputs();
@@ -159,11 +79,11 @@ void gnomonComposition::addReader(gnomonAbstractReaderCommand *command)
         if (gnomonAbstractDynamicForm *clone = d->form_clones.key(form,nullptr)) {
             form = clone;
         }
-        d->reader_nodes[form] = new gnomonComposerNodeReader(command->factoryName(),command->algorithmName(),command->path());
+        d->reader_nodes[form] = new gnomonPipelineNodeReader(command->factoryName(),command->algorithmName(),command->path());
     }
 }
 
-void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters)
+void gnomonPipeline::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters)
 {
     QMap<QString, QVariant> parameter_values;
     for (const auto& param : parameters.keys()) {
@@ -194,7 +114,7 @@ void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> 
         }
     }
 
-    gnomonComposerNodeAlgorithm *node = new gnomonComposerNodeAlgorithm(algorithm_class,algorithm,parameter_values,input_forms.keys(),output_forms.keys());
+    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class,algorithm,parameter_values,input_forms.keys(),output_forms.keys());
 
     d->node_input_forms[node] = input_forms;
 
@@ -204,10 +124,10 @@ void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> 
     }
 }
 
-void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
+void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 {
     if (d->reader_nodes.contains(form)) {
-        gnomonComposerNodeReader *node = d->reader_nodes[form];
+        gnomonPipelineNodeReader *node = d->reader_nodes[form];
         QString node_name = node->algorithm_class;
         if (!d->node_type_count.contains(node->algorithm_class)) {
             d->node_type_count[node->algorithm_class] = 1;
@@ -219,7 +139,7 @@ void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
         d->pipeline_nodes[node_name] = node;
         emit nodeAdded(node);
     } else if (d->algorithm_nodes.contains(form)) {
-        gnomonComposerNodeAlgorithm *node = d->algorithm_nodes[form];
+        gnomonPipelineNodeAlgorithm *node = d->algorithm_nodes[form];
         QMap<QString, gnomonAbstractDynamicForm *> input_forms = d->node_input_forms[node];
         for (const auto& input : input_forms.keys()) {
             gnomonAbstractDynamicForm *input_form = input_forms[input];
@@ -254,13 +174,13 @@ void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
     }
 }
 
-void gnomonComposition::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone)
+void gnomonPipeline::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone)
 {
     qDebug()<<Q_FUNC_INFO<<clone<<"->"<<form;
     d->form_clones[clone] = form;
 }
 
-void gnomonComposition::exportToToml(const QString& path)
+void gnomonPipeline::exportToToml(const QString& path)
 {
     Q_ASSERT(path.endsWith(".toml"));
 
@@ -272,12 +192,12 @@ void gnomonComposition::exportToToml(const QString& path)
 
     for (const auto& node_name : d->pipeline_node_names) {
         dtkComposerSceneNodeComposite *node = d->pipeline_nodes[node_name];
-        if (gnomonComposerNodeReader * reader_node = dynamic_cast<gnomonComposerNodeReader *>(node)) {
+        if (gnomonPipelineNodeReader * reader_node = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
             out << "[" << node_name << "]" << "\n";
             out << "plugin_name = \""<< reader_node->algorithm << "\"\n";
             out << "path = \""<< reader_node->path << "\"\n";
             out << "\n";
-        } else if (gnomonComposerNodeAlgorithm * algorithm_node = dynamic_cast<gnomonComposerNodeAlgorithm *>(node)) {
+        } else if (gnomonPipelineNodeAlgorithm * algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
             out << "[" << node_name << "]" << "\n";
             out << "plugin_name = \""<< algorithm_node->algorithm << "\"\n";
             out << "    [" << node_name << ".parameters]\n";
@@ -321,7 +241,7 @@ void gnomonComposition::exportToToml(const QString& path)
     file.close();
 }
 
-gnomonComposition *gnomonComposition::s_instance = nullptr;
+gnomonPipeline *gnomonPipeline::s_instance = nullptr;
 
 //
-// gnomonComposition.cpp ends here
+// gnomonPipeline.cpp ends here

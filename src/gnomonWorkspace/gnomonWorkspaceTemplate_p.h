@@ -34,7 +34,7 @@ signals:
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspace;
-class gnomonComposition;
+class gnomonPipeline;
 
 template <typename T> class gnomonWorkspaceTemplatePrivate : public gnomonWorkspacePrivateSignals
 {
@@ -58,7 +58,7 @@ public:
     QString algorithm;
 
 public:
-    gnomonComposition *pipeline;
+    gnomonPipeline *pipeline;
 
 public:
     T *command = nullptr;

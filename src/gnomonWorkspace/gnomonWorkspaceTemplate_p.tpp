@@ -21,7 +21,7 @@
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
-    this->pipeline = gnomonComposition::instance();
+    this->pipeline = gnomonPipeline::instance();
 }
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)

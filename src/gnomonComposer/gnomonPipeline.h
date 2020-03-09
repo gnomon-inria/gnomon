@@ -25,14 +25,14 @@ class gnomonAbstractReaderCommand;
 class gnomonAbstractAlgorithmCommand;
 class gnomonCoreParameter;
 
-class gnomonCompositionPrivate;
+class gnomonPipelinePrivate;
 
-class GNOMONCOMPOSER_EXPORT gnomonComposition : public QObject
+class GNOMONCOMPOSER_EXPORT gnomonPipeline : public QObject
 {
     Q_OBJECT
 
 public:
-    static gnomonComposition *instance(void);
+    static gnomonPipeline *instance(void);
 
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
@@ -46,15 +46,15 @@ public slots:
     void exportToToml(const QString& path);
 
 protected:
-     gnomonComposition(void);
-    ~gnomonComposition(void);
+     gnomonPipeline(void);
+    ~gnomonPipeline(void);
 
 private:
-    gnomonCompositionPrivate *d;
+    gnomonPipelinePrivate *d;
 
 private:
-    static gnomonComposition *s_instance;
+    static gnomonPipeline *s_instance;
 };
 
 //
-// gnomonComposition.h ends here
+// gnomonPipeline.h ends here

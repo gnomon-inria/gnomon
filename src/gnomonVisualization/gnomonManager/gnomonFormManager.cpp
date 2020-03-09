@@ -314,7 +314,7 @@ gnomonFormManager::gnomonFormManager(QWidget *parent) : QFrame(parent)
     d = new gnomonFormManagerPrivate;
     d->q = this;
 
-    d->pipeline = gnomonComposition::instance();
+    d->pipeline = gnomonPipeline::instance();
 
     QHBoxLayout *t_layout = new QHBoxLayout;
     t_layout->setContentsMargins(0, 0, 0, 0);

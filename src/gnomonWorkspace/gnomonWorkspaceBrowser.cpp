@@ -326,7 +326,7 @@ class gnomonWorkspaceBrowserPrivate: public QObject
     Q_OBJECT
 
 public:
-   gnomonComposition *pipeline;
+   gnomonPipeline *pipeline;
 
 public:
     gnomonViewForm *browse_view;
@@ -663,7 +663,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d = new gnomonWorkspaceBrowserPrivate;
     d->q = this;
 
-    d->pipeline = gnomonComposition::instance();
+    d->pipeline = gnomonPipeline::instance();
 
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(this->color);

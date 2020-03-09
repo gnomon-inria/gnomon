@@ -28,7 +28,7 @@ class gnomonFormManagerFocus;
 class gnomonFormManagerData;
 class gnomonViewForm;
 
-class gnomonComposition;
+class gnomonPipeline;
 
 class vtkCamera;
 
@@ -66,7 +66,7 @@ public:
     gnomonFormManagerFocus *focus_item = nullptr;
 
 public:
-    gnomonComposition *pipeline = nullptr;
+    gnomonPipeline *pipeline = nullptr;
 
 public:
     gnomonViewForm *view = nullptr;

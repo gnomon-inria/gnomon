@@ -16,7 +16,7 @@
 #include "gnomonComposerWidget.h"
 #include "gnomonComposerWidget_p.h"
 
-#include "gnomonComposition.h"
+#include "gnomonPipeline.h"
 
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
@@ -344,7 +344,7 @@ bool gnomonComposerWidget::pipelineSave(void)
     dialog.setDefaultSuffix("toml");
 
     if(dialog.exec()) {
-        gnomonComposition::instance()->exportToToml(dialog.selectedFiles().first());
+        gnomonPipeline::instance()->exportToToml(dialog.selectedFiles().first());
         status = true;
     }
 
