@@ -577,8 +577,9 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
             qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
         } else {
             this->browse_view->setForm("gnomonImage",image_series->clone());
+            this->pipeline->addClonedForm(image_series,this->browse_view->image());
             this->view_stack->setCurrentWidget(this->browse_view);
-            this->pipeline->addReader(this->browse_view->image(),imageCommand->factoryName(),imageCommand->algorithmName(),path);
+            this->pipeline->addReader(imageCommand);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
     {
@@ -590,7 +591,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
             this->view_stack->setCurrentWidget(this->browse_view);
-            this->pipeline->addReader(this->browse_view->cellImage(),cellImageCommand->factoryName(),cellImageCommand->algorithmName(),path);
+            this->pipeline->addReader(cellImageCommand);
         }
     } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(readerCommand))
     {

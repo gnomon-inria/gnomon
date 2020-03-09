@@ -29,9 +29,6 @@ public:
 public:
     static bool isEmpty(void);
 
-public:
-    static const QString factoryName(void);
-
 private:
     class gnomonImageFilterCommandPrivate *d;
 };

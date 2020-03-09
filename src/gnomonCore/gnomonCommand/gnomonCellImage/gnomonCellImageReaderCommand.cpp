@@ -23,7 +23,7 @@
 class gnomonCellImageReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonCellImageSeries *cellImage;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,14 @@ gnomonCellImageReaderCommand::~gnomonCellImageReaderCommand()
 void gnomonCellImageReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageReader *) this->action)->setPath(d->path);
+    ((gnomonAbstractCellImageReader *) this->action)->setPath(this->m_path);
     this->action->run();
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        d->cellImage = nullptr;
+    } else {
+        d->cellImage = cellImage;
+    }
 }
 
 void gnomonCellImageReaderCommand::undo(void)
@@ -58,17 +64,12 @@ void gnomonCellImageReaderCommand::undo(void)
 
 void gnomonCellImageReaderCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
-        return nullptr;
-    } else {
-        return cellImage;
-    }
+    return d->cellImage;
 }
 
 bool gnomonCellImageReaderCommand::isEmpty(void)

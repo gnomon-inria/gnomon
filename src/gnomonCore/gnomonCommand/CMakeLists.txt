@@ -33,6 +33,8 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractCommand
   gnomonAbstractCommand.h
+  gnomonAbstractReaderCommand
+  gnomonAbstractReaderCommand.h
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}

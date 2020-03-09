@@ -34,6 +34,7 @@ public:
 
 gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
 {
+    this->factory_name = "imageFilter";
     loadPluginGroup(this->factoryName());
 
     this->algorithm_name = key;
@@ -111,14 +112,9 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs(voi
     return outputs;
 }
 
-const QString gnomonImageFilterCommand::factoryName(void)
-{
-    return "imageFilter";
-}
-
 bool gnomonImageFilterCommand::isEmpty(void)
 {
-    loadPluginGroup(gnomonImageFilterCommand::factoryName());
+    loadPluginGroup("imageFilter");
     return gnomonCore::imageFilter::pluginFactory().keys().size() == 0;
 }
 

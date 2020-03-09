@@ -35,17 +35,19 @@ public:
         return this->algorithm_name;
     };
 
+    const QString& factoryName(void) {
+        return this->factory_name;
+    };
+
 public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
 
-public:
-    static const QString factoryName(void) {return "";};
-
 protected:
     gnomonAbstractAlgorithm *action = nullptr;
-
     QString algorithm_name = "";
+    QString factory_name = "";
+
 };
 
 // ///////////////////////////////////////////////////////////////////

@@ -23,7 +23,6 @@
 class gnomonImageReaderCommandPrivate
 {
 public:
-    QString path;
     gnomonImageSeries *image = nullptr;
 };
 
@@ -33,8 +32,10 @@ public:
 
 gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
 {
+    this->factory_name = "imageReader";
     loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::imageReader::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -48,7 +49,7 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
 void gnomonImageReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractImageReader *) this->action)->setPath(d->path);
+    ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
     if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
@@ -65,7 +66,7 @@ void gnomonImageReaderCommand::undo(void)
 
 void gnomonImageReaderCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 gnomonImageSeries *gnomonImageReaderCommand::image(void)
@@ -80,15 +81,9 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageReaderCommand::outputs(voi
     return outputs;
 }
 
-
-const QString gnomonImageReaderCommand::factoryName(void)
-{
-    return "imageReader";
-}
-
 bool gnomonImageReaderCommand::isEmpty(void)
 {
-    loadPluginGroup(gnomonImageReaderCommand::factoryName());
+    loadPluginGroup("imageReader");
     return gnomonCore::imageReader::pluginFactory().keys().size() == 0;
 }
 

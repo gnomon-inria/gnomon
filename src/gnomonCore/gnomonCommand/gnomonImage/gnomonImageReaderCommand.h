@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractReaderCommand.h"
 
-class GNOMONCORE_EXPORT gnomonImageReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
      gnomonImageReaderCommand(void) = delete;
@@ -19,9 +20,6 @@ public:
 
 public:
     static bool isEmpty(void);
-
-public:
-    static const QString factoryName(void);
 
 private:
     class gnomonImageReaderCommandPrivate *d;

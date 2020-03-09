@@ -15,6 +15,8 @@
 #include "gnomonComposition.h"
 
 #include <gnomonCore>
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
 
 #include <dtkCore>
 #include <dtkComposer>
@@ -141,10 +143,22 @@ gnomonComposition::~gnomonComposition(void)
     delete d;
 }
 
-void gnomonComposition::addReader(gnomonAbstractDynamicForm *form, const QString& algorithm_class, const QString& algorithm, const QString& path)
+void gnomonComposition::addReader(gnomonAbstractReaderCommand *command)
 {
-    qDebug() << Q_FUNC_INFO << algorithm_class << "[" << algorithm << "] : "<<path;
-    d->reader_nodes[form] = new gnomonComposerNodeReader(algorithm_class,algorithm,path);
+    qDebug() << Q_FUNC_INFO << command->factoryName() << "[" << command->algorithmName() << "] : "<<command->path();
+
+    QMap<QString, gnomonAbstractDynamicForm *> forms = command->outputs();
+
+    qDebug() << Q_FUNC_INFO << forms;
+
+    for (const auto& form_name : forms.keys())
+    {
+        gnomonAbstractDynamicForm *form = forms[form_name];
+        if (gnomonAbstractDynamicForm *clone = d->form_clones.key(form,nullptr)) {
+            form = clone;
+        }
+        d->reader_nodes[form] = new gnomonComposerNodeReader(command->factoryName(),command->algorithmName(),command->path());
+    }
 }
 
 void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters)

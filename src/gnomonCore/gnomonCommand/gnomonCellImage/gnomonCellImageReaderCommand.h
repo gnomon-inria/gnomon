@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractReaderCommand.h"
 
-class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
      gnomonCellImageReaderCommand(void) = delete;
