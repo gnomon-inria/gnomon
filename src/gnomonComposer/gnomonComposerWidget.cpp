@@ -46,6 +46,8 @@
 #include <QtCore>
 #include <QtWidgets>
 
+#include <gnomonWidgets>
+
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerWidgetPrivate
 // /////////////////////////////////////////////////////////////////
@@ -55,22 +57,22 @@ bool gnomonComposerWidgetPrivate::maySave(void)
     if(this->closing)
         return true;
 
-    if (q->isWindowModified()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("gnomon");
-        msgBox.setText("The composition has been modified.");
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        msgBox.setStyleSheet("");
-        int ret = msgBox.exec();
-
-        if (ret == QMessageBox::Save)
-            return q->pipelineSave();
-        else
-            if(ret == QMessageBox::Cancel)
-                return false;
-    }
+//    if (q->isWindowModified()) {
+//        QMessageBox msgBox;
+//        msgBox.setWindowTitle("gnomon");
+//        msgBox.setText("The composition has been modified.");
+//        msgBox.setInformativeText("Do you want to save your changes?");
+//        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+//        msgBox.setDefaultButton(QMessageBox::Save);
+//        msgBox.setStyleSheet("");
+//        int ret = msgBox.exec();
+//
+//        if (ret == QMessageBox::Save)
+//            return q->compositionSave();
+//        else
+//            if(ret == QMessageBox::Cancel)
+//                return false;
+//    }
 
     return true;
 }
@@ -111,6 +113,14 @@ QSize gnomonComposerWidget::sizeHint(void) const
     return QSize(200, 10);
 }
 
+
+void gnomonComposerWidget::resizeEvent(QResizeEvent *event)
+{
+    d->save_button->move(event->size().width() -40, 30);
+
+    QWidget::resizeEvent(event);
+}
+
 gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonComposerWidgetPrivate;
@@ -135,6 +145,9 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     main_layout->setContentsMargins(0, 0, 0, 0);
     main_layout->setSpacing(0);
     main_layout->addWidget(d->composer);
+
+    d->save_button = new gnomonOverlayButton(fa::save, "", d->composer);
+    connect(d->save_button, SIGNAL(iconClicked()), this, SLOT(pipelineSave()));
 
     this->setLayout(main_layout);
 

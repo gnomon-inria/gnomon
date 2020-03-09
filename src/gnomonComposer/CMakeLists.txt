@@ -73,6 +73,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
 
 ## #############################################################################
 ##

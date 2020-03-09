@@ -38,6 +38,7 @@ signals:
 
 public:
     QSize sizeHint(void) const;
+    void resizeEvent(QResizeEvent *event);
 
 public:
     dtkComposerWidget* composerWidget(void);
