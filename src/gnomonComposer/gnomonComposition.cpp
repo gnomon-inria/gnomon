@@ -110,7 +110,9 @@ gnomonComposerNodeAlgorithm::~gnomonComposerNodeAlgorithm(void)
 class gnomonCompositionPrivate
 {
 public:
-    QList<dtkComposerSceneNodeComposite *> pipeline_nodes;
+    QStringList pipeline_node_names;
+    QMap<QString, int> node_type_count;
+    QMap<QString, dtkComposerSceneNodeComposite *> pipeline_nodes;
 
     QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeAlgorithm *> algorithm_nodes;
@@ -149,10 +151,7 @@ gnomonComposition::~gnomonComposition(void)
 void gnomonComposition::addReader(gnomonAbstractReaderCommand *command)
 {
     qDebug() << Q_FUNC_INFO << command->factoryName() << "[" << command->algorithmName() << "] : "<<command->path();
-
     QMap<QString, gnomonAbstractDynamicForm *> forms = command->outputs();
-
-    qDebug() << Q_FUNC_INFO << forms;
 
     for (const auto& form_name : forms.keys())
     {
@@ -166,42 +165,31 @@ void gnomonComposition::addReader(gnomonAbstractReaderCommand *command)
 
 void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters)
 {
-    qDebug() << Q_FUNC_INFO << algorithm_class << "[" << algorithm << "]";
-    qDebug() << Q_FUNC_INFO << input_forms.keys() << "->" << output_forms.keys();
-
     QMap<QString, QVariant> parameter_values;
     for (const auto& param : parameters.keys()) {
         if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             parameter_values[param] = QVariant(parameter->value());
         } else if (gnomonCoreParameterDouble *parameter = dynamic_cast<gnomonCoreParameterDouble *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             parameter_values[param] = QVariant(parameter->value());
         }  else if (gnomonCoreParameterIntRange *parameter = dynamic_cast<gnomonCoreParameterIntRange *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             QList<QVariant> range;
             for (const auto& val : parameter->value()) {
                 range.append(QVariant(val));
             }
             parameter_values[param] = QVariant(range);
         } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             QList<QVariant> range;
             for (const auto& val : parameter->value()) {
                 range.append(QVariant(val));
             }
             parameter_values[param] = QVariant(range);
         }  else if (gnomonCoreParameterBool *parameter = dynamic_cast<gnomonCoreParameterBool *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             parameter_values[param] = QVariant(parameter->value());
         } else if (gnomonCoreParameterString *parameter = dynamic_cast<gnomonCoreParameterString *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             parameter_values[param] = QVariant(parameter->value());
         } else if (gnomonCoreParameterStringList *parameter = dynamic_cast<gnomonCoreParameterStringList *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             parameter_values[param] = QVariant(parameter->value());
         } else if (gnomonCoreParameterFile *parameter = dynamic_cast<gnomonCoreParameterFile *>(parameters[param])) {
-            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
             parameter_values[param] = QVariant(parameter->value());
         }
     }
@@ -219,8 +207,17 @@ void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> 
 void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
 {
     if (d->reader_nodes.contains(form)) {
-        d->pipeline_nodes.append(d->reader_nodes[form]);
-        emit nodeAdded(d->reader_nodes[form]);
+        gnomonComposerNodeReader *node = d->reader_nodes[form];
+        QString node_name = node->algorithm_class;
+        if (!d->node_type_count.contains(node->algorithm_class)) {
+            d->node_type_count[node->algorithm_class] = 1;
+        } else {
+            node_name += QString::number(d->node_type_count[node->algorithm_class]);
+            d->node_type_count[node->algorithm_class] += 1;
+        }
+        d->pipeline_node_names.append(node_name);
+        d->pipeline_nodes[node_name] = node;
+        emit nodeAdded(node);
     } else if (d->algorithm_nodes.contains(form)) {
         gnomonComposerNodeAlgorithm *node = d->algorithm_nodes[form];
         QMap<QString, gnomonAbstractDynamicForm *> input_forms = d->node_input_forms[node];
@@ -244,7 +241,15 @@ void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
                 node->addEdge(edge);
             }
         }
-        d->pipeline_nodes.append(node);
+        QString node_name = node->algorithm_class;
+        if (!d->node_type_count.contains(node->algorithm_class)) {
+            d->node_type_count[node->algorithm_class] = 1;
+        } else {
+            node_name += QString::number(d->node_type_count[node->algorithm_class]);
+            d->node_type_count[node->algorithm_class] += 1;
+        }
+        d->pipeline_node_names.append(node_name);
+        d->pipeline_nodes[node_name] = node;
         emit nodeAdded(node);
     }
 }
@@ -265,16 +270,17 @@ void gnomonComposition::exportToToml(const QString& path)
 
     QTextStream out(&file);
 
-    for (const auto& node : d->pipeline_nodes) {
+    for (const auto& node_name : d->pipeline_node_names) {
+        dtkComposerSceneNodeComposite *node = d->pipeline_nodes[node_name];
         if (gnomonComposerNodeReader * reader_node = dynamic_cast<gnomonComposerNodeReader *>(node)) {
-            out << "[" << reader_node->algorithm_class << "]" << "\n";
+            out << "[" << node_name << "]" << "\n";
             out << "plugin_name = \""<< reader_node->algorithm << "\"\n";
             out << "path = \""<< reader_node->path << "\"\n";
             out << "\n";
         } else if (gnomonComposerNodeAlgorithm * algorithm_node = dynamic_cast<gnomonComposerNodeAlgorithm *>(node)) {
-            out << "[" << algorithm_node->algorithm_class << "]" << "\n";
+            out << "[" << node_name << "]" << "\n";
             out << "plugin_name = \""<< algorithm_node->algorithm << "\"\n";
-            out << "    [" << algorithm_node->algorithm_class << ".parameters]\n";
+            out << "    [" << node_name << ".parameters]\n";
             for (const auto& param : algorithm_node->parameters.keys()) {
                 QVariant parameter = algorithm_node->parameters[param];
                 bool int_status;
@@ -283,7 +289,6 @@ void gnomonComposition::exportToToml(const QString& path)
                 parameter.toDouble(&double_status);
                 QString parameter_string = "";
 
-                qDebug()<<Q_FUNC_INFO<<parameter.toString()<<parameter.canConvert<int>()<<"("<<int_status<<")"<<parameter.canConvert<double>()<<"("<<double_status<<")"<<parameter.canConvert<QString>();
                 if (int_status | double_status) {
                      parameter_string = parameter.toString();
                 } else if (parameter.canConvert<QString>()) {
