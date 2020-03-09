@@ -42,6 +42,9 @@ public slots:
 signals:
     void nodeAdded(dtkComposerSceneNodeComposite *);
 
+public slots:
+    void exportToToml(const QString& path);
+
 protected:
      gnomonComposition(void);
     ~gnomonComposition(void);

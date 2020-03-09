@@ -16,6 +16,8 @@
 #include "gnomonComposerWidget.h"
 #include "gnomonComposerWidget_p.h"
 
+#include "gnomonComposition.h"
+
 #include <dtkComposer/dtkComposer.h>
 #include <dtkComposer/dtkComposerNode.h>
 #include <dtkComposer/dtkComposerWidget.h>
@@ -53,22 +55,22 @@ bool gnomonComposerWidgetPrivate::maySave(void)
     if(this->closing)
         return true;
 
-//    if (q->isWindowModified()) {
-//        QMessageBox msgBox;
-//        msgBox.setWindowTitle("gnomon");
-//        msgBox.setText("The composition has been modified.");
-//        msgBox.setInformativeText("Do you want to save your changes?");
-//        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-//        msgBox.setDefaultButton(QMessageBox::Save);
-//        msgBox.setStyleSheet("");
-//        int ret = msgBox.exec();
-//
-//        if (ret == QMessageBox::Save)
-//            return q->compositionSave();
-//        else
-//            if(ret == QMessageBox::Cancel)
-//                return false;
-//    }
+    if (q->isWindowModified()) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("gnomon");
+        msgBox.setText("The composition has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        msgBox.setStyleSheet("");
+        int ret = msgBox.exec();
+
+        if (ret == QMessageBox::Save)
+            return q->pipelineSave();
+        else
+            if(ret == QMessageBox::Cancel)
+                return false;
+    }
 
     return true;
 }
@@ -321,6 +323,30 @@ bool gnomonComposerWidget::compositionInsert(const QString& file)
     settings.beginGroup("VisualProgramming");
     settings.setValue("last_open_dir", info.absolutePath());
     settings.endGroup();
+
+    return status;
+}
+
+bool gnomonComposerWidget::pipelineSave(void)
+{
+     bool status = false;
+
+    QSettings settings("inria", "dtk");
+    settings.beginGroup("General");
+    QString path = settings.value("last_open_dir", QDir::homePath()).toString();
+    settings.endGroup();
+
+    QFileDialog dialog(this, "Save pipeline", path, QString("TOML file (*.toml)"));
+    dialog.setStyleSheet("");
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setConfirmOverwrite(true);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setDefaultSuffix("toml");
+
+    if(dialog.exec()) {
+        gnomonComposition::instance()->exportToToml(dialog.selectedFiles().first());
+        status = true;
+    }
 
     return status;
 }

@@ -108,8 +108,9 @@ gnomonComposerNodeAlgorithm::~gnomonComposerNodeAlgorithm(void)
 class gnomonCompositionPrivate
 {
 public:
-    QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeReader *> reader_nodes;
+    QList<dtkComposerSceneNodeComposite *> pipeline_nodes;
 
+    QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, gnomonComposerNodeAlgorithm *> algorithm_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> algorithm_output;
 
@@ -136,6 +137,9 @@ gnomonComposition *gnomonComposition::instance(void)
 gnomonComposition::gnomonComposition(void)
 {
     d = new gnomonCompositionPrivate;
+    connect(this, &gnomonComposition::nodeAdded, [=] (dtkComposerSceneNodeComposite * node) {
+        d->pipeline_nodes.append(node);
+    });
 }
 
 gnomonComposition::~gnomonComposition(void)
@@ -210,6 +214,32 @@ void gnomonComposition::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbs
 {
     qDebug()<<Q_FUNC_INFO<<clone<<"->"<<form;
     d->form_clones[clone] = form;
+}
+
+void gnomonComposition::exportToToml(const QString& path)
+{
+    Q_ASSERT(path.endsWith(".toml"));
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+
+    for (const auto& node : d->pipeline_nodes) {
+        if (gnomonComposerNodeAlgorithm * algorithm_node = dynamic_cast<gnomonComposerNodeAlgorithm *>(node)) {
+            out << "[" << algorithm_node->algorithm_class << "]" << "\n";
+            out << "plugin_name = \""<< algorithm_node->algorithm << "\"\n";
+            out << "\n";
+        } else if (gnomonComposerNodeReader * reader_node = dynamic_cast<gnomonComposerNodeReader *>(node)) {
+            out << "[" << reader_node->algorithm_class << "]" << "\n";
+            out << "plugin_name = \""<< reader_node->algorithm << "\"\n";
+            out << "path = \""<< reader_node->path << "\"\n";
+            out << "\n";
+        }
+    }
+
+    file.close();
 }
 
 gnomonComposition *gnomonComposition::s_instance = nullptr;

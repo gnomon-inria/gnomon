@@ -53,6 +53,9 @@ public slots:
     bool compositionInsert(void);
     bool compositionInsert(const QString& file);
 
+public slots:
+    bool pipelineSave(void);
+
 protected:
      gnomonComposerWidget(QWidget *parent = 0);
     ~gnomonComposerWidget(void);
