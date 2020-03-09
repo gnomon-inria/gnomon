@@ -66,21 +66,23 @@ gnomonComposerNodeReader::~gnomonComposerNodeReader(void)
 class GNOMONCOMPOSER_EXPORT gnomonComposerNodeAlgorithm : public dtkComposerSceneNodeComposite
 {
 public:
-     gnomonComposerNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QList<QString> inputs, QList<QString> outputs);
+     gnomonComposerNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs, QList<QString> outputs);
     ~gnomonComposerNodeAlgorithm(void);
 
 public:
     QString algorithm_class;
     QString algorithm;
+    QMap<QString, QVariant> parameters;
 
     QMap<QString, dtkComposerScenePort *> input_ports;
     QMap<QString, dtkComposerScenePort *> output_ports;
 };
 
-gnomonComposerNodeAlgorithm::gnomonComposerNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QList<QString> inputs,  QList<QString> outputs) : dtkComposerSceneNodeComposite()
+gnomonComposerNodeAlgorithm::gnomonComposerNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : dtkComposerSceneNodeComposite()
 {
     this->algorithm_class = algorithm_class;
     this->algorithm = algorithm;
+    this->parameters = parameters;
 
     this->setTitle(this->algorithm_class);
 
@@ -137,9 +139,6 @@ gnomonComposition *gnomonComposition::instance(void)
 gnomonComposition::gnomonComposition(void)
 {
     d = new gnomonCompositionPrivate;
-    connect(this, &gnomonComposition::nodeAdded, [=] (dtkComposerSceneNodeComposite * node) {
-        d->pipeline_nodes.append(node);
-    });
 }
 
 gnomonComposition::~gnomonComposition(void)
@@ -169,7 +168,45 @@ void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> 
 {
     qDebug() << Q_FUNC_INFO << algorithm_class << "[" << algorithm << "]";
     qDebug() << Q_FUNC_INFO << input_forms.keys() << "->" << output_forms.keys();
-    gnomonComposerNodeAlgorithm *node = new gnomonComposerNodeAlgorithm(algorithm_class,algorithm,input_forms.keys(),output_forms.keys());
+
+    QMap<QString, QVariant> parameter_values;
+    for (const auto& param : parameters.keys()) {
+        if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            parameter_values[param] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterDouble *parameter = dynamic_cast<gnomonCoreParameterDouble *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            parameter_values[param] = QVariant(parameter->value());
+        }  else if (gnomonCoreParameterIntRange *parameter = dynamic_cast<gnomonCoreParameterIntRange *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            QList<QVariant> range;
+            for (const auto& val : parameter->value()) {
+                range.append(QVariant(val));
+            }
+            parameter_values[param] = QVariant(range);
+        } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            QList<QVariant> range;
+            for (const auto& val : parameter->value()) {
+                range.append(QVariant(val));
+            }
+            parameter_values[param] = QVariant(range);
+        }  else if (gnomonCoreParameterBool *parameter = dynamic_cast<gnomonCoreParameterBool *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            parameter_values[param] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterString *parameter = dynamic_cast<gnomonCoreParameterString *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            parameter_values[param] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterStringList *parameter = dynamic_cast<gnomonCoreParameterStringList *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            parameter_values[param] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterFile *parameter = dynamic_cast<gnomonCoreParameterFile *>(parameters[param])) {
+            qDebug() << Q_FUNC_INFO << "  --> "<<param<<" : "<<parameter->value();
+            parameter_values[param] = QVariant(parameter->value());
+        }
+    }
+
+    gnomonComposerNodeAlgorithm *node = new gnomonComposerNodeAlgorithm(algorithm_class,algorithm,parameter_values,input_forms.keys(),output_forms.keys());
 
     d->node_input_forms[node] = input_forms;
 
@@ -182,6 +219,7 @@ void gnomonComposition::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> 
 void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
 {
     if (d->reader_nodes.contains(form)) {
+        d->pipeline_nodes.append(d->reader_nodes[form]);
         emit nodeAdded(d->reader_nodes[form]);
     } else if (d->algorithm_nodes.contains(form)) {
         gnomonComposerNodeAlgorithm *node = d->algorithm_nodes[form];
@@ -206,6 +244,7 @@ void gnomonComposition::addForm(gnomonAbstractDynamicForm *form)
                 node->addEdge(edge);
             }
         }
+        d->pipeline_nodes.append(node);
         emit nodeAdded(node);
     }
 }
@@ -227,14 +266,49 @@ void gnomonComposition::exportToToml(const QString& path)
     QTextStream out(&file);
 
     for (const auto& node : d->pipeline_nodes) {
-        if (gnomonComposerNodeAlgorithm * algorithm_node = dynamic_cast<gnomonComposerNodeAlgorithm *>(node)) {
-            out << "[" << algorithm_node->algorithm_class << "]" << "\n";
-            out << "plugin_name = \""<< algorithm_node->algorithm << "\"\n";
-            out << "\n";
-        } else if (gnomonComposerNodeReader * reader_node = dynamic_cast<gnomonComposerNodeReader *>(node)) {
+        if (gnomonComposerNodeReader * reader_node = dynamic_cast<gnomonComposerNodeReader *>(node)) {
             out << "[" << reader_node->algorithm_class << "]" << "\n";
             out << "plugin_name = \""<< reader_node->algorithm << "\"\n";
             out << "path = \""<< reader_node->path << "\"\n";
+            out << "\n";
+        } else if (gnomonComposerNodeAlgorithm * algorithm_node = dynamic_cast<gnomonComposerNodeAlgorithm *>(node)) {
+            out << "[" << algorithm_node->algorithm_class << "]" << "\n";
+            out << "plugin_name = \""<< algorithm_node->algorithm << "\"\n";
+            out << "    [" << algorithm_node->algorithm_class << ".parameters]\n";
+            for (const auto& param : algorithm_node->parameters.keys()) {
+                QVariant parameter = algorithm_node->parameters[param];
+                bool int_status;
+                parameter.toInt(&int_status);
+                bool double_status;
+                parameter.toDouble(&double_status);
+                QString parameter_string = "";
+
+                qDebug()<<Q_FUNC_INFO<<parameter.toString()<<parameter.canConvert<int>()<<"("<<int_status<<")"<<parameter.canConvert<double>()<<"("<<double_status<<")"<<parameter.canConvert<QString>();
+                if (int_status | double_status) {
+                     parameter_string = parameter.toString();
+                } else if (parameter.canConvert<QString>()) {
+                     parameter_string = "\"" + parameter.toString() + "\"";
+                } else if (parameter.canConvert<QStringList>()) {
+                    QStringList list = parameter.toStringList();
+                    parameter_string = "[";
+                    for (int i=0; i<list.size(); i++) {
+                        if (i>0)
+                            parameter_string += ", ";
+                        parameter_string += "\"" + list[i] + "\"";
+                    }
+                    parameter_string += "]";
+                } else if (parameter.canConvert<QList<QVariant>>()) {
+                    QList<QVariant> list = parameter.toList();
+                    parameter_string = "[";
+                    for (int i=0; i<list.size(); i++) {
+                        if (i>0)
+                            parameter_string += ", ";
+                        parameter_string += list[i].toString();
+                    }
+                    parameter_string += "]";
+                }
+                out << "    " << param << " = " << parameter_string << "\n";
+            }
             out << "\n";
         }
     }
