@@ -19,6 +19,7 @@
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
 
 #include <dtkCore>
@@ -83,8 +84,13 @@ void gnomonPipeline::addReader(gnomonAbstractReaderCommand *command)
     }
 }
 
-void gnomonPipeline::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters)
+void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
 {
+    QMap<QString, gnomonCoreParameter *> parameters = command->parameters();
+
+    QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
+    QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
+
     QMap<QString, QVariant> parameter_values;
     for (const auto& param : parameters.keys()) {
         if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(parameters[param])) {
@@ -114,7 +120,7 @@ void gnomonPipeline::addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> inp
         }
     }
 
-    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class,algorithm,parameter_values,input_forms.keys(),output_forms.keys());
+    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(),command->algorithmName(),parameter_values,input_forms.keys(),output_forms.keys());
 
     d->node_input_forms[node] = input_forms;
 

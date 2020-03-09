@@ -63,7 +63,7 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
 template <typename T> void gnomonWorkspaceTemplatePrivate<T>::registerPipeline(void)
 {
     if (this->command) {
-        this->pipeline->addAlgorithm(this->command->inputs(),this->command->outputs(),this->command->factoryName(),this->command->algorithmName(),this->command->parameters());
+        this->pipeline->addAlgorithm(this->command);
     }
 }
 

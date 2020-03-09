@@ -1,8 +1,9 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonImageFilterCommand(void) = delete;
@@ -24,7 +25,7 @@ public:
     virtual void setParameter(const QString&, const QVariant&);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
     static bool isEmpty(void);

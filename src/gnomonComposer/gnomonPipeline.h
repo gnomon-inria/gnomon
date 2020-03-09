@@ -36,7 +36,7 @@ public:
 
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
-    void addAlgorithm(QMap<QString, gnomonAbstractDynamicForm *> input_forms, QMap<QString, gnomonAbstractDynamicForm *> output_forms, const QString& algorithm_class, const QString& algorithm, QMap<QString, gnomonCoreParameter *> parameters);
+    void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
     void addForm(gnomonAbstractDynamicForm *form);
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
 signals:
