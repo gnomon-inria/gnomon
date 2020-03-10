@@ -184,5 +184,10 @@ QString gnomonPipelineNode::variantParameterString(const QVariant& parameter)
     return parameter_string;
 }
 
+QString gnomonPipelineNode::toLuigiClass(void)
+{
+    return "";
+}
+
 //
 // gnomonPipelineNode.cpp ends here

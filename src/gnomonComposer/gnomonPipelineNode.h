@@ -40,6 +40,8 @@ public:
     virtual QString toToml(const QString& node_name);
     QString variantParameterString(const QVariant& parameter);
 
+    virtual QString toLuigiClass(void);
+
 protected:
     class gnomonPipelineNodePrivate *d;
 };

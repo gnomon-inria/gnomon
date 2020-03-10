@@ -248,13 +248,24 @@ void gnomonPipeline::exportToToml(const QString& path)
         return;
 
     QTextStream out(&file);
-
     for (const auto& node_name : d->pipeline_node_names) {
-        gnomonPipelineNode *node = d->pipeline_nodes[node_name];
-        out << node->toToml(node_name);
+        out << d->pipeline_nodes[node_name]->toToml(node_name);
     }
-
     file.close();
+
+    QFileInfo info(path);
+    QString script_path = info.path() + "/" + info.baseName() + ".py";
+
+    qDebug()<<Q_FUNC_INFO<<script_path;
+    QFile script_file(script_path);
+    if (!script_file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream script_out(&script_file);
+    for (const auto& node_name : d->pipeline_node_names) {
+        script_out << d->pipeline_nodes[node_name]->toLuigiClass();
+    }
+    script_file.close();
 }
 
 gnomonPipeline *gnomonPipeline::s_instance = nullptr;
