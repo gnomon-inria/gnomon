@@ -23,7 +23,11 @@
 
 gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonComposerSceneNode()
 {
-    d->color = QColor(255, 175, 0).darker();
+    if (algorithm_class.contains("From")) {
+        d->color = QColor(255, 0, 0);
+    } else {
+        d->color = QColor(255, 170, 0);
+    }
 
     this->algorithm_class = algorithm_class;
     this->algorithm = algorithm;

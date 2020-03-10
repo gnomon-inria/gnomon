@@ -22,7 +22,7 @@
 
 gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_class, const QString& algorithm, const QString& path) : gnomonComposerSceneNode()
 {
-    d->color = Qt::darkYellow;
+    d->color = QColor(255, 255, 0);
 
     this->algorithm_class = algorithm_class;
     this->algorithm = algorithm;
