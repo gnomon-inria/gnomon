@@ -68,6 +68,13 @@ void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)
     d->image = image;
 }
 
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageWriterCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["image"] = d->image;
+    return inputs;
+}
+
 bool gnomonImageWriterCommand::isEmpty(void)
 {
     loadPluginGroup("imageWriter");

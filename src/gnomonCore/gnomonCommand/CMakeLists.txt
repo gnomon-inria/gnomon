@@ -37,6 +37,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractCommand.h
   gnomonAbstractReaderCommand
   gnomonAbstractReaderCommand.h
+  gnomonAbstractWriterCommand
+  gnomonAbstractWriterCommand.h
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}
