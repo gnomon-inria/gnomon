@@ -14,13 +14,13 @@
 
 #include "gnomonPipelineNodeReader.h"
 
-#include "gnomonComposerSceneNode_p.h"
+#include "gnomonPipelineNode_p.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeReader
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path) : gnomonComposerSceneNode()
+gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path) : gnomonPipelineNode()
 {
     d->color = QColor(170, 255, 0);
 

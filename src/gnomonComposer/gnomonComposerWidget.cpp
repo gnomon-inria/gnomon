@@ -18,7 +18,7 @@
 
 #include "gnomonPipeline.h"
 
-#include "gnomonComposerSceneNode.h"
+#include "gnomonPipelineNode.h"
 
 #include <dtkComposer>
 #include <dtkCore>
@@ -202,7 +202,7 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
     d->last_port = port;
 }
 
-void gnomonComposerWidget::addNode(gnomonComposerSceneNode *node)
+void gnomonComposerWidget::addNode(gnomonPipelineNode *node)
 {
     if (d->last_node) {
         node->setPos(d->last_node->pos() + QPointF(300, 0));

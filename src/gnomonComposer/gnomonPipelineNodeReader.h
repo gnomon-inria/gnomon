@@ -16,9 +16,9 @@
 
 #include <gnomonComposerExport.h>
 
-#include "gnomonComposerSceneNode.h"
+#include "gnomonPipelineNode.h"
 
-class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeReader : public gnomonComposerSceneNode
+class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeReader : public gnomonPipelineNode
 {
 public:
      gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path);

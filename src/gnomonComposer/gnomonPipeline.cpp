@@ -14,7 +14,7 @@
 
 #include "gnomonPipeline.h"
 
-#include "gnomonComposerSceneNode.h"
+#include "gnomonPipelineNode.h"
 
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeReader.h"
@@ -39,7 +39,7 @@ class gnomonPipelinePrivate
 public:
     QStringList pipeline_node_names;
     QMap<QString, int> node_type_count;
-    QMap<QString, gnomonComposerSceneNode *> pipeline_nodes;
+    QMap<QString, gnomonPipelineNode *> pipeline_nodes;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeWriter *> writer_nodes;
@@ -250,7 +250,7 @@ void gnomonPipeline::exportToToml(const QString& path)
     QTextStream out(&file);
 
     for (const auto& node_name : d->pipeline_node_names) {
-        gnomonComposerSceneNode *node = d->pipeline_nodes[node_name];
+        gnomonPipelineNode *node = d->pipeline_nodes[node_name];
         if (gnomonPipelineNodeReader * reader_node = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
             out << "[" << node_name << "]" << "\n";
             out << "plugin_name = \""<< reader_node->algorithm << "\"\n";

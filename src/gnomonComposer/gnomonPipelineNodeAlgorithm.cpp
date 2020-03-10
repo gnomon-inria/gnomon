@@ -14,14 +14,14 @@
 
 #include "gnomonPipelineNodeAlgorithm.h"
 
-#include "gnomonComposerSceneNode_p.h"
+#include "gnomonPipelineNode_p.h"
 
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonComposerSceneNode()
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode()
 {
     if (algorithm_class.contains("From")) {
         d->color = QColor(255, 0, 0);

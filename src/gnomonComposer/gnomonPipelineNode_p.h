@@ -18,7 +18,7 @@
 #include <QtWidgets>
 
 
-class gnomonComposerSceneNodePrivate
+class gnomonPipelineNodePrivate
 {
 
 public:
@@ -34,4 +34,4 @@ public:
 
 
 //
-// gnomonComposerSceneNodePrivate.h ends here
+// gnomonPipelineNodePrivate.h ends here

@@ -22,7 +22,7 @@
 
 class dtkComposerSceneNode;
 class dtkComposerWidget;
-class gnomonComposerSceneNode;
+class gnomonPipelineNode;
 
 class gnomonComposerWidgetPrivate;
 
@@ -46,7 +46,7 @@ public:
 
 public slots:
     void addWorkspace(const QString&);
-    void addNode(gnomonComposerSceneNode *node);
+    void addNode(gnomonPipelineNode *node);
 
 public slots:
     bool compositionSave(void);

@@ -20,7 +20,7 @@
 class dtkComposerScenePort;
 class dtkComposerWidget;
 class gnomonComposerWidget;
-class gnomonComposerSceneNode;
+class gnomonPipelineNode;
 class gnomonComposerNodeWorkspace;
 
 class gnomonOverlayButton;

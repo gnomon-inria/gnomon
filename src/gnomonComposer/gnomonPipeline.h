@@ -18,7 +18,7 @@
 
 #include <QtCore>
 
-class gnomonComposerSceneNode;
+class gnomonPipelineNode;
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractAlgorithmCommand;
@@ -42,7 +42,7 @@ public slots:
     void addForm(gnomonAbstractDynamicForm *form);
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
 signals:
-    void nodeAdded(gnomonComposerSceneNode *);
+    void nodeAdded(gnomonPipelineNode *);
 
 public slots:
     void exportToToml(const QString& path);

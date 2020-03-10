@@ -14,14 +14,14 @@
 
 #include <float.h>
 
-#include "gnomonComposerSceneNode.h"
-#include "gnomonComposerSceneNode_p.h"
+#include "gnomonPipelineNode.h"
+#include "gnomonPipelineNode_p.h"
 
 // /////////////////////////////////////////////////////////////////
-// gnomonComposerSceneNode
+// gnomonPipelineNode
 // /////////////////////////////////////////////////////////////////
 
-gnomonComposerSceneNode::gnomonComposerSceneNode(void) : dtkComposerSceneNode(), d(new gnomonComposerSceneNodePrivate)
+gnomonPipelineNode::gnomonPipelineNode(void) : dtkComposerSceneNode(), d(new gnomonPipelineNodePrivate)
 {
     d->color = QColor(Qt::darkGray);
 
@@ -33,24 +33,14 @@ gnomonComposerSceneNode::gnomonComposerSceneNode(void) : dtkComposerSceneNode(),
     this->setTitle("");
 }
 
-gnomonComposerSceneNode::~gnomonComposerSceneNode(void)
+gnomonPipelineNode::~gnomonPipelineNode(void)
 {
     delete d;
 
     d = NULL;
 }
 
-void gnomonComposerSceneNode::resetPos(const QPointF& pos, const QRectF& rect)
-{
-    QPointF center(0, 0);
-    QRectF box(0, 0, 0, 0);
-
-    if (!pos.isNull()) {
-        center = pos + QPointF(0.5 * rect.width(), 0.5 * rect.height());
-    }
-}
-
-void gnomonComposerSceneNode::layout(void)
+void gnomonPipelineNode::layout(void)
 {
     d->rect = QRectF(0, 0, 150, 50);
 
@@ -103,22 +93,17 @@ void gnomonComposerSceneNode::layout(void)
 
 }
 
-void gnomonComposerSceneNode::resize(const QSizeF& size)
-{
-    d->rect = QRectF(d->rect.topLeft(), size);
-}
-
-void gnomonComposerSceneNode::resize(qreal width, qreal height)
+void gnomonPipelineNode::resize(qreal width, qreal height)
 {
     d->rect = QRectF(d->rect.topLeft(), QSizeF(width, height));
 }
 
-QRectF gnomonComposerSceneNode::boundingRect(void) const
+QRectF gnomonPipelineNode::boundingRect(void) const
 {
     return d->rect.adjusted(-2, -2, 2, 2);
 }
 
-void gnomonComposerSceneNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -156,25 +141,5 @@ void gnomonComposerSceneNode::paint(QPainter *painter, const QStyleOptionGraphic
     painter->drawText(title_pos, title_text);
 }
 
-void gnomonComposerSceneNode::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
-{
-    event->ignore();
-}
-
-void gnomonComposerSceneNode::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
-{
-    event->ignore();
-}
-
-void gnomonComposerSceneNode::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
-{
-    event->ignore();
-}
-
-void gnomonComposerSceneNode::dropEvent(QGraphicsSceneDragDropEvent *event)
-{
-    event->ignore();
-}
-
 //
-// gnomonComposerSceneNode.cpp ends here
+// gnomonPipelineNode.cpp ends here

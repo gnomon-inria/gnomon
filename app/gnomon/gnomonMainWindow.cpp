@@ -326,7 +326,7 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
    });
 
 //   connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
-   connect(d->pipeline, SIGNAL(nodeAdded(gnomonComposerSceneNode *)), d->workflow, SLOT(addNode(gnomonComposerSceneNode *)));
+   connect(d->pipeline, SIGNAL(nodeAdded(gnomonPipelineNode *)), d->workflow, SLOT(addNode(gnomonPipelineNode *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 
