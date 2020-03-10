@@ -21,8 +21,9 @@
 class dtkComposerSceneNodeComposite;
 
 class gnomonAbstractDynamicForm;
-class gnomonAbstractReaderCommand;
 class gnomonAbstractAlgorithmCommand;
+class gnomonAbstractReaderCommand;
+class gnomonAbstractWriterCommand;
 class gnomonCoreParameter;
 
 class gnomonPipelinePrivate;
@@ -36,6 +37,7 @@ public:
 
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
+    void addWriter(gnomonAbstractWriterCommand *command);
     void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
     void addForm(gnomonAbstractDynamicForm *form);
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);

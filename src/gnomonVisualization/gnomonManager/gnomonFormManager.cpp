@@ -130,10 +130,14 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
         }
 
         if(!export_file_path.isEmpty()) {
-           settings.beginGroup("general");
-           settings.setValue("last_saved_file", export_file_path);
-           settings.endGroup();
-           this->formWriterCommand[item]->redo();
+            settings.beginGroup("general");
+            settings.setValue("last_saved_file", export_file_path);
+            settings.endGroup();
+            this->formWriterCommand[item]->redo();
+
+            if (gnomonImageWriterCommand *imageCommand = dynamic_cast<gnomonImageWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(imageCommand);
+            }
         }
     });
 
