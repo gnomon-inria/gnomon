@@ -18,26 +18,9 @@
 
 #include "gnomonPipeline.h"
 
-#include <dtkComposer/dtkComposer.h>
-#include <dtkComposer/dtkComposerNode.h>
-#include <dtkComposer/dtkComposerWidget.h>
-#include <dtkComposer/dtkComposerCompass.h>
-#include <dtkComposer/dtkComposerControls.h>
-#include <dtkComposer/dtkComposerEvaluator.h>
-#include <dtkComposer/dtkComposerEvaluatorToolBar.h>
-#include <dtkComposer/dtkComposerNodeFactory.h>
-#include <dtkComposer/dtkComposerNodeFactoryView.h>
-#include <dtkComposer/dtkComposerGraph.h>
-#include <dtkComposer/dtkComposerPath.h>
-#include <dtkComposer/dtkComposerScene.h>
-#include <dtkComposer/dtkComposerSceneModel.h>
-#include <dtkComposer/dtkComposerSceneNodeEditor.h>
-#include <dtkComposer/dtkComposerSceneView.h>
-#include <dtkComposer/dtkComposerStack.h>
-#include <dtkComposer/dtkComposerStackView.h>
-#include <dtkComposer/dtkComposerView.h>
-#include <dtkComposer/dtkComposerViewController.h>
+#include "gnomonComposerSceneNode.h"
 
+#include <dtkComposer>
 #include <dtkCore>
 #include <dtkLog>
 #include <dtkWidgets>
@@ -202,7 +185,7 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
         edge->setDestination(i_port);
         edge->link(true);
 
-        d->last_node->addEdge(edge);
+        d->last_node->addOutputEdge(edge);
     }
 
 
@@ -219,7 +202,7 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
     d->last_port = port;
 }
 
-void gnomonComposerWidget::addNode(dtkComposerSceneNodeComposite *node)
+void gnomonComposerWidget::addNode(gnomonComposerSceneNode *node)
 {
     if (d->last_node) {
         node->setPos(d->last_node->pos() + QPointF(300, 0));

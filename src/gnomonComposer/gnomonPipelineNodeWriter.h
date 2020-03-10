@@ -16,9 +16,9 @@
 
 #include <gnomonComposerExport.h>
 
-#include <dtkComposer>
+#include "gnomonComposerSceneNode.h"
 
-class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeWriter : public dtkComposerSceneNodeComposite
+class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeWriter : public gnomonComposerSceneNode
 {
 public:
      gnomonPipelineNodeWriter(const QString& algorithm_class, const QString& algorithm, const QString& path);

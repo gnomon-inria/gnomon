@@ -26,6 +26,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonComposer
   gnomonComposerNodeWorkspace
   gnomonComposerNodeWorkspace.h
+  gnomonComposerSceneNode.h
   gnomonComposerWidget_p.h
   gnomonComposerWidget.h
   gnomonPipeline
@@ -39,6 +40,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonComposerNodeWorkspace.cpp
+  gnomonComposerSceneNode.cpp
   gnomonComposerWidget.cpp
   gnomonPipeline.cpp
   gnomonPipelineNodeAlgorithm.cpp

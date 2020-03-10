@@ -14,6 +14,8 @@
 
 #include "gnomonPipeline.h"
 
+#include "gnomonComposerSceneNode.h"
+
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeWriter.h"
@@ -37,7 +39,7 @@ class gnomonPipelinePrivate
 public:
     QStringList pipeline_node_names;
     QMap<QString, int> node_type_count;
-    QMap<QString, dtkComposerSceneNodeComposite *> pipeline_nodes;
+    QMap<QString, gnomonComposerSceneNode *> pipeline_nodes;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeWriter *> writer_nodes;
@@ -118,7 +120,7 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
         if (edge) {
             edge->setDestination(node->input_port);
             edge->link(true);
-            node->addEdge(edge);
+            node->addInputEdge(edge);
         }
 
         d->writer_nodes[input_form] = node;
@@ -215,7 +217,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             if (edge) {
                 edge->setDestination(node->input_ports[input]);
                 edge->link(true);
-                node->addEdge(edge);
+                node->addInputEdge(edge);
             }
         }
         QString node_name = node->algorithm_class;
@@ -248,7 +250,7 @@ void gnomonPipeline::exportToToml(const QString& path)
     QTextStream out(&file);
 
     for (const auto& node_name : d->pipeline_node_names) {
-        dtkComposerSceneNodeComposite *node = d->pipeline_nodes[node_name];
+        gnomonComposerSceneNode *node = d->pipeline_nodes[node_name];
         if (gnomonPipelineNodeReader * reader_node = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
             out << "[" << node_name << "]" << "\n";
             out << "plugin_name = \""<< reader_node->algorithm << "\"\n";

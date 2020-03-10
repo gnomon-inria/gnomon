@@ -20,7 +20,7 @@
 class dtkComposerScenePort;
 class dtkComposerWidget;
 class gnomonComposerWidget;
-class dtkComposerSceneNodeComposite;
+class gnomonComposerSceneNode;
 class gnomonComposerNodeWorkspace;
 
 class gnomonOverlayButton;
@@ -62,7 +62,7 @@ public:
 
 public:
     gnomonComposerWidget *q;
-    dtkComposerSceneNodeComposite *last_node = nullptr;
+    dtkComposerSceneNode *last_node = nullptr;
 //    gnomonComposerNodeWorkspace *last_node = nullptr;
 
 public:

@@ -14,12 +14,17 @@
 
 #include "gnomonPipelineNodeAlgorithm.h"
 
+#include "gnomonComposerSceneNode_p.h"
+
+
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : dtkComposerSceneNodeComposite()
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonComposerSceneNode()
 {
+    d->color = QColor(255, 175, 0).darker();
+
     this->algorithm_class = algorithm_class;
     this->algorithm = algorithm;
     this->parameters = parameters;
