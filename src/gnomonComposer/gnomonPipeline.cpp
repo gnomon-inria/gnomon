@@ -251,55 +251,7 @@ void gnomonPipeline::exportToToml(const QString& path)
 
     for (const auto& node_name : d->pipeline_node_names) {
         gnomonPipelineNode *node = d->pipeline_nodes[node_name];
-        if (gnomonPipelineNodeReader * reader_node = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
-            out << "[" << node_name << "]" << "\n";
-            out << "plugin_name = \""<< reader_node->algorithm << "\"\n";
-            out << "path = \""<< reader_node->path << "\"\n";
-            out << "\n";
-        } else if (gnomonPipelineNodeWriter * writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
-            out << "[" << node_name << "]" << "\n";
-            out << "plugin_name = \""<< writer_node->algorithm << "\"\n";
-            out << "path = \""<< writer_node->path << "\"\n";
-            out << "\n";
-        } else if (gnomonPipelineNodeAlgorithm * algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
-            out << "[" << node_name << "]" << "\n";
-            out << "plugin_name = \""<< algorithm_node->algorithm << "\"\n";
-            out << "    [" << node_name << ".parameters]\n";
-            for (const auto& param : algorithm_node->parameters.keys()) {
-                QVariant parameter = algorithm_node->parameters[param];
-                bool int_status;
-                parameter.toInt(&int_status);
-                bool double_status;
-                parameter.toDouble(&double_status);
-                QString parameter_string = "";
-
-                if (int_status | double_status) {
-                     parameter_string = parameter.toString();
-                } else if (parameter.canConvert<QString>()) {
-                     parameter_string = "\"" + parameter.toString() + "\"";
-                } else if (parameter.canConvert<QStringList>()) {
-                    QStringList list = parameter.toStringList();
-                    parameter_string = "[";
-                    for (int i=0; i<list.size(); i++) {
-                        if (i>0)
-                            parameter_string += ", ";
-                        parameter_string += "\"" + list[i] + "\"";
-                    }
-                    parameter_string += "]";
-                } else if (parameter.canConvert<QList<QVariant>>()) {
-                    QList<QVariant> list = parameter.toList();
-                    parameter_string = "[";
-                    for (int i=0; i<list.size(); i++) {
-                        if (i>0)
-                            parameter_string += ", ";
-                        parameter_string += list[i].toString();
-                    }
-                    parameter_string += "]";
-                }
-                out << "    " << param << " = " << parameter_string << "\n";
-            }
-            out << "\n";
-        }
+        out << node->toToml(node_name);
     }
 
     file.close();

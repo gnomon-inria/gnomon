@@ -40,5 +40,16 @@ gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)
 
 }
 
+QString gnomonPipelineNodeReader::toToml(const QString& node_name)
+{
+    QString node_string;
+    QTextStream out(&node_string);
+    out << "[" << node_name << "]" << "\n";
+    out << "plugin_name = \""<< this->algorithm << "\"\n";
+    out << "path = \""<< this->path << "\"\n";
+    out << "\n";
+    return node_string;
+}
+
 //
 // gnomonPipelineNodeReader.cpp ends here

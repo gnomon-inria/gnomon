@@ -25,12 +25,14 @@ public:
     ~gnomonPipelineNodeReader(void);
 
 public:
+    virtual QString toToml(const QString& node_name) override;
+
+public:
     QString algorithm_class;
     QString algorithm;
     QString path;
 
     dtkComposerScenePort *output_port;
-
 };
 
 //

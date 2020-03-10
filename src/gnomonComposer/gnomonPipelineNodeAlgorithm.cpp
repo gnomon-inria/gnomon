@@ -51,5 +51,21 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
+QString gnomonPipelineNodeAlgorithm::toToml(const QString& node_name)
+{
+    QString node_string;
+    QTextStream out(&node_string);
+    out << "[" << node_name << "]" << "\n";
+    out << "plugin_name = \""<< this->algorithm << "\"\n";
+    out << "    [" << node_name << ".parameters]\n";
+    for (const auto& param : this->parameters.keys()) {
+        QVariant parameter = this->parameters[param];
+        QString parameter_string = this->variantParameterString(parameter);
+        out << "    " << param << " = " << parameter_string << "\n";
+    }
+    out << "\n";
+    return node_string;
+}
+
 //
 // gnomonPipelineNodeAlgorithm.cpp ends here

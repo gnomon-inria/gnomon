@@ -141,5 +141,48 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawText(title_pos, title_text);
 }
 
+
+QString gnomonPipelineNode::toToml(const QString& node_name)
+{
+    QString node_string = "[" + node_name + "]\n" + "\n";
+    return node_string;
+}
+
+QString gnomonPipelineNode::variantParameterString(const QVariant& parameter)
+{
+    QString parameter_string = "";
+
+    bool int_status;
+    parameter.toInt(&int_status);
+    bool double_status;
+    parameter.toDouble(&double_status);
+
+    if (int_status | double_status) {
+         parameter_string = parameter.toString();
+    } else if (parameter.canConvert<QString>()) {
+         parameter_string = "\"" + parameter.toString() + "\"";
+    } else if (parameter.canConvert<QStringList>()) {
+        QStringList list = parameter.toStringList();
+        parameter_string = "[";
+        for (int i=0; i<list.size(); i++) {
+            if (i>0)
+                parameter_string += ", ";
+            parameter_string += "\"" + list[i] + "\"";
+        }
+        parameter_string += "]";
+    } else if (parameter.canConvert<QList<QVariant>>()) {
+        QList<QVariant> list = parameter.toList();
+        parameter_string = "[";
+        for (int i=0; i<list.size(); i++) {
+            if (i>0)
+                parameter_string += ", ";
+            parameter_string += list[i].toString();
+        }
+        parameter_string += "]";
+    }
+
+    return parameter_string;
+}
+
 //
 // gnomonPipelineNode.cpp ends here
