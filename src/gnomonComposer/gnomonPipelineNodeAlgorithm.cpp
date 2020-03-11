@@ -75,6 +75,7 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     QString class_name = QString(this->algorithm_class) + "Task";
     class_name.replace(0, 1, class_name[0].toUpper());
 
+    out<<"\n";
     out<<"class "<<class_name<<"(AlgorithmPluginTask):\n";
     out<<"    parameters = luigi.DictParameter()\n";
     out<<"    \n";
@@ -87,7 +88,7 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
         if (i>0) {
             out<<", ";
         }
-        QString input_name = input_ports.keys()[i];
+        QString input_name = this->input_ports.keys()[i];
         out<<"\""<<input_name<<"\"";
     }
     out<<"]\n";

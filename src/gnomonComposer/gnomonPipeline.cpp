@@ -42,6 +42,7 @@ public:
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
+    QMap<gnomonAbstractDynamicForm *, QString> reader_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeWriter *> writer_nodes;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeAlgorithm *> algorithm_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> algorithm_output;
@@ -79,13 +80,16 @@ void gnomonPipeline::addReader(gnomonAbstractReaderCommand *command)
     qDebug() << Q_FUNC_INFO << command->factoryName() << "[" << command->algorithmName() << "] : "<<command->path();
     QMap<QString, gnomonAbstractDynamicForm *> forms = command->outputs();
 
+    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(),command->algorithmName(),command->path(),forms.keys());
+
     for (const auto& form_name : forms.keys())
     {
         gnomonAbstractDynamicForm *form = forms[form_name];
         if (gnomonAbstractDynamicForm *clone = d->form_clones.key(form,nullptr)) {
             form = clone;
         }
-        d->reader_nodes[form] = new gnomonPipelineNodeReader(command->factoryName(),command->algorithmName(),command->path());
+        d->reader_nodes[form] = node;
+        d->reader_output[form] = form_name;
     }
 }
 
@@ -94,31 +98,26 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
     qDebug() << Q_FUNC_INFO << command->factoryName() << "[" << command->algorithmName() << "] : "<<command->path();
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
 
+    gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(),command->algorithmName(),command->path(),input_forms.keys());
+
     for (const auto& form_name : input_forms.keys())
     {
         gnomonAbstractDynamicForm *input_form = input_forms[form_name];
-//        if (gnomonAbstractDynamicForm *clone = d->form_clones.key(input_form,nullptr)) {
-//            qDebug()<<Q_FUNC_INFO<<input_form<<"->"<<clone;
-//            input_form = clone;
-//        }
         if (d->form_clones.contains(input_form)) {
             qDebug()<<Q_FUNC_INFO<<input_form<<"->"<<d->form_clones[input_form];
             input_form = d->form_clones[input_form];
         }
-        gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(),command->algorithmName(),command->path());
 
         dtkComposerSceneEdge *edge = nullptr;
-        qDebug()<<Q_FUNC_INFO<<d->reader_nodes.keys();
-        qDebug()<<Q_FUNC_INFO<<d->algorithm_nodes.keys();
         if (d->reader_nodes.contains(input_form)) {
             edge = new dtkComposerSceneEdge();
-            edge->setSource(d->reader_nodes[input_form]->output_port);
+            edge->setSource(d->reader_nodes[input_form]->output_ports[d->reader_output[input_form]]);
         } else if (d->algorithm_nodes.contains(input_form)) {
             edge = new dtkComposerSceneEdge();
             edge->setSource(d->algorithm_nodes[input_form]->output_ports[d->algorithm_output[input_form]]);
         }
         if (edge) {
-            edge->setDestination(node->input_port);
+            edge->setDestination(node->input_ports[form_name]);
             edge->link(true);
             node->addInputEdge(edge);
         }
@@ -209,7 +208,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             dtkComposerSceneEdge *edge = nullptr;
             if (d->reader_nodes.contains(input_form)) {
                 edge = new dtkComposerSceneEdge();
-                edge->setSource(d->reader_nodes[input_form]->output_port);
+                edge->setSource(d->reader_nodes[input_form]->output_ports[d->reader_output[input_form]]);
             } else if (d->algorithm_nodes.contains(input_form)) {
                 edge = new dtkComposerSceneEdge();
                 edge->setSource(d->algorithm_nodes[input_form]->output_ports[d->algorithm_output[input_form]]);
@@ -256,17 +255,33 @@ void gnomonPipeline::exportToToml(const QString& path)
     QFileInfo info(path);
     QString script_path = info.path() + "/" + info.baseName() + ".py";
 
-    qDebug()<<Q_FUNC_INFO<<script_path;
-    QFile script_file(script_path);
-    if (!script_file.open(QIODevice::WriteOnly | QIODevice::Text))
+    this->exportToLuigiScript(script_path);
+}
+
+void gnomonPipeline::exportToLuigiScript(const QString& path)
+{
+    qDebug()<<Q_FUNC_INFO<<path;
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
-    QTextStream script_out(&script_file);
+    QTextStream out(&file);
+    out << "import argparse\n";
+    out << "\n";
+    out << "import luigi\n";
+    out << "\n";
+    out << "import gnomoncore\n";
+    out << "from gnomon_utils import load_plugin_group\n";
+    out << "\n";
+    out << "from gnomon_luigi.tasks import AlgorithmPluginTask\n";
+    out << "\n";
     for (const auto& node_name : d->pipeline_node_names) {
-        script_out << d->pipeline_nodes[node_name]->toLuigiClass();
+        out << d->pipeline_nodes[node_name]->toLuigiClass();
     }
-    script_file.close();
+
+    file.close();
 }
+
 
 gnomonPipeline *gnomonPipeline::s_instance = nullptr;
 

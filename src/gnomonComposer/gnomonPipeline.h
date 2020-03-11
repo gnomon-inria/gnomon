@@ -46,6 +46,7 @@ signals:
 
 public slots:
     void exportToToml(const QString& path);
+    void exportToLuigiScript(const QString& path);
 
 protected:
      gnomonPipeline(void);
