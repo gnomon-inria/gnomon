@@ -275,7 +275,7 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "\n";
     out << "from gnomon_luigi.tasks import AlgorithmPluginTask\n";
     out << "\n";
-    for (const auto& node_name : d->pipeline_node_names) {
+    for (const auto& node_name : d->node_type_count.keys()) {
         out << d->pipeline_nodes[node_name]->toLuigiClass();
     }
 
