@@ -41,6 +41,7 @@ public slots:
     void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
     void addForm(gnomonAbstractDynamicForm *form);
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
+
 signals:
     void nodeAdded(gnomonPipelineNode *);
 
