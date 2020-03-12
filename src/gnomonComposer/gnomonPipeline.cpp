@@ -40,6 +40,7 @@ public:
     QStringList pipeline_node_names;
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
+    QMap< QPair<QString, QString>, QPair<QString, QString> > pipeline_edges;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> reader_output;
@@ -108,20 +109,6 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
             input_form = d->form_clones[input_form];
         }
 
-        dtkComposerSceneEdge *edge = nullptr;
-        if (d->reader_nodes.contains(input_form)) {
-            edge = new dtkComposerSceneEdge();
-            edge->setSource(d->reader_nodes[input_form]->output_ports[d->reader_output[input_form]]);
-        } else if (d->algorithm_nodes.contains(input_form)) {
-            edge = new dtkComposerSceneEdge();
-            edge->setSource(d->algorithm_nodes[input_form]->output_ports[d->algorithm_output[input_form]]);
-        }
-        if (edge) {
-            edge->setDestination(node->input_ports[form_name]);
-            edge->link(true);
-            node->addInputEdge(edge);
-        }
-
         d->writer_nodes[input_form] = node;
         QString node_name = node->algorithm_class;
         if (!d->node_type_count.contains(node->algorithm_class)) {
@@ -132,6 +119,30 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
         }
         d->pipeline_node_names.append(node_name);
         d->pipeline_nodes[node_name] = node;
+
+        dtkComposerSceneEdge *edge = nullptr;
+        QPair<QString, QString> edge_source;
+        QPair<QString, QString> edge_target;
+        if (d->reader_nodes.contains(input_form)) {
+            edge = new dtkComposerSceneEdge();
+            edge->setSource(d->reader_nodes[input_form]->output_ports[d->reader_output[input_form]]);
+            edge_source.first = d->pipeline_nodes.key(d->reader_nodes[input_form]);
+            edge_source.second = d->reader_output[input_form];
+        } else if (d->algorithm_nodes.contains(input_form)) {
+            edge = new dtkComposerSceneEdge();
+            edge->setSource(d->algorithm_nodes[input_form]->output_ports[d->algorithm_output[input_form]]);
+            edge_source.first = d->pipeline_nodes.key(d->algorithm_nodes[input_form]);
+            edge_source.second = d->algorithm_output[input_form];
+        }
+        if (edge) {
+            edge->setDestination(node->input_ports[form_name]);
+            edge->link(true);
+            node->addInputEdge(edge);
+            edge_target.first = node_name;
+            edge_target.second = form_name;
+            d->pipeline_edges[edge_target] = edge_source;
+        }
+
         emit nodeAdded(node);
     }
 }
@@ -198,27 +209,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
         emit nodeAdded(node);
     } else if (d->algorithm_nodes.contains(form)) {
         gnomonPipelineNodeAlgorithm *node = d->algorithm_nodes[form];
-        QMap<QString, gnomonAbstractDynamicForm *> input_forms = d->node_input_forms[node];
-        for (const auto& input : input_forms.keys()) {
-            gnomonAbstractDynamicForm *input_form = input_forms[input];
-            if (d->form_clones.contains(input_form)) {
-                input_form = d->form_clones[input_form];
-            }
 
-            dtkComposerSceneEdge *edge = nullptr;
-            if (d->reader_nodes.contains(input_form)) {
-                edge = new dtkComposerSceneEdge();
-                edge->setSource(d->reader_nodes[input_form]->output_ports[d->reader_output[input_form]]);
-            } else if (d->algorithm_nodes.contains(input_form)) {
-                edge = new dtkComposerSceneEdge();
-                edge->setSource(d->algorithm_nodes[input_form]->output_ports[d->algorithm_output[input_form]]);
-            }
-            if (edge) {
-                edge->setDestination(node->input_ports[input]);
-                edge->link(true);
-                node->addInputEdge(edge);
-            }
-        }
         QString node_name = node->algorithm_class;
         if (!d->node_type_count.contains(node->algorithm_class)) {
             d->node_type_count[node->algorithm_class] = 1;
@@ -228,6 +219,37 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
         }
         d->pipeline_node_names.append(node_name);
         d->pipeline_nodes[node_name] = node;
+
+        QMap<QString, gnomonAbstractDynamicForm *> input_forms = d->node_input_forms[node];
+        for (const auto& input : input_forms.keys()) {
+            gnomonAbstractDynamicForm *input_form = input_forms[input];
+            if (d->form_clones.contains(input_form)) {
+                input_form = d->form_clones[input_form];
+            }
+            dtkComposerSceneEdge *edge = nullptr;
+            QPair<QString, QString> edge_source;
+            QPair<QString, QString> edge_target;
+            if (d->reader_nodes.contains(input_form)) {
+                edge = new dtkComposerSceneEdge();
+                edge->setSource(d->reader_nodes[input_form]->output_ports[d->reader_output[input_form]]);
+                edge_source.first = d->pipeline_nodes.key(d->reader_nodes[input_form]);
+                edge_source.second = d->reader_output[input_form];
+            } else if (d->algorithm_nodes.contains(input_form)) {
+                edge = new dtkComposerSceneEdge();
+                edge->setSource(d->algorithm_nodes[input_form]->output_ports[d->algorithm_output[input_form]]);
+                edge_source.first = d->pipeline_nodes.key(d->algorithm_nodes[input_form]);
+                edge_source.second = d->algorithm_output[input_form];
+            }
+            if (edge) {
+                edge->setDestination(node->input_ports[input]);
+                edge->link(true);
+                node->addInputEdge(edge);
+                edge_target.first = node_name;
+                edge_target.second = input;
+                d->pipeline_edges[edge_target] = edge_source;
+            }
+        }
+
         emit nodeAdded(node);
     }
 }
@@ -260,7 +282,9 @@ void gnomonPipeline::exportToToml(const QString& path)
 
 void gnomonPipeline::exportToLuigiScript(const QString& path)
 {
-    qDebug()<<Q_FUNC_INFO<<path;
+    QFileInfo info(path);
+    QString script_path = info.path() + "/" + info.baseName() + ".py";
+
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
@@ -275,9 +299,60 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "\n";
     out << "from gnomon_luigi.tasks import AlgorithmPluginTask\n";
     out << "\n";
-    for (const auto& node_name : d->node_type_count.keys()) {
-        out << d->pipeline_nodes[node_name]->toLuigiClass();
+    for (const auto& node_name : d->pipeline_node_names) {
+        if (d->node_type_count.contains(node_name)) {
+            out << d->pipeline_nodes[node_name]->toLuigiClass();
+        }
     }
+    out << "\n";
+    out << "def main():\n";
+    out << "    parser = argparse.ArgumentParser()\n";
+    out << "    parser.add_argument(\"-c\", \"--config-filename\", ";
+    out << "help=\"Path to the TOML file containing pipeline config\", ";
+    out << "default=\"" << info.baseName() << ".toml\")\n";
+    out << "    args = parser.parse_args()\n";
+    out << "\n";
+    out << "    config = luigi.configuration.LuigiTomlParser().read(config_paths=[args.config_filename])\n";
+    out << "\n";
+    out << "    tasks = {}\n";
+
+    for (const auto& node_name: d->pipeline_node_names) {
+        QString class_name = QString(node_name).remove(QRegExp("[0-9]")) + "Task";
+        class_name.replace(0, 1, class_name[0].toUpper());
+        out << "    tasks[\"" << node_name <<"\"] = " << class_name << "(**config[\"" << node_name <<"\"])\n";
+
+        for (const auto& edge_target : d->pipeline_edges.keys()) {
+            if (edge_target.first == node_name) {
+                out << "    tasks[\"" << node_name <<"\"].connect_input(tasks[\"" << d->pipeline_edges[edge_target].first << "\"], ";
+                out << "output_name=\"" << d->pipeline_edges[edge_target].second << "\", ";
+                out << "input_name=\"" << edge_target.second << "\")\n";
+            }
+        }
+        out << "\n";
+    }
+
+    out << "    sink_tasks = []\n";
+
+    QMap<QString, bool> node_sink;
+    for (const auto& node_name: d->pipeline_node_names) {
+        node_sink[node_name] = true;
+    }
+    for (const auto& edge_source : d->pipeline_edges.values()) {
+        node_sink[edge_source.first] = false;
+    }
+    for (const auto& node_name: d->pipeline_node_names) {
+        if (node_sink[node_name]) {
+            out << "    sink_tasks.append(tasks[\"" << node_name << "\"])\n";
+        }
+    }
+
+    out << "\n";
+    out << "    luigi.build(sink_tasks, local_scheduler=True)\n";
+    out << "\n";
+    out << "\n";
+    out << "if __name__ == '__main__':\n";
+    out << "    main()\n";
+    out << "\n";
 
     file.close();
 }
