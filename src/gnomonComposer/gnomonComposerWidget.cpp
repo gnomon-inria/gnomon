@@ -332,15 +332,15 @@ bool gnomonComposerWidget::pipelineSave(void)
     QString path = settings.value("last_open_dir", QDir::homePath()).toString();
     settings.endGroup();
 
-    QFileDialog dialog(this, "Save pipeline", path, QString("TOML file (*.toml)"));
+    QFileDialog dialog(this, "Save pipeline", path, QString("Python script (*.py)"));
     dialog.setStyleSheet("");
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setConfirmOverwrite(true);
-    dialog.setFileMode(QFileDialog::AnyFile);
-    dialog.setDefaultSuffix("toml");
+//    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setDefaultSuffix("py");
 
     if(dialog.exec()) {
-        gnomonPipeline::instance()->exportToToml(dialog.selectedFiles().first());
+        gnomonPipeline::instance()->exportToLuigiScript(dialog.selectedFiles().first());
         status = true;
     }
 

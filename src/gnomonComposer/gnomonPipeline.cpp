@@ -254,17 +254,12 @@ void gnomonPipeline::exportToToml(const QString& path)
         out << d->pipeline_nodes[node_name]->toToml(node_name);
     }
     file.close();
-
-    QFileInfo info(path);
-    QString script_path = info.path() + "/" + info.baseName() + ".py";
-
-    this->exportToLuigiScript(script_path);
 }
 
 void gnomonPipeline::exportToLuigiScript(const QString& path)
 {
     QFileInfo info(path);
-    QString script_path = info.path() + "/" + info.baseName() + ".py";
+    QString config_path = info.path() + "/" + info.baseName() + ".toml";
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -336,6 +331,8 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "\n";
 
     file.close();
+
+    this->exportToToml(config_path);
 }
 
 
