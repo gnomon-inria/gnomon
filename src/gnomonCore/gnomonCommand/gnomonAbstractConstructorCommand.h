@@ -19,16 +19,15 @@
 
 class gnomonAbstractCommand;
 
-class gnomonAbstractAlgorithmCommand : public gnomonAbstractCommand
+class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {
 
 public:
     virtual QMap<QString, gnomonCoreParameter *> parameters(void) const {QMap<QString, gnomonCoreParameter *> empty; return empty;};;
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
 };
 
 
 //
-// gnomonAbstractAlgorithmCommand.h ends here
+// gnomonAbstractConstructorCommand.h ends here
