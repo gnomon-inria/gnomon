@@ -85,6 +85,8 @@ gnomonWorkspaceImageConstructor::gnomonWorkspaceImageConstructor(QWidget *parent
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
 
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
 // /////////////////////////////////////////////////////////////////////////////

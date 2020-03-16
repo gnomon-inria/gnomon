@@ -78,6 +78,11 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
             edge->setSource(this->reader_nodes[input_form]->output_ports[this->reader_output[input_form]]);
             edge_source.first = this->pipeline_nodes.key(this->reader_nodes[input_form]);
             edge_source.second = this->reader_output[input_form];
+        } else if (this->constructor_nodes.contains(input_form)) {
+            edge = new dtkComposerSceneEdge();
+            edge->setSource(this->constructor_nodes[input_form]->output_ports[this->constructor_output[input_form]]);
+            edge_source.first = this->pipeline_nodes.key(this->constructor_nodes[input_form]);
+            edge_source.second = this->constructor_output[input_form];
         } else if (this->algorithm_nodes.contains(input_form)) {
             edge = new dtkComposerSceneEdge();
             edge->setSource(this->algorithm_nodes[input_form]->output_ports[this->algorithm_output[input_form]]);
@@ -241,6 +246,21 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
         }
         d->pipeline_node_names.append(node_name);
         d->pipeline_nodes[node_name] = node;
+
+        emit nodeAdded(node);
+    } else if (d->constructor_nodes.contains(form)) {
+        gnomonPipelineNodeConstructor *node = d->constructor_nodes[form];
+
+        QString node_name = node->algorithm_class;
+        if (!d->node_type_count.contains(node->algorithm_class)) {
+            d->node_type_count[node->algorithm_class] = 1;
+        } else {
+            node_name += QString::number(d->node_type_count[node->algorithm_class]);
+            d->node_type_count[node->algorithm_class] += 1;
+        }
+        d->pipeline_node_names.append(node_name);
+        d->pipeline_nodes[node_name] = node;
+
         emit nodeAdded(node);
     } else if (d->algorithm_nodes.contains(form)) {
         gnomonPipelineNodeAlgorithm *node = d->algorithm_nodes[form];

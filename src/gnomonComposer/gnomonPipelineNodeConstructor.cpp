@@ -69,7 +69,7 @@ QString gnomonPipelineNodeConstructor::toLuigiClass(void)
     class_name.replace(0, 1, class_name[0].toUpper());
 
     out<<"\n";
-    out<<"class "<<class_name<<"(ConstructorPluginTask):\n";
+    out<<"class "<<class_name<<"(AlgorithmPluginTask):\n";
     out<<"    parameters = luigi.DictParameter()\n";
     out<<"    \n";
     out<<"    def __init__(self, **kwargs):\n";
