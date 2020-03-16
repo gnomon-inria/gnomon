@@ -86,28 +86,33 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     d = new gnomonMainWindowPrivate;
     d->q = this;
 
-    dtk::widgets::workspace::pluginFactory().record( "Image Preprocessing", creator<gnomonWorkspacePreprocess>);
     dtk::widgets::workspace::pluginFactory().record( "Form Browser", creator<gnomonWorkspaceBrowser>);
     dtk::widgets::workspace::pluginFactory().record( "Python Form Algorithm", creator<gnomonWorkspacePythonAlgorithm>);
+    dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
+
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Constructor", creator<gnomonWorkspaceImageConstructor>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Preprocessing", creator<gnomonWorkspacePreprocess>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
+    dtk::widgets::workspace::pluginFactory().record( "Point Cloud Analysis", creator<gnomonWorkspacePointCloudQuantification>);
+
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Meshing", creator<gnomonWorkspaceCellComplexFromCellImage>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Complex Constructor", creator<gnomonWorkspaceCellComplexConstructor>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
-    dtk::widgets::workspace::pluginFactory().record( "L-System Simulator", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Constructor", creator<gnomonWorkspaceMeshConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Processing", creator<gnomonWorkspaceMeshFilter>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
-    dtk::widgets::workspace::pluginFactory().record( "Point Cloud Analysis", creator<gnomonWorkspacePointCloudQuantification>);
-    dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
     dtk::widgets::workspace::pluginFactory().record( "FEM Simulation", creator<gnomonWorkspaceSimulation>);
+
+
     dtk::widgets::workspace::pluginFactory().record( "Tree Transform", creator<gnomonWorkspaceTreeAnalysis>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Constructor", creator<gnomonWorkspaceTreeConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Form Translation", creator<gnomonWorkspaceLStringTranslation>);
+    dtk::widgets::workspace::pluginFactory().record( "L-System Simulator", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "PlantScan3D", creator<gnomonWorkspacePlantScan3D>);
 
     dtkApp->setWindow(this);
@@ -151,6 +156,9 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
     }
     if (!gnomonWorkspaceFusion::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Fusion", "Fuses images that have been taken of a 3D object from different angles", "Image Fusion", gnomonWorkspaceFusion::color);
+    }
+    if (!gnomonWorkspaceImageConstructor::isEmpty()) {
+        d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Constructor", "Create a virtual tissue represented a 3D multichannel intensity image", "Image Constructor", gnomonWorkspaceImageConstructor::color);
     }
     if (!gnomonWorkspacePreprocess::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Preprocessing",   "Provides various plugins to pre-process intensity images (noise, signal enhancement,...)", "Image Preprocessing", gnomonWorkspacePreprocess::color);
