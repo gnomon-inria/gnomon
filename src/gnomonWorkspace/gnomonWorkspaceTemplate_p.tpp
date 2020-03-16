@@ -14,6 +14,10 @@
 
 #include <gnomonCore/gnomonCoreParameter.h>
 
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand.h>
+
 #include <gnomonWidgets/gnomonWidgetsParameter.h>
 
 #include <dtkWidgets>
@@ -63,7 +67,11 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
 template <typename T> void gnomonWorkspaceTemplatePrivate<T>::registerPipeline(void)
 {
     if (this->command) {
-        this->pipeline->addAlgorithm(this->command);
+        if (gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command)) {
+            this->pipeline->addAlgorithm(algorithm_command);
+        } else if (gnomonAbstractConstructorCommand *constructor_command = dynamic_cast<gnomonAbstractConstructorCommand *>(this->command)) {
+            this->pipeline->addConstructor(constructor_command);
+        }
     }
 }
 

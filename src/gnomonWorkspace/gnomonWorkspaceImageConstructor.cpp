@@ -154,6 +154,8 @@ void gnomonWorkspaceImageConstructor::apply(void)
         d->target->setImage(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }

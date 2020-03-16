@@ -22,6 +22,7 @@ class gnomonPipelineNode;
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractAlgorithmCommand;
+class gnomonAbstractConstructorCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
 class gnomonCoreParameter;
@@ -39,6 +40,7 @@ public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
     void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
+    void addConstructor(gnomonAbstractConstructorCommand *command);
     void addForm(gnomonAbstractDynamicForm *form);
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
 
