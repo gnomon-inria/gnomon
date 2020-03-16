@@ -31,6 +31,8 @@
 #include <dtkCore>
 #include <dtkComposer>
 
+#include <cmath>
+
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelinePrivate
@@ -56,9 +58,20 @@ public:
 
     QMap<gnomonAbstractDynamicForm *, gnomonAbstractDynamicForm *> form_clones;
 
+    QMap<QString, QPointF> node_layout;
+
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
     QMap<QString, QVariant> parameterVariantValues(QMap<QString, gnomonCoreParameter *> parameters);
+
+public:
+    QStringList sourceNodeNames(void);
+    QStringList sinkNodeNames(void);
+
+public:
+    QList<QList<double> > nodeDistances(QList<QPointF> node_positions);
+    QList<QList<QVector2D> > nodeVectors(QList<QPointF> node_positions);
+    void forceDrivenLayout(void);
 };
 
 
@@ -138,6 +151,206 @@ QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(QMap<QStri
     return parameter_values;
 }
 
+QStringList gnomonPipelinePrivate::sourceNodeNames(void)
+{
+    QMap<QString, bool> node_source;
+    for (const auto& node_name: this->pipeline_node_names) {
+        node_source[node_name] = true;
+    }
+    for (const auto& edge_target : this->pipeline_edges.keys()) {
+        node_source[edge_target.first] = false;
+    }
+    QStringList source_nodes;
+    for (const auto& node_name: this->pipeline_node_names) {
+        if (node_source[node_name]) {
+            source_nodes.append(node_name);
+        }
+    }
+    return source_nodes;
+}
+
+QStringList gnomonPipelinePrivate::sinkNodeNames(void)
+{
+    QMap<QString, bool> node_sink;
+    for (const auto& node_name: this->pipeline_node_names) {
+        node_sink[node_name] = true;
+    }
+    for (const auto& edge_source : this->pipeline_edges.values()) {
+        node_sink[edge_source.first] = false;
+    }
+    QStringList sink_nodes;
+    for (const auto& node_name: this->pipeline_node_names) {
+        if (node_sink[node_name]) {
+            sink_nodes.append(node_name);
+        }
+    }
+    return sink_nodes;
+}
+
+void gnomonPipelinePrivate::forceDrivenLayout(void)
+{
+    QList<QPointF> node_positions;
+    for (const auto& node_name : this->pipeline_node_names) {
+        node_positions.append(this->pipeline_nodes[node_name]->pos()/10);
+    }
+
+    QList<QPair<int, int> > node_edge_indices;
+    for (const auto& edge_target : this->pipeline_edges.keys())
+    {
+        int target_index = this->pipeline_node_names.indexOf(edge_target.first);
+        int source_index = this->pipeline_node_names.indexOf(this->pipeline_edges[edge_target].first);
+        node_edge_indices.append(QPair<int,int>(target_index,source_index));
+        node_edge_indices.append(QPair<int,int>(source_index,target_index));
+    }
+
+    int iterations = 1000;
+    double target_distance = 300;
+    double max_deformation = 1;
+    double y_damping = 0.5;
+
+    QMap<QString, double> force_weights;
+    force_weights["node_repulsion"] = 1;
+    force_weights["edge_attraction"] = 1;
+    force_weights["source_left_drift"] = 0.5;
+    force_weights["sink_right_drift"] = 0.5;
+
+    QList<QList<double> > node_distances;
+    QList<QList<QVector2D> > node_vectors;
+
+    for (int n=0; n<node_positions.size(); n++) {
+        node_positions[n] += QPointF(rand()/(RAND_MAX+1.), rand()/(RAND_MAX+1.));
+    }
+
+    for (int iteration=0; iteration<iterations; iteration++)
+    {
+        node_distances = this->nodeDistances(node_positions);
+        node_vectors = this->nodeVectors(node_positions);
+
+        QMap<QString, QList<QVector2D> > node_forces;
+        node_forces["node_repulsion"] = QList<QVector2D>();
+        for (int n1=0; n1<node_positions.size(); n1++) {
+            QVector2D node_force = QVector2D(0,0);
+            for (int n2=0; n2<node_positions.size(); n2++) {
+                node_force += pow(target_distance,2)*node_vectors[n1][n2]/(pow(node_distances[n1][n2],2)+1e-7);
+            }
+            node_forces["node_repulsion"].append(node_force);
+        }
+
+        node_forces["edge_attraction"] = QList<QVector2D>();
+        for (int n=0; n<node_positions.size(); n++) {
+            QVector2D node_force = QVector2D(0,0);
+            node_forces["edge_attraction"].append(node_force);
+        }
+        for (const auto& edge_indices : node_edge_indices)
+        {
+            int n1 = edge_indices.first;
+            int n2 = edge_indices.second;
+            node_forces["edge_attraction"][n1] += (target_distance-node_distances[n1][n2])*node_vectors[n1][n2]/target_distance;
+        }
+
+        node_forces["source_left_drift"] = QList<QVector2D>();
+        for (int n=0; n<node_positions.size(); n++) {
+            QVector2D node_force = QVector2D(0,0);
+            node_forces["source_left_drift"].append(node_force);
+        }
+        for (const auto& node_name : this->sourceNodeNames())
+        {
+            int n = this->pipeline_node_names.indexOf(node_name);
+            double left_x = -target_distance*pow(node_positions.size()-1,0.5);
+            double x_drift = left_x - node_positions[n].x();
+            if (x_drift < 0)
+            {
+                node_forces["source_left_drift"][n] = QVector2D(x_drift,0);
+            }
+        }
+        
+        node_forces["sink_right_drift"] = QList<QVector2D>();
+        for (int n=0; n<node_positions.size(); n++) {
+            QVector2D node_force = QVector2D(0,0);
+            node_forces["sink_right_drift"].append(node_force);
+        }
+        for (const auto& node_name : this->sinkNodeNames())
+        {
+            int n = this->pipeline_node_names.indexOf(node_name);
+            double right_x = target_distance*pow(node_positions.size()-1,0.5);
+            double x_drift = right_x - node_positions[n].x();
+            if (x_drift > 0)
+            {
+                node_forces["sink_right_drift"][n] = QVector2D(x_drift,0);
+            }
+        }
+
+        QList<QVector2D> node_force;
+        for (int n=0; n<node_positions.size(); n++) {
+            QVector2D force = QVector2D(0,0);
+            for (const auto& force_name : force_weights.keys())
+            {
+                force += force_weights[force_name]*node_forces[force_name][n];
+            }
+            force = force * QVector2D(1,1-y_damping);
+            if (force.length() > max_deformation) {
+                force *= max_deformation/force.length();
+            }
+            node_force.append(force);
+        }
+
+        for (int n=0; n<node_positions.size(); n++) {
+            node_positions[n] += node_force[n].toPointF();
+        }
+    }
+
+    for (int n=0; n<node_positions.size(); n++) {
+        gnomonPipelineNode *node = this->pipeline_nodes[this->pipeline_node_names[n]];
+        node->setPos(node_positions[n]);
+    }
+    for (int n=0; n<node_positions.size(); n++) {
+        gnomonPipelineNode *node = this->pipeline_nodes[this->pipeline_node_names[n]];
+        for (const auto& edge : node->inputEdges()) {
+            edge->adjust();
+        }
+    }
+
+}
+
+QList<QList<double> > gnomonPipelinePrivate::nodeDistances(QList<QPointF> node_positions)
+{
+    QList<QList<double> > node_distances;
+    for (int n1=0; n1<node_positions.size(); n1++) {
+        QList<double> n1_distances;
+        node_distances.append(n1_distances);
+        for (int n2=0; n2<node_positions.size(); n2++) {
+            if (n2>n1) {
+                node_distances[n1].append(QVector2D(node_positions[n1] - node_positions[n2]).length());
+            } else if (n2==n1) {
+                node_distances[n1].append(0);
+            } else {
+                node_distances[n1].append(node_distances[n2][n1]);
+            }
+        }
+    }
+    return node_distances;
+}
+
+QList<QList<QVector2D> > gnomonPipelinePrivate::nodeVectors(QList<QPointF> node_positions)
+{
+    QList<QList<QVector2D> > node_vectors;
+    for (int n1=0; n1<node_positions.size(); n1++) {
+        QList<QVector2D> n1_vectors;
+        node_vectors.append(n1_vectors);
+        for (int n2=0; n2<node_positions.size(); n2++) {
+            if (n2>n1) {
+                node_vectors[n1].append(QVector2D(node_positions[n1] - node_positions[n2]));
+                node_vectors[n1][n2] = node_vectors[n1][n2]/(node_vectors[n1][n2].length() + 1e-7);
+            } else if (n2==n1) {
+                node_vectors[n1].append(QVector2D(0,0));
+            } else {
+                node_vectors[n1].append(-node_vectors[n2][n1]);
+            }
+        }
+    }
+    return node_vectors;
+}
+
 // /////////////////////////////////////////////////////////////////
 // gnomonPipeline
 // /////////////////////////////////////////////////////////////////
@@ -198,6 +411,8 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
 
     d->linkNodeInputs(node);
 
+    d->forceDrivenLayout();
+
     emit nodeAdded(node);
 }
 
@@ -247,6 +462,8 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
         d->pipeline_node_names.append(node_name);
         d->pipeline_nodes[node_name] = node;
 
+        d->forceDrivenLayout();
+
         emit nodeAdded(node);
     } else if (d->constructor_nodes.contains(form)) {
         gnomonPipelineNodeConstructor *node = d->constructor_nodes[form];
@@ -260,6 +477,8 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
         }
         d->pipeline_node_names.append(node_name);
         d->pipeline_nodes[node_name] = node;
+
+        d->forceDrivenLayout();
 
         emit nodeAdded(node);
     } else if (d->algorithm_nodes.contains(form)) {
@@ -276,6 +495,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
         d->pipeline_nodes[node_name] = node;
 
         d->linkNodeInputs(node);
+        d->forceDrivenLayout();
 
         emit nodeAdded(node);
     }
@@ -354,17 +574,8 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
 
     out << "    sink_tasks = []\n";
 
-    QMap<QString, bool> node_sink;
-    for (const auto& node_name: d->pipeline_node_names) {
-        node_sink[node_name] = true;
-    }
-    for (const auto& edge_source : d->pipeline_edges.values()) {
-        node_sink[edge_source.first] = false;
-    }
-    for (const auto& node_name: d->pipeline_node_names) {
-        if (node_sink[node_name]) {
-            out << "    sink_tasks.append(tasks[\"" << node_name << "\"])\n";
-        }
+    for (const auto& node_name: d->sinkNodeNames()) {
+        out << "    sink_tasks.append(tasks[\"" << node_name << "\"])\n";
     }
 
     out << "\n";

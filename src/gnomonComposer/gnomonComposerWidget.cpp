@@ -204,9 +204,9 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
 
 void gnomonComposerWidget::addNode(gnomonPipelineNode *node)
 {
-    if (d->last_node) {
-        node->setPos(d->last_node->pos() + QPointF(300, 0));
-    }
+//    if (d->last_node) {
+//        node->setPos(d->last_node->pos() + QPointF(300, 0));
+//    }
     node->layout();
 
     d->composer->scene()->addItem(node);
