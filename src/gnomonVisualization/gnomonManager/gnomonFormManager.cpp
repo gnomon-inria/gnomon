@@ -137,6 +137,8 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
 
             if (gnomonImageWriterCommand *imageCommand = dynamic_cast<gnomonImageWriterCommand *>(formWriterCommand[item])) {
                 this->pipeline->addWriter(imageCommand);
+            } else if (gnomonCellImageWriterCommand *cellImageCommand = dynamic_cast<gnomonCellImageWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(cellImageCommand);
             }
         }
     });

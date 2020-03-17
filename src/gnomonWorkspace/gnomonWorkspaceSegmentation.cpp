@@ -16,7 +16,7 @@
 #include "gnomonWorkspaceTemplate_p.h"
 
 #include <gnomonCore>
-#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonSegmentationCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageFromImageCommand.h>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -36,7 +36,7 @@
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>
+class gnomonWorkspaceSegmentationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonCellImageFromImageCommand>
 {
 public:
      gnomonWorkspaceSegmentationPrivate(void);
@@ -73,7 +73,7 @@ public:
     dtkWidgetsMenuBarContainer *dashboard;
 };
 
-gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonSegmentationCommand>()
+gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonCellImageFromImageCommand>()
 {
 
 }
@@ -109,6 +109,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -228,6 +230,8 @@ void gnomonWorkspaceSegmentation::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);

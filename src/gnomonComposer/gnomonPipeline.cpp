@@ -204,7 +204,7 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
     }
 
     int iterations = 1000;
-    double target_distance = 300;
+    double target_distance = 200;
     double max_deformation = 1;
     double y_damping = 0.5;
 
