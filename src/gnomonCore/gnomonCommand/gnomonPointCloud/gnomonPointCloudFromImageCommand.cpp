@@ -25,6 +25,8 @@ class gnomonPointCloudFromImageCommandPrivate
 {
 public:
     gnomonImageSeries* input = nullptr;
+
+    gnomonPointCloudSeries* output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -33,8 +35,10 @@ public:
 
 gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
 {
-    loadPluginGroup("pointCloudFromImage");
+    this->factory_name = "pointCloudFromImage";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -50,6 +54,13 @@ void gnomonPointCloudFromImageCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d-> output = pointCloud;
+    }
 }
 
 void gnomonPointCloudFromImageCommand::undo(void)
@@ -57,10 +68,13 @@ void gnomonPointCloudFromImageCommand::undo(void)
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *input)
+void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *image)
 {
-    d->input = input;
-
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        d->input = nullptr;
+    } else {
+        d->input = image;
+    }
     Q_ASSERT(this->action);
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(d->input);
 }
@@ -77,22 +91,26 @@ QMap<QString, gnomonCoreParameter *> gnomonPointCloudFromImageCommand::parameter
 
 gnomonImageSeries *gnomonPointCloudFromImageCommand::input(void)
 {
-    gnomonImageSeries *image = ((gnomonAbstractPointCloudFromImage *) this->action)->input();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
-    } else {
-        return image;
-    }
+    return d->input;
 }
 
 gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
-        return nullptr;
-    } else {
-        return pointCloud;
-    }
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonPointCloudFromImageCommand::isEmpty(void)

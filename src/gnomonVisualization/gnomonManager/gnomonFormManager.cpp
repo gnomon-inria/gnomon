@@ -30,6 +30,7 @@
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
@@ -119,6 +120,10 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save cell complex"), path, tr("Meshes (*.ply)"));
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setCellComplex(cellcomplex);
             static_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
+        } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+            export_file_path = QFileDialog::getSaveFileName(this, tr("Save point cloud"), path, tr("Meshes (*.ply)"));
+            static_cast<gnomonPointCloudWriterCommand *>(this->formWriterCommand[item])->setPointCloud(pointCloud);
+            static_cast<gnomonPointCloudWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
         } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save data frame"), path, tr("Comma separated value (*.csv)"));
             static_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[item])->setDataFrame(dataFrame);
@@ -139,6 +144,8 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
                 this->pipeline->addWriter(imageCommand);
             } else if (gnomonCellImageWriterCommand *cellImageCommand = dynamic_cast<gnomonCellImageWriterCommand *>(formWriterCommand[item])) {
                 this->pipeline->addWriter(cellImageCommand);
+            } else if (gnomonPointCloudWriterCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(pointCloudCommand);
             }
         }
     });
@@ -217,6 +224,9 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         d->formWriterCommand[item] = new gnomonCellImageWriterCommand("gnomonCellImageWriterPropertySpatialImage");
         static_cast<gnomonCellImageWriterCommand *>(d->formWriterCommand[item])->setCellImage(cellimage);
+    } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+        d->formWriterCommand[item] = new gnomonPointCloudWriterCommand("pointCloudWriterPropertyTopomesh");
+        static_cast<gnomonPointCloudWriterCommand *>(d->formWriterCommand[item])->setPointCloud(pointCloud);
     } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
         d->formWriterCommand[item] = new gnomonCellComplexWriterCommand("gnomonCellComplexWriterPropertyTopomesh");
         static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
