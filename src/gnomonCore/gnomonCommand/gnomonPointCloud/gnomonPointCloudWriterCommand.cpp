@@ -22,7 +22,6 @@
 class gnomonPointCloudWriterCommandPrivate
 {
 public:
-    QString path;
     gnomonPointCloudSeries* pointCloud = nullptr;
 };
 
@@ -49,7 +48,7 @@ gnomonPointCloudWriterCommand::~gnomonPointCloudWriterCommand()
 void gnomonPointCloudWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudWriter *) this->action)->setPath(d->path);
+    ((gnomonAbstractPointCloudWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractPointCloudWriter *) this->action)->setPointCloud(d->pointCloud);
     this->action->run();
 }
@@ -61,7 +60,7 @@ void gnomonPointCloudWriterCommand::undo(void)
 
 void gnomonPointCloudWriterCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 void gnomonPointCloudWriterCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)

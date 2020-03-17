@@ -98,14 +98,14 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     }
     out<<"    \n";
     out<<"    def run(self):\n";
-    out<<"        for name, value in self.parameters.items():\n";
-    out<<"            self.algorithm.setParameter(name,value)\n";
     out<<"        inputs = self.algorithm_inputs()\n";
     for (const auto& input_name : this->input_ports.keys()) {
         QString setter_name = "set" + input_name;
         setter_name.replace(3, 1, setter_name[3].toUpper());
         out<<"        self.algorithm." << setter_name << "(inputs[\"" << input_name << "\"])\n";
     }
+    out<<"        for name, value in self.parameters.items():\n";
+    out<<"            self.algorithm.setParameter(name,value)\n";
     out<<"        self.algorithm.run()\n";
     out<<"\n";
 
