@@ -551,6 +551,7 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
 
     QTextStream out(&file);
     out << "import argparse\n";
+    out << "import os\n";
     out << "\n";
     out << "import luigi\n";
     out << "\n";
@@ -570,6 +571,9 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "    parser.add_argument(\"-c\", \"--config-filename\", ";
     out << "help=\"Path to the TOML file containing pipeline config\", ";
     out << "default=\"" << info.baseName() << ".toml\")\n";
+    out << "    parser.add_argument(\"-f\", \"--force\", ";
+    out << "help=\"Force pipeline to overwrite existing output files\", ";
+    out << "action=\"store_true\", default=True)\n";
     out << "    args = parser.parse_args()\n";
     out << "\n";
     out << "    config = luigi.configuration.LuigiTomlParser().read(config_paths=[args.config_filename])\n";
@@ -596,8 +600,15 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     for (const auto& node_name: d->sinkNodeNames()) {
         out << "    sink_tasks.append(tasks[\"" << node_name << "\"])\n";
     }
-
     out << "\n";
+
+    out << "    if args.force:\n";
+    out << "        for task in sink_tasks:\n";
+    out << "            for output_name in task.file_output_paths.keys():\n";
+    out << "                if os.path.exists(task.file_output_paths[output_name]):\n";
+    out << "                    os.remove(task.file_output_paths[output_name])\n";
+    out << "\n";
+
     out << "    luigi.build(sink_tasks, local_scheduler=True)\n";
     out << "\n";
     out << "\n";
