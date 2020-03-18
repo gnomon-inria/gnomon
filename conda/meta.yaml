@@ -79,6 +79,7 @@ requirements:
     - qt >=5.9.0
     - jupyter
     - jupyter_client=5.3.4
+    - luigi
     - pillow
     - numpy
     - matplotlib

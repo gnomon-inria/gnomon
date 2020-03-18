@@ -31,6 +31,7 @@ dependencies:
   - swig>=4.0.0
   - sip
   - setuptools
+  - luigi
   - scipy
   - sphinx
   - pip

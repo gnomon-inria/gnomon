@@ -557,7 +557,7 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "import gnomoncore\n";
     out << "from gnomon_utils import load_plugin_group\n";
     out << "\n";
-    out << "from gnomon_luigi.tasks import AlgorithmPluginTask\n";
+    out << "from gnomon_utils.gnomonLuigi import AlgorithmPluginTask\n";
     out << "\n";
     for (const auto& node_name : d->pipeline_node_names) {
         if (d->node_type_count.contains(node_name)) {
