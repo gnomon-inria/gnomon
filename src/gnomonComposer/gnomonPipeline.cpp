@@ -199,20 +199,19 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
     {
         int target_index = this->pipeline_node_names.indexOf(edge_target.first);
         int source_index = this->pipeline_node_names.indexOf(this->pipeline_edges[edge_target].first);
-        node_edge_indices.append(QPair<int,int>(target_index,source_index));
         node_edge_indices.append(QPair<int,int>(source_index,target_index));
     }
 
     int iterations = 1000;
     double target_distance = 200;
-    double max_deformation = 1;
-    double y_damping = 0.5;
+    double max_deformation = 5;
 
     QMap<QString, double> force_weights;
-    force_weights["node_repulsion"] = 1;
-    force_weights["edge_attraction"] = 1;
+    force_weights["node_repulsion"] = 4.;
+    force_weights["edge_attraction"] = 2.;
     force_weights["source_left_drift"] = 0.5;
     force_weights["sink_right_drift"] = 0.5;
+    force_weights["edge_horizontality"] = 4.;
 
     QList<QList<double> > node_distances;
     QList<QList<QVector2D> > node_vectors;
@@ -246,6 +245,7 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
             int n1 = edge_indices.first;
             int n2 = edge_indices.second;
             node_forces["edge_attraction"][n1] += (target_distance-node_distances[n1][n2])*node_vectors[n1][n2]/target_distance;
+            node_forces["edge_attraction"][n2] += (target_distance-node_distances[n2][n1])*node_vectors[n2][n1]/target_distance;
         }
 
         node_forces["source_left_drift"] = QList<QVector2D>();
@@ -260,7 +260,7 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
             double x_drift = left_x - node_positions[n].x();
             if (x_drift < 0)
             {
-                node_forces["source_left_drift"][n] = QVector2D(x_drift,0);
+                node_forces["source_left_drift"][n] = QVector2D((x_drift > 0) - (x_drift < 0),0);
             }
         }
         
@@ -276,8 +276,22 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
             double x_drift = right_x - node_positions[n].x();
             if (x_drift > 0)
             {
-                node_forces["sink_right_drift"][n] = QVector2D(x_drift,0);
+                node_forces["sink_right_drift"][n] = QVector2D((x_drift > 0) - (x_drift < 0),0);
             }
+        }
+
+        node_forces["edge_horizontality"] = QList<QVector2D>();
+        for (int n=0; n<node_positions.size(); n++) {
+            QVector2D node_force = QVector2D(0,0);
+            node_forces["edge_horizontality"].append(node_force);
+        }
+        for (const auto& edge_indices : node_edge_indices)
+        {
+            int n1 = edge_indices.first;
+            int n2 = edge_indices.second;
+            double edge_sinus = node_vectors[n1][n2].y()/node_vectors[n1][n2].length();
+            node_forces["edge_horizontality"][n1] += QVector2D(-abs(edge_sinus),-edge_sinus);
+            node_forces["edge_horizontality"][n2] += QVector2D(abs(edge_sinus),edge_sinus);
         }
 
         QList<QVector2D> node_force;
@@ -287,7 +301,6 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
             {
                 force += force_weights[force_name]*node_forces[force_name][n];
             }
-            force = force * QVector2D(1,1-y_damping);
             if (force.length() > max_deformation) {
                 force *= max_deformation/force.length();
             }
