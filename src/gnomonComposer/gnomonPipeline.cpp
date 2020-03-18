@@ -209,8 +209,8 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
     QMap<QString, double> force_weights;
     force_weights["node_repulsion"] = 4.;
     force_weights["edge_attraction"] = 2.;
-    force_weights["source_left_drift"] = 0.5;
-    force_weights["sink_right_drift"] = 0.5;
+    force_weights["source_left_drift"] = 1.;
+    force_weights["sink_right_drift"] = 1.;
     force_weights["edge_horizontality"] = 4.;
 
     QList<QList<double> > node_distances;
@@ -312,9 +312,15 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         }
     }
 
+    QPointF center = QPointF(0,0);
+    for (int n=0; n<node_positions.size(); n++) {
+        center += node_positions[n];
+    }
+    center /= node_positions.size();
+
     for (int n=0; n<node_positions.size(); n++) {
         gnomonPipelineNode *node = this->pipeline_nodes[this->pipeline_node_names[n]];
-        node->setPos(node_positions[n]);
+        node->setPos(node_positions[n]-center);
     }
     for (int n=0; n<node_positions.size(); n++) {
         gnomonPipelineNode *node = this->pipeline_nodes[this->pipeline_node_names[n]];
@@ -602,6 +608,11 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     file.close();
 
     this->exportToToml(config_path);
+}
+
+void gnomonPipeline::updateLayout(void)
+{
+    d->forceDrivenLayout();
 }
 
 

@@ -100,6 +100,7 @@ QSize gnomonComposerWidget::sizeHint(void) const
 void gnomonComposerWidget::resizeEvent(QResizeEvent *event)
 {
     d->save_button->move(event->size().width() -40, 30);
+    d->layout_button->move(event->size().width() -80, 30);
 
     QWidget::resizeEvent(event);
 }
@@ -131,6 +132,11 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     d->save_button = new gnomonOverlayButton(fa::save, "", d->composer);
     connect(d->save_button, SIGNAL(iconClicked()), this, SLOT(pipelineSave()));
+
+    d->layout_button = new gnomonOverlayButton(fa::random, "", d->composer);
+    connect(d->layout_button, &gnomonOverlayButton::iconClicked, [=] () {
+        gnomonPipeline::instance()->updateLayout();
+    });
 
     this->setLayout(main_layout);
 

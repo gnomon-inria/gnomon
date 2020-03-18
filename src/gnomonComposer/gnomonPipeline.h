@@ -51,6 +51,9 @@ public slots:
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
 
+public slots:
+    void updateLayout(void);
+
 protected:
      gnomonPipeline(void);
     ~gnomonPipeline(void);

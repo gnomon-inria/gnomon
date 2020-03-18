@@ -59,6 +59,7 @@ public:
 
 public:
     gnomonOverlayButton *save_button = nullptr;
+    gnomonOverlayButton *layout_button = nullptr;
 
 public:
     gnomonComposerWidget *q;
