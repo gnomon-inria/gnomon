@@ -23,7 +23,7 @@
 class gnomonTreeReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonTreeSeries *tree = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -32,8 +32,10 @@ public:
 
 gnomonTreeReaderCommand::gnomonTreeReaderCommand(const QString& key) : d(new gnomonTreeReaderCommandPrivate)
 {
-    loadPluginGroup("treeReader");
+    this->factory_name = "treeReader";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::treeReader::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -47,8 +49,14 @@ gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
 void gnomonTreeReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractTreeReader *) this->action)->setPath(d->path);
+    ((gnomonAbstractTreeReader *) this->action)->setPath(this->m_path);
     this->action->run();
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
+    if ((!tree)||(tree->times().size()==0)) {
+        d->tree = nullptr;
+    } else {
+        d->tree = tree;
+    }
 }
 
 void gnomonTreeReaderCommand::undo(void)
@@ -58,17 +66,19 @@ void gnomonTreeReaderCommand::undo(void)
 
 void gnomonTreeReaderCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 gnomonTreeSeries *gnomonTreeReaderCommand::tree(void)
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
-    } else {
-        return tree;
-    }
+    return d->tree;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeReaderCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["tree"] = this->tree();
+    return outputs;
 }
 
 bool gnomonTreeReaderCommand::isEmpty(void)

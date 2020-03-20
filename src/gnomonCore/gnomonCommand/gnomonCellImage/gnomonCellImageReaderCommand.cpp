@@ -23,7 +23,7 @@
 class gnomonCellImageReaderCommandPrivate
 {
 public:
-    gnomonCellImageSeries *cellImage;
+    gnomonCellImageSeries *cellImage = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -32,8 +32,10 @@ public:
 
 gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(const QString& key) : d(new gnomonCellImageReaderCommandPrivate)
 {
-    loadPluginGroup("cellImageReader");
+    this->factory_name = "cellImageReader";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::cellImageReader::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -70,6 +72,13 @@ void gnomonCellImageReaderCommand::setPath(const QString& path)
 gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage(void)
 {
     return d->cellImage;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageReaderCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["cellImage"] = this->cellImage();
+    return outputs;
 }
 
 bool gnomonCellImageReaderCommand::isEmpty(void)

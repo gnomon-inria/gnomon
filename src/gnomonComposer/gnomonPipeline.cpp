@@ -573,7 +573,7 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "default=\"" << info.baseName() << ".toml\")\n";
     out << "    parser.add_argument(\"-f\", \"--force\", ";
     out << "help=\"Force pipeline to overwrite existing output files\", ";
-    out << "action=\"store_true\", default=True)\n";
+    out << "action=\"store_true\", default=False)\n";
     out << "    args = parser.parse_args()\n";
     out << "\n";
     out << "    config = luigi.configuration.LuigiTomlParser().read(config_paths=[args.config_filename])\n";

@@ -1,8 +1,9 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractReaderCommand.h"
 
 class gnomonPointCloud;
 
-class GNOMONCORE_EXPORT gnomonPointCloudReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonPointCloudReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
      gnomonPointCloudReaderCommand(void) = delete;
@@ -17,6 +18,7 @@ public:
     void setPath(const QString& path);
 
     gnomonPointCloudSeries *pointCloud(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
 public:
     static bool isEmpty(void);

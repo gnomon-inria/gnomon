@@ -16,6 +16,7 @@ public:
     void setPath(const QString& path);
 
     gnomonCellImageSeries *cellImage(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
 public:
     static bool isEmpty(void);

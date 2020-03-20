@@ -17,13 +17,15 @@
 class gnomonCellComplexReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonCellComplexSeries *cellComplex = nullptr;
 };
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(const QString& key) : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    loadPluginGroup("cellComplexReader");
+    this->factory_name = "cellComplexReader";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::cellComplexReader::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -38,9 +40,14 @@ void gnomonCellComplexReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-    ((gnomonAbstractCellComplexReader *) this->action)->setPath(d->path);
-
+    ((gnomonAbstractCellComplexReader *) this->action)->setPath(this->m_path);
     this->action->run();
+    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
+    if ((!cellComplex)||(cellComplex->times().size()==0)) {
+        d->cellComplex = nullptr;
+    } else {
+        d->cellComplex = cellComplex;
+    }
 }
 
 void gnomonCellComplexReaderCommand::undo(void)
@@ -50,17 +57,19 @@ void gnomonCellComplexReaderCommand::undo(void)
 
 void gnomonCellComplexReaderCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 gnomonCellComplexSeries *gnomonCellComplexReaderCommand::cellComplex(void)
 {
-    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
-    if ((!cellComplex)||(cellComplex->times().size()==0)) {
-        return nullptr;
-    } else {
-        return cellComplex;
-    }
+    return d->cellComplex;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexReaderCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["cellComplex"] = this->cellComplex();
+    return outputs;
 }
 
 bool gnomonCellComplexReaderCommand::isEmpty(void)
