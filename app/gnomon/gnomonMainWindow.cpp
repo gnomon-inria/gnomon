@@ -79,7 +79,7 @@ template <typename T> dtkWidgetsWorkspace *creator(void)
 //
 // ///////////////////////////////////////////////////////////////////
 
-gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(parent)
+gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *parent) : dtkWidgetsMainWindow(parent)
 {
     d = new gnomonMainWindowPrivate;
     d->q = this;
@@ -200,7 +200,12 @@ gnomonMainWindow::gnomonMainWindow(QWidget *parent) : dtkWidgetsMainWindow(paren
         d->workspace_bar->addWorkspaceInMenu("Branching Forms", branching_package_desc, "PlantScan3D", "Apply a set of algorithms to reconstruct branching structures based on a 3D point cloud", "PlantScan3D", gnomonWorkspacePlantScan3D::color);
     }
 
-    d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
+    if (dtk::widgets::workspace::pluginFactory().keys().contains(workspace_name)) {
+        d->workspace_bar->createWorkspace(workspace_name, workspace_name, false);
+    } else {
+        qWarning()<<Q_FUNC_INFO<<"Cannot open workspace :"<<workspace_name<<" is not a valid workspace name";
+        d->workspace_bar->createWorkspace("Form Browser", "Form Browser", false);
+    }
 
     d->manager = gnomonFormManager::instance();
 
