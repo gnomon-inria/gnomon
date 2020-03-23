@@ -207,14 +207,17 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
     double max_deformation = 5;
 
     QMap<QString, double> force_weights;
-    force_weights["node_repulsion"] = 4.;
-    force_weights["edge_attraction"] = 2.;
-    force_weights["source_left_drift"] = 1.;
-    force_weights["sink_right_drift"] = 1.;
-    force_weights["edge_horizontality"] = 4.;
+    force_weights["node_repulsion"] = 1.;
+    force_weights["edge_attraction"] = 1.;
+    force_weights["source_left_drift"] = 0.5;
+    force_weights["sink_right_drift"] = 0.5;
+    force_weights["edge_horizontality"] = 1.;
+    force_weights["vertical_centering"] = 1.;
 
     QList<QList<double> > node_distances;
     QList<QList<QVector2D> > node_vectors;
+
+    double target_radius = target_distance*pow(node_positions.size()-1,0.5)+1e-7;
 
     for (int n=0; n<node_positions.size(); n++) {
         node_positions[n] += QPointF(rand()/(RAND_MAX+1.), rand()/(RAND_MAX+1.));
@@ -256,11 +259,11 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         for (const auto& node_name : this->sourceNodeNames())
         {
             int n = this->pipeline_node_names.indexOf(node_name);
-            double left_x = -target_distance*pow(node_positions.size()-1,0.5);
+            double left_x = -target_radius;
             double x_drift = left_x - node_positions[n].x();
             if (x_drift < 0)
             {
-                node_forces["source_left_drift"][n] = QVector2D((x_drift > 0) - (x_drift < 0),0);
+                node_forces["source_left_drift"][n] = QVector2D(x_drift*abs(x_drift)/pow(target_distance,2),0);
             }
         }
         
@@ -272,12 +275,19 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         for (const auto& node_name : this->sinkNodeNames())
         {
             int n = this->pipeline_node_names.indexOf(node_name);
-            double right_x = target_distance*pow(node_positions.size()-1,0.5);
+            double right_x = target_radius;
             double x_drift = right_x - node_positions[n].x();
             if (x_drift > 0)
             {
-                node_forces["sink_right_drift"][n] = QVector2D((x_drift > 0) - (x_drift < 0),0);
+                node_forces["sink_right_drift"][n] = QVector2D(x_drift*abs(x_drift)/pow(target_distance,2),0);
             }
+        }
+
+        node_forces["vertical_centering"] = QList<QVector2D>();
+        for (int n=0; n<node_positions.size(); n++) {
+            double node_y = node_positions[n].y();
+            QVector2D node_force = QVector2D(0,-node_y*abs(node_y)/pow(target_radius,2));
+            node_forces["vertical_centering"].append(node_force);
         }
 
         node_forces["edge_horizontality"] = QList<QVector2D>();
