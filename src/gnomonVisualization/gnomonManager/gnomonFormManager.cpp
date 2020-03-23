@@ -131,7 +131,7 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
         } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
             export_file_path = QFileDialog::getSaveFileName(this, tr("Save tree"), path, tr("Comma separated value (*.xml)"));
             static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setPath(export_file_path);
-            static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setInput(tree);
+            static_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[item])->setTree(tree);
         }
 
         if(!export_file_path.isEmpty()) {
@@ -142,10 +142,18 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
 
             if (gnomonImageWriterCommand *imageCommand = dynamic_cast<gnomonImageWriterCommand *>(formWriterCommand[item])) {
                 this->pipeline->addWriter(imageCommand);
+            } else if (gnomonMeshWriterCommand *meshCommand = dynamic_cast<gnomonMeshWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(meshCommand);
             } else if (gnomonCellImageWriterCommand *cellImageCommand = dynamic_cast<gnomonCellImageWriterCommand *>(formWriterCommand[item])) {
                 this->pipeline->addWriter(cellImageCommand);
+            } else if (gnomonCellComplexWriterCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(cellComplexCommand);
             } else if (gnomonPointCloudWriterCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudWriterCommand *>(formWriterCommand[item])) {
                 this->pipeline->addWriter(pointCloudCommand);
+            } else if (gnomonDataFrameWriterCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(dataFrameCommand);
+            } else if (gnomonTreeWriterCommand *treeCommand = dynamic_cast<gnomonTreeWriterCommand *>(formWriterCommand[item])) {
+                this->pipeline->addWriter(treeCommand);
             }
         }
     });
@@ -242,8 +250,10 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     gnomonFormManagerItem *item = d->create(form, color, image);
     item->id = d->item_counter++;
 
-    d->forms.insert(item, form);
+    d->forms.insert(item, form->clone());
     d->formMatplotlibVisualizations.insert(item, visualization);
+
+    d->pipeline->addClonedForm(form,d->forms[item]);
 
     QString writerPlugin;
 
@@ -251,8 +261,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
         d->formWriterCommand[item] = new gnomonDataFrameWriterCommand("gnomonDataFrameWriterPandas");
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
     } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
-      d->formWriterCommand[item] = new gnomonTreeWriterCommand("gnomonTreeWriterTreex");
-      static_cast<gnomonTreeWriterCommand *>(d->formWriterCommand[item])->setInput(tree);
+        d->formWriterCommand[item] = new gnomonTreeWriterCommand("gnomonTreeWriterTreex");
+        static_cast<gnomonTreeWriterCommand *>(d->formWriterCommand[item])->setTree(tree);
     }
 
     d->contents->layout()->addWidget(item);

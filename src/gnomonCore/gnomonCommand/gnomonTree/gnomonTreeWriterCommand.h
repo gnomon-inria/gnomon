@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractWriterCommand.h"
 
-class GNOMONCORE_EXPORT gnomonTreeWriterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonTreeWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
      gnomonTreeWriterCommand(void) = delete;
@@ -13,7 +14,9 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setInput(gnomonTreeSeries *tree_series);
+    void setTree(gnomonTreeSeries *image_series);
+
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
 public:
     static bool isEmpty(void);

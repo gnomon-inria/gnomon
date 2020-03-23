@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractWriterCommand.h"
 
-class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
      gnomonMeshWriterCommand(void) = delete;
@@ -13,7 +14,9 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setMesh(gnomonMeshSeries *mesh);
+    void setMesh(gnomonMeshSeries *image_series);
+
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
 public:
     static bool isEmpty(void);
