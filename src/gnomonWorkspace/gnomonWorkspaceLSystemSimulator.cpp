@@ -144,6 +144,10 @@ public:
     gnomonViewMatplotlib *axiom = nullptr;
     gnomonViewMatplotlib *target = nullptr;
 
+public:
+    QTextEdit *axiom_editor = nullptr;
+    QStackedWidget *axiom_stack = nullptr;
+    QWidget *axiom_widget = nullptr;
 
 public:
     QPushButton *run_button;
@@ -180,7 +184,50 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     // d->spinner = new gnomonSpinner(this);
     // d->spinner->start();
 
+/////////////////////////////////////////////////////////////////////////////
+
     d->axiom = new gnomonViewMatplotlib(this);
+
+    d->axiom_editor = new QTextEdit(this);
+
+    d->axiom_stack = new QStackedWidget(this);
+    d->axiom_stack->addWidget(d->axiom);
+    d->axiom_stack->addWidget(d->axiom_editor);
+    d->axiom_stack->setCurrentWidget(d->axiom);
+
+    QToolButton *axiom_figure_button = new QToolButton(this);
+    axiom_figure_button->setIcon(dtkFontAwesome::instance()->icon(fa::square));
+    axiom_figure_button->setToolTip("2D Form Viewer");
+    QToolButton *axiom_editor_button = new QToolButton(this);
+    axiom_editor_button->setIcon(dtkFontAwesome::instance()->icon(fa::edit));
+    axiom_editor_button->setToolTip("Text Editor");
+
+    QHBoxLayout *axiom_button_layout = new QHBoxLayout;
+    axiom_button_layout->addWidget(axiom_figure_button);
+    axiom_button_layout->addWidget(axiom_editor_button);
+    axiom_button_layout->addStretch();
+
+    QVBoxLayout *axiom_layout = new QVBoxLayout;
+    axiom_layout->setContentsMargins(0, 0, 0, 0);
+    axiom_layout->setSpacing(0);
+    axiom_layout->addLayout(axiom_button_layout);
+    axiom_layout->addWidget(d->axiom_stack);
+
+    d->axiom_widget = new QWidget(this);
+    d->axiom_widget->setLayout(axiom_layout);
+
+    connect(axiom_figure_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->axiom_stack->setCurrentWidget(d->axiom);
+    });
+
+    connect(axiom_editor_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->axiom_stack->setCurrentWidget(d->axiom_editor);
+    });
+
+/////////////////////////////////////////////////////////////////////////////
+
     d->target = new gnomonViewMatplotlib(this);
 
     d->lhs = new QTabWidget(this);
@@ -694,7 +741,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 //        d->in_axiom->setLayout(layout);
 
 //        d->lhs->addTab(d->in_axiom, "Axiom");
-        d->lhs->addTab(d->axiom, "Axiom");
+        d->lhs->addTab(d->axiom_widget, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
        
