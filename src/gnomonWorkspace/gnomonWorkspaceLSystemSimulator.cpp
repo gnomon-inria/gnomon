@@ -226,6 +226,15 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
         d->axiom_stack->setCurrentWidget(d->axiom_editor);
     });
 
+    connect(d->axiom, &gnomonViewMatplotlib::formAdded, [=] (const QString& form_name)
+    {
+        gnomonAbstractDynamicForm *form = d->axiom->form(form_name);
+
+        if (gnomonLStringSeries *lstring = dynamic_cast<gnomonLStringSeries *>(form)) {
+            qDebug()<<lstring->current()->toString();
+        }
+    });
+
 /////////////////////////////////////////////////////////////////////////////
 
     d->target = new gnomonViewMatplotlib(this);
