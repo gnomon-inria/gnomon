@@ -1,8 +1,11 @@
+
 DIR=$(dirname $0)
 
+nargs=$#
 args=
-for arg in "$@";
+while [ $nargs -gt 0 ]
 do
-  args="$args '$arg'"
+  args=""$$nargs" $args"
+  nargs=`expr $nargs - 1`
 done
 eval exec $DIR/gnomon.app/Contents/MacOS/gnomon $args
