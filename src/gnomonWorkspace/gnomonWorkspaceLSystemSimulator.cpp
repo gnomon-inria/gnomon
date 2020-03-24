@@ -218,6 +218,19 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     connect(axiom_figure_button, &QToolButton::clicked, [=] (void) -> void
     {
+        qDebug()<<d->axiom_editor->toPlainText();
+
+        gnomonLString *lstring = new gnomonLString();
+
+        gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+        lstring_series->insert(0, lstring);
+
+        gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+        lstring_data->fromString(d->axiom_editor->toPlainText());
+        lstring->setData(lstring_data);
+
+        d->axiom->setForm("gnomonLString",lstring_series);
+
         d->axiom_stack->setCurrentWidget(d->axiom);
     });
 
@@ -231,7 +244,10 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
         gnomonAbstractDynamicForm *form = d->axiom->form(form_name);
 
         if (gnomonLStringSeries *lstring = dynamic_cast<gnomonLStringSeries *>(form)) {
-            qDebug()<<lstring->current()->toString();
+            QString lstring_value = lstring->current()->asLString()->toString();
+            d->axiom_editor->blockSignals(true);
+            d->axiom_editor->setText(lstring_value);
+            d->axiom_editor->blockSignals(false);
         }
     });
 

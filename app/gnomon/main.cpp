@@ -203,6 +203,9 @@ int main(int argc, char **argv)
 
     dtkScriptInterpreterPython::instance()->init("gnomon-core");
 
+    dtkScriptInterpreterPython::instance()->interpret("import matplotlib",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("matplotlib.use('qt5agg')",&stat);
+
     splash->showMessage("Loading reader plugins",Qt::AlignRight|Qt::AlignBottom);
     application->processEvents();
 
