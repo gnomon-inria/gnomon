@@ -237,7 +237,32 @@ public:
     dtkWidgetsMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
     dtkWidgetsMenuBar *out_view_bar = nullptr;
+
+public:
+    void exportAxiom(void);
 };
+
+void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
+{
+    QString edited_axiom = this->axiom_editor->toPlainText();
+
+    if (edited_axiom != "") {
+        gnomonLString *lstring = new gnomonLString();
+
+        gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+        lstring_series->insert(0, lstring);
+
+        gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+        lstring_data->fromString(edited_axiom);
+        lstring->setData(lstring_data);
+
+        this->axiom->setForm("gnomonLString",lstring_series);
+    } else {
+        if (this->axiom->form("gnomonLString")) {
+            this->axiom->clearForm("gnomonLString");
+        }
+    }
+}
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -270,10 +295,14 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     axiom_editor_button->setIcon(dtkFontAwesome::instance()->icon(fa::edit));
     axiom_editor_button->setToolTip("Text Editor");
 
+    QPushButton *axiom_save_button = new QPushButton("  Save  ");
+    axiom_save_button->setVisible(false);
+
     QHBoxLayout *axiom_button_layout = new QHBoxLayout;
     axiom_button_layout->addWidget(axiom_figure_button);
     axiom_button_layout->addWidget(axiom_editor_button);
     axiom_button_layout->addStretch();
+    axiom_button_layout->addWidget(axiom_save_button);
 
     QVBoxLayout *axiom_layout = new QVBoxLayout;
     axiom_layout->setContentsMargins(0, 0, 0, 0);
@@ -284,32 +313,22 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->axiom_widget = new QWidget(this);
     d->axiom_widget->setLayout(axiom_layout);
 
+    connect(axiom_save_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->exportAxiom();
+    });
+
     connect(axiom_figure_button, &QToolButton::clicked, [=] (void) -> void
     {
-        QString edited_axiom = d->axiom_editor->toPlainText();
-        qDebug()<<edited_axiom;
-
-        if (edited_axiom != "") {
-            gnomonLString *lstring = new gnomonLString();
-
-            gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
-            lstring_series->insert(0, lstring);
-
-            gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
-            lstring_data->fromString(edited_axiom);
-            lstring->setData(lstring_data);
-
-            d->axiom->setForm("gnomonLString",lstring_series);
-        } else {
-            d->axiom->clearForm("gnomonLString");
-        }
-
+        d->exportAxiom();
         d->axiom_stack->setCurrentWidget(d->axiom);
+        axiom_save_button->setVisible(false);
     });
 
     connect(axiom_editor_button, &QToolButton::clicked, [=] (void) -> void
     {
         d->axiom_stack->setCurrentWidget(d->axiom_editor);
+        axiom_save_button->setVisible(true);
     });
 
     connect(d->axiom, &gnomonViewMatplotlib::formAdded, [=] (const QString& form_name)
