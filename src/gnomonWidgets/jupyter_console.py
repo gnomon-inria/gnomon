@@ -38,6 +38,7 @@ else:
     kernel_client.start_channels()
 
     console = RichJupyterWidget()
+    console.enable_calltips = False
     console._display_banner = False
     console.style_sheet  = ""
     console.style_sheet += ".error { color: orange; }"
