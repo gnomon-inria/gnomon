@@ -282,6 +282,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     font.setPointSize(18);
     font.setFamily("Courier New");
     d->axiom_editor->setFont(font);
+    d->axiom_editor->setAcceptDrops(false);
 
     d->highlighter = new gnomonHighlighterLString(d->axiom_editor->document());
 
