@@ -123,6 +123,71 @@ dtkWidgetsMenu *build(int icon, QMenu *menu)
     return w_menu;
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+//  gnomonHighlighterLString
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonHighlighterLString : public QSyntaxHighlighter
+{
+
+public:
+     gnomonHighlighterLString(QTextDocument *parent = nullptr);
+    ~gnomonHighlighterLString(void);
+
+public:
+    void setModuleNames(const QStringList& module_names);
+
+protected:
+    void highlightBlock(const QString& text) override;
+
+protected:
+    QStringList module_names;
+};
+
+gnomonHighlighterLString::gnomonHighlighterLString(QTextDocument *parent) : QSyntaxHighlighter(parent)
+{
+}
+
+gnomonHighlighterLString::~gnomonHighlighterLString(void)
+{
+}
+
+void gnomonHighlighterLString::setModuleNames(const QStringList& module_names)
+{
+    this->module_names.clear();
+    for (const auto& module_name : module_names) {
+        this->module_names.append(module_name);
+    }
+}
+
+void gnomonHighlighterLString::highlightBlock(const QString& text)
+{
+    qDebug()<<Q_FUNC_INFO<<text;
+    qDebug()<<Q_FUNC_INFO<<this->module_names;
+
+    QStringList theme_colors;
+    theme_colors << "@red"  << "@green" << "@violet" <<  "@yellow"  << "@darkblue" << "@magenta";
+    theme_colors << "@cyan" << "@teal"<< "@orange" << "@darkcyan" << "@blue";
+
+    int i_module = 0;
+    for (const auto& module_name : this->module_names) {
+        QTextCharFormat module_format;
+        module_format.setFontPointSize(24);
+        module_format.setFontWeight(QFont::Bold);
+        module_format.setForeground(dtkThemesEngine::instance()->color(theme_colors[i_module % theme_colors.size()]));
+        i_module ++;
+
+        QRegularExpression module_pattern(module_name);
+        QRegularExpressionMatchIterator matchIterator = module_pattern.globalMatch(text);
+        qDebug()<<Q_FUNC_INFO<<module_name<<":"<<matchIterator.hasNext();
+        while (matchIterator.hasNext())
+        {
+            QRegularExpressionMatch match = matchIterator.next();
+            qDebug()<<Q_FUNC_INFO<<module_name<<":"<<match;
+            setFormat(match.capturedStart(),match.capturedLength(),module_format);
+        }
+    }
+}
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -146,6 +211,8 @@ public:
 
 public:
     QTextEdit *axiom_editor = nullptr;
+    gnomonHighlighterLString *highlighter = nullptr;
+
     QStackedWidget *axiom_stack = nullptr;
     QWidget *axiom_widget = nullptr;
 
@@ -189,6 +256,12 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->axiom = new gnomonViewMatplotlib(this);
 
     d->axiom_editor = new QTextEdit(this);
+    QFont font = d->axiom_editor->font();
+    font.setPointSize(18);
+    font.setFamily("Courier New");
+    d->axiom_editor->setFont(font);
+
+    d->highlighter = new gnomonHighlighterLString(d->axiom_editor->document());
 
     d->axiom_stack = new QStackedWidget(this);
     d->axiom_stack->addWidget(d->axiom);
@@ -243,11 +316,24 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     {
         gnomonAbstractDynamicForm *form = d->axiom->form(form_name);
 
-        if (gnomonLStringSeries *lstring = dynamic_cast<gnomonLStringSeries *>(form)) {
-            QString lstring_value = lstring->current()->asLString()->toString();
+        if (gnomonLStringSeries *lstring_series = dynamic_cast<gnomonLStringSeries *>(form)) {
+            gnomonLString *lstring = lstring_series->current()->asLString();
+            QString lstring_value = lstring->toString();
+
+            QStringList module_names;
+            for (const auto & module_id :  lstring->moduleIds()) {
+                QString module_name = lstring->moduleName(module_id);
+                if (! module_names.contains(module_name)) {
+                    module_names.append(module_name);
+                }
+            }
+            qDebug()<<module_names;
+            d->highlighter->setModuleNames(module_names);
+
             d->axiom_editor->blockSignals(true);
             d->axiom_editor->setText(lstring_value);
             d->axiom_editor->blockSignals(false);
+
         }
     });
 
