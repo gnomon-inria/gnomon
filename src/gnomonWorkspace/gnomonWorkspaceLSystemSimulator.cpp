@@ -162,9 +162,6 @@ void gnomonHighlighterLString::setModuleNames(const QStringList& module_names)
 
 void gnomonHighlighterLString::highlightBlock(const QString& text)
 {
-    qDebug()<<Q_FUNC_INFO<<text;
-    qDebug()<<Q_FUNC_INFO<<this->module_names;
-
     QStringList theme_colors;
     theme_colors << "@red"  << "@green" << "@violet" <<  "@yellow"  << "@darkblue" << "@magenta";
     theme_colors << "@cyan" << "@teal"<< "@orange" << "@darkcyan" << "@blue";
@@ -179,11 +176,9 @@ void gnomonHighlighterLString::highlightBlock(const QString& text)
 
         QRegularExpression module_pattern(module_name);
         QRegularExpressionMatchIterator matchIterator = module_pattern.globalMatch(text);
-        qDebug()<<Q_FUNC_INFO<<module_name<<":"<<matchIterator.hasNext();
         while (matchIterator.hasNext())
         {
             QRegularExpressionMatch match = matchIterator.next();
-            qDebug()<<Q_FUNC_INFO<<module_name<<":"<<match;
             setFormat(match.capturedStart(),match.capturedLength(),module_format);
         }
     }
@@ -291,18 +286,23 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     connect(axiom_figure_button, &QToolButton::clicked, [=] (void) -> void
     {
-        qDebug()<<d->axiom_editor->toPlainText();
+        QString edited_axiom = d->axiom_editor->toPlainText();
+        qDebug()<<edited_axiom;
 
-        gnomonLString *lstring = new gnomonLString();
+        if (edited_axiom != "") {
+            gnomonLString *lstring = new gnomonLString();
 
-        gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
-        lstring_series->insert(0, lstring);
+            gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+            lstring_series->insert(0, lstring);
 
-        gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
-        lstring_data->fromString(d->axiom_editor->toPlainText());
-        lstring->setData(lstring_data);
+            gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+            lstring_data->fromString(edited_axiom);
+            lstring->setData(lstring_data);
 
-        d->axiom->setForm("gnomonLString",lstring_series);
+            d->axiom->setForm("gnomonLString",lstring_series);
+        } else {
+            d->axiom->clearForm("gnomonLString");
+        }
 
         d->axiom_stack->setCurrentWidget(d->axiom);
     });
@@ -333,7 +333,18 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
             d->axiom_editor->blockSignals(true);
             d->axiom_editor->setText(lstring_value);
             d->axiom_editor->blockSignals(false);
+        }
+    });
 
+    connect(d->axiom, &gnomonViewMatplotlib::formRemoved, [=] (const QString& form_name)
+    {
+        if (form_name == "gnomonLString") {
+            QStringList module_names;
+            d->highlighter->setModuleNames(module_names);
+
+            d->axiom_editor->blockSignals(true);
+            d->axiom_editor->setText("");
+            d->axiom_editor->blockSignals(false);
         }
     });
 
