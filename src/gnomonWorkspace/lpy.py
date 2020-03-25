@@ -177,6 +177,7 @@ workspace.frame.setObjectName("LPYCodeEditor")
 set_theme_to_code_editor()
 
 workspace.shellwidget.setObjectName("LPYShell")
+workspace.shellwidget.enable_calltips = False
 workspace.shellwidget.setStyleSheet(
     ""
     "background-color: " + dtkThemesEngine.instance().value("@base1") + ";"
