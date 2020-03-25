@@ -218,6 +218,8 @@ public:
     QPushButton *animate_button;
     QPushButton *step_button;
 
+    QCheckBox *use_axiom;
+
 public:
     QList<dtkWidgetsMenu *> menus;
 
@@ -433,8 +435,13 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QWidget *controls = new QWidget(this);
     controls->setLayout(controls_layout);
 
+    d->use_axiom = new QCheckBox("Use external axiom");
+    d->use_axiom->setTristate(false);
+    d->use_axiom->setChecked(true);
+
     d->dashboard_menu_controls = new dtkWidgetsMenuItemDIY("Controls");
     d->dashboard_menu_controls->addWidget(controls);
+    d->dashboard_menu_controls->addWidget(d->use_axiom);
 
     d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
     d->dashboard_menu->addItem(d->dashboard_menu_parameters);
@@ -599,30 +606,33 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                     this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
                         int stat;
-                        dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
 
-                        dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
+                        if (d->use_axiom->isChecked()) {
+                            dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
 
-                        QString get_statement = "";
-                        get_statement += "form = getFigureForm('gnomonLString',";
-                        get_statement += QString::number(d->axiom->figureNumber());
-                        get_statement += ")";
-                        dtkScriptInterpreterPython::instance()->interpret(get_statement, &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
 
-                        QString axiom_statement = "";
-                        axiom_statement += "if form is not None:\n";
-                        axiom_statement += "  axiom_lstring = form.current().asLString()\n";
-                        axiom_statement += "  gnomon_axiom = axiom_lstring.toString()\n";
-                        axiom_statement += "else:\n";
-                        axiom_statement += "  gnomon_axiom = None\n";
-                        axiom_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
-                        axiom_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
-                        axiom_statement += "    editor.setAxiom(gnomon_axiom)\n";
-                        dtkScriptInterpreterPython::instance()->interpret(axiom_statement, &stat);
+                            QString get_statement = "";
+                            get_statement += "form = getFigureForm('gnomonLString',";
+                            get_statement += QString::number(d->axiom->figureNumber());
+                            get_statement += ")";
+                            dtkScriptInterpreterPython::instance()->interpret(get_statement, &stat);
+
+                            QString axiom_statement = "";
+                            axiom_statement += "if form is not None:\n";
+                            axiom_statement += "  axiom_lstring = form.current().asLString()\n";
+                            axiom_statement += "  gnomon_axiom = axiom_lstring.toString()\n";
+                            axiom_statement += "else:\n";
+                            axiom_statement += "  gnomon_axiom = None\n";
+                            axiom_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                            axiom_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+                            axiom_statement += "    editor.setAxiom(gnomon_axiom)\n";
+                            dtkScriptInterpreterPython::instance()->interpret(axiom_statement, &stat);
+                        }
 
                         reaction->trigger();
 
