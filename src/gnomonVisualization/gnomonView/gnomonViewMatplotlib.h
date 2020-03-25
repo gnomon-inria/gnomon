@@ -34,6 +34,7 @@ public:
 public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
     gnomonAbstractDynamicForm *form (const QString&);
+    void clearForm(const QString&);
 public:
     void addWidget(QWidget *);
 
@@ -51,6 +52,7 @@ public:
 
 signals:
     void formAdded(const QString&);
+    void formRemoved(const QString&);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *);
