@@ -56,7 +56,7 @@ Installation
    :maxdepth: 2
 
    installation
-
+   docker
 
 Concepts
 ========

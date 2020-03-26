@@ -170,7 +170,10 @@ int main(int argc, char **argv)
     QCommandLineParser *parser = application->parser();
     parser->setApplicationDescription("gnomon application.");
 
+    QCommandLineOption workspaceOption("workspace", "Workspace to open on application launch", "workspace name", "Form Browser");
+    parser->addOption(workspaceOption);
     application->initialize();
+
 
     splash->showMessage("Loading core functionalities",Qt::AlignRight|Qt::AlignBottom);
     application->processEvents();
@@ -200,10 +203,14 @@ int main(int argc, char **argv)
 
     dtkScriptInterpreterPython::instance()->init("gnomon-core");
 
+    dtkScriptInterpreterPython::instance()->interpret("import matplotlib",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("matplotlib.use('qt5agg')",&stat);
+
     splash->showMessage("Loading reader plugins",Qt::AlignRight|Qt::AlignBottom);
     application->processEvents();
 
-    gnomonMainWindow *widget = new gnomonMainWindow;
+    QString workspace_name = parser->value(workspaceOption);
+    gnomonMainWindow *widget = new gnomonMainWindow(workspace_name);
 
     splash->showMessage("Assembling application window",Qt::AlignRight|Qt::AlignBottom);
     application->processEvents();

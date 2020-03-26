@@ -61,6 +61,8 @@ public:
 public slots:
     void exportToManager(void);
     void saveFigure(void);
+
+    void removeForm(const QString&);
     void clear(void);
 
 public:
@@ -147,38 +149,52 @@ void gnomonViewMatplotlibPrivate::saveFigure(void)
 
 }
 
+void gnomonViewMatplotlibPrivate::removeForm(const QString& key)
+{
+    this->formVisualization[key]->disconnect();
+//        this->formVisualization[key]->clearConnections();
+//        this->formVisualization[key]->clear();
+    delete this->formVisualization[key];
+    this->formVisualization.remove(key);
+
+    this->parameterLayouts[key]->disconnect();
+    delete this->parameterLayouts[key];
+    this->parameterLayouts.remove(key);
+
+    this->formVisualizationMenus[key]->removeItem(this->formVisualizationPaneItems[key]);
+
+    this->formVisualizationPaneItems[key]->disconnect();
+    this->formVisualizationPaneItems[key]->clear();
+    delete this->formVisualizationPaneItems[key];
+    this->formVisualizationPaneItems.remove(key);
+
+    this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
+
+    this->formVisualizationMenus[key]->disconnect();
+    this->formVisualizationMenus[key]->clear();
+    delete this->formVisualizationMenus[key];
+    this->formVisualizationMenus.remove(key);
+
+    this->forms.remove(key);
+
+    this->refresh();
+
+    q->emit formRemoved(key);
+}
+
 void gnomonViewMatplotlibPrivate::clear(void)
 {
     for (const auto& key : this->formVisualization.keys()) {
-
-        this->formVisualization[key]->disconnect();
-//        this->formVisualization[key]->clearConnections();
-//        this->formVisualization[key]->clear();
-        delete this->formVisualization[key];
-        this->parameterLayouts[key]->disconnect();
-        delete this->parameterLayouts[key];
-
-        this->formVisualizationMenus[key]->removeItem(this->formVisualizationPaneItems[key]);
-
-        this->formVisualizationPaneItems[key]->disconnect();
-        this->formVisualizationPaneItems[key]->clear();
-        delete this->formVisualizationPaneItems[key];
-
-        this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
-
-        this->formVisualizationMenus[key]->disconnect();
-        this->formVisualizationMenus[key]->clear();
-        delete this->formVisualizationMenus[key];
+        this->removeForm(key);
     }
 
-    this->formVisualization.clear();
-    this->forms.clear();
-    this->parameterLayouts.clear();
-    this->formVisualizationMenus.clear();
-    this->formVisualizationPaneItems.clear();
+//    this->formVisualization.clear();
+//    this->forms.clear();
+//    this->parameterLayouts.clear();
+//    this->formVisualizationMenus.clear();
+//    this->formVisualizationPaneItems.clear();
 
 //    this->empty = true;
-    this->refresh();
 //    q->render();
 }
 
@@ -619,6 +635,11 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
 gnomonAbstractDynamicForm *gnomonViewMatplotlib::form(const QString& name)
 {
   return d->forms[name];
+}
+
+void gnomonViewMatplotlib::clearForm(const QString& name)
+{
+    return d->removeForm(name);
 }
 
 void gnomonViewMatplotlib::addWidget(QWidget *widget)

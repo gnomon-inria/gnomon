@@ -23,7 +23,7 @@ class gnomonMainWindow : public dtkWidgetsMainWindow
     Q_OBJECT
 
 public:
-     gnomonMainWindow(QWidget *parent = nullptr);
+     gnomonMainWindow(const QString& workspace_name, QWidget *parent = nullptr);
     ~gnomonMainWindow(void);
 
 public:

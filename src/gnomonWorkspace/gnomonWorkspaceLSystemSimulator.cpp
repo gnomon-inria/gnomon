@@ -123,6 +123,66 @@ dtkWidgetsMenu *build(int icon, QMenu *menu)
     return w_menu;
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+//  gnomonHighlighterLString
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonHighlighterLString : public QSyntaxHighlighter
+{
+
+public:
+     gnomonHighlighterLString(QTextDocument *parent = nullptr);
+    ~gnomonHighlighterLString(void);
+
+public:
+    void setModuleNames(const QStringList& module_names);
+
+protected:
+    void highlightBlock(const QString& text) override;
+
+protected:
+    QStringList module_names;
+};
+
+gnomonHighlighterLString::gnomonHighlighterLString(QTextDocument *parent) : QSyntaxHighlighter(parent)
+{
+}
+
+gnomonHighlighterLString::~gnomonHighlighterLString(void)
+{
+}
+
+void gnomonHighlighterLString::setModuleNames(const QStringList& module_names)
+{
+    this->module_names.clear();
+    for (const auto& module_name : module_names) {
+        this->module_names.append(module_name);
+    }
+}
+
+void gnomonHighlighterLString::highlightBlock(const QString& text)
+{
+    QStringList theme_colors;
+    theme_colors << "@red"  << "@green" << "@violet" <<  "@yellow"  << "@darkblue" << "@magenta";
+    theme_colors << "@cyan" << "@teal"<< "@orange" << "@darkcyan" << "@blue";
+
+    int i_module = 0;
+    for (const auto& module_name : this->module_names) {
+        QTextCharFormat module_format;
+        module_format.setFontPointSize(24);
+        module_format.setFontWeight(QFont::Bold);
+        module_format.setForeground(dtkThemesEngine::instance()->color(theme_colors[i_module % theme_colors.size()]));
+        i_module ++;
+
+        QRegularExpression module_pattern(module_name);
+        QRegularExpressionMatchIterator matchIterator = module_pattern.globalMatch(text);
+        while (matchIterator.hasNext())
+        {
+            QRegularExpressionMatch match = matchIterator.next();
+            setFormat(match.capturedStart(),match.capturedLength(),module_format);
+        }
+    }
+}
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -144,6 +204,12 @@ public:
     gnomonViewMatplotlib *axiom = nullptr;
     gnomonViewMatplotlib *target = nullptr;
 
+public:
+    QTextEdit *axiom_editor = nullptr;
+    gnomonHighlighterLString *highlighter = nullptr;
+
+    QStackedWidget *axiom_stack = nullptr;
+    QWidget *axiom_widget = nullptr;
 
 public:
     QPushButton *run_button;
@@ -151,6 +217,8 @@ public:
     QPushButton *rewind_button;
     QPushButton *animate_button;
     QPushButton *step_button;
+
+    QCheckBox *use_axiom;
 
 public:
     QList<dtkWidgetsMenu *> menus;
@@ -171,7 +239,32 @@ public:
     dtkWidgetsMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
     dtkWidgetsMenuBar *out_view_bar = nullptr;
+
+public:
+    void exportAxiom(void);
 };
+
+void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
+{
+    QString edited_axiom = this->axiom_editor->toPlainText();
+
+    if (edited_axiom != "") {
+        gnomonLString *lstring = new gnomonLString();
+
+        gnomonLStringSeries *lstring_series = new gnomonLStringSeries();
+        lstring_series->insert(0, lstring);
+
+        gnomonAbstractLStringData *lstring_data = gnomonCore::lStringData::pluginFactory().create("gnomonLStringDataLPy");
+        lstring_data->fromString(edited_axiom);
+        lstring->setData(lstring_data);
+
+        this->axiom->setForm("gnomonLString",lstring_series);
+    } else {
+        if (this->axiom->form("gnomonLString")) {
+            this->axiom->clearForm("gnomonLString");
+        }
+    }
+}
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -180,7 +273,105 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     // d->spinner = new gnomonSpinner(this);
     // d->spinner->start();
 
+/////////////////////////////////////////////////////////////////////////////
+
     d->axiom = new gnomonViewMatplotlib(this);
+
+    d->axiom_editor = new QTextEdit(this);
+    QFont font = d->axiom_editor->font();
+    font.setPointSize(18);
+    font.setFamily("Courier New");
+    d->axiom_editor->setFont(font);
+    d->axiom_editor->setAcceptDrops(false);
+
+    d->highlighter = new gnomonHighlighterLString(d->axiom_editor->document());
+
+    d->axiom_stack = new QStackedWidget(this);
+    d->axiom_stack->addWidget(d->axiom);
+    d->axiom_stack->addWidget(d->axiom_editor);
+    d->axiom_stack->setCurrentWidget(d->axiom);
+
+    QToolButton *axiom_figure_button = new QToolButton(this);
+    axiom_figure_button->setIcon(dtkFontAwesome::instance()->icon(fa::square));
+    axiom_figure_button->setToolTip("2D Form Viewer");
+    QToolButton *axiom_editor_button = new QToolButton(this);
+    axiom_editor_button->setIcon(dtkFontAwesome::instance()->icon(fa::edit));
+    axiom_editor_button->setToolTip("Text Editor");
+
+    QPushButton *axiom_save_button = new QPushButton("  Save  ");
+    axiom_save_button->setVisible(false);
+
+    QHBoxLayout *axiom_button_layout = new QHBoxLayout;
+    axiom_button_layout->addWidget(axiom_figure_button);
+    axiom_button_layout->addWidget(axiom_editor_button);
+    axiom_button_layout->addStretch();
+    axiom_button_layout->addWidget(axiom_save_button);
+
+    QVBoxLayout *axiom_layout = new QVBoxLayout;
+    axiom_layout->setContentsMargins(0, 0, 0, 0);
+    axiom_layout->setSpacing(0);
+    axiom_layout->addLayout(axiom_button_layout);
+    axiom_layout->addWidget(d->axiom_stack);
+
+    d->axiom_widget = new QWidget(this);
+    d->axiom_widget->setLayout(axiom_layout);
+
+    connect(axiom_save_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->exportAxiom();
+    });
+
+    connect(axiom_figure_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->exportAxiom();
+        d->axiom_stack->setCurrentWidget(d->axiom);
+        axiom_save_button->setVisible(false);
+    });
+
+    connect(axiom_editor_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->axiom_stack->setCurrentWidget(d->axiom_editor);
+        axiom_save_button->setVisible(true);
+    });
+
+    connect(d->axiom, &gnomonViewMatplotlib::formAdded, [=] (const QString& form_name)
+    {
+        gnomonAbstractDynamicForm *form = d->axiom->form(form_name);
+
+        if (gnomonLStringSeries *lstring_series = dynamic_cast<gnomonLStringSeries *>(form)) {
+            gnomonLString *lstring = lstring_series->current()->asLString();
+            QString lstring_value = lstring->toString();
+
+            QStringList module_names;
+            for (const auto & module_id :  lstring->moduleIds()) {
+                QString module_name = lstring->moduleName(module_id);
+                if (! module_names.contains(module_name)) {
+                    module_names.append(module_name);
+                }
+            }
+            qDebug()<<module_names;
+            d->highlighter->setModuleNames(module_names);
+
+            d->axiom_editor->blockSignals(true);
+            d->axiom_editor->setText(lstring_value);
+            d->axiom_editor->blockSignals(false);
+        }
+    });
+
+    connect(d->axiom, &gnomonViewMatplotlib::formRemoved, [=] (const QString& form_name)
+    {
+        if (form_name == "gnomonLString") {
+            QStringList module_names;
+            d->highlighter->setModuleNames(module_names);
+
+            d->axiom_editor->blockSignals(true);
+            d->axiom_editor->setText("");
+            d->axiom_editor->blockSignals(false);
+        }
+    });
+
+/////////////////////////////////////////////////////////////////////////////
+
     d->target = new gnomonViewMatplotlib(this);
 
     d->lhs = new QTabWidget(this);
@@ -245,8 +436,13 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QWidget *controls = new QWidget(this);
     controls->setLayout(controls_layout);
 
+    d->use_axiom = new QCheckBox("Use external axiom");
+    d->use_axiom->setTristate(false);
+    d->use_axiom->setChecked(true);
+
     d->dashboard_menu_controls = new dtkWidgetsMenuItemDIY("Controls");
     d->dashboard_menu_controls->addWidget(controls);
+    d->dashboard_menu_controls->addWidget(d->use_axiom);
 
     d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
     d->dashboard_menu->addItem(d->dashboard_menu_parameters);
@@ -410,31 +606,40 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
 
                     this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
+                        d->run_button->setEnabled(false);
+                        d->step_button->setEnabled(false);
+                        d->rewind_button->setEnabled(false);
+                        d->animate_button->setEnabled(false);
+                        d->stop_button->setEnabled(false);
+
                         int stat;
-                        dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
 
-                        dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
+                        if (d->use_axiom->isChecked()) {
+                            dtkScriptInterpreterPython::instance()->interpret("import gnomoncore", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import gnomonLStringSeries, gnomonLString", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
 
-                        QString get_statement = "";
-                        get_statement += "form = getFigureForm('gnomonLString',";
-                        get_statement += QString::number(d->axiom->figureNumber());
-                        get_statement += ")";
-                        dtkScriptInterpreterPython::instance()->interpret(get_statement, &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
 
-                        QString axiom_statement = "";
-                        axiom_statement += "if form is not None:\n";
-                        axiom_statement += "  axiom_lstring = form.current().asLString()\n";
-                        axiom_statement += "  gnomon_axiom = axiom_lstring.toString()\n";
-                        axiom_statement += "else:\n";
-                        axiom_statement += "  gnomon_axiom = None\n";
-                        axiom_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
-                        axiom_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
-                        axiom_statement += "    editor.setAxiom(gnomon_axiom)\n";
-                        dtkScriptInterpreterPython::instance()->interpret(axiom_statement, &stat);
+                            QString get_statement = "";
+                            get_statement += "form = getFigureForm('gnomonLString',";
+                            get_statement += QString::number(d->axiom->figureNumber());
+                            get_statement += ")";
+                            dtkScriptInterpreterPython::instance()->interpret(get_statement, &stat);
+
+                            QString axiom_statement = "";
+                            axiom_statement += "if form is not None:\n";
+                            axiom_statement += "  axiom_lstring = form.current().asLString()\n";
+                            axiom_statement += "  gnomon_axiom = axiom_lstring.toString()\n";
+                            axiom_statement += "else:\n";
+                            axiom_statement += "  gnomon_axiom = None\n";
+                            axiom_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                            axiom_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+                            axiom_statement += "    editor.setAxiom(gnomon_axiom)\n";
+                            dtkScriptInterpreterPython::instance()->interpret(axiom_statement, &stat);
+                        }
 
                         reaction->trigger();
 
@@ -453,6 +658,12 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         add_statement += QString::number(d->target->figureNumber());
                         add_statement += ")";
                         dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
+
+                        d->run_button->setEnabled(true);
+                        d->step_button->setEnabled(true);
+                        d->rewind_button->setEnabled(true);
+                        d->animate_button->setEnabled(true);
+                        d->stop_button->setEnabled(true);
                     });
                 }
             }
@@ -694,7 +905,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 //        d->in_axiom->setLayout(layout);
 
 //        d->lhs->addTab(d->in_axiom, "Axiom");
-        d->lhs->addTab(d->axiom, "Axiom");
+        d->lhs->addTab(d->axiom_widget, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
        
