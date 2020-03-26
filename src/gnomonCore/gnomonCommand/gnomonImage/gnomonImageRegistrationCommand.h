@@ -1,8 +1,9 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
     gnomonImageRegistrationCommand() = delete;
@@ -15,10 +16,12 @@ public:
 
 public:
     void addImage(gnomonImageSeries *);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
     gnomonImageSeries *output();
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
     
-    QMap<QString, gnomonCoreParameter*> parameters(void) const;
+    QMap<QString, gnomonCoreParameter*> parameters(void) const override;
     void setParameter(const QString&, const QVariant&);
 
 public:
