@@ -61,6 +61,7 @@ requirements:
     - pyqt >=5.6.0
     - sip
     - vtk=8.2.0
+    - ffmpeg >=4.2
     - zlib
 
   run:
@@ -85,6 +86,7 @@ requirements:
     - python >=3.7
     - sip
     - vtk=8.2.0
+    - ffmpeg >=4.2
     - zlib
 
 app:
