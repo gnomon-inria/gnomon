@@ -100,9 +100,18 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     out<<"    def run(self):\n";
     out<<"        inputs = self.algorithm_inputs()\n";
     for (const auto& input_name : this->input_ports.keys()) {
-        QString setter_name = "set" + input_name;
-        setter_name.replace(3, 1, setter_name[3].toUpper());
-        out<<"        self.algorithm." << setter_name << "(inputs[\"" << input_name << "\"])\n";
+        QRegularExpression numbered_input("[A-z]+[0-9]+");
+        if (numbered_input.match(input_name).hasMatch()) {
+            QString input_type_name = QString(input_name);
+            input_type_name = input_type_name.remove(QRegularExpression("[0-9]+"));
+            QString adder_name = "add" + input_type_name;
+            adder_name.replace(3, 1, adder_name[3].toUpper());
+            out<<"        self.algorithm." << adder_name << "(inputs[\"" << input_name << "\"])\n";
+        } else {
+            QString setter_name = "set" + input_name;
+            setter_name.replace(3, 1, setter_name[3].toUpper());
+            out<<"        self.algorithm." << setter_name << "(inputs[\"" << input_name << "\"])\n";
+        }
     }
     out<<"        for name, value in self.parameters.items():\n";
     out<<"            self.algorithm.setParameter(name,value)\n";
