@@ -606,6 +606,12 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
 
                     this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
+                        d->run_button->setEnabled(false);
+                        d->step_button->setEnabled(false);
+                        d->rewind_button->setEnabled(false);
+                        d->animate_button->setEnabled(false);
+                        d->stop_button->setEnabled(false);
+
                         int stat;
 
                         if (d->use_axiom->isChecked()) {
@@ -639,6 +645,12 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
 
                         qDebug()<<Q_FUNC_INFO<<"Run finished";
 
+                        QString axiom_clear_statement = "";
+                        axiom_clear_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                        axiom_clear_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+                        axiom_clear_statement += "    editor.setAxiom(None)\n";
+                        dtkScriptInterpreterPython::instance()->interpret(axiom_clear_statement, &stat);
+
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
@@ -652,6 +664,12 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         add_statement += QString::number(d->target->figureNumber());
                         add_statement += ")";
                         dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
+
+                        d->run_button->setEnabled(true);
+                        d->step_button->setEnabled(true);
+                        d->rewind_button->setEnabled(true);
+                        d->animate_button->setEnabled(true);
+                        d->stop_button->setEnabled(true);
                     });
                 }
             }
