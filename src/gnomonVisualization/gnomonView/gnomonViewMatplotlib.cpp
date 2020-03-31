@@ -80,7 +80,7 @@ public:
 
 public:
     QMap<QString, QFormLayout *> parameterLayouts;
-
+    
     QMap<QString, dtkWidgetsMenu *> formVisualizationMenus;
     QMap<QString, dtkWidgetsMenuItemDIY *> formVisualizationPaneItems;
 
@@ -88,7 +88,7 @@ public:
 
 public:
     dtkWidgetsMenu *menu(void);
-
+    
 public:
     // gnomonOverlayPane *pane(QWidget *parent);
     dtkWidgetsMenu *view_menu;
@@ -98,9 +98,6 @@ public slots:
     void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
     void addFormMenu(const QString& key);
     void refresh(void);
-
-public:
-    bool verifyPluginIsLoaded(const QStringList& keys, const QString& name="??");
 
 };
 
@@ -486,22 +483,6 @@ dtkWidgetsMenu *gnomonViewMatplotlibPrivate::menu(void)
     return this->view_menu;
 }
 
-bool gnomonViewMatplotlibPrivate::verifyPluginIsLoaded(const QStringList& keys, const QString& name)
-{
-    if (keys.count() == 0) {
-        QString error;
-        error =
-            "Plugin not found, you must install the plugin "
-            + name + "\n"
-            + "from https://anaconda.org/gnomon/repo" + "\n"
-            + "conda install -c gnomon -c mosaic -c dtk-forge -c conda-forge " + name;
-        std::cerr << error.toStdString() << std::endl;
-        QMessageBox::warning(nullptr, "Plugin not found", error);
-        return false;
-    }
-    return true;
-}
-
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -590,9 +571,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
         d->forms["gnomonTree"] = tree;
 
-        if (!d->verifyPluginIsLoaded(gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys())) {
-            return;
-        }
         QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
@@ -613,9 +591,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
         d->forms["gnomonDataFrame"] = dataFrame;
 
-        if (!d->verifyPluginIsLoaded(gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys())) {
-            return;
-        }
         QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
@@ -636,9 +611,6 @@ void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicFor
     } else if (gnomonLStringSeries *lString = dynamic_cast<gnomonLStringSeries *>(form)) {
         d->forms["gnomonLString"] = lString;
 
-        if (!d->verifyPluginIsLoaded(gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys(), "plugin_treelsystem")) {
-            return;
-        }
         QString key = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys()[0];
 
         if ((!d->formVisualization.contains("gnomonLString"))||(!d->formVisualization["gnomonLString"]))
