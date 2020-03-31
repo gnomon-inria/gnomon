@@ -26,6 +26,8 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
+
 // /////////////////////////////////////////////////////////////////////////////
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
@@ -674,7 +676,7 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                 }
             }
         }
-    }    
+    }
 }
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
@@ -865,7 +867,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 widget->setVisible(true); // NOTE: Does the trick! Com'on ....
 
                 // dynamic_cast<QHBoxLayout *>(d->rhs_area->layout())->insertWidget(0, widget);
-               
+
                 qDebug() << "Got a toolbar!" << widget;
             }
 
@@ -914,7 +916,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->lhs->addTab(d->axiom_widget, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
-       
+
         // window->hide();
     }
 
@@ -942,6 +944,9 @@ const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
 bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 {
+    if (gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys().count() == 0) {
+        return true;
+    }
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
     return (stat == 1) && (gnomonCore::lStringData::pluginFactory().keys().contains("gnomonLStringDataLPy"));
