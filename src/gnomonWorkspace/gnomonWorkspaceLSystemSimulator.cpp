@@ -674,7 +674,7 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                 }
             }
         }
-    }    
+    }
 }
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
@@ -850,6 +850,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
 
+            window->statusBar()->setSizeGripEnabled(false);
             foreach(QWidget *widget, window->findChildren<QToolBar *>()) {
 
                 if(widget->objectName() == "LocationBar")
@@ -865,7 +866,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 widget->setVisible(true); // NOTE: Does the trick! Com'on ....
 
                 // dynamic_cast<QHBoxLayout *>(d->rhs_area->layout())->insertWidget(0, widget);
-               
+
                 qDebug() << "Got a toolbar!" << widget;
             }
 
@@ -914,7 +915,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->lhs->addTab(d->axiom_widget, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
-       
+
         // window->hide();
     }
 
