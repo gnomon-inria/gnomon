@@ -26,6 +26,8 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
+
 // /////////////////////////////////////////////////////////////////////////////
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
@@ -943,6 +945,10 @@ const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
 bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 {
+    loadPluginGroup("matplotlibVisualizationLString");
+    if (gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys().count() == 0) {
+        return true;
+    }
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
     return (stat == 1) && (gnomonCore::lStringData::pluginFactory().keys().contains("gnomonLStringDataLPy"));
