@@ -852,6 +852,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
 
+            window->statusBar()->setSizeGripEnabled(false);
             foreach(QWidget *widget, window->findChildren<QToolBar *>()) {
 
                 if(widget->objectName() == "LocationBar")
