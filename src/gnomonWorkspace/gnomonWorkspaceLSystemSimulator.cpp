@@ -945,6 +945,7 @@ const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
 bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 {
+    loadPluginGroup("matplotlibVisualizationLString");
     if (gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys().count() == 0) {
         return true;
     }
