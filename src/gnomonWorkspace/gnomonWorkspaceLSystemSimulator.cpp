@@ -432,15 +432,15 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->use_axiom->setTristate(false);
     d->use_axiom->setChecked(true);
 
-    auto *dashboard = new QFrame;
-    auto *dashboard_layout = new QVBoxLayout;
+    QWidget *dashboard = new QFrame;
+    QLayout *dashboard_layout = new QVBoxLayout;
     dashboard->setLayout(dashboard_layout);
     dashboard_layout->addWidget(new QLabel("L-System Simulator"));
 
     auto addToDashboard = [&] (QWidget *widget, bool add_separator, QLabel *title=nullptr)
     {
         if (add_separator) {
-            auto *separator = new QFrame();
+            QFrame *separator = new QFrame();
             separator->setFrameShape(QFrame::HLine);
             separator->setFrameShadow(QFrame::Raised);//Sunken);
             dashboard_layout->addWidget(separator);
@@ -464,7 +464,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->lhs);
 
-    auto *splitter_rhs = new QSplitter(this);
+    QSplitter *splitter_rhs = new QSplitter(this);
     splitter_rhs->addWidget(d->rhs_area);
     splitter_rhs->addWidget(dashboard);
     d->splitter->addWidget(splitter_rhs);
