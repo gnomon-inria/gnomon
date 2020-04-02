@@ -696,7 +696,7 @@ void gnomonWorkspaceLSystemSimulatorPrivate::disableFloatingDockWidgets(QWidget 
 
     auto *as_dock_widget = dynamic_cast<QDockWidget *>(parent);
     if (as_dock_widget != nullptr) {
-        as_dock_widget->setFeatures(as_dock_widget->features() & ~QDockWidget::DockWidgetFloatable);
+        as_dock_widget->setFeatures(as_dock_widget->features() & ~(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable));
     }
     for (auto *child: parent->children()) {
         auto *as_widget = dynamic_cast<QWidget *>(child);
