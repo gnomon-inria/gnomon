@@ -244,6 +244,7 @@ public:
 
 public:
     void exportAxiom(void);
+    void disableFloatingDockWidgets(QWidget *parent);
 };
 
 void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
@@ -679,6 +680,26 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
     }
 }
 
+void gnomonWorkspaceLSystemSimulatorPrivate::disableFloatingDockWidgets(QWidget *parent)
+{
+    static QSet<QWidget *> already_disabled;
+    if (already_disabled.contains(parent)) {
+        return;
+    }
+    already_disabled << parent;
+
+    auto *as_dock_widget = dynamic_cast<QDockWidget *>(parent);
+    if (as_dock_widget != nullptr) {
+        as_dock_widget->setFeatures(as_dock_widget->features() & ~QDockWidget::DockWidgetFloatable);
+    }
+    for (auto *child: parent->children()) {
+        auto *as_widget = dynamic_cast<QWidget *>(child);
+        if (as_widget != nullptr) {
+            disableFloatingDockWidgets(as_widget);
+        }
+    }
+};
+
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
     qDebug() << Q_FUNC_INFO << widget << widget->objectName();
@@ -687,6 +708,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     if(filled.contains(widget))
         return;
+
+    d->disableFloatingDockWidgets(widget);
 
 // /////////////////////////////////////////////////////////////////////////////
 // LPYCodeEditor

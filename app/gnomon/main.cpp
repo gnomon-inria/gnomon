@@ -106,7 +106,7 @@ protected:
 //                            }
 //                        });
 
-                       
+
                     }
 
                     foreach(QWidget *top, qApp->topLevelWidgets()) {
@@ -127,7 +127,7 @@ protected:
                 return true;
             }
         }
-       
+
         return false;
     }
 
