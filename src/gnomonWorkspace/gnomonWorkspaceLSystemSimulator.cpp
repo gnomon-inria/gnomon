@@ -398,17 +398,20 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->dashboard_menu_parameters->setSizePolicy(QSizePolicy::Expanding);
 
     d->run_button = new QPushButton;
-    d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
+//    d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
+    d->run_button->setIcon(QIcon(QPixmap(":gnomon/gnomonButton-Run.png").scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
     d->run_button->setStyleSheet("background: none; border: none; color: @fg");
     d->run_button->setIconSize(QSize(32,32));
 
     d->stop_button = new QPushButton;
-    d->stop_button->setIcon(dtkFontAwesome::instance()->icon(fa::pause));
+//    d->stop_button->setIcon(dtkFontAwesome::instance()->icon(fa::pause));
+    d->stop_button->setIcon(QIcon(QPixmap(":gnomon/gnomonButton-Stop.png").scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
     d->stop_button->setStyleSheet("background: none; border: none; color: @fg");
     d->stop_button->setIconSize(QSize(32,32));
 
     d->rewind_button = new QPushButton;
-    d->rewind_button->setIcon(dtkFontAwesome::instance()->icon(fa::backward));
+//    d->rewind_button->setIcon(dtkFontAwesome::instance()->icon(fa::backward));
+    d->rewind_button->setIcon(QIcon(QPixmap(":gnomon/gnomonButton-Rewind.png").scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
     d->rewind_button->setStyleSheet("background: none; border: none; color: @fg");
     d->rewind_button->setIconSize(QSize(32,32));
 
@@ -416,6 +419,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->animate_button = new QPushButton;
     d->animate_button->setIcon(dtkFontAwesome::instance()->icon(fa::play));
+    d->animate_button->setIcon(QIcon(QPixmap(":gnomon/gnomonButton-Animate.png").scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
     d->animate_button->setStyleSheet("background: none; border: none; color: @fg");
     d->animate_button->setIconSize(QSize(32,32));
 
@@ -423,6 +427,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->step_button = new QPushButton;
     d->step_button->setIcon(dtkFontAwesome::instance()->icon(fa::stepforward));
+    d->step_button->setIcon(QIcon(QPixmap(":gnomon/gnomonButton-Step.png").scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
     d->step_button->setStyleSheet("background: none; border: none; color: @fg");
     d->step_button->setIconSize(QSize(32,32));
 
@@ -446,7 +451,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->dashboard_menu_controls->addWidget(controls);
     d->dashboard_menu_controls->addWidget(d->use_axiom);
 
-    d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
+    d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "Simulation Parameters");
     d->dashboard_menu->addItem(d->dashboard_menu_parameters);
     d->dashboard_menu->addItem(d->dashboard_menu_controls);
 
