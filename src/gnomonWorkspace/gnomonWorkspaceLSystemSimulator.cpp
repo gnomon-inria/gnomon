@@ -228,12 +228,6 @@ public:
     dtkWidgetsMenu *tools_menu;
 
 public:
-    dtkWidgetsMenu *dashboard_menu;
-    dtkWidgetsMenuItemDIY *dashboard_menu_parameters;
-    dtkWidgetsMenuItemDIY *dashboard_menu_controls;
-    dtkWidgetsMenuBarContainer *dashboard;
-
-public:
     QWidget *in_code = nullptr;
     QWidget *in_axiom = nullptr;
     QWidget *out_view = nullptr;
@@ -393,10 +387,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->tools_menu = new dtkWidgetsMenu(fa::gears, "Tools");
 
-    d->dashboard_menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
-    d->dashboard_menu_parameters->addLayout(params_layout);
-    d->dashboard_menu_parameters->setSizePolicy(QSizePolicy::Expanding);
-
     d->run_button = new QPushButton;
     d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
     d->run_button->setStyleSheet("background: none; border: none; color: @fg");
@@ -442,18 +432,27 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->use_axiom->setTristate(false);
     d->use_axiom->setChecked(true);
 
-    d->dashboard_menu_controls = new dtkWidgetsMenuItemDIY("Controls");
-    d->dashboard_menu_controls->addWidget(controls);
-    d->dashboard_menu_controls->addWidget(d->use_axiom);
+    auto *dashboard = new QFrame;
+    auto *dashboard_layout = new QVBoxLayout;
+    dashboard->setLayout(dashboard_layout);
+    dashboard_layout->addWidget(new QLabel("L-System Simulator"));
 
-    d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
-    d->dashboard_menu->addItem(d->dashboard_menu_parameters);
-    d->dashboard_menu->addItem(d->dashboard_menu_controls);
-
-    d->dashboard = new dtkWidgetsMenuBarContainer(this);
-    d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->dashboard_menu);
-    d->dashboard->setFixedWidth(300);
+    auto addToDashboard = [&] (QWidget *widget, bool add_separator, QLabel *title=nullptr)
+    {
+        if (add_separator) {
+            auto *separator = new QFrame();
+            separator->setFrameShape(QFrame::HLine);
+            separator->setFrameShadow(QFrame::Raised);//Sunken);
+            dashboard_layout->addWidget(separator);
+        }
+        if (title != nullptr) {
+            dashboard_layout->addWidget(title);
+        }
+        dashboard_layout->addWidget(widget);
+    };
+    addToDashboard(d->params, true, new QLabel("Parameters"));
+    addToDashboard(controls, true, new QLabel("Controls"));
+    addToDashboard(d->use_axiom, false);
 
     d->rhs_area = new QWidget(this);
 
@@ -464,14 +463,21 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->lhs);
-    d->splitter->addWidget(d->rhs_area);
+
+    auto *splitter_rhs = new QSplitter(this);
+    splitter_rhs->addWidget(d->rhs_area);
+    splitter_rhs->addWidget(dashboard);
+    d->splitter->addWidget(splitter_rhs);
+
+    for (auto *splitter: { d->splitter, splitter_rhs }) {
+        splitter->setHandleWidth(5);
+    }
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     // layout->addWidget(d->spinner);
     layout->addWidget(d->splitter);
-    layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -741,17 +747,14 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     else if(widget->objectName() == "LPYScalars") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Scalars");
-        d->dashboard->update();
     }
 
     else if(widget->objectName() == "LPYCurves") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Graphical Objects");
-        d->dashboard->update();
     }
 
     else if(widget->objectName() == "LPYMaterials") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Materials");
-        d->dashboard->update();
     }
 
     else if(widget->objectName() == "LPYMainWindow") {
