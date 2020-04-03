@@ -28,7 +28,10 @@ public:
 
 gnomonCellComplexConstructorCommand::gnomonCellComplexConstructorCommand(const QString& key) : d(new gnomonCellComplexConstructorCommandPrivate)
 {
-    loadPluginGroup("cellComplexConstructor");
+    this->factory_name = "cellComplexConstructor";
+    loadPluginGroup(this->factoryName());
+
+    this->algorithm_name = key;
 
     this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(key);
 
@@ -45,6 +48,13 @@ void gnomonCellComplexConstructorCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexConstructor *) this->action)->output();
+    if ((!cellComplex)||(cellComplex->times().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d->output = cellComplex;
+    }
 }
 
 void gnomonCellComplexConstructorCommand::undo(void)
@@ -63,13 +73,14 @@ QMap<QString, gnomonCoreParameter *> gnomonCellComplexConstructorCommand::parame
 
 gnomonCellComplexSeries *gnomonCellComplexConstructorCommand::output(void)
 {
-    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexConstructor *) this->action)->output();
-    if ((!cellComplex)||(cellComplex->times().size()==0)) {
-        return nullptr;
-    } else {
-        d->output = cellComplex;
-        return cellComplex;
-    }
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexConstructorCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonCellComplexConstructorCommand::isEmpty(void)

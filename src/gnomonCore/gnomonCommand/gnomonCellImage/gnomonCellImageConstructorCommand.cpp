@@ -28,7 +28,10 @@ public:
 
 gnomonCellImageConstructorCommand::gnomonCellImageConstructorCommand(const QString& key) : d(new gnomonCellImageConstructorCommandPrivate)
 {
-    loadPluginGroup("cellImageConstructor");
+    this->factory_name = "cellImageConstructor";
+    loadPluginGroup(this->factoryName());
+
+    this->algorithm_name = key;
 
     this->action = gnomonCore::cellImageConstructor::pluginFactory().create(key);
 
@@ -45,6 +48,13 @@ void gnomonCellImageConstructorCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageConstructor *) this->action)->output();
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d->output = cellImage;
+    }
 }
 
 void gnomonCellImageConstructorCommand::undo(void)
@@ -63,13 +73,14 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageConstructorCommand::paramete
 
 gnomonCellImageSeries *gnomonCellImageConstructorCommand::output(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageConstructor *) this->action)->output();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
-        return nullptr;
-    } else {
-        d->output = cellImage;
-        return cellImage;
-    }
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageConstructorCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonCellImageConstructorCommand::isEmpty(void)

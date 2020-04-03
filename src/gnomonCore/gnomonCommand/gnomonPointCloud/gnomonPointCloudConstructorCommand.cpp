@@ -28,7 +28,10 @@ public:
 
 gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand(const QString& key) : d(new gnomonPointCloudConstructorCommandPrivate)
 {
-    loadPluginGroup("pointCloudConstructor");
+    this->factory_name = "pointCloudConstructor";
+    loadPluginGroup(this->factoryName());
+
+    this->algorithm_name = key;
 
     this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(key);
 
@@ -45,6 +48,13 @@ void gnomonPointCloudConstructorCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
+    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d->output = pointCloud;
+    }
 }
 
 void gnomonPointCloudConstructorCommand::undo(void)
@@ -63,13 +73,14 @@ QMap<QString, gnomonCoreParameter *> gnomonPointCloudConstructorCommand::paramet
 
 gnomonPointCloudSeries *gnomonPointCloudConstructorCommand::output(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
-        return nullptr;
-    } else {
-        d->output = pointCloud;
-        return pointCloud;
-    }
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudConstructorCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonPointCloudConstructorCommand::isEmpty(void)
