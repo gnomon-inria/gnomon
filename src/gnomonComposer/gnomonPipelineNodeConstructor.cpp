@@ -83,6 +83,8 @@ QString gnomonPipelineNodeConstructor::toLuigiClass(void)
     out<<"    \n";
     out<<"    def run(self):\n";
     out<<"        for name, value in self.parameters.items():\n";
+    out<<"            if isinstance(value, tuple):\n";
+    out<<"                value = list(value)\n";
     out<<"            self.constructor.setParameter(name,value)\n";
     out<<"        self.constructor.run()\n";
     out<<"\n";

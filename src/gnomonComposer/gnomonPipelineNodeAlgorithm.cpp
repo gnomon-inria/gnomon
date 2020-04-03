@@ -114,6 +114,8 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
         }
     }
     out<<"        for name, value in self.parameters.items():\n";
+    out<<"            if isinstance(value, tuple):\n";
+    out<<"                value = list(value)\n";
     out<<"            self.algorithm.setParameter(name,value)\n";
     out<<"        self.algorithm.run()\n";
     out<<"\n";

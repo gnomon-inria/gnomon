@@ -338,7 +338,6 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
             edge->adjust();
         }
     }
-
 }
 
 QList<QList<double> > gnomonPipelinePrivate::nodeDistances(QList<QPointF> node_positions)
@@ -479,10 +478,6 @@ void gnomonPipeline::addConstructor(gnomonAbstractConstructorCommand *command)
 
 void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 {
-    qDebug()<<Q_FUNC_INFO<<form;
-    for (auto algo_form : d->algorithm_nodes.keys()) {
-        qDebug()<<Q_FUNC_INFO<<algo_form<<d->algorithm_nodes[algo_form]->algorithm_class;
-    }
     if (d->reader_nodes.contains(form)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form];
 
