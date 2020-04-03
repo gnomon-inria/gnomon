@@ -199,7 +199,8 @@ public:
     QTabWidget *lhs;
     QTabWidget *rhs;
     QTabWidget *params;
-    QSplitter *splitter;
+    QSplitter *splitter_lhs;
+    QSplitter *splitter_rhs;
     QWidget *rhs_area;
 
 public:
@@ -237,8 +238,14 @@ public:
     dtkWidgetsMenuBar *out_view_bar = nullptr;
 
 public:
+    const QString setting_id = "LSystemSplittersSizes";
+    const QString setting_id_lhs = setting_id + "LHS";
+    const QString setting_id_rhs = setting_id + "RHS";
+
+public:
     void exportAxiom(void);
     void disableFloatingDockWidgets(QWidget *parent);
+    void setSplittersSizes(int width);
 };
 
 void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
@@ -462,23 +469,30 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     rhs_area_layout->setSpacing(0);
     rhs_area_layout->addWidget(d->rhs);
 
-    d->splitter = new QSplitter(this);
-    d->splitter->addWidget(d->lhs);
+    d->splitter_lhs = new QSplitter(this);
+    d->splitter_lhs->addWidget(d->lhs);
 
-    QSplitter *splitter_rhs = new QSplitter(this);
-    splitter_rhs->addWidget(d->rhs_area);
-    splitter_rhs->addWidget(dashboard);
-    d->splitter->addWidget(splitter_rhs);
+    d->splitter_rhs = new QSplitter(this);
+    d->splitter_rhs->addWidget(d->rhs_area);
+    d->splitter_rhs->addWidget(dashboard);
+    d->splitter_lhs->addWidget(d->splitter_rhs);
 
-    for (auto *splitter: { d->splitter, splitter_rhs }) {
+    for (auto *splitter: { d->splitter_lhs, d->splitter_rhs }) {
         splitter->setHandleWidth(5);
+        splitter->setChildrenCollapsible(false);
+        connect(splitter, &QSplitter::splitterMoved, [=] ()
+        {
+            QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+            const auto is_lhs = (splitter == d->splitter_lhs);
+            settings.setValue(is_lhs ? d->setting_id_lhs : d->setting_id_rhs, splitter->saveState());
+        });
     }
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     // layout->addWidget(d->spinner);
-    layout->addWidget(d->splitter);
+    layout->addWidget(d->splitter_lhs);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -904,7 +918,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             d->out_view_bar->touch();
         }
 
-        d->splitter->setSizes(QList<int>() << this->width() / 2 << this->width() / 2);
+        d->setSplittersSizes(this->width());
     }
 
     if(widget->objectName() == "LPYViewer") {
@@ -965,6 +979,27 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     // widget->show();
 
     filled << widget;
+}
+
+void gnomonWorkspaceLSystemSimulatorPrivate::setSplittersSizes(int width)
+{
+    const auto width_panel1 = width * 33 / 100;
+    const auto width_panels23 = width - width_panel1;
+    const auto width_panel3 = width * 25 / 100;
+    const auto width_panel2 = width_panels23 - width_panel3;
+
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    if (settings.contains(setting_id_lhs)) {
+        splitter_lhs->restoreState(settings.value(setting_id_lhs).toByteArray());
+    } else {
+        splitter_lhs->setSizes( { width_panel1, width_panels23 } );
+    }
+
+    if (settings.contains(setting_id_rhs)) {
+        splitter_rhs->restoreState(settings.value(setting_id_rhs).toByteArray());
+    } else {
+        splitter_rhs->setSizes( { width_panel2, width_panel3 } );
+    }
 }
 
 const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
