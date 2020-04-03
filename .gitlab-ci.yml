@@ -22,10 +22,10 @@ conda_build_linux:
   artifacts:
     paths:
       - conda-bld
-  only:
-    - master
-    - develop
-    - merge_requests
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'  
+    - if: $CI_COMMIT_BRANCH == 'develop'  
+    - if: $CI_MERGE_REQUEST_ID  
 
 anaconda_linux_master:
   stage: deploy
@@ -34,8 +34,8 @@ anaconda_linux_master:
   - conda install conda-build anaconda-client
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
   extends: .template_retry
-  only:
-  - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'  
 
 
 anaconda_linux_develop :
@@ -46,8 +46,8 @@ anaconda_linux_develop :
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
   extends: .template_retry
   when: manual
-  only:
-  - develop
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'develop'  
 
 
 pages:
@@ -63,6 +63,6 @@ pages:
   artifacts:
     paths:
     - public
-  only:
-  - master
-  - develop
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'  
+    - if: $CI_COMMIT_BRANCH == 'develop'  
