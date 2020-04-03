@@ -261,7 +261,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
         QVariantAnimation *animation = new QVariantAnimation(this);
         animation->setDuration(500);
         animation->setStartValue(d->stack->height());
-        animation->setEndValue(0);
+        animation->setEndValue(6);
         animation->setEasingCurve(QEasingCurve::OutQuad);
 
         connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
@@ -281,7 +281,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
 
         QVariantAnimation *animation = new QVariantAnimation(this);
         animation->setDuration(500);
-        animation->setStartValue(0);
+        animation->setStartValue(6);
         animation->setEndValue(l_h);
         animation->setEasingCurve(QEasingCurve::OutQuad);
 
@@ -306,7 +306,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
        QVariantAnimation *animation = new QVariantAnimation(this);
        animation->setDuration(500);
        animation->setStartValue(d->stack->height());
-       animation->setEndValue(0);
+       animation->setEndValue(6);
        animation->setEasingCurve(QEasingCurve::OutQuad);
 
        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
@@ -326,7 +326,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
 
        QVariantAnimation *animation = new QVariantAnimation(this);
        animation->setDuration(500);
-       animation->setStartValue(0);
+       animation->setStartValue(6);
        animation->setEndValue(l_h);
        animation->setEasingCurve(QEasingCurve::OutQuad);
 
