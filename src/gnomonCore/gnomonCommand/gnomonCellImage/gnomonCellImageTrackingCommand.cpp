@@ -21,13 +21,18 @@ class gnomonCellImageTrackingCommandPrivate
 {
 public:
     gnomonImageSeries* image = nullptr;
+    gnomonCellImageSeries* input_cellImage = nullptr;
+
     gnomonCellImageSeries* cellImage = nullptr;
+    gnomonTreeSeries* tree = nullptr;
 };
 
 gnomonCellImageTrackingCommand::gnomonCellImageTrackingCommand(const QString& key) : d(new gnomonCellImageTrackingCommandPrivate)
 {
-    loadPluginGroup("cellImageTracking");
+    this->factory_name = "cellImageTracking";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::cellImageTracking::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -43,6 +48,21 @@ void gnomonCellImageTrackingCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
+    if ((!cellImage)||(cellImage->times().size())==0) {
+        d->cellImage = nullptr;
+    } else {
+        d->cellImage = cellImage;
+    }
+
+    gnomonTreeSeries *tree = ((gnomonAbstractCellImageTracking *) this->action)->tree();
+    if ((!tree)||(tree->times().size()==0)) {
+        d->tree = nullptr;
+    }
+    else {
+        d->tree = tree;
+    }
 }
 
 void gnomonCellImageTrackingCommand::undo(void)
@@ -53,19 +73,25 @@ void gnomonCellImageTrackingCommand::undo(void)
 
 void gnomonCellImageTrackingCommand::setImage(gnomonImageSeries *image)
 {
-    d->image = image;
-
-    Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageTracking *) this->action)->setImage(d->image);
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        d->image = nullptr;
+    } else {
+        d->image = image;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractCellImageTracking *) this->action)->setImage(d->image);
+    }
 }
-
 
 void gnomonCellImageTrackingCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    d->cellImage = cellImage;
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        d->input_cellImage = nullptr;
+    } else {
+        d->input_cellImage = cellImage;
 
-    Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageTracking *) this->action)->setCellImage(d->cellImage);
+        Q_ASSERT(this->action);
+        ((gnomonAbstractCellImageTracking *) this->action)->setCellImage(d->input_cellImage);
+    }
 }
 
 void gnomonCellImageTrackingCommand::setParameter(const QString& parameter, const QVariant& value)
@@ -80,23 +106,28 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageTrackingCommand::parameters(
 
 gnomonCellImageSeries *gnomonCellImageTrackingCommand::cellImage(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
-    if ((!cellImage)||(cellImage->times().size())==0) {
-        return nullptr;
-    } else {
-        return cellImage;
-    }
+    return d->cellImage;
 }
 
 gnomonTreeSeries *gnomonCellImageTrackingCommand::tree(void)
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractCellImageTracking *) this->action)->tree();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
-    }
-    else {
-        return tree;
-    }
+    return d->tree;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageTrackingCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["image"] = d->image;
+    inputs["cellImage"] = d->input_cellImage;
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageTrackingCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["cellImage"] = this->cellImage();
+    outputs["tree"] = this->tree();
+    return outputs;
 }
 
 bool gnomonCellImageTrackingCommand::isEmpty(void)

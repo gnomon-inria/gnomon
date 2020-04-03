@@ -94,10 +94,13 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(this->color);
-    d->view->setInputView(false);
-    d->view->setEnableLinking(false);
+    d->view->setInputView(true);
+
+    connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
+
+    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_layout = new QVBoxLayout;
     d->mpl_layout->setContentsMargins(0, 0, 0, 0);
@@ -203,11 +206,19 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
         d->command->setImage(d->view->image());
     }
 
+    d->view->setInputView(true);
+
     d->command->redo();
 
-    qDebug()<<Q_FUNC_INFO<<d->command->cellImage();
+
+    if(d->command->cellImage() != nullptr | d->command->dataFrame() != nullptr) {
+        d->registerPipeline();
+    }
+
     if(d->command->cellImage()) {
         d->view->setCellImage(dynamic_cast<gnomonCellImageSeries *>(d->command->cellImage()->clone()));
+        d->pipeline->addClonedForm(d->command->cellImage(),d->view->cellImage());
+        d->pipeline->addForm(d->command->cellImage());
         d->view->setInputView(false);
     }
 
