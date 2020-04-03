@@ -479,54 +479,68 @@ void gnomonPipeline::addConstructor(gnomonAbstractConstructorCommand *command)
 
 void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 {
+    qDebug()<<Q_FUNC_INFO<<form;
+    for (auto algo_form : d->algorithm_nodes.keys()) {
+        qDebug()<<Q_FUNC_INFO<<algo_form<<d->algorithm_nodes[algo_form]->algorithm_class;
+    }
     if (d->reader_nodes.contains(form)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form];
-        QString node_name = node->algorithm_class;
-        if (!d->node_type_count.contains(node->algorithm_class)) {
-            d->node_type_count[node->algorithm_class] = 1;
-        } else {
-            node_name += QString::number(d->node_type_count[node->algorithm_class]);
-            d->node_type_count[node->algorithm_class] += 1;
+
+        if (!d->pipeline_nodes.values().contains(node))
+        {
+            QString node_name = node->algorithm_class;
+            if (!d->node_type_count.contains(node->algorithm_class)) {
+                d->node_type_count[node->algorithm_class] = 1;
+            } else {
+                node_name += QString::number(d->node_type_count[node->algorithm_class]);
+                d->node_type_count[node->algorithm_class] += 1;
+            }
+            d->pipeline_node_names.append(node_name);
+            d->pipeline_nodes[node_name] = node;
+
+            d->forceDrivenLayout();
+
+            emit nodeAdded(node);
         }
-        d->pipeline_node_names.append(node_name);
-        d->pipeline_nodes[node_name] = node;
-
-        d->forceDrivenLayout();
-
-        emit nodeAdded(node);
     } else if (d->constructor_nodes.contains(form)) {
         gnomonPipelineNodeConstructor *node = d->constructor_nodes[form];
 
-        QString node_name = node->algorithm_class;
-        if (!d->node_type_count.contains(node->algorithm_class)) {
-            d->node_type_count[node->algorithm_class] = 1;
-        } else {
-            node_name += QString::number(d->node_type_count[node->algorithm_class]);
-            d->node_type_count[node->algorithm_class] += 1;
+        if (!d->pipeline_nodes.values().contains(node))
+        {
+            QString node_name = node->algorithm_class;
+            if (!d->node_type_count.contains(node->algorithm_class)) {
+                d->node_type_count[node->algorithm_class] = 1;
+            } else {
+                node_name += QString::number(d->node_type_count[node->algorithm_class]);
+                d->node_type_count[node->algorithm_class] += 1;
+            }
+            d->pipeline_node_names.append(node_name);
+            d->pipeline_nodes[node_name] = node;
+
+            d->forceDrivenLayout();
+
+            emit nodeAdded(node);
         }
-        d->pipeline_node_names.append(node_name);
-        d->pipeline_nodes[node_name] = node;
-
-        d->forceDrivenLayout();
-
-        emit nodeAdded(node);
     } else if (d->algorithm_nodes.contains(form)) {
         gnomonPipelineNodeAlgorithm *node = d->algorithm_nodes[form];
 
-        QString node_name = node->algorithm_class;
-        if (!d->node_type_count.contains(node->algorithm_class)) {
-            d->node_type_count[node->algorithm_class] = 1;
-        } else {
-            node_name += QString::number(d->node_type_count[node->algorithm_class]);
-            d->node_type_count[node->algorithm_class] += 1;
+        if (!d->pipeline_nodes.values().contains(node))
+        {
+            QString node_name = node->algorithm_class;
+            if (!d->node_type_count.contains(node->algorithm_class)) {
+                d->node_type_count[node->algorithm_class] = 1;
+            } else {
+                node_name += QString::number(d->node_type_count[node->algorithm_class]);
+                d->node_type_count[node->algorithm_class] += 1;
+            }
+            d->pipeline_node_names.append(node_name);
+            d->pipeline_nodes[node_name] = node;
+
+            d->linkNodeInputs(node);
+            d->forceDrivenLayout();
+
+            emit nodeAdded(node);
         }
-        d->pipeline_node_names.append(node_name);
-        d->pipeline_nodes[node_name] = node;
-
-        d->linkNodeInputs(node);
-        d->forceDrivenLayout();
-
-        emit nodeAdded(node);
     }
 }
 
