@@ -26,6 +26,8 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
+
 // /////////////////////////////////////////////////////////////////////////////
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
@@ -226,12 +228,6 @@ public:
     dtkWidgetsMenu *tools_menu;
 
 public:
-    dtkWidgetsMenu *dashboard_menu;
-    dtkWidgetsMenuItemDIY *dashboard_menu_parameters;
-    dtkWidgetsMenuItemDIY *dashboard_menu_controls;
-    dtkWidgetsMenuBarContainer *dashboard;
-
-public:
     QWidget *in_code = nullptr;
     QWidget *in_axiom = nullptr;
     QWidget *out_view = nullptr;
@@ -242,6 +238,7 @@ public:
 
 public:
     void exportAxiom(void);
+    void disableFloatingDockWidgets(QWidget *parent);
 };
 
 void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
@@ -391,10 +388,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->tools_menu = new dtkWidgetsMenu(fa::gears, "Tools");
 
-    d->dashboard_menu_parameters = new dtkWidgetsMenuItemDIY("Parameters");
-    d->dashboard_menu_parameters->addLayout(params_layout);
-    d->dashboard_menu_parameters->setSizePolicy(QSizePolicy::Expanding);
-
     d->run_button = new QPushButton;
     d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
     d->run_button->setStyleSheet("background: none; border: none; color: @fg");
@@ -440,18 +433,27 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->use_axiom->setTristate(false);
     d->use_axiom->setChecked(true);
 
-    d->dashboard_menu_controls = new dtkWidgetsMenuItemDIY("Controls");
-    d->dashboard_menu_controls->addWidget(controls);
-    d->dashboard_menu_controls->addWidget(d->use_axiom);
+    QWidget *dashboard = new QFrame;
+    QLayout *dashboard_layout = new QVBoxLayout;
+    dashboard->setLayout(dashboard_layout);
+    dashboard_layout->addWidget(new QLabel("L-System Simulator"));
 
-    d->dashboard_menu = new dtkWidgetsMenu(fa::circleo, "L-System Simulator");
-    d->dashboard_menu->addItem(d->dashboard_menu_parameters);
-    d->dashboard_menu->addItem(d->dashboard_menu_controls);
-
-    d->dashboard = new dtkWidgetsMenuBarContainer(this);
-    d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->dashboard_menu);
-    d->dashboard->setFixedWidth(300);
+    auto addToDashboard = [&] (QWidget *widget, bool add_separator, QLabel *title=nullptr)
+    {
+        if (add_separator) {
+            QFrame *separator = new QFrame();
+            separator->setFrameShape(QFrame::HLine);
+            separator->setFrameShadow(QFrame::Raised);//Sunken);
+            dashboard_layout->addWidget(separator);
+        }
+        if (title != nullptr) {
+            dashboard_layout->addWidget(title);
+        }
+        dashboard_layout->addWidget(widget);
+    };
+    addToDashboard(d->params, true, new QLabel("Parameters"));
+    addToDashboard(controls, true, new QLabel("Controls"));
+    addToDashboard(d->use_axiom, false);
 
     d->rhs_area = new QWidget(this);
 
@@ -462,14 +464,21 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->splitter = new QSplitter(this);
     d->splitter->addWidget(d->lhs);
-    d->splitter->addWidget(d->rhs_area);
+
+    QSplitter *splitter_rhs = new QSplitter(this);
+    splitter_rhs->addWidget(d->rhs_area);
+    splitter_rhs->addWidget(dashboard);
+    d->splitter->addWidget(splitter_rhs);
+
+    for (auto *splitter: { d->splitter, splitter_rhs }) {
+        splitter->setHandleWidth(5);
+    }
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     // layout->addWidget(d->spinner);
     layout->addWidget(d->splitter);
-    layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -674,8 +683,28 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                 }
             }
         }
-    }    
+    }
 }
+
+void gnomonWorkspaceLSystemSimulatorPrivate::disableFloatingDockWidgets(QWidget *parent)
+{
+    static QSet<QWidget *> already_disabled;
+    if (already_disabled.contains(parent)) {
+        return;
+    }
+    already_disabled << parent;
+
+    auto *as_dock_widget = dynamic_cast<QDockWidget *>(parent);
+    if (as_dock_widget != nullptr) {
+        as_dock_widget->setFeatures(as_dock_widget->features() & ~(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable));
+    }
+    for (auto *child: parent->children()) {
+        auto *as_widget = dynamic_cast<QWidget *>(child);
+        if (as_widget != nullptr) {
+            disableFloatingDockWidgets(as_widget);
+        }
+    }
+};
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
@@ -685,6 +714,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     if(filled.contains(widget))
         return;
+
+    d->disableFloatingDockWidgets(widget);
 
 // /////////////////////////////////////////////////////////////////////////////
 // LPYCodeEditor
@@ -739,17 +770,14 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     else if(widget->objectName() == "LPYScalars") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Scalars");
-        d->dashboard->update();
     }
 
     else if(widget->objectName() == "LPYCurves") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Graphical Objects");
-        d->dashboard->update();
     }
 
     else if(widget->objectName() == "LPYMaterials") {
         d->params->addTab(static_cast<QDockWidget *>(widget)->widget(), "Materials");
-        d->dashboard->update();
     }
 
     else if(widget->objectName() == "LPYMainWindow") {
@@ -850,6 +878,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget->parentWidget())) {
 
+            window->statusBar()->setSizeGripEnabled(false);
             foreach(QWidget *widget, window->findChildren<QToolBar *>()) {
 
                 if(widget->objectName() == "LocationBar")
@@ -865,7 +894,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 widget->setVisible(true); // NOTE: Does the trick! Com'on ....
 
                 // dynamic_cast<QHBoxLayout *>(d->rhs_area->layout())->insertWidget(0, widget);
-               
+
                 qDebug() << "Got a toolbar!" << widget;
             }
 
@@ -914,7 +943,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->lhs->addTab(d->axiom_widget, "Axiom");
 
         // d->in_axiom_bar->setFixedHeight(d->in_axiom->height() + 150);
-       
+
         // window->hide();
     }
 
@@ -942,6 +971,10 @@ const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
 bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 {
+    loadPluginGroup("matplotlibVisualizationLString");
+    if (gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys().count() == 0) {
+        return true;
+    }
     int stat;
     dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy", &stat);
     return (stat == 1) && (gnomonCore::lStringData::pluginFactory().keys().contains("gnomonLStringDataLPy"));
