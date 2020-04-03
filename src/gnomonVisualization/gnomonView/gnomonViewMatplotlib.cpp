@@ -504,6 +504,7 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
 
     this->setObjectName("ViewMatplotlib");
+    this->setMinimumHeight(8);
 
     QFile file(":gnomon/matplotlib_figure.py");
 
