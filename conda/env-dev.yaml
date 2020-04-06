@@ -25,6 +25,7 @@ dependencies:
   - dtk-widgets >=2.20.0
   - dtk-composer >=2.0.0
   - vtk =8.2.0
+  - libnetcdf =4.7.3
   - tbb-devel
   - xtensor
   - dtk-script

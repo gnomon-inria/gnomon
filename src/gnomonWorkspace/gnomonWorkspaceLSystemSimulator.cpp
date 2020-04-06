@@ -187,6 +187,47 @@ void gnomonHighlighterLString::highlightBlock(const QString& text)
 }
 
 // /////////////////////////////////////////////////////////////////////////////
+//  gnomonPushButtonLPyAction
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonPushButtonLPyAction : public QPushButton
+{
+public:
+     gnomonPushButtonLPyAction(const QString&, const QString&, QWidget *parent = nullptr);
+    ~gnomonPushButtonLPyAction(void);
+
+public slots:
+    void setEnabled(bool);
+
+protected:
+    QString path_on;
+    QString path_off;
+};
+
+gnomonPushButtonLPyAction::gnomonPushButtonLPyAction(const QString& path_on, const QString& path_off, QWidget *parent) : QPushButton(parent)
+{
+    this->path_on = path_on;
+    this->path_off = path_off;
+    this->setIcon(QIcon(QPixmap(path_on).scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+    this->setStyleSheet("background: none; border: none; color: @fg");
+    this->setIconSize(QSize(32,32));
+}
+
+gnomonPushButtonLPyAction::~gnomonPushButtonLPyAction(void)
+{
+}
+
+void gnomonPushButtonLPyAction::setEnabled(bool enabled)
+{
+    QPushButton::setEnabled(enabled);
+    if (enabled){
+        this->setIcon(QIcon(QPixmap(path_on).scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+    } else {
+        this->setIcon(QIcon(QPixmap(path_off).scaled(QSize(32,32),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+    }
+}
+
+// /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -215,11 +256,11 @@ public:
     QWidget *axiom_widget = nullptr;
 
 public:
-    QPushButton *run_button;
-    QPushButton *stop_button;
-    QPushButton *rewind_button;
-    QPushButton *animate_button;
-    QPushButton *step_button;
+    gnomonPushButtonLPyAction *run_button;
+    gnomonPushButtonLPyAction *stop_button;
+    gnomonPushButtonLPyAction *rewind_button;
+    gnomonPushButtonLPyAction *animate_button;
+    gnomonPushButtonLPyAction *step_button;
 
     QCheckBox *use_axiom;
 
@@ -395,41 +436,18 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->tools_menu = new dtkWidgetsMenu(fa::gears, "Tools");
 
-    d->run_button = new QPushButton;
-    d->run_button->setIcon(dtkFontAwesome::instance()->icon(fa::playcircleo));
-    d->run_button->setStyleSheet("background: none; border: none; color: @fg");
-    d->run_button->setIconSize(QSize(32,32));
-
-    d->stop_button = new QPushButton;
-    d->stop_button->setIcon(dtkFontAwesome::instance()->icon(fa::pause));
-    d->stop_button->setStyleSheet("background: none; border: none; color: @fg");
-    d->stop_button->setIconSize(QSize(32,32));
-
-    d->rewind_button = new QPushButton;
-    d->rewind_button->setIcon(dtkFontAwesome::instance()->icon(fa::backward));
-    d->rewind_button->setStyleSheet("background: none; border: none; color: @fg");
-    d->rewind_button->setIconSize(QSize(32,32));
-
-    dtkFontAwesome::instance()->setDefaultOption("color", QColor(Qt::red));
-
-    d->animate_button = new QPushButton;
-    d->animate_button->setIcon(dtkFontAwesome::instance()->icon(fa::play));
-    d->animate_button->setStyleSheet("background: none; border: none; color: @fg");
-    d->animate_button->setIconSize(QSize(32,32));
-
-    dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
-
-    d->step_button = new QPushButton;
-    d->step_button->setIcon(dtkFontAwesome::instance()->icon(fa::stepforward));
-    d->step_button->setStyleSheet("background: none; border: none; color: @fg");
-    d->step_button->setIconSize(QSize(32,32));
+    d->run_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Run.png",":gnomon/gnomonButton-Run-off.png");
+    d->animate_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Animate.png",":gnomon/gnomonButton-Animate-off.png");
+    d->stop_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Stop.png",":gnomon/gnomonButton-Stop-off.png");
+    d->rewind_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Rewind.png",":gnomon/gnomonButton-Rewind-off.png");
+    d->step_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Step.png",":gnomon/gnomonButton-Step-off.png");
 
     QHBoxLayout *controls_layout = new QHBoxLayout;
     controls_layout->setContentsMargins(0, 0, 0, 0);
     controls_layout->addWidget(d->run_button);
+    controls_layout->addWidget(d->animate_button);
     controls_layout->addWidget(d->stop_button);
     controls_layout->addWidget(d->rewind_button);
-    controls_layout->addWidget(d->animate_button);
     controls_layout->addWidget(d->step_button);
     controls_layout->setAlignment(Qt::AlignHCenter);
 
@@ -443,7 +461,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QWidget *dashboard = new QFrame;
     QLayout *dashboard_layout = new QVBoxLayout;
     dashboard->setLayout(dashboard_layout);
-    dashboard_layout->addWidget(new QLabel("L-System Simulator"));
+    dashboard_layout->addWidget(new QLabel("Simulation Parameters"));
 
     auto addToDashboard = [&] (QWidget *widget, bool add_separator, QLabel *title=nullptr)
     {

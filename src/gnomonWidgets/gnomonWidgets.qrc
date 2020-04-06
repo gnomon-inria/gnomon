@@ -6,6 +6,17 @@
   <qresource prefix="gnomon">
     <file>jupyter_console.py</file>
 
+    <file>gnomonButton-Animate.png</file>
+    <file>gnomonButton-Rewind.png</file>
+    <file>gnomonButton-Run.png</file>
+    <file>gnomonButton-Step.png</file>
+    <file>gnomonButton-Stop.png</file>
+    <file>gnomonButton-Animate-off.png</file>
+    <file>gnomonButton-Rewind-off.png</file>
+    <file>gnomonButton-Run-off.png</file>
+    <file>gnomonButton-Step-off.png</file>
+    <file>gnomonButton-Stop-off.png</file>
+
     <file>gnomonButton-XY.png</file>
     <file>gnomonButton-XZ.png</file>
     <file>gnomonButton-YZ.png</file>

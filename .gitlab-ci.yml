@@ -23,8 +23,9 @@ conda_build_linux:
     paths:
       - conda-bld
   only:
-    - master
-    - develop
+  - master
+  - develop
+  - merge_requests
 
 anaconda_linux_master:
   stage: deploy
@@ -45,7 +46,7 @@ anaconda_linux_develop :
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
   extends: .template_retry
   when: manual
-  only:
+  only: 
   - develop
 
 
