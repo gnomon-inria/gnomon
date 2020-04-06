@@ -113,6 +113,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     // -- Elements
 
     d->composer = new dtkComposerWidget;
+    d->composer->scene()->root()->setTitle("Pipeline");
     d->composer->view()->setBackgroundBrush(QColor(dtkThemesEngine::instance()->color("@bg")));
 
     d->closing = false;
@@ -194,7 +195,6 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
         d->last_node->addOutputEdge(edge);
     }
 
-
     d->composer->scene()->addItem(node);
 
     if (edge) {
@@ -210,15 +210,11 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
 
 void gnomonComposerWidget::addNode(gnomonPipelineNode *node)
 {
-//    if (d->last_node) {
-//        node->setPos(d->last_node->pos() + QPointF(300, 0));
-//    }
     node->layout();
 
     d->composer->scene()->addItem(node);
 
     for (const auto& edge : node->inputEdges()) {
-//        d->composer->scene()->root()->addEdge(edge);
         d->composer->scene()->addItem(edge);
     }
 
