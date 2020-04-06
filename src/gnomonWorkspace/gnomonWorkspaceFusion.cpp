@@ -85,6 +85,8 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     d->target->setMinimumWidth(250);
     d->target->setEnableLinking(false);
 
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     QWidget *dummy = new QWidget(this);
     dummy->setLayout(d->sources_layout);
 
@@ -127,14 +129,14 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
     {
         d->command->undo();
+        d->target_message->setMessage("Result will be displayed here");
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
+                d->target_message->setMessage("Result will be displayed here");
             }
         }
         d->configure(d->algorithm);
-//        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
-//        dtkApp->window()->menubar()->touch();
     });
 
     connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
@@ -187,7 +189,6 @@ void gnomonWorkspaceFusion::apply(void)
     if(d->sources_layout->views().isEmpty())
         return;
 
-    d->command->removeImages();
     //d->command->removeLandmarks();
     d->command->undo();
 
@@ -203,6 +204,8 @@ void gnomonWorkspaceFusion::apply(void)
     if (d->command->output()) {
         d->target->setImage(d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
