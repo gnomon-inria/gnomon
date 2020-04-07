@@ -95,6 +95,9 @@ gnomonWorkspaceLStringTranslation::gnomonWorkspaceLStringTranslation(QWidget *pa
 
     d->target = new gnomonViewMatplotlib(this);
 
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
+
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
 // /////////////////////////////////////////////////////////////////////////////
@@ -211,9 +214,12 @@ void gnomonWorkspaceLStringTranslation::apply(void)
         d->target->setForm("gnomonLString",d->command->outputLString());
         d->target_stack->setCurrentWidget(d->target);
     }
-//    if (!d->command->outputTree() && !d->command->outputLString()) {
-//        d->target_stack->setCurrentWidget(d->target_message);
-//    }
+
+    if ((d->command->outputTree() != nullptr) | (d->command->outputLString() != nullptr)) {
+        d->registerPipeline();
+    } else {
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
 }
 
 void gnomonWorkspaceLStringTranslation::configure(const QString& algorithm)
