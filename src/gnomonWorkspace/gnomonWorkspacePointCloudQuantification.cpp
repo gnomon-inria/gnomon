@@ -97,7 +97,11 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
     d->view->setInputView(false);
     d->view->setEnableLinking(false);
 
+    connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     d->mpl_figure = new gnomonViewMatplotlib(this);
+
+    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_layout = new QVBoxLayout;
     d->mpl_layout->setContentsMargins(0, 0, 0, 0);
@@ -203,11 +207,18 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
         d->command->setImage(d->view->image());
     }
 
-    d->command->redo();
+    d->view->setInputView(true);
 
-    qDebug()<<Q_FUNC_INFO<<d->command->pointCloud();
+    d->command->redo();
+    
+    if(d->command->pointCloud() != nullptr | d->command->dataFrame() != nullptr) {
+        d->registerPipeline();
+    }
+
     if(d->command->pointCloud()) {
         d->view->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(d->command->pointCloud()->clone()));
+        d->pipeline->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
+        d->pipeline->addForm(d->command->pointCloud());
         d->view->setInputView(false);
     }
 

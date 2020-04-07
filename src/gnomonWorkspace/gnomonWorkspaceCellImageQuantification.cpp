@@ -210,7 +210,6 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
 
     d->command->redo();
 
-
     if(d->command->cellImage() != nullptr | d->command->dataFrame() != nullptr) {
         d->registerPipeline();
     }

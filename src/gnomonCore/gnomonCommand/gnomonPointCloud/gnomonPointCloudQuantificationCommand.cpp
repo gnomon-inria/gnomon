@@ -21,13 +21,18 @@ class gnomonPointCloudQuantificationCommandPrivate
 {
 public:
     gnomonImageSeries* image = nullptr;
+    gnomonPointCloudSeries* input_pointCloud = nullptr;
+
     gnomonPointCloudSeries* pointCloud = nullptr;
+    gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
 gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand(const QString& key) : d(new gnomonPointCloudQuantificationCommandPrivate)
 {
-    loadPluginGroup("pointCloudQuantification");
+    this->factory_name = "pointCloudQuantification";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -43,6 +48,21 @@ void gnomonPointCloudQuantificationCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
+    if ((!pointCloud)||(pointCloud->times().size())==0) {
+        d->pointCloud = nullptr;
+    } else {
+        d->pointCloud = pointCloud;
+    }
+
+    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
+    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+        d->dataFrame = nullptr;
+    }
+    else {
+        d->dataFrame = dataFrame;
+    }
 }
 
 void gnomonPointCloudQuantificationCommand::undo(void)
@@ -53,19 +73,25 @@ void gnomonPointCloudQuantificationCommand::undo(void)
 
 void gnomonPointCloudQuantificationCommand::setImage(gnomonImageSeries *image)
 {
-    d->image = image;
-
-    Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        d->image = nullptr;
+    } else {
+        d->image = image;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
+    }
 }
-
 
 void gnomonPointCloudQuantificationCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)
 {
-    d->pointCloud = pointCloud;
+    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+        d->input_pointCloud = nullptr;
+    } else {
+        d->input_pointCloud = pointCloud;
 
-    Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->pointCloud);
+        Q_ASSERT(this->action);
+        ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->input_pointCloud);
+    }
 }
 
 void gnomonPointCloudQuantificationCommand::setParameter(const QString& parameter, const QVariant& value)
@@ -80,23 +106,28 @@ QMap<QString, gnomonCoreParameter *> gnomonPointCloudQuantificationCommand::para
 
 gnomonPointCloudSeries *gnomonPointCloudQuantificationCommand::pointCloud(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
-    if ((!pointCloud)||(pointCloud->times().size())==0) {
-        return nullptr;
-    } else {
-        return pointCloud;
-    }
+    return d->pointCloud;
 }
 
 gnomonDataFrameSeries *gnomonPointCloudQuantificationCommand::dataFrame(void)
 {
-    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
-    if ((!dataFrame)||(dataFrame->times().size()==0)) {
-        return nullptr;
-    }
-    else {
-        return dataFrame;
-    }
+    return d->dataFrame;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["image"] = d->image;
+    inputs["pointCloud"] = d->input_pointCloud;
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["pointCloud"] = this->pointCloud();
+    outputs["dataFrame"] = this->dataFrame();
+    return outputs;
 }
 
 bool gnomonPointCloudQuantificationCommand::isEmpty(void)
