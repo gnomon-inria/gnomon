@@ -80,39 +80,41 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = this->node_input_forms[node];
     for (const auto& input : input_forms.keys()) {
         gnomonAbstractDynamicForm *input_form = input_forms[input];
-        if (this->form_clones.contains(input_form)) {
-            input_form = this->form_clones[input_form];
-        }
-        dtkComposerSceneEdge *edge = nullptr;
-        QPair<QString, QString> edge_source;
-        QPair<QString, QString> edge_target;
-        if (this->reader_nodes.contains(input_form)) {
-            edge = new dtkComposerSceneEdge();
-            edge->setSource(this->reader_nodes[input_form]->output_ports[this->reader_output[input_form]]);
-            edge_source.first = this->pipeline_nodes.key(this->reader_nodes[input_form]);
-            edge_source.second = this->reader_output[input_form];
-        } else if (this->constructor_nodes.contains(input_form)) {
-            edge = new dtkComposerSceneEdge();
-            edge->setSource(this->constructor_nodes[input_form]->output_ports[this->constructor_output[input_form]]);
-            edge_source.first = this->pipeline_nodes.key(this->constructor_nodes[input_form]);
-            edge_source.second = this->constructor_output[input_form];
-        } else if (this->algorithm_nodes.contains(input_form)) {
-            edge = new dtkComposerSceneEdge();
-            edge->setSource(this->algorithm_nodes[input_form]->output_ports[this->algorithm_output[input_form]]);
-            edge_source.first = this->pipeline_nodes.key(this->algorithm_nodes[input_form]);
-            edge_source.second = this->algorithm_output[input_form];
-        }
-        if (edge) {
-            if (gnomonPipelineNodeWriter *writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
-                edge->setDestination(writer_node->input_ports[input]);
-            } else if (gnomonPipelineNodeAlgorithm *algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
-                edge->setDestination(algorithm_node->input_ports[input]);
-            } 
-            edge->link(true);
-            node->addInputEdge(edge);
-            edge_target.first = this->pipeline_nodes.key(node);
-            edge_target.second = input;
-            this->pipeline_edges[edge_target] = edge_source;
+        if (input_form) {
+            if (this->form_clones.contains(input_form)) {
+                input_form = this->form_clones[input_form];
+            }
+            dtkComposerSceneEdge *edge = nullptr;
+            QPair<QString, QString> edge_source;
+            QPair<QString, QString> edge_target;
+            if (this->reader_nodes.contains(input_form)) {
+                edge = new dtkComposerSceneEdge();
+                edge->setSource(this->reader_nodes[input_form]->output_ports[this->reader_output[input_form]]);
+                edge_source.first = this->pipeline_nodes.key(this->reader_nodes[input_form]);
+                edge_source.second = this->reader_output[input_form];
+            } else if (this->constructor_nodes.contains(input_form)) {
+                edge = new dtkComposerSceneEdge();
+                edge->setSource(this->constructor_nodes[input_form]->output_ports[this->constructor_output[input_form]]);
+                edge_source.first = this->pipeline_nodes.key(this->constructor_nodes[input_form]);
+                edge_source.second = this->constructor_output[input_form];
+            } else if (this->algorithm_nodes.contains(input_form)) {
+                edge = new dtkComposerSceneEdge();
+                edge->setSource(this->algorithm_nodes[input_form]->output_ports[this->algorithm_output[input_form]]);
+                edge_source.first = this->pipeline_nodes.key(this->algorithm_nodes[input_form]);
+                edge_source.second = this->algorithm_output[input_form];
+            }
+            if (edge) {
+                if (gnomonPipelineNodeWriter *writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
+                    edge->setDestination(writer_node->input_ports[input]);
+                } else if (gnomonPipelineNodeAlgorithm *algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
+                    edge->setDestination(algorithm_node->input_ports[input]);
+                }
+                edge->link(true);
+                node->addInputEdge(edge);
+                edge_target.first = this->pipeline_nodes.key(node);
+                edge_target.second = input;
+                this->pipeline_edges[edge_target] = edge_source;
+            }
         }
     }
 }
