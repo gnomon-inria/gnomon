@@ -81,7 +81,9 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
     for (const auto& input : input_forms.keys()) {
         gnomonAbstractDynamicForm *input_form = input_forms[input];
         if (input_form) {
-            if (this->form_clones.contains(input_form)) {
+            qDebug()<<Q_FUNC_INFO<<input<<input_form;
+            qDebug()<<Q_FUNC_INFO<<this->form_clones;
+            while (this->form_clones.contains(input_form) & !this->reader_nodes.contains(input_form)) {
                 input_form = this->form_clones[input_form];
             }
             dtkComposerSceneEdge *edge = nullptr;
