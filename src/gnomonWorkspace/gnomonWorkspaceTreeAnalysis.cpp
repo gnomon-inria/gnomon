@@ -100,6 +100,8 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     d->source = new gnomonViewMatplotlib(this);
     d->target = new gnomonViewMatplotlib(this);
 
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
 // /////////////////////////////////////////////////////////////////////////////
@@ -206,6 +208,8 @@ void gnomonWorkspaceTreeAnalysis::apply(void)
     if (d->command->output()) {
         d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }

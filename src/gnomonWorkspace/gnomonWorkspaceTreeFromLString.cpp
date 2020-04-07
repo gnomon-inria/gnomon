@@ -93,6 +93,8 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     d->target = new gnomonViewMatplotlib(this);
 //    d->target->setExportColor(gnomonToolBar::treeFromLString_color);
 
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: LSystem Editor
 // /////////////////////////////////////////////////////////////////////////////
@@ -232,6 +234,8 @@ void gnomonWorkspaceTreeFromLString::apply(void)
     if (d->command->output()) {
         d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
