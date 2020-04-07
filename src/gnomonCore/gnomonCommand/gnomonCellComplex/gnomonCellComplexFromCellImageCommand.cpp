@@ -20,7 +20,7 @@
 class gnomonCellComplexFromCellImageCommandPrivate
 {
 public:
-    gnomonCellImageSeries* input = nullptr;
+    gnomonCellImageSeries *input = nullptr;
     gnomonCellComplexSeries *output = nullptr;
 };
 
