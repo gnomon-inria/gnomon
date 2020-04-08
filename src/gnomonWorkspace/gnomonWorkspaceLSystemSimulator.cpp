@@ -455,7 +455,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
     d->run_button->setToolTip("Run");
     d->animate_button->setToolTip("Animate");
-    d->stop_button->setToolTip("Stop");
+    d->stop_button->setToolTip("Pause");
     d->rewind_button->setToolTip("Rewind");
     d->step_button->setToolTip("Step");
 
