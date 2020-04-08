@@ -443,6 +443,12 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->rewind_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Rewind.png",":gnomon/gnomonButton-Rewind-off.png");
     d->step_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Step.png",":gnomon/gnomonButton-Step-off.png");
 
+    d->run_button->setToolTip("Run");
+    d->animate_button->setToolTip("Animate");
+    d->stop_button->setToolTip("Stop");
+    d->rewind_button->setToolTip("Rewind");
+    d->step_button->setToolTip("Step");
+
     QHBoxLayout *controls_layout = new QHBoxLayout;
     controls_layout->setContentsMargins(0, 0, 0, 0);
     controls_layout->addWidget(d->run_button);
