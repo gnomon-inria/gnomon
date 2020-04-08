@@ -664,6 +664,10 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
 
                     this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
+                        if (button == d->stop_button) {
+                            reaction->trigger();
+                            return;
+                        }
                         d->updateButtonsEnabled(true);
 
                         int stat;
