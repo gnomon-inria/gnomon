@@ -52,6 +52,7 @@ void build(QMenu *menu, dtkWidgetsMenu *w_menu)
                 dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
 
                 QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
+                QObject::connect(item, SIGNAL(clicked()), dtkApp->window()->menubar(), SLOT(collapse()));
             }
         }
     }
