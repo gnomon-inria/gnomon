@@ -91,25 +91,25 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
             QPair<QString, QString> edge_target;
             if (this->reader_nodes.contains(input_form)) {
                 edge = new dtkComposerSceneEdge();
-                edge->setSource(this->reader_nodes[input_form]->output_ports[this->reader_output[input_form]]);
+                edge->setSource(this->reader_nodes[input_form]->outputPorts()[this->reader_output[input_form]]);
                 edge_source.first = this->pipeline_nodes.key(this->reader_nodes[input_form]);
                 edge_source.second = this->reader_output[input_form];
             } else if (this->constructor_nodes.contains(input_form)) {
                 edge = new dtkComposerSceneEdge();
-                edge->setSource(this->constructor_nodes[input_form]->output_ports[this->constructor_output[input_form]]);
+                edge->setSource(this->constructor_nodes[input_form]->outputPorts()[this->constructor_output[input_form]]);
                 edge_source.first = this->pipeline_nodes.key(this->constructor_nodes[input_form]);
                 edge_source.second = this->constructor_output[input_form];
             } else if (this->algorithm_nodes.contains(input_form)) {
                 edge = new dtkComposerSceneEdge();
-                edge->setSource(this->algorithm_nodes[input_form]->output_ports[this->algorithm_output[input_form]]);
+                edge->setSource(this->algorithm_nodes[input_form]->outputPorts()[this->algorithm_output[input_form]]);
                 edge_source.first = this->pipeline_nodes.key(this->algorithm_nodes[input_form]);
                 edge_source.second = this->algorithm_output[input_form];
             }
             if (edge) {
                 if (gnomonPipelineNodeWriter *writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
-                    edge->setDestination(writer_node->input_ports[input]);
+                    edge->setDestination(writer_node->inputPorts()[input]);
                 } else if (gnomonPipelineNodeAlgorithm *algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
-                    edge->setDestination(algorithm_node->input_ports[input]);
+                    edge->setDestination(algorithm_node->inputPorts()[input]);
                 }
                 edge->link(true);
                 node->addInputEdge(edge);
@@ -429,12 +429,12 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
 
     gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(),command->algorithmName(),command->path(),input_forms.keys());
 
-    QString node_name = node->algorithm_class;
-    if (!d->node_type_count.contains(node->algorithm_class)) {
-        d->node_type_count[node->algorithm_class] = 1;
+    QString node_name = node->algorithmClass();
+    if (!d->node_type_count.contains(node->algorithmClass())) {
+        d->node_type_count[node->algorithmClass()] = 1;
     } else {
-        node_name += QString::number(d->node_type_count[node->algorithm_class]);
-        d->node_type_count[node->algorithm_class] += 1;
+        node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+        d->node_type_count[node->algorithmClass()] += 1;
     }
     d->pipeline_node_names.append(node_name);
     d->pipeline_nodes[node_name] = node;
@@ -487,12 +487,12 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 
         if (!d->pipeline_nodes.values().contains(node))
         {
-            QString node_name = node->algorithm_class;
-            if (!d->node_type_count.contains(node->algorithm_class)) {
-                d->node_type_count[node->algorithm_class] = 1;
+            QString node_name = node->algorithmClass();
+            if (!d->node_type_count.contains(node->algorithmClass())) {
+                d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithm_class]);
-                d->node_type_count[node->algorithm_class] += 1;
+                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+                d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
@@ -506,12 +506,12 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 
         if (!d->pipeline_nodes.values().contains(node))
         {
-            QString node_name = node->algorithm_class;
-            if (!d->node_type_count.contains(node->algorithm_class)) {
-                d->node_type_count[node->algorithm_class] = 1;
+            QString node_name = node->algorithmClass();
+            if (!d->node_type_count.contains(node->algorithmClass())) {
+                d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithm_class]);
-                d->node_type_count[node->algorithm_class] += 1;
+                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+                d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
@@ -525,12 +525,12 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 
         if (!d->pipeline_nodes.values().contains(node))
         {
-            QString node_name = node->algorithm_class;
-            if (!d->node_type_count.contains(node->algorithm_class)) {
-                d->node_type_count[node->algorithm_class] = 1;
+            QString node_name = node->algorithmClass();
+            if (!d->node_type_count.contains(node->algorithmClass())) {
+                d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithm_class]);
-                d->node_type_count[node->algorithm_class] += 1;
+                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+                d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;

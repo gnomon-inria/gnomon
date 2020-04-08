@@ -17,6 +17,47 @@
 #include "gnomonPipelineNode.h"
 #include "gnomonPipelineNode_p.h"
 
+
+// /////////////////////////////////////////////////////////////////
+// gnomonPipelineNodePrivate
+// /////////////////////////////////////////////////////////////////
+
+QString gnomonPipelineNodePrivate::variantParameterString(const QVariant& parameter)
+{
+    QString parameter_string = "";
+
+    bool int_status;
+    parameter.toInt(&int_status);
+    bool double_status;
+    parameter.toDouble(&double_status);
+
+    if (int_status | double_status) {
+         parameter_string = parameter.toString();
+    } else if (parameter.canConvert<QString>()) {
+         parameter_string = "\"" + parameter.toString() + "\"";
+    } else if (parameter.canConvert<QStringList>()) {
+        QStringList list = parameter.toStringList();
+        parameter_string = "[";
+        for (int i=0; i<list.size(); i++) {
+            if (i>0)
+                parameter_string += ", ";
+            parameter_string += "\"" + list[i] + "\"";
+        }
+        parameter_string += "]";
+    } else if (parameter.canConvert<QList<QVariant>>()) {
+        QList<QVariant> list = parameter.toList();
+        parameter_string = "[";
+        for (int i=0; i<list.size(); i++) {
+            if (i>0)
+                parameter_string += ", ";
+            parameter_string += list[i].toString();
+        }
+        parameter_string += "]";
+    }
+
+    return parameter_string;
+}
+
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNode
 // /////////////////////////////////////////////////////////////////
@@ -40,9 +81,9 @@ gnomonPipelineNode::~gnomonPipelineNode(void)
     d = NULL;
 }
 
-void gnomonPipelineNode::setLabel(const QString& text)
+const QString& gnomonPipelineNode::algorithmClass(void)
 {
-    d->label = text;
+    return d->algorithm_class;
 }
 
 void gnomonPipelineNode::layout(void)
@@ -171,7 +212,7 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     QFont font = painter->font();
     QFontMetricsF metrics(font);
 
-    QString title_text = metrics.elidedText(this->title(), Qt::ElideMiddle, this->boundingRect().width() - 2 - 4 * margin);
+    QString title_text = metrics.elidedText(d->algorithm_class, Qt::ElideMiddle, this->boundingRect().width() - 2 - 4 * margin);
     QPointF title_pos  = QPointF(2 * margin, 2 * margin + metrics.xHeight());
 
     painter->setPen(QPen(QColor(Qt::black)));
@@ -191,9 +232,8 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     font.setPointSize(10);
     QFontMetricsF label_metrics(font);
 
-    QString label_text = label_metrics.elidedText(d->label, Qt::ElideMiddle, this->boundingRect().width() - 2 - 12 * margin);
+    QString label_text = label_metrics.elidedText(d->algorithm, Qt::ElideMiddle, this->boundingRect().width() - 2 - 12 * margin);
     QPointF label_pos = QPointF(200 - 6 * margin - label_metrics.boundingRect(label_text).width(), 4 * margin + 2 + metrics.xHeight() + label_metrics.xHeight());
-
 
     painter->setFont(font);
     painter->setPen(QPen(QColor(Qt::black)));
@@ -205,42 +245,6 @@ QString gnomonPipelineNode::toToml(const QString& node_name)
 {
     QString node_string = "[" + node_name + "]\n" + "\n";
     return node_string;
-}
-
-QString gnomonPipelineNode::variantParameterString(const QVariant& parameter)
-{
-    QString parameter_string = "";
-
-    bool int_status;
-    parameter.toInt(&int_status);
-    bool double_status;
-    parameter.toDouble(&double_status);
-
-    if (int_status | double_status) {
-         parameter_string = parameter.toString();
-    } else if (parameter.canConvert<QString>()) {
-         parameter_string = "\"" + parameter.toString() + "\"";
-    } else if (parameter.canConvert<QStringList>()) {
-        QStringList list = parameter.toStringList();
-        parameter_string = "[";
-        for (int i=0; i<list.size(); i++) {
-            if (i>0)
-                parameter_string += ", ";
-            parameter_string += "\"" + list[i] + "\"";
-        }
-        parameter_string += "]";
-    } else if (parameter.canConvert<QList<QVariant>>()) {
-        QList<QVariant> list = parameter.toList();
-        parameter_string = "[";
-        for (int i=0; i<list.size(); i++) {
-            if (i>0)
-                parameter_string += ", ";
-            parameter_string += list[i].toString();
-        }
-        parameter_string += "]";
-    }
-
-    return parameter_string;
 }
 
 QString gnomonPipelineNode::toLuigiClass(void)

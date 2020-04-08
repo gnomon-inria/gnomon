@@ -18,31 +18,38 @@
 
 
 // /////////////////////////////////////////////////////////////////
+// gnomonPipelineNodeAlgorithmPrivate
+// /////////////////////////////////////////////////////////////////
+
+class gnomonPipelineNodeAlgorithmPrivate {
+public:
+    QMap<QString, QVariant> parameters;
+    QMap<QString, dtkComposerScenePort *> input_ports;
+    QMap<QString, dtkComposerScenePort *> output_ports;
+};
+
+// /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode()
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
 {
     if (algorithm_class.contains("From")) {
         d->color = QColor(153, 69, 69);
     } else {
         d->color = QColor(153, 125, 69);
     }
+    d->algorithm_class = algorithm_class;
+    d->algorithm = algorithm;
 
-    this->algorithm_class = algorithm_class;
-    this->algorithm = algorithm;
-    this->parameters = parameters;
-
-    this->setTitle(this->algorithm_class);
-    this->setLabel(this->algorithm);
-
+    dd->parameters = parameters;
     for (const auto& input : inputs) {
-        this->input_ports[input] = new dtkComposerScenePort(dtkComposerScenePort::Input, this);
-        this->addInputPort(this->input_ports[input]);
+        dd->input_ports[input] = new dtkComposerScenePort(dtkComposerScenePort::Input, this);
+        this->addInputPort(dd->input_ports[input]);
     }
     for (const auto& output : outputs) {
-        this->output_ports[output] = new dtkComposerScenePort(dtkComposerScenePort::Output, this);
-        this->addOutputPort(this->output_ports[output]);
+        dd->output_ports[output] = new dtkComposerScenePort(dtkComposerScenePort::Output, this);
+        this->addOutputPort(dd->output_ports[output]);
     }
     this->layout();
 }
@@ -52,17 +59,27 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
+const QMap<QString, dtkComposerScenePort *>& gnomonPipelineNodeAlgorithm::inputPorts(void)
+{
+    return dd->input_ports;
+}
+
+const QMap<QString, dtkComposerScenePort *>& gnomonPipelineNodeAlgorithm::outputPorts(void)
+{
+    return dd->output_ports;
+}
+
 QString gnomonPipelineNodeAlgorithm::toToml(const QString& node_name)
 {
     QString node_string;
     QTextStream out(&node_string);
     out << "[" << node_name << "]" << "\n";
     out << "task_name = \""<< node_name << "\"\n";
-    out << "plugin_name = \""<< this->algorithm << "\"\n";
+    out << "plugin_name = \""<< d->algorithm << "\"\n";
     out << "    [" << node_name << ".parameters]\n";
-    for (const auto& param : this->parameters.keys()) {
-        QVariant parameter = this->parameters[param];
-        QString parameter_string = this->variantParameterString(parameter);
+    for (const auto& param : dd->parameters.keys()) {
+        QVariant parameter = dd->parameters[param];
+        QString parameter_string = d->variantParameterString(parameter);
         out << "    " << param << " = " << parameter_string << "\n";
     }
     out << "\n";
@@ -74,7 +91,7 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     QString luigi_string;
     QTextStream out(&luigi_string);
 
-    QString class_name = QString(this->algorithm_class) + "Task";
+    QString class_name = QString(d->algorithm_class) + "Task";
     class_name.replace(0, 1, class_name[0].toUpper());
 
     out<<"\n";
@@ -83,24 +100,24 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     out<<"    \n";
     out<<"    def __init__(self, **kwargs):\n";
     out<<"        super().__init__(**kwargs)\n";
-    out<<"        load_plugin_group(\"" << this->algorithm_class << "\")\n";
-    out<<"        self.algorithm = gnomoncore." << this->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
+    out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
+    out<<"        self.algorithm = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = [";
-    for (int i=0; i<this->input_ports.size(); i++) {
+    for (int i=0; i<dd->input_ports.size(); i++) {
         if (i>0) {
             out<<", ";
         }
-        QString input_name = this->input_ports.keys()[i];
+        QString input_name = dd->input_ports.keys()[i];
         out<<"\""<<input_name<<"\"";
     }
     out<<"]\n";
-    for (const auto& output_name : this->output_ports.keys()) {
+    for (const auto& output_name : dd->output_ports.keys()) {
         out<<"        self.form_output_functions[\"" << output_name << "\"] = self.algorithm." << output_name  <<"\n";
     }
     out<<"    \n";
     out<<"    def run(self):\n";
     out<<"        inputs = self.algorithm_inputs()\n";
-    for (const auto& input_name : this->input_ports.keys()) {
+    for (const auto& input_name : dd->input_ports.keys()) {
         QRegularExpression numbered_input("[A-z]+[0-9]+");
         if (numbered_input.match(input_name).hasMatch()) {
             QString input_type_name = QString(input_name);

@@ -20,6 +20,9 @@
 
 class gnomonPipelineNodePrivate
 {
+public:
+    QString algorithm_class;
+    QString algorithm;
 
 public:
     QColor color;
@@ -31,7 +34,7 @@ public:
     QRectF rect;
 
 public:
-    QString label;
+    QString variantParameterString(const QVariant& parameter);
 };
 
 

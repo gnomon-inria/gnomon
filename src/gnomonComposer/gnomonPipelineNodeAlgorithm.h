@@ -25,17 +25,15 @@ public:
     ~gnomonPipelineNodeAlgorithm(void);
 
 public:
-    virtual QString toToml(const QString& node_name) override;
-
-    virtual QString toLuigiClass(void) override;
+    const QMap<QString, dtkComposerScenePort *>& inputPorts(void);
+    const QMap<QString, dtkComposerScenePort *>& outputPorts(void);
 
 public:
-    QString algorithm_class;
-    QString algorithm;
-    QMap<QString, QVariant> parameters;
+    virtual QString toToml(const QString& node_name) override;
+    virtual QString toLuigiClass(void) override;
 
-    QMap<QString, dtkComposerScenePort *> input_ports;
-    QMap<QString, dtkComposerScenePort *> output_ports;
+protected:
+    class gnomonPipelineNodeAlgorithmPrivate *dd;
 };
 
 //
