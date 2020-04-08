@@ -22,13 +22,14 @@
 
 gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs) : gnomonPipelineNode()
 {
-    d->color = QColor(170, 255, 0);
+    d->color = QColor(111, 153, 69);
 
     this->algorithm_class = algorithm_class;
     this->algorithm = algorithm;
     this->path = path;
 
     this->setTitle(this->algorithm_class);
+    this->setLabel(this->algorithm);
 
     for (const auto& output : outputs) {
         this->output_ports[output] = new dtkComposerScenePort(dtkComposerScenePort::Output, this);

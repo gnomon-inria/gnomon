@@ -25,7 +25,7 @@ gnomonPipelineNode::gnomonPipelineNode(void) : dtkComposerSceneNode(), d(new gno
 {
     d->color = QColor(Qt::darkGray);
 
-    d->rect = QRectF(0, 0, 150, 50);
+    d->rect = QRectF(0, 0, 200, 50);
     d->offset = QPointF(50, 50);
 
     this->setAcceptDrops(false);
@@ -40,9 +40,14 @@ gnomonPipelineNode::~gnomonPipelineNode(void)
     d = NULL;
 }
 
+void gnomonPipelineNode::setLabel(const QString& text)
+{
+    d->label = text;
+}
+
 void gnomonPipelineNode::layout(void)
 {
-    d->rect = QRectF(0, 0, 150, 50);
+    d->rect = QRectF(0, 0, 200, 50);
 
     // /////////////////////////////////////////////////////////////////
     // Port location
@@ -108,37 +113,91 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    qreal radius = 5.0;
+    qreal radius = 10.0;
+    qreal shadow_distance = 3.;
+
+    QPolygonF shadow_polygon;
+    shadow_polygon<<QPointF(d->rect.left()+shadow_distance,d->rect.top()+radius+shadow_distance);
+    shadow_polygon<<QPointF(d->rect.left()+radius+shadow_distance,d->rect.top()+shadow_distance);
+    shadow_polygon<<QPointF(d->rect.right()+shadow_distance,d->rect.top()+shadow_distance);
+    shadow_polygon<<QPointF(d->rect.right()+shadow_distance,d->rect.bottom()-radius+shadow_distance/2);
+    shadow_polygon<<QPointF(d->rect.right()-radius+shadow_distance/2,d->rect.bottom()+shadow_distance);
+    shadow_polygon<<QPointF(d->rect.left()+shadow_distance,d->rect.bottom()+shadow_distance);
+
+//    QLinearGradient gradient(d->rect.left()+shadow_distance, d->rect.top()+shadow_distance, d->rect.left()+shadow_distance, d->rect.bottom()+shadow_distance);
+////    gradient.setColorAt(0.0, d->color);
+//    gradient.setColorAt(0.0, Qt::black);
+//    gradient.setColorAt(1.0 - shadow_distance/d->rect.height(), QColor(0,0,0,128));
+//    gradient.setColorAt(1.0, QColor(0,0,0,0));
+////    gradient.setColorAt(10 / d->rect.height(),d->color.darker().darker());
+////    gradient.setColorAt(1.0, d->color.darker().darker().darker());
+
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(0,0,0,96));
+    painter->drawConvexPolygon(shadow_polygon);
+
+    QPolygonF polygon;
+    polygon<<QPointF(d->rect.left(),d->rect.top()+radius);
+    polygon<<QPointF(d->rect.left()+radius,d->rect.top());
+    polygon<<QPointF(d->rect.right(),d->rect.top());
+    polygon<<QPointF(d->rect.right(),d->rect.bottom()-radius);
+    polygon<<QPointF(d->rect.right()-radius,d->rect.bottom());
+    polygon<<QPointF(d->rect.left(),d->rect.bottom());
 
     if (this->isSelected()) {
         painter->setPen(QPen(Qt::magenta, 3, Qt::SolidLine));
         painter->setBrush(Qt::NoBrush);
-        painter->drawRoundedRect(d->rect.adjusted(-1, -1, 1, 1), radius, radius);
+//        painter->drawRoundedRect(d->rect.adjusted(-1, -1, 1, 1), radius, radius);
+        painter->drawConvexPolygon(polygon);
     }
 
-    QLinearGradient gradient(d->rect.left(), d->rect.top(), d->rect.left(), d->rect.bottom());
-    gradient.setColorAt(0.0, d->color);
-    gradient.setColorAt(10 / d->rect.height(),d->color.darker().darker());
-    gradient.setColorAt(1.0, d->color.darker().darker().darker());
 
-    painter->setPen(QPen(d->color.darker().darker(), 1, Qt::SolidLine));
-    painter->setBrush(gradient);
+//    painter->setPen(QPen(d->color.darker().darker(), 1, Qt::SolidLine));
+//    painter->setPen(QPen(QColor(Qt::black), 1, Qt::SolidLine));
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QBrush(d->color));
 
-    painter->drawRoundedRect(d->rect, radius, radius);
+//    painter->drawRoundedRect(d->rect, radius, radius);
+    painter->drawConvexPolygon(polygon);
+
+//    painter->setPen(QPen(Qt::black, 1, Qt::SolidLine));
+//    painter->setBrush(Qt::NoBrush);
+//    painter->drawRoundedRect(d->rect.adjusted(2, 2, -2, -2), radius-1, radius-1);
+//    painter->drawRoundedRect(d->rect.adjusted(-2, -2, 2, 2), radius+1, radius+1);
 
     // Drawing node's title
-
     qreal margin = 5.0;
 
     QFont font = painter->font();
     QFontMetricsF metrics(font);
 
     QString title_text = metrics.elidedText(this->title(), Qt::ElideMiddle, this->boundingRect().width() - 2 - 4 * margin);
-    QPointF title_pos;
+    QPointF title_pos  = QPointF(2 * margin, 2 * margin + metrics.xHeight());
 
-    title_pos = QPointF(2 * margin, 2 * margin + metrics.xHeight());
-    painter->setPen(QPen(QColor(Qt::white)));
+    painter->setPen(QPen(QColor(Qt::black)));
     painter->drawText(title_pos, title_text);
+
+    QPolygonF label_polygon;
+    label_polygon<<QPointF(d->rect.left()+5*margin,d->rect.top()+4*margin+2+radius);
+    label_polygon<<QPointF(d->rect.left()+5*margin+radius,d->rect.top()+4*margin+2);
+    label_polygon<<QPointF(d->rect.right()-5*margin,d->rect.top()+4*margin+2);
+    label_polygon<<QPointF(d->rect.right()-5*margin,d->rect.bottom());
+    label_polygon<<QPointF(d->rect.left()+5*margin,d->rect.bottom());
+
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QBrush(d->color.lighter()));
+    painter->drawConvexPolygon(label_polygon);
+
+    font.setPointSize(10);
+    QFontMetricsF label_metrics(font);
+
+    QString label_text = label_metrics.elidedText(d->label, Qt::ElideMiddle, this->boundingRect().width() - 2 - 12 * margin);
+    QPointF label_pos = QPointF(200 - 6 * margin - label_metrics.boundingRect(label_text).width(), 4 * margin + 2 + metrics.xHeight() + label_metrics.xHeight());
+
+
+    painter->setFont(font);
+    painter->setPen(QPen(QColor(Qt::black)));
+    painter->drawText(label_pos, label_text);
 }
 
 

@@ -29,6 +29,9 @@ public:
 
 public:
     QRectF rect;
+
+public:
+    QString label;
 };
 
 

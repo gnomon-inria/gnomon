@@ -37,6 +37,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
 public:
+    void setLabel(const QString& text);
+
+public:
     virtual QString toToml(const QString& node_name);
     QString variantParameterString(const QVariant& parameter);
 
