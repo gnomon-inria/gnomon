@@ -288,6 +288,7 @@ public:
     void exportAxiom(void);
     void disableFloatingDockWidgets(QWidget *parent);
     void setSplittersSizes(int width);
+    void updateButtonsEnabled(bool runnning);
 };
 
 void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
@@ -311,6 +312,14 @@ void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
         }
     }
 }
+
+void gnomonWorkspaceLSystemSimulatorPrivate::updateButtonsEnabled(bool running)
+{
+    for (auto* button : { run_button, step_button, rewind_button, animate_button }) {
+        button->setEnabled(running == false);
+    }
+    stop_button->setEnabled(running);
+};
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -442,6 +451,13 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     d->stop_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Stop.png",":gnomon/gnomonButton-Stop-off.png");
     d->rewind_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Rewind.png",":gnomon/gnomonButton-Rewind-off.png");
     d->step_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Step.png",":gnomon/gnomonButton-Step-off.png");
+    d->updateButtonsEnabled(false);
+
+    d->run_button->setToolTip("Run");
+    d->animate_button->setToolTip("Animate");
+    d->stop_button->setToolTip("Pause");
+    d->rewind_button->setToolTip("Rewind");
+    d->step_button->setToolTip("Step");
 
     QHBoxLayout *controls_layout = new QHBoxLayout;
     controls_layout->setContentsMargins(0, 0, 0, 0);
@@ -648,11 +664,11 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
 
                     this->connect(button, &QPushButton::clicked, [=] (void) -> void
                     {
-                        d->run_button->setEnabled(false);
-                        d->step_button->setEnabled(false);
-                        d->rewind_button->setEnabled(false);
-                        d->animate_button->setEnabled(false);
-                        d->stop_button->setEnabled(false);
+                        if (button == d->stop_button) {
+                            reaction->trigger();
+                            return;
+                        }
+                        d->updateButtonsEnabled(true);
 
                         int stat;
 
@@ -707,11 +723,7 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         add_statement += ")";
                         dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
 
-                        d->run_button->setEnabled(true);
-                        d->step_button->setEnabled(true);
-                        d->rewind_button->setEnabled(true);
-                        d->animate_button->setEnabled(true);
-                        d->stop_button->setEnabled(true);
+                        d->updateButtonsEnabled(false);
                     });
                 }
             }
