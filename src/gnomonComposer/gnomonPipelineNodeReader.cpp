@@ -87,7 +87,8 @@ QString gnomonPipelineNodeReader::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.reader = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = []\n";
-    for (const auto& output_name : dd->output_ports.keys()) {
+    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+        auto&& output_name = it.key();
         out<<"        self.form_output_functions[\"" << output_name << "\"] = self.reader." << output_name  <<"\n";
     }
     out<<"    \n";

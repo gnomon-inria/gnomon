@@ -85,11 +85,11 @@ QString gnomonPipelineNodeWriter::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.writer = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = [";
-    for (int i=0; i<dd->input_ports.size(); i++) {
-        if (i>0) {
+    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
+        if (it != dd->input_ports.begin()) {
             out<<", ";
         }
-        QString input_name = dd->input_ports.keys()[i];
+        auto&& input_name = it.key();
         out<<"\""<<input_name<<"\"";
     }
     out<<"]\n";
@@ -98,7 +98,9 @@ QString gnomonPipelineNodeWriter::toLuigiClass(void)
     out<<"    def run(self):\n";
     out<<"        self.writer.setPath(self.path)\n";
     out<<"        inputs = self.algorithm_inputs()\n";
-    for (const auto& input_name : dd->input_ports.keys()) {
+
+    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
+        auto&& input_name = it.key();
         QString setter_name = "set" + input_name;
         setter_name.replace(3, 1, setter_name[3].toUpper());
         out<<"        self.writer." << setter_name << "(inputs[\"" << input_name << "\"])\n";

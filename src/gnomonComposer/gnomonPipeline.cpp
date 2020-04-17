@@ -62,11 +62,14 @@ public:
 
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
-    QMap<QString, QVariant> parameterVariantValues(QMap<QString, gnomonCoreParameter *> parameters);
+    QMap<QString, QVariant> parameterVariantValues(const QMap<QString, gnomonCoreParameter *>&parameters);
 
 public:
     QStringList sourceNodeNames(void);
     QStringList sinkNodeNames(void);
+
+public:
+    bool hasNode(gnomonPipelineNode *);
 
 public:
     QList<QList<double> > nodeDistances(QList<QPointF> node_positions);
@@ -78,11 +81,11 @@ public:
 void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
 {
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = this->node_input_forms[node];
-    for (const auto& input : input_forms.keys()) {
+    for (auto it = input_forms.begin(); it != input_forms.end(); ++it) {
+        auto&& input = it.key();
+        qDebug()<<Q_FUNC_INFO<<input;
         gnomonAbstractDynamicForm *input_form = input_forms[input];
         if (input_form) {
-            qDebug()<<Q_FUNC_INFO<<input<<input_form;
-            qDebug()<<Q_FUNC_INFO<<this->form_clones;
             while (this->form_clones.contains(input_form) & !this->reader_nodes.contains(input_form)) {
                 input_form = this->form_clones[input_form];
             }
@@ -121,34 +124,36 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
     }
 }
 
-QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(QMap<QString, gnomonCoreParameter *> parameters)
+QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(const QMap<QString, gnomonCoreParameter *>&parameters)
 {
     QMap<QString, QVariant> parameter_values;
-    for (const auto& param : parameters.keys()) {
-        if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(parameters[param])) {
-            parameter_values[param] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterDouble *parameter = dynamic_cast<gnomonCoreParameterDouble *>(parameters[param])) {
-            parameter_values[param] = QVariant(parameter->value());
-        }  else if (gnomonCoreParameterIntRange *parameter = dynamic_cast<gnomonCoreParameterIntRange *>(parameters[param])) {
+    for (auto it = parameters.begin(); it != parameters.end(); ++it) {
+        auto&& parameter_name = it.key();
+        auto&& param = it.value();
+        if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(param)) {
+            parameter_values[parameter_name] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterDouble *parameter = dynamic_cast<gnomonCoreParameterDouble *>(param)) {
+            parameter_values[parameter_name] = QVariant(parameter->value());
+        }  else if (gnomonCoreParameterIntRange *parameter = dynamic_cast<gnomonCoreParameterIntRange *>(param)) {
             QList<QVariant> range;
             for (const auto& val : parameter->value()) {
                 range.append(QVariant(val));
             }
-            parameter_values[param] = QVariant(range);
-        } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(parameters[param])) {
+            parameter_values[parameter_name] = QVariant(range);
+        } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(param)) {
             QList<QVariant> range;
             for (const auto& val : parameter->value()) {
                 range.append(QVariant(val));
             }
-            parameter_values[param] = QVariant(range);
-        }  else if (gnomonCoreParameterBool *parameter = dynamic_cast<gnomonCoreParameterBool *>(parameters[param])) {
-            parameter_values[param] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterString *parameter = dynamic_cast<gnomonCoreParameterString *>(parameters[param])) {
-            parameter_values[param] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterStringList *parameter = dynamic_cast<gnomonCoreParameterStringList *>(parameters[param])) {
-            parameter_values[param] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterFile *parameter = dynamic_cast<gnomonCoreParameterFile *>(parameters[param])) {
-            parameter_values[param] = QVariant(parameter->value());
+            parameter_values[parameter_name] = QVariant(range);
+        }  else if (gnomonCoreParameterBool *parameter = dynamic_cast<gnomonCoreParameterBool *>(param)) {
+            parameter_values[parameter_name] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterString *parameter = dynamic_cast<gnomonCoreParameterString *>(param)) {
+            parameter_values[parameter_name] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterStringList *parameter = dynamic_cast<gnomonCoreParameterStringList *>(param)) {
+            parameter_values[parameter_name] = QVariant(parameter->value());
+        } else if (gnomonCoreParameterFile *parameter = dynamic_cast<gnomonCoreParameterFile *>(param)) {
+            parameter_values[parameter_name] = QVariant(parameter->value());
         }
     }
 
@@ -161,7 +166,8 @@ QStringList gnomonPipelinePrivate::sourceNodeNames(void)
     for (const auto& node_name: this->pipeline_node_names) {
         node_source[node_name] = true;
     }
-    for (const auto& edge_target : this->pipeline_edges.keys()) {
+    for (auto it = this->pipeline_edges.begin(); it != this->pipeline_edges.end(); ++it) {
+        auto&& edge_target = it.key();
         node_source[edge_target.first] = false;
     }
     QStringList source_nodes;
@@ -179,7 +185,8 @@ QStringList gnomonPipelinePrivate::sinkNodeNames(void)
     for (const auto& node_name: this->pipeline_node_names) {
         node_sink[node_name] = true;
     }
-    for (const auto& edge_source : this->pipeline_edges.values()) {
+    for (auto it = this->pipeline_edges.begin(); it != this->pipeline_edges.end(); ++it) {
+        auto&& edge_source = it.value();
         node_sink[edge_source.first] = false;
     }
     QStringList sink_nodes;
@@ -191,6 +198,20 @@ QStringList gnomonPipelinePrivate::sinkNodeNames(void)
     return sink_nodes;
 }
 
+bool gnomonPipelinePrivate::hasNode(gnomonPipelineNode *node)
+{
+    bool node_found = false;
+    for (auto it = this->pipeline_nodes.begin(); it != this->pipeline_nodes.end(); ++it) {
+        auto&& n = it.value();
+        qDebug()<<Q_FUNC_INFO<<n<<node;
+        if (n == node) {
+           node_found = true;
+           break;
+        }
+    }
+    return node_found;
+}
+
 void gnomonPipelinePrivate::forceDrivenLayout(void)
 {
     QList<QPointF> node_positions;
@@ -199,8 +220,9 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
     }
 
     QList<QPair<int, int> > node_edge_indices;
-    for (const auto& edge_target : this->pipeline_edges.keys())
-    {
+
+    for (auto it = this->pipeline_edges.begin(); it != this->pipeline_edges.end(); ++it) {
+        auto&& edge_target = it.key();
         int target_index = this->pipeline_node_names.indexOf(edge_target.first);
         int source_index = this->pipeline_node_names.indexOf(this->pipeline_edges[edge_target].first);
         node_edge_indices.append(QPair<int,int>(source_index,target_index));
@@ -311,8 +333,8 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         QList<QVector2D> node_force;
         for (int n=0; n<node_positions.size(); n++) {
             QVector2D force = QVector2D(0,0);
-            for (const auto& force_name : force_weights.keys())
-            {
+            for (auto it = force_weights.begin(); it != force_weights.end(); ++it) {
+                auto&& force_name = it.key();
                 force += force_weights[force_name]*node_forces[force_name][n];
             }
             if (force.length() > max_deformation) {
@@ -412,8 +434,8 @@ void gnomonPipeline::addReader(gnomonAbstractReaderCommand *command)
 
     gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(),command->algorithmName(),command->path(),forms.keys());
 
-    for (const auto& form_name : forms.keys())
-    {
+    for (auto it = forms.begin(); it != forms.end(); ++it) {
+        auto&& form_name = it.key();
         gnomonAbstractDynamicForm *form = forms[form_name];
         if (gnomonAbstractDynamicForm *clone = d->form_clones.key(form,nullptr)) {
             form = clone;
@@ -459,7 +481,8 @@ void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
 
     d->node_input_forms[node] = input_forms;
 
-    for (const auto& output : output_forms.keys()) {
+    for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
+        auto&& output = it.key();
         d->algorithm_nodes[output_forms[output]] = node;
         d->algorithm_output[output_forms[output]] = output;
     }
@@ -474,7 +497,8 @@ void gnomonPipeline::addConstructor(gnomonAbstractConstructorCommand *command)
 
     gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(),command->algorithmName(),parameter_values,output_forms.keys());
 
-    for (const auto& output : output_forms.keys()) {
+    for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
+        auto&& output = it.key();
         d->constructor_nodes[output_forms[output]] = node;
         d->constructor_output[output_forms[output]] = output;
     }
@@ -485,7 +509,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
     if (d->reader_nodes.contains(form)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form];
 
-        if (!d->pipeline_nodes.values().contains(node))
+        if (!d->hasNode(node))
         {
             QString node_name = node->algorithmClass();
             if (!d->node_type_count.contains(node->algorithmClass())) {
@@ -504,7 +528,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
     } else if (d->constructor_nodes.contains(form)) {
         gnomonPipelineNodeConstructor *node = d->constructor_nodes[form];
 
-        if (!d->pipeline_nodes.values().contains(node))
+        if (!d->hasNode(node))
         {
             QString node_name = node->algorithmClass();
             if (!d->node_type_count.contains(node->algorithmClass())) {
@@ -523,7 +547,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
     } else if (d->algorithm_nodes.contains(form)) {
         gnomonPipelineNodeAlgorithm *node = d->algorithm_nodes[form];
 
-        if (!d->pipeline_nodes.values().contains(node))
+        if (!d->hasNode(node))
         {
             QString node_name = node->algorithmClass();
             if (!d->node_type_count.contains(node->algorithmClass())) {
@@ -608,7 +632,8 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
         class_name.replace(0, 1, class_name[0].toUpper());
         out << "    tasks[\"" << node_name <<"\"] = " << class_name << "(**config[\"" << node_name <<"\"])\n";
 
-        for (const auto& edge_target : d->pipeline_edges.keys()) {
+        for (auto it = d->pipeline_edges.begin(); it != d->pipeline_edges.end(); ++it) {
+            auto&& edge_target = it.key();
             if (edge_target.first == node_name) {
                 out << "    tasks[\"" << node_name <<"\"].connect_input(tasks[\"" << d->pipeline_edges[edge_target].first << "\"], ";
                 out << "output_name=\"" << d->pipeline_edges[edge_target].second << "\", ";

@@ -65,7 +65,8 @@ QString gnomonPipelineNodeConstructor::toToml(const QString& node_name)
     out << "task_name = \""<< node_name << "\"\n";
     out << "plugin_name = \""<< d->algorithm << "\"\n";
     out << "    [" << node_name << ".parameters]\n";
-    for (const auto& param : dd->parameters.keys()) {
+    for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
+        auto&& param = it.key();
         QVariant parameter = dd->parameters[param];
         QString parameter_string = d->variantParameterString(parameter);
         out << "    " << param << " = " << parameter_string << "\n";
@@ -91,7 +92,8 @@ QString gnomonPipelineNodeConstructor::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.constructor = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = []\n";
-    for (const auto& output_name : dd->output_ports.keys()) {
+    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+        auto&& output_name = it.key();
         out<<"        self.form_output_functions[\"" << output_name << "\"] = self.constructor." << output_name  <<"\n";
     }
     out<<"    \n";
