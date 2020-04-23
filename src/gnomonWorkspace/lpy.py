@@ -28,6 +28,7 @@ from openalea.lpy.gui.lpystudio import LPyWindow, LpyPlotter, Viewer
 from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor
 from openalea.lpy.gui.lpyview3d import LpyView3D
 import openalea.lpy.gui.settings as lpysettings
+from openalea.lpy import LPY_VERSION_MAJOR
 
 from dtkthemes import dtkThemesEngine
 from dtkthemes import dtkThemesEngineCallBack
@@ -42,7 +43,7 @@ base1 = QColor(dtkThemesEngine.instance().value("@base1"))
 ##
 ## #############################################################################
 def getSettings():
-    settings = QSettings(QSettings.IniFormat, QSettings.UserScope,'Gnomon','LPy'+str(LPY_VERSION_MAJOR))
+    settings = QSettings(QSettings.IniFormat, QSettings.UserScope, 'inria', 'LPy'+str(LPY_VERSION_MAJOR))
     return settings
 
 lpysettings.getSettings = getSettings
@@ -192,7 +193,7 @@ workspace.shellwidget.style_sheet += ".out-prompt { color: " + dtkThemesEngine.i
 workspace.shellwidget.style_sheet += ".out-prompt-number { color: " + dtkThemesEngine.instance().value("@red") + "; font-weight: bold; }"
 
 workspace.debugDock.setObjectName("LPYDebug")
-# workspace.parameterDock.toggleViewAction().toggle()# 
+# workspace.parameterDock.toggleViewAction().toggle()#
 
 workspace.scalarDock.setObjectName("LPYScalars")
 workspace.materialDock.setObjectName("LPYMaterials")
