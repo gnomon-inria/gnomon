@@ -81,7 +81,15 @@ def setAxiom(self,axiom=None):
             del self.axiom
 LpyCodeEditor.setAxiom = setAxiom
 
-workspace = LPyWindow(withinterpreter=True)
+class gnomonLPyWindow(LPyWindow):
+    def closeDocument(self,id = None):
+        super().closeDocument(id)
+        lpysettings.saveState(self)
+    def openfile(self,fname = None):
+        super().openfile(fname)
+        lpysettings.saveState(self)
+
+workspace = gnomonLPyWindow(withinterpreter=True)
 
 def set_theme_to_code_editor():
         workspace.codeeditor.setStyleSheet(
