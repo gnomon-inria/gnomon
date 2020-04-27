@@ -51,7 +51,7 @@ requirements:
     - dtk-themes >=2.1.9
     - dtk-themes-python >=2.0.3
     - dtk-core >=2.9.0
-    - dtk-core-python >=2.5.4, <2.6.0
+    - dtk-core-python =2.5.4
     - dtk-imaging >=2.0.4
     - dtk-imaging-python >=2.0.4
     - dtk-widgets >=2.21.0
@@ -72,7 +72,7 @@ requirements:
     - dtk-themes >=2.1.11
     - dtk-themes-python >=2.0.3
     - dtk-core >=2.7.1
-    - dtk-core-python >=2.5.4, <2.6.0
+    - dtk-core-python =2.5.4
     - dtk-imaging >=2.0.4
     - dtk-imaging-python >=2.0.4
     - dtk-plugins-imaging >=2.0.2
