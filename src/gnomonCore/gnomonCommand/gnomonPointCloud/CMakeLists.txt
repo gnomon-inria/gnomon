@@ -36,7 +36,7 @@ ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonPointCloudFromImageCommand.cpp
     gnomonPointCloudQuantificationCommand.cpp
     gnomonPointCloudReaderCommand.cpp
-    gnomonPointCloudReaderCommand.cpp)
+    gnomonPointCloudWriterCommand.cpp)
 
 
 ######################################################################

@@ -19,16 +19,15 @@
 class gnomonCellComplexWriterCommandPrivate
 {
 public:
-    QString path;
-
-public:
-    gnomonCellComplexSeries* cellComplex = nullptr;
+    gnomonCellComplexSeries *cellComplex = nullptr;
 };
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(const QString& key) : d(new gnomonCellComplexWriterCommandPrivate)
 {
-    loadPluginGroup("cellComplexWriter");
+    this->factory_name = "cellComplexWriter";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::cellComplexWriter::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -42,7 +41,7 @@ gnomonCellComplexWriterCommand::~gnomonCellComplexWriterCommand()
 void gnomonCellComplexWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractCellComplexWriter *) this->action)->setPath(d->path);
+    ((gnomonAbstractCellComplexWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractCellComplexWriter *) this->action)->setCellComplex(d->cellComplex);
     this->action->run();
 }
@@ -54,12 +53,19 @@ void gnomonCellComplexWriterCommand::undo(void)
 
 void gnomonCellComplexWriterCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cellComplex)
 {
     d->cellComplex = cellComplex;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["cellComplex"] = d->cellComplex;
+    return inputs;
 }
 
 bool gnomonCellComplexWriterCommand::isEmpty(void)

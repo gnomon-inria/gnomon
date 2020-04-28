@@ -14,6 +14,7 @@
 #include <gnomonMainWindow.h>
 
 #include <gnomonCore>
+#include <gnomonComposer>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
 #include <gnomonWorkspace>
@@ -49,8 +50,9 @@ public:
 // Bottom level - Workflow
 // /////////////////////////////////////////////////////////////////////////////
 
-// public:
-//    gnomonComposerWidget *workflow;
+public:
+   gnomonComposerWidget *workflow;
+   gnomonPipeline *pipeline;
 
 public:
     gnomonMainWindow *q;
@@ -84,28 +86,33 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
     d = new gnomonMainWindowPrivate;
     d->q = this;
 
-    dtk::widgets::workspace::pluginFactory().record( "Image Preprocessing", creator<gnomonWorkspacePreprocess>);
     dtk::widgets::workspace::pluginFactory().record( "Form Browser", creator<gnomonWorkspaceBrowser>);
     dtk::widgets::workspace::pluginFactory().record( "Python Form Algorithm", creator<gnomonWorkspacePythonAlgorithm>);
+    dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
+
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Constructor", creator<gnomonWorkspaceImageConstructor>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Preprocessing", creator<gnomonWorkspacePreprocess>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
+    dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
+    dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
+    dtk::widgets::workspace::pluginFactory().record( "Point Cloud Analysis", creator<gnomonWorkspacePointCloudQuantification>);
+
     dtk::widgets::workspace::pluginFactory().record( "Cell Image Meshing", creator<gnomonWorkspaceCellComplexFromCellImage>);
     dtk::widgets::workspace::pluginFactory().record( "Cell Complex Constructor", creator<gnomonWorkspaceCellComplexConstructor>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Morpho Filter", creator<gnomonWorkspaceCellImageFilter>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Analysis", creator<gnomonWorkspaceCellImageQuantification>);
-    dtk::widgets::workspace::pluginFactory().record( "Cell Image Tracking", creator<gnomonWorkspaceCellImageTracking>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Fusion", creator<gnomonWorkspaceFusion>);
-    dtk::widgets::workspace::pluginFactory().record( "L-System Simulator", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "Image Surface Meshing", creator<gnomonWorkspaceMeshFromImage>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Constructor", creator<gnomonWorkspaceMeshConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Mesh Processing", creator<gnomonWorkspaceMeshFilter>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Cell Detection", creator<gnomonWorkspacePointCloudFromImage>);
-    dtk::widgets::workspace::pluginFactory().record( "Point Cloud Analysis", creator<gnomonWorkspacePointCloudQuantification>);
-    dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Registration", creator<gnomonWorkspaceRegistration>);
-    dtk::widgets::workspace::pluginFactory().record( "Image Segmentation", creator<gnomonWorkspaceSegmentation>);
     dtk::widgets::workspace::pluginFactory().record( "FEM Simulation", creator<gnomonWorkspaceSimulation>);
+
+
     dtk::widgets::workspace::pluginFactory().record( "Tree Transform", creator<gnomonWorkspaceTreeAnalysis>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Constructor", creator<gnomonWorkspaceTreeConstructor>);
     dtk::widgets::workspace::pluginFactory().record( "Tree Form Translation", creator<gnomonWorkspaceLStringTranslation>);
+    dtk::widgets::workspace::pluginFactory().record( "L-System Simulator", creator<gnomonWorkspaceLSystemSimulator>);
     dtk::widgets::workspace::pluginFactory().record( "PlantScan3D", creator<gnomonWorkspacePlantScan3D>);
 
     dtkApp->setWindow(this);
@@ -149,6 +156,9 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
     }
     if (!gnomonWorkspaceFusion::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Fusion", "Fuses images that have been taken of a 3D object from different angles", "Image Fusion", gnomonWorkspaceFusion::color);
+    }
+    if (!gnomonWorkspaceImageConstructor::isEmpty()) {
+        d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Constructor", "Create a virtual tissue represented a 3D multichannel intensity image", "Image Constructor", gnomonWorkspaceImageConstructor::color);
     }
     if (!gnomonWorkspacePreprocess::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("Tissue Image Forms", tissue_image_package_desc, "Image Preprocessing",   "Provides various plugins to pre-process intensity images (noise, signal enhancement,...)", "Image Preprocessing", gnomonWorkspacePreprocess::color);
@@ -209,7 +219,8 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
 
     d->manager = gnomonFormManager::instance();
 
-//    d->workflow = gnomonComposerWidget::instance();
+    d->workflow = gnomonComposerWidget::instance();
+    d->pipeline = gnomonPipeline::instance();
 
     QHBoxLayout *b_layout = new QHBoxLayout;
     b_layout->setContentsMargins(0, 0, 32, 0);
@@ -220,7 +231,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
     i_layout->setSpacing(0);
     i_layout->addWidget(d->manager);
     i_layout->addWidget(d->stack);
-//    i_layout->addWidget(d->workflow);
+    i_layout->addWidget(d->workflow);
     i_layout->addLayout(b_layout);
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -250,7 +261,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
         QVariantAnimation *animation = new QVariantAnimation(this);
         animation->setDuration(500);
         animation->setStartValue(d->stack->height());
-        animation->setEndValue(0);
+        animation->setEndValue(6);
         animation->setEasingCurve(QEasingCurve::OutQuad);
 
         connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
@@ -270,7 +281,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
 
         QVariantAnimation *animation = new QVariantAnimation(this);
         animation->setDuration(500);
-        animation->setStartValue(0);
+        animation->setStartValue(6);
         animation->setEndValue(l_h);
         animation->setEasingCurve(QEasingCurve::OutQuad);
 
@@ -282,52 +293,53 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     });
 
-//    connect(d->workflow, &gnomonComposerWidget::expand, [=] (void)
-//    {
-//        if(d->stack->height() < 10)
-//            return;
-//
-//        int m_h = d->workflow->height();
-//        int s_h = d->stack->height();
-//
-//        l_h = s_h;
-//
-//        QVariantAnimation *animation = new QVariantAnimation(this);
-//        animation->setDuration(500);
-//        animation->setStartValue(d->stack->height());
-//        animation->setEndValue(0);
-//        animation->setEasingCurve(QEasingCurve::OutQuad);
-//
-//        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
-//            d->stack->setFixedHeight(value.toInt());
-//            d->workflow->setFixedHeight(m_h + s_h - value.toInt());
-//        });
-//
-//        animation->start(QAbstractAnimation::DeleteWhenStopped);
-//    });
-//
-//    connect(d->workflow, &gnomonComposerWidget::shrink, [=] (void)
-//    {
-//        if(d->workflow->height() < 10)
-//            return;
-//
-//        int m_h = d->workflow->height();
-//
-//        QVariantAnimation *animation = new QVariantAnimation(this);
-//        animation->setDuration(500);
-//        animation->setStartValue(0);
-//        animation->setEndValue(l_h);
-//        animation->setEasingCurve(QEasingCurve::OutQuad);
-//
-//        connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
-//            d->stack->setFixedHeight(value.toInt());
-//            d->workflow->setFixedHeight(m_h - value.toInt());
-//        });
-//
-//        animation->start(QAbstractAnimation::DeleteWhenStopped);
-//    });
+   connect(d->workflow, &gnomonComposerWidget::expand, [=] (void)
+   {
+       if(d->stack->height() < 10)
+           return;
 
-//    connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
+       int m_h = d->workflow->height();
+       int s_h = d->stack->height();
+
+       l_h = s_h;
+
+       QVariantAnimation *animation = new QVariantAnimation(this);
+       animation->setDuration(500);
+       animation->setStartValue(d->stack->height());
+       animation->setEndValue(6);
+       animation->setEasingCurve(QEasingCurve::OutQuad);
+
+       connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+           d->stack->setFixedHeight(value.toInt());
+           d->workflow->setFixedHeight(m_h + s_h - value.toInt());
+       });
+
+       animation->start(QAbstractAnimation::DeleteWhenStopped);
+   });
+
+   connect(d->workflow, &gnomonComposerWidget::shrink, [=] (void)
+   {
+       if(d->workflow->height() < 10)
+           return;
+
+       int m_h = d->workflow->height();
+
+       QVariantAnimation *animation = new QVariantAnimation(this);
+       animation->setDuration(500);
+       animation->setStartValue(6);
+       animation->setEndValue(l_h);
+       animation->setEasingCurve(QEasingCurve::OutQuad);
+
+       connect(animation, &QVariantAnimation::valueChanged, [=] (const QVariant& value) {
+           d->stack->setFixedHeight(value.toInt());
+           d->workflow->setFixedHeight(m_h - value.toInt());
+       });
+
+       animation->start(QAbstractAnimation::DeleteWhenStopped);
+   });
+
+//   connect(d->workspace_bar, SIGNAL(created(const QString&)), d->workflow, SLOT(addWorkspace(const QString&)));
+   connect(d->pipeline, SIGNAL(nodeAdded(gnomonPipelineNode *)), d->workflow, SLOT(addNode(gnomonPipelineNode *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 

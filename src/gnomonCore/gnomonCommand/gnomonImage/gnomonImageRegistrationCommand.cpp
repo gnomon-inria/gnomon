@@ -24,6 +24,8 @@ class gnomonImageRegistrationCommandPrivate
 {
 public:
     QVector<gnomonImageSeries *> images_series;
+
+    gnomonImageSeries* output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -32,8 +34,10 @@ public:
 
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
 {
-    loadPluginGroup("imageRegistration");
+    this->factory_name = "imageRegistration";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -49,6 +53,13 @@ void gnomonImageRegistrationCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonImageSeries *image = ((gnomonAbstractImageRegistration *) this->action)->output();
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d->output = image;
+    }
 }
 
 void gnomonImageRegistrationCommand::undo(void)
@@ -61,19 +72,14 @@ void gnomonImageRegistrationCommand::addImage(gnomonImageSeries *image_series)
     d->images_series.push_back(image_series);
 
     ((gnomonAbstractImageRegistration *) this->action)->removeImages();
-    for(auto& images_serie : d->images_series) {
-        ((gnomonAbstractImageRegistration *) this->action)->addImage(images_serie);
+    for(auto& image_series : d->images_series) {
+        ((gnomonAbstractImageRegistration *) this->action)->addImage(image_series);
     };
 }
 
 gnomonImageSeries* gnomonImageRegistrationCommand::output()
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageRegistration *) this->action)->output();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
-    } else {
-        return image;
-    }
+    return d->output;
 }
 
 QMap<QString, gnomonCoreParameter*> gnomonImageRegistrationCommand::parameters(void) const
@@ -84,6 +90,25 @@ QMap<QString, gnomonCoreParameter*> gnomonImageRegistrationCommand::parameters(v
 void gnomonImageRegistrationCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    int input_count = 1;
+    for(auto& image_series : d->images_series) {
+        QString input_name = "image" + QString::number(input_count);
+        inputs[input_name] = image_series;
+        input_count++;
+    }
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonImageRegistrationCommand::isEmpty(void)

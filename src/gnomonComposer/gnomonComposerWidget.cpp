@@ -16,26 +16,11 @@
 #include "gnomonComposerWidget.h"
 #include "gnomonComposerWidget_p.h"
 
-#include <dtkComposer/dtkComposer.h>
-#include <dtkComposer/dtkComposerNode.h>
-#include <dtkComposer/dtkComposerWidget.h>
-#include <dtkComposer/dtkComposerCompass.h>
-#include <dtkComposer/dtkComposerControls.h>
-#include <dtkComposer/dtkComposerEvaluator.h>
-#include <dtkComposer/dtkComposerEvaluatorToolBar.h>
-#include <dtkComposer/dtkComposerNodeFactory.h>
-#include <dtkComposer/dtkComposerNodeFactoryView.h>
-#include <dtkComposer/dtkComposerGraph.h>
-#include <dtkComposer/dtkComposerPath.h>
-#include <dtkComposer/dtkComposerScene.h>
-#include <dtkComposer/dtkComposerSceneModel.h>
-#include <dtkComposer/dtkComposerSceneNodeEditor.h>
-#include <dtkComposer/dtkComposerSceneView.h>
-#include <dtkComposer/dtkComposerStack.h>
-#include <dtkComposer/dtkComposerStackView.h>
-#include <dtkComposer/dtkComposerView.h>
-#include <dtkComposer/dtkComposerViewController.h>
+#include "gnomonPipeline.h"
 
+#include "gnomonPipelineNode.h"
+
+#include <dtkComposer>
 #include <dtkCore>
 #include <dtkLog>
 #include <dtkWidgets>
@@ -43,6 +28,8 @@
 
 #include <QtCore>
 #include <QtWidgets>
+
+#include <gnomonWidgets>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonComposerWidgetPrivate
@@ -53,22 +40,22 @@ bool gnomonComposerWidgetPrivate::maySave(void)
     if(this->closing)
         return true;
 
-    if (q->isWindowModified()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("gnomon");
-        msgBox.setText("The composition has been modified.");
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        msgBox.setStyleSheet("");
-        int ret = msgBox.exec();
-
-        if (ret == QMessageBox::Save)
-            return q->compositionSave();
-        else
-            if(ret == QMessageBox::Cancel)
-                return false;
-    }
+//    if (q->isWindowModified()) {
+//        QMessageBox msgBox;
+//        msgBox.setWindowTitle("gnomon");
+//        msgBox.setText("The composition has been modified.");
+//        msgBox.setInformativeText("Do you want to save your changes?");
+//        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+//        msgBox.setDefaultButton(QMessageBox::Save);
+//        msgBox.setStyleSheet("");
+//        int ret = msgBox.exec();
+//
+//        if (ret == QMessageBox::Save)
+//            return q->compositionSave();
+//        else
+//            if(ret == QMessageBox::Cancel)
+//                return false;
+//    }
 
     return true;
 }
@@ -109,6 +96,15 @@ QSize gnomonComposerWidget::sizeHint(void) const
     return QSize(200, 10);
 }
 
+
+void gnomonComposerWidget::resizeEvent(QResizeEvent *event)
+{
+    d->save_button->move(event->size().width() -40, 30);
+    d->layout_button->move(event->size().width() -80, 30);
+
+    QWidget::resizeEvent(event);
+}
+
 gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 {
     d = new gnomonComposerWidgetPrivate;
@@ -117,6 +113,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     // -- Elements
 
     d->composer = new dtkComposerWidget;
+    d->composer->scene()->root()->setTitle("Pipeline");
     d->composer->view()->setBackgroundBrush(QColor(dtkThemesEngine::instance()->color("@bg")));
 
     d->closing = false;
@@ -134,6 +131,14 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
     main_layout->setSpacing(0);
     main_layout->addWidget(d->composer);
 
+    d->save_button = new gnomonOverlayButton(fa::save, "", d->composer);
+    connect(d->save_button, SIGNAL(iconClicked()), this, SLOT(pipelineSave()));
+
+    d->layout_button = new gnomonOverlayButton(fa::random, "", d->composer);
+    connect(d->layout_button, &gnomonOverlayButton::iconClicked, [=] () {
+        gnomonPipeline::instance()->updateLayout();
+    });
+
     this->setLayout(main_layout);
 
     d->setCurrentFile("");
@@ -149,7 +154,7 @@ gnomonComposerWidget::gnomonComposerWidget(QWidget *parent) : QFrame(parent)
 
     // --
 
-    this->addWorkspace("Browser");
+//    this->addWorkspace("Browser");
 }
 
 gnomonComposerWidget::~gnomonComposerWidget(void)
@@ -187,9 +192,8 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
         edge->setDestination(i_port);
         edge->link(true);
 
-        d->last_node->addEdge(edge);
+        d->last_node->addOutputEdge(edge);
     }
-
 
     d->composer->scene()->addItem(node);
 
@@ -202,6 +206,19 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
 
     d->last_node = node;
     d->last_port = port;
+}
+
+void gnomonComposerWidget::addNode(gnomonPipelineNode *node)
+{
+    node->layout();
+
+    d->composer->scene()->addItem(node);
+
+    for (const auto& edge : node->inputEdges()) {
+        d->composer->scene()->addItem(edge);
+    }
+
+    d->last_node = node;
 }
 
 bool gnomonComposerWidget::compositionSave(void)
@@ -304,6 +321,30 @@ bool gnomonComposerWidget::compositionInsert(const QString& file)
     settings.beginGroup("VisualProgramming");
     settings.setValue("last_open_dir", info.absolutePath());
     settings.endGroup();
+
+    return status;
+}
+
+bool gnomonComposerWidget::pipelineSave(void)
+{
+     bool status = false;
+
+    QSettings settings("inria", "dtk");
+    settings.beginGroup("General");
+    QString path = settings.value("last_open_dir", QDir::homePath()).toString();
+    settings.endGroup();
+
+    QFileDialog dialog(this, "Save pipeline", path, QString("Python script (*.py)"));
+    dialog.setStyleSheet("");
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setConfirmOverwrite(true);
+//    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setDefaultSuffix("py");
+
+    if(dialog.exec()) {
+        gnomonPipeline::instance()->exportToLuigiScript(dialog.selectedFiles().first());
+        status = true;
+    }
 
     return status;
 }

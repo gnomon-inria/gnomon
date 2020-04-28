@@ -17,10 +17,13 @@
 #include <QtCore>
 #include <QtWidgets>
 
-class    dtkComposerScenePort;
-class    dtkComposerWidget;
+class dtkComposerScenePort;
+class dtkComposerWidget;
 class gnomonComposerWidget;
+class gnomonPipelineNode;
 class gnomonComposerNodeWorkspace;
+
+class gnomonOverlayButton;
 
 class gnomonComposerWidgetPrivate : public QObject
 {
@@ -55,8 +58,13 @@ public:
     State state = Collapsed;
 
 public:
+    gnomonOverlayButton *save_button = nullptr;
+    gnomonOverlayButton *layout_button = nullptr;
+
+public:
     gnomonComposerWidget *q;
-    gnomonComposerNodeWorkspace *last_node = nullptr;
+    dtkComposerSceneNode *last_node = nullptr;
+//    gnomonComposerNodeWorkspace *last_node = nullptr;
 
 public:
     dtkComposerScenePort *last_port = nullptr;

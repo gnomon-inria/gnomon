@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractWriterCommand.h"
 
-class GNOMONCORE_EXPORT gnomonDataFrameWriterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonDataFrameWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
      gnomonDataFrameWriterCommand(void) = delete;
@@ -13,7 +14,9 @@ public:
 
 public:
     void setPath(const QString& path);
-    void setDataFrame(gnomonDataFrameSeries *dataFrame);
+    void setDataFrame(gnomonDataFrameSeries *image_series);
+
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
 public:
     static bool isEmpty(void);

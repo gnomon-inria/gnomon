@@ -23,9 +23,6 @@
 class gnomonTreeWriterCommandPrivate
 {
 public:
-    QString path;
-
-public:
     gnomonTreeSeries* tree = nullptr;
 };
 
@@ -35,8 +32,10 @@ public:
 
 gnomonTreeWriterCommand::gnomonTreeWriterCommand(const QString& key) : d(new gnomonTreeWriterCommandPrivate)
 {
-    loadPluginGroup("treeWriter");
+    this->factory_name = "treeWriter";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::treeWriter::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -50,8 +49,8 @@ gnomonTreeWriterCommand::~gnomonTreeWriterCommand()
 void gnomonTreeWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractTreeWriter *) this->action)->setPath(d->path);
-    ((gnomonAbstractTreeWriter *) this->action)->setInput(d->tree);
+    ((gnomonAbstractTreeWriter *) this->action)->setPath(this->m_path);
+    ((gnomonAbstractTreeWriter *) this->action)->setTree(d->tree);
     this->action->run();
 }
 
@@ -62,15 +61,19 @@ void gnomonTreeWriterCommand::undo(void)
 
 void gnomonTreeWriterCommand::setPath(const QString& path)
 {
-    qDebug() << Q_FUNC_INFO << "LA COMMAND PATH";
-    d->path = path;
+    this->m_path = path;
 }
 
-void gnomonTreeWriterCommand::setInput(gnomonTreeSeries *tree)
+void gnomonTreeWriterCommand::setTree(gnomonTreeSeries *tree)
 {
-    qDebug() << Q_FUNC_INFO << "LA COMMAND TREE";
     d->tree = tree;
-    qDebug() << Q_FUNC_INFO << "LA COMMAND TREE APRES";
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["tree"] = d->tree;
+    return inputs;
 }
 
 bool gnomonTreeWriterCommand::isEmpty(void)

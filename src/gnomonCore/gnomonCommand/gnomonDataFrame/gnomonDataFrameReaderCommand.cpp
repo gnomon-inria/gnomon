@@ -23,7 +23,7 @@
 class gnomonDataFrameReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonDataFrameSeries *dataFrame = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -32,8 +32,10 @@ public:
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(const QString& key) : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    loadPluginGroup("dataFrameReader");
+    this->factory_name = "dataFrameReader";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::dataFrameReader::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -47,8 +49,14 @@ gnomonDataFrameReaderCommand::~gnomonDataFrameReaderCommand()
 void gnomonDataFrameReaderCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractDataFrameReader *) this->action)->setPath(d->path);
+    ((gnomonAbstractDataFrameReader *) this->action)->setPath(this->m_path);
     this->action->run();
+    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+        d->dataFrame = nullptr;
+    } else {
+        d->dataFrame = dataFrame;
+    }
 }
 
 void gnomonDataFrameReaderCommand::undo(void)
@@ -58,17 +66,19 @@ void gnomonDataFrameReaderCommand::undo(void)
 
 void gnomonDataFrameReaderCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame(void)
 {
-    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
-    if ((!dataFrame)||(dataFrame->times().size()==0)) {
-        return nullptr;
-    } else {
-        return dataFrame;
-    }
+    return d->dataFrame;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameReaderCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["dataFrame"] = this->dataFrame();
+    return outputs;
 }
 
 bool gnomonDataFrameReaderCommand::isEmpty(void)

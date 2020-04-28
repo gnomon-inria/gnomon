@@ -38,7 +38,7 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setInput(gnomonTreeSeries *tree) = 0;
+    virtual void setTree(gnomonTreeSeries *tree) = 0;
     virtual void setPath(const QString& path) = 0;
 
 public:

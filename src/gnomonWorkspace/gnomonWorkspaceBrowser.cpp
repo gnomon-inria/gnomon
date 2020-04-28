@@ -16,6 +16,7 @@
 
 #include <gnomonWidgets>
 #include <gnomonVisualization>
+#include <gnomonComposer>
 
 #include <dtkThemes>
 #include <dtkWidgets>
@@ -325,6 +326,9 @@ class gnomonWorkspaceBrowserPrivate: public QObject
     Q_OBJECT
 
 public:
+   gnomonPipeline *pipeline;
+
+public:
     gnomonViewForm *browse_view;
     gnomonViewMatplotlib *browse_figure;
 
@@ -563,82 +567,97 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
 
+    QString path = filename.remove("file://");
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
     {
-        imageCommand->setPath(filename.remove("file://"));
+        imageCommand->setPath(path);
         imageCommand->redo();
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
         if (!image_series) {
             qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
         } else {
             this->browse_view->setForm("gnomonImage",image_series->clone());
+            this->pipeline->addClonedForm(image_series,this->browse_view->image());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(imageCommand);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
     {
-        cellImageCommand->setPath(filename.remove("file://"));
+        cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
         if (!cellImage_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
         } else {
             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
+            this->pipeline->addClonedForm(cellImage_series,this->browse_view->cellImage());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(cellImageCommand);
         }
     } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(readerCommand))
     {
-        cellComplexCommand->setPath(filename.remove("file://"));
+        cellComplexCommand->setPath(path);
         cellComplexCommand->redo();
         gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex();
         if (!cellComplex_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
         } else {
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
+            this->pipeline->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(cellComplexCommand);
         }
     } else if (gnomonDataFrameReaderCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameReaderCommand *>(readerCommand))
     {
-        dataFrameCommand->setPath(filename.remove("file://"));
+        dataFrameCommand->setPath(path);
         dataFrameCommand->redo();
         gnomonDataFrameSeries * dataFrame_series = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame();
         if (!dataFrame_series) {
             qWarning() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
         } else {
             this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
+            this->pipeline->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
             this->view_stack->setCurrentWidget(this->browse_figure);
+            this->pipeline->addReader(dataFrameCommand);
         }
     } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(readerCommand))
     {
-        meshCommand->setPath(filename.remove("file://"));
+        meshCommand->setPath(path);
         meshCommand->redo();
         gnomonMeshSeries * mesh_series = (gnomonMeshSeries *) meshCommand->mesh();
         if (!mesh_series) {
             qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
         } else {
             this->browse_view->setForm("gnomonMesh",mesh_series->clone());
+            this->pipeline->addClonedForm(mesh_series,this->browse_view->mesh());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(meshCommand);
         }
     } else if (gnomonPointCloudReaderCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudReaderCommand *>(readerCommand))
     {
-        pointCloudCommand->setPath(filename.remove("file://"));
+        pointCloudCommand->setPath(path);
         pointCloudCommand->redo();
         gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud();
         if (!pointCloud_series) {
             qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
         } else {
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
+            this->pipeline->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
             this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(pointCloudCommand);
         }
     } else if (gnomonTreeReaderCommand *treeCommand = dynamic_cast<gnomonTreeReaderCommand *>(readerCommand))
     {
-        treeCommand->setPath(filename.remove("file://"));
+        treeCommand->setPath(path);
         treeCommand->redo();
         gnomonTreeSeries * tree_series = (gnomonTreeSeries *) treeCommand->tree();
         if (!tree_series) {
             qWarning() << Q_FUNC_INFO << "Resulting tree series is void.";
         } else {
             this->browse_figure->setForm("gnomonTree",tree_series->clone());
+            this->pipeline->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
             this->view_stack->setCurrentWidget(this->browse_figure);
+            this->pipeline->addReader(treeCommand);
         }
     }
     if (this->menu) {
@@ -655,10 +674,16 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d = new gnomonWorkspaceBrowserPrivate;
     d->q = this;
 
+    d->pipeline = gnomonPipeline::instance();
+
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(this->color);
 
+    connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     d->browse_figure = new gnomonViewMatplotlib(this);
+
+    connect(d->browse_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->view_message = new gnomonMessageBoard(this);
     d->view_message->setMessage("Double-click or drop a file");

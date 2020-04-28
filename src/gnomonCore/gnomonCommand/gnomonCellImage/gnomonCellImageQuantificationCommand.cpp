@@ -21,13 +21,18 @@ class gnomonCellImageQuantificationCommandPrivate
 {
 public:
     gnomonImageSeries* image = nullptr;
+    gnomonCellImageSeries* input_cellImage = nullptr;
+
     gnomonCellImageSeries* cellImage = nullptr;
+    gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(const QString& key) : d(new gnomonCellImageQuantificationCommandPrivate)
 {
-    loadPluginGroup("cellImageQuantification");
+    this->factory_name = "cellImageQuantification";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -43,6 +48,21 @@ void gnomonCellImageQuantificationCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+    if ((!cellImage)||(cellImage->times().size())==0) {
+        d->cellImage = nullptr;
+    } else {
+        d->cellImage = cellImage;
+    }
+
+    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+        d->dataFrame = nullptr;
+    }
+    else {
+        d->dataFrame = dataFrame;
+    }
 }
 
 void gnomonCellImageQuantificationCommand::undo(void)
@@ -53,19 +73,25 @@ void gnomonCellImageQuantificationCommand::undo(void)
 
 void gnomonCellImageQuantificationCommand::setImage(gnomonImageSeries *image)
 {
-    d->image = image;
-
-    Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageQuantification *) this->action)->setImage(d->image);
+    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+        d->image = nullptr;
+    } else {
+        d->image = image;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractCellImageQuantification *) this->action)->setImage(d->image);
+    }
 }
-
 
 void gnomonCellImageQuantificationCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    d->cellImage = cellImage;
+    if ((!cellImage)||(cellImage->times().size()==0)) {
+        d->input_cellImage = nullptr;
+    } else {
+        d->input_cellImage = cellImage;
 
-    Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(d->cellImage);
+        Q_ASSERT(this->action);
+        ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(d->input_cellImage);
+    }
 }
 
 void gnomonCellImageQuantificationCommand::setParameter(const QString& parameter, const QVariant& value)
@@ -80,23 +106,28 @@ QMap<QString, gnomonCoreParameter *> gnomonCellImageQuantificationCommand::param
 
 gnomonCellImageSeries *gnomonCellImageQuantificationCommand::cellImage(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
-    if ((!cellImage)||(cellImage->times().size())==0) {
-        return nullptr;
-    } else {
-        return cellImage;
-    }
+    return d->cellImage;
 }
 
 gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
 {
-    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
-    if ((!dataFrame)||(dataFrame->times().size()==0)) {
-        return nullptr;
-    }
-    else {
-        return dataFrame;
-    }
+    return d->dataFrame;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["image"] = d->image;
+    inputs["cellImage"] = d->input_cellImage;
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["cellImage"] = this->cellImage();
+    outputs["dataFrame"] = this->dataFrame();
+    return outputs;
 }
 
 bool gnomonCellImageQuantificationCommand::isEmpty(void)

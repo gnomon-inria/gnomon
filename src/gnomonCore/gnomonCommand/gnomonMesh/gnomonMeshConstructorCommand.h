@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractConstructorCommand.h"
 
-class GNOMONCORE_EXPORT gnomonMeshConstructorCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
      gnomonMeshConstructorCommand(void) = delete;
@@ -14,10 +15,12 @@ public:
 public:
     gnomonMeshSeries *output(void);
 
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+
     virtual void setParameter(const QString&, const QVariant&);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
     static bool isEmpty(void);

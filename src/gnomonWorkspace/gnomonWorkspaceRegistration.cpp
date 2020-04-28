@@ -87,6 +87,8 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     d->target  = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
 
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     d->pool = new gnomonViewFormPool(this);
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
@@ -209,7 +211,10 @@ void gnomonWorkspaceRegistration::apply(void)
 
     if (d->command->output()) {
         d->target->setForm("gnomonImage",d->command->output());
+        d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }

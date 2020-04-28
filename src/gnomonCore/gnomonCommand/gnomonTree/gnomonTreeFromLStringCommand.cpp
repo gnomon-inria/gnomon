@@ -16,33 +16,25 @@
 
 #include <dtkScript>
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
 class gnomonTreeFromLStringCommandPrivate
 {
 public:
-    gnomonLStringSeries *lstring = nullptr;
-
-//public:
-//    QString lsystem;
+    gnomonLStringSeries *input = nullptr;
+    gnomonTreeSeries *output = nullptr;
 };
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
 
 gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand(const QString& key) : d(new gnomonTreeFromLStringCommandPrivate)
 {
-    loadPluginGroup("treeFromLString");
+    this->factory_name = "treeFromLString";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::treeFromLString::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
 }
 
-gnomonTreeFromLStringCommand::~gnomonTreeFromLStringCommand()
+gnomonTreeFromLStringCommand::~gnomonTreeFromLStringCommand(void)
 {
     delete d;
 }
@@ -52,11 +44,18 @@ void gnomonTreeFromLStringCommand::redo(void)
     Q_ASSERT(this->action);
 //    ((gnomonAbstractTreeFromLString *) this->action)->setLSystem(d->lsystem);
     this->action->run();
+
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
+    if ((!tree)||(tree->times().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d->output = tree;
+    }
 }
 
 void gnomonTreeFromLStringCommand::undo(void)
 {
-//    ((gnomonAbstractTreeFromLString *) this->action)->setLSystem("");
+    ((gnomonAbstractTreeFromLString *) this->action)->setInput(nullptr);
 }
 
 //void gnomonTreeFromLStringCommand::setLSystem(const QString& lsystem)
@@ -64,30 +63,25 @@ void gnomonTreeFromLStringCommand::undo(void)
 //    d->lsystem = lsystem;
 //}
 
-void gnomonTreeFromLStringCommand::setInput(gnomonLStringSeries* lstring)
+void gnomonTreeFromLStringCommand::setInput(gnomonLStringSeries *input)
 {
-    d->lstring = lstring;
-    ((gnomonAbstractTreeFromLString *) this->action)->setInput(d->lstring);
-}
-
-gnomonLStringSeries *gnomonTreeFromLStringCommand::input()
-{
-    gnomonLStringSeries *lString = ((gnomonAbstractTreeFromLString *) this->action)->input();
-    if ((!lString)||(lString->times().size()==0)) {
-        return nullptr;
+    if ((!input)||(input->times().size()==0)) {
+        d->input = nullptr;
     } else {
-        return lString;
+        d->input = input;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractTreeFromLString *) this->action)->setInput(d->input);
     }
 }
 
-gnomonTreeSeries *gnomonTreeFromLStringCommand::output()
+gnomonLStringSeries *gnomonTreeFromLStringCommand::input(void)
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
-    } else {
-        return tree;
-    }
+    return d->input;
+}
+
+gnomonTreeSeries *gnomonTreeFromLStringCommand::output(void)
+{
+    return d->output;
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonTreeFromLStringCommand::parameters(void) const
@@ -98,6 +92,20 @@ QMap<QString, gnomonCoreParameter *> gnomonTreeFromLStringCommand::parameters(vo
 void gnomonTreeFromLStringCommand::setParameter(const QString& parameter, const QVariant& value)
 {
     this->action->setParameter(parameter, value);
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonTreeFromLStringCommand::isEmpty(void)

@@ -28,7 +28,10 @@ public:
 
 gnomonTreeConstructorCommand::gnomonTreeConstructorCommand(const QString& key) : d(new gnomonTreeConstructorCommandPrivate)
 {
-    loadPluginGroup("treeConstructor");
+    this->factory_name = "treeConstructor";
+    loadPluginGroup(this->factoryName());
+
+    this->algorithm_name = key;
 
     this->action = gnomonCore::treeConstructor::pluginFactory().create(key);
 
@@ -45,6 +48,13 @@ void gnomonTreeConstructorCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->action->run();
+
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
+    if ((!tree)||(tree->times().size()==0)) {
+        d->output = nullptr;
+    } else {
+        d->output = tree;
+    }
 }
 
 void gnomonTreeConstructorCommand::undo(void)
@@ -63,13 +73,14 @@ QMap<QString, gnomonCoreParameter *> gnomonTreeConstructorCommand::parameters(vo
 
 gnomonTreeSeries *gnomonTreeConstructorCommand::output(void)
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
-    } else {
-        d->output = tree;
-        return tree;
-    }
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeConstructorCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
 }
 
 bool gnomonTreeConstructorCommand::isEmpty(void)

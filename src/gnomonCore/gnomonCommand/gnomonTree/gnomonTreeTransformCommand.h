@@ -1,8 +1,9 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonTree;
 
-class GNOMONCORE_EXPORT gnomonTreeTransformCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonTreeTransformCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonTreeTransformCommand(void) = delete;
@@ -14,15 +15,17 @@ public:
     void undo(void) override;
 
 public:
-    void setInput(gnomonTreeSeries *image_series);
+    void setInput(gnomonTreeSeries *tree_series);
     gnomonTreeSeries *input(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
     gnomonTreeSeries *output(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
     static bool isEmpty(void);

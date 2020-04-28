@@ -54,6 +54,9 @@ signals:
     void formAdded(const QString&);
     void formRemoved(const QString&);
 
+signals:
+    void exportedForm(gnomonAbstractDynamicForm *);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dragLeaveEvent(QDragLeaveEvent *);

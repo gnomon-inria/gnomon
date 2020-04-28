@@ -1,8 +1,9 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonMesh;
 
-class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonMeshFilterCommand(void) = delete;
@@ -16,13 +17,15 @@ public:
 public:
     void setInput(gnomonMeshSeries *mesh_series);
     gnomonMeshSeries *input(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
     gnomonMeshSeries *output(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
     static bool isEmpty(void);

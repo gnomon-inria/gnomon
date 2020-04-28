@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractWriterCommand.h"
 
-class GNOMONCORE_EXPORT gnomonImageWriterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
      gnomonImageWriterCommand(void) = delete;
@@ -14,6 +15,8 @@ public:
 public:
     void setPath(const QString& path);
     void setImage(gnomonImageSeries *image_series);
+
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
 public:
     static bool isEmpty(void);

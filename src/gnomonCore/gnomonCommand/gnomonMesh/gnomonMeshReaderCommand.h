@@ -1,8 +1,9 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractReaderCommand.h"
 
 class gnomonMesh;
 
-class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
      gnomonMeshReaderCommand(void) = delete;
@@ -17,6 +18,7 @@ public:
     void setPath(const QString& path);
 
     gnomonMeshSeries *mesh(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
 public:
     static bool isEmpty(void);

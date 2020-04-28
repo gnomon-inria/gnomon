@@ -23,6 +23,8 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonCellImageConstructorCommand.h
     gnomonCellImageFilterCommand
     gnomonCellImageFilterCommand.h
+    gnomonCellImageFromImageCommand
+    gnomonCellImageFromImageCommand.h
     gnomonCellImageQuantificationCommand
     gnomonCellImageQuantificationCommand.h
     gnomonCellImageReaderCommand
@@ -30,19 +32,17 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonCellImageTrackingCommand
     gnomonCellImageTrackingCommand.h
     gnomonCellImageWriterCommand
-    gnomonCellImageWriterCommand.h
-    gnomonSegmentationCommand
-    gnomonSegmentationCommand.h)
+    gnomonCellImageWriterCommand.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonCellImageConstructorCommand.cpp
     gnomonCellImageFilterCommand.cpp
+    gnomonCellImageFromImageCommand.cpp
     gnomonCellImageQuantificationCommand.cpp
     gnomonCellImageReaderCommand.cpp
     gnomonCellImageTrackingCommand.cpp
-    gnomonCellImageWriterCommand.cpp
-    gnomonSegmentationCommand.cpp)
+    gnomonCellImageWriterCommand.cpp)
 
 
 ######################################################################

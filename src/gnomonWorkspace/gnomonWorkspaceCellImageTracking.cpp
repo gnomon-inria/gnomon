@@ -109,7 +109,6 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     {
         QList<double> prev_times = d->prev_view->times();
         int time_index = prev_times.indexOf(time);
-        qDebug()<<Q_FUNC_INFO<<"Prev"<<time<<"("<<time_index<<")";
         if (time_index < prev_times.size()-1) {
             d->next_view->timeIndexChange(time_index+1);
         } else {
@@ -122,11 +121,12 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->next_view->setInputView(false);
     d->next_view->setEnableLinking(false);
 
+    connect(d->next_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     connect(d->next_view, &gnomonViewForm::timeChanged, [=] (double time)
     {
         QList<double> next_times = d->next_view->times();
         int time_index = next_times.indexOf(time);
-        qDebug()<<Q_FUNC_INFO<<"Next"<<time<<"("<<time_index<<")";
         if (time_index > 0) {
             d->prev_view->timeIndexChange(time_index-1);
         } else {
@@ -136,6 +136,8 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
 
+    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     d->mpl_layout = new QVBoxLayout;
     d->mpl_layout->setContentsMargins(0, 0, 0, 0);
     d->mpl_layout->setSpacing(0);
@@ -143,7 +145,6 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
 
     d->mpl_view = new QWidget(this);
     d->mpl_view->setLayout(d->mpl_layout);
-
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked next view
 // /////////////////////////////////////////////////////////////////////////////
@@ -255,11 +256,13 @@ void gnomonWorkspaceCellImageTracking::apply(void)
 
     d->command->redo();
 
-    qDebug()<<Q_FUNC_INFO<<d->command->cellImage();
     if(d->command->cellImage()) {
-        d->next_view->setCellImage(dynamic_cast<gnomonCellImageSeries *>(d->command->cellImage()->clone()));
+        d->next_view->setCellImage(d->command->cellImage());
         d->next_view->setInputView(false);
         d->next_view->timeIndexChange(1);
+
+        d->registerPipeline();
+
         d->next_stack->setCurrentWidget(d->next_view);
     } else {
         d->next_stack->setCurrentWidget(d->next_message);
@@ -268,6 +271,8 @@ void gnomonWorkspaceCellImageTracking::apply(void)
     if(d->command->tree()) {
         d->mpl_figure->setForm("gnomonTree",d->command->tree());
         d->mpl_stack->setCurrentWidget(d->mpl_view);
+
+        d->registerPipeline();
     } else {
         d->mpl_stack->setCurrentWidget(d->mpl_message);
     }

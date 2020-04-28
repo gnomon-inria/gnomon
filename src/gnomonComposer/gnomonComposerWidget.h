@@ -22,6 +22,7 @@
 
 class dtkComposerSceneNode;
 class dtkComposerWidget;
+class gnomonPipelineNode;
 
 class gnomonComposerWidgetPrivate;
 
@@ -38,12 +39,14 @@ signals:
 
 public:
     QSize sizeHint(void) const;
+    void resizeEvent(QResizeEvent *event);
 
 public:
     dtkComposerWidget* composerWidget(void);
 
 public slots:
     void addWorkspace(const QString&);
+    void addNode(gnomonPipelineNode *node);
 
 public slots:
     bool compositionSave(void);
@@ -51,6 +54,9 @@ public slots:
     bool compositionSaveAs(const QString& file, dtkComposerWriter::Type type = dtkComposerWriter::Ascii);
     bool compositionInsert(void);
     bool compositionInsert(const QString& file);
+
+public slots:
+    bool pipelineSave(void);
 
 protected:
      gnomonComposerWidget(QWidget *parent = 0);

@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractReaderCommand.h"
 
-class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
      gnomonCellImageReaderCommand(void) = delete;
@@ -15,6 +16,7 @@ public:
     void setPath(const QString& path);
 
     gnomonCellImageSeries *cellImage(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
 public:
     static bool isEmpty(void);

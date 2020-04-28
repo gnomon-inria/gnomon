@@ -23,7 +23,6 @@
 class gnomonImageWriterCommandPrivate
 {
 public:
-    QString path;
     gnomonImageSeries* image = nullptr;
 };
 
@@ -33,8 +32,10 @@ public:
 
 gnomonImageWriterCommand::gnomonImageWriterCommand(const QString& key) : d(new gnomonImageWriterCommandPrivate)
 {
-    loadPluginGroup("imageWriter");
+    this->factory_name = "imageWriter";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::imageWriter::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -48,7 +49,7 @@ gnomonImageWriterCommand::~gnomonImageWriterCommand()
 void gnomonImageWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractImageWriter *) this->action)->setPath(d->path);
+    ((gnomonAbstractImageWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractImageWriter *) this->action)->setImage(d->image);
     this->action->run();
 }
@@ -60,12 +61,19 @@ void gnomonImageWriterCommand::undo(void)
 
 void gnomonImageWriterCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)
 {
     d->image = image;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageWriterCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["image"] = d->image;
+    return inputs;
 }
 
 bool gnomonImageWriterCommand::isEmpty(void)

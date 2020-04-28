@@ -122,6 +122,7 @@ void gnomonViewMatplotlibPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
         gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
+        q->emit exportedForm(this->forms[key]);
     }
 }
 
@@ -503,6 +504,7 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     connect(d->save_button, SIGNAL(iconClicked()), d, SLOT(saveFigure()));
 
     this->setObjectName("ViewMatplotlib");
+    this->setMinimumHeight(8);
 
     QFile file(":gnomon/matplotlib_figure.py");
 

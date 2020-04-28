@@ -1,6 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageQuantificationCommand(void) = delete;
@@ -15,13 +16,16 @@ public:
     void setImage(gnomonImageSeries *image);
     void setCellImage(gnomonCellImageSeries *cellimage);
 
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+
     gnomonCellImageSeries *cellImage(void);
     gnomonDataFrameSeries *dataFrame(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
 
 public:
     static bool isEmpty(void);

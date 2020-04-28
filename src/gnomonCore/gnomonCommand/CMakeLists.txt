@@ -31,8 +31,16 @@ add_subdirectory(gnomonTree)
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
+  gnomonAbstractAlgorithmCommand
+  gnomonAbstractAlgorithmCommand.h
   gnomonAbstractCommand
   gnomonAbstractCommand.h
+  gnomonAbstractConstructorCommand
+  gnomonAbstractConstructorCommand.h
+  gnomonAbstractReaderCommand
+  gnomonAbstractReaderCommand.h
+  gnomonAbstractWriterCommand
+  gnomonAbstractWriterCommand.h
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}

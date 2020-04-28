@@ -22,7 +22,6 @@
 class gnomonPointCloudWriterCommandPrivate
 {
 public:
-    QString path;
     gnomonPointCloudSeries* pointCloud = nullptr;
 };
 
@@ -32,8 +31,10 @@ public:
 
 gnomonPointCloudWriterCommand::gnomonPointCloudWriterCommand(const QString& key) : d(new gnomonPointCloudWriterCommandPrivate)
 {
-    loadPluginGroup("pointCloudWriter");
+    this->factory_name = "pointCloudWriter";
+    loadPluginGroup(this->factoryName());
 
+    this->algorithm_name = key;
     this->action = gnomonCore::pointCloudWriter::pluginFactory().create(key);
 
     Q_ASSERT(this->action);
@@ -47,7 +48,7 @@ gnomonPointCloudWriterCommand::~gnomonPointCloudWriterCommand()
 void gnomonPointCloudWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudWriter *) this->action)->setPath(d->path);
+    ((gnomonAbstractPointCloudWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractPointCloudWriter *) this->action)->setPointCloud(d->pointCloud);
     this->action->run();
 }
@@ -59,12 +60,19 @@ void gnomonPointCloudWriterCommand::undo(void)
 
 void gnomonPointCloudWriterCommand::setPath(const QString& path)
 {
-    d->path = path;
+    this->m_path = path;
 }
 
 void gnomonPointCloudWriterCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)
 {
     d->pointCloud = pointCloud;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudWriterCommand::inputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["pointCloud"] = d->pointCloud;
+    return inputs;
 }
 
 bool gnomonPointCloudWriterCommand::isEmpty(void)
