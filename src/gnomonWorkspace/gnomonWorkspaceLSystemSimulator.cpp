@@ -678,6 +678,7 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                             dtkScriptInterpreterPython::instance()->interpret("from gnomonvisualization import getFigureForm, addFormToFigure", &stat);
 
                             dtkScriptInterpreterPython::instance()->interpret("import openalea.lpy as lpy", &stat);
+                            dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpystudio import LPyWindow", &stat);
                             dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor", &stat);
                             dtkScriptInterpreterPython::instance()->interpret("from PyQt5 import Qt", &stat);
 
@@ -708,6 +709,14 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         axiom_clear_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
                         axiom_clear_statement += "    editor.setAxiom(None)\n";
                         dtkScriptInterpreterPython::instance()->interpret(axiom_clear_statement, &stat);
+
+                        QString simu_statement = "";
+                        simu_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                        simu_statement += "  for lpy_window in top.findChildren(LPyWindow):\n";
+                        simu_statement += "    simu = lpy_window.currentSimulation()\n";
+                        simu_statement += "    simu.updateLsystemCode()\n";
+                        simu_statement += "    simu.isTextEdited()\n";
+                        dtkScriptInterpreterPython::instance()->interpret(simu_statement, &stat);
 
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
