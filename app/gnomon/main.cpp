@@ -141,8 +141,6 @@ private:
 
 int main(int argc, char **argv)
 {
-    dtk::core::registerParameters();
-
     dtk::widgets::initialize();
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
