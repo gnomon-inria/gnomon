@@ -116,10 +116,6 @@ def set_theme_to_code_editor():
             else:
                 print('No format',name)
 
-        # To update the syntax highlighting on all the document.
-        workspace.codeeditor.syntaxhighlighter.setActivation(False)
-        workspace.codeeditor.syntaxhighlighter.setActivation(True)
-
 class lpyThemesEngineCallBack(dtkThemesEngineCallBack):
     def __init__(self):
         super(lpyThemesEngineCallBack, self).__init__()
