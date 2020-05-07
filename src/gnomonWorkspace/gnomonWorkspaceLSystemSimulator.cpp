@@ -229,6 +229,53 @@ void gnomonPushButtonLPyAction::setEnabled(bool enabled)
 }
 
 // /////////////////////////////////////////////////////////////////////////////
+//  gnomonViewLString
+//  lazily call addFormToFigure(), only when visible
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonViewLString: public gnomonViewMatplotlib
+{
+public:
+    gnomonViewLString(QWidget *parent = nullptr) :
+        gnomonViewMatplotlib(parent),
+        dirty(false)
+    { }
+    virtual ~gnomonViewLString() { }
+
+    virtual void showEvent(QShowEvent *event) override
+    {
+        checkDirty();
+        gnomonViewMatplotlib::showEvent(event);
+    }
+
+    void setIsDirty()
+    {
+        dirty = true;
+        if (isVisible()) {
+            checkDirty();
+        }
+    }
+
+private:
+    void checkDirty()
+    {
+        if (dirty) {
+            dirty = false;
+            int stat;
+            QString add_statement = "";
+            add_statement += "addFormToFigure(gnomon_lstring_series,'gnomonLString',";
+            add_statement += QString::number(figureNumber());
+            add_statement += ")";
+            dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
+        }
+    }
+
+private:
+    bool dirty;
+
+};
+
+// /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -247,7 +294,7 @@ public:
 
 public:
     gnomonViewMatplotlib *axiom = nullptr;
-    gnomonViewMatplotlib *target = nullptr;
+    gnomonViewLString *target = nullptr;
 
 public:
     QTextEdit *axiom_editor = nullptr;
@@ -427,7 +474,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
 /////////////////////////////////////////////////////////////////////////////
 
-    d->target = new gnomonViewMatplotlib(this);
+    d->target = new gnomonViewLString(this);
 
     d->lhs = new QTabWidget(this);
     d->lhs->setTabPosition(QTabWidget::South);
@@ -726,11 +773,8 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
 
-                        QString add_statement = "";
-                        add_statement += "addFormToFigure(gnomon_lstring_series,'gnomonLString',";
-                        add_statement += QString::number(d->target->figureNumber());
-                        add_statement += ")";
-                        dtkScriptInterpreterPython::instance()->interpret(add_statement, &stat);
+
+                        d->target->setIsDirty();
 
                         d->updateButtonsEnabled(false);
                     });
