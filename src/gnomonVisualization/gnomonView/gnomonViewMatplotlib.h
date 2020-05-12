@@ -35,6 +35,13 @@ public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
     gnomonAbstractDynamicForm *form (const QString&);
     void clearForm(const QString&);
+
+public:
+    void setIsModifiedForm(const QString&);
+
+public:
+    void updateVisualizations(void);
+
 public:
     void addWidget(QWidget *);
 
@@ -58,10 +65,13 @@ signals:
     void exportedForm(gnomonAbstractDynamicForm *);
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *);
-    void dragLeaveEvent(QDragLeaveEvent *);
-    void dragMoveEvent(QDragMoveEvent *);
-    void dropEvent(QDropEvent *);
+    virtual void showEvent(QShowEvent *event) override;
+
+protected:
+    virtual void dragEnterEvent(QDragEnterEvent *) override;
+    virtual void dragLeaveEvent(QDragLeaveEvent *) override;
+    virtual void dragMoveEvent(QDragMoveEvent *) override;
+    virtual void dropEvent(QDropEvent *) override;
 
 signals:
     void fileDropped(const QString&);

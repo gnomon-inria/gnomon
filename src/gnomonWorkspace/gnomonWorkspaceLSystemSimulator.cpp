@@ -718,8 +718,8 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         simu_statement += "    simu.isTextEdited()\n";
                         dtkScriptInterpreterPython::instance()->interpret(simu_statement, &stat);
 
-                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
