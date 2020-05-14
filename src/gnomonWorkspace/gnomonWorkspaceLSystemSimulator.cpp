@@ -274,6 +274,8 @@ public:
     QWidget *in_code = nullptr;
     QWidget *in_axiom = nullptr;
     QWidget *out_view = nullptr;
+    // TODO rlacroix to remove
+    QTextEdit *in_code_edit = nullptr;
 
     dtkWidgetsMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
@@ -797,6 +799,21 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         layout->addWidget(d->in_code_bar->container());
         layout->addWidget(widget);
 
+        // TODO rlacroix to remove
+        for (auto& child: widget->children()) {
+            if (child->objectName() == "codeeditor") {
+                auto *editor = dynamic_cast<QTextEdit*>(child);
+                if (editor != nullptr) {
+                    auto font = QFont("Helvetica", 20); // "Courier New"
+                    // font.setPixelSize(10);
+                    editor->setCurrentFont(font);
+                    d->in_code_edit = editor;
+                    qDebug() << "++++++++++" << child;
+                    break;
+                }
+            }
+        }
+
         d->in_code->setLayout(layout);
 
         d->in_code->stackUnder(d->in_code_bar);
@@ -857,7 +874,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                }
 
                 if(action->text() == "Edit") {
-
                     d->in_code_bar->addMenu(::build(fa::edit, action->menu()));
                     d->in_code_bar->touch();
                 }
@@ -881,6 +897,52 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 }
 
                 if(action->text() == "View") {
+
+                    QMenu *lpy_view_menu = action->menu();
+                    QMenu *gnomon_view_menu = new QMenu(lpy_view_menu->title(), this);
+                    // TODO rlacroix to remove
+                    Q_ASSERT(d->in_code_edit != nullptr);
+                    auto print_font = [=] (const QString& prefix) {
+                        auto *ed = d->in_code_edit;
+                        qDebug() << prefix
+                                 << "fontPointSize()" << ed->fontPointSize()
+                                 << "fontPixelSize()" << ed->currentFont().pixelSize()
+                                 << "currentFont()" << ed->currentFont()
+                            ;
+                    };
+                    print_font("##########");
+                    for (int zoom : { +1, -1 } ){
+                        QAction *action = new QAction;
+                        QString label = "Zoom";
+                        label += (zoom > 0) ? "In" : "Out";
+                        action->setText(label);
+                        gnomon_view_menu->addAction(action);
+                        connect(action, &QAction::triggered, [=] () {
+                            qDebug() << action->text() << Q_FUNC_INFO;
+                            const int zoom_step = 2;
+                            print_font("++++++++ BEFORE");
+
+                            int stat;
+                            QString font_statement = "";
+
+                            font_statement += "from PyQt5 import Qt\n";
+                            font_statement += "from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor\n";
+                            font_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+                            font_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+
+                            // TODO rlacroix : do not have this magic number
+                            static int font_size = 13;
+                            font_size += zoom_step * zoom;
+                            font_statement += "    editor.setEditionFontSize(" + QString::number(font_size) + ")\n";
+
+                            dtkScriptInterpreterPython::instance()->interpret(font_statement, &stat);
+
+                            print_font("++++++++ AFTER ");
+                        });
+                    }
+
+                    d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
+                    d->in_code_bar->touch();
 
                     foreach(QAction *reaction, action->menu()->actions()) {
 
