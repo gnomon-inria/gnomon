@@ -292,6 +292,7 @@ public:
     void disableFloatingDockWidgets(QWidget *parent);
     void setSplittersSizes(int width);
     void updateButtonsEnabled(bool runnning);
+    void applyZoom(void);
 };
 
 void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
@@ -323,6 +324,18 @@ void gnomonWorkspaceLSystemSimulatorPrivate::updateButtonsEnabled(bool running)
     }
     stop_button->setEnabled(running);
 };
+
+void gnomonWorkspaceLSystemSimulatorPrivate::applyZoom(void)
+{
+    int stat;
+    QString font_statement = "";
+    font_statement += "from PyQt5 import Qt\n";
+    font_statement += "from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor\n";
+    font_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+    font_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+    font_statement += "    editor.setEditionFontSize(" + QString::number(edition_font_size) + ")\n";
+    dtkScriptInterpreterPython::instance()->interpret(font_statement, &stat);
+}
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -790,7 +803,9 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
      // d->in_code_bar->addMenu(d->menu());
         d->in_code_bar->touch();
 
-        d->edition_font_size = d->default_edition_font_size;
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+        d->edition_font_size = settings.value("LPyEditionFontSize", d->default_edition_font_size).toInt();
+        d->applyZoom();
 
         // if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
         //     edit->setFrameShape(QFrame::NoFrame);
@@ -899,13 +914,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                         connect(action, &QAction::triggered, [=] () {
                             qDebug() << action->text() << Q_FUNC_INFO;
                             const int zoom_step = 1;
-
-                            int stat;
-                            QString font_statement = "";
-                            font_statement += "from PyQt5 import Qt\n";
-                            font_statement += "from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor\n";
-                            font_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
-                            font_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
                             if (zoom == 0) {
                                 d->edition_font_size = d->default_edition_font_size;
                             } else {
@@ -915,8 +923,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                                     d->edition_font_size = new_font_size;
                                 }
                             }
-                            font_statement += "    editor.setEditionFontSize(" + QString::number(d->edition_font_size) + ")\n";
-                            dtkScriptInterpreterPython::instance()->interpret(font_statement, &stat);
+
+                            d->applyZoom();
+
+                            QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+                            settings.setValue("LPyEditionFontSize", d->edition_font_size);
 
                         });
                     }
