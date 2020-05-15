@@ -912,7 +912,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                         action->setText(label);
                         gnomon_view_menu->addAction(action);
                         connect(action, &QAction::triggered, [=] () {
-                            qDebug() << action->text() << Q_FUNC_INFO;
                             const int zoom_step = 1;
                             if (zoom == 0) {
                                 d->edition_font_size = d->default_edition_font_size;
