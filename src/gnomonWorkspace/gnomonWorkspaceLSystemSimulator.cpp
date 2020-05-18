@@ -902,15 +902,31 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                 if(action->text() == "View") {
 
-                    QMenu *lpy_view_menu = action->menu();
-                    QMenu *gnomon_view_menu = new QMenu(lpy_view_menu->title(), this);
+                    QWidget *code_editor = nullptr;
+                    for (auto *widget: QApplication::topLevelWidgets()) {
+                        for (auto *editor: widget->findChildren<QWidget *>("codeeditor")) {
+                            code_editor = editor;
+                            break;
+                        }
+                    }
+                    Q_ASSERT(code_editor != nullptr);
+
+                    QMenu *gnomon_view_menu = new QMenu("View", d->in_code);
 
                     for (int zoom : { +1, -1, 0 } ){
                         QAction *action = new QAction;
                         QString label = "Zoom ";
                         label += (zoom > 0) ? "In" : (zoom < 0 ? "Out" : "1:1");
                         action->setText(label);
+                        if (zoom > 0) {
+                            action->setShortcut(QKeySequence::ZoomIn);
+                        } else if (zoom < 0) {
+                            action->setShortcut(QKeySequence::ZoomOut);
+                        }
+                        action->setShortcutContext(Qt::WindowShortcut);
+
                         gnomon_view_menu->addAction(action);
+                        code_editor->addAction(action); // needed for shortcuts
                         connect(action, &QAction::triggered, [=] () {
                             const int zoom_step = 1;
                             if (zoom == 0) {
