@@ -275,6 +275,9 @@ public:
     QWidget *in_axiom = nullptr;
     QWidget *out_view = nullptr;
 
+    int edition_font_size;
+    const int default_edition_font_size = 10;
+
     dtkWidgetsMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
     dtkWidgetsMenuBar *out_view_bar = nullptr;
@@ -289,6 +292,7 @@ public:
     void disableFloatingDockWidgets(QWidget *parent);
     void setSplittersSizes(int width);
     void updateButtonsEnabled(bool runnning);
+    void applyZoom(void);
 };
 
 void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
@@ -320,6 +324,18 @@ void gnomonWorkspaceLSystemSimulatorPrivate::updateButtonsEnabled(bool running)
     }
     stop_button->setEnabled(running);
 };
+
+void gnomonWorkspaceLSystemSimulatorPrivate::applyZoom(void)
+{
+    int stat;
+    QString font_statement = "";
+    font_statement += "from PyQt5 import Qt\n";
+    font_statement += "from openalea.lpy.gui.lpycodeeditor import LpyCodeEditor\n";
+    font_statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+    font_statement += "  for editor in top.findChildren(LpyCodeEditor):\n";
+    font_statement += "    editor.setEditionFontSize(" + QString::number(edition_font_size) + ")\n";
+    dtkScriptInterpreterPython::instance()->interpret(font_statement, &stat);
+}
 
 gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
@@ -787,6 +803,10 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
      // d->in_code_bar->addMenu(d->menu());
         d->in_code_bar->touch();
 
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+        d->edition_font_size = settings.value("LPyEditionFontSize", d->default_edition_font_size).toInt();
+        d->applyZoom();
+
         // if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
         //     edit->setFrameShape(QFrame::NoFrame);
 
@@ -881,6 +901,54 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 }
 
                 if(action->text() == "View") {
+
+                    QWidget *code_editor = nullptr;
+                    for (auto *widget: QApplication::topLevelWidgets()) {
+                        for (auto *editor: widget->findChildren<QWidget *>("codeeditor")) {
+                            code_editor = editor;
+                            break;
+                        }
+                    }
+                    Q_ASSERT(code_editor != nullptr);
+
+                    QMenu *gnomon_view_menu = new QMenu("View", d->in_code);
+
+                    for (int zoom : { +1, -1, 0 } ){
+                        QAction *action = new QAction;
+                        QString label = "Zoom ";
+                        label += (zoom > 0) ? "In" : (zoom < 0 ? "Out" : "1:1");
+                        action->setText(label);
+                        if (zoom > 0) {
+                            action->setShortcut(QKeySequence::ZoomIn);
+                        } else if (zoom < 0) {
+                            action->setShortcut(QKeySequence::ZoomOut);
+                        }
+                        action->setShortcutContext(Qt::WindowShortcut);
+
+                        gnomon_view_menu->addAction(action);
+                        code_editor->addAction(action); // needed for shortcuts
+                        connect(action, &QAction::triggered, [=] () {
+                            const int zoom_step = 1;
+                            if (zoom == 0) {
+                                d->edition_font_size = d->default_edition_font_size;
+                            } else {
+                                const auto offset = zoom_step * zoom;
+                                const auto new_font_size = d->edition_font_size + offset;
+                                if (new_font_size > 0) {
+                                    d->edition_font_size = new_font_size;
+                                }
+                            }
+
+                            d->applyZoom();
+
+                            QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+                            settings.setValue("LPyEditionFontSize", d->edition_font_size);
+
+                        });
+                    }
+
+                    d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
+                    d->in_code_bar->touch();
 
                     foreach(QAction *reaction, action->menu()->actions()) {
 
