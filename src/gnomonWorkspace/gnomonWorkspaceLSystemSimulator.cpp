@@ -274,6 +274,7 @@ public:
     QWidget *in_code = nullptr;
     QWidget *in_axiom = nullptr;
     QWidget *out_view = nullptr;
+    QVBoxLayout *code_editor_layout = nullptr;
 
     int edition_font_size;
     const int default_edition_font_size = 10;
@@ -815,7 +816,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         layout->setSpacing(0);
         layout->addWidget(d->in_code_bar);
         layout->addWidget(d->in_code_bar->container());
-        layout->addWidget(widget);
+        auto *code_editor_frame = new QWidget;
+        d->code_editor_layout = new QVBoxLayout;
+        code_editor_frame->setLayout(d->code_editor_layout);
+        d->code_editor_layout->addWidget(widget);
+        layout->addWidget(code_editor_frame);
 
         d->in_code->setLayout(layout);
 
@@ -855,6 +860,16 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     }
 
     else if(widget->objectName() == "LPYMainWindow") {
+
+        auto find_frame = [=] (const QString& name) {
+            auto frames = widget->findChildren<QFrame*>(name);
+            Q_ASSERT_X(frames.size() == 1, Q_FUNC_INFO, ("failed to find 1 instance of " + name).toStdString().c_str());
+            return frames[0];
+        };
+        Q_ASSERT(d->code_editor_layout != nullptr);
+        for (auto *frame : { find_frame("frameReplace"), find_frame("frameFind") }) {
+            d->code_editor_layout->addWidget(frame);
+        }
 
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
 
