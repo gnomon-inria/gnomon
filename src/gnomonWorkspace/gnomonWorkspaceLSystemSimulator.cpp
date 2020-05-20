@@ -291,6 +291,7 @@ public:
 public:
     void exportAxiom(void);
     void disableFloatingDockWidgets(QWidget *parent);
+    void verifyConflictInShortcuts(QWidget *parent);
     void setSplittersSizes(int width);
     void updateButtonsEnabled(bool runnning);
     void applyZoom(void);
@@ -775,7 +776,40 @@ void gnomonWorkspaceLSystemSimulatorPrivate::disableFloatingDockWidgets(QWidget 
             disableFloatingDockWidgets(as_widget);
         }
     }
-};
+}
+
+void gnomonWorkspaceLSystemSimulatorPrivate::verifyConflictInShortcuts(QWidget *parent)
+{
+    static QMap<QString, QAction*> binds;
+    static QSet<QAction *> actions;
+    auto describe_action = [] (const QAction *action) {
+        QString ret = action->text();
+        ret.replace("&", "");
+        const auto *parent = action->parentWidget();
+        if (parent != nullptr && parent->objectName().size()) {
+            ret += " (parented to " + parent->objectName() + ")";
+        }
+        return ret;
+    };
+    for (auto *widget: parent->findChildren<QWidget *>()) {
+        for (auto *action: widget->actions()) {
+            if (actions.contains(action)) {
+                continue;
+            }
+            const auto& shortcut = action->shortcut();
+            if (shortcut.isEmpty()) {
+                continue;
+            }
+            actions << action;
+            const auto& key_sequence = shortcut.toString();
+            if (binds.contains(key_sequence)) {
+                qDebug() << "Conflict in shortcuts:" << describe_action(action) << "and" << describe_action(binds[key_sequence]) << "are both bound to" << key_sequence;
+            } else {
+                binds[key_sequence] = action;
+            }
+        }
+    }
+}
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
@@ -787,6 +821,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         return;
 
     d->disableFloatingDockWidgets(widget);
+    d->verifyConflictInShortcuts(widget);
 
 // /////////////////////////////////////////////////////////////////////////////
 // LPYCodeEditor
