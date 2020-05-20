@@ -902,7 +902,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             return frames[0];
         };
         Q_ASSERT(d->code_editor_layout != nullptr);
-        for (auto *frame : { find_frame("frameReplace"), find_frame("frameFind") }) {
+        for (auto *frame : { find_frame("frameFind"), find_frame("frameReplace") }) {
             d->code_editor_layout->addWidget(frame);
         }
 
