@@ -274,6 +274,7 @@ public:
     QWidget *in_code = nullptr;
     QWidget *in_axiom = nullptr;
     QWidget *out_view = nullptr;
+    QVBoxLayout *code_editor_layout = nullptr;
 
     int edition_font_size;
     const int default_edition_font_size = 10;
@@ -290,6 +291,7 @@ public:
 public:
     void exportAxiom(void);
     void disableFloatingDockWidgets(QWidget *parent);
+    void verifyConflictInShortcuts(QWidget *parent);
     void setSplittersSizes(int width);
     void updateButtonsEnabled(bool runnning);
     void applyZoom(void);
@@ -774,7 +776,40 @@ void gnomonWorkspaceLSystemSimulatorPrivate::disableFloatingDockWidgets(QWidget 
             disableFloatingDockWidgets(as_widget);
         }
     }
-};
+}
+
+void gnomonWorkspaceLSystemSimulatorPrivate::verifyConflictInShortcuts(QWidget *parent)
+{
+    static QMap<QString, QAction*> binds;
+    static QSet<QAction *> actions;
+    auto describe_action = [] (const QAction *action) {
+        QString ret = action->text();
+        ret.replace("&", "");
+        const auto *parent = action->parentWidget();
+        if (parent != nullptr && parent->objectName().size()) {
+            ret += " (parented to " + parent->objectName() + ")";
+        }
+        return ret;
+    };
+    for (auto *widget: parent->findChildren<QWidget *>()) {
+        for (auto *action: widget->actions()) {
+            if (actions.contains(action)) {
+                continue;
+            }
+            const auto& shortcut = action->shortcut();
+            if (shortcut.isEmpty()) {
+                continue;
+            }
+            actions << action;
+            const auto& key_sequence = shortcut.toString();
+            if (binds.contains(key_sequence)) {
+                qDebug() << "Conflict in shortcuts:" << describe_action(action) << "and" << describe_action(binds[key_sequence]) << "are both bound to" << key_sequence;
+            } else {
+                binds[key_sequence] = action;
+            }
+        }
+    }
+}
 
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
@@ -786,6 +821,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         return;
 
     d->disableFloatingDockWidgets(widget);
+    d->verifyConflictInShortcuts(widget);
 
 // /////////////////////////////////////////////////////////////////////////////
 // LPYCodeEditor
@@ -815,7 +851,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         layout->setSpacing(0);
         layout->addWidget(d->in_code_bar);
         layout->addWidget(d->in_code_bar->container());
-        layout->addWidget(widget);
+        auto *code_editor_frame = new QWidget;
+        d->code_editor_layout = new QVBoxLayout;
+        code_editor_frame->setLayout(d->code_editor_layout);
+        d->code_editor_layout->addWidget(widget);
+        layout->addWidget(code_editor_frame);
 
         d->in_code->setLayout(layout);
 
@@ -856,6 +896,16 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
     else if(widget->objectName() == "LPYMainWindow") {
 
+        auto find_frame = [=] (const QString& name) {
+            auto frames = widget->findChildren<QFrame*>(name);
+            Q_ASSERT_X(frames.size() == 1, Q_FUNC_INFO, ("failed to find 1 instance of " + name).toStdString().c_str());
+            return frames[0];
+        };
+        Q_ASSERT(d->code_editor_layout != nullptr);
+        for (auto *frame : { find_frame("frameFind"), find_frame("frameReplace") }) {
+            d->code_editor_layout->addWidget(frame);
+        }
+
         if(QMainWindow *window = dynamic_cast<QMainWindow *>(widget)) {
 
             window->setParent(this);
@@ -863,6 +913,29 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             // d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
 
             foreach(QAction *action, window->menuBar()->actions()) {
+
+                QWidget *code_editor = nullptr;
+                for (auto *widget: QApplication::topLevelWidgets()) {
+                    for (auto *editor: widget->findChildren<QWidget *>("codeeditor")) {
+                        code_editor = editor;
+                        break;
+                    }
+                }
+                Q_ASSERT(code_editor != nullptr);
+
+                auto add_actions_shortcuts = [=] (QMenu* menu) {
+                    // this function is needed for these 2 purposes :
+                    // [1] enable its shortcut by adding it do the code_editor widget
+                    // [2] expose its shortcut to the user by adding it to its text
+                    for (auto * reaction : menu->actions()) {
+                        const auto& shortcut = reaction->shortcut();
+                        if (shortcut.isEmpty()) {
+                            continue;
+                        }
+                        code_editor->addAction(reaction);
+                        reaction->setText(reaction->text() + " (" + shortcut.toString() + ")");
+                    }
+                };
 
                 qDebug() << Q_FUNC_INFO << action->text();
 
@@ -877,6 +950,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                }
 
                 if(action->text() == "Edit") {
+
+                    add_actions_shortcuts(action->menu());
 
                     d->in_code_bar->addMenu(::build(fa::edit, action->menu()));
                     d->in_code_bar->touch();
@@ -902,15 +977,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                 if(action->text() == "View") {
 
-                    QWidget *code_editor = nullptr;
-                    for (auto *widget: QApplication::topLevelWidgets()) {
-                        for (auto *editor: widget->findChildren<QWidget *>("codeeditor")) {
-                            code_editor = editor;
-                            break;
-                        }
-                    }
-                    Q_ASSERT(code_editor != nullptr);
-
                     QMenu *gnomon_view_menu = new QMenu("View", d->in_code);
 
                     for (int zoom : { +1, -1, 0 } ){
@@ -926,7 +992,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                         action->setShortcutContext(Qt::WindowShortcut);
 
                         gnomon_view_menu->addAction(action);
-                        code_editor->addAction(action); // needed for shortcuts
                         connect(action, &QAction::triggered, [=] () {
                             const int zoom_step = 1;
                             if (zoom == 0) {
@@ -946,6 +1011,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                         });
                     }
+                    add_actions_shortcuts(gnomon_view_menu);
 
                     d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
                     d->in_code_bar->touch();
