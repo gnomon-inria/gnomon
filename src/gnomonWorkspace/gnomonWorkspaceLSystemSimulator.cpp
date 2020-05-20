@@ -879,6 +879,29 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
             foreach(QAction *action, window->menuBar()->actions()) {
 
+                QWidget *code_editor = nullptr;
+                for (auto *widget: QApplication::topLevelWidgets()) {
+                    for (auto *editor: widget->findChildren<QWidget *>("codeeditor")) {
+                        code_editor = editor;
+                        break;
+                    }
+                }
+                Q_ASSERT(code_editor != nullptr);
+
+                auto add_actions_shortcuts = [=] (QMenu* menu) {
+                    // this function is needed for these 2 purposes :
+                    // [1] enable its shortcut by adding it do the code_editor widget
+                    // [2] expose its shortcut to the user by adding it to its text
+                    for (auto * reaction : menu->actions()) {
+                        const auto& shortcut = reaction->shortcut();
+                        if (shortcut.isEmpty()) {
+                            continue;
+                        }
+                        code_editor->addAction(reaction);
+                        reaction->setText(reaction->text() + " (" + shortcut.toString() + ")");
+                    }
+                };
+
                 qDebug() << Q_FUNC_INFO << action->text();
 
                 if(action->text() == "File") {
@@ -892,6 +915,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                }
 
                 if(action->text() == "Edit") {
+
+                    add_actions_shortcuts(action->menu());
 
                     d->in_code_bar->addMenu(::build(fa::edit, action->menu()));
                     d->in_code_bar->touch();
@@ -917,15 +942,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                 if(action->text() == "View") {
 
-                    QWidget *code_editor = nullptr;
-                    for (auto *widget: QApplication::topLevelWidgets()) {
-                        for (auto *editor: widget->findChildren<QWidget *>("codeeditor")) {
-                            code_editor = editor;
-                            break;
-                        }
-                    }
-                    Q_ASSERT(code_editor != nullptr);
-
                     QMenu *gnomon_view_menu = new QMenu("View", d->in_code);
 
                     for (int zoom : { +1, -1, 0 } ){
@@ -941,7 +957,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                         action->setShortcutContext(Qt::WindowShortcut);
 
                         gnomon_view_menu->addAction(action);
-                        code_editor->addAction(action); // needed for shortcuts
                         connect(action, &QAction::triggered, [=] () {
                             const int zoom_step = 1;
                             if (zoom == 0) {
@@ -961,6 +976,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                         });
                     }
+                    add_actions_shortcuts(gnomon_view_menu);
 
                     d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
                     d->in_code_bar->touch();
