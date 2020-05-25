@@ -864,6 +864,23 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->lhs->addTab(d->in_code, "Code");
 
         // d->in_code_bar->setFixedHeight(widget->height());
+
+        auto tab_bars = widget->findChildren<QTabBar*>("documentNames");
+        Q_ASSERT_X(tab_bars.size() == 1, Q_FUNC_INFO, (QString("failed to find 1 instance of QTabBar documentNames, results size=") + QString::number(tab_bars.size())).toStdString().c_str());
+        auto *tab_bar = tab_bars[0];
+        tab_bar->setTabsClosable(true);
+
+        connect(tab_bar, &QTabBar::tabCloseRequested, [] (int index) {
+            int stat;
+            QString statement = "";
+            statement += "from PyQt5 import Qt\n";
+            statement += "from openalea.lpy.gui.lpystudio import LPyWindow\n";
+            statement += "for top in Qt.QApplication.topLevelWidgets():\n";
+            statement += "  for lpy_window in top.findChildren(LPyWindow):\n";
+            statement += "    lpy_window.closeDocument(" + QString::number(index) + ")\n";
+            dtkScriptInterpreterPython::instance()->interpret(statement, &stat);
+        });
+
     }
 
 // /////////////////////////////////////////////////////////////////////////////
