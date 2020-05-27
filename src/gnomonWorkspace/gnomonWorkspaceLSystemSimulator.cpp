@@ -869,6 +869,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         Q_ASSERT_X(tab_bars.size() == 1, Q_FUNC_INFO, (QString("failed to find 1 instance of QTabBar documentNames, results size=") + QString::number(tab_bars.size())).toStdString().c_str());
         auto *tab_bar = tab_bars[0];
         tab_bar->setTabsClosable(true);
+        tab_bar->setExpanding(true);
 
         connect(tab_bar, &QTabBar::tabCloseRequested, [] (int index) {
             int stat;

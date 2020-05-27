@@ -112,8 +112,6 @@ gnomonWorkspaceLSystemSimulator QTabBar::tab
     font-size: 12px;
     font-weight: bold;
 
-    width: 100;
-
     color: @fgalt;
 }
 
