@@ -122,7 +122,7 @@ public slots:
     void render(void);
 
 public slots:
-    void setAcceptCellComplex(bool);
+    void setAcceptForm(const QString&, bool);
 
 public slots:
     void setEnableLinking(bool);
