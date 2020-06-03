@@ -919,8 +919,10 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             Q_ASSERT_X(frames.size() == 1, Q_FUNC_INFO, ("failed to find 1 instance of " + name).toStdString().c_str());
             return frames[0];
         };
+        qDebug() << Q_FUNC_INFO << "d->code_editor_layout =  " << d->code_editor_layout;
         Q_ASSERT(d->code_editor_layout != nullptr);
         for (auto *frame : { find_frame("frameFind"), find_frame("frameReplace") }) {
+            qDebug() << Q_FUNC_INFO << "frame =" << frame;
             d->code_editor_layout->addWidget(frame);
         }
 
