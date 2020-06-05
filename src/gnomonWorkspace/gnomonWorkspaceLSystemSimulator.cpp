@@ -916,12 +916,22 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         auto find_frame = [=] (const QString& name) {
             auto frames = widget->findChildren<QFrame*>(name);
-            Q_ASSERT_X(frames.size() == 1, Q_FUNC_INFO, ("failed to find 1 instance of " + name).toStdString().c_str());
-            return frames[0];
+            if (frames.size() == 1) {
+                return frames[0];
+            } else {
+                qDebug() << Q_FUNC_INFO << "failed to find QFrame instance of" << name << "search count is" << frames.size();
+                return (QFrame*)nullptr;
+            }
         };
+        // TODO remove next qDebug
         qDebug() << Q_FUNC_INFO << "d->code_editor_layout =  " << d->code_editor_layout;
+
         Q_ASSERT(d->code_editor_layout != nullptr);
         for (auto *frame : { find_frame("frameFind"), find_frame("frameReplace") }) {
+            if (frame == nullptr) {
+                continue;
+            }
+            // TODO remove next qDebug
             qDebug() << Q_FUNC_INFO << "frame =" << frame;
             d->code_editor_layout->addWidget(frame);
         }
