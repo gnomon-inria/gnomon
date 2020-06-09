@@ -1,5 +1,8 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
+  <qresource prefix="">
+    <file>gnomonFormAdapter.qml</file>
+  </qresource>
   <qresource prefix="gnomon">
     <file>matplotlib_figure.py</file>
   </qresource>

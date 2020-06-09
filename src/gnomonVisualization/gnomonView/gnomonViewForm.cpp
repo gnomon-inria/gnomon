@@ -22,6 +22,9 @@
 //#include <dtkScript>
 #include <dtkImagingCore>
 
+#include <QtQuick>
+#include <QtQuickWidgets>
+
 #include <gnomonCore>
 #include <gnomonWidgets>
 
@@ -47,6 +50,44 @@
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLNativeWidget.h>
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonFormAdapterMenu : public QQuickWidget
+{
+    Q_OBJECT
+
+public:
+    gnomonFormAdapterMenu(QVariantMap, QWidget *parent = nullptr);
+
+protected:
+    void focusOutEvent(QFocusEvent *event) override
+    {
+        this->close();
+        this->deleteLater();
+
+        QQuickWidget::focusOutEvent(event);
+    }
+};
+
+gnomonFormAdapterMenu::gnomonFormAdapterMenu(QVariantMap adapter_descs, QWidget *parent) : QQuickWidget(parent)
+{
+    this->engine()->addImportPath("qrc:/");
+
+    QQmlContext *context = this->rootContext();
+    context->setContextProperty("font", dtkFontAwesome::instance());
+    context->setContextProperty("theme", dtkThemesEngine::instance());
+    context->setContextProperty("adapter_descs", adapter_descs);
+
+    this->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    this->setSource(QUrl("qrc:/gnomonFormAdapter.qml"));
+    this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+    this->setFocus(Qt::PopupFocusReason);
+}
+
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewFormPrivate
@@ -171,6 +212,16 @@ public slots:
     void refresh(void);
 
 public:
+    QMap<QString, QMap<QString, gnomonAbstractCommand *> > adapterCommands;
+    QMap<QString, QMap<QString, QString> > adapterTargets;
+    QMap<QString, QMap<QString, QString> > adapterDescriptions;
+
+    gnomonAbstractDynamicForm *form_to_adapt = nullptr;
+
+public slots:
+    void adaptForm(const QString& adapter_plugin);
+
+public:
     void updateKeys(void);
     void updateInteractorStyleMenu(void);
 
@@ -194,6 +245,9 @@ public:
 
 public:
     dtkWidgetsMenu *view_menu;
+    
+public:
+    gnomonFormAdapterMenu *adapter_menu = nullptr;
 
 // /////////////////////////////////////////////////////////////////////////////
 };
@@ -778,6 +832,24 @@ void gnomonViewFormPrivate::updateInteractorStyleMenu(void)
     this->style_menubar->touch();
 }
 
+void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
+{
+    gnomonAbstractDynamicForm *form = this->form_to_adapt;
+
+    if (gnomonMeshSeries* mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
+        gnomonMeshAdapterCommand *meshCommand = dynamic_cast<gnomonMeshAdapterCommand *>(this->adapterCommands["gnomonMesh"][adapter_plugin]);
+
+        meshCommand->setInput(mesh);
+        meshCommand->redo();
+        gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
+        q->setForm("adaptedMesh",adaptedMesh);
+    }
+
+    if (this->adapter_menu) {
+        this->adapter_menu->close();
+    }
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
@@ -798,6 +870,30 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     d->acceptForms["gnomonImage"] = false;
     d->acceptForms["gnomonMesh"] = false;
     d->acceptForms["gnomonPointCloud"] = false;
+
+    for (const auto& form : d->acceptForms.keys()) {
+        if (form=="gnomonMesh") {
+            loadPluginGroup("meshAdapter");
+            qDebug()<<Q_FUNC_INFO<<gnomonCore::meshAdapter::pluginFactory().keys();
+            for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())
+            {
+                gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
+                if (!d->adapterCommands.contains(form))
+                {
+                    QMap<QString, QString> empty_target;
+                    d->adapterTargets[form] = empty_target;
+                    QMap<QString, QString> empty_desc;
+                    d->adapterDescriptions[form] = empty_desc;
+                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    d->adapterCommands[form] = empty_list;
+                }
+                d->adapterTargets[form][key] = adapter->target();
+                d->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
+                d->adapterCommands[form][key] = new gnomonMeshAdapterCommand(key);
+                delete adapter;
+            }
+        }
+    }
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
     connect(d->renderer3D_button, SIGNAL(iconClicked()), this, SLOT(switchTo3D()));
@@ -1274,53 +1370,26 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
 
 void gnomonViewForm::setAdaptedForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
-    QMap<QPair<QString, QString>, QMap<QString, gnomonAbstractCommand *> > adapterCommands;
-    QMap<QPair<QString, QString>, QMap<QString, QString> > adapterDescriptions;
-    for (const auto& form : d->acceptForms.keys()) {
-        if (form=="gnomonMesh") {
-            loadPluginGroup("meshAdapter");
-            for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
-                QPair<QString, QString> forms;
-                forms.first = form;
-                forms.second = adapter->target();
-                if (!adapterCommands.contains(forms))
-                {
-                    QMap<QString, QString> empty_desc;
-                    adapterDescriptions[forms] = empty_desc;
-                    QMap<QString, gnomonAbstractCommand *> empty_list;
-                    adapterCommands[forms] = empty_list;
-                }
-                adapterDescriptions[forms][key] = adapter->documentation().split("\n")[1];
-                adapterCommands[forms][key] = new gnomonMeshAdapterCommand(key);
-                delete adapter;
+    qDebug()<<Q_FUNC_INFO<<d->adapterCommands.keys();
+    if (d->adapterCommands.contains(name)) {
+        QVariantMap adapter_descs;
+        for (const auto &key : d->adapterCommands[name].keys()) {
+            if (d->acceptForms[d->adapterTargets[name][key]]) {
+                adapter_descs[key] = d->adapterDescriptions[name][key];
             }
         }
-    }
+        if (adapter_descs.size() > 0) {
+            d->form_to_adapt = form;
+            d->adapter_menu = new gnomonFormAdapterMenu(adapter_descs);
+            d->adapter_menu->setAttribute(Qt::WA_DeleteOnClose, true);
+            d->adapter_menu->resize(dtkApp->window()->width() * 1/3, dtkApp->window()->height() - 40);
+            d->adapter_menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
+            d->adapter_menu->show();
 
-    for (const auto& target : d->acceptForms.keys())
-    {
-        QPair<QString, QString> forms;
-        forms.first = name;
-        forms.second = target;
-        if (d->acceptForms[target] & adapterCommands.contains(forms)) {
-            QString adapter_plugin;
-            if (adapterCommands[forms].size()==1) {
-                adapter_plugin = adapterCommands[forms].keys()[0];
-                gnomonAbstractCommand *adapterCommand = adapterCommands[forms][adapter_plugin];
+            QObject *context = d->adapter_menu->rootObject();
+            connect(context, SIGNAL(clicked(const QString&)), d, SLOT(adaptForm(const QString&)));
 
-                if (gnomonMeshAdapterCommand *meshCommand = dynamic_cast<gnomonMeshAdapterCommand *>(adapterCommand))
-                {
-                    gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form);
-                    meshCommand->setInput(mesh);
-                    meshCommand->redo();
-                    gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
-                    this->setForm("adaptedMesh",adaptedMesh,visualization);
-                }
-            } else {
-                qDebug()<<Q_FUNC_INFO<<"Not implemented yet"<<adapterCommands[forms].keys();
-            }
+            QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(d->adapter_menu);
         }
     }
 }

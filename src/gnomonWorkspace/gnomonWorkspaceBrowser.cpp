@@ -681,7 +681,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->browse_view->setAcceptForm("gnomonCellComplex",true);
     d->browse_view->setAcceptForm("gnomonCellImage",true);
     d->browse_view->setAcceptForm("gnomonImage",true);
-    d->browse_view->setAcceptForm("gnomonMesh",false);
+    d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
     d->browse_view->setAcceptDrops(true);
 

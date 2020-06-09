@@ -89,6 +89,7 @@ gnomonWorkspaceMeshFilter::gnomonWorkspaceMeshFilter(QWidget *parent) : dtkWidge
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
     d->source->setInputView(true);
+    d->source->setAcceptForm("gnomonMesh",true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);

@@ -94,7 +94,8 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(this->color);
-    d->view->setInputView(false);
+    d->view->setAcceptForm("gnomonPointCloud",true);
+    d->view->setInputView(true);
     d->view->setEnableLinking(false);
 
     connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
@@ -220,6 +221,7 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
         d->pipeline->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
         d->pipeline->addForm(d->command->pointCloud());
         d->view->setInputView(false);
+        d->view->setAcceptDrops(true);
     }
 
     if(d->command->dataFrame()) {
