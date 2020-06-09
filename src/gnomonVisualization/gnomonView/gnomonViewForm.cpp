@@ -1246,23 +1246,23 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
 {
     if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         if (d->acceptForms["gnomonCellImage"]) {
-            this->setCellImage(cellImage);
+            this->setCellImage(cellImage, visualization);
         }
     } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
         if (d->acceptForms["gnomonCellComplex"]) {
-            this->setCellComplex(cellComplex);
+            this->setCellComplex(cellComplex, visualization);
         }
     } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         if (d->acceptForms["gnomonImage"]) {
-            this->setImage(image);
+            this->setImage(image, visualization);
         }
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         if (d->acceptForms["gnomonMesh"]) {
-            this->setMesh(mesh);
+            this->setMesh(mesh, visualization);
         }
     } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         if (d->acceptForms["gnomonPointCloud"]) {
-            this->setPointCloud(pointCloud);
+            this->setPointCloud(pointCloud, visualization);
         }
     }
     return;
