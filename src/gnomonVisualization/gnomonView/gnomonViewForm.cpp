@@ -1245,15 +1245,25 @@ gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
     if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
-        this->setCellImage(cellImage);
+        if (d->acceptForms["gnomonCellImage"]) {
+            this->setCellImage(cellImage);
+        }
     } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-        this->setCellComplex(cellComplex);
+        if (d->acceptForms["gnomonCellComplex"]) {
+            this->setCellComplex(cellComplex);
+        }
     } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
-        this->setImage(image);
+        if (d->acceptForms["gnomonImage"]) {
+            this->setImage(image);
+        }
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
-        this->setMesh(mesh);
+        if (d->acceptForms["gnomonMesh"]) {
+            this->setMesh(mesh);
+        }
     } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
-        this->setPointCloud(pointCloud);
+        if (d->acceptForms["gnomonPointCloud"]) {
+            this->setPointCloud(pointCloud);
+        }
     }
     return;
 }
@@ -1269,37 +1279,35 @@ gnomonCellImageSeries *gnomonViewForm::cellImage(void)
 
 void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstractVisualization *visualization)
 {
-    if (d->acceptForms["gnomonCellImage"]) {
-        d->forms["gnomonCellImage"] = cellImage;
+    d->forms["gnomonCellImage"] = cellImage;
 
-        QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+    QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
 
-        if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
-        {
-            d->formVisualization["gnomonCellImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key);
-            d->formVisualization["gnomonCellImage"]->setView(this);
-        }
-
-        gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
-        dtkApp->window()->setCursor(Qt::BusyCursor);
-        formVisualizationCellImage->setCellImage(cellImage);
-        if (visualization) {
-            formVisualizationCellImage->setParameters(visualization->parameters());
-        }
-        formVisualizationCellImage->update();
-        dtkApp->window()->setCursor(Qt::ArrowCursor);
-
-        if (d->renderer3D_button->isToggled()) {
-            d->renderer3D_button->toggle(false);
-            this->switchTo3D();
-        }
-        else if (d->renderer2D_button->isToggled()) {
-            d->renderer2D_button->toggle(false);
-            this->switchTo2D();
-        }
-
-        emit formAdded("gnomonCellImage");
+    if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
+    {
+        d->formVisualization["gnomonCellImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key);
+        d->formVisualization["gnomonCellImage"]->setView(this);
     }
+
+    gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)d->formVisualization["gnomonCellImage"];
+    dtkApp->window()->setCursor(Qt::BusyCursor);
+    formVisualizationCellImage->setCellImage(cellImage);
+    if (visualization) {
+        formVisualizationCellImage->setParameters(visualization->parameters());
+    }
+    formVisualizationCellImage->update();
+    dtkApp->window()->setCursor(Qt::ArrowCursor);
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonCellImage");
 }
 
 gnomonCellComplexSeries *gnomonViewForm::cellComplex(void)
@@ -1313,40 +1321,37 @@ gnomonCellComplexSeries *gnomonViewForm::cellComplex(void)
 
 void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomonAbstractVisualization *visualization)
 {
-    if (d->acceptForms["gnomonCellComplex"]) {
-        d->forms["gnomonCellComplex"] = cellComplex;
+    d->forms["gnomonCellComplex"] = cellComplex;
 
-        QString key = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
-    //    QString key = "gnomonVisualizationCellComplexTriangularMesh";
+    QString key = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
+//    QString key = "gnomonVisualizationCellComplexTriangularMesh";
 
-        if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
-        {
-    //        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
-            d->formVisualization["gnomonCellComplex"] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(key);
-            d->formVisualization["gnomonCellComplex"]->setView(this);
-        }
-        gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
-        dtkApp->window()->setCursor(Qt::BusyCursor);
-        formVisualizationCellComplex->setCellComplex(cellComplex);
-        if (visualization) {
-            formVisualizationCellComplex->setParameters(visualization->parameters());
-        }
-        formVisualizationCellComplex->update();
-        dtkApp->window()->setCursor(Qt::ArrowCursor);
-
-        if (d->renderer3D_button->isToggled()) {
-            d->renderer3D_button->toggle(false);
-            this->switchTo3D();
-        }
-        else if (d->renderer2D_button->isToggled()) {
-            d->renderer2D_button->toggle(false);
-            this->switchTo2D();
-        }
-
-        emit formAdded("gnomonCellComplex");
+    if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
+    {
+//        d->formVisualization["gnomonCellComplex"] = new gnomonVisualizationCellComplex();
+        d->formVisualization["gnomonCellComplex"] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(key);
+        d->formVisualization["gnomonCellComplex"]->setView(this);
     }
-}
+    gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)d->formVisualization["gnomonCellComplex"];
+    dtkApp->window()->setCursor(Qt::BusyCursor);
+    formVisualizationCellComplex->setCellComplex(cellComplex);
+    if (visualization) {
+        formVisualizationCellComplex->setParameters(visualization->parameters());
+    }
+    formVisualizationCellComplex->update();
+    dtkApp->window()->setCursor(Qt::ArrowCursor);
 
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonCellComplex");
+}
 
 gnomonImageSeries *gnomonViewForm::image(void)
 {
@@ -1359,38 +1364,36 @@ gnomonImageSeries *gnomonViewForm::image(void)
 
 void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualization *visualization)
 {
-    if (d->acceptForms["gnomonImage"]) {
-        d->forms["gnomonImage"] = image;
+    d->forms["gnomonImage"] = image;
 
-        qDebug() << gnomonVisualization::visualizationImage::pluginFactory().keys();
-        QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
+    qDebug() << gnomonVisualization::visualizationImage::pluginFactory().keys();
+    QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
 
-        if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
-            {
-                d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
-                d->formVisualization["gnomonImage"]->setView(this);
-            }
-
-        gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
-        dtkApp->window()->setCursor(Qt::BusyCursor);
-        formVisualizationImage->setImage(image);
-        if (visualization) {
-            formVisualizationImage->setParameters(visualization->parameters());
-        }
-        formVisualizationImage->update();
-        dtkApp->window()->setCursor(Qt::ArrowCursor);
-
-        if (d->renderer3D_button->isToggled()) {
-            d->renderer3D_button->toggle(false);
-            this->switchTo3D();
-        }
-        else if (d->renderer2D_button->isToggled()) {
-            d->renderer2D_button->toggle(false);
-            this->switchTo2D();
+    if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
+        {
+            d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
+            d->formVisualization["gnomonImage"]->setView(this);
         }
 
-        emit formAdded("gnomonImage");
+    gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)d->formVisualization["gnomonImage"];
+    dtkApp->window()->setCursor(Qt::BusyCursor);
+    formVisualizationImage->setImage(image);
+    if (visualization) {
+        formVisualizationImage->setParameters(visualization->parameters());
     }
+    formVisualizationImage->update();
+    dtkApp->window()->setCursor(Qt::ArrowCursor);
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonImage");
 }
 
 gnomonMeshSeries *gnomonViewForm::mesh(void)
@@ -1404,37 +1407,35 @@ gnomonMeshSeries *gnomonViewForm::mesh(void)
 
 void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization *visualization)
 {
-    if (d->acceptForms["gnomonMesh"]) {
-        d->forms["gnomonMesh"] = mesh;
+    d->forms["gnomonMesh"] = mesh;
 
-        QString key = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
+    QString key = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
 
-        if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
-        {
-            d->formVisualization["gnomonMesh"] = gnomonVisualization::visualizationMesh::pluginFactory().create(key);
-            d->formVisualization["gnomonMesh"]->setView(this);
-        }
-
-        gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)d->formVisualization["gnomonMesh"];
-        dtkApp->window()->setCursor(Qt::BusyCursor);
-        formVisualizationMesh->setMesh(mesh);
-        if (visualization) {
-            formVisualizationMesh->setParameters(visualization->parameters());
-        }
-        formVisualizationMesh->update();
-        dtkApp->window()->setCursor(Qt::ArrowCursor);
-
-        if (d->renderer3D_button->isToggled()) {
-            d->renderer3D_button->toggle(false);
-            this->switchTo3D();
-        }
-        else if (d->renderer2D_button->isToggled()) {
-            d->renderer2D_button->toggle(false);
-            this->switchTo2D();
-        }
-
-        emit formAdded("gnomonMesh");
+    if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
+    {
+        d->formVisualization["gnomonMesh"] = gnomonVisualization::visualizationMesh::pluginFactory().create(key);
+        d->formVisualization["gnomonMesh"]->setView(this);
     }
+
+    gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)d->formVisualization["gnomonMesh"];
+    dtkApp->window()->setCursor(Qt::BusyCursor);
+    formVisualizationMesh->setMesh(mesh);
+    if (visualization) {
+        formVisualizationMesh->setParameters(visualization->parameters());
+    }
+    formVisualizationMesh->update();
+    dtkApp->window()->setCursor(Qt::ArrowCursor);
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonMesh");
 }
 
 gnomonPointCloudSeries *gnomonViewForm::pointCloud(void)
@@ -1448,37 +1449,35 @@ gnomonPointCloudSeries *gnomonViewForm::pointCloud(void)
 
 void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbstractVisualization *visualization)
 {
-    if (d->acceptForms["gnomonPointCloud"]) {
-        d->forms["gnomonPointCloud"] = pointCloud;
+    d->forms["gnomonPointCloud"] = pointCloud;
 
-        QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
+    QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
 
-        if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
-        {
-            d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(key);
-            d->formVisualization["gnomonPointCloud"]->setView(this);
-        }
-
-        gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
-        dtkApp->window()->setCursor(Qt::BusyCursor);
-        formVisualizationPointCloud->setPointCloud(pointCloud);
-        if (visualization) {
-            formVisualizationPointCloud->setParameters(visualization->parameters());
-        }
-        formVisualizationPointCloud->update();
-        dtkApp->window()->setCursor(Qt::ArrowCursor);
-
-        if (d->renderer3D_button->isToggled()) {
-            d->renderer3D_button->toggle(false);
-            this->switchTo3D();
-        }
-        else if (d->renderer2D_button->isToggled()) {
-            d->renderer2D_button->toggle(false);
-            this->switchTo2D();
-        }
-
-        emit formAdded("gnomonPointCloud");
+    if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
+    {
+        d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(key);
+        d->formVisualization["gnomonPointCloud"]->setView(this);
     }
+
+    gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
+    dtkApp->window()->setCursor(Qt::BusyCursor);
+    formVisualizationPointCloud->setPointCloud(pointCloud);
+    if (visualization) {
+        formVisualizationPointCloud->setParameters(visualization->parameters());
+    }
+    formVisualizationPointCloud->update();
+    dtkApp->window()->setCursor(Qt::ArrowCursor);
+
+    if (d->renderer3D_button->isToggled()) {
+        d->renderer3D_button->toggle(false);
+        this->switchTo3D();
+    }
+    else if (d->renderer2D_button->isToggled()) {
+        d->renderer2D_button->toggle(false);
+        this->switchTo2D();
+    }
+
+    emit formAdded("gnomonPointCloud");
 }
 
 void gnomonViewForm::setBounds(double bounds[6])
