@@ -88,6 +88,9 @@ public:
     void setPointCloud(gnomonPointCloudSeries *, gnomonAbstractVisualization *  = nullptr);
 
 public:
+    void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization * = nullptr);
+
+public:
     gnomonAbstractDynamicForm *form(const QString&);
     gnomonImageSeries *image(void);
     gnomonCellImageSeries *cellImage(void);

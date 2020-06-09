@@ -25,6 +25,8 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshAdapterCommand>
+
 #include "gnomonManager/gnomonFormManager.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
@@ -1259,6 +1261,8 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         if (d->acceptForms["gnomonMesh"]) {
             this->setMesh(mesh, visualization);
+        } else {
+            this->setAdaptedForm("gnomonMesh", mesh, visualization);
         }
     } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         if (d->acceptForms["gnomonPointCloud"]) {
@@ -1266,6 +1270,59 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
         }
     }
     return;
+}
+
+void gnomonViewForm::setAdaptedForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
+{
+    QMap<QPair<QString, QString>, QMap<QString, gnomonAbstractCommand *> > adapterCommands;
+    QMap<QPair<QString, QString>, QMap<QString, QString> > adapterDescriptions;
+    for (const auto& form : d->acceptForms.keys()) {
+        if (form=="gnomonMesh") {
+            loadPluginGroup("meshAdapter");
+            for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())
+            {
+                gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
+                QPair<QString, QString> forms;
+                forms.first = form;
+                forms.second = adapter->target();
+                if (!adapterCommands.contains(forms))
+                {
+                    QMap<QString, QString> empty_desc;
+                    adapterDescriptions[forms] = empty_desc;
+                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    adapterCommands[forms] = empty_list;
+                }
+                adapterDescriptions[forms][key] = adapter->documentation().split("\n")[1];
+                adapterCommands[forms][key] = new gnomonMeshAdapterCommand(key);
+                delete adapter;
+            }
+        }
+    }
+
+    for (const auto& target : d->acceptForms.keys())
+    {
+        QPair<QString, QString> forms;
+        forms.first = name;
+        forms.second = target;
+        if (d->acceptForms[target] & adapterCommands.contains(forms)) {
+            QString adapter_plugin;
+            if (adapterCommands[forms].size()==1) {
+                adapter_plugin = adapterCommands[forms].keys()[0];
+                gnomonAbstractCommand *adapterCommand = adapterCommands[forms][adapter_plugin];
+
+                if (gnomonMeshAdapterCommand *meshCommand = dynamic_cast<gnomonMeshAdapterCommand *>(adapterCommand))
+                {
+                    gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form);
+                    meshCommand->setInput(mesh);
+                    meshCommand->redo();
+                    gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
+                    this->setForm("adaptedMesh",adaptedMesh,visualization);
+                }
+            } else {
+                qDebug()<<Q_FUNC_INFO<<"Not implemented yet"<<adapterCommands[forms].keys();
+            }
+        }
+    }
 }
 
 gnomonCellImageSeries *gnomonViewForm::cellImage(void)
