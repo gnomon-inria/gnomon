@@ -842,6 +842,8 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
         meshCommand->setInput(mesh);
         meshCommand->redo();
         gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
+        // TODO
+        // Add adapter to the pipeline
         q->setForm("adaptedMesh",adaptedMesh);
     }
 
