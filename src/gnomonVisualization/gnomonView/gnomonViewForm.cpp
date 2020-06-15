@@ -26,6 +26,7 @@
 #include <QtQuickWidgets>
 
 #include <gnomonCore>
+#include <gnomonComposer>
 #include <gnomonWidgets>
 
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshAdapterCommand>
@@ -842,8 +843,7 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
         meshCommand->setInput(mesh);
         meshCommand->redo();
         gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
-        // TODO
-        // Add adapter to the pipeline
+        gnomonPipeline::instance()->addAdapter(meshCommand);
         q->setForm("adaptedMesh",adaptedMesh);
     }
 

@@ -16,6 +16,7 @@
 
 #include "gnomonPipelineNode.h"
 
+#include "gnomonPipelineNodeAdapter.h"
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeConstructor.h"
 #include "gnomonPipelineNodeReader.h"
@@ -23,6 +24,7 @@
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
@@ -49,6 +51,8 @@ public:
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> reader_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeWriter *> writer_nodes;
+    QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeAdapter *> adapter_nodes;
+    QMap<gnomonAbstractDynamicForm *, QString> adapter_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeAlgorithm *> algorithm_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> algorithm_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeConstructor *> constructor_nodes;
@@ -470,6 +474,22 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
     emit nodeAdded(node);
 }
 
+void gnomonPipeline::addAdapter(gnomonAbstractAdapterCommand *command)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
+    QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
+
+    gnomonPipelineNodeAdapter *node = new gnomonPipelineNodeAdapter(command->factoryName(),command->algorithmName(),input_forms.keys(),output_forms.keys());
+
+    d->node_input_forms[node] = input_forms;
+
+    for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
+        auto&& output = it.key();
+        d->adapter_nodes[output_forms[output]] = node;
+        d->adapter_output[output_forms[output]] = output;
+    }
+}
+
 void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
@@ -521,6 +541,26 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
 
+            d->forceDrivenLayout();
+
+            emit nodeAdded(node);
+        }
+    } else if (d->adapter_nodes.contains(form)) {
+        gnomonPipelineNodeAdapter *node = d->adapter_nodes[form];
+
+        if (!d->hasNode(node))
+        {
+            QString node_name = node->algorithmClass();
+            if (!d->node_type_count.contains(node->algorithmClass())) {
+                d->node_type_count[node->algorithmClass()] = 1;
+            } else {
+                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+                d->node_type_count[node->algorithmClass()] += 1;
+            }
+            d->pipeline_node_names.append(node_name);
+            d->pipeline_nodes[node_name] = node;
+
+            d->linkNodeInputs(node);
             d->forceDrivenLayout();
 
             emit nodeAdded(node);
