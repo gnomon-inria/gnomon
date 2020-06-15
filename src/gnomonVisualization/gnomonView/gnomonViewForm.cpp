@@ -29,6 +29,7 @@
 #include <gnomonComposer>
 #include <gnomonWidgets>
 
+#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshAdapterCommand>
 
 #include "gnomonManager/gnomonFormManager.h"
@@ -843,8 +844,20 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
         meshCommand->setInput(mesh);
         meshCommand->redo();
         gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
-        gnomonPipeline::instance()->addAdapter(meshCommand);
-        q->setForm("adaptedMesh",adaptedMesh);
+        if (adaptedMesh) {
+            gnomonPipeline::instance()->addAdapter(meshCommand);
+            q->setForm("adaptedMesh",adaptedMesh);
+        }
+    } else if (gnomonCellComplexSeries* cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
+        gnomonCellComplexAdapterCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexAdapterCommand *>(this->adapterCommands["gnomonCellComplex"][adapter_plugin]);
+
+        cellComplexCommand->setInput(cellComplex);
+        cellComplexCommand->redo();
+        gnomonAbstractDynamicForm *adaptedCellComplex = cellComplexCommand->output();
+        if (adaptedCellComplex) {
+            gnomonPipeline::instance()->addAdapter(cellComplexCommand);
+            q->setForm("adaptedCellComplex",adaptedCellComplex);
+        }
     }
 
     if (this->adapter_menu) {
@@ -894,7 +907,27 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                 d->adapterCommands[form][key] = new gnomonMeshAdapterCommand(key);
                 delete adapter;
             }
-        }
+        } else if (form=="gnomonCellComplex") {
+            loadPluginGroup("cellComplexAdapter");
+            qDebug()<<Q_FUNC_INFO<<gnomonCore::cellComplexAdapter::pluginFactory().keys();
+            for (const auto& key : gnomonCore::cellComplexAdapter::pluginFactory().keys())
+            {
+                gnomonAbstractCellComplexAdapter *adapter = dynamic_cast<gnomonAbstractCellComplexAdapter *>(gnomonCore::cellComplexAdapter::pluginFactory().create(key));
+                if (!d->adapterCommands.contains(form))
+                {
+                    QMap<QString, QString> empty_target;
+                    d->adapterTargets[form] = empty_target;
+                    QMap<QString, QString> empty_desc;
+                    d->adapterDescriptions[form] = empty_desc;
+                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    d->adapterCommands[form] = empty_list;
+                }
+                d->adapterTargets[form][key] = adapter->target();
+                d->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
+                d->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand(key);
+                delete adapter;
+            }
+        } 
     }
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
@@ -1351,6 +1384,8 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
     } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
         if (d->acceptForms["gnomonCellComplex"]) {
             this->setCellComplex(cellComplex, visualization);
+        } else {
+            this->setAdaptedForm("gnomonCellComplex", cellComplex, visualization);
         }
     } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         if (d->acceptForms["gnomonImage"]) {

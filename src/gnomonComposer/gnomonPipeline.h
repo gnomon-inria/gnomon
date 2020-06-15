@@ -41,6 +41,7 @@ public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
     void addAdapter(gnomonAbstractAdapterCommand *command);
+    void addAdaptedForm(gnomonAbstractDynamicForm *form);
     void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
     void addConstructor(gnomonAbstractConstructorCommand *command);
     void addForm(gnomonAbstractDynamicForm *form);
