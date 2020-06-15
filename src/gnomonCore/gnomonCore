@@ -1,6 +1,8 @@
 #include "gnomonCore.h"
 
+#include "gnomonAlgorithm/gnomonAbstractFormAdapter.h"
 #include "gnomonAlgorithm/gnomonAbstractFormAlgorithm.h"
+#include "gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h"
 #include "gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h"
 #include "gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h"
 #include "gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h"

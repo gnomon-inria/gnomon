@@ -20,30 +20,30 @@
 
 #include "gnomonAlgorithm/gnomonAbstractFormAdapter.h"
 
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
+#include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 
 // ///////////////////////////////////////////////////////////////////
-// gnomonAbstractMeshAdapter
+// gnomonAbstractCellComplexAdapter
 // ///////////////////////////////////////////////////////////////////
 
-typedef gnomonAbstractFormAdapter<gnomonMeshSeries> gnomonAbstractMeshAdapter;
+typedef gnomonAbstractFormAdapter<gnomonCellComplexSeries> gnomonAbstractCellComplexAdapter;
 
 // ///////////////////////////////////////////////////////////////////
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractMeshAdapter *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractCellComplexAdapter *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT, meshAdapter);
+    DTK_DECLARE_CONCEPT(gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT, cellComplexAdapter);
 }
 
 //
-// gnomonAbstractMeshAdapter.h ends here
+// gnomonAbstractCellComplexAdapter.h ends here

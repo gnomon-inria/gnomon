@@ -58,7 +58,9 @@
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
@@ -699,7 +701,9 @@
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
+%include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
@@ -760,7 +764,6 @@ namespace std {
     %template(vec3_t) array<double, 3>;
 }
 
-
 %template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;
 %template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
 %template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
@@ -770,6 +773,9 @@ namespace std {
 %template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
 %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
 %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
+
+%template(gnomonAbstractMeshAdapter) gnomonAbstractFormAdapter<gnomonMeshSeries>;
+%template(gnomonAbstractCellComplexAdapter) gnomonAbstractFormAdapter<gnomonCellComplexSeries>;
 
 /* %pythoncode "gnomonCore/gnomonPlugin.py" */
 

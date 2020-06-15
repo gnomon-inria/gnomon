@@ -33,6 +33,8 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractAlgorithm
   gnomonAbstractAlgorithm.h
+  gnomonAbstractFormAdapter
+  gnomonAbstractFormAdapter.h
   gnomonAbstractFormAlgorithm
   gnomonAbstractFormAlgorithm.h
   ${${PROJECT_NAME}_ALGORITHM_CELLCOMPLEX_HEADERS}
