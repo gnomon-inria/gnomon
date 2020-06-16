@@ -922,16 +922,12 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 return (QFrame*)nullptr;
             }
         };
-        // TODO remove next qDebug
-        qDebug() << Q_FUNC_INFO << "d->code_editor_layout =  " << d->code_editor_layout;
 
         Q_ASSERT(d->code_editor_layout != nullptr);
         for (auto *frame : { find_frame("frameFind"), find_frame("LPYframeFind"), find_frame("frameReplace") }) {
             if (frame == nullptr) {
                 continue;
             }
-            // TODO remove next qDebug
-            qDebug() << Q_FUNC_INFO << "frame =" << frame;
             d->code_editor_layout->addWidget(frame);
         }
 
