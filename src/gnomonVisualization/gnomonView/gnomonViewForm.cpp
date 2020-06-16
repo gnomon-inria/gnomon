@@ -1419,7 +1419,7 @@ void gnomonViewForm::setAdaptedForm(const QString& name, gnomonAbstractDynamicFo
             d->form_to_adapt = form;
             d->adapter_menu = new gnomonFormAdapterMenu(adapter_descs);
             d->adapter_menu->setAttribute(Qt::WA_DeleteOnClose, true);
-            d->adapter_menu->resize(dtkApp->window()->width() * 1/3, dtkApp->window()->height() - 40);
+            d->adapter_menu->resize(dtkApp->window()->width() * 2/5, dtkApp->window()->height() - 40);
             d->adapter_menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
             d->adapter_menu->show();
 

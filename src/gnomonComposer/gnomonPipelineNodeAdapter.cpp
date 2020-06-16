@@ -83,8 +83,7 @@ QString gnomonPipelineNodeAdapter::toLuigiClass(void)
     class_name.replace(0, 1, class_name[0].toUpper());
 
     out<<"\n";
-    out<<"class "<<class_name<<"(AdapterPluginTask):\n";
-    out<<"    parameters = luigi.DictParameter()\n";
+    out<<"class "<<class_name<<"(AlgorithmPluginTask):\n";
     out<<"    \n";
     out<<"    def __init__(self, **kwargs):\n";
     out<<"        super().__init__(**kwargs)\n";
@@ -105,7 +104,7 @@ QString gnomonPipelineNodeAdapter::toLuigiClass(void)
     }
     out<<"    \n";
     out<<"    def run(self):\n";
-    out<<"        inputs = self.adapter_inputs()\n";
+    out<<"        inputs = self.algorithm_inputs()\n";
     for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
         auto&& input_name = it.key();
         QRegularExpression numbered_input("[A-z]+[0-9]+");
