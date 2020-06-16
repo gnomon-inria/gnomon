@@ -919,7 +919,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             if (frames.size() == 1) {
                 return frames[0];
             } else {
-                qDebug() << Q_FUNC_INFO << "failed to find QFrame instance of" << name << "search count is" << frames.size();
                 return (QFrame*)nullptr;
             }
         };
@@ -927,7 +926,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         qDebug() << Q_FUNC_INFO << "d->code_editor_layout =  " << d->code_editor_layout;
 
         Q_ASSERT(d->code_editor_layout != nullptr);
-        for (auto *frame : { find_frame("frameFind"), find_frame("frameReplace") }) {
+        for (auto *frame : { find_frame("frameFind"), find_frame("LPYframeFind"), find_frame("frameReplace") }) {
             if (frame == nullptr) {
                 continue;
             }
