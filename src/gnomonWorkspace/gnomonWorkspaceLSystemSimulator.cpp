@@ -32,28 +32,32 @@
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
 
+void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu);
+
 void build(QMenu *menu, dtkWidgetsMenu *w_menu)
 {
     foreach(QAction *action, menu->actions()) {
+        insertMenuItem(action, w_menu);
+    }
+}
 
-        dtkWidgetsMenu *w_s_menu = 0;
+void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu)
+{
+    if(QMenu *s_menu = action->menu()) {
 
-        if(QMenu *s_menu = action->menu()) {
+        dtkWidgetsMenu *w_s_menu = w_menu->addMenu(fa::circle, action->text());
 
-            w_s_menu = w_menu->addMenu(fa::circle, action->text());
+        build(s_menu, w_s_menu);
+    } else {
 
-            build(s_menu, w_s_menu);
+        if(action->isSeparator()) {
+            w_menu->addSeparator();
         } else {
 
-            if(action->isSeparator()) {
-                w_menu->addSeparator();
-            } else {
+            dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
 
-                dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
-
-                QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
-                QObject::connect(item, SIGNAL(clicked()), dtkApp->window()->menubar(), SLOT(collapse()));
-            }
+            QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
+            QObject::connect(item, SIGNAL(clicked()), dtkApp->window()->menubar(), SLOT(collapse()));
         }
     }
 }
@@ -97,31 +101,10 @@ dtkWidgetsMenu *build(int icon, QMenu *menu)
     dtkWidgetsMenu *w_menu = new dtkWidgetsMenu(icon, menu->title());
 
     foreach(QAction *action, menu->actions()) {
-
         if(action->text().isEmpty())
             continue;
 
-        // ::build(action, w_menu);
-
-        dtkWidgetsMenu *w_s_menu = 0;
-
-        if(QMenu *s_menu = action->menu()) {
-
-            w_s_menu = w_menu->addMenu(fa::circle, action->text());
-
-            ::build(s_menu, w_s_menu);
-        } else {
-
-            if(action->isSeparator()) {
-                w_menu->addSeparator();
-            } else {
-
-                dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
-
-                QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
-                QObject::connect(item, SIGNAL(clicked()), dtkApp->window()->menubar(), SLOT(collapse()));
-            }
-        }
+        insertMenuItem(action, w_menu);
     }
 
     return w_menu;
