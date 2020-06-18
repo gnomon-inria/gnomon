@@ -42,6 +42,8 @@
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 #include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
 
+#include "gnomonFormAdapterMenu.h"
+
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorStyleImage.h>
@@ -52,43 +54,6 @@
 
 #include <QVTKInteractor.h>
 #include <QVTKOpenGLNativeWidget.h>
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonFormAdapterMenu : public QQuickWidget
-{
-    Q_OBJECT
-
-public:
-    gnomonFormAdapterMenu(QVariantMap, QWidget *parent = nullptr);
-
-protected:
-    void focusOutEvent(QFocusEvent *event) override
-    {
-        this->close();
-        this->deleteLater();
-
-        QQuickWidget::focusOutEvent(event);
-    }
-};
-
-gnomonFormAdapterMenu::gnomonFormAdapterMenu(QVariantMap adapter_descs, QWidget *parent) : QQuickWidget(parent)
-{
-    this->engine()->addImportPath("qrc:/");
-
-    QQmlContext *context = this->rootContext();
-    context->setContextProperty("font", dtkFontAwesome::instance());
-    context->setContextProperty("theme", dtkThemesEngine::instance());
-    context->setContextProperty("adapter_descs", adapter_descs);
-
-    this->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    this->setSource(QUrl("qrc:/gnomonFormAdapter.qml"));
-    this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
-    this->setFocus(Qt::PopupFocusReason);
-}
-
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -214,7 +179,7 @@ public slots:
     void refresh(void);
 
 public:
-    QMap<QString, QMap<QString, gnomonAbstractCommand *> > adapterCommands;
+    QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
     QMap<QString, QMap<QString, QString> > adapterTargets;
     QMap<QString, QMap<QString, QString> > adapterDescriptions;
 
@@ -899,7 +864,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                     d->adapterTargets[form] = empty_target;
                     QMap<QString, QString> empty_desc;
                     d->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
                     d->adapterCommands[form] = empty_list;
                 }
                 d->adapterTargets[form][key] = adapter->target();
@@ -919,7 +884,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                     d->adapterTargets[form] = empty_target;
                     QMap<QString, QString> empty_desc;
                     d->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
                     d->adapterCommands[form] = empty_list;
                 }
                 d->adapterTargets[form][key] = adapter->target();

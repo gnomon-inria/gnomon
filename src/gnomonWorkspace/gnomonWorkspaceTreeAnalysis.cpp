@@ -98,7 +98,12 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     d = new gnomonWorkspaceTreeAnalysisPrivate;
 
     d->source = new gnomonViewMatplotlib(this);
+    d->source->setInputView(true);
+    d->source->setAcceptForm("gnomonTree",true);
+
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
+    d->target->setInputView(false);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

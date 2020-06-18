@@ -81,6 +81,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringTranslation.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter.h>
@@ -724,6 +725,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringTranslation.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter.h>
@@ -774,8 +776,9 @@ namespace std {
 %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
 %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
-%template(gnomonAbstractMeshAdapter) gnomonAbstractFormAdapter<gnomonMeshSeries>;
 %template(gnomonAbstractCellComplexAdapter) gnomonAbstractFormAdapter<gnomonCellComplexSeries>;
+%template(gnomonAbstractLStringAdapter) gnomonAbstractFormAdapter<gnomonLStringSeries>;
+%template(gnomonAbstractMeshAdapter) gnomonAbstractFormAdapter<gnomonMeshSeries>;
 
 /* %pythoncode "gnomonCore/gnomonPlugin.py" */
 

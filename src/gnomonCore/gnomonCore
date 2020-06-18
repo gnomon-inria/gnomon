@@ -23,6 +23,7 @@
 #include "gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h"
 #include "gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h"
 #include "gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h"
+#include "gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter.h"
 #include "gnomonAlgorithm/gnomonLString/gnomonAbstractLStringTranslation.h"
 #include "gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h"
 #include "gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter.h"

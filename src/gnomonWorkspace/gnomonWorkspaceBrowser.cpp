@@ -688,6 +688,10 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->browse_figure = new gnomonViewMatplotlib(this);
+    d->browse_figure->setAcceptForm("gnomonTree",true);
+    d->browse_figure->setAcceptForm("gnomonDataFrame",true);
+    d->browse_figure->setAcceptForm("gnomonLString",true);
+    d->browse_figure->setAcceptDrops(true);
 
     connect(d->browse_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

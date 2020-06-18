@@ -37,7 +37,16 @@ public:
     void clearForm(const QString&);
 
 public:
+    void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization * = nullptr);
+
+public slots:
+    void setAcceptForm(const QString&, bool);
+
+public:
     void setIsModifiedForm(const QString&);
+
+public slots:
+    void setInputView(bool);
 
 public:
     void updateVisualizations(void);
