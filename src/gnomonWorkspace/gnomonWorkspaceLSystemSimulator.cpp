@@ -950,7 +950,10 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                 if(action->text() == "File") {
 
-                    d->menus << ::build(fa::file, action->menu());
+                    add_actions_shortcuts(action->menu());
+
+                    d->in_code_bar->addMenu(::build(fa::file, action->menu()));
+                    d->in_code_bar->touch();
                 }
 
                 if(action->text() == "Help") {
