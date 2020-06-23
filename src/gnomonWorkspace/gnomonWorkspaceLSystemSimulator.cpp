@@ -263,6 +263,7 @@ public:
     int edition_font_size;
     const int default_edition_font_size = 10;
 
+    dtkWidgetsMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
     dtkWidgetsMenuBar *out_view_bar = nullptr;
 
@@ -565,18 +566,16 @@ gnomonWorkspaceLSystemSimulator::~gnomonWorkspaceLSystemSimulator(void)
 
 void gnomonWorkspaceLSystemSimulator::enter(void)
 {
-    foreach(dtkWidgetsMenu *menu, d->menus) {
+    foreach(dtkWidgetsMenu *menu, d->menus)
         dtkApp->window()->menubar()->addMenu(menu);
-    }
 
     dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceLSystemSimulator::leave(void)
 {
-    foreach(dtkWidgetsMenu *menu, d->menus) {
+    foreach(dtkWidgetsMenu *menu, d->menus)
         dtkApp->window()->menubar()->removeMenu(menu);
-    }
 
     dtkApp->window()->menubar()->touch();
 }
@@ -816,6 +815,14 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         d->in_code = new QWidget(this);
 
+        d->in_code_bar = new dtkWidgetsMenuBar(d->in_code);
+        d->in_code_bar->show();
+        d->in_code_bar->setInteractive(false);
+        d->in_code_bar->setWidth(32);
+        d->in_code_bar->setMargins(6);
+     // d->in_code_bar->addMenu(d->menu());
+        d->in_code_bar->touch();
+
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
         d->edition_font_size = settings.value("LPyEditionFontSize", d->default_edition_font_size).toInt();
         d->applyZoom();
@@ -826,6 +833,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         QHBoxLayout *layout = new QHBoxLayout;
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
+        layout->addWidget(d->in_code_bar);
+        layout->addWidget(d->in_code_bar->container());
         auto *code_editor_frame = new QWidget;
         d->code_editor_layout = new QVBoxLayout;
         code_editor_frame->setLayout(d->code_editor_layout);
@@ -834,7 +843,11 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         d->in_code->setLayout(layout);
 
+        d->in_code->stackUnder(d->in_code_bar);
+
         d->lhs->addTab(d->in_code, "Code");
+
+        // d->in_code_bar->setFixedHeight(widget->height());
 
         auto tab_bars = widget->findChildren<QTabBar*>("documentNames");
         Q_ASSERT_X(tab_bars.size() == 1, Q_FUNC_INFO, (QString("failed to find 1 instance of QTabBar documentNames, results size=") + QString::number(tab_bars.size())).toStdString().c_str());
@@ -949,7 +962,8 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                     add_actions_shortcuts(action->menu());
 
-                    d->menus << ::build(fa::edit, action->menu());
+                    d->in_code_bar->addMenu(::build(fa::edit, action->menu()));
+                    d->in_code_bar->touch();
                 }
 
                 if(action->text() == "L-systems") {
@@ -1008,14 +1022,15 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                     }
                     add_actions_shortcuts(gnomon_view_menu);
 
+                    d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
+                    d->in_code_bar->touch();
+
                     foreach(QAction *reaction, action->menu()->actions()) {
 
                         if(reaction->text().contains("Tab")) {
                             reaction->trigger();
                         }
                     }
-
-                    d->menus << ::build(fa::eye, action->menu());
                 }
             }
 
@@ -1186,6 +1201,9 @@ bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 void gnomonWorkspaceLSystemSimulator::resizeEvent(QResizeEvent *event)
 {
     d->params->setFixedHeight(event->size().height() - 225);
+
+    // if (d->in_code && d->in_code_bar)
+    //     d->in_code_bar->setFixedHeight(d->in_code->height());
 
     // if (d->in_axiom && d->in_axiom_bar)
     //     d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
