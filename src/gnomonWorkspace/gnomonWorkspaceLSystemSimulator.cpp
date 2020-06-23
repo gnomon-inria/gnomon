@@ -110,6 +110,30 @@ dtkWidgetsMenu *build(int icon, QMenu *menu)
     return w_menu;
 }
 
+
+void addActionsShortcuts(QMenu *menu, QWidget *parent)
+{
+    // this function is needed for these 2 purposes :
+    // [1] enable its shortcut by adding it do the parent widget
+    // [2] expose its shortcut to the user by adding it to its text
+    for (auto * reaction : menu->actions()) {
+        const auto& shortcut = reaction->shortcut();
+        if (shortcut.isEmpty()) {
+            continue;
+        }
+        parent->addAction(reaction);
+        reaction->setText(reaction->text() + " (" + shortcut.toString() + ")");
+    }
+}
+
+void buildMenuBarSubMenu(dtkWidgetsMenuBar *bar, QWidget *parent, QAction *action, int icon)
+{
+    addActionsShortcuts(action->menu(), parent);
+
+    bar->addMenu(::build(icon, action->menu()));
+    bar->touch();
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 //  gnomonHighlighterLString
 // /////////////////////////////////////////////////////////////////////////////
@@ -932,28 +956,10 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 }
                 Q_ASSERT(code_editor != nullptr);
 
-                auto add_actions_shortcuts = [=] (QMenu* menu) {
-                    // this function is needed for these 2 purposes :
-                    // [1] enable its shortcut by adding it do the code_editor widget
-                    // [2] expose its shortcut to the user by adding it to its text
-                    for (auto * reaction : menu->actions()) {
-                        const auto& shortcut = reaction->shortcut();
-                        if (shortcut.isEmpty()) {
-                            continue;
-                        }
-                        code_editor->addAction(reaction);
-                        reaction->setText(reaction->text() + " (" + shortcut.toString() + ")");
-                    }
-                };
-
                 qDebug() << Q_FUNC_INFO << action->text();
 
                 if(action->text() == "File") {
-
-                    add_actions_shortcuts(action->menu());
-
-                    d->in_code_bar->addMenu(::build(fa::file, action->menu()));
-                    d->in_code_bar->touch();
+                    buildMenuBarSubMenu(d->in_code_bar, code_editor, action, fa::file);
                 }
 
                 if(action->text() == "Help") {
@@ -962,11 +968,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                }
 
                 if(action->text() == "Edit") {
-
-                    add_actions_shortcuts(action->menu());
-
-                    d->in_code_bar->addMenu(::build(fa::edit, action->menu()));
-                    d->in_code_bar->touch();
+                    buildMenuBarSubMenu(d->in_code_bar, code_editor, action, fa::edit);
                 }
 
                 if(action->text() == "L-systems") {
@@ -1023,7 +1025,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                         });
                     }
-                    add_actions_shortcuts(gnomon_view_menu);
+                    addActionsShortcuts(gnomon_view_menu, code_editor);
 
                     d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
                     d->in_code_bar->touch();
