@@ -996,7 +996,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                 if(action->text() == "View") {
 
-                    QMenu *gnomon_view_menu = new QMenu("View", d->in_code);
+                    QMenu *view_menu = new QMenu("View", d->in_code);
 
                     for (int zoom : { +1, -1, 0 } ){
                         QAction *action = new QAction;
@@ -1010,7 +1010,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                         }
                         action->setShortcutContext(Qt::WindowShortcut);
 
-                        gnomon_view_menu->addAction(action);
+                        view_menu->addAction(action);
                         connect(action, &QAction::triggered, [=] () {
                             const int zoom_step = 1;
                             if (zoom == 0) {
@@ -1030,7 +1030,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                         });
                     }
-                    buildMenuBarSubMenu(d->in_code_bar, code_editor, gnomon_view_menu, fa::eye);
+                    buildMenuBarSubMenu(d->in_code_bar, code_editor, view_menu, fa::eye);
 
                     foreach(QAction *reaction, action->menu()->actions()) {
 
