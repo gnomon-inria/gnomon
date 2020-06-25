@@ -32,7 +32,7 @@
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
 
-void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu);
+void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **sub_menu=nullptr);
 
 void build(QMenu *menu, dtkWidgetsMenu *w_menu)
 {
@@ -41,11 +41,15 @@ void build(QMenu *menu, dtkWidgetsMenu *w_menu)
     }
 }
 
-void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu)
+void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **sub_menu)
 {
     if(QMenu *s_menu = action->menu()) {
 
         dtkWidgetsMenu *w_s_menu = w_menu->addMenu(fa::circle, action->text());
+
+        if (sub_menu != nullptr) {
+            *sub_menu = w_s_menu;
+        }
 
         build(s_menu, w_s_menu);
     } else {
@@ -100,11 +104,18 @@ dtkWidgetsMenu *build(int icon, QMenu *menu)
 {
     dtkWidgetsMenu *w_menu = new dtkWidgetsMenu(icon, menu->title());
 
+    auto *root_item = new QAction;
+    root_item->setText(menu->title());
+    root_item->setMenu(new QMenu);
+    dtkWidgetsMenu *sub_menu = nullptr;
+    insertMenuItem(root_item, w_menu, &sub_menu);
+    Q_ASSERT(sub_menu != nullptr);
+
     foreach(QAction *action, menu->actions()) {
         if(action->text().isEmpty())
             continue;
 
-        insertMenuItem(action, w_menu);
+        insertMenuItem(action, sub_menu);
     }
 
     return w_menu;
@@ -1040,6 +1051,27 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                     }
                 }
             }
+
+            auto *code_bar_container = dynamic_cast<dtkWidgetsMenuBarContainer*>(d->in_code_bar->container());
+
+            QObject::connect(d->in_code_bar, &dtkWidgetsMenuBar::clicked, [=] (int index) {
+                qDebug() << "BAR CLICK" << index;
+                auto *as_menu = d->in_code_bar->menus()[index];
+                qDebug() << as_menu->menus()[0]->title();
+                qDebug() << as_menu->menus()[0];
+
+
+                // menu bar -> container -> slide -> facade -> items
+                // either container->switchTo(menu)
+                // or Slider->slideTo(index)
+                // or if cast to dtkWidgetsMenuInnerFacade
+                // emit its signal clicked
+
+                // AND OR
+                // understand how clicks to items/menus are handled
+                // by MenuBar ?
+                // reproduce the event/signal here
+            });
 
             this->reparentAction(window->menuBar(), "L-systems", "Run", d->run_button);
             this->reparentAction(window->menuBar(), "L-systems", "Step", d->step_button);
