@@ -130,7 +130,23 @@ void buildMenuBarSubMenu(dtkWidgetsMenuBar *bar, QWidget *parent, QMenu *menu, i
 {
     addActionsShortcuts(menu, parent);
 
-    bar->addMenu(::build(icon, menu));
+    const auto& menu_title = menu->title();
+    static const QMap<QString, int> menu_index = {
+        { "File", 0 },
+        { "Edit", 1 },
+        { "View", 2 },
+    };
+    auto insert_index = bar->size();
+    if (menu_index.contains(menu_title)) {
+        insert_index = menu_index[menu_title];
+    }
+
+    auto *dtk_menu = ::build(icon, menu);
+    if (insert_index > bar->size()) {
+        bar->addMenu(dtk_menu);
+    } else {
+        bar->insertMenu(insert_index, dtk_menu);
+    }
     bar->touch();
 }
 
