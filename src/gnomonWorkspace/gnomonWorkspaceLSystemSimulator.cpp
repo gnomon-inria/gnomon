@@ -1054,23 +1054,29 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
             auto *code_bar_container = dynamic_cast<dtkWidgetsMenuBarContainer*>(d->in_code_bar->container());
 
-            QObject::connect(d->in_code_bar, &dtkWidgetsMenuBar::clicked, [=] (int index) {
+            connect(d->in_code_bar, &dtkWidgetsMenuBar::clicked, [=] (int index) {
                 qDebug() << "BAR CLICK" << index;
+
                 auto *as_menu = d->in_code_bar->menus()[index];
-                qDebug() << as_menu->menus()[0]->title();
-                qDebug() << as_menu->menus()[0];
+                if (as_menu == nullptr ||as_menu->menus().count() == 0) { return; }
+                auto *sub_menu = as_menu->menus()[0];
+                if (sub_menu == nullptr) { return; }
 
+                qDebug() << sub_menu << sub_menu->title();
 
-                // menu bar -> container -> slide -> facade -> items
-                // either container->switchTo(menu)
-                // or Slider->slideTo(index)
-                // or if cast to dtkWidgetsMenuInnerFacade
-                // emit its signal clicked
+                // std::function<void()> no_op_callback;
+                // code_bar_container->switchToRoot(no_op_callback); NO
 
-                // AND OR
-                // understand how clicks to items/menus are handled
-                // by MenuBar ?
-                // reproduce the event/signal here
+                // code_bar_container->slider->slideTo(0); NO
+                // code_bar_container->switchToNextSlide(as_menu); NO
+                // code_bar_container->switchToPrevSlide(sub_menu); NO
+                code_bar_container->switchToNextSlide(sub_menu); // YES
+
+                // code_bar_container->slider->slideTo(index); NO
+
+                // code_bar_container->slider->print();
+
+                // d->in_code_bar->setCurrentIndex(index); NO
             });
 
             this->reparentAction(window->menuBar(), "L-systems", "Run", d->run_button);
