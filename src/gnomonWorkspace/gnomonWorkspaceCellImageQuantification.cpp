@@ -222,8 +222,8 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
     }
 
     if(d->command->dataFrame()) {
-        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
         d->target_stack->setCurrentWidget(d->mpl_figure);
+        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }

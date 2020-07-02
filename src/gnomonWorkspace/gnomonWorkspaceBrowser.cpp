@@ -711,6 +711,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     connect(d->browse_figure, &gnomonViewMatplotlib::formAdded, [=] (const QString&)
     {
         d->view_stack->setCurrentWidget(d->browse_figure);
+        d->browse_figure->updateVisualizations();
     });
 
     QToolButton *view_button = new QToolButton(this);

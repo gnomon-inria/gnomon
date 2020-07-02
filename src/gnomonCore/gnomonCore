@@ -37,6 +37,7 @@
 #include "gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h"
 #include "gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h"
 #include "gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudWriter.h"
+#include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeAdapter.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeConstructor.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h"

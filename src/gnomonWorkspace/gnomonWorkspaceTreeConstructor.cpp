@@ -153,8 +153,8 @@ void gnomonWorkspaceTreeConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+        d->target->setForm("gnomonTree",d->command->output());
 
         d->registerPipeline();
     } else {
