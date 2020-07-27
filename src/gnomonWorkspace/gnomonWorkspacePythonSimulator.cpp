@@ -241,6 +241,11 @@ gnomonWorkspacePythonSimulator::gnomonWorkspacePythonSimulator(QWidget *parent) 
     editor_widget->resize(800, editor_widget->height());
 
     d->view = new gnomonViewForm(this);
+    d->view->setAcceptForm("gnomonCellComplex",true);
+    d->view->setAcceptForm("gnomonCellImage",true);
+    d->view->setAcceptForm("gnomonImage",true);
+    d->view->setAcceptForm("gnomonMesh",true);
+    d->view->setAcceptForm("gnomonPointCloud",true);
 
     // -- Organizing the viewer column --
     d->viewer_layout = new QVBoxLayout;

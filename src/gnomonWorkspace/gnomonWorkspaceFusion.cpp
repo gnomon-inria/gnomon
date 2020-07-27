@@ -78,12 +78,14 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     }
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
     d->target->setMinimumWidth(250);
     d->target->setEnableLinking(false);
+    d->target->setAcceptForm("gnomonImage",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

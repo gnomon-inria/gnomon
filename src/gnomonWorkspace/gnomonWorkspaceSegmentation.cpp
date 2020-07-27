@@ -105,10 +105,13 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QWidget *parent) : dtkW
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
+    d->source->setAcceptForm("gnomonImage",true);
+    d->source->setAcceptForm("gnomonPointCloud",true);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellImage",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

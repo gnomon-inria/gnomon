@@ -95,12 +95,14 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(this->color);
     d->view->setAcceptForm("gnomonPointCloud",true);
+    d->view->setAcceptForm("gnomonImage",true);
     d->view->setInputView(true);
     d->view->setEnableLinking(false);
 
     connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
+    d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
 
     connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

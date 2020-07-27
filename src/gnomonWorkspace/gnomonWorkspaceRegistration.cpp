@@ -86,6 +86,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
 
     d->target  = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonImage",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -93,6 +94,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
         d->pool->addView(view);
     }
     d->pool->addView(d->target);

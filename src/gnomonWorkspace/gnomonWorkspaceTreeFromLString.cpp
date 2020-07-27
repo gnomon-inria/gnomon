@@ -88,9 +88,11 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     d = new gnomonWorkspaceTreeFromLStringPrivate;
 
     d->source = new gnomonViewMatplotlib(this);
+    d->source->setAcceptForm("gnomonLString",true);
 //    d->source->setExportColor(gnomonToolBar::treeFromLString_color);
 
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
 //    d->target->setExportColor(gnomonToolBar::treeFromLString_color);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
