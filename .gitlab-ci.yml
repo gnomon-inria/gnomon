@@ -14,7 +14,7 @@ conda_build_linux:
   script:
   - apt update
   - apt install libgl1 -y
-  - conda update -n base -c defaults conda
+  - conda update -n base -c defaults conda python=3.7
   - conda install conda-build git anaconda-client conda-verify
   - mkdir conda-bld
   - conda build . -c dtk-forge -c conda-forge --output-folder conda-bld/
