@@ -25,6 +25,11 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonPythonScriptEditor
+// ///////////////////////////////////////////////////////////////////
+
 class gnomonPythonScriptEditor : public QWidget
 {
     Q_OBJECT
@@ -45,6 +50,9 @@ signals:
     void openButtonClicked(void);
     void saveButtonClicked(void);
     void loadButtonClicked(void);
+
+public:
+    QSize sizeHint(void) const;
 };
 
 gnomonPythonScriptEditor::gnomonPythonScriptEditor(QWidget *parent) : QWidget(parent)
@@ -99,6 +107,77 @@ void gnomonPythonScriptEditor::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
+QSize gnomonPythonScriptEditor::sizeHint(void) const
+{
+    return QSize(1000, 800);
+}
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonPythonAlgorithmPluginEditor
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonPythonAlgorithmPluginEditor : public gnomonPythonScriptEditor
+{
+    Q_OBJECT
+
+public:
+     gnomonPythonAlgorithmPluginEditor(QWidget *parent = Q_NULLPTR);
+    ~gnomonPythonAlgorithmPluginEditor(void);
+
+public:
+    dtkWidgetsMenuBarContainer *form_pane;
+    dtkWidgetsMenu *input_menu;
+    dtkWidgetsMenu *output_menu;
+
+    dtkWidgetsMenuBarContainer *parameter_pane;
+    dtkWidgetsMenu *parameter_menu;
+};
+
+gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonScriptEditor(parent)
+{
+    QHBoxLayout *menu_layout = new QHBoxLayout;
+    menu_layout->setContentsMargins(0, 0, 0, 0);
+
+    this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
+    dtkWidgetsMenuItem *add_input = this->input_menu->addItem(fa::plus,"Add input...");
+    QObject::connect(add_input, &dtkWidgetsMenuItem::clicked, [=] () {
+        qDebug()<<"Add input";
+    });
+
+    this->output_menu = new dtkWidgetsMenu(fa::arrowcircleup, "Output Forms");
+    dtkWidgetsMenuItem *add_output = this->output_menu->addItem(fa::plus,"Add output...");
+    QObject::connect(add_output, &dtkWidgetsMenuItem::clicked, [=] () {
+        qDebug()<<"Add output";
+    });
+
+    this->form_pane = new dtkWidgetsMenuBarContainer(this);
+    this->form_pane->navigator->deleteLater();
+    this->form_pane->build(QVector<dtkWidgetsMenu *>() << this->input_menu << this->output_menu);
+
+    this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
+    dtkWidgetsMenuItem *add_parameter = this->parameter_menu->addItem(fa::plus,"Add parameter...");
+    QObject::connect(add_parameter, &dtkWidgetsMenuItem::clicked, [=] () {
+        qDebug()<<"Add parameter";
+    });
+
+    this->parameter_pane = new dtkWidgetsMenuBarContainer(this);
+    this->parameter_pane->navigator->deleteLater();
+    this->parameter_pane->build(QVector<dtkWidgetsMenu *>() << this->parameter_menu);
+
+    menu_layout->addWidget(this->form_pane);
+    menu_layout->addWidget(this->parameter_pane);
+
+    QWidget *menu_pane = new QWidget(this);
+    menu_pane->setLayout(menu_layout);
+
+    this->layout->insertWidget(0,menu_pane);
+
+    this->setLayout(this->layout);
+}
+
+gnomonPythonAlgorithmPluginEditor::~gnomonPythonAlgorithmPluginEditor(void)
+{
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
@@ -111,7 +190,7 @@ public:
     void configure(void);
 
 public:
-    gnomonPythonScriptEditor *editor = nullptr;
+    gnomonPythonAlgorithmPluginEditor *editor = nullptr;
 
 public:
     dtkWidgetsMenuBarContainer *dashboard;
@@ -128,7 +207,7 @@ public:
 
 public:
     QFormLayout *layout = nullptr;
-    QHBoxLayout *viewer_layout = nullptr;
+    QVBoxLayout *viewer_layout = nullptr;
 
 public:
     QHash<QString, dtkCoreParameter *> parameters;
@@ -139,7 +218,7 @@ public:
 
 dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace *parent)
 {
-    QObject::connect(this->editor, &gnomonPythonScriptEditor::openButtonClicked, [=] () {
+    QObject::connect(this->editor, &gnomonPythonAlgorithmPluginEditor::openButtonClicked, [=] () {
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
 
         QString file_path;
@@ -157,7 +236,7 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
         }
     });
     
-    QObject::connect(this->editor, &gnomonPythonScriptEditor::loadButtonClicked, [=] () {
+    QObject::connect(this->editor, &gnomonPythonAlgorithmPluginEditor::loadButtonClicked, [=] () {
         this->configure();
     });
 
@@ -239,8 +318,8 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 {
     d = new gnomonWorkspacePythonAlgorithmPrivate;
 
-    d->editor = new gnomonPythonScriptEditor(this);
-    d->editor->resize(this->width(), 600);
+    d->editor = new gnomonPythonAlgorithmPluginEditor(this);
+    d->editor->resize(this->width(), 1000);
 
     QString example = "import gnomoncore\n";
     example += "\n";
@@ -260,11 +339,12 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
     d->editor->editor->setText(example);
 
-    QHBoxLayout *editor_layout = new QHBoxLayout();
-    QWidget *editor_widget = new QWidget(this);
-    editor_widget->setLayout(editor_layout);
+//    QVBoxLayout *editor_layout = new QVBoxLayout();
+//    QWidget *editor_widget = new QWidget(this);
+//    editor_widget->setLayout(editor_layout);
+//
+//    editor_layout->addWidget(d->editor);
 
-    editor_layout->addWidget(d->editor);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -278,7 +358,12 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
     d->terminal = new gnomonInterpreterJupyter(this);
 //    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
-    editor_layout->addWidget(d->terminal);
+//    editor_layout->addWidget(d->terminal);
+
+    QSplitter *editor_splitter = new QSplitter(this);
+    editor_splitter->setOrientation(Qt::Vertical);
+    editor_splitter->addWidget(d->editor);
+    editor_splitter->addWidget(d->terminal);
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
@@ -315,7 +400,13 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->target_stack->setCurrentWidget(d->target_message);
 
     // -- Organizing the viewer column --
-    d->viewer_layout = new QHBoxLayout;
+
+//    QSplitter *viewer_splitter = new QSplitter(this);
+//    viewer_splitter->setOrientation(Qt::Vertical);
+//    viewer_splitter->addWidget(d->source);
+//    viewer_splitter->addWidget(d->target_stack);
+
+    d->viewer_layout = new QVBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
     d->viewer_layout->addWidget(d->source);
@@ -326,9 +417,9 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
 //     // -- Organizing the whole workspace --
     QSplitter *splitter = new QSplitter(this);
-    splitter->setOrientation(Qt::Vertical);
+    splitter->setOrientation(Qt::Horizontal);
+    splitter->addWidget(editor_splitter);
     splitter->addWidget(viewer);
-    splitter->addWidget(editor_widget);
 
 
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -343,6 +434,15 @@ gnomonWorkspacePythonAlgorithm::~gnomonWorkspacePythonAlgorithm(void)
     delete d;
 }
 
+void gnomonWorkspacePythonAlgorithm::resizeEvent(QResizeEvent *event)
+{
+    if (d->target_stack->currentWidget() == d->target_message)
+    {
+        d->target_stack->setCurrentWidget(d->target);
+        d->target_message->setMinimumHeight(d->target->height());
+        d->target_stack->setCurrentWidget(d->target_message);
+    }
+}
 
 void gnomonWorkspacePythonAlgorithm::enter(void)
 {
