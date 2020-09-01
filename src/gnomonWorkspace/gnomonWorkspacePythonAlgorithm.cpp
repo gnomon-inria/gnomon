@@ -18,6 +18,7 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
+#include <dtkCore>
 #include <dtkScript>
 #include <dtkFonts>
 #include <dtkMacs>
@@ -25,6 +26,32 @@
 #include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonFormDescription
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonFormDescription
+{
+public:
+     gnomonFormDescription(const QString& name, const QString& type, const QString& data_plugin);
+    ~gnomonFormDescription(void);
+
+public:
+    QString name;
+    QString type;
+    QString data_plugin;
+};
+
+gnomonFormDescription::gnomonFormDescription(const QString& name, const QString& type, const QString& data_plugin)
+{
+    this->name = name;
+    this->type = type;
+    this->data_plugin = data_plugin;
+}
+
+gnomonFormDescription::~gnomonFormDescription(void)
+{
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonPythonScriptEditor
@@ -125,12 +152,28 @@ public:
     ~gnomonPythonAlgorithmPluginEditor(void);
 
 public:
+    gnomonFormDescription *formDescriptionDialog(bool input = true);
+
+public slots:
+    void updateDataPlugins(const QString& form_type);
+    void addInputForm(void);
+    void addOutputForm(void);
+
+public:
+    QList<gnomonFormDescription *> input_forms;
+    QList<gnomonFormDescription *> output_forms;
+
+public:
     dtkWidgetsMenuBarContainer *form_pane;
     dtkWidgetsMenu *input_menu;
     dtkWidgetsMenu *output_menu;
 
     dtkWidgetsMenuBarContainer *parameter_pane;
     dtkWidgetsMenu *parameter_menu;
+
+public:
+    QComboBox *type_edit = nullptr;
+    QComboBox *data_plugin_edit = nullptr;
 };
 
 gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonScriptEditor(parent)
@@ -140,15 +183,11 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
 
     this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
     dtkWidgetsMenuItem *add_input = this->input_menu->addItem(fa::plus,"Add input...");
-    QObject::connect(add_input, &dtkWidgetsMenuItem::clicked, [=] () {
-        qDebug()<<"Add input";
-    });
+    connect(add_input, &dtkWidgetsMenuItem::clicked,this, &gnomonPythonAlgorithmPluginEditor::addInputForm);
 
     this->output_menu = new dtkWidgetsMenu(fa::arrowcircleup, "Output Forms");
     dtkWidgetsMenuItem *add_output = this->output_menu->addItem(fa::plus,"Add output...");
-    QObject::connect(add_output, &dtkWidgetsMenuItem::clicked, [=] () {
-        qDebug()<<"Add output";
-    });
+    connect(add_output, &dtkWidgetsMenuItem::clicked,this, &gnomonPythonAlgorithmPluginEditor::addOutputForm);
 
     this->form_pane = new dtkWidgetsMenuBarContainer(this);
     this->form_pane->navigator->deleteLater();
@@ -178,6 +217,105 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
 gnomonPythonAlgorithmPluginEditor::~gnomonPythonAlgorithmPluginEditor(void)
 {
 }
+
+void gnomonPythonAlgorithmPluginEditor::updateDataPlugins(const QString& form_type)
+{
+    this->data_plugin_edit->clear();
+    QList<QString> factory_keys;
+    if (form_type == "gnomonCellComplex") {
+        factory_keys = gnomonCore::cellComplexData::pluginFactory().keys();
+    } else if (form_type == "gnomonCellImage") {
+        factory_keys = gnomonCore::cellImageData::pluginFactory().keys();
+    } else if (form_type == "gnomonImage") {
+        factory_keys = gnomonCore::imageData::pluginFactory().keys();
+    } else if (form_type == "gnomonMesh") {
+        factory_keys = gnomonCore::meshData::pluginFactory().keys();
+    } else if (form_type == "gnomonPointCloud") {
+        factory_keys = gnomonCore::pointCloudData::pluginFactory().keys();
+    }
+    for (const auto& data_plugin : factory_keys) {
+        this->data_plugin_edit->addItem(data_plugin);
+    }
+}
+
+gnomonFormDescription *gnomonPythonAlgorithmPluginEditor::formDescriptionDialog(bool input)
+{
+    QDialog *form_dialog = new QDialog(this);
+    form_dialog->setWindowModality(Qt::WindowModal);
+
+    QGridLayout *form_layout = new QGridLayout();
+    form_layout->setContentsMargins(10, 10, 10, 10);
+
+    QString prefix = input? "Input" : "Output";
+    QLabel *type_label = new QLabel(prefix+" form type");
+    form_layout->addWidget(type_label, 0, 0, 1, 1);
+
+    if (!this->type_edit) {
+        this->type_edit = new QComboBox();
+
+        type_edit->addItem("gnomonCellComplex");
+        type_edit->addItem("gnomonCellImage");
+        type_edit->addItem("gnomonImage");
+        type_edit->addItem("gnomonMesh");
+        type_edit->addItem("gnomonPointCloud");
+
+        connect(this->type_edit, &QComboBox::currentTextChanged, this, &gnomonPythonAlgorithmPluginEditor::updateDataPlugins);
+    }
+    form_layout->addWidget(this->type_edit, 0, 1, 1, 1);
+
+    QLabel *data_plugin_label = new QLabel("Form data plugin");
+    form_layout->addWidget(data_plugin_label, 1, 0, 1, 1);
+
+    if (!this->data_plugin_edit) {
+        this->data_plugin_edit = new QComboBox();
+    }
+    this->updateDataPlugins(this->type_edit->currentText());
+    form_layout->addWidget(this->data_plugin_edit, 1, 1, 1, 1);
+
+    QLabel *name_label = new QLabel(prefix+" variable name");
+    form_layout->addWidget(name_label, 2, 0, 1, 1);
+
+    QLineEdit *name_edit = new QLineEdit();
+    form_layout->addWidget(name_edit, 2, 1, 1, 1);
+
+    QPushButton *cancel_button = new QPushButton("Cancel");
+    cancel_button->setDefault(false);
+    connect(cancel_button, &QPushButton::clicked, form_dialog, &QDialog::reject);
+    form_layout->addWidget(cancel_button, 3, 0, 1, 1);
+
+    QPushButton *ok_button = new QPushButton("Ok");
+    ok_button->setDefault(true);
+    connect(ok_button, &QPushButton::clicked, form_dialog, &QDialog::accept);
+    form_layout->addWidget(ok_button, 3, 1, 1, 1);
+
+    form_dialog->setLayout(form_layout);
+
+    if (form_dialog->exec() & !name_edit->text().isEmpty())
+    {
+        return new gnomonFormDescription(name_edit->text(),this->type_edit->currentText(),this->data_plugin_edit->currentText());
+    } else {
+        return nullptr;
+    }
+}
+
+void gnomonPythonAlgorithmPluginEditor::addInputForm()
+{
+    gnomonFormDescription *form_description = this->formDescriptionDialog(true);
+    if (form_description) {
+        qDebug()<<form_description->name<<form_description->type;
+        this->input_forms.append(form_description);
+    }
+}
+
+void gnomonPythonAlgorithmPluginEditor::addOutputForm()
+{
+    gnomonFormDescription *form_description = this->formDescriptionDialog(false);
+    if (form_description) {
+        qDebug()<<form_description->name<<form_description->type;
+        this->output_forms.append(form_description);
+    }
+}
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
