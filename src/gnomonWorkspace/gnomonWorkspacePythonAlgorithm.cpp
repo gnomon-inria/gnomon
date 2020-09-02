@@ -159,14 +159,20 @@ public slots:
     void addInputForm(void);
     void addOutputForm(void);
 
+    void updateMenus(void);
+    void updateCode(void);
+
 public:
-    QList<gnomonFormDescription *> input_forms;
-    QList<gnomonFormDescription *> output_forms;
+    QMap<QString, gnomonFormDescription *> input_forms;
+    QMap<QString, gnomonFormDescription *> output_forms;
 
 public:
     dtkWidgetsMenuBarContainer *form_pane;
     dtkWidgetsMenu *input_menu;
+    dtkWidgetsMenuItem *add_input;
+
     dtkWidgetsMenu *output_menu;
+    dtkWidgetsMenuItem *add_output;
 
     dtkWidgetsMenuBarContainer *parameter_pane;
     dtkWidgetsMenu *parameter_menu;
@@ -182,15 +188,15 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
     menu_layout->setContentsMargins(0, 0, 0, 0);
 
     this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
-    dtkWidgetsMenuItem *add_input = this->input_menu->addItem(fa::plus,"Add input...");
-    connect(add_input, &dtkWidgetsMenuItem::clicked,this, &gnomonPythonAlgorithmPluginEditor::addInputForm);
+    this->add_input = this->input_menu->addItem(fa::plus,"Add input...");
+    connect(this->add_input, &dtkWidgetsMenuItem::clicked, this, &gnomonPythonAlgorithmPluginEditor::addInputForm);
 
     this->output_menu = new dtkWidgetsMenu(fa::arrowcircleup, "Output Forms");
-    dtkWidgetsMenuItem *add_output = this->output_menu->addItem(fa::plus,"Add output...");
-    connect(add_output, &dtkWidgetsMenuItem::clicked,this, &gnomonPythonAlgorithmPluginEditor::addOutputForm);
+    this->add_output = this->output_menu->addItem(fa::plus,"Add output...");
+    connect(this->add_output, &dtkWidgetsMenuItem::clicked, this, &gnomonPythonAlgorithmPluginEditor::addOutputForm);
 
     this->form_pane = new dtkWidgetsMenuBarContainer(this);
-    this->form_pane->navigator->deleteLater();
+    this->form_pane->navigator->setVisible(false);
     this->form_pane->build(QVector<dtkWidgetsMenu *>() << this->input_menu << this->output_menu);
 
     this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
@@ -302,8 +308,9 @@ void gnomonPythonAlgorithmPluginEditor::addInputForm()
 {
     gnomonFormDescription *form_description = this->formDescriptionDialog(true);
     if (form_description) {
-        qDebug()<<form_description->name<<form_description->type;
-        this->input_forms.append(form_description);
+        this->input_forms[form_description->type] = form_description;
+        this->updateMenus();
+        this->updateCode();
     }
 }
 
@@ -311,9 +318,125 @@ void gnomonPythonAlgorithmPluginEditor::addOutputForm()
 {
     gnomonFormDescription *form_description = this->formDescriptionDialog(false);
     if (form_description) {
-        qDebug()<<form_description->name<<form_description->type;
-        this->output_forms.append(form_description);
+        this->output_forms[form_description->type] = form_description;
+        this->updateMenus();
+        this->updateCode();
     }
+}
+
+void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
+{
+    this->input_menu->removeItem(this->add_input);
+    this->input_menu->clear();
+    for (const auto &form_type : this->input_forms.keys()) {
+        gnomonFormDescription *desc = this->input_forms[form_type];
+        QString short_type = desc->type.split("gnomon")[1];
+        short_type.replace(0,1,short_type[0].toUpper());
+        dtkWidgetsMenuItem *input_item = new dtkWidgetsMenuItem(fa::image, desc->name + " (" + short_type + ")");
+        this->input_menu->addItem(input_item);
+    }
+    this->input_menu->addItem(this->add_input);
+    
+    this->output_menu->removeItem(this->add_output);
+    this->output_menu->clear();
+    for (const auto &form_type : this->output_forms.keys()) {
+        gnomonFormDescription *desc = this->output_forms[form_type];
+        QString short_type = desc->type.split("gnomon")[1];
+        short_type.replace(0,1,short_type[0].toUpper());
+        dtkWidgetsMenuItem *output_item = new dtkWidgetsMenuItem(fa::image, desc->name + " (" + short_type + ")");
+        this->output_menu->addItem(output_item);
+    }
+    this->output_menu->addItem(this->add_output);
+    this->form_pane->touch();
+}
+
+void gnomonPythonAlgorithmPluginEditor::updateCode(void)
+{
+    QString plugin_code = "import gnomoncore\n";
+    plugin_code += "\n";
+    plugin_code += "from gnomon_utils import gnomonPlugin, gnomonParametric\n";
+
+    if (this->input_forms.size() + this->output_forms.size() > 0) {
+        plugin_code += "from gnomon_utils.gnomonDecorator import";
+    }
+    int n_forms = 0;
+    for (const auto &form_type : this->input_forms.keys()) {
+        if (n_forms > 0) {
+            plugin_code += ",";
+        }
+        plugin_code += " " + form_type + "Input";
+        n_forms ++;
+    }
+    for (const auto &form_type : this->output_forms.keys()) {
+        if (n_forms > 0) {
+            plugin_code += ",";
+        }
+        plugin_code += " " + form_type + "Output";
+        n_forms ++;
+    }
+    plugin_code += "\n";
+    plugin_code += "\n";
+    
+    plugin_code += "@gnomonPlugin(namespace=gnomoncore)\n";
+    plugin_code += "@gnomonParametric\n";
+
+    for (const auto &form_type : this->input_forms.keys()) {
+        gnomonFormDescription *desc = this->input_forms[form_type];
+        plugin_code += "@" + form_type + "Input(";
+        plugin_code += "attr='" + desc->name + "', ";
+        plugin_code += "method='setInput" + desc->type.split("gnomon")[1] + "', ";
+        plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
+    }
+    for (const auto &form_type : this->output_forms.keys()) {
+        gnomonFormDescription *desc = this->output_forms[form_type];
+        plugin_code += "@" + form_type + "Output(";
+        plugin_code += "attr='" + desc->name + "', ";
+        plugin_code += "method='setOutput" + desc->type.split("gnomon")[1] + "', ";
+        plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
+    }
+    plugin_code += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
+    plugin_code += "\n";
+    plugin_code += "    def __init__(self):\n";
+    plugin_code += "        super().__init__()\n";
+    plugin_code += "\n";
+    plugin_code += "        self._parameters = {}\n";
+    plugin_code += "\n";
+    if (n_forms > 0) {
+        for (const auto &form_type : this->input_forms.keys()) {
+            gnomonFormDescription *desc = this->input_forms[form_type];
+            plugin_code += "        self." + desc->name + " = {}\n";
+        }
+        for (const auto &form_type : this->output_forms.keys()) {
+            gnomonFormDescription *desc = this->output_forms[form_type];
+            plugin_code += "        self." + desc->name + " = {}\n";
+        }
+        plugin_code += "\n";
+    }
+    plugin_code += "    def run(self):\n";
+    if (n_forms == 0)
+    {
+        plugin_code += "        pass\n";
+    } else {
+        for (const auto &form_type : this->output_forms.keys()) {
+            gnomonFormDescription *desc = this->output_forms[form_type];
+            plugin_code += "        self." + desc->name + " = {}\n";
+        }
+
+        if (this->input_forms.size()>0) {
+            plugin_code += "        for time in self." + this->input_forms.values()[0]->name +  ".keys():\n";
+            for (const auto &form_type : this->input_forms.keys()) {
+                gnomonFormDescription *desc = this->input_forms[form_type];
+                plugin_code += "            " + desc->name + " = self." + desc->name + "[time]\n";
+            }
+            plugin_code += "\n";
+            for (const auto &form_type : this->output_forms.keys()) {
+                gnomonFormDescription *desc = this->output_forms[form_type];
+                plugin_code += "            self." + desc->name + "[time] = None\n";
+            }
+        }
+    }
+
+    this->editor->setText(plugin_code);
 }
 
 
@@ -459,23 +582,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->editor = new gnomonPythonAlgorithmPluginEditor(this);
     d->editor->resize(this->width(), 1000);
 
-    QString example = "import gnomoncore\n";
-    example += "\n";
-    example += "from gnomon_utils import gnomonPlugin, gnomonParametric\n";
-    example += "\n";
-    example += "@gnomonPlugin(namespace=gnomoncore)\n";
-    example += "@gnomonParametric\n";
-    example += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
-    example += "\n";
-    example += "    def __init__(self):\n";
-    example += "        super().__init__()\n";
-    example += "\n";
-    example += "        self._parameters = {}\n";
-    example += "\n";
-    example += "    def run(self):\n";
-    example += "        pass\n";
-
-    d->editor->editor->setText(example);
+    d->editor->updateCode();
 
 //    QVBoxLayout *editor_layout = new QVBoxLayout();
 //    QWidget *editor_widget = new QWidget(this);
