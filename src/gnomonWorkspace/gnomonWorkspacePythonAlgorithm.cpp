@@ -111,8 +111,13 @@ public:
 
 gnomonPythonScriptEditor::gnomonPythonScriptEditor(QWidget *parent) : QWidget(parent)
 {
+
     this->editor = new dtkMacsWidget(this);
     this->editor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QFont font = this->editor->font();
+    font.setFamily("Courier New");
+    this->editor->setCurrentFont(font);
 
     // -- Organizing the editor column --
     this->layout = new QHBoxLayout;
@@ -459,6 +464,32 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
 
 void gnomonPythonAlgorithmPluginEditor::updateCode(void)
 {
+    QString current_code = this->editor->toPlainText();
+
+    QStringList code_lines = current_code.split("\n");
+    QString import_code = "";
+    QString run_code = "";
+
+    bool user_line = false;
+    int section = 0;
+    for (const auto& line : code_lines) {
+
+        if (line.contains("# {#")) {
+            user_line = false;
+            section++;
+        }
+        if (user_line) {
+            if (section == 1) {
+                import_code += line + "\n";
+            } else {
+                run_code += line + "\n";
+            }
+        }
+        if (line.contains("# #}")) {
+            user_line = true;
+        }
+    }
+
     QString plugin_code = "";
 
     plugin_code += "# {# gnomon, plugin.imports\n";
@@ -488,10 +519,15 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "\n";
 
     plugin_code += "# #}\n";
-    plugin_code += "# add your imports before the next gnomon tag\n";
 
-    plugin_code += "\n";
-    plugin_code += "\n";
+    if (import_code.isEmpty()) {
+        plugin_code += "# add your imports before the next gnomon tag\n";
+
+        plugin_code += "\n";
+        plugin_code += "\n";
+    } else {
+        plugin_code += import_code;
+    }
 
     plugin_code += "# {# gnomon, plugin.class\n";
 
@@ -552,9 +588,13 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     if (n_forms == 0)
     {
         plugin_code += "        # #}\n";
-        plugin_code += "        # implement the run method\n";
-        plugin_code += "\n";
-        plugin_code += "        pass\n";
+        if (run_code.isEmpty() | !run_code.startsWith("        ")) {
+            plugin_code += "        # implement the run method\n";
+            plugin_code += "\n";
+            plugin_code += "        pass\n";
+        } else {
+            plugin_code += run_code;
+        }
     } else {
         for (const auto &form_type : this->output_forms.keys()) {
             gnomonFormDescription *desc = this->output_forms[form_type];
@@ -571,11 +611,15 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
             plugin_code += "            " + desc->name + " = self." + desc->name + "[time]\n";
         }
         plugin_code += "            # #}\n";
-        plugin_code += "            # implement the run method\n";
-        plugin_code += "\n";
-        for (const auto &form_type : this->output_forms.keys()) {
-            gnomonFormDescription *desc = this->output_forms[form_type];
-            plugin_code += "            self." + desc->name + "[time] = None\n";
+        if (run_code.isEmpty() | !run_code.startsWith("            ")) {
+            plugin_code += "            # implement the run method\n";
+            plugin_code += "\n";
+            for (const auto &form_type : this->output_forms.keys()) {
+                gnomonFormDescription *desc = this->output_forms[form_type];
+                plugin_code += "            self." + desc->name + "[time] = None\n";
+            }
+        } else {
+            plugin_code += run_code;
         }
     }
 
