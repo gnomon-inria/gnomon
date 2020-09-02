@@ -70,7 +70,7 @@ protected:
 
 public:
     dtkMacsWidget *editor = nullptr;
-    QVBoxLayout *layout = nullptr;
+    QHBoxLayout *layout = nullptr;
     dtkWidgetsMenuBar* script_menubar;
 
 signals:
@@ -85,9 +85,10 @@ public:
 gnomonPythonScriptEditor::gnomonPythonScriptEditor(QWidget *parent) : QWidget(parent)
 {
     this->editor = new dtkMacsWidget(this);
+    this->editor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // -- Organizing the editor column --
-    this->layout = new QVBoxLayout;
+    this->layout = new QHBoxLayout;
     this->layout->setContentsMargins(40, 0, 0, 0);
     this->layout->setSpacing(0);
     this->layout->addWidget(this->editor);
@@ -184,7 +185,7 @@ public:
 
 gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonScriptEditor(parent)
 {
-    QHBoxLayout *menu_layout = new QHBoxLayout;
+    QVBoxLayout *menu_layout = new QVBoxLayout();
     menu_layout->setContentsMargins(0, 0, 0, 0);
 
     this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
@@ -198,6 +199,7 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
     this->form_pane = new dtkWidgetsMenuBarContainer(this);
     this->form_pane->navigator->setVisible(false);
     this->form_pane->build(QVector<dtkWidgetsMenu *>() << this->input_menu << this->output_menu);
+    this->form_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
     dtkWidgetsMenuItem *add_parameter = this->parameter_menu->addItem(fa::plus,"Add parameter...");
@@ -208,12 +210,15 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
     this->parameter_pane = new dtkWidgetsMenuBarContainer(this);
     this->parameter_pane->navigator->deleteLater();
     this->parameter_pane->build(QVector<dtkWidgetsMenu *>() << this->parameter_menu);
+    this->parameter_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     menu_layout->addWidget(this->form_pane);
     menu_layout->addWidget(this->parameter_pane);
 
     QWidget *menu_pane = new QWidget(this);
     menu_pane->setLayout(menu_layout);
+    menu_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    menu_pane->setFixedWidth(300);
 
     this->layout->insertWidget(0,menu_pane);
 
@@ -384,14 +389,15 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
         gnomonFormDescription *desc = this->input_forms[form_type];
         plugin_code += "@" + form_type + "Input(";
         plugin_code += "attr='" + desc->name + "', ";
-        plugin_code += "method='setInput" + desc->type.split("gnomon")[1] + "', ";
+        plugin_code += "method='input" + desc->type.split("gnomon")[1] + "', ";
+        plugin_code += "setter_method='setInput" + desc->type.split("gnomon")[1] + "', ";
         plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
     }
     for (const auto &form_type : this->output_forms.keys()) {
         gnomonFormDescription *desc = this->output_forms[form_type];
         plugin_code += "@" + form_type + "Output(";
         plugin_code += "attr='" + desc->name + "', ";
-        plugin_code += "method='setOutput" + desc->type.split("gnomon")[1] + "', ";
+        plugin_code += "method='output" + desc->type.split("gnomon")[1] + "', ";
         plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
     }
     plugin_code += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
@@ -468,7 +474,7 @@ public:
 
 public:
     QFormLayout *layout = nullptr;
-    QVBoxLayout *viewer_layout = nullptr;
+    QHBoxLayout *viewer_layout = nullptr;
 
 public:
     QHash<QString, dtkCoreParameter *> parameters;
@@ -567,7 +573,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
                 this->layout->addRow(it.key(), widget);
         }
 
-        this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+//        this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     }
 }
 
@@ -605,10 +611,10 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 //    d->terminal->registerInterpreter(dtkScriptInterpreterPython::instance());
 //    editor_layout->addWidget(d->terminal);
 
-    QSplitter *editor_splitter = new QSplitter(this);
-    editor_splitter->setOrientation(Qt::Vertical);
-    editor_splitter->addWidget(d->editor);
-    editor_splitter->addWidget(d->terminal);
+//    QSplitter *editor_splitter = new QSplitter(this);
+//    editor_splitter->setOrientation(Qt::Horizontal);
+//    editor_splitter->addWidget(d->editor);
+//    editor_splitter->addWidget(d->terminal);
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
@@ -646,12 +652,8 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
     // -- Organizing the viewer column --
 
-//    QSplitter *viewer_splitter = new QSplitter(this);
-//    viewer_splitter->setOrientation(Qt::Vertical);
-//    viewer_splitter->addWidget(d->source);
-//    viewer_splitter->addWidget(d->target_stack);
 
-    d->viewer_layout = new QVBoxLayout;
+    d->viewer_layout = new QHBoxLayout;
     d->viewer_layout->setContentsMargins(0, 0, 0, 0);
     d->viewer_layout->setSpacing(0);
     d->viewer_layout->addWidget(d->source);
@@ -660,17 +662,57 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     QWidget *viewer = new QWidget(this);
     viewer->setLayout(d->viewer_layout);
 
-//     // -- Organizing the whole workspace --
-    QSplitter *splitter = new QSplitter(this);
-    splitter->setOrientation(Qt::Horizontal);
-    splitter->addWidget(editor_splitter);
-    splitter->addWidget(viewer);
+    QSplitter *viewer_splitter = new QSplitter(this);
+    viewer_splitter->setOrientation(Qt::Vertical);
+    viewer_splitter->addWidget(viewer);
+    viewer_splitter->addWidget(d->terminal);
 
+//     // -- Organizing the whole workspace --
+//    QSplitter *splitter = new QSplitter(this);
+//    splitter->setOrientation(Qt::Horizontal);
+//    splitter->addWidget(editor_splitter);
+//    splitter->addWidget(viewer);
+
+    QStackedWidget *editor_viewer_stack = new QStackedWidget(this);
+    editor_viewer_stack->addWidget(d->editor);
+    editor_viewer_stack->addWidget(viewer_splitter);
+    editor_viewer_stack->setCurrentWidget(d->editor);
+
+    QToolButton *editor_button = new QToolButton(this);
+    editor_button->setIcon(dtkFontAwesome::instance()->icon(fa::edit));
+    editor_button->setToolTip("Edit code");
+    connect(editor_button, &QToolButton::clicked, [=] ()
+    {
+        editor_viewer_stack->setCurrentWidget(d->editor);
+    });
+
+    QToolButton *viewer_button = new QToolButton(this);
+    viewer_button->setIcon(dtkFontAwesome::instance()->icon(fa::play));
+    viewer_button->setToolTip("Run Python algorithm");
+    connect(viewer_button, &QToolButton::clicked, [=] (void) -> void
+    {
+        d->configure();
+        editor_viewer_stack->setCurrentWidget(viewer_splitter);
+    });
+
+    QHBoxLayout *button_layout = new QHBoxLayout;
+    button_layout->addWidget(editor_button);
+    button_layout->addWidget(viewer_button);
+    button_layout->addStretch();
+
+    QVBoxLayout *editor_viewer_layout = new QVBoxLayout;
+    editor_viewer_layout->setContentsMargins(0, 0, 0, 0);
+    editor_viewer_layout->setSpacing(0);
+    editor_viewer_layout->addLayout(button_layout);
+    editor_viewer_layout->addWidget(editor_viewer_stack);
+
+    QWidget *editor_viewer = new QWidget(this);
+    editor_viewer->setLayout(editor_viewer_layout);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(splitter);
+    layout->addWidget(editor_viewer);
     layout->addWidget(d->dashboard);
 }
 
@@ -704,6 +746,7 @@ void gnomonWorkspacePythonAlgorithm::apply(void)
 
 void gnomonWorkspacePythonAlgorithm::run(void)
 {
+    qDebug()<<Q_FUNC_INFO<<d->algorithm;
     Q_ASSERT(d->algorithm);
 
     if (d->source->cellComplex()) {
