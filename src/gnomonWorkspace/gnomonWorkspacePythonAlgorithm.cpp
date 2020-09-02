@@ -357,7 +357,11 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
 
 void gnomonPythonAlgorithmPluginEditor::updateCode(void)
 {
-    QString plugin_code = "import gnomoncore\n";
+    QString plugin_code = "";
+
+    plugin_code += "# {# gnomon, plugin.imports\n";
+
+    plugin_code += "import gnomoncore\n";
     plugin_code += "\n";
     plugin_code += "from gnomon_utils import gnomonPlugin, gnomonParametric\n";
 
@@ -380,8 +384,15 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
         n_forms ++;
     }
     plugin_code += "\n";
+
+    plugin_code += "# #}\n";
+    plugin_code += "# add your imports before the next gnomon tag\n";
+
     plugin_code += "\n";
-    
+    plugin_code += "\n";
+
+    plugin_code += "# {# gnomon, plugin.class\n";
+
     plugin_code += "@gnomonPlugin(namespace=gnomoncore)\n";
     plugin_code += "@gnomonParametric\n";
 
@@ -421,6 +432,9 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "    def run(self):\n";
     if (n_forms == 0)
     {
+        plugin_code += "        # #}\n";
+        plugin_code += "        # implement the run method\n";
+        plugin_code += "\n";
         plugin_code += "        pass\n";
     } else {
         for (const auto &form_type : this->output_forms.keys()) {
@@ -434,11 +448,17 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
                 gnomonFormDescription *desc = this->input_forms[form_type];
                 plugin_code += "            " + desc->name + " = self." + desc->name + "[time]\n";
             }
+            plugin_code += "            # #}\n";
+            plugin_code += "            # implement the run method\n";
             plugin_code += "\n";
             for (const auto &form_type : this->output_forms.keys()) {
                 gnomonFormDescription *desc = this->output_forms[form_type];
                 plugin_code += "            self." + desc->name + "[time] = None\n";
             }
+        } else {
+            plugin_code += "        # #}\n";
+            plugin_code += "        # implement the run method\n";
+            plugin_code += "\n";
         }
     }
 
