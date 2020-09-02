@@ -54,6 +54,33 @@ gnomonFormDescription::~gnomonFormDescription(void)
 }
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonParameterDescription
+// ///////////////////////////////////////////////////////////////////
+
+class gnomonParameterDescription
+{
+public:
+     gnomonParameterDescription(const QString& name, const QString& type, const QString& doc);
+    ~gnomonParameterDescription(void);
+
+public:
+    QString name;
+    QString type;
+    QString doc;
+};
+
+gnomonParameterDescription::gnomonParameterDescription(const QString& name, const QString& type, const QString& doc)
+{
+    this->name = name;
+    this->type = type;
+    this->doc = doc;
+}
+
+gnomonParameterDescription::~gnomonParameterDescription(void)
+{
+}
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonPythonScriptEditor
 // ///////////////////////////////////////////////////////////////////
 
@@ -154,11 +181,13 @@ public:
 
 public:
     gnomonFormDescription *formDescriptionDialog(bool input = true);
+    gnomonParameterDescription *parameterDescriptionDialog(void);
 
 public slots:
     void updateDataPlugins(const QString& form_type);
     void addInputForm(void);
     void addOutputForm(void);
+    void addParameter(void);
 
     void updateMenus(void);
     void updateCode(void);
@@ -166,6 +195,7 @@ public slots:
 public:
     QMap<QString, gnomonFormDescription *> input_forms;
     QMap<QString, gnomonFormDescription *> output_forms;
+    QMap<QString, gnomonParameterDescription *> parameters;
 
 public:
     dtkWidgetsMenuBarContainer *form_pane;
@@ -177,6 +207,7 @@ public:
 
     dtkWidgetsMenuBarContainer *parameter_pane;
     dtkWidgetsMenu *parameter_menu;
+    dtkWidgetsMenuItem *add_parameter;
 
 public:
     QComboBox *type_edit = nullptr;
@@ -202,13 +233,11 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
     this->form_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
-    dtkWidgetsMenuItem *add_parameter = this->parameter_menu->addItem(fa::plus,"Add parameter...");
-    QObject::connect(add_parameter, &dtkWidgetsMenuItem::clicked, [=] () {
-        qDebug()<<"Add parameter";
-    });
+    this->add_parameter = this->parameter_menu->addItem(fa::plus,"Add parameter...");
+    connect(this->add_parameter, &dtkWidgetsMenuItem::clicked, this, &gnomonPythonAlgorithmPluginEditor::addParameter);
 
     this->parameter_pane = new dtkWidgetsMenuBarContainer(this);
-    this->parameter_pane->navigator->deleteLater();
+    this->parameter_pane->navigator->setVisible(false);
     this->parameter_pane->build(QVector<dtkWidgetsMenu *>() << this->parameter_menu);
     this->parameter_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -309,6 +338,58 @@ gnomonFormDescription *gnomonPythonAlgorithmPluginEditor::formDescriptionDialog(
     }
 }
 
+gnomonParameterDescription *gnomonPythonAlgorithmPluginEditor::parameterDescriptionDialog(void)
+{
+    QDialog *parameter_dialog = new QDialog(this);
+    parameter_dialog->setWindowModality(Qt::WindowModal);
+
+    QGridLayout *parameter_layout = new QGridLayout();
+    parameter_layout->setContentsMargins(10, 10, 10, 10);
+
+    QLabel *name_label = new QLabel("Parameter name");
+    parameter_layout->addWidget(name_label, 0, 0, 1, 1);
+
+    QLineEdit *name_edit = new QLineEdit();
+    parameter_layout->addWidget(name_edit, 0, 1, 1, 1);
+
+    QLabel *type_label = new QLabel("Parameter type");
+    parameter_layout->addWidget(type_label, 1, 0, 1, 1);
+
+    QComboBox *type_edit = new QComboBox();
+
+    type_edit->addItem("Bool");
+    type_edit->addItem("Int");
+    type_edit->addItem("Double");
+    type_edit->addItem("String");
+    type_edit->addItem("StringList");
+    parameter_layout->addWidget(type_edit, 1, 1, 1, 1);
+
+    QLabel *documentation_label = new QLabel("Documentation");
+    parameter_layout->addWidget(documentation_label, 2, 0, 1, 1);
+
+    QLineEdit *documentation_edit = new QLineEdit();
+    parameter_layout->addWidget(documentation_edit, 2, 1, 1, 1);
+
+    QPushButton *cancel_button = new QPushButton("Cancel");
+    cancel_button->setDefault(false);
+    connect(cancel_button, &QPushButton::clicked, parameter_dialog, &QDialog::reject);
+    parameter_layout->addWidget(cancel_button, 3, 0, 1, 1);
+
+    QPushButton *ok_button = new QPushButton("Ok");
+    ok_button->setDefault(true);
+    connect(ok_button, &QPushButton::clicked, parameter_dialog, &QDialog::accept);
+    parameter_layout->addWidget(ok_button, 3, 1, 1, 1);
+
+    parameter_dialog->setLayout(parameter_layout);
+
+    if (parameter_dialog->exec() & !name_edit->text().isEmpty())
+    {
+        return new gnomonParameterDescription(name_edit->text(),type_edit->currentText(),documentation_edit->text());
+    } else {
+        return nullptr;
+    }
+}
+
 void gnomonPythonAlgorithmPluginEditor::addInputForm()
 {
     gnomonFormDescription *form_description = this->formDescriptionDialog(true);
@@ -324,6 +405,17 @@ void gnomonPythonAlgorithmPluginEditor::addOutputForm()
     gnomonFormDescription *form_description = this->formDescriptionDialog(false);
     if (form_description) {
         this->output_forms[form_description->type] = form_description;
+        this->updateMenus();
+        this->updateCode();
+    }
+}
+
+void gnomonPythonAlgorithmPluginEditor::addParameter()
+{
+    gnomonParameterDescription *parameter_description = this->parameterDescriptionDialog();
+    qDebug()<<parameter_description->name<<parameter_description->type;
+    if (parameter_description) {
+        this->parameters[parameter_description->name] = parameter_description;
         this->updateMenus();
         this->updateCode();
     }
@@ -353,6 +445,16 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
     this->output_menu->addItem(this->add_output);
     this->form_pane->touch();
+    
+    this->parameter_menu->removeItem(this->add_parameter);
+    this->parameter_menu->clear();
+    for (const auto &param : this->parameters.keys()) {
+        gnomonParameterDescription *desc = this->parameters[param];
+        dtkWidgetsMenuItem *parameter_item = new dtkWidgetsMenuItem(fa::circlethin, desc->name + " (" + desc->type + ")");
+        this->parameter_menu->addItem(parameter_item);
+    }
+    this->parameter_menu->addItem(this->add_parameter);
+    this->parameter_pane->touch();
 }
 
 void gnomonPythonAlgorithmPluginEditor::updateCode(void)
@@ -417,6 +519,23 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "        super().__init__()\n";
     plugin_code += "\n";
     plugin_code += "        self._parameters = {}\n";
+    for (const auto &param : this->parameters.keys()) {
+        gnomonParameterDescription *desc = this->parameters[param];
+        plugin_code += "        self._parameters['" + desc->name + "'] = ";
+        plugin_code += "gnomoncore.Parameter" + desc->type + "(";
+        if (desc->type == "Bool") {
+            plugin_code += "True";
+        } else if (desc->type == "Int") {
+            plugin_code += "1,0,10";
+        } else if (desc->type == "Double") {
+            plugin_code += "1.,0.,1.,2";
+        } else if (desc->type == "String") {
+            plugin_code += "'',['']";
+        } else if (desc->type == "StringList") {
+            plugin_code += "[''],['']";
+        }
+        plugin_code += ",'" + desc->doc + "')\n";
+    }
     plugin_code += "\n";
     if (n_forms > 0) {
         for (const auto &form_type : this->input_forms.keys()) {
@@ -444,21 +563,19 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
 
         if (this->input_forms.size()>0) {
             plugin_code += "        for time in self." + this->input_forms.values()[0]->name +  ".keys():\n";
-            for (const auto &form_type : this->input_forms.keys()) {
-                gnomonFormDescription *desc = this->input_forms[form_type];
-                plugin_code += "            " + desc->name + " = self." + desc->name + "[time]\n";
-            }
-            plugin_code += "            # #}\n";
-            plugin_code += "            # implement the run method\n";
-            plugin_code += "\n";
-            for (const auto &form_type : this->output_forms.keys()) {
-                gnomonFormDescription *desc = this->output_forms[form_type];
-                plugin_code += "            self." + desc->name + "[time] = None\n";
-            }
         } else {
-            plugin_code += "        # #}\n";
-            plugin_code += "        # implement the run method\n";
-            plugin_code += "\n";
+            plugin_code += "        for time in [0]:\n";
+        }
+        for (const auto &form_type : this->input_forms.keys()) {
+            gnomonFormDescription *desc = this->input_forms[form_type];
+            plugin_code += "            " + desc->name + " = self." + desc->name + "[time]\n";
+        }
+        plugin_code += "            # #}\n";
+        plugin_code += "            # implement the run method\n";
+        plugin_code += "\n";
+        for (const auto &form_type : this->output_forms.keys()) {
+            gnomonFormDescription *desc = this->output_forms[form_type];
+            plugin_code += "            self." + desc->name + "[time] = None\n";
         }
     }
 
@@ -766,85 +883,84 @@ void gnomonWorkspacePythonAlgorithm::apply(void)
 
 void gnomonWorkspacePythonAlgorithm::run(void)
 {
-    qDebug()<<Q_FUNC_INFO<<d->algorithm;
-    Q_ASSERT(d->algorithm);
-
-    if (d->source->cellComplex()) {
-        d->algorithm->setInputCellComplex(d->source->cellComplex());
-    }
-    if (d->source->cellImage()) {
-        d->algorithm->setInputCellImage(d->source->cellImage());
-    }
-    if (d->source->image()) {
-        d->algorithm->setInputImage(d->source->image());
-    }
-    if (d->source->mesh()) {
-        d->algorithm->setInputMesh(d->source->mesh());
-    }
-    if (d->source->pointCloud()) {
-        d->algorithm->setInputPointCloud(d->source->pointCloud());
-    }
-
-    d->algorithm->run();
-
     d->target_stack->setCurrentWidget(d->target_message);
     d->source->setEnableLinking(false);
     d->target->setEnableLinking(false);
 
+    if (d->algorithm) {
 
-    gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
-    if ((!cellComplex)||(cellComplex->times().size()==0)) {
-        qDebug()<<"No CellComplex!";
-    } else {
-        d->target->setForm("gnomonCellComplex",cellComplex);
-        d->target->render();
-        d->target_stack->setCurrentWidget(d->target);
-        d->source->setEnableLinking(true);
-        d->target->setEnableLinking(true);
-    }
+        if (d->source->cellComplex()) {
+            d->algorithm->setInputCellComplex(d->source->cellComplex());
+        }
+        if (d->source->cellImage()) {
+            d->algorithm->setInputCellImage(d->source->cellImage());
+        }
+        if (d->source->image()) {
+            d->algorithm->setInputImage(d->source->image());
+        }
+        if (d->source->mesh()) {
+            d->algorithm->setInputMesh(d->source->mesh());
+        }
+        if (d->source->pointCloud()) {
+            d->algorithm->setInputPointCloud(d->source->pointCloud());
+        }
 
-    gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
-        qDebug()<<"No CellImage!";
-    } else {
-        d->target->setForm("gnomonCellImage",cellImage);
-        d->target->render();
-        d->target_stack->setCurrentWidget(d->target);
-        d->source->setEnableLinking(true);
-        d->target->setEnableLinking(true);
-    }
+        d->algorithm->run();
 
-    gnomonImageSeries *image = d->algorithm->outputImage();
-     if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        qDebug()<<"No Image!";
-    } else {
-        d->target->setForm("gnomonImage",image);
-        d->target->render();
-        d->target_stack->setCurrentWidget(d->target);
-        d->source->setEnableLinking(true);
-        d->target->setEnableLinking(true);
-    }
+        gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
+        if ((!cellComplex)||(cellComplex->times().size()==0)) {
+            qDebug()<<"No CellComplex!";
+        } else {
+            d->target->setForm("gnomonCellComplex",cellComplex);
+            d->target->render();
+            d->target_stack->setCurrentWidget(d->target);
+            d->source->setEnableLinking(true);
+            d->target->setEnableLinking(true);
+        }
 
-    gnomonMeshSeries *mesh = d->algorithm->outputMesh();
-    if ((!mesh)||(mesh->times().size()==0)) {
-        qDebug()<<"No Mesh!";
-    } else {
-        d->target->setForm("gnomonMesh",mesh);
-        d->target->render();
-        d->target_stack->setCurrentWidget(d->target);
-        d->source->setEnableLinking(true);
-        d->target->setEnableLinking(true);
-    }
+        gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
+        if ((!cellImage)||(cellImage->times().size()==0)) {
+            qDebug()<<"No CellImage!";
+        } else {
+            d->target->setForm("gnomonCellImage",cellImage);
+            d->target->render();
+            d->target_stack->setCurrentWidget(d->target);
+            d->source->setEnableLinking(true);
+            d->target->setEnableLinking(true);
+        }
 
-    gnomonPointCloudSeries *pointCloud = d->algorithm->outputPointCloud();
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
-        qDebug()<<"No PointCloud!";
-    } else {
-        d->target->setForm("gnomonPointCloud",pointCloud);
-        d->target->render();
-        d->target_stack->setCurrentWidget(d->target);
-        d->source->setEnableLinking(true);
-        d->target->setEnableLinking(true);
+        gnomonImageSeries *image = d->algorithm->outputImage();
+         if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+            qDebug()<<"No Image!";
+        } else {
+            d->target->setForm("gnomonImage",image);
+            d->target->render();
+            d->target_stack->setCurrentWidget(d->target);
+            d->source->setEnableLinking(true);
+            d->target->setEnableLinking(true);
+        }
+
+        gnomonMeshSeries *mesh = d->algorithm->outputMesh();
+        if ((!mesh)||(mesh->times().size()==0)) {
+            qDebug()<<"No Mesh!";
+        } else {
+            d->target->setForm("gnomonMesh",mesh);
+            d->target->render();
+            d->target_stack->setCurrentWidget(d->target);
+            d->source->setEnableLinking(true);
+            d->target->setEnableLinking(true);
+        }
+
+        gnomonPointCloudSeries *pointCloud = d->algorithm->outputPointCloud();
+        if ((!pointCloud)||(pointCloud->times().size()==0)) {
+            qDebug()<<"No PointCloud!";
+        } else {
+            d->target->setForm("gnomonPointCloud",pointCloud);
+            d->target->render();
+            d->target_stack->setCurrentWidget(d->target);
+            d->source->setEnableLinking(true);
+            d->target->setEnableLinking(true);
+        }
     }
 }
 
