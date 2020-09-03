@@ -241,8 +241,8 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
 
     this->updateMenus();
 
-    this->menu_layout->addWidget(this->form_pane);
-    this->menu_layout->addWidget(this->parameter_pane);
+//    this->menu_layout->addWidget(this->form_pane);
+//    this->menu_layout->addWidget(this->parameter_pane);
 
     QWidget *menu_pane = new QWidget(this);
     menu_pane->setLayout(menu_layout);
@@ -336,13 +336,13 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newFormMenu(bool input)
     static std::function<void (void)> cb = [=] (void) -> void
     {
         this->form_pane->slider->setCurrentIndex(0,ca);
-        this->form_pane->decr();
     };
 
     QPushButton *cancel_button = new QPushButton("Cancel");
     cancel_button->setDefault(false);
     connect(cancel_button, &QPushButton::clicked, [=] () {
         this->form_pane->switchToRoot(cb);
+        this->updateMenus();
     });
     form_layout->addWidget(cancel_button, 3, 0, 1, 1);
 
@@ -410,13 +410,14 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     static std::function<void (void)> cb = [=] (void) -> void
     {
         this->parameter_pane->slider->setCurrentIndex(0,ca);
-        this->parameter_pane->decr();
     };
+
 
     QPushButton *cancel_button = new QPushButton("Cancel");
     cancel_button->setDefault(false);
     connect(cancel_button, &QPushButton::clicked, [=] (){
         this->parameter_pane->switchToRoot(cb);
+        this->updateMenus();
     });
     parameter_layout->addWidget(cancel_button, 3, 0, 1, 1);
 
@@ -437,10 +438,12 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     dtkWidgetsMenuItemDIY *new_parameter_item = new dtkWidgetsMenuItemDIY("New Parameter");
     new_parameter_item->addWidget(parameter_widget);
 
-    dtkWidgetsMenu *new_parameter_menu = new dtkWidgetsMenu(fa::plus, "Add parameter...");
-    new_parameter_menu->addItem(new_parameter_item);
+    if (!this->add_parameter) {
+        this->add_parameter = new dtkWidgetsMenu(fa::plus, "Add parameter...");
+    }
+    this->add_parameter->addItem(new_parameter_item);
 
-    return new_parameter_menu;
+    return this->add_parameter;
 }
 
 void gnomonPythonAlgorithmPluginEditor::addInputForm(gnomonFormDescription *desc)
@@ -472,8 +475,23 @@ void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription 
 
 void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
 {
+    if (this->form_pane) {
+        this->form_pane->deleteLater();
+        this->form_pane = nullptr;
+    }
+
+    if (this->input_menu) {
+        this->input_menu->deleteLater();
+        this->input_menu = nullptr;
+    }
+
     if (!this->input_menu) {
         this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
+    }
+    
+    if (this->output_menu) {
+        this->output_menu->deleteLater();
+        this->output_menu = nullptr;
     }
     
     if (!this->output_menu) {
@@ -488,9 +506,10 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
     
     if (this->add_input) {
-        this->form_pane->slides.remove(this->add_input);
-        this->input_menu->removeMenu(this->add_input);
-        delete this->add_input;
+//        this->form_pane->slides.remove(this->add_input);
+//        this->input_menu->removeMenu(this->add_input);
+        this->add_input->deleteLater();
+        this->add_input = nullptr;
     }
     
     for (const auto &form_type : this->input_forms.keys()) {
@@ -504,9 +523,10 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     this->add_input = this->input_menu->addMenu(this->newFormMenu(true));
     
     if (this->add_output) {
-        this->form_pane->slides.remove(this->add_output);
-        this->output_menu->removeMenu(this->add_output);
-        delete this->add_output;
+//        this->form_pane->slides.remove(this->add_output);
+//        this->output_menu->removeMenu(this->add_output);
+        this->add_output->deleteLater();
+        this->add_output = nullptr;
     }
     
     for (const auto &form_type : this->output_forms.keys()) {
@@ -516,17 +536,30 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
         dtkWidgetsMenuItem *output_item = new dtkWidgetsMenuItem(fa::image, desc->name + " (" + short_type + ")");
         this->output_menu->addItem(output_item);
     }
-    
-    this->add_output = this->output_menu->addMenu(this->newFormMenu(false));
+
+    if (!this->add_output) {
+        this->add_output = this->newFormMenu(false);
+        this->output_menu->addMenu(this->add_output);
+    }
     
     this->form_pane->build(QVector<dtkWidgetsMenu *>() << this->input_menu << this->output_menu);
     this->form_pane->buildChildSlide(this->add_input);
     this->form_pane->buildChildSlide(this->add_output);
-    this->form_pane->touch();
 
+    this->menu_layout->addWidget(this->form_pane);
+
+    if (this->parameter_menu) {
+        this->parameter_menu->deleteLater();
+        this->parameter_menu = nullptr;
+    }
 
     if (!this->parameter_menu) {
         this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
+    }
+
+    if (this->parameter_pane) {
+        this->parameter_pane->deleteLater();
+        this->parameter_pane = nullptr;
     }
 
     if (!this->parameter_pane) {
@@ -537,9 +570,8 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     if (this->add_parameter) {
-        this->parameter_pane->slides.remove(this->add_parameter);
-        this->parameter_menu->removeMenu(this->add_parameter);
-        delete this->add_parameter;
+        this->add_parameter->deleteLater();
+        this->add_parameter = nullptr;
     }
 
     for (const auto &param : this->parameters.keys()) {
@@ -549,11 +581,12 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
         this->parameter_menu->addItem(parameter_item);
     }
 
-    this->add_parameter = this->parameter_menu->addMenu(this->newParameterMenu());
-
+    if (!this->add_parameter) {
+        this->add_parameter = this->newParameterMenu();
+        this->parameter_menu->addMenu(this->add_parameter);
+    }
     this->parameter_pane->build(QVector<dtkWidgetsMenu *>() << this->parameter_menu);
     this->parameter_pane->buildChildSlide(this->add_parameter);
-    this->parameter_pane->touch();
 
     this->menu_layout->addWidget(this->parameter_pane);
 }
