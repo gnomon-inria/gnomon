@@ -186,13 +186,13 @@ public:
 
 public:
     gnomonFormDescription *formDescriptionDialog(bool input = true);
-    gnomonParameterDescription *parameterDescriptionDialog(void);
+    dtkWidgetsMenu *newParameterMenu(void);
 
 public slots:
     void updateDataPlugins(const QString& form_type);
     void addInputForm(void);
     void addOutputForm(void);
-    void addParameter(void);
+    void addParameter(gnomonParameterDescription* desc);
 
     void updateMenus(void);
     void updateCode(void);
@@ -203,16 +203,18 @@ public:
     QMap<QString, gnomonParameterDescription *> parameters;
 
 public:
-    dtkWidgetsMenuBarContainer *form_pane;
-    dtkWidgetsMenu *input_menu;
-    dtkWidgetsMenuItem *add_input;
+    QVBoxLayout *menu_layout = nullptr;
 
-    dtkWidgetsMenu *output_menu;
-    dtkWidgetsMenuItem *add_output;
+    dtkWidgetsMenuBarContainer *form_pane = nullptr;
+    dtkWidgetsMenu *input_menu = nullptr;
+    dtkWidgetsMenuItem *add_input = nullptr;
 
-    dtkWidgetsMenuBarContainer *parameter_pane;
-    dtkWidgetsMenu *parameter_menu;
-    dtkWidgetsMenuItem *add_parameter;
+    dtkWidgetsMenu *output_menu = nullptr;
+    dtkWidgetsMenuItem *add_output = nullptr;
+
+    dtkWidgetsMenuBarContainer *parameter_pane = nullptr;
+    dtkWidgetsMenu *parameter_menu = nullptr;
+    dtkWidgetsMenu *add_parameter = nullptr;
 
 public:
     QComboBox *type_edit = nullptr;
@@ -221,8 +223,8 @@ public:
 
 gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonScriptEditor(parent)
 {
-    QVBoxLayout *menu_layout = new QVBoxLayout();
-    menu_layout->setContentsMargins(0, 0, 0, 0);
+    this->menu_layout = new QVBoxLayout();
+    this->menu_layout->setContentsMargins(0, 0, 0, 0);
 
     this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
     this->add_input = this->input_menu->addItem(fa::plus,"Add input...");
@@ -237,17 +239,10 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
     this->form_pane->build(QVector<dtkWidgetsMenu *>() << this->input_menu << this->output_menu);
     this->form_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
-    this->add_parameter = this->parameter_menu->addItem(fa::plus,"Add parameter...");
-    connect(this->add_parameter, &dtkWidgetsMenuItem::clicked, this, &gnomonPythonAlgorithmPluginEditor::addParameter);
+    this->updateMenus();
 
-    this->parameter_pane = new dtkWidgetsMenuBarContainer(this);
-    this->parameter_pane->navigator->setVisible(false);
-    this->parameter_pane->build(QVector<dtkWidgetsMenu *>() << this->parameter_menu);
-    this->parameter_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    menu_layout->addWidget(this->form_pane);
-    menu_layout->addWidget(this->parameter_pane);
+    this->menu_layout->addWidget(this->form_pane);
+    this->menu_layout->addWidget(this->parameter_pane);
 
     QWidget *menu_pane = new QWidget(this);
     menu_pane->setLayout(menu_layout);
@@ -343,11 +338,8 @@ gnomonFormDescription *gnomonPythonAlgorithmPluginEditor::formDescriptionDialog(
     }
 }
 
-gnomonParameterDescription *gnomonPythonAlgorithmPluginEditor::parameterDescriptionDialog(void)
+dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
 {
-    QDialog *parameter_dialog = new QDialog(this);
-    parameter_dialog->setWindowModality(Qt::WindowModal);
-
     QGridLayout *parameter_layout = new QGridLayout();
     parameter_layout->setContentsMargins(10, 10, 10, 10);
 
@@ -361,7 +353,6 @@ gnomonParameterDescription *gnomonPythonAlgorithmPluginEditor::parameterDescript
     parameter_layout->addWidget(type_label, 1, 0, 1, 1);
 
     QComboBox *type_edit = new QComboBox();
-
     type_edit->addItem("Bool");
     type_edit->addItem("Int");
     type_edit->addItem("Double");
@@ -375,24 +366,46 @@ gnomonParameterDescription *gnomonPythonAlgorithmPluginEditor::parameterDescript
     QLineEdit *documentation_edit = new QLineEdit();
     parameter_layout->addWidget(documentation_edit, 2, 1, 1, 1);
 
+    static std::function<void (void)> ca = [=] (void) -> void
+    {
+        this->parameter_pane->slider->blockSignals(false);
+        this->parameter_pane->slider->enableSpying(true);
+    };
+
+    static std::function<void (void)> cb = [=] (void) -> void
+    {
+        this->parameter_pane->slider->setCurrentIndex(0,ca);
+        this->parameter_pane->decr();
+    };
+
     QPushButton *cancel_button = new QPushButton("Cancel");
     cancel_button->setDefault(false);
-    connect(cancel_button, &QPushButton::clicked, parameter_dialog, &QDialog::reject);
+    connect(cancel_button, &QPushButton::clicked, [=] (){
+        this->parameter_pane->switchToRoot(cb);
+    });
     parameter_layout->addWidget(cancel_button, 3, 0, 1, 1);
 
     QPushButton *ok_button = new QPushButton("Ok");
     ok_button->setDefault(true);
-    connect(ok_button, &QPushButton::clicked, parameter_dialog, &QDialog::accept);
+    connect(ok_button, &QPushButton::clicked, [=] (){
+        this->parameter_pane->switchToRoot(cb);
+        if (!name_edit->text().isEmpty()) {
+            gnomonParameterDescription *desc = new gnomonParameterDescription(name_edit->text(),type_edit->currentText(),documentation_edit->text());
+            this->addParameter(desc);
+        }
+    });
     parameter_layout->addWidget(ok_button, 3, 1, 1, 1);
 
-    parameter_dialog->setLayout(parameter_layout);
+    QWidget *parameter_widget = new QWidget();
+    parameter_widget->setLayout(parameter_layout);
 
-    if (parameter_dialog->exec() & !name_edit->text().isEmpty())
-    {
-        return new gnomonParameterDescription(name_edit->text(),type_edit->currentText(),documentation_edit->text());
-    } else {
-        return nullptr;
-    }
+    dtkWidgetsMenuItemDIY *new_parameter_item = new dtkWidgetsMenuItemDIY("Add parameter");
+    new_parameter_item->addWidget(parameter_widget);
+
+    dtkWidgetsMenu *new_parameter_menu = new dtkWidgetsMenu(fa::gears, "Add parameter...");
+    new_parameter_menu->addItem(new_parameter_item);
+
+    return new_parameter_menu;
 }
 
 void gnomonPythonAlgorithmPluginEditor::addInputForm()
@@ -415,12 +428,10 @@ void gnomonPythonAlgorithmPluginEditor::addOutputForm()
     }
 }
 
-void gnomonPythonAlgorithmPluginEditor::addParameter()
+void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription *desc)
 {
-    gnomonParameterDescription *parameter_description = this->parameterDescriptionDialog();
-    qDebug()<<parameter_description->name<<parameter_description->type;
-    if (parameter_description) {
-        this->parameters[parameter_description->name] = parameter_description;
+    if (desc) {
+        this->parameters[desc->name] = desc;
         this->updateMenus();
         this->updateCode();
     }
@@ -450,16 +461,38 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
     this->output_menu->addItem(this->add_output);
     this->form_pane->touch();
-    
-    this->parameter_menu->removeItem(this->add_parameter);
-    this->parameter_menu->clear();
+
+    if (!this->parameter_menu) {
+        this->parameter_menu = new dtkWidgetsMenu(fa::gear, "Parameters");
+    }
+
+    if (!this->parameter_pane) {
+        this->parameter_pane = new dtkWidgetsMenuBarContainer(this);
+        this->parameter_pane->navigator->setVisible(false);
+        this->parameter_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        this->parameter_pane->q = this->script_menubar;
+    }
+
+    if (this->add_parameter) {
+        this->parameter_pane->slides.remove(this->add_parameter);
+        this->parameter_menu->removeMenu(this->add_parameter);
+//        delete this->add_parameter;
+    }
+
     for (const auto &param : this->parameters.keys()) {
+        qDebug()<<param<<this->parameters[param];
         gnomonParameterDescription *desc = this->parameters[param];
         dtkWidgetsMenuItem *parameter_item = new dtkWidgetsMenuItem(fa::circlethin, desc->name + " (" + desc->type + ")");
         this->parameter_menu->addItem(parameter_item);
     }
-    this->parameter_menu->addItem(this->add_parameter);
+
+    this->add_parameter = this->parameter_menu->addMenu(this->newParameterMenu());
+
+    this->parameter_pane->build(QVector<dtkWidgetsMenu *>() << this->parameter_menu);
+    this->parameter_pane->buildChildSlide(this->add_parameter);
     this->parameter_pane->touch();
+
+    this->menu_layout->addWidget(this->parameter_pane);
 }
 
 void gnomonPythonAlgorithmPluginEditor::updateCode(void)
@@ -489,6 +522,7 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
             user_line = true;
         }
     }
+    run_code = run_code.left(run_code.length()-1);
 
     QString plugin_code = "";
 
