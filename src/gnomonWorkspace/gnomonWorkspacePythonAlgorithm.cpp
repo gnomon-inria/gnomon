@@ -81,102 +81,10 @@ gnomonParameterDescription::~gnomonParameterDescription(void)
 }
 
 // ///////////////////////////////////////////////////////////////////
-// gnomonPythonScriptEditor
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonPythonScriptEditor : public QWidget
-{
-    Q_OBJECT
-
-public:
-     gnomonPythonScriptEditor(QWidget *parent = Q_NULLPTR);
-    ~gnomonPythonScriptEditor(void);
-
-protected:
-    void resizeEvent(QResizeEvent *);
-
-public:
-    dtkMacsWidget *editor = nullptr;
-    QHBoxLayout *layout = nullptr;
-    dtkWidgetsMenuBar* script_menubar;
-
-signals:
-    void openButtonClicked(void);
-    void saveButtonClicked(void);
-    void loadButtonClicked(void);
-
-public:
-    QSize sizeHint(void) const;
-};
-
-gnomonPythonScriptEditor::gnomonPythonScriptEditor(QWidget *parent) : QWidget(parent)
-{
-
-    this->editor = new dtkMacsWidget(this);
-    this->editor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    QFont font = this->editor->font();
-    font.setFamily("Courier New");
-    this->editor->setCurrentFont(font);
-
-    // -- Organizing the editor column --
-    this->layout = new QHBoxLayout;
-    this->layout->setContentsMargins(40, 0, 0, 0);
-    this->layout->setSpacing(0);
-    this->layout->addWidget(this->editor);
-
-    this->script_menubar = new dtkWidgetsMenuBar(this);
-    this->script_menubar->setInteractive(false);
-    this->script_menubar->setStandalone(true);
-    this->script_menubar->setWidth(32);
-    this->script_menubar->setMargins(6);
-
-    this->script_menubar->addMenu(fa::folder, "Open Python Script");
-    this->script_menubar->addMenu(fa::save, "Save Python Script");
-    this->script_menubar->addMenu(fa::play, "Load Python Script");
-
-    connect(this->script_menubar, &dtkWidgetsMenuBar::clicked, [=] (int i_style)
-    {
-        if (i_style==0) {
-            emit openButtonClicked();
-        } else if (i_style==1) {
-            emit saveButtonClicked();
-        } else if (i_style==2) {
-            emit loadButtonClicked();
-        }
-
-    });
-//    this->script_menubar->move(QPoint(0, 0));
-    this->script_menubar->touch();
-
-    this->setLayout(this->layout);
-}
-
-gnomonPythonScriptEditor::~gnomonPythonScriptEditor(void)
-{
-    delete this->editor;
-}
-
-void gnomonPythonScriptEditor::resizeEvent(QResizeEvent *event)
-{
-    if (this->script_menubar) {
-        this->script_menubar->setFixedHeight(event->size().height());
-        this->script_menubar->touch();
-    }
-
-    QWidget::resizeEvent(event);
-}
-
-QSize gnomonPythonScriptEditor::sizeHint(void) const
-{
-    return QSize(1000, 800);
-}
-
-// ///////////////////////////////////////////////////////////////////
 // gnomonPythonAlgorithmPluginEditor
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonPythonAlgorithmPluginEditor : public gnomonPythonScriptEditor
+class gnomonPythonAlgorithmPluginEditor : public gnomonPythonEditor
 {
     Q_OBJECT
 
@@ -221,7 +129,7 @@ public:
     QComboBox *data_plugin_edit = nullptr;
 };
 
-gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonScriptEditor(parent)
+gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonEditor(parent)
 {
     this->menu_layout = new QVBoxLayout();
     this->menu_layout->setContentsMargins(0, 0, 0, 0);
@@ -249,9 +157,9 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
     menu_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     menu_pane->setFixedWidth(300);
 
-    this->layout->insertWidget(0,menu_pane);
-
-    this->setLayout(this->layout);
+    d->layout->insertWidget(0,menu_pane);
+//
+//    this->setLayout(this->layout);
 }
 
 gnomonPythonAlgorithmPluginEditor::~gnomonPythonAlgorithmPluginEditor(void)
@@ -502,7 +410,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
         this->form_pane = new dtkWidgetsMenuBarContainer(this);
         this->form_pane->navigator->setVisible(false);
         this->form_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        this->form_pane->q = this->script_menubar;
+        this->form_pane->q = d->script_menubar;
     }
     
     if (this->add_input) {
@@ -566,7 +474,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
         this->parameter_pane = new dtkWidgetsMenuBarContainer(this);
         this->parameter_pane->navigator->setVisible(false);
         this->parameter_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        this->parameter_pane->q = this->script_menubar;
+        this->parameter_pane->q = d->script_menubar;
     }
 
     if (this->add_parameter) {
@@ -593,7 +501,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
 
 void gnomonPythonAlgorithmPluginEditor::updateCode(void)
 {
-    QString current_code = this->editor->toPlainText();
+    QString current_code = d->editor->toPlainText();
 
     QStringList code_lines = current_code.split("\n");
     QString import_code = "";
@@ -680,6 +588,9 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
         plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
     }
     plugin_code += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
+    plugin_code += "    \"\"\"\n";
+    plugin_code += "    Implements a custom form algorithm plugin.\n";
+    plugin_code += "    \"\"\"\n";
     plugin_code += "\n";
     plugin_code += "    def __init__(self):\n";
     plugin_code += "        super().__init__()\n";
@@ -753,7 +664,7 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
         }
     }
 
-    this->editor->setText(plugin_code);
+    d->editor->setText(plugin_code);
 }
 
 
@@ -808,7 +719,7 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
             settings.setValue("Python/load", file_path);
 
             QTextStream s(&f);
-            this->editor->editor->setText(s.readAll());
+            this->editor->setText(s.readAll());
 
             this->configure();
         }
@@ -852,7 +763,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     gnomonCore::formAlgorithm::pluginFactory().clear();
 
     int stat;
-    QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->editor->toPlainText(), &stat);
+    QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->text(), &stat);
 
     if (gnomonCore::formAlgorithm::pluginFactory().keys().size() > 0) {
         QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
