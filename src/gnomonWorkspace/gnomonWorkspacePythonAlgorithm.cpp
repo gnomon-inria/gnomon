@@ -227,7 +227,8 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newFormMenu(bool input)
             data_plugin_edit->addItem(data_plugin);
         }
     });
-    type_edit->setCurrentText("gnomonImage");
+    type_edit->setCurrentIndex(1);
+    type_edit->setCurrentIndex(0);
 
     QLabel *name_label = new QLabel(prefix+" variable name");
     form_layout->addWidget(name_label, 2, 0, 1, 1);
@@ -384,11 +385,13 @@ void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription 
 void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
 {
     if (this->form_pane) {
+        this->form_pane->disconnect();
         this->form_pane->deleteLater();
         this->form_pane = nullptr;
     }
 
     if (this->input_menu) {
+        this->input_menu->disconnect();
         this->input_menu->deleteLater();
         this->input_menu = nullptr;
     }
@@ -398,6 +401,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
     
     if (this->output_menu) {
+        this->output_menu->disconnect();
         this->output_menu->deleteLater();
         this->output_menu = nullptr;
     }
@@ -414,8 +418,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
     
     if (this->add_input) {
-//        this->form_pane->slides.remove(this->add_input);
-//        this->input_menu->removeMenu(this->add_input);
+        this->add_input->disconnect();
         this->add_input->deleteLater();
         this->add_input = nullptr;
     }
@@ -431,8 +434,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     this->add_input = this->input_menu->addMenu(this->newFormMenu(true));
     
     if (this->add_output) {
-//        this->form_pane->slides.remove(this->add_output);
-//        this->output_menu->removeMenu(this->add_output);
+        this->add_output->disconnect();
         this->add_output->deleteLater();
         this->add_output = nullptr;
     }
@@ -457,6 +459,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     this->menu_layout->addWidget(this->form_pane);
 
     if (this->parameter_menu) {
+        this->parameter_menu->disconnect();
         this->parameter_menu->deleteLater();
         this->parameter_menu = nullptr;
     }
@@ -466,6 +469,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     if (this->parameter_pane) {
+        this->parameter_pane->disconnect();
         this->parameter_pane->deleteLater();
         this->parameter_pane = nullptr;
     }
@@ -478,6 +482,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     if (this->add_parameter) {
+        this->add_parameter->disconnect();
         this->add_parameter->deleteLater();
         this->add_parameter = nullptr;
     }
