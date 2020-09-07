@@ -293,15 +293,25 @@ QWidget *gnomonWidgetsParameterFile::widget(gnomonCoreParameterFile *parameter, 
         widget->setToolTip(parameter->doc());
 
         QObject::connect(browse_button, &QPushButton::clicked, [=](void) {
-            QString format_string = "File (";
-            for (const auto& format : parameter->formats()) {
-                format_string += "*."+format;
-            }
-            format_string += ")";
             QString path;
-            path = QFileDialog::getOpenFileName(widget, "File path", path, format_string);
-
-            file_label->setText(QFileInfo(path).fileName());
+            if (!parameter->formats().contains("/")) {
+                QString format_string = "File (";
+                int i_format = 0;
+                for (const auto& format : parameter->formats()) {
+                    if (i_format>0) {
+                        format_string += " ";
+                    }
+                    format_string += "*."+format;
+                    i_format++;
+                }
+                format_string += ")";
+                qDebug()<<Q_FUNC_INFO<<format_string;
+                path = QFileDialog::getOpenFileName(widget, "File path", path, format_string);
+                file_label->setText(QFileInfo(path).fileName());
+            } else {
+                path = QFileDialog::getExistingDirectory(widget, "Select directory", path);
+                file_label->setText(QFileInfo(path).fileName());
+            }
             parameter->setValue(path);
         });
 

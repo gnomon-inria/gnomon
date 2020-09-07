@@ -86,6 +86,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
 
     d->target  = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonImage",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -93,6 +94,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
         d->pool->addView(view);
     }
     d->pool->addView(d->target);
@@ -143,8 +145,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
                 d->target_message->setMessage("Result will be displayed here");
             }
         }
-//        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
-//        dtkApp->window()->menubar()->touch();
         d->configure(d->algorithm);
     });
 
@@ -153,6 +153,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
         d->pool->addView(view);
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
@@ -180,18 +181,10 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 
 void gnomonWorkspaceRegistration::enter(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->addMenu(form->menu());
-//    dtkApp->window()->menubar()->addMenu(d->target->menu());
-//    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceRegistration::leave(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->removeMenu(form->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-//    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceRegistration::apply(void)

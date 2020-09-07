@@ -16,6 +16,7 @@
 
 #include "gnomonPipelineNode.h"
 
+#include "gnomonPipelineNodeAdapter.h"
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeConstructor.h"
 #include "gnomonPipelineNodeReader.h"
@@ -23,6 +24,7 @@
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
@@ -41,6 +43,9 @@
 class gnomonPipelinePrivate
 {
 public:
+    gnomonPipeline *q;
+
+public:
     QStringList pipeline_node_names;
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
@@ -49,6 +54,8 @@ public:
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> reader_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeWriter *> writer_nodes;
+    QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeAdapter *> adapter_nodes;
+    QMap<gnomonAbstractDynamicForm *, QString> adapter_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeAlgorithm *> algorithm_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> algorithm_output;
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeConstructor *> constructor_nodes;
@@ -102,6 +109,12 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
                 edge->setSource(this->constructor_nodes[input_form]->outputPorts()[this->constructor_output[input_form]]);
                 edge_source.first = this->pipeline_nodes.key(this->constructor_nodes[input_form]);
                 edge_source.second = this->constructor_output[input_form];
+            } else if (this->adapter_nodes.contains(input_form)) {
+                q->addAdaptedForm(input_form);
+                edge = new dtkComposerSceneEdge();
+                edge->setSource(this->adapter_nodes[input_form]->outputPorts()[this->adapter_output[input_form]]);
+                edge_source.first = this->pipeline_nodes.key(this->adapter_nodes[input_form]);
+                edge_source.second = this->adapter_output[input_form];
             } else if (this->algorithm_nodes.contains(input_form)) {
                 edge = new dtkComposerSceneEdge();
                 edge->setSource(this->algorithm_nodes[input_form]->outputPorts()[this->algorithm_output[input_form]]);
@@ -111,6 +124,8 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
             if (edge) {
                 if (gnomonPipelineNodeWriter *writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
                     edge->setDestination(writer_node->inputPorts()[input]);
+                } else if (gnomonPipelineNodeAdapter *adapter_node = dynamic_cast<gnomonPipelineNodeAdapter *>(node)) {
+                    edge->setDestination(adapter_node->inputPorts()[input]);
                 } else if (gnomonPipelineNodeAlgorithm *algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
                     edge->setDestination(algorithm_node->inputPorts()[input]);
                 }
@@ -421,6 +436,7 @@ gnomonPipeline *gnomonPipeline::instance(void)
 gnomonPipeline::gnomonPipeline(void)
 {
     d = new gnomonPipelinePrivate;
+    d->q = this;
 }
 
 gnomonPipeline::~gnomonPipeline(void)
@@ -470,6 +486,22 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
     emit nodeAdded(node);
 }
 
+void gnomonPipeline::addAdapter(gnomonAbstractAdapterCommand *command)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
+    QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
+
+    gnomonPipelineNodeAdapter *node = new gnomonPipelineNodeAdapter(command->factoryName(),command->algorithmName(),input_forms.keys(),output_forms.keys());
+
+    d->node_input_forms[node] = input_forms;
+
+    for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
+        auto&& output = it.key();
+        d->adapter_nodes[output_forms[output]] = node;
+        d->adapter_output[output_forms[output]] = output;
+    }
+}
+
 void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
@@ -504,6 +536,28 @@ void gnomonPipeline::addConstructor(gnomonAbstractConstructorCommand *command)
     }
 }
 
+void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
+{
+    if (d->adapter_nodes.contains(form))
+    {
+        gnomonPipelineNodeAdapter *node = d->adapter_nodes[form];
+        if (!d->pipeline_nodes.values().contains(node)) {
+            QString node_name = node->algorithmClass();
+            if (!d->node_type_count.contains(node->algorithmClass())) {
+                d->node_type_count[node->algorithmClass()] = 1;
+            } else {
+                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+                d->node_type_count[node->algorithmClass()] += 1;
+            }
+            d->pipeline_node_names.append(node_name);
+            d->pipeline_nodes[node_name] = node;
+            d->linkNodeInputs(node);
+            d->forceDrivenLayout();
+            emit nodeAdded(node);
+        }
+    }
+}
+
 void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 {
     if (d->reader_nodes.contains(form)) {
@@ -521,6 +575,26 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
 
+            d->forceDrivenLayout();
+
+            emit nodeAdded(node);
+        }
+    } else if (d->adapter_nodes.contains(form)) {
+        gnomonPipelineNodeAdapter *node = d->adapter_nodes[form];
+
+        if (!d->hasNode(node))
+        {
+            QString node_name = node->algorithmClass();
+            if (!d->node_type_count.contains(node->algorithmClass())) {
+                d->node_type_count[node->algorithmClass()] = 1;
+            } else {
+                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+                d->node_type_count[node->algorithmClass()] += 1;
+            }
+            d->pipeline_node_names.append(node_name);
+            d->pipeline_nodes[node_name] = node;
+
+            d->linkNodeInputs(node);
             d->forceDrivenLayout();
 
             emit nodeAdded(node);
@@ -631,7 +705,9 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
         QString class_name = QString(node_name).remove(QRegExp("[0-9]")) + "Task";
         class_name.replace(0, 1, class_name[0].toUpper());
         out << "    tasks[\"" << node_name <<"\"] = " << class_name << "(**config[\"" << node_name <<"\"])\n";
+    }
 
+    for (const auto& node_name: d->pipeline_node_names) {
         for (auto it = d->pipeline_edges.begin(); it != d->pipeline_edges.end(); ++it) {
             auto&& edge_target = it.key();
             if (edge_target.first == node_name) {

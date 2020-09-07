@@ -31,6 +31,8 @@ add_subdirectory(gnomonTree)
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
+  gnomonAbstractAdapterCommand
+  gnomonAbstractAdapterCommand.h
   gnomonAbstractAlgorithmCommand
   gnomonAbstractAlgorithmCommand.h
   gnomonAbstractCommand

@@ -19,6 +19,8 @@
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
+    gnomonFormAdapterMenu
+    gnomonFormAdapterMenu.h
     gnomonGridLayout
     gnomonGridLayout.h
     gnomonViewForm
@@ -32,6 +34,7 @@ ADD_GNOMON_HEADERS(
 
 
 ADD_GNOMON_SOURCES(
+    gnomonFormAdapterMenu.cpp
     gnomonGridLayout.cpp
     gnomonViewForm.cpp
     gnomonViewFormPool.cpp

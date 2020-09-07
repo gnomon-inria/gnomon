@@ -83,6 +83,7 @@ gnomonWorkspaceTreeConstructor::gnomonWorkspaceTreeConstructor(QWidget *parent) 
     d = new gnomonWorkspaceTreeConstructorPrivate;
 
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -152,8 +153,8 @@ void gnomonWorkspaceTreeConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+        d->target->setForm("gnomonTree",d->command->output());
 
         d->registerPipeline();
     } else {

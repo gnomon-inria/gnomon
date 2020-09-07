@@ -94,12 +94,15 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(this->color);
-    d->view->setInputView(false);
+    d->view->setAcceptForm("gnomonPointCloud",true);
+    d->view->setAcceptForm("gnomonImage",true);
+    d->view->setInputView(true);
     d->view->setEnableLinking(false);
 
     connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
+    d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
 
     connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -220,11 +223,12 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
         d->pipeline->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
         d->pipeline->addForm(d->command->pointCloud());
         d->view->setInputView(false);
+        d->view->setAcceptDrops(true);
     }
 
     if(d->command->dataFrame()) {
-        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
         d->target_stack->setCurrentWidget(d->mpl_figure);
+        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }

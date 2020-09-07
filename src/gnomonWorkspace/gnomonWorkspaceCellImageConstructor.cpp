@@ -84,6 +84,7 @@ gnomonWorkspaceCellImageConstructor::gnomonWorkspaceCellImageConstructor(QWidget
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellImage",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

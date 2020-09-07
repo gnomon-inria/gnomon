@@ -92,8 +92,12 @@ gnomonWorkspaceLStringTranslation::gnomonWorkspaceLStringTranslation(QWidget *pa
     d = new gnomonWorkspaceLStringTranslationPrivate;
 
     d->source = new gnomonViewMatplotlib(this);
+    d->source->setAcceptForm("gnomonTree",true);
+    d->source->setAcceptForm("gnomonLString",true);
 
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
+    d->target->setAcceptForm("gnomonLString",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

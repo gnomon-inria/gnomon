@@ -349,6 +349,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 /////////////////////////////////////////////////////////////////////////////
 
     d->axiom = new gnomonViewMatplotlib(this);
+    d->axiom->setAcceptForm("gnomonLString",true);
+    d->axiom->setInputView(true);
 
     d->axiom_editor = new QTextEdit(this);
     QFont font = d->axiom_editor->font();
@@ -446,6 +448,8 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 /////////////////////////////////////////////////////////////////////////////
 
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonLString",true);
+    d->target->setInputView(false);
 
     d->lhs = new QTabWidget(this);
     d->lhs->setTabPosition(QTabWidget::South);
