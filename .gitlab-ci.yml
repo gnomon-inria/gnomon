@@ -15,7 +15,7 @@ conda_build_linux:
   - apt update
   - apt install libgl1 -y
   - conda update -n base -c defaults conda
-  - conda install conda-build git anaconda-client conda-verify
+  - conda install python=3.7 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
   - conda build . -c dtk-forge -c conda-forge --output-folder conda-bld/
   extends: .template_retry

@@ -145,6 +145,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     });
 
 
@@ -172,18 +173,10 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 
 void gnomonWorkspaceFusion::enter(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->addMenu(form->menu());
-//    dtkApp->window()->menubar()->addMenu(d->target->menu());
-    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceFusion::leave(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->removeMenu(form->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceFusion::apply(void)
