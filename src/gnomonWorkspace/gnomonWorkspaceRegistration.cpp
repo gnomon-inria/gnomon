@@ -145,8 +145,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
                 d->target_message->setMessage("Result will be displayed here");
             }
         }
-//        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
-//        dtkApp->window()->menubar()->touch();
         d->configure(d->algorithm);
     });
 
@@ -183,18 +181,10 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 
 void gnomonWorkspaceRegistration::enter(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->addMenu(form->menu());
-//    dtkApp->window()->menubar()->addMenu(d->target->menu());
-//    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceRegistration::leave(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->removeMenu(form->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-//    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceRegistration::apply(void)
