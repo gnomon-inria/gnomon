@@ -145,6 +145,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     });
 
 

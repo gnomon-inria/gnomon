@@ -155,6 +155,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkW
         d->pool->addView(view);
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
