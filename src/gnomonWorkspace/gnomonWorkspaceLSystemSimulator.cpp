@@ -330,6 +330,11 @@ public:
     const QString setting_id_rhs = setting_id + "RHS";
 
 public:
+    dtkWidgetsMenuBarContainer *menubar_container = nullptr;
+    dtkWidgetsMenu *deferred_sub_menu = nullptr;
+    void deferredChangeMenu(void);
+
+public:
     void exportAxiom(void);
     void disableFloatingDockWidgets(QWidget *parent);
     void verifyConflictInShortcuts(QWidget *parent);
@@ -854,6 +859,15 @@ void gnomonWorkspaceLSystemSimulatorPrivate::verifyConflictInShortcuts(QWidget *
     }
 }
 
+void gnomonWorkspaceLSystemSimulatorPrivate::deferredChangeMenu(void)
+{
+    if (menubar_container->slider->is_in_transition) {
+        QTimer::singleShot(10, [=] () { deferredChangeMenu(); });
+    } else {
+        menubar_container->switchToNextSlide(deferred_sub_menu);
+    }
+}
+
 void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 {
     qDebug() << Q_FUNC_INFO << widget << widget->objectName();
@@ -1067,28 +1081,18 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
             auto *code_bar_container = dynamic_cast<dtkWidgetsMenuBarContainer*>(d->in_code_bar->container());
 
             connect(d->in_code_bar, &dtkWidgetsMenuBar::clicked, [=] (int index) {
-                qDebug() << "BAR CLICK" << index;
 
                 auto *as_menu = d->in_code_bar->menus()[index];
                 if (as_menu == nullptr ||as_menu->menus().count() == 0) { return; }
                 auto *sub_menu = as_menu->menus()[0];
                 if (sub_menu == nullptr) { return; }
 
-                qDebug() << sub_menu << sub_menu->title();
+                std::function<void()> no_op_callback = [=] () { };
+                code_bar_container->switchToRoot(no_op_callback);
 
-                // std::function<void()> no_op_callback;
-                // code_bar_container->switchToRoot(no_op_callback); NO
-
-                // code_bar_container->slider->slideTo(0); NO
-                // code_bar_container->switchToNextSlide(as_menu); NO
-                // code_bar_container->switchToPrevSlide(sub_menu); NO
-                code_bar_container->switchToNextSlide(sub_menu); // YES
-
-                // code_bar_container->slider->slideTo(index); NO
-
-                // code_bar_container->slider->print();
-
-                // d->in_code_bar->setCurrentIndex(index); NO
+                d->menubar_container = code_bar_container;
+                d->deferred_sub_menu = sub_menu;
+                QTimer::singleShot(10, [=] () { d->deferredChangeMenu(); });
             });
 
             this->reparentAction(window->menuBar(), "L-systems", "Run", d->run_button);
