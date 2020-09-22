@@ -333,6 +333,7 @@ public:
     dtkWidgetsMenuBarContainer *menubar_container = nullptr;
     dtkWidgetsMenu *deferred_sub_menu = nullptr;
     void deferredChangeMenu(void);
+    bool inside_any_submenu = false;
 
 public:
     void exportAxiom(void);
@@ -1094,6 +1095,29 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 d->deferred_sub_menu = sub_menu;
                 QTimer::singleShot(10, [=] () { d->deferredChangeMenu(); });
             });
+            connect(d->in_code_bar, &dtkWidgetsMenuBar::entered, [=] (dtkWidgetsMenu *menu) {
+                    d->inside_any_submenu = true;
+                    const auto& menus = d->in_code_bar->menus();
+                    for (int i=0; i<menus.size(); ++i) {
+                        const auto& submenus = menus[i]->menus();
+                        if (submenus.size() == 1 && submenus[0] == menu) {
+                            d->in_code_bar->setCurrentIndex(i);
+                            break;
+                        }
+                    }
+            });
+            connect(d->in_code_bar, &dtkWidgetsMenuBar::left, [=] (dtkWidgetsMenu *menu) {
+                    d->inside_any_submenu = false;
+                    QTimer::singleShot(10, [=] () {
+                        if (!d->inside_any_submenu) {
+                            // still not inside any submenu in the near future
+                            // <-> we went back to the root main menu
+                            // <-> no root item should be selected
+                            d->in_code_bar->setCurrentIndex(-1);
+                        }
+                    });
+            });
+
 
             this->reparentAction(window->menuBar(), "L-systems", "Run", d->run_button);
             this->reparentAction(window->menuBar(), "L-systems", "Step", d->step_button);
