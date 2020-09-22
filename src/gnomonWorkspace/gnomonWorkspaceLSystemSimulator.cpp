@@ -908,7 +908,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         layout->addWidget(d->in_code_bar);
-        layout->addWidget(d->in_code_bar->container());
         auto *code_editor_frame = new QWidget;
         d->code_editor_layout = new QVBoxLayout;
         code_editor_frame->setLayout(d->code_editor_layout);
@@ -917,7 +916,13 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         d->in_code->setLayout(layout);
 
-        d->in_code->stackUnder(d->in_code_bar);
+        code_editor_frame->stackUnder(d->in_code_bar);
+        QTimer::singleShot(1000, [=] () {
+            // workaround bug: the first resize event will be called
+            // before we are fully created, but it needs to be called
+            // after we've been full created to compute the correct size
+            d->in_code_bar->setFixedHeight(d->in_code->height());
+        });
 
         d->lhs->addTab(d->in_code, "Code");
 
@@ -1284,8 +1289,9 @@ void gnomonWorkspaceLSystemSimulator::resizeEvent(QResizeEvent *event)
 {
     d->params->setFixedHeight(event->size().height() - 225);
 
-    // if (d->in_code && d->in_code_bar)
-    //     d->in_code_bar->setFixedHeight(d->in_code->height());
+    if (d->in_code && d->in_code_bar) {
+        d->in_code_bar->setFixedHeight(d->in_code->height());
+    }
 
     // if (d->in_axiom && d->in_axiom_bar)
     //     d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
