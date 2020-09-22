@@ -45,7 +45,11 @@ void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **su
 {
     if(QMenu *s_menu = action->menu()) {
 
-        dtkWidgetsMenu *w_s_menu = w_menu->addMenu(fa::circle, action->text());
+        const int icon = sub_menu ? 0 : fa::circle;
+        // if sub_menu, then this is a root item
+        // it already has a category icon (for the menubar quick-access before expand)
+        // -> do not give it an icon
+        dtkWidgetsMenu *w_s_menu = w_menu->addMenu(icon, action->text());
 
         if (sub_menu != nullptr) {
             *sub_menu = w_s_menu;
@@ -100,9 +104,13 @@ QList<dtkWidgetsMenu *> build(const QString& prefix, QMenuBar *bar)
     return menus;
 }
 
-dtkWidgetsMenu *build(int icon, QMenu *menu)
+dtkWidgetsMenu *buildRootItem(int icon, int index, QMenu *menu)
 {
-    dtkWidgetsMenu *w_menu = new dtkWidgetsMenu(icon, menu->title());
+    QString unique_blank_title;
+    for (int i=0; i<index; ++i) {
+        unique_blank_title += " ";
+    }
+    dtkWidgetsMenu *w_menu = new dtkWidgetsMenu(icon, unique_blank_title);
 
     auto *root_item = new QAction;
     root_item->setText(menu->title());
@@ -152,7 +160,7 @@ void buildMenuBarSubMenu(dtkWidgetsMenuBar *bar, QWidget *parent, QMenu *menu, i
         insert_index = menu_index[menu_title];
     }
 
-    auto *dtk_menu = ::build(icon, menu);
+    auto *dtk_menu = ::buildRootItem(icon, bar->size(), menu);
     if (insert_index > bar->size()) {
         bar->addMenu(dtk_menu);
     } else {
