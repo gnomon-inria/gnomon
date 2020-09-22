@@ -578,7 +578,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonImage",image_series->clone());
             this->pipeline->addClonedForm(image_series,this->browse_view->image());
-            this->view_stack->setCurrentWidget(this->browse_view);
+//            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(imageCommand);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
@@ -591,7 +591,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
             this->pipeline->addClonedForm(cellImage_series,this->browse_view->cellImage());
-            this->view_stack->setCurrentWidget(this->browse_view);
+//            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(cellImageCommand);
         }
     } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(readerCommand))
@@ -604,7 +604,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
             this->pipeline->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
-            this->view_stack->setCurrentWidget(this->browse_view);
+//            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(cellComplexCommand);
         }
     } else if (gnomonDataFrameReaderCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameReaderCommand *>(readerCommand))
@@ -617,7 +617,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
             this->pipeline->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
-            this->view_stack->setCurrentWidget(this->browse_figure);
+//            this->view_stack->setCurrentWidget(this->browse_figure);
             this->pipeline->addReader(dataFrameCommand);
         }
     } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(readerCommand))
@@ -630,7 +630,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonMesh",mesh_series->clone());
             this->pipeline->addClonedForm(mesh_series,this->browse_view->mesh());
-            this->view_stack->setCurrentWidget(this->browse_view);
+//            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(meshCommand);
         }
     } else if (gnomonPointCloudReaderCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudReaderCommand *>(readerCommand))
@@ -643,7 +643,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
             this->pipeline->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
-            this->view_stack->setCurrentWidget(this->browse_view);
+//            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(pointCloudCommand);
         }
     } else if (gnomonTreeReaderCommand *treeCommand = dynamic_cast<gnomonTreeReaderCommand *>(readerCommand))
@@ -656,7 +656,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         } else {
             this->browse_figure->setForm("gnomonTree",tree_series->clone());
             this->pipeline->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
-            this->view_stack->setCurrentWidget(this->browse_figure);
+//            this->view_stack->setCurrentWidget(this->browse_figure);
             this->pipeline->addReader(treeCommand);
         }
     }
@@ -678,10 +678,20 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
 
     d->browse_view = new gnomonViewForm(this);
     d->browse_view->setExportColor(this->color);
+    d->browse_view->setAcceptForm("gnomonCellComplex",true);
+    d->browse_view->setAcceptForm("gnomonCellImage",true);
+    d->browse_view->setAcceptForm("gnomonImage",true);
+    d->browse_view->setAcceptForm("gnomonMesh",true);
+    d->browse_view->setAcceptForm("gnomonPointCloud",true);
+    d->browse_view->setAcceptDrops(true);
 
     connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->browse_figure = new gnomonViewMatplotlib(this);
+    d->browse_figure->setAcceptForm("gnomonTree",true);
+    d->browse_figure->setAcceptForm("gnomonDataFrame",true);
+    d->browse_figure->setAcceptForm("gnomonLString",true);
+    d->browse_figure->setAcceptDrops(true);
 
     connect(d->browse_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -692,6 +702,17 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->view_stack->addWidget(d->view_message);
     d->view_stack->addWidget(d->browse_view);
     d->view_stack->addWidget(d->browse_figure);
+
+    connect(d->browse_view, &gnomonViewForm::formAdded, [=] (const QString&)
+    {
+        d->view_stack->setCurrentWidget(d->browse_view);
+    });
+
+    connect(d->browse_figure, &gnomonViewMatplotlib::formAdded, [=] (const QString&)
+    {
+        d->view_stack->setCurrentWidget(d->browse_figure);
+        d->browse_figure->updateVisualizations();
+    });
 
     QToolButton *view_button = new QToolButton(this);
     view_button->setIcon(dtkFontAwesome::instance()->icon(fa::cubes));

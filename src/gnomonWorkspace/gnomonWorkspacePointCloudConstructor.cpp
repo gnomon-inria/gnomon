@@ -84,6 +84,7 @@ gnomonWorkspacePointCloudConstructor::gnomonWorkspacePointCloudConstructor(QWidg
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonPointCloud",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

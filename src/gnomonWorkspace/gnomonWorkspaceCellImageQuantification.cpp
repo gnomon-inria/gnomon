@@ -95,10 +95,13 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(this->color);
     d->view->setInputView(true);
+    d->view->setAcceptForm("gnomonCellImage",true);
+    d->view->setAcceptForm("gnomonImage",true);
 
     connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
+    d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
 
     connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -222,8 +225,8 @@ void gnomonWorkspaceCellImageQuantification::apply(void)
     }
 
     if(d->command->dataFrame()) {
-        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
         d->target_stack->setCurrentWidget(d->mpl_figure);
+        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }

@@ -84,6 +84,7 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonMesh",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

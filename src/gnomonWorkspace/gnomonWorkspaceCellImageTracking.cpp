@@ -104,6 +104,8 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->prev_view->setExportColor(this->color);
     d->prev_view->setInputView(true);
     d->prev_view->setEnableLinking(false);
+    d->prev_view->setAcceptForm("gnomonCellImage",true);
+    d->prev_view->setAcceptForm("gnomonImage",true);
 
     connect(d->prev_view, &gnomonViewForm::timeChanged, [=] (double time)
     {
@@ -120,6 +122,8 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     d->next_view->setExportColor(this->color);
     d->next_view->setInputView(false);
     d->next_view->setEnableLinking(false);
+    d->next_view->setAcceptForm("gnomonCellImage",true);
+    d->next_view->setAcceptForm("gnomonImage",true);
 
     connect(d->next_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
@@ -135,6 +139,7 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *pare
     });
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
+    d->mpl_figure->setAcceptForm("gnomonTree",true);
 
     connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

@@ -282,10 +282,20 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
+    d->source->setAcceptForm("gnomonCellComplex",true);
+    d->source->setAcceptForm("gnomonCellImage",true);
+    d->source->setAcceptForm("gnomonImage",true);
+    d->source->setAcceptForm("gnomonMesh",true);
+    d->source->setAcceptForm("gnomonPointCloud",true);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellComplex",true);
+    d->target->setAcceptForm("gnomonCellImage",true);
+    d->target->setAcceptForm("gnomonImage",true);
+    d->target->setAcceptForm("gnomonMesh",true);
+    d->target->setAcceptForm("gnomonPointCloud",true);
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);

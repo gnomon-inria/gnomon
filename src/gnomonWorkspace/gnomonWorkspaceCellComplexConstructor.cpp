@@ -84,6 +84,7 @@ gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWi
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellComplex",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 

@@ -404,10 +404,12 @@ void setupMatplotlib(qlonglong view_address, int num)
 
 void addFormToFigure(gnomonAbstractDynamicForm * form, const QString& name, int figure_number)
 {
+    qDebug()<<Q_FUNC_INFO<<form<<figure_number;
     foreach(QWidget *top, qApp->topLevelWidgets()) {
         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
             if(view->figureNumber() == figure_number)
             {
+                qDebug()<<Q_FUNC_INFO<<view<<"setForm"<<name;
                 view->setForm(name,form);
             }
         }
