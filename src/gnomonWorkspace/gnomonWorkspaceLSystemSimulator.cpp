@@ -330,9 +330,8 @@ public:
     const QString setting_id_rhs = setting_id + "RHS";
 
 public:
-    dtkWidgetsMenuBarContainer *menubar_container = nullptr;
-    dtkWidgetsMenu *deferred_sub_menu = nullptr;
     void deferredChangeMenu(void);
+    dtkWidgetsMenu *deferred_sub_menu = nullptr;
     bool inside_any_submenu = false;
 
 public:
@@ -862,10 +861,11 @@ void gnomonWorkspaceLSystemSimulatorPrivate::verifyConflictInShortcuts(QWidget *
 
 void gnomonWorkspaceLSystemSimulatorPrivate::deferredChangeMenu(void)
 {
-    if (menubar_container->slider->is_in_transition) {
+    auto *code_bar_container = dynamic_cast<dtkWidgetsMenuBarContainer*>(in_code_bar->container());
+    if (code_bar_container->slider->is_in_transition) {
         QTimer::singleShot(10, [=] () { deferredChangeMenu(); });
     } else {
-        menubar_container->switchToNextSlide(deferred_sub_menu);
+        code_bar_container->switchToNextSlide(deferred_sub_menu);
     }
 }
 
@@ -1091,7 +1091,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 std::function<void()> no_op_callback = [=] () { };
                 code_bar_container->switchToRoot(no_op_callback);
 
-                d->menubar_container = code_bar_container;
                 d->deferred_sub_menu = sub_menu;
                 QTimer::singleShot(10, [=] () { d->deferredChangeMenu(); });
             });
