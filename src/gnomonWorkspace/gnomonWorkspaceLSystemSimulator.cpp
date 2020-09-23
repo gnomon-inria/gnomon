@@ -32,16 +32,16 @@
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
 
-void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **sub_menu=nullptr);
+void insertMenuItem(dtkWidgetsMenuBar *bar, QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **sub_menu=nullptr);
 
-void build(QMenu *menu, dtkWidgetsMenu *w_menu)
+void build(dtkWidgetsMenuBar *bar, QMenu *menu, dtkWidgetsMenu *w_menu)
 {
     foreach(QAction *action, menu->actions()) {
-        insertMenuItem(action, w_menu);
+        insertMenuItem(bar, action, w_menu);
     }
 }
 
-void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **sub_menu)
+void insertMenuItem(dtkWidgetsMenuBar *bar, QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **sub_menu)
 {
     if(QMenu *s_menu = action->menu()) {
 
@@ -55,7 +55,7 @@ void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **su
             *sub_menu = w_s_menu;
         }
 
-        build(s_menu, w_s_menu);
+        build(bar, s_menu, w_s_menu);
     } else {
 
         if(action->isSeparator()) {
@@ -65,12 +65,12 @@ void insertMenuItem(QAction *action, dtkWidgetsMenu *w_menu, dtkWidgetsMenu **su
             dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
 
             QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
-            QObject::connect(item, SIGNAL(clicked()), dtkApp->window()->menubar(), SLOT(collapse()));
+            QObject::connect(item, SIGNAL(clicked()), bar, SLOT(collapse()));
         }
     }
 }
 
-QList<dtkWidgetsMenu *> build(const QString& prefix, QMenuBar *bar)
+QList<dtkWidgetsMenu *> build(const QString& prefix, dtkWidgetsMenuBar *dtk_bar, QMenuBar *bar)
 {
     QList<dtkWidgetsMenu *> menus;
 
@@ -96,7 +96,7 @@ QList<dtkWidgetsMenu *> build(const QString& prefix, QMenuBar *bar)
         if(action->text().contains("Help"))
             w_menu = new dtkWidgetsMenu(fa::questioncircle, QString(action->text().remove("&")));
 
-        ::build(action->menu(), w_menu);
+        ::build(dtk_bar, action->menu(), w_menu);
 
         menus << w_menu;
     }
@@ -104,9 +104,10 @@ QList<dtkWidgetsMenu *> build(const QString& prefix, QMenuBar *bar)
     return menus;
 }
 
-dtkWidgetsMenu *buildRootItem(int icon, int index, QMenu *menu)
+dtkWidgetsMenu *buildRootItem(int icon, dtkWidgetsMenuBar *bar, QMenu *menu)
 {
     QString unique_blank_title;
+    const int index = bar->size();
     for (int i=0; i<index; ++i) {
         unique_blank_title += " ";
     }
@@ -116,14 +117,14 @@ dtkWidgetsMenu *buildRootItem(int icon, int index, QMenu *menu)
     root_item->setText(menu->title());
     root_item->setMenu(new QMenu);
     dtkWidgetsMenu *sub_menu = nullptr;
-    insertMenuItem(root_item, w_menu, &sub_menu);
+    insertMenuItem(bar, root_item, w_menu, &sub_menu);
     Q_ASSERT(sub_menu != nullptr);
 
     foreach(QAction *action, menu->actions()) {
         if(action->text().isEmpty())
             continue;
 
-        insertMenuItem(action, sub_menu);
+        insertMenuItem(bar, action, sub_menu);
     }
 
     return w_menu;
@@ -160,7 +161,7 @@ void buildMenuBarSubMenu(dtkWidgetsMenuBar *bar, QWidget *parent, QMenu *menu, i
         insert_index = menu_index[menu_title];
     }
 
-    auto *dtk_menu = ::buildRootItem(icon, bar->size(), menu);
+    auto *dtk_menu = ::buildRootItem(icon, bar, menu);
     if (insert_index > bar->size()) {
         bar->addMenu(dtk_menu);
     } else {
@@ -1182,7 +1183,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 qDebug() << "Got a toolbar!" << widget;
             }
 
-            foreach(dtkWidgetsMenu *menu, ::build("", window->menuBar()))
+            foreach(dtkWidgetsMenu *menu, ::build("", d->out_view_bar, window->menuBar()))
                 d->out_view_bar->addMenu(menu);
 
             d->out_view_bar->touch();
