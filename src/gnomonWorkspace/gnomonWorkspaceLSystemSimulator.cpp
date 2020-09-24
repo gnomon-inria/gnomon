@@ -38,7 +38,7 @@ class gnomonMenuBarPrivate;
 class gnomonMenuBar: public dtkWidgetsMenuBar
 {
 public:
-    gnomonMenuBar(QWidget *parent=nullptr);
+    gnomonMenuBar(QWidget *parent, QWidget *child_below=nullptr);
     virtual ~gnomonMenuBar(void);
 
 public:
@@ -63,9 +63,38 @@ public:
     void cleanUpLabels(QMenu *menu);
 };
 
-gnomonMenuBar::gnomonMenuBar(QWidget *parent) : dtkWidgetsMenuBar(parent), d(new gnomonMenuBarPrivate)
+gnomonMenuBar::gnomonMenuBar(QWidget *parent, QWidget *child_below) :
+    dtkWidgetsMenuBar(parent),
+    d(new gnomonMenuBarPrivate)
 {
 #warning "investigate this bug: fails to change menu when clicking on multiple panels"
+
+    this->show();
+    this->setInteractive(false);
+    this->setWidth(32);
+    this->setMargins(6);
+    this->touch();
+
+    auto *layout = new QHBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(this);
+
+    parent->setLayout(layout);
+
+    if (child_below != nullptr) {
+        layout->addWidget(child_below);
+        child_below->stackUnder(this);
+    }
+
+    QTimer::singleShot(1000, [=] () {
+        // workaround bug: the first resize event will be called
+        // before we are fully created, but it needs to be called
+        // after we've been full created to compute the correct size
+        this->setFixedHeight(parent->height());
+    });
+
+
     d->bar = this;
 
     connect(this, &dtkWidgetsMenuBar::clicked, [=] (int index) {
@@ -955,14 +984,12 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     if(widget->objectName() == "LPYCodeEditor") {
 
         d->in_code = new QWidget(this);
+        auto *code_editor_frame = new QWidget(this);
+        d->in_code_bar = new gnomonMenuBar(d->in_code, code_editor_frame);
 
-        d->in_code_bar = new gnomonMenuBar(d->in_code);
-        d->in_code_bar->show();
-        d->in_code_bar->setInteractive(false);
-        d->in_code_bar->setWidth(32);
-        d->in_code_bar->setMargins(6);
-     // d->in_code_bar->addMenu(d->menu());
-        d->in_code_bar->touch();
+        d->code_editor_layout = new QVBoxLayout;
+        code_editor_frame->setLayout(d->code_editor_layout);
+        d->code_editor_layout->addWidget(widget);
 
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
         d->edition_font_size = settings.value("LPyEditionFontSize", d->default_edition_font_size).toInt();
@@ -970,27 +997,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
         // if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
         //     edit->setFrameShape(QFrame::NoFrame);
-
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
-        layout->addWidget(d->in_code_bar);
-
-        auto *code_editor_frame = new QWidget(this);
-        d->code_editor_layout = new QVBoxLayout;
-        code_editor_frame->setLayout(d->code_editor_layout);
-        d->code_editor_layout->addWidget(widget);
-        layout->addWidget(code_editor_frame);
-
-        d->in_code->setLayout(layout);
-
-        code_editor_frame->stackUnder(d->in_code_bar);
-        QTimer::singleShot(1000, [=] () {
-            // workaround bug: the first resize event will be called
-            // before we are fully created, but it needs to be called
-            // after we've been full created to compute the correct size
-            d->in_code_bar->setFixedHeight(d->in_code->height());
-        });
 
         d->lhs->addTab(d->in_code, "Code");
 
@@ -1163,33 +1169,12 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     if(widget->objectName() == "PGLFrameGL") {
 
         d->out_view = new QWidget(this);
-
-#warning "mutualize initialization: layout, size ..."
-        d->out_view_bar = new gnomonMenuBar(d->out_view);
-        d->out_view_bar->show();
-        d->out_view_bar->setInteractive(false);
-        d->out_view_bar->setWidth(32);
-        d->out_view_bar->setMargins(6);
-        // d->view_menubar->addMenu(d->menu());
-        d->out_view_bar->touch();
-
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
-        layout->addWidget(d->out_view_bar);
-
         auto *out_view_frame = new QWidget(this);
+        d->out_view_bar = new gnomonMenuBar(d->out_view, out_view_frame);
+
         auto *out_view_layout = new QVBoxLayout;
         out_view_frame->setLayout(out_view_layout);
         out_view_layout->addWidget(widget->parentWidget());
-        layout->addWidget(out_view_frame);
-
-        d->out_view->setLayout(layout);
-
-        out_view_frame->stackUnder(d->out_view_bar);
-        QTimer::singleShot(1000, [=] () {
-            d->out_view_bar->setFixedHeight(d->out_view->height());
-        });
 
         d->rhs->addTab(d->out_view, "3D");
 
