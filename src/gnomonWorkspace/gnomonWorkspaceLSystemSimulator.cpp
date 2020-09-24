@@ -43,6 +43,7 @@ public:
 
 public:
     void addRootMenu(QWidget *parent, QMenu *menu);
+    void resizeEvent(void);
 
 private:
     gnomonMenuBarPrivate *d;
@@ -51,6 +52,7 @@ private:
 class gnomonMenuBarPrivate
 {
 public:
+    QWidget *parent = nullptr;
     bool inside_any_submenu = false;
     dtkWidgetsMenu *deferred_change_menu = nullptr;
     gnomonMenuBar *bar = nullptr;
@@ -96,6 +98,7 @@ gnomonMenuBar::gnomonMenuBar(QWidget *parent, QWidget *child_below) :
 
 
     d->bar = this;
+    d->parent = parent;
 
     connect(this, &dtkWidgetsMenuBar::clicked, [=] (int index) {
 
@@ -139,6 +142,11 @@ gnomonMenuBar::gnomonMenuBar(QWidget *parent, QWidget *child_below) :
 gnomonMenuBar::~gnomonMenuBar()
 {
     delete d;
+}
+
+void gnomonMenuBar::resizeEvent(void)
+{
+    this->setFixedHeight(d->parent->height());
 }
 
 void gnomonMenuBarPrivate::deferredChangeMenu(void)
@@ -424,6 +432,8 @@ public:
     gnomonMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
     gnomonMenuBar *out_view_bar = nullptr;
+
+    QVector<gnomonMenuBar*> menu_bars;
 
 public:
     const QString setting_id = "LSystemSplittersSizes";
@@ -986,6 +996,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->in_code = new QWidget(this);
         auto *code_editor_frame = new QWidget(this);
         d->in_code_bar = new gnomonMenuBar(d->in_code, code_editor_frame);
+        d->menu_bars << d->in_code_bar;
 
         d->code_editor_layout = new QVBoxLayout;
         code_editor_frame->setLayout(d->code_editor_layout);
@@ -1171,6 +1182,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         d->out_view = new QWidget(this);
         auto *out_view_frame = new QWidget(this);
         d->out_view_bar = new gnomonMenuBar(d->out_view, out_view_frame);
+        d->menu_bars << d->out_view_bar;
 
         auto *out_view_layout = new QVBoxLayout;
         out_view_frame->setLayout(out_view_layout);
@@ -1312,17 +1324,13 @@ bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 void gnomonWorkspaceLSystemSimulator::resizeEvent(QResizeEvent *event)
 {
     d->params->setFixedHeight(event->size().height() - 225);
-#warning "share code for resizeEvent"
-    if (d->in_code && d->in_code_bar) {
-        d->in_code_bar->setFixedHeight(d->in_code->height());
+
+    for (auto *menu_bar: d->menu_bars) {
+        menu_bar->resizeEvent();
     }
 
     // if (d->in_axiom && d->in_axiom_bar)
     //     d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
-
-    if (d->out_view && d->out_view_bar) {
-        d->out_view_bar->setFixedHeight(d->out_view->height());
-    }
 
     dtkWidgetsWorkspace::resizeEvent(event);
 }
