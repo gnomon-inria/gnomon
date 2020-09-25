@@ -23,8 +23,6 @@ gnomonMenuBar::gnomonMenuBar(QWidget *parent, QWidget *child_below) :
     dtkWidgetsMenuBar(parent),
     d(new gnomonMenuBarPrivate)
 {
-#warning "investigate this bug: fails to change menu when clicking on multiple panels"
-
     this->show();
     this->setInteractive(false);
     this->setWidth(32);
