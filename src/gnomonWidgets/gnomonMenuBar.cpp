@@ -44,7 +44,7 @@ gnomonMenuBar::gnomonMenuBar(QWidget *parent, QWidget *child_below) :
     QTimer::singleShot(1000, [=] () {
         // workaround bug: the first resize event will be called
         // before we are fully created, but it needs to be called
-        // after we've been full created to compute the correct size
+        // after we've been fully created to compute the correct size
         this->setFixedHeight(parent->height());
     });
 
