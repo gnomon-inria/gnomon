@@ -660,6 +660,7 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
         if (run_code.isEmpty() | !run_code.startsWith("            ")) {
             plugin_code += "            # implement the run method\n";
             plugin_code += "\n";
+            plugin_code += "            pass\n";
             for (const auto &form_type : this->output_forms.keys()) {
                 gnomonFormDescription *desc = this->output_forms[form_type];
                 plugin_code += "            self." + desc->name + "[time] = None\n";
