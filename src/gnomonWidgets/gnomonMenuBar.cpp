@@ -48,7 +48,6 @@ gnomonMenuBar::gnomonMenuBar(QWidget *parent, QWidget *child_below) :
         this->setFixedHeight(parent->height());
     });
 
-
     d->bar = this;
     d->parent = parent;
 
