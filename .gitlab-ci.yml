@@ -13,7 +13,7 @@ conda_build_linux:
   stage: build
   script:
   - apt update
-  - apt install libgl1-mesa-dev -y
+  - apt install libgl1 -y
   - conda update -n base -c defaults conda
   - conda install python=3.7 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
