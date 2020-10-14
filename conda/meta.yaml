@@ -26,6 +26,7 @@ requirements:
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ cdt('libuuid-devel') }}         # [linux]
     - {{ cdt('libICE-devel') }}          # [linux]
+    - {{ cdt('libxcb') }}                # [linux]
     - {{ cdt('libxrender-devel') }}      # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libdrm-devel') }}          # [linux]
