@@ -14,7 +14,6 @@ requirements:
   build:
     - cmake
     - make
-    - binutils_impl_linux-64<2.31.0      # [linux]
     - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
@@ -64,6 +63,7 @@ requirements:
     - vtk=8.2.0
     - ffmpeg =4.2.3
     - libnetcdf =4.7.3
+    - tbb-devel =2019.*
     - zlib
 
   run:
@@ -91,6 +91,7 @@ requirements:
     - vtk=8.2.0
     - ffmpeg >=4.2
     - libnetcdf =4.7.3
+    - tbb-devel =2019.*
     - zlib
 
 app:
