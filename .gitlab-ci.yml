@@ -12,9 +12,7 @@ stages:
 conda_build_linux:
   stage: build
   script:
-  - apt update
-  - apt install libgl1-mesa-dev -y
-  - conda update -n base -c defaults conda
+  - conda install -n base -c defaults conda python=3.7 -y
   - conda install python=3.7 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
   - conda build . -c dtk-forge -c conda-forge --output-folder conda-bld/
@@ -30,7 +28,7 @@ conda_build_linux:
 anaconda_linux_master:
   stage: deploy
   script:
-  - conda update -n base -c defaults conda
+  - conda install -n base -c defaults conda python=3.7 -y
   - conda install conda-build anaconda-client
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
   extends: .template_retry
@@ -41,7 +39,7 @@ anaconda_linux_master:
 anaconda_linux_develop :
   stage: deploy
   script:
-  - conda update -n base -c defaults conda
+  - conda install -n base -c defaults conda python=3.7 -y
   - conda install conda-build anaconda-client curl
   - curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon

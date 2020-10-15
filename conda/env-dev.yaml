@@ -6,11 +6,14 @@ channels:
 dependencies:
   - python=3.7
   - cmake
+  - qt >=5.9.0,<5.12.8
   - ipython
   - qtconsole
   - pillow
   - numpy
   - scipy
+  - pandas
+  - networkx
   - matplotlib
   - dtk-log >=2.0.0
   - dtk-macs >=2.0.3
@@ -26,6 +29,7 @@ dependencies:
   - dtk-composer >=2.0.0
   - vtk =8.2.0
   - libnetcdf =4.7.3
+  - ffmpeg >=4.2
   - tbb-devel
   - xtensor
   - dtk-script
@@ -33,7 +37,6 @@ dependencies:
   - sip
   - setuptools
   - luigi
-  - scipy
   - sphinx
   - pip
   - pip:
