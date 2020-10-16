@@ -14,7 +14,6 @@ requirements:
   build:
     - cmake
     - make
-    - binutils_impl_linux-64<2.31.0      # [linux]
     - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
@@ -26,6 +25,7 @@ requirements:
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ cdt('libuuid-devel') }}         # [linux]
     - {{ cdt('libICE-devel') }}          # [linux]
+    - {{ cdt('libxcb') }}                # [linux]
     - {{ cdt('libxrender-devel') }}      # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libdrm-devel') }}          # [linux]
@@ -44,7 +44,7 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt >=5.9.0
+    - qt >=5.9.0,<5.12.8
     - dtk-log >=2.2.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
@@ -61,11 +61,13 @@ requirements:
     - pyqt >=5.6.0
     - sip
     - vtk=8.2.0
-    - ffmpeg >=4.2
+    - ffmpeg =4.2.3
     - libnetcdf =4.7.3
+    - tbb-devel =2019.*
     - zlib
 
   run:
+    - qt >=5.9.0,<5.12.8
     - dtk-log >=2.0.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
@@ -78,7 +80,6 @@ requirements:
     - dtk-plugins-imaging >=2.0.2
     - dtk-widgets >=2.21.0
     - dtk-composer >=2.0.0
-    - qt >=5.9.0
     - jupyter
     - jupyter_client=5.3.4
     - luigi
@@ -90,6 +91,7 @@ requirements:
     - vtk=8.2.0
     - ffmpeg >=4.2
     - libnetcdf =4.7.3
+    - tbb-devel =2019.*
     - zlib
 
 app:
