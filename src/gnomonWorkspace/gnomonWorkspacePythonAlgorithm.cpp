@@ -814,15 +814,8 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
 
 void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 {
-    if (this->algorithm) {
-        this->command = new gnomonFormAlgorithmCommand(this->algorithm_key);
-        if (this->algorithm->inputImage()) {
-            this->command->addInput(this->algorithm->inputImage());
-        }
-        if (this->algorithm->outputImage()) {
-            this->command->addInput(this->algorithm->outputImage());
-        }
-        gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command)   ;
+    if (this->command) {
+        gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command);
         gnomonPipeline::instance()->addAlgorithm(algorithm_command);
     }
 }
@@ -882,6 +875,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->target->setAcceptForm("gnomonImage",true);
     d->target->setAcceptForm("gnomonMesh",true);
     d->target->setAcceptForm("gnomonPointCloud",true);
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), gnomonPipeline::instance(), SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -1000,7 +994,14 @@ void gnomonWorkspacePythonAlgorithm::run(void)
     d->source->setEnableLinking(false);
     d->target->setEnableLinking(false);
 
+    if (d->command) {
+        delete d->command;
+        d->command = nullptr;
+    }
+
     if (d->algorithm) {
+
+        d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
 
         if (d->source->cellComplex()) {
             d->algorithm->setInputCellComplex(d->source->cellComplex());
@@ -1010,6 +1011,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         }
         if (d->source->image()) {
             d->algorithm->setInputImage(d->source->image());
+            d->command->addInput(d->source->image());
         }
         if (d->source->mesh()) {
             d->algorithm->setInputMesh(d->source->mesh());
@@ -1046,6 +1048,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
          if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
             qDebug()<<"No Image!";
         } else {
+            d->command->addOutput(image);
             d->target->setForm("gnomonImage",image);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1077,6 +1080,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
     }
 
     if (d->target_stack->currentWidget() == d->target) {
+        qDebug()<<Q_FUNC_INFO<<"Register Pipeline!";
         d->registerPipeline();
     }
 }

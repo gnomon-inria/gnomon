@@ -27,6 +27,8 @@ public:
     gnomonImageSeries* inputImage = nullptr;
 
     gnomonImageSeries* outputImage = nullptr;
+
+    QMap<QString, gnomonCoreParameter *> parameters;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -36,11 +38,10 @@ public:
 gnomonFormAlgorithmCommand::gnomonFormAlgorithmCommand(const QString& key) : d(new gnomonFormAlgorithmCommandPrivate)
 {
     this->factory_name = "formAlgorithm";
-
     this->algorithm_name = key;
-    this->action = gnomonCore::formAlgorithm::pluginFactory().create(key);
+    //this->action = gnomonCore::formAlgorithm::pluginFactory().create(key);
 
-    Q_ASSERT(this->action);
+    //Q_ASSERT(this->action);
 }
 
 gnomonFormAlgorithmCommand::~gnomonFormAlgorithmCommand(void)
@@ -60,24 +61,28 @@ void gnomonFormAlgorithmCommand::addInput(gnomonAbstractDynamicForm *input)
 {
     if (gnomonImageSeries* image = dynamic_cast<gnomonImageSeries *>(input)) {
         d->inputImage = image;
+        qDebug()<<Q_FUNC_INFO<<"Image"<<d->inputImage;
     }
 }
 
 void gnomonFormAlgorithmCommand::addOutput(gnomonAbstractDynamicForm *output)
 {
+    qDebug()<<Q_FUNC_INFO<<output;
     if (gnomonImageSeries* image = dynamic_cast<gnomonImageSeries *>(output)) {
         d->outputImage = image;
+        qDebug()<<Q_FUNC_INFO<<"Image"<<d->outputImage;
+        qDebug()<<Q_FUNC_INFO<<"Image"<<d->outputImage->current()->name();
     }
 }
 
 void gnomonFormAlgorithmCommand::setParameter(const QString& parameter, const QVariant& value)
 {
-    this->action->setParameter(parameter, value);
+    //this->action->setParameter(parameter, value);
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonFormAlgorithmCommand::parameters(void) const
 {
-    return this->action->parameters();
+    return d->parameters;
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::inputs(void)
