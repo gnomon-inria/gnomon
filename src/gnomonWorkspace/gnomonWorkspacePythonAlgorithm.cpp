@@ -687,14 +687,10 @@ public:
     void configure(void);
 
 public:
-<<<<<<< HEAD
     void registerPipeline(void);
 
 public:
-    gnomonPythonScriptEditor *editor = nullptr;
-=======
     gnomonPythonAlgorithmPluginEditor *editor = nullptr;
->>>>>>> feature/pythonWorkspaceGui
 
 public:
     dtkWidgetsMenuBarContainer *dashboard;
