@@ -4,6 +4,7 @@
     <file>gnomonWidgetsWorkspaceBar.qml</file>
   </qresource>
   <qresource prefix="gnomon">
+    <file>gnomonHighlighterPython.xml</file>
     <file>jupyter_console.py</file>
 
     <file>gnomonButton-Animate.png</file>
