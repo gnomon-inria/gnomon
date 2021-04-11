@@ -15,6 +15,8 @@
 #include "gnomonWorkspacePythonAlgorithm.h"
 
 #include <gnomonCore>
+#include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
+#include <gnomonComposer>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -111,6 +113,9 @@ public:
     void configure(void);
 
 public:
+    void registerPipeline(void);
+
+public:
     gnomonPythonScriptEditor *editor = nullptr;
 
 public:
@@ -134,7 +139,9 @@ public:
     QHash<QString, dtkCoreParameter *> parameters;
 
 public:
+    QString algorithm_key;
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
+    gnomonFormAlgorithmCommand *command = nullptr;
 };
 
 dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace *parent)
@@ -198,9 +205,9 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->editor->toPlainText(), &stat);
 
     if (gnomonCore::formAlgorithm::pluginFactory().keys().size() > 0) {
-        QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
-        qDebug()<<Q_FUNC_INFO<<key;
-        this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(key);
+        this->algorithm_key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
+        qDebug()<<Q_FUNC_INFO<<this->algorithm_key;
+        this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(this->algorithm_key);
         Q_ASSERT(this->algorithm);
     } else {
         this->algorithm = nullptr;
@@ -228,6 +235,21 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
         }
 
         this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    }
+}
+
+void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
+{
+    if (this->algorithm) {
+        this->command = new gnomonFormAlgorithmCommand(this->algorithm_key);
+        if (this->algorithm->inputImage()) {
+            this->command->addInput(this->algorithm->inputImage());
+        }
+        if (this->algorithm->outputImage()) {
+            this->command->addInput(this->algorithm->outputImage());
+        }
+        gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command)   ;
+        gnomonPipeline::instance()->addAlgorithm(algorithm_command);
     }
 }
 
@@ -383,7 +405,6 @@ void gnomonWorkspacePythonAlgorithm::run(void)
     d->source->setEnableLinking(false);
     d->target->setEnableLinking(false);
 
-
     gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
     if ((!cellComplex)||(cellComplex->times().size()==0)) {
         qDebug()<<"No CellComplex!";
@@ -437,6 +458,10 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+    }
+
+    if (d->target_stack->currentWidget() == d->target) {
+        d->registerPipeline();
     }
 }
 
