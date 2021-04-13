@@ -1005,9 +1005,11 @@ void gnomonWorkspacePythonAlgorithm::run(void)
 
         if (d->source->cellComplex()) {
             d->algorithm->setInputCellComplex(d->source->cellComplex());
+            d->command->addInput(d->source->cellComplex());
         }
         if (d->source->cellImage()) {
             d->algorithm->setInputCellImage(d->source->cellImage());
+            d->command->addInput(d->source->cellImage());
         }
         if (d->source->image()) {
             d->algorithm->setInputImage(d->source->image());
@@ -1015,9 +1017,11 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         }
         if (d->source->mesh()) {
             d->algorithm->setInputMesh(d->source->mesh());
+            d->command->addInput(d->source->mesh());
         }
         if (d->source->pointCloud()) {
             d->algorithm->setInputPointCloud(d->source->pointCloud());
+            d->command->addInput(d->source->pointCloud());
         }
 
         d->algorithm->run();
@@ -1026,6 +1030,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!cellComplex)||(cellComplex->times().size()==0)) {
             qDebug()<<"No CellComplex!";
         } else {
+            d->command->addOutput(cellComplex);
             d->target->setForm("gnomonCellComplex",cellComplex);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1037,6 +1042,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!cellImage)||(cellImage->times().size()==0)) {
             qDebug()<<"No CellImage!";
         } else {
+            d->command->addOutput(cellImage);
             d->target->setForm("gnomonCellImage",cellImage);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1060,6 +1066,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!mesh)||(mesh->times().size()==0)) {
             qDebug()<<"No Mesh!";
         } else {
+            d->command->addOutput(mesh);
             d->target->setForm("gnomonMesh",mesh);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1071,6 +1078,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!pointCloud)||(pointCloud->times().size()==0)) {
             qDebug()<<"No PointCloud!";
         } else {
+            d->command->addOutput(pointCloud);
             d->target->setForm("gnomonPointCloud",pointCloud);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
