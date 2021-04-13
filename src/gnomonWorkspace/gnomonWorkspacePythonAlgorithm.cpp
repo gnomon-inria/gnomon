@@ -15,6 +15,8 @@
 #include "gnomonWorkspacePythonAlgorithm.h"
 
 #include <gnomonCore>
+#include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
+#include <gnomonComposer>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
@@ -685,6 +687,9 @@ public:
     void configure(void);
 
 public:
+    void registerPipeline(void);
+
+public:
     gnomonPythonAlgorithmPluginEditor *editor = nullptr;
 
 public:
@@ -708,7 +713,9 @@ public:
     QHash<QString, dtkCoreParameter *> parameters;
 
 public:
+    QString algorithm_key;
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
+    gnomonFormAlgorithmCommand *command = nullptr;
 };
 
 dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace *parent)
@@ -772,9 +779,9 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     QString output = dtkScriptInterpreterPython::instance()->interpret(this->editor->text(), &stat);
 
     if (gnomonCore::formAlgorithm::pluginFactory().keys().size() > 0) {
-        QString key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
-        qDebug()<<Q_FUNC_INFO<<key;
-        this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(key);
+        this->algorithm_key = gnomonCore::formAlgorithm::pluginFactory().keys()[0];
+        qDebug()<<Q_FUNC_INFO<<this->algorithm_key;
+        this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(this->algorithm_key);
         Q_ASSERT(this->algorithm);
     } else {
         this->algorithm = nullptr;
@@ -802,6 +809,14 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
         }
 
 //        this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    }
+}
+
+void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
+{
+    if (this->command) {
+        gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command);
+        gnomonPipeline::instance()->addAlgorithm(algorithm_command);
     }
 }
 
@@ -860,6 +875,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) 
     d->target->setAcceptForm("gnomonImage",true);
     d->target->setAcceptForm("gnomonMesh",true);
     d->target->setAcceptForm("gnomonPointCloud",true);
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), gnomonPipeline::instance(), SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -978,22 +994,34 @@ void gnomonWorkspacePythonAlgorithm::run(void)
     d->source->setEnableLinking(false);
     d->target->setEnableLinking(false);
 
+    if (d->command) {
+        delete d->command;
+        d->command = nullptr;
+    }
+
     if (d->algorithm) {
+
+        d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
 
         if (d->source->cellComplex()) {
             d->algorithm->setInputCellComplex(d->source->cellComplex());
+            d->command->addInput(d->source->cellComplex());
         }
         if (d->source->cellImage()) {
             d->algorithm->setInputCellImage(d->source->cellImage());
+            d->command->addInput(d->source->cellImage());
         }
         if (d->source->image()) {
             d->algorithm->setInputImage(d->source->image());
+            d->command->addInput(d->source->image());
         }
         if (d->source->mesh()) {
             d->algorithm->setInputMesh(d->source->mesh());
+            d->command->addInput(d->source->mesh());
         }
         if (d->source->pointCloud()) {
             d->algorithm->setInputPointCloud(d->source->pointCloud());
+            d->command->addInput(d->source->pointCloud());
         }
 
         d->algorithm->run();
@@ -1002,6 +1030,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!cellComplex)||(cellComplex->times().size()==0)) {
             qDebug()<<"No CellComplex!";
         } else {
+            d->command->addOutput(cellComplex);
             d->target->setForm("gnomonCellComplex",cellComplex);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1013,6 +1042,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!cellImage)||(cellImage->times().size()==0)) {
             qDebug()<<"No CellImage!";
         } else {
+            d->command->addOutput(cellImage);
             d->target->setForm("gnomonCellImage",cellImage);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1024,6 +1054,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
          if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
             qDebug()<<"No Image!";
         } else {
+            d->command->addOutput(image);
             d->target->setForm("gnomonImage",image);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1035,6 +1066,7 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!mesh)||(mesh->times().size()==0)) {
             qDebug()<<"No Mesh!";
         } else {
+            d->command->addOutput(mesh);
             d->target->setForm("gnomonMesh",mesh);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
@@ -1046,12 +1078,18 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         if ((!pointCloud)||(pointCloud->times().size()==0)) {
             qDebug()<<"No PointCloud!";
         } else {
+            d->command->addOutput(pointCloud);
             d->target->setForm("gnomonPointCloud",pointCloud);
             d->target->render();
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
         }
+    }
+
+    if (d->target_stack->currentWidget() == d->target) {
+        qDebug()<<Q_FUNC_INFO<<"Register Pipeline!";
+        d->registerPipeline();
     }
 }
 

@@ -517,6 +517,7 @@ void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
         auto&& output = it.key();
         d->algorithm_nodes[output_forms[output]] = node;
         d->algorithm_output[output_forms[output]] = output;
+        qDebug()<<Q_FUNC_INFO<<output<<output_forms[output];
     }
 }
 
@@ -560,6 +561,7 @@ void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
 
 void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 {
+    qDebug()<<Q_FUNC_INFO<<form<<d->algorithm_nodes.contains(form);
     if (d->reader_nodes.contains(form)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form];
 
