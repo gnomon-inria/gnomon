@@ -100,9 +100,9 @@ void gnomonFormAlgorithmCommand::addOutput(gnomonAbstractDynamicForm *output)
     }
 }
 
-void gnomonFormAlgorithmCommand::setParameter(const QString& parameter, const QVariant& value)
+void gnomonFormAlgorithmCommand::addParameter(const QString& name, gnomonCoreParameter *parameter)
 {
-    //this->action->setParameter(parameter, value);
+    d->parameters[name] = parameter;
 }
 
 QMap<QString, gnomonCoreParameter *> gnomonFormAlgorithmCommand::parameters(void) const

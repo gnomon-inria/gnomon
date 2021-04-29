@@ -1024,6 +1024,10 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->command->addInput(d->source->pointCloud());
         }
 
+        for (const auto& parameter_name : d->algorithm->parameters().keys()){
+            d->command->addParameter(parameter_name, d->algorithm->parameters()[parameter_name]);
+        }
+
         d->algorithm->run();
 
         gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();

@@ -20,7 +20,7 @@ public:
     void addOutput(gnomonAbstractDynamicForm *output);
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    void addParameter(const QString&, gnomonCoreParameter *parameter);
 
 public:
     QMap<QString, gnomonCoreParameter *> parameters(void) const override;
