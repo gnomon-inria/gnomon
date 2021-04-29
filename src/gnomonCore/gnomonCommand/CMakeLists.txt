@@ -43,6 +43,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractReaderCommand.h
   gnomonAbstractWriterCommand
   gnomonAbstractWriterCommand.h
+  gnomonFormAlgorithmCommand
+  gnomonFormAlgorithmCommand.h
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}
@@ -63,7 +65,8 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_COMMAND_LSTRING_SOURCES}
   ${${PROJECT_NAME}_COMMAND_MESH_SOURCES}
   ${${PROJECT_NAME}_COMMAND_POINTCLOUD_SOURCES}
-  ${${PROJECT_NAME}_COMMAND_TREE_SOURCES})
+  ${${PROJECT_NAME}_COMMAND_TREE_SOURCES}
+  gnomonFormAlgorithmCommand.cpp)
 
 
 ######################################################################

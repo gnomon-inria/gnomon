@@ -231,8 +231,8 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
     i_layout->setSpacing(0);
     i_layout->addWidget(d->manager);
     i_layout->addWidget(d->stack);
-    i_layout->addWidget(d->workflow);
     i_layout->addLayout(b_layout);
+    i_layout->addWidget(d->workflow);
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);

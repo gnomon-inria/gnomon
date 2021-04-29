@@ -37,6 +37,9 @@ public:
 public:
     static const QColor color;
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 public:
     static bool isEmpty(void);
 
