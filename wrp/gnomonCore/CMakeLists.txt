@@ -48,7 +48,7 @@ list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++ -threads)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 swig_link_libraries(${PROJECT_NAME}
-  Python3::Python
+  ${PYTHON_LIBRARIES}
   dtkCore
   dtkImagingCore)
 
