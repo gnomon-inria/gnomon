@@ -44,17 +44,17 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt >=5.9.0,<5.12.8
-    - dtk-log >=2.2.0
+    - qt >=5.12.0,<5.14.0
+    - dtk-log >=2.4.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.9
-    - dtk-themes-python >=2.0.3
-    - dtk-core >=2.9.0
-    - dtk-core-python =2.5.4
+    - dtk-themes >=2.1.17
+    - dtk-themes-python >=2.0.4
+    - dtk-core >=2.9.1
+    - dtk-core-python =2.6.0
     - dtk-imaging >=2.0.4
-    - dtk-imaging-python >=2.0.4
-    - dtk-widgets >=2.21.0
+    - dtk-imaging-python >=2.0.6
+    - dtk-widgets >=2.25.1
     - dtk-composer >=2.0.0
     - python >=3.7,<3.8
     - swig >4.0.0
@@ -67,18 +67,18 @@ requirements:
     - zlib
 
   run:
-    - qt >=5.9.0,<5.12.8
-    - dtk-log >=2.0.0
+    - qt >=5.12.0,<5.14.0
+    - dtk-log >=2.4.0
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.11
-    - dtk-themes-python >=2.0.3
-    - dtk-core >=2.7.1
-    - dtk-core-python =2.5.4
+    - dtk-themes >=2.1.17
+    - dtk-themes-python >=2.0.6
+    - dtk-core >=2.9.1
+    - dtk-core-python =2.6.0
     - dtk-imaging >=2.0.4
-    - dtk-imaging-python >=2.0.4
+    - dtk-imaging-python >=2.0.6
     - dtk-plugins-imaging >=2.0.2
-    - dtk-widgets >=2.21.0
+    - dtk-widgets >=2.25.1
     - dtk-composer >=2.0.0
     - jupyter
     - jupyter_client=5.3.4
