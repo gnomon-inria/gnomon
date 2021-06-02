@@ -113,11 +113,13 @@ include(GenerateExportHeader)
 ## Dependencies
 ## ###################################################################
 
-find_package (Python3 COMPONENTS Interpreter Development)
+if (WIN32)
+  # needed when we run cmake in a conda environment
+  set(Python3_FIND_REGISTRY LAST)
+endif()
 
-#include_directories(${PYTHON_INCLUDE_DIRS})
-
-set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+find_package (Python3 3.7 EXACT COMPONENTS Interpreter Development.Module)
+set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
@@ -156,7 +158,7 @@ add_subdirectory(wrp)
 add_subdirectory(python)
 add_subdirectory(doc)
 
-# add_subdirectory(tst)
+#add_subdirectory(tst)
 # add_subdirectory(tst-py)
 
 ## ###################################################################
