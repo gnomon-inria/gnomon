@@ -16,6 +16,13 @@
 
 %module(directors="1") gnomoncore
 
+#ifdef SWIGWIN
+%include <windows.i>
+#endif
+
+%include "std_array.i"
+%include "std_vector.i"
+
 %include <dtkBase/dtkBase.i>
 %include <gnomonCore/gnomonCoreParameter.i>
 %import <dtkCore/dtkCore.i>
@@ -761,8 +768,6 @@
 %include <gnomonCore/gnomonTypeDef.h>
 %include <QtCore/QVariant.i>
 
-%include "std_array.i"
-%include "std_vector.i"
 
 namespace std {
     %template(vec3_t) array<double, 3>;

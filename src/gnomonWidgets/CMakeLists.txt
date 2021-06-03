@@ -26,12 +26,17 @@ add_subdirectory(gnomonEditor)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonHighlighterPython
+  gnomonHighlighterPython.h
   gnomonInterpreterJupyter
   gnomonInterpreterJupyter.h
   gnomonItemButton.h
   gnomonMenuBar.h
   gnomonMessageBoard.h
   gnomonOverlayButton.h
+  gnomonPythonEditor
+  gnomonPythonEditor.h
+  gnomonPythonEditor_p.h
   gnomonSpinner
   gnomonSpinner.h
   gnomonWidgets
@@ -44,10 +49,12 @@ set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_EDITOR_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonHighlighterPython.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
   gnomonMenuBar.cpp
   gnomonMessageBoard.cpp
+  gnomonPythonEditor.cpp
   gnomonOverlayButton.cpp
   gnomonSpinner.cpp
   gnomonWidgets.cpp
@@ -88,10 +95,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkMacs)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 

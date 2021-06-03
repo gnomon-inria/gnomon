@@ -30,7 +30,8 @@ add_subdirectory(gnomonComposer)
 ## Targets
 ## #################################################################
 
-export(EXPORT layer-targets FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+export(EXPORT layer-targets
+  FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 ######################################################################
 ### CMakeLists.txt ends here
