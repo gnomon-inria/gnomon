@@ -31,6 +31,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonInterpreterJupyter
   gnomonInterpreterJupyter.h
   gnomonItemButton.h
+  gnomonMenuBar.h
   gnomonMessageBoard.h
   gnomonOverlayButton.h
   gnomonPythonEditor
@@ -51,6 +52,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonHighlighterPython.cpp
   gnomonInterpreterJupyter.cpp
   gnomonItemButton.cpp
+  gnomonMenuBar.cpp
   gnomonMessageBoard.cpp
   gnomonPythonEditor.cpp
   gnomonOverlayButton.cpp

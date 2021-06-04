@@ -17,13 +17,13 @@
 #include <gnomonCore>
 #include <gnomonVisualization>
 #include <gnomonWidgets>
+#include <gnomonMenuBar.h>
 
 #include <dtkFonts>
 #include <dtkThemes>
 #include <dtkScript>
 #include <dtkMacs>
 #include <dtkWidgets>
-#include <dtkWidgetsMenuBar_p.h>
 #include <dtkWidgetsMenu+ux.h>
 
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
@@ -32,99 +32,6 @@
 // Helper functions
 // /////////////////////////////////////////////////////////////////////////////
 
-void build(QMenu *menu, dtkWidgetsMenu *w_menu)
-{
-    foreach(QAction *action, menu->actions()) {
-
-        dtkWidgetsMenu *w_s_menu = 0;
-
-        if(QMenu *s_menu = action->menu()) {
-
-            w_s_menu = w_menu->addMenu(fa::circle, action->text());
-
-            build(s_menu, w_s_menu);
-        } else {
-
-            if(action->isSeparator()) {
-                w_menu->addSeparator();
-            } else {
-
-                dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
-
-                QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
-                QObject::connect(item, SIGNAL(clicked()), dtkApp->window()->menubar(), SLOT(collapse()));
-            }
-        }
-    }
-}
-
-QList<dtkWidgetsMenu *> build(const QString& prefix, QMenuBar *bar)
-{
-    QList<dtkWidgetsMenu *> menus;
-
-    foreach(QAction *action, bar->actions()) {
-
-        if(action->text().isEmpty())
-            continue;
-
-        dtkWidgetsMenu *w_menu;
-
-        if(action->text().contains("File"))
-            w_menu = new dtkWidgetsMenu(fa::file, QString(action->text().remove("&")));
-
-        if(action->text().contains("Edit"))
-            w_menu = new dtkWidgetsMenu(fa::edit, QString(action->text().remove("&")));
-
-        if(action->text().contains("View"))
-            w_menu = new dtkWidgetsMenu(fa::eye, QString(action->text().remove("&")));
-
-        if(action->text().contains("Tool"))
-            w_menu = new dtkWidgetsMenu(fa::gear, QString(action->text().remove("&")));
-
-        if(action->text().contains("Help"))
-            w_menu = new dtkWidgetsMenu(fa::questioncircle, QString(action->text().remove("&")));
-
-        ::build(action->menu(), w_menu);
-
-        menus << w_menu;
-    }
-
-    return menus;
-}
-
-dtkWidgetsMenu *build(int icon, QMenu *menu)
-{
-    dtkWidgetsMenu *w_menu = new dtkWidgetsMenu(icon, menu->title());
-
-    foreach(QAction *action, menu->actions()) {
-
-        if(action->text().isEmpty())
-            continue;
-
-        // ::build(action, w_menu);
-
-        dtkWidgetsMenu *w_s_menu = 0;
-
-        if(QMenu *s_menu = action->menu()) {
-
-            w_s_menu = w_menu->addMenu(fa::circle, action->text());
-
-            ::build(s_menu, w_s_menu);
-        } else {
-
-            if(action->isSeparator()) {
-                w_menu->addSeparator();
-            } else {
-
-                dtkWidgetsMenuItem *item = w_menu->addItem(fa::dashcube, action->text());
-
-                QObject::connect(item, SIGNAL(clicked()), action, SLOT(trigger()));
-            }
-        }
-    }
-
-    return w_menu;
-}
 
 // /////////////////////////////////////////////////////////////////////////////
 //  gnomonHighlighterLString
@@ -268,8 +175,6 @@ public:
 public:
     QList<dtkWidgetsMenu *> menus;
 
-    dtkWidgetsMenu *tools_menu;
-
 public:
     QWidget *in_code = nullptr;
     QWidget *in_axiom = nullptr;
@@ -279,9 +184,11 @@ public:
     int edition_font_size;
     const int default_edition_font_size = 10;
 
-    dtkWidgetsMenuBar *in_code_bar = nullptr;
+    gnomonMenuBar *in_code_bar = nullptr;
     dtkWidgetsMenuBar *in_axiom_bar = nullptr;
-    dtkWidgetsMenuBar *out_view_bar = nullptr;
+    gnomonMenuBar *out_view_bar = nullptr;
+
+    QVector<gnomonMenuBar*> menu_bars;
 
 public:
     const QString setting_id = "LSystemSplittersSizes";
@@ -465,8 +372,6 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
     QVBoxLayout *params_layout = new QVBoxLayout;
     params_layout->addWidget(d->params);
     params_layout->addStretch();
-
-    d->tools_menu = new dtkWidgetsMenu(fa::gears, "Tools");
 
     d->run_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Run.png",":gnomon/gnomonButton-Run-off.png");
     d->animate_button = new gnomonPushButtonLPyAction(":gnomon/gnomonButton-Animate.png",":gnomon/gnomonButton-Animate-off.png");
@@ -782,6 +687,16 @@ void gnomonWorkspaceLSystemSimulatorPrivate::disableFloatingDockWidgets(QWidget 
     }
 }
 
+void printParents(QWidget *root, int depth=0)
+{
+    if (root != nullptr) {
+        QString prefix;
+        for (int i=0; i<depth; ++i) { prefix += " "; }
+        qDebug() << prefix << root;
+        printParents(root->parentWidget(), depth + 1);
+    }
+}
+
 void gnomonWorkspaceLSystemSimulatorPrivate::verifyConflictInShortcuts(QWidget *parent)
 {
     static QMap<QString, QAction*> binds;
@@ -834,14 +749,13 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     if(widget->objectName() == "LPYCodeEditor") {
 
         d->in_code = new QWidget(this);
+        auto *code_editor_frame = new QWidget(this);
+        d->in_code_bar = new gnomonMenuBar(d->in_code, code_editor_frame);
+        d->menu_bars << d->in_code_bar;
 
-        d->in_code_bar = new dtkWidgetsMenuBar(d->in_code);
-        d->in_code_bar->show();
-        d->in_code_bar->setInteractive(false);
-        d->in_code_bar->setWidth(32);
-        d->in_code_bar->setMargins(6);
-     // d->in_code_bar->addMenu(d->menu());
-        d->in_code_bar->touch();
+        d->code_editor_layout = new QVBoxLayout;
+        code_editor_frame->setLayout(d->code_editor_layout);
+        d->code_editor_layout->addWidget(widget);
 
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
         d->edition_font_size = settings.value("LPyEditionFontSize", d->default_edition_font_size).toInt();
@@ -850,24 +764,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
         // if(QTextEdit *edit = dynamic_cast<QTextEdit *>(widget))
         //     edit->setFrameShape(QFrame::NoFrame);
 
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
-        layout->addWidget(d->in_code_bar);
-        layout->addWidget(d->in_code_bar->container());
-        auto *code_editor_frame = new QWidget;
-        d->code_editor_layout = new QVBoxLayout;
-        code_editor_frame->setLayout(d->code_editor_layout);
-        d->code_editor_layout->addWidget(widget);
-        layout->addWidget(code_editor_frame);
-
-        d->in_code->setLayout(layout);
-
-        d->in_code->stackUnder(d->in_code_bar);
-
         d->lhs->addTab(d->in_code, "Code");
-
-        // d->in_code_bar->setFixedHeight(widget->height());
 
         auto tab_bars = widget->findChildren<QTabBar*>("documentNames");
         Q_ASSERT_X(tab_bars.size() == 1, Q_FUNC_INFO, (QString("failed to find 1 instance of QTabBar documentNames, results size=") + QString::number(tab_bars.size())).toStdString().c_str());
@@ -939,8 +836,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
             window->setParent(this);
 
-            // d->menus << dtkWidgetsMenuBar::build(window->objectName(), window->menuBar());
-
             foreach(QAction *action, window->menuBar()->actions()) {
 
                 QWidget *code_editor = nullptr;
@@ -952,61 +847,35 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 }
                 Q_ASSERT(code_editor != nullptr);
 
-                auto add_actions_shortcuts = [=] (QMenu* menu) {
-                    // this function is needed for these 2 purposes :
-                    // [1] enable its shortcut by adding it do the code_editor widget
-                    // [2] expose its shortcut to the user by adding it to its text
-                    for (auto * reaction : menu->actions()) {
-                        const auto& shortcut = reaction->shortcut();
-                        if (shortcut.isEmpty()) {
-                            continue;
-                        }
-                        code_editor->addAction(reaction);
-                        reaction->setText(reaction->text() + " (" + shortcut.toString() + ")");
-                    }
-                };
-
                 qDebug() << Q_FUNC_INFO << action->text();
 
                 if(action->text() == "File") {
-
-                    d->menus << ::build(fa::file, action->menu());
+                    d->in_code_bar->addRootMenu(code_editor, action->menu());
                 }
 
                 if(action->text() == "Help") {
-
-                    d->menus << ::build(fa::question, action->menu());
+                    d->in_code_bar->addRootMenu(code_editor, action->menu());
                }
 
                 if(action->text() == "Edit") {
-
-                    add_actions_shortcuts(action->menu());
-
-                    d->in_code_bar->addMenu(::build(fa::edit, action->menu()));
-                    d->in_code_bar->touch();
+                    d->in_code_bar->addRootMenu(code_editor, action->menu());
                 }
 
                 if(action->text() == "L-systems") {
+                    auto *tools_menu = new QMenu("Tools", d->in_code);
 
                     foreach(QAction *reaction, action->menu()->actions()) {
-
-                        if(reaction->text() == "Debug") {
-                            dtkWidgetsMenuItem *item = d->tools_menu->addItem(fa::bug, "Debug");
-
-                            connect(item, SIGNAL(clicked()), reaction, SLOT(trigger()));
-                        }
-
-                        if(reaction->text() == "Profile") {
-                            dtkWidgetsMenuItem *item = d->tools_menu->addItem(fa::stackoverflow, "Profile");
-
-                            connect(item, SIGNAL(clicked()), reaction, SLOT(trigger()));
+                        if(reaction->text() == "Debug" || reaction->text() == "Profile") {
+                            tools_menu->addAction(reaction);
                         }
                     }
+
+                    d->in_code_bar->addRootMenu(code_editor, tools_menu);
                 }
 
                 if(action->text() == "View") {
 
-                    QMenu *gnomon_view_menu = new QMenu("View", d->in_code);
+                    QMenu *view_menu = new QMenu("View", d->in_code);
 
                     for (int zoom : { +1, -1, 0 } ){
                         QAction *action = new QAction;
@@ -1020,7 +889,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                         }
                         action->setShortcutContext(Qt::WindowShortcut);
 
-                        gnomon_view_menu->addAction(action);
+                        view_menu->addAction(action);
                         connect(action, &QAction::triggered, [=] () {
                             const int zoom_step = 1;
                             if (zoom == 0) {
@@ -1040,10 +909,7 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
                         });
                     }
-                    add_actions_shortcuts(gnomon_view_menu);
-
-                    d->in_code_bar->addMenu(::build(fa::eye, gnomon_view_menu));
-                    d->in_code_bar->touch();
+                    d->in_code_bar->addRootMenu(code_editor, view_menu);
 
                     foreach(QAction *reaction, action->menu()->actions()) {
 
@@ -1062,8 +928,6 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
 
 //            window->setMenuBar(0);
 
-            d->menus << d->tools_menu;
-
             this->enter();
         }
     }
@@ -1071,23 +935,13 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
     if(widget->objectName() == "PGLFrameGL") {
 
         d->out_view = new QWidget(this);
+        auto *out_view_frame = new QWidget(this);
+        d->out_view_bar = new gnomonMenuBar(d->out_view, out_view_frame);
+        d->menu_bars << d->out_view_bar;
 
-        d->out_view_bar = new dtkWidgetsMenuBar(d->out_view);
-        d->out_view_bar->show();
-        d->out_view_bar->setInteractive(false);
-        d->out_view_bar->setWidth(32);
-        d->out_view_bar->setMargins(6);
-        // d->view_menubar->addMenu(d->menu());
-        d->out_view_bar->touch();
-
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
-        layout->addWidget(d->out_view_bar);
-        layout->addWidget(d->out_view_bar->container());
-        layout->addWidget(widget->parentWidget());
-
-        d->out_view->setLayout(layout);
+        auto *out_view_layout = new QVBoxLayout;
+        out_view_frame->setLayout(out_view_layout);
+        out_view_layout->addWidget(widget->parentWidget());
 
         d->rhs->addTab(d->out_view, "3D");
 
@@ -1115,8 +969,12 @@ void gnomonWorkspaceLSystemSimulator::fill(QWidget *widget)
                 qDebug() << "Got a toolbar!" << widget;
             }
 
-            foreach(dtkWidgetsMenu *menu, ::build("", window->menuBar()))
-                d->out_view_bar->addMenu(menu);
+            foreach(QAction *action, window->menuBar()->actions()) {
+                if (action->text().size() == 0 || action->menu() == nullptr) {
+                    continue;
+                }
+                d->out_view_bar->addRootMenu(widget, action->menu());
+            }
 
             d->out_view_bar->touch();
         }
@@ -1222,14 +1080,12 @@ void gnomonWorkspaceLSystemSimulator::resizeEvent(QResizeEvent *event)
 {
     d->params->setFixedHeight(event->size().height() - 225);
 
-    // if (d->in_code && d->in_code_bar)
-    //     d->in_code_bar->setFixedHeight(d->in_code->height());
+    for (auto *menu_bar: d->menu_bars) {
+        menu_bar->resizeEvent();
+    }
 
     // if (d->in_axiom && d->in_axiom_bar)
     //     d->in_axiom_bar->setFixedHeight(d->in_axiom->height());
-
-    // if (d->out_view && d->out_view_bar)
-    //     d->out_view_bar->setFixedHeight(d->out_view->height());
 
     dtkWidgetsWorkspace::resizeEvent(event);
 }
