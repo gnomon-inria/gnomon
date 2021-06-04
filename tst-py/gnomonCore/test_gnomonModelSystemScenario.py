@@ -13,20 +13,20 @@
 # Code:
 
 import unittest
-import sys
-from PyQt5.QtCore import QSettings
+# import sys
+# from PyQt5.QtCore import QSettings
 
-settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
-settings.beginGroup("modules");
-paths = settings.value("path")
-settings.endGroup()
+# settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
+# settings.beginGroup("modules");
+# paths = settings.value("path")
+# settings.endGroup()
 
-for path in paths.split(":"):
-    sys.path.append(path)
+# for path in paths.split(":"):
+#     sys.path.append(path)
 
 import numpy as np
 
-from gnomoncore import gnomonTime, gnomonDiscreteDynamicForm
+from gnomoncore import gnomonTime #, gnomonDiscreteDynamicForm
 from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
 from gnomoncore import gnomonAbstractModel
 from gnomoncore import gnomonAbstractForm, gnomonSphereForm
@@ -136,12 +136,12 @@ class TestModelSystemScenario(unittest.TestCase):
     def test_gnomonSphereExpansion(self):
         system = gnomonSystem(self.system_scenario)
         dt = 1
-        for t in xrange(0, 20):
+        for t in range(0, 20):
             system.step(t, dt)
             self.dynamic_sphere.insert(self.system_scenario.sphere,gnomonTime(t+dt))
             # self.dynamic_wall.insert(self.system_scenario.wall,gnomonTime(t+dt))
 
-        print self.dynamic_sphere.availableTimes()
+        print(self.dynamic_sphere.availableTimes())
 
         eps = 1e-4
         assert abs(self.sphere.radius() - 19.0272) < eps

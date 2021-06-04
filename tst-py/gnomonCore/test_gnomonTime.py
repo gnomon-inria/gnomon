@@ -1,29 +1,6 @@
-# Version: $Id$
-#
-#
-
-# Commentary:
-#
-#
-
-# Change Log:
-#
-#
-
-# Code:
-
 import unittest
 import sys
-from PyQt5.QtCore import QSettings
 
-settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
-settings.beginGroup("modules");
-paths = settings.value("path")
-settings.endGroup()
-
-for path in paths.split(":"):
-    sys.path.append(path)
-    
 from gnomoncore import gnomonTime
 
 class TestGnomonTime(unittest.TestCase):
@@ -31,7 +8,7 @@ class TestGnomonTime(unittest.TestCase):
     Tests the gnomonTime class.
     '''
 
-    def setUp(self):    
+    def setUp(self):
         self.t0 = gnomonTime(0)
         self.t1 = gnomonTime(1)
         self.t2 = gnomonTime(0, gnomonTime.ArbitraryTime)
