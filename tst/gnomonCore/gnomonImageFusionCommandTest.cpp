@@ -11,30 +11,27 @@
 
 #include <dtkImage>
 
-// For tests checking
+namespace fusion {
 bool t_remove_images_called = false;
 int t_nb_image_added = 0;
 bool t_set_parameter_called = false;
 bool t_run_called = false;
 bool t_remove_landmarks = false;
+}
 
 
 class dummyImageFusionPlugin : public gnomonAbstractImageFusion {
 public:
-    dummyImageFusionPlugin(void) = default;
-    ~dummyImageFusionPlugin(void) = default;
-
-public:
-    void setParameter(const QString& parameterName, const QVariant& parameterValue) override {t_set_parameter_called = true;};
+    void setParameter(const QString& parameterName, const QVariant& parameterValue) override {fusion::t_set_parameter_called = true;};
     QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
 
-    void run(void) override{ t_run_called = true;};
+    void run(void) override{ fusion::t_run_called = true;};
     QString documentation(void) override {return "empty";};
-    void addImage(gnomonImageSeries *) override { t_nb_image_added++;};
-    void removeImages(void) override { t_remove_images_called = true; t_nb_image_added=0;};
+    void addImage(gnomonImageSeries *) override { fusion::t_nb_image_added++;};
+    void removeImages(void) override { fusion::t_remove_images_called = true; fusion::t_nb_image_added=0;};
 
     void addLandmarks(const std::vector<gnomonLandmark>&) override {};
-    void removeLandmarks(void) override {t_remove_landmarks = true;};
+    void removeLandmarks(void) override {fusion::t_remove_landmarks = true;};
 
     gnomonImageSeries *output() override { return nullptr;};
 };
@@ -73,7 +70,6 @@ void gnomonImageFusionCommandTestCase::init(void)
 
 void gnomonImageFusionCommandTestCase::redo(void)
 {
-
     d->image_series.push_back(new gnomonImageSeries());
     d->image_series.push_back(new gnomonImageSeries());
     d->image_series.push_back(new gnomonImageSeries());
@@ -86,13 +82,13 @@ void gnomonImageFusionCommandTestCase::redo(void)
     d->fusion_command->setParameter("n_job", 1);
     d->fusion_command->redo();
 
-    QVERIFY(t_nb_image_added==3 && t_run_called && t_remove_images_called);
+    QVERIFY(fusion::t_nb_image_added==3 && fusion::t_run_called && fusion::t_remove_images_called);
 }
 
 void gnomonImageFusionCommandTestCase::undo(void)
 {
     d->fusion_command->undo();
-    QVERIFY(t_remove_landmarks);
+    QVERIFY(fusion::t_remove_landmarks);
 }
 
 void gnomonImageFusionCommandTestCase::cleanup(void)

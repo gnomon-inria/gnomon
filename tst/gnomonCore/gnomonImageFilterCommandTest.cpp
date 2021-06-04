@@ -10,6 +10,29 @@
 
 #include <dtkImage>
 
+namespace filter{
+bool t_run_called = false;
+bool t_set_input_called = false;
+bool t_set_parameter_called = false;
+}
+
+class dummyImageFilterPlugin : public gnomonAbstractImageFilter {
+public:
+    void setParameter(const QString& parameterName, const QVariant& parameterValue) override {filter::t_set_parameter_called = true;};
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+
+    void run(void) override{ filter::t_run_called = true;};
+    QString documentation(void) override {return "empty";};
+    void setInput(gnomonImageSeries *image_series) override {filter::t_set_input_called = true;};
+    gnomonImageSeries *input() override {return nullptr;};
+    gnomonImageSeries *output() override {return nullptr;};
+};
+
+inline gnomonAbstractImageFilter* dummyImageFilterPluginCreator(void)  {
+    return new dummyImageFilterPlugin();
+}
+
+
 class gnomonImageFilterCommandTestCasePrivate
 {
 public:
@@ -29,34 +52,28 @@ gnomonImageFilterCommandTestCase::~gnomonImageFilterCommandTestCase(void)
 void gnomonImageFilterCommandTestCase::initTestCase(void)
 {
     dtkScriptInterpreterPython::instance()->init();
+    gnomonCore::imageFilter::pluginFactory().record("dummyImageFilter", dummyImageFilterPluginCreator);
 }
 
 void gnomonImageFilterCommandTestCase::init(void)
 {
-    d->filter_command = new gnomonImageFilterCommand("morphoContrastTimagetk");
-    Q_ASSERT(d->filter_command);
+    d->filter_command = new gnomonImageFilterCommand("dummyImageFilter");
+    QVERIFY(d->filter_command);
 }
 
 void gnomonImageFilterCommandTestCase::redo(void)
 {
-    gnomonImageReaderCommand* command = new gnomonImageReaderCommand("gnomonImageReader");
-    Q_ASSERT(command);
-
-    QString image_0_file_path = QFINDTESTDATA("../resources/time_0_cut_resampled.inr");
-    command->setPath(image_0_file_path);
-    command->redo();
-    d->image_series = command->image();
-
-    d->filter_command->setInput(d->image_series);
- 
+    d->filter_command->setInput(new gnomonImageSeries());
     d->filter_command->redo();
 
-    delete command;
+    QVERIFY(filter::t_run_called && !filter::t_set_input_called);
+
 }
 
 void gnomonImageFilterCommandTestCase::undo(void)
 {
     d->filter_command->undo();
+    QVERIFY(filter::t_set_input_called);
 }
 
 void gnomonImageFilterCommandTestCase::cleanup(void)

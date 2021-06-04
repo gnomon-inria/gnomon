@@ -16,7 +16,6 @@ private slots:
 
 private slots:
     void readInr(void);
-    void readCzi(void);
 
 private slots:
     void cleanupTestCase(void);
