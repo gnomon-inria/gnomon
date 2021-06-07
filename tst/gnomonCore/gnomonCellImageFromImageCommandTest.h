@@ -2,13 +2,13 @@
 
 #include <QtCore>
 
-class gnomonSegmentationCommandTestCase : public QObject
+class gnomonCellImageFromImageCommandTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-    gnomonSegmentationCommandTestCase(void);
-    ~gnomonSegmentationCommandTestCase(void);
+    gnomonCellImageFromImageCommandTestCase(void);
+    ~gnomonCellImageFromImageCommandTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -23,5 +23,5 @@ private slots:
     void cleanup(void);
 
 private:
-    class gnomonSegmentationCommandTestCasePrivate *d;
+    class gnomonCellImageFromImageCommandTestCasePrivate *d;
 };

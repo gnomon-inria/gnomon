@@ -1,33 +1,6 @@
-# Version: $Id$
-#
-#
-
-# Commentary:
-#
-#
-
-# Change Log:
-#
-#
-
-# Code:
-
 import unittest
-import sys
-from PyQt5.QtCore import QSettings
-
-settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
-settings.beginGroup("modules");
-paths = settings.value("path")
-settings.endGroup()
-
-for path in paths.split(":"):
-    sys.path.append(path)
-    
 from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
 from gnomoncore import gnomonSphereForm, gnomonWallForm
-
-# AaAaargh!
 from gnomoncore import vec3_t
 
 class sphereExpansionScenario(gnomonAbstractSystemScenario):
@@ -73,7 +46,7 @@ class TestSystemScenario(unittest.TestCase):
     def test_gnomonSphereExpansion(self):
         system = gnomonSystem(self.system_scenario)
         dt = 1
-        for t in xrange(0, 20):
+        for t in range(0, 20):
             system.step(t, dt)
 
         eps = 1e-4

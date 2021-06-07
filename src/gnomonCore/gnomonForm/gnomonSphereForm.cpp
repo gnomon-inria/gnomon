@@ -5,10 +5,20 @@ gnomonSphereForm::gnomonSphereForm(void)
 //    this->record();
 }
 
+gnomonSphereForm *gnomonSphereForm::clone(void)
+{
+    gnomonSphereForm *newForm = new gnomonSphereForm();
+    newForm->setCenter(m_center);
+    newForm->setRadius(m_radius);
+    return newForm;
+}
+
 QString gnomonSphereForm::name(void) const
 {
     return "gnomonSphereForm";
 }
+
+
 
 const gnomon::vec3_t gnomonSphereForm::center(void) const
 {

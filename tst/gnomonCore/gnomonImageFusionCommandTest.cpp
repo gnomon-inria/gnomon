@@ -3,12 +3,42 @@
 #include <gnomonCore>
 #include <gnomonTest>
 
+
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFusionCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
 
 #include <dtkScript>
 
 #include <dtkImage>
+
+namespace fusion {
+bool t_remove_images_called = false;
+int t_nb_image_added = 0;
+bool t_set_parameter_called = false;
+bool t_run_called = false;
+bool t_remove_landmarks = false;
+}
+
+
+class dummyImageFusionPlugin : public gnomonAbstractImageFusion {
+public:
+    void setParameter(const QString& parameterName, const QVariant& parameterValue) override {fusion::t_set_parameter_called = true;};
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+
+    void run(void) override{ fusion::t_run_called = true;};
+    QString documentation(void) override {return "empty";};
+    void addImage(gnomonImageSeries *) override { fusion::t_nb_image_added++;};
+    void removeImages(void) override { fusion::t_remove_images_called = true; fusion::t_nb_image_added=0;};
+
+    void addLandmarks(const std::vector<gnomonLandmark>&) override {};
+    void removeLandmarks(void) override {fusion::t_remove_landmarks = true;};
+
+    gnomonImageSeries *output() override { return nullptr;};
+};
+
+inline gnomonAbstractImageFusion* dummyImageFusionPluginCreator(void)  {
+    return new dummyImageFusionPlugin();
+}
 
 class gnomonImageFusionCommandTestCasePrivate
 {
@@ -29,46 +59,36 @@ gnomonImageFusionCommandTestCase::~gnomonImageFusionCommandTestCase(void)
 void gnomonImageFusionCommandTestCase::initTestCase(void)
 {
     dtkScriptInterpreterPython::instance()->init();
+    gnomonCore::imageFusion::pluginFactory().record("dummyImageFusion", dummyImageFusionPluginCreator);
 }
 
 void gnomonImageFusionCommandTestCase::init(void)
 {
-    d->fusion_command = new gnomonImageFusionCommand("gnomonImageFusion");
+    d->fusion_command = new gnomonImageFusionCommand("dummyImageFusion");
     Q_ASSERT(d->fusion_command);
 }
 
 void gnomonImageFusionCommandTestCase::redo(void)
 {
-    gnomonImageReaderCommand* command = new gnomonImageReaderCommand("gnomonImageReader");
-    Q_ASSERT(command);
-
-    QString image_0_file_path = QFINDTESTDATA("../resources/time_0_cut_resampled.inr");
-    command->setPath(image_0_file_path);
-    command->redo();
-    d->image_series.push_back(command->image());
-
-    QString image_1_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated1_resampled.inr");
-    command->setPath(image_1_file_path);
-    command->redo();
-    d->image_series.push_back(command->image());
-
-    QString image_2_file_path = QFINDTESTDATA("../resources/time_0_cut_rotated2_resampled.inr");
-    command->setPath(image_2_file_path);
-    command->redo();
-    d->image_series.push_back(command->image());
+    d->image_series.push_back(new gnomonImageSeries());
+    d->image_series.push_back(new gnomonImageSeries());
+    d->image_series.push_back(new gnomonImageSeries());
 
     d->fusion_command->addImage(d->image_series[0]);
     d->fusion_command->addImage(d->image_series[1]);
     d->fusion_command->addImage(d->image_series[2]);
- 
+
     d->fusion_command->setParameter("nb_iterations", 0);
     d->fusion_command->setParameter("n_job", 1);
     d->fusion_command->redo();
+
+    QVERIFY(fusion::t_nb_image_added==3 && fusion::t_run_called && fusion::t_remove_images_called);
 }
 
 void gnomonImageFusionCommandTestCase::undo(void)
 {
     d->fusion_command->undo();
+    QVERIFY(fusion::t_remove_landmarks);
 }
 
 void gnomonImageFusionCommandTestCase::cleanup(void)

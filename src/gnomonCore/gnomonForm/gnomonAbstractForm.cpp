@@ -25,6 +25,7 @@
 #include "gnomonMesh/gnomonMesh.h"
 #include "gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonTree/gnomonTree.h"
+#include "gnomonSphereForm.h"
 
 //void gnomonAbstractForm::record(void)
 //{
@@ -56,6 +57,9 @@ gnomonMesh *gnomonAbstractForm::asMesh()
 
 gnomonPointCloud *gnomonAbstractForm::asPointCloud()
 { return dynamic_cast<gnomonPointCloud *>(this); }
+
+gnomonSphereForm *gnomonAbstractForm::asSphere()
+{ return dynamic_cast<gnomonSphereForm *>(this); }
 
 gnomonTree *gnomonAbstractForm::asTree()
 { return dynamic_cast<gnomonTree *>(this); }

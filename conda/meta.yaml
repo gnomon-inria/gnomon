@@ -63,7 +63,7 @@ requirements:
     - vtk=8.2.0
     - ffmpeg =4.2.3
     - libnetcdf =4.7.3
-    - tbb-devel =2019.*
+    - tbb-devel =2020.*
     - zlib
 
   run:
@@ -91,7 +91,7 @@ requirements:
     - vtk=8.2.0
     - ffmpeg >=4.2
     - libnetcdf =4.7.3
-    - tbb-devel =2019.*
+    - tbb-devel =2020.*
     - zlib
 
 app:

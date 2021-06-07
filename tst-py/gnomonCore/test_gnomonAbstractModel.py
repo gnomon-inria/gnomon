@@ -1,29 +1,5 @@
-# Version: $Id$
-#
-#
-
-# Commentary:
-#
-#
-
-# Change Log:
-#
-#
-
-# Code:
-
 import unittest
-import sys
-from PyQt5.QtCore import QSettings
 
-settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
-settings.beginGroup("modules");
-paths = settings.value("path")
-settings.endGroup()
-
-for path in paths.split(":"):
-    sys.path.append(path)
-    
 from gnomoncore import gnomonAbstractModel, gnomonAbstractForm
 from gnomoncore import gnomonTime
 
@@ -127,7 +103,7 @@ class TestSphereModel(unittest.TestCase):
 
     def test_gnomonAbstractModel_loop(self):
         self.model.step()
-        for step in xrange(8):
+        for step in range(8):
             self.model.setForm(self.model.nextForm())
             self.model.setTime(self.model.nextTime())
             self.model.step()

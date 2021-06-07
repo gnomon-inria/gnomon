@@ -9,6 +9,27 @@
 
 #include <dtkImage>
 
+namespace reader {
+bool t_set_path = false;
+bool t_run_called = false;
+}
+
+
+class dummyImageReaderPlugin : public gnomonAbstractImageReader {
+public:
+    void setParameter(const QString& parameterName, const QVariant& parameterValue) override {};
+    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+
+    void run(void) override{ reader::t_run_called = true;};
+    QString documentation(void) override {return "empty";};
+    void setPath(const QString& path) override {reader::t_set_path = true;};
+    gnomonImageSeries *image() override {return nullptr;};
+    QStringList extensions(void) override {return QStringList();};
+};
+
+inline gnomonAbstractImageReader* dummyImageReaderPluginCreator(void)  {
+    return new dummyImageReaderPlugin();
+}
 
 class gnomonImageReaderCommandTestCasePrivate
 {
@@ -28,76 +49,25 @@ gnomonImageReaderCommandTestCase::~gnomonImageReaderCommandTestCase(void)
 void gnomonImageReaderCommandTestCase::initTestCase(void)
 {
     dtkScriptInterpreterPython::instance()->init();
+    gnomonCore::imageReader::pluginFactory().record("dummyImageReader", dummyImageReaderPluginCreator);
 }
 
 void gnomonImageReaderCommandTestCase::init(void)
 {
-    d->command = new gnomonImageReaderCommand("gnomonImageReader");
-    Q_ASSERT(d->command);
+    d->command = new gnomonImageReaderCommand("dummyImageReader");
+    QVERIFY(d->command);
 }
 
 void gnomonImageReaderCommandTestCase::readInr(void)
 {
     QString image_file_path = QFINDTESTDATA("../resources/rect_t0.inr");
     d->command->setPath(image_file_path);
+    QVERIFY(!reader::t_set_path);
 
     d->command->redo();
-
-    gnomonImageSeries *image_series = d->command->image();
-
-    QVERIFY(image_series->times().size() == 1);
-    QVERIFY(image_series->times().first() == 0);
-
-    dtkImage* image = dynamic_cast<gnomonImage *>(image_series->current())->image();
-
-    QVERIFY(image->xDim() == 7);
-    QVERIFY(image->yDim() == 5);
-    QVERIFY(image->zDim() == 3);
-
-    d->command->undo();
-
-    delete image_series;
+    QVERIFY(reader::t_set_path && reader::t_run_called);
 }
 
-void gnomonImageReaderCommandTestCase::readCzi(void)
-{
-    QString image_file_path = QFINDTESTDATA("../resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi");
-
-    d->command->setPath(image_file_path);
-
-    d->command->redo();
-
-    gnomonImageSeries *image_series = d->command->image();
-
-    QVERIFY(image_series->times().size() == 1);
-    QVERIFY(image_series->times().first() == 0);
-
-    QStringList true_list = {"ChS1_EYFP", "Ch1_EBFP", "Ch2_PI", "Ch2_mCherry", "ChS1_EGFP"};
-
-    QStringList channels = dynamic_cast<gnomonImage *>(image_series->current())->channels();
-
-    for (auto& channel : channels) {
-        QVERIFY(true_list.contains(channel));
-    }
-    for (auto& channel : true_list) {
-        QVERIFY(channels.contains(channel));
-    }
-
-    dtkImage* image = nullptr;
-
-    for(auto& channel : channels)
-    {
-      image =  dynamic_cast<gnomonImage *>(image_series->current())->image(channel);
-
-      QVERIFY(image->xDim() == 101);
-      QVERIFY(image->yDim() == 101);
-      QVERIFY(image->zDim() == 20);
-    }
-
-    d->command->undo();
-
-    delete image_series;
-}
 
 void gnomonImageReaderCommandTestCase::cleanup(void)
 {
