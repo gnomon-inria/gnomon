@@ -26,7 +26,9 @@ class gnomonImage;
 class gnomonLString;
 class gnomonMesh;
 class gnomonPointCloud;
+class gnomonSphereForm;
 class gnomonTree;
+
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -58,6 +60,7 @@ public:
     gnomonLString *asLString();
     gnomonMesh *asMesh();
     gnomonPointCloud *asPointCloud();
+    gnomonSphereForm *asSphere();
     gnomonTree *asTree();
 };
 

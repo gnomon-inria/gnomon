@@ -14,6 +14,7 @@ class GNOMONCORE_EXPORT gnomonSphereForm : public gnomonAbstractForm
 public:
     gnomonSphereForm(void);
     ~gnomonSphereForm(void) = default;
+    gnomonSphereForm *clone(void);
 
 public:
     QString name(void) const override;

@@ -781,6 +781,7 @@ namespace std {
 %template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
 %template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
 %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
+%template(gnomonSphereSeries) gnomonTimeSeries<gnomonSphereForm>;
 %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
 %template(gnomonAbstractCellComplexAdapter) gnomonAbstractFormAdapter<gnomonCellComplexSeries>;
