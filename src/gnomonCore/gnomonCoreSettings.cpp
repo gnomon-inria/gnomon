@@ -40,6 +40,27 @@ gnomonCoreSettings::gnomonCoreSettings(void) : QSettings(QSettings::IniFormat, Q
 
     this->sync();
     this->endGroup();
+
+    this->beginGroup("mongo");
+
+    if(!this->allKeys().contains("server"))
+        this->setValue("mongoserver", QString("myhost.company.com"));
+
+    if(!this->allKeys().contains("user"))
+        this->setValue("mongouser", QString("nobody"));
+
+    if(!this->allKeys().contains("passwd"))
+        this->setValue("mongopasswd", QString("insert your password here"));
+
+    if(!this->allKeys().contains("port"))
+        this->setValue("mongoport", 4064);
+
+    if(!this->allKeys().contains("dbpath"))
+        this->setValue("mongodbpath", 4064);
+
+    this->sync();
+    this->endGroup();
+
 }
 
 gnomonCoreSettings::~gnomonCoreSettings(void)

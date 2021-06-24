@@ -75,6 +75,7 @@
 #include "gnomonModel/gnomonAbstractTissueGrowthModel.h"
 #include "gnomonModel/gnomonSystem.h"
 
+#include "gnomonAbstractDataDriver.h"
 #include "gnomonCoreParameter.h"
 #include "gnomonCoreSettings.h"
 #include "gnomonDataManager.h"

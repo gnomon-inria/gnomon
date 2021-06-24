@@ -40,6 +40,7 @@
 #endif
 
 #include <dtkCore>
+#include <gnomonCore/gnomonAbstractDataDriver.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
@@ -685,6 +686,7 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+%include <gnomonCore/gnomonAbstractDataDriver.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
