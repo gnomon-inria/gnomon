@@ -19,6 +19,7 @@
 #define GNOMON_GIT_UPDATES "@GNOMON_GIT_UPDATES@"
 
 #define GNOMON_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
+#define GNOMON_VERSION "@gnomon_VERSION@"
 
 //
 // gnomonConfig.h.in ends here

@@ -75,3 +75,22 @@ Existing plugins
 
 
 To install a plugin : ``conda install -c gnomon -c mosaic -c dtk-forge -c fredboudon -c conda-forge <package>``
+
+
+# Mongo
+
+a mongo instance will be automatically launched on gnomon start if there is none configured. The local instance can be tuned with
+ the qsettings parameters.
+
+A connection to an existing mongo db will try to be established if the following variables are set in the qsettings file:
+```
+[mongo]
+uri
+port
+login
+passwd
+```
+
+If a connection to an existing db is not possible, a local one will be created in the directory defined by the qsetting `mongo/dbpath`
+or in the directory `~/gnomondb` if the qsetting is not set.
+

@@ -28,12 +28,14 @@ add_subdirectory(gnomonModel)
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonAbstractDataDriver.h
   gnomonCore
   gnomonCore.h
   gnomonCoreParameter
   gnomonCoreParameter.h
   gnomonCoreSettings
   gnomonCoreSettings.h
+  gnomonDataDriver.h
   gnomonDataManager
   gnomonDataManager.h
   gnomonFileSystemFormReader.h
@@ -51,9 +53,11 @@ set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_MODEL_HEADERS})
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAbstractDataDriver.cpp
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonCoreParameter.cpp
+  gnomonDataDriver.cpp
   gnomonDataManager.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
