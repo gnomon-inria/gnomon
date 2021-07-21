@@ -78,6 +78,7 @@
 #include "gnomonAbstractDataDriver.h"
 #include "gnomonCoreParameter.h"
 #include "gnomonCoreSettings.h"
+#include "gnomonDataDriver.h"
 #include "gnomonDataManager.h"
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonFormVisitor.h"

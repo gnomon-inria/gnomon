@@ -182,7 +182,7 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
 
     node->addOutputPort(port);
     node->layout();
-   
+
     dtkComposerSceneEdge *edge = 0;
 
     if (d->last_port) {
@@ -327,22 +327,20 @@ bool gnomonComposerWidget::compositionInsert(const QString& file)
 
 bool gnomonComposerWidget::pipelineSave(void)
 {
-     bool status = false;
+    bool status = false;
 
-    QSettings settings("inria", "dtk");
-    settings.beginGroup("General");
-    QString path = settings.value("last_open_dir", QDir::homePath()).toString();
-    settings.endGroup();
+    gnomonCoreSettings settings;
+    QString path = settings.value("pipeline/last_open_dir", QDir::homePath()).toString();
 
-    QFileDialog dialog(this, "Save pipeline", path, QString("Python script (*.py)"));
+    QFileDialog dialog(this, "Save pipeline", path);
     dialog.setStyleSheet("");
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setConfirmOverwrite(true);
-//    dialog.setFileMode(QFileDialog::AnyFile);
-    dialog.setDefaultSuffix("py");
 
     if(dialog.exec()) {
-        gnomonPipeline::instance()->exportToLuigiScript(dialog.selectedFiles().first());
+        QString file = dialog.selectedFiles().first();
+        gnomonPipeline::instance()->exportToLuigiScript(file + ".py");
+        gnomonPipeline::instance()->exportToJson(file + ".json");
         status = true;
     }
 

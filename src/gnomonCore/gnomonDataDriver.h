@@ -13,17 +13,19 @@ class GNOMONCORE_EXPORT gnomonDataDriver
 {
 
 public:
-    static gnomonDataDriver *instance(const QString& name = "mongo");
+    static gnomonDataDriver *instance(const QString& name = "gnomonDataDriverMongo");
 
 protected:
     static gnomonDataDriver *s_instance;
 
 public:
-    const QString& name(void);
-    bool insert(const QString& doc);
-    bool remove(const QString& key);
+    QString name(void);
+
+    // return ths inserted _id
+    QString insert(const QString& doc);
+    bool delete_one(const QString& key);
     bool protect(const QString& key);
-    const QString& find(const QString& query);
+    QStringList find(const QString& query);
 
 private:
     gnomonDataDriver(const QString& name);

@@ -72,7 +72,7 @@ requirements:
     - dtk-macs >=2.0.3
     - dtk-fonts >=2.1.1
     - dtk-themes >=2.1.17
-    - dtk-themes-python >=2.0.6
+    - dtk-themes-python >=2.0.4
     - dtk-core >=2.9.1
     - dtk-core-python =2.6.0
     - dtk-imaging >=2.0.4

@@ -86,6 +86,7 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
     d = new gnomonMainWindowPrivate;
     d->q = this;
 
+    dtk::widgets::workspace::pluginFactory().record( "Database Browser", creator<gnomonWorkspaceDatabaseBrowser>);
     dtk::widgets::workspace::pluginFactory().record( "Form Browser", creator<gnomonWorkspaceBrowser>);
     dtk::widgets::workspace::pluginFactory().record( "Python Form Algorithm", creator<gnomonWorkspacePythonAlgorithm>);
     dtk::widgets::workspace::pluginFactory().record( "Python Simulation", creator<gnomonWorkspacePythonSimulator>);
@@ -136,6 +137,10 @@ gnomonMainWindow::gnomonMainWindow(const QString& workspace_name, QWidget *paren
     }
     if (!gnomonWorkspacePythonAlgorithm::isEmpty()) {
         d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Python Form Algorithm", "Run a custom algorithm written in Python on any type of forms", "Python Form Algorithm", gnomonWorkspacePythonAlgorithm::color);
+    }
+
+    if (!gnomonWorkspaceDatabaseBrowser::isEmpty()) {
+        d->workspace_bar->addWorkspaceInMenu("General", general_package_desc, "Database Browser", "load / remove what's in the database", "Database Browser", gnomonWorkspaceDatabaseBrowser::color);
     }
 
     //const QString python_model_desc = QString("Runs a dynamical system model on forms based on a Python code.");

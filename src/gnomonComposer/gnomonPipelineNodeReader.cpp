@@ -70,6 +70,23 @@ QString gnomonPipelineNodeReader::toToml(const QString& node_name)
     return node_string;
 }
 
+const QJsonObject gnomonPipelineNodeReader::toJson(const QString& node_name)
+{
+    QJsonObject json;
+    json.insert("name", node_name);
+    json.insert("plugin_name", d->algorithm);
+    json.insert("path", dd->path);
+
+    QJsonArray out;
+    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+        auto&& output_name = it.key();
+        out.append(output_name);
+    }
+    json.insert("outputs", out);
+
+    return json;
+}
+
 QString gnomonPipelineNodeReader::toLuigiClass(void)
 {
     QString luigi_string;

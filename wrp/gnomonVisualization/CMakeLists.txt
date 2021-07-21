@@ -1,4 +1,4 @@
-project(gnomonvisualization)
+project(gnomonvisualization VERSION ${gnomon_VERSION})
 
 set(LAYER_NAME gnomonVisualization)
 
@@ -9,7 +9,7 @@ get_property(LAYER_INCLUDES TARGET ${LAYER_NAME} PROPERTY INTERFACE_INCLUDE_DIRE
 if(NOT DTK_SWIG_INCLUDE_PATH)
   message(FATAL_ERROR "You use a bad dtkScript version. Need DTK_SWIG_INCLUDE_PATH to continue")
 endif(NOT DTK_SWIG_INCLUDE_PATH)
-list(INSERT LAYER_INCLUDES 0 ${DTK_SWIG_INCLUDE_PATH})
+list(APPEND LAYER_INCLUDES ${DTK_SWIG_INCLUDE_PATH})
 
 #message(${DTK_SWIG_INCLUDE_PATH})
 # swig stuff

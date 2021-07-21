@@ -12,7 +12,7 @@
 ##
 ### Code:
 
-project(gnomonVisualization)
+project(gnomonVisualization VERSION ${gnomon_VERSION})
 
 ## #################################################################
 ## Inputs

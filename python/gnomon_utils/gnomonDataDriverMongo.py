@@ -9,6 +9,7 @@ from datetime import date
 from gnomoncore import gnomonAbstractDataDriver, gnomonAbstractDataDriverPlugin
 from PyQt5.QtCore import QSettings
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 
 from .gnomonPlugin import gnomonPlugin
@@ -28,7 +29,8 @@ class gnomonDataDriverMongo(gnomonAbstractDataDriver):
         port = settings.value("port")
         user = settings.value("logging")
         pwd = settings.value("passwd")
-        is_test = os.environ["IS_TEST"] == "1"
+
+        is_test = "IS_TEST" in os.environ
         if is_test:
             print("MONGO TEST ENVIRONMENT")
 
@@ -77,50 +79,92 @@ class gnomonDataDriverMongo(gnomonAbstractDataDriver):
         self._finalizer = weakref.finalize(self, closeProcess, self.process)
 
     def name(self):
-        return "mongo"
+        return "gnomonDataDriverMongo"
+
+    def _toJson(self, query):
+        """internal method to transform a string query to a json document
+        If a _id key is present, it will also transform it from a string to an ObjectID
+
+        Args:
+            doc (str): the query as a string
+        """
+        if type(query) is str:
+            query = json.loads(query)
+
+        if "_id" in query and type(query["_id"]) is str:
+            query["_id"] = ObjectId(query["_id"])
+
+        return query
+
 
     def insert(self, doc):
-        # TODO latter
-        # depending of the contents of the document, insert into pipeline or runs collection
+        # if type(doc) is list:
+        #     res = True
+        #     for single_doc in doc:
+        #         res = res and self.insert(single_doc)
+        #         return res
+
+        doc = self._toJson(doc)
+
         doc['user'] = get_username()
         doc['date'] = date.today().isoformat()
         if doc['type'] == 'pipeline':
-            self._db.pipelines.insert_one(doc)
+            res = self._db.pipelines.insert_one(doc)
         elif doc['type'] == 'run':
-            self._db.runs.insert_one(doc)
+            res = self._db.runs.insert_one(doc)
         else:
             print(f"wrong type of document for: {doc}")
-            return False
+            return None
 
-        return True
+        return str(res.inserted_id)
 
     def delete_one(self, key):
+        key = self._toJson(key)
+
         if "type" in key and key["type"] == "run":
             res = self._db.runs.delete_one(key)
         else:
             res = self._db.pipelines.delete_one(key)
+
         return res.deleted_count == 1
 
     def protect(self, key):
         to_protect = self.find_one(key)
-        assert(to_protect)
+
+        if not to_protect:
+            print(f" cannot found object with key {key} to protect it")
+            return False
 
         to_protect['expiration_date'] = date.today().replace(year=date.today().year+1).isoformat()
         if 'pipelines' in to_protect:
             # protect the pipelines as well
             p_ids = [p["id"] for p in to_protect["pipelines"] ]
             for p_id in  p_ids:
-                # TODO use id or something like name ?
-                p = self.find_one({"id" : p_id})
+                p = self.find_one(f'{{"id" : "{p_id}"}}')
                 assert(p)
-                self.protect(p)
+                p['expiration_date'] = date.today().replace(year=date.today().year+1).isoformat()
+                self._db.protected.insert_one(p)
 
         self._db.protected.insert_one(to_protect)
         return True
 
     def find_one(self, query):
+        query = self._toJson(query)
         if "type" in query and query["type"] == "run":
             res = self._db.runs.find_one(query)
         else:
             res = self._db.pipelines.find_one(query)
         return res
+
+    def find(self, query):
+        query = self._toJson(query)
+        if "type" in query and query["type"] == "run":
+            res = self._db.runs.find(query)
+        else:
+            res = self._db.pipelines.find(query)
+
+        res_list = [doc for doc in res]
+        for doc in res_list:
+            doc["_id"] = str(doc["_id"])
+
+        return [json.dumps(doc) for doc in res_list]
