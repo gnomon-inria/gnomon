@@ -19,18 +19,18 @@ gnomonDataDriver *gnomonDataDriver::instance(const QString& name)
     return s_instance;
 }
 
-const QString& gnomonDataDriver::name(void) {
+QString gnomonDataDriver::name(void) {
     return d->name();
 }
 
-bool gnomonDataDriver::insert(const QString& doc)
+QString gnomonDataDriver::insert(const QString& doc)
 {
     return d->insert(doc);
 }
 
-bool gnomonDataDriver::remove(const QString& key)
+bool gnomonDataDriver::delete_one(const QString& key)
 {
-    return d->remove(key);
+    return d->delete_one(key);
 }
 
 bool gnomonDataDriver::protect(const QString& key)
@@ -38,7 +38,7 @@ bool gnomonDataDriver::protect(const QString& key)
     return d->protect(key);
 }
 
-const QString& gnomonDataDriver::find(const QString& query)
+QStringList gnomonDataDriver::find(const QString& query)
 {
     return d->find(query);
 }

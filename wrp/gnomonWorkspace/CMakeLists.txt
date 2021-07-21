@@ -12,7 +12,7 @@
 ##
 ### Code:
 
-project(gnomonworkspace)
+project(gnomonworkspace VERSION ${gnomon_VERSION})
 
 set(LAYER_NAME gnomonWorkspace)
 
@@ -22,7 +22,7 @@ if(NOT DTK_SWIG_INCLUDE_PATH)
   message(FATAL_ERROR "You use a bad dtkScript version. Need DTK_SWIG_INCLUDE_PATH to continue")
 endif(NOT DTK_SWIG_INCLUDE_PATH)
 
-list(INSERT LAYER_INCLUDES 0 ${DTK_SWIG_INCLUDE_PATH})
+list(APPEND LAYER_INCLUDES ${DTK_SWIG_INCLUDE_PATH})
 
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i PROPERTIES CPLUSPLUS ON)
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i PROPERTIES INCLUDE_DIRECTORIES  "${LAYER_INCLUDES}")

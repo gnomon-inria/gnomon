@@ -14,6 +14,7 @@
 
 #include "gnomonPipeline.h"
 
+#include "gnomon"
 #include "gnomonPipelineNode.h"
 
 #include "gnomonPipelineNodeAdapter.h"
@@ -307,7 +308,7 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
                 node_forces["source_left_drift"][n] = QVector2D(x_drift*abs(x_drift)/pow(target_distance,2),0);
             }
         }
-        
+
         node_forces["sink_right_drift"] = QList<QVector2D>();
         for (int n=0; n<node_positions.size(); n++) {
             QVector2D node_force = QVector2D(0,0);
@@ -661,6 +662,103 @@ void gnomonPipeline::exportToToml(const QString& path)
         out << d->pipeline_nodes[node_name]->toToml(node_name);
     }
     file.close();
+}
+
+void gnomonPipeline::exportToJson(const QString& path)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    // 1 pipeline document
+    QJsonObject pipeline_json;
+    QString pipeline_name = QFileInfo(path).baseName();
+    pipeline_json.insert("type", "pipeline");
+    pipeline_json.insert("gnomonVersion", GNOMON_VERSION);
+    pipeline_json.insert("fileFormatVersion", "0.0.1");
+    pipeline_json.insert("name", pipeline_name);
+    pipeline_json.insert("description", "TODO");
+
+    QJsonArray inputs_json;  // input_name, node_name -> method
+    QJsonArray outputs_json; // output_name, node_name -> method
+
+    QJsonArray inputs_json_run; // "input": {"toto" : {"monnom": "/home/trcabel/Dev/naviscope/gnomon/gnomon-data/p58-t0_imgFus_down_interp_2x.inr.gz"}},
+
+
+    for (const auto& node_name : d->pipeline_node_names) {
+        auto node_json = d->pipeline_nodes[node_name]->toJson(node_name);
+        for (auto it = d->pipeline_edges.begin(); it != d->pipeline_edges.end(); ++it) {
+            auto&& edge_target = it.key();
+            if (edge_target.first == node_name) {
+                QString from = d->pipeline_edges[edge_target].first + " -> " + d->pipeline_edges[edge_target].second;
+                node_json.insert(edge_target.second, from);
+            }
+        }
+        pipeline_json.insert(node_name, node_json);
+
+        auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
+        if (node_reader) {
+            //this is a nodeReader add to inputs
+            QJsonObject input;
+            QString input_name = "my_input_" + QString::number(inputs_json.count());
+            input.insert(input_name, node_name + " -> path");
+            inputs_json.append(input);
+
+            QJsonObject input_run;
+            input_run.insert(input_name, node_json["path"]);
+            QJsonObject input_run_with_pipeline;
+            input_run_with_pipeline.insert(pipeline_name, input_run);
+            inputs_json_run.append(input_run_with_pipeline);
+        }
+
+        // TODO 1 pipeline for each output????
+        auto *node_writer = dynamic_cast<gnomonPipelineNodeWriter *>(d->pipeline_nodes[node_name]);
+        if (node_writer) {
+            //this is a nodeReader add to inputs
+            QJsonObject output;
+            output.insert("my_output" ,node_name + " -> path");
+            outputs_json.append(output); // "output": {"anOutput": "cellImageQuantification -> cellImage"},
+        }
+    }
+
+    pipeline_json.insert("input", inputs_json);
+    pipeline_json.insert("output", outputs_json);
+
+    QJsonDocument pipeline_doc(pipeline_json);
+    file.write(pipeline_doc.toJson());
+    file.close();
+
+    QJsonArray pipeline_ids = { gnomonDataDriver::instance()->insert(pipeline_doc.toJson()) };
+
+
+    // 2 run document
+    QString path_run = path;
+    path_run.remove(".json");
+    path_run += "_run.json";
+
+    QFile file_run(path_run);
+    if (!file_run.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QJsonObject run_json;
+    run_json.insert("pipeline", pipeline_ids);
+    run_json.insert("parameters", "TODO"); // "parameters": { "toto": {"cellImageFromImage" : {"h_min": 3}}},
+
+    run_json.insert("intermediateResults", "TODO"); // "intermediateResults":  {"toto" : {"cellImageFromImage -> output": "/asdasdasd/dsadad/"} } ,
+
+
+    run_json.insert("input", inputs_json_run); // "input": {"toto" : {"monnom": "/home/trcabel/Dev/naviscope/gnomon/gnomon-data/p58-t0_imgFus_down_interp_2x.inr.gz"}},
+
+    run_json.insert("output", "TODO"); // "output": ["/home/trcabel/aaa"]
+    run_json.insert("type", "run");
+    run_json.insert("gnomonVersion", GNOMON_VERSION);
+    run_json.insert("fileFormatVersion", "0.0.1");
+    run_json.insert("name", QFileInfo(path).baseName() + "_run");
+
+    QJsonDocument run_doc(run_json);
+    file_run.write(run_doc.toJson());
+    file_run.close();
+    gnomonDataDriver::instance()->insert(run_doc.toJson());
 }
 
 void gnomonPipeline::exportToLuigiScript(const QString& path)

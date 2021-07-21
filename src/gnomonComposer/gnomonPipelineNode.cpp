@@ -252,5 +252,12 @@ QString gnomonPipelineNode::toLuigiClass(void)
     return "";
 }
 
+const QJsonObject gnomonPipelineNode::toJson(const QString& node_name)
+{
+    QJsonObject json;
+    json.insert("name", node_name);
+    return json;
+}
+
 //
 // gnomonPipelineNode.cpp ends here

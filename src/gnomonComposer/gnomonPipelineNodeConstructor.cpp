@@ -75,6 +75,30 @@ QString gnomonPipelineNodeConstructor::toToml(const QString& node_name)
     return node_string;
 }
 
+const QJsonObject gnomonPipelineNodeConstructor::toJson(const QString& node_name)
+{
+    QJsonObject json;
+    json.insert("name", node_name);
+    json.insert("plugin_name", d->algorithm);
+
+    QJsonObject parameters;
+    for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
+        auto&& param = it.key();
+        QVariant parameter = dd->parameters[param];
+        parameters.insert(param, QJsonValue::fromVariant(parameter));
+    }
+    json.insert("parameters", parameters);
+
+    QJsonArray out;
+    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+        auto&& output_name = it.key();
+        out.append(output_name);
+    }
+    json.insert("outputs", out);
+
+    return json;
+}
+
 QString gnomonPipelineNodeConstructor::toLuigiClass(void)
 {
     QString luigi_string;

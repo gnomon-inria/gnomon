@@ -175,6 +175,11 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
 
     plugin_name = cls.__name__
     plugin_name = plugin_name[0].lower() + plugin_name[1:]
+
+    # TODO
+    # check plugin gnomon_version to actual version before registering it
+    # register plugin_version to be able to get it ?
+
     factory.recordPlugin(plugin_name, __PLUGINS__[-1])
     if plugin_name in factory.keys():
         logging.info("Python plugin "+str(plugin_name)+" has been successfully loaded!")

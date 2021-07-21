@@ -42,6 +42,7 @@ public:
 public:
     virtual QString toToml(const QString& node_name);
     virtual QString toLuigiClass(void);
+    virtual const QJsonObject toJson(const QString& node_name);
 
 protected:
     class gnomonPipelineNodePrivate *d;

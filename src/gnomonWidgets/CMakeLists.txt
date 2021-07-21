@@ -12,7 +12,7 @@
 ##
 ### Code:
 
-project(gnomonWidgets)
+project(gnomonWidgets VERSION ${gnomon_VERSION})
 
 ## #################################################################
 ## Inputs

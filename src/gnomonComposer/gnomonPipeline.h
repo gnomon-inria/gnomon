@@ -53,6 +53,7 @@ signals:
 public slots:
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
+    void exportToJson(const QString& path);
 
 public slots:
     void updateLayout(void);

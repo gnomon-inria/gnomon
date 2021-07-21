@@ -11,11 +11,11 @@ public:
 virtual ~gnomonAbstractDataDriver(void) = default;
 
 public:
-    virtual const QString& name(void) = 0;
-    virtual bool insert(const QString& doc) = 0;
-    virtual bool remove(const QString& key) = 0;
+    virtual QString name(void) = 0;
+    virtual QString insert(const QString& doc) = 0;
+    virtual bool delete_one(const QString& key) = 0;
     virtual bool protect(const QString& key) = 0;
-    virtual const QString& find(const QString& query) = 0;
+    virtual QStringList find(const QString& query) = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDriver *)

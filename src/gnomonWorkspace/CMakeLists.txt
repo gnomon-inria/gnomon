@@ -12,7 +12,7 @@
 ##
 ### Code:
 
-project(gnomonWorkspace)
+project(gnomonWorkspace VERSION ${gnomon_VERSION})
 
 ## #################################################################
 ## Sources
@@ -22,6 +22,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspace
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
+  gnomonWorkspaceDatabaseBrowser.h
   gnomonWorkspaceCellComplexConstructor
   gnomonWorkspaceCellComplexConstructor.h
   gnomonWorkspaceCellComplexFromCellImage
@@ -77,6 +78,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
+  gnomonWorkspaceDatabaseBrowser.cpp
   gnomonWorkspaceCellComplexConstructor.cpp
   gnomonWorkspaceCellComplexFromCellImage.cpp
   gnomonWorkspaceCellImageConstructor.cpp
