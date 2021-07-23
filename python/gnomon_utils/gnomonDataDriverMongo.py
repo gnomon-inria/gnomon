@@ -2,6 +2,7 @@ import getpass
 import json
 import os
 import subprocess
+import traceback
 import weakref
 
 import gnomoncore
@@ -119,6 +120,14 @@ class gnomonDataDriverMongo(gnomonAbstractDataDriver):
         return str(res.inserted_id)
 
     def delete_one(self, key):
+        doc = self.find_one(key)
+        if not doc:
+            print("cannot delete a unexisting doc")
+            return False
+        elif "expiration_date" in doc and date.today() < date.fromisoformat(doc["expiration_date"]):
+            print(f"cannot delete a protected doc (protected until {doc['expiration_date']})")
+            return False
+
         key = self._toJson(key)
 
         if "type" in key and key["type"] == "run":
@@ -129,24 +138,28 @@ class gnomonDataDriverMongo(gnomonAbstractDataDriver):
         return res.deleted_count == 1
 
     def protect(self, key):
-        to_protect = self.find_one(key)
+        try:
+            to_protect = self.find_one(key)
 
-        if not to_protect:
-            print(f" cannot found object with key {key} to protect it")
+            if not to_protect:
+                print(f" cannot found object with key {key} to protect it")
+                return False
+
+            exp_date = date.today().replace(year=date.today().year+1).isoformat()
+            if 'pipelines' in to_protect:
+                self._db.runs.update_one({'_id': to_protect['_id']}, {'$set': {'expiration_date': exp_date} } )
+
+                # protect the pipelines as well
+                p_ids = [p["id"] for p in to_protect["pipelines"] ]
+                for p_id in  p_ids:
+                    self._db.pipelines.update_one({'_id': p_id}, {'$set': {'expiration_date': exp_date} } )
+            else:
+                self._db.pipelines.update_one({'_id': to_protect['_id']}, {'$set': {'expiration_date': exp_date} } )
+
+            return True
+        except Exception:
+            traceback.print_exc()
             return False
-
-        to_protect['expiration_date'] = date.today().replace(year=date.today().year+1).isoformat()
-        if 'pipelines' in to_protect:
-            # protect the pipelines as well
-            p_ids = [p["id"] for p in to_protect["pipelines"] ]
-            for p_id in  p_ids:
-                p = self.find_one(f'{{"id" : "{p_id}"}}')
-                assert(p)
-                p['expiration_date'] = date.today().replace(year=date.today().year+1).isoformat()
-                self._db.protected.insert_one(p)
-
-        self._db.protected.insert_one(to_protect)
-        return True
 
     def find_one(self, query):
         query = self._toJson(query)
@@ -159,12 +172,14 @@ class gnomonDataDriverMongo(gnomonAbstractDataDriver):
     def find(self, query):
         query = self._toJson(query)
         if "type" in query and query["type"] == "run":
-            res = self._db.runs.find(query)
+            res = [doc for doc in self._db.runs.find(query)]
+        elif "type" in query and query["type"] == "pipeline":
+            res = [doc for doc in self._db.pipelines.find(query)]
         else:
-            res = self._db.pipelines.find(query)
+            res = [doc for doc in self._db.runs.find(query)]
+            res += [doc for doc in self._db.pipelines.find(query)]
 
-        res_list = [doc for doc in res]
-        for doc in res_list:
+        for doc in res:
             doc["_id"] = str(doc["_id"])
 
-        return [json.dumps(doc) for doc in res_list]
+        return [json.dumps(doc) for doc in res]

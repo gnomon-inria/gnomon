@@ -741,7 +741,7 @@ void gnomonPipeline::exportToJson(const QString& path)
         return;
 
     QJsonObject run_json;
-    run_json.insert("pipeline", pipeline_ids);
+    run_json.insert("pipelines", pipeline_ids);
     run_json.insert("parameters", "TODO"); // "parameters": { "toto": {"cellImageFromImage" : {"h_min": 3}}},
 
     run_json.insert("intermediateResults", "TODO"); // "intermediateResults":  {"toto" : {"cellImageFromImage -> output": "/asdasdasd/dsadad/"} } ,
