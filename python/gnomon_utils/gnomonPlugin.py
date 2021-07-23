@@ -137,6 +137,7 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
                 return f(self, *args, **kwargs)
             except Exception as e:
                 traceback.print_exc()
+                print(e)
 
         return func
 

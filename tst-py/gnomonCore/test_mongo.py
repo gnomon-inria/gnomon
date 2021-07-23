@@ -45,17 +45,10 @@ class TestMongo(unittest.TestCase):
 
     def test_protect(self):
         driver.protect('{"name":"wouf", "type" : "run"}')
-        pass
-        # TODO
 
-        # insert a document
-        # protect it
-
-        # find it OK
-
-        # try to remove it NOK
-
-
+        doc = json.loads(driver.find('{"name":"wouf", "type" : "run"}')[0])
+        assert doc["expiration_date"]
+        assert not driver.delete_one('{"name":"wouf", "type" : "run"}')
 
 #
 # test_gnomonTime.py ends here.
