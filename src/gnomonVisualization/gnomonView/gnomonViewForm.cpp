@@ -212,7 +212,7 @@ public:
 
 public:
     dtkWidgetsMenu *view_menu;
-    
+
 public:
     gnomonFormAdapterMenu *adapter_menu = nullptr;
 
@@ -556,9 +556,9 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
                 parent->addLayout(this->parameterLayouts[key]);
             }
 
-            QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+            QMap<QString, dtkCoreParameter *> parameters = v->parameters();
 
-            for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            for(QMap<QString, dtkCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
                 if (widget) {
                     this->parameterLayouts[key]->addRow(it.key(), widget);
@@ -892,7 +892,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                 d->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand(key);
                 delete adapter;
             }
-        } 
+        }
     }
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
@@ -1101,7 +1101,7 @@ void gnomonViewForm::switchTo2D(void)
         default:
             break;
     }
-    
+
     emit switchedTo2D();
 
     d->slice_slider->setVisible(true);

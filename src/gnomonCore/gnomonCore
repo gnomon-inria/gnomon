@@ -76,7 +76,7 @@
 #include "gnomonModel/gnomonSystem.h"
 
 #include "gnomonAbstractDataDriver.h"
-#include "gnomonCoreParameter.h"
+#include "dtkCoreParameter.h"
 #include "gnomonCoreSettings.h"
 #include "gnomonDataDriver.h"
 #include "gnomonDataManager.h"

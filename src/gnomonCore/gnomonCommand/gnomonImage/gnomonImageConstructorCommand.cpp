@@ -66,7 +66,7 @@ void gnomonImageConstructorCommand::setParameter(const QString& parameter, const
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonImageConstructorCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonImageConstructorCommand::parameters(void) const
 {
     return this->action->parameters();
 }

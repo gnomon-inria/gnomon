@@ -18,10 +18,10 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore>
+#include <dtkCore>
 
-class gnomonCoreParameterLookupTable;
-class gnomonCoreParameterColorMap;
+//class gnomonCoreParameterLookupTable;
+//class gnomonCoreParameterColorMap;
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameter
@@ -30,9 +30,10 @@ class gnomonCoreParameterColorMap;
 class GNOMONWIDGETS_EXPORT gnomonWidgetsParameter
 {
 public:
-    static QWidget *widget(gnomonCoreParameter *parameter, QWidget *parent);
+    static QWidget *widget(dtkCoreParameter *parameter, QWidget *parent);
 };
 
+/*
 // ///////////////////////////////////////////////////////////////////
 // gnomonWidgetsParameterInt
 // ///////////////////////////////////////////////////////////////////
@@ -41,7 +42,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterInt
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterInt *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_int *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterDouble
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterDouble *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_real *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterIntRange
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterIntRange *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_range_int *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -74,7 +75,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterDoubleRange
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterDoubleRange *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_range_real *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterBool
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterBool *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_bool *parameter, QWidget *parent);
 };
 
 
@@ -97,7 +98,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterText
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterText *parameter, QWidget *parent);
+    static QWidget *widget(dtkCoreParameterText *parameter, QWidget *parent);
 };
 
 
@@ -109,7 +110,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterString
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterString *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_inliststring *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -120,7 +121,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterStringList
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterStringList *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_inliststring *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -131,7 +132,7 @@ class GNOMONWIDGETS_EXPORT gnomonWidgetsParameterFile
 {
 public:
     static QString style;
-    static QWidget *widget(gnomonCoreParameterFile *parameter, QWidget *parent);
+    static QWidget *widget(dtk::d_path *parameter, QWidget *parent);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -158,3 +159,5 @@ public:
 
 //
 // gnomonWidgetsParameter.h ends here
+
+*/

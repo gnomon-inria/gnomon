@@ -20,8 +20,8 @@ public:
 
     gnomonImageSeries *output();
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-    
-    QMap<QString, gnomonCoreParameter*> parameters(void) const override;
+
+    QMap<QString, dtkCoreParameter*> parameters(void) const override;
     void setParameter(const QString&, const QVariant&);
 
 public:

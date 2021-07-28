@@ -75,7 +75,7 @@ public slots:
 
 void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
 {
-    double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
+    double alpha = ((dtk::d_real *)q->parameters()["alpha"])->value();
 
     if(this->actor) {
         this->actor->setOpacity(alpha);
@@ -88,7 +88,7 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateOpacity(void)
 
 void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
 {
-     QString property_name = ((gnomonCoreParameterString *)q->parameters()["property_name"])->value();
+     QString property_name = ((dtk::d_inliststring *)q->parameters()["property_name"])->value();
 
      QMap<long, QVariant> cellProperty;
      if(this->cellImage->cellPropertyNames().contains(property_name)) {
@@ -105,11 +105,9 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
      }
      auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
 
-     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
-     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
-     ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setValue(*(mm.first),*(mm.second));
-
-     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)this->q->parameters()["value_range"])->value();
+     ((dtk::d_range_real *)q->parameters()["value_range"])->setMin(*(mm.first));
+     ((dtk::d_range_real *)q->parameters()["value_range"])->setMax(*(mm.second));
+     ((dtk::d_range_real *)q->parameters()["value_range"])->setValue({*(mm.first),*(mm.second)});
 }
 
 // /////////////////////////////////////////////////////////////////
@@ -122,15 +120,15 @@ gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingC
     dd->cellImageSeries = Q_NULLPTR;
     dd->cellImage = Q_NULLPTR;
 
-    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellImage property to be displayed");
-    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
+    d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "CellImage property to be displayed");
+    d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
-    d->parameters["resolution"] = new gnomonCoreParameterDouble(1.5, 0.1, 5., 1, "Resampling voxelsize for computing the Marching Cubes");
+    d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellImage rendering");
+    d->parameters["resolution"] = new dtk::d_real("resolution", 1.5, 0.1, 5., 1, "Resampling voxelsize for computing the Marching Cubes");
 
-    d->parameters["x_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of x positions of cells to display");
-    d->parameters["y_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of y positions of cells to display");
-    d->parameters["z_range"] = new gnomonCoreParameterDoubleRange(0., 100., 0., 100., "Range of z positions of cells to display");
+    d->parameters["x_range"] = new dtk::d_range_real("x_range", {0., 100.}, 0., 100., "Range of x positions of cells to display");
+    d->parameters["y_range"] = new dtk::d_range_real("y_range", {0., 100.}, 0., 100., "Range of y positions of cells to display");
+    d->parameters["z_range"] = new dtk::d_range_real("z_range", {0., 100.}, 0., 100., "Range of z positions of cells to display");
 
     dd->interactor_style = new gnomonInteractorStyleCellImageMarchingCubes();
     dd->interactor_style->setVisualization(this);
@@ -178,15 +176,15 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
         return;
 
     this->setParameter("alpha",1.0);
-    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+    d->parameters["property_name"]->connect([=] (QVariant v) {
         if(!dd->cellImage)
             return;
         dd->updateValueRange();
         emit parametersChanged();
     });
 
-    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    dtk::d_inliststring *propertyParam = (dtk::d_inliststring *)d->parameters["property_name"];
+    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
 
     QStringList properties = {""};
     for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
@@ -206,20 +204,14 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
     dd->updateValueRange();
 
-    gnomonCoreParameterDoubleRange *xRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["x_range"];
-    xRangeParam->setMinimumValue(0);
-    xRangeParam->setMaximumValue(dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
-    xRangeParam->setValue(0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]);
+    dtk::d_range_real *xRangeParam = (dtk::d_range_real *)d->parameters["x_range"];
+    xRangeParam->setBounds({0,dd->cellImage->image()->xDim()*dd->cellImage->image()->spacing()[0]});
 
-    gnomonCoreParameterDoubleRange *yRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["y_range"];
-    yRangeParam->setMinimumValue(0);
-    yRangeParam->setMaximumValue(dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
-    yRangeParam->setValue(0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]);
+    dtk::d_range_real *yRangeParam = (dtk::d_range_real *)d->parameters["y_range"];
+    yRangeParam->setBounds({0,dd->cellImage->image()->yDim()*dd->cellImage->image()->spacing()[1]});
 
-    gnomonCoreParameterDoubleRange *zRangeParam = (gnomonCoreParameterDoubleRange *)d->parameters["z_range"];
-    zRangeParam->setMinimumValue(0);
-    zRangeParam->setMaximumValue(dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
-    zRangeParam->setValue(0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]);
+    dtk::d_range_real *zRangeParam = (dtk::d_range_real *)d->parameters["z_range"];
+    zRangeParam->setBounds({0,dd->cellImage->image()->zDim()*dd->cellImage->image()->spacing()[2]});
 
 }
 
@@ -241,19 +233,18 @@ QImage gnomonVisualizationCellImageMarchingCubes::imageRendering(void)
 
 void gnomonVisualizationCellImageMarchingCubes::update(void)
 {
-     QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+     QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
      QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-     QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
-
-     QList<double> x_range = ((gnomonCoreParameterDoubleRange *)d->parameters["x_range"])->value();
-     QList<double> y_range = ((gnomonCoreParameterDoubleRange *)d->parameters["y_range"])->value();
-     QList<double> z_range = ((gnomonCoreParameterDoubleRange *)d->parameters["z_range"])->value();
+     std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
+     std::array<double, 2> x_range = ((dtk::d_range_real *)d->parameters["x_range"])->value();
+     std::array<double, 2> y_range = ((dtk::d_range_real *)d->parameters["y_range"])->value();
+     std::array<double, 2> z_range = ((dtk::d_range_real *)d->parameters["z_range"])->value();
 
     if(!dd->cellImage)
         return;
 
-    double resampling_voxelsize =  ((gnomonCoreParameterDouble *)d->parameters["resolution"])->value();
+    double resampling_voxelsize =  ((dtk::d_real *)d->parameters["resolution"])->value();
 
     if (dd->polydata) {
         dd->polydata->Delete();
@@ -317,7 +308,7 @@ void gnomonVisualizationCellImageMarchingCubes::render(void)
     d->view->render();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImageMarchingCubes::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonVisualizationCellImageMarchingCubes::parameters(void) const
 {
     return d->parameters;
 }
@@ -331,13 +322,12 @@ void gnomonVisualizationCellImageMarchingCubes::setParameter(const QString& para
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

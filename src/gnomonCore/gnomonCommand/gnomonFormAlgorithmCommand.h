@@ -20,10 +20,10 @@ public:
     void addOutput(gnomonAbstractDynamicForm *output);
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
-    void addParameter(const QString&, gnomonCoreParameter *parameter);
+    void addParameter(const QString&, dtkCoreParameter *parameter);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    QMap<QString, dtkCoreParameter *> parameters(void) const override;
 
 private:
     class gnomonFormAlgorithmCommandPrivate *d;

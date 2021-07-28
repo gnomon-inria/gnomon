@@ -23,7 +23,7 @@
 class gnomonViewForm;
 
 class gnomonCellComplex;
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationCellComplex : public gnomonAbstractVisualizationCellComplex
 {
@@ -58,8 +58,8 @@ public slots:
 
 public:
     void setParameter(const QString&, const QVariant&) override;
-    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    void setParameters(const QMap<QString, dtkCoreParameter *>&) override;
+    QMap<QString, dtkCoreParameter *> parameters(void) const override;
 
 private:
 	class gnomonVisualizationCellComplexPrivate *dd;

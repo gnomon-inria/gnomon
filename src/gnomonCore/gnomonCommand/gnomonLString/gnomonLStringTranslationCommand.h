@@ -41,7 +41,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    QMap<QString, dtkCoreParameter *> parameters(void) const override;
 
 public:
     static bool isEmpty(void);

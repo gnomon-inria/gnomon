@@ -210,7 +210,7 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newFormMenu(bool input)
 
     QComboBox *data_plugin_edit = new QComboBox();
     form_layout->addWidget(data_plugin_edit, 1, 1, 1, 1);
-    
+
     connect(type_edit, &QComboBox::currentTextChanged, [=] (const QString& form_type) {
         data_plugin_edit->clear();
         QList<QString> factory_keys;
@@ -401,30 +401,30 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     if (!this->input_menu) {
         this->input_menu = new dtkWidgetsMenu(fa::arrowcircledown, "Input Forms");
     }
-    
+
     if (this->output_menu) {
         this->output_menu->disconnect();
         this->output_menu->deleteLater();
         this->output_menu = nullptr;
     }
-    
+
     if (!this->output_menu) {
         this->output_menu = new dtkWidgetsMenu(fa::arrowcircleup, "Output Forms");
     }
-    
+
     if (!this->form_pane) {
         this->form_pane = new dtkWidgetsMenuBarContainer(this);
         this->form_pane->navigator->setVisible(false);
         this->form_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         this->form_pane->q = d->script_menubar;
     }
-    
+
     if (this->add_input) {
         this->add_input->disconnect();
         this->add_input->deleteLater();
         this->add_input = nullptr;
     }
-    
+
     for (const auto &form_type : this->input_forms.keys()) {
         gnomonFormDescription *desc = this->input_forms[form_type];
         QString short_type = desc->type.split("gnomon")[1];
@@ -432,15 +432,15 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
         dtkWidgetsMenuItem *input_item = new dtkWidgetsMenuItem(fa::image, desc->name + " (" + short_type + ")");
         this->input_menu->addItem(input_item);
     }
-    
+
     this->add_input = this->input_menu->addMenu(this->newFormMenu(true));
-    
+
     if (this->add_output) {
         this->add_output->disconnect();
         this->add_output->deleteLater();
         this->add_output = nullptr;
     }
-    
+
     for (const auto &form_type : this->output_forms.keys()) {
         gnomonFormDescription *desc = this->output_forms[form_type];
         QString short_type = desc->type.split("gnomon")[1];
@@ -453,7 +453,7 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
         this->add_output = this->newFormMenu(false);
         this->output_menu->addMenu(this->add_output);
     }
-    
+
     this->form_pane->build(QVector<dtkWidgetsMenu *>() << this->input_menu << this->output_menu);
     this->form_pane->buildChildSlide(this->add_input);
     this->form_pane->buildChildSlide(this->add_output);
@@ -737,13 +737,13 @@ dtkWidgetsMenu *gnomonWorkspacePythonAlgorithmPrivate::menu(dtkWidgetsWorkspace 
             this->configure();
         }
     });
-    
+
     QObject::connect(this->editor, &gnomonPythonAlgorithmPluginEditor::loadButtonClicked, [=] () {
         this->configure();
     });
 
     this->layout = new QFormLayout;
-    
+
     QWidget *pane_item_parameters = new QWidget;
     pane_item_parameters->setLayout(this->layout);
 
@@ -800,9 +800,9 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
 
     if (this->algorithm) {
 
-        QMap<QString, gnomonCoreParameter *> parameters = this->algorithm->parameters();
+        QMap<QString, dtkCoreParameter *> parameters = this->algorithm->parameters();
 
-        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+        for(QMap<QString, dtkCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
             QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
             if (widget)
                 this->layout->addRow(it.key(), widget);
@@ -821,7 +821,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 }
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QWidget *parent) : dtkWidgetsWorkspace(parent)

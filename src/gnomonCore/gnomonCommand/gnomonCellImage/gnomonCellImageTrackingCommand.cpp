@@ -99,7 +99,7 @@ void gnomonCellImageTrackingCommand::setParameter(const QString& parameter, cons
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonCellImageTrackingCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonCellImageTrackingCommand::parameters(void) const
 {
     return this->action->parameters();
 }

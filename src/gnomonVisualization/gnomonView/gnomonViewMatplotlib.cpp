@@ -92,7 +92,7 @@ public:
 
 public:
     QMap<QString, QFormLayout *> parameterLayouts;
-    
+
     QMap<QString, dtkWidgetsMenu *> formVisualizationMenus;
     QMap<QString, dtkWidgetsMenuItemDIY *> formVisualizationPaneItems;
 
@@ -100,7 +100,7 @@ public:
 
 public:
     dtkWidgetsMenu *menu(void);
-    
+
 public:
     // gnomonOverlayPane *pane(QWidget *parent);
     dtkWidgetsMenu *view_menu;
@@ -277,9 +277,9 @@ void gnomonViewMatplotlibPrivate::configure(dtkWidgetsMenuItemDIY *parent, const
                 parent->addLayout(this->parameterLayouts[key]);
             }
 
-            QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+            QMap<QString, dtkCoreParameter *> parameters = v->parameters();
 
-            for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            for(QMap<QString, dtkCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
                 if (widget) {
                     this->parameterLayouts[key]->addRow(it.key(), widget);
@@ -486,8 +486,8 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QWidget *parent) : QFrame(parent)
     d->acceptForms["gnomonTree"] = false;
     d->acceptForms["gnomonDataFrame"] = false;
     d->acceptForms["gnomonLString"] = false;
-    
-    
+
+
     for (const auto& form : d->acceptForms.keys()) {
         if (form=="gnomonLString") {
             loadPluginGroup("lStringAdapter");

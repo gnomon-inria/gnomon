@@ -18,7 +18,7 @@ bool t_run_called = false;
 class dummyImageReaderPlugin : public gnomonAbstractImageReader {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {};
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+    QMap<QString, dtkCoreParameter *> parameters(void) const override {return QMap<QString, dtkCoreParameter *>();};
 
     void run(void) override{ reader::t_run_called = true;};
     QString documentation(void) override {return "empty";};

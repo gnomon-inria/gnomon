@@ -38,7 +38,7 @@ public slots:
     void modified(void);
 
     void setOpacity(double);
-    void setValueRange(const QList<int>& value);
+    void setValueRange(const std::array<long long int, 2>& value);
     void setColorMap(const QMap<double,QColor>&);
     void setFlatRendering(bool);
 

@@ -19,7 +19,7 @@ bool t_set_parameter_called = false;
 class dummyImageFilterPlugin : public gnomonAbstractImageFilter {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {filter::t_set_parameter_called = true;};
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+    QMap<QString, dtkCoreParameter *> parameters(void) const override {return QMap<QString, dtkCoreParameter *>();};
 
     void run(void) override{ filter::t_run_called = true;};
     QString documentation(void) override {return "empty";};

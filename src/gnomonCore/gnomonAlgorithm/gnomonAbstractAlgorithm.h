@@ -19,7 +19,7 @@
 #include <QtCore>
 #include <dtkCore>
 
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -33,7 +33,7 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
+    virtual QMap<QString, dtkCoreParameter *> parameters(void) const = 0;
 
 public:
     virtual void run(void) = 0;

@@ -56,7 +56,7 @@ public slots:
 
 void gnomonVisualizationCellComplexPrivate::updateOpacity(void)
 {
-    double alpha = ((gnomonCoreParameterDouble *)q->parameters()["alpha"])->value();
+    double alpha = ((dtk::d_real *)q->parameters()["alpha"])->value();
 
     if(this->actor) {
         this->actor->setOpacity(alpha);
@@ -69,7 +69,7 @@ void gnomonVisualizationCellComplexPrivate::updateOpacity(void)
 
 void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
 {
-    QString property_name = ((gnomonCoreParameterString *)q->parameters()["property_name"])->value();
+    QString property_name = ((dtk::d_inliststring *)q->parameters()["property_name"])->value();
 
     QMap<long, QVariant> cellProperty;
     if(this->cellComplex->elementPropertyNames(3).contains(property_name)) {
@@ -86,9 +86,7 @@ void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
     }
     auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
 
-    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMinimumValue(*(mm.first));
-    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setMaximumValue(*(mm.second));
-    ((gnomonCoreParameterDoubleRange *)q->parameters()["value_range"])->setValue(*(mm.first),*(mm.second));
+    ((dtk::d_range_real *)q->parameters()["value_range"])->setBounds({*(mm.first),*(mm.second)});
 }
 
 
@@ -102,11 +100,11 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbs
     dd->q = this;
     dd->cellComplex = Q_NULLPTR;
 
-    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "CellComplex property to be displayed");
-    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
+    d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "CellComplex property to be displayed");
+    d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellComplex rendering");
-    d->parameters["scale_factor"] = new gnomonCoreParameterDouble(0.99, 0, 1, 2, "Scale for cell surface visualization");
+    d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellComplex rendering");
+    d->parameters["scale_factor"] = new dtk::d_real("scale_factor", 0.99, 0, 1, 2, "Scale for cell surface visualization");
 
 
 }
@@ -140,15 +138,15 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cel
     dd->cellComplex = (gnomonCellComplex *) cellComplexSeries->current();
 
     this->setParameter("alpha",1.0);
-    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+    d->parameters["property_name"]->connect([=] (QVariant v) {
         if(!dd->cellComplex)
             return;
         dd->updateValueRange();
         emit parametersChanged();
     });
 
-    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    dtk::d_inliststring *propertyParam = (dtk::d_inliststring *)d->parameters["property_name"];
+    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
 
     QStringList properties = {""};
     for (const auto& prop : dd->cellComplex->elementPropertyNames(3)) {
@@ -186,11 +184,11 @@ QImage gnomonVisualizationCellComplex::imageRendering(void)
 
 void gnomonVisualizationCellComplex::update(void)
 {
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
     QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-    QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
-    double scale = ((gnomonCoreParameterDouble *)d->parameters["scale_factor"])->value();
+    std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
+    double scale = ((dtk::d_real *)d->parameters["scale_factor"])->value();
 
     if(!dd->cellComplex)
         return;
@@ -258,7 +256,7 @@ void gnomonVisualizationCellComplex::render(void)
     d->view->render();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellComplex::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonVisualizationCellComplex::parameters(void) const
 {
     return d->parameters;
 }
@@ -272,13 +270,11 @@ void gnomonVisualizationCellComplex::setParameter(const QString& parameter, cons
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellComplex::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationCellComplex::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
 {
-//    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

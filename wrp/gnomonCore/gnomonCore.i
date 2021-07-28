@@ -24,7 +24,6 @@
 %include "std_vector.i"
 
 %include <dtkBase/dtkBase.i>
-%include <gnomonCore/gnomonCoreParameter.i>
 %import <dtkCore/dtkCore.i>
 
 %import <dtkImagingCore/dtkImagingCore.i>

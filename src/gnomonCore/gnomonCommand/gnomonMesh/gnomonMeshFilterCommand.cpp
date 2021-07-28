@@ -83,7 +83,7 @@ void gnomonMeshFilterCommand::setParameter(const QString& parameter, const QVari
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonMeshFilterCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonMeshFilterCommand::parameters(void) const
 {
     return this->action->parameters();
 }

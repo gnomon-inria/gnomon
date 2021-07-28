@@ -18,7 +18,7 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCoreParameter>
+#include <dtkCore/dtkCoreParameter>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -33,9 +33,9 @@ class gnomonAbstractVisualizationPrivate
 
 public:
     gnomonViewForm* view;
-    
+
 public:
-    QMap<QString, gnomonCoreParameter *> parameters;
+    QMap<QString, dtkCoreParameter *> parameters;
 
 public:
     QMetaObject::Connection connectSliceOrientation;

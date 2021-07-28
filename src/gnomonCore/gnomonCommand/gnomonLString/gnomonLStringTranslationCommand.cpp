@@ -132,7 +132,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::outp
     return outputs;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonLStringTranslationCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonLStringTranslationCommand::parameters(void) const
 {
     return this->action->parameters();
 }

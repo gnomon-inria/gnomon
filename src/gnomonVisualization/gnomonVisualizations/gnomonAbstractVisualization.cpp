@@ -1,25 +1,7 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonAbstractVisualization.h"
 #include "gnomonAbstractVisualization_p.h"
 
 #include <QtWidgets>
-
-//#include <gnomonCore/gnomonForm/gnomonMesh>
-//#include <gnomonCore/gnomonCoreParameter>
-//#include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
@@ -46,7 +28,7 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
-//QMap<QString, gnomonCoreParameter *> gnomonAbstractVisualization::parameters(void) const
+//QMap<QString, dtkCoreParameter *> gnomonAbstractVisualization::parameters(void) const
 //{
 //    return d->parameters;
 //}
@@ -60,7 +42,7 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 //        qWarning()<<parameter<<"is not a valid parameter!";
 //}
 //
-//void gnomonAbstractVisualization::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+//void gnomonAbstractVisualization::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
 //{
 ////    d->parameters = parameters;
 //    for (const auto& param : parameters.keys()) {
@@ -130,16 +112,16 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
     d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
     d->offscreenRenderWindow->SetOffScreenRendering(1);
     d->offscreenRenderWindow->SetSize(1500, 1500);
-    
+
     d->offscreenRenderer->SetBackground(0,0,0);
-    
+
     vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
     cam->ParallelProjectionOn();
     cam->SetParallelScale(1);
     cam->SetFocalPoint((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2);
     cam->SetPosition((xMin+xMax)/2,(yMin+yMax)/2,zMin);
     cam->SetViewUp(0,1,0);
-    
+
     double focus = 0.8;
     double xMinFocus = (focus)*xMin+(1.-focus)*xMax;
     double xMaxFocus = (1.-focus)*xMin+(focus)*xMax;
@@ -154,8 +136,8 @@ QImage gnomonAbstractVisualization::offscreenImageRendering(void)
 
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(d->offscreenRenderWindow);
-    windowToImageFilter->SetInputBufferTypeToRGBA(); 
-    // windowToImageFilter->ReadFrontBufferOff(); 
+    windowToImageFilter->SetInputBufferTypeToRGBA();
+    // windowToImageFilter->ReadFrontBufferOff();
     windowToImageFilter->Update();
 
     vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();

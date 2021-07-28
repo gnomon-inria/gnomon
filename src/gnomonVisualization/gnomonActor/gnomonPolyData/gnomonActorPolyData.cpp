@@ -154,6 +154,14 @@ void gnomonActorPolyData::setValueRange(const QList<double>& value)
     d->interactor->Render();
 }
 
+void gnomonActorPolyData::setValueRange(const std::array<double, 2>& value)
+{
+    d->value_range[0] = value[0];
+    d->value_range[1] = value[1];
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
 void gnomonActorPolyData::setColorMap(const QMap<double,QColor>& value)
 {
     d->colormap = value;

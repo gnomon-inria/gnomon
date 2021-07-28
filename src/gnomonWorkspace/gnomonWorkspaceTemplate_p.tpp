@@ -12,7 +12,7 @@
 
 // Code:
 
-#include <gnomonCore/gnomonCoreParameter.h>
+#include <dtkCore/dtkCoreParameter.h>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
@@ -52,9 +52,9 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
 
     if (!algorithm.isEmpty()) {
 
-        QMap<QString, gnomonCoreParameter *> parameters = this->command->parameters();
+        QMap<QString, dtkCoreParameter *> parameters = this->command->parameters();
 
-        for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+        for(QMap<QString, dtkCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
             QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
             if (widget)
                 this->layout->addRow(it.key(), widget);

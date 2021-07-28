@@ -62,7 +62,7 @@ public:
 
     QString propertyName;
 
-    QMap<QString,QList<double>> slice;
+    QMap<QString, std::array<double, 2> > slice;
 
     bool modified;
     bool as_8bit = false;
@@ -265,7 +265,7 @@ void gnomonPolyDataCellImage::set8Bit(bool value)
     d->as_8bit = value;
 }
 
-void gnomonPolyDataCellImage::setSliceRanges(const QList<double>& x_value, const QList<double>& y_value, const QList<double>& z_value)
+void gnomonPolyDataCellImage::setSliceRanges(const std::array<double, 2>& x_value, const std::array<double, 2>& y_value, const std::array<double, 2>& z_value)
 {
     d->slice["x"] = x_value;
     d->slice["y"] = y_value;

@@ -21,12 +21,12 @@
 ADD_GNOMON_HEADERS(
     gnomonCoreParameterColor
     gnomonCoreParameterColor.h
-    gnomonLookupTable.h)
+    )#gnomonLookupTable.h)
 
 
 ADD_GNOMON_SOURCES(
     gnomonCoreParameterColor.cpp
-    gnomonLookupTable.cpp)
+    )#gnomonLookupTable.cpp)
 
 
 ######################################################################

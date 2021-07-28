@@ -99,7 +99,7 @@ void gnomonCellImageQuantificationCommand::setParameter(const QString& parameter
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonCellImageQuantificationCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonCellImageQuantificationCommand::parameters(void) const
 {
     return this->action->parameters();
 }

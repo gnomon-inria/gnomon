@@ -77,7 +77,7 @@ gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh(void)
     return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonFemSolverCommand::parameters(void) const
 {
     return this->action->parameters();
 }

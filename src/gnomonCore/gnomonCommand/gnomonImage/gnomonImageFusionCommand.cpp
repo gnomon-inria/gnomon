@@ -102,7 +102,7 @@ void gnomonImageFusionCommand::setParameter(const QString& parameter, const QVar
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonImageFusionCommand::parameters(void) const
+QMap<QString, dtkCoreParameter *> gnomonImageFusionCommand::parameters(void) const
 {
     return this->action->parameters();
 }

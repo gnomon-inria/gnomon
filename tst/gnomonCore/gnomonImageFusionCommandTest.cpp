@@ -23,7 +23,7 @@ bool t_remove_landmarks = false;
 class dummyImageFusionPlugin : public gnomonAbstractImageFusion {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {fusion::t_set_parameter_called = true;};
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+    QMap<QString, dtkCoreParameter *> parameters(void) const override {return QMap<QString, dtkCoreParameter *>();};
 
     void run(void) override{ fusion::t_run_called = true;};
     QString documentation(void) override {return "empty";};

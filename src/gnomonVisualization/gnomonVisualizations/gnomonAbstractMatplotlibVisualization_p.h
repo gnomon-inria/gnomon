@@ -18,7 +18,7 @@
 
 #include <QtWidgets>
 
-#include <gnomonCore/gnomonCoreParameter>
+#include <dtkCore/dtkCoreParameter>
 
 #include "gnomonView/gnomonViewMatplotlib.h"
 
@@ -28,9 +28,9 @@ class gnomonAbstractMatplotlibVisualizationPrivate
 
 public:
     gnomonViewMatplotlib* view;
-    
+
 public:
-    QMap<QString, gnomonCoreParameter *> parameters;
+    QMap<QString, dtkCoreParameter *> parameters;
 };
 
 
