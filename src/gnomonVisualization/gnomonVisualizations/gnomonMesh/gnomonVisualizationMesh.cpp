@@ -192,7 +192,7 @@ void gnomonVisualizationMesh::update(void)
 {
     QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-    QList<double> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
+    std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
 
     if(!dd->mesh)
         return;
@@ -290,8 +290,7 @@ void gnomonVisualizationMesh::setParameters(const QMap<QString, dtkCoreParameter
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

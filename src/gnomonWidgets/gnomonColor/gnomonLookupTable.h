@@ -16,6 +16,8 @@
 
 #include <gnomonWidgetsExport>
 
+#include <dtkCore/dtkCoreParameter.h>
+
 #include <QtCore>
 #include <QtWidgets>
 
@@ -49,6 +51,12 @@ private:
     QList<double> value_range;
     bool visible;
 };
+
+Q_DECLARE_METATYPE(gnomonLookupTable)
+Q_DECLARE_METATYPE(gnomonLookupTable *)
+
+using gnomonCoreParameterLookupTable = dtkCoreParameterSimple<gnomonLookupTable>;
+DTK_DECLARE_PARAMETER(gnomonCoreParameterLookupTable)
 
 //
 // gnomonLookupTable.h ends here

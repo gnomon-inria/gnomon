@@ -11,7 +11,7 @@ from pkg_resources import iter_entry_points
 from setuptools import findall
 
 import gnomoncore
-import dtkcore.dtkCoreParameter
+from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
 
@@ -76,7 +76,7 @@ def gnomonParametric(cls):
 
     def setParameter(self, parameter_name, parameter_value):
         if parameter_name in self._parameters:
-            if isinstance(parameter_value, dtkcore.dtkCoreParameter):
+            if isinstance(parameter_value, dtkCoreParameter):
                 self._parameters[parameter_name] = parameter_value
             else:
                 self._parameters[parameter_name].setValue(parameter_value)
