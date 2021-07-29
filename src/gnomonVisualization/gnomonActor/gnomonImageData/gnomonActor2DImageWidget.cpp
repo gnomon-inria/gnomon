@@ -212,7 +212,7 @@ void gnomonActor2DImageWidget::setOpacity(double value)
     d->interactor->Render();
 }
 
-void gnomonActor2DImageWidget::setValueRange(const QList<int>& value)
+void gnomonActor2DImageWidget::setValueRange(const std::array<long long int, 2>& value)
 {
     d->value_range[0] = value[0];
     d->value_range[1] = value[1];

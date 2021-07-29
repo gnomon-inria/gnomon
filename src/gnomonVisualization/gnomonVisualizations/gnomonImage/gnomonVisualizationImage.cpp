@@ -184,7 +184,7 @@ void gnomonVisualizationImage::update(void)
         return;
 
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
-    QList<int> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
+    std::array<long long int, 2> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
 
     QString channel;
@@ -257,8 +257,7 @@ void gnomonVisualizationImage::setParameters(const QMap<QString, dtkCoreParamete
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

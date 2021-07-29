@@ -283,8 +283,7 @@ void gnomonVisualizationImageChannelBlending::setParameters(const QMap<QString, 
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }
