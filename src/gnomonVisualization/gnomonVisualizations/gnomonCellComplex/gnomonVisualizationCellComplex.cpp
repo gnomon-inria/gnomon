@@ -256,7 +256,7 @@ void gnomonVisualizationCellComplex::render(void)
     d->view->render();
 }
 
-QMap<QString, dtkCoreParameter *> gnomonVisualizationCellComplex::parameters(void) const
+dtkCoreParameters gnomonVisualizationCellComplex::parameters(void) const
 {
     return d->parameters;
 }
@@ -270,7 +270,7 @@ void gnomonVisualizationCellComplex::setParameter(const QString& parameter, cons
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellComplex::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+void gnomonVisualizationCellComplex::setParameters(const dtkCoreParameters& parameters)
 {
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {

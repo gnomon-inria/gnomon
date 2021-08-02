@@ -84,7 +84,7 @@ void gnomonPointCloudFromImageCommand::setParameter(const QString& parameter, co
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, dtkCoreParameter *> gnomonPointCloudFromImageCommand::parameters(void) const
+dtkCoreParameters gnomonPointCloudFromImageCommand::parameters(void) const
 {
     return this->action->parameters();
 }

@@ -264,7 +264,7 @@ void gnomonVisualizationImageChannelBlending::render(void)
 }
 
 
-QMap<QString, dtkCoreParameter *> gnomonVisualizationImageChannelBlending::parameters(void) const
+dtkCoreParameters gnomonVisualizationImageChannelBlending::parameters(void) const
 {
     return d->parameters;
 }
@@ -278,7 +278,7 @@ void gnomonVisualizationImageChannelBlending::setParameter(const QString& parame
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationImageChannelBlending::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+void gnomonVisualizationImageChannelBlending::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {

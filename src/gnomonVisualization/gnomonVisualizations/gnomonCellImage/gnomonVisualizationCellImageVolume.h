@@ -62,8 +62,8 @@ public slots:
 
 public:
     void setParameter(const QString&, const QVariant&) override;
-    void setParameters(const QMap<QString, dtkCoreParameter *>&) override;
-    QMap<QString, dtkCoreParameter *> parameters(void) const override;
+    void setParameters(const dtkCoreParameters&) override;
+    dtkCoreParameters parameters(void) const override;
 
 public:
     long cellId(long vtkId) override;

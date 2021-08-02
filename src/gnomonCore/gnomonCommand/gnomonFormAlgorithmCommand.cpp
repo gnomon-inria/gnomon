@@ -36,7 +36,7 @@ public:
     gnomonMeshSeries* outputMesh = nullptr;
     gnomonPointCloudSeries* outputPointCloud = nullptr;
 
-    QMap<QString, dtkCoreParameter *> parameters;
+    dtkCoreParameters parameters;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ void gnomonFormAlgorithmCommand::addParameter(const QString& name, dtkCoreParame
     d->parameters[name] = parameter;
 }
 
-QMap<QString, dtkCoreParameter *> gnomonFormAlgorithmCommand::parameters(void) const
+dtkCoreParameters gnomonFormAlgorithmCommand::parameters(void) const
 {
     return d->parameters;
 }

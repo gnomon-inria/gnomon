@@ -800,9 +800,9 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
 
     if (this->algorithm) {
 
-        QMap<QString, dtkCoreParameter *> parameters = this->algorithm->parameters();
+        dtkCoreParameters parameters = this->algorithm->parameters();
 
-        for(QMap<QString, dtkCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+        for(dtkCoreParameters::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
             QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
             if (widget)
                 this->layout->addRow(it.key(), widget);

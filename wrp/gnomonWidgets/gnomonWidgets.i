@@ -24,6 +24,7 @@
 
 %{
 
+#include <dtkCore>
 #include <dtkWidgets>
 #include <dtkImagingCore>
 #include <gnomonCore>

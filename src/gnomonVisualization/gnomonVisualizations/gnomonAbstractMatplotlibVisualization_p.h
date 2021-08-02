@@ -18,7 +18,7 @@
 
 #include <QtWidgets>
 
-#include <dtkCore/dtkCoreParameter>
+#include <dtkCore/dtkCoreParameters>
 
 #include "gnomonView/gnomonViewMatplotlib.h"
 
@@ -30,7 +30,7 @@ public:
     gnomonViewMatplotlib* view;
 
 public:
-    QMap<QString, dtkCoreParameter *> parameters;
+    dtkCoreParameters parameters;
 };
 
 

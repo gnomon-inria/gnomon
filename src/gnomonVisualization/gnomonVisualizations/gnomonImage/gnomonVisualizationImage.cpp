@@ -238,7 +238,7 @@ void gnomonVisualizationImage::render(void)
     d->view->render();
 }
 
-QMap<QString, dtkCoreParameter *> gnomonVisualizationImage::parameters(void) const
+dtkCoreParameters gnomonVisualizationImage::parameters(void) const
 {
     return d->parameters;
 }
@@ -252,7 +252,7 @@ void gnomonVisualizationImage::setParameter(const QString& parameter, const QVar
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationImage::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+void gnomonVisualizationImage::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {

@@ -271,7 +271,7 @@ void gnomonVisualizationMesh::render(void)
     d->view->render();
 }
 
-QMap<QString, dtkCoreParameter *> gnomonVisualizationMesh::parameters(void) const
+dtkCoreParameters gnomonVisualizationMesh::parameters(void) const
 {
     return d->parameters;
 }
@@ -285,7 +285,7 @@ void gnomonVisualizationMesh::setParameter(const QString& parameter, const QVari
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationMesh::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+void gnomonVisualizationMesh::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {

@@ -82,7 +82,7 @@ gnomonImageSeries* gnomonImageRegistrationCommand::output()
     return d->output;
 }
 
-QMap<QString, dtkCoreParameter*> gnomonImageRegistrationCommand::parameters(void) const
+dtkCoreParameters gnomonImageRegistrationCommand::parameters(void) const
 {
     return this->action->parameters();
 }

@@ -32,7 +32,7 @@ class GNOMONCORE_EXPORT gnomonAbstractPointCloudFromImage : public gnomonAbstrac
     //Inputs
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual QMap<QString, dtkCoreParameter *> parameters(void) const override = 0;
+  virtual dtkCoreParameters parameters(void) const override = 0;
   virtual void setInput(gnomonImageSeries *image) = 0;
 
     // Outputs

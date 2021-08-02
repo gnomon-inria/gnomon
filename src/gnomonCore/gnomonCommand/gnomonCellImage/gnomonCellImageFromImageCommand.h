@@ -39,7 +39,7 @@ public:
 
 public:
     void setParameter(const QString&, const QVariant&);
-    virtual QMap<QString, dtkCoreParameter *> parameters(void) const override;
+    virtual dtkCoreParameters parameters(void) const override;
 
 public:
     gnomonCellImageSeries *output();

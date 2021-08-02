@@ -233,7 +233,7 @@ void gnomonVisualizationCellImageVolume::render(void)
 }
 
 
-QMap<QString, dtkCoreParameter *> gnomonVisualizationCellImageVolume::parameters(void) const
+dtkCoreParameters gnomonVisualizationCellImageVolume::parameters(void) const
 {
     return d->parameters;
 }
@@ -247,7 +247,7 @@ void gnomonVisualizationCellImageVolume::setParameter(const QString& parameter, 
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellImageVolume::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+void gnomonVisualizationCellImageVolume::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {

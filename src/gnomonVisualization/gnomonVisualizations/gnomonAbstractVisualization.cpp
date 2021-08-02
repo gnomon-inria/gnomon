@@ -28,7 +28,7 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
-//QMap<QString, dtkCoreParameter *> gnomonAbstractVisualization::parameters(void) const
+//dtkCoreParameters gnomonAbstractVisualization::parameters(void) const
 //{
 //    return d->parameters;
 //}
@@ -42,7 +42,7 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 //        qWarning()<<parameter<<"is not a valid parameter!";
 //}
 //
-//void gnomonAbstractVisualization::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+//void gnomonAbstractVisualization::setParameters(const dtkCoreParameters& parameters)
 //{
 ////    d->parameters = parameters;
 //    for (const auto& param : parameters.keys()) {

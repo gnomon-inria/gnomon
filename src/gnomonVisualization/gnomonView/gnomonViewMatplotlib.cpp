@@ -277,9 +277,9 @@ void gnomonViewMatplotlibPrivate::configure(dtkWidgetsMenuItemDIY *parent, const
                 parent->addLayout(this->parameterLayouts[key]);
             }
 
-            QMap<QString, dtkCoreParameter *> parameters = v->parameters();
+            dtkCoreParameters parameters = v->parameters();
 
-            for(QMap<QString, dtkCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            for(dtkCoreParameters::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
                 if (widget) {
                     this->parameterLayouts[key]->addRow(it.key(), widget);

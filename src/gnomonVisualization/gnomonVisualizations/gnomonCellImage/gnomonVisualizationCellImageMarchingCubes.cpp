@@ -308,7 +308,7 @@ void gnomonVisualizationCellImageMarchingCubes::render(void)
     d->view->render();
 }
 
-QMap<QString, dtkCoreParameter *> gnomonVisualizationCellImageMarchingCubes::parameters(void) const
+dtkCoreParameters gnomonVisualizationCellImageMarchingCubes::parameters(void) const
 {
     return d->parameters;
 }
@@ -322,7 +322,7 @@ void gnomonVisualizationCellImageMarchingCubes::setParameter(const QString& para
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellImageMarchingCubes::setParameters(const QMap<QString, dtkCoreParameter *>& parameters)
+void gnomonVisualizationCellImageMarchingCubes::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {

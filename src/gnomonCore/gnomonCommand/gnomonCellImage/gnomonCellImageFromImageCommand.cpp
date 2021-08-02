@@ -113,7 +113,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::outp
     return outputs;
 }
 
-QMap<QString, dtkCoreParameter *> gnomonCellImageFromImageCommand::parameters(void) const
+dtkCoreParameters gnomonCellImageFromImageCommand::parameters(void) const
 {
     return this->action->parameters();
 }

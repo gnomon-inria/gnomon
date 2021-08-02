@@ -91,6 +91,7 @@ def gnomonParametric(cls):
     cls.setParameters = setParameters
 
     def parameters(self):
+        print(self._parameters)
         return self._parameters
     cls.parameters = parameters
 
@@ -135,6 +136,7 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
         @wraps(f)
         def func(self, *args, **kwargs):
             try:
+                print(f"calling {f}")
                 return f(self, *args, **kwargs)
             except Exception as e:
                 traceback.print_exc()

@@ -15,7 +15,7 @@ public:
     void setMesh(gnomonMeshSeries *mesh);
     void setParameter(const QString&, const QVariant&);
 
-    QMap<QString, dtkCoreParameter *> parameters(void) const;
+    dtkCoreParameters parameters(void) const;
     gnomonMeshSeries *updatedMesh(void);
 
 public:

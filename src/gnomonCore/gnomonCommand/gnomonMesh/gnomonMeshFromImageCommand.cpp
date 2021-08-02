@@ -75,7 +75,7 @@ void gnomonMeshFromImageCommand::setParameter(const QString& parameter, const QV
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, dtkCoreParameter *> gnomonMeshFromImageCommand::parameters(void) const
+dtkCoreParameters gnomonMeshFromImageCommand::parameters(void) const
 {
     return this->action->parameters();
 }

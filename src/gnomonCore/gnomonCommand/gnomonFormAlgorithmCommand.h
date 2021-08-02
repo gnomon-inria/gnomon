@@ -23,7 +23,7 @@ public:
     void addParameter(const QString&, dtkCoreParameter *parameter);
 
 public:
-    QMap<QString, dtkCoreParameter *> parameters(void) const override;
+    dtkCoreParameters parameters(void) const override;
 
 private:
     class gnomonFormAlgorithmCommandPrivate *d;

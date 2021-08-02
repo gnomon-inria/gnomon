@@ -32,6 +32,6 @@ public:
     static bool isEmpty(void);
 
 public:
-    QMap<QString, dtkCoreParameter*> parameters(void) const override;
+    dtkCoreParameters parameters(void) const override;
     class gnomonImageFusionCommandPrivate *d;
 };

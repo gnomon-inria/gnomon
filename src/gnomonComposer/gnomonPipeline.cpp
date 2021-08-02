@@ -70,7 +70,7 @@ public:
 
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
-    QMap<QString, QVariant> parameterVariantValues(const QMap<QString, dtkCoreParameter *>&parameters);
+    QMap<QString, QVariant> parameterVariantValues(const dtkCoreParameters&parameters);
 
 public:
     QStringList sourceNodeNames(void);
@@ -140,7 +140,7 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
     }
 }
 
-QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(const QMap<QString, dtkCoreParameter *>&parameters)
+QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(const dtkCoreParameters&parameters)
 {
     QMap<QString, QVariant> parameter_values;
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {

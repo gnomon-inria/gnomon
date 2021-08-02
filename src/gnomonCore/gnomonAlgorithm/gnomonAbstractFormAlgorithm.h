@@ -44,7 +44,7 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, dtkCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
 
     // CellComplex
 public:

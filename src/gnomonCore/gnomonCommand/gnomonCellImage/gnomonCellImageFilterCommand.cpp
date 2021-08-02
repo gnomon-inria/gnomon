@@ -83,7 +83,7 @@ void gnomonCellImageFilterCommand::setParameter(const QString& parameter, const 
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, dtkCoreParameter *> gnomonCellImageFilterCommand::parameters(void) const
+dtkCoreParameters gnomonCellImageFilterCommand::parameters(void) const
 {
     return this->action->parameters();
 }
