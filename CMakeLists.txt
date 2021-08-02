@@ -137,7 +137,6 @@ find_package(xtensor REQUIRED)
 
 find_package(VTK REQUIRED)
 
-include(${VTK_USE_FILE})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 
 ## #################################################################
