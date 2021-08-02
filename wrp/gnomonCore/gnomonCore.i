@@ -485,8 +485,6 @@
     }
 }
 
-
-
 %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) std::vector<gnomonLandmark, std::allocator< gnomonLandmark > > {
     $1 = PyList_Check($input) ? 1 : 0;
 }
@@ -494,142 +492,6 @@
  %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, noblock=1) const std::vector<gnomonLandmark, std::allocator< gnomonLandmark > >& {
     $1 = PyList_Check($input) ? 1 : 0;
 }
-
-
-%typemap(in) QList<unsigned long> {
-    if (PyList_Check($input)) {
-        int i = 0;
-        int end = PyList_Size($input);
-        for(i;i!=end; ++i) {
-            $1 << PyLong_AsLong(PyList_GET_ITEM($input, i));
-        }
-    } else {
-        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
-    }
-}
-
-%typemap(in) const QList<unsigned long>& {
-    if (PyList_Check($input)) {
-        int i = 0;
-        int end = PyList_Size($input);
-        $1 = new QList<unsigned long>;
-        for(i;i!=end; ++i) {
-            ($1)->append(PyLong_AsLong(PyList_GET_ITEM($input, i)));
-        }
-    } else {
-        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
-    }
-}
-
-%typemap(freearg) const QList<unsigned long>& {
-    if ($1) {
-        delete $1;
-    }
-}
-
-%typemap(directorout) QList<unsigned long> {
-    PyObject *list = static_cast<PyObject *>($1);
-    if (PyList_Check(list)) {
-        int i = 0;
-        int end = PyList_Size(list);
-        for(i;i<end; ++i) {
-            PyObject *o = PyList_GET_ITEM(list, i);
-            $result << PyLong_AsLong(o);
-        }
-    } else {
-        qDebug("PyList of integers is expected as input. Empty QList<unsigned long> is returned.");
-    }
-}
-
-%typemap(out) QList<unsigned long> {
-    $result = PyList_New($1.size());
-    auto it  = $1.cbegin();
-    auto end = $1.cend();
-    for(int i = 0; it != end; ++it, ++i) {
-        PyObject* v = PyLong_FromLong(*it);
-        PyList_SET_ITEM($result, i, v);
-    }
-}
-
-%typemap(directorin) QList<unsigned long> {
-    PyObject *list = PyList_New($1.size());
-    auto it  = $1.cbegin();
-    auto end = $1.cend();
-    for(int i = 0; it != end; ++it, ++i) {
-        PyObject* v = PyLong_FromLong(*it);
-        PyList_SET_ITEM(list, i, v);
-    }
-    $input = list;
-}
-
-
-%typemap(in) QList<double> {
-    if (PyList_Check($input)) {
-        int i = 0;
-        int end = PyList_Size($input);
-        for(i;i!=end; ++i) {
-            $1 << PyFloat_AsDouble(PyList_GET_ITEM($input, i));
-        }
-    } else {
-        qDebug("PyList of floats is expected as input. Empty QList<double> is returned.");
-    }
-}
-
-%typemap(in) const QList<double>& {
-    if (PyList_Check($input)) {
-        int i = 0;
-        int end = PyList_Size($input);
-        $1 = new QList<double>;
-        for(i;i!=end; ++i) {
-            ($1)->append(PyFloat_AsDouble(PyList_GET_ITEM($input, i)));
-        }
-    } else {
-        qDebug("PyList of floats is expected as input. Empty QList<double> is returned.");
-    }
-}
-
-%typemap(freearg) const QList<double>& {
-    if ($1) {
-        delete $1;
-    }
-}
-
-%typemap(directorout) QList<double> {
-    PyObject *list = static_cast<PyObject *>($1);
-    if (PyList_Check(list)) {
-        int i = 0;
-        int end = PyList_Size(list);
-        for(i;i<end; ++i) {
-            PyObject *o = PyList_GET_ITEM(list, i);
-            $result << PyFloat_AsDouble(o);
-        }
-    } else {
-        qDebug("PyList of floats is expected as input. Empty QList<double> is returned.");
-    }
-}
-
-%typemap(out) QList<double> {
-    $result = PyList_New($1.size());
-    auto it  = $1.cbegin();
-    auto end = $1.cend();
-    for(int i = 0; it != end; ++it, ++i) {
-        PyObject* v = PyFloat_FromDouble(*it);
-        PyList_SET_ITEM($result, i, v);
-    }
-}
-
-%typemap(directorin) QList<double> {
-    PyObject *list = PyList_New($1.size());
-    auto it  = $1.cbegin();
-    auto end = $1.cend();
-    for(int i = 0; it != end; ++it, ++i) {
-        PyObject* v = PyFloat_FromDouble(*it);
-        PyList_SET_ITEM(list, i, v);
-    }
-    $input = list;
-}
-
-
 
 %typemap(out) std::vector<gnomonLandmark, std::allocator<gnomonLandmark>>
 {
@@ -679,7 +541,6 @@
         import dtkcore
         return dtkcore.dtkCoreObjectManager_instance()
 %}
-
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
