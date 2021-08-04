@@ -66,7 +66,7 @@ public:
 
 public:
     long cellId(long vtkId) override;
-    QMap<QString, QVariant> cellInfo(long cellId);
+    QVariantMap cellInfo(long cellId);
 
 public:
 	class gnomonVisualizationCellImageMarchingCubesPrivate *dd;

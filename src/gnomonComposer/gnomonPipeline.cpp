@@ -70,7 +70,7 @@ public:
 
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
-    QMap<QString, QVariant> parameterVariantValues(const dtkCoreParameters&parameters);
+    QVariantMap parameterVariantValues(const dtkCoreParameters&parameters);
 
 public:
     QStringList sourceNodeNames(void);
@@ -140,9 +140,9 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
     }
 }
 
-QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(const dtkCoreParameters&parameters)
+QVariantMap gnomonPipelinePrivate::parameterVariantValues(const dtkCoreParameters&parameters)
 {
-    QMap<QString, QVariant> parameter_values;
+    QVariantMap parameter_values;
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         auto&& parameter_name = it.key();
         auto&& param = it.value();
@@ -484,7 +484,7 @@ void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    QMap<QString, QVariant> parameter_values = d->parameterVariantValues(command->parameters());
+    QVariantMap parameter_values = d->parameterVariantValues(command->parameters());
 
     gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(),command->algorithmName(),parameter_values,input_forms.keys(),output_forms.keys());
 
@@ -503,7 +503,7 @@ void gnomonPipeline::addConstructor(gnomonAbstractConstructorCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    QMap<QString, QVariant> parameter_values = d->parameterVariantValues(command->parameters());
+    QVariantMap parameter_values = d->parameterVariantValues(command->parameters());
 
     gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(),command->algorithmName(),parameter_values,output_forms.keys());
 

@@ -23,7 +23,7 @@
 class gnomonFemSolverCommandPrivate
 {
 public:
-    QMap<QString, QVariant> parameters;
+    QVariantMap parameters;
 
 public:
     gnomonMeshSeries* mesh = nullptr;

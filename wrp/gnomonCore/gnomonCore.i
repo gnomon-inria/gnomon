@@ -188,8 +188,8 @@
 }
 
 %typemap(in) const QMap<QString, QString>& {
+    $1 = new QMap<QString, QString>;
     if (PyDict_Check($input)) {
-        $1 = new QMap<QString, QString>;
         PyObject *key, *value;
         Py_ssize_t pos = 0;
         int r;
@@ -245,8 +245,8 @@
 }
 
 %typemap(in) const QMap<long, double>& {
+    $1 = new QMap<long, double>;
     if (PyDict_Check($input)) {
-        $1 = new QMap<long, double>;
         PyObject *key, *value;
         Py_ssize_t pos = 0;
         int r;

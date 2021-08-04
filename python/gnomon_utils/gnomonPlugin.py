@@ -91,12 +91,11 @@ def gnomonParametric(cls):
     cls.setParameters = setParameters
 
     def parameters(self):
-        print(self._parameters)
-        return self._parameters
+        return {k:v.castToTop() for k,v in self._parameters.items()}
     cls.parameters = parameters
 
     def parameterDict(self):
-        return {key : value.value() for key, value in self.parameters().iteritems()}
+        return {key : value.value() for key, value in self.parameters().items()}
     cls.parameterDict = parameterDict
 
 
@@ -136,7 +135,6 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
         @wraps(f)
         def func(self, *args, **kwargs):
             try:
-                print(f"calling {f}")
                 return f(self, *args, **kwargs)
             except Exception as e:
                 traceback.print_exc()

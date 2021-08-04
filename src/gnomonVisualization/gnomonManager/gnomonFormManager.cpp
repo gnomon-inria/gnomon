@@ -86,10 +86,7 @@ QSize gnomonFormManagerPrivate::sizeHint(void) const
 
 gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicForm * form, const QColor& color, const QImage& image)
 {
-    qDebug()<<Q_FUNC_INFO<<form;
-    qDebug()<<Q_FUNC_INFO<<form<<form->times().size();
     gnomonFormManagerItem *item = new gnomonFormManagerItem(color, QPixmap::fromImage(image), form->times().size(), this);
-    qDebug()<<Q_FUNC_INFO<<item;
 
     connect(item, &gnomonFormManagerItem::destroy, [=] () {
         this->contents->layout()->removeWidget(item);
@@ -166,10 +163,7 @@ gnomonFormManagerItem *gnomonFormManagerPrivate::create(gnomonAbstractDynamicFor
     });
 
     gnomonFormManagerData *data = new gnomonFormManagerData(this);
-    qDebug()<<Q_FUNC_INFO<<data;
     data->reference = item;
-    qDebug()<<Q_FUNC_INFO<<form->current();
-    qDebug()<<Q_FUNC_INFO<<form->current()<<form->current()->name();
     data->name = form->current()->name();
     qDebug()<<Q_FUNC_INFO<<data->name;
     data->data_name = form->current()->dataName();

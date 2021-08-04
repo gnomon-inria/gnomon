@@ -163,7 +163,7 @@ void gnomonInteractorStyleCellImageMarchingCubes::OnDoubleClick(long vtkId)
     QString text = "        Cell ";
     text.append(QString::number(cellId));
 
-    // QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
+    // QVariantMap cellInfo = q->cellInfo(cellId);
 
     // if(!this->visu->view()->infoPane()->isToggled())
     //     this->visu->view()->infoPane()->toggle();

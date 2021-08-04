@@ -337,9 +337,9 @@ long gnomonVisualizationCellImageMarchingCubes::cellId(long vtkId)
     return dd->polydata->cellId(vtkId);
 }
 
-QMap<QString, QVariant> gnomonVisualizationCellImageMarchingCubes::cellInfo(long cellId)
+QVariantMap gnomonVisualizationCellImageMarchingCubes::cellInfo(long cellId)
 {
-    QMap<QString, QVariant> info;
+    QVariantMap info;
 //    info["label"] = QVariant(int(cellId));
     for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
         QMap<long, QVariant> property = dd->cellImage->cellProperty(propertyName);

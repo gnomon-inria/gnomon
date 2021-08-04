@@ -42,12 +42,12 @@ QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *pa
         return w;
     }
     if (dtk::d_range_int *p = dynamic_cast<dtk::d_range_int *>(parameter)) {
-        auto *w = new dtkWidgetsParameterIntSlider(parent);
+        auto *w = new dtkWidgetsParameterIntRange(parent);
         w->connect(p);
         return w;
     }
     if (dtk::d_range_real *p = dynamic_cast<dtk::d_range_real *>(parameter)) {
-        auto *w = new dtkWidgetsParameterDoubleSlider(parent);
+        auto *w = new dtkWidgetsParameterDoubleRange(parent);
         w->connect(p);
         return w;
     }
