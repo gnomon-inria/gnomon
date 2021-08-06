@@ -24,7 +24,8 @@
 // gnomonDoubleEditor
 // /////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonDoubleEditor : public QWidget
+
+class GNOMONWIDGETS_DEPRECATED_EXPORT gnomonDoubleEditor : public QWidget
 {
     Q_OBJECT
 

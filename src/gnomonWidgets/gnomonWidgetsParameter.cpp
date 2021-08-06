@@ -57,16 +57,12 @@ QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *pa
         return w;
     }
     if (dtk::d_inliststring *p = dynamic_cast<dtk::d_inliststring *>(parameter)) {
-        // old gnomonCoreString -> combobox?
-        // old ...list -> checkboxes ?
-        auto *w = new dtkWidgetsParameterStringListComboBox(parent); // checkboxes ?
+        auto *w = new dtkWidgetsParameterStringListComboBox(parent);
         w->connect(p);
         return w;
     }
     if (dtk::d_inliststringlist *p = dynamic_cast<dtk::d_inliststringlist *>(parameter)) {
-        // old gnomonCoreString -> combobox?
-        // old ...list -> checkboxes ?
-        auto *w = new dtkWidgetsParameterListStringListCheckBox(parent); // checkboxes ?
+        auto *w = new dtkWidgetsParameterListStringListCheckBox(parent);
         w->connect(p);
         return w;
     }
