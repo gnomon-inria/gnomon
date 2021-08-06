@@ -60,7 +60,7 @@ requirements:
     - swig >4.0.0
     - pyqt >=5.6.0
     - sip
-    - vtk=8.2.0
+    - vtk=9.0.*
     - ffmpeg =4.2.3
     - libnetcdf =4.7.3
     - tbb-devel =2020.*
@@ -88,7 +88,7 @@ requirements:
     - matplotlib
     - python >=3.7,<3.8
     - sip
-    - vtk=8.2.0
+    - vtk=9.0.*
     - ffmpeg >=4.2
     - libnetcdf =4.7.3
     - tbb-devel =2020.*
