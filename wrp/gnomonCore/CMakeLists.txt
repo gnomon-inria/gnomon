@@ -34,7 +34,7 @@ list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++ -threads)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 swig_link_libraries(${PROJECT_NAME}
-  ${PYTHON_LIBRARIES}
+  Python3::Python
   ${VTK_LIBRARIES}
   dtkCore
   dtkImagingCore)
@@ -53,7 +53,6 @@ add_custom_command(
 install(TARGETS ${PROJECT_NAME} DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i  DESTINATION ${CMAKE_INSTALL_PREFIX}/wrp/${LAYER_NAME}/)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dtkCoreParameter.i  DESTINATION ${CMAKE_INSTALL_PREFIX}/wrp/${LAYER_NAME}/)
 
 
 ######################################################################

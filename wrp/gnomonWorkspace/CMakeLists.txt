@@ -37,7 +37,7 @@ swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_
 
 swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
-  ${PYTHON_LIBRARIES}
+  Python3::Python
   dtkCore
   dtkWidgets
   gnomonCore
