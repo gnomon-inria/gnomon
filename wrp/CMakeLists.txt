@@ -24,6 +24,7 @@ find_package(dtkImagingPython REQUIRED)
 
 find_package(SWIG 4 REQUIRED)
 include(${SWIG_USE_FILE})
+include_directories(${Python3_INCLUDE_DIRS})
 
 mark_as_advanced(SWIG_DIR)
 mark_as_advanced(SWIG_EXECUTABLE)
