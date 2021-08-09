@@ -44,42 +44,42 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt >=5.12.0,<5.14.0
-    - dtk-log >=2.4.0
-    - dtk-macs >=2.0.3
-    - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.17
-    - dtk-themes-python >=2.0.4
-    - dtk-core >=2.10.0
+    - qt =5.12.9
+    - dtk-log =2.4.0
+    - dtk-macs =2.0.3
+    - dtk-fonts =2.1.1
+    - dtk-themes =2.1.17
+    - dtk-themes-python =2.0.4
+    - dtk-core =2.10.0
     - dtk-core-python =2.7.0
-    - dtk-imaging >=2.0.4
-    - dtk-imaging-python >=2.0.6
-    - dtk-widgets >=2.27.0
-    - dtk-composer >=2.0.0
+    - dtk-imaging =2.0.4
+    - dtk-imaging-python =2.0.6
+    - dtk-widgets =2.27.0
+    - dtk-composer =2.0.0
     - python >=3.7,<3.8
-    - swig >4.0.0
+    - swig =4.0
     - pyqt >=5.6.0
     - sip
-    - vtk=9.0.*
-    - ffmpeg =4.2.3
-    - libnetcdf =4.7.3
-    - tbb-devel =2020.*
+    - vtk=9.0
+    - ffmpeg =4.3
+    - libnetcdf =4.8
+    - tbb-devel =2020.3
     - zlib
 
   run:
-    - qt >=5.12.0,<5.14.0
-    - dtk-log >=2.4.0
-    - dtk-macs >=2.0.3
-    - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.17
-    - dtk-themes-python >=2.0.4
-    - dtk-core >=2.10.0
+    - qt =5.12.9
+    - dtk-log =2.4.0
+    - dtk-macs =2.0.3
+    - dtk-fonts =2.1.1
+    - dtk-themes =2.1.17
+    - dtk-themes-python =2.0.4
+    - dtk-core =2.10.0
     - dtk-core-python =2.7.0
-    - dtk-imaging >=2.0.4
-    - dtk-imaging-python >=2.0.6
-    - dtk-plugins-imaging >=2.0.2
-    - dtk-widgets >=2.27.0
-    - dtk-composer >=2.0.0
+    - dtk-imaging =2.0.4
+    - dtk-imaging-python =2.0.6
+    - dtk-plugins-imaging =2.0.3
+    - dtk-widgets =2.27.0
+    - dtk-composer =2.0.0
     - jupyter
     - jupyter_client=5.3.4
     - luigi
@@ -88,10 +88,10 @@ requirements:
     - matplotlib
     - python >=3.7,<3.8
     - sip
-    - vtk=9.0.*
-    - ffmpeg >=4.2
-    - libnetcdf =4.7.3
-    - tbb-devel =2020.*
+    - vtk=9.0
+    - ffmpeg =4.3
+    - libnetcdf =4.8
+    - tbb-devel =2020.3
     - zlib
 
 app:
