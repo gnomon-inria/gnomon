@@ -23,7 +23,7 @@ class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {
 
 public:
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const {QMap<QString, gnomonCoreParameter *> empty; return empty;};;
+    virtual dtkCoreParameters parameters(void) const {dtkCoreParameters empty; return empty;};;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
 };

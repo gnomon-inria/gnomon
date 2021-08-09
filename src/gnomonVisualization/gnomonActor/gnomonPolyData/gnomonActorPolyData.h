@@ -40,6 +40,8 @@ public slots:
     void setOpacity(double);
     void setLinewidth(double);
     void setValueRange(const QList<double>& value);
+    void setValueRange(const std::array<double, 2>& value);
+
     void setColorMap(const QMap<double,QColor>&);
     void setColor(const QColor&);
     void setWireframe(bool);

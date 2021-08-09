@@ -20,13 +20,19 @@
 // gnomonCoreParameterColorMap
 // ///////////////////////////////////////////////////////////////////
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QMap<double, QColor>& c, const QString& doc) : gnomonCoreParameter(doc), m_c(c), m_n("no name")
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QMap<double, QColor>& c, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(), m_c(c), m_n("no name")
 {
+    m_doc = doc;
 }
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& clut, const QString& doc) : gnomonCoreParameter(doc), m_n(clut)
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& clut, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(), m_n(clut)
 {
+    m_doc = doc;
     this->setValue(clut);
+}
+
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const gnomonCoreParameterColorMap& o) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(o), m_c(o.m_c), m_n(o.m_n)
+{
 }
 
 QMap<double, QColor> gnomonCoreParameterColorMap::value(void) const
@@ -71,7 +77,7 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
     int    log = root.attribute("log").toInt();
 
     Q_UNUSED(log);
-    
+
     QDomNode n = root.firstChild();
     while(!n.isNull()) {
         QDomElement e = n.toElement();
@@ -81,7 +87,7 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
             qreal a = e.attribute("a").toDouble();
 
             Q_UNUSED(a);
-            
+
             int r = e.attribute("r").toInt();
             int g = e.attribute("g").toInt();
             int b = e.attribute("b").toInt();
@@ -95,8 +101,38 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
     if(m_c != colormap) {
         m_c = colormap;
         m_n = clut;
-        emit valueChanged();
+        this->sync();
     }
+}
+
+void gnomonCoreParameterColorMap::setValue(const QVariant& v)
+{
+    if (v.canConvert<gnomonCoreParameterColorMap>()) {
+        *this = v.value<gnomonCoreParameterColorMap>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        this->m_n = map["clut"].toString();
+
+        this->m_c.clear();
+
+        auto keys = map["keys"].toList();
+        auto colors = map["colors"].toList();
+        for(int i=0; i< keys.size(); ++i) {
+            this->m_c[keys[i].toDouble()] = colors[i].value<QColor>();
+        }
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+    this->sync();
+    return;
 }
 
 void gnomonCoreParameterColorMap::setName(const QString& clut)
@@ -104,21 +140,79 @@ void gnomonCoreParameterColorMap::setName(const QString& clut)
     m_n = clut;
 }
 
-void gnomonCoreParameterColorMap::copy(gnomonCoreParameter *other)
+gnomonCoreParameterColorMap& gnomonCoreParameterColorMap::operator = (const QVariant& v)
 {
-    if (gnomonCoreParameterColorMap *param = dynamic_cast<gnomonCoreParameterColorMap *>(other)) {
-        m_n = param->name();
-        m_c = param->value();
-        emit valueChanged();
+    if (v.canConvert<gnomonCoreParameterColorMap>()) {
+        *this = v.value<gnomonCoreParameterColorMap>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_n = map["clut"].toString();
+
+        m_c.clear();
+
+        auto keys = map["keys"].toList();
+        auto colors = map["colors"].toList();
+        for(int i=0; i< keys.size(); ++i) {
+            m_c[keys[i].toDouble()] = colors[i].value<QColor>();
+        }
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << ". Nothing is done.";
+        this->syncFail();
+        return *this;
     }
+    this->sync();
+    return *this;
+}
+
+gnomonCoreParameterColorMap& gnomonCoreParameterColorMap::operator = (const gnomonCoreParameterColorMap& o)
+{
+  if (this != &o) {
+        m_label = o.m_label;
+        m_doc = o.m_doc;
+        m_c = o.m_c;
+        m_n = o.m_n;
+        this->sync();
+    }
+    return *this;
+}
+
+QVariantHash gnomonCoreParameterColorMap::toVariantHash(void) const
+{
+    QVariantHash hash = dtkCoreParameterBase<gnomonCoreParameterColorMap>::toVariantHash();
+    hash.insert("clut", m_n);
+
+    QList<QVariant> keys; keys.reserve(m_c.size());
+    QList<QVariant> colors; colors.reserve(m_c.size());
+    QMap<double, QColor>::const_iterator i = m_c.constBegin();
+    while (i != m_c.constEnd()) {
+        keys << QVariant::fromValue(i.key());
+        colors << QVariant::fromValue(i.value());
+        ++i;
+    }
+    hash.insert("keys", keys);
+    hash.insert("colors", colors);
+
+    return hash;
 }
 
 
+/*
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterLookupTable
 // ///////////////////////////////////////////////////////////////////
 
-gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(const gnomonLookupTable& lut, const QString& doc) : gnomonCoreParameter(doc), m_l(lut)
+gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(const gnomonLookupTable& lut, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterLookupTable>(), m_l(lut)
+{
+    m_doc = doc;
+}
+
+gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(const gnomonCoreParameterLookupTable& o) : dtkCoreParameterBase<gnomonCoreParameterLookupTable>(o), m_l(o.m_l)
 {
 }
 
@@ -133,14 +227,54 @@ void gnomonCoreParameterLookupTable::setValue(const gnomonLookupTable& lut)
     m_l.setColorMap(lut.colorMapName());
 }
 
-void gnomonCoreParameterLookupTable::copy(gnomonCoreParameter *other)
+gnomonCoreParameterLookupTable& gnomonCoreParameterLookupTable::operator = (const QVariant& v)
 {
-    if (gnomonCoreParameterLookupTable *param = dynamic_cast<gnomonCoreParameterLookupTable *>(other)) {
-        m_l = param->value();
-        emit valueChanged();
+        if (v.canConvert<gnomonCoreParameterLookupTablep>()) {
+        *this = v.value<gnomonCoreParameterLookupTable>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_n = map["clut"].toString();
+
+        m_c.clear();
+
+        auto keys = map["keys"].toList();
+        auto colors = map["colors"].toList();
+        for(int i=0; i< keys.size(); ++i) {
+            m_c[keys[i].toDouble()] = colors[i].value<QColor>();
+        }
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << ". Nothing is done.";
+        this->syncFail();
+        return *this;
     }
+    this->sync();
+    return *this;
 }
 
+gnomonCoreParameterLookupTable& gnomonCoreParameterLookupTable::operator = (const gnomonCoreParameterLookupTable& o)
+{
+  if (this != &o) {
+        m_label = o.m_label;
+        m_doc = o.m_doc;
+        m_l = o.m_l;
+        this->sync();
+    }
+    return *this;
+}
 
+QVariantHash gnomonCoreParameterLookupTable::toVariantHash(void) const
+{
+    QVariantHash hash = dtkCoreParameterBase<gnomonCoreParameterLookupTable>::toVariantHash();
+    hash.insert("lut", m_l);
+
+    return hash;
+}
+*/
 //
 // gnomonCoreParameterColor.cpp ends here

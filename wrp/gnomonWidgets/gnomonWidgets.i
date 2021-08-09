@@ -24,6 +24,7 @@
 
 %{
 
+#include <dtkCore>
 #include <dtkWidgets>
 #include <dtkImagingCore>
 #include <gnomonCore>
@@ -63,9 +64,9 @@ void foo(PyObject *widget, PyObject *console)
 // Typemaps
 // /////////////////////////////////////////////////////////////////
 
-// QMap<QString, QVariant>
-
-%typemap(in) QMap<QString, QVariant> {
+// QVariantMap
+/*
+%typemap(in) QVariantMap {
     if (PyDict_Check($input)) {
         PyObject *key, *value;
         Py_ssize_t pos = 0;
@@ -87,13 +88,13 @@ void foo(PyObject *widget, PyObject *console)
             $1.insert(k, v);
         }
     } else {
-        qDebug("PyDict is expected as input. Empty QMap<QString, QVariant> is returned.");
+        qDebug("PyDict is expected as input. Empty QVariantMap is returned.");
     }
 }
 
-%typemap(in) const QMap<QString, QVariant>& {
+%typemap(in) const QVariantMap& {
     if (PyDict_Check($input)) {
-        $1 = new QMap<QString, QVariant>;
+        $1 = new QVariantMap;
         PyObject *key, *value;
         Py_ssize_t pos = 0;
         QVariant v;
@@ -114,17 +115,17 @@ void foo(PyObject *widget, PyObject *console)
             $1->insert(k, v);
         }
     } else {
-        qDebug("PyDict is expected as input. Empty QMap<QString, QVariant> is returned.");
+        qDebug("PyDict is expected as input. Empty QVariantMap is returned.");
     }
 }
 
-%typemap(freearg) const QMap<QString, QVariant>& {
+%typemap(freearg) const QVariantMap& {
     if ($1) {
         delete $1;
     }
 }
 
-%typemap(directorout) QMap<QString, QVariant> {
+%typemap(directorout) QVariantMap {
     PyObject *dict = static_cast<PyObject *>($1);
     if (PyDict_Check(dict)) {
         PyObject *key, *value;
@@ -147,10 +148,10 @@ void foo(PyObject *widget, PyObject *console)
             $result.insert(k, v);
         }
     } else {
-        qDebug("PyDict is expected as input. Empty QMap<QString, QVariant> is returned.");
+        qDebug("PyDict is expected as input. Empty QVariantMap is returned.");
     }
 }
-
+*/
 // /////////////////////////////////////////////////////////////////
 // QMap of colors
 // /////////////////////////////////////////////////////////////////

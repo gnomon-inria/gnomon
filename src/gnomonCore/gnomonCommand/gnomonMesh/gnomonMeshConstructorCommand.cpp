@@ -66,7 +66,7 @@ void gnomonMeshConstructorCommand::setParameter(const QString& parameter, const 
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonMeshConstructorCommand::parameters(void) const
+dtkCoreParameters gnomonMeshConstructorCommand::parameters(void) const
 {
     return this->action->parameters();
 }

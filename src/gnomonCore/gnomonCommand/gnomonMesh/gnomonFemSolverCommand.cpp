@@ -23,7 +23,7 @@
 class gnomonFemSolverCommandPrivate
 {
 public:
-    QMap<QString, QVariant> parameters;
+    QVariantMap parameters;
 
 public:
     gnomonMeshSeries* mesh = nullptr;
@@ -77,7 +77,7 @@ gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh(void)
     return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonFemSolverCommand::parameters(void) const
+dtkCoreParameters gnomonFemSolverCommand::parameters(void) const
 {
     return this->action->parameters();
 }

@@ -30,7 +30,7 @@
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonForm/gnomonTree/gnomonTree.h"
 
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -44,7 +44,7 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
 
     // CellComplex
 public:
@@ -93,7 +93,7 @@ public:
     virtual void setInputTree(gnomonTreeSeries *tree) { return; };
     virtual gnomonTreeSeries *inputTree() const { return nullptr; };
     virtual gnomonTreeSeries *outputTree() const { return nullptr; };
-    
+
 public:
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;

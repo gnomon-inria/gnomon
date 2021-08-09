@@ -20,7 +20,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 //  ///////////////////////////////////////////////////////////////////
 //
@@ -30,7 +30,7 @@ class GNOMONCORE_EXPORT gnomonAbstractFemSolver : public gnomonAbstractAlgorithm
 {
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 

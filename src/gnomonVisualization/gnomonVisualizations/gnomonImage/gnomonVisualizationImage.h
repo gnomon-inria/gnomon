@@ -22,7 +22,7 @@
 
 class gnomonViewForm;
 
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImage : public gnomonAbstractVisualizationImage
 {
@@ -61,8 +61,8 @@ public slots:
 
 public:
     void setParameter(const QString&, const QVariant&) override;
-    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    void setParameters(const dtkCoreParameters&) override;
+    dtkCoreParameters parameters(void) const override;
 
 private:
     class gnomonVisualizationImagePrivate *dd;

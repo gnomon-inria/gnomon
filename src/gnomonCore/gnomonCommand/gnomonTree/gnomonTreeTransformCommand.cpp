@@ -83,7 +83,7 @@ void gnomonTreeTransformCommand::setParameter(const QString& parameter, const QV
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonTreeTransformCommand::parameters(void) const
+dtkCoreParameters gnomonTreeTransformCommand::parameters(void) const
 {
     return this->action->parameters();
 }

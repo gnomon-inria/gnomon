@@ -20,7 +20,7 @@ public:
     virtual void setParameter(const QString&, const QVariant&);
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    dtkCoreParameters parameters(void) const override;
 
 public:
     static bool isEmpty(void);

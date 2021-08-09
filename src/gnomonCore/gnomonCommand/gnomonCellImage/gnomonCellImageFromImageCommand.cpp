@@ -92,7 +92,7 @@ gnomonPointCloudSeries *gnomonCellImageFromImageCommand::cellPoints()
 {
     return d->pointCloud_series;
 }
-    
+
 gnomonCellImageSeries *gnomonCellImageFromImageCommand::output()
 {
     return d->output;
@@ -113,7 +113,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::outp
     return outputs;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonCellImageFromImageCommand::parameters(void) const
+dtkCoreParameters gnomonCellImageFromImageCommand::parameters(void) const
 {
     return this->action->parameters();
 }

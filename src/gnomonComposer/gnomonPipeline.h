@@ -26,7 +26,6 @@ class gnomonAbstractAlgorithmCommand;
 class gnomonAbstractConstructorCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
-class gnomonCoreParameter;
 
 class gnomonPipelinePrivate;
 

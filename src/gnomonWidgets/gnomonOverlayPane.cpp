@@ -222,7 +222,7 @@ void gnomonOverlayPane::addLayout(QLayout *layout)
     d->layout->addLayout(layout);
 }
 
-void gnomonOverlayPane::addInfoPaneItem(const QString& title, QMap<QString, QVariant> info)
+void gnomonOverlayPane::addInfoPaneItem(const QString& title, QVariantMap info)
 {
     if (!d->pane_items.contains(title))
     {
@@ -244,7 +244,7 @@ void gnomonOverlayPane::addInfoPaneItem(const QString& title, QMap<QString, QVar
         }
     }
 
-    for(QMap<QString, QVariant>::iterator it = info.begin(), it_end = info.end(); it != it_end; ++it) {
+    for(QVariantMap::iterator it = info.begin(), it_end = info.end(); it != it_end; ++it) {
         d->pane_item_layouts[title]->addRow(it.key(), new QLabel(it.value().toString()));
     }
 

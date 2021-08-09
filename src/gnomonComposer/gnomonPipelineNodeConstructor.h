@@ -21,7 +21,7 @@
 class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeConstructor : public gnomonPipelineNode
 {
 public:
-     gnomonPipelineNodeConstructor(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> outputs);
+     gnomonPipelineNodeConstructor(const QString& algorithm_class, const QString& algorithm, QVariantMap parameters, QList<QString> outputs);
     ~gnomonPipelineNodeConstructor(void);
 
 public:

@@ -25,7 +25,7 @@
 class gnomonViewForm;
 
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractVisualization
 {
@@ -40,8 +40,8 @@ public:
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void setParameters(const dtkCoreParameters&) override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
 
 public:
     virtual QImage imageRendering(void) override = 0;

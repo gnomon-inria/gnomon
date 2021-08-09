@@ -99,7 +99,7 @@ void gnomonPointCloudQuantificationCommand::setParameter(const QString& paramete
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonPointCloudQuantificationCommand::parameters(void) const
+dtkCoreParameters gnomonPointCloudQuantificationCommand::parameters(void) const
 {
     return this->action->parameters();
 }

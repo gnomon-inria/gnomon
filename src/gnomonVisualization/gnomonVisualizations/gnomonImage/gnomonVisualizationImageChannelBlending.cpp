@@ -74,10 +74,10 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
 
     dd->image = Q_NULLPTR;
 
-    // d->parameters["channel"] = new gnomonCoreParameterString("", {""}, "Image channel to be displayed");
-    // d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
+    // d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
+    // d->parameters["value_range"] = new dtk::d_range_int(0, 255, 0, 255, "Value range for display ramps");
     // d->parameters["colormap"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("Greys"), "Colormap to apply to the image channel");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
+    d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
 
     dd->defaultColormaps[0] = "grey";
@@ -157,7 +157,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             dd->channelLookupTables.remove("");
         }
         dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
-        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[""], "Lookuptable to apply to the image");
+        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
     } else {
         int iChannel = 0;
         for (const auto& channelName : dd->image->channels()) {
@@ -165,7 +165,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
                 dd->channelLookupTables.remove(channelName);
             }
             dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
-            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable(dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
+            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
             iChannel++;
         }
     }
@@ -173,7 +173,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
 
 void gnomonVisualizationImageChannelBlending::updateOpacity(void)
 {
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     dd->actor2D->setOpacity(alpha);
     dd->volume->setOpacity(alpha);
@@ -195,8 +195,8 @@ void gnomonVisualizationImageChannelBlending::update(void)
     if(!dd->image)
         return;
 
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    // QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
+    double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
+    // QList<int> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
     // QMap<double, QColor> colormap = ((gnomonCoreParameterLookupTable *)d->parameters["colormap"])->value()->colorMap();
 
 
@@ -264,7 +264,7 @@ void gnomonVisualizationImageChannelBlending::render(void)
 }
 
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationImageChannelBlending::parameters(void) const
+dtkCoreParameters gnomonVisualizationImageChannelBlending::parameters(void) const
 {
     return d->parameters;
 }
@@ -278,13 +278,12 @@ void gnomonVisualizationImageChannelBlending::setParameter(const QString& parame
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationImageChannelBlending::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationImageChannelBlending::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

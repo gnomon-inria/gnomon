@@ -59,12 +59,12 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualiza
 {
     dd->mesh = Q_NULLPTR;
 
-    d->parameters["property_name"] = new gnomonCoreParameterString("", {""}, "Mesh property to be displayed");
-    d->parameters["value_range"] = new gnomonCoreParameterDoubleRange(0., 1., 0., 1., "Value range for color adjustment");
+    d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "Mesh property to be displayed");
+    d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the mesh");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the mesh rendering");
+    d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the mesh rendering");
 
-    connect(d->parameters["property_name"], &gnomonCoreParameter::valueChanged, [=] () {
+    d->parameters["property_name"]->connect([=] (QVariant v) {
         if(!dd->mesh)
             return;
         this->updateValueRange();
@@ -109,8 +109,8 @@ void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
 
     this->setParameter("alpha",1.0);
 
-    gnomonCoreParameterString *propertyParam = (gnomonCoreParameterString *)d->parameters["property_name"];
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    dtk::d_inliststring *propertyParam = (dtk::d_inliststring *)d->parameters["property_name"];
+    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
 
     QStringList properties = {""};
     for (const auto& propertyName : dd->mesh->vertexPropertyNames()) {
@@ -131,7 +131,7 @@ void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
 
 void gnomonVisualizationMesh::updateOpacity(void)
 {
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
@@ -149,7 +149,7 @@ void gnomonVisualizationMesh::updateOpacity(void)
 
 void gnomonVisualizationMesh::updateValueRange(void)
 {
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
 
     QMap<long, QVariant> vertexProperty;
     if(dd->mesh->vertexPropertyNames().contains(property_name)) {
@@ -167,8 +167,7 @@ void gnomonVisualizationMesh::updateValueRange(void)
     auto mm = std::minmax_element(vertexScalarPropertyValues.begin(),vertexScalarPropertyValues.end());
 
 
-    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-    ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
+    ((dtk::d_range_real *)d->parameters["value_range"])->setBounds({*(mm.first), *(mm.second)});
 }
 
 QImage gnomonVisualizationMesh::imageRendering(void)
@@ -191,9 +190,9 @@ QImage gnomonVisualizationMesh::imageRendering(void)
 
 void gnomonVisualizationMesh::update(void)
 {
-    QString property_name = ((gnomonCoreParameterString *)d->parameters["property_name"])->value();
+    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-    QList<double> value_range = ((gnomonCoreParameterDoubleRange *)d->parameters["value_range"])->value();
+    std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
 
     if(!dd->mesh)
         return;
@@ -272,7 +271,7 @@ void gnomonVisualizationMesh::render(void)
     d->view->render();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationMesh::parameters(void) const
+dtkCoreParameters gnomonVisualizationMesh::parameters(void) const
 {
     return d->parameters;
 }
@@ -286,13 +285,12 @@ void gnomonVisualizationMesh::setParameter(const QString& parameter, const QVari
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationMesh::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationMesh::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

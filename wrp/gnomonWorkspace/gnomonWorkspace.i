@@ -18,10 +18,11 @@
 
 %include <dtkBase/dtkBase.i>
 
-%import <dtkCore/dtkCore.i>
+%include <dtkCore/dtkCore.i>
 
 %{
 
+#include <dtkCore>
 #include <dtkWidgets>
 #include <gnomonCore>
 #include <gnomonWorkspace>

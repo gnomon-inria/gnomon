@@ -16,10 +16,10 @@
 
 #include <QtCore>
 
+#include <dtkCore>
 #include <gnomonVisualizationExport.h>
 
 class gnomonViewMatplotlib;
-class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualization : public QObject
 {
@@ -32,11 +32,11 @@ public:
 public:
     void setView(gnomonViewMatplotlib *view);
     virtual void setParameter(const QString&, const QVariant&) = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) = 0;
+    virtual void setParameters(const dtkCoreParameters&) = 0;
 
 public:
     gnomonViewMatplotlib* view(void);
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
+    virtual dtkCoreParameters parameters(void) const = 0;
 
 public:
     virtual QImage imageRendering(void) = 0;

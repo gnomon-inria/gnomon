@@ -66,7 +66,7 @@ void gnomonCellImageConstructorCommand::setParameter(const QString& parameter, c
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonCellImageConstructorCommand::parameters(void) const
+dtkCoreParameters gnomonCellImageConstructorCommand::parameters(void) const
 {
     return this->action->parameters();
 }

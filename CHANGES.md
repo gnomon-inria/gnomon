@@ -1,4 +1,6 @@
 # ChangeLog
+ - use dtkCoreParameters
+
 ## version 0.9.1 - 2018-11-27
 - demo release before image series merge
  - add gnomon application to add a workflow for working on images

@@ -17,9 +17,7 @@
 %module(directors="1") gnomonvisualization
 
 %include <dtkBase/dtkBase.i>
-%include <gnomonCore/gnomonCoreParameter.i>
-
-%import <dtkCore/dtkCore.i>
+%include <dtkCore/dtkCore.i>
 %import <gnomonCore/gnomonCore.i>
 
 %{

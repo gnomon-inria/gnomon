@@ -19,6 +19,7 @@
 #include "gnomonPipeline.h"
 
 #include "gnomonPipelineNode.h"
+#include "gnomonCore/gnomonCoreSettings.h"
 
 #include <dtkComposer>
 #include <dtkCore>

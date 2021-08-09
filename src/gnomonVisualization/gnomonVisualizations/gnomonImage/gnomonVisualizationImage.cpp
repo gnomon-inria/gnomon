@@ -68,12 +68,12 @@ gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisuali
     dd->imageSeries = Q_NULLPTR;
     dd->image = Q_NULLPTR;
 
-    d->parameters["channel"] = new gnomonCoreParameterString("", {""}, "Image channel to be displayed");
-    d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for display ramps");
+    d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
+    d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for display ramps");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the image rendering");
+    d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
-    connect(d->parameters["channel"], &gnomonCoreParameter::valueChanged, [=] () {
+    d->parameters["channel"]->connect([=] (QVariant v) {
         if(!dd->image)
             return;
         this->updateChannelColorMap();
@@ -127,30 +127,30 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
         d->parameters.remove("channel");
     } else {
         if((!d->parameters.contains("channel"))||(!d->parameters["channel"])) {
-            d->parameters["channel"] = new gnomonCoreParameterString("", {""}, "Image channel to be displayed");
+            d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
         }
         qDebug()<<Q_FUNC_INFO<<d->parameters["channel"];
-        gnomonCoreParameterString *channelParam = (gnomonCoreParameterString *)d->parameters["channel"];
+        dtk::d_inliststring *channelParam = (dtk::d_inliststring *)d->parameters["channel"];
         channelParam->setValues(dd->image->channels());
         channelParam->setValue(dd->image->channels()[0]);
     }
 
-    gnomonCoreParameterIntRange *valueRangeParam = (gnomonCoreParameterIntRange *)d->parameters["value_range"];
-    valueRangeParam->setMinimumValue(0);
+    dtk::d_range_int *valueRangeParam = (dtk::d_range_int *)d->parameters["value_range"];
+    valueRangeParam->setMin(0);
 
     QString channel = dd->image->channels()[0];
     if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
-        valueRangeParam->setMaximumValue(255);
-        valueRangeParam->setValue(0,255);
+        valueRangeParam->setMax(255);
+        valueRangeParam->setValue({0,255});
     } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
-        valueRangeParam->setMaximumValue(65535);
-        valueRangeParam->setValue(0,65535);
+        valueRangeParam->setMax(65535);
+        valueRangeParam->setValue({0,65535});
      }
 }
 
 void gnomonVisualizationImage::updateOpacity(void)
 {
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     dd->actor2D->setOpacity(alpha);
     dd->volume->setOpacity(alpha);
@@ -159,7 +159,7 @@ void gnomonVisualizationImage::updateOpacity(void)
 void gnomonVisualizationImage::updateChannelColorMap(void)
 {
     if(dd->image->channels().size()>1) {
-        QString channel = ((gnomonCoreParameterString *)d->parameters["channel"])->value();
+        QString channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
 
         if(dd->channelColormaps.contains(channel)) {
             ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
@@ -183,13 +183,13 @@ void gnomonVisualizationImage::update(void)
     if(!dd->image)
         return;
 
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
-    QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
+    double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
+    std::array<long long int, 2> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
 
     QString channel;
     if(dd->image->channels().size()>1) {
-        channel = ((gnomonCoreParameterString *)d->parameters["channel"])->value();
+        channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
         dd->channelColormaps[channel] = colormap;
     } else {
         channel = "";
@@ -238,7 +238,7 @@ void gnomonVisualizationImage::render(void)
     d->view->render();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationImage::parameters(void) const
+dtkCoreParameters gnomonVisualizationImage::parameters(void) const
 {
     return d->parameters;
 }
@@ -252,13 +252,12 @@ void gnomonVisualizationImage::setParameter(const QString& parameter, const QVar
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationImage::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationImage::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

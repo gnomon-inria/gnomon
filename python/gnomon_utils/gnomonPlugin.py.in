@@ -11,6 +11,7 @@ from pkg_resources import iter_entry_points
 from setuptools import findall
 
 import gnomoncore
+from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
 
@@ -75,7 +76,7 @@ def gnomonParametric(cls):
 
     def setParameter(self, parameter_name, parameter_value):
         if parameter_name in self._parameters:
-            if isinstance(parameter_value, gnomoncore.gnomonCoreParameter):
+            if isinstance(parameter_value, dtkCoreParameter):
                 self._parameters[parameter_name] = parameter_value
             else:
                 self._parameters[parameter_name].setValue(parameter_value)
@@ -90,26 +91,26 @@ def gnomonParametric(cls):
     cls.setParameters = setParameters
 
     def parameters(self):
-        return self._parameters
+        return {k:v.castToTop() for k,v in self._parameters.items()}
     cls.parameters = parameters
 
     def parameterDict(self):
-        return {key : value.value() for key, value in self.parameters().iteritems()}
+        return {key : value.value() for key, value in self.parameters().items()}
     cls.parameterDict = parameterDict
 
 
     return cls
 
 
-def gnomonPlugin(cls=None, namespace=gnomoncore, base_class=None):
+def gnomonPlugin(version, coreversion, cls=None, namespace=gnomoncore, base_class=None):
     if cls is not None:
-        return _gnomonPlugin(cls, namespace=namespace, base_class=base_class)
+        return _gnomonPlugin(version, coreversion, cls, namespace=namespace, base_class=base_class)
     else:
         def wrapper(cls):
-            return _gnomonPlugin(cls, namespace=namespace, base_class=base_class)
+            return _gnomonPlugin(version, coreversion, cls, namespace=namespace, base_class=base_class)
         return wrapper
 
-def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
+def _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class = None):
     # -----------------------------------------------------
     # Python error management
     # -----------------------------------------------------
@@ -129,6 +130,8 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
             doc = "\nThis plugin has no documentation\n\n"
         return doc
     cls.documentation = documentation
+
+    cls.version = version
 
     def wrapper(f):
         @wraps(f)
@@ -152,6 +155,28 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
         base_class =  cls.__bases__[0]
 
     gnomonPluginBaseClass = getattr(namespace, base_class.__name__ + "Plugin")
+
+    def checkVersion(plugin_coreversion : str) -> bool:
+        coreversion = ("${gnomon_VERSION}").split('.')
+        plugin_coreversion = plugin_coreversion.split('.')
+
+        if int(coreversion[0]) != int(plugin_coreversion[0]) :
+            return False
+
+        # if minor level of ref < elem return false
+        if int(coreversion[1]) < int(plugin_coreversion[1]) :
+            return False
+        else :
+            # no patch level specified in ref
+            if len(coreversion) < 3 or  len(plugin_coreversion) < 3:
+                return True
+
+            # if same minor level, compare patch level
+            if (int(coreversion[1]) == int(plugin_coreversion[1])) and (int(coreversion[2]) <  int(plugin_coreversion[2])) :
+                return False
+            # else minor level of elem < ref , then don't compare patch level
+
+        return True
 
     class gnomonPluginClass(gnomonPluginBaseClass):
         def __init__(self):
@@ -177,12 +202,15 @@ def _gnomonPlugin(cls, namespace=gnomoncore, base_class = None):
     plugin_name = cls.__name__
     plugin_name = plugin_name[0].lower() + plugin_name[1:]
 
+
     # TODO
     # check plugin gnomon_version to actual version before registering it
     # register plugin_version to be able to get it ?
-
-    factory.recordPlugin(plugin_name, __PLUGINS__[-1])
-    if plugin_name in factory.keys():
-        logging.info("Python plugin "+str(plugin_name)+" has been successfully loaded!")
-
+    if checkVersion(coreversion):
+        factory.recordPlugin(plugin_name, __PLUGINS__[-1])
+        if plugin_name in factory.keys():
+            logging.info("Python plugin "+str(plugin_name)+" has been successfully loaded!")
+    else :
+        logging.info("Python plugin" + str(plugin_name) + "defined for core version " + str(coreversion) + " but actual version is ${gnomon_VERSION}")
+        logging.info("plugin not loaded")
     return cls

@@ -212,7 +212,7 @@ public:
 
 public:
     dtkWidgetsMenu *view_menu;
-    
+
 public:
     gnomonFormAdapterMenu *adapter_menu = nullptr;
 
@@ -233,7 +233,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLNative
     this->window->AddRenderer(this->renderer2D);
     this->window->AddRenderer(this->renderer3D);
 
-    this->SetRenderWindow(this->window);
+    this->setRenderWindow(this->window);
     this->setEnableHiDPI(true);
 
     this->renderer2D_button = new gnomonOverlayButton(fa::square, "", this);
@@ -284,7 +284,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLNative
 
         this->renderer2D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
         this->renderer3D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
-        this->GetInteractor()->Render();
+        this->interactor()->Render();
     });
 }
 
@@ -316,10 +316,10 @@ void gnomonViewFormPrivate::saveScreenshot(void)
     QString export_file_path;
     export_file_path = QFileDialog::getSaveFileName(this, tr("Save screenshot"), path, tr("PNG Image (*.png)"));
 
-    this->GetRenderWindow()->SetAlphaBitPlanes(1);
+    this->renderWindow()->SetAlphaBitPlanes(1);
 
     vtkSmartPointer<vtkWindowToImageFilter> screenshooter = vtkWindowToImageFilter::New();
-    screenshooter->SetInput(this->GetRenderWindow());
+    screenshooter->SetInput(this->renderWindow());
     screenshooter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
     screenshooter->ReadFrontBufferOff();
     screenshooter->Update();
@@ -442,7 +442,7 @@ void gnomonViewFormPrivate::updateOrientation(void)
     else {
         this->renderer2D->SetActiveCamera(this->cameras[this->ori]);
     }
-    this->GetInteractor()->Render();
+    this->interactor()->Render();
 }
 
 void gnomonViewFormPrivate::clear(void)
@@ -556,9 +556,9 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
                 parent->addLayout(this->parameterLayouts[key]);
             }
 
-            QMap<QString, gnomonCoreParameter *> parameters = v->parameters();
+            dtkCoreParameters parameters = v->parameters();
 
-            for(QMap<QString, gnomonCoreParameter*>::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
+            for(dtkCoreParameters::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
                 QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
                 if (widget) {
                     this->parameterLayouts[key]->addRow(it.key(), widget);
@@ -892,7 +892,7 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
                 d->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand(key);
                 delete adapter;
             }
-        } 
+        }
     }
 
     connect(d->renderer2D_button, SIGNAL(iconClicked()), this, SLOT(switchTo2D()));
@@ -1101,7 +1101,7 @@ void gnomonViewForm::switchTo2D(void)
         default:
             break;
     }
-    
+
     emit switchedTo2D();
 
     d->slice_slider->setVisible(true);
@@ -1209,7 +1209,7 @@ void gnomonViewForm::sliceChange(int value)
     if (valueChanged)
         emit sliceChanged(value);
 
-    d->GetInteractor()->Render();
+    d->interactor()->Render();
 }
 
 
@@ -1234,7 +1234,7 @@ void gnomonViewForm::timeIndexChange(int value)
         emit timeChanged(time);
     }
 
-    d->GetInteractor()->Render();
+    d->interactor()->Render();
 }
 
 QList<double> gnomonViewForm::times(void)
@@ -1260,7 +1260,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
 //    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
-    other->d->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+    other->d->renderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
     connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
     connect(other, &gnomonViewForm::switchedTo2D, [=] () {
@@ -1731,7 +1731,7 @@ void gnomonViewForm::setEnableMenus(bool enable)
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
 {
-    return d->GetInteractor();
+    return d->interactor();
 }
 
 vtkRenderer *gnomonViewForm::renderer2D(void)
@@ -1762,7 +1762,7 @@ int gnomonViewForm::orientation(void)
 void gnomonViewForm::render(void)
 {
 //    d->renderer2D->ResetCameraClippingRange();
-    d->GetInteractor()->Render();
+    d->interactor()->Render();
 }
 
 void gnomonViewForm::onSliceChanged(int slice)

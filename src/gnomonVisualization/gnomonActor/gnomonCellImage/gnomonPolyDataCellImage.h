@@ -38,7 +38,7 @@ public slots:
     void modified(void);
 
     void setPropertyName(const QString& value);
-    void setSliceRanges(const QList<double>& x_value, const QList<double>& y_value, const QList<double>& z_value);
+    void setSliceRanges(const std::array<double, 2>& x_value, const std::array<double, 2>& y_value, const std::array<double, 2>& z_value);
 
     void set8Bit(bool value);
 

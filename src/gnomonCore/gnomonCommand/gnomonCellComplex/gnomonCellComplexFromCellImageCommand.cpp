@@ -75,7 +75,7 @@ void gnomonCellComplexFromCellImageCommand::setParameter(const QString& paramete
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonCellComplexFromCellImageCommand::parameters(void) const
+dtkCoreParameters gnomonCellComplexFromCellImageCommand::parameters(void) const
 {
     return this->action->parameters();
 }

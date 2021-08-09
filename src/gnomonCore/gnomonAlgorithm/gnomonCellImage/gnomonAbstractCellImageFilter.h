@@ -31,7 +31,7 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageFilter : public gnomonAbstractAlg
     //Inputs
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+  virtual dtkCoreParameters parameters(void) const override = 0;
   virtual void setInput(gnomonCellImageSeries *images) = 0;
 
     // Outputs

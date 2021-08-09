@@ -24,7 +24,7 @@
 // gnomonDoubleRangeEditor
 // /////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonDoubleRangeEditor : public QWidget
+class GNOMONWIDGETS_DEPRECATED_EXPORT gnomonDoubleRangeEditor : public QWidget
 {
     Q_OBJECT
 

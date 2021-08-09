@@ -20,7 +20,7 @@ bool t_set_parameter_called = false;
 class dummyImageFromImagePlugin : public gnomonAbstractCellImageFromImage {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override { imagefromimage::t_set_parameter_called = true;};
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override {return QMap<QString, gnomonCoreParameter *>();};
+    dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
     void run(void) override{ imagefromimage::t_run_called = true;};
     QString documentation(void) override {return "empty";};

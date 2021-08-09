@@ -83,7 +83,7 @@ void gnomonImageFilterCommand::setParameter(const QString& parameter, const QVar
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonImageFilterCommand::parameters(void) const
+dtkCoreParameters gnomonImageFilterCommand::parameters(void) const
 {
     return this->action->parameters();
 }

@@ -23,7 +23,7 @@
 
 class gnomonPipelineNodeAlgorithmPrivate {
 public:
-    QMap<QString, QVariant> parameters;
+    QVariantMap parameters;
     QMap<QString, dtkComposerScenePort *> input_ports;
     QMap<QString, dtkComposerScenePort *> output_ports;
 };
@@ -32,7 +32,7 @@ public:
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QMap<QString, QVariant> parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QVariantMap parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
 {
     if (algorithm_class.contains("From")) {
         d->color = QColor(153, 69, 69);

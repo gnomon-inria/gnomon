@@ -66,7 +66,7 @@ void gnomonTreeConstructorCommand::setParameter(const QString& parameter, const 
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonTreeConstructorCommand::parameters(void) const
+dtkCoreParameters gnomonTreeConstructorCommand::parameters(void) const
 {
     return this->action->parameters();
 }

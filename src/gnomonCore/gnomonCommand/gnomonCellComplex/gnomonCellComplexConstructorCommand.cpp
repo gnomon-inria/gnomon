@@ -66,7 +66,7 @@ void gnomonCellComplexConstructorCommand::setParameter(const QString& parameter,
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonCellComplexConstructorCommand::parameters(void) const
+dtkCoreParameters gnomonCellComplexConstructorCommand::parameters(void) const
 {
     return this->action->parameters();
 }

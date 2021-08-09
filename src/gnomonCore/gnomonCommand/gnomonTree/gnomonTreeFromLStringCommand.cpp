@@ -84,7 +84,7 @@ gnomonTreeSeries *gnomonTreeFromLStringCommand::output(void)
     return d->output;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonTreeFromLStringCommand::parameters(void) const
+dtkCoreParameters gnomonTreeFromLStringCommand::parameters(void) const
 {
     return this->action->parameters();
 }

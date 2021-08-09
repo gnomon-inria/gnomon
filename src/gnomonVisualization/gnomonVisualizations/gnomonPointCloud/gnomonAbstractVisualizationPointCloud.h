@@ -26,7 +26,7 @@
 class gnomonViewForm;
 
 class gnomonPointCloud;
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationPointCloud : public gnomonAbstractVisualization
 {
@@ -41,8 +41,8 @@ public:
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void setParameters(const dtkCoreParameters&) override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
 
 public:
     virtual QImage imageRendering(void) override = 0;

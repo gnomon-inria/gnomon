@@ -62,9 +62,9 @@ gnomonVisualizationCellImageVolume::gnomonVisualizationCellImageVolume(void) : g
 {
     dd->cellImage = Q_NULLPTR;
 
-    d->parameters["value_range"] = new gnomonCoreParameterIntRange(0, 255, 0, 255, "Value range for color adjustment");
+    d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellImage");
-    d->parameters["alpha"] = new gnomonCoreParameterDouble(1, 0, 1, 2, "Transparency value for the cellImage rendering");
+    d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellImage rendering");
 }
 
 gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
@@ -105,7 +105,7 @@ void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cel
 
 void gnomonVisualizationCellImageVolume::updateOpacity(void)
 {
-    double alpha = ((gnomonCoreParameterDouble *)d->parameters["alpha"])->value();
+    double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     if(dd->actor) {
         dd->actor->setOpacity(alpha);
@@ -121,9 +121,7 @@ void gnomonVisualizationCellImageVolume::updateValueRange(void)
      QList<long> cellIds = dd->cellImage->cellIds();
      auto mm = std::minmax_element(cellIds.begin(),cellIds.end());
 
-     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMinimumValue(*(mm.first));
-     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setMaximumValue(*(mm.second));
-     ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->setValue(*(mm.first),*(mm.second));
+     ((dtk::d_range_int *)d->parameters["value_range"])->setBounds({*(mm.first),*(mm.second)});
 }
 
 QImage gnomonVisualizationCellImageVolume::imageRendering(void)
@@ -148,7 +146,7 @@ void gnomonVisualizationCellImageVolume::update(void)
 {
      QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
      QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-     QList<int> value_range = ((gnomonCoreParameterIntRange *)d->parameters["value_range"])->value();
+     std::array<long long int, 2> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
 
     if(!dd->cellImage)
         return;
@@ -235,7 +233,7 @@ void gnomonVisualizationCellImageVolume::render(void)
 }
 
 
-QMap<QString, gnomonCoreParameter *> gnomonVisualizationCellImageVolume::parameters(void) const
+dtkCoreParameters gnomonVisualizationCellImageVolume::parameters(void) const
 {
     return d->parameters;
 }
@@ -249,13 +247,12 @@ void gnomonVisualizationCellImageVolume::setParameter(const QString& parameter, 
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationCellImageVolume::setParameters(const QMap<QString, gnomonCoreParameter *>& parameters)
+void gnomonVisualizationCellImageVolume::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
-//            d->parameters[param] = parameters[param];
-            d->parameters[param]->copy(parameters[param]);
+            d->parameters[param] = parameters[param];
         }
     }
 }

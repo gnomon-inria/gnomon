@@ -70,7 +70,7 @@ public:
 
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
-    QMap<QString, QVariant> parameterVariantValues(const QMap<QString, gnomonCoreParameter *>&parameters);
+    QVariantMap parameterVariantValues(const dtkCoreParameters&parameters);
 
 public:
     QStringList sourceNodeNames(void);
@@ -140,37 +140,13 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
     }
 }
 
-QMap<QString, QVariant> gnomonPipelinePrivate::parameterVariantValues(const QMap<QString, gnomonCoreParameter *>&parameters)
+QVariantMap gnomonPipelinePrivate::parameterVariantValues(const dtkCoreParameters&parameters)
 {
-    QMap<QString, QVariant> parameter_values;
+    QVariantMap parameter_values;
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         auto&& parameter_name = it.key();
         auto&& param = it.value();
-        if (gnomonCoreParameterInt *parameter = dynamic_cast<gnomonCoreParameterInt *>(param)) {
-            parameter_values[parameter_name] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterDouble *parameter = dynamic_cast<gnomonCoreParameterDouble *>(param)) {
-            parameter_values[parameter_name] = QVariant(parameter->value());
-        }  else if (gnomonCoreParameterIntRange *parameter = dynamic_cast<gnomonCoreParameterIntRange *>(param)) {
-            QList<QVariant> range;
-            for (const auto& val : parameter->value()) {
-                range.append(QVariant(val));
-            }
-            parameter_values[parameter_name] = QVariant(range);
-        } else if (gnomonCoreParameterDoubleRange *parameter = dynamic_cast<gnomonCoreParameterDoubleRange *>(param)) {
-            QList<QVariant> range;
-            for (const auto& val : parameter->value()) {
-                range.append(QVariant(val));
-            }
-            parameter_values[parameter_name] = QVariant(range);
-        }  else if (gnomonCoreParameterBool *parameter = dynamic_cast<gnomonCoreParameterBool *>(param)) {
-            parameter_values[parameter_name] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterString *parameter = dynamic_cast<gnomonCoreParameterString *>(param)) {
-            parameter_values[parameter_name] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterStringList *parameter = dynamic_cast<gnomonCoreParameterStringList *>(param)) {
-            parameter_values[parameter_name] = QVariant(parameter->value());
-        } else if (gnomonCoreParameterFile *parameter = dynamic_cast<gnomonCoreParameterFile *>(param)) {
-            parameter_values[parameter_name] = QVariant(parameter->value());
-        }
+        parameter_values[parameter_name] = param->variant();
     }
 
     return parameter_values;
@@ -508,7 +484,7 @@ void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    QMap<QString, QVariant> parameter_values = d->parameterVariantValues(command->parameters());
+    QVariantMap parameter_values = d->parameterVariantValues(command->parameters());
 
     gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(),command->algorithmName(),parameter_values,input_forms.keys(),output_forms.keys());
 
@@ -527,7 +503,7 @@ void gnomonPipeline::addConstructor(gnomonAbstractConstructorCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    QMap<QString, QVariant> parameter_values = d->parameterVariantValues(command->parameters());
+    QVariantMap parameter_values = d->parameterVariantValues(command->parameters());
 
     gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(),command->algorithmName(),parameter_values,output_forms.keys());
 

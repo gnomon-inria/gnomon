@@ -23,7 +23,7 @@
 class gnomonViewForm;
 
 class gnomonCellImage;
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationCellImageMarchingCubes : public gnomonAbstractVisualizationCellImage
 {
@@ -61,12 +61,12 @@ public slots:
 
 public:
     void setParameter(const QString&, const QVariant&) override;
-    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    void setParameters(const dtkCoreParameters&) override;
+    dtkCoreParameters parameters(void) const override;
 
 public:
     long cellId(long vtkId) override;
-    QMap<QString, QVariant> cellInfo(long cellId);
+    QVariantMap cellInfo(long cellId);
 
 public:
 	class gnomonVisualizationCellImageMarchingCubesPrivate *dd;

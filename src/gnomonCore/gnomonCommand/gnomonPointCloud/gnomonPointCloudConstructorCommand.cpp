@@ -66,7 +66,7 @@ void gnomonPointCloudConstructorCommand::setParameter(const QString& parameter, 
     this->action->setParameter(parameter, value);
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonPointCloudConstructorCommand::parameters(void) const
+dtkCoreParameters gnomonPointCloudConstructorCommand::parameters(void) const
 {
     return this->action->parameters();
 }
