@@ -4,7 +4,7 @@ if (PYTHON)
     set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
     set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
     set(PLUGIN_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonPlugin.py.in")
-    set(PLUGIN_PY    "${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonPlugin.py")
+    set(PLUGIN_PY    "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonPlugin.py")
     set(OUTPUT      "${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/__init__.py")
 
     configure_file(${SETUP_PY_IN} ${SETUP_PY})
