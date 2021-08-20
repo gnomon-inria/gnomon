@@ -108,6 +108,9 @@ public slots:
     void updateCode(void);
 
 public:
+    QMap<QString, QString> parameter_types;
+
+public:
     QMap<QString, gnomonFormDescription *> input_forms;
     QMap<QString, gnomonFormDescription *> output_forms;
     QMap<QString, gnomonParameterDescription *> parameters;
@@ -133,6 +136,12 @@ public:
 
 gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *parent) : gnomonPythonEditor(parent)
 {
+    this->parameter_types["Bool"] = "d_bool";
+    this->parameter_types["Int"] = "d_int";
+    this->parameter_types["Double"] = "d_real";
+    this->parameter_types["String"] = "d_inliststring";
+    this->parameter_types["StringList"] = "d_inliststringlist";
+
     this->menu_layout = new QVBoxLayout();
     this->menu_layout->setContentsMargins(0, 0, 0, 0);
 
@@ -299,11 +308,9 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     parameter_layout->addWidget(type_label, 1, 0, 1, 1);
 
     QComboBox *type_edit = new QComboBox();
-    type_edit->addItem("Bool");
-    type_edit->addItem("Int");
-    type_edit->addItem("Double");
-    type_edit->addItem("String");
-    type_edit->addItem("StringList");
+    for (const auto& type : this->parameter_types.keys()) {
+        type_edit->addItem(type);
+    }
     parameter_layout->addWidget(type_edit, 1, 1, 1, 1);
 
     QLabel *documentation_label = new QLabel("Documentation");
@@ -322,7 +329,6 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     {
         this->parameter_pane->slider->setCurrentIndex(0,ca);
     };
-
 
     QPushButton *cancel_button = new QPushButton("Cancel");
     cancel_button->setDefault(false);
@@ -539,6 +545,8 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
 
     plugin_code += "# {# gnomon, plugin.imports\n";
 
+    plugin_code += "from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist\n";
+    plugin_code += "\n";
     plugin_code += "import gnomoncore\n";
     plugin_code += "\n";
     plugin_code += "from gnomon_utils import gnomonPlugin, gnomonParametric\n";
@@ -606,19 +614,20 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     for (const auto &param : this->parameters.keys()) {
         gnomonParameterDescription *desc = this->parameters[param];
         plugin_code += "        self._parameters['" + desc->name + "'] = ";
-        plugin_code += "gnomoncore.Parameter" + desc->type + "(";
+        plugin_code += this->parameter_types[desc->type] + "(";
+        plugin_code += "'" + desc->doc + "', ";
         if (desc->type == "Bool") {
             plugin_code += "True";
         } else if (desc->type == "Int") {
-            plugin_code += "1,0,10";
+            plugin_code += "1, 0, 10";
         } else if (desc->type == "Double") {
-            plugin_code += "1.,0.,1.,2";
+            plugin_code += "1., 0., 1., 2";
         } else if (desc->type == "String") {
-            plugin_code += "'',['']";
+            plugin_code += "'', ['']";
         } else if (desc->type == "StringList") {
-            plugin_code += "[''],['']";
+            plugin_code += "[''], ['']";
         }
-        plugin_code += ",'" + desc->doc + "')\n";
+        plugin_code += ")\n";
     }
     plugin_code += "\n";
     if (n_forms > 0) {
