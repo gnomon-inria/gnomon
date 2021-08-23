@@ -123,7 +123,7 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
 
     dd->channelColormaps.clear();
     if(dd->image->channels().size()==1) {
-        delete d->parameters["channel"];
+        //delete d->parameters["channel"];
         d->parameters.remove("channel");
     } else {
         if((!d->parameters.contains("channel"))||(!d->parameters["channel"])) {

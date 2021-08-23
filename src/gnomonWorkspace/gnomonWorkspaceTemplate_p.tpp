@@ -37,11 +37,15 @@ template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplat
 template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QString& algorithm)
 {
     if (this->layout) {
-
         for(int row = 0, max_row = this->layout->count(); row < max_row; ++row) {
             QLayoutItem *forDeletion = this->layout->takeAt(0);
-            forDeletion->widget()->disconnect();
-            delete forDeletion->widget();
+            dtkWidgetsParameter *parameter_widget = dynamic_cast<dtkWidgetsParameter *>(forDeletion->widget());
+            if (parameter_widget) {
+                delete parameter_widget;
+            } else {
+                forDeletion->widget()->disconnect();
+                delete forDeletion->widget();
+            }
             delete forDeletion;
         }
     } else {

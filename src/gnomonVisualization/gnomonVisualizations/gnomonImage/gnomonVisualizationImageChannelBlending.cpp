@@ -135,7 +135,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
 
     for (const auto& parameterName : parameterNames) {
         if(parameterName.contains("lookuptable")) {
-            delete d->parameters[parameterName];
+            //delete d->parameters[parameterName];
             d->parameters.remove(parameterName);
         }
     }
