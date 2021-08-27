@@ -1,32 +1,12 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWidgetsExport.h>
 
 #include <dtkCoreParameter>
 
-#include "gnomonLookupTable.h"
-
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonCoreParameterColormap
-// ///////////////////////////////////////////////////////////////////
 
 class GNOMONWIDGETS_EXPORT gnomonCoreParameterColorMap : public dtkCoreParameterBase<gnomonCoreParameterColorMap>
 {
@@ -66,36 +46,3 @@ private:
 
 Q_DECLARE_METATYPE(gnomonCoreParameterColorMap);
 Q_DECLARE_METATYPE(gnomonCoreParameterColorMap *);
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonCoreParameterLookupTable
-// ///////////////////////////////////////////////////////////////////
-/*
-class GNOMONWIDGETS_EXPORT gnomonCoreParameterLookupTable : public dtkCoreParameterBase<gnomonCoreParameterLookupTable>
-{
-public:
-    gnomonCoreParameterLookupTable(void) = default;
-    gnomonCoreParameterLookupTable(const gnomonLookupTable& lut, const QString& doc = QString());
-    gnomonCoreParameterLookupTable(const gnomonCoreParameterLookupTable&);
-    ~gnomonCoreParameterLookupTable(void) = default;
-
-    gnomonLookupTable value(void) const;
-
-    void setValue(const gnomonLookupTable&);
-
-    gnomonCoreParameterLookupTable& operator = (const QVariant&);
-    gnomonCoreParameterLookupTable& operator = (const gnomonCoreParameterLookupTable&);
-
-    QVariantHash toVariantHash(void) const override;
-
-private:
-    using dtkCoreParameter::m_label;
-    using dtkCoreParameter::m_doc;
-    gnomonLookupTable m_l;
-};
-
-Q_DECLARE_METATYPE(gnomonCoreParameterLookupTable);
-Q_DECLARE_METATYPE(gnomonCoreParameterLookupTable *);
-*/
-//
-// dtkCoreParameter.h ends here

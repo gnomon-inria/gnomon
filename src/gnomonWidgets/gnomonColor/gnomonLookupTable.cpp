@@ -30,6 +30,34 @@ gnomonLookupTable::gnomonLookupTable(const QString& clut, const QList<double> r,
     this->setColorMap(clut);
 }
 
+gnomonLookupTable::gnomonLookupTable(const gnomonLookupTable& o) : name(o.name) ,colormap(o.colormap), value_range(o.value_range), visible(o.visible)
+{
+}
+
+gnomonLookupTable& gnomonLookupTable::operator = (const gnomonLookupTable& o)
+{
+    if(this != &o) {
+        this->name = o.name;
+        this->colormap = o.colormap;
+        this->value_range = o.value_range;
+        this->visible = o.visible;
+    }
+
+    return *this;
+}
+
+bool gnomonLookupTable::operator != (const gnomonLookupTable& o)
+{
+    if(this->name == o.name && this->visible == o.visible) {
+        if(this->value_range == o.value_range) {
+            return this->colormap == o.colormap;
+        }
+    }
+
+    return false;
+}
+
+
 const QString& gnomonLookupTable::colorMapName(void) const
 {
     return this->name;
@@ -63,7 +91,7 @@ void gnomonLookupTable::setColorMap(const QMap<double, QColor>& c)
 void gnomonLookupTable::setColorMap(const QString& clut)
 {
     this->name = clut;
-    
+
     QString fileName = QString(":gnomon/cluts/%1.clut").arg(clut);
 
     QDomDocument doc("clut");
@@ -88,7 +116,7 @@ void gnomonLookupTable::setColorMap(const QString& clut)
     int    log = root.attribute("log").toInt();
 
     Q_UNUSED(log);
-    
+
     QDomNode n = root.firstChild();
     while(!n.isNull()) {
         QDomElement e = n.toElement();
@@ -98,7 +126,7 @@ void gnomonLookupTable::setColorMap(const QString& clut)
             qreal a = e.attribute("a").toDouble();
 
             Q_UNUSED(a);
-            
+
             int r = e.attribute("r").toInt();
             int g = e.attribute("g").toInt();
             int b = e.attribute("b").toInt();
