@@ -24,7 +24,7 @@
 %include "std_vector.i"
 
 %include <dtkBase/dtkBase.i>
-%include <dtkCore/dtkCore.i>
+%import <dtkCore/dtkCore.i>
 
 %import <dtkImagingCore/dtkImagingCore.i>
 

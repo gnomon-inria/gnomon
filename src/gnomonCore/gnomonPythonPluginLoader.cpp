@@ -27,5 +27,5 @@ void loadPluginGroup (const QString& module)
 
   dtkScriptInterpreterPython::instance()->interpret(code, &stat);
 
-  Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+  //Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 }

@@ -16,7 +16,7 @@
 
 #include <gnomonWidgetsExport>
 
-#include <dtkCore/dtkCoreParameter.h>
+#include <dtkCore/dtkCoreParameterSimple.h>
 
 #include <QtCore>
 #include <QtWidgets>

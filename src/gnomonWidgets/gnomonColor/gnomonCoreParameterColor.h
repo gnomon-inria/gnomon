@@ -51,7 +51,6 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
-    using dtkCoreParameter::castToTop;
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
