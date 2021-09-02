@@ -76,6 +76,7 @@ QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *pa
         widget->setValue(p->value());
 
         QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable& val) {
+            qDebug() << Q_FUNC_INFO << "calling set value on " << p;
             p->setValue(val);
         });
 
