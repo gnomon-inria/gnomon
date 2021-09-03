@@ -170,9 +170,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             auto param = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
             param->connect( [this](QVariant v) {
                 this->update();
-                qDebug() << "update called with " << v;
             });
-            qDebug() << Q_FUNC_INFO << "new connect on " << param;
             d->parameters[channelName+"\nlookuptable"] = param;
             iChannel++;
         }
@@ -200,7 +198,6 @@ QImage gnomonVisualizationImageChannelBlending::imageRendering(void)
 
 void gnomonVisualizationImageChannelBlending::update(void)
 {
-    qDebug() << Q_FUNC_INFO << "  UPDATTTTTE";
     if(!dd->image)
         return;
 
@@ -225,7 +222,6 @@ void gnomonVisualizationImageChannelBlending::update(void)
     } else {
         for (const auto& channelName : dd->image->channels()) {
             dd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
-            qDebug() << channelName << dd->channelLookupTables[channelName].colorMapName();
         }
     }
 
@@ -290,9 +286,6 @@ void gnomonVisualizationImageChannelBlending::setParameter(const QString& parame
 
 void gnomonVisualizationImageChannelBlending::setParameters(const dtkCoreParameters& parameters)
 {
-//    d->parameters = parameters;
-qDebug() << "old params " << d->parameters;
-qDebug() << "new params" << parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
             d->parameters[param] = parameters[param];
