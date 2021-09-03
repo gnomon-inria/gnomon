@@ -558,10 +558,12 @@ void gnomonViewFormPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QStri
 
             dtkCoreParameters parameters = v->parameters();
 
-            for(dtkCoreParameters::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-                QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
+            QList<QString> keys = parameters.keys();
+            keys.sort();
+            for(QString k : keys) {
+                QWidget *widget = gnomonWidgetsParameter::widget(parameters[k], 0);
                 if (widget) {
-                    this->parameterLayouts[key]->addRow(it.key(), widget);
+                    this->parameterLayouts[key]->addRow(k, widget);
                 }
             }
         }
