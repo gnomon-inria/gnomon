@@ -126,7 +126,7 @@ public:
 
     gnomonOverlayButton *sync = nullptr;
     gnomonOverlayButton *export_button = nullptr;
-    gnomonOverlayButton *save_button = nullptr;
+    gnomonOverlayButton *screenshot_button = nullptr;
     gnomonOverlayButton *help_button = nullptr;
 
 public:
@@ -250,12 +250,15 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QWidget *parent) : QVTKOpenGLNative
     this->sync->toggle(false);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
+    this->export_button->setToolTip("export to the world");
     this->export_button->toggle(true);
 
-    this->save_button = new gnomonOverlayButton(fa::save, "", this);
-    this->save_button->toggle(true);
+    this->screenshot_button = new gnomonOverlayButton(fa::camera, "", this);
+    this->screenshot_button->setToolTip("take a screenshot");
+    this->screenshot_button->toggle(true);
 
     this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
+    this->help_button->setToolTip("display shortcuts");
     this->help_button->toggle(false);
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -353,7 +356,7 @@ void gnomonViewFormPrivate::resizeEvent(QResizeEvent *event)
     this->renderer2D_YZ->move(l_margin + 10, 130);
 
     this->export_button->move(event->size().width() - r_margin - 40, 10);
-    this->save_button->move(event->size().width() - r_margin - 80, 10);
+    this->screenshot_button->move(event->size().width() - r_margin - 80, 10);
     if (this->enableLink) {
         this->sync->setVisible(true);
         this->sync->move(event->size().width() - r_margin - 120, 10);
@@ -448,8 +451,6 @@ void gnomonViewFormPrivate::updateOrientation(void)
 void gnomonViewFormPrivate::clear(void)
 {
     for (const auto& key : this->formVisualization.keys()) {
-
-        qDebug() << Q_FUNC_INFO << key;
 
         this->formVisualization[key]->disconnect();
         this->formVisualization[key]->clearConnections();
@@ -854,7 +855,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
     for (const auto& form : d->acceptForms.keys()) {
         if (form=="gnomonMesh") {
             loadPluginGroup("meshAdapter");
-            qDebug()<<Q_FUNC_INFO<<gnomonCore::meshAdapter::pluginFactory().keys();
             for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())
             {
                 gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
@@ -874,7 +874,6 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
             }
         } else if (form=="gnomonCellComplex") {
             loadPluginGroup("cellComplexAdapter");
-            qDebug()<<Q_FUNC_INFO<<gnomonCore::cellComplexAdapter::pluginFactory().keys();
             for (const auto& key : gnomonCore::cellComplexAdapter::pluginFactory().keys())
             {
                 gnomonAbstractCellComplexAdapter *adapter = dynamic_cast<gnomonAbstractCellComplexAdapter *>(gnomonCore::cellComplexAdapter::pluginFactory().create(key));
@@ -908,9 +907,9 @@ gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
         }
     });
 
-    connect(d->save_button,  &gnomonOverlayButton::iconClicked, [=] ()
+    connect(d->screenshot_button,  &gnomonOverlayButton::iconClicked, [=] ()
     {
-        if (d->save_button->isToggled()) {
+        if (d->screenshot_button->isToggled()) {
             d->saveScreenshot();
         }
     });
@@ -1372,7 +1371,6 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
 
 void gnomonViewForm::setAdaptedForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
-    qDebug()<<Q_FUNC_INFO<<d->adapterCommands.keys();
     if (d->adapterCommands.contains(name)) {
         QVariantMap adapter_descs;
         for (const auto &key : d->adapterCommands[name].keys()) {
@@ -1494,7 +1492,6 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualizat
 {
     d->forms["gnomonImage"] = image;
 
-    qDebug() << gnomonVisualization::visualizationImage::pluginFactory().keys();
     QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
 
     if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))

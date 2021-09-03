@@ -45,16 +45,17 @@ requirements:
 
   host:
     - qt =5.12.9
-    - dtk-log =2.4.0
-    - dtk-macs =2.0.3
-    - dtk-fonts =2.1.1
-    - dtk-themes =2.1.17
-    - dtk-themes-python =2.0.4
-    - dtk-core =2.10.0
-    - dtk-core-python =2.7.0
+    - dtk-log =2.4.0,<2.5.0
+    - dtk-macs =2.0.3,<2.1.0
+    - dtk-fonts =2.1.1,<2.2.0
+    - dtk-themes =2.1.17,<2.2.0
+    - dtk-themes-python =2.0.4,<2.1.0
+    - dtk-core =2.11.0,<2,12,0
+    - dtk-core-python =2.8.0,<2,11,0
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
-    - dtk-widgets =2.27.0
+    - dtk-script >=2.5.0,<2.6.0
+    - dtk-widgets =2.28.0,<2.29.0
     - dtk-composer =2.0.0
     - python >=3.7,<3.8
     - swig =4.0
@@ -68,17 +69,17 @@ requirements:
 
   run:
     - qt =5.12.9
-    - dtk-log =2.4.0
-    - dtk-macs =2.0.3
-    - dtk-fonts =2.1.1
-    - dtk-themes =2.1.17
-    - dtk-themes-python =2.0.4
-    - dtk-core =2.10.0
-    - dtk-core-python =2.7.0
+    - dtk-log =2.4.0,<2.5.0
+    - dtk-macs =2.0.3,<2.1.0
+    - dtk-fonts =2.1.1,<2.2.0
+    - dtk-themes =2.1.17,<2.2.0
+    - dtk-themes-python =2.0.4,<2.1.0
+    - dtk-core =2.11.0,<2,12,0
+    - dtk-core-python =2.8.0,<2,11,0
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
-    - dtk-plugins-imaging =2.0.3
-    - dtk-widgets =2.27.0
+    - dtk-script >=2.5.0,<2.6.0
+    - dtk-widgets =2.28.0,<2.29.0
     - dtk-composer =2.0.0
     - jupyter
     - jupyter_client=5.3.4
