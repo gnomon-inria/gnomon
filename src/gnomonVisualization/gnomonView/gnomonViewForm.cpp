@@ -140,7 +140,6 @@ public:
     dtkWidgetsMenuBar *style_menubar = nullptr;
 
     QMap<gnomonInteractorStyle *, dtkWidgetsMenu *> style_menus;
-
     QList<gnomonOverlayButton *> shortcut_keys;
 
 public:
@@ -764,7 +763,7 @@ void gnomonViewFormPrivate::updateKeys(void)
             }
         }
         gnomonOverlayButton *shortcut_key = new gnomonOverlayButton(key_char, keymap[key], this);
-        shortcut_key->setFixedWidth(240);
+        //shortcut_key->setFixedWidth(240); // commented to avoid align left
         shortcut_key->setVisible(this->help_button->isToggled());
         this->shortcut_keys.push_back(shortcut_key);
     }
