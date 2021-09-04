@@ -91,7 +91,7 @@ def gnomonParametric(cls):
     cls.setParameters = setParameters
 
     def parameters(self):
-        return {k:v.castToTop() for k,v in self._parameters.items()}
+        return {k:v for k,v in self._parameters.items()}
     cls.parameters = parameters
 
     def parameterDict(self):
