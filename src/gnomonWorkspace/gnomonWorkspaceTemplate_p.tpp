@@ -57,11 +57,13 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
     if (!algorithm.isEmpty()) {
 
         dtkCoreParameters parameters = this->command->parameters();
-
-        for(dtkCoreParameters::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
-            if (widget)
-                this->layout->addRow(it.key(), widget);
+        QList<QString> keys = parameters.keys();
+        keys.sort();
+        for(QString key : keys) {
+            QWidget *widget = gnomonWidgetsParameter::widget(parameters[key], 0);
+            if (widget) {
+                this->layout->addRow(key, widget);
+            }
         }
 
         this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);

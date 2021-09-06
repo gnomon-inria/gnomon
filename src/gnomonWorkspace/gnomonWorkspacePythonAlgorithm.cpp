@@ -810,13 +810,14 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     if (this->algorithm) {
 
         dtkCoreParameters parameters = this->algorithm->parameters();
-
-        for(dtkCoreParameters::iterator it = parameters.begin(), it_end = parameters.end(); it != it_end; ++it) {
-            QWidget *widget = gnomonWidgetsParameter::widget(it.value(), 0);
-            if (widget)
-                this->layout->addRow(it.key(), widget);
+        QList<QString> keys = parameters.keys();
+        keys.sort();
+        for(QString k : keys) {
+            QWidget *widget = gnomonWidgetsParameter::widget(parameters[k], 0);
+            if (widget) {
+                this->layout->addRow(k, widget);
+            }
         }
-
 //        this->layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     }
 }

@@ -136,13 +136,11 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
     for (const auto& parameterName : parameterNames) {
         if(parameterName.contains("lookuptable")) {
             //delete d->parameters[parameterName];
-            d->parameters.remove(parameterName);
+            auto p = d->parameters.take(parameterName);
+            p->disconnect();
+            delete p;
         }
     }
-
-    qDebug()<<Q_FUNC_INFO<<dd->image;
-    qDebug()<<Q_FUNC_INFO<<dd->image->data();
-    qDebug()<<Q_FUNC_INFO<<dd->image->channels();
 
     QString channel = dd->image->channels()[0];
     QList<double> valueRange = {0,1};
@@ -158,6 +156,10 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         }
         dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
+        d->parameters["lookuptable"]->connect([this](QVariant v) {
+             this->update();
+        });
+
     } else {
         int iChannel = 0;
         for (const auto& channelName : dd->image->channels()) {
@@ -165,7 +167,11 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
                 dd->channelLookupTables.remove(channelName);
             }
             dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
-            d->parameters[channelName+"\nlookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
+            auto param = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
+            param->connect( [this](QVariant v) {
+                this->update();
+            });
+            d->parameters[channelName+"\nlookuptable"] = param;
             iChannel++;
         }
     }
@@ -280,7 +286,6 @@ void gnomonVisualizationImageChannelBlending::setParameter(const QString& parame
 
 void gnomonVisualizationImageChannelBlending::setParameters(const dtkCoreParameters& parameters)
 {
-//    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
         if (d->parameters.contains(param)) {
             d->parameters[param] = parameters[param];

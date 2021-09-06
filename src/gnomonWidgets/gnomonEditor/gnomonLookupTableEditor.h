@@ -1,17 +1,3 @@
-// Version: $Id: 80be09c7cc19c2fc912fa461752bfbc2a211d0d6 $
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -39,7 +25,7 @@ public:
     void setValue(gnomonLookupTable value);
 
 signals:
-    void valueChanged(gnomonLookupTable);
+    void valueChanged(gnomonLookupTable&);
 
 private:
     class gnomonLookupTableEditorPrivate *d;

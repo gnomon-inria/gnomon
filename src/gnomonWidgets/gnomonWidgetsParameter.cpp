@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWidgetsParameter.h"
 
 #include <dtkWidgets>
@@ -19,8 +5,6 @@
 #include "gnomonColor/gnomonCoreParameterColor.h"
 
 #include "gnomonEditor/gnomonColorMapEditor.h"
-//#include "gnomonEditor/gnomonDoubleRangeEditor.h"
-//#include "gnomonEditor/gnomonStringListEditor.h"
 #include "gnomonEditor/gnomonLookupTableEditor.h"
 
 QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *parent)
@@ -79,15 +63,25 @@ QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *pa
         widget->setValue(p->name());
 
         QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
-            p->setValue(val);
+            p->shareValue(QVariant::fromValue(val));
             p->setName(widget->name());
         });
 
         return widget;
     }
-    //if (gnomonCoreParameterLookupTable *p = dynamic_cast<gnomonCoreParameterLookupTable *>(parameter)) {
-    //    return gnomonWidgetsParameterLookupTable::widget(p, parent);
-    //}
+    if (gnomonCoreParameterLookupTable *p = dynamic_cast<gnomonCoreParameterLookupTable *>(parameter)) {
+        gnomonLookupTableEditor *widget = new gnomonLookupTableEditor(parent);
+
+        widget->setToolTip(p->documentation());
+        widget->setValue(p->value());
+
+        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable& val) {
+            p->shareValue(QVariant::fromValue(val));
+        });
+
+        return widget;
+    }
+
     return nullptr;
 }
 
