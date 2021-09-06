@@ -388,7 +388,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         }
         delete reader;
     }
-       
+
     loadPluginGroup("cellImageReader");
     QStringList cellImage_reader_plugins = gnomonCore::cellImageReader::pluginFactory().keys();
     for (const auto& key : cellImage_reader_plugins)
@@ -409,7 +409,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         }
         delete reader;
     }
-    
+
     loadPluginGroup("cellComplexReader");
     QStringList cellComplex_reader_plugins = gnomonCore::cellComplexReader::pluginFactory().keys();
     for (const auto& key : cellComplex_reader_plugins)
@@ -430,7 +430,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         }
         delete reader;
     }
-    
+
     loadPluginGroup("dataFrameReader");
     QStringList dataFrame_reader_plugins = gnomonCore::dataFrameReader::pluginFactory().keys();
     for (const auto& key : dataFrame_reader_plugins)
@@ -451,7 +451,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         }
         delete reader;
     }
-    
+
     loadPluginGroup("meshReader");
     QStringList mesh_reader_plugins = gnomonCore::meshReader::pluginFactory().keys();
     for (const auto& key : mesh_reader_plugins)
@@ -472,7 +472,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         }
         delete reader;
     }
-    
+
     loadPluginGroup("pointCloudReader");
     QStringList pointCloud_reader_plugins = gnomonCore::pointCloudReader::pluginFactory().keys();
     for (const auto& key : pointCloud_reader_plugins)
@@ -493,7 +493,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
         }
         delete reader;
     }
-    
+
     loadPluginGroup("treeReader");
     QStringList tree_reader_plugins = gnomonCore::treeReader::pluginFactory().keys();
     for (const auto& key : tree_reader_plugins)
@@ -532,7 +532,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
 
     if (this->fileReaderCommands.contains(this->ext))
     {
-        qDebug()<<this->fileReaderCommands[this->ext];
+        qDebug()<< Q_FUNC_INFO <<  this->fileReaderCommands[this->ext];
 
         if (this->fileReaderCommands[this->ext].size()==1) {
             this->readForm(this->fileReaderCommands[this->ext].keys()[0]);
