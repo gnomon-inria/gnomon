@@ -28,8 +28,11 @@
 #include <dtkWidgets>
 #include <dtkImagingCore>
 #include <gnomonCore>
-#include <gnomonWidgets/gnomonInterpreterJupyter.h>
+
 #include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+#include <gnomonWidgets/gnomonColor/gnomonLookupTable.h>
+
+#include <gnomonWidgets/gnomonInterpreterJupyter.h>
 
 %}
 
@@ -270,9 +273,6 @@ void foo(PyObject *widget, PyObject *console)
   $input = dict;
 }
 
-%rename(ParameterLookupTable)  gnomonCoreParameterLookupTable;
-%rename(ParameterColorMap)     gnomonCoreParameterColorMap;
-// %rename(OverlayPane)           gnomonOverlayPane;
 
 // /////////////////////////////////////////////////////////////////
 // SIP/SWIG connection
@@ -299,7 +299,13 @@ void setupConsole(qlonglong console_address)
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterColorMap)
 %include <gnomonWidgets/gnomonColor/gnomonCoreParameterColor.h>
+
+%ignore dtkCoreParameterSimple<gnomonLookupTable>::__str__;
+%include <gnomonWidgets/gnomonColor/gnomonLookupTable.h>
+WRAP_DTKCORE_PARAMETER(dtkCoreParameterSimple<gnomonLookupTable>, ParameterLookupTable)
+
 %include <gnomonWidgets/gnomonInterpreterJupyter.h>
 
 //

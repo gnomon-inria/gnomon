@@ -157,7 +157,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
         d->parameters["lookuptable"]->connect([this](QVariant v) {
-             this->update();
+              //this->update();
         });
 
     } else {

@@ -63,7 +63,7 @@ QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *pa
         widget->setValue(p->name());
 
         QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
-            p->shareValue(QVariant::fromValue(val));
+            p->setValue(QVariant::fromValue(val));
             p->setName(widget->name());
         });
 
@@ -76,7 +76,7 @@ QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *pa
         widget->setValue(p->value());
 
         QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable& val) {
-            p->shareValue(QVariant::fromValue(val));
+            p->setValue(QVariant::fromValue(val));
         });
 
         return widget;
