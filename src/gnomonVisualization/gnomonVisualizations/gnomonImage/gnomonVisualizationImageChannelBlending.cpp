@@ -157,7 +157,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
         d->parameters["lookuptable"]->connect([this](QVariant v) {
-              //this->update();
+              // this->update();
         });
 
     } else {
@@ -169,7 +169,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
             auto param = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
             param->connect( [this](QVariant v) {
-                this->update();
+                // this->update();
             });
             d->parameters[channelName+"\nlookuptable"] = param;
             iChannel++;
