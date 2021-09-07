@@ -131,7 +131,7 @@ gnomonViewMatplotlibPrivate::gnomonViewMatplotlibPrivate(QWidget *parent) : QWid
     this->layout->setContentsMargins(38,0,0,0);
 
     this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", parent);
-    this->save_button = new gnomonOverlayButton(fa::save, "", parent);
+    this->save_button = new gnomonOverlayButton(fa::camera, "", parent);
 
     static int count = 0;
     this->figureNumber = count++;
