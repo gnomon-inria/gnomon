@@ -808,6 +808,24 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
     }
 
     if (this->algorithm) {
+        dtkCoreObjectManager *object_manager = dtkCoreObjectManager::instance();
+        QString algo_key;
+        int algo_id = 0;
+        for (const auto& key : object_manager->keys()) {
+            QRegExp rx("gnomonAbstractFormAlgorithm[*] ([0-9]*)");
+            int pos = rx.indexIn(key);
+            if (pos != -1) {
+                int key_id = rx.capturedTexts()[1].toInt();
+                if (key_id > algo_id) {
+                    algo_key = key;
+                    algo_id = key_id;
+                }
+            }
+        }
+        qDebug()<<Q_FUNC_INFO<<algo_key;
+        qDebug()<<Q_FUNC_INFO<<object_manager->value(algo_key);
+        qDebug()<<Q_FUNC_INFO<<object_manager->value(algo_key).value<gnomonAbstractFormAlgorithm *>();
+        qDebug()<<Q_FUNC_INFO<<this->algorithm;
 
         dtkCoreParameters parameters = this->algorithm->parameters();
         QList<QString> keys = parameters.keys();

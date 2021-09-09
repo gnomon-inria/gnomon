@@ -20,7 +20,7 @@
 
 %import <dtkCore/dtkCore.i>
 %import <dtkImagingCore/dtkImagingCore.i>
-// %import <gnomonCore.i>
+// %import <gnomonCore/gnomonCore.i>
 
 %{
 

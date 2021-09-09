@@ -18,7 +18,7 @@
 
 %include <dtkBase/dtkBase.i>
 %include <dtkCore/dtkCore.i>
-%import <gnomonCore/gnomonCore.i>
+// %import <gnomonCore/gnomonCore.i>
 
 %{
 

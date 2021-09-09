@@ -190,6 +190,7 @@ int main(int argc, char **argv)
     }
 
     dtkImaging::initialize();
+    gnomonCore::activateObjectManager();
     gnomonCore::initialize();
     gnomonVisualization::initialize();
     gnomonWidgets::initialize();

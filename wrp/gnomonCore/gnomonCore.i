@@ -546,6 +546,20 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+%define INCLUDE_GNOMON_CONCEPT(name, path)
+%include < ## path/ ## name.h>
+%extend dtkCoreObjectManager {
+    ## name * ## name(const QString& key) {
+        auto v = $self->value(key);
+        ## name *res = nullptr;
+        if (v.canConvert<## name *>()) {
+            res = v.value<## name *>();
+        }
+        return res;
+    }
+}
+%enddef
+
 %include <gnomonCore/gnomonAbstractDataDriver.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
@@ -573,7 +587,8 @@
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, gnomonCore/gnomonAlgorithm)
+// %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
@@ -628,6 +643,7 @@
 %include <gnomonCore/gnomonLandmark.h>
 %include <gnomonCore/gnomonTime.h>
 %include <gnomonCore/gnomonTypeDef.h>
+
 %include <QtCore/QVariant.i>
 
 
