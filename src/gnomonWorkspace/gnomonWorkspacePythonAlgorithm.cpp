@@ -723,6 +723,7 @@ public:
 
 public:
     QString algorithm_key;
+    QString object_key;
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
 };
@@ -809,7 +810,6 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
 
     if (this->algorithm) {
         dtkCoreObjectManager *object_manager = dtkCoreObjectManager::instance();
-        QString algo_key;
         int algo_id = 0;
         for (const auto& key : object_manager->keys()) {
             QRegExp rx("gnomonAbstractFormAlgorithm[*] ([0-9]*)");
@@ -817,15 +817,11 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
             if (pos != -1) {
                 int key_id = rx.capturedTexts()[1].toInt();
                 if (key_id > algo_id) {
-                    algo_key = key;
+                    this->object_key = key;
                     algo_id = key_id;
                 }
             }
         }
-        qDebug()<<Q_FUNC_INFO<<algo_key;
-        qDebug()<<Q_FUNC_INFO<<object_manager->value(algo_key);
-        qDebug()<<Q_FUNC_INFO<<object_manager->value(algo_key).value<gnomonAbstractFormAlgorithm *>();
-        qDebug()<<Q_FUNC_INFO<<this->algorithm;
 
         dtkCoreParameters parameters = this->algorithm->parameters();
         QList<QString> keys = parameters.keys();
@@ -1058,6 +1054,11 @@ void gnomonWorkspacePythonAlgorithm::run(void)
 
         d->algorithm->run();
 
+        int stat;
+        QString output;
+        output = dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import objectManagerFormAlgorithm", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret("algorithm = objectManagerFormAlgorithm(\"" + d->object_key + "\")", &stat);
+
         gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
         if ((!cellComplex)||(cellComplex->times().size()==0)) {
             qDebug()<<"No CellComplex!";
@@ -1068,6 +1069,8 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
+
+            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex = algorithm.outputCellComplex(clone=False)", &stat);
         }
 
         gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
