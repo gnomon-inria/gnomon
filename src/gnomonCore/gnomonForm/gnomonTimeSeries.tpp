@@ -55,7 +55,7 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
     return (*this);
 }
 
-template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::at(double t) const
+template <typename T> T *gnomonTimeSeries<T>::at(double t) const
 {
     Q_ASSERT_X(d->forms.contains(t), "at", "Invalid time position : the form is not defined at this time");
 
@@ -63,7 +63,7 @@ template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::at(double t) cons
     return this->current();
 }
 
-template <typename T> gnomonAbstractForm* gnomonTimeSeries<T>::current(void) const
+template <typename T> T *gnomonTimeSeries<T>::current(void) const
 {
     return d->forms[d->current_time];
 }
