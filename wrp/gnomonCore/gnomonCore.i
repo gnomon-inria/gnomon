@@ -546,7 +546,7 @@
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
-%define INCLUDE_GNOMON_CONCEPT(name, path)
+%define INCLUDE_GNOMON_CONCEPT(name, short_name, path)
 %include < ## path/ ## name.h>
 %extend dtkCoreObjectManager {
     ## name * ## name(const QString& key) {
@@ -558,6 +558,22 @@
         return res;
     }
 }
+%inline
+%{
+    ## name *objectManager## short_name(const QString& key)
+    {
+        dtkCoreObjectManager *object_manager = dtkCoreObjectManager::instance();
+        if (object_manager->keys().contains(key)) {
+            QVariant v = object_manager->value(key);
+            if (v.canConvert<## name *>()) {
+                return v.value<## name *>();
+            }
+            return nullptr;
+        } else {
+            return nullptr;
+        }
+    }
+%}
 %enddef
 
 %include <gnomonCore/gnomonAbstractDataDriver.h>
@@ -587,8 +603,8 @@
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
-INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, gnomonCore/gnomonAlgorithm)
 // %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, FormAlgorithm, gnomonCore/gnomonAlgorithm)
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
@@ -622,8 +638,10 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, gnomonCore/gnomonAlgorithm)
 %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudWriter.h>
+// %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h>
+INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudReader, PointCloudReader, gnomonCore/gnomonAlgorithm/gnomonPointCloud)
+// %include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudWriter.h>
+INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudWriter, PointCloudWriter, gnomonCore/gnomonAlgorithm/gnomonPointCloud)
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
@@ -645,6 +663,9 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, gnomonCore/gnomonAlgorithm)
 %include <gnomonCore/gnomonTypeDef.h>
 
 %include <QtCore/QVariant.i>
+
+
+
 
 
 namespace std {
