@@ -19,6 +19,7 @@ def buildPointCloudSeries(pointCloud_dict, data_plugin=default_plugin, data_sett
         pointCloud_series = gnomonPointCloudSeries()
     else:
         pointCloud_series = form_series
+        current_time = pointCloud_series.time()
 
     for time in pointCloud_dict.keys():
         if form_series is None:
@@ -27,9 +28,11 @@ def buildPointCloudSeries(pointCloud_dict, data_plugin=default_plugin, data_sett
             pointCloud_data[time] = gnomoncore.pointCloudData_pluginFactory().create(data_plugin)
             pointCloud[time].setData(pointCloud_data[time])
         else:
-            pointCloud[time] = pointCloud_series.at(time)
+            pointCloud[time] = pointCloud_series.at(time).asPointCloud()
             pointCloud_data[time] = pointCloud[time].data()
         getattr(pointCloud_data[time], data_setter)(pointCloud_dict[time])
+    if form_series is not None:
+       pointCloud_series.at(current_time)
 
     return pointCloud_series, pointCloud, pointCloud_data
 
@@ -49,9 +52,13 @@ def pointCloudDictFromSeries(pointCloud_series, data_plugin=default_plugin, data
 
 
 def _gnomonPointCloudInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
-    def func(self):
-        if not hasattr(self,"_in_pointCloud_series"):
-            self._in_pointCloud_series, self._in_pointCloud, self._in_pointCloud_data = buildPointCloudSeries(getattr(self, attr), data_plugin, data_setter)
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_pointCloud_series")
+        if update:
+            form_series, form_dict, data_dict = buildPointCloudSeries(getattr(self, attr), data_plugin, data_setter)
+            self._in_pointCloud_series = form_series
+            self._in_pointCloud = form_dict
+            self._in_pointCloud_data = data_dict
         return self._in_pointCloud_series
 
     setattr(cls, method, func)
@@ -62,8 +69,8 @@ def _gnomonPointCloudInput(cls, attr, method, setter_method, data_plugin, data_s
         setattr(self, attr, {})
 
         if self._in_pointCloud_series is not None:
-
-            pointCloud_dict, self._in_pointCloud = pointCloudDictFromSeries(self._in_pointCloud_series, data_plugin, data_attr)
+            pointCloud_dict, form_dict = pointCloudDictFromSeries(self._in_pointCloud_series, data_plugin, data_attr)
+            self._in_pointCloud = form_dict
             setattr(self, attr, pointCloud_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -85,15 +92,13 @@ def gnomonPointCloudInput(cls=None, attr=None, method='input', setter_method='se
 
 
 def _gnomonPointCloudOutput(cls, attr, method, data_plugin, data_setter):
-    def func(self, clone=True):
-        form_series = self._out_pointCloud_series if not clone else None
-        form_series, form_dict, data_dict = buildPointCloudSeries(getattr(self, attr),
-                                                                  data_plugin,
-                                                                  data_setter,
-                                                                  form_series=form_series)
-        self._out_pointCloud_series = form_series
-        self._out_pointCloud = form_dict
-        self._out_pointCloud_data = data_dict
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_pointCloud_series")
+        if update:
+            form_series, form_dict, data_dict = buildPointCloudSeries(getattr(self, attr), data_plugin, data_setter)
+            self._out_pointCloud_series = form_series
+            self._out_pointCloud = form_dict
+            self._out_pointCloud_data = data_dict
         return self._out_pointCloud_series
 
     setattr(cls, method, func)
@@ -109,4 +114,5 @@ def gnomonPointCloudOutput(cls=None, attr=None, method='output', data_plugin=def
             return _gnomonPointCloudOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
+
 

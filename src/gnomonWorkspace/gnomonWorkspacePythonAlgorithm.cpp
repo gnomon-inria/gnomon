@@ -1024,28 +1024,42 @@ void gnomonWorkspacePythonAlgorithm::run(void)
     }
 
     if (d->algorithm) {
+        int stat;
+        QString output;
+        output = dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import objectManagerFormAlgorithm", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret("algorithm = objectManagerFormAlgorithm(\"" + d->object_key + "\")", &stat);
 
         d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
 
         if (d->source->cellComplex()) {
             d->algorithm->setInputCellComplex(d->source->cellComplex());
             d->command->addInput(d->source->cellComplex());
+            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_in = algorithm.inputCellComplex(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_in = {t:cellcomplex_in.at(t) for t in cellcomplex_in.times()}", &stat);
         }
         if (d->source->cellImage()) {
             d->algorithm->setInputCellImage(d->source->cellImage());
             d->command->addInput(d->source->cellImage());
+            output = dtkScriptInterpreterPython::instance()->interpret("cellimage_in = algorithm.inputCellImage(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("cellimage_in = {t:cellimage_in.at(t) for t in cellimage_in.times()}", &stat);
         }
         if (d->source->image()) {
             d->algorithm->setInputImage(d->source->image());
             d->command->addInput(d->source->image());
+            output = dtkScriptInterpreterPython::instance()->interpret("image_in = algorithm.inputImage(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("image_in = {t:image_in.at(t) for t in image_in.times()}", &stat);
         }
         if (d->source->mesh()) {
             d->algorithm->setInputMesh(d->source->mesh());
             d->command->addInput(d->source->mesh());
+            output = dtkScriptInterpreterPython::instance()->interpret("mesh_in = algorithm.inputMesh(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("mesh_in = {t:cellimage_in.at(t) for t in cellimage_in.times()}", &stat);
         }
         if (d->source->pointCloud()) {
             d->algorithm->setInputPointCloud(d->source->pointCloud());
             d->command->addInput(d->source->pointCloud());
+            output = dtkScriptInterpreterPython::instance()->interpret("pointcloud_in = algorithm.inputPointCloud(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("pointcloud_in = {t:pointcloud_in.at(t) for t in pointcloud_in.times()}", &stat);
         }
 
         for (const auto& parameter_name : d->algorithm->parameters().keys()){
@@ -1053,11 +1067,6 @@ void gnomonWorkspacePythonAlgorithm::run(void)
         }
 
         d->algorithm->run();
-
-        int stat;
-        QString output;
-        output = dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import objectManagerFormAlgorithm", &stat);
-        output = dtkScriptInterpreterPython::instance()->interpret("algorithm = objectManagerFormAlgorithm(\"" + d->object_key + "\")", &stat);
 
         gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
         if ((!cellComplex)||(cellComplex->times().size()==0)) {
@@ -1069,8 +1078,10 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
-
-            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex = algorithm.outputCellComplex(clone=False)", &stat);
+            qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
+            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = algorithm.outputCellComplex(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = {t:cellcomplex_out.at(t) for t in cellcomplex_out.times()}", &stat);
+            qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
         }
 
         gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
@@ -1083,6 +1094,8 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
+            output = dtkScriptInterpreterPython::instance()->interpret("cellimage_out = algorithm.outputCellImage(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("cellimage_out = {t:cellimage_out.at(t) for t in cellimage_out.times()}", &stat);
         }
 
         gnomonImageSeries *image = d->algorithm->outputImage();
@@ -1095,6 +1108,8 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
+            output = dtkScriptInterpreterPython::instance()->interpret("image_out = algorithm.outputImage(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("image_out = {t:image_out.at(t) for t in image_out.times()}", &stat);
         }
 
         gnomonMeshSeries *mesh = d->algorithm->outputMesh();
@@ -1107,6 +1122,8 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
+            output = dtkScriptInterpreterPython::instance()->interpret("mesh_out = algorithm.outputMesh(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("mesh_out = {t:mesh_out.at(t) for t in mesh_out.times()}", &stat);
         }
 
         gnomonPointCloudSeries *pointCloud = d->algorithm->outputPointCloud();
@@ -1119,6 +1136,8 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
+            output = dtkScriptInterpreterPython::instance()->interpret("pointcloud_out = algorithm.outputPointCloud(False)", &stat);
+            output = dtkScriptInterpreterPython::instance()->interpret("pointcloud_out = {t:pointcloud_out.at(t) for t in pointcloud_out.times()}", &stat);
         }
     }
 

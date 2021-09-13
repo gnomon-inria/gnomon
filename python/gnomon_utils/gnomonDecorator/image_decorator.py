@@ -19,6 +19,7 @@ def buildImageSeries(image_dict, data_plugin=default_plugin, data_setter=default
         image_series = gnomonImageSeries()
     else:
         image_series = form_series
+        current_time = image_series.time()
 
     for time in image_dict.keys():
         if form_series is None:
@@ -27,9 +28,11 @@ def buildImageSeries(image_dict, data_plugin=default_plugin, data_setter=default
             image_data[time] = gnomoncore.imageData_pluginFactory().create(data_plugin)
             image[time].setData(image_data[time])
         else:
-            image[time] = image_series.at(time)
+            image[time] = image_series.at(time).asImage()
             image_data[time] = image[time].data()
         getattr(image_data[time], data_setter)(image_dict[time])
+    if form_series is not None:
+       image_series.at(current_time)
 
     return image_series, image, image_data
 
@@ -49,9 +52,13 @@ def imageDictFromSeries(image_series, data_plugin=default_plugin, data_attr=defa
 
 
 def _gnomonImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
-    def func(self):
-        if not hasattr(self,"_in_image_series"):
-            self._in_image_series, self._in_image, self._in_image_data = buildImageSeries(getattr(self, attr), data_plugin, data_setter)
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_image_series")
+        if update:
+            form_series, form_dict, data_dict = buildImageSeries(getattr(self, attr), data_plugin, data_setter)
+            self._in_image_series = form_series
+            self._in_image = form_dict
+            self._in_image_data = data_dict
         return self._in_image_series
 
     setattr(cls, method, func)
@@ -62,8 +69,8 @@ def _gnomonImageInput(cls, attr, method, setter_method, data_plugin, data_setter
         setattr(self, attr, {})
 
         if self._in_image_series is not None:
-
-            image_dict, self._in_image = imageDictFromSeries(self._in_image_series, data_plugin, data_attr)
+            image_dict, form_dict = imageDictFromSeries(self._in_image_series, data_plugin, data_attr)
+            self._in_image = form_dict
             setattr(self, attr, image_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -85,15 +92,13 @@ def gnomonImageInput(cls=None, attr=None, method='input', setter_method='setInpu
 
 
 def _gnomonImageOutput(cls, attr, method, data_plugin, data_setter):
-    def func(self, clone=True):
-        form_series = self._out_image_series if not clone else None
-        form_series, form_dict, data_dict = buildImageSeries(getattr(self, attr),
-                                                             data_plugin,
-                                                             data_setter,
-                                                             form_series=form_series)
-        self._out_image_series = form_series
-        self._out_image = form_dict
-        self._out_image_data = data_dict
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_image_series")
+        if update:
+            form_series, form_dict, data_dict = buildImageSeries(getattr(self, attr), data_plugin, data_setter)
+            self._out_image_series = form_series
+            self._out_image = form_dict
+            self._out_image_data = data_dict
         return self._out_image_series
 
     setattr(cls, method, func)
@@ -109,4 +114,6 @@ def gnomonImageOutput(cls=None, attr=None, method='output', data_plugin=default_
             return _gnomonImageOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
+
+
 

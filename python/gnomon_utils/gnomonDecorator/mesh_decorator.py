@@ -19,6 +19,7 @@ def buildMeshSeries(mesh_dict, data_plugin=default_plugin, data_setter=default_s
         mesh_series = gnomonMeshSeries()
     else:
         mesh_series = form_series
+        current_time = mesh_series.time()
 
     for time in mesh_dict.keys():
         if form_series is None:
@@ -27,9 +28,11 @@ def buildMeshSeries(mesh_dict, data_plugin=default_plugin, data_setter=default_s
             mesh_data[time] = gnomoncore.meshData_pluginFactory().create(data_plugin)
             mesh[time].setData(mesh_data[time])
         else:
-            mesh[time] = mesh_series.at(time)
+            mesh[time] = mesh_series.at(time).asMesh()
             mesh_data[time] = mesh[time].data()
         getattr(mesh_data[time], data_setter)(mesh_dict[time])
+    if form_series is not None:
+       mesh_series.at(current_time)
 
     return mesh_series, mesh, mesh_data
 
@@ -49,9 +52,13 @@ def meshDictFromSeries(mesh_series, data_plugin=default_plugin, data_attr=defaul
 
 
 def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
-    def func(self):
-        if not hasattr(self,"_in_mesh_series"):
-            self._in_mesh_series, self._in_mesh, self._in_mesh_data = buildMeshSeries(getattr(self, attr), data_plugin, data_setter)
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_mesh_series")
+        if update:
+            form_series, form_dict, data_dict = buildMeshSeries(getattr(self, attr), data_plugin, data_setter)
+            self._in_mesh_series = form_series
+            self._in_mesh = form_dict
+            self._in_mesh_data = data_dict
         return self._in_mesh_series
 
     setattr(cls, method, func)
@@ -62,8 +69,8 @@ def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter,
         setattr(self, attr, {})
 
         if self._in_mesh_series is not None:
-
-            mesh_dict, self._in_mesh = meshDictFromSeries(self._in_mesh_series, data_plugin, data_attr)
+            mesh_dict, form_dict = meshDictFromSeries(self._in_mesh_series, data_plugin, data_attr)
+            self._in_mesh = form_dict
             setattr(self, attr, mesh_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -85,15 +92,13 @@ def gnomonMeshInput(cls=None, attr=None, method='input', setter_method='setInput
 
 
 def _gnomonMeshOutput(cls, attr, method, data_plugin, data_setter):
-    def func(self, clone=True):
-        form_series = self._out_mesh_series if not clone else None
-        form_series, form_dict, data_dict = buildMeshSeries(getattr(self, attr),
-                                                            data_plugin,
-                                                            data_setter,
-                                                            form_series=form_series)
-        self._out_mesh_series = form_series
-        self._out_mesh = form_dict
-        self._out_mesh_data = data_dict
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_mesh_series")
+        if update:
+            form_series, form_dict, data_dict = buildMeshSeries(getattr(self, attr), data_plugin, data_setter)
+            self._out_mesh_series = form_series
+            self._out_mesh = form_dict
+            self._out_mesh_data = data_dict
         return self._out_mesh_series
 
     setattr(cls, method, func)
@@ -109,4 +114,6 @@ def gnomonMeshOutput(cls=None, attr=None, method='output', data_plugin=default_p
             return _gnomonMeshOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
+
+
 

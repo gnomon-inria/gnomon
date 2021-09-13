@@ -19,6 +19,7 @@ def buildTreeSeries(tree_dict, data_plugin=default_plugin, data_setter=default_s
         tree_series = gnomonTreeSeries()
     else:
         tree_series = form_series
+        current_time = tree_series.time()
 
     for time in tree_dict.keys():
         if form_series is None:
@@ -27,9 +28,11 @@ def buildTreeSeries(tree_dict, data_plugin=default_plugin, data_setter=default_s
             tree_data[time] = gnomoncore.treeData_pluginFactory().create(data_plugin)
             tree[time].setData(tree_data[time])
         else:
-            tree[time] = tree_series.at(time)
+            tree[time] = tree_series.at(time).asTree()
             tree_data[time] = tree[time].data()
         getattr(tree_data[time], data_setter)(tree_dict[time])
+    if form_series is not None:
+       tree_series.at(current_time)
 
     return tree_series, tree, tree_data
 
@@ -49,9 +52,13 @@ def treeDictFromSeries(tree_series, data_plugin=default_plugin, data_attr=defaul
 
 
 def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
-    def func(self):
-        if not hasattr(self,"_in_tree_series"):
-            self._in_tree_series, self._in_tree, self._in_tree_data = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_tree_series")
+        if update:
+            form_series, form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
+            self._in_tree_series = form_series
+            self._in_tree = form_dict
+            self._in_tree_data = data_dict
         return self._in_tree_series
 
     setattr(cls, method, func)
@@ -62,8 +69,8 @@ def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter,
         setattr(self, attr, {})
 
         if self._in_tree_series is not None:
-
-            tree_dict, self._in_tree = treeDictFromSeries(self._in_tree_series, data_plugin, data_attr)
+            tree_dict, form_dict = treeDictFromSeries(self._in_tree_series, data_plugin, data_attr)
+            self._in_tree = form_dict
             setattr(self, attr, tree_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -85,15 +92,13 @@ def gnomonTreeInput(cls=None, attr=None, method='input', setter_method='setInput
 
 
 def _gnomonTreeOutput(cls, attr, method, data_plugin, data_setter):
-    def func(self, clone=True):
-        form_series = self._out_tree_series if not clone else None
-        form_series, form_dict, data_dict = buildTreeSeries(getattr(self, attr),
-                                                            data_plugin,
-                                                            data_setter,
-                                                            form_series=form_series)
-        self._out_tree_series = form_series
-        self._out_tree = form_dict
-        self._out_tree_data = data_dict
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_tree_series")
+        if update:
+            form_series, form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
+            self._out_tree_series = form_series
+            self._out_tree = form_dict
+            self._out_tree_data = data_dict
         return self._out_tree_series
 
     setattr(cls, method, func)

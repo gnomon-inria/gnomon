@@ -19,6 +19,7 @@ def buildCellImageSeries(cellImage_dict, data_plugin=default_plugin, data_setter
         cellImage_series = gnomonCellImageSeries()
     else:
         cellImage_series = form_series
+        current_time = cellImage_series.time()
 
     for time in cellImage_dict.keys():
         if form_series is None:
@@ -27,9 +28,11 @@ def buildCellImageSeries(cellImage_dict, data_plugin=default_plugin, data_setter
             cellImage_data[time] = gnomoncore.cellImageData_pluginFactory().create(data_plugin)
             cellImage[time].setData(cellImage_data[time])
         else:
-            cellImage[time] = cellImage_series.at(time)
+            cellImage[time] = cellImage_series.at(time).asCellImage()
             cellImage_data[time] = cellImage[time].data()
         getattr(cellImage_data[time], data_setter)(cellImage_dict[time])
+    if form_series is not None:
+       cellImage_series.at(current_time)
 
     return cellImage_series, cellImage, cellImage_data
 
@@ -49,9 +52,13 @@ def cellImageDictFromSeries(cellImage_series, data_plugin=default_plugin, data_a
 
 
 def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
-    def func(self):
-        if not hasattr(self,"_in_cellImage_series"):
-            self._in_cellImage_series, self._in_cellImage, self._in_cellImage_data = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_cellImage_series")
+        if update:
+            form_series, form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
+            self._in_cellImage_series = form_series
+            self._in_cellImage = form_dict
+            self._in_cellImage_data = data_dict
         return self._in_cellImage_series
 
     setattr(cls, method, func)
@@ -62,8 +69,8 @@ def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_se
         setattr(self, attr, {})
 
         if self._in_cellImage_series is not None:
-
-            cellImage_dict, self._in_cellImage = cellImageDictFromSeries(self._in_cellImage_series, data_plugin, data_attr)
+            cellImage_dict, form_dict = cellImageDictFromSeries(self._in_cellImage_series, data_plugin, data_attr)
+            self._in_cellImage = form_dict
             setattr(self, attr, cellImage_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -85,15 +92,13 @@ def gnomonCellImageInput(cls=None, attr=None, method='input', setter_method='set
 
 
 def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
-    def func(self, clone=True):
-        form_series = self._out_cellImage_series if not clone else None
-        form_series, form_dict, data_dict = buildCellImageSeries(getattr(self, attr),
-                                                                 data_plugin,
-                                                                 data_setter,
-                                                                 form_series=form_series)
-        self._out_cellImage_series = form_series
-        self._out_cellImage = form_dict
-        self._out_cellImage_data = data_dict
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_cellImage_series")
+        if update:
+            form_series, form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
+            self._out_cellImage_series = form_series
+            self._out_cellImage = form_dict
+            self._out_cellImage_data = data_dict
         return self._out_cellImage_series
 
     setattr(cls, method, func)
@@ -109,4 +114,5 @@ def gnomonCellImageOutput(cls=None, attr=None, method='output', data_plugin=defa
             return _gnomonCellImageOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
+
 

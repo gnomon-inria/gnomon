@@ -19,6 +19,7 @@ def buildDataFrameSeries(dataFrame_dict, data_plugin=default_plugin, data_setter
         dataFrame_series = gnomonDataFrameSeries()
     else:
         dataFrame_series = form_series
+        current_time = dataFrame_series.time()
 
     for time in dataFrame_dict.keys():
         if form_series is None:
@@ -27,9 +28,11 @@ def buildDataFrameSeries(dataFrame_dict, data_plugin=default_plugin, data_setter
             dataFrame_data[time] = gnomoncore.dataFrameData_pluginFactory().create(data_plugin)
             dataFrame[time].setData(dataFrame_data[time])
         else:
-            dataFrame[time] = dataFrame_series.at(time)
+            dataFrame[time] = dataFrame_series.at(time).asDataFrame()
             dataFrame_data[time] = dataFrame[time].data()
         getattr(dataFrame_data[time], data_setter)(dataFrame_dict[time])
+    if form_series is not None:
+       dataFrame_series.at(current_time)
 
     return dataFrame_series, dataFrame, dataFrame_data
 
@@ -49,9 +52,13 @@ def dataFrameDictFromSeries(dataFrame_series, data_plugin=default_plugin, data_a
 
 
 def _gnomonDataFrameInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
-    def func(self):
-        if not hasattr(self,"_in_dataFrame_series"):
-            self._in_dataFrame_series, self._in_dataFrame, self._in_dataFrame_data = buildDataFrameSeries(getattr(self, attr), data_plugin, data_setter)
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_dataFrame_series")
+        if update:
+            form_series, form_dict, data_dict = buildDataFrameSeries(getattr(self, attr), data_plugin, data_setter)
+            self._in_dataFrame_series = form_series
+            self._in_dataFrame = form_dict
+            self._in_dataFrame_data = data_dict
         return self._in_dataFrame_series
 
     setattr(cls, method, func)
@@ -62,8 +69,8 @@ def _gnomonDataFrameInput(cls, attr, method, setter_method, data_plugin, data_se
         setattr(self, attr, {})
 
         if self._in_dataFrame_series is not None:
-
-            dataFrame_dict, self._in_dataFrame = dataFrameDictFromSeries(self._in_dataFrame_series, data_plugin, data_attr)
+            dataFrame_dict, form_dict = dataFrameDictFromSeries(self._in_dataFrame_series, data_plugin, data_attr)
+            self._in_dataFrame = form_dict
             setattr(self, attr, dataFrame_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -85,15 +92,13 @@ def gnomonDataFrameInput(cls=None, attr=None, method='input', setter_method='set
 
 
 def _gnomonDataFrameOutput(cls, attr, method, data_plugin, data_setter):
-    def func(self, clone=True):
-        form_series = self._out_dataFrame_series if not clone else None
-        form_series, form_dict, data_dict = buildDataFrameSeries(getattr(self, attr),
-                                                                 data_plugin,
-                                                                 data_setter,
-                                                                 form_series=form_series)
-        self._out_dataFrame_series = form_series
-        self._out_dataFrame = form_dict
-        self._out_dataFrame_data = data_dict
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_dataFrame_series")
+        if update:
+            form_series, form_dict, data_dict = buildDataFrameSeries(getattr(self, attr), data_plugin, data_setter)
+            self._out_dataFrame_series = form_series
+            self._out_dataFrame = form_dict
+            self._out_dataFrame_data = data_dict
         return self._out_dataFrame_series
 
     setattr(cls, method, func)
