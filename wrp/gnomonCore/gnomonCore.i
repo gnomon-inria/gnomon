@@ -370,25 +370,33 @@
     }
 }
 
+
+
 // /////////////////////////////////////////////////////////////////
 // CellComplex series
 // /////////////////////////////////////////////////////////////////
 
-%typemap(in) gnomonCellComplexSeries *{
-    $1 = new gnomonCellComplexSeries();
-    if (PyDict_Check($input)) {
+%fragment("ToCellComplexSeries", "header") {
+    void ToCellComplexSeries(PyObject *obj, gnomonCellComplexSeries *series) {
         PyObject *key, *value;
         Py_ssize_t pos = 0;
         int r;
-        while (PyDict_Next($input, &pos, &key, &value)) {
+        while (PyDict_Next(obj, &pos, &key, &value)) {
             double t = PyFloat_AsDouble(key);
             gnomonCellComplex *v;
             void *s_v = 0;
             r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCellComplex, 0);
             if (SWIG_IsOK(r))
                 v = reinterpret_cast<gnomonCellComplex *>(s_v);
-            $1->insert(t, v);
+            series->insert(t, v);
         }
+    }
+}
+
+%typemap(in, fragment="ToCellComplexSeries") gnomonCellComplexSeries *{
+    $1 = new gnomonCellComplexSeries();
+    if (PyDict_Check($input)) {
+        ToCellComplexSeries($input, $1);
     } else {
         qDebug("PyDict is expected as input. Empty time series is returned.");
     }
@@ -400,22 +408,11 @@
     }
 }
 
-%typemap(directorout) gnomonCellComplexSeries *{
+%typemap(directorout, fragment="ToCellComplexSeries") gnomonCellComplexSeries *{
     $result = new gnomonCellComplexSeries();
     PyObject *dict = static_cast<PyObject *>($1);
     if (PyDict_Check(dict)) {
-        PyObject *key, *value;
-        Py_ssize_t pos = 0;
-        int r;
-        while (PyDict_Next(dict, &pos, &key, &value)) {
-            double t = PyFloat_AsDouble(key);
-            gnomonCellComplex *v;
-            void *s_v = 0;
-            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCellComplex, 0);
-            if (SWIG_IsOK(r))
-                v = reinterpret_cast<gnomonCellComplex *>(s_v);
-            $result->insert(t, v);
-        }
+        ToCellComplexSeries(dict, $result);
     } else {
         qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractForm*> is returned.");
     }
