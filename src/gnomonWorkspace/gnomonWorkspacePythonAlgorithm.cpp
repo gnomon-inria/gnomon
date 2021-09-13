@@ -1078,10 +1078,10 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->target_stack->setCurrentWidget(d->target);
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
-            qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
+            // qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
             output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = algorithm.outputCellComplex(False)", &stat);
-            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = {t:cellcomplex_out.at(t) for t in cellcomplex_out.times()}", &stat);
-            qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
+            // output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = {t:cellcomplex_out.at(t) for t in cellcomplex_out.times()}", &stat);
+            // qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
         }
 
         gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();

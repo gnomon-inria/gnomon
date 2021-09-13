@@ -370,6 +370,87 @@
     }
 }
 
+// /////////////////////////////////////////////////////////////////
+// CellComplex series
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) gnomonCellComplexSeries *{
+    $1 = new gnomonCellComplexSeries();
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            double t = PyFloat_AsDouble(key);
+            gnomonCellComplex *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCellComplex, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonCellComplex *>(s_v);
+            $1->insert(t, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty time series is returned.");
+    }
+}
+
+%typemap(freearg) gnomonCellComplexSeries *{
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) gnomonCellComplexSeries *{
+    $result = new gnomonCellComplexSeries();
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            double t = PyFloat_AsDouble(key);
+            gnomonCellComplex *v;
+            void *s_v = 0;
+            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCellComplex, 0);
+            if (SWIG_IsOK(r))
+                v = reinterpret_cast<gnomonCellComplex *>(s_v);
+            $result->insert(t, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractForm*> is returned.");
+    }
+}
+
+%typemap(out) gnomonCellComplexSeries *{
+    $result = PyDict_New();
+    QList<double> times = $1->times();
+    gnomonCellComplex *c;
+    double t;
+    PyObject *v;
+    for (auto it = times.begin(); it != times.end(); ++it) {
+        t = *it;
+        c = $1->at(t);
+        v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomonCellComplex, 0 |  0 );
+        PyDict_SetItem($result, PyFloat_FromDouble(t), v);
+    }
+}
+
+%typemap(directorin) gnomonCellComplexSeries *{
+    PyObject *dict = PyDict_New();
+    QList<double> times = $1->times();
+    gnomonCellComplex *c;
+    double t;
+    PyObject *v;
+    for (auto it = times.begin(); it != times.end(); ++it) {
+        t = *it;
+        c = $1->at(t);
+        v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomonCellComplex, 0 |  0 );
+        PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+    }
+    $input = dict;
+}
+
+// /////////////////////////////////////////////////////////////////
 
 %extend QVariant {
     void setValue(gnomonCellComplex *value) {
@@ -585,6 +666,19 @@
 
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
+%extend gnomonCellComplex {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& cellComplex = $self;
+        QString str("<gnomoncore.gnomonCellComplex");
+        str += QString(" with %1 cell(s)").arg(cellComplex->elementCount(3));
+        str += QString(" at 0x%1>").arg((quintptr)cellComplex, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
 %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
@@ -608,7 +702,8 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, FormAlgorithm, gnomonCore/gn
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
+// %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
+INCLUDE_GNOMON_CONCEPT(gnomonAbstractCellComplexReader, CellComplexReader, gnomonCore/gnomonAlgorithm/gnomonCellComplex)
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameWriter.h>
@@ -672,7 +767,7 @@ namespace std {
     %template(vec3_t) array<double, 3>;
 }
 
-%template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;
+// %template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;
 %template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
 %template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
 %template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;

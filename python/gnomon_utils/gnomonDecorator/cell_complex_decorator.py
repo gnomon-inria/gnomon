@@ -2,7 +2,7 @@ import gnomoncore
 
 import logging
 
-from gnomoncore import gnomonCellComplex, gnomonCellComplexSeries
+from gnomoncore import gnomonCellComplex
 from gnomon_utils.gnomonPlugin import load_plugin_group
 
 load_plugin_group("cellComplexData")
@@ -12,65 +12,52 @@ default_setter = "set_property_topomesh"
 default_attr = "_topomesh"
 
 
-def buildCellComplexSeries(cellComplex_dict, data_plugin=default_plugin, data_setter=default_setter, form_series=None):
+def buildCellComplexSeries(cellComplex_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
     cellComplex = {}
     cellComplex_data = {}
-    if form_series is None:
-        cellComplex_series = gnomonCellComplexSeries()
-    else:
-        cellComplex_series = form_series
-        current_time = cellComplex_series.time()
 
     for time in cellComplex_dict.keys():
-        if form_series is None:
+        if form_dict is None:
             cellComplex[time] = gnomonCellComplex()
-            cellComplex_series.insert(time, cellComplex[time])
             cellComplex_data[time] = gnomoncore.cellComplexData_pluginFactory().create(data_plugin)
             cellComplex[time].setData(cellComplex_data[time])
         else:
-            cellComplex[time] = cellComplex_series.at(time).asCellComplex()
+            cellComplex[time] = form_dict[time]
             cellComplex_data[time] = cellComplex[time].data()
         getattr(cellComplex_data[time], data_setter)(cellComplex_dict[time])
-    if form_series is not None:
-       cellComplex_series.at(current_time)
 
-    return cellComplex_series, cellComplex, cellComplex_data
+    return cellComplex, cellComplex_data
 
 
-def cellComplexDictFromSeries(cellComplex_series, data_plugin=default_plugin, data_attr=default_attr):
-    cellComplex = {}
+def cellComplexDictFromSeries(cellComplex, data_plugin=default_plugin, data_attr=default_attr):
     cellComplex_dict = {}
-    for time in cellComplex_series.times():
-        cellComplex[time] = cellComplex_series.at(time).asCellComplex()
+    for time in cellComplex.keys():
         if hasattr(cellComplex[time].data(), data_attr):
             cellComplex_dict[time] = getattr(cellComplex[time].data(), data_attr)
         else:
             cellComplex_data = gnomoncore.cellComplexData_pluginFactory().create(data_plugin).from_gnomonCellComplex(cellComplex[time])
             cellComplex_dict[time] = getattr(cellComplex_data, data_attr)
 
-    return cellComplex_dict, cellComplex
+    return cellComplex_dict
 
 
 def _gnomonCellComplexInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
-        update = update or not hasattr(self, "_in_cellComplex_series")
+        update = update or not hasattr(self, "_in_cellComplex")
         if update:
-            form_series, form_dict, data_dict = buildCellComplexSeries(getattr(self, attr), data_plugin, data_setter)
-            self._in_cellComplex_series = form_series
+            form_dict, data_dict = buildCellComplexSeries(getattr(self, attr), data_plugin, data_setter)
             self._in_cellComplex = form_dict
             self._in_cellComplex_data = data_dict
-        return self._in_cellComplex_series
+        return self._in_cellComplex
 
     setattr(cls, method, func)
 
-    def setter_func(self, cellComplex_series):
-        self._in_cellComplex_series = cellComplex_series
-        self._in_cellComplex = {}
+    def setter_func(self, cellComplex):
+        self._in_cellComplex = cellComplex
         setattr(self, attr, {})
 
-        if self._in_cellComplex_series is not None:
-            cellComplex_dict, form_dict = cellComplexDictFromSeries(self._in_cellComplex_series, data_plugin, data_attr)
-            self._in_cellComplex = form_dict
+        if self._in_cellComplex is not None:
+            cellComplex_dict = cellComplexDictFromSeries(self._in_cellComplex_series, data_plugin, data_attr)
             setattr(self, attr, cellComplex_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -93,13 +80,12 @@ def gnomonCellComplexInput(cls=None, attr=None, method='input', setter_method='s
 
 def _gnomonCellComplexOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
-        update = update or not hasattr(self, "_out_cellComplex_series")
+        update = update or not hasattr(self, "_out_cellComplex")
         if update:
-            form_series, form_dict, data_dict = buildCellComplexSeries(getattr(self, attr), data_plugin, data_setter)
-            self._out_cellComplex_series = form_series
+            form_dict, data_dict = buildCellComplexSeries(getattr(self, attr), data_plugin, data_setter)
             self._out_cellComplex = form_dict
             self._out_cellComplex_data = data_dict
-        return self._out_cellComplex_series
+        return self._out_cellComplex
 
     setattr(cls, method, func)
 
