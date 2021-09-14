@@ -2,7 +2,7 @@ import gnomoncore
 
 import logging
 
-from gnomoncore import gnomonTree, gnomonTreeSeries
+from gnomoncore import gnomonTree
 from gnomon_utils.gnomonPlugin import load_plugin_group
 
 load_plugin_group("treeData")
@@ -12,65 +12,52 @@ default_setter = "set_tree"
 default_attr = "_tree"
 
 
-def buildTreeSeries(tree_dict, data_plugin=default_plugin, data_setter=default_setter, form_series=None):
+def buildTreeSeries(tree_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
     tree = {}
     tree_data = {}
-    if form_series is None:
-        tree_series = gnomonTreeSeries()
-    else:
-        tree_series = form_series
-        current_time = tree_series.time()
 
     for time in tree_dict.keys():
-        if form_series is None:
+        if form_dict is None:
             tree[time] = gnomonTree()
-            tree_series.insert(time, tree[time])
             tree_data[time] = gnomoncore.treeData_pluginFactory().create(data_plugin)
             tree[time].setData(tree_data[time])
         else:
-            tree[time] = tree_series.at(time).asTree()
+            tree[time] = form_dict[time]
             tree_data[time] = tree[time].data()
         getattr(tree_data[time], data_setter)(tree_dict[time])
-    if form_series is not None:
-       tree_series.at(current_time)
 
-    return tree_series, tree, tree_data
+    return tree, tree_data
 
 
-def treeDictFromSeries(tree_series, data_plugin=default_plugin, data_attr=default_attr):
-    tree = {}
+def treeDictFromSeries(tree, data_plugin=default_plugin, data_attr=default_attr):
     tree_dict = {}
-    for time in tree_series.times():
-        tree[time] = tree_series.at(time).asTree()
+    for time in tree.keys():
         if hasattr(tree[time].data(), data_attr):
             tree_dict[time] = getattr(tree[time].data(), data_attr)
         else:
             tree_data = gnomoncore.treeData_pluginFactory().create(data_plugin).from_gnomonTree(tree[time])
             tree_dict[time] = getattr(tree_data, data_attr)
 
-    return tree_dict, tree
+    return tree_dict
 
 
 def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
-        update = update or not hasattr(self, "_in_tree_series")
+        update = update or not hasattr(self, "_in_tree")
         if update:
-            form_series, form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
-            self._in_tree_series = form_series
+            form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
             self._in_tree = form_dict
             self._in_tree_data = data_dict
-        return self._in_tree_series
+        return self._in_tree
 
     setattr(cls, method, func)
 
-    def setter_func(self, tree_series):
-        self._in_tree_series = tree_series
-        self._in_tree = {}
+    def setter_func(self, tree):
+        self._in_tree = tree
         setattr(self, attr, {})
 
-        if self._in_tree_series is not None:
-            tree_dict, form_dict = treeDictFromSeries(self._in_tree_series, data_plugin, data_attr)
-            self._in_tree = form_dict
+        if self._in_tree is not None:
+            tree_dict = treeDictFromSeries(self._in_tree, data_plugin, data_attr)
             setattr(self, attr, tree_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -93,13 +80,12 @@ def gnomonTreeInput(cls=None, attr=None, method='input', setter_method='setInput
 
 def _gnomonTreeOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
-        update = update or not hasattr(self, "_out_tree_series")
+        update = update or not hasattr(self, "_out_tree")
         if update:
-            form_series, form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
-            self._out_tree_series = form_series
+            form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
             self._out_tree = form_dict
             self._out_tree_data = data_dict
-        return self._out_tree_series
+        return self._out_tree
 
     setattr(cls, method, func)
 

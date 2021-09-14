@@ -376,7 +376,7 @@
 // Form series
 // /////////////////////////////////////////////////////////////////
 
-%define WRAP_FORM_SERIES(form_name)
+%define WRAP_GNOMONCORE_FORM_SERIES(form_name)
     %fragment("To## form_name## Series", "header") {
         void To## form_name## Series(PyObject *obj, gnomon## form_name## Series *series) {
             PyObject *key, *value;
@@ -396,18 +396,22 @@
 
     %fragment("From## form_name## Series", "header") {
         PyObject *From## form_name## Series(gnomon## form_name## Series *series) {
-            PyObject *dict = PyDict_New();
-            QList<double> times = series->times();
-            gnomon## form_name##  *c;
-            double t;
-            PyObject *v;
-            for (auto it = times.begin(); it != times.end(); ++it) {
-                t = *it;
-                c = series->at(t);
-                v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomon## form_name## , 0 |  0 );
-                PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+            if (series) {
+                PyObject *dict = PyDict_New();
+                QList<double> times = series->times();
+                gnomon## form_name##  *c;
+                double t;
+                PyObject *v;
+                for (auto it = times.begin(); it != times.end(); ++it) {
+                    t = *it;
+                    c = series->at(t);
+                    v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomon## form_name## , 0 |  0 );
+                    PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+                }
+                return dict;
+            } else {
+                Py_RETURN_NONE;
             }
-            return dict;
         }
     }
 
@@ -445,7 +449,14 @@
     }
 %enddef
 
-WRAP_FORM_SERIES(CellComplex)
+WRAP_GNOMONCORE_FORM_SERIES(CellComplex)
+WRAP_GNOMONCORE_FORM_SERIES(CellImage)
+WRAP_GNOMONCORE_FORM_SERIES(DataFrame)
+WRAP_GNOMONCORE_FORM_SERIES(Image)
+WRAP_GNOMONCORE_FORM_SERIES(LString)
+WRAP_GNOMONCORE_FORM_SERIES(Mesh)
+WRAP_GNOMONCORE_FORM_SERIES(PointCloud)
+WRAP_GNOMONCORE_FORM_SERIES(Tree)
 
 // /////////////////////////////////////////////////////////////////
 
@@ -765,15 +776,15 @@ namespace std {
 }
 
 // %template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;
-%template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
-%template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
-%template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;
-%template(gnomonImageSeries) gnomonTimeSeries<gnomonImage>;
-%template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
-%template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
-%template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
-%template(gnomonSphereSeries) gnomonTimeSeries<gnomonSphereForm>;
-%template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
+// %template(gnomonCellGraphSeries) gnomonTimeSeries<gnomonCellGraph>;
+// %template(gnomonCellImageSeries) gnomonTimeSeries<gnomonCellImage>;
+// %template(gnomonDataFrameSeries) gnomonTimeSeries<gnomonDataFrame>;
+// %template(gnomonImageSeries) gnomonTimeSeries<gnomonImage>;
+// %template(gnomonLStringSeries) gnomonTimeSeries<gnomonLString>;
+// %template(gnomonMeshSeries) gnomonTimeSeries<gnomonMesh>;
+// %template(gnomonPointCloudSeries) gnomonTimeSeries<gnomonPointCloud>;
+// %template(gnomonSphereSeries) gnomonTimeSeries<gnomonSphereForm>;
+// %template(gnomonTreeSeries) gnomonTimeSeries<gnomonTree>;
 
 %template(gnomonAbstractCellComplexAdapter) gnomonAbstractFormAdapter<gnomonCellComplexSeries>;
 %template(gnomonAbstractLStringAdapter) gnomonAbstractFormAdapter<gnomonLStringSeries>;

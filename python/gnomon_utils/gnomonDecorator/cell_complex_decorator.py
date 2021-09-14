@@ -57,7 +57,7 @@ def _gnomonCellComplexInput(cls, attr, method, setter_method, data_plugin, data_
         setattr(self, attr, {})
 
         if self._in_cellComplex is not None:
-            cellComplex_dict = cellComplexDictFromSeries(self._in_cellComplex_series, data_plugin, data_attr)
+            cellComplex_dict = cellComplexDictFromSeries(self._in_cellComplex, data_plugin, data_attr)
             setattr(self, attr, cellComplex_dict)
 
             if hasattr(self,"refresh_parameters"):

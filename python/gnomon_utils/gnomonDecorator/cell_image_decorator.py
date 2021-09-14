@@ -2,7 +2,7 @@ import gnomoncore
 
 import logging
 
-from gnomoncore import gnomonCellImage, gnomonCellImageSeries
+from gnomoncore import gnomonCellImage
 from gnomon_utils.gnomonPlugin import load_plugin_group
 
 load_plugin_group("cellImageData")
@@ -12,65 +12,52 @@ default_setter = "set_property_image"
 default_attr = "_p_img"
 
 
-def buildCellImageSeries(cellImage_dict, data_plugin=default_plugin, data_setter=default_setter, form_series=None):
+def buildCellImageSeries(cellImage_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
     cellImage = {}
     cellImage_data = {}
-    if form_series is None:
-        cellImage_series = gnomonCellImageSeries()
-    else:
-        cellImage_series = form_series
-        current_time = cellImage_series.time()
 
     for time in cellImage_dict.keys():
-        if form_series is None:
+        if form_dict is None:
             cellImage[time] = gnomonCellImage()
-            cellImage_series.insert(time, cellImage[time])
             cellImage_data[time] = gnomoncore.cellImageData_pluginFactory().create(data_plugin)
             cellImage[time].setData(cellImage_data[time])
         else:
-            cellImage[time] = cellImage_series.at(time).asCellImage()
+            cellImage[time] = form_dict[time]
             cellImage_data[time] = cellImage[time].data()
         getattr(cellImage_data[time], data_setter)(cellImage_dict[time])
-    if form_series is not None:
-       cellImage_series.at(current_time)
 
-    return cellImage_series, cellImage, cellImage_data
+    return cellImage, cellImage_data
 
 
-def cellImageDictFromSeries(cellImage_series, data_plugin=default_plugin, data_attr=default_attr):
-    cellImage = {}
+def cellImageDictFromSeries(cellImage, data_plugin=default_plugin, data_attr=default_attr):
     cellImage_dict = {}
-    for time in cellImage_series.times():
-        cellImage[time] = cellImage_series.at(time).asCellImage()
+    for time in cellImage.keys():
         if hasattr(cellImage[time].data(), data_attr):
             cellImage_dict[time] = getattr(cellImage[time].data(), data_attr)
         else:
             cellImage_data = gnomoncore.cellImageData_pluginFactory().create(data_plugin).from_gnomonCellImage(cellImage[time])
             cellImage_dict[time] = getattr(cellImage_data, data_attr)
 
-    return cellImage_dict, cellImage
+    return cellImage_dict
 
 
 def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
-        update = update or not hasattr(self, "_in_cellImage_series")
+        update = update or not hasattr(self, "_in_cellImage")
         if update:
-            form_series, form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
-            self._in_cellImage_series = form_series
+            form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
             self._in_cellImage = form_dict
             self._in_cellImage_data = data_dict
-        return self._in_cellImage_series
+        return self._in_cellImage
 
     setattr(cls, method, func)
 
-    def setter_func(self, cellImage_series):
-        self._in_cellImage_series = cellImage_series
-        self._in_cellImage = {}
+    def setter_func(self, cellImage):
+        self._in_cellImage = cellImage
         setattr(self, attr, {})
 
-        if self._in_cellImage_series is not None:
-            cellImage_dict, form_dict = cellImageDictFromSeries(self._in_cellImage_series, data_plugin, data_attr)
-            self._in_cellImage = form_dict
+        if self._in_cellImage is not None:
+            cellImage_dict = cellImageDictFromSeries(self._in_cellImage, data_plugin, data_attr)
             setattr(self, attr, cellImage_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -93,13 +80,12 @@ def gnomonCellImageInput(cls=None, attr=None, method='input', setter_method='set
 
 def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
-        update = update or not hasattr(self, "_out_cellImage_series")
+        update = update or not hasattr(self, "_out_cellImage")
         if update:
-            form_series, form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
-            self._out_cellImage_series = form_series
+            form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
             self._out_cellImage = form_dict
             self._out_cellImage_data = data_dict
-        return self._out_cellImage_series
+        return self._out_cellImage
 
     setattr(cls, method, func)
 
