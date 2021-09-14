@@ -373,79 +373,79 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// CellComplex series
+// Form series
 // /////////////////////////////////////////////////////////////////
 
-%fragment("ToCellComplexSeries", "header") {
-    void ToCellComplexSeries(PyObject *obj, gnomonCellComplexSeries *series) {
-        PyObject *key, *value;
-        Py_ssize_t pos = 0;
-        int r;
-        while (PyDict_Next(obj, &pos, &key, &value)) {
-            double t = PyFloat_AsDouble(key);
-            gnomonCellComplex *v;
-            void *s_v = 0;
-            r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomonCellComplex, 0);
-            if (SWIG_IsOK(r))
-                v = reinterpret_cast<gnomonCellComplex *>(s_v);
-            series->insert(t, v);
+%define WRAP_FORM_SERIES(form_name)
+    %fragment("To## form_name## Series", "header") {
+        void To## form_name## Series(PyObject *obj, gnomon## form_name## Series *series) {
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
+            int r;
+            while (PyDict_Next(obj, &pos, &key, &value)) {
+                double t = PyFloat_AsDouble(key);
+                gnomon## form_name##  *v;
+                void *s_v = 0;
+                r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomon## form_name## , 0);
+                if (SWIG_IsOK(r))
+                    v = reinterpret_cast<gnomon## form_name##  *>(s_v);
+                series->insert(t, v);
+            }
         }
     }
-}
 
-%typemap(in, fragment="ToCellComplexSeries") gnomonCellComplexSeries *{
-    $1 = new gnomonCellComplexSeries();
-    if (PyDict_Check($input)) {
-        ToCellComplexSeries($input, $1);
-    } else {
-        qDebug("PyDict is expected as input. Empty time series is returned.");
+    %fragment("From## form_name## Series", "header") {
+        PyObject *From## form_name## Series(gnomon## form_name## Series *series) {
+            PyObject *dict = PyDict_New();
+            QList<double> times = series->times();
+            gnomon## form_name##  *c;
+            double t;
+            PyObject *v;
+            for (auto it = times.begin(); it != times.end(); ++it) {
+                t = *it;
+                c = series->at(t);
+                v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomon## form_name## , 0 |  0 );
+                PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+            }
+            return dict;
+        }
     }
-}
 
-%typemap(freearg) gnomonCellComplexSeries *{
-    if ($1) {
-        delete $1;
+    %typemap(in, fragment="To## form_name## Series") gnomon## form_name## Series *{
+        $1 = new gnomon## form_name## Series();
+        if (PyDict_Check($input)) {
+            To## form_name## Series($input, $1);
+        } else {
+            qDebug("PyDict is expected as input. Empty time series is returned.");
+        }
     }
-}
 
-%typemap(directorout, fragment="ToCellComplexSeries") gnomonCellComplexSeries *{
-    $result = new gnomonCellComplexSeries();
-    PyObject *dict = static_cast<PyObject *>($1);
-    if (PyDict_Check(dict)) {
-        ToCellComplexSeries(dict, $result);
-    } else {
-        qDebug("PyDict is expected as input. Empty QMap<QString, gnomonAbstractForm*> is returned.");
+    %typemap(freearg) gnomon## form_name## Series *{
+        if ($1) {
+            delete $1;
+        }
     }
-}
 
-%typemap(out) gnomonCellComplexSeries *{
-    $result = PyDict_New();
-    QList<double> times = $1->times();
-    gnomonCellComplex *c;
-    double t;
-    PyObject *v;
-    for (auto it = times.begin(); it != times.end(); ++it) {
-        t = *it;
-        c = $1->at(t);
-        v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomonCellComplex, 0 |  0 );
-        PyDict_SetItem($result, PyFloat_FromDouble(t), v);
+    %typemap(directorout, fragment="To## form_name## Series") gnomon## form_name## Series *{
+        $result = new gnomon## form_name## Series();
+        PyObject *dict = static_cast<PyObject *>($1);
+        if (PyDict_Check(dict)) {
+            To## form_name## Series(dict, $result);
+        } else {
+            qDebug("PyDict is expected as input. Empty time series is returned.");
+        }
     }
-}
 
-%typemap(directorin) gnomonCellComplexSeries *{
-    PyObject *dict = PyDict_New();
-    QList<double> times = $1->times();
-    gnomonCellComplex *c;
-    double t;
-    PyObject *v;
-    for (auto it = times.begin(); it != times.end(); ++it) {
-        t = *it;
-        c = $1->at(t);
-        v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomonCellComplex, 0 |  0 );
-        PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+    %typemap(out, fragment="From## form_name## Series") gnomon## form_name## Series *{
+        $result = From## form_name## Series($1);
     }
-    $input = dict;
-}
+
+    %typemap(directorin, fragment="From## form_name## Series") gnomon## form_name## Series *{
+        $input = From## form_name## Series($1);
+    }
+%enddef
+
+WRAP_FORM_SERIES(CellComplex)
 
 // /////////////////////////////////////////////////////////////////
 
