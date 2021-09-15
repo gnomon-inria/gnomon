@@ -11,19 +11,6 @@ default_plugin = "gnomonMeshDataPropertyTopomesh"
 default_setter = "set_property_topomesh"
 default_attr = "_topomesh"
 
-import gnomoncore
-
-import logging
-
-from gnomoncore import gnomonCellComplex
-from gnomon_utils.gnomonPlugin import load_plugin_group
-
-load_plugin_group("cellComplexData")
-
-default_plugin = "gnomonCellComplexDataPropertyTopomesh"
-default_setter = "set_property_topomesh"
-default_attr = "_topomesh"
-
 
 def buildMeshSeries(mesh_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
     mesh = {}

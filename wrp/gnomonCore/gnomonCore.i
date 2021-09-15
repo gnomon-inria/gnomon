@@ -637,16 +637,6 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 
 %define INCLUDE_GNOMON_CONCEPT(name, short_name, path)
 %include < ## path/ ## name.h>
-%extend dtkCoreObjectManager {
-    ## name * ## name(const QString& key) {
-        auto v = $self->value(key);
-        ## name *res = nullptr;
-        if (v.canConvert<## name *>()) {
-            res = v.value<## name *>();
-        }
-        return res;
-    }
-}
 %inline
 %{
     ## name *objectManager## short_name(const QString& key)

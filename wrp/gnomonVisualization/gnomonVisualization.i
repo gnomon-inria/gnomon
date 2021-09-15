@@ -45,6 +45,8 @@
 
 %}
 
+%include <gnomonCore/gnomonCore.i>
+
 
 %{
 // VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
