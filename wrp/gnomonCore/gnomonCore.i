@@ -40,11 +40,11 @@
 
 #include <dtkCore>
 #include <gnomonCore/gnomonAbstractDataDriver.h>
-// #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-// #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-// #include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
-// #include <gnomonCore/gnomonForm/gnomonWallForm.h>
+#include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+#include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
+#include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
@@ -656,11 +656,11 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 %enddef
 
 %include <gnomonCore/gnomonAbstractDataDriver.h>
-// %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-// %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-// %include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
-// %include <gnomonCore/gnomonForm/gnomonWallForm.h>
+%include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+%include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
+%include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
