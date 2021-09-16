@@ -100,9 +100,9 @@ public:
 
 public slots:
     void updateDataPlugins(const QString& form_type);
-    void addInputForm(gnomonFormDescription *desc);
-    void addOutputForm(gnomonFormDescription *desc);
-    void addParameter(gnomonParameterDescription* desc);
+    void addInputForm(gnomonFormDescription *desc, bool update_code=true);
+    void addOutputForm(gnomonFormDescription *desc, bool update_code=true);
+    void addParameter(gnomonParameterDescription* desc, bool update_code=true);
 
     void updateMenus(void);
     void updateCode(void);
@@ -115,6 +115,9 @@ private:
 
 public:
     QMap<QString, QString> parameter_types;
+
+public:
+    QMap<QString, QString> default_data_plugins;
 
 public:
     QMap<QString, gnomonFormDescription *> input_forms;
@@ -168,6 +171,12 @@ gnomonPythonAlgorithmPluginEditor::gnomonPythonAlgorithmPluginEditor(QWidget *pa
 
 //    this->menu_layout->addWidget(this->form_pane);
 //    this->menu_layout->addWidget(this->parameter_pane);
+
+    this->default_data_plugins["gnomonCellComplex"] = gnomonCore::cellComplexData::pluginFactory().keys()[0];
+    this->default_data_plugins["gnomonCellImage"] = gnomonCore::cellImageData::pluginFactory().keys()[0];
+    this->default_data_plugins["gnomonImage"] = gnomonCore::imageData::pluginFactory().keys()[0];
+    this->default_data_plugins["gnomonMesh"] = gnomonCore::meshData::pluginFactory().keys()[0];
+    this->default_data_plugins["gnomonPointCloud"] = gnomonCore::pointCloudData::pluginFactory().keys()[0];
 
     QWidget *menu_pane = new QWidget(this);
     menu_pane->setLayout(menu_layout);
@@ -369,30 +378,36 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     return this->add_parameter;
 }
 
-void gnomonPythonAlgorithmPluginEditor::addInputForm(gnomonFormDescription *desc)
+void gnomonPythonAlgorithmPluginEditor::addInputForm(gnomonFormDescription *desc, bool update_code)
 {
     if (desc) {
         this->input_forms[desc->type] = desc;
         this->updateMenus();
-        this->updateCode();
+        if (update_code) {
+            this->updateCode();
+        }
     }
 }
 
-void gnomonPythonAlgorithmPluginEditor::addOutputForm(gnomonFormDescription *desc)
+void gnomonPythonAlgorithmPluginEditor::addOutputForm(gnomonFormDescription *desc, bool update_code)
 {
     if (desc) {
         this->output_forms[desc->type] = desc;
         this->updateMenus();
-        this->updateCode();
+        if (update_code) {
+            this->updateCode();
+        }
     }
 }
 
-void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription *desc)
+void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription *desc, bool update_code)
 {
     if (desc) {
         this->parameters[desc->name] = desc;
         this->updateMenus();
-        this->updateCode();
+        if (update_code) {
+            this->updateCode();
+        }
     }
 }
 
@@ -739,7 +754,10 @@ void gnomonPythonAlgorithmPluginEditor::parseCode(void)
             QString args = input_rx.capturedTexts()[2];
             QString attr_name = this->stripQuotes(this->argumentValue(args, "attr", 0));
             QString data_plugin = this->stripQuotes(this->argumentValue(args, "data_plugin", 3));
-            this->addInputForm(new gnomonFormDescription(attr_name, form_type, data_plugin));
+            if (data_plugin == "") {
+                data_plugin = this->default_data_plugins[form_type];
+            }
+            this->addInputForm(new gnomonFormDescription(attr_name, form_type, data_plugin), false);
         }
         pos = output_rx.indexIn(line);
         if (pos != -1) {
@@ -747,7 +765,10 @@ void gnomonPythonAlgorithmPluginEditor::parseCode(void)
             QString args = output_rx.capturedTexts()[2];
             QString attr_name = this->stripQuotes(this->argumentValue(args, "attr", 0));
             QString data_plugin = this->stripQuotes(this->argumentValue(args, "data_plugin", 2));
-            this->addOutputForm(new gnomonFormDescription(attr_name, form_type, data_plugin));
+            if (data_plugin == "") {
+                data_plugin = this->default_data_plugins[form_type];
+            }
+            this->addOutputForm(new gnomonFormDescription(attr_name, form_type, data_plugin), false);
         }
     }
 }
@@ -1147,7 +1168,11 @@ void gnomonWorkspacePythonAlgorithm::run(void)
             d->source->setEnableLinking(true);
             d->target->setEnableLinking(true);
             // qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
-            output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = algorithm.outputCellComplex(False)", &stat);
+            QString form_name("cellcomplex_out");
+            if (d->editor->output_forms.contains("gnomonCellComplex")) {
+                form_name = d->editor->output_forms["gnomonCellComplex"]->name;
+            }
+            output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputCellComplex(False)", &stat);
             // output = dtkScriptInterpreterPython::instance()->interpret("cellcomplex_out = {t:cellcomplex_out.at(t) for t in cellcomplex_out.times()}", &stat);
             // qDebug()<<cellComplex<<cellComplex->current()<<cellComplex->current()->name();
         }
