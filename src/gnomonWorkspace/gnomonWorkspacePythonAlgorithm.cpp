@@ -107,6 +107,12 @@ public slots:
     void updateMenus(void);
     void updateCode(void);
 
+    void parseCode(void);
+
+private:
+    QString argumentValue(const QString& arguments, const QString& argument_name, int argument_position=0);
+    QString stripQuotes(const QString& str);
+
 public:
     QMap<QString, QString> parameter_types;
 
@@ -684,6 +690,67 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     d->editor->setText(plugin_code);
 }
 
+QString gnomonPythonAlgorithmPluginEditor::stripQuotes(const QString& str)
+{
+    QRegExp quote_rx("[\'\"](.*)[\'\"]");
+    int pos = quote_rx.indexIn(str);
+    if (pos != -1) {
+        return quote_rx.capturedTexts()[1];
+    } else {
+        return str;
+    }
+}
+
+QString gnomonPythonAlgorithmPluginEditor::argumentValue(const QString& arguments, const QString& argument_name, int argument_position)
+{
+    QStringList args = arguments.split(",");
+    QString arg_value("");
+    int arg_pos = 0;
+    for (const auto& arg : args) {
+        if (arg.contains("=")) {
+            QString arg_name = arg.split("=")[0];
+            if (arg_name == argument_name) {
+                arg_value = arg.split("=")[1];
+            }
+        } else if (arg_pos == argument_position) {
+            arg_value = arg;
+        } else {
+            arg_pos += 1;
+        }
+    }
+    return arg_value;
+}
+
+void gnomonPythonAlgorithmPluginEditor::parseCode(void)
+{
+    this->input_forms.clear();
+    this->output_forms.clear();
+
+    QString current_code = d->editor->toPlainText();
+    QStringList code_lines = current_code.split("\n");
+
+    QRegExp input_rx("@(gnomon.*)Input[(](.*)[)]");
+    QRegExp output_rx("@(gnomon.*)Output[(](.*)[)]");
+    int pos = -1;
+    for (const auto& line : code_lines) {
+        pos = input_rx.indexIn(line);
+        if (pos != -1) {
+            QString form_type = input_rx.capturedTexts()[1];
+            QString args = input_rx.capturedTexts()[2];
+            QString attr_name = this->stripQuotes(this->argumentValue(args, "attr", 0));
+            QString data_plugin = this->stripQuotes(this->argumentValue(args, "data_plugin", 3));
+            this->addInputForm(new gnomonFormDescription(attr_name, form_type, data_plugin));
+        }
+        pos = output_rx.indexIn(line);
+        if (pos != -1) {
+            QString form_type = output_rx.capturedTexts()[1];
+            QString args = output_rx.capturedTexts()[2];
+            QString attr_name = this->stripQuotes(this->argumentValue(args, "attr", 0));
+            QString data_plugin = this->stripQuotes(this->argumentValue(args, "data_plugin", 2));
+            this->addOutputForm(new gnomonFormDescription(attr_name, form_type, data_plugin));
+        }
+    }
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
@@ -793,6 +860,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
         qDebug()<<Q_FUNC_INFO<<this->algorithm_key;
         this->algorithm = gnomonCore::formAlgorithm::pluginFactory().create(this->algorithm_key);
         Q_ASSERT(this->algorithm);
+        this->editor->parseCode();
     } else {
         this->algorithm = nullptr;
     }
