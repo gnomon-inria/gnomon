@@ -517,7 +517,6 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     for (const auto &param : this->parameters.keys()) {
-        qDebug()<<param<<this->parameters[param];
         gnomonParameterDescription *desc = this->parameters[param];
         dtkWidgetsMenuItem *parameter_item = new dtkWidgetsMenuItem(fa::circlethin, desc->name + " (" + desc->type + ")");
         this->parameter_menu->addItem(parameter_item);
@@ -740,14 +739,27 @@ void gnomonPythonAlgorithmPluginEditor::parseCode(void)
 {
     this->input_forms.clear();
     this->output_forms.clear();
+    this->parameters.clear();
 
     QString current_code = d->editor->toPlainText();
     QStringList code_lines = current_code.split("\n");
 
+    bool in_init = false;
+    QRegExp init_rx("def[ ]*__init__[(]self");
+    QRegExp method_rx("def.*[(]self");
+
     QRegExp input_rx("@(gnomon.*)Input[(](.*)[)]");
     QRegExp output_rx("@(gnomon.*)Output[(](.*)[)]");
+    QRegExp parameter_rx("self._parameters\\[(.*)\\][ ]*=[ ]*([\\S]*)[(](.*)[)]");
+
     int pos = -1;
     for (const auto& line : code_lines) {
+        if (init_rx.indexIn(line) != -1) {
+            in_init = true;
+        } else if (method_rx.indexIn(line) != -1) {
+            in_init = false;
+        }
+
         pos = input_rx.indexIn(line);
         if (pos != -1) {
             QString form_type = input_rx.capturedTexts()[1];
@@ -759,6 +771,7 @@ void gnomonPythonAlgorithmPluginEditor::parseCode(void)
             }
             this->addInputForm(new gnomonFormDescription(attr_name, form_type, data_plugin), false);
         }
+
         pos = output_rx.indexIn(line);
         if (pos != -1) {
             QString form_type = output_rx.capturedTexts()[1];
@@ -769,6 +782,17 @@ void gnomonPythonAlgorithmPluginEditor::parseCode(void)
                 data_plugin = this->default_data_plugins[form_type];
             }
             this->addOutputForm(new gnomonFormDescription(attr_name, form_type, data_plugin), false);
+        }
+
+        if (in_init) {
+            pos = parameter_rx.indexIn(line);
+            if (pos != -1) {
+                QString parameter_name = this->stripQuotes(parameter_rx.capturedTexts()[1]);
+                QString parameter_type = this->parameter_types.key(parameter_rx.capturedTexts()[2]);
+                QString parameter_args = parameter_rx.capturedTexts()[3];
+                QString parameter_doc = this->stripQuotes(this->argumentValue(parameter_args, "documentation", 0));
+                this->addParameter(new gnomonParameterDescription(parameter_name, parameter_type, parameter_doc), false);
+            }
         }
     }
 }
