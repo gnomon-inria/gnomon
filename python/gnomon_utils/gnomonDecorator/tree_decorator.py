@@ -1,9 +1,9 @@
 import gnomoncore
 
-import logging
-
 from gnomoncore import gnomonTree
 from gnomon_utils.gnomonPlugin import load_plugin_group
+
+from .form_series import buildFormSeries, formDictFromSeries
 
 load_plugin_group("treeData")
 
@@ -11,41 +11,20 @@ default_plugin = "gnomonTreeDataTreex"
 default_setter = "set_tree"
 default_attr = "_tree"
 
-
-def buildTreeSeries(tree_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
-    tree = {}
-    tree_data = {}
-
-    for time in tree_dict.keys():
-        if form_dict is None:
-            tree[time] = gnomonTree()
-            tree_data[time] = gnomoncore.treeData_pluginFactory().create(data_plugin)
-            tree[time].setData(tree_data[time])
-        else:
-            tree[time] = form_dict[time]
-            tree_data[time] = tree[time].data()
-        getattr(tree_data[time], data_setter)(tree_dict[time])
-
-    return tree, tree_data
-
-
-def treeDictFromSeries(tree, data_plugin=default_plugin, data_attr=default_attr):
-    tree_dict = {}
-    for time in tree.keys():
-        if hasattr(tree[time].data(), data_attr):
-            tree_dict[time] = getattr(tree[time].data(), data_attr)
-        else:
-            tree_data = gnomoncore.treeData_pluginFactory().create(data_plugin).from_gnomonTree(tree[time])
-            tree_dict[time] = getattr(tree_data, data_attr)
-
-    return tree_dict
+form_class = gnomonTree
+form_data_factory = gnomoncore.treeData_pluginFactory()
+from_form_method = "from_gnomonTree"
 
 
 def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
         update = update or not hasattr(self, "_in_tree")
         if update:
-            form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._in_tree = form_dict
             self._in_tree_data = data_dict
         return self._in_tree
@@ -57,7 +36,11 @@ def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter,
         setattr(self, attr, {})
 
         if self._in_tree is not None:
-            tree_dict = treeDictFromSeries(self._in_tree, data_plugin, data_attr)
+            tree_dict = formDictFromSeries(form=self._in_tree,
+                                                  form_data_factory=form_data_factory,
+                                                  from_form_method=from_form_method,
+                                                  data_plugin=data_plugin,
+                                                  data_attr=data_attr)
             setattr(self, attr, tree_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -82,7 +65,11 @@ def _gnomonTreeOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
         update = update or not hasattr(self, "_out_tree")
         if update:
-            form_dict, data_dict = buildTreeSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._out_tree = form_dict
             self._out_tree_data = data_dict
         return self._out_tree
@@ -100,4 +87,3 @@ def gnomonTreeOutput(cls=None, attr=None, method='output', data_plugin=default_p
             return _gnomonTreeOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
-

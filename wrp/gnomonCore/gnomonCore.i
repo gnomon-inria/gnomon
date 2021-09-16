@@ -40,16 +40,16 @@
 
 #include <dtkCore>
 #include <gnomonCore/gnomonAbstractDataDriver.h>
-#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+// #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-#include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-#include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
-#include <gnomonCore/gnomonForm/gnomonWallForm.h>
+// #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+// #include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
+// #include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
-#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
-#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+// #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+// #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
@@ -656,11 +656,11 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 %enddef
 
 %include <gnomonCore/gnomonAbstractDataDriver.h>
-%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+// %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-%include <gnomonCore/gnomonForm/gnomonSphereForm.h>
-%include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
-%include <gnomonCore/gnomonForm/gnomonWallForm.h>
+// %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
+// %include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
+// %include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
@@ -677,22 +677,112 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 	}
 }
 
-%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
-%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+// %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+// %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+%extend gnomonCellImage {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& cellImage = $self;
+        QString str("<gnomoncore.gnomonCellImage");
+        str += QString(" with %1 cell(s)").arg(cellImage->cellCount());
+        str += QString(" at 0x%1>").arg((quintptr)cellImage, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+%extend gnomonDataFrame {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& dataFrame = $self;
+        QString str("<gnomoncore.gnomonDataFrame");
+        str += QString(" with %1 line(s)").arg(dataFrame->index().size());
+        str += QString(" at 0x%1>").arg((quintptr)dataFrame, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+%extend gnomonImage {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& image = $self;
+        QString str("<gnomoncore.gnomonImage");
+        str += QString(" with %1 channels(s)").arg(image->channels().size());
+        str += QString(" at 0x%1>").arg((quintptr)image, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
+%extend gnomonLString {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& lString = $self;
+        QString str("<gnomoncore.gnomonLString");
+        str += QString(" with %1 module(s)").arg(lString->moduleCount());
+        str += QString(" at 0x%1>").arg((quintptr)lString, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
+%extend gnomonMesh {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& mesh = $self;
+        QString str("<gnomoncore.gnomonMesh");
+        str += QString(" with %1 triangle(s) and %1 vertices").arg(mesh->triangleCount(), mesh->vertexCount());
+        str += QString(" at 0x%1>").arg((quintptr)mesh, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
 %include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+%extend gnomonPointCloud {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& pointCloud = $self;
+        QString str("<gnomoncore.gnomonPointCloud");
+        str += QString(" with %1 point(s)").arg(pointCloud->pointCount());
+        str += QString(" at 0x%1>").arg((quintptr)pointCloud, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
+%extend gnomonTree {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& tree = $self;
+        QString str("<gnomoncore.gnomonTree");
+        str += QString(" with %1 node(s)").arg(tree->vertexCount());
+        str += QString(" at 0x%1>").arg((quintptr)tree, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
 
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
 // %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>

@@ -1,9 +1,9 @@
 import gnomoncore
 
-import logging
-
 from gnomoncore import gnomonPointCloud
 from gnomon_utils.gnomonPlugin import load_plugin_group
+
+from .form_series import buildFormSeries, formDictFromSeries
 
 load_plugin_group("pointCloudData")
 
@@ -11,41 +11,20 @@ default_plugin = "gnomonPointCloudDataPropertyTopomesh"
 default_setter = "set_property_topomesh"
 default_attr = "_topomesh"
 
-
-def buildPointCloudSeries(pointCloud_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
-    pointCloud = {}
-    pointCloud_data = {}
-
-    for time in pointCloud_dict.keys():
-        if form_dict is None:
-            pointCloud[time] = gnomonPointCloud()
-            pointCloud_data[time] = gnomoncore.pointCloudData_pluginFactory().create(data_plugin)
-            pointCloud[time].setData(pointCloud_data[time])
-        else:
-            pointCloud[time] = form_dict[time]
-            pointCloud_data[time] = pointCloud[time].data()
-        getattr(pointCloud_data[time], data_setter)(pointCloud_dict[time])
-
-    return pointCloud, pointCloud_data
-
-
-def pointCloudDictFromSeries(pointCloud, data_plugin=default_plugin, data_attr=default_attr):
-    pointCloud_dict = {}
-    for time in pointCloud.keys():
-        if hasattr(pointCloud[time].data(), data_attr):
-            pointCloud_dict[time] = getattr(pointCloud[time].data(), data_attr)
-        else:
-            pointCloud_data = gnomoncore.pointCloudData_pluginFactory().create(data_plugin).from_gnomonPointCloud(pointCloud[time])
-            pointCloud_dict[time] = getattr(pointCloud_data, data_attr)
-
-    return pointCloud_dict
+form_class = gnomonPointCloud
+form_data_factory = gnomoncore.pointCloudData_pluginFactory()
+from_form_method = "from_gnomonPointCloud"
 
 
 def _gnomonPointCloudInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
         update = update or not hasattr(self, "_in_pointCloud")
         if update:
-            form_dict, data_dict = buildPointCloudSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._in_pointCloud = form_dict
             self._in_pointCloud_data = data_dict
         return self._in_pointCloud
@@ -57,10 +36,14 @@ def _gnomonPointCloudInput(cls, attr, method, setter_method, data_plugin, data_s
         setattr(self, attr, {})
 
         if self._in_pointCloud is not None:
-            pointCloud_dict = pointCloudDictFromSeries(self._in_pointCloud, data_plugin, data_attr)
+            pointCloud_dict = formDictFromSeries(form=self._in_pointCloud,
+                                            form_data_factory=form_data_factory,
+                                            from_form_method=from_form_method,
+                                            data_plugin=data_plugin,
+                                            data_attr=data_attr)
             setattr(self, attr, pointCloud_dict)
 
-            if hasattr(self,"refresh_parameters"):
+            if hasattr(self, "refresh_parameters"):
                 self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
@@ -82,7 +65,11 @@ def _gnomonPointCloudOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
         update = update or not hasattr(self, "_out_pointCloud")
         if update:
-            form_dict, data_dict = buildPointCloudSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._out_pointCloud = form_dict
             self._out_pointCloud_data = data_dict
         return self._out_pointCloud
@@ -100,5 +87,3 @@ def gnomonPointCloudOutput(cls=None, attr=None, method='output', data_plugin=def
             return _gnomonPointCloudOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
-
-

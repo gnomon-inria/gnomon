@@ -1,9 +1,9 @@
 import gnomoncore
 
-import logging
-
 from gnomoncore import gnomonLString
 from gnomon_utils.gnomonPlugin import load_plugin_group
+
+from .form_series import buildFormSeries, formDictFromSeries
 
 load_plugin_group("lStringData")
 
@@ -11,41 +11,20 @@ default_plugin = "gnomonLStringDataLPy"
 default_setter = "set_lstring"
 default_attr = "_lstring"
 
-
-def buildLStringSeries(lString_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
-    lString = {}
-    lString_data = {}
-
-    for time in lString_dict.keys():
-        if form_dict is None:
-            lString[time] = gnomonLString()
-            lString_data[time] = gnomoncore.lStringData_pluginFactory().create(data_plugin)
-            lString[time].setData(lString_data[time])
-        else:
-            lString[time] = form_dict[time]
-            lString_data[time] = lString[time].data()
-        getattr(lString_data[time], data_setter)(lString_dict[time])
-
-    return lString, lString_data
-
-
-def lStringDictFromSeries(lString, data_plugin=default_plugin, data_attr=default_attr):
-    lString_dict = {}
-    for time in lString.keys():
-        if hasattr(lString[time].data(), data_attr):
-            lString_dict[time] = getattr(lString[time].data(), data_attr)
-        else:
-            lString_data = gnomoncore.lStringData_pluginFactory().create(data_plugin).from_gnomonLString(lString[time])
-            lString_dict[time] = getattr(lString_data, data_attr)
-
-    return lString_dict
+form_class = gnomonLString
+form_data_factory = gnomoncore.lStringData_pluginFactory()
+from_form_method = "from_gnomonLString"
 
 
 def _gnomonLStringInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
         update = update or not hasattr(self, "_in_lString")
         if update:
-            form_dict, data_dict = buildLStringSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._in_lString = form_dict
             self._in_lString_data = data_dict
         return self._in_lString
@@ -57,7 +36,11 @@ def _gnomonLStringInput(cls, attr, method, setter_method, data_plugin, data_sett
         setattr(self, attr, {})
 
         if self._in_lString is not None:
-            lString_dict = lStringDictFromSeries(self._in_lString, data_plugin, data_attr)
+            lString_dict = formDictFromSeries(form=self._in_lString,
+                                                  form_data_factory=form_data_factory,
+                                                  from_form_method=from_form_method,
+                                                  data_plugin=data_plugin,
+                                                  data_attr=data_attr)
             setattr(self, attr, lString_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -82,7 +65,11 @@ def _gnomonLStringOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
         update = update or not hasattr(self, "_out_lString")
         if update:
-            form_dict, data_dict = buildLStringSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._out_lString = form_dict
             self._out_lString_data = data_dict
         return self._out_lString
@@ -100,4 +87,3 @@ def gnomonLStringOutput(cls=None, attr=None, method='output', data_plugin=defaul
             return _gnomonLStringOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
-

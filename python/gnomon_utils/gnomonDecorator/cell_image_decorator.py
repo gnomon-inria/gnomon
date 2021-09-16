@@ -1,9 +1,9 @@
 import gnomoncore
 
-import logging
-
 from gnomoncore import gnomonCellImage
 from gnomon_utils.gnomonPlugin import load_plugin_group
+
+from .form_series import buildFormSeries, formDictFromSeries
 
 load_plugin_group("cellImageData")
 
@@ -11,41 +11,20 @@ default_plugin = "gnomonCellImageDataPropertySpatialImage"
 default_setter = "set_property_image"
 default_attr = "_p_img"
 
-
-def buildCellImageSeries(cellImage_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
-    cellImage = {}
-    cellImage_data = {}
-
-    for time in cellImage_dict.keys():
-        if form_dict is None:
-            cellImage[time] = gnomonCellImage()
-            cellImage_data[time] = gnomoncore.cellImageData_pluginFactory().create(data_plugin)
-            cellImage[time].setData(cellImage_data[time])
-        else:
-            cellImage[time] = form_dict[time]
-            cellImage_data[time] = cellImage[time].data()
-        getattr(cellImage_data[time], data_setter)(cellImage_dict[time])
-
-    return cellImage, cellImage_data
-
-
-def cellImageDictFromSeries(cellImage, data_plugin=default_plugin, data_attr=default_attr):
-    cellImage_dict = {}
-    for time in cellImage.keys():
-        if hasattr(cellImage[time].data(), data_attr):
-            cellImage_dict[time] = getattr(cellImage[time].data(), data_attr)
-        else:
-            cellImage_data = gnomoncore.cellImageData_pluginFactory().create(data_plugin).from_gnomonCellImage(cellImage[time])
-            cellImage_dict[time] = getattr(cellImage_data, data_attr)
-
-    return cellImage_dict
+form_class = gnomonCellImage
+form_data_factory = gnomoncore.cellImageData_pluginFactory()
+from_form_method = "from_gnomonCellImage"
 
 
 def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
         update = update or not hasattr(self, "_in_cellImage")
         if update:
-            form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._in_cellImage = form_dict
             self._in_cellImage_data = data_dict
         return self._in_cellImage
@@ -57,7 +36,11 @@ def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_se
         setattr(self, attr, {})
 
         if self._in_cellImage is not None:
-            cellImage_dict = cellImageDictFromSeries(self._in_cellImage, data_plugin, data_attr)
+            cellImage_dict = formDictFromSeries(form=self._in_cellImage,
+                                                  form_data_factory=form_data_factory,
+                                                  from_form_method=from_form_method,
+                                                  data_plugin=data_plugin,
+                                                  data_attr=data_attr)
             setattr(self, attr, cellImage_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -82,7 +65,11 @@ def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
         update = update or not hasattr(self, "_out_cellImage")
         if update:
-            form_dict, data_dict = buildCellImageSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._out_cellImage = form_dict
             self._out_cellImage_data = data_dict
         return self._out_cellImage
@@ -100,5 +87,3 @@ def gnomonCellImageOutput(cls=None, attr=None, method='output', data_plugin=defa
             return _gnomonCellImageOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
-
-

@@ -1,9 +1,9 @@
 import gnomoncore
 
-import logging
-
 from gnomoncore import gnomonDataFrame
 from gnomon_utils.gnomonPlugin import load_plugin_group
+
+from .form_series import buildFormSeries, formDictFromSeries
 
 load_plugin_group("dataFrameData")
 
@@ -11,41 +11,20 @@ default_plugin = "gnomonDataFrameDataPandas"
 default_setter = "set_dataframe"
 default_attr = "_df"
 
-
-def buildDataFrameSeries(dataFrame_dict, data_plugin=default_plugin, data_setter=default_setter, form_dict=None):
-    dataFrame = {}
-    dataFrame_data = {}
-
-    for time in dataFrame_dict.keys():
-        if form_dict is None:
-            dataFrame[time] = gnomonDataFrame()
-            dataFrame_data[time] = gnomoncore.dataFrameData_pluginFactory().create(data_plugin)
-            dataFrame[time].setData(dataFrame_data[time])
-        else:
-            dataFrame[time] = form_dict[time]
-            dataFrame_data[time] = dataFrame[time].data()
-        getattr(dataFrame_data[time], data_setter)(dataFrame_dict[time])
-
-    return dataFrame, dataFrame_data
-
-
-def dataFrameDictFromSeries(dataFrame, data_plugin=default_plugin, data_attr=default_attr):
-    dataFrame_dict = {}
-    for time in dataFrame.keys():
-        if hasattr(dataFrame[time].data(), data_attr):
-            dataFrame_dict[time] = getattr(dataFrame[time].data(), data_attr)
-        else:
-            dataFrame_data = gnomoncore.dataFrameData_pluginFactory().create(data_plugin).from_gnomonDataFrame(dataFrame[time])
-            dataFrame_dict[time] = getattr(dataFrame_data, data_attr)
-
-    return dataFrame_dict
+form_class = gnomonDataFrame
+form_data_factory = gnomoncore.dataFrameData_pluginFactory()
+from_form_method = "from_gnomonDataFrame"
 
 
 def _gnomonDataFrameInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
         update = update or not hasattr(self, "_in_dataFrame")
         if update:
-            form_dict, data_dict = buildDataFrameSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._in_dataFrame = form_dict
             self._in_dataFrame_data = data_dict
         return self._in_dataFrame
@@ -57,7 +36,11 @@ def _gnomonDataFrameInput(cls, attr, method, setter_method, data_plugin, data_se
         setattr(self, attr, {})
 
         if self._in_dataFrame is not None:
-            dataFrame_dict = dataFrameDictFromSeries(self._in_dataFrame, data_plugin, data_attr)
+            dataFrame_dict = formDictFromSeries(form=self._in_dataFrame,
+                                                  form_data_factory=form_data_factory,
+                                                  from_form_method=from_form_method,
+                                                  data_plugin=data_plugin,
+                                                  data_attr=data_attr)
             setattr(self, attr, dataFrame_dict)
 
             if hasattr(self,"refresh_parameters"):
@@ -82,7 +65,11 @@ def _gnomonDataFrameOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
         update = update or not hasattr(self, "_out_dataFrame")
         if update:
-            form_dict, data_dict = buildDataFrameSeries(getattr(self, attr), data_plugin, data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
             self._out_dataFrame = form_dict
             self._out_dataFrame_data = data_dict
         return self._out_dataFrame
@@ -100,4 +87,3 @@ def gnomonDataFrameOutput(cls=None, attr=None, method='output', data_plugin=defa
             return _gnomonDataFrameOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
 
         return wrapper
-
