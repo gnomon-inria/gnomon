@@ -18,10 +18,8 @@
 
 #include <dtkWidgets>
 
+#include <gnomonCore>
 #include <gnomonWidgets>
-
-class gnomonFormDescription;
-class gnomonParameterDescription;
 
 class GNOMONWORKSPACE_EXPORT gnomonPythonAlgorithmPluginEditor : public gnomonPythonEditor
 {
@@ -36,15 +34,15 @@ public:
     dtkWidgetsMenu *newParameterMenu(void);
 
 public:
-    const QMap<QString, gnomonFormDescription *>& inputForms(void) const;
-    const QMap<QString, gnomonFormDescription *>& outputForms(void) const;
-    const QMap<QString, gnomonParameterDescription *>& parameters(void) const;
+    const QMap<QString, gnomonFormDescription>& inputForms(void) const;
+    const QMap<QString, gnomonFormDescription>& outputForms(void) const;
+    const QMap<QString, gnomonParameterDescription>& parameters(void) const;
 
 public slots:
     void updateDataPlugins(const QString& form_type);
-    void addInputForm(gnomonFormDescription *desc, bool update_code=true);
-    void addOutputForm(gnomonFormDescription *desc, bool update_code=true);
-    void addParameter(gnomonParameterDescription* desc, bool update_code=true);
+    void addInputForm(gnomonFormDescription desc, bool update_code=true);
+    void addOutputForm(gnomonFormDescription desc, bool update_code=true);
+    void addParameter(gnomonParameterDescription desc, bool update_code=true);
 
     void updateMenus(void);
     void updateCode(void);

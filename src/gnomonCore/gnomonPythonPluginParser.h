@@ -22,8 +22,9 @@
 class GNOMONCORE_EXPORT gnomonFormDescription
 {
 public:
-     gnomonFormDescription(const QString& name, const QString& type, const QString& data_plugin);
-    ~gnomonFormDescription(void);
+     gnomonFormDescription(void) = default;
+     gnomonFormDescription(const QString& name, const QString& type, const QString& data_plugin) : name(name), type(type), data_plugin(data_plugin) {};;
+    ~gnomonFormDescription(void) = default;
 
 public:
     QString name;
@@ -35,8 +36,9 @@ public:
 class GNOMONCORE_EXPORT gnomonParameterDescription
 {
 public:
-     gnomonParameterDescription(const QString& name, const QString& type, const QString& doc);
-    ~gnomonParameterDescription(void);
+     gnomonParameterDescription(void) = default;
+     gnomonParameterDescription(const QString& name, const QString& type, const QString& doc) : name(name), type(type), doc(doc) {};
+    ~gnomonParameterDescription(void) = default;
 
 public:
     QString name;
@@ -56,9 +58,9 @@ public:
     ~gnomonPythonPluginParser(void);
 
 public:
-    const QMap<QString, gnomonFormDescription *>& inputForms(void) const;
-    const QMap<QString, gnomonFormDescription *>& outputForms(void) const;
-    const QMap<QString, gnomonParameterDescription *>& parameters(void) const;
+    const QMap<QString, gnomonFormDescription>& inputForms(void) const;
+    const QMap<QString, gnomonFormDescription>& outputForms(void) const;
+    const QMap<QString, gnomonParameterDescription>& parameters(void) const;
 
 public:
     const QMap<QString, QString>& parameterTypes(void) const;

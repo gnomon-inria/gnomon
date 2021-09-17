@@ -24,20 +24,17 @@ gnomonPythonPluginParserTestCase::~gnomonPythonPluginParserTestCase(void)
 
 void gnomonPythonPluginParserTestCase::initTestCase(void)
 {
-    gnomonCore::initialize();
-    dtkScriptInterpreterPython::instance()->init("gnomon-core");
 }
 
 void gnomonPythonPluginParserTestCase::init(void)
 {
     d->parser = new gnomonPythonPluginParser();
-    qDebug()<<Q_FUNC_INFO;
     QVERIFY(d->parser);
 }
 
 void gnomonPythonPluginParserTestCase::emptyParserTest(void)
 {
-     QMap<QString, gnomonFormDescription *> input_forms;
+     QMap<QString, gnomonFormDescription> input_forms;
      input_forms= d->parser->inputForms();
      QVERIFY(input_forms.size() == 0);
 }

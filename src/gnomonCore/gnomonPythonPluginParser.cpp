@@ -54,37 +54,6 @@ QString argumentValue(const QString& arguments, const QString& argument_name, in
 
 
 // ///////////////////////////////////////////////////////////////////
-// gnomonFormDescription
-// ///////////////////////////////////////////////////////////////////
-
-
-gnomonFormDescription::gnomonFormDescription(const QString& name, const QString& type, const QString& data_plugin)
-{
-    this->name = name;
-    this->type = type;
-    this->data_plugin = data_plugin;
-}
-
-gnomonFormDescription::~gnomonFormDescription(void)
-{
-}
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonParameterDescription
-// ///////////////////////////////////////////////////////////////////
-
-gnomonParameterDescription::gnomonParameterDescription(const QString& name, const QString& type, const QString& doc)
-{
-    this->name = name;
-    this->type = type;
-    this->doc = doc;
-}
-
-gnomonParameterDescription::~gnomonParameterDescription(void)
-{
-}
-
-// ///////////////////////////////////////////////////////////////////
 // gnomonPythonPluginParserPrivate
 // ///////////////////////////////////////////////////////////////////
 
@@ -92,9 +61,9 @@ gnomonParameterDescription::~gnomonParameterDescription(void)
 class gnomonPythonPluginParserPrivate: public QObject
 {
 public:
-    QMap<QString, gnomonFormDescription *> input_forms;
-    QMap<QString, gnomonFormDescription *> output_forms;
-    QMap<QString, gnomonParameterDescription *> parameters;
+    QMap<QString, gnomonFormDescription> input_forms;
+    QMap<QString, gnomonFormDescription> output_forms;
+    QMap<QString, gnomonParameterDescription> parameters;
     
 public:
     QMap<QString, QString> default_data_plugins;
@@ -138,17 +107,17 @@ gnomonPythonPluginParser::~gnomonPythonPluginParser(void)
     delete d;
 }
 
-const QMap<QString, gnomonFormDescription *>& gnomonPythonPluginParser::inputForms(void) const
+const QMap<QString, gnomonFormDescription>& gnomonPythonPluginParser::inputForms(void) const
 {
     return d->input_forms;
 }
 
-const QMap<QString, gnomonFormDescription *>& gnomonPythonPluginParser::outputForms(void) const
+const QMap<QString, gnomonFormDescription>& gnomonPythonPluginParser::outputForms(void) const
 {
     return d->output_forms;
 }
 
-const QMap<QString, gnomonParameterDescription *>& gnomonPythonPluginParser::parameters(void) const
+const QMap<QString, gnomonParameterDescription>& gnomonPythonPluginParser::parameters(void) const
 {
     return d->parameters;
 }
@@ -191,7 +160,7 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
             if (data_plugin == "") {
                 data_plugin = d->default_data_plugins[form_type];
             }
-            d->input_forms[attr_name] = new gnomonFormDescription(attr_name, form_type, data_plugin);
+            d->input_forms[attr_name] = gnomonFormDescription(attr_name, form_type, data_plugin);
         }
 
         pos = output_rx.indexIn(line);
@@ -203,7 +172,7 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
             if (data_plugin == "") {
                 data_plugin = d->default_data_plugins[form_type];
             }
-            d->output_forms[attr_name] = new gnomonFormDescription(attr_name, form_type, data_plugin);
+            d->output_forms[attr_name] = gnomonFormDescription(attr_name, form_type, data_plugin);
         }
 
         if (in_init) {
@@ -213,7 +182,7 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
                 QString parameter_type = d->parameter_types.key(parameter_rx.capturedTexts()[2]);
                 QString parameter_args = parameter_rx.capturedTexts()[3];
                 QString parameter_doc = stripQuotes(argumentValue(parameter_args, "documentation", 0));
-                d->parameters[parameter_name] = new gnomonParameterDescription(parameter_name, parameter_type, parameter_doc);
+                d->parameters[parameter_name] = gnomonParameterDescription(parameter_name, parameter_type, parameter_doc);
             }
         }
     }

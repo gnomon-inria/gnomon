@@ -49,6 +49,7 @@ public:
     // CellComplex
 public:
     virtual void setInputCellComplex(gnomonCellComplexSeries *cellComplex) { return; };
+    // set update argument to false to avoid re-generating gnomon classes in Python plugins
     virtual gnomonCellComplexSeries *inputCellComplex(bool update=true) const { return nullptr; };
     virtual gnomonCellComplexSeries *outputCellComplex(bool update=true) const { return nullptr; };
 

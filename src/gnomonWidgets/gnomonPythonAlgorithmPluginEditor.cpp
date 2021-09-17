@@ -31,9 +31,9 @@ public:
     QMap<QString, QString> parameter_types;
 
 public:
-    QMap<QString, gnomonFormDescription *> input_forms;
-    QMap<QString, gnomonFormDescription *> output_forms;
-    QMap<QString, gnomonParameterDescription *> parameters;
+    QMap<QString, gnomonFormDescription> input_forms;
+    QMap<QString, gnomonFormDescription> output_forms;
+    QMap<QString, gnomonParameterDescription> parameters;
 
 public:
     gnomonPythonPluginParser *parser;
@@ -118,17 +118,17 @@ gnomonPythonAlgorithmPluginEditor::~gnomonPythonAlgorithmPluginEditor(void)
     delete dd;
 }
 
-const QMap<QString, gnomonFormDescription *>& gnomonPythonAlgorithmPluginEditor::inputForms(void) const
+const QMap<QString, gnomonFormDescription>& gnomonPythonAlgorithmPluginEditor::inputForms(void) const
 {
     return dd->input_forms;
 }
 
-const QMap<QString, gnomonFormDescription *>& gnomonPythonAlgorithmPluginEditor::outputForms(void) const
+const QMap<QString, gnomonFormDescription>& gnomonPythonAlgorithmPluginEditor::outputForms(void) const
 {
     return dd->output_forms;
 }
 
-const QMap<QString, gnomonParameterDescription *>& gnomonPythonAlgorithmPluginEditor::parameters(void) const
+const QMap<QString, gnomonParameterDescription>& gnomonPythonAlgorithmPluginEditor::parameters(void) const
 {
     return dd->parameters;
 }
@@ -227,7 +227,7 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newFormMenu(bool input)
     connect(ok_button, &QPushButton::clicked, [=] () {
         dd->form_pane->switchToRoot(cb);
         if (!name_edit->text().isEmpty()) {
-            gnomonFormDescription *desc = new gnomonFormDescription(name_edit->text(),type_edit->currentText(),data_plugin_edit->currentText());
+            gnomonFormDescription desc(name_edit->text(),type_edit->currentText(),data_plugin_edit->currentText());
             if (input) {
                 this->addInputForm(desc);
             } else {
@@ -299,7 +299,7 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     connect(ok_button, &QPushButton::clicked, [=] (){
         dd->parameter_pane->switchToRoot(cb);
         if (!name_edit->text().isEmpty()) {
-            gnomonParameterDescription *desc = new gnomonParameterDescription(name_edit->text(),type_edit->currentText(),documentation_edit->text());
+            gnomonParameterDescription desc(name_edit->text(),type_edit->currentText(),documentation_edit->text());
             this->addParameter(desc);
         }
     });
@@ -319,36 +319,30 @@ dtkWidgetsMenu *gnomonPythonAlgorithmPluginEditor::newParameterMenu(void)
     return dd->add_parameter;
 }
 
-void gnomonPythonAlgorithmPluginEditor::addInputForm(gnomonFormDescription *desc, bool update_code)
+void gnomonPythonAlgorithmPluginEditor::addInputForm(gnomonFormDescription desc, bool update_code)
 {
-    if (desc) {
-        dd->input_forms[desc->type] = desc;
-        this->updateMenus();
-        if (update_code) {
-            this->updateCode();
-        }
+    dd->input_forms[desc.type] = desc;
+    this->updateMenus();
+    if (update_code) {
+        this->updateCode();
     }
 }
 
-void gnomonPythonAlgorithmPluginEditor::addOutputForm(gnomonFormDescription *desc, bool update_code)
+void gnomonPythonAlgorithmPluginEditor::addOutputForm(gnomonFormDescription desc, bool update_code)
 {
-    if (desc) {
-        dd->output_forms[desc->type] = desc;
-        this->updateMenus();
-        if (update_code) {
-            this->updateCode();
-        }
+    dd->output_forms[desc.type] = desc;
+    this->updateMenus();
+    if (update_code) {
+        this->updateCode();
     }
 }
 
-void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription *desc, bool update_code)
+void gnomonPythonAlgorithmPluginEditor::addParameter(gnomonParameterDescription desc, bool update_code)
 {
-    if (desc) {
-        dd->parameters[desc->name] = desc;
-        this->updateMenus();
-        if (update_code) {
-            this->updateCode();
-        }
+    dd->parameters[desc.name] = desc;
+    this->updateMenus();
+    if (update_code) {
+        this->updateCode();
     }
 }
 
@@ -394,10 +388,10 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     for (const auto &form_type : dd->input_forms.keys()) {
-        gnomonFormDescription *desc = dd->input_forms[form_type];
-        QString short_type = desc->type.split("gnomon")[1];
+        gnomonFormDescription desc = dd->input_forms[form_type];
+        QString short_type = desc.type.split("gnomon")[1];
         short_type.replace(0,1,short_type[0].toUpper());
-        dtkWidgetsMenuItem *input_item = new dtkWidgetsMenuItem(fa::image, desc->name + " (" + short_type + ")");
+        dtkWidgetsMenuItem *input_item = new dtkWidgetsMenuItem(fa::image, desc.name + " (" + short_type + ")");
         dd->input_menu->addItem(input_item);
     }
 
@@ -410,10 +404,10 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     for (const auto &form_type : dd->output_forms.keys()) {
-        gnomonFormDescription *desc = dd->output_forms[form_type];
-        QString short_type = desc->type.split("gnomon")[1];
+        gnomonFormDescription desc = dd->output_forms[form_type];
+        QString short_type = desc.type.split("gnomon")[1];
         short_type.replace(0,1,short_type[0].toUpper());
-        dtkWidgetsMenuItem *output_item = new dtkWidgetsMenuItem(fa::image, desc->name + " (" + short_type + ")");
+        dtkWidgetsMenuItem *output_item = new dtkWidgetsMenuItem(fa::image, desc.name + " (" + short_type + ")");
         dd->output_menu->addItem(output_item);
     }
 
@@ -458,8 +452,8 @@ void gnomonPythonAlgorithmPluginEditor::updateMenus(void)
     }
 
     for (const auto &param : dd->parameters.keys()) {
-        gnomonParameterDescription *desc = dd->parameters[param];
-        dtkWidgetsMenuItem *parameter_item = new dtkWidgetsMenuItem(fa::circlethin, desc->name + " (" + desc->type + ")");
+        gnomonParameterDescription desc = dd->parameters[param];
+        dtkWidgetsMenuItem *parameter_item = new dtkWidgetsMenuItem(fa::circlethin, desc.name + " (" + desc.type + ")");
         dd->parameter_menu->addItem(parameter_item);
     }
 
@@ -549,19 +543,19 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "@gnomonParametric\n";
 
     for (const auto &form_type : dd->input_forms.keys()) {
-        gnomonFormDescription *desc = dd->input_forms[form_type];
+        gnomonFormDescription desc = dd->input_forms[form_type];
         plugin_code += "@" + form_type + "Input(";
-        plugin_code += "attr='" + desc->name + "', ";
-        plugin_code += "method='input" + desc->type.split("gnomon")[1] + "', ";
-        plugin_code += "setter_method='setInput" + desc->type.split("gnomon")[1] + "', ";
-        plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
+        plugin_code += "attr='" + desc.name + "', ";
+        plugin_code += "method='input" + desc.type.split("gnomon")[1] + "', ";
+        plugin_code += "setter_method='setInput" + desc.type.split("gnomon")[1] + "', ";
+        plugin_code += "data_plugin='" + desc.data_plugin + "')\n";
     }
     for (const auto &form_type : dd->output_forms.keys()) {
-        gnomonFormDescription *desc = dd->output_forms[form_type];
+        gnomonFormDescription desc = dd->output_forms[form_type];
         plugin_code += "@" + form_type + "Output(";
-        plugin_code += "attr='" + desc->name + "', ";
-        plugin_code += "method='output" + desc->type.split("gnomon")[1] + "', ";
-        plugin_code += "data_plugin='" + desc->data_plugin + "')\n";
+        plugin_code += "attr='" + desc.name + "', ";
+        plugin_code += "method='output" + desc.type.split("gnomon")[1] + "', ";
+        plugin_code += "data_plugin='" + desc.data_plugin + "')\n";
     }
     plugin_code += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
     plugin_code += "    \"\"\"\n";
@@ -573,19 +567,19 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "\n";
     plugin_code += "        self._parameters = {}\n";
     for (const auto &param : dd->parameters.keys()) {
-        gnomonParameterDescription *desc = dd->parameters[param];
-        plugin_code += "        self._parameters['" + desc->name + "'] = ";
-        plugin_code += dd->parameter_types[desc->type] + "(";
-        plugin_code += "'" + desc->doc + "', ";
-        if (desc->type == "Bool") {
+        gnomonParameterDescription desc = dd->parameters[param];
+        plugin_code += "        self._parameters['" + desc.name + "'] = ";
+        plugin_code += dd->parameter_types[desc.type] + "(";
+        plugin_code += "'" + desc.doc + "', ";
+        if (desc.type == "Bool") {
             plugin_code += "True";
-        } else if (desc->type == "Int") {
+        } else if (desc.type == "Int") {
             plugin_code += "1, 0, 10";
-        } else if (desc->type == "Double") {
+        } else if (desc.type == "Double") {
             plugin_code += "1., 0., 1., 2";
-        } else if (desc->type == "String") {
+        } else if (desc.type == "String") {
             plugin_code += "'', ['']";
-        } else if (desc->type == "StringList") {
+        } else if (desc.type == "StringList") {
             plugin_code += "[''], ['']";
         }
         plugin_code += ")\n";
@@ -593,12 +587,12 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "\n";
     if (n_forms > 0) {
         for (const auto &form_type : dd->input_forms.keys()) {
-            gnomonFormDescription *desc = dd->input_forms[form_type];
-            plugin_code += "        self." + desc->name + " = {}\n";
+            gnomonFormDescription desc = dd->input_forms[form_type];
+            plugin_code += "        self." + desc.name + " = {}\n";
         }
         for (const auto &form_type : dd->output_forms.keys()) {
-            gnomonFormDescription *desc = dd->output_forms[form_type];
-            plugin_code += "        self." + desc->name + " = {}\n";
+            gnomonFormDescription desc = dd->output_forms[form_type];
+            plugin_code += "        self." + desc.name + " = {}\n";
         }
         plugin_code += "\n";
     }
@@ -615,18 +609,18 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
         }
     } else {
         for (const auto &form_type : dd->output_forms.keys()) {
-            gnomonFormDescription *desc = dd->output_forms[form_type];
-            plugin_code += "        self." + desc->name + " = {}\n";
+            gnomonFormDescription desc = dd->output_forms[form_type];
+            plugin_code += "        self." + desc.name + " = {}\n";
         }
 
         if (dd->input_forms.size()>0) {
-            plugin_code += "        for time in self." + dd->input_forms.values()[0]->name +  ".keys():\n";
+            plugin_code += "        for time in self." + dd->input_forms.values()[0].name +  ".keys():\n";
         } else {
             plugin_code += "        for time in [0]:\n";
         }
         for (const auto &form_type : dd->input_forms.keys()) {
-            gnomonFormDescription *desc = dd->input_forms[form_type];
-            plugin_code += "            " + desc->name + " = self." + desc->name + "[time]\n";
+            gnomonFormDescription desc = dd->input_forms[form_type];
+            plugin_code += "            " + desc.name + " = self." + desc.name + "[time]\n";
         }
         plugin_code += "            # #}\n";
         if (run_code.isEmpty() | !run_code.startsWith("            ")) {
@@ -634,8 +628,8 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
             plugin_code += "\n";
             plugin_code += "            pass\n";
             for (const auto &form_type : dd->output_forms.keys()) {
-                gnomonFormDescription *desc = dd->output_forms[form_type];
-                plugin_code += "            self." + desc->name + "[time] = None\n";
+                gnomonFormDescription desc = dd->output_forms[form_type];
+                plugin_code += "            self." + desc.name + "[time] = None\n";
             }
         } else {
             plugin_code += run_code;
