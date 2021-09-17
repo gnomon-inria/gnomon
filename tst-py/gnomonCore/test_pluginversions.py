@@ -26,7 +26,7 @@ class dummyPlugin(gnomonAbstractDataDriver):
     def find(self, query):
         return [""]
 
-version_exact = "0.16.0"
+version_exact = "0.17.0"
 
 split = version_exact.split('.')
 split[0] = str(int(split[0]) + 1)

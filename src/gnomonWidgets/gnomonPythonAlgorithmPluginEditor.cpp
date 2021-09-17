@@ -539,7 +539,7 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
 
     plugin_code += "# {# gnomon, plugin.class\n";
 
-    plugin_code += "@gnomonPlugin(version='0.1.0', coreversion='0.16.0', namespace=gnomoncore)\n";
+    plugin_code += "@gnomonPlugin(version='0.1.0', coreversion='0.17.0', namespace=gnomoncore)\n";
     plugin_code += "@gnomonParametric\n";
 
     for (const auto &form_type : dd->input_forms.keys()) {

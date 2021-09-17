@@ -164,7 +164,8 @@ def _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class = 
             return False
 
         # if minor level of ref < elem return false
-        if int(coreversion[1]) < int(plugin_coreversion[1]) :
+        # TODO put < when major > 0
+        if int(coreversion[1]) != int(plugin_coreversion[1]) :
             return False
         else :
             # no patch level specified in ref

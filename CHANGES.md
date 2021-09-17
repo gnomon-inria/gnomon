@@ -1,4 +1,7 @@
 # ChangeLog
+
+## version 0.17.0 - 2021-09-17
+ - replace series by dict in Python
  - use dtkCoreParameters
  - check plugin versions
  - update vtk to 9.0

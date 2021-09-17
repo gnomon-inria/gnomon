@@ -10,7 +10,7 @@ from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
 
 from timagetk.components import SpatialImage
 
-@gnomonPlugin(version='0.1.0', coreversion='0.16.0', namespace=gnomoncore)
+@gnomonPlugin(version='0.1.0', coreversion='0.17.0', namespace=gnomoncore)
 @gnomonParametric
 @gnomonImageInput(attr='in_img', method='inputImage', setter_method='setInputImage')
 @gnomonImageOutput(attr='out_img', method='outputImage')
