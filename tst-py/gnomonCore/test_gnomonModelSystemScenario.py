@@ -13,20 +13,8 @@
 # Code:
 
 import unittest
-# import sys
-# from PyQt5.QtCore import QSettings
 
-# settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","dtk-script")
-# settings.beginGroup("modules");
-# paths = settings.value("path")
-# settings.endGroup()
 
-# for path in paths.split(":"):
-#     sys.path.append(path)
-
-import numpy as np
-
-from gnomoncore import gnomonTime, gnomonSphereSeries
 from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
 from gnomoncore import gnomonAbstractModel
 from gnomoncore import gnomonAbstractForm, gnomonSphereForm
@@ -34,6 +22,7 @@ from gnomoncore import gnomonAbstractForm, gnomonSphereForm
 
 class gnomonWallForm(gnomonAbstractForm):
     def __init__(self):
+        super().__init__()
         self.x = 0
 
     def name(self):
@@ -42,6 +31,7 @@ class gnomonWallForm(gnomonAbstractForm):
 
 class myWallEvolutionModel(gnomonAbstractModel):
     def __init__(self):
+        super().__init__()
         self.wall = None
         self.parameters = {'wall_x_0':2., 'wall_x_1':4., 'time_1':10}
 
@@ -57,6 +47,7 @@ class myWallEvolutionModel(gnomonAbstractModel):
 
 class mySphereEvolutionModel(gnomonAbstractModel):
     def __init__(self):
+        super().__init__()
         self.sphere = None
         self.parameters = {'growth_rate':1., 'growth_rate_decay':0.99}
 
@@ -71,6 +62,7 @@ class mySphereEvolutionModel(gnomonAbstractModel):
 
 class mySphereWallInteractionEvolutionModel(gnomonAbstractModel):
     def __init__(self):
+        super().__init__()
         self.sphere = None
         self.wall = None
         self.parameters = {}
@@ -93,7 +85,7 @@ class mySphereWallInteractionEvolutionModel(gnomonAbstractModel):
 
 class mySphereExpansionAgainstWallScenario(gnomonAbstractSystemScenario):
     def __init__(self, sphere=None, wall=None):
-        super(mySphereExpansionAgainstWallScenario, self).__init__()
+        super().__init__()
         self.sphere = sphere
         self.wall = wall
 
@@ -123,25 +115,20 @@ class TestModelSystemScenario(unittest.TestCase):
 
         self.system_scenario = mySphereExpansionAgainstWallScenario(self.sphere, self.wall)
 
-        self.dynamic_sphere = gnomonSphereSeries()
-        self.dynamic_sphere.insert(0., self.system_scenario.sphere)
-
-        # self.dynamic_wall = gnomonDiscreteDynamicForm()
-        # self.dynamic_wall.insert(self.system_scenario.wall,gnomonTime(0))
+        self.dynamic_sphere = {0.: self.system_scenario.sphere}
 
 
     def tearDown(self):
-        self.dynamic_sphere.this.disown()
+        pass
 
     def test_gnomonSphereExpansion(self):
         system = gnomonSystem(self.system_scenario)
         dt = 1
         for t in range(0, 20):
             system.step(t, dt)
-            self.dynamic_sphere.insert(t+dt, self.system_scenario.sphere)
-            # self.dynamic_wall.insert(self.system_scenario.wall,gnomonTime(t+dt))
+            self.dynamic_sphere[t+dt] = self.system_scenario.sphere
 
-        print(self.dynamic_sphere.times())
+        print(list(self.dynamic_sphere.keys()))
 
         eps = 1e-4
         assert abs(self.sphere.radius() - 19.0272) < eps

@@ -1,6 +1,8 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
+
+pkgs = find_packages('${CMAKE_CURRENT_SOURCE_DIR}')
 
 setup(name='gnomon_utils',
       version='${gnomon_VERSION}',
       package_dir={ '': '${CMAKE_CURRENT_SOURCE_DIR}' },
-      packages=['gnomon_utils'])
+      packages=pkgs)

@@ -1763,6 +1763,11 @@ void gnomonViewForm::render(void)
     d->interactor()->Render();
 }
 
+void gnomonViewForm::clear(void)
+{
+    d->clear();
+}
+
 void gnomonViewForm::onSliceChanged(int slice)
 {
     d->slice_slider->setValue(slice);

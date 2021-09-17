@@ -34,6 +34,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonMenuBar.h
   gnomonMessageBoard.h
   gnomonOverlayButton.h
+  gnomonPythonAlgorithmPluginEditor
+  gnomonPythonAlgorithmPluginEditor.h
   gnomonPythonEditor
   gnomonPythonEditor.h
   gnomonPythonEditor_p.h
@@ -54,6 +56,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonItemButton.cpp
   gnomonMenuBar.cpp
   gnomonMessageBoard.cpp
+  gnomonPythonAlgorithmPluginEditor.cpp
   gnomonPythonEditor.cpp
   gnomonOverlayButton.cpp
   gnomonSpinner.cpp

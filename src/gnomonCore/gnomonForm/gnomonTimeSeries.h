@@ -55,8 +55,8 @@ public:
     gnomonAbstractDynamicForm *clone(void) const override;
 
 public:
-    gnomonAbstractForm *at(double t) const override;
-    gnomonAbstractForm *current(void) const override;
+    T *at(double t) const override;
+    T *current(void) const override;
     double time(void) const override;
     QList<double> times(void) const override;
 

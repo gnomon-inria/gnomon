@@ -123,6 +123,7 @@ public:
 
 public slots:
     void render(void);
+    void clear(void);
 
 public slots:
     void setAcceptForm(const QString&, bool);

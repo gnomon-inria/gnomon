@@ -13,7 +13,10 @@ if (PYTHON)
         OUTPUT ${OUTPUT}
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/*.py
-                                                   ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/)
+                                                   ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/
+        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonDecorator
+        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonDecorator/*.py
+                                                   ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonDecorator/)
 
     add_custom_target(target ALL DEPENDS ${OUTPUT})
 
