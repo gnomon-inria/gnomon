@@ -29,12 +29,12 @@ class dummyPlugin(gnomonAbstractDataDriver):
 version_exact = "0.17.0"
 
 split = version_exact.split('.')
-split[0] = str(int(split[0]) + 1)
+split[1] = str(int(split[1]) + 1)
 version_future = '.'.join(split)
-split[0] = str(int(split[0]) - 2)
+split[1] = str(int(split[1]) - 2)
 version_old_bad = '.'.join(split)
-split[0] = str(int(split[0]) + 1)
-split[1] = str(int(split[1]) - 1)
+split[1] = str(int(split[1]) + 1)
+split[2] = str(int(split[2]) - 1)
 version_old_good = '.'.join(split)
 
 
