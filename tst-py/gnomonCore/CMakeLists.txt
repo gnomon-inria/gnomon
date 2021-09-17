@@ -18,13 +18,11 @@ project(gnomonCorePythonTests)
 ## Test rules
 ## ###################################################################
 
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-  add_test(NAME pythonTests COMMAND ${Python3_EXECUTABLE} -m unittest discover -v ${CMAKE_CURRENT_SOURCE_DIR} WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
+add_test(NAME pythonTests COMMAND ${Python3_EXECUTABLE} -m unittest discover -v ${CMAKE_CURRENT_SOURCE_DIR} WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 
-  set_tests_properties(pythonTests PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}:${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL_PATH}")
+set_tests_properties(pythonTests PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}:${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL_PATH}")
 
-endif()
 
 ######################################################################
 ### CMakeLists.txt ends here
