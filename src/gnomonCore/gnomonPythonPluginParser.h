@@ -1,0 +1,74 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <gnomonCoreExport.h>
+
+#include <QtCore>
+
+
+class GNOMONCORE_EXPORT gnomonFormDescription
+{
+public:
+     gnomonFormDescription(const QString& name, const QString& type, const QString& data_plugin);
+    ~gnomonFormDescription(void);
+
+public:
+    QString name;
+    QString type;
+    QString data_plugin;
+};
+
+
+class GNOMONCORE_EXPORT gnomonParameterDescription
+{
+public:
+     gnomonParameterDescription(const QString& name, const QString& type, const QString& doc);
+    ~gnomonParameterDescription(void);
+
+public:
+    QString name;
+    QString type;
+    QString doc;
+};
+
+
+GNOMONCORE_EXPORT QString argumentValue(const QString& arguments, const QString& argument_name, int argument_position=0);
+
+GNOMONCORE_EXPORT QString stripQuotes(const QString& str);
+
+class GNOMONCORE_EXPORT gnomonPythonPluginParser
+{
+public:
+     gnomonPythonPluginParser(void);
+    ~gnomonPythonPluginParser(void);
+
+public:
+    const QMap<QString, gnomonFormDescription *>& inputForms(void) const;
+    const QMap<QString, gnomonFormDescription *>& outputForms(void) const;
+    const QMap<QString, gnomonParameterDescription *>& parameters(void) const;
+
+public:
+    const QMap<QString, QString>& parameterTypes(void) const;
+
+public:
+    void parsePluginCode(const QString&);
+
+private:
+    class gnomonPythonPluginParserPrivate *d;
+};
+
+
+

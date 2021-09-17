@@ -10,6 +10,7 @@
 #include "gnomonInterpreterJupyter.h"
 #include "gnomonMessageBoard.h"
 #include "gnomonOverlayButton.h"
+#include "gnomonPythonAlgorithmPluginEditor.h"
 #include "gnomonPythonEditor.h"
 #include "gnomonPythonEditor_p.h"
 #include "gnomonSpinner.h"

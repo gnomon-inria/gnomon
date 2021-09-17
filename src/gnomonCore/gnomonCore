@@ -86,3 +86,4 @@
 #include "gnomonTime.h"
 #include "gnomonTypeDef.h"
 #include "gnomonPythonPluginLoader.h"
+#include "gnomonPythonPluginParser.h"

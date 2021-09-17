@@ -12,6 +12,8 @@
 
 // Code:
 
+#pragma once
+
 #include <gnomonWidgetsExport.h>
 
 #include <QtCore>

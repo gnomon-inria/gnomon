@@ -26,7 +26,10 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormVisitor
   gnomonFormVisitor.h
   gnomonLandmark.h
+  gnomonPythonPluginLoader
   gnomonPythonPluginLoader.h
+  gnomonPythonPluginParser
+  gnomonPythonPluginParser.h
   gnomonTypeDef
   gnomonTypeDef.h
   gnomonTime
@@ -44,6 +47,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDataManager.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonPythonPluginParser.cpp
   gnomonPythonPluginLoader.cpp
   gnomonTime.cpp
   ${${PROJECT_NAME}_ALGORITHM_SOURCES}
