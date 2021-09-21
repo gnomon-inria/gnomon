@@ -87,6 +87,8 @@ requirements:
     - pillow
     - numpy
     - matplotlib
+    - mongodb =4.0
+    - pymongo =3.11
     - python >=3.7,<3.8
     - sip
     - vtk=9.0
