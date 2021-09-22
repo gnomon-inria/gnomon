@@ -100,8 +100,8 @@ QSize gnomonComposerWidget::sizeHint(void) const
 
 void gnomonComposerWidget::resizeEvent(QResizeEvent *event)
 {
-    d->save_button->move(event->size().width() -40, 30);
-    d->layout_button->move(event->size().width() -80, 30);
+    d->save_button->move(event->size().width() -62, 30);
+    d->layout_button->move(event->size().width() -102, 30);
 
     QWidget::resizeEvent(event);
 }
