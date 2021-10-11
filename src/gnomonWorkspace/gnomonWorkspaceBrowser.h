@@ -26,6 +26,9 @@ public:
      gnomonWorkspaceBrowser(QObject *parent = nullptr);
     ~gnomonWorkspaceBrowser(void);
 
+public slots:
+    void read(const QString&);
+
 private:
     class gnomonWorkspaceBrowserPrivate *d;
 };

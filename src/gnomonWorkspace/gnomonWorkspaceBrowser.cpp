@@ -890,6 +890,11 @@ gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
     delete d;
 }
 
+void gnomonWorkspaceBrowser::read(const QString &path)
+{
+    d->addFormFromFile(path);
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"
