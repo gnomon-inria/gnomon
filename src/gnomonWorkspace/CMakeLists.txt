@@ -19,93 +19,94 @@ project(gnomonWorkspace VERSION ${gnomon_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonWorkspace
+  # gnomonWorkspace
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
-  gnomonWorkspaceDatabaseBrowser.h
-  gnomonWorkspaceCellComplexConstructor
-  gnomonWorkspaceCellComplexConstructor.h
-  gnomonWorkspaceCellComplexFromCellImage
-  gnomonWorkspaceCellComplexFromCellImage.h
-  gnomonWorkspaceCellImageConstructor
-  gnomonWorkspaceCellImageConstructor.h
-  gnomonWorkspaceCellImageFilter
-  gnomonWorkspaceCellImageFilter.h
-  gnomonWorkspaceCellImageTracking
-  gnomonWorkspaceCellImageTracking.h
-  gnomonWorkspaceFusion
-  gnomonWorkspaceFusion.h
-  gnomonWorkspaceImageConstructor
-  gnomonWorkspaceImageConstructor.h
-  gnomonWorkspaceLSystemSimulator
-  gnomonWorkspaceLSystemSimulator.h
-  gnomonWorkspaceLStringTranslation
-  gnomonWorkspaceLStringTranslation.h
-  gnomonWorkspaceMeshConstructor
-  gnomonWorkspaceMeshConstructor.h
-  gnomonWorkspaceMeshFromImage
-  gnomonWorkspaceMeshFromImage.h
-  gnomonWorkspaceMeshFilter
-  gnomonWorkspaceMeshFilter.h
-  gnomonWorkspacePlantScan3D
-  gnomonWorkspacePlantScan3D.h
-  gnomonWorkspacePointCloudConstructor
-  gnomonWorkspacePointCloudConstructor.h
-  gnomonWorkspacePointCloudFromImage
-  gnomonWorkspacePointCloudFromImage.h
-  gnomonWorkspacePointCloudQuantification
-  gnomonWorkspacePointCloudQuantification.h
-  gnomonWorkspacePreprocess
-  gnomonWorkspacePreprocess.h
-  gnomonWorkspacePythonAlgorithm
-  gnomonWorkspacePythonAlgorithm.h
-  gnomonWorkspacePythonSimulator
-  gnomonWorkspacePythonSimulator.h
-  gnomonWorkspaceRegistration
-  gnomonWorkspaceRegistration.h
-  gnomonWorkspaceSimulation
-  gnomonWorkspaceSimulation.h
-  gnomonWorkspaceSegmentation
-  gnomonWorkspaceSegmentation.h
-  gnomonWorkspaceTreeAnalysis
-  gnomonWorkspaceTreeAnalysis.h
-  gnomonWorkspaceTreeConstructor
-  gnomonWorkspaceTreeConstructor.h
-  gnomonWorkspaceTreeFromLString
-  gnomonWorkspaceTreeFromLString.h
-  gnomonWorkspaceTemplate_p.h
-  gnomonWorkspaceTemplate_p.tpp)
+  # gnomonWorkspaceDatabaseBrowser.h
+  # gnomonWorkspaceCellComplexConstructor
+  # gnomonWorkspaceCellComplexConstructor.h
+  # gnomonWorkspaceCellComplexFromCellImage
+  # gnomonWorkspaceCellComplexFromCellImage.h
+  # gnomonWorkspaceCellImageConstructor
+  # gnomonWorkspaceCellImageConstructor.h
+  # gnomonWorkspaceCellImageFilter
+  # gnomonWorkspaceCellImageFilter.h
+  # gnomonWorkspaceCellImageTracking
+  # gnomonWorkspaceCellImageTracking.h
+  # gnomonWorkspaceFusion
+  # gnomonWorkspaceFusion.h
+  # gnomonWorkspaceImageConstructor
+  # gnomonWorkspaceImageConstructor.h
+  # gnomonWorkspaceLSystemSimulator
+  # gnomonWorkspaceLSystemSimulator.h
+  # gnomonWorkspaceLStringTranslation
+  # gnomonWorkspaceLStringTranslation.h
+  # gnomonWorkspaceMeshConstructor
+  # gnomonWorkspaceMeshConstructor.h
+  # gnomonWorkspaceMeshFromImage
+  # gnomonWorkspaceMeshFromImage.h
+  # gnomonWorkspaceMeshFilter
+  # gnomonWorkspaceMeshFilter.h
+  # gnomonWorkspacePlantScan3D
+  # gnomonWorkspacePlantScan3D.h
+  # gnomonWorkspacePointCloudConstructor
+  # gnomonWorkspacePointCloudConstructor.h
+  # gnomonWorkspacePointCloudFromImage
+  # gnomonWorkspacePointCloudFromImage.h
+  # gnomonWorkspacePointCloudQuantification
+  # gnomonWorkspacePointCloudQuantification.h
+  # gnomonWorkspacePreprocess
+  # gnomonWorkspacePreprocess.h
+  # gnomonWorkspacePythonAlgorithm
+  # gnomonWorkspacePythonAlgorithm.h
+  # gnomonWorkspacePythonSimulator
+  # gnomonWorkspacePythonSimulator.h
+  # gnomonWorkspaceRegistration
+  # gnomonWorkspaceRegistration.h
+  # gnomonWorkspaceSimulation
+  # gnomonWorkspaceSimulation.h
+  # gnomonWorkspaceSegmentation
+  # gnomonWorkspaceSegmentation.h
+  # gnomonWorkspaceTreeAnalysis
+  # gnomonWorkspaceTreeAnalysis.h
+  # gnomonWorkspaceTreeConstructor
+  # gnomonWorkspaceTreeConstructor.h
+  # gnomonWorkspaceTreeFromLString
+  # gnomonWorkspaceTreeFromLString.h
+  # gnomonWorkspaceTemplate_p.h
+  # gnomonWorkspaceTemplate_p.tpp)
+  )
 
 set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
-  gnomonWorkspaceDatabaseBrowser.cpp
-  gnomonWorkspaceCellComplexConstructor.cpp
-  gnomonWorkspaceCellComplexFromCellImage.cpp
-  gnomonWorkspaceCellImageConstructor.cpp
-  gnomonWorkspaceCellImageFilter.cpp
-  gnomonWorkspaceCellImageQuantification.cpp
-  gnomonWorkspaceCellImageTracking.cpp
-  gnomonWorkspaceImageConstructor.cpp
-  gnomonWorkspaceFusion.cpp
-  gnomonWorkspaceLSystemSimulator.cpp
-  gnomonWorkspaceLStringTranslation.cpp
-  gnomonWorkspaceMeshConstructor.cpp
-  gnomonWorkspaceMeshFilter.cpp
-  gnomonWorkspaceMeshFromImage.cpp
-  gnomonWorkspacePlantScan3D.cpp
-  gnomonWorkspacePointCloudConstructor.cpp
-  gnomonWorkspacePointCloudFromImage.cpp
-  gnomonWorkspacePointCloudQuantification.cpp
-  gnomonWorkspacePreprocess.cpp
-  gnomonWorkspacePythonAlgorithm.cpp
-  gnomonWorkspacePythonSimulator.cpp
-  gnomonWorkspaceRegistration.cpp
-  gnomonWorkspaceSegmentation.cpp
-  gnomonWorkspaceSimulation.cpp
-  gnomonWorkspaceTreeAnalysis.cpp
-  gnomonWorkspaceTreeConstructor.cpp
-  gnomonWorkspaceTreeFromLString.cpp)
-
+  # gnomonWorkspaceDatabaseBrowser.cpp
+  # gnomonWorkspaceCellComplexConstructor.cpp
+  # gnomonWorkspaceCellComplexFromCellImage.cpp
+  # gnomonWorkspaceCellImageConstructor.cpp
+  # gnomonWorkspaceCellImageFilter.cpp
+  # gnomonWorkspaceCellImageQuantification.cpp
+  # gnomonWorkspaceCellImageTracking.cpp
+  # gnomonWorkspaceImageConstructor.cpp
+  # gnomonWorkspaceFusion.cpp
+  # gnomonWorkspaceLSystemSimulator.cpp
+  # gnomonWorkspaceLStringTranslation.cpp
+  # gnomonWorkspaceMeshConstructor.cpp
+  # gnomonWorkspaceMeshFilter.cpp
+  # gnomonWorkspaceMeshFromImage.cpp
+  # gnomonWorkspacePlantScan3D.cpp
+  # gnomonWorkspacePointCloudConstructor.cpp
+  # gnomonWorkspacePointCloudFromImage.cpp
+  # gnomonWorkspacePointCloudQuantification.cpp
+  # gnomonWorkspacePreprocess.cpp
+  # gnomonWorkspacePythonAlgorithm.cpp
+  # gnomonWorkspacePythonSimulator.cpp
+  # gnomonWorkspaceRegistration.cpp
+  # gnomonWorkspaceSegmentation.cpp
+  # gnomonWorkspaceSimulation.cpp
+  # gnomonWorkspaceTreeAnalysis.cpp
+  # gnomonWorkspaceTreeConstructor.cpp
+  # gnomonWorkspaceTreeFromLString.cpp)
+)
 set(${PROJECT_NAME}_SOURCES_QRC gnomonWorkspace.qrc)
 
 ## #################################################################
@@ -120,26 +121,26 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES_RCC})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
+# target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
+# target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
+# target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
+# target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkMacs)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkMacs)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
+# target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
-target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
-target_link_libraries(${PROJECT_NAME} PUBLIC gnomonComposer)
+# target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
+# target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
+# target_link_libraries(${PROJECT_NAME} PUBLIC gnomonComposer)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 
