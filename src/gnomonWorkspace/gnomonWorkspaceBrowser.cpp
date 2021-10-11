@@ -531,17 +531,27 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
         this->ext = this->filename.split(".")[this->filename.split(".").size()-1];
     }
 
+    qDebug() << Q_FUNC_INFO << "WANTS" << this->ext << "IN" << this->fileReaderCommands.keys();
+
     if (this->fileReaderCommands.contains(this->ext))
     {
         qDebug()<< Q_FUNC_INFO <<  this->fileReaderCommands[this->ext];
 
         if (this->fileReaderCommands[this->ext].size()==1) {
+
+            qDebug() << Q_FUNC_INFO << "Reading using" << this->ext;
+
             this->readForm(this->fileReaderCommands[this->ext].keys()[0]);
         } else {
             QVariantMap reader_descs;
             for (const auto &key : this->fileReaderCommands[this->ext].keys()) {
                 reader_descs[key] = fileReaderDescriptions[ext][key];
             }
+
+            qDebug() << Q_FUNC_INFO << "Not that simple" << reader_descs;
+
+            this->readForm(this->fileReaderCommands[this->ext].keys()[0]); // TODO: Fixme
+
 
 //             this->menu = new gnomonBrowserReaderMenu(reader_descs);
 //             this->menu->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -568,6 +578,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
 
+    qDebug() << Q_FUNC_INFO << readerCommand;
+
     QString path = filename.remove("file://");
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
     {
@@ -584,6 +596,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
     {
+
+
         cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
@@ -603,6 +617,9 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!cellComplex_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
         } else {
+
+            qDebug() << Q_FUNC_INFO << "HERE" << cellComplex_series;
+
 //TODO            this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
 //             this->pipeline->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
 // //            this->view_stack->setCurrentWidget(this->browse_view);
@@ -629,6 +646,9 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!mesh_series) {
             qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
         } else {
+
+            qDebug() << Q_FUNC_INFO << "HERE" << mesh_series;
+
 //TODO            this->browse_view->setForm("gnomonMesh",mesh_series->clone());
 //             this->pipeline->addClonedForm(mesh_series,this->browse_view->mesh());
 // //            this->view_stack->setCurrentWidget(this->browse_view);
@@ -642,6 +662,9 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!pointCloud_series) {
             qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
         } else {
+
+            qDebug() << Q_FUNC_INFO << "HERE - 2" << pointCloud_series;
+
 //TODO            this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
 //             this->pipeline->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
 // //            this->view_stack->setCurrentWidget(this->browse_view);

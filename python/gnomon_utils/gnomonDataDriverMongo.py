@@ -8,7 +8,6 @@ import weakref
 import gnomoncore
 from datetime import date
 from gnomoncore import gnomonAbstractDataDriver, gnomonAbstractDataDriverPlugin
-from PyQt5.QtCore import QSettings
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
@@ -22,6 +21,9 @@ def get_username():
 class gnomonDataDriverMongo(gnomonAbstractDataDriver):
     def __init__(self):
         super().__init__()
+
+        # Uh?
+        from PyQt5.QtCore import QSettings
 
         # 1 launch and connect to the db
         settings = QSettings(QSettings.IniFormat,QSettings.UserScope,"inria","gnomon-core")
