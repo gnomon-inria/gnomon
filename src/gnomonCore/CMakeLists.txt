@@ -125,6 +125,14 @@ set(${PROJECT_NAME}_HEADERS
 install(FILES ${${PROJECT_NAME}_HEADERS}
   DESTINATION include/${PROJECT_NAME})
 
+## TODO: Shame on me ....
+install(DIRECTORY
+    gnomonAlgorithm
+    gnomonCommand
+    gnomonForm
+    gnomonModel
+  DESTINATION include/${PROJECT_NAME})
+
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
