@@ -548,10 +548,9 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 reader_descs[key] = fileReaderDescriptions[ext][key];
             }
 
-            qDebug() << Q_FUNC_INFO << "Not that simple" << reader_descs;
+            emit q->available(reader_descs);
 
-            this->readForm(this->fileReaderCommands[this->ext].keys()[0]); // TODO: Fixme
-
+            // this->readForm(this->fileReaderCommands[this->ext].keys()[0]); // TODO: Fixme
 
 //             this->menu = new gnomonBrowserReaderMenu(reader_descs);
 //             this->menu->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -913,9 +912,14 @@ gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
     delete d;
 }
 
-void gnomonWorkspaceBrowser::read(const QString &path)
+void gnomonWorkspaceBrowser::read(const QString& path)
 {
     d->addFormFromFile(path);
+}
+
+void gnomonWorkspaceBrowser::readWith(const QString& reader)
+{
+    d->readForm(reader);
 }
 
 // /////////////////////////////////////////////////////////////////////////////
