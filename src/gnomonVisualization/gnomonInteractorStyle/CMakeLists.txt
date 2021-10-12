@@ -35,6 +35,5 @@ ADD_GNOMON_SOURCES(
     gnomonInteractorStyleXYZ.cpp
     ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_SOURCES})
 
-
 ######################################################################
 ### CMakeLists.txt ends here

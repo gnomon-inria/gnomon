@@ -18,18 +18,20 @@
 
 %include <dtkBase/dtkBase.i>
 %include <dtkCore/dtkCore.i>
+%import <dtkImagingCore/dtkImagingCore.i>
 // %import <gnomonCore/gnomonCore.i>
 
 %{
 
-#include <dtkImagingCore>
 #include <dtkCore>
+#include <dtkImagingCore>
+
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
-#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
-#include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+// #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+// #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+// #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
@@ -42,6 +44,9 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
+
+#include <gnomonVisualization/gnomonCoreParameterColor.h>
+#include <gnomonVisualization/gnomonLookupTable.h>
 
 %}
 
@@ -438,15 +443,144 @@ gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number)
 %ignore onInserted;
 
 // /////////////////////////////////////////////////////////////////
+// QMap of colors
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<double, QColor> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            double k = double(PyFloat_AsDouble(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<double, QColor> is returned.");
+    }
+}
+
+%typemap(in) const QMap<double, QColor>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<double, QColor>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            double k = double(PyFloat_AsDouble(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<double, QColor> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<double, QColor>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<double, QColor> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            double k = double(PyFloat_AsDouble(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<double, QColor> is returned.");
+    }
+}
+
+
+%typemap(out) QMap<double, QColor> {
+  $result = PyDict_New();
+  QColor c;
+  double k;
+
+  QList<double> keys = $1.keys();
+  for (auto it = keys.begin(); it != keys.end(); ++it) {
+    k = *it;
+    c = $1[k];
+
+    PyObject *value = PyList_New(3);
+    PyList_SET_ITEM(value, 0, PyLong_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyLong_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyLong_FromLong(c.blue()));
+    PyDict_SetItem($result, PyFloat_FromDouble(k), value);
+  }
+}
+
+%typemap(directorin) QMap<double, QColor> {
+  PyObject *dict = PyDict_New();
+  QColor c;
+  double k;
+
+  QList<double> keys = $1.keys();
+  for (auto it = keys.begin(); it != keys.end(); ++it) {
+    k = *it;
+    c = $1[k];
+    PyObject *value = PyList_New(3);
+    PyList_SET_ITEM(value, 0, PyLong_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyLong_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyLong_FromLong(c.blue()));
+    PyDict_SetItem($result, PyFloat_FromDouble(k), value);
+  }
+  $input = dict;
+}
+
+// /////////////////////////////////////////////////////////////////
+// Wrapper input
+// /////////////////////////////////////////////////////////////////
+
+WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterColorMap)
+%include <gnomonVisualization/gnomonCoreParameterColor.h>
+
+%ignore dtkCoreParameterSimple<gnomonLookupTable>::__str__;
+%include <gnomonVisualization/gnomonLookupTable.h>
+WRAP_DTKCORE_PARAMETER(dtkCoreParameterSimple<gnomonLookupTable>, ParameterLookupTable)
+
+// /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
-%include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-%include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+// %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+// %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-%include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+// %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
@@ -457,6 +591,9 @@ gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number)
 %include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
+
+%include <gnomonVisualization/gnomonCoreParameterColor.h>
+%include <gnomonVisualization/gnomonLookupTable.h>
 
 //
 // gnomonVisualization.i.in ends here
