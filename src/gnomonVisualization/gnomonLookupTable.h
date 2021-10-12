@@ -5,7 +5,7 @@
 #include <dtkCore/dtkCoreParameterSimple.h>
 
 #include <QtCore>
-#include <QtWidgets>
+#include <QtGui>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonLookupTableColormap

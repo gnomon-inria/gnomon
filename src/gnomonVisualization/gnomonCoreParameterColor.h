@@ -6,7 +6,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QtWidgets>
+// #include <QtWidgets>
 
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorMap : public dtkCoreParameterBase<gnomonCoreParameterColorMap>
 {

@@ -16,10 +16,15 @@
 
 %module(directors="1") gnomonvisualization
 
-%include <dtkBase/dtkBase.i>
-%include <dtkCore/dtkCore.i>
+%include "std_array.i"
+%include "std_vector.i"
+%include "carrays.i"
+
+%array_class(double, doubleArray);
+
+%import <dtkBase/dtkBase.i>
+%import <dtkCore/dtkCore.i>
 %import <dtkImagingCore/dtkImagingCore.i>
-// %import <gnomonCore/gnomonCore.i>
 
 %{
 
@@ -33,8 +38,8 @@
 // #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 // #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
+// #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+// #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
@@ -51,7 +56,6 @@
 %}
 
 %include <gnomonCore/gnomonCore.i>
-
 
 %{
 // VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
@@ -393,46 +397,46 @@
 %inline
 %{
 
-void setupMatplotlib(qlonglong view_address, int num)
-{
-    QWidget *widget = reinterpret_cast<QWidget *>(view_address);
+/* void setupMatplotlib(qlonglong view_address, int num) */
+/* { */
+/*     QWidget *widget = reinterpret_cast<QWidget *>(view_address); */
 
-    foreach(QWidget *top, qApp->topLevelWidgets()) {
-        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
-            if(view->figureNumber() == num)
-            {
-                view->addWidget(widget);
-            }
-        }
-    }
-}
+/*     foreach(QWidget *top, qApp->topLevelWidgets()) { */
+/*         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) { */
+/*             if(view->figureNumber() == num) */
+/*             { */
+/*                 view->addWidget(widget); */
+/*             } */
+/*         } */
+/*     } */
+/* } */
 
-void addFormToFigure(gnomonAbstractDynamicForm * form, const QString& name, int figure_number)
-{
-    qDebug()<<Q_FUNC_INFO<<form<<figure_number;
-    foreach(QWidget *top, qApp->topLevelWidgets()) {
-        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
-            if(view->figureNumber() == figure_number)
-            {
-                qDebug()<<Q_FUNC_INFO<<view<<"setForm"<<name;
-                view->setForm(name,form);
-            }
-        }
-    }
-}
+/* void addFormToFigure(gnomonAbstractDynamicForm * form, const QString& name, int figure_number) */
+/* { */
+/*     qDebug()<<Q_FUNC_INFO<<form<<figure_number; */
+/*     foreach(QWidget *top, qApp->topLevelWidgets()) { */
+/*         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) { */
+/*             if(view->figureNumber() == figure_number) */
+/*             { */
+/*                 qDebug()<<Q_FUNC_INFO<<view<<"setForm"<<name; */
+/*                 view->setForm(name,form); */
+/*             } */
+/*         } */
+/*     } */
+/* } */
 
-gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number)
-{
-    foreach(QWidget *top, qApp->topLevelWidgets()) {
-        foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) {
-            if(view->figureNumber() == figure_number)
-            {
-                return view->form(name);
-            }
-        }
-    }
-    return nullptr;
-}
+/* gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number) */
+/* { */
+/*     foreach(QWidget *top, qApp->topLevelWidgets()) { */
+/*         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) { */
+/*             if(view->figureNumber() == figure_number) */
+/*             { */
+/*                 return view->form(name); */
+/*             } */
+/*         } */
+/*     } */
+/*     return nullptr; */
+/* } */
 
 %}
 
@@ -581,7 +585,7 @@ WRAP_DTKCORE_PARAMETER(dtkCoreParameterSimple<gnomonLookupTable>, ParameterLooku
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
+// %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>

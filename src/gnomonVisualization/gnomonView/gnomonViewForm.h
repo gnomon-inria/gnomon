@@ -16,7 +16,8 @@
 
 #include <gnomonVisualizationExport>
 
-#include <QtWidgets>
+#include <QtGui>
+// #include <QtWidgets>
 
 #include <gnomonLandmark.h>
 
@@ -43,12 +44,12 @@ class vtkCamera;
 class vtkRenderer;
 class vtkRenderWindowInteractor;
 
-class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QFrame
+class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonViewForm(QWidget *parent = nullptr);
+     gnomonViewForm(QObject *parent = nullptr);
     ~gnomonViewForm(void);
 
 signals:

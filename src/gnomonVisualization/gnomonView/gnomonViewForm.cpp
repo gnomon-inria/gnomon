@@ -844,7 +844,7 @@ void gnomonViewFormPrivate::clear(void)
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
 
-gnomonViewForm::gnomonViewForm(QWidget *parent) : QFrame(parent)
+gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 {
     d = new gnomonViewFormPrivate;
     d->q = this;
@@ -1808,7 +1808,7 @@ void gnomonViewForm::onTimeChanged(double time)
 
 void gnomonViewForm::setInputView(bool input)
 {
-    this->setAcceptDrops(input);
+    // this->setAcceptDrops(input);
     // if (input) {
     //     d->export_button->changeIcon(fa::arrowcircledown);
     //     d->export_button->toggle(false);
