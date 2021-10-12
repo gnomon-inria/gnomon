@@ -23,7 +23,7 @@ add_subdirectory(gnomonCellImage)
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
-    gnomonInteractorStyle
+#   gnomonInteractorStyle
     gnomonInteractorStyle.h
     gnomonInteractorStyleXYZ
     gnomonInteractorStyleXYZ.h
