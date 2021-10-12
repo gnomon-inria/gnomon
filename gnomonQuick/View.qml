@@ -8,11 +8,18 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
+import gnomon.Visualization 1.0 as G
+
 Rectangle {
 
     id: _control;
 
     color: X.Style.linkColor;
+
+    G.View {
+
+        id: _logic;
+    }
 
     XVis.Viewer {
 
