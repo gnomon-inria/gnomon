@@ -19,7 +19,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -102,7 +103,7 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbs
 
     d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "CellComplex property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
-    d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
+    // d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellComplex rendering");
     d->parameters["scale_factor"] = new dtk::d_real("scale_factor", 0.99, 0, 1, 2, "Scale for cell surface visualization");
 
@@ -184,11 +185,12 @@ QImage gnomonVisualizationCellComplex::imageRendering(void)
 
 void gnomonVisualizationCellComplex::update(void)
 {
-    QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
-    QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
-    QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
-    std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
-    double scale = ((dtk::d_real *)d->parameters["scale_factor"])->value();
+    // TODO: later
+    // QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
+    // QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
+    // QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
+    // std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
+    // double scale = ((dtk::d_real *)d->parameters["scale_factor"])->value();
 
     if(!dd->cellComplex)
         return;
@@ -201,15 +203,15 @@ void gnomonVisualizationCellComplex::update(void)
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellComplex::New();
     dd->polydata->setCellComplex((gnomonCellComplex *)dd->cellComplex->clone());
-    dd->polydata->set8Bit(colormap_name=="glasbey");
-    dd->polydata->setPropertyName(property_name);
-    dd->polydata->setScaleFactor(scale);
+    // dd->polydata->set8Bit(colormap_name=="glasbey");
+    // dd->polydata->setPropertyName(property_name);
+    // dd->polydata->setScaleFactor(scale);
     dd->polydata->update();
 
-    if (colormap_name == "glasbey") {
-        value_range[0] = 0;
-        value_range[1] = 255;
-    }
+    // if (colormap_name == "glasbey") {
+    //     value_range[0] = 0;
+    //     value_range[1] = 255;
+    // }
 
 //    if (dd->actor) {
 //        d->view->renderer3D()->RemoveActor(dd->actor);
@@ -221,10 +223,10 @@ void gnomonVisualizationCellComplex::update(void)
         dd->actor = gnomonActorPolyData::New();
         d->view->renderer3D()->AddActor(dd->actor);
     }
-    dd->actor->setInteractor(d->view->interactor());
+    // dd->actor->setInteractor(d->view->interactor());
     dd->actor->setPolyData(dd->polydata);
-    dd->actor->setColorMap(colormap);
-    dd->actor->setValueRange(value_range);
+    // dd->actor->setColorMap(colormap);
+    // dd->actor->setValueRange(value_range);
 
 //    if (dd->actor2D) {
 //        d->view->renderer2D()->RemoveActor(dd->actor2D);
@@ -237,11 +239,11 @@ void gnomonVisualizationCellComplex::update(void)
         dd->actor2D = gnomonActor2DPolyData::New();
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
-    dd->actor2D->setInteractor(d->view->interactor());
+    // dd->actor2D->setInteractor(d->view->interactor());
     dd->actor2D->setSliceThickness(0.5);
     dd->actor2D->setPolyData(dd->polydata);
-    dd->actor2D->setColorMap(colormap);
-    dd->actor2D->setValueRange(value_range);
+    // dd->actor2D->setColorMap(colormap);
+    // dd->actor2D->setValueRange(value_range);
 
     double bounds[6];
     dd->polydata->GetBounds(bounds);

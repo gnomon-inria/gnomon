@@ -17,7 +17,7 @@
 #include <QtCore>
 #include <QtWidgets>
 
-#include <dtkFonts/dtkFontAwesome>
+// #include <dtkFonts/dtkFontAwesome>
 
 #include <gnomonVisualizationExport>
 

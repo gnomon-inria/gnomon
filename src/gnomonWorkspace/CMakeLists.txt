@@ -183,7 +183,7 @@ set(${PROJECT_NAME}_HEADERS
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/gnomonWorkspace
+  DESTINATION include/${PROJECT_NAME}
   COMPONENT gnomon-workspace)
 
 ## ###################################################################

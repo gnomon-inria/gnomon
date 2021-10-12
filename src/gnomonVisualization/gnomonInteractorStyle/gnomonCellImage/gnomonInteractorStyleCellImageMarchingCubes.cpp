@@ -21,7 +21,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include <dtkImagingCore>
 
@@ -224,6 +225,6 @@ QString gnomonInteractorStyleCellImageMarchingCubes::description(void) const
 
 int gnomonInteractorStyleCellImageMarchingCubes::icon(void) const
 {
-    return fa::crosshairs;
+    return 0; // fa::crosshairs;
 }
 

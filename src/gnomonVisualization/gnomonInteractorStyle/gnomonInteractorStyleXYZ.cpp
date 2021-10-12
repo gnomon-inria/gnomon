@@ -194,7 +194,7 @@ QString gnomonInteractorStyleXYZ::description(void) const
 
 int gnomonInteractorStyleXYZ::icon(void) const
 {
-    return fa::squareo;
+    return 0; // fa::squareo;
 }
 
 //

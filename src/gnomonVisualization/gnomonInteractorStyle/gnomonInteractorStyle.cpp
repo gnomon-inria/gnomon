@@ -179,7 +179,7 @@ QString gnomonInteractorStyle::description(void) const
 
 int gnomonInteractorStyle::icon(void) const
 {
-    return fa::mousepointer;
+    return 0; // fa::mousepointer;
 }
 
 //

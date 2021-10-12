@@ -15,8 +15,8 @@
 #include "gnomonGridLayout.h"
 #include "gnomonViewForm.h"
 
-#include <dtkFonts>
-#include <dtkThemes>
+// #include <dtkFonts>
+// #include <dtkThemes>
 
 #include <math.h>
 

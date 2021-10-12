@@ -19,7 +19,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include <dtkImagingCore>
 

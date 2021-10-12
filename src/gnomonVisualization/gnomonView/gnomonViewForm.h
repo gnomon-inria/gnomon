@@ -52,6 +52,9 @@ public:
     ~gnomonViewForm(void);
 
 signals:
+    void updated(void);
+
+signals:
     void switchedTo3D  (void);
     void switchedTo2D  (void);
     void switchedTo2DXY(void);
@@ -102,9 +105,9 @@ public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
 
-public:
-    dtkWidgetsMenu *menu(void);
-    dtkWidgetsMenuBar *menubar(void);
+// public:
+//     dtkWidgetsMenu *menu(void);
+//     dtkWidgetsMenuBar *menubar(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
@@ -166,17 +169,17 @@ public slots:
     void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
-protected:
-    void dragEnterEvent(QDragEnterEvent *);
-    void dragLeaveEvent(QDragLeaveEvent *);
-    void dragMoveEvent(QDragMoveEvent *);
-    void dropEvent(QDropEvent *);
+// protected:
+//     void dragEnterEvent(QDragEnterEvent *);
+//     void dragLeaveEvent(QDragLeaveEvent *);
+//     void dragMoveEvent(QDragMoveEvent *);
+//     void dropEvent(QDropEvent *);
 
-signals:
-    void fileDropped(const QString&);
+// signals:
+//     void fileDropped(const QString&);
 
-protected:
-    void resizeEvent(QResizeEvent *);
+// protected:
+//     void resizeEvent(QResizeEvent *);
 
 private:
     class gnomonViewFormPrivate *d;

@@ -14,7 +14,7 @@
 
 #include "gnomonImageDataChannelBlending.h"
 
-#include <gnomonWidgets>
+#include <gnomonVisualization>
 
 #include <dtkImagingCore>
 
