@@ -16,14 +16,15 @@ Rectangle {
 
     color: X.Style.linkColor;
 
-    G.View {
+    property alias view: _view;
 
-        id: _logic;
+    G.View {
+        id: d;
     }
 
     XVis.Viewer {
 
-        id: _viewer;
+        id: _view;
 
         anchors.fill: parent;
 
