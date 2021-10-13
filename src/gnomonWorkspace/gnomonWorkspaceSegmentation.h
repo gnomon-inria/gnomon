@@ -16,29 +16,19 @@
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include <QtCore>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSegmentation : public dtkWidgetsWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSegmentation : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceSegmentation(QWidget *parent = nullptr);
+     gnomonWorkspaceSegmentation(QObject *parent = nullptr);
     ~gnomonWorkspaceSegmentation(void);
 
-public:
-    void enter(void) override;
-    void leave(void) override;
-
 public slots:
-    void apply(void) override;
     void configure(const QString& text);
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
+    void apply(void);
 
 private:
     class gnomonWorkspaceSegmentationPrivate *d;
