@@ -43,6 +43,7 @@ template <typename T> class gnomonTimeSeries;
 class vtkCamera;
 class vtkRenderer;
 class vtkRenderWindowInteractor;
+class vtkGenericOpenGLRenderWindow;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
@@ -51,6 +52,12 @@ class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 public:
      gnomonViewForm(QObject *parent = nullptr);
     ~gnomonViewForm(void);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    void link(vtkGenericOpenGLRenderWindow *);
+// /////////////////////////////////////////////////////////////////////////////
 
 signals:
     void updated(void);

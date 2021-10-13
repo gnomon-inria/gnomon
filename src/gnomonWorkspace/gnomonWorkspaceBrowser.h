@@ -18,6 +18,8 @@
 
 #include <QtCore>
 
+class gnomonViewForm;
+
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public QObject
 {
     Q_OBJECT
@@ -32,6 +34,9 @@ signals:
 public slots:
     void read    (const QString&);
     void readWith(const QString&);
+
+public:
+    Q_INVOKABLE gnomonViewForm *view(void);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

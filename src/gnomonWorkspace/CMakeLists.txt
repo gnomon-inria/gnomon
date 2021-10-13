@@ -121,7 +121,7 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES_RCC})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
-# target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
 # target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
 # target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
 # target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
@@ -139,7 +139,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 # target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
-# target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
 # target_link_libraries(${PROJECT_NAME} PUBLIC gnomonComposer)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})

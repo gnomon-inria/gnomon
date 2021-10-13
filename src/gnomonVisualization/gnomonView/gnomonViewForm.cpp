@@ -229,10 +229,6 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QObject *parent) : QObject(parent)
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer3D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
-    this->window = vtkGenericOpenGLRenderWindow::New();
-    this->window->AddRenderer(this->renderer2D);
-    this->window->AddRenderer(this->renderer3D);
-
     // this->setRenderWindow(this->window);
     // this->setEnableHiDPI(true);
 
@@ -1029,12 +1025,25 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
     // });
 
     // this->setAcceptDrops(false);
+}
 
-    this->switchTo2D();
-    this->switchTo2DXY();
-    this->switchTo3D();
+void gnomonViewForm::link(vtkGenericOpenGLRenderWindow *window)
+{
+    // d->window = vtkGenericOpenGLRenderWindow::New();
+    qDebug() << Q_FUNC_INFO << d;
+    qDebug() << Q_FUNC_INFO << d->renderer2D;
+    qDebug() << Q_FUNC_INFO << d->renderer3D;
+    qDebug() << Q_FUNC_INFO << window;
 
-    d->updateOrientation();
+    d->window = window;
+    d->window->AddRenderer(d->renderer2D);
+    d->window->AddRenderer(d->renderer3D);
+
+    // this->switchTo2D();
+    // this->switchTo2DXY();
+    // this->switchTo3D();
+
+    // d->updateOrientation();
     // d->updateTimeSlider();
 }
 
@@ -1832,7 +1841,7 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
         d->style->disable();
     }
     d->style = new_style;
-    this->interactor()->SetInteractorStyle(d->style);
+    // this->interactor()->SetInteractorStyle(d->style); // TODO
     d->style->setView(this);
     // if (d->renderer3D_button->isToggled()) {
     //     d->style->setMode("3D");

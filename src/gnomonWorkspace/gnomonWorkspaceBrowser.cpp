@@ -13,9 +13,9 @@
 // Code:
 
 #include "gnomonWorkspaceBrowser.h"
+#include <gnomonVisualization>
 
 // #include <gnomonWidgets>
-// #include <gnomonVisualization>
 // #include <gnomonComposer>
 
 // #include <dtkThemes>
@@ -318,7 +318,6 @@
 //     this->setFocus(Qt::PopupFocusReason);
 // }
 
-
 /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspaceBrowserPrivate: public QObject
@@ -329,7 +328,7 @@ public:
 //   gnomonPipeline *pipeline;
 
 public:
-//    gnomonViewForm *browse_view;
+    gnomonViewForm *browse_view;
 //    gnomonViewMatplotlib *browse_figure;
 
 public:
@@ -588,7 +587,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!image_series) {
             qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
         } else {
-//TODO            this->browse_view->setForm("gnomonImage",image_series->clone());
+            this->browse_view->setForm("gnomonImage",image_series->clone());
 //             this->pipeline->addClonedForm(image_series,this->browse_view->image());
 // //            this->view_stack->setCurrentWidget(this->browse_view);
 //             this->pipeline->addReader(imageCommand);
@@ -603,7 +602,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!cellImage_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
         } else {
-//TODO             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
+             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
 //             this->pipeline->addClonedForm(cellImage_series,this->browse_view->cellImage());
 // //            this->view_stack->setCurrentWidget(this->browse_view);
 //             this->pipeline->addReader(cellImageCommand);
@@ -617,7 +616,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
             qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
         } else {
 
-//TODO            this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
+            this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
 //             this->pipeline->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
 // //            this->view_stack->setCurrentWidget(this->browse_view);
 //             this->pipeline->addReader(cellComplexCommand);
@@ -630,7 +629,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!dataFrame_series) {
             qWarning() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
         } else {
-//TODO            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
+//            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
 //             this->pipeline->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
 // //            this->view_stack->setCurrentWidget(this->browse_figure);
 //             this->pipeline->addReader(dataFrameCommand);
@@ -643,8 +642,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!mesh_series) {
             qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
         } else {
-
-//TODO            this->browse_view->setForm("gnomonMesh",mesh_series->clone());
+            this->browse_view->setForm("gnomonMesh",mesh_series->clone());
 //             this->pipeline->addClonedForm(mesh_series,this->browse_view->mesh());
 // //            this->view_stack->setCurrentWidget(this->browse_view);
 //             this->pipeline->addReader(meshCommand);
@@ -657,10 +655,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!pointCloud_series) {
             qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
         } else {
-
-            qDebug() << Q_FUNC_INFO << "HERE - 2" << pointCloud_series;
-
-//TODO            this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
+            this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
 
 
 //             this->pipeline->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
@@ -675,7 +670,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!tree_series) {
             qWarning() << Q_FUNC_INFO << "Resulting tree series is void.";
         } else {
-//TODO            this->browse_figure->setForm("gnomonTree",tree_series->clone());
+//            this->browse_figure->setForm("gnomonTree",tree_series->clone());
 //             this->pipeline->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
 // //            this->view_stack->setCurrentWidget(this->browse_figure);
 //             this->pipeline->addReader(treeCommand);
@@ -697,13 +692,13 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent
 
 //    d->pipeline = gnomonPipeline::instance();
 
-    // d->browse_view = new gnomonViewForm(this);
+    d->browse_view = new gnomonViewForm(this);
     // d->browse_view->setExportColor(this->color);
-    // d->browse_view->setAcceptForm("gnomonCellComplex",true);
-    // d->browse_view->setAcceptForm("gnomonCellImage",true);
-    // d->browse_view->setAcceptForm("gnomonImage",true);
-    // d->browse_view->setAcceptForm("gnomonMesh",true);
-    // d->browse_view->setAcceptForm("gnomonPointCloud",true);
+    d->browse_view->setAcceptForm("gnomonCellComplex",true);
+    d->browse_view->setAcceptForm("gnomonCellImage",true);
+    d->browse_view->setAcceptForm("gnomonImage",true);
+    d->browse_view->setAcceptForm("gnomonMesh",true);
+    d->browse_view->setAcceptForm("gnomonPointCloud",true);
     // d->browse_view->setAcceptDrops(true);
 
 //NOTE    connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
@@ -918,6 +913,11 @@ void gnomonWorkspaceBrowser::read(const QString& path)
 void gnomonWorkspaceBrowser::readWith(const QString& reader)
 {
     d->readForm(reader);
+}
+
+gnomonViewForm *gnomonWorkspaceBrowser::view(void)
+{
+    return d->browse_view;
 }
 
 // /////////////////////////////////////////////////////////////////////////////
