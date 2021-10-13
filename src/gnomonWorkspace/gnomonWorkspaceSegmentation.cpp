@@ -167,8 +167,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObj
 
     connect(d, &gnomonWorkspaceSegmentationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
-        // if(d->source->image())
-        //     d->command->setInput(d->source->image());
+        if(d->source->image())
+            d->command->setInput(d->source->image());
         d->configure(algorithm);
     });
 
