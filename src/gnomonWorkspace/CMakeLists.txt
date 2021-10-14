@@ -65,17 +65,16 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceRegistration.h
   # gnomonWorkspaceSimulation
   # gnomonWorkspaceSimulation.h
-  # gnomonWorkspaceSegmentation
-  # gnomonWorkspaceSegmentation.h
+  gnomonWorkspaceSegmentation
+  gnomonWorkspaceSegmentation.h
   # gnomonWorkspaceTreeAnalysis
   # gnomonWorkspaceTreeAnalysis.h
   # gnomonWorkspaceTreeConstructor
   # gnomonWorkspaceTreeConstructor.h
   # gnomonWorkspaceTreeFromLString
   # gnomonWorkspaceTreeFromLString.h
-  # gnomonWorkspaceTemplate_p.h
-  # gnomonWorkspaceTemplate_p.tpp)
-  )
+  gnomonWorkspaceTemplate_p.h
+  gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceBrowser.cpp
@@ -101,7 +100,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspacePythonAlgorithm.cpp
   # gnomonWorkspacePythonSimulator.cpp
   # gnomonWorkspaceRegistration.cpp
-  # gnomonWorkspaceSegmentation.cpp
+  gnomonWorkspaceSegmentation.cpp
   # gnomonWorkspaceSimulation.cpp
   # gnomonWorkspaceTreeAnalysis.cpp
   # gnomonWorkspaceTreeConstructor.cpp
