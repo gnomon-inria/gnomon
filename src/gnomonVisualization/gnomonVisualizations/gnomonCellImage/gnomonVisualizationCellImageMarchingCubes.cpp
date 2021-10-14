@@ -298,12 +298,12 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
 {
-//    if (!dd->is2D) {
-//        dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
-//        d->view->interactor()->SetInteractorStyle(dd->interactor_style);
-//        d->view->interactor()->Enable();
-//    }
-//    d->view->setInteractorStyle(dd->interactor_style);
+   if (!dd->is2D) {
+       dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
+       d->view->interactor()->SetInteractorStyle(dd->interactor_style);
+       d->view->interactor()->Enable();
+   }
+   d->view->setInteractorStyle(dd->interactor_style);
 
     dd->updateOpacity();
     d->view->render();

@@ -75,6 +75,12 @@ public:
      gnomonViewFormPrivate(QObject *parent = Q_NULLPTR);
     ~gnomonViewFormPrivate(void);
 
+public:
+    vtkRenderWindowInteractor *interactor(void)
+    {
+        return this->window->GetInteractor();
+    }
+
 public slots:
     void exportToManager(void);
     void saveScreenshot(void);
@@ -448,7 +454,7 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
     emit q->updated();
 
-    // this->interactor()->Render();
+    this->interactor()->Render();
 }
 
 void gnomonViewFormPrivate::clear(void)
@@ -969,8 +975,6 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 
     // d->updateInteractorStyleMenu();
 
-    this->setInteractorStyle(d->default_style);
-
     // QGridLayout *layout  = new QGridLayout(this);
     // layout->setContentsMargins(0, 0, 0, 0);
     // layout->setSpacing(0);
@@ -1039,11 +1043,13 @@ void gnomonViewForm::link(vtkGenericOpenGLRenderWindow *window)
     d->window->AddRenderer(d->renderer2D);
     d->window->AddRenderer(d->renderer3D);
 
-    // this->switchTo2D();
-    // this->switchTo2DXY();
-    // this->switchTo3D();
+    this->setInteractorStyle(d->default_style);
 
-    // d->updateOrientation();
+    this->switchTo2D();
+    this->switchTo2DXY();
+    this->switchTo3D();
+
+    d->updateOrientation();
     // d->updateTimeSlider();
 }
 
@@ -1229,9 +1235,7 @@ void gnomonViewForm::sliceChange(int value)
     if (valueChanged)
         emit sliceChanged(value);
 
-    emit updated();
-
-    // d->interactor()->Render();
+    d->interactor()->Render();
 }
 
 
@@ -1256,9 +1260,7 @@ void gnomonViewForm::timeIndexChange(int value)
         emit timeChanged(time);
     }
 
-    emit updated();
-
-    // d->interactor()->Render();
+    d->interactor()->Render();
 }
 
 QList<double> gnomonViewForm::times(void)
@@ -1603,16 +1605,28 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
 {
     d->forms["gnomonPointCloud"] = pointCloud;
 
+    qDebug() << Q_FUNC_INFO << -1;
+    qDebug() << Q_FUNC_INFO << gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
+
     QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
 
-    if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
-    {
+    qDebug() << Q_FUNC_INFO << "Using" << key;
+
+    if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"])) {
+
+        qDebug() << Q_FUNC_INFO << 0;
+
         d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(key);
         d->formVisualization["gnomonPointCloud"]->setView(this);
+
+        qDebug() << Q_FUNC_INFO << 1;
     }
 
     gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
     // dtkApp->window()->setCursor(Qt::BusyCursor);
+
+    qDebug() << Q_FUNC_INFO << 2;
+
     formVisualizationPointCloud->setPointCloud(pointCloud);
     if (visualization) {
         formVisualizationPointCloud->setParameters(visualization->parameters());
@@ -1755,8 +1769,11 @@ void gnomonViewForm::setEnableMenus(bool enable)
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
 {
-    // return d->interactor();
-    return 0;
+    qDebug() << Q_FUNC_INFO << d;
+    qDebug() << Q_FUNC_INFO << d->window;
+    qDebug() << Q_FUNC_INFO << d->window->GetInteractor();
+
+    return d->interactor();
 }
 
 vtkRenderer *gnomonViewForm::renderer2D(void)
@@ -1786,10 +1803,8 @@ int gnomonViewForm::orientation(void)
 
 void gnomonViewForm::render(void)
 {
-//    d->renderer2D->ResetCameraClippingRange();
-//    d->interactor()->Render();
-
-    emit updated();
+    d->renderer2D->ResetCameraClippingRange();
+    d->interactor()->Render();
 }
 
 void gnomonViewForm::clear(void)
@@ -1832,17 +1847,34 @@ void gnomonViewForm::setInputView(bool input)
 void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
 {
     gnomonInteractorStyle *new_style;
+
     if (style) {
         new_style = style;
     } else {
         new_style = d->default_style;
     }
-    if(d->style) {
+
+    qDebug() << Q_FUNC_INFO << 1;
+
+    if (d->style) {
         d->style->disable();
     }
+
+    qDebug() << Q_FUNC_INFO << 2;
+
     d->style = new_style;
-    // this->interactor()->SetInteractorStyle(d->style); // TODO
+
+    qDebug() << Q_FUNC_INFO << d->style;
+    qDebug() << Q_FUNC_INFO << this->interactor();
+
+    this->interactor()->SetInteractorStyle(d->style);
+
+    qDebug() << Q_FUNC_INFO << 3;
+
     d->style->setView(this);
+
+    qDebug() << Q_FUNC_INFO << 4;
+
     // if (d->renderer3D_button->isToggled()) {
     //     d->style->setMode("3D");
     //     d->style->SetDefaultRenderer(this->renderer3D());
@@ -1850,7 +1882,11 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
     //     d->style->setMode("2D");
     //     d->style->SetDefaultRenderer(this->renderer2D());
     // }
-    // this->interactor()->Enable();
+
+    this->interactor()->Enable();
+
+    qDebug() << Q_FUNC_INFO << 5;
+
     // d->updateKeys();
 }
 
