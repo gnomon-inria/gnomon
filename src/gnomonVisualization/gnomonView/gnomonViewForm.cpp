@@ -49,6 +49,7 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkPNGWriter.h>
 #include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkWindowToImageFilter.h>
 
@@ -188,10 +189,10 @@ public:
     QMap<QString, QMap<QString, QString> > adapterTargets;
     QMap<QString, QMap<QString, QString> > adapterDescriptions;
 
-//  gnomonAbstractDynamicForm *form_to_adapt = nullptr;
+    gnomonAbstractDynamicForm *form_to_adapt = nullptr;
 
-// public slots:
-//     void adaptForm(const QString& adapter_plugin);
+public slots:
+    void adaptForm(const QString& adapter_plugin);
 
 public:
     // void updateKeys(void);
@@ -633,13 +634,14 @@ void gnomonViewFormPrivate::clear(void)
 //         }
 //         combo_box->model()->sort(0);
 
+// NOTE: Reconnect this
+
 //         connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu)
 //         {
 //             q->switchTo3D();
 
 //             if (this->formVisualization[key]) {
-//                 this->formVisualization[key]->clear();
-//                 // TODO:
+//                 this->formVisualization[key]->clear()
 //                 delete this->formVisualization[key];
 //                 this->formVisualization[key] = nullptr;
 //             }
@@ -811,36 +813,36 @@ void gnomonViewFormPrivate::clear(void)
 //     this->style_menubar->touch();
 // }
 
-// void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
-// {
-//     gnomonAbstractDynamicForm *form = this->form_to_adapt;
+void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
+{
+    gnomonAbstractDynamicForm *form = this->form_to_adapt;
 
-//     if (gnomonMeshSeries* mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
-//         gnomonMeshAdapterCommand *meshCommand = dynamic_cast<gnomonMeshAdapterCommand *>(this->adapterCommands["gnomonMesh"][adapter_plugin]);
+    if (gnomonMeshSeries* mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
+        gnomonMeshAdapterCommand *meshCommand = dynamic_cast<gnomonMeshAdapterCommand *>(this->adapterCommands["gnomonMesh"][adapter_plugin]);
 
-//         meshCommand->setInput(mesh);
-//         meshCommand->redo();
-//         gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
-//         if (adaptedMesh) {
-//             gnomonPipeline::instance()->addAdapter(meshCommand);
-//             q->setForm("adaptedMesh",adaptedMesh);
-//         }
-//     } else if (gnomonCellComplexSeries* cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-//         gnomonCellComplexAdapterCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexAdapterCommand *>(this->adapterCommands["gnomonCellComplex"][adapter_plugin]);
+        meshCommand->setInput(mesh);
+        meshCommand->redo();
+        gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
+        if (adaptedMesh) {
+            // gnomonPipeline::instance()->addAdapter(meshCommand);
+            q->setForm("adaptedMesh",adaptedMesh);
+        }
+    } else if (gnomonCellComplexSeries* cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
+        gnomonCellComplexAdapterCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexAdapterCommand *>(this->adapterCommands["gnomonCellComplex"][adapter_plugin]);
 
-//         cellComplexCommand->setInput(cellComplex);
-//         cellComplexCommand->redo();
-//         gnomonAbstractDynamicForm *adaptedCellComplex = cellComplexCommand->output();
-//         if (adaptedCellComplex) {
-//             gnomonPipeline::instance()->addAdapter(cellComplexCommand);
-//             q->setForm("adaptedCellComplex",adaptedCellComplex);
-//         }
-//     }
+        cellComplexCommand->setInput(cellComplex);
+        cellComplexCommand->redo();
+        gnomonAbstractDynamicForm *adaptedCellComplex = cellComplexCommand->output();
+        if (adaptedCellComplex) {
+            // gnomonPipeline::instance()->addAdapter(cellComplexCommand);
+            q->setForm("adaptedCellComplex",adaptedCellComplex);
+        }
+    }
 
-//     if (this->adapter_menu) {
-//         this->adapter_menu->close();
-//     }
-// }
+    // if (this->adapter_menu) {
+    //     this->adapter_menu->close();
+    // }
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewForm
@@ -982,7 +984,7 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
     // layout->addWidget(d, 0, 3, 1, 1);
     // layout->addWidget(d->time_slider, 1, 1, 1, 3);
 
-    static int count = 0;
+    // static int count = 0;
 
 //    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
 //    d->view_item->setShowTitle(false);
@@ -1034,12 +1036,14 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 void gnomonViewForm::link(vtkGenericOpenGLRenderWindow *window)
 {
     // d->window = vtkGenericOpenGLRenderWindow::New();
+
     qDebug() << Q_FUNC_INFO << d;
     qDebug() << Q_FUNC_INFO << d->renderer2D;
     qDebug() << Q_FUNC_INFO << d->renderer3D;
     qDebug() << Q_FUNC_INFO << window;
 
     d->window = window;
+    d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
     d->window->AddRenderer(d->renderer2D);
     d->window->AddRenderer(d->renderer3D);
 
@@ -1455,7 +1459,7 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstra
 
     // if (d->renderer3D_button->isToggled()) {
     //     d->renderer3D_button->toggle(false);
-    //     this->switchTo3D();
+         this->switchTo3D();
     // }
     // else if (d->renderer2D_button->isToggled()) {
     //     d->renderer2D_button->toggle(false);
@@ -1498,7 +1502,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, gnomon
 
     // if (d->renderer3D_button->isToggled()) {
     //     d->renderer3D_button->toggle(false);
-    //     this->switchTo3D();
+         this->switchTo3D();
     // }
     // else if (d->renderer2D_button->isToggled()) {
     //     d->renderer2D_button->toggle(false);
@@ -1540,7 +1544,7 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, gnomonAbstractVisualizat
 
     // if (d->renderer3D_button->isToggled()) {
     //     d->renderer3D_button->toggle(false);
-    //     this->switchTo3D();
+         this->switchTo3D();
     // }
     // else if (d->renderer2D_button->isToggled()) {
     //     d->renderer2D_button->toggle(false);
@@ -1582,7 +1586,7 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, gnomonAbstractVisualization
 
     // if (d->renderer3D_button->isToggled()) {
     //     d->renderer3D_button->toggle(false);
-    //     this->switchTo3D();
+         this->switchTo3D();
     // }
     // else if (d->renderer2D_button->isToggled()) {
     //     d->renderer2D_button->toggle(false);
@@ -1636,7 +1640,7 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
 
     // if (d->renderer3D_button->isToggled()) {
     //     d->renderer3D_button->toggle(false);
-    //     this->switchTo3D();
+         this->switchTo3D();
     // }
     // else if (d->renderer2D_button->isToggled()) {
     //     d->renderer2D_button->toggle(false);
@@ -1710,8 +1714,8 @@ void gnomonViewForm::setBounds(double bounds[6])
 //                 break;
 //         };
 
-//         d->renderer2D->ResetCamera();
-// //        d->renderer3D->ResetCamera();
+    d->renderer2D->ResetCamera();
+    d->renderer3D->ResetCamera();
 //     }
 
 }
@@ -1876,8 +1880,8 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
     qDebug() << Q_FUNC_INFO << 4;
 
     // if (d->renderer3D_button->isToggled()) {
-    //     d->style->setMode("3D");
-    //     d->style->SetDefaultRenderer(this->renderer3D());
+         d->style->setMode("3D");
+         d->style->SetDefaultRenderer(this->renderer3D());
     // } else {
     //     d->style->setMode("2D");
     //     d->style->SetDefaultRenderer(this->renderer2D());
