@@ -29,6 +29,14 @@ Rectangle {
         anchors.fill: parent;
 
         mouseEnabled: true;
+
+        XVis.Actor {
+            XVis.PolyDataMapper {
+                XVis.SphereSource {
+                    id: source;
+                }
+            }
+        }
     }
 
     layer.enabled: true
