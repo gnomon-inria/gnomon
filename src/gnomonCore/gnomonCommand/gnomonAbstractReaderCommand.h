@@ -34,7 +34,7 @@ public:
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
     virtual const QString& path(void);
 
 protected:

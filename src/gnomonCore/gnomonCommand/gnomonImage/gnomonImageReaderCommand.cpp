@@ -33,10 +33,13 @@ public:
 gnomonImageReaderCommand::gnomonImageReaderCommand(void) : d(new gnomonImageReaderCommandPrivate)
 {
     this->factory_name = "imageReader";
+
     loadPluginGroup(this->factoryName());
 
     for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
+
         auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;

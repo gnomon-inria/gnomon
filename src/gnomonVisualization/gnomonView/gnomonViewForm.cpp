@@ -1035,15 +1035,8 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
     // this->setAcceptDrops(false);
 }
 
-void gnomonViewForm::link(vtkGenericOpenGLRenderWindow *window)
+void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
-    // d->window = vtkGenericOpenGLRenderWindow::New();
-
-    qDebug() << Q_FUNC_INFO << d;
-    qDebug() << Q_FUNC_INFO << d->renderer2D;
-    qDebug() << Q_FUNC_INFO << d->renderer3D;
-    qDebug() << Q_FUNC_INFO << window;
-
     d->window = window;
     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
     d->window->AddRenderer(d->renderer2D);
