@@ -35,8 +35,8 @@ gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(void) : d(new gnomonD
     this->factory_name = "dataFrameReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
-        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+    for (auto key: gnomonCore::dataFrameReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::dataFrameReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;

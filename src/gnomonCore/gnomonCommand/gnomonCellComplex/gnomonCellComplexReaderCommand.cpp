@@ -25,8 +25,8 @@ gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(void) : d(new gno
     this->factory_name = "cellComplexReader";
     loadPluginGroup(this->factoryName());
 
-     for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
-        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+     for (auto key: gnomonCore::cellComplexReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::cellComplexReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;

@@ -27,8 +27,8 @@ gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand(void) : d(new gnomo
     this->factory_name = "pointCloudReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
-        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+    for (auto key: gnomonCore::pointCloudReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::pointCloudReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;

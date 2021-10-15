@@ -35,8 +35,8 @@ gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(void) : d(new gnomonC
     this->factory_name = "cellImageReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
-        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+    for (auto key: gnomonCore::cellImageReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::cellImageReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;

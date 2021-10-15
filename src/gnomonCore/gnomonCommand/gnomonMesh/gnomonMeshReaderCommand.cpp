@@ -27,8 +27,8 @@ gnomonMeshReaderCommand::gnomonMeshReaderCommand(void) : d(new gnomonMeshReaderC
     this->factory_name = "meshReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
-        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+    for (auto key: gnomonCore::meshReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::meshReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;

@@ -35,8 +35,8 @@ gnomonTreeReaderCommand::gnomonTreeReaderCommand(void) : d(new gnomonTreeReaderC
     this->factory_name = "treeReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
-        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+    for (auto key: gnomonCore::treeReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::treeReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
             this->algorithm_name = key;
