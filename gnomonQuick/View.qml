@@ -18,6 +18,8 @@ Rectangle {
 
     property alias view: _view;
 
+    signal dropped(string path)
+
     G.View {
         id: d;
     }
@@ -29,13 +31,31 @@ Rectangle {
         anchors.fill: parent;
 
         mouseEnabled: true;
+    }
 
-        XVis.Actor {
-            XVis.PolyDataMapper {
-                XVis.SphereSource {
-                    id: source;
-                }
-            }
+    DropArea {
+
+        id: _drop;
+
+        anchors.fill: parent;
+
+        X.Icon {
+            icon: X.Icons.icons.arrow_circle_down;
+            size: 56;
+            color: "#44999999";
+            visible: _drop.containsDrag;
+            anchors.centerIn: parent;
+        }
+
+        onDropped: {
+
+            console.log('Gropped!');
+
+            drop.urls.forEach(function (item, index) {
+                _control.dropped(item);
+            });
+
+            drop.accept();
         }
     }
 
