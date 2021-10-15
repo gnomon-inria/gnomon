@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonMeshWriterCommand(void) = delete;
-     gnomonMeshWriterCommand(const QString&);
+     gnomonMeshWriterCommand(void);
     ~gnomonMeshWriterCommand(void);
 
 public:
@@ -15,6 +14,7 @@ public:
 public:
     void setPath(const QString& path);
     void setMesh(gnomonMeshSeries *image_series);
+    void setAlgorithmName(const QString& algo_name) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

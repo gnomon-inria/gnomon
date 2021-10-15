@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonPointCloudWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonPointCloudWriterCommand(void) = delete;
-     gnomonPointCloudWriterCommand(const QString&);
+     gnomonPointCloudWriterCommand(void);
     ~gnomonPointCloudWriterCommand(void);
 
 public:
@@ -15,6 +14,7 @@ public:
 public:
     void setPath(const QString& path);
     void setPointCloud(gnomonPointCloudSeries *pointCloud);
+    void setAlgorithmName(const QString& algo_name) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

@@ -23,20 +23,29 @@ public:
     gnomonAbstractDynamicForm* output = nullptr;
 };
 
-gnomonTreeAdapterCommand::gnomonTreeAdapterCommand(const QString& key) : d(new gnomonTreeAdapterCommandPrivate)
+gnomonTreeAdapterCommand::gnomonTreeAdapterCommand(void) : d(new gnomonTreeAdapterCommandPrivate)
 {
     this->factory_name = "treeAdapter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::treeAdapter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeAdapter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeAdapter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonTreeAdapterCommand::~gnomonTreeAdapterCommand()
 {
     delete d;
+}
+
+void gnomonTreeAdapterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::treeAdapter::pluginFactory().create(algo_name);
 }
 
 void gnomonTreeAdapterCommand::redo(void)

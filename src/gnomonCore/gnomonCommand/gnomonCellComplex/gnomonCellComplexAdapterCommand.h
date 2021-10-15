@@ -6,8 +6,7 @@ class gnomonCellComplex;
 class GNOMONCORE_EXPORT gnomonCellComplexAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonCellComplexAdapterCommand(void) = delete;
-     gnomonCellComplexAdapterCommand(const QString&);
+     gnomonCellComplexAdapterCommand(void);
     ~gnomonCellComplexAdapterCommand(void);
 
 public:
@@ -16,6 +15,8 @@ public:
 
 public:
     void setInput(gnomonCellComplexSeries *cellComplex_series);
+    void setAlgorithmName(const QString &) override;
+
     gnomonCellComplexSeries *input(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

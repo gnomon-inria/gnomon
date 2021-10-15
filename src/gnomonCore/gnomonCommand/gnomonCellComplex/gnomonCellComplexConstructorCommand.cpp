@@ -26,22 +26,31 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellComplexConstructorCommand::gnomonCellComplexConstructorCommand(const QString& key) : d(new gnomonCellComplexConstructorCommandPrivate)
+gnomonCellComplexConstructorCommand::gnomonCellComplexConstructorCommand(void) : d(new gnomonCellComplexConstructorCommandPrivate)
 {
     this->factory_name = "cellComplexConstructor";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-
-    this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellComplexConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellComplexConstructorCommand::~gnomonCellComplexConstructorCommand(void)
 {
     delete d;
 }
+
+void gnomonCellComplexConstructorCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(algo_name);
+}
+
 
 void gnomonCellComplexConstructorCommand::redo(void)
 {

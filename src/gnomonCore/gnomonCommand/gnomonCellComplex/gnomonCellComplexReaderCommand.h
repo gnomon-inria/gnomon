@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellComplexReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonCellComplexReaderCommand(void) = delete;
-     gnomonCellComplexReaderCommand(const QString&);
+     gnomonCellComplexReaderCommand(void);
     ~gnomonCellComplexReaderCommand(void);
 
 public:

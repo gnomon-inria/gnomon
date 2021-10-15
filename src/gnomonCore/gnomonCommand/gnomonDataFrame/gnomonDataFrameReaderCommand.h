@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonDataFrameReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonDataFrameReaderCommand(void) = delete;
-     gnomonDataFrameReaderCommand(const QString&);
+     gnomonDataFrameReaderCommand(void);
     ~gnomonDataFrameReaderCommand(void);
 
 public:

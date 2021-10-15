@@ -32,20 +32,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeTransformCommand::gnomonTreeTransformCommand(const QString& key) : d(new gnomonTreeTransformCommandPrivate)
+gnomonTreeTransformCommand::gnomonTreeTransformCommand(void) : d(new gnomonTreeTransformCommandPrivate)
 {
     this->factory_name = "treeTransform";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::treeTransform::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonTreeTransformCommand::~gnomonTreeTransformCommand(void)
 {
     delete d;
+}
+
+void gnomonTreeTransformCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::treeTransform::pluginFactory().create(algo_name);
 }
 
 void gnomonTreeTransformCommand::redo(void)

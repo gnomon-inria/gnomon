@@ -23,20 +23,29 @@ public:
     gnomonAbstractDynamicForm* output = nullptr;
 };
 
-gnomonLStringAdapterCommand::gnomonLStringAdapterCommand(const QString& key) : d(new gnomonLStringAdapterCommandPrivate)
+gnomonLStringAdapterCommand::gnomonLStringAdapterCommand(void) : d(new gnomonLStringAdapterCommandPrivate)
 {
     this->factory_name = "lStringAdapter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::lStringAdapter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonLStringAdapterCommand::~gnomonLStringAdapterCommand()
 {
     delete d;
+}
+
+void gnomonLStringAdapterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::lStringAdapter::pluginFactory().create(algo_name);
 }
 
 void gnomonLStringAdapterCommand::redo(void)

@@ -58,8 +58,9 @@ void gnomonImageRegistrationCommandTestCase::initTestCase(void)
 
 void gnomonImageRegistrationCommandTestCase::init(void)
 {
-    d->registration_command = new gnomonImageRegistrationCommand("dummyImageRegistration");
+    d->registration_command = new gnomonImageRegistrationCommand();
     Q_ASSERT(d->registration_command);
+    d->registration_command->setAlgorithmName("dummyImageRegistration");
 }
 
 void gnomonImageRegistrationCommandTestCase::redo(void)

@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonCellImageQuantificationCommand(void) = delete;
-     gnomonCellImageQuantificationCommand(const QString&);
+     gnomonCellImageQuantificationCommand(void);
     ~gnomonCellImageQuantificationCommand(void);
 
 public:
@@ -23,6 +22,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

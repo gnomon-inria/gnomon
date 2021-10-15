@@ -184,12 +184,27 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
     delete d;
 }
 
-void gnomonWorkspaceSegmentation::configure(const QString& algorithm)
+QString gnomonWorkspaceSegmentation::algoName(void) const
+{
+    return d->algorithm;
+}
+
+void gnomonWorkspaceSegmentation::setAlgoName(const QString& algorithm)
 {
     d->configure(algorithm);
 }
 
-void gnomonWorkspaceSegmentation::apply(void)
+gnomonViewForm* gnomonWorkspaceSegmentation::source(void) const
+{
+    return d->source;
+}
+
+gnomonViewForm* gnomonWorkspaceSegmentation::target(void) const
+{
+    return d->target;
+}
+
+void gnomonWorkspaceSegmentation::run(void)
 {
     Q_ASSERT(d->command);
 

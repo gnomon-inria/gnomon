@@ -19,8 +19,7 @@
 class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonCellImageFromImageCommand(void) = delete;
-     gnomonCellImageFromImageCommand(const QString&);
+     gnomonCellImageFromImageCommand(void);
     ~gnomonCellImageFromImageCommand(void);
 
 public:
@@ -39,6 +38,8 @@ public:
 
 public:
     void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
+
     virtual dtkCoreParameters parameters(void) const override;
 
 public:

@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellImageConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonCellImageConstructorCommand(void) = delete;
-     gnomonCellImageConstructorCommand(const QString&);
+     gnomonCellImageConstructorCommand(void);
     ~gnomonCellImageConstructorCommand(void);
 
 public:
@@ -18,6 +17,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

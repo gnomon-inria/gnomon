@@ -30,20 +30,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonMeshWriterCommand::gnomonMeshWriterCommand(const QString& key) : d(new gnomonMeshWriterCommandPrivate)
+gnomonMeshWriterCommand::gnomonMeshWriterCommand() : d(new gnomonMeshWriterCommandPrivate)
 {
     this->factory_name = "meshWriter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::meshWriter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::meshWriter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshWriter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonMeshWriterCommand::~gnomonMeshWriterCommand()
 {
     delete d;
+}
+
+void gnomonMeshWriterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::meshWriter::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshWriterCommand::redo(void)

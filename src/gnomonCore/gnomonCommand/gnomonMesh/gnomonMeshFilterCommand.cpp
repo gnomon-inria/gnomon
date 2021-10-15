@@ -32,20 +32,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonMeshFilterCommand::gnomonMeshFilterCommand(const QString& key) : d(new gnomonMeshFilterCommandPrivate)
+gnomonMeshFilterCommand::gnomonMeshFilterCommand(void) : d(new gnomonMeshFilterCommandPrivate)
 {
     this->factory_name = "meshFilter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::meshFilter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::meshFilter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshFilter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonMeshFilterCommand::~gnomonMeshFilterCommand(void)
 {
     delete d;
+}
+
+void gnomonMeshFilterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::meshFilter::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshFilterCommand::redo(void)

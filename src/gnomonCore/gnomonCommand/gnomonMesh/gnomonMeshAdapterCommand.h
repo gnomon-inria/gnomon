@@ -6,8 +6,7 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonMeshAdapterCommand(void) = delete;
-     gnomonMeshAdapterCommand(const QString&);
+     gnomonMeshAdapterCommand(void);
     ~gnomonMeshAdapterCommand(void);
 
 public:
@@ -16,6 +15,7 @@ public:
 
 public:
     void setInput(gnomonMeshSeries *mesh_series);
+    void setAlgorithmName(const QString & algo) override;
     gnomonMeshSeries *input(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

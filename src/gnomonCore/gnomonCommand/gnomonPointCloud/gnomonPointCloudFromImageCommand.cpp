@@ -33,20 +33,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
+gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(void) : d(new gnomonPointCloudFromImageCommandPrivate)
 {
     this->factory_name = "pointCloudFromImage";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::pointCloudFromImage::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonPointCloudFromImageCommand::~gnomonPointCloudFromImageCommand(void)
 {
     delete d;
+}
+
+void gnomonPointCloudFromImageCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(algo_name);
 }
 
 void gnomonPointCloudFromImageCommand::redo(void)

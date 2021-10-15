@@ -35,6 +35,8 @@ public:
         return this->algorithm_name;
     };
 
+    virtual void setAlgorithmName(const QString &name) = 0;
+
     const QString& factoryName(void) {
         return this->factory_name;
     };

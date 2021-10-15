@@ -6,8 +6,7 @@ class gnomonTree;
 class GNOMONCORE_EXPORT gnomonTreeAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonTreeAdapterCommand(void) = delete;
-     gnomonTreeAdapterCommand(const QString&);
+     gnomonTreeAdapterCommand(void);
     ~gnomonTreeAdapterCommand(void);
 
 public:
@@ -16,6 +15,9 @@ public:
 
 public:
     void setInput(gnomonTreeSeries *tree_series);
+    void setAlgorithmName(const QString& algo_name) override;
+
+public:
     gnomonTreeSeries *input(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

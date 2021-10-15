@@ -32,20 +32,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
+gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(void) : d(new gnomonImageRegistrationCommandPrivate)
 {
     this->factory_name = "imageRegistration";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::imageRegistration::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageRegistration::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonImageRegistrationCommand::~gnomonImageRegistrationCommand()
 {
     delete d;
+}
+
+void gnomonImageRegistrationCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::imageRegistration::pluginFactory().create(algo_name);
 }
 
 void gnomonImageRegistrationCommand::redo(void)

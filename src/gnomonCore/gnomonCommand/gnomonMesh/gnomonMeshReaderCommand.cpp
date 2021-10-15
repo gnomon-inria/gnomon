@@ -22,19 +22,26 @@ public:
     gnomonMeshSeries *mesh = nullptr;
 };
 
-gnomonMeshReaderCommand::gnomonMeshReaderCommand(const QString& key) : d(new gnomonMeshReaderCommandPrivate)
+gnomonMeshReaderCommand::gnomonMeshReaderCommand(void) : d(new gnomonMeshReaderCommandPrivate)
 {
     this->factory_name = "meshReader";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::meshReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 

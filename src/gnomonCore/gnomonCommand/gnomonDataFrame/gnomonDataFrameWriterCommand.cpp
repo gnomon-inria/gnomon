@@ -30,20 +30,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand(const QString& key) : d(new gnomonDataFrameWriterCommandPrivate)
+gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand(void) : d(new gnomonDataFrameWriterCommandPrivate)
 {
     this->factory_name = "dataFrameWriter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::dataFrameWriter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::dataFrameWriter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::dataFrameWriter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonDataFrameWriterCommand::~gnomonDataFrameWriterCommand()
 {
     delete d;
+}
+
+void gnomonDataFrameWriterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::dataFrameWriter::pluginFactory().create(algo_name);
 }
 
 void gnomonDataFrameWriterCommand::redo(void)

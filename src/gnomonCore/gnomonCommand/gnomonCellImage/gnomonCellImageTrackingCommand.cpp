@@ -27,20 +27,29 @@ public:
     gnomonTreeSeries* tree = nullptr;
 };
 
-gnomonCellImageTrackingCommand::gnomonCellImageTrackingCommand(const QString& key) : d(new gnomonCellImageTrackingCommandPrivate)
+gnomonCellImageTrackingCommand::gnomonCellImageTrackingCommand(void) : d(new gnomonCellImageTrackingCommandPrivate)
 {
     this->factory_name = "cellImageTracking";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellImageTracking::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageTracking::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageTracking::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellImageTrackingCommand::~gnomonCellImageTrackingCommand(void)
 {
     delete d;
+}
+
+void gnomonCellImageTrackingCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellImageTracking::pluginFactory().create(algo_name);
 }
 
 void gnomonCellImageTrackingCommand::redo(void)

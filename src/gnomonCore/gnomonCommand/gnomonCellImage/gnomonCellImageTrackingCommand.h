@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellImageTrackingCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonCellImageTrackingCommand(void) = delete;
-     gnomonCellImageTrackingCommand(const QString&);
+     gnomonCellImageTrackingCommand(void);
     ~gnomonCellImageTrackingCommand(void);
 
 public:
@@ -23,6 +22,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

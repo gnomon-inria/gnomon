@@ -22,19 +22,26 @@ public:
     gnomonPointCloudSeries *pointCloud = nullptr;
 };
 
-gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand(const QString& key) : d(new gnomonPointCloudReaderCommandPrivate)
+gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand(void) : d(new gnomonPointCloudReaderCommandPrivate)
 {
     this->factory_name = "pointCloudReader";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::pointCloudReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonPointCloudReaderCommand::~gnomonPointCloudReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 

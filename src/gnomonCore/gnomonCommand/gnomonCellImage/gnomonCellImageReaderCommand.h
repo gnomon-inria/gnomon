@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonCellImageReaderCommand(void) = delete;
-     gnomonCellImageReaderCommand(const QString&);
+     gnomonCellImageReaderCommand(void);
     ~gnomonCellImageReaderCommand(void);
 
 public:

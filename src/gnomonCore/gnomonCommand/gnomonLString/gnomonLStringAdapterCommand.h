@@ -6,8 +6,7 @@ class gnomonLString;
 class GNOMONCORE_EXPORT gnomonLStringAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonLStringAdapterCommand(void) = delete;
-     gnomonLStringAdapterCommand(const QString&);
+     gnomonLStringAdapterCommand(void);
     ~gnomonLStringAdapterCommand(void);
 
 public:
@@ -16,6 +15,7 @@ public:
 
 public:
     void setInput(gnomonLStringSeries *lString_series);
+    void setAlgorithmName(const QString &) override;
     gnomonLStringSeries *input(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

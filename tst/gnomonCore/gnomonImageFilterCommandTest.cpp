@@ -57,8 +57,9 @@ void gnomonImageFilterCommandTestCase::initTestCase(void)
 
 void gnomonImageFilterCommandTestCase::init(void)
 {
-    d->filter_command = new gnomonImageFilterCommand("dummyImageFilter");
+    d->filter_command = new gnomonImageFilterCommand();
     QVERIFY(d->filter_command);
+    d->filter_command->setAlgorithmName("dummyImageFilter");
 }
 
 void gnomonImageFilterCommandTestCase::redo(void)

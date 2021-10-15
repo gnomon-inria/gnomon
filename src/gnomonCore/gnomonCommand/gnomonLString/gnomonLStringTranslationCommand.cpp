@@ -27,20 +27,30 @@ public:
     gnomonLStringSeries *output_lString_series = nullptr;
 };
 
-gnomonLStringTranslationCommand::gnomonLStringTranslationCommand(const QString& key) : d(new gnomonLStringTranslationCommandPrivate)
+gnomonLStringTranslationCommand::gnomonLStringTranslationCommand(void) : d(new gnomonLStringTranslationCommandPrivate)
 {
     this->factory_name = "lStringTranslation";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::lStringTranslation::pluginFactory().create(key);
+    QStringList keys = gnomonCore::lStringTranslation::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::lStringTranslation::pluginFactory().create(this->algorithm_name);
+    }
 
-    Q_ASSERT(this->action);
 }
 
 gnomonLStringTranslationCommand::~gnomonLStringTranslationCommand(void)
 {
     delete d;
+}
+
+void gnomonLStringTranslationCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::lStringTranslation::pluginFactory().create(algo_name);
 }
 
 void gnomonLStringTranslationCommand::redo(void)

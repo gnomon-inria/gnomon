@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellComplexWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonCellComplexWriterCommand(void) = delete;
-     gnomonCellComplexWriterCommand(const QString&);
+     gnomonCellComplexWriterCommand(void);
     ~gnomonCellComplexWriterCommand(void);
 
 public:
@@ -15,6 +14,7 @@ public:
 public:
     void setPath(const QString& path);
     void setCellComplex(gnomonCellComplexSeries *cellcomplex);
+    void setAlgorithmName(const QString &) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

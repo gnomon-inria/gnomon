@@ -24,20 +24,30 @@ public:
     gnomonCellComplexSeries *output = nullptr;
 };
 
-gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(const QString& key) : d(new gnomonCellComplexFromCellImageCommandPrivate)
+gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(void) : d(new gnomonCellComplexFromCellImageCommandPrivate)
 {
     this->factory_name = "cellComplexFromCellImage";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(key);
+    QStringList keys = gnomonCore::cellComplexFromCellImage::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(this->algorithm_name);
+    }
 
-    Q_ASSERT(this->action);
 }
 
 gnomonCellComplexFromCellImageCommand::~gnomonCellComplexFromCellImageCommand(void)
 {
     delete d;
+}
+
+void gnomonCellComplexFromCellImageCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(algo_name);
 }
 
 void gnomonCellComplexFromCellImageCommand::redo(void)

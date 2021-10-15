@@ -882,7 +882,8 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
                 }
                 d->adapterTargets[form][key] = adapter->target();
                 d->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                d->adapterCommands[form][key] = new gnomonMeshAdapterCommand(key);
+                d->adapterCommands[form][key] = new gnomonMeshAdapterCommand;
+                d->adapterCommands[form][key]->setAlgorithmName(key);
                 delete adapter;
             }
         } else if (form=="gnomonCellComplex") {
@@ -901,7 +902,8 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
                 }
                 d->adapterTargets[form][key] = adapter->target();
                 d->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                d->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand(key);
+                d->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand;
+                d->adapterCommands[form][key]->setAlgorithmName(key);
                 delete adapter;
             }
         }

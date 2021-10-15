@@ -30,19 +30,26 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(const QString& key) : d(new gnomonDataFrameReaderCommandPrivate)
+gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(void) : d(new gnomonDataFrameReaderCommandPrivate)
 {
     this->factory_name = "dataFrameReader";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::dataFrameReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonDataFrameReaderCommand::~gnomonDataFrameReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 

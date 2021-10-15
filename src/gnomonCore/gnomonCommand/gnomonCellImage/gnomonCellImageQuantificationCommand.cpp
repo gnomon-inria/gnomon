@@ -27,20 +27,29 @@ public:
     gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
-gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(const QString& key) : d(new gnomonCellImageQuantificationCommandPrivate)
+gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(void) : d(new gnomonCellImageQuantificationCommandPrivate)
 {
     this->factory_name = "cellImageQuantification";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellImageQuantification::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageQuantification::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellImageQuantificationCommand::~gnomonCellImageQuantificationCommand(void)
 {
     delete d;
+}
+
+void gnomonCellImageQuantificationCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellImageQuantification::pluginFactory().create(algo_name);
 }
 
 void gnomonCellImageQuantificationCommand::redo(void)

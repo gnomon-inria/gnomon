@@ -33,20 +33,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
+gnomonImageFusionCommand::gnomonImageFusionCommand(void) : d(new gnomonImageFusionCommandPrivate)
 {
     this->factory_name = "imageFusion";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::imageFusion::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::imageFusion::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageFusion::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonImageFusionCommand::~gnomonImageFusionCommand(void)
 {
     delete d;
+}
+
+void gnomonImageFusionCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::imageFusion::pluginFactory().create(algo_name);
 }
 
 void gnomonImageFusionCommand::redo(void)

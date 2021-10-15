@@ -6,8 +6,7 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-    gnomonImageRegistrationCommand() = delete;
-    gnomonImageRegistrationCommand(const QString&);
+    gnomonImageRegistrationCommand();
     virtual ~gnomonImageRegistrationCommand();
 
 public:
@@ -23,6 +22,7 @@ public:
 
     dtkCoreParameters parameters(void) const override;
     void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
 
 public:
     static bool isEmpty(void);

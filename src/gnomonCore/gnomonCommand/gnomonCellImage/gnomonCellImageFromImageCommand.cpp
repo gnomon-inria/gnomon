@@ -26,20 +26,29 @@ public:
     gnomonCellImageSeries *output = nullptr;
 };
 
-gnomonCellImageFromImageCommand::gnomonCellImageFromImageCommand(const QString& key) : d(new gnomonCellImageFromImageCommandPrivate)
+gnomonCellImageFromImageCommand::gnomonCellImageFromImageCommand(void) : d(new gnomonCellImageFromImageCommandPrivate)
 {
     this->factory_name = "cellImageFromImage";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageFromImage::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageFromImage::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellImageFromImageCommand::~gnomonCellImageFromImageCommand(void)
 {
     delete d;
+}
+
+void gnomonCellImageFromImageCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellImageFromImage::pluginFactory().create(algo_name);
 }
 
 void gnomonCellImageFromImageCommand::redo(void)

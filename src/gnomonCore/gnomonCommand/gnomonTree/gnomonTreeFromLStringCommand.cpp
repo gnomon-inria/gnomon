@@ -23,21 +23,31 @@ public:
     gnomonTreeSeries *output = nullptr;
 };
 
-gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand(const QString& key) : d(new gnomonTreeFromLStringCommandPrivate)
+gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand(void) : d(new gnomonTreeFromLStringCommandPrivate)
 {
     this->factory_name = "treeFromLString";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::treeFromLString::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonTreeFromLStringCommand::~gnomonTreeFromLStringCommand(void)
 {
     delete d;
 }
+
+void gnomonTreeFromLStringCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::treeFromLString::pluginFactory().create(algo_name);
+}
+
 
 void gnomonTreeFromLStringCommand::redo(void)
 {

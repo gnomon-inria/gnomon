@@ -6,8 +6,7 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonMeshReaderCommand(void) = delete;
-     gnomonMeshReaderCommand(const QString&);
+     gnomonMeshReaderCommand(void);
     ~gnomonMeshReaderCommand(void);
 
 public:

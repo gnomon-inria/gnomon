@@ -24,20 +24,29 @@ public:
     gnomonMeshSeries *output = nullptr;
 };
 
-gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
+gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(void) : d(new gnomonMeshFromImageCommandPrivate)
 {
     this->factory_name = "meshFromImage";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::meshFromImage::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::meshFromImage::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshFromImage::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonMeshFromImageCommand::~gnomonMeshFromImageCommand(void)
 {
     delete d;
+}
+
+void gnomonMeshFromImageCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::meshFromImage::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshFromImageCommand::redo(void)

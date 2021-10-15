@@ -6,8 +6,7 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonImageFilterCommand(void) = delete;
-     gnomonImageFilterCommand(const QString&);
+     gnomonImageFilterCommand(void);
     ~gnomonImageFilterCommand(void);
 
 public:
@@ -23,6 +22,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

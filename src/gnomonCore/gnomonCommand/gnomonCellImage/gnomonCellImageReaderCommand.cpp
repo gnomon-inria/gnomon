@@ -30,19 +30,26 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(const QString& key) : d(new gnomonCellImageReaderCommandPrivate)
+gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(void) : d(new gnomonCellImageReaderCommandPrivate)
 {
     this->factory_name = "cellImageReader";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellImageReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonCellImageReaderCommand::~gnomonCellImageReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 

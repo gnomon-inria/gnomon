@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonCellImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonCellImageWriterCommand(void) = delete;
-     gnomonCellImageWriterCommand(const QString&);
+     gnomonCellImageWriterCommand(void);
     ~gnomonCellImageWriterCommand(void);
 
 public:
@@ -15,6 +14,7 @@ public:
 public:
     void setPath(const QString& path);
     void setCellImage(gnomonCellImageSeries *image_series);
+    void setAlgorithmName(const QString &) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

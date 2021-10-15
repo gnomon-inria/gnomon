@@ -26,21 +26,30 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageConstructorCommand::gnomonImageConstructorCommand(const QString& key) : d(new gnomonImageConstructorCommandPrivate)
+gnomonImageConstructorCommand::gnomonImageConstructorCommand(void) : d(new gnomonImageConstructorCommandPrivate)
 {
     this->factory_name = "imageConstructor";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
+    QStringList keys = gnomonCore::imageConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageConstructor::pluginFactory().create(this->algorithm_name);
+    }
 
-    this->action = gnomonCore::imageConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
 }
 
 gnomonImageConstructorCommand::~gnomonImageConstructorCommand(void)
 {
     delete d;
+}
+
+void gnomonImageConstructorCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::imageConstructor::pluginFactory().create(algo_name);
 }
 
 void gnomonImageConstructorCommand::redo(void)

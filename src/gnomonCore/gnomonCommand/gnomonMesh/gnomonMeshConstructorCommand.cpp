@@ -26,21 +26,30 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonMeshConstructorCommand::gnomonMeshConstructorCommand(const QString& key) : d(new gnomonMeshConstructorCommandPrivate)
+gnomonMeshConstructorCommand::gnomonMeshConstructorCommand(void) : d(new gnomonMeshConstructorCommandPrivate)
 {
     this->factory_name = "meshConstructor";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
+    QStringList keys = gnomonCore::meshConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshConstructor::pluginFactory().create(this->algorithm_name);
+    }
 
-    this->action = gnomonCore::meshConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
 }
 
 gnomonMeshConstructorCommand::~gnomonMeshConstructorCommand(void)
 {
     delete d;
+}
+
+void gnomonMeshConstructorCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::meshConstructor::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshConstructorCommand::redo(void)

@@ -27,20 +27,29 @@ public:
     gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
-gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand(const QString& key) : d(new gnomonPointCloudQuantificationCommandPrivate)
+gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand(void) : d(new gnomonPointCloudQuantificationCommandPrivate)
 {
     this->factory_name = "pointCloudQuantification";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonPointCloudQuantificationCommand::~gnomonPointCloudQuantificationCommand(void)
 {
     delete d;
+}
+
+void gnomonPointCloudQuantificationCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(algo_name);
 }
 
 void gnomonPointCloudQuantificationCommand::redo(void)

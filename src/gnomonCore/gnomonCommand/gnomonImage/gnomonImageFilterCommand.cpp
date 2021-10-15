@@ -32,20 +32,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
+gnomonImageFilterCommand::gnomonImageFilterCommand(void) : d(new gnomonImageFilterCommandPrivate)
 {
     this->factory_name = "imageFilter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::imageFilter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::imageFilter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageFilter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonImageFilterCommand::~gnomonImageFilterCommand(void)
 {
     delete d;
+}
+
+void gnomonImageFilterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::imageFilter::pluginFactory().create(algo_name);
 }
 
 void gnomonImageFilterCommand::redo(void)

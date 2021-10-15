@@ -368,151 +368,32 @@ public slots:
 
 gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
 {
-    loadPluginGroup("imageReader");
-    QStringList image_reader_plugins = gnomonCore::imageReader::pluginFactory().keys();
-    for (const auto& key : image_reader_plugins)
-    {
-        gnomonAbstractImageReader *reader = dynamic_cast<gnomonAbstractImageReader *>(gnomonCore::imageReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonImageReaderCommand(key);
-        }
-        delete reader;
-    }
+    QList<gnomonAbstractReaderCommand*> commands;
+    commands << new gnomonImageReaderCommand;
+    commands << new gnomonCellImageReaderCommand;
+    commands << new gnomonCellComplexReaderCommand;
+    commands << new gnomonDataFrameReaderCommand;
+    commands << new gnomonMeshReaderCommand;
+    commands << new gnomonPointCloudReaderCommand;
+    commands << new gnomonTreeReaderCommand;
 
-    loadPluginGroup("cellImageReader");
-    QStringList cellImage_reader_plugins = gnomonCore::cellImageReader::pluginFactory().keys();
-    for (const auto& key : cellImage_reader_plugins)
-    {
-        gnomonAbstractCellImageReader *reader = dynamic_cast<gnomonAbstractCellImageReader *>(gnomonCore::cellImageReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonCellImageReaderCommand(key);
-        }
-        delete reader;
-    }
+    for (auto command: commands) {
+        QMap<QString, QStringList> extensions = command->extensions();
+        auto descriptions = command->descriptions();
+        for (const auto& algo_name : command->algorithmNames()) {
+            for (QString ext : extensions[algo_name]) {
 
-    loadPluginGroup("cellComplexReader");
-    QStringList cellComplex_reader_plugins = gnomonCore::cellComplexReader::pluginFactory().keys();
-    for (const auto& key : cellComplex_reader_plugins)
-    {
-        gnomonAbstractCellComplexReader *reader = dynamic_cast<gnomonAbstractCellComplexReader *>(gnomonCore::cellComplexReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonCellComplexReaderCommand(key);
-        }
-        delete reader;
-    }
+                if (!this->fileReaderCommands.contains(ext)) {
+                    QMap<QString, QString> empty_desc;
+                    fileReaderDescriptions[ext] = empty_desc;
+                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    fileReaderCommands[ext] = empty_list;
+                }
 
-    loadPluginGroup("dataFrameReader");
-    QStringList dataFrame_reader_plugins = gnomonCore::dataFrameReader::pluginFactory().keys();
-    for (const auto& key : dataFrame_reader_plugins)
-    {
-        gnomonAbstractDataFrameReader *reader = dynamic_cast<gnomonAbstractDataFrameReader *>(gnomonCore::dataFrameReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
+                fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
+                fileReaderCommands[ext][algo_name] = command;
             }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonDataFrameReaderCommand(key);
         }
-        delete reader;
-    }
-
-    loadPluginGroup("meshReader");
-    QStringList mesh_reader_plugins = gnomonCore::meshReader::pluginFactory().keys();
-    for (const auto& key : mesh_reader_plugins)
-    {
-        gnomonAbstractMeshReader *reader = dynamic_cast<gnomonAbstractMeshReader *>(gnomonCore::meshReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonMeshReaderCommand(key);
-        }
-        delete reader;
-    }
-
-    loadPluginGroup("pointCloudReader");
-    QStringList pointCloud_reader_plugins = gnomonCore::pointCloudReader::pluginFactory().keys();
-    for (const auto& key : pointCloud_reader_plugins)
-    {
-        gnomonAbstractPointCloudReader *reader = dynamic_cast<gnomonAbstractPointCloudReader *>(gnomonCore::pointCloudReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonPointCloudReaderCommand(key);
-        }
-        delete reader;
-    }
-
-    loadPluginGroup("treeReader");
-    QStringList tree_reader_plugins = gnomonCore::treeReader::pluginFactory().keys();
-    for (const auto& key : tree_reader_plugins)
-    {
-        gnomonAbstractTreeReader *reader = dynamic_cast<gnomonAbstractTreeReader *>(gnomonCore::treeReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonTreeReaderCommand(key);
-        }
-        delete reader;
     }
 }
 
@@ -548,20 +429,6 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
             }
 
             emit q->available(reader_descs);
-
-            // this->readForm(this->fileReaderCommands[this->ext].keys()[0]); // TODO: Fixme
-
-//             this->menu = new gnomonBrowserReaderMenu(reader_descs);
-//             this->menu->setAttribute(Qt::WA_DeleteOnClose, true);
-//             this->menu->resize(dtkApp->window()->width() * 1/3, dtkApp->window()->height() - 40);
-// //            this->menu->move(dtkApp->window()->frameGeometry().topRight() - QPoint(this->menu->width(),0));
-//             this->menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
-//             this->menu->show();
-
-//             QObject *context = this->menu->rootObject();
-//             connect(context, SIGNAL(clicked(const QString&)), this, SLOT(readForm(const QString&)));
-
-//             QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(menu);
         }
 
     } else {
@@ -575,6 +442,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
 void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
+    readerCommand->setAlgorithmName(reader_plugin);
 
     qDebug() << Q_FUNC_INFO << readerCommand;
 

@@ -26,21 +26,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand(const QString& key) : d(new gnomonPointCloudConstructorCommandPrivate)
+gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand(void) : d(new gnomonPointCloudConstructorCommandPrivate)
 {
     this->factory_name = "pointCloudConstructor";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-
-    this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonPointCloudConstructorCommand::~gnomonPointCloudConstructorCommand(void)
 {
     delete d;
+}
+
+void gnomonPointCloudConstructorCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(algo_name);
 }
 
 void gnomonPointCloudConstructorCommand::redo(void)
