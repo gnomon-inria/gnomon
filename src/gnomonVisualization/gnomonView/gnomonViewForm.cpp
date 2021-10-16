@@ -1039,6 +1039,9 @@ void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
     d->window = window;
     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
+#if defined(Q_OS_LINUX)
+    d->window->GetInteractor()->Initialize();
+#endif
     d->window->AddRenderer(d->renderer2D);
     d->window->AddRenderer(d->renderer3D);
 
@@ -1604,27 +1607,16 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, gnomonAbs
 {
     d->forms["gnomonPointCloud"] = pointCloud;
 
-    qDebug() << Q_FUNC_INFO << -1;
-    qDebug() << Q_FUNC_INFO << gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
-
     QString key = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
-
-    qDebug() << Q_FUNC_INFO << "Using" << key;
 
     if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"])) {
 
-        qDebug() << Q_FUNC_INFO << 0;
-
         d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(key);
         d->formVisualization["gnomonPointCloud"]->setView(this);
-
-        qDebug() << Q_FUNC_INFO << 1;
     }
 
     gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)d->formVisualization["gnomonPointCloud"];
     // dtkApp->window()->setCursor(Qt::BusyCursor);
-
-    qDebug() << Q_FUNC_INFO << 2;
 
     formVisualizationPointCloud->setPointCloud(pointCloud);
     if (visualization) {
@@ -1768,10 +1760,6 @@ void gnomonViewForm::setEnableMenus(bool enable)
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
 {
-    qDebug() << Q_FUNC_INFO << d;
-    qDebug() << Q_FUNC_INFO << d->window;
-    qDebug() << Q_FUNC_INFO << d->window->GetInteractor();
-
     return d->interactor();
 }
 
@@ -1853,26 +1841,15 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
         new_style = d->default_style;
     }
 
-    qDebug() << Q_FUNC_INFO << 1;
-
     if (d->style) {
         d->style->disable();
     }
 
-    qDebug() << Q_FUNC_INFO << 2;
-
     d->style = new_style;
-
-    qDebug() << Q_FUNC_INFO << d->style;
-    qDebug() << Q_FUNC_INFO << this->interactor();
 
     this->interactor()->SetInteractorStyle(d->style);
 
-    qDebug() << Q_FUNC_INFO << 3;
-
     d->style->setView(this);
-
-    qDebug() << Q_FUNC_INFO << 4;
 
     // if (d->renderer3D_button->isToggled()) {
          d->style->setMode("3D");
@@ -1882,9 +1859,9 @@ void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
     //     d->style->SetDefaultRenderer(this->renderer2D());
     // }
 
+#if !defined(Q_OS_LINUX)
     this->interactor()->Enable();
-
-    qDebug() << Q_FUNC_INFO << 5;
+#endif
 
     // d->updateKeys();
 }
