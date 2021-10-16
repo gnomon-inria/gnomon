@@ -14,7 +14,7 @@ Rectangle {
 
     id: _control;
 
-    color: X.Style.linkColor;
+    color: Qt.darker(X.Style.alternateBaseColor);
 
     property alias view: _view;
 
