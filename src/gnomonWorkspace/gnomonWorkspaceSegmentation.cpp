@@ -109,10 +109,11 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObj
 
 //TODO: pipeline    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->pool = new gnomonViewFormPool(this);
-    d->pool->addView(d->source);
-    d->pool->addView(d->target);
-    d->pool->linkAll();
+    // TODO: Fix the view pool
+    // d->pool = new gnomonViewFormPool(this);
+    // d->pool->addView(d->source);
+    // d->pool->addView(d->target);
+    // d->pool->linkAll();
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
