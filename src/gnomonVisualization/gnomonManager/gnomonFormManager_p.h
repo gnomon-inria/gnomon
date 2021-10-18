@@ -32,20 +32,22 @@ class gnomonPipeline;
 
 class vtkCamera;
 
-class gnomonFormManagerPrivate : public QScrollArea
+class gnomonFormManagerPrivate : public QObject
 {
-public:
-    enum State {
-        Collapsed,
-        Expanded
-    };
+    Q_OBJECT
 
 public:
-     gnomonFormManagerPrivate(QWidget *parent = nullptr);
+    // enum State {
+    //     Collapsed,
+    //     Expanded
+    // };
+
+public:
+     gnomonFormManagerPrivate(QObject *parent = nullptr);
     ~gnomonFormManagerPrivate(void);
 
-public:
-    QSize sizeHint(void) const;
+// public:
+//     QSize sizeHint(void) const;
 
 public:
     gnomonFormManagerItem *create(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
@@ -62,39 +64,39 @@ public:
 public:
     gnomonFormManager *q;
 
-public:
-    gnomonFormManagerFocus *focus_item = nullptr;
+// public:
+//     gnomonFormManagerFocus *focus_item = nullptr;
 
-public:
-    gnomonPipeline *pipeline = nullptr;
+// public:
+//     gnomonPipeline *pipeline = nullptr;
 
 public:
     gnomonViewForm *view = nullptr;
 
-public:
-    QScrollArea *focus_area = nullptr;
+// public:
+//     QScrollArea *focus_area = nullptr;
 
-public:
-    QSequentialAnimationGroup *animation = nullptr;
+// public:
+//     QSequentialAnimationGroup *animation = nullptr;
 
 public:
     static int item_counter;
 
-public:
-    bool inside = false;
+// public:
+//     bool inside = false;
 
-public:
-    QWidget *contents;
+// public:
+//     QWidget *contents;
 
-public:
-    State state = Collapsed;
+// public:
+//     State state = Collapsed;
 
-public:
-    gnomonFormManagerItem *current_focus = nullptr;
+// public:
+//     gnomonFormManagerItem *current_focus = nullptr;
 
-public:
-    void deleteAnimation(void);
-    void dismissView(void);
+// public:
+//     void deleteAnimation(void);
+//     void dismissView(void);
 };
 
 //

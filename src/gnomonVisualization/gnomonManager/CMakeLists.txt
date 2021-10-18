@@ -23,14 +23,14 @@ ADD_GNOMON_HEADERS(
     gnomonFormManager.h
     gnomonFormManager_p.h
     gnomonFormManagerData.h
-    gnomonFormManagerFocus.h
+    # gnomonFormManagerFocus.h
     gnomonFormManagerItem.h)
 
 
 ADD_GNOMON_SOURCES(
     gnomonFormManager.cpp
     gnomonFormManagerData.cpp
-    gnomonFormManagerFocus.cpp
+    # gnomonFormManagerFocus.cpp
     gnomonFormManagerItem.cpp)
 
 
