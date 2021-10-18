@@ -19,10 +19,7 @@ Rectangle {
     property alias view: _view;
 
     signal dropped(string path)
-
-    G.View {
-        id: d;
-    }
+    signal transmit();
 
     XVis.Viewer {
 
@@ -31,6 +28,13 @@ Rectangle {
         anchors.fill: parent;
 
         mouseEnabled: true;
+        /* XVis.Actor { */
+        /*     XVis.PolyDataMapper { */
+        /*         XVis.SphereSource { */
+        /*             id: source; */
+        /*         } */
+        /*     } */
+        /* } */
     }
 
     DropArea {
@@ -48,14 +52,29 @@ Rectangle {
         }
 
         onDropped: {
-
-            console.log('Gropped!');
-
-            drop.urls.forEach(function (item, index) {
-                _control.dropped(item);
-            });
+            if (drop.hasUrls)
+                drop.urls.forEach(function (item, index) {
+                    _control.dropped(item);
+                });
+            else
+                console.log("Got", drag.source.ref)
 
             drop.accept();
+        }
+    }
+
+    X.ButtonRound {
+        iconSource: X.Icons.icons.arrow_circle_up;
+
+        text: "Export"
+
+        anchors.top: _view.top
+        anchors.topMargin: 10
+        anchors.right: _view.right
+        anchors.rightMargin: 10
+
+        onClicked: {
+            _control.transmit();
         }
     }
 

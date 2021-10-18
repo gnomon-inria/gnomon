@@ -3,3 +3,4 @@ module gnomonQuick
 Pipeline 1.0 Pipeline.qml
 Project.qml 1.0 Project.qml
 View 1.0 View.qml
+World 1.0 World.qml
