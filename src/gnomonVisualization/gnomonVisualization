@@ -1,8 +1,9 @@
 #include "gnomonVisualization.h"
 #include "gnomonActor/gnomonActor.h"
+#include "gnomonManager/gnomonFormManager.h"
+#include "gnomonManager/gnomonFormManagerItem.h"
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonView/gnomonViewFormPool.h"
 // #include "gnomonView/gnomonViewMatplotlib.h"
-
 #include "gnomonCoreParameterColor.h"
 #include "gnomonLookupTable.h"

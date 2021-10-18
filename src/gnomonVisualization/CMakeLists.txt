@@ -137,6 +137,7 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 install(DIRECTORY
     gnomonActor
     gnomonInteractorStyle
+    gnomonManager
     gnomonView
     gnomonVisualizations
   DESTINATION include/${PROJECT_NAME})

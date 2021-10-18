@@ -15,7 +15,6 @@
 #pragma once
 
 #include <QtCore>
-#include <QtWidgets>
 
 class gnomonFormManagerPrivate;
 class gnomonItemButton;

@@ -36,7 +36,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QObject
 public:
     static gnomonFormManager *instance(void);
 
-// signals:
+signals:
+    void added(int id);
 //     void shrink(void);
 //     void expand(void);
 
@@ -57,7 +58,7 @@ public:
     vtkCamera *getCamera(int index);
 
 public:
-    QPixmap thumbnail(int index);
+    Q_INVOKABLE QPixmap thumbnail(int index);
 
 protected:
      gnomonFormManager(QObject *parent = nullptr);

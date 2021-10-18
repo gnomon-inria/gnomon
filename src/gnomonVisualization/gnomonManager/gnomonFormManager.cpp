@@ -246,6 +246,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
         static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
     }
 
+    emit added(item->id);
     // d->contents->layout()->addWidget(item);
 }
 
@@ -274,6 +275,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
         static_cast<gnomonTreeWriterCommand *>(d->formWriterCommand[item])->setTree(tree);
     }
 
+    emit added(item->id);
 //    d->contents->layout()->addWidget(item);
 }
 
@@ -294,6 +296,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
         static_cast<gnomonDataFrameWriterCommand *>(d->formWriterCommand[item])->setDataFrame(dataFrame);
     }
 
+    emit added(item->id);
 //    d->contents->layout()->addWidget(item);
 }
 

@@ -306,12 +306,10 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 
 void gnomonViewFormPrivate::exportToManager(void)
 {
-    // TODO: Wazzzza?
-
-    // for (const auto& key : this->forms.keys()) {
-    //     gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
-    //     q->emit exportedForm(this->forms[key]);
-    // }
+    for (const auto& key : this->forms.keys()) {
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
+        q->emit exportedForm(this->forms[key]);
+    }
 }
 
 void gnomonViewFormPrivate::saveScreenshot(void)
@@ -1033,6 +1031,12 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
     // });
 
     // this->setAcceptDrops(false);
+}
+
+void gnomonViewForm::transmit(void)
+{
+    qDebug()<< Q_FUNC_INFO ;
+    d->exportToManager();
 }
 
 void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
