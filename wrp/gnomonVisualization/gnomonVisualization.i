@@ -34,9 +34,9 @@
 #include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
-// #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 // #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
-// #include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+//#include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 // #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 // #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
@@ -83,6 +83,8 @@
 
 #undef  GNOMONVISUALIZATION_EXPORT
 #define GNOMONVISUALIZATION_EXPORT
+#undef  Q_INVOKABLE
+#define Q_INVOKABLE
 
 // /////////////////////////////////////////////////////////////////
 // typemaps
@@ -581,7 +583,7 @@ WRAP_DTKCORE_PARAMETER(dtkCoreParameterSimple<gnomonLookupTable>, ParameterLooku
 
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
-// %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+%include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
