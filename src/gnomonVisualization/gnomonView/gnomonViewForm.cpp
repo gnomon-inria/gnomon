@@ -1042,10 +1042,10 @@ void gnomonViewForm::transmit(void)
 void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
     d->window = window;
-    d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
-#if defined(Q_OS_LINUX)
-    d->window->GetInteractor()->Initialize();
-#endif
+//     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
+// #if defined(Q_OS_LINUX)
+//     d->window->GetInteractor()->Initialize();
+// #endif
     d->window->AddRenderer(d->renderer2D);
     d->window->AddRenderer(d->renderer3D);
 
