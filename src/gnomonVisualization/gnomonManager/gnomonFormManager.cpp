@@ -40,6 +40,7 @@
 #include <dtkScript>
 
 #include <vtkCamera.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManagerPrivate
@@ -209,8 +210,10 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkCamera *cam)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkGenericOpenGLRenderWindow *window, vtkCamera *cam)
 {
+    visualization->setOffscreenRenderWindow(window);
+
     QImage image = visualization->imageRendering();
 
     gnomonFormManagerItem *item = d->create(form, color, image);

@@ -7,7 +7,9 @@
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 #include <vtkCamera.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageData.h>
+#include <vtkOpenGLRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
@@ -100,18 +102,21 @@ vtkRenderer *gnomonAbstractVisualization::offscreenRenderer(void)
     return d->offscreenRenderer;
 }
 
+
+void gnomonAbstractVisualization::setOffscreenRenderWindow(vtkGenericOpenGLRenderWindow *window)
+{
+    d->offscreenRenderWindow = window;
+}
+
 void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax)
 {
     if(!d->offscreenRenderer) {
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
     }
 
-    if(!d->offscreenRenderWindow) {
-        d->offscreenRenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-    }
     d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
     d->offscreenRenderWindow->SetOffScreenRendering(1);
-    d->offscreenRenderWindow->SetSize(1500, 1500);
+    d->offscreenRenderWindow->SetSize(1500, 1500); // NOTE: Remove that
 
     d->offscreenRenderer->SetBackground(0,0,0);
 
@@ -156,6 +161,8 @@ QImage gnomonAbstractVisualization::offscreenImageRendering(void)
             ++rgbPtr;
         }
     }
+
+    d->offscreenRenderWindow->RemoveRenderer(d->offscreenRenderer);
 
     return image;
 }
