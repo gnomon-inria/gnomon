@@ -1035,7 +1035,6 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 
 void gnomonViewForm::transmit(void)
 {
-    qDebug()<< Q_FUNC_INFO ;
     d->exportToManager();
 }
 
@@ -1375,6 +1374,8 @@ gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 
 void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
+    qDebug() << Q_FUNC_INFO << name << form << visualization;
+
     if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         if (d->acceptForms["gnomonCellImage"]) {
             this->setCellImage(cellImage, visualization);
@@ -1917,6 +1918,27 @@ void gnomonViewForm::updateShortcutKeys(void)
 //     // ///////////////////////////////////////////////////////////////
 
 // }
+
+void gnomonViewForm::drop(int index)
+{
+    qDebug() << Q_FUNC_INFO << index;
+
+    gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(index);
+
+    qDebug() << Q_FUNC_INFO << index << form;
+
+    if (d->empty) {
+        if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(index)) {
+            this->setCamera(cam);
+        }
+    }
+
+    qDebug() << Q_FUNC_INFO << gnomonFormManager::instance()->getVisualization(index);
+
+    this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
+
+    d->interactor()->Render();
+}
 
 // void gnomonViewForm::resizeEvent(QResizeEvent *event)
 // {

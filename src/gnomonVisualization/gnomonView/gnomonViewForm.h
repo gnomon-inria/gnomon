@@ -88,6 +88,9 @@ public slots:
     void unlink(gnomonViewForm *other);
 
 public slots:
+    void drop(int);
+
+public slots:
     void setExportColor(const QColor& color);
 
 public:
