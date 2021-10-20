@@ -18,7 +18,8 @@ Rectangle {
 
     property alias view: _view;
 
-    signal dropped(string path)
+    signal droppedFromFile(string path)
+    signal droppedFromManager(int index)
     signal transmit();
 
     XVis.Viewer {
@@ -52,12 +53,13 @@ Rectangle {
         }
 
         onDropped: {
-            if (drop.hasUrls)
+            if (drop.hasUrls) {
                 drop.urls.forEach(function (item, index) {
-                    _control.dropped(item);
+                    _control.droppedFromFile(item);
                 });
-            else
-                console.log("Got", drag.source.ref)
+            } else {
+                _control.droppedFromManager(drag.source.ref);
+            }
 
             drop.accept();
         }
