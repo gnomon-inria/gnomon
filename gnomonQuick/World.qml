@@ -46,7 +46,11 @@ ListView {
             Drag.hotSpot: Qt.point(_world.height/2, _world.height/2);
             Drag.mimeData: {"gnomon/item": model.index }
             property int ref: model.index
-
+            Image {
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+                source: "image://thumbnails/" + model.index
+            }
             MouseArea {
                 id: _dragger;
 
