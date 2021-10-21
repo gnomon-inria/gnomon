@@ -69,7 +69,8 @@ public:
 
 gnomonWorkspaceSegmentationPrivate::gnomonWorkspaceSegmentationPrivate(void) : gnomonWorkspaceTemplatePrivate<gnomonCellImageFromImageCommand>()
 {
-
+    this->command   = new gnomonCellImageFromImageCommand;
+    this->algorithm = this->command->algorithmName();
 }
 
 gnomonWorkspaceSegmentationPrivate::~gnomonWorkspaceSegmentationPrivate(void)

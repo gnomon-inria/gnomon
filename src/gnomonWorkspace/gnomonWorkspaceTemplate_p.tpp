@@ -51,6 +51,7 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
     //     this->layout = new QFormLayout;
     // }
 
+    this->command->setAlgorithmName(algorithm);
     this->algorithm = algorithm;
 
     if (!algorithm.isEmpty()) {
