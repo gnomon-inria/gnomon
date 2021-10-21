@@ -71,7 +71,10 @@ void gnomonActorPolyDataPrivate::updateColorFunction(void)
     this->colorFunction->RemoveAllPoints();
     for (const auto& val : this->colormap.keys()) {
         double node = val*this->value_range[1] + (1-val)*this->value_range[0];
-        this->colorFunction->AddRGBPoint(node, this->colormap[val].red()/255., this->colormap[val].green()/255., this->colormap[val].blue()/255.);
+        double r = this->colormap[val].red()/255.;
+        double g = this->colormap[val].green()/255.;
+        double b = this->colormap[val].blue()/255.;
+        this->colorFunction->AddRGBPoint(node, r, g, b);
     }
 
     this->colorFunction->ClampingOn();
