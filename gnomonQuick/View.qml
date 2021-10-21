@@ -87,14 +87,8 @@ Rectangle {
             }
         }
 
-        X.LabelHint1 { id: _2d_label;
-            text: "2D mode"
-            color: X.Style.foregroundColor;
-            visible: _2d_mouse_area.containsMouse;
-
-            anchors.top: _2d_icon.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
+        ToolTip.visible: _2d_mouse_area.containsMouse;
+        ToolTip.text: "2D mode";
     }
 
     X.Icon { id: _3d_icon;
@@ -116,14 +110,8 @@ Rectangle {
             }
         }
 
-        X.LabelHint1 { id: _3d_label;
-            text: "3D mode"
-            color: X.Style.foregroundColor;
-            visible: _3d_mouse_area.containsMouse;
-
-            anchors.top: _3d_icon.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
+        ToolTip.visible: _3d_mouse_area.containsMouse;
+        ToolTip.text: "3D mode";
     }
 
     X.Icon { id: _export_icon;
@@ -145,14 +133,8 @@ Rectangle {
             }
         }
 
-        X.LabelHint1 { id: _export_label;
-            text: "Export"
-            color: X.Style.foregroundColor;
-            visible: _export_mouse_area.containsMouse;
-
-            anchors.top: _export_icon.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
+        ToolTip.visible: _export_mouse_area.containsMouse;
+        ToolTip.text: "Export";
     }
 
     layer.enabled: true
