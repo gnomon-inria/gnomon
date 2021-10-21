@@ -19,6 +19,8 @@ ListView {
 
     snapMode: ListView.SnapToItem
 
+    property alias count: _world_model.count;
+
     model: ListModel {
         id: _world_model;
 
@@ -34,10 +36,10 @@ ListView {
         Rectangle {
 
             anchors.fill: parent;
-            anchors.margins: 15;
+            anchors.margins: 5;
 
             color: "#99D0A3BF"
-            radius: 10;
+            radius: 2;
 
             Drag.active: _dragger.drag.active
             Drag.dragType: Drag.Automatic
