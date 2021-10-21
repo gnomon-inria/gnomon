@@ -8,7 +8,7 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
-import gnomon.Visualization 1.0 as G
+import gnomon.Visualization 1.0 as GV
 
 Rectangle {
 
@@ -20,7 +20,10 @@ Rectangle {
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
+
     signal transmit();
+    signal switchTo2D();
+    signal switchTo3D();
 
     XVis.Viewer {
 
@@ -65,18 +68,90 @@ Rectangle {
         }
     }
 
-    X.ButtonRound {
-        iconSource: X.Icons.icons.arrow_circle_up;
+    X.Icon { id: _2d_icon;
+        icon: X.Icons.icons.crop_square;
+        size: 32;
+        color: X.Style.foregroundColor;
 
-        text: "Export"
+        anchors.top: _view.top
+        anchors.topMargin: 10
+        anchors.left: _view.left
+        anchors.leftMargin: 10
+
+        MouseArea { id: _2d_mouse_area;
+            anchors.fill: parent;
+            hoverEnabled: true;
+
+            onClicked: {
+                _control.switchTo2D();
+            }
+        }
+
+        X.LabelHint1 { id: _2d_label;
+            text: "2D mode"
+            color: X.Style.foregroundColor;
+            visible: _2d_mouse_area.containsMouse;
+
+            anchors.top: _2d_icon.bottom;
+            anchors.horizontalCenter: parent.horizontalCenter;
+        }
+    }
+
+    X.Icon { id: _3d_icon;
+        icon: X.Icons.icons._3d_rotation;
+        size: 32;
+        color: X.Style.foregroundColor;
+
+        anchors.top: _view.top
+        anchors.topMargin: 10
+        anchors.left: _view.left
+        anchors.leftMargin: 50
+
+        MouseArea { id: _3d_mouse_area;
+            anchors.fill: parent;
+            hoverEnabled: true;
+
+            onClicked: {
+                _control.switchTo3D();
+            }
+        }
+
+        X.LabelHint1 { id: _3d_label;
+            text: "3D mode"
+            color: X.Style.foregroundColor;
+            visible: _3d_mouse_area.containsMouse;
+
+            anchors.top: _3d_icon.bottom;
+            anchors.horizontalCenter: parent.horizontalCenter;
+        }
+    }
+
+    X.Icon { id: _export_icon;
+        icon: X.Icons.icons.arrow_circle_up;
+        size: 32;
+        color: X.Style.foregroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
         anchors.right: _view.right
         anchors.rightMargin: 10
 
-        onClicked: {
-            _control.transmit();
+        MouseArea { id: _export_mouse_area;
+            anchors.fill: parent;
+            hoverEnabled: true;
+
+            onClicked: {
+                _control.transmit();
+            }
+        }
+
+        X.LabelHint1 { id: _export_label;
+            text: "Export"
+            color: X.Style.foregroundColor;
+            visible: _export_mouse_area.containsMouse;
+
+            anchors.top: _export_icon.bottom;
+            anchors.horizontalCenter: parent.horizontalCenter;
         }
     }
 
