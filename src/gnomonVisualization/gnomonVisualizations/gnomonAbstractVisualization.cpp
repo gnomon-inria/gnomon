@@ -113,12 +113,12 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
     if(!d->offscreenRenderer) {
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
     }
-
+    d->offscreenRenderer->DrawOn();
     d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
-    d->offscreenRenderWindow->SetOffScreenRendering(1);
+//    d->offscreenRenderWindow->SetOffScreenRendering(1);
     d->offscreenRenderWindow->SetSize(1500, 1500); // NOTE: Remove that
 
-    d->offscreenRenderer->SetBackground(0,0,0);
+    d->offscreenRenderer->SetBackground(1,1,1);
 
     vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
     cam->ParallelProjectionOn();
@@ -137,12 +137,14 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
 
 QImage gnomonAbstractVisualization::offscreenImageRendering(void)
 {
+    d->offscreenRenderer->InteractiveOn();
     d->offscreenRenderWindow->Render();
+    d->offscreenRenderWindow->GetInteractor()->Render();
 
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(d->offscreenRenderWindow);
     windowToImageFilter->SetInputBufferTypeToRGBA();
-    // windowToImageFilter->ReadFrontBufferOff();
+    windowToImageFilter->ReadFrontBufferOn();
     windowToImageFilter->Update();
 
     vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
