@@ -15,8 +15,4 @@ SwipeView {
     interactive: false;
 
     clip: true;
-
-    Loader {
-        source: 'qrc:/src/workspaces/WorkspaceBrowsing.qml';
-    }
 }
