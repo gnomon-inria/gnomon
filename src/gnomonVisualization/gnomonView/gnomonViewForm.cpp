@@ -412,7 +412,8 @@ void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
 
 void gnomonViewFormPrivate::updateOrientation(void)
 {
-    if(!this->cameras.contains(this->ori)) {
+    // if(!this->cameras.contains(this->ori)) {
+    if(true) {
 
         vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
         cam->ParallelProjectionOn();
