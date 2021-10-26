@@ -27,11 +27,18 @@ public:
 public:
     QColor color;
 
-public:
+/*public:
     QPointF offset;
 
 public:
-    QRectF rect;
+    QRectF rect;*/
+
+public:
+    QList<gnomonPipelinePort *>  input_ports;
+    QList<gnomonPipelinePort *> output_ports;
+
+    QList<gnomonPipelineEdge *>  input_edges;
+    QList<gnomonPipelineEdge *> output_edges;
 
 public:
     QString variantParameterString(const QVariant& parameter);

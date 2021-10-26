@@ -190,7 +190,7 @@ void gnomonComposerWidget::addWorkspace(const QString& title)
         qDebug() << Q_FUNC_INFO << "Adding edge";
         edge = new dtkComposerSceneEdge;
         edge->setSource(d->last_port);
-        edge->setDestination(i_port);
+        edge->setTarget(i_port);
         edge->link(true);
 
         d->last_node->addOutputEdge(edge);

@@ -15,6 +15,7 @@
 #include "gnomonPipelineNodeReader.h"
 
 #include "gnomonPipelineNode_p.h"
+#include "gnomonPipelinePort.h"
 
 
 // /////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@
 class gnomonPipelineNodeReaderPrivate {
 public:
     QString path;
-    QMap<QString, dtkComposerScenePort *> output_ports;
+    QMap<QString, gnomonPipelinePort *> output_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -42,10 +43,10 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_clas
 
 
     for (const auto& output : outputs) {
-        dd->output_ports[output] = new dtkComposerScenePort(dtkComposerScenePort::Output, this);
+        dd->output_ports[output] = new gnomonPipelinePort(gnomonPipelinePort::Output, this);
         this->addOutputPort(dd->output_ports[output]);
     }
-    this->layout();
+    // this->layout()();
 }
 
 gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)
@@ -53,7 +54,7 @@ gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)
 
 }
 
-const QMap<QString, dtkComposerScenePort *>& gnomonPipelineNodeReader::outputPorts(void)
+const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeReader::outputPorts(void)
 {
     return dd->output_ports;
 }

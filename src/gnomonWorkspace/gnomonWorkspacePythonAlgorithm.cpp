@@ -16,7 +16,7 @@
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
-#include <gnomonComposer>
+#include <gnomonPipeline>
 #include <gnomonVisualization>
 
 #include <dtkCore>

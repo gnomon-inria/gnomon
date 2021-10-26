@@ -62,16 +62,16 @@ QString gnomonPipelineNodePrivate::variantParameterString(const QVariant& parame
 // gnomonPipelineNode
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNode::gnomonPipelineNode(void) : dtkComposerSceneNode(), d(new gnomonPipelineNodePrivate)
+gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
 {
-    d->color = QColor(Qt::darkGray);
+    /*d->color = QColor(Qt::darkGray);
 
     d->rect = QRectF(0, 0, 200, 50);
     d->offset = QPointF(50, 50);
 
     this->setAcceptDrops(false);
-    this->layout();
-    this->setTitle("");
+    // this->layout()();
+    this->setTitle("");*/
 }
 
 gnomonPipelineNode::~gnomonPipelineNode(void)
@@ -86,7 +86,7 @@ const QString& gnomonPipelineNode::algorithmClass(void)
     return d->algorithm_class;
 }
 
-void gnomonPipelineNode::layout(void)
+/* void gnomonPipelineNode::layout(void)
 {
     d->rect = QRectF(0, 0, 200, 50);
 
@@ -125,12 +125,12 @@ void gnomonPipelineNode::layout(void)
 
     QRectF updateRect;
 
-    for (dtkComposerSceneEdge *edge : this->inputEdges()) {
+    for (gnomonPipelineEdge *edge : this->inputEdges()) {
         edge->adjust();
         updateRect |= edge->boundingRect();
     }
 
-    for (dtkComposerSceneEdge *edge : this->outputEdges()) {
+    for (gnomonPipelineEdge *edge : this->outputEdges()) {
         edge->adjust();
         updateRect |= edge->boundingRect();
     }
@@ -238,8 +238,48 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->setFont(font);
     painter->setPen(QPen(QColor(Qt::black)));
     painter->drawText(label_pos, label_text);
+} */
+
+void gnomonPipelineNode::addInputEdge(gnomonPipelineEdge *edge)
+{
+    d->input_edges << edge;
 }
 
+void gnomonPipelineNode::addOutputEdge(gnomonPipelineEdge *edge)
+{
+    d->output_edges << edge;
+}
+
+void gnomonPipelineNode::removeInputEdge(gnomonPipelineEdge *edge)
+{
+    d->input_edges.removeAll(edge);
+}
+
+void gnomonPipelineNode::removeOutputEdge(gnomonPipelineEdge *edge)
+{
+    d->output_edges.removeAll(edge);
+}
+
+int gnomonPipelineNode::addInputPort(gnomonPipelinePort *port)
+{
+    d->input_ports << port;
+    return d->input_ports.size() - 1;
+}
+
+void gnomonPipelineNode::addOutputPort(gnomonPipelinePort *port)
+{
+    d->output_ports << port;
+}
+
+void gnomonPipelineNode::removeInputPort(gnomonPipelinePort *port)
+{
+    d->input_ports.removeAll(port);
+}
+
+void gnomonPipelineNode::removeOutputPort(gnomonPipelinePort *port)
+{
+    d->output_ports.removeAll(port);
+}
 
 QString gnomonPipelineNode::toToml(const QString& node_name)
 {

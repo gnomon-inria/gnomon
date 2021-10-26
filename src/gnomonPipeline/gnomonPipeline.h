@@ -27,8 +27,6 @@ class gnomonAbstractConstructorCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
 
-class gnomonPipelinePrivate;
-
 class GNOMONCOMPOSER_EXPORT gnomonPipeline : public QObject
 {
     Q_OBJECT
@@ -54,15 +52,15 @@ public slots:
     void exportToLuigiScript(const QString& path);
     void exportToJson(const QString& path);
 
-public slots:
-    void updateLayout(void);
+/* public slots:
+    void updateLayout(void); */
 
 protected:
      gnomonPipeline(void);
     ~gnomonPipeline(void);
 
 private:
-    gnomonPipelinePrivate *d;
+    class gnomonPipelinePrivate *d;
 
 private:
     static gnomonPipeline *s_instance;

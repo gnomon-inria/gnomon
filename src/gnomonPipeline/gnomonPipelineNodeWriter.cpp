@@ -15,6 +15,7 @@
 #include "gnomonPipelineNodeWriter.h"
 
 #include "gnomonPipelineNode_p.h"
+#include "gnomonPipelinePort.h"
 
 
 // /////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@
 class gnomonPipelineNodeWriterPrivate {
 public:
     QString path;
-    QMap<QString, dtkComposerScenePort *> input_ports;
+    QMap<QString, gnomonPipelinePort *> input_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -40,10 +41,10 @@ gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_clas
 
     dd->path = path;
     for (const auto& input : inputs) {
-        dd->input_ports[input] = new dtkComposerScenePort(dtkComposerScenePort::Input, this);
+        dd->input_ports[input] = new gnomonPipelinePort(gnomonPipelinePort::Input, this);
         this->addInputPort(dd->input_ports[input]);
     }
-    this->layout();
+    // this->layout()();
 }
 
 gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
@@ -51,7 +52,7 @@ gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
 
 }
 
-const QMap<QString, dtkComposerScenePort *>& gnomonPipelineNodeWriter::inputPorts(void)
+const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeWriter::inputPorts(void)
 {
     return dd->input_ports;
 }

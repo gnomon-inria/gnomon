@@ -15,6 +15,7 @@
 #include "gnomonPipelineNodeAlgorithm.h"
 
 #include "gnomonPipelineNode_p.h"
+#include "gnomonPipelinePort.h"
 
 
 // /////////////////////////////////////////////////////////////////
@@ -24,8 +25,8 @@
 class gnomonPipelineNodeAlgorithmPrivate {
 public:
     QVariantMap parameters;
-    QMap<QString, dtkComposerScenePort *> input_ports;
-    QMap<QString, dtkComposerScenePort *> output_ports;
+    QMap<QString, gnomonPipelinePort *> input_ports;
+    QMap<QString, gnomonPipelinePort *> output_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -44,14 +45,14 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
 
     dd->parameters = parameters;
     for (const auto& input : inputs) {
-        dd->input_ports[input] = new dtkComposerScenePort(dtkComposerScenePort::Input, this);
+        dd->input_ports[input] = new gnomonPipelinePort(gnomonPipelinePort::Input, this);
         this->addInputPort(dd->input_ports[input]);
     }
     for (const auto& output : outputs) {
-        dd->output_ports[output] = new dtkComposerScenePort(dtkComposerScenePort::Output, this);
+        dd->output_ports[output] = new gnomonPipelinePort(gnomonPipelinePort::Output, this);
         this->addOutputPort(dd->output_ports[output]);
     }
-    this->layout();
+    // this->layout()();
 }
 
 gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
@@ -59,12 +60,12 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
-const QMap<QString, dtkComposerScenePort *>& gnomonPipelineNodeAlgorithm::inputPorts(void)
+const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeAlgorithm::inputPorts(void)
 {
     return dd->input_ports;
 }
 
-const QMap<QString, dtkComposerScenePort *>& gnomonPipelineNodeAlgorithm::outputPorts(void)
+const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeAlgorithm::outputPorts(void)
 {
     return dd->output_ports;
 }

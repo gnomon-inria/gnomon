@@ -1,18 +1,19 @@
-project(gnomonComposer VERSION ${gnomon_VERSION})
+project(gnomonPipeline VERSION ${gnomon_VERSION})
 
 ## #################################################################
 ## Input
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonComposer
-  gnomonComposerNodeWorkspace
-  gnomonComposerNodeWorkspace.h
-  gnomonPipelineNode.h
-  gnomonComposerWidget_p.h
-  gnomonComposerWidget.h
+  # gnomonComposer
+  # gnomonComposerNodeWorkspace
+  # gnomonComposerNodeWorkspace.h
+  # gnomonComposerWidget_p.h
+  # gnomonComposerWidget.h
   gnomonPipeline
   gnomonPipeline.h
+  gnomonPipelineEdge.h
+  gnomonPipelineNode.h
   gnomonPipelineNodeAdapter
   gnomonPipelineNodeAdapter.h
   gnomonPipelineNodeAlgorithm
@@ -22,20 +23,23 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPipelineNodeReader
   gnomonPipelineNodeReader.h
   gnomonPipelineNodeWriter
-  gnomonPipelineNodeWriter.h)
+  gnomonPipelineNodeWriter.h
+  gnomonPipelinePort.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonComposerNodeWorkspace.cpp
-  gnomonPipelineNode.cpp
-  gnomonComposerWidget.cpp
+  # gnomonComposerNodeWorkspace.cpp
+  # gnomonComposerWidget.cpp
   gnomonPipeline.cpp
+  gnomonPipelineEdge.cpp
+  gnomonPipelineNode.cpp
   gnomonPipelineNodeAdapter.cpp
   gnomonPipelineNodeAlgorithm.cpp
   gnomonPipelineNodeConstructor.cpp
   gnomonPipelineNodeReader.cpp
-  gnomonPipelineNodeWriter.cpp)
+  gnomonPipelineNodeWriter.cpp
+  gnomonPipelinePort.cpp)
 
-## set(${PROJECT_NAME}_RESOURCES gnomonComposer.qrc)
+## set(${PROJECT_NAME}_RESOURCES gnomonPipeline.qrc)
 
 ## #################################################################
 ## Build rules
@@ -53,20 +57,20 @@ add_library(${PROJECT_NAME} SHARED
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
+# target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Network)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Svg)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Xml)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
+# target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
+# target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
 
 ## #############################################################################
 ##
@@ -108,7 +112,7 @@ set(${PROJECT_NAME}_HEADERS
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
   DESTINATION include/gnomon
-  COMPONENT gnomon-composer)
+  COMPONENT gnomon-pipeline)
 
 ## ###################################################################
 ## Install rules - targets

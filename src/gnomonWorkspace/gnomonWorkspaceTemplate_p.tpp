@@ -20,11 +20,11 @@
 
 //#include <gnomonWidgets/gnomonWidgetsParameter.h>
 
-//#include <gnomonComposer>
+#include <gnomonPipeline>
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
-//    this->pipeline = gnomonPipeline::instance();
+    this->pipeline = gnomonPipeline::instance();
 }
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
@@ -76,9 +76,9 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::registerPipeline(v
 {
     if (this->command) {
         if (gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command)) {
-//TODO:            this->pipeline->addAlgorithm(algorithm_command);
+            this->pipeline->addAlgorithm(algorithm_command);
         } else if (gnomonAbstractConstructorCommand *constructor_command = dynamic_cast<gnomonAbstractConstructorCommand *>(this->command)) {
-//TODO:            this->pipeline->addConstructor(constructor_command);
+            this->pipeline->addConstructor(constructor_command);
         }
     }
 }

@@ -18,6 +18,8 @@
 
 #include "gnomonPipelineNode.h"
 
+class gnomonPipelinePort;
+
 class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeReader : public gnomonPipelineNode
 {
 public:
@@ -25,7 +27,7 @@ public:
     ~gnomonPipelineNodeReader(void);
 
 public:
-    const QMap<QString, dtkComposerScenePort *>& outputPorts(void);
+    const QMap<QString, gnomonPipelinePort *>& outputPorts(void);
 
 public:
     virtual QString toToml(const QString& node_name) override;
