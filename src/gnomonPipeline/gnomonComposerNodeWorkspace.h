@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include <gnomonComposerExport.h>
+#include <gnomonPipelineExport.h>
 
 #include <dtkComposer>
 
-class GNOMONCOMPOSER_EXPORT gnomonComposerNodeWorkspace : public dtkComposerSceneNodeComposite
+class GNOMONPIPELINE_EXPORT gnomonComposerNodeWorkspace : public dtkComposerSceneNodeComposite
 {
 public:
      gnomonComposerNodeWorkspace(const QString& title);

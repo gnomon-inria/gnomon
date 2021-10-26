@@ -16,14 +16,14 @@
 
 // #include <dtkComposerExport.h>
 // #include <dtkComposer>
-#include <gnomonComposerExport.h>
+#include <gnomonPipelineExport.h>
 
 #include <QtCore>
 
 class gnomonPipelineEdge;
 class gnomonPipelinePort;
 
-class GNOMONCOMPOSER_EXPORT gnomonPipelineNode : public QObject
+class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
 {
     Q_OBJECT
 

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <gnomonComposerExport.h>
+#include <gnomonPipelineExport.h>
 
 #include <QtCore>
 
@@ -27,7 +27,7 @@ class gnomonAbstractConstructorCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
 
-class GNOMONCOMPOSER_EXPORT gnomonPipeline : public QObject
+class GNOMONPIPELINE_EXPORT gnomonPipeline : public QObject
 {
     Q_OBJECT
 

@@ -14,13 +14,13 @@
 
 #pragma once
 
-#include <gnomonComposerExport.h>
+#include <gnomonPipelineExport.h>
 
 #include "gnomonPipelineNode.h"
 
 class gnomonPipelinePort;
 
-class GNOMONCOMPOSER_EXPORT gnomonPipelineNodeReader : public gnomonPipelineNode
+class GNOMONPIPELINE_EXPORT gnomonPipelineNodeReader : public gnomonPipelineNode
 {
 public:
      gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs);

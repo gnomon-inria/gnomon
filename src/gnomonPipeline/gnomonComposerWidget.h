@@ -18,7 +18,7 @@
 
 #include <QtWidgets>
 
-#include <gnomonComposerExport.h>
+#include <gnomonPipelineExport.h>
 
 class dtkComposerSceneNode;
 class dtkComposerWidget;
@@ -26,7 +26,7 @@ class gnomonPipelineNode;
 
 class gnomonComposerWidgetPrivate;
 
-class GNOMONCOMPOSER_EXPORT gnomonComposerWidget : public QFrame
+class GNOMONPIPELINE_EXPORT gnomonComposerWidget : public QFrame
 {
     Q_OBJECT
 

@@ -14,9 +14,7 @@
 
 #pragma once
 
-#include <QtWidgets>
 
-class gnomonPipelineEdgePrivate;
 class gnomonPipelineNode;
 class gnomonPipelinePort;
 
