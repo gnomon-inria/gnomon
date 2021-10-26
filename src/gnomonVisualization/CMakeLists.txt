@@ -92,7 +92,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
 #target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
 #
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
-# target_link_libraries(${PROJECT_NAME} PRIVATE gnomonComposer)
+target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)
 # target_link_libraries(${PROJECT_NAME} PRIVATE gnomonWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})

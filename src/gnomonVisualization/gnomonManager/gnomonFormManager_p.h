@@ -67,8 +67,8 @@ public:
 // public:
 //     gnomonFormManagerFocus *focus_item = nullptr;
 
-// public:
-//     gnomonPipeline *pipeline = nullptr;
+public:
+    gnomonPipeline *pipeline = nullptr;
 
 public:
     gnomonViewForm *view = nullptr;

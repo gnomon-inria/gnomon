@@ -108,7 +108,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObj
 //    d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonCellImage",true);
 
-//TODO: pipeline    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     // TODO: Fix the view pool
     // d->pool = new gnomonViewFormPool(this);

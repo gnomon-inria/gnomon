@@ -25,7 +25,7 @@
 #include "gnomonView/gnomonViewForm.h"
 
 #include <gnomonCore>
-// #include <gnomonComposer>
+#include <gnomonPipeline>
 
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
@@ -223,8 +223,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     d->formVisualizations.insert(item, visualization);
     d->formCameras.insert(item, cam);
 
-    //TODO:
-    // d->pipeline->addClonedForm(form,d->forms[item]);
+    d->pipeline->addClonedForm(form,d->forms[item]);
 
     QString writerPlugin;
     if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
@@ -263,8 +262,7 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->forms.insert(item, form->clone());
     d->formMatplotlibVisualizations.insert(item, visualization);
 
- //TODO:
-    // d->pipeline->addClonedForm(form,d->forms[item]);
+    d->pipeline->addClonedForm(form,d->forms[item]);
 
     QString writerPlugin;
 
@@ -356,7 +354,7 @@ gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
     d = new gnomonFormManagerPrivate;
     d->q = this;
 
-//    d->pipeline = gnomonPipeline::instance();
+    d->pipeline = gnomonPipeline::instance();
 
     // QHBoxLayout *t_layout = new QHBoxLayout;
     // t_layout->setContentsMargins(0, 0, 0, 0);
