@@ -794,7 +794,7 @@ void gnomonViewMatplotlib::dragMoveEvent(QDragMoveEvent *event)
 
 void gnomonViewMatplotlib::dropEvent(QDropEvent *event)
 {
-    QString path = event->mimeData()->text();
+    QString path = QUrl::fromPercentEncoding(event->mimeData()->text().toUtf8());
 
     if(path.startsWith(":")) {
         gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(path.remove(":").toInt());

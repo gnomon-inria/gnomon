@@ -628,7 +628,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent
 
 /////////////////////////////////////////////////////////////////////////////
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+
 
 //     QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
 
@@ -773,6 +773,9 @@ gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 void gnomonWorkspaceBrowser::read(const QString& path)
 {
     d->addFormFromFile(path);
+
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    settings.setValue("path", QUrl(path).adjusted(QUrl::RemoveFilename).toString());
 }
 
 void gnomonWorkspaceBrowser::readWith(const QString& reader)
@@ -783,6 +786,12 @@ void gnomonWorkspaceBrowser::readWith(const QString& reader)
 gnomonViewForm *gnomonWorkspaceBrowser::view(void)
 {
     return d->browse_view;
+}
+
+QUrl gnomonWorkspaceBrowser::defaultReadPath()
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    return settings.value("path").toString();
 }
 
 // /////////////////////////////////////////////////////////////////////////////

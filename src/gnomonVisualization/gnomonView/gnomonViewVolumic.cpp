@@ -1033,7 +1033,7 @@ void gnomonViewVolumic::setMesh(gnomonMesh *mesh)
 }
 
 void gnomonViewVolumic::setBounds(double bounds[6])
-{   
+{
     d->xBounds[0] = bounds[0];
     d->xBounds[1] = bounds[1];
     d->yBounds[0] = bounds[2];
@@ -1476,7 +1476,7 @@ void gnomonViewVolumic::dragMoveEvent(QDragMoveEvent *event)
 
 void gnomonViewVolumic::dropEvent(QDropEvent *event)
 {
-    QString path = event->mimeData()->text();
+    QString path = QUrl::fromPercentEncoding(event->mimeData()->text().toUtf8());
 
     if(path.startsWith(":")) {
         gnomonImagesSeriePtr images_serie = gnomonImageManager::instance()->get(path.remove(":").toInt());

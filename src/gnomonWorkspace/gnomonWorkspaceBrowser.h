@@ -36,6 +36,7 @@ public slots:
     void readWith(const QString&);
 
 public:
+    Q_INVOKABLE QUrl defaultReadPath();
     Q_INVOKABLE gnomonViewForm *view(void);
 
 private:
