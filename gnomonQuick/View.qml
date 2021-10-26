@@ -24,6 +24,7 @@ Rectangle {
     signal transmit();
     signal switchTo2D();
     signal switchTo3D();
+    signal sliceChange(int value);
 
     XVis.Viewer {
 
@@ -68,6 +69,29 @@ Rectangle {
         }
     }
 
+    Slider { id: _2d_slider
+        from: 0
+        to: 100
+        value: 50
+        stepSize: 1
+        snapMode: Slider.SnapAlways
+
+        rotation: 90
+        visible: false
+        width: _view.height
+
+        anchors.verticalCenter: _view.verticalCenter
+        anchors.left: _view.left
+        anchors.leftMargin: 5 - _view.height / 2
+
+        handle.implicitWidth: 10
+        handle.implicitHeight: 10
+
+        onValueChanged: {
+            _control.sliceChange(value);
+        }
+    }
+
     X.Icon { id: _2d_icon;
         icon: X.Icons.icons.crop_square;
         size: 32;
@@ -84,6 +108,8 @@ Rectangle {
 
             onClicked: {
                 _control.switchTo2D();
+                _control.sliceChange(_2d_slider.value);
+                _2d_slider.visible = true;
             }
         }
 
@@ -107,6 +133,7 @@ Rectangle {
 
             onClicked: {
                 _control.switchTo3D();
+                _2d_slider.visible = false;
             }
         }
 
