@@ -111,8 +111,7 @@ set(${PROJECT_NAME}_HEADERS
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/gnomon
-  COMPONENT gnomon-pipeline)
+  DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################
 ## Install rules - targets
