@@ -83,6 +83,7 @@
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonFormVisitor.h"
 #include "gnomonLandmark.h"
+#include "gnomonProjectManager.h"
 #include "gnomonTime.h"
 #include "gnomonTypeDef.h"
 #include "gnomonPythonPluginLoader.h"
