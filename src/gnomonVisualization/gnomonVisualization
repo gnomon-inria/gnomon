@@ -2,6 +2,7 @@
 #include "gnomonActor/gnomonActor.h"
 #include "gnomonManager/gnomonFormManager.h"
 #include "gnomonManager/gnomonFormManagerItem.h"
+#include "gnomonManager/gnomonProjectManager.h"
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonView/gnomonViewFormPool.h"
 // #include "gnomonView/gnomonViewMatplotlib.h"
