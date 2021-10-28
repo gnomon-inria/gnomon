@@ -422,6 +422,11 @@ gnomonPipeline::~gnomonPipeline(void)
     delete d;
 }
 
+const QStringList& gnomonPipeline::nodeNames(void)
+{
+    return d->pipeline_node_names;
+}
+
 void gnomonPipeline::addReader(gnomonAbstractReaderCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> forms = command->outputs();

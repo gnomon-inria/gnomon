@@ -34,6 +34,16 @@ class GNOMONPIPELINE_EXPORT gnomonPipeline : public QObject
 public:
     static gnomonPipeline *instance(void);
 
+protected:
+     gnomonPipeline(void);
+    ~gnomonPipeline(void);
+
+public:
+    Q_PROPERTY(QStringList nodeNames READ nodeNames);
+
+public:
+    const QStringList& nodeNames(void);
+
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
@@ -54,10 +64,6 @@ public slots:
 
 /* public slots:
     void updateLayout(void); */
-
-protected:
-     gnomonPipeline(void);
-    ~gnomonPipeline(void);
 
 private:
     class gnomonPipelinePrivate *d;

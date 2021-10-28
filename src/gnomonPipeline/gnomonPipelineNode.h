@@ -32,6 +32,9 @@ public:
     ~gnomonPipelineNode(void);
 
 public:
+    Q_PROPERTY(QString algorithmClass READ algorithmClass);
+
+public:
     const QString& algorithmClass(void);
 
 /*public:
