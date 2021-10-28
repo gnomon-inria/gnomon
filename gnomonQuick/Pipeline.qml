@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
 
+import gnomon.Pipeline 1.0 as G
+
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use actual resolution as propertues bound to the shader
 // /////////////////////////////////////////////////////////////////////////////
@@ -11,6 +13,13 @@ Rectangle {
 
     layer.enabled: true
     layer.samples: 4
+
+    Connections {
+        target: G.Pipeline
+        function onNodeAdded (node) {
+            console.log(node.algorithmClass, G.Pipeline.nodeNames);
+        }
+    }
 
     ShaderEffect {
 
