@@ -3,7 +3,7 @@ import QtQuick.Shapes 1.15
 
 import gnomon.Pipeline 1.0 as G
 
-import gnomonQuick     1.0 as GQ
+import gnomonQuick     1.0 as GX
 
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use actual resolution as propertues bound to the shader
@@ -15,14 +15,6 @@ Rectangle {
 
     layer.enabled: true
     layer.samples: 4
-
-    Connections {
-        target: G.Pipeline
-        function onNodeAdded (node) {
-            console.log(node.algorithmClass, G.Pipeline.nodeNames);
-            root.addNode()
-        }
-    }
 
     ShaderEffect {
 
@@ -108,16 +100,46 @@ void main() {
 
     property var nodes: []
 
-    function addNode() {
-        var component = Qt.createComponent("PipelineNode.qml");
-        var node = component.createObject(root);
-        console.log("Adding node...", node)
-        nodes.push(node);
+    Connections {
+        target: G.Pipeline
+        function onNodeAdded (node) {
+            console.log(node.algorithmClass, node.position.x, node.position.y, G.Pipeline.nodeNames);
+            for (var i = 0; i < G.Pipeline.nodeNames.length; i++)
+                console.log("  -> node",
+                            G.Pipeline.nodeNames[i],
+                            G.Pipeline.node(G.Pipeline.nodeNames[i]).position.x,
+                            G.Pipeline.node(G.Pipeline.nodeNames[i]).position.y);
+
+            var n = root.addNode(node);
+        }
     }
 
+    function addNode(node) {
+        var node_component = Qt.createComponent("PipelineNode.qml");
+        if (node_component.status == Component.Ready) {
+            var n = node_component.createObject(root, {
+                "algorithmClass": node.algorithmClass,
+                "algorithmPlugin": node.algorithmPlugin,
+                "color": node.color,
+                "x": Qt.binding(function() { return root.width/2 + node.position.x }),
+                "y": Qt.binding(function() { return root.height/2 + node.position.y })
+            });
+            nodes.push(n);
+            console.log("Adding node...", n)
+            return n;
+        } else {
+            console.error(node_component.errorString());
+        }
+    }
+
+    /*GX.PipelineNode { id: _source;
+        algorithmClass: "source";
+        algorithmPlugin: "dummySource";
+    }*/
+
     /*
-    GQ.PipelineNode { id: _source; }
-    GQ.PipelineNode { id: _destination; }
+    GX.PipelineNode { id: _source; }
+    GX.PipelineNode { id: _destination; }
 
 
     Shape {
