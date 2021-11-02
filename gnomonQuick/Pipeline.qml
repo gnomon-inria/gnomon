@@ -3,6 +3,8 @@ import QtQuick.Shapes 1.15
 
 import gnomon.Pipeline 1.0 as G
 
+import gnomonQuick     1.0 as GQ
+
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use actual resolution as propertues bound to the shader
 // /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,7 @@ Rectangle {
         target: G.Pipeline
         function onNodeAdded (node) {
             console.log(node.algorithmClass, G.Pipeline.nodeNames);
+            root.addNode()
         }
     }
 
@@ -100,46 +103,22 @@ void main() {
     }
 
 // /////////////////////////////////////////////////////////////////////////////
-// Nodes                                           - TODO: Turn into a component
+// Nodes
 // /////////////////////////////////////////////////////////////////////////////
 
-    Rectangle {
+    property var nodes: []
 
-        id: _source;
-
-        width: 100;
-        height: 48;
-        radius: 6;
-        color: "#E4A065";
-
-        Drag.active: dragArea_1.drag.active
-
-        MouseArea {
-            id: dragArea_1
-            anchors.fill: parent
-
-            drag.target: parent
-        }
+    function addNode() {
+        var component = Qt.createComponent("PipelineNode.qml");
+        var node = component.createObject(root);
+        console.log("Adding node...", node)
+        nodes.push(node);
     }
 
-    Rectangle {
+    /*
+    GQ.PipelineNode { id: _source; }
+    GQ.PipelineNode { id: _destination; }
 
-        id: _destination;
-
-        width: 100;
-        height: 48;
-        radius: 6;
-        color: "#E49034";
-
-        Drag.active: dragArea_2.drag.active
-
-        MouseArea {
-            id: dragArea_2
-            anchors.fill: parent
-
-            drag.target: parent
-        }
-    }
 
     Shape {
 
@@ -173,4 +152,5 @@ void main() {
             }
         }
     }
+    */
 }
