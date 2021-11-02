@@ -86,6 +86,29 @@ const QString& gnomonPipelineNode::algorithmClass(void)
     return d->algorithm_class;
 }
 
+const QString& gnomonPipelineNode::algorithmPlugin(void)
+{
+    return d->algorithm;
+}
+
+const QColor& gnomonPipelineNode::color(void)
+{
+    return d->color;
+}
+
+
+const QPointF& gnomonPipelineNode::position(void)
+{
+    return d->position;
+}
+
+void gnomonPipelineNode::setPosition(const QPointF& pos)
+{
+    d->position = pos;
+    emit positionChanged();
+}
+
+
 /* void gnomonPipelineNode::layout(void)
 {
     d->rect = QRectF(0, 0, 200, 50);

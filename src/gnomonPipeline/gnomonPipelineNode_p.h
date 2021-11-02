@@ -15,7 +15,7 @@
 #pragma once
 
 #include <QtCore>
-#include <QtWidgets>
+#include <QtGui>
 
 
 class gnomonPipelineNodePrivate
@@ -26,6 +26,7 @@ public:
 
 public:
     QColor color;
+    QPointF position;
 
 /*public:
     QPointF offset;

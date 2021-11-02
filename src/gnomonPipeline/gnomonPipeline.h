@@ -44,6 +44,8 @@ public:
 public:
     const QStringList& nodeNames(void);
 
+    Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
+
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
@@ -62,8 +64,8 @@ public slots:
     void exportToLuigiScript(const QString& path);
     void exportToJson(const QString& path);
 
-/* public slots:
-    void updateLayout(void); */
+public slots:
+    void updateLayout(void);
 
 private:
     class gnomonPipelinePrivate *d;

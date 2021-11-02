@@ -80,10 +80,10 @@ public:
 public:
     bool hasNode(gnomonPipelineNode *);
 
-/*public:
+public:
     QList<QList<double> > nodeDistances(QList<QPointF> node_positions);
     QList<QList<QVector2D> > nodeVectors(QList<QPointF> node_positions);
-    void forceDrivenLayout(void);*/
+    void forceDrivenLayout(void);
 };
 
 
@@ -205,11 +205,11 @@ bool gnomonPipelinePrivate::hasNode(gnomonPipelineNode *node)
     return node_found;
 }
 
-/*void gnomonPipelinePrivate::forceDrivenLayout(void)
+void gnomonPipelinePrivate::forceDrivenLayout(void)
 {
     QList<QPointF> node_positions;
     for (const auto& node_name : this->pipeline_node_names) {
-        node_positions.append(this->pipeline_nodes[node_name]->pos()/10);
+        node_positions.append(this->pipeline_nodes[node_name]->position()/10);
     }
 
     QList<QPair<int, int> > node_edge_indices;
@@ -349,14 +349,15 @@ bool gnomonPipelinePrivate::hasNode(gnomonPipelineNode *node)
 
     for (int n=0; n<node_positions.size(); n++) {
         gnomonPipelineNode *node = this->pipeline_nodes[this->pipeline_node_names[n]];
-        node->setPos(node_positions[n]-center);
+        node->setPosition(node_positions[n]-center);
     }
-    for (int n=0; n<node_positions.size(); n++) {
+
+    /*for (int n=0; n<node_positions.size(); n++) {
         gnomonPipelineNode *node = this->pipeline_nodes[this->pipeline_node_names[n]];
         for (const auto& edge : node->inputEdges()) {
             edge->adjust();
         }
-    }
+    }*/
 }
 
 QList<QList<double> > gnomonPipelinePrivate::nodeDistances(QList<QPointF> node_positions)
@@ -396,7 +397,7 @@ QList<QList<QVector2D> > gnomonPipelinePrivate::nodeVectors(QList<QPointF> node_
         }
     }
     return node_vectors;
-}*/
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipeline
@@ -425,6 +426,15 @@ gnomonPipeline::~gnomonPipeline(void)
 const QStringList& gnomonPipeline::nodeNames(void)
 {
     return d->pipeline_node_names;
+}
+
+gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
+{
+    if (d->pipeline_node_names.contains(node_name)) {
+        return d->pipeline_nodes[node_name];
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonPipeline::addReader(gnomonAbstractReaderCommand *command)
@@ -464,7 +474,7 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
 
     d->linkNodeInputs(node);
 
-    // d->forceDrivenLayout();
+    this->updateLayout();
 
     emit nodeAdded(node);
 }
@@ -536,7 +546,7 @@ void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
             d->linkNodeInputs(node);
-            // d->forceDrivenLayout();
+            this->updateLayout();
             emit nodeAdded(node);
         }
     }
@@ -560,7 +570,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
 
-            // d->forceDrivenLayout();
+            this->updateLayout();
 
             emit nodeAdded(node);
         }
@@ -580,7 +590,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             d->pipeline_nodes[node_name] = node;
 
             d->linkNodeInputs(node);
-            // d->forceDrivenLayout();
+            this->updateLayout();
 
             emit nodeAdded(node);
         }
@@ -599,7 +609,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             d->pipeline_node_names.append(node_name);
             d->pipeline_nodes[node_name] = node;
 
-            // d->forceDrivenLayout();
+            this->updateLayout();
 
             emit nodeAdded(node);
         }
@@ -619,7 +629,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             d->pipeline_nodes[node_name] = node;
 
             d->linkNodeInputs(node);
-            // d->forceDrivenLayout();
+            this->updateLayout();
 
             emit nodeAdded(node);
         }
@@ -827,10 +837,10 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     this->exportToToml(config_path);
 }
 
-/* void gnomonPipeline::updateLayout(void)
+void gnomonPipeline::updateLayout(void)
 {
     d->forceDrivenLayout();
-} */
+}
 
 
 gnomonPipeline *gnomonPipeline::s_instance = nullptr;

@@ -19,6 +19,7 @@
 #include <gnomonPipelineExport.h>
 
 #include <QtCore>
+#include <QtGui>
 
 class gnomonPipelineEdge;
 class gnomonPipelinePort;
@@ -33,9 +34,22 @@ public:
 
 public:
     Q_PROPERTY(QString algorithmClass READ algorithmClass);
+    Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin);
+    Q_PROPERTY(QColor color READ color);
+    Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
 public:
     const QString& algorithmClass(void);
+    const QString& algorithmPlugin(void);
+    const QColor& color(void);
+
+    const QPointF& position(void);
+
+public:
+    void setPosition(const QPointF& pos);
+
+signals:
+    void positionChanged(void);
 
 /*public:
     void layout(void);
