@@ -1,2 +1,3 @@
 #include "gnomonPipeline.h"
 #include "gnomonPipelineNode.h"
+#include "gnomonPipelinePort.h"

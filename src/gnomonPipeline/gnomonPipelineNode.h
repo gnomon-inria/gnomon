@@ -38,6 +38,9 @@ public:
     Q_PROPERTY(QColor color READ color);
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
+    Q_PROPERTY(QStringList inputPortsNames READ inputPortsNames);
+    Q_PROPERTY(QStringList outputPortsNames READ outputPortsNames);
+
 public:
     const QString& algorithmClass(void);
     const QString& algorithmPlugin(void);
@@ -71,8 +74,14 @@ public:
     void removeOutputEdge(gnomonPipelineEdge *edge);
 
 public:
-    int  addInputPort(gnomonPipelinePort *port);
-    void addOutputPort(gnomonPipelinePort *port);
+    const QMap<QString, gnomonPipelinePort *>& inputPorts(void);
+    const QMap<QString, gnomonPipelinePort *>& outputPorts(void);
+
+    QStringList inputPortsNames(void);
+    QStringList outputPortsNames(void);
+
+    int  addInputPort(const QString& name, gnomonPipelinePort *port);
+    void addOutputPort(const QString& name, gnomonPipelinePort *port);
 
     void  removeInputPort(gnomonPipelinePort *port);
     void removeOutputPort(gnomonPipelinePort *port);
@@ -85,3 +94,6 @@ public:
 protected:
     class gnomonPipelineNodePrivate *d;
 };
+
+//
+// gnomonPipelineNode.h ends here

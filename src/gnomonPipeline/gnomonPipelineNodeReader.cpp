@@ -25,7 +25,6 @@
 class gnomonPipelineNodeReaderPrivate {
 public:
     QString path;
-    QMap<QString, gnomonPipelinePort *> output_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -41,10 +40,8 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_clas
 
     dd->path = path;
 
-
     for (const auto& output : outputs) {
-        dd->output_ports[output] = new gnomonPipelinePort(gnomonPipelinePort::Output, this);
-        this->addOutputPort(dd->output_ports[output]);
+        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, this));
     }
     // this->layout()();
 }
@@ -52,11 +49,6 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_clas
 gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)
 {
 
-}
-
-const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeReader::outputPorts(void)
-{
-    return dd->output_ports;
 }
 
 QString gnomonPipelineNodeReader::toToml(const QString& node_name)
@@ -79,7 +71,7 @@ const QJsonObject gnomonPipelineNodeReader::toJson(const QString& node_name)
     json.insert("path", dd->path);
 
     QJsonArray out;
-    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
         auto&& output_name = it.key();
         out.append(output_name);
     }
@@ -105,7 +97,7 @@ QString gnomonPipelineNodeReader::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.reader = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = []\n";
-    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
         auto&& output_name = it.key();
         out<<"        self.form_output_functions[\"" << output_name << "\"] = self.reader." << output_name  <<"\n";
     }

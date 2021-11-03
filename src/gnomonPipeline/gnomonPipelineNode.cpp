@@ -77,8 +77,7 @@ gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
 gnomonPipelineNode::~gnomonPipelineNode(void)
 {
     delete d;
-
-    d = NULL;
+    d = nullptr;
 }
 
 const QString& gnomonPipelineNode::algorithmClass(void)
@@ -283,25 +282,51 @@ void gnomonPipelineNode::removeOutputEdge(gnomonPipelineEdge *edge)
     d->output_edges.removeAll(edge);
 }
 
-int gnomonPipelineNode::addInputPort(gnomonPipelinePort *port)
+const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNode::inputPorts(void)
 {
-    d->input_ports << port;
+    return d->input_ports;
+}
+
+const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNode::outputPorts(void)
+{
+    return d->output_ports;
+}
+
+QStringList gnomonPipelineNode::inputPortsNames(void)
+{
+    return d->input_ports.keys();
+}
+
+QStringList gnomonPipelineNode::outputPortsNames(void)
+{
+    return d->output_ports.keys();
+}
+
+int gnomonPipelineNode::addInputPort(const QString& name, gnomonPipelinePort *port)
+{
+    d->input_ports[name] = port;
     return d->input_ports.size() - 1;
 }
 
-void gnomonPipelineNode::addOutputPort(gnomonPipelinePort *port)
+void gnomonPipelineNode::addOutputPort(const QString& name, gnomonPipelinePort *port)
 {
-    d->output_ports << port;
+    d->output_ports[name] = port;
 }
 
 void gnomonPipelineNode::removeInputPort(gnomonPipelinePort *port)
 {
-    d->input_ports.removeAll(port);
+    const QString key = d->input_ports.key(port, "");
+    if (key != "") {
+        d->input_ports.remove(key);
+    }
 }
 
 void gnomonPipelineNode::removeOutputPort(gnomonPipelinePort *port)
 {
-    d->output_ports.removeAll(port);
+    const QString key = d->output_ports.key(port, "");
+    if (key != "") {
+        d->output_ports.remove(key);
+    }
 }
 
 QString gnomonPipelineNode::toToml(const QString& node_name)

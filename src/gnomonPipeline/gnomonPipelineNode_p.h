@@ -35,8 +35,8 @@ public:
     QRectF rect;*/
 
 public:
-    QList<gnomonPipelinePort *>  input_ports;
-    QList<gnomonPipelinePort *> output_ports;
+    QMap<QString, gnomonPipelinePort *> input_ports;
+    QMap<QString, gnomonPipelinePort *> output_ports;
 
     QList<gnomonPipelineEdge *>  input_edges;
     QList<gnomonPipelineEdge *> output_edges;

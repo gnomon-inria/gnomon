@@ -25,8 +25,6 @@
 class gnomonPipelineNodeConstructorPrivate {
 public:
     QVariantMap parameters;
-
-    QMap<QString, gnomonPipelinePort *> output_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -42,8 +40,7 @@ gnomonPipelineNodeConstructor::gnomonPipelineNodeConstructor(const QString& algo
 
     dd->parameters = parameters;
     for (const auto& output : outputs) {
-        dd->output_ports[output] = new gnomonPipelinePort(gnomonPipelinePort::Output, this);
-        this->addOutputPort(dd->output_ports[output]);
+        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, this));
     }
     // this->layout()();
 }
@@ -51,11 +48,6 @@ gnomonPipelineNodeConstructor::gnomonPipelineNodeConstructor(const QString& algo
 gnomonPipelineNodeConstructor::~gnomonPipelineNodeConstructor(void)
 {
 
-}
-
-const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeConstructor::outputPorts(void)
-{
-    return dd->output_ports;
 }
 
 QString gnomonPipelineNodeConstructor::toToml(const QString& node_name)
@@ -91,7 +83,7 @@ const QJsonObject gnomonPipelineNodeConstructor::toJson(const QString& node_name
     json.insert("parameters", parameters);
 
     QJsonArray out;
-    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
         auto&& output_name = it.key();
         out.append(output_name);
     }
@@ -117,7 +109,7 @@ QString gnomonPipelineNodeConstructor::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.constructor = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = []\n";
-    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
         auto&& output_name = it.key();
         out<<"        self.form_output_functions[\"" << output_name << "\"] = self.constructor." << output_name  <<"\n";
     }

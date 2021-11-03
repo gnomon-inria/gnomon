@@ -25,7 +25,6 @@
 class gnomonPipelineNodeWriterPrivate {
 public:
     QString path;
-    QMap<QString, gnomonPipelinePort *> input_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -40,9 +39,9 @@ gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_clas
     d->algorithm = algorithm;
 
     dd->path = path;
+
     for (const auto& input : inputs) {
-        dd->input_ports[input] = new gnomonPipelinePort(gnomonPipelinePort::Input, this);
-        this->addInputPort(dd->input_ports[input]);
+        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, this));
     }
     // this->layout()();
 }
@@ -50,11 +49,6 @@ gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_clas
 gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
 {
 
-}
-
-const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeWriter::inputPorts(void)
-{
-    return dd->input_ports;
 }
 
 QString gnomonPipelineNodeWriter::toToml(const QString& node_name)
@@ -77,7 +71,7 @@ const QJsonObject gnomonPipelineNodeWriter::toJson(const QString& node_name)
     json.insert("path", dd->path);
 
     QJsonArray in;
-    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
         in.append(input_name);
     }
@@ -103,8 +97,8 @@ QString gnomonPipelineNodeWriter::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.writer = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = [";
-    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
-        if (it != dd->input_ports.begin()) {
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
+        if (it != d->input_ports.begin()) {
             out<<", ";
         }
         auto&& input_name = it.key();
@@ -117,7 +111,7 @@ QString gnomonPipelineNodeWriter::toLuigiClass(void)
     out<<"        self.writer.setPath(self.path)\n";
     out<<"        inputs = self.algorithm_inputs()\n";
 
-    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
         QString setter_name = "set" + input_name;
         setter_name.replace(3, 1, setter_name[3].toUpper());

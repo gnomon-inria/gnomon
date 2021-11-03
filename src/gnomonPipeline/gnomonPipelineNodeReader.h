@@ -27,9 +27,6 @@ public:
     ~gnomonPipelineNodeReader(void);
 
 public:
-    const QMap<QString, gnomonPipelinePort *>& outputPorts(void);
-
-public:
     virtual QString toToml(const QString& node_name) override;
     virtual const QJsonObject toJson(const QString& node_name) override;
     virtual QString toLuigiClass(void) override;

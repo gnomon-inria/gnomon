@@ -27,16 +27,9 @@ public:
     ~gnomonPipelineNodeAdapter(void);
 
 public:
-    const QMap<QString, gnomonPipelinePort *>& inputPorts(void);
-    const QMap<QString, gnomonPipelinePort *>& outputPorts(void);
-
-public:
     virtual QString toToml(const QString& node_name) override;
     virtual QString toLuigiClass(void) override;
     virtual const QJsonObject toJson(const QString& node_name) override;
-
-protected:
-    class gnomonPipelineNodeAdapterPrivate *dd;
 };
 
 //

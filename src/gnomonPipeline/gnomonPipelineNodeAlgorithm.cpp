@@ -25,8 +25,6 @@
 class gnomonPipelineNodeAlgorithmPrivate {
 public:
     QVariantMap parameters;
-    QMap<QString, gnomonPipelinePort *> input_ports;
-    QMap<QString, gnomonPipelinePort *> output_ports;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -45,12 +43,10 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
 
     dd->parameters = parameters;
     for (const auto& input : inputs) {
-        dd->input_ports[input] = new gnomonPipelinePort(gnomonPipelinePort::Input, this);
-        this->addInputPort(dd->input_ports[input]);
+        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, this));
     }
     for (const auto& output : outputs) {
-        dd->output_ports[output] = new gnomonPipelinePort(gnomonPipelinePort::Output, this);
-        this->addOutputPort(dd->output_ports[output]);
+        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, this));
     }
     // this->layout()();
 }
@@ -58,16 +54,6 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
 gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 {
 
-}
-
-const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeAlgorithm::inputPorts(void)
-{
-    return dd->input_ports;
-}
-
-const QMap<QString, gnomonPipelinePort *>& gnomonPipelineNodeAlgorithm::outputPorts(void)
-{
-    return dd->output_ports;
 }
 
 QString gnomonPipelineNodeAlgorithm::toToml(const QString& node_name)
@@ -104,14 +90,14 @@ const QJsonObject gnomonPipelineNodeAlgorithm::toJson(const QString& node_name)
     json.insert("parameters", parameters);
 
     QJsonArray in;
-    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
         in.append(input_name);
     }
     json.insert("input", in);
 
     QJsonArray out;
-    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
         auto&& output_name = it.key();
         out.append(output_name);
     }
@@ -137,22 +123,22 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     out<<"        load_plugin_group(\"" << d->algorithm_class << "\")\n";
     out<<"        self.algorithm = gnomoncore." << d->algorithm_class << "_pluginFactory().create(self.plugin_name)\n";
     out<<"        self.input_names = [";
-    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
-        if (it != dd->input_ports.begin()) {
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
+        if (it != d->input_ports.begin()) {
             out<<", ";
         }
         auto&& input_name = it.key();
         out<<"\""<<input_name<<"\"";
     }
     out<<"]\n";
-    for (auto it = dd->output_ports.begin(); it != dd->output_ports.end(); ++it) {
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
         auto&& output_name = it.key();
         out<<"        self.form_output_functions[\"" << output_name << "\"] = self.algorithm." << output_name  <<"\n";
     }
     out<<"    \n";
     out<<"    def run(self):\n";
     out<<"        inputs = self.algorithm_inputs()\n";
-    for (auto it = dd->input_ports.begin(); it != dd->input_ports.end(); ++it) {
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
         QRegularExpression numbered_input("[A-z]+[0-9]+");
         if (numbered_input.match(input_name).hasMatch()) {

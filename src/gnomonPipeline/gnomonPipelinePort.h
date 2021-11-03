@@ -14,11 +14,16 @@
 
 #pragma once
 
+#include <gnomonPipelineExport.h>
+
+#include <QtCore>
 
 class gnomonPipelineNode;
 
-class gnomonPipelinePort
+class GNOMONPIPELINE_EXPORT gnomonPipelinePort : public QObject
 {
+    Q_OBJECT
+
 public:
     enum Type {
         Input,
@@ -26,6 +31,7 @@ public:
     };
 
 public:
+    gnomonPipelinePort(void) = default;
     gnomonPipelinePort(Type type, gnomonPipelineNode *parent);
     gnomonPipelinePort(Type type, const QString& label, gnomonPipelineNode *parent);
     ~gnomonPipelinePort(void);
@@ -44,8 +50,6 @@ public:
 private:
     class gnomonPipelinePortPrivate *d;
 };
-
-
 
 //
 // gnomonPipelinePort.h ends here

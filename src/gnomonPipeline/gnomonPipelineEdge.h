@@ -14,6 +14,9 @@
 
 #pragma once
 
+#include <gnomonPipelineExport.h>
+
+#include <QtCore>
 
 class gnomonPipelineNode;
 class gnomonPipelinePort;
@@ -22,8 +25,10 @@ class gnomonPipelinePort;
 // gnomonPipelineEdge
 // /////////////////////////////////////////////////////////////////
 
-class gnomonPipelineEdge
+class GNOMONPIPELINE_EXPORT gnomonPipelineEdge : public QObject
 {
+    Q_OBJECT
+
 public:
     gnomonPipelineEdge(void);
     ~gnomonPipelineEdge(void);
@@ -49,8 +54,6 @@ public:
 private:
     class gnomonPipelineEdgePrivate *d;
 };
-
-
 
 //
 // gnomonPipelineEdge.h ends here
