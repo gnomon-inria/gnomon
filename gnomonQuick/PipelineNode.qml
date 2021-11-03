@@ -5,15 +5,19 @@ import QtQuick.Shapes 1.15
 import xQuick           1.0 as X
 import xQuick.Controls  1.0 as X
 
-Rectangle { id: node;
+import gnomonQuick     1.0 as GX
 
-    width: 160;
-    height: 40;
-    radius: 8;
-    color: "#E4A065";
+Rectangle { id: node;
 
     property string algorithmClass: "";
     property string algorithmPlugin: "";
+
+    property var inputPorts: [];
+    property var outputPorts: [];
+
+    width: 200;
+    height: 30 + 15*Math.max(node.inputPorts.length, node.outputPorts.length) - 5;
+    radius: 8;
 
     Drag.active: dragArea.drag.active
 
@@ -29,7 +33,8 @@ Rectangle { id: node;
         font.pixelSize: 12;
 
         anchors.fill: parent
-        anchors.leftMargin: 10
+        anchors.topMargin: 3
+        anchors.leftMargin: 6
         horizontalAlignment: Text.AlignLeft;
     }
 
@@ -40,8 +45,36 @@ Rectangle { id: node;
         font.pixelSize: 10;
 
         anchors.fill: parent
-        anchors.topMargin: 16
-        anchors.rightMargin: 10
+        anchors.topMargin: 20
+        anchors.rightMargin: 5
         horizontalAlignment: Text.AlignRight;
+    }
+
+    Column { id: _input_ports
+        spacing: 5;
+        anchors.horizontalCenter: parent.left
+        anchors.top: parent.top
+        anchors.topMargin: 15
+
+        Repeater {
+            model: node.inputPorts;
+            GX.PipelinePort {
+                name: modelData
+            }
+        }
+    }
+
+    Column { id: _output_ports
+        spacing: 5;
+        anchors.horizontalCenter: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 15
+
+        Repeater {
+            model: node.outputPorts;
+            GX.PipelinePort {
+                name: modelData
+            }
+        }
     }
 }

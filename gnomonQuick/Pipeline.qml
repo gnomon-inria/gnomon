@@ -120,6 +120,8 @@ void main() {
             var n = node_component.createObject(root, {
                 "algorithmClass": node.algorithmClass,
                 "algorithmPlugin": node.algorithmPlugin,
+                "inputPorts": node.inputPortsNames,
+                "outputPorts": node.outputPortsNames,
                 "color": node.color,
                 "x": Qt.binding(function() { return root.width/2 + node.position.x }),
                 "y": Qt.binding(function() { return root.height/2 + node.position.y })
@@ -135,6 +137,7 @@ void main() {
     /*GX.PipelineNode { id: _source;
         algorithmClass: "source";
         algorithmPlugin: "dummySource";
+        outputPorts: ["output1", "output2"];
     }*/
 
     /*
