@@ -98,19 +98,26 @@ void main() {
 // Nodes
 // /////////////////////////////////////////////////////////////////////////////
 
-    property var nodes: []
+    property var nodes: new Object();
+    property var edges: [];
 
     Connections {
         target: G.Pipeline
         function onNodeAdded (node) {
-            console.log(node.algorithmClass, node.position.x, node.position.y, G.Pipeline.nodeNames);
-            for (var i = 0; i < G.Pipeline.nodeNames.length; i++)
-                console.log("  -> node",
-                            G.Pipeline.nodeNames[i],
-                            G.Pipeline.node(G.Pipeline.nodeNames[i]).position.x,
-                            G.Pipeline.node(G.Pipeline.nodeNames[i]).position.y);
-
+            console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
             var n = root.addNode(node);
+
+            console.log(node.inputEdgeCount, "input edges")
+            if (node.inputEdgeCount > 0) {
+                for (var i=0; i<node.inputEdgeCount; i++) {
+                    var edge = node.inputEdgeAt(i);
+                    console.log(" --> edge", i, ":",
+                                edge.source.node.name, "(", edge.source.label, ")",
+                                "->",
+                                edge.target.node.name, "(", edge.target.label,")")
+                    var e = root.addEdge(edge);
+                }
+            }
         }
     }
 
@@ -120,13 +127,13 @@ void main() {
             var n = node_component.createObject(root, {
                 "algorithmClass": node.algorithmClass,
                 "algorithmPlugin": node.algorithmPlugin,
-                "inputPorts": node.inputPortsNames,
-                "outputPorts": node.outputPortsNames,
+                "inputPortsNames": node.inputPortsNames,
+                "outputPortsNames": node.outputPortsNames,
                 "color": node.color,
                 "x": Qt.binding(function() { return root.width/2 + node.position.x }),
                 "y": Qt.binding(function() { return root.height/2 + node.position.y })
             });
-            nodes.push(n);
+            nodes[node.name] = n;
             console.log("Adding node...", n)
             return n;
         } else {
@@ -134,48 +141,59 @@ void main() {
         }
     }
 
+    function addEdge(edge) {
+        var edge_component = Qt.createComponent("PipelineEdge.qml");
+        if (edge_component.status == Component.Ready) {
+            var src_node = nodes[edge.source.node.name];
+            var src = src_node.outputPorts[edge.source.label];
+            var tgt_node = nodes[edge.target.node.name];
+            var tgt = tgt_node.inputPorts[edge.target.label]
+
+            var e = edge_component.createObject(root, {
+                //"stt": Qt.binding(function() { return src.mapToItem(root, Qt.point(src.width, src.height/2)) }),
+                "stt": Qt.binding(function() { return Qt.point((src_node.x + src.parent.x + src.x + src.width),
+                                                               (src_node.y + src.parent.y + src.y + src.height/2)) }),
+                //"end": Qt.binding(function() { return tgt.mapToItem(root, Qt.point(0, tgt.height/2)) }),
+                "end": Qt.binding(function() { return Qt.point((tgt_node.x + tgt.parent.x + tgt.x),
+                                                               (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
+            });
+
+            edges.push(e);
+            console.log("Adding edge...", e)
+            return e;
+        } else {
+            console.error(edge_component.errorString());
+        }
+    }
+
     /*GX.PipelineNode { id: _source;
         algorithmClass: "source";
         algorithmPlugin: "dummySource";
-        outputPorts: ["output1", "output2"];
-    }*/
+        outputPortsNames: ["output1", "output2"];
 
-    /*
-    GX.PipelineNode { id: _source; }
-    GX.PipelineNode { id: _destination; }
+        x:300
+        y:100
 
-
-    Shape {
-
-        id: _e;
-
-        property Item src: _source;
-        property Item dst: _destination;
-
-        property point stt: Qt.point((src.x + src.width), (src.y + src.height/2));
-        property point end: Qt.point( dst.x,              (dst.y + dst.height/2));
-        property point mid: Qt.point((stt.x + end.x)/2,   (stt.y + end.y)/2);
-
-        property real delt: (mid.x - stt.x)/2;
-
-         width: end.x - stt.x;
-        height: end.y - stt.y;
-
-        ShapePath {
-            fillColor: "transparent";
-
-            strokeWidth: 3
-            strokeColor: "red"
-
-            startX: _e.stt.x;
-            startY: _e.stt.y;
-
-            PathCubic {
-                control1X: _e.end.x-_e.delt; control1Y: _e.stt.y;
-                control2X: _e.stt.x+_e.delt; control2Y: _e.end.y;
-                        x: _e.end.x;                 y: _e.end.y
-            }
+        Component.onCompleted: {
+            console.log(_source.outputPorts);
         }
     }
-    */
+
+    GX.PipelineNode { id: _target;
+        algorithmClass: "target";
+        algorithmPlugin: "dummyTarget";
+        inputPortsNames: ["input1", "input2"];
+
+        x:600
+        y:100
+
+        Component.onCompleted: {
+            console.log(_target.inputPorts);
+        }
+    }
+
+    GX.PipelineEdge { id: _edge;
+        src: _source.outputPorts["output2"];
+        tgt: _target.inputPorts["input1"];
+    }*/
 }

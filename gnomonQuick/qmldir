@@ -1,6 +1,7 @@
 module gnomonQuick
 
 Pipeline 1.0 Pipeline.qml
+PipelineEdge 1.0 PipelineEdge.qml
 PipelineNode 1.0 PipelineNode.qml
 PipelinePort 1.0 PipelinePort.qml
 Project.qml 1.0 Project.qml

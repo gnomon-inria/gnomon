@@ -7,27 +7,27 @@ import xQuick.Controls  1.0 as X
 
 import gnomonQuick     1.0 as GX
 
-Rectangle { id: node;
+Rectangle { id: _node;
 
     property string algorithmClass: "";
     property string algorithmPlugin: "";
 
-    property var inputPorts: [];
-    property var outputPorts: [];
+    property var inputPortsNames: [];
+    property var outputPortsNames: [];
 
     width: 200;
-    height: 30 + 15*Math.max(node.inputPorts.length, node.outputPorts.length) - 5;
+    height: 30 + 15*Math.max(_node.inputPortsNames.length, _node.outputPortsNames.length) - 5;
     radius: 8;
 
-    Drag.active: dragArea.drag.active
+    Drag.active: _dragArea.drag.active
 
-    MouseArea { id: dragArea
+    MouseArea { id: _dragArea
         anchors.fill: parent
         drag.target: parent
     }
 
-    X.Label { id: classLabel
-        text: node.algorithmClass;
+    X.Label { id: _classLabel
+        text: _node.algorithmClass;
 
         color: "#333333";
         font.pixelSize: 12;
@@ -39,7 +39,7 @@ Rectangle { id: node;
     }
 
     X.Label { id: pluginLabel
-        text: node.algorithmPlugin;
+        text: _node.algorithmPlugin;
 
         color: "#333333";
         font.pixelSize: 10;
@@ -50,30 +50,40 @@ Rectangle { id: node;
         horizontalAlignment: Text.AlignRight;
     }
 
-    Column { id: _input_ports
+    property var inputPorts: new Object();
+
+    Column {
         spacing: 5;
         anchors.horizontalCenter: parent.left
         anchors.top: parent.top
         anchors.topMargin: 15
 
-        Repeater {
-            model: node.inputPorts;
-            GX.PipelinePort {
+        Repeater { id: _input_ports
+            model: _node.inputPortsNames;
+            GX.PipelinePort { id: _port
                 name: modelData
+                Component.onCompleted: {
+                    _node.inputPorts[_port.name] = _input_ports.itemAt(index)
+                }
             }
         }
     }
 
-    Column { id: _output_ports
+    property var outputPorts: new Object();
+
+    Column {
         spacing: 5;
         anchors.horizontalCenter: parent.right
         anchors.top: parent.top
         anchors.topMargin: 15
 
-        Repeater {
-            model: node.outputPorts;
-            GX.PipelinePort {
+        Repeater { id: _output_ports
+            model: _node.outputPortsNames;
+            GX.PipelinePort { id: _port
                 name: modelData
+                Component.onCompleted: {
+                    _node.outputPorts[_port.name] = _output_ports.itemAt(index)
+                }
             }
         }
     }
