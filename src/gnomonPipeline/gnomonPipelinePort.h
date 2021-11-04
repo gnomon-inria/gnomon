@@ -24,6 +24,9 @@ class GNOMONPIPELINE_EXPORT gnomonPipelinePort : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(gnomonPipelineNode *node READ node);
+    Q_PROPERTY(QString label READ label WRITE setLabel);
+
 public:
     enum Type {
         Input,

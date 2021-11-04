@@ -41,7 +41,7 @@ gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_clas
     dd->path = path;
 
     for (const auto& input : inputs) {
-        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, this));
+        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, input, this));
     }
     // this->layout()();
 }
@@ -51,22 +51,22 @@ gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
 
 }
 
-QString gnomonPipelineNodeWriter::toToml(const QString& node_name)
+QString gnomonPipelineNodeWriter::toToml(void)
 {
     QString node_string;
     QTextStream out(&node_string);
-    out << "[" << node_name << "]" << "\n";
-    out << "task_name = \""<< node_name << "\"\n";
+    out << "[" << d->name << "]" << "\n";
+    out << "task_name = \""<< d->name << "\"\n";
     out << "plugin_name = \""<< d->algorithm << "\"\n";
     out << "path = \""<< dd->path << "\"\n";
     out << "\n";
     return node_string;
 }
 
-const QJsonObject gnomonPipelineNodeWriter::toJson(const QString& node_name)
+const QJsonObject gnomonPipelineNodeWriter::toJson(void)
 {
     QJsonObject json;
-    json.insert("name", node_name);
+    json.insert("name", d->name);
     json.insert("plugin_name", d->algorithm);
     json.insert("path", dd->path);
 

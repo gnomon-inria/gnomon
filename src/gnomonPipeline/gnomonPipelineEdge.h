@@ -29,6 +29,10 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineEdge : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(gnomonPipelinePort *source READ source WRITE setSource);
+    Q_PROPERTY(gnomonPipelinePort *target READ target WRITE setTarget);
+    Q_PROPERTY(gnomonPipelineNode *parent READ parent WRITE setParent);
+
 public:
     gnomonPipelineEdge(void);
     ~gnomonPipelineEdge(void);

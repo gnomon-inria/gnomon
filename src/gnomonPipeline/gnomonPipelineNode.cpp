@@ -80,6 +80,16 @@ gnomonPipelineNode::~gnomonPipelineNode(void)
     d = nullptr;
 }
 
+const QString& gnomonPipelineNode::name(void)
+{
+    return d->name;
+}
+
+void gnomonPipelineNode::setName(const QString& node_name)
+{
+    d->name = node_name;
+}
+
 const QString& gnomonPipelineNode::algorithmClass(void)
 {
     return d->algorithm_class;
@@ -262,6 +272,34 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawText(label_pos, label_text);
 } */
 
+int gnomonPipelineNode::inputEdgeCount(void)
+{
+    return d->input_edges.size();
+}
+
+int gnomonPipelineNode::outputEdgeCount(void)
+{
+    return d->output_edges.size();
+}
+
+gnomonPipelineEdge *gnomonPipelineNode::inputEdgeAt(int index)
+{
+    if (index < d->input_edges.size()) {
+        return d->input_edges[index];
+    } else {
+        return nullptr;
+    }
+}
+
+gnomonPipelineEdge *gnomonPipelineNode::outputEdgeAt(int index)
+{
+    if (index < d->output_edges.size()) {
+        return d->output_edges[index];
+    } else {
+        return nullptr;
+    }
+}
+
 void gnomonPipelineNode::addInputEdge(gnomonPipelineEdge *edge)
 {
     d->input_edges << edge;
@@ -329,9 +367,9 @@ void gnomonPipelineNode::removeOutputPort(gnomonPipelinePort *port)
     }
 }
 
-QString gnomonPipelineNode::toToml(const QString& node_name)
+QString gnomonPipelineNode::toToml(void)
 {
-    QString node_string = "[" + node_name + "]\n" + "\n";
+    QString node_string = "[" + d->name + "]\n" + "\n";
     return node_string;
 }
 
@@ -340,10 +378,10 @@ QString gnomonPipelineNode::toLuigiClass(void)
     return "";
 }
 
-const QJsonObject gnomonPipelineNode::toJson(const QString& node_name)
+const QJsonObject gnomonPipelineNode::toJson(void)
 {
     QJsonObject json;
-    json.insert("name", node_name);
+    json.insert("name", d->name);
     return json;
 }
 

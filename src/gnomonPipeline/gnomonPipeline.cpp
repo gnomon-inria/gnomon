@@ -132,7 +132,7 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
                     edge->setTarget(algorithm_node->inputPorts()[input]);
                 }
                 edge->link();
-                node->addInputEdge(edge);
+                //node->addInputEdge(edge);
                 edge_target.first = this->pipeline_nodes.key(node);
                 edge_target.second = input;
                 this->pipeline_edges[edge_target] = edge_source;
@@ -468,6 +468,7 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
         d->node_type_count[node->algorithmClass()] += 1;
     }
     d->pipeline_node_names.append(node_name);
+    node->setName(node_name);
     d->pipeline_nodes[node_name] = node;
 
     d->node_input_forms[node] = input_forms;
@@ -544,6 +545,7 @@ void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
                 d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
+            node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
             d->linkNodeInputs(node);
             this->updateLayout();
@@ -568,6 +570,8 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
                 d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
+            node->setName(node_name);
+            qDebug()<<Q_FUNC_INFO<<node->name();
             d->pipeline_nodes[node_name] = node;
 
             this->updateLayout();
@@ -587,6 +591,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
                 d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
+            node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
 
             d->linkNodeInputs(node);
@@ -607,6 +612,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
                 d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
+            node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
 
             this->updateLayout();
@@ -626,6 +632,7 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
                 d->node_type_count[node->algorithmClass()] += 1;
             }
             d->pipeline_node_names.append(node_name);
+            node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
 
             d->linkNodeInputs(node);
@@ -651,7 +658,7 @@ void gnomonPipeline::exportToToml(const QString& path)
 
     QTextStream out(&file);
     for (const auto& node_name : d->pipeline_node_names) {
-        out << d->pipeline_nodes[node_name]->toToml(node_name);
+        out << d->pipeline_nodes[node_name]->toToml();
     }
     file.close();
 }
@@ -678,7 +685,7 @@ void gnomonPipeline::exportToJson(const QString& path)
 
 
     for (const auto& node_name : d->pipeline_node_names) {
-        auto node_json = d->pipeline_nodes[node_name]->toJson(node_name);
+        auto node_json = d->pipeline_nodes[node_name]->toJson();
         for (auto it = d->pipeline_edges.begin(); it != d->pipeline_edges.end(); ++it) {
             auto&& edge_target = it.key();
             if (edge_target.first == node_name) {

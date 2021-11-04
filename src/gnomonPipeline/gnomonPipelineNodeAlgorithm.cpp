@@ -43,10 +43,10 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
 
     dd->parameters = parameters;
     for (const auto& input : inputs) {
-        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, this));
+        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, input, this));
     }
     for (const auto& output : outputs) {
-        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, this));
+        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
     // this->layout()();
 }
@@ -56,14 +56,14 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
-QString gnomonPipelineNodeAlgorithm::toToml(const QString& node_name)
+QString gnomonPipelineNodeAlgorithm::toToml(void)
 {
     QString node_string;
     QTextStream out(&node_string);
-    out << "[" << node_name << "]" << "\n";
-    out << "task_name = \""<< node_name << "\"\n";
+    out << "[" << d->name << "]" << "\n";
+    out << "task_name = \""<< d->name << "\"\n";
     out << "plugin_name = \""<< d->algorithm << "\"\n";
-    out << "    [" << node_name << ".parameters]\n";
+    out << "    [" << d->name << ".parameters]\n";
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
         QVariant parameter = dd->parameters[param];
@@ -74,10 +74,10 @@ QString gnomonPipelineNodeAlgorithm::toToml(const QString& node_name)
     return node_string;
 }
 
-const QJsonObject gnomonPipelineNodeAlgorithm::toJson(const QString& node_name)
+const QJsonObject gnomonPipelineNodeAlgorithm::toJson(void)
 {
     QJsonObject json;
-    json.insert("name", node_name);
+    json.insert("name", d->name);
     json.insert("plugin_name", d->algorithm);
     json.insert("plugin_version", "TODO");
 

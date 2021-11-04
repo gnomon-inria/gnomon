@@ -33,6 +33,7 @@ public:
     ~gnomonPipelineNode(void);
 
 public:
+    Q_PROPERTY(QString name READ name WRITE setName);
     Q_PROPERTY(QString algorithmClass READ algorithmClass);
     Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin);
     Q_PROPERTY(QColor color READ color);
@@ -41,7 +42,12 @@ public:
     Q_PROPERTY(QStringList inputPortsNames READ inputPortsNames);
     Q_PROPERTY(QStringList outputPortsNames READ outputPortsNames);
 
+    Q_PROPERTY(int inputEdgeCount READ inputEdgeCount);
+    Q_PROPERTY(int outputEdgeCount READ outputEdgeCount);
+
 public:
+    const QString& name(void);
+
     const QString& algorithmClass(void);
     const QString& algorithmPlugin(void);
     const QColor& color(void);
@@ -49,6 +55,7 @@ public:
     const QPointF& position(void);
 
 public:
+    void setName(const QString& node_name);
     void setPosition(const QPointF& pos);
 
 signals:
@@ -67,6 +74,12 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);*/
     
 public:
+    int inputEdgeCount(void);
+    int outputEdgeCount(void);
+
+    Q_INVOKABLE gnomonPipelineEdge *inputEdgeAt(int index);
+    Q_INVOKABLE gnomonPipelineEdge *outputEdgeAt(int index);
+
     void  addInputEdge(gnomonPipelineEdge *edge);
     void addOutputEdge(gnomonPipelineEdge *edge);
 
@@ -87,9 +100,9 @@ public:
     void removeOutputPort(gnomonPipelinePort *port);
 
 public:
-    virtual QString toToml(const QString& node_name);
+    virtual QString toToml(void);
     virtual QString toLuigiClass(void);
-    virtual const QJsonObject toJson(const QString& node_name);
+    virtual const QJsonObject toJson(void);
 
 protected:
     class gnomonPipelineNodePrivate *d;

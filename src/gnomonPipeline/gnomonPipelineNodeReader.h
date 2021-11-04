@@ -27,9 +27,9 @@ public:
     ~gnomonPipelineNodeReader(void);
 
 public:
-    virtual QString toToml(const QString& node_name) override;
-    virtual const QJsonObject toJson(const QString& node_name) override;
+    virtual QString toToml(void) override;
     virtual QString toLuigiClass(void) override;
+    virtual const QJsonObject toJson(void) override;
 
 protected:
     class gnomonPipelineNodeReaderPrivate *dd;

@@ -28,10 +28,10 @@ gnomonPipelineNodeAdapter::gnomonPipelineNodeAdapter(const QString& algorithm_cl
     d->algorithm = algorithm;
 
     for (const auto& input : inputs) {
-        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, this));
+        this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, input, this));
     }
     for (const auto& output : outputs) {
-        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, this));
+        this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
     // this->layout()();
 }
@@ -41,21 +41,21 @@ gnomonPipelineNodeAdapter::~gnomonPipelineNodeAdapter(void)
 
 }
 
-QString gnomonPipelineNodeAdapter::toToml(const QString& node_name)
+QString gnomonPipelineNodeAdapter::toToml(void)
 {
     QString node_string;
     QTextStream out(&node_string);
-    out << "[" << node_name << "]" << "\n";
-    out << "task_name = \""<< node_name << "\"\n";
+    out << "[" << d->name << "]" << "\n";
+    out << "task_name = \""<< d->name << "\"\n";
     out << "plugin_name = \""<< d->algorithm << "\"\n";
     out << "\n";
     return node_string;
 }
 
-const QJsonObject gnomonPipelineNodeAdapter::toJson(const QString& node_name)
+const QJsonObject gnomonPipelineNodeAdapter::toJson(void)
 {
     QJsonObject json;
-    json.insert("name", node_name);
+    json.insert("name", d->name);
     json.insert("plugin_name", d->algorithm);
 
     QJsonArray in;
