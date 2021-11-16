@@ -69,6 +69,42 @@ Rectangle {
         }
     }
 
+    ToolBar { id: _menubar
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        //situation: X.Style.Position.Left;
+
+        width: 42
+
+        Behavior on width {
+            NumberAnimation {
+                easing {
+                    type: Easing.OutElastic
+                    amplitude: 1.0
+                    period: 0.5
+                }
+            }
+        }
+
+        X.LabelHint2 {
+            text: "View";
+            horizontalAlignment: Text.AlignHCenter;
+            Layout.fillHeight: true;
+
+            MouseArea {
+                anchors.fill: parent;
+                onClicked: {
+                    if (_menubar.width <50) {
+                        _menubar.width = 300;
+                    } else {
+                        _menubar.width = 42;
+                    }
+                }
+            }
+        }
+    }
+
     Slider { id: _2d_slider
         from: 0
         to: 100
@@ -81,7 +117,7 @@ Rectangle {
         width: _view.height
 
         anchors.verticalCenter: _view.verticalCenter
-        anchors.left: _view.left
+        anchors.left: _menubar.right
         anchors.leftMargin: 5 - _view.height / 2
 
         handle.implicitWidth: 10
@@ -99,7 +135,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _view.left
+        anchors.left: _menubar.right
         anchors.leftMargin: 10
 
         MouseArea { id: _2d_mouse_area;
@@ -124,7 +160,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _view.left
+        anchors.left: _menubar.right
         anchors.leftMargin: 50
 
         MouseArea { id: _3d_mouse_area;
