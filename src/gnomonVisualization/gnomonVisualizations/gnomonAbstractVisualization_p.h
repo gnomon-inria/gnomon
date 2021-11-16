@@ -28,6 +28,8 @@ class vtkRenderWindowInteractor;
 
 #include <vtkSmartPointer.h>
 
+class xVisViewer;
+
 class gnomonAbstractVisualizationPrivate
 {
 
@@ -53,7 +55,8 @@ public:
 
 public:
     vtkSmartPointer <vtkRenderer> offscreenRenderer;
-    vtkGenericOpenGLRenderWindow *offscreenRenderWindow;
+
+    xVisViewer *offscreenRenderWindow = 0;
 };
 
 //

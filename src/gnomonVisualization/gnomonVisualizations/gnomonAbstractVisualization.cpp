@@ -15,6 +15,8 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkWindowToImageFilter.h>
 
+#include <xVis/xVisViewer.hpp>
+
 // /////////////////////////////////////////////////////////////////
 // gnomonAbstractVisualization
 // /////////////////////////////////////////////////////////////////
@@ -30,30 +32,30 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
-//dtkCoreParameters gnomonAbstractVisualization::parameters(void) const
-//{
-//    return d->parameters;
-//}
+// dtkCoreParameters gnomonAbstractVisualization::parameters(void) const
+// {
+//     return d->parameters;
+// }
 //
-//void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
-//{
-//    if (d->parameters.contains(parameter)) {
-//        d->parameters[parameter]->setValue(value);
-//    }
-//    else
-//        qWarning()<<parameter<<"is not a valid parameter!";
-//}
+// void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
+// {
+//     if (d->parameters.contains(parameter)) {
+//         d->parameters[parameter]->setValue(value);
+//     }
+//     else
+//         qWarning()<<parameter<<"is not a valid parameter!";
+// }
 //
-//void gnomonAbstractVisualization::setParameters(const dtkCoreParameters& parameters)
-//{
-////    d->parameters = parameters;
-//    for (const auto& param : parameters.keys()) {
-//        if (d->parameters.contains(param)) {
-////            d->parameters[param] = parameters[param];
-//            d->parameters[param]->copy(parameters[param]);
-//        }
-//    }
-//}
+// void gnomonAbstractVisualization::setParameters(const dtkCoreParameters& parameters)
+// {
+//     d->parameters = parameters;
+//     for (const auto& param : parameters.keys()) {
+//         if (d->parameters.contains(param)) {
+//             d->parameters[param] = parameters[param];
+//             d->parameters[param]->copy(parameters[param]);
+//         }
+//     }
+// }
 
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
@@ -102,10 +104,9 @@ vtkRenderer *gnomonAbstractVisualization::offscreenRenderer(void)
     return d->offscreenRenderer;
 }
 
-
-void gnomonAbstractVisualization::setOffscreenRenderWindow(vtkGenericOpenGLRenderWindow *window)
+void gnomonAbstractVisualization::setOffscreenRenderWindow(xVisViewer *viewer)
 {
-    d->offscreenRenderWindow = window;
+    d->offscreenRenderWindow = viewer;
 }
 
 void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax)
@@ -114,11 +115,7 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
     }
     d->offscreenRenderer->DrawOn();
-    d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
-//    d->offscreenRenderWindow->SetOffScreenRendering(1);
-    d->offscreenRenderWindow->SetSize(1500, 1500); // NOTE: Remove that
-
-    d->offscreenRenderer->SetBackground(1,1,1);
+    d->offscreenRenderWindow->GetRenderWindow()->AddRenderer(d->offscreenRenderer);
 
     vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
     cam->ParallelProjectionOn();
@@ -132,39 +129,17 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
     double xMaxFocus = (1.-focus)*xMin+(focus)*xMax;
     double yMinFocus = (focus)*yMin+(1.-focus)*yMax;
     double yMaxFocus = (1.-focus)*yMin+(focus)*yMax;
+
     d->offscreenRenderer->ResetCamera(xMinFocus,xMaxFocus,yMinFocus,yMaxFocus,zMin,zMax);
 }
 
 QImage gnomonAbstractVisualization::offscreenImageRendering(void)
 {
     d->offscreenRenderer->InteractiveOn();
-    d->offscreenRenderWindow->Render();
-    d->offscreenRenderWindow->GetInteractor()->Render();
 
-    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
-    windowToImageFilter->SetInput(d->offscreenRenderWindow);
-    windowToImageFilter->SetInputBufferTypeToRGBA();
-    windowToImageFilter->ReadFrontBufferOn();
-    windowToImageFilter->Update();
+    QImage image = d->offscreenRenderWindow->capture();
 
-    vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
-    int width = renderedImage->GetDimensions()[0];
-    int height = renderedImage->GetDimensions()[1];
-    QImage image( width, height, QImage::Format_RGB32);
-
-    QRgb *rgbPtr = reinterpret_cast<QRgb *>(image.bits());
-    for(int col = 0; col < width; ++col) {
-        for(int row = 0; row < height; ++row) {
-            double r, g, b;
-            r = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[0];
-            g = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[1];
-            b = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[2];
-            *(rgbPtr) = QColor(r,g,b).rgb();
-            ++rgbPtr;
-        }
-    }
-
-    d->offscreenRenderWindow->RemoveRenderer(d->offscreenRenderer);
+    d->offscreenRenderWindow->GetRenderWindow()->RemoveRenderer(d->offscreenRenderer);
 
     return image;
 }

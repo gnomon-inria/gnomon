@@ -14,7 +14,6 @@
 
 #include "gnomonViewForm.h"
 
-
 // TODO: Script
 
 // #include <dtkThemes>
@@ -55,6 +54,8 @@
 
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
+
+#include <xVis/xVisViewer.hpp>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewFormPrivate
@@ -107,7 +108,6 @@ public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
-
 
 public:
     gnomonViewForm *q = nullptr;
@@ -213,6 +213,8 @@ public:
 
     // dtkWidgetsMenuItemDIY *paneItemButton = nullptr;
 
+    xVisViewer *viewer = 0;
+
 public:
     // dtkWidgetsMenu *menu(void);
 
@@ -307,7 +309,7 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->window, this->renderer3D->GetActiveCamera());
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->viewer, this->renderer3D->GetActiveCamera());
         q->emit exportedForm(this->forms[key]);
     }
 }
@@ -1039,9 +1041,11 @@ void gnomonViewForm::transmit(void)
     d->exportToManager();
 }
 
-void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
+void gnomonViewForm::associate(xVisViewer *viewer)
 {
-    d->window = window;
+    d->viewer = viewer;
+
+    d->window = d->viewer->GetRenderWindow();
 //     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
 // #if defined(Q_OS_LINUX)
 //     d->window->GetInteractor()->Initialize();

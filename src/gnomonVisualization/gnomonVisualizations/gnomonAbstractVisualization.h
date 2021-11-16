@@ -25,6 +25,8 @@ class gnomonInteractorStyle;
 class vtkGenericOpenGLRenderWindow;
 class vtkRenderer;
 
+class xVisViewer;
+
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 {
     Q_OBJECT
@@ -75,7 +77,7 @@ public:
     vtkRenderer *offscreenRenderer(void);
 
 public slots:
-    void setOffscreenRenderWindow(vtkGenericOpenGLRenderWindow *);
+    void setOffscreenRenderWindow(xVisViewer *);
     void updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax);
     QImage offscreenImageRendering(void);
 
