@@ -11,7 +11,7 @@ import gnomonQuick     1.0 as GX
 
 Rectangle {
 
-    id: root;
+    id: self;
 
     layer.enabled: true
     layer.samples: 4
@@ -105,7 +105,7 @@ void main() {
         target: G.Pipeline
         function onNodeAdded (node) {
             console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
-            var n = root.addNode(node);
+            var n = self.addNode(node);
 
             console.log(node.inputEdgeCount, "input edges")
             if (node.inputEdgeCount > 0) {
@@ -115,7 +115,7 @@ void main() {
                                 edge.source.node.name, "(", edge.source.label, ")",
                                 "->",
                                 edge.target.node.name, "(", edge.target.label,")")
-                    var e = root.addEdge(edge);
+                    var e = self.addEdge(edge);
                 }
             }
         }
@@ -124,14 +124,14 @@ void main() {
     function addNode(node) {
         var node_component = Qt.createComponent("PipelineNode.qml");
         if (node_component.status == Component.Ready) {
-            var n = node_component.createObject(root, {
+            var n = node_component.createObject(self, {
                 "algorithmClass": node.algorithmClass,
                 "algorithmPlugin": node.algorithmPlugin,
                 "inputPortsNames": node.inputPortsNames,
                 "outputPortsNames": node.outputPortsNames,
                 "color": node.color,
-                "x": Qt.binding(function() { return root.width/2 + node.position.x }),
-                "y": Qt.binding(function() { return root.height/2 + node.position.y })
+                "x": Qt.binding(function() { return self.width/2 + node.position.x }),
+                "y": Qt.binding(function() { return self.height/2 + node.position.y })
             });
             nodes[node.name] = n;
             console.log("Adding node...", n)
@@ -149,11 +149,11 @@ void main() {
             var tgt_node = nodes[edge.target.node.name];
             var tgt = tgt_node.inputPorts[edge.target.label]
 
-            var e = edge_component.createObject(root, {
-                //"stt": Qt.binding(function() { return src.mapToItem(root, Qt.point(src.width, src.height/2)) }),
+            var e = edge_component.createObject(self, {
+                //"stt": Qt.binding(function() { return src.mapToItem(self, Qt.point(src.width, src.height/2)) }),
                 "stt": Qt.binding(function() { return Qt.point((src_node.x + src.parent.x + src.x + src.width),
                                                                (src_node.y + src.parent.y + src.y + src.height/2)) }),
-                //"end": Qt.binding(function() { return tgt.mapToItem(root, Qt.point(0, tgt.height/2)) }),
+                //"end": Qt.binding(function() { return tgt.mapToItem(self, Qt.point(0, tgt.height/2)) }),
                 "end": Qt.binding(function() { return Qt.point((tgt_node.x + tgt.parent.x + tgt.x),
                                                                (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
             });

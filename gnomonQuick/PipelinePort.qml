@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
-Rectangle { id: _port
+Rectangle { id: self
     color: "#CCCCCC"
     height: 10;
     width: 10;
@@ -11,7 +11,7 @@ Rectangle { id: _port
     property string name: "";
 
     ToolTip {
-         text: _port.name
+         text: self.name
          visible: _mouse_area.containsMouse
     }
 

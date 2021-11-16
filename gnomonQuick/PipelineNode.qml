@@ -7,7 +7,7 @@ import xQuick.Controls  1.0 as X
 
 import gnomonQuick     1.0 as GX
 
-Rectangle { id: _node;
+Rectangle { id: self;
 
     property string algorithmClass: "";
     property string algorithmPlugin: "";
@@ -16,7 +16,7 @@ Rectangle { id: _node;
     property var outputPortsNames: [];
 
     width: 200;
-    height: 30 + 15*Math.max(_node.inputPortsNames.length, _node.outputPortsNames.length) - 5;
+    height: 30 + 15*Math.max(self.inputPortsNames.length, self.outputPortsNames.length) - 5;
     radius: 8;
 
     Drag.active: _dragArea.drag.active
@@ -27,19 +27,19 @@ Rectangle { id: _node;
     }
 
     X.Label { id: _classLabel
-        text: _node.algorithmClass;
+        text: self.algorithmClass;
 
-        color: "#333333";
-        font.pixelSize: 12;
+        color: "#333333"; //TODO: get value from theme
+        font.pixelSize: 12; //TODO: get value from theme
 
         anchors.fill: parent
-        anchors.topMargin: 3
-        anchors.leftMargin: 6
+        anchors.topMargin: 3 //TODO: get value from theme
+        anchors.leftMargin: 6 //TODO: get value from theme
         horizontalAlignment: Text.AlignLeft;
     }
 
-    X.Label { id: pluginLabel
-        text: _node.algorithmPlugin;
+    X.Label { id: _pluginLabel
+        text: self.algorithmPlugin;
 
         color: "#333333";
         font.pixelSize: 10;
@@ -59,11 +59,11 @@ Rectangle { id: _node;
         anchors.topMargin: 15
 
         Repeater { id: _input_ports
-            model: _node.inputPortsNames;
+            model: self.inputPortsNames;
             GX.PipelinePort { id: _port
                 name: modelData
                 Component.onCompleted: {
-                    _node.inputPorts[_port.name] = _input_ports.itemAt(index)
+                    self.inputPorts[_port.name] = _input_ports.itemAt(index)
                 }
             }
         }
@@ -78,11 +78,11 @@ Rectangle { id: _node;
         anchors.topMargin: 15
 
         Repeater { id: _output_ports
-            model: _node.outputPortsNames;
+            model: self.outputPortsNames;
             GX.PipelinePort { id: _port
                 name: modelData
                 Component.onCompleted: {
-                    _node.outputPorts[_port.name] = _output_ports.itemAt(index)
+                    self.outputPorts[_port.name] = _output_ports.itemAt(index)
                 }
             }
         }

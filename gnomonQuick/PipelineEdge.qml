@@ -2,7 +2,9 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
-Shape { id: _edge;
+import xQuick.Style       1.0 as X
+
+Shape { id: self;
 
     property Item src;
     property Item tgt;
@@ -20,18 +22,18 @@ Shape { id: _edge;
         fillColor: "transparent";
 
         strokeWidth: 3
-        strokeColor: "red"
+        strokeColor: X.Style.border.Color
 
-        startX: _edge.stt.x;
-        startY: _edge.stt.y;
+        startX: self.stt.x;
+        startY: self.stt.y;
 
         PathCubic {
-            control1X: _edge.end.x - _edge.delt;
-            control1Y: _edge.stt.y;
-            control2X: _edge.stt.x + _edge.delt;
-            control2Y: _edge.end.y;
-                    x: _edge.end.x;
-                    y: _edge.end.y
+            control1X: self.end.x - self.delt;
+            control1Y: self.stt.y;
+            control2X: self.stt.x + self.delt;
+            control2Y: self.end.y;
+                    x: self.end.x;
+                    y: self.end.y
         }
     }
 }
