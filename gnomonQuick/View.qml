@@ -76,7 +76,6 @@ Rectangle {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         state: "show"
-        //situation: X.Style.Position.Left;
 
         width: 500
 
@@ -84,6 +83,11 @@ Rectangle {
             text: "View";
             horizontalAlignment: Text.AlignHCenter;
             Layout.fillHeight: true;
+
+            rotation: 90
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.topMargin: width/2
 
             MouseArea {
                 anchors.fill: parent;
@@ -117,6 +121,24 @@ Rectangle {
             }
         ]
 
+        transitions: [
+            Transition{
+                to:"hide"
+                NumberAnimation{
+                    duration:500
+                    properties:"x, opacity"
+                    easing.type: Easing.InCubic
+                }
+            },
+            Transition{
+                to:"show"
+                NumberAnimation{
+                    duration:500
+                    properties:"x, opacity"
+                    easing.type: Easing.OutCubic
+                }
+            }
+        ]
     }
 
     Slider { id: _2d_slider
