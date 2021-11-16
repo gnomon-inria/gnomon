@@ -12,7 +12,7 @@ import gnomon.Visualization 1.0 as GV
 
 Rectangle {
 
-    id: _control;
+    id: self;
 
     color: Qt.darker(X.Style.alternateBaseColor);
 
@@ -25,6 +25,7 @@ Rectangle {
     signal switchTo2D();
     signal switchTo3D();
     signal sliceChange(int value);
+    signal clear();
 
     XVis.Viewer {
 
@@ -59,33 +60,25 @@ Rectangle {
         onDropped: {
             if (drop.hasUrls) {
                 drop.urls.forEach(function (item, index) {
-                    _control.droppedFromFile(item);
+                    self.droppedFromFile(item);
                 });
             } else {
-                _control.droppedFromManager(drag.source.ref);
+                self.droppedFromManager(drag.source.ref);
             }
 
             drop.accept();
         }
     }
 
-    ToolBar { id: _menubar
+    Pane {
+        id: _collapsible
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.bottom: parent.bottom
+        state: "show"
         //situation: X.Style.Position.Left;
 
-        width: 42
-
-        Behavior on width {
-            NumberAnimation {
-                easing {
-                    type: Easing.OutElastic
-                    amplitude: 1.0
-                    period: 0.5
-                }
-            }
-        }
+        width: 500
 
         X.LabelHint2 {
             text: "View";
@@ -95,14 +88,35 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent;
                 onClicked: {
-                    if (_menubar.width <50) {
-                        _menubar.width = 300;
-                    } else {
-                        _menubar.width = 42;
-                    }
+                    _collapsible.state === "hide" ? _collapsible.state = "show" : _collapsible.state = "hide"
                 }
             }
         }
+
+        /* Button { */
+        /*     Layout.fillWidth: true */
+        /*     text: "Clear" */
+        /* } */
+
+        states: [
+            State{
+                name: "hide"
+                PropertyChanges {
+                    target: _collapsible;
+                    opacity: 0;
+                    x: -500
+                }
+            },
+            State{
+                name: "show"
+                PropertyChanges {
+                    target: _collapsible;
+                    opacity: 1
+                    x: 0;
+                }
+            }
+        ]
+
     }
 
     Slider { id: _2d_slider
@@ -117,14 +131,14 @@ Rectangle {
         width: _view.height
 
         anchors.verticalCenter: _view.verticalCenter
-        anchors.left: _menubar.right
+        anchors.left: _collapsible.right
         anchors.leftMargin: 5 - _view.height / 2
 
         handle.implicitWidth: 10
         handle.implicitHeight: 10
 
         onValueChanged: {
-            _control.sliceChange(value);
+            self.sliceChange(value);
         }
     }
 
@@ -135,7 +149,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _menubar.right
+        anchors.left: _collapsible.right
         anchors.leftMargin: 10
 
         MouseArea { id: _2d_mouse_area;
@@ -143,8 +157,8 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _control.switchTo2D();
-                _control.sliceChange(_2d_slider.value);
+                self.switchTo2D();
+                self.sliceChange(_2d_slider.value);
                 _2d_slider.visible = true;
             }
         }
@@ -160,7 +174,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _menubar.right
+        anchors.left: _collapsible.right
         anchors.leftMargin: 50
 
         MouseArea { id: _3d_mouse_area;
@@ -168,7 +182,7 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _control.switchTo3D();
+                self.switchTo3D();
                 _2d_slider.visible = false;
             }
         }
@@ -192,7 +206,7 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _control.transmit();
+                self.transmit();
             }
         }
 
@@ -205,8 +219,8 @@ Rectangle {
     {
         maskSource: Rectangle
         {
-            width: _control.width
-            height: _control.height
+            width: self.width
+            height: self.height
             radius: 4;
         }
     }
