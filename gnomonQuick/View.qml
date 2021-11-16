@@ -73,7 +73,6 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        //situation: X.Style.Position.Left;
 
         width: 42
 
@@ -91,6 +90,11 @@ Rectangle {
             text: "View";
             horizontalAlignment: Text.AlignHCenter;
             Layout.fillHeight: true;
+
+            rotation: 90
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.topMargin: width/2
 
             MouseArea {
                 anchors.fill: parent;
