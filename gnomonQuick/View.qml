@@ -22,6 +22,7 @@ Rectangle {
     signal droppedFromManager(int index)
 
     signal transmit();
+
     signal switchTo2D();
     signal switchTo3D();
     signal sliceChange(int value);
@@ -33,6 +34,11 @@ Rectangle {
         anchors.fill: parent;
 
         mouseEnabled: true;
+
+        onCaptured: {
+            console.warn('Captured');
+            _control.transmit();
+        }
     }
 
     DropArea {
@@ -150,8 +156,7 @@ Rectangle {
 
             onClicked: {
                 _view.requestCapture();
-                _control.update();
-                _control.transmit();
+                _view.update();
             }
         }
 
