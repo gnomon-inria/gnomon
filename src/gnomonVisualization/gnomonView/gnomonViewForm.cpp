@@ -1021,17 +1021,18 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
     //     }
     // });
 
-    // connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
-    //     d->addFormMenu(key);
-    //     d->configure(d->formVisualizationPaneItems[key], key);
-    //     d->updateInteractorStyleMenu();
-    //     d->updateTimeSlider();
-    //     if (d->empty) {
-    //         d->renderer3D->ResetCamera();
-    //     }
-    //     d->empty = false;
-    //     this->render();
-    // });
+     connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
+         /*d->addFormMenu(key);
+         d->configure(d->formVisualizationPaneItems[key], key);
+         d->updateInteractorStyleMenu();
+         d->updateTimeSlider();
+         if (d->empty) {
+             d->renderer3D->ResetCamera();
+         }
+         d->empty = false;
+         this->render();*/
+         emit formsChanged();
+     });
 
     // this->setAcceptDrops(false);
 }
@@ -1367,6 +1368,12 @@ void gnomonViewForm::setExportColor(const QColor& color)
 // {
 //     d->formVisualizationPane->toggle();
 // }
+
+
+QStringList gnomonViewForm::formNames(void)
+{
+     return d->forms.keys();
+}
 
 gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 {

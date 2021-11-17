@@ -28,6 +28,9 @@ public:
      gnomonWorkspaceBrowser(QObject *parent = nullptr);
     ~gnomonWorkspaceBrowser(void);
 
+public:
+    Q_PROPERTY(gnomonViewForm* view READ view);
+
 signals:
     void available(const QVariantMap& readers);
 

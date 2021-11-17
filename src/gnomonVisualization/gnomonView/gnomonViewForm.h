@@ -55,6 +55,9 @@ public:
      gnomonViewForm(QObject *parent = nullptr);
     ~gnomonViewForm(void);
 
+public:
+    Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -105,6 +108,12 @@ public:
 
 public:
     void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization * = nullptr);
+
+public:
+    QStringList formNames(void);
+
+signals:
+    void formsChanged(void);
 
 public:
     gnomonAbstractDynamicForm *form(const QString&);
