@@ -17,6 +17,7 @@
 #include <gnomonWorkspaceExport>
 
 #include <QtCore>
+#include <QtQml>
 
 class gnomonViewForm;
 
@@ -32,8 +33,10 @@ public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
     Q_PROPERTY(gnomonViewForm* source READ source);
     Q_PROPERTY(gnomonViewForm* target READ target);
-    //TODO: include crossParameterCollection ?
-//    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
+    Q_PROPERTY(QJSValue collection READ collection NOTIFY collectionChanged)
+
+signals:
+    void collectionChanged(void);
 
 public slots:
     void run(void);
@@ -45,6 +48,7 @@ public:
 public:
     gnomonViewForm *source(void) const;
     gnomonViewForm *target(void) const;
+    QJSValue collection(void);
 
 private:
     class gnomonWorkspaceSegmentationPrivate *d;

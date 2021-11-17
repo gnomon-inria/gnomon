@@ -196,6 +196,11 @@ void gnomonWorkspaceSegmentation::setAlgoName(const QString& algorithm)
     d->configure(algorithm);
 }
 
+QJSValue gnomonWorkspaceSegmentation::collection(void)
+{
+    return dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
+}
+
 gnomonViewForm* gnomonWorkspaceSegmentation::source(void) const
 {
     return d->source;
