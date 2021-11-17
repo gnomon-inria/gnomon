@@ -191,6 +191,11 @@ QString gnomonWorkspaceSegmentation::algoName(void) const
     return d->algorithm;
 }
 
+QStringList gnomonWorkspaceSegmentation::algorithms(void) const
+{
+    return d->keys();
+}
+
 void gnomonWorkspaceSegmentation::setAlgoName(const QString& algorithm)
 {
     d->configure(algorithm);

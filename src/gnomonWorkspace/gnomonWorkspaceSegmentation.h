@@ -31,6 +31,7 @@ public:
 
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
+    Q_PROPERTY(QStringList algorithms READ algorithms)
     Q_PROPERTY(gnomonViewForm* source READ source);
     Q_PROPERTY(gnomonViewForm* target READ target);
     Q_PROPERTY(QJSValue collection READ collection NOTIFY collectionChanged)
@@ -43,6 +44,7 @@ public slots:
 
 public:
     QString algoName(void) const;
+    QStringList algorithms(void) const;
     void setAlgoName(const QString &);
 
 public:
