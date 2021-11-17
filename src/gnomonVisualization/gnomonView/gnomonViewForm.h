@@ -182,8 +182,8 @@ public slots:
     void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
-public:
-    Q_INVOKABLE void transmit(void);
+public slots:
+    void transmit(void);
 
 // protected:
 //     void dragEnterEvent(QDragEnterEvent *);
