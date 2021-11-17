@@ -33,13 +33,6 @@ Rectangle {
         anchors.fill: parent;
 
         mouseEnabled: true;
-        /* XVis.Actor { */
-        /*     XVis.PolyDataMapper { */
-        /*         XVis.SphereSource { */
-        /*             id: source; */
-        /*         } */
-        /*     } */
-        /* } */
     }
 
     DropArea {
@@ -156,6 +149,8 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
+                _view.requestCapture();
+                _control.update();
                 _control.transmit();
             }
         }
