@@ -17,6 +17,7 @@ Rectangle {
     color: Qt.darker(X.Style.alternateBaseColor);
 
     property alias view: _view;
+    property var formNames: [];
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -74,16 +75,42 @@ Rectangle {
         orientation: "left";
         size: parent.width / 3;
 
-        Column {
-            anchors.top: parent.top;
-            anchors.horizontalCenter: parent.horizontalCenter
+        ColumnLayout {
+            spacing: 20;
 
-            Button {
-                text: "Clear"
+            anchors.top: parent.top;
+            anchors.horizontalCenter: parent.horizontalCenter;
+
+            anchors.topMargin: 10
+            anchors.leftMargin: 20
+            anchors.rightMargin: 20
+
+            Repeater { id: _forms;
+                model: self.formNames;
+
+                X.LabelHint2 {
+                    text: modelData;
+                    horizontalAlignment: Text.AlignHCenter;
+                    Layout.fillWidth: true;
+
+                    color: Qt.darker(X.Style.backgroundColor, 1.2)
+
+                    MouseArea {
+                        anchors.fill: parent;
+                        onClicked: {
+                            console.log(modelData);
+                        }
+                    }
+                }
             }
 
-        }
+            Button {
+                Layout.fillWidth: true;
 
+                text: "Clear"
+
+            }
+        }
     }
 
     Slider { id: _2d_slider
