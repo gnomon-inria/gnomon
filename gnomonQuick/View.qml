@@ -22,6 +22,7 @@ Rectangle {
     signal droppedFromManager(int index)
 
     signal transmit();
+
     signal switchTo2D();
     signal switchTo3D();
     signal sliceChange(int value);
@@ -34,13 +35,11 @@ Rectangle {
         anchors.fill: parent;
 
         mouseEnabled: true;
-        /* XVis.Actor { */
-        /*     XVis.PolyDataMapper { */
-        /*         XVis.SphereSource { */
-        /*             id: source; */
-        /*         } */
-        /*     } */
-        /* } */
+
+        onCaptured: {
+            console.warn('Captured');
+            _control.transmit();
+        }
     }
 
     DropArea {
@@ -175,6 +174,8 @@ Rectangle {
 
             onClicked: {
                 self.transmit();
+                _view.requestCapture();
+                _view.update();
             }
         }
 
