@@ -95,6 +95,7 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObject(parent)
 {
     loadPluginGroup("cellImageFromImage");
+    emit algorithmsLoaded();
 
     d = new gnomonWorkspaceSegmentationPrivate;
 

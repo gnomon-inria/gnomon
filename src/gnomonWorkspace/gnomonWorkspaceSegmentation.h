@@ -31,12 +31,13 @@ public:
 
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
-    Q_PROPERTY(QStringList algorithms READ algorithms)
+    Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
     Q_PROPERTY(gnomonViewForm* source READ source);
     Q_PROPERTY(gnomonViewForm* target READ target);
     Q_PROPERTY(QJSValue collection READ collection NOTIFY collectionChanged)
 
 signals:
+    void algorithmsLoaded(void);
     void collectionChanged(void);
 
 public slots:
