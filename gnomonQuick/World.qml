@@ -58,7 +58,7 @@ ListView {
 
                 hoverEnabled: true;
 
-                drag.target: _world_delegate;
+                drag.target: parent;
                 drag.maximumX: 0;
                 drag.maximumY: 0;
 
