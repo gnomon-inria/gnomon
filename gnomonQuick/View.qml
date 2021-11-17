@@ -73,6 +73,9 @@ Rectangle {
         id: _collapsible;
         orientation: "left";
         size: parent.width / 3;
+        /* background: Rectangle { */
+        /*     color: "#88000000" */
+        /* } */
 
         Column {
             anchors.top: parent.top;
