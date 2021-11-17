@@ -38,7 +38,7 @@ Rectangle {
 
         onCaptured: {
             console.warn('Captured');
-            _control.transmit();
+            self.transmit();
         }
     }
 
@@ -173,7 +173,6 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                self.transmit();
                 _view.requestCapture();
                 _view.update();
             }
