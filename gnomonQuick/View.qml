@@ -70,75 +70,21 @@ Rectangle {
         }
     }
 
-    Pane {
-        id: _collapsible
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        state: "show"
+    X.CollapsibleView {
+        id: _collapsible;
+        orientation: "left";
+        size: parent.width / 3;
 
-        width: 500
+        Column {
+            anchors.top: parent.top;
+            anchors.horizontalCenter: parent.horizontalCenter
 
-        X.LabelHint2 {
-            text: "View";
-            horizontalAlignment: Text.AlignHCenter;
-            Layout.fillHeight: true;
-
-            rotation: 90
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.topMargin: width/2
-
-            MouseArea {
-                anchors.fill: parent;
-                onClicked: {
-                    _collapsible.state === "hide" ? _collapsible.state = "show" : _collapsible.state = "hide"
-                }
+            Button {
+                text: "Clear"
             }
+
         }
 
-        /* Button { */
-        /*     Layout.fillWidth: true */
-        /*     text: "Clear" */
-        /* } */
-
-        states: [
-            State{
-                name: "hide"
-                PropertyChanges {
-                    target: _collapsible;
-                    opacity: 0;
-                    x: -500
-                }
-            },
-            State{
-                name: "show"
-                PropertyChanges {
-                    target: _collapsible;
-                    opacity: 1
-                    x: 0;
-                }
-            }
-        ]
-
-        transitions: [
-            Transition{
-                to:"hide"
-                NumberAnimation{
-                    duration:500
-                    properties:"x, opacity"
-                    easing.type: Easing.InCubic
-                }
-            },
-            Transition{
-                to:"show"
-                NumberAnimation{
-                    duration:500
-                    properties:"x, opacity"
-                    easing.type: Easing.OutCubic
-                }
-            }
-        ]
     }
 
     Slider { id: _2d_slider
