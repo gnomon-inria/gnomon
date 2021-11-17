@@ -114,34 +114,37 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
     if(!d->offscreenRenderer) {
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
     }
-    d->offscreenRenderer->DrawOn();
-    d->offscreenRenderWindow->GetRenderWindow()->AddRenderer(d->offscreenRenderer);
 
-    vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
-    cam->ParallelProjectionOn();
-    cam->SetParallelScale(1);
-    cam->SetFocalPoint((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2);
-    cam->SetPosition((xMin+xMax)/2,(yMin+yMax)/2,zMin);
-    cam->SetViewUp(0,1,0);
+    // d->offscreenRenderer->DrawOn();
+    // d->offscreenRenderWindow->GetRenderWindow()->AddRenderer(d->offscreenRenderer);
 
-    double focus = 0.8;
-    double xMinFocus = (focus)*xMin+(1.-focus)*xMax;
-    double xMaxFocus = (1.-focus)*xMin+(focus)*xMax;
-    double yMinFocus = (focus)*yMin+(1.-focus)*yMax;
-    double yMaxFocus = (1.-focus)*yMin+(focus)*yMax;
+    // vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
+    // cam->ParallelProjectionOn();
+    // cam->SetParallelScale(1);
+    // cam->SetFocalPoint((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2);
+    // cam->SetPosition((xMin+xMax)/2,(yMin+yMax)/2,zMin);
+    // cam->SetViewUp(0,1,0);
 
-    d->offscreenRenderer->ResetCamera(xMinFocus,xMaxFocus,yMinFocus,yMaxFocus,zMin,zMax);
+    // double focus = 0.8;
+    // double xMinFocus = (focus)*xMin+(1.-focus)*xMax;
+    // double xMaxFocus = (1.-focus)*xMin+(focus)*xMax;
+    // double yMinFocus = (focus)*yMin+(1.-focus)*yMax;
+    // double yMaxFocus = (1.-focus)*yMin+(focus)*yMax;
+
+    // d->offscreenRenderer->ResetCamera(xMinFocus,xMaxFocus,yMinFocus,yMaxFocus,zMin,zMax);
 }
 
 QImage gnomonAbstractVisualization::offscreenImageRendering(void)
 {
-    d->offscreenRenderer->InteractiveOn();
+    // d->offscreenRenderer->InteractiveOn();
 
-    QImage image = d->offscreenRenderWindow->capture();
+    // QImage image = d->offscreenRenderWindow->capture();
 
-    d->offscreenRenderWindow->GetRenderWindow()->RemoveRenderer(d->offscreenRenderer);
+    // d->offscreenRenderWindow->GetRenderWindow()->RemoveRenderer(d->offscreenRenderer);
 
-    return image;
+    // return image;
+
+    return d->offscreenRenderWindow->capture();
 }
 
 //
