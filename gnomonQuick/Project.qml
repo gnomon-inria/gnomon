@@ -8,11 +8,15 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
-SwipeView {
+// SwipeView {
+StackLayout {
 
     id: _control;
 
-    interactive: false;
+    // interactive: false;
+
+    Layout.fillWidth: true;
+    Layout.fillHeight: true;
 
     clip: true;
 }
