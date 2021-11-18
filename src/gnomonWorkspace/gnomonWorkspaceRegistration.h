@@ -16,29 +16,43 @@
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include <QtCore>
+#include <QtQml>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public dtkWidgetsWorkspace
+class gnomonViewForm;
+class gnomonViewFormList;
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceRegistration(QWidget *parent = nullptr);
+     gnomonWorkspaceRegistration(QObject *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
 
 public:
-    void enter(void) override;
-    void leave(void) override;
+    Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
+    Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
+    Q_PROPERTY(gnomonViewFormList* sources READ sources);
+    Q_PROPERTY(gnomonViewForm* target READ target);
+    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
+
+signals:
+    void algorithmsLoaded(void);
+    void parametersChanged(void);
 
 public slots:
-    void apply(void) override;
-    void configure(const QString& text);
+    void run(void);
 
 public:
-    static const QColor color;
+    QString algoName(void) const;
+    QStringList algorithms(void) const;
+    Q_INVOKABLE void setAlgoName(const QString &);
 
 public:
-    static bool isEmpty(void);
+    gnomonViewFormList* sources(void) const;
+    gnomonViewForm *target(void) const;
+    QJSValue parameters(void);
 
 private:
     class gnomonWorkspaceRegistrationPrivate *d;

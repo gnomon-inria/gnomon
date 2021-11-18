@@ -4,6 +4,7 @@
 #include "gnomonManager/gnomonFormManagerItem.h"
 #include "gnomonManager/gnomonProjectManager.h"
 #include "gnomonView/gnomonViewForm.h"
+#include "gnomonView/gnomonViewFormList.h"
 #include "gnomonView/gnomonViewFormPool.h"
 // #include "gnomonView/gnomonViewMatplotlib.h"
 #include "gnomonCoreParameterColor.h"

@@ -16,17 +16,20 @@
 
 #include <gnomonVisualizationExport>
 
-#include <QtWidgets>
+#include <QtCore>
 
 class gnomonViewForm;
 
-class GNOMONVISUALIZATION_EXPORT gnomonGridLayout : public QGridLayout
+class GNOMONVISUALIZATION_EXPORT gnomonViewFormList : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonGridLayout(QWidget *parent = nullptr);
-    ~gnomonGridLayout(void);
+     gnomonViewFormList(QObject *parent = nullptr);
+    ~gnomonViewFormList(void);
+
+public:
+    Q_PROPERTY(QList<gnomonViewForm *> views READ views);
 
 public slots:
     void addView(void);
@@ -35,17 +38,17 @@ public slots:
 public:
     QList<gnomonViewForm *> views(void);
 
-protected:
+/* protected:
     void clear(void);
-    void update(void);
+    void update(void); */
 
 signals:
     void formAdded(const QString&);
     void viewAdded(gnomonViewForm *);
 
 private:
-    class gnomonGridLayoutPrivate *d;
+    class gnomonViewFormListPrivate *d;
 };
 
 //
-// gnomonGridLayout.h ends here
+// gnomonViewFormList.h ends here
