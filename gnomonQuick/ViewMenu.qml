@@ -24,6 +24,16 @@ Item {
             model: view.formNames;
 
             Layout.fillWidth: true;
+
+            onCurrentIndexChanged: {
+                view.updateVisualizations(view.formNames[currentIndex]);
+            }
+        }
+
+        ComboBox {
+            model: self.view.visualizations;
+
+            Layout.fillWidth: true;
         }
 
         Item {
