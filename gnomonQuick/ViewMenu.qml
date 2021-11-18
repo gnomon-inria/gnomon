@@ -12,21 +12,23 @@ Item {
 
     id: self;
 
+    // TODO: Start with a flickable
+
+    required property Item view;
+
     ColumnLayout {
+
         anchors.fill: parent;
 
-        Button {
-            text: 'test';
+        ComboBox {
+            model: view.formNames;
 
             Layout.fillWidth: true;
-            Layout.preferredHeight: 32;
         }
 
-        Button {
-            text: 'test';
-
+        Item {
+            Layout.fillHeight: true;
             Layout.fillWidth: true;
-            Layout.preferredHeight: 32;
         }
     }
 }
