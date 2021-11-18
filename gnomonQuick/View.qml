@@ -78,52 +78,6 @@ Rectangle {
         }
     }
 
-    X.CollapsibleView {
-        id: _collapsible;
-        orientation: "left";
-        size: parent.width / 3;
-        /* background: Rectangle { */
-        /*     color: "#88000000" */
-        /* } */
-
-        ColumnLayout {
-            spacing: 20;
-
-            anchors.top: parent.top;
-            anchors.horizontalCenter: parent.horizontalCenter;
-
-            anchors.topMargin: 10
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-
-            Repeater { id: _forms;
-                model: self.formNames;
-
-                X.LabelHint2 {
-                    text: modelData;
-                    horizontalAlignment: Text.AlignHCenter;
-                    Layout.fillWidth: true;
-
-                    color: Qt.darker(X.Style.backgroundColor, 1.2)
-
-                    MouseArea {
-                        anchors.fill: parent;
-                        onClicked: {
-                            console.log(modelData);
-                        }
-                    }
-                }
-            }
-
-            Button {
-                Layout.fillWidth: true;
-
-                text: "Clear"
-
-            }
-        }
-    }
-
     Slider { id: _2d_slider
         from: 0
         to: 100
@@ -136,7 +90,7 @@ Rectangle {
         width: _view.height
 
         anchors.verticalCenter: _view.verticalCenter
-        anchors.left: _collapsible.right
+        anchors.left: _view.left
         anchors.leftMargin: 5 - _view.height / 2
 
         handle.implicitWidth: 10
@@ -154,7 +108,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _collapsible.right
+        anchors.left: _view.left
         anchors.leftMargin: 10
 
         MouseArea { id: _2d_mouse_area;
@@ -179,7 +133,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _collapsible.right
+        anchors.left: _view.left
         anchors.leftMargin: 50
 
         MouseArea { id: _3d_mouse_area;
