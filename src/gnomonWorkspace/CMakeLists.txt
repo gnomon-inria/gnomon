@@ -19,7 +19,7 @@ project(gnomonWorkspace VERSION ${gnomon_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  # gnomonWorkspace
+  gnomonWorkspace
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
   # gnomonWorkspaceDatabaseBrowser.h
@@ -55,8 +55,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspacePointCloudFromImage.h
   # gnomonWorkspacePointCloudQuantification
   # gnomonWorkspacePointCloudQuantification.h
-  # gnomonWorkspacePreprocess
-  # gnomonWorkspacePreprocess.h
+  gnomonWorkspacePreprocess
+  gnomonWorkspacePreprocess.h
   # gnomonWorkspacePythonAlgorithm
   # gnomonWorkspacePythonAlgorithm.h
   # gnomonWorkspacePythonSimulator
@@ -96,7 +96,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspacePointCloudConstructor.cpp
   # gnomonWorkspacePointCloudFromImage.cpp
   # gnomonWorkspacePointCloudQuantification.cpp
-  # gnomonWorkspacePreprocess.cpp
+  gnomonWorkspacePreprocess.cpp
   # gnomonWorkspacePythonAlgorithm.cpp
   # gnomonWorkspacePythonSimulator.cpp
   # gnomonWorkspaceRegistration.cpp

@@ -56,9 +56,9 @@ public:
 public:
     gnomonCellImage *cellimage = nullptr;
 
-public:
-    QMetaObject::Connection c_o;
-    QMetaObject::Connection c_s;
+//public:
+//    QMetaObject::Connection c_o;
+//    QMetaObject::Connection c_s;
 
 // public:
 //     dtkWidgetsMenu *menu_;
@@ -89,7 +89,7 @@ QStringList gnomonWorkspaceSegmentationPrivate::keys(void) const
 }
 
 // ///////////////////////////////////////////////////////////////////
-//
+// gnomonWorkspaceSegmentation
 // ///////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObject(parent)
