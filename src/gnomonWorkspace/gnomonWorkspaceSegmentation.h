@@ -34,11 +34,11 @@ public:
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
     Q_PROPERTY(gnomonViewForm* source READ source);
     Q_PROPERTY(gnomonViewForm* target READ target);
-    Q_PROPERTY(QJSValue collection READ collection NOTIFY collectionChanged)
+    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
     void algorithmsLoaded(void);
-    void collectionChanged(void);
+    void parametersChanged(void);
 
 public slots:
     void run(void);
@@ -46,12 +46,12 @@ public slots:
 public:
     QString algoName(void) const;
     QStringList algorithms(void) const;
-    void setAlgoName(const QString &);
+    Q_INVOKABLE void setAlgoName(const QString &);
 
 public:
     gnomonViewForm *source(void) const;
     gnomonViewForm *target(void) const;
-    QJSValue collection(void);
+    QJSValue parameters(void);
 
 private:
     class gnomonWorkspaceSegmentationPrivate *d;

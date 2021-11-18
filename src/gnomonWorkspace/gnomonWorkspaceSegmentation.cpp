@@ -98,6 +98,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObj
     emit algorithmsLoaded();
 
     d = new gnomonWorkspaceSegmentationPrivate;
+    emit parametersChanged();
 
     d->source = new gnomonViewForm(this);
 //    d->source->setExportColor(this->color);
@@ -161,6 +162,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObj
                 d->command->setInput(d->source->image());
 //                d->target_message->setMessage("Press Apply to display the result of the algorithm");
 //                d->target_message->setMessage("Result will be displayed here");
+                emit parametersChanged();
             }
         } else {
             qDebug() << "Not changed";
@@ -173,6 +175,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : QObj
         if(d->source->image())
             d->command->setInput(d->source->image());
         d->configure(algorithm);
+        emit parametersChanged();
     });
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -202,7 +205,7 @@ void gnomonWorkspaceSegmentation::setAlgoName(const QString& algorithm)
     d->configure(algorithm);
 }
 
-QJSValue gnomonWorkspaceSegmentation::collection(void)
+QJSValue gnomonWorkspaceSegmentation::parameters(void)
 {
     return dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
 }

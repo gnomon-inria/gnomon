@@ -54,6 +54,7 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::configure(const QS
     if (algorithm != this->algorithm) {
         this->command->setAlgorithmName(algorithm);
         this->algorithm = algorithm;
+        emit algorithmChanged(algorithm);
     }
 
     if (!algorithm.isEmpty()) {
