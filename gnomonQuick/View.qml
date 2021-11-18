@@ -12,11 +12,12 @@ import gnomon.Visualization 1.0 as GV
 
 Rectangle {
 
-    id: _control;
+    id: self;
 
     color: Qt.darker(X.Style.alternateBaseColor);
 
     property alias view: _view;
+    property var formNames: [];
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -26,6 +27,7 @@ Rectangle {
     signal switchTo2D();
     signal switchTo3D();
     signal sliceChange(int value);
+    signal clear();
 
     XVis.Viewer {
 
@@ -37,7 +39,7 @@ Rectangle {
 
         onCaptured: {
             console.warn('Captured');
-            _control.transmit();
+            self.transmit();
         }
     }
 
@@ -58,13 +60,59 @@ Rectangle {
         onDropped: {
             if (drop.hasUrls) {
                 drop.urls.forEach(function (item, index) {
-                    _control.droppedFromFile(item);
+                    self.droppedFromFile(item);
                 });
             } else {
-                _control.droppedFromManager(drag.source.ref);
+                self.droppedFromManager(drag.source.ref);
             }
 
             drop.accept();
+        }
+    }
+
+    X.CollapsibleView {
+        id: _collapsible;
+        orientation: "left";
+        size: parent.width / 3;
+        /* background: Rectangle { */
+        /*     color: "#88000000" */
+        /* } */
+
+        ColumnLayout {
+            spacing: 20;
+
+            anchors.top: parent.top;
+            anchors.horizontalCenter: parent.horizontalCenter;
+
+            anchors.topMargin: 10
+            anchors.leftMargin: 20
+            anchors.rightMargin: 20
+
+            Repeater { id: _forms;
+                model: self.formNames;
+
+                X.LabelHint2 {
+                    text: modelData;
+                    horizontalAlignment: Text.AlignHCenter;
+                    Layout.fillWidth: true;
+
+                    color: Qt.darker(X.Style.backgroundColor, 1.2)
+
+                    MouseArea {
+                        anchors.fill: parent;
+                        onClicked: {
+                            console.log(modelData);
+                        }
+                    }
+                }
+            }
+
+            Button {
+                Layout.fillWidth: true;
+
+                text: "Clear"
+
+            }
         }
     }
 
@@ -80,14 +128,14 @@ Rectangle {
         width: _view.height
 
         anchors.verticalCenter: _view.verticalCenter
-        anchors.left: _view.left
+        anchors.left: _collapsible.right
         anchors.leftMargin: 5 - _view.height / 2
 
         handle.implicitWidth: 10
         handle.implicitHeight: 10
 
         onValueChanged: {
-            _control.sliceChange(value);
+            self.sliceChange(value);
         }
     }
 
@@ -98,7 +146,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _view.left
+        anchors.left: _collapsible.right
         anchors.leftMargin: 10
 
         MouseArea { id: _2d_mouse_area;
@@ -106,8 +154,8 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _control.switchTo2D();
-                _control.sliceChange(_2d_slider.value);
+                self.switchTo2D();
+                self.sliceChange(_2d_slider.value);
                 _2d_slider.visible = true;
             }
         }
@@ -123,7 +171,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: 10
-        anchors.left: _view.left
+        anchors.left: _collapsible.right
         anchors.leftMargin: 50
 
         MouseArea { id: _3d_mouse_area;
@@ -131,7 +179,7 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _control.switchTo3D();
+                self.switchTo3D();
                 _2d_slider.visible = false;
             }
         }
@@ -169,8 +217,8 @@ Rectangle {
     {
         maskSource: Rectangle
         {
-            width: _control.width
-            height: _control.height
+            width: self.width
+            height: self.height
             radius: 4;
         }
     }
