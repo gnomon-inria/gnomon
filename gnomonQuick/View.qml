@@ -16,8 +16,12 @@ Rectangle {
 
     color: Qt.darker(X.Style.alternateBaseColor);
 
+    focus: true;
+
     property alias view: _view;
-    property var formNames: [];
+    property var formNames;
+
+    onFormNamesChanged: console.log(self.formNames);
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -38,8 +42,12 @@ Rectangle {
         mouseEnabled: true;
 
         onCaptured: {
-            console.warn('Captured');
             self.transmit();
+        }
+
+        onActiveFocusChanged: {
+            if (_view.activeFocus)
+                window.currentView = self;
         }
     }
 
@@ -222,4 +230,22 @@ Rectangle {
             radius: 4;
         }
     }
+
+    Rectangle {
+
+        id: _focus_indicator;
+
+        width: self.width - 1
+        height: self.height - 1
+        radius: 4;
+
+        color: "#00000000";
+
+        border.width: 2;
+        border.color: X.Style.accentColor;
+
+        visible: window.currentView == self;
+    }
+
+    Component.onCompleted: window.currentView = self;
 }
