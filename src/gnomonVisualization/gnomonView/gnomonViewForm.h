@@ -16,6 +16,8 @@
 
 #include <gnomonVisualizationExport>
 
+#include <QtCore>
+#include <QtQml>
 #include <QtGui>
 // #include <QtWidgets>
 
@@ -122,6 +124,12 @@ public:
     gnomonCellComplexSeries *cellComplex(void);
     gnomonMeshSeries *mesh(void);
     gnomonPointCloudSeries *pointCloud(void);
+
+public:
+    Q_INVOKABLE QString formVisuName(const QString& name);
+    Q_INVOKABLE QStringList formVisualizations(const QString& name);
+    Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
+    Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
 
 public:
     vtkRenderer *renderer2D(void);

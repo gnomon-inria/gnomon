@@ -80,6 +80,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Gui)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Xml)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Qml)
 # target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
