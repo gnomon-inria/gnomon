@@ -11,9 +11,14 @@ import xQuick.Vis         1.0 as XVis
 Rectangle {
     id: self;
 
-    width: 100;
-    height: 12;
-    radius: height/2;
+    property int orientation: Qt.Horizontal;
+
+    property int l_size: 100;
+    property int s_size: 12;
+
+     width: orientation == Qt.Horizontal ? l_size : s_size;
+    height: orientation == Qt.Horizontal ? s_size : l_size;
+    radius: s_size/2;
 
     color: Qt.darker(X.Style.alternateBaseColor, 1.1);
 
@@ -24,8 +29,14 @@ Rectangle {
 
     Rectangle {
         anchors.centerIn: parent;
-        width: parent.width - parent.height;
-        height: 4;
+
+         width: orientation == Qt.Horizontal
+            ? parent.width - parent.height
+            : s_size/4;
+        height: orientation == Qt.Horizontal
+            ? s_size/4
+            : parent.height - parent.width;
+
         radius: 2;
         color: X.Style.borderColor;
     }
