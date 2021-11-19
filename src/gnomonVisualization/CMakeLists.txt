@@ -34,6 +34,8 @@ set(${PROJECT_NAME}_HEADERS
     gnomonVisualization.h
 
     gnomonCoreParameterColor.h # NOTE: Transitional
+    gnomonCoreParameterColorObject # NOTE: Transitional
+    gnomonCoreParameterColorObject.h # NOTE: Transitional
     gnomonLookupTable.h # NOTE: Transitional
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
@@ -47,6 +49,7 @@ set(${PROJECT_NAME}_SOURCES
     gnomonVisualization.cpp
 
     gnomonCoreParameterColor.cpp # NOTE: Transitional
+    gnomonCoreParameterColorObject.cpp # NOTE: Transitional
     gnomonLookupTable.cpp # NOTE: Transitional
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
