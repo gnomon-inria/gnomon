@@ -19,10 +19,10 @@
 ADD_GNOMON_HEADERS(
     # gnomonFormAdapterMenu
     # gnomonFormAdapterMenu.h
-    # gnomonGridLayout
-    # gnomonGridLayout.h
     gnomonViewForm
     gnomonViewForm.h
+    gnomonViewFormList
+    gnomonViewFormList.h
     gnomonViewFormPool
     gnomonViewFormPool.h
     # gnomonViewManager
@@ -33,8 +33,8 @@ ADD_GNOMON_HEADERS(
 
 ADD_GNOMON_SOURCES(
     # gnomonFormAdapterMenu.cpp
-    # gnomonGridLayout.cpp
     gnomonViewForm.cpp
+    gnomonViewFormList.cpp
     gnomonViewFormPool.cpp
     # gnomonViewManager.cpp
     # gnomonViewMatplotlib.cpp)

@@ -12,24 +12,24 @@
 
 // Code:
 
-#include "gnomonGridLayout.h"
+#include "gnomonViewFormList.h"
 #include "gnomonViewForm.h"
 
 // #include <dtkFonts>
 // #include <dtkThemes>
 
-#include <math.h>
+// #include <math.h>
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonGridLayoutButton : public QLabel
+/* class gnomonViewFormListButton : public QLabel
 {
     Q_OBJECT
 
 public:
-    gnomonGridLayoutButton(QWidget *parent = nullptr) : QLabel(parent) {
+    gnomonViewFormListButton(QWidget *parent = nullptr) : QLabel(parent) {
         dtkFontAwesome::instance()->initFontAwesome();
         dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
 
@@ -51,48 +51,48 @@ protected:
     void mousePressEvent(QMouseEvent *) {
         emit increase();
     }
-};
+}; */
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class gnomonGridLayoutPrivate
+class gnomonViewFormListPrivate
 {
 public:
     QList<gnomonViewForm *> views;
 
-public:
-    gnomonGridLayoutButton *button;
+/*public:
+    gnomonViewFormListButton *button;
 
 public:
-    std::size_t landmark_id = 0;
+    std::size_t landmark_id = 0;*/
 };
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-gnomonGridLayout::gnomonGridLayout(QWidget *parent) : QGridLayout(parent)
+gnomonViewFormList::gnomonViewFormList(QObject *parent) : QObject(parent)
 {
-    d = new gnomonGridLayoutPrivate;
+    d = new gnomonViewFormListPrivate;
 
-    d->button = new gnomonGridLayoutButton;
+    /*d->button = new gnomonViewFormListButton;
 
     connect(d->button, SIGNAL(increase()), this, SLOT(addView()));
 
     this->setContentsMargins(0, 0, 0, 0);
     this->setSpacing(0);
-    this->addWidget(d->button);
+    this->addWidget(d->button);*/
 }
 
-gnomonGridLayout::~gnomonGridLayout(void)
+gnomonViewFormList::~gnomonViewFormList(void)
 {
-    delete d->button;
+    // delete d->button;
     delete d;
 }
 
-void gnomonGridLayout::addView(void)
+void gnomonViewFormList::addView(void)
 {
     gnomonViewForm *new_view = new gnomonViewForm;
 //    for(gnomonViewForm *view : d->views) {
@@ -103,32 +103,32 @@ void gnomonGridLayout::addView(void)
 //        connect(view, &gnomonViewForm::landmarkRemoved, new_view, &gnomonViewForm::removeLandmark);
 //    }
 
-    connect(new_view, &gnomonViewForm::formAdded, this, &gnomonGridLayout::formAdded);
+    connect(new_view, &gnomonViewForm::formAdded, this, &gnomonViewFormList::formAdded);
 
     d->views << new_view;
 
-    this->update();
+    // this->update();
 
     emit viewAdded(new_view);
 }
 
-QList<gnomonViewForm *> gnomonGridLayout::views(void)
+QList<gnomonViewForm *> gnomonViewFormList::views(void)
 {
     return d->views;
 }
 
-void gnomonGridLayout::removeAllViews(void)
+void gnomonViewFormList::removeAllViews(void)
 {
     d->views.clear();
-    this->update();
+    // this->update();
 }
 
-void gnomonGridLayout::clear(void)
+/* void gnomonViewFormList::clear(void)
 {
     QLayoutItem *child; while ((child = this->takeAt(0)) != 0);
 }
 
-void gnomonGridLayout::update(void)
+void gnomonViewFormList::update(void)
 {
     this->clear();
 
@@ -150,11 +150,11 @@ void gnomonGridLayout::update(void)
     }
 
     this->addWidget(d->button, i, j);
-}
+} */
 
 // ///////////////////////////////////////////////////////////////////
 
-#include "gnomonGridLayout.moc"
+#include "gnomonViewFormList.moc"
 
 //
-// gnomonGridLayout.cpp ends here
+// gnomonViewFormList.cpp ends here

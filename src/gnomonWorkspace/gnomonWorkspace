@@ -19,7 +19,7 @@
 // #include "gnomonWorkspaceCellImageTracking.h"
 // #include "gnomonWorkspaceCellImageConstructor.h"
 // #include "gnomonWorkspaceCellImageFilter.h"
-// #include "gnomonWorkspaceRegistration.h"
+#include "gnomonWorkspaceRegistration.h"
 #include "gnomonWorkspaceSegmentation.h"
 // #include "gnomonWorkspaceSimulation.h"
 // #include "gnomonWorkspaceTreeAnalysis.h"
