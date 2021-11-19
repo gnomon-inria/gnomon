@@ -159,6 +159,9 @@ public:
     bool enableMenus = true;
 
 public:
+    bool input_view = false;
+
+public:
     QColor export_color = QColor("#cccccc");
 
 // public:
@@ -491,8 +494,8 @@ void gnomonViewFormPrivate::clear(void)
 
     this->formVisualizationNames.clear();
 
-    // this->formVisualization.clear();
-    // this->forms.clear();
+     this->formVisualization.clear();
+     this->forms.clear();
     // this->parameterLayouts.clear();
     // this->formVisualizationMenus.clear();
     // this->formVisualizationPaneItems.clear();
@@ -716,54 +719,75 @@ void gnomonViewFormPrivate::clear(void)
 
 void gnomonViewFormPrivate::updateFormVisualization(const QString& name)
 {
-    this->formVisualization[name]->setView(q);
+    auto&& visu = this->formVisualization[name];
+    auto&& form = this->forms[name];
+   
+    visu->setView(q);
+
+    bool update = false;
 
     if (name == "gnomonCellComplex") {
-        gnomonAbstractVisualizationCellComplex *formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)this->formVisualization[name];
-        formVisualizationCellComplex->setCellComplex((gnomonCellComplexSeries *)this->forms[name]);
+        auto formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)visu;
+        if (formVisualizationCellComplex->cellComplex() != (gnomonCellComplexSeries *)form) {
+            formVisualizationCellComplex->setCellComplex((gnomonCellComplexSeries *)form);
+            update = true;
+        }
     } else if (name == "gnomonCellImage") {
-        gnomonAbstractVisualizationCellImage *formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)this->formVisualization[name];
-        formVisualizationCellImage->setCellImage((gnomonCellImageSeries *)this->forms[name]);
+        auto formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)visu;
+        if (formVisualizationCellImage->cellImage() != (gnomonCellImageSeries *)form) {
+            formVisualizationCellImage->setCellImage((gnomonCellImageSeries *)form);
+            update = true;
+        }
     } else if (name == "gnomonImage") {
-        gnomonAbstractVisualizationImage *formVisualizationImage = (gnomonAbstractVisualizationImage *)this->formVisualization[name];
-        formVisualizationImage->setImage((gnomonImageSeries *)this->forms[name]);
+        auto formVisualizationImage = (gnomonAbstractVisualizationImage *)visu;
+        if (formVisualizationImage->image() != (gnomonImageSeries *)form) {
+            formVisualizationImage->setImage((gnomonImageSeries *)form);
+            update = true;
+        }
     } else if (name == "gnomonMesh") {
-        gnomonAbstractVisualizationMesh *formVisualizationMesh = (gnomonAbstractVisualizationMesh *)this->formVisualization[name];
-        formVisualizationMesh->setMesh((gnomonMeshSeries *)this->forms[name]);
+        auto formVisualizationMesh = (gnomonAbstractVisualizationMesh *)visu;
+        if (formVisualizationMesh->mesh() != (gnomonMeshSeries *)form) {
+            formVisualizationMesh->setMesh((gnomonMeshSeries *)form);
+            update = true;
+        }
     } else if (name == "gnomonPointCloud") {
-        gnomonAbstractVisualizationPointCloud *formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)this->formVisualization[name];
-        formVisualizationPointCloud->setPointCloud((gnomonPointCloudSeries *)this->forms[name]);
+        auto formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)visu;
+        if (formVisualizationPointCloud->pointCloud() != (gnomonPointCloudSeries *)form) {
+            formVisualizationPointCloud->setPointCloud((gnomonPointCloudSeries *)form);
+            update = true;
+        }
     }
 
-    this->formVisualization[name]->update();
+    if (update) {
+        visu->update();
+        q->switchTo3D();
+    }
 }
 
 void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QString& visu)
 {
     if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu) {
-        this->formVisualizationNames[name] = visu;
 
         if (this->formVisualization[name]) {
             this->formVisualization[name]->clear();
             delete this->formVisualization[name];
             this->formVisualization[name] = nullptr;
         }
+
+        if (name == "gnomonCellComplex") {
+            this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
+        } else if (name == "gnomonCellImage") {
+            this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
+        } else if (name == "gnomonImage") {
+            this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu);
+        } else if (name == "gnomonMesh") {
+            this->formVisualization[name] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu);
+        } else if (name == "gnomonPointCloud") {
+            this->formVisualization[name] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
+        }
     }
 
-    if (name == "gnomonCellComplex") {
-        this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
-    } else if (name == "gnomonCellImage") {
-        this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
-    } else if (name == "gnomonImage") {
-        this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu);
-    } else if (name == "gnomonMesh") {
-        this->formVisualization[name] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu);
-    } else if (name == "gnomonPointCloud") {
-        this->formVisualization[name] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu);
-    }
-
-    q->switchTo3D();
-
+    this->formVisualizationNames[name] = visu;
     this->updateFormVisualization(name);
 }
 
@@ -1778,6 +1802,17 @@ void gnomonViewForm::setAcceptForm(const QString& name, bool accept)
     }
 }
 
+QStringList gnomonViewForm::acceptedForms(void)
+{
+    QStringList forms;
+    for (const auto& name : d->acceptForms.keys()) {
+        if (d->acceptForms[name]) {
+            forms << name;
+        }
+    }
+    return forms;
+}
+
 
 void gnomonViewForm::setEnableLinking(bool enable)
 {
@@ -1827,6 +1862,16 @@ void gnomonViewForm::render(void)
     d->interactor()->Render();
 }
 
+void gnomonViewForm::update(void)
+{
+     for (const auto& key : d->formVisualization.keys()) {
+         gnomonAbstractVisualization *v = d->formVisualization[key];
+         if(v) {
+             v->update();
+         }
+     }
+}
+
 void gnomonViewForm::clear(void)
 {
     d->clear();
@@ -1853,6 +1898,7 @@ void gnomonViewForm::onTimeChanged(double time)
 
 void gnomonViewForm::setInputView(bool input)
 {
+    d->input_view = input;
     // this->setAcceptDrops(input);
     // if (input) {
     //     d->export_button->changeIcon(fa::arrowcircledown);
@@ -1863,6 +1909,11 @@ void gnomonViewForm::setInputView(bool input)
     //     d->export_button->toggle(true);
     //     d->export_button->activate(true);
     // }
+}
+
+bool gnomonViewForm::inputView(void)
+{
+    return d->input_view;
 }
 
 void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)

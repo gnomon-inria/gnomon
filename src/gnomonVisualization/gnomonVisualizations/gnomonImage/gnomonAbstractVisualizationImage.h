@@ -37,6 +37,7 @@ public:
 
 public:
     virtual void setImage(gnomonImageSeries *image) = 0;
+    virtual gnomonImageSeries *image(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

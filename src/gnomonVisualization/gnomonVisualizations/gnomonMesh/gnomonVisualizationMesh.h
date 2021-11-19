@@ -35,6 +35,7 @@ public:
 
 public:
 	void setMesh(gnomonMeshSeries *mesh) override;
+	gnomonMeshSeries *mesh(void) override;
 
 public slots:
     void updateOpacity(void);

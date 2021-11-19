@@ -104,6 +104,11 @@ void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cel
         this->updateValueRange();
 }
 
+gnomonCellImageSeries *gnomonVisualizationCellImageVolume::cellImage(void)
+{
+    return dd->cellImageSeries;
+}
+
 void gnomonVisualizationCellImageVolume::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();

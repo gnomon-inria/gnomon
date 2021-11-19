@@ -59,6 +59,8 @@ public:
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+    Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
+    Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -113,6 +115,8 @@ public:
 
 public:
     QStringList formNames(void);
+    QStringList acceptedForms(void);
+    bool inputView(void);
 
 signals:
     void formsChanged(void);
@@ -156,6 +160,7 @@ public:
 
 public slots:
     void render(void);
+    void update(void);
     void clear(void);
 
 public slots:

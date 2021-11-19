@@ -37,6 +37,7 @@ public:
 
 public:
 	virtual void setDataFrame(gnomonDataFrame *dataFrame) = 0;
+	virtual gnomonDataFrame *dataFrame(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

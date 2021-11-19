@@ -149,6 +149,11 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
      }
 }
 
+gnomonImageSeries *gnomonVisualizationImage::image(void)
+{
+    return dd->imageSeries;
+}
+
 void gnomonVisualizationImage::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
