@@ -19,6 +19,7 @@
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellGraph)
 add_subdirectory(gnomonCellImage)
+add_subdirectory(gnomonDataDict)
 add_subdirectory(gnomonDataFrame)
 add_subdirectory(gnomonImage)
 add_subdirectory(gnomonLString)
