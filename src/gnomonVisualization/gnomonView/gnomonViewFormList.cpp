@@ -118,6 +118,16 @@ QList<gnomonViewForm *> gnomonViewFormList::views(void)
     return d->views;
 }
 
+QList<QObject *> gnomonViewFormList::viewsAsQObject(void)
+{
+    QList<QObject *> o_views;
+    for(gnomonViewForm *v : d->views)
+        o_views.append(static_cast<QObject *>(v));
+
+    return o_views;
+}
+
+
 void gnomonViewFormList::removeAllViews(void)
 {
     d->views.clear();

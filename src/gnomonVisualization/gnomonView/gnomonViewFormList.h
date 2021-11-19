@@ -29,7 +29,7 @@ public:
     ~gnomonViewFormList(void);
 
 public:
-    Q_PROPERTY(QList<gnomonViewForm *> views READ views);
+    Q_PROPERTY(QList<QObject *> views READ viewsAsQObject);
 
 public slots:
     void addView(void);
@@ -37,6 +37,7 @@ public slots:
 
 public:
     QList<gnomonViewForm *> views(void);
+    QList<QObject *> viewsAsQObject(void);
 
 /* protected:
     void clear(void);

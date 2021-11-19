@@ -40,12 +40,12 @@ public:
     QStackedWidget *target_stack = nullptr;
     gnomonMessageBoard *target_message = nullptr;
 
-    QSplitter *splitter = nullptr; */
+    QSplitter *splitter = nullptr;
 
 public:
     gnomonViewFormPool *pool = nullptr;
 
-/* public:
+ public:
     dtkWidgetsMenu *menu_;
 
 public:
@@ -69,15 +69,21 @@ QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : QObject(parent)
 {
     loadPluginGroup("imageRegistration");
+    emit algorithmsLoaded();
 
     d = new gnomonWorkspaceRegistrationPrivate;
+    emit parametersChanged();
+
 
     d->sources = new gnomonViewFormList;
-    d->sources->addView();
-    d->sources->addView();
+    d->sources->addView(); //ref
+    d->sources->addView(); // other
 
-//    QWidget *sources_dummy = new QWidget(this);
-//    sources_dummy->setLayout(d->sources);
+    for(gnomonViewForm *v : d->sources->views()) {
+        v->setAcceptForm("gnomonImage",true);
+        v->setInputView(true);
+        //v->setEnableLinking(false);
+    }
 
     d->target  = new gnomonViewForm(this);
 //    d->target->setExportColor(this->color);
@@ -85,14 +91,14 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : QObj
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->pool = new gnomonViewFormPool(this);
-    for(gnomonViewForm *view : d->sources->views()) {
-        view->setInputView(true);
-        view->setEnableLinking(false);
-        view->setAcceptForm("gnomonImage",true);
-        d->pool->addView(view);
-    }
-    d->pool->addView(d->target);
+    //d->pool = new gnomonViewFormPool(this);
+    //for(gnomonViewForm *view : d->sources->views()) {
+    //    view->setInputView(true);
+    //    view->setEnableLinking(false);
+    //    view->setAcceptForm("gnomonImage",true);
+    //    d->pool->addView(view);
+    //}
+    //d->pool->addView(d->target);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -140,16 +146,17 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : QObj
                 // d->target_message->setMessage("Result will be displayed here");
             }
         }
+        emit parametersChanged();
         d->configure(d->algorithm);
     });
 
-    connect(d->sources, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *view)
-    {
-        d->pool->addView(view);
-        view->setInputView(true);
-        view->setEnableLinking(false);
-        view->setAcceptForm("gnomonImage",true);
-    });
+    // connect(d->sources, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *view)
+    // {
+    //     d->pool->addView(view);
+    //     view->setInputView(true);
+    //     view->setEnableLinking(false);
+    //     view->setAcceptForm("gnomonImage",true);
+    // });
 
     connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
     {
@@ -160,6 +167,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : QObj
             }
         }
         d->configure(algorithm);
+        emit parametersChanged();
     });
 
 // /////////////////////////////////////////////////////////////////////////////

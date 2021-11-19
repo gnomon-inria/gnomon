@@ -223,5 +223,6 @@ private:
     class gnomonViewFormPrivate *d;
 };
 
+//Q_DECLARE_METATYPE(gnomonViewForm *)
 //
 // gnomonViewForm.h ends here
