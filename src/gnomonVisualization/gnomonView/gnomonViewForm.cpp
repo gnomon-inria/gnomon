@@ -466,27 +466,30 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
 void gnomonViewFormPrivate::clear(void)
 {
-    // for (const auto& key : this->formVisualization.keys()) {
+     for (const auto& key : this->formVisualization.keys()) {
 
-    //     this->formVisualization[key]->disconnect();
-    //     this->formVisualization[key]->clearConnections();
-    //     this->formVisualization[key]->clear();
-    //     delete this->formVisualization[key];
-    //     this->parameterLayouts[key]->disconnect();
-    //     delete this->parameterLayouts[key];
+         this->formVisualization[key]->disconnect();
+         this->formVisualization[key]->clearConnections();
+         this->formVisualization[key]->clear();
+         delete this->formVisualization[key];
 
-    //     this->formVisualizationMenus[key]->removeItem(this->formVisualizationPaneItems[key]);
+//         this->parameterLayouts[key]->disconnect();
+//         delete this->parameterLayouts[key];
 
-    //     this->formVisualizationPaneItems[key]->disconnect();
-    //     this->formVisualizationPaneItems[key]->clear();
-    //     delete this->formVisualizationPaneItems[key];
+//         this->formVisualizationMenus[key]->removeItem(this->formVisualizationPaneItems[key]);
+//
+//         this->formVisualizationPaneItems[key]->disconnect();
+//         this->formVisualizationPaneItems[key]->clear();
+//         delete this->formVisualizationPaneItems[key];
+//
+//         this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
+//
+//         this->formVisualizationMenus[key]->disconnect();
+//         this->formVisualizationMenus[key]->clear();
+//         delete this->formVisualizationMenus[key];
+    }
 
-    //     this->view_menubar->removeMenu(this->formVisualizationMenus[key]);
-
-    //     this->formVisualizationMenus[key]->disconnect();
-    //     this->formVisualizationMenus[key]->clear();
-    //     delete this->formVisualizationMenus[key];
-    // }
+    this->formVisualizationNames.clear();
 
     // this->formVisualization.clear();
     // this->forms.clear();
@@ -1827,6 +1830,7 @@ void gnomonViewForm::render(void)
 void gnomonViewForm::clear(void)
 {
     d->clear();
+    emit formsChanged();
 }
 
 void gnomonViewForm::onSliceChanged(int slice)

@@ -75,7 +75,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : QObj
     d->sources = new gnomonViewFormList;
     d->sources->addView();
     d->sources->addView();
-    d->sources->addView();
 
 //    QWidget *sources_dummy = new QWidget(this);
 //    sources_dummy->setLayout(d->sources);
