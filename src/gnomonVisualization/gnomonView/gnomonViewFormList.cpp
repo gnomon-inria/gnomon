@@ -94,7 +94,8 @@ gnomonViewFormList::~gnomonViewFormList(void)
 
 void gnomonViewFormList::addView(void)
 {
-    gnomonViewForm *new_view = new gnomonViewForm;
+    gnomonViewForm *new_view = new gnomonViewForm(this->parent());
+
 //    for(gnomonViewForm *view : d->views) {
 //        connect(new_view, &gnomonViewForm::landmarkAdded, view, &gnomonViewForm::addLandmark);
 //        connect(view, &gnomonViewForm::landmarkAdded, new_view, &gnomonViewForm::addLandmark);

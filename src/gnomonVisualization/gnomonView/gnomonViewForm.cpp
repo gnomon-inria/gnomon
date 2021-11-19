@@ -1664,7 +1664,7 @@ void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_na
 QJSValue gnomonViewForm::formVisuParameters(const QString& name)
 {
     if (d->forms.contains(name)) {
-        return dtkCoreParameterCollection(d->formVisualization[name]->parameters()).toJSValue(this);
+        return dtkCoreParameterCollection(d->formVisualization[name]->parameters()).toJSValue(this->parent());
     } else {
         return QJSValue();
     }
