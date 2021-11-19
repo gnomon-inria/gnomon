@@ -37,6 +37,7 @@ public:
 
 public:
 	virtual void setLString(gnomonLString *lString) = 0;
+	virtual gnomonLString *lString(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

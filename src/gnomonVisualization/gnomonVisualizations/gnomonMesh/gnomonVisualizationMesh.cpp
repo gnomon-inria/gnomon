@@ -130,6 +130,11 @@ void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
     this->updateValueRange();
 }
 
+gnomonMeshSeries *gnomonVisualizationMesh::mesh(void)
+{
+    return dd->meshSeries;
+}
+
 void gnomonVisualizationMesh::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();

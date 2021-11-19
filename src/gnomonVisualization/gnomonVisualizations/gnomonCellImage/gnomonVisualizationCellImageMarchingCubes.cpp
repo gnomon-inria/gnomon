@@ -216,6 +216,11 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
 }
 
+gnomonCellImageSeries *gnomonVisualizationCellImageMarchingCubes::cellImage(void)
+{
+    return dd->cellImageSeries;
+}
+
 gnomonInteractorStyle *gnomonVisualizationCellImageMarchingCubes::interactorStyle(void)
 {
     return dd->interactor_style;

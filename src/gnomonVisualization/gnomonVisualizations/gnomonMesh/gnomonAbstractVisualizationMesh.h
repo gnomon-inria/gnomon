@@ -37,6 +37,7 @@ public:
 
 public:
 	virtual void setMesh(gnomonMeshSeries *mesh) = 0;
+	virtual gnomonMeshSeries *mesh(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

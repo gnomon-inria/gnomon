@@ -35,6 +35,7 @@ public:
 
 public:
 	void setCellImage(gnomonCellImageSeries *cellImage) override;
+	gnomonCellImageSeries *cellImage(void) override;
 
 public:
     gnomonInteractorStyle *interactorStyle(void) override;

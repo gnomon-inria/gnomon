@@ -163,6 +163,11 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cel
     dd->updateValueRange();
 }
 
+gnomonCellComplexSeries *gnomonVisualizationCellComplex::cellComplex(void)
+{
+    return dd->cellComplexSeries;
+}
+
 QImage gnomonVisualizationCellComplex::imageRendering(void)
 {
     double bounds[6];

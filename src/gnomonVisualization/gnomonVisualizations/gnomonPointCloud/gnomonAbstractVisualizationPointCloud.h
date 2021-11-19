@@ -37,7 +37,8 @@ public:
     virtual ~gnomonAbstractVisualizationPointCloud(void) = default;
 
 public:
-	virtual void setPointCloud(gnomonPointCloudSeries *PointCloud) = 0;
+	virtual void setPointCloud(gnomonPointCloudSeries *pointCloud) = 0;
+	virtual gnomonPointCloudSeries *pointCloud(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

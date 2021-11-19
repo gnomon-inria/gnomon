@@ -37,6 +37,7 @@ public:
 
 public:
 	virtual void setTree(gnomonTree *tree) = 0;
+	virtual gnomonTree *tree(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
