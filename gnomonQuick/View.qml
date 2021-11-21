@@ -23,7 +23,6 @@ Rectangle {
     property var viewLogic;
     property var visualizations;
 
-
     onFormNamesChanged: console.log(self.formNames);
 
     signal droppedFromFile(string path)
@@ -41,8 +40,6 @@ Rectangle {
         console.log("UPDATE", self.visualizations)
     }
 
-
-
     XVis.Viewer {
 
         id: _view;
@@ -51,9 +48,9 @@ Rectangle {
 
         mouseEnabled: true;
 
-        onCaptured: {
-            self.transmit();
-        }
+        // onCaptured: {
+        //     self.transmit();
+        // }
 
         onActiveFocusChanged: {
             if (_view.activeFocus)
@@ -175,8 +172,11 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _view.requestCapture();
-                _view.update();
+
+                viewLogic.transmit();
+
+                // _view.requestCapture();
+                // _view.update();
             }
         }
 
@@ -189,7 +189,7 @@ Rectangle {
     {
         maskSource: Rectangle
         {
-            width: self.width
+             width: self.width
             height: self.height
             radius: 4;
         }
@@ -199,7 +199,7 @@ Rectangle {
 
         id: _focus_indicator;
 
-        width: self.width - 1
+         width: self.width - 1
         height: self.height - 1
         radius: 4;
 
