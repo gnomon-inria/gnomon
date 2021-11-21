@@ -115,36 +115,34 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
     }
 
-    // d->offscreenRenderer->DrawOn();
-    // d->offscreenRenderWindow->GetRenderWindow()->AddRenderer(d->offscreenRenderer);
+    d->offscreenRenderer->DrawOn();
+    d->offscreenRenderer->InteractiveOn();
+    d->offscreenRenderWindow->GetRenderWindow()->AddRenderer(d->offscreenRenderer);
 
-    // vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
-    // cam->ParallelProjectionOn();
-    // cam->SetParallelScale(1);
-    // cam->SetFocalPoint((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2);
-    // cam->SetPosition((xMin+xMax)/2,(yMin+yMax)/2,zMin);
-    // cam->SetViewUp(0,1,0);
+    vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
+    cam->ParallelProjectionOn();
+    cam->SetParallelScale(1);
+    cam->SetFocalPoint((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2);
+    cam->SetPosition((xMin+xMax)/2,(yMin+yMax)/2,zMin);
+    cam->SetViewUp(0,1,0);
 
-    // double focus = 0.8;
-    // double xMinFocus = (focus)*xMin+(1.-focus)*xMax;
-    // double xMaxFocus = (1.-focus)*xMin+(focus)*xMax;
-    // double yMinFocus = (focus)*yMin+(1.-focus)*yMax;
-    // double yMaxFocus = (1.-focus)*yMin+(focus)*yMax;
+    double focus = 0.8;
+    double xMinFocus = (focus)*xMin+(1.-focus)*xMax;
+    double xMaxFocus = (1.-focus)*xMin+(focus)*xMax;
+    double yMinFocus = (focus)*yMin+(1.-focus)*yMax;
+    double yMaxFocus = (1.-focus)*yMin+(focus)*yMax;
 
-    // d->offscreenRenderer->ResetCamera(xMinFocus,xMaxFocus,yMinFocus,yMaxFocus,zMin,zMax);
+    d->offscreenRenderer->ResetCamera(xMinFocus,xMaxFocus,yMinFocus,yMaxFocus,zMin,zMax);
 }
 
 QImage gnomonAbstractVisualization::offscreenImageRendering(void)
 {
-    // d->offscreenRenderer->InteractiveOn();
+    return QImage();
+}
 
-    // QImage image = d->offscreenRenderWindow->capture();
-
-    // d->offscreenRenderWindow->GetRenderWindow()->RemoveRenderer(d->offscreenRenderer);
-
-    // return image;
-
-    return d->offscreenRenderWindow->capture();
+void gnomonAbstractVisualization::cleanup(void)
+{
+    d->offscreenRenderWindow->GetRenderWindow()->RemoveRenderer(d->offscreenRenderer);
 }
 
 //

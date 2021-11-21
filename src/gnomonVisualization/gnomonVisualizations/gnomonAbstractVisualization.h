@@ -80,6 +80,7 @@ public slots:
     void setOffscreenRenderWindow(xVisViewer *);
     void updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax);
     QImage offscreenImageRendering(void);
+    void cleanup(void);
 
 protected:
     class gnomonAbstractVisualizationPrivate *d;

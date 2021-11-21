@@ -97,6 +97,9 @@ public:
 // public:
 //     void deleteAnimation(void);
 //     void dismissView(void);
+
+public:
+        QMetaObject::Connection connection;
 };
 
 //

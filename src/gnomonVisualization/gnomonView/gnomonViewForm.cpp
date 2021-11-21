@@ -85,6 +85,7 @@ public:
     }
 
 public slots:
+    void exportOne(void);
     void exportToManager(void);
     void saveScreenshot(void);
     void clear(void);
@@ -119,6 +120,8 @@ public:
 
 public:
     QMap<QString, gnomonAbstractDynamicForm *> forms;
+    QMap<QString, gnomonAbstractDynamicForm *> to_export;
+
     QMap<QString, QString> formVisualizationNames;
     QMap<QString, gnomonAbstractVisualization *> formVisualization;
 
@@ -246,85 +249,45 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QObject *parent) : QObject(parent)
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer3D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
-    // this->setRenderWindow(this->window);
-    // this->setEnableHiDPI(true);
-
-    // this->renderer2D_button = new gnomonOverlayButton(fa::square, "", this);
-    // this->renderer2D_button->toggle(false);
-    // this->renderer3D_button = new gnomonOverlayButton(fa::cube, "", this);
-    // this->renderer2D_XY = new gnomonOverlayButton(":gnomon/gnomonButton-XY.png", ":gnomon/gnomonButton-XY-off.png", "", this);
-    // this->renderer2D_XY->toggle(false);
-    // this->renderer2D_XZ = new gnomonOverlayButton(":gnomon/gnomonButton-XZ.png", ":gnomon/gnomonButton-XZ-off.png", "", this);
-    // this->renderer2D_XZ->toggle(false);
-    // this->renderer2D_YZ = new gnomonOverlayButton(":gnomon/gnomonButton-YZ.png",  ":gnomon/gnomonButton-YZ-off.png", "", this);
-    // this->renderer2D_YZ->toggle(false);
-
-    // this->sync = new gnomonOverlayButton(fa::unlock, "", this);
-    // this->sync->toggle(false);
-
-    // this->export_button = new gnomonOverlayButton(fa::arrowcircleup, "", this);
-    // this->export_button->setToolTip("export to the world");
-    // this->export_button->toggle(true);
-
-    // this->screenshot_button = new gnomonOverlayButton(fa::camera, "", this);
-    // this->screenshot_button->setToolTip("take a screenshot");
-    // this->screenshot_button->toggle(true);
-
-    // this->help_button = new gnomonOverlayButton(fa::questioncircle, "", this);
-    // this->help_button->setToolTip("display shortcuts");
-    // this->help_button->toggle(false);
-
-    // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
     this->default_style = new gnomonInteractorStyle();
     this->xyz_style = new gnomonInteractorStyleXYZ();
 
     this->available_styles.push_back(this->default_style);
     this->available_styles.push_back(this->xyz_style);
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
     static int count = 0;
-//    this->view_menu = new dtkWidgetsMenu(fa::image, "View " + QString::number(count++));
-    //this->view_menu = new dtkWidgetsMenu(fa::cubes, "3D Form Viewer", this);
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-    // connect(dtkThemesEngine::instance(), &dtkThemesEngine::changed, [=] (void) -> void
-    // {
-    //     QColor bg = dtkThemesEngine::instance()->color("@bgalt");
-
-    //     this->renderer2D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
-    //     this->renderer3D->SetBackground(bg.redF(), bg.greenF(), bg.blueF());
-    //     this->interactor()->Render();
-    // });
 }
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 {
-    // the mother-ViewForm is called in the FormManager to display detailed views of the stored items.
-    // it can be destroyed at runtime, so we need to destroy its fields.
     delete this->default_style;
     delete this->xyz_style;
-    // the rest is deleted by parent-relationship.
+}
 
+void gnomonViewFormPrivate::exportOne(void)
+{
+    if(!this->to_export.count())
+        return;
+
+    QString key = this->to_export.firstKey();
+
+    gnomonAbstractDynamicForm *form = this->to_export.take(key);
+
+    gnomonFormManager::instance()->addForm(form, this->export_color, this->formVisualization[key], this->viewer, this->renderer3D->GetActiveCamera());
+
+    q->emit exportedForm(this->forms[key]);
 }
 
 void gnomonViewFormPrivate::exportToManager(void)
 {
-    for (const auto& key : this->forms.keys()) {
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->viewer, this->renderer3D->GetActiveCamera());
-        q->emit exportedForm(this->forms[key]);
-    }
+    this->to_export = this->forms;
+
+    this->exportOne();
 }
 
 void gnomonViewFormPrivate::saveScreenshot(void)
 {
-    // TODO: NoBrainer
+    // TODO: NoBrainer --- Let's do that soon then
 
     // QSettings settings("inria", "gnomon");
     // settings.beginGroup("General");
@@ -1124,6 +1087,8 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 
 void gnomonViewForm::transmit(void)
 {
+    qDebug() << Q_FUNC_INFO;
+
     d->exportToManager();
 }
 
@@ -1147,6 +1112,8 @@ void gnomonViewForm::associate(xVisViewer *viewer)
 
     d->updateOrientation();
     // d->updateTimeSlider();
+
+    connect(viewer, &xVisViewer::captureRetrieved, d, &gnomonViewFormPrivate::exportOne);
 }
 
 gnomonViewForm::~gnomonViewForm(void)

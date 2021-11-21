@@ -42,6 +42,8 @@
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 
+#include <xVis/xVisViewer.hpp>
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManagerPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -214,42 +216,57 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 {
     visualization->setOffscreenRenderWindow(viewer);
 
-    QImage image = visualization->imageRendering();
+    Q_UNUSED(visualization->imageRendering());
 
-    gnomonFormManagerItem *item = d->create(form, color, image);
-    item->id = d->item_counter++;
+    viewer->requestCapture();
+    viewer->update();
 
-    d->forms.insert(item, form->clone());
-    d->formVisualizations.insert(item, visualization);
-    d->formCameras.insert(item, cam);
+    d->connection = connect(viewer, &xVisViewer::captured, [=] ()
+    {
+        QImage image = viewer->capture();
 
-    d->pipeline->addClonedForm(form,d->forms[item]);
+        visualization->cleanup();
 
-    QString writerPlugin;
-    if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
-        d->formWriterCommand[item] = new gnomonImageWriterCommand;
-        d->formWriterCommand[item]->setAlgorithmName("gnomonImageWriter");
-        static_cast<gnomonImageWriterCommand *>(d->formWriterCommand[item])->setImage(image);
-    } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
-        d->formWriterCommand[item] = new gnomonMeshWriterCommand;
-        d->formWriterCommand[item]->setAlgorithmName("gnomonMeshWriterPropertyTopomesh");
-        static_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
-    } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
-        d->formWriterCommand[item] = new gnomonCellImageWriterCommand;
-        d->formWriterCommand[item]->setAlgorithmName("gnomonCellImageWriterPropertySpatialImage");
-        static_cast<gnomonCellImageWriterCommand *>(d->formWriterCommand[item])->setCellImage(cellimage);
-    } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
-        d->formWriterCommand[item] = new gnomonPointCloudWriterCommand;
-        d->formWriterCommand[item]->setAlgorithmName("pointCloudWriterPropertyTopomesh");
-        static_cast<gnomonPointCloudWriterCommand *>(d->formWriterCommand[item])->setPointCloud(pointCloud);
-    } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-        d->formWriterCommand[item] = new gnomonCellComplexWriterCommand;
-        d->formWriterCommand[item]->setAlgorithmName("gnomonCellComplexWriterPropertyTopomesh");
-        static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
-    }
+        gnomonFormManagerItem *item = d->create(form, color, image);
+        item->id = d->item_counter++;
 
-    emit added(item->id);
-    // d->contents->layout()->addWidget(item);
+        d->forms.insert(item, form->clone());
+        d->formVisualizations.insert(item, visualization);
+        d->formCameras.insert(item, cam);
+
+        d->pipeline->addClonedForm(form,d->forms[item]);
+
+        QString writerPlugin;
+        if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
+            d->formWriterCommand[item] = new gnomonImageWriterCommand;
+            d->formWriterCommand[item]->setAlgorithmName("gnomonImageWriter");
+            static_cast<gnomonImageWriterCommand *>(d->formWriterCommand[item])->setImage(image);
+        } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
+            d->formWriterCommand[item] = new gnomonMeshWriterCommand;
+            d->formWriterCommand[item]->setAlgorithmName("gnomonMeshWriterPropertyTopomesh");
+            static_cast<gnomonMeshWriterCommand *>(d->formWriterCommand[item])->setMesh(mesh);
+        } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
+            d->formWriterCommand[item] = new gnomonCellImageWriterCommand;
+            d->formWriterCommand[item]->setAlgorithmName("gnomonCellImageWriterPropertySpatialImage");
+            static_cast<gnomonCellImageWriterCommand *>(d->formWriterCommand[item])->setCellImage(cellimage);
+        } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+            d->formWriterCommand[item] = new gnomonPointCloudWriterCommand;
+            d->formWriterCommand[item]->setAlgorithmName("pointCloudWriterPropertyTopomesh");
+            static_cast<gnomonPointCloudWriterCommand *>(d->formWriterCommand[item])->setPointCloud(pointCloud);
+        } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
+            d->formWriterCommand[item] = new gnomonCellComplexWriterCommand;
+            d->formWriterCommand[item]->setAlgorithmName("gnomonCellComplexWriterPropertyTopomesh");
+            static_cast<gnomonCellComplexWriterCommand *>(d->formWriterCommand[item])->setCellComplex(cellcomplex);
+        }
+
+        emit added(item->id);
+
+        disconnect(d->connection);
+
+        emit viewer->captureRetrieved();
+
+        viewer->update();
+    });
 }
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
