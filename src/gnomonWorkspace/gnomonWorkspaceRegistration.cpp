@@ -29,11 +29,15 @@
 class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImageRegistrationCommand>
 {
 public:
+    gnomonWorkspaceRegistrationPrivate(void);
+    ~gnomonWorkspaceRegistrationPrivate(void);
+
+public:
     QString workspace(void) const override;
     QStringList keys(void) const override;
 
 public:
-    gnomonViewFormList *sources;
+    gnomonViewFormList *sources = nullptr;
     gnomonViewForm *target = nullptr;
 
 /* public:
@@ -51,6 +55,17 @@ public:
 public:
     dtkWidgetsMenuBarContainer *dashboard; */
 };
+
+gnomonWorkspaceRegistrationPrivate::gnomonWorkspaceRegistrationPrivate(void)
+{
+    this->command = new gnomonImageRegistrationCommand;
+    this->algorithm = this->command->algorithmName();
+}
+
+gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
+{
+
+}
 
 QString gnomonWorkspaceRegistrationPrivate::workspace(void) const
 {
