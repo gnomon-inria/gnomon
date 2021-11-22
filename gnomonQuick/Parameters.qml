@@ -22,7 +22,7 @@ Item {
 
     Component {
         id: _num_component
-        C.Numeric {param: lparam}
+        C.Numeric {param: lparam; paramType: lparam.type}
     }
 
     Component {
@@ -78,7 +78,7 @@ Item {
         for (var param_name in parameters) {
             var p = parameters[param_name];
             var prop_dict = {};
-            prop_dict["component"] = getComponent(p.type)
+            prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
             console.log(p)
             params_model.append(prop_dict);
