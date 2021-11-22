@@ -33,8 +33,8 @@ public:
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
-    Q_PROPERTY(gnomonViewFormList* sources READ sources);
-    Q_PROPERTY(gnomonViewForm* target READ target);
+    Q_PROPERTY(gnomonViewFormList* sources READ sources CONSTANT);
+    Q_PROPERTY(gnomonViewForm* target READ target CONSTANT);
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
