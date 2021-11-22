@@ -8,6 +8,8 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
+import "."                1.0 as G
+
 Item {
 
     id: self;
@@ -20,25 +22,86 @@ Item {
 
         anchors.fill: parent;
 
-        ComboBox {
-            model: view.formNames;
+        ComboBox { id: _form_combobox
+            model: view.viewLogic.formNames;
 
             Layout.fillWidth: true;
+        }
+
+        ComboBox { id: _visu_combobox;
+            model: view.viewLogic.formVisualizations(_form_combobox.currentValue);
+
+            Layout.fillWidth: true;
+            Layout.leftMargin: 20
+            Layout.rightMargin: 20
+            visible: view.viewLogic.formNames.length > 0
 
             onCurrentIndexChanged: {
-                view.updateVisualizations(view.formNames[currentIndex]);
+                if(_visu_combobox.currentValue) {
+                    view.viewLogic.setFormVisuName(_form_combobox.currentValue, model[_visu_combobox.currentIndex]);
+                }
+            }
+
+            onCurrentValueChanged: {
+                _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_combobox.currentValue))
+
+                _params.parameters =  view.viewLogic.formVisuParameters(_form_combobox.currentValue);
+                _params.updateParametersModel();
             }
         }
 
-        ComboBox {
-            model: self.view.visualizations;
+        G.Parameters {
+            id: _params;
+        }
+
+        ListView { id: _l;
+            model: _params.params_model;
 
             Layout.fillWidth: true;
+            Layout.fillHeight: true;
+            Layout.leftMargin: 20
+            Layout.rightMargin: 20
+            visible: view.viewLogic.formNames.length > 0
+            clip: true;
+
+            delegate: Loader {
+                property var lparam: param;
+                height: 70;
+                width: _l.width;
+                sourceComponent: component
+            }
+
+            ScrollIndicator.vertical: ScrollIndicator {
+                visible: _l.contentHeight > _l.height;
+            }
         }
 
         Item {
-            Layout.fillHeight: true;
             Layout.fillWidth: true;
+            Layout.fillHeight: true;
+            visible: view.viewLogic.formNames.length == 0
+        }
+
+        X.ButtonRaw {
+            text: "Render";
+
+            Layout.fillWidth: true;
+            enabled: view.viewLogic.formNames.length > 0;
+
+            onClicked: {
+                view.viewLogic.update();
+            }
+        }
+
+        X.ButtonRaw {
+            text: "Clear";
+
+            Layout.fillWidth: true;
+            enabled: view.viewLogic.formNames.length > 0;
+
+            onClicked: {
+                view.viewLogic.clear();
+            }
         }
     }
 }

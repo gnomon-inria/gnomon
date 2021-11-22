@@ -16,7 +16,7 @@ Rectangle {
     property int l_size: 100;
     property int s_size: 12;
 
-     width: orientation == Qt.Horizontal ? l_size : s_size;
+    width: orientation == Qt.Horizontal ? l_size : s_size;
     height: orientation == Qt.Horizontal ? s_size : l_size;
     radius: s_size/2;
 

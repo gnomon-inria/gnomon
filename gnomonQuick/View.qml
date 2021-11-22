@@ -19,11 +19,8 @@ Rectangle {
     focus: true;
 
     property alias view: _view;
-    property var formNames;
     property var viewLogic;
     property var visualizations;
-
-    onFormNamesChanged: console.log(self.formNames);
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -34,11 +31,6 @@ Rectangle {
     signal switchTo3D();
     signal sliceChange(int value);
     signal clear();
-
-    function updateVisualizations(formName) {
-        self.visualizations = self.viewLogic.formVisualizations(formName);
-        console.log("UPDATE", self.visualizations)
-    }
 
     XVis.Viewer {
 
