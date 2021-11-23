@@ -50,6 +50,8 @@
 #include "gnomonForm/gnomonCellGraph/gnomonCellGraph.h"
 #include "gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonDataDict/gnomonAbstractDataDictData.h"
+#include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
 #include "gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImage/gnomonAbstractImageData.h"

@@ -7,9 +7,9 @@ from .form_series import buildFormSeries, formDictFromSeries
 
 load_plugin_group("dataDictData")
 
-default_plugin = "gnomonDataDictData"
-default_setter = "set_data_dict"
-default_attr = "_data_dict"
+default_plugin = "gnomonNumpyDataDictData"
+default_setter = "set_data"
+default_attr = "_data"
 
 form_class = gnomonDataDict
 form_data_factory = gnomoncore.dataDictData_pluginFactory()
