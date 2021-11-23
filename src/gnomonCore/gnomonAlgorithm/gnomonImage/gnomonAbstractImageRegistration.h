@@ -23,6 +23,7 @@
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 
 class gnomonImagesSerie;
+class gnomonDataDict;
 class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
@@ -45,6 +46,7 @@ public:
     virtual void removeImages(void) = 0;
 
     virtual gnomonImageSeries* output() = 0;
+    virtual gnomonDataDict* outputTransformation() = 0;
 
 };
 
