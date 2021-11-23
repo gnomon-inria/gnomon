@@ -54,6 +54,8 @@
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonAbstractDataDictData.h>
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
@@ -451,6 +453,7 @@
 
 WRAP_GNOMONCORE_FORM_SERIES(CellComplex)
 WRAP_GNOMONCORE_FORM_SERIES(CellImage)
+WRAP_GNOMONCORE_FORM_SERIES(DataDict)
 WRAP_GNOMONCORE_FORM_SERIES(DataFrame)
 WRAP_GNOMONCORE_FORM_SERIES(Image)
 WRAP_GNOMONCORE_FORM_SERIES(LString)
@@ -689,6 +692,21 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         QString str("<gnomoncore.gnomonCellImage");
         str += QString(" with %1 cell(s)").arg(cellImage->cellCount());
         str += QString(" at 0x%1>").arg((quintptr)cellImage, 12, 16, QChar('0'));
+        s = str.toStdString();
+        return s.data();
+	}
+}
+
+%include <gnomonCore/gnomonForm/gnomonDataDict/gnomonAbstractDataDictData.h>
+%include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict.h>
+%extend gnomonDataDict {
+	const char* __repr__()
+	{
+        static std::string s;
+        auto&& dataDict = $self;
+        QString str("<gnomoncore.gnomonDataDict");
+        str += QString(" with %1 key(s)").arg(dataDict->keys().size());
+        str += QString(" at 0x%1>").arg((quintptr)dataDict, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
 	}

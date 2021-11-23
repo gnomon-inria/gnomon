@@ -50,7 +50,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictData, GNOMONCORE_EXPORT, DataDictData);
+    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictData, GNOMONCORE_EXPORT, dataDictData);
 }
 
 //
