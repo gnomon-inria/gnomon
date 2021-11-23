@@ -23,6 +23,7 @@ Item {
         anchors.fill: parent;
         anchors.margins: 12;
 
+
         ComboBox { id: _form_combobox
             model: view.viewLogic.formNames;
             visible: view.viewLogic.formNames.length > 0
@@ -56,17 +57,19 @@ Item {
             id: _params;
         }
 
-        ListView { id: _l;
+        ListView {
+            id: _l;
             model: _params.params_model;
+            spacing: 33;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
             visible: view.viewLogic.formNames.length > 0
-            clip: true;
+            //clip: true;
 
             delegate: Loader {
                 property var lparam: param;
-                width: _l.width;
+                height: 33;
                 sourceComponent: component;
             }
 
@@ -78,7 +81,7 @@ Item {
         Item {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            //visible: view.viewLogic.formNames.length == 0
+            visible: view.viewLogic.formNames.length == 0
         }
 
         X.ButtonRaw {
