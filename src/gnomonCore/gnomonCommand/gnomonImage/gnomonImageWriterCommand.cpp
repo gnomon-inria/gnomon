@@ -68,9 +68,9 @@ void gnomonImageWriterCommand::undo(void)
     ((gnomonAbstractImageWriter *) this->action)->setPath("");
 }
 
-void gnomonImageWriterCommand::setPath(const QString& path)
+void gnomonImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
 {
-    this->m_path = path;
+    d->image = dynamic_cast<gnomonImageSeries*>(form);
 }
 
 void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)

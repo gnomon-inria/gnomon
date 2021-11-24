@@ -68,14 +68,14 @@ void gnomonDataFrameWriterCommand::undo(void)
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath("");
 }
 
-void gnomonDataFrameWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonDataFrameWriterCommand::setDataFrame(gnomonDataFrameSeries *dataFrame)
 {
     d->dataFrame = dataFrame;
+}
+
+void gnomonDataFrameWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameWriterCommand::inputs(void)

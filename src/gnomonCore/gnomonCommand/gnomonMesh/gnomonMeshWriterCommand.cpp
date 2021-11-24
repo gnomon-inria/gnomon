@@ -68,14 +68,14 @@ void gnomonMeshWriterCommand::undo(void)
     ((gnomonAbstractMeshWriter *) this->action)->setPath("");
 }
 
-void gnomonMeshWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonMeshWriterCommand::setMesh(gnomonMeshSeries *mesh)
 {
     d->mesh = mesh;
+}
+
+void gnomonMeshWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->mesh = dynamic_cast<gnomonMeshSeries*>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshWriterCommand::inputs(void)

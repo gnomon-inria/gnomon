@@ -12,7 +12,7 @@ public:
     void undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *) override;
     void setCellComplex(gnomonCellComplexSeries *cellcomplex);
     void setAlgorithmName(const QString &) override;
 

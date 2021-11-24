@@ -68,14 +68,14 @@ void gnomonCellImageWriterCommand::undo(void)
     ((gnomonAbstractCellImageWriter *) this->action)->setPath("");
 }
 
-void gnomonCellImageWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonCellImageWriterCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
     d->cellImage = cellImage;
+}
+
+void gnomonCellImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->cellImage = dynamic_cast<gnomonCellImageSeries*>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageWriterCommand::inputs(void)

@@ -60,14 +60,14 @@ void gnomonCellComplexWriterCommand::undo(void)
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath("");
 }
 
-void gnomonCellComplexWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cellComplex)
 {
     d->cellComplex = cellComplex;
+}
+
+void gnomonCellComplexWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::inputs(void)

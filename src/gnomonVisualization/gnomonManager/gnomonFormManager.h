@@ -41,19 +41,14 @@ public:
 
 signals:
     void added(int id);
-//     void shrink(void);
-//     void expand(void);
-
-// public:
-//     QSize sizeHint(void) const;
 
 public slots:
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, xVisViewer *viewer, vtkCamera *cam=0);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
-// public slots:
-//     void present(gnomonFormManagerItem *, bool = false);
+public slots:
+    void saveAs(int id, const QString& filename) const;
 
 public:
     gnomonAbstractDynamicForm *get(int index);
@@ -61,21 +56,11 @@ public:
     vtkCamera *getCamera(int index);
 
 public:
-    Q_INVOKABLE QPixmap thumbnail(int index);
+    Q_INVOKABLE QImage thumbnail(int index);
 
 protected:
      gnomonFormManager(QObject *parent = nullptr);
     ~gnomonFormManager(void);
-
-// protected:
-//     void enterEvent(QEvent *);
-//     void leaveEvent(QEvent *);
-
-// protected:
-//     void mousePressEvent(QMouseEvent *);
-
-// protected:
-//     void paintEvent(QPaintEvent *);
 
 private:
     class gnomonFormManagerPrivate *d;

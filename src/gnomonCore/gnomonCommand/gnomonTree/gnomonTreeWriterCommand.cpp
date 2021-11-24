@@ -68,14 +68,14 @@ void gnomonTreeWriterCommand::undo(void)
     ((gnomonAbstractTreeWriter *) this->action)->setPath("");
 }
 
-void gnomonTreeWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonTreeWriterCommand::setTree(gnomonTreeSeries *tree)
 {
     d->tree = tree;
+}
+
+void gnomonTreeWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->tree = dynamic_cast<gnomonTreeSeries *>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs(void)

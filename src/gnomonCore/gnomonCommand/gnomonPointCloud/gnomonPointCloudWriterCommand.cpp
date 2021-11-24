@@ -68,14 +68,14 @@ void gnomonPointCloudWriterCommand::undo(void)
     ((gnomonAbstractPointCloudWriter *) this->action)->setPath("");
 }
 
-void gnomonPointCloudWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonPointCloudWriterCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)
 {
     d->pointCloud = pointCloud;
+}
+
+void gnomonPointCloudWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->pointCloud = dynamic_cast<gnomonPointCloudSeries*>(form);;
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudWriterCommand::inputs(void)
