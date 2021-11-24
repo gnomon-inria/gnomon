@@ -73,14 +73,12 @@ Item {
 
     function updateParametersModel() {
         console.log("UPDATING PARAMETERS", parameters)
-        console.log("PARAMETERS LOG: ")
         params_model.clear();
         for (var param_name in parameters) {
             var p = parameters[param_name];
             var prop_dict = {};
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
-            console.log(p)
             params_model.append(prop_dict);
         }
     }
