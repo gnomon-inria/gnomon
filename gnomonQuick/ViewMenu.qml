@@ -12,7 +12,7 @@ import "."                1.0 as G
 
 Item {
 
-    id: self;
+    id: _self;
 
     // TODO: Start with a flickable
 
@@ -21,9 +21,12 @@ Item {
     ColumnLayout {
 
         anchors.fill: parent;
+        anchors.margins: 12;
+
 
         ComboBox { id: _form_combobox
             model: view.viewLogic.formNames;
+            visible: view.viewLogic.formNames.length > 0
 
             Layout.fillWidth: true;
         }
@@ -32,8 +35,8 @@ Item {
             model: view.viewLogic.formVisualizations(_form_combobox.currentValue);
 
             Layout.fillWidth: true;
-            Layout.leftMargin: 20
-            Layout.rightMargin: 20
+            /* Layout.leftMargin: 20 */
+            /* Layout.rightMargin: 20 */
             visible: view.viewLogic.formNames.length > 0
 
             onCurrentIndexChanged: {
@@ -54,21 +57,20 @@ Item {
             id: _params;
         }
 
-        ListView { id: _l;
+        ListView {
+            id: _l;
             model: _params.params_model;
+            spacing: 33;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            Layout.leftMargin: 20
-            Layout.rightMargin: 20
             visible: view.viewLogic.formNames.length > 0
-            clip: true;
+            //clip: true;
 
             delegate: Loader {
                 property var lparam: param;
-                height: 70;
-                width: _l.width;
-                sourceComponent: component
+                height: 33;
+                sourceComponent: component;
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
@@ -87,6 +89,7 @@ Item {
 
             Layout.fillWidth: true;
             enabled: view.viewLogic.formNames.length > 0;
+            visible: view.viewLogic.formNames.length > 0;
 
             onClicked: {
                 view.viewLogic.update();
@@ -98,10 +101,12 @@ Item {
 
             Layout.fillWidth: true;
             enabled: view.viewLogic.formNames.length > 0;
+            visible: view.viewLogic.formNames.length > 0;
 
             onClicked: {
                 view.viewLogic.clear();
             }
         }
+
     }
 }
