@@ -66,7 +66,9 @@ Rectangle {
 
         onDropped: {
             if (drop.hasUrls) {
+                console.log("DROP", drop.mimeData)
                 drop.urls.forEach(function (item, index) {
+                    console.log("DROP FILE", item)
                     self.droppedFromFile(item);
                 });
             } else {
