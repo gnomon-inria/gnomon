@@ -85,6 +85,8 @@ Item {
         for (var param_name in parameters) {
             var p = parameters[param_name];
             var prop_dict = {};
+            console.log("PARAMETER", p.type)
+            if(p.type === "dtk::d_inliststring") console.log("LIST", p.list)
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
             params_model.append(prop_dict);

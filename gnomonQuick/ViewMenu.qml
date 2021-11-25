@@ -60,16 +60,17 @@ Item {
         ListView {
             id: _l;
             model: _params.params_model;
-            spacing: 33;
+            spacing: 10;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
             visible: view.viewLogic.formNames.length > 0
-            //clip: true;
+            clip: true;
 
             delegate: Loader {
                 property var lparam: param;
-                height: 33;
+                height: 70;
+                width: _l.width;
                 sourceComponent: component;
             }
 
