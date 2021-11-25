@@ -45,6 +45,11 @@ Item {
         C.InList {param: lparam}
     }
 
+    Component {
+        id: _range_component
+        C.Range {param: lparam}
+    }
+
     ListModel {
         id: params_model;
         dynamicRoles: true;
@@ -59,6 +64,9 @@ Item {
         }
         if (type == "dtk::d_path") {
             return _path_component;
+        }
+        if (type == "dtk::d_range_real") {
+            return _range_component;
         }
 
         if (type == "dtk::d_inliststring") {
