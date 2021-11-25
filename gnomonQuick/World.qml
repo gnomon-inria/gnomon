@@ -28,20 +28,6 @@ ListView {
 
     }
 
-    P.FileDialog {
-        id: _file_dialog
-
-        nameFilters: [ "Image files (*.png *.tif *.inr *.gz *.ply)", "All files (*)" ]
-        title: "save Gnomon Form"
-        modality: Qt.NonModal;
-        fileMode: P.FileDialog.SaveFile
-
-        onAccepted: {
-            console.log(model.index,_file_dialog.file)
-            GV.World.saveAs(model.index, _file_dialog.file);
-        }
-    }
-
     delegate: Item {
 
         id: _world_delegate;
@@ -61,14 +47,27 @@ ListView {
             Drag.active: _dragger.drag.active
             Drag.dragType: Drag.Automatic
             Drag.hotSpot: Qt.point(_world.height/2, _world.height/2);
-            Drag.mimeData: {"gnomon/item": model.index }
-            property int ref: model.index
+            Drag.mimeData: {"gnomon/item": form_id }
+
+            P.FileDialog {
+                id: _file_dialog
+
+                nameFilters: [ "Image files (*.png *.tif *.inr *.gz *.ply)", "All files (*)" ]
+                title: "save Gnomon Form"
+                modality: Qt.NonModal;
+                fileMode: P.FileDialog.SaveFile
+
+                onAccepted: {
+                    console.log("save", form_id)
+                    GV.World.saveAs(form_id, _file_dialog.file);
+                }
+            }
 
             Image {
                 id: _img
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
-                source: "image://thumbnails/" + model.index
+                source: "image://thumbnails/" + form_id
             }
 
             MouseArea {
@@ -85,6 +84,33 @@ ListView {
                 onPressed: parent.grabToImage(function(result) {
                     parent.Drag.imageSource = result.url
                 }, Qt.size(_world.height,_world.height));
+            }
+
+            X.Icon {
+                id: _delete_icon;
+                icon: X.Icons.icons.delete;
+                size: 24;
+                color: X.Style.foregroundColor;
+
+                anchors.top: _thumbnail.top
+                anchors.topMargin: 5
+                anchors.left: _thumbnail.left
+                anchors.rightMargin: 5
+                visible: parent.parent.height > 42
+
+                MouseArea { id: _delete_mouse_area;
+                            anchors.fill: parent;
+                            hoverEnabled: true;
+
+                            onClicked: {
+                                GV.World.deleteForm(form_id)
+                                console.log("delete ...", model.index, form_id)
+                                _world_model.remove(model.index)
+                            }
+                          }
+
+                ToolTip.visible: _delete_mouse_area.containsMouse;
+                ToolTip.text: "Delete form";
             }
 
             X.Icon { id: _save_icon;
@@ -104,7 +130,6 @@ ListView {
 
                                  onClicked: {
                                      _file_dialog.open()
-                                     console.log("saving ...")
                                  }
                                }
 
@@ -125,7 +150,7 @@ ListView {
         target: GV.World
         function onAdded(id) {
             console.log("form added", id);
-            _world_model.append({"ref": _world_model.count })
+            _world_model.append({"form_id": id })
         }
     }
 
