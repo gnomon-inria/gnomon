@@ -22,7 +22,7 @@ Shape { id: self;
         fillColor: "transparent";
 
         strokeWidth: 3
-        strokeColor: X.Style.border.Color
+        strokeColor: X.Style.borderColor
 
         startX: self.stt.x;
         startY: self.stt.y;
