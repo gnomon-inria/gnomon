@@ -80,7 +80,7 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
 
-    dd->defaultColormaps[0] = "grey";
+    dd->defaultColormaps[0] = "gray";
     dd->defaultColormaps[1] = "0CMY_cyan";
     dd->defaultColormaps[2] = "0CMY_magenta";
     dd->defaultColormaps[3] = "0CMY_yellow";
@@ -154,7 +154,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         if (dd->channelLookupTables.contains("")) {
             dd->channelLookupTables.remove("");
         }
-        dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
+        dd->channelLookupTables[""] = gnomonLookupTable("gray", valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
         /*d->parameters["lookuptable"]->connect([this](QVariant v) {
               // this->update();

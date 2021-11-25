@@ -49,7 +49,7 @@
     <file>cluts/density.clut</file>
     <file>cluts/geo_jet.clut</file>
     <file>cluts/glasbey.clut</file>
-    <file>cluts/grey.clut</file>
+    <file>cluts/gray.clut</file>
     <file>cluts/hot.clut</file>
     <file>cluts/inferno.clut</file>
     <file>cluts/jet.clut</file>
