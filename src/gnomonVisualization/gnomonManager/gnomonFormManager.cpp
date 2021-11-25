@@ -98,6 +98,22 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 // }
 
 
+void gnomonFormManager::deleteForm(int id)
+{
+    if (!d->forms.contains(id)) {
+        dtkWarn() << "Unknown forms id" << id << "can't delete it ";
+        return;
+    }
+    d->forms.remove(id);
+    d->formVisualizations.remove(id);
+    d->formCameras.remove(id);
+    d->formData.remove(id);
+    // TODO: do something with pipeline ?
+    auto command = d->formWriterCommand.take(id);
+    if (command)
+        delete command;
+}
+
 void gnomonFormManager::saveAs(int id, const QString& f) const
 {
     QString file_name = f;

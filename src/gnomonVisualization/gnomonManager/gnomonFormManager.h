@@ -49,6 +49,7 @@ public slots:
 
 public slots:
     void saveAs(int id, const QString& filename) const;
+    void deleteForm(int id);
 
 public:
     gnomonAbstractDynamicForm *get(int index);
