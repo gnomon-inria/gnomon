@@ -6,6 +6,7 @@ PipelineEdge 1.0 PipelineEdge.qml
 PipelineNode 1.0 PipelineNode.qml
 PipelinePort 1.0 PipelinePort.qml
 Project.qml 1.0 Project.qml
+Stack 1.0 Stack.qml
 View 1.0 View.qml
 World 1.0 World.qml
 Parameters 1.0 Parameters.qml
