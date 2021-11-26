@@ -1,3 +1,4 @@
+#include "gnomonAlgorithmWorkspace.h"
 #include "gnomonWorkspaceBrowser.h"
 // #include "gnomonWorkspaceDatabaseBrowser.h"
 // #include "gnomonWorkspaceLSystemSimulator.h"

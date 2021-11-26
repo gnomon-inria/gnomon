@@ -1,9 +1,8 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractCommand
 {
 public:
     gnomonImageRegistrationCommand();
@@ -16,9 +15,12 @@ public:
 public:
     void addImage(gnomonImageSeries *);
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    virtual orderedMap inputTypes(void) override;
+    virtual void addInputForm(gnomonAbstractDynamicForm *form) override;
 
     gnomonImageSeries *output();
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    virtual orderedMap outputTypes(void) override;
 
     dtkCoreParameters parameters(void) const override;
     void setParameter(const QString&, const QVariant&);

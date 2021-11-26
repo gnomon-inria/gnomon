@@ -16,15 +16,11 @@
 
 #include <gnomonCore>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonAbstractCommand;
-
-class gnomonAbstractAdapterCommand : public gnomonAbstractCommand
+class [[deprecated]] gnomonAbstractAdapterCommand : public gnomonAbstractCommand
 {
 
-public:
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
 };
 
 
