@@ -193,7 +193,11 @@ QStringList gnomonWorkspaceCellImageQuantification::algorithms(void) const
 
 void gnomonWorkspaceCellImageQuantification::setAlgoName(const QString& algorithm)
 {
-    d->configure(algorithm);
+    if (algorithm != d->algorithm)
+    {
+        d->configure(algorithm);
+        emit parametersChanged();
+    }
 }
 
 QJSValue gnomonWorkspaceCellImageQuantification::parameters(void)
