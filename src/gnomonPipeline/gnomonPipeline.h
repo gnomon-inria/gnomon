@@ -45,6 +45,8 @@ public:
     const QStringList& nodeNames(void);
 
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
+    Q_INVOKABLE void exportToJson(const QString& url);
+
 
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
@@ -62,7 +64,6 @@ signals:
 public slots:
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
-    void exportToJson(const QString& path);
 
 public slots:
     void updateLayout(void);
