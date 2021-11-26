@@ -1,7 +1,7 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 #include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-
+//TODO reemove ? is it used somewhere?
 class GNOMONCORE_EXPORT gnomonFormAlgorithmCommand : public gnomonAbstractAlgorithmCommand
 {
 public:

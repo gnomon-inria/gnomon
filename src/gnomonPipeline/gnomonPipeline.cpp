@@ -496,7 +496,7 @@ void gnomonPipeline::addAdapter(gnomonAbstractAdapterCommand *command)
     }
 }
 
-void gnomonPipeline::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
+void gnomonPipeline::addAlgorithm(gnomonAbstractCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
