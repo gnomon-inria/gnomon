@@ -116,6 +116,11 @@ void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractD
     }
 }
 
+void gnomonImageFilterCommand::addInputForm(gnomonAbstractDynamicForm *form) {
+    this->setInputForm("input", form);
+}
+
+
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;

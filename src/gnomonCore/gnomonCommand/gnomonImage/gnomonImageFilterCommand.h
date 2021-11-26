@@ -19,6 +19,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
     virtual orderedMap inputTypes(void) override;
     virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    virtual void addInputForm(gnomonAbstractDynamicForm *form) override;
 
     gnomonImageSeries *output(void);
 
