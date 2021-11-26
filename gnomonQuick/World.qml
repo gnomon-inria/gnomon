@@ -47,7 +47,7 @@ ListView {
             Drag.active: _dragger.drag.active
             Drag.dragType: Drag.Automatic
             Drag.hotSpot: Qt.point(_world.height/2, _world.height/2);
-            Drag.mimeData: {"gnomon/item": form_id }
+            property int ref: form_id
 
             P.FileDialog {
                 id: _file_dialog
