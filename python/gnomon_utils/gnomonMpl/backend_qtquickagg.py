@@ -8,13 +8,43 @@ from .backend_qtquick import (
     QtCore, QtGui, FigureCanvasQtQuick)
 
 
+class GnomonFigureManager:
+
+    def __init__(self):
+        self._figures = {}
+        self._canvas = {}
+        self.num = 0
+
+    def register_canvas(self, canvas):
+        assert isinstance(canvas, FigureCanvasQtQuickAgg)
+
+        self._canvas[self.num] = canvas
+        self._figures[self.num] = canvas.figure
+        canvas.set_number(self.num)
+
+        self.num += 1
+
+    def figure(self, num):
+        if num in self._figures.keys():
+            return self._figures[num]
+        else:
+            raise KeyError(f"Figure {num} does not exist!")
+
+
+manager_instance = GnomonFigureManager()
+
+
+def gnomon_figure(num):
+    return manager_instance.figure(num)
+
+
 class FigureCanvasQtQuickAgg(FigureCanvasAgg, FigureCanvasQtQuick):
     """ This class customizes the FigureCanvasQtQuick for Agg
     """
     def __init__(self, figure=None, parent=None):
         super().__init__(figure=figure, parent=parent)
         self.blitbox = None
-        self.set_number(self.figure.number)
+        manager_instance.register_canvas(self)
 
 #
 # Turn number into a property
