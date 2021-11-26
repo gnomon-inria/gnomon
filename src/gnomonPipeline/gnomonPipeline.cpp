@@ -663,11 +663,16 @@ void gnomonPipeline::exportToToml(const QString& path)
     file.close();
 }
 
-void gnomonPipeline::exportToJson(const QString& path)
+void gnomonPipeline::exportToJson(const QString& url)
 {
+    QUrl q_url(url);
+    QString path = q_url.toLocalFile();
+
     QFile file(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << Q_FUNC_INFO << "can't open file " << path;
         return;
+    }
 
     // 1 pipeline document
     QJsonObject pipeline_json;
@@ -727,8 +732,8 @@ void gnomonPipeline::exportToJson(const QString& path)
     file.write(pipeline_doc.toJson());
     file.close();
 
-    QJsonArray pipeline_ids = { gnomonDataDriver::instance()->insert(pipeline_doc.toJson()) };
-
+    //QJsonArray pipeline_ids = { gnomonDataDriver::instance()->insert(pipeline_doc.toJson()) };
+    QJsonArray pipeline_ids = { path };
 
     // 2 run document
     QString path_run = path;
@@ -757,7 +762,9 @@ void gnomonPipeline::exportToJson(const QString& path)
     QJsonDocument run_doc(run_json);
     file_run.write(run_doc.toJson());
     file_run.close();
-    gnomonDataDriver::instance()->insert(run_doc.toJson());
+
+    //commented for now. will put it back when we do databases
+    //gnomonDataDriver::instance()->insert(run_doc.toJson());
 }
 
 void gnomonPipeline::exportToLuigiScript(const QString& path)

@@ -41,7 +41,6 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
     if (command) {
         delete command;
     }
-    delete d;
 }
 
 void gnomonWorkspaceSegmentation::setInputs()

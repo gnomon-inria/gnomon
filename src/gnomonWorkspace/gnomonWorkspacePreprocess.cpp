@@ -54,7 +54,6 @@ gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
     if (command) {
         delete command;
     }
-    delete d;
 }
 
 //
