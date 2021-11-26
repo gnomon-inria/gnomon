@@ -47,6 +47,8 @@ public:
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
     QHash<int, QImage> formData;
     QHash<int, vtkCamera *> formCameras;
+    QHash<QString, gnomonAbstractWriterCommand *> commands;
+
 public:
     gnomonFormManager *q;
 
