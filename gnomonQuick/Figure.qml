@@ -22,18 +22,18 @@ Rectangle {
     property alias view: _view;
     property var viewLogic;
     property var visualizations;
+    property int number: _view.number;
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
 
     signal transmit();
 
-     GV.FigureCanvas { id: _view;
+    GV.FigureCanvas { id: _view;
 
-         dpi_ratio: Screen.devicePixelRatio
+        dpi_ratio: Screen.devicePixelRatio
 
-         anchors.fill: parent
-
+        anchors.fill: parent
 
         MouseArea { id: _view_mouse_area;
             anchors.fill: parent;
@@ -42,8 +42,7 @@ Rectangle {
 
         ToolTip.visible: _view_mouse_area.containsMouse;
         ToolTip.text: "Figure " + _view.number;
-     }
-
+    }
 
     DropArea {
 
