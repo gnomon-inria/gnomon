@@ -9,8 +9,7 @@ import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
 import gnomon.Visualization 1.0 as GV
-
-import ??? as G
+// import gnomon.Mpl           1.0 as GV
 
 Rectangle {
 
@@ -29,33 +28,33 @@ Rectangle {
 
     signal transmit();
 
-    // XVis.Viewer {
+    // GV.FigureCanvas {
 
     //     id: _view;
 
-    //     anchors.fill: parent;
+    //     dpi_ratio: Screen.devicePixelRatio
 
-    //     mouseEnabled: true;
+    //     anchors.fill: parent
 
-    //     // onCaptured: {
-    //     //     self.transmit();
-    //     // }
-
-    //     onActiveFocusChanged: {
-    //         if (_view.activeFocus)
-    //             window.currentView = self;
-    //     }
+    //     onNumberChanged: console.info('Figure number changed to:', _view.number);
     // }
 
-    G.FigureCanvas {
 
+    // TODO: Substitute me
+    Rectangle {
         id: _view;
 
-        dpi_ratio: Screen.devicePixelRatio
+        anchors.fill: parent;
 
-        anchors.fill: parent
+        color: "#D0A3BF"
 
-        onNumberChanged: console.info('Figure number changed to:', _view.number);
+        Label {
+            anchors.centerIn: parent;
+
+            color: "#000000"
+
+            text: "This will be changed to a gnomon Figure implementing MatPlotLib";
+        }
     }
 
     DropArea {
