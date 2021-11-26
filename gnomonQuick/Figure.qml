@@ -9,7 +9,7 @@ import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
 import gnomon.Visualization 1.0 as GV
-// import gnomon.Mpl           1.0 as GV
+import gnomon.Mpl           1.0 as GV
 
 Rectangle {
 
@@ -28,34 +28,22 @@ Rectangle {
 
     signal transmit();
 
-    // GV.FigureCanvas {
+     GV.FigureCanvas { id: _view;
 
-    //     id: _view;
+         dpi_ratio: Screen.devicePixelRatio
 
-    //     dpi_ratio: Screen.devicePixelRatio
-
-    //     anchors.fill: parent
-
-    //     onNumberChanged: console.info('Figure number changed to:', _view.number);
-    // }
+         anchors.fill: parent
 
 
-    // TODO: Substitute me
-    Rectangle {
-        id: _view;
-
-        anchors.fill: parent;
-
-        color: "#D0A3BF"
-
-        Label {
-            anchors.centerIn: parent;
-
-            color: "#000000"
-
-            text: "This will be changed to a gnomon Figure implementing MatPlotLib";
+        MouseArea { id: _view_mouse_area;
+            anchors.fill: parent;
+            hoverEnabled: true;
         }
-    }
+
+        ToolTip.visible: _view_mouse_area.containsMouse;
+        ToolTip.text: "Figure " + _view.number;
+     }
+
 
     DropArea {
 
