@@ -231,6 +231,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         if button is not None:
             FigureCanvasBase.button_press_event(self, x, y, button,
                                                 guiEvent=event)
+        self.forceActiveFocus()
 
     def mouseReleaseEvent(self, event):
         x, y = self.mouseEventCoords(event.pos())
