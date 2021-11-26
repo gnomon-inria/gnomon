@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageFilterCommand.h"
 
 #include <dtkScript>
@@ -114,11 +100,34 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs(void
     return inputs;
 }
 
+gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes(void)
+{
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    return input_types;
+}
+
+void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+{
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::outputTypes(void)
+{
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonImage"));
+    return output_types;
 }
 
 bool gnomonImageFilterCommand::isEmpty(void)

@@ -22,7 +22,7 @@ class gnomonPipelineNode;
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractAdapterCommand;
-class gnomonAbstractAlgorithmCommand;
+class gnomonAbstractCommand;
 class gnomonAbstractConstructorCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
@@ -49,11 +49,11 @@ public:
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
-    void addAdapter(gnomonAbstractAdapterCommand *command);
-    void addAdaptedForm(gnomonAbstractDynamicForm *form);
-    void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
-    void addConstructor(gnomonAbstractConstructorCommand *command);
-    void addForm(gnomonAbstractDynamicForm *form);
+    void addAdapter(gnomonAbstractAdapterCommand *command); //todo delete ?
+    void addAdaptedForm(gnomonAbstractDynamicForm *form); //todo delete ?
+    void addAlgorithm(gnomonAbstractCommand *command);
+    void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
+    void addForm(gnomonAbstractDynamicForm *form); //todo delete ?
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
 
 signals:

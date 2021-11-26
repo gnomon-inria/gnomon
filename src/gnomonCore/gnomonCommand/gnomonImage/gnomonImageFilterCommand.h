@@ -1,9 +1,8 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImageFilterCommand(void);
@@ -16,10 +15,15 @@ public:
 public:
     void setInput(gnomonImageSeries *image_series);
     gnomonImageSeries *input(void);
+
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    virtual orderedMap inputTypes(void) override;
+    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
     gnomonImageSeries *output(void);
+
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    virtual orderedMap outputTypes(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
     void setAlgorithmName(const QString &) override;

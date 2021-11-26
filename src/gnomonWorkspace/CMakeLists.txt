@@ -19,6 +19,9 @@ project(gnomonWorkspace VERSION ${gnomon_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonAlgorithmWorkspace
+  gnomonAlgorithmWorkspace.h
+  gnomonAlgorithmWorkspace_p.h
   gnomonWorkspace
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
@@ -77,6 +80,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonAlgorithmWorkspace.cpp
   gnomonWorkspaceBrowser.cpp
   # gnomonWorkspaceDatabaseBrowser.cpp
   # gnomonWorkspaceCellComplexConstructor.cpp
