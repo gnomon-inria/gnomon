@@ -1,6 +1,7 @@
 module gnomonQuick
 
 Dragger 1.0 Dragger.qml
+Figure 1.0 Figure.qml
 Pipeline 1.0 Pipeline.qml
 PipelineEdge 1.0 PipelineEdge.qml
 PipelineNode 1.0 PipelineNode.qml
