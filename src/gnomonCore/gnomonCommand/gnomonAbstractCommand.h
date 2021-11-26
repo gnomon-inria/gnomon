@@ -9,7 +9,7 @@ public:
     using orderedMap = std::vector< std::pair <QString, QString > >; // to respect the order of inserting
 public:
      gnomonAbstractCommand(void) = default;
-    ~gnomonAbstractCommand(void);
+    virtual ~gnomonAbstractCommand(void);
 
 public:
     virtual void redo(void) = 0;
