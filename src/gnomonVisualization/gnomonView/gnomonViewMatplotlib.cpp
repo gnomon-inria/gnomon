@@ -368,6 +368,9 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QObject *parent) : QObject(parent)
         }
     }
 
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomon_utils.gnomonMpl", &stat);
+
     /*QFile file(":gnomon/matplotlib_figure.py");
     if (file.open(QIODevice::ReadOnly)) {
         int stat;
