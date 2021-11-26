@@ -20,8 +20,8 @@
 class gnomonAbstractCommand
 {
 public:
-     gnomonAbstractCommand(void) = default;
-    ~gnomonAbstractCommand(void);
+    gnomonAbstractCommand(void) = default;
+    virtual ~gnomonAbstractCommand(void);
 
 public:
     virtual void redo(void) = 0;
