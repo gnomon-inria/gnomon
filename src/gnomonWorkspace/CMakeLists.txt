@@ -31,6 +31,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceCellImageConstructor.h
   # gnomonWorkspaceCellImageFilter
   # gnomonWorkspaceCellImageFilter.h
+  gnomonWorkspaceCellImageQuantification
+  gnomonWorkspaceCellImageQuantification.h
   # gnomonWorkspaceCellImageTracking
   # gnomonWorkspaceCellImageTracking.h
   # gnomonWorkspaceFusion
@@ -83,7 +85,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspaceCellComplexFromCellImage.cpp
   # gnomonWorkspaceCellImageConstructor.cpp
   # gnomonWorkspaceCellImageFilter.cpp
-  # gnomonWorkspaceCellImageQuantification.cpp
+  gnomonWorkspaceCellImageQuantification.cpp
   # gnomonWorkspaceCellImageTracking.cpp
   # gnomonWorkspaceImageConstructor.cpp
   # gnomonWorkspaceFusion.cpp
