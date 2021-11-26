@@ -17,6 +17,7 @@
 #include <gnomonVisualizationExport>
 
 #include <QtCore>
+#include <QtQml>
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractMatplotlibVisualization;
@@ -65,11 +66,22 @@ signals:
 public:
     void updateVisualizations(void);
 
+public:
+    Q_INVOKABLE QString formVisuName(const QString& name);
+    Q_INVOKABLE QStringList formVisualizations(const QString& name);
+    Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
+    Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
 
 signals:
     void formAdded(const QString&);
     void formRemoved(const QString&);
     void figureNumberChanged(int);
+
+public slots:
+    void render(void);
+    void update(void);
+    void clear(void);
+    void transmit(void);
 
 signals:
     void exportedForm(gnomonAbstractDynamicForm *);

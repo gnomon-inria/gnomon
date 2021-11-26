@@ -56,6 +56,7 @@ public slots:
 
 public:
     QMap<QString, gnomonAbstractDynamicForm *> forms;
+    QMap<QString, QString> formVisualizationNames;
     QMap<QString, gnomonAbstractMatplotlibVisualization *> formVisualization;
 
 public:
@@ -72,9 +73,12 @@ public:
     QColor export_color = QColor("#cccccc");
 
 public slots:
+    void setFormVisualization(const QString& name, const QString& visu);
+    void updateFormVisualization(const QString& name);
+    
 //    void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
 //    void addFormMenu(const QString& key);
-    void refresh(void);
+    void render(void);
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
@@ -139,7 +143,7 @@ void gnomonViewMatplotlibPrivate::removeForm(const QString& key)
 
     this->forms.remove(key);
 
-    this->refresh();
+    this->render();
 
     q->emit formRemoved(key);
 }
@@ -149,6 +153,70 @@ void gnomonViewMatplotlibPrivate::clear(void)
     for (const auto& key : this->formVisualization.keys()) {
         this->removeForm(key);
     }
+    if (this->figureNumber != -1) {
+        int stat;
+        QString clearStatement = "from gnomon_utils.gnomonMpl import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.clf()\nfigure.canvas.draw()";
+        dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
+    }
+}
+
+void gnomonViewMatplotlibPrivate::updateFormVisualization(const QString& name)
+{
+    auto&& visu = this->formVisualization[name];
+    auto&& form = this->forms[name];
+   
+    visu->setView(q);
+
+    bool update = false;
+
+    if (name == "gnomonDataFrame") {
+        auto formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)visu;
+        qDebug()<<Q_FUNC_INFO<<formVisualizationDataFrame;
+        qDebug()<<Q_FUNC_INFO<<formVisualizationDataFrame->dataFrame();
+        if (formVisualizationDataFrame->dataFrame() != ((gnomonDataFrameSeries *)form)->current()) {
+            formVisualizationDataFrame->setDataFrame(((gnomonDataFrameSeries *)form)->current());
+            update = true;
+        }
+    } else if (name == "gnomonLString") {
+        auto formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)visu;
+        if (formVisualizationLString->lString() != ((gnomonLStringSeries *)form)->current()) {
+            formVisualizationLString->setLString(((gnomonLStringSeries *)form)->current());
+            update = true;
+        }
+    } else if (name == "gnomonTree") {
+        auto formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)visu;
+        if (formVisualizationTree->tree() != ((gnomonTreeSeries *)form)->current()) {
+            formVisualizationTree->setTree(((gnomonTreeSeries *)form)->current());
+            update = true;
+        }
+    }
+
+    if (update) {
+        visu->update();
+    }
+}
+
+void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, const QString& visu)
+{
+    if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu) {
+
+        if (this->formVisualization[name]) {
+            this->formVisualization[name]->clear();
+            delete this->formVisualization[name];
+            this->formVisualization[name] = nullptr;
+        }
+
+        if (name == "gnomonDataFrame") {
+            this->formVisualization[name] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
+        } else if (name == "gnomonLString") {
+            this->formVisualization[name] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
+        } else if (name == "gnomonTree") {
+            this->formVisualization[name] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu);
+        }
+    }
+
+    this->formVisualizationNames[name] = visu;
+    this->updateFormVisualization(name);
 }
 
 /*void gnomonViewMatplotlibPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QString& key)
@@ -186,7 +254,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
         }
     }
 
-    this->refresh();
+    this->render();
 }
 
 void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
@@ -261,11 +329,13 @@ void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
 
 }*/
 
-void gnomonViewMatplotlibPrivate::refresh(void)
+void gnomonViewMatplotlibPrivate::render(void)
 {
-//    int stat;
-//    QString refreshStatement = "import matplotlib.pyplot as plt\nfigure = plt.figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
-//    dtkScriptInterpreterPython::instance()->interpret(refreshStatement, &stat);
+    if (this->figureNumber != -1) {
+        int stat;
+        QString clearStatement = "from gnomon_utils.gnomonMpl import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
+        dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
+    }
 }
 
 void gnomonViewMatplotlibPrivate::adaptForm(const QString& adapter_plugin)
@@ -383,11 +453,12 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QObject *parent) : QObject(parent)
         qWarning() << "Can't open matplotlib figure script";
     }*/
 
-    /*connect(this, &gnomonViewMatplotlib::formAdded, [=] (const QString& key) {
-        d->addFormMenu(key);
-        d->configure(d->formVisualizationPaneItems[key], key);
-//        this->render();
-    });*/
+    connect(this, &gnomonViewMatplotlib::formAdded, [=] (const QString& key) {
+//        d->addFormMenu(key);
+//        d->configure(d->formVisualizationPaneItems[key], key);
+        this->render();
+        emit formsChanged();
+    });
 
     // connect(d->renderButton, &QPushButton::clicked, [=] () {
     //     for (const auto& key : d->formVisualization.keys()) {
@@ -557,6 +628,77 @@ void gnomonViewMatplotlib::updateVisualizations(void)
             d->formModified[name] = false;
         }
     }
+}
+
+
+QString gnomonViewMatplotlib::formVisuName(const QString& name)
+{
+    QString visu_name;
+    if (d->forms.contains(name)) {
+        visu_name = d->formVisualizationNames[name];
+    }
+    return visu_name;
+}
+
+QStringList gnomonViewMatplotlib::formVisualizations(const QString& name)
+{   
+    QStringList visu_names;
+    
+    if (d->forms.contains(name)) {  
+        if (name == "gnomonDataFrame") {
+             visu_names = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
+         } else if (name == "gnomonLString") {
+             visu_names = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys();
+         } else if (name == "gnomonTree") {
+             visu_names = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
+         }
+    }
+    
+    return visu_names;
+}
+
+void gnomonViewMatplotlib::setFormVisuName(const QString& name, const QString& visu_name)
+{
+    if (d->forms.contains(name)) {
+        d->setFormVisualization(name, visu_name);
+    }
+}
+
+QJSValue gnomonViewMatplotlib::formVisuParameters(const QString& name)
+{
+    if (d->forms.contains(name)) {
+        return dtkCoreParameterCollection(d->formVisualization[name]->parameters()).toJSValue(this->parent());
+    } else {
+        return QJSValue();
+    }
+}
+
+void gnomonViewMatplotlib::render(void)
+{
+    d->render();
+}
+
+void gnomonViewMatplotlib::update(void)
+{
+     for (const auto& key : d->formVisualization.keys()) {
+         gnomonAbstractMatplotlibVisualization *v = d->formVisualization[key];
+         if(v) {
+             v->update();
+         }
+     }
+}
+
+void gnomonViewMatplotlib::clear(void)
+{
+    d->clear();
+    emit formsChanged();
+}
+
+void gnomonViewMatplotlib::transmit(void)
+{
+    qDebug() << Q_FUNC_INFO;
+
+    d->exportToManager();
 }
 
 int gnomonViewMatplotlib::figureNumber(void)

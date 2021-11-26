@@ -19,7 +19,6 @@
 #include <QtCore>
 #include <QtQml>
 #include <QtGui>
-// #include <QtWidgets>
 
 #include <gnomonLandmark.h>
 
