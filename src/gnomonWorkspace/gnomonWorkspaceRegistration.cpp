@@ -51,7 +51,6 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
     if (command) {
         delete command;
     }
-    delete d;
 }
 
 
