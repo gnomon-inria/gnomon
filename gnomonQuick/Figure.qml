@@ -35,13 +35,10 @@ Rectangle {
 
         anchors.fill: parent
 
-        MouseArea { id: _view_mouse_area;
-            anchors.fill: parent;
-            hoverEnabled: true;
+        onActiveFocusChanged: {
+            if (_view.activeFocus)
+                window.currentView = self;
         }
-
-        ToolTip.visible: _view_mouse_area.containsMouse;
-        ToolTip.text: "Figure " + _view.number;
     }
 
     DropArea {
