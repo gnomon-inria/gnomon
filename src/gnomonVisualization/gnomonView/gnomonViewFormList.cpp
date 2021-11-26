@@ -106,11 +106,18 @@ void gnomonViewFormList::addView(void)
 
     connect(new_view, &gnomonViewForm::formAdded, this, &gnomonViewFormList::formAdded);
 
+    connect(new_view, &gnomonViewForm::formsChanged, this, &gnomonViewFormList::formsChanged);
+
     d->views << new_view;
 
     // this->update();
 
     emit viewAdded(new_view);
+}
+
+gnomonViewForm *gnomonViewFormList::operator[](int i)
+{
+    return this->views()[i];
 }
 
 QList<gnomonViewForm *> gnomonViewFormList::views(void)

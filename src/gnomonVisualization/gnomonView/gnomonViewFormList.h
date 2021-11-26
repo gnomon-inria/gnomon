@@ -36,6 +36,7 @@ public slots:
 	void removeAllViews(void);
 
 public:
+    gnomonViewForm *operator[](int);
     QList<gnomonViewForm *> views(void);
     QList<QObject *> viewsAsQObject(void);
 
@@ -45,6 +46,7 @@ public:
 
 signals:
     void formAdded(const QString&);
+    void formsChanged(void);
     void viewAdded(gnomonViewForm *);
 
 private:

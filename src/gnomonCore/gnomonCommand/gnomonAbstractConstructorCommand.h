@@ -16,16 +16,11 @@
 
 #include <gnomonCore>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonCommand/gnomonAbstractCommand.h"
 
-class gnomonAbstractCommand;
-
-class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
+class [[deprecated]] gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {
 
-public:
-    virtual dtkCoreParameters parameters(void) const {dtkCoreParameters empty; return empty;};;
-
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) {QMap<QString, gnomonAbstractDynamicForm *> empty; return empty;};
 };
 
 
