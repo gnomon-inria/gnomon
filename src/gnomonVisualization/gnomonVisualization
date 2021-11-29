@@ -6,6 +6,6 @@
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonView/gnomonViewFormList.h"
 #include "gnomonView/gnomonViewFormPool.h"
-// #include "gnomonView/gnomonViewMatplotlib.h"
+#include "gnomonView/gnomonViewMatplotlib.h"
 #include "gnomonCoreParameterColor.h"
 #include "gnomonLookupTable.h"
