@@ -1089,8 +1089,6 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 
 void gnomonViewForm::transmit(void)
 {
-    qDebug() << Q_FUNC_INFO;
-
     d->exportToManager();
 }
 
@@ -1347,46 +1345,52 @@ void gnomonViewForm::tryLinking(void)
     //     else
     //         emit unlinking();
 
-    if(!d->syncing) {
+    d->syncing = !d->syncing;
+
+    if (d->syncing) {
         emit linking();
     } else {
         emit unlinking();
     }
 
-    if (d->synced)
-        return;
+    // if (d->syncing && !d->synced) {
 
-    d->syncing_count = 0;
+    // d->syncing_count = 0;
 
-    if(!d->syncing_timer)
-        d->syncing_timer = new QTimer(d);
+    // if(!d->syncing_timer)
+    //     d->syncing_timer = new QTimer(d);
 
-    connect(d->syncing_timer, &QTimer::timeout, [=] () {
-        if (d->syncing_count == 11) {
-            d->syncing = false; emit syncingChanged();
-            d->syncing_timer->stop();
-            d->syncing_timer->disconnect();
-            delete d->syncing_timer;
-            d->syncing_timer = nullptr;
-            emit unlinking();
-        }
-    });
+    // connect(d->syncing_timer, &QTimer::timeout, [=] () {
+    //     if (d->syncing_count == 11) {
+    //         d->syncing = false;
+    //         d->syncing_timer->stop();
+    //         d->syncing_timer->disconnect();
+    //         delete d->syncing_timer;
+    //         d->syncing_timer = nullptr;
+    //         emit unlinking();
+    //     }
+    // });
 
-    d->syncing = true; emit syncingChanged();
+    // d->syncing_timer->start(500);
 
-    d->syncing_timer->start(500);
+    // }
+
+    emit syncingChanged();
 }
 
 void gnomonViewForm::link(gnomonViewForm *other)
 {
-    if (d->syncing_timer)
-        d->syncing_timer->stop();
+    // if (d->syncing_timer) {
+    //     d->syncing_timer->stop();
+    //     d->syncing = false;
+    //     emit syncingChanged();
+    // }
 
     // d->sync->toggle(true);
     // d->sync->changeIcon(fa::lock);
 
-    d->synced = true;
-    d->syncing = false;
+           d->synced = true;
+    other->d->synced = true;
 
     // ///////////////////////////////////////////////////////////////
 
@@ -1417,24 +1421,26 @@ void gnomonViewForm::link(gnomonViewForm *other)
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 
-    emit syncedChanged();
-    emit syncingChanged();
+    emit        syncedChanged();
+    emit other->syncedChanged();
 }
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
 {
-    if (d->syncing_timer) {
-        d->syncing_timer->stop();
-        d->syncing_timer->disconnect();
-        delete d->syncing_timer;
-        d->syncing_timer = nullptr;
-    }
+    // if (d->syncing_timer) {
+    //     d->syncing_timer->stop();
+    //     d->syncing_timer->disconnect();
+    //     delete d->syncing_timer;
+    //     d->syncing_timer = nullptr;
+    //     d->syncing = false;
+    //     emit syncingChanged();
+    // }
 
     // d->sync->toggle(false);
     // d->sync->changeIcon(fa::unlock);
 
-    d->synced = false;
-    d->syncing = false;
+           d->synced = false;
+    other->d->synced = false;
 
     // ///////////////////////////////////////////////////////////////
 
@@ -1456,8 +1462,8 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     disconnect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 
-    emit syncedChanged();
-    emit syncingChanged();
+    emit        syncedChanged();
+    emit other->syncedChanged();
 }
 
 void gnomonViewForm::setExportColor(const QColor& color)
