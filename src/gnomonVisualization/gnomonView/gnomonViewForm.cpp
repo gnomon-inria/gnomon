@@ -1390,7 +1390,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
     // d->sync->changeIcon(fa::lock);
 
            d->synced = true;
-    other->d->synced = true;
+//    other->d->synced = true;
 
     // ///////////////////////////////////////////////////////////////
 
@@ -1422,7 +1422,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
     connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 
     emit        syncedChanged();
-    emit other->syncedChanged();
+//    emit other->syncedChanged();
 }
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
@@ -1440,7 +1440,7 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     // d->sync->changeIcon(fa::unlock);
 
            d->synced = false;
-    other->d->synced = false;
+//    other->d->synced = false;
 
     // ///////////////////////////////////////////////////////////////
 
@@ -1463,7 +1463,7 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     disconnect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 
     emit        syncedChanged();
-    emit other->syncedChanged();
+//    emit other->syncedChanged();
 }
 
 void gnomonViewForm::setExportColor(const QColor& color)
