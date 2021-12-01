@@ -64,6 +64,18 @@ void gnomonAlgorithmWorkspacePrivate::updateViewFormTypes(void)
     }
 }
 
+void gnomonAlgorithmWorkspacePrivate::updatePool(void)
+{
+    if(!this->pool)
+        this->pool = new gnomonViewFormPool(this);
+
+    foreach(gnomonViewForm *view, this->sources->views())
+        this->pool->addView(view);
+
+    foreach(gnomonViewForm *view, this->targets->views())
+        this->pool->addView(view);
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspace
 // /////////////////////////////////////////////////////////////////////////////
@@ -81,11 +93,6 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : QObject(pa
     connect(d->targets, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
         connect(v, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
     });
-
-     //d->pool = new gnomonViewFormPool(this);
-     //d->pool->addView(d->source);
-     //d->pool->addView(d->target);
-     //d->pool->linkAll();
 
     connect(d->sources, &gnomonViewFormList::formsChanged, [=] ()
     {

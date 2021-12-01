@@ -60,6 +60,8 @@ public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
+    Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
+    Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,6 +78,8 @@ signals:
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
+    void syncedChanged(void);
+    void syncingChanged(void);
 
 signals:
     void   linking(void);
@@ -92,6 +96,8 @@ public slots:
     void switchTo2DYZ(void);
 
 public slots:
+    void tryLinking(void);
+
     void   link(gnomonViewForm *other);
     void unlink(gnomonViewForm *other);
 
@@ -116,6 +122,8 @@ public:
     QStringList formNames(void);
     QStringList acceptedForms(void);
     bool inputView(void);
+    bool synced(void);
+    bool syncing(void);
 
 signals:
     void formsChanged(void);

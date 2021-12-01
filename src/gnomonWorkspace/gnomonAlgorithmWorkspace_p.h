@@ -7,6 +7,7 @@ class gnomonAbstractCommand;
 
 class gnomonViewForm;
 class gnomonViewFormList;
+class gnomonViewFormPool;
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspacePrivate
@@ -27,6 +28,7 @@ public:
     bool setAlgorithm(const QString& algorithm);
     void registerPipeline(void);
     void updateViewFormTypes(void);
+    void updatePool(void);
 
 public:
     QString workspace;
@@ -42,4 +44,5 @@ public:
 public:
     gnomonViewFormList *sources = nullptr;
     gnomonViewFormList *targets = nullptr;
+    gnomonViewFormPool *pool = nullptr;
 };

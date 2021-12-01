@@ -33,6 +33,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnom
     emit parametersChanged();
 
     d->updateViewFormTypes();
+    d->updatePool();
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)

@@ -155,7 +155,7 @@ public:
     // QList<gnomonOverlayButton *> shortcut_keys;
 
 public:
-    int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false;
+    int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false; bool syncing = false;
 
 public:
     bool enableLink = false;
@@ -1040,6 +1040,8 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 //    d->view_item = new dtkWidgetsMenuItemDIY("View parameters" + QString::number(count++));
 //    d->view_item->setShowTitle(false);
 
+    // NOTE: There we are
+
     // connect(d->sync, &gnomonOverlayButton::iconClicked, [=] ()
     // {
     //     d->sync->toggle(!d->sync->isToggled());
@@ -1334,6 +1336,47 @@ QList<double> gnomonViewForm::times(void)
     return sorted_times;
 }
 
+void gnomonViewForm::tryLinking(void)
+{
+    // connect(d->sync, &gnomonOverlayButton::iconClicked, [=] ()
+    // {
+    //     d->sync->toggle(!d->sync->isToggled());
+
+    //     if (d->sync->isToggled())
+    //         emit linking();
+    //     else
+    //         emit unlinking();
+
+    if(!d->syncing) {
+        emit linking();
+    } else {
+        emit unlinking();
+    }
+
+    if (d->synced)
+        return;
+
+    d->syncing_count = 0;
+
+    if(!d->syncing_timer)
+        d->syncing_timer = new QTimer(d);
+
+    connect(d->syncing_timer, &QTimer::timeout, [=] () {
+        if (d->syncing_count == 11) {
+            d->syncing = false; emit syncingChanged();
+            d->syncing_timer->stop();
+            d->syncing_timer->disconnect();
+            delete d->syncing_timer;
+            d->syncing_timer = nullptr;
+            emit unlinking();
+        }
+    });
+
+    d->syncing = true; emit syncingChanged();
+
+    d->syncing_timer->start(500);
+}
+
 void gnomonViewForm::link(gnomonViewForm *other)
 {
     if (d->syncing_timer)
@@ -1343,14 +1386,14 @@ void gnomonViewForm::link(gnomonViewForm *other)
     // d->sync->changeIcon(fa::lock);
 
     d->synced = true;
+    d->syncing = false;
 
     // ///////////////////////////////////////////////////////////////
 
-//    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
-    // TODO
-    // other->d->renderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+    other->d->viewer->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
     connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
     connect(other, &gnomonViewForm::switchedTo2D, [=] () {
@@ -1369,10 +1412,13 @@ void gnomonViewForm::link(gnomonViewForm *other)
         this->switchTo2DYZ();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     });
-//    connect(other, &gnomonViewForm::switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
-//    connect(other, &gnomonViewForm::switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
+    connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
+    connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+
+    emit syncedChanged();
+    emit syncingChanged();
 }
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
@@ -1388,6 +1434,7 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     // d->sync->changeIcon(fa::unlock);
 
     d->synced = false;
+    d->syncing = false;
 
     // ///////////////////////////////////////////////////////////////
 
@@ -1408,8 +1455,10 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     disconnect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     disconnect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
-}
 
+    emit syncedChanged();
+    emit syncingChanged();
+}
 
 void gnomonViewForm::setExportColor(const QColor& color)
 {
@@ -1881,6 +1930,16 @@ void gnomonViewForm::setInputView(bool input)
 bool gnomonViewForm::inputView(void)
 {
     return d->input_view;
+}
+
+bool gnomonViewForm::synced(void)
+{
+    return d->synced;
+}
+
+bool gnomonViewForm::syncing(void)
+{
+    return d->syncing;
 }
 
 void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
