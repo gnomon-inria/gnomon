@@ -230,23 +230,12 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                console.info('Try & link');
                 viewLogic.tryLinking();
             }
         }
 
         ToolTip.visible: _link_area.containsMouse;
-        ToolTip.text: "Start linking with another view";
-
-        OpacityAnimator {
-            target: _link;
-            from: 0;
-            to: 1;
-            duration: 1000
-            running: viewLogic.syncing;
-            loops: Animation.Infinite;
-            alwaysRunToEnd: true;
-        }
+        ToolTip.text: "(Un)Link with other views for this workspace";
     }
 
     X.Icon { id: _export_icon;
