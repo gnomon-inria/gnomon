@@ -19,7 +19,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -105,8 +106,6 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbs
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellComplex rendering");
     d->parameters["scale_factor"] = new dtk::d_real("scale_factor", 0.99, 0, 1, 2, "Scale for cell surface visualization");
-
-
 }
 
 gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
@@ -164,6 +163,11 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cel
     dd->updateValueRange();
 }
 
+gnomonCellComplexSeries *gnomonVisualizationCellComplex::cellComplex(void)
+{
+    return dd->cellComplexSeries;
+}
+
 QImage gnomonVisualizationCellComplex::imageRendering(void)
 {
     double bounds[6];
@@ -184,6 +188,7 @@ QImage gnomonVisualizationCellComplex::imageRendering(void)
 
 void gnomonVisualizationCellComplex::update(void)
 {
+    // TODO: later
     QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
     QString colormap_name = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->name();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();

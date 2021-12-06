@@ -1,17 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 cmake_minimum_required(VERSION 3.6.0)
 
 ######################################################################
@@ -29,7 +15,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 ## ###################################################################
 
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 17)
+set(${PROJECT_NAME}_VERSION_MINOR 18)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -77,7 +63,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -95,6 +81,12 @@ endif("${isSystemDir}" STREQUAL "-1")
 #if(UNIX)
 #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -Wno-deprecated-register -Wno-unused-value")
 #endif(UNIX)
+
+## #################################################################
+## Options
+## #################################################################
+
+option(GNOMON_ENABLE_WIDGETS "Enable Widgets and Visualization View" false)
 
 ## ###################################################################
 ## Test setup
@@ -124,18 +116,19 @@ set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJ
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtkLog      REQUIRED)
-find_package(dtkFonts    REQUIRED)
-find_package(dtkThemes   REQUIRED)
 find_package(dtkCore     REQUIRED)
-find_package(dtkMacs     REQUIRED)
 find_package(dtkImaging  REQUIRED)
 find_package(dtkScript   REQUIRED)
-find_package(dtkWidgets  REQUIRED)
-find_package(dtkComposer REQUIRED)
+find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
+find_package(xtensor     REQUIRED) # because of dtkImaging
 
-find_package(xtensor REQUIRED)
-
-find_package(VTK REQUIRED)
+if(GNOMON_ENABLE_WIDGETS)
+  find_package(dtkFonts    REQUIRED)
+  find_package(dtkThemes   REQUIRED)
+  find_package(dtkMacs     REQUIRED)
+  find_package(dtkWidgets  REQUIRED)
+  find_package(dtkComposer REQUIRED)
+endif(GNOMON_ENABLE_WIDGETS)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 

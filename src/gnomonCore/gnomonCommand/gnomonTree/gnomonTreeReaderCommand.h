@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonTreeReaderCommand(void) = delete;
-     gnomonTreeReaderCommand(const QString&);
+     gnomonTreeReaderCommand(void);
     ~gnomonTreeReaderCommand(void);
 
 public:

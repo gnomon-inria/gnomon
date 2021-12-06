@@ -21,6 +21,7 @@
 class gnomonCellComplex;
 class gnomonCellGraph;
 class gnomonCellImage;
+class gnomonDataDict;
 class gnomonDataFrame;
 class gnomonImage;
 class gnomonLString;
@@ -55,6 +56,7 @@ public:
     gnomonCellComplex *asCellComplex();
     gnomonCellGraph *asCellGraph();
     gnomonCellImage *asCellImage();
+    gnomonDataDict *asDataDict();
     gnomonDataFrame *asDataFrame();
     gnomonImage *asImage();
     gnomonLString *asLString();

@@ -18,8 +18,7 @@
 class GNOMONCORE_EXPORT gnomonLStringTranslationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonLStringTranslationCommand(void) = delete;
-     gnomonLStringTranslationCommand(const QString&);
+     gnomonLStringTranslationCommand(void);
     ~gnomonLStringTranslationCommand(void);
 
 public:
@@ -34,6 +33,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
     void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString &) override;
 
 public:
     gnomonTreeSeries *outputTree();

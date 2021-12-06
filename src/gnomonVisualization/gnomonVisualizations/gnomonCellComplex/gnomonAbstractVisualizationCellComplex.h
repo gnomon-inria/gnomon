@@ -38,6 +38,7 @@ public:
 
 public:
 	virtual void setCellComplex(gnomonCellComplexSeries *cellComplex) = 0;
+	virtual gnomonCellComplexSeries *cellComplex(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

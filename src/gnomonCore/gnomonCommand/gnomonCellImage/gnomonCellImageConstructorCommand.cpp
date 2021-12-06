@@ -26,21 +26,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageConstructorCommand::gnomonCellImageConstructorCommand(const QString& key) : d(new gnomonCellImageConstructorCommandPrivate)
+gnomonCellImageConstructorCommand::gnomonCellImageConstructorCommand(void) : d(new gnomonCellImageConstructorCommandPrivate)
 {
     this->factory_name = "cellImageConstructor";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-
-    this->action = gnomonCore::cellImageConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellImageConstructorCommand::~gnomonCellImageConstructorCommand(void)
 {
     delete d;
+}
+
+void gnomonCellImageConstructorCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellImageConstructor::pluginFactory().create(algo_name);
 }
 
 void gnomonCellImageConstructorCommand::redo(void)

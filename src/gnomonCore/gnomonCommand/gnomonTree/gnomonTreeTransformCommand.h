@@ -6,8 +6,7 @@ class gnomonTree;
 class GNOMONCORE_EXPORT gnomonTreeTransformCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonTreeTransformCommand(void) = delete;
-     gnomonTreeTransformCommand(const QString&);
+     gnomonTreeTransformCommand(void);
     ~gnomonTreeTransformCommand(void);
 
 public:
@@ -23,6 +22,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString& algo_name) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

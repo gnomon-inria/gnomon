@@ -1,19 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonCellImageFromImageCommand.h"
 
+#include <dtkLog>
 #include <dtkScript>
 #include <dtkImagingCore>
 
@@ -26,20 +13,29 @@ public:
     gnomonCellImageSeries *output = nullptr;
 };
 
-gnomonCellImageFromImageCommand::gnomonCellImageFromImageCommand(const QString& key) : d(new gnomonCellImageFromImageCommandPrivate)
+gnomonCellImageFromImageCommand::gnomonCellImageFromImageCommand(void) : d(new gnomonCellImageFromImageCommandPrivate)
 {
     this->factory_name = "cellImageFromImage";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellImageFromImage::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageFromImage::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageFromImage::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellImageFromImageCommand::~gnomonCellImageFromImageCommand(void)
 {
     delete d;
+}
+
+void gnomonCellImageFromImageCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellImageFromImage::pluginFactory().create(algo_name);
 }
 
 void gnomonCellImageFromImageCommand::redo(void)
@@ -61,6 +57,7 @@ void gnomonCellImageFromImageCommand::undo(void)
     Q_ASSERT(this->action);
 
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(nullptr);
+    ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(nullptr);
 }
 
 void gnomonCellImageFromImageCommand::setInput(gnomonImageSeries* image_series)
@@ -106,11 +103,37 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::inpu
     return inputs;
 }
 
+gnomonAbstractCommand::orderedMap gnomonCellImageFromImageCommand::inputTypes(void)
+{
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("cellPoints", "gnomonPointCloud"));
+    return input_types;
+}
+
+void gnomonCellImageFromImageCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+{
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else if (name == "cellPoints") {
+        this->setCellPoints(dynamic_cast<gnomonPointCloudSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::outputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageFromImageCommand::outputTypes(void)
+{
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonCellImage"));
+    return output_types;
 }
 
 dtkCoreParameters gnomonCellImageFromImageCommand::parameters(void) const

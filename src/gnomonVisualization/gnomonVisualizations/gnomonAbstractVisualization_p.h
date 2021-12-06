@@ -1,4 +1,3 @@
-
 // Version: $Id$
 //
 //
@@ -22,11 +21,14 @@
 
 #include "gnomonView/gnomonViewForm.h"
 
-
+class vtkGenericOpenGLRenderWindow;
 class vtkRenderer;
 class vtkRenderWindow;
 class vtkRenderWindowInteractor;
+
 #include <vtkSmartPointer.h>
+
+class xVisViewer;
 
 class gnomonAbstractVisualizationPrivate
 {
@@ -52,10 +54,10 @@ public:
     QMetaObject::Connection connectYZ;
 
 public:
-    vtkSmartPointer<vtkRenderer> offscreenRenderer;
-    vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
-};
+    vtkSmartPointer <vtkRenderer> offscreenRenderer;
 
+    xVisViewer *offscreenRenderWindow = 0;
+};
 
 //
 // gnomonAbstractVisualization_p.h ends here

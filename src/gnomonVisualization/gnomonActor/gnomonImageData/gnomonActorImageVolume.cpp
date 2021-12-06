@@ -187,8 +187,11 @@ void gnomonActorImageVolume::setValueRange(const std::array<long long int, 2>& v
 
 void gnomonActorImageVolume::setColorMap(const QMap<double,QColor>& value)
 {
+    qDebug() << Q_FUNC_INFO << d;
     d->colormap = value;
+    qDebug() << Q_FUNC_INFO << 2;
     d->updateColorFunction();
+    qDebug() << Q_FUNC_INFO << 3;
     d->interactor->Render();
 }
 

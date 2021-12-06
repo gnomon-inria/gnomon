@@ -15,10 +15,9 @@
 #pragma once
 
 #include <QtCore>
-#include <QtWidgets>
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspacePrivateSignals : public QObject
@@ -30,7 +29,7 @@ signals:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspace;
@@ -46,8 +45,8 @@ public:
     virtual QString workspace(void) const = 0;
     virtual QStringList keys(void) const = 0;
 
-public:
-    dtkWidgetsMenu *menu(dtkWidgetsWorkspace *);
+// public:
+//     dtkWidgetsMenu *menu(dtkWidgetsWorkspace *);
 
 public:
     void configure(const QString& algorithm);
@@ -63,8 +62,8 @@ public:
 public:
     T *command = nullptr;
 
-public:
-    QFormLayout *layout = nullptr;
+// public:
+//     QFormLayout *layout = nullptr;
 
 public:
     static bool isEmpty(void);

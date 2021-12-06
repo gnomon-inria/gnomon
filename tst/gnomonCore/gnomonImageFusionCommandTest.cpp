@@ -64,8 +64,9 @@ void gnomonImageFusionCommandTestCase::initTestCase(void)
 
 void gnomonImageFusionCommandTestCase::init(void)
 {
-    d->fusion_command = new gnomonImageFusionCommand("dummyImageFusion");
+    d->fusion_command = new gnomonImageFusionCommand();
     Q_ASSERT(d->fusion_command);
+    d->fusion_command->setAlgorithmName("dummyImageFusion");
 }
 
 void gnomonImageFusionCommandTestCase::redo(void)

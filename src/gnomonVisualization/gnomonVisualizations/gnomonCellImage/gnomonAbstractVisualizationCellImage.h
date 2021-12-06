@@ -38,6 +38,7 @@ public:
 
 public:
 	virtual void setCellImage(gnomonCellImageSeries *cellImage) = 0;
+	virtual gnomonCellImageSeries *cellImage(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;

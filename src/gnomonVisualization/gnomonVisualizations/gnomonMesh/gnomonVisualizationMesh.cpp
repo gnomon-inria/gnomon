@@ -18,7 +18,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+//#include <gnomonWidgets>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -61,7 +62,7 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualiza
 
     d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "Mesh property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
-    d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the mesh");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("gray", "Colormap to apply to the mesh");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the mesh rendering");
 
     d->parameters["property_name"]->connect([=] (QVariant v) {
@@ -127,6 +128,11 @@ void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
 
 
     this->updateValueRange();
+}
+
+gnomonMeshSeries *gnomonVisualizationMesh::mesh(void)
+{
+    return dd->meshSeries;
 }
 
 void gnomonVisualizationMesh::updateOpacity(void)

@@ -16,7 +16,9 @@
 
 #include <gnomonVisualizationExport>
 
-#include <QtWidgets>
+#include <QtCore>
+#include <QtQml>
+#include <QtGui>
 
 #include <gnomonLandmark.h>
 
@@ -42,14 +44,33 @@ template <typename T> class gnomonTimeSeries;
 class vtkCamera;
 class vtkRenderer;
 class vtkRenderWindowInteractor;
+class vtkGenericOpenGLRenderWindow;
 
-class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QFrame
+class xVisViewer;
+
+class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonViewForm(QWidget *parent = nullptr);
+     gnomonViewForm(QObject *parent = nullptr);
     ~gnomonViewForm(void);
+
+public:
+    Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+    Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
+    Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
+    Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
+    Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+    void associate(xVisViewer *);
+// /////////////////////////////////////////////////////////////////////////////
+
+signals:
+    void updated(void);
 
 signals:
     void switchedTo3D  (void);
@@ -57,6 +78,8 @@ signals:
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
+    void syncedChanged(void);
+    void syncingChanged(void);
 
 signals:
     void   linking(void);
@@ -73,8 +96,13 @@ public slots:
     void switchTo2DYZ(void);
 
 public slots:
+    void tryLinking(void);
+
     void   link(gnomonViewForm *other);
     void unlink(gnomonViewForm *other);
+
+public slots:
+    void drop(int);
 
 public slots:
     void setExportColor(const QColor& color);
@@ -91,6 +119,16 @@ public:
     void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization * = nullptr);
 
 public:
+    QStringList formNames(void);
+    QStringList acceptedForms(void);
+    bool inputView(void);
+    bool synced(void);
+    bool syncing(void);
+
+signals:
+    void formsChanged(void);
+
+public:
     gnomonAbstractDynamicForm *form(const QString&);
     gnomonImageSeries *image(void);
     gnomonCellImageSeries *cellImage(void);
@@ -99,12 +137,18 @@ public:
     gnomonPointCloudSeries *pointCloud(void);
 
 public:
+    Q_INVOKABLE QString formVisuName(const QString& name);
+    Q_INVOKABLE QStringList formVisualizations(const QString& name);
+    Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
+    Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+
+public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
 
-public:
-    dtkWidgetsMenu *menu(void);
-    dtkWidgetsMenuBar *menubar(void);
+// public:
+//     dtkWidgetsMenu *menu(void);
+//     dtkWidgetsMenuBar *menubar(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
@@ -123,6 +167,7 @@ public:
 
 public slots:
     void render(void);
+    void update(void);
     void clear(void);
 
 public slots:
@@ -166,21 +211,25 @@ public slots:
     void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
-protected:
-    void dragEnterEvent(QDragEnterEvent *);
-    void dragLeaveEvent(QDragLeaveEvent *);
-    void dragMoveEvent(QDragMoveEvent *);
-    void dropEvent(QDropEvent *);
+public slots:
+    void transmit(void);
 
-signals:
-    void fileDropped(const QString&);
+// protected:
+//     void dragEnterEvent(QDragEnterEvent *);
+//     void dragLeaveEvent(QDragLeaveEvent *);
+//     void dragMoveEvent(QDragMoveEvent *);
+//     void dropEvent(QDropEvent *);
 
-protected:
-    void resizeEvent(QResizeEvent *);
+// signals:
+//     void fileDropped(const QString&);
+
+// protected:
+//     void resizeEvent(QResizeEvent *);
 
 private:
     class gnomonViewFormPrivate *d;
 };
 
+//Q_DECLARE_METATYPE(gnomonViewForm *)
 //
 // gnomonViewForm.h ends here

@@ -1,26 +1,9 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-
-class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonCellImageFromImageCommand(void) = delete;
-     gnomonCellImageFromImageCommand(const QString&);
+     gnomonCellImageFromImageCommand(void);
     ~gnomonCellImageFromImageCommand(void);
 
 public:
@@ -36,14 +19,20 @@ public:
     gnomonPointCloudSeries *cellPoints();
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    virtual orderedMap inputTypes(void) override;
+    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
 public:
-    void setParameter(const QString&, const QVariant&);
+    virtual void setParameter(const QString&, const QVariant&);
+    virtual void setAlgorithmName(const QString &) override;
+
     virtual dtkCoreParameters parameters(void) const override;
 
 public:
     gnomonCellImageSeries *output();
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap outputTypes(void) override;
 
 public:
     static bool isEmpty(void);

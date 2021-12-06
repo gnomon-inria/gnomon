@@ -16,28 +16,31 @@
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include <QtCore>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public dtkWidgetsWorkspace
+class gnomonViewForm;
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceBrowser(QWidget *parent = nullptr);
+     gnomonWorkspaceBrowser(QObject *parent = nullptr);
     ~gnomonWorkspaceBrowser(void);
 
 public:
-    void enter(void) override;
-    void leave(void) override;
+    Q_PROPERTY(gnomonViewForm* view READ view);
+
+signals:
+    void available(const QVariantMap& readers);
+
+public slots:
+    void read    (const QString&);
+    void readWith(const QString&);
 
 public:
-    void apply(void) override;
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
+    Q_INVOKABLE QUrl defaultReadPath();
+    Q_INVOKABLE gnomonViewForm *view(void);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

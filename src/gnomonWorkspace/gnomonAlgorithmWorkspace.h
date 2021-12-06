@@ -1,0 +1,61 @@
+#pragma once
+
+#include <gnomonWorkspaceExport>
+
+#include <QtCore>
+#include <QtQml>
+
+#include <gnomonVisualization/gnomonView/gnomonViewFormList>
+
+class gnomonAbstractAlgorithmCommand;
+class gnomonViewForm;
+
+class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public QObject
+{
+    Q_OBJECT
+
+public:
+     gnomonAlgorithmWorkspace(QObject *parent = nullptr);
+    virtual ~gnomonAlgorithmWorkspace(void);
+
+public:
+    Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName NOTIFY algorithmChanged);
+    Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
+    Q_PROPERTY(gnomonViewFormList* sources READ sources CONSTANT);
+    Q_PROPERTY(gnomonViewFormList* targets READ targets CONSTANT);
+    Q_PROPERTY(gnomonViewForm* source READ source CONSTANT); //for ease of use
+    Q_PROPERTY(gnomonViewForm* target READ target CONSTANT); //for ease of use
+
+    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
+
+signals:
+    void algorithmsLoaded(void);
+    void algorithmChanged(const QString& algorithm);
+    void parametersChanged(void);
+
+public slots:
+    virtual void run(void);
+    virtual void setInputs(void);
+    virtual void getOutputs(void);
+
+public:
+    QString algoName(void) const;
+    QStringList algorithms(void) const;
+    void setAlgoName(const QString &);
+
+public:
+    gnomonViewFormList *sources(void) const;
+    gnomonViewFormList *targets(void) const;
+
+    //for old compatibility
+    gnomonViewForm *source(void) const { return (*this->sources())[0]; };
+    gnomonViewForm *target(void) const {return (*this->targets())[0]; };
+
+    QJSValue parameters(void);
+
+protected:
+    class gnomonAlgorithmWorkspacePrivate *d = nullptr;
+};
+
+//
+// gnomonAlgorithmWorkspace.h ends here

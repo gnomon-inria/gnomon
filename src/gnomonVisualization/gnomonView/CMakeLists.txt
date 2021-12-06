@@ -12,35 +12,33 @@
 ##
 ### Code:
 
-
-
 ## #################################################################
 ## Sources
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
-    gnomonFormAdapterMenu
-    gnomonFormAdapterMenu.h
-    gnomonGridLayout
-    gnomonGridLayout.h
+    # gnomonFormAdapterMenu
+    # gnomonFormAdapterMenu.h
     gnomonViewForm
     gnomonViewForm.h
+    gnomonViewFormList
+    gnomonViewFormList.h
     gnomonViewFormPool
     gnomonViewFormPool.h
-    gnomonViewManager
-    gnomonViewManager.h
+    # gnomonViewManager
+    # gnomonViewManager.h
     gnomonViewMatplotlib
-    gnomonViewMatplotlib.h)
-
+    gnomonViewMatplotlib.h
+)
 
 ADD_GNOMON_SOURCES(
-    gnomonFormAdapterMenu.cpp
-    gnomonGridLayout.cpp
+    # gnomonFormAdapterMenu.cpp
     gnomonViewForm.cpp
+    gnomonViewFormList.cpp
     gnomonViewFormPool.cpp
-    gnomonViewManager.cpp
-    gnomonViewMatplotlib.cpp)
-
+    # gnomonViewManager.cpp
+    gnomonViewMatplotlib.cpp
+)
 
 ######################################################################
 ### CMakeLists.txt ends here

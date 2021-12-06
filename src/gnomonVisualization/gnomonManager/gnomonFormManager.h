@@ -17,7 +17,7 @@
 #include <gnomonVisualizationExport>
 
 #include <QtCore>
-#include <QtWidgets>
+#include <QtGui>
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
@@ -28,8 +28,11 @@ class gnomonAbstractMatplotlibVisualization;
 class gnomonFormManagerItem;
 
 class vtkCamera;
+class vtkGenericOpenGLRenderWindow;
 
-class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QFrame
+class xVisViewer;
+
+class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QObject
 {
     Q_OBJECT
 
@@ -37,19 +40,16 @@ public:
     static gnomonFormManager *instance(void);
 
 signals:
-    void shrink(void);
-    void expand(void);
-
-public:
-    QSize sizeHint(void) const;
+    void added(int id);
 
 public slots:
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, vtkCamera *cam=0);
+    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, xVisViewer *viewer, vtkCamera *cam=0);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
 public slots:
-    void present(gnomonFormManagerItem *, bool = false);
+    void saveAs(int id, const QString& filename) const;
+    void deleteForm(int id);
 
 public:
     gnomonAbstractDynamicForm *get(int index);
@@ -57,21 +57,11 @@ public:
     vtkCamera *getCamera(int index);
 
 public:
-    QPixmap thumbnail(int index);
+    Q_INVOKABLE QImage thumbnail(int index);
 
 protected:
-     gnomonFormManager(QWidget *parent = nullptr);
+     gnomonFormManager(QObject *parent = nullptr);
     ~gnomonFormManager(void);
-
-protected:
-    void enterEvent(QEvent *);
-    void leaveEvent(QEvent *);
-
-protected:
-    void mousePressEvent(QMouseEvent *);
-
-protected:
-    void paintEvent(QPaintEvent *);
 
 private:
     class gnomonFormManagerPrivate *d;

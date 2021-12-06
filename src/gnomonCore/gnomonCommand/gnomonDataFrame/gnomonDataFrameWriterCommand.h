@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonDataFrameWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonDataFrameWriterCommand(void) = delete;
-     gnomonDataFrameWriterCommand(const QString&);
+     gnomonDataFrameWriterCommand(void);
     ~gnomonDataFrameWriterCommand(void);
 
 public:
@@ -13,8 +12,9 @@ public:
     void undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *form) override;
     void setDataFrame(gnomonDataFrameSeries *image_series);
+    void setAlgorithmName(const QString &) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

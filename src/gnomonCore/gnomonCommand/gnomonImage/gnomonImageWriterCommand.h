@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonImageWriterCommand(void) = delete;
-     gnomonImageWriterCommand(const QString&);
+     gnomonImageWriterCommand(void);
     ~gnomonImageWriterCommand(void);
 
 public:
@@ -13,8 +12,9 @@ public:
     void undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *form) override;
     void setImage(gnomonImageSeries *image_series);
+    void setAlgorithmName(const QString &) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

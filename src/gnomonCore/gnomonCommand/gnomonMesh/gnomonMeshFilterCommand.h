@@ -6,8 +6,7 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonMeshFilterCommand(void) = delete;
-     gnomonMeshFilterCommand(const QString&);
+     gnomonMeshFilterCommand(void);
     ~gnomonMeshFilterCommand(void);
 
 public:
@@ -23,6 +22,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString& algo_name) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

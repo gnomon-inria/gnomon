@@ -18,7 +18,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include <dtkImagingCore>
 
@@ -35,7 +36,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
-
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationImageChannelBlendingPrivate
@@ -80,7 +80,7 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
 
-    dd->defaultColormaps[0] = "grey";
+    dd->defaultColormaps[0] = "gray";
     dd->defaultColormaps[1] = "0CMY_cyan";
     dd->defaultColormaps[2] = "0CMY_magenta";
     dd->defaultColormaps[3] = "0CMY_yellow";
@@ -135,10 +135,10 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
 
     for (const auto& parameterName : parameterNames) {
         if(parameterName.contains("lookuptable")) {
-            //delete d->parameters[parameterName];
+            // delete d->parameters[parameterName];
             auto p = d->parameters.take(parameterName);
-            p->disconnect();
-            delete p;
+            // p->disconnect();
+            // delete p;
         }
     }
 
@@ -154,11 +154,11 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         if (dd->channelLookupTables.contains("")) {
             dd->channelLookupTables.remove("");
         }
-        dd->channelLookupTables[""] = gnomonLookupTable("grey", valueRange, true);
+        dd->channelLookupTables[""] = gnomonLookupTable("gray", valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
-        d->parameters["lookuptable"]->connect([this](QVariant v) {
+        /*d->parameters["lookuptable"]->connect([this](QVariant v) {
               // this->update();
-        });
+        });*/
 
     } else {
         int iChannel = 0;
@@ -168,13 +168,18 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             }
             dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
             auto param = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
-            param->connect( [this](QVariant v) {
+            /*param->connect( [this](QVariant v) {
                 // this->update();
-            });
+            });*/
             d->parameters[channelName+"\nlookuptable"] = param;
             iChannel++;
         }
     }
+}
+
+gnomonImageSeries *gnomonVisualizationImageChannelBlending::image(void)
+{
+    return dd->imageSeries;
 }
 
 void gnomonVisualizationImageChannelBlending::updateOpacity(void)

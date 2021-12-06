@@ -66,6 +66,7 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_COMMAND_MESH_SOURCES}
   ${${PROJECT_NAME}_COMMAND_POINTCLOUD_SOURCES}
   ${${PROJECT_NAME}_COMMAND_TREE_SOURCES}
+  gnomonAbstractReaderCommand.cpp
   gnomonFormAlgorithmCommand.cpp)
 
 

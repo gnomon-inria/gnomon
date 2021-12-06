@@ -6,8 +6,7 @@ class gnomonPointCloud;
 class GNOMONCORE_EXPORT gnomonPointCloudReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonPointCloudReaderCommand(void) = delete;
-     gnomonPointCloudReaderCommand(const QString&);
+     gnomonPointCloudReaderCommand(void);
     ~gnomonPointCloudReaderCommand(void);
 
 public:

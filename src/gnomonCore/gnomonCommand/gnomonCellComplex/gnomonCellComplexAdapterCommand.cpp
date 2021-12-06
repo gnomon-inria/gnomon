@@ -23,20 +23,29 @@ public:
     gnomonAbstractDynamicForm* output = nullptr;
 };
 
-gnomonCellComplexAdapterCommand::gnomonCellComplexAdapterCommand(const QString& key) : d(new gnomonCellComplexAdapterCommandPrivate)
+gnomonCellComplexAdapterCommand::gnomonCellComplexAdapterCommand(void) : d(new gnomonCellComplexAdapterCommandPrivate)
 {
     this->factory_name = "cellComplexAdapter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellComplexAdapter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellComplexAdapter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellComplexAdapter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellComplexAdapterCommand::~gnomonCellComplexAdapterCommand()
 {
     delete d;
+}
+
+void gnomonCellComplexAdapterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellComplexAdapter::pluginFactory().create(algo_name);
 }
 
 void gnomonCellComplexAdapterCommand::redo(void)

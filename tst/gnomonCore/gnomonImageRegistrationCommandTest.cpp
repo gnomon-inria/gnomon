@@ -27,6 +27,7 @@ public:
     void addImage(gnomonImageSeries *) override {registration::t_add_image_called++;};
     void removeImages(void) override{registration::t_add_image_called = 0;};
     gnomonImageSeries* output() override {return nullptr;};
+    gnomonDataDictSeries* outputTransformation() override {return nullptr;};
 };
 
 inline gnomonAbstractImageRegistration* dummyImageRegistrationPluginCreator(void)  {
@@ -58,8 +59,9 @@ void gnomonImageRegistrationCommandTestCase::initTestCase(void)
 
 void gnomonImageRegistrationCommandTestCase::init(void)
 {
-    d->registration_command = new gnomonImageRegistrationCommand("dummyImageRegistration");
+    d->registration_command = new gnomonImageRegistrationCommand();
     Q_ASSERT(d->registration_command);
+    d->registration_command->setAlgorithmName("dummyImageRegistration");
 }
 
 void gnomonImageRegistrationCommandTestCase::redo(void)

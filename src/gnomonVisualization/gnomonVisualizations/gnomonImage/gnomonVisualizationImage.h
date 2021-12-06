@@ -34,6 +34,7 @@ public:
 
 public:
     void setImage(gnomonImageSeries *image) override;
+    gnomonImageSeries *image(void) override;
 
 public slots:
     void updateOpacity(void);

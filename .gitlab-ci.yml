@@ -23,7 +23,7 @@ conda_build_linux:
   only:
   - master
   - develop
-  - merge_requests
+
 
 anaconda_linux_master:
   stage: deploy

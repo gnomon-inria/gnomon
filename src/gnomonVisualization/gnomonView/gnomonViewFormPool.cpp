@@ -108,7 +108,7 @@ void gnomonViewFormPool::unlinkAll(void)
     foreach(gnomonViewForm *source, d->views) {
         foreach(gnomonViewForm *target, d->views) {
             if (source != target) {
-                 source->unlink(target);
+                source->unlink(target);
             }
         }
     }

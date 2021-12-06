@@ -26,21 +26,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeConstructorCommand::gnomonTreeConstructorCommand(const QString& key) : d(new gnomonTreeConstructorCommandPrivate)
+gnomonTreeConstructorCommand::gnomonTreeConstructorCommand(void) : d(new gnomonTreeConstructorCommandPrivate)
 {
     this->factory_name = "treeConstructor";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-
-    this->action = gnomonCore::treeConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonTreeConstructorCommand::~gnomonTreeConstructorCommand(void)
 {
     delete d;
+}
+
+void gnomonTreeConstructorCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::treeConstructor::pluginFactory().create(algo_name);
 }
 
 void gnomonTreeConstructorCommand::redo(void)

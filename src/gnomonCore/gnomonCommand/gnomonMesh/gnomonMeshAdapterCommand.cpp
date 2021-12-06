@@ -23,20 +23,29 @@ public:
     gnomonAbstractDynamicForm* output = nullptr;
 };
 
-gnomonMeshAdapterCommand::gnomonMeshAdapterCommand(const QString& key) : d(new gnomonMeshAdapterCommandPrivate)
+gnomonMeshAdapterCommand::gnomonMeshAdapterCommand() : d(new gnomonMeshAdapterCommandPrivate)
 {
     this->factory_name = "meshAdapter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::meshAdapter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::meshAdapter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshAdapter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonMeshAdapterCommand::~gnomonMeshAdapterCommand()
 {
     delete d;
+}
+
+void gnomonMeshAdapterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::meshAdapter::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshAdapterCommand::redo(void)

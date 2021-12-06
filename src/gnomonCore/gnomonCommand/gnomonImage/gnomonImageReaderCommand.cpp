@@ -30,19 +30,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
+gnomonImageReaderCommand::gnomonImageReaderCommand(void) : d(new gnomonImageReaderCommandPrivate)
 {
     this->factory_name = "imageReader";
+
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::imageReader::pluginFactory().create(key);
+    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
 
-    Q_ASSERT(this->action);
+        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonImageReaderCommand::~gnomonImageReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 

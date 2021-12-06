@@ -19,7 +19,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include <dtkImagingCore>
 
@@ -215,6 +216,11 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
 }
 
+gnomonCellImageSeries *gnomonVisualizationCellImageMarchingCubes::cellImage(void)
+{
+    return dd->cellImageSeries;
+}
+
 gnomonInteractorStyle *gnomonVisualizationCellImageMarchingCubes::interactorStyle(void)
 {
     return dd->interactor_style;
@@ -297,12 +303,12 @@ void gnomonVisualizationCellImageMarchingCubes::update(void)
 
 void gnomonVisualizationCellImageMarchingCubes::render(void)
 {
-//    if (!dd->is2D) {
-//        dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
-//        d->view->interactor()->SetInteractorStyle(dd->interactor_style);
-//        d->view->interactor()->Enable();
-//    }
-//    d->view->setInteractorStyle(dd->interactor_style);
+   if (!dd->is2D) {
+       dd->interactor_style->SetDefaultRenderer(d->view->renderer3D());
+       d->view->interactor()->SetInteractorStyle(dd->interactor_style);
+       d->view->interactor()->Enable();
+   }
+   d->view->setInteractorStyle(dd->interactor_style);
 
     dd->updateOpacity();
     d->view->render();

@@ -61,8 +61,9 @@ void gnomonCellImageFromImageCommandTestCase::initTestCase(void)
 
 void gnomonCellImageFromImageCommandTestCase::init(void)
 {
-    d->command_cellImageFromImage = new gnomonCellImageFromImageCommand("dummyImage");
+    d->command_cellImageFromImage = new gnomonCellImageFromImageCommand();
     Q_ASSERT(d->command_cellImageFromImage);
+    d->command_cellImageFromImage->setAlgorithmName("dummyImage");
 }
 
 void gnomonCellImageFromImageCommandTestCase::redo(void)

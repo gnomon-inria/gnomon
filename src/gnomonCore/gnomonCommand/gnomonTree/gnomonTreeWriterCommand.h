@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonTreeWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonTreeWriterCommand(void) = delete;
-     gnomonTreeWriterCommand(const QString&);
+     gnomonTreeWriterCommand(void);
     ~gnomonTreeWriterCommand(void);
 
 public:
@@ -13,8 +12,9 @@ public:
     void undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *form) override;
     void setTree(gnomonTreeSeries *image_series);
+    void setAlgorithmName(const QString& algo_name) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

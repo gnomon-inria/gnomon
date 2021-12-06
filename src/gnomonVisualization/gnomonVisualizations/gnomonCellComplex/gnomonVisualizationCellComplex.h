@@ -35,6 +35,7 @@ public:
 
 public:
 	void setCellComplex(gnomonCellComplexSeries *cellComplex) override;
+	gnomonCellComplexSeries *cellComplex(void) override;
 
 public:
     QImage imageRendering(void) override;

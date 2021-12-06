@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonTreeConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonTreeConstructorCommand(void) = delete;
-     gnomonTreeConstructorCommand(const QString&);
+     gnomonTreeConstructorCommand(void);
     ~gnomonTreeConstructorCommand(void);
 
 public:
@@ -18,6 +17,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString& algo_name) override;
 
 public:
     dtkCoreParameters parameters(void) const override;

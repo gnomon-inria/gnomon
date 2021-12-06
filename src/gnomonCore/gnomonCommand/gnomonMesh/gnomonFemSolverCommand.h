@@ -3,8 +3,7 @@
 class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonFemSolverCommand(void) = delete;
-     gnomonFemSolverCommand(const QString&);
+     gnomonFemSolverCommand(void);
     ~gnomonFemSolverCommand(void);
 
 public:
@@ -14,6 +13,7 @@ public:
 public:
     void setMesh(gnomonMeshSeries *mesh);
     void setParameter(const QString&, const QVariant&);
+    void setAlgorithmName(const QString& algo_name) override;
 
     dtkCoreParameters parameters(void) const;
     gnomonMeshSeries *updatedMesh(void);

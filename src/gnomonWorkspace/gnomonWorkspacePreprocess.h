@@ -1,47 +1,22 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspacePreprocess : public dtkWidgetsWorkspace
+#include <QtCore>
+#include <QtQml>
+
+class gnomonViewForm;
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePreprocess : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspacePreprocess(QWidget *parent = nullptr);
+     gnomonWorkspacePreprocess(QObject *parent = nullptr);
     ~gnomonWorkspacePreprocess(void);
 
-public:
-    void enter(void) override;
-    void leave(void) override;
-
-public slots:
-    void apply(void) override;
-    void configure(const QString& text);
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
-
-private:
-    class gnomonWorkspacePreprocessPrivate *d;
 };
 
 //

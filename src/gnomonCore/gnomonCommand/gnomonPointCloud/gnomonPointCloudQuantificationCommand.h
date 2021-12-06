@@ -4,8 +4,7 @@
 class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
-     gnomonPointCloudQuantificationCommand(void) = delete;
-     gnomonPointCloudQuantificationCommand(const QString&);
+     gnomonPointCloudQuantificationCommand(void);
     ~gnomonPointCloudQuantificationCommand(void);
 
 public:
@@ -15,6 +14,7 @@ public:
 public:
     void setImage(gnomonImageSeries *image);
     void setPointCloud(gnomonPointCloudSeries *pointCloud);
+    void setAlgorithmName(const QString &) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 

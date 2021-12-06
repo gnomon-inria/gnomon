@@ -30,20 +30,29 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageWriterCommand::gnomonImageWriterCommand(const QString& key) : d(new gnomonImageWriterCommandPrivate)
+gnomonImageWriterCommand::gnomonImageWriterCommand(void) : d(new gnomonImageWriterCommandPrivate)
 {
     this->factory_name = "imageWriter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::imageWriter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageWriter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonImageWriterCommand::~gnomonImageWriterCommand()
 {
     delete d;
+}
+
+void gnomonImageWriterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::imageWriter::pluginFactory().create(algo_name);
 }
 
 void gnomonImageWriterCommand::redo(void)
@@ -59,9 +68,9 @@ void gnomonImageWriterCommand::undo(void)
     ((gnomonAbstractImageWriter *) this->action)->setPath("");
 }
 
-void gnomonImageWriterCommand::setPath(const QString& path)
+void gnomonImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
 {
-    this->m_path = path;
+    d->image = dynamic_cast<gnomonImageSeries*>(form);
 }
 
 void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)

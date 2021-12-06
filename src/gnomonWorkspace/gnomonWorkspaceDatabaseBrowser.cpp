@@ -3,7 +3,7 @@
 #include <gnomonCore>
 #include <gnomonWidgets>
 #include <gnomonVisualization>
-#include <gnomonComposer>
+#include <gnomonPipeline>
 
 #include <dtkThemes>
 #include <dtkWidgets>

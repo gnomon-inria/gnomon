@@ -18,7 +18,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include <dtkImagingCore>
 
@@ -101,6 +102,11 @@ void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cel
 
     if (dd->cellImage)
         this->updateValueRange();
+}
+
+gnomonCellImageSeries *gnomonVisualizationCellImageVolume::cellImage(void)
+{
+    return dd->cellImageSeries;
 }
 
 void gnomonVisualizationCellImageVolume::updateOpacity(void)

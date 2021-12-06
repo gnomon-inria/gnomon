@@ -33,18 +33,28 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonFemSolverCommand::gnomonFemSolverCommand(const QString& key) : d(new gnomonFemSolverCommandPrivate)
+gnomonFemSolverCommand::gnomonFemSolverCommand(void) : d(new gnomonFemSolverCommandPrivate)
 {
     loadPluginGroup("femSolver");
 
-    this->action = gnomonCore::femSolver::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::femSolver::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::femSolver::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonFemSolverCommand::~gnomonFemSolverCommand(void)
 {
     delete d;
+}
+
+void gnomonFemSolverCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::femSolver::pluginFactory().create(algo_name);
 }
 
 void gnomonFemSolverCommand::redo(void)

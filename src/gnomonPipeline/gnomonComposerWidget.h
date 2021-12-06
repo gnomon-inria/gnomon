@@ -1,0 +1,86 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#include <dtkComposer/dtkComposerWriter.h>
+
+#include <QtWidgets>
+
+#include <gnomonPipelineExport.h>
+
+class dtkComposerSceneNode;
+class dtkComposerWidget;
+class gnomonPipelineNode;
+
+class gnomonComposerWidgetPrivate;
+
+class GNOMONPIPELINE_EXPORT gnomonComposerWidget : public QFrame
+{
+    Q_OBJECT
+
+public:
+    static gnomonComposerWidget *instance(void);
+
+signals:
+    void shrink(void);
+    void expand(void);
+
+public:
+    QSize sizeHint(void) const;
+    void resizeEvent(QResizeEvent *event);
+
+public:
+    dtkComposerWidget* composerWidget(void);
+
+public slots:
+    void addWorkspace(const QString&);
+    void addNode(gnomonPipelineNode *node);
+
+public slots:
+    bool compositionSave(void);
+    bool compositionSaveAs(void);
+    bool compositionSaveAs(const QString& file, dtkComposerWriter::Type type = dtkComposerWriter::Ascii);
+    bool compositionInsert(void);
+    bool compositionInsert(const QString& file);
+
+public slots:
+    bool pipelineSave(void);
+
+protected:
+     gnomonComposerWidget(QWidget *parent = 0);
+    ~gnomonComposerWidget(void);
+
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
+protected:
+    void mousePressEvent(QMouseEvent *);
+
+protected:
+    void paintEvent(QPaintEvent *);
+
+protected:
+    void closeEvent(QCloseEvent *event);
+
+private:
+    gnomonComposerWidgetPrivate *d;
+
+private:
+    static gnomonComposerWidget *s_instance;
+};
+
+//
+// gnomonComposerWidget.h ends here

@@ -1,5 +1,6 @@
 from .cell_complex_decorator import gnomonCellComplexInput, gnomonCellComplexOutput
 from .cell_image_decorator import gnomonCellImageInput, gnomonCellImageOutput
+from .data_dict_decorator import gnomonDataDictInput, gnomonDataDictOutput
 from .data_frame_decorator import gnomonDataFrameInput, gnomonDataFrameOutput
 from .image_decorator import gnomonImageInput, gnomonImageOutput
 from .l_string_decorator import gnomonLStringInput, gnomonLStringOutput

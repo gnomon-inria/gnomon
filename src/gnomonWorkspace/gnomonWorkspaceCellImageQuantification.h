@@ -16,29 +16,44 @@
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include <QtCore>
+#include <QtQml>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public dtkWidgetsWorkspace
+class gnomonViewForm;
+class gnomonViewMatplotlib;
+
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspaceCellImageQuantification(QWidget *parent = nullptr);
+     gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
     ~gnomonWorkspaceCellImageQuantification(void);
 
 public:
-    void enter(void) override;
-    void leave(void) override;
+    Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
+    Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
+    Q_PROPERTY(gnomonViewForm* source READ source CONSTANT);
+    Q_PROPERTY(gnomonViewMatplotlib* target READ target CONSTANT);
+    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
+
+signals:
+    void algorithmsLoaded(void);
+    void parametersChanged(void);
 
 public slots:
-    void apply(void) override;
-    void configure(const QString& text);
+    void run(void);
 
 public:
-    static const QColor color;
+    QString algoName(void) const;
+    QStringList algorithms(void) const;
+    Q_INVOKABLE void setAlgoName(const QString &);
 
 public:
-    static bool isEmpty(void);
+    gnomonViewForm *source(void) const;
+    gnomonViewMatplotlib *target(void) const;
+    QJSValue parameters(void);
 
 private:
     class gnomonWorkspaceCellImageQuantificationPrivate *d;

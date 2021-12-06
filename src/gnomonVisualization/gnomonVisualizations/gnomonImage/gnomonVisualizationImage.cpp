@@ -18,7 +18,8 @@
 #include <QtWidgets>
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+#include <gnomonVisualization>
+// #include <gnomonWidgets>
 
 #include <dtkImagingCore>
 
@@ -70,7 +71,7 @@ gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisuali
 
     d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for display ramps");
-    d->parameters["colormap"] = new gnomonCoreParameterColorMap("grey", "Colormap to apply to the image");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("gray", "Colormap to apply to the image");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
     d->parameters["channel"]->connect([=] (QVariant v) {
@@ -146,6 +147,11 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
         valueRangeParam->setMax(65535);
         valueRangeParam->setValue({0,65535});
      }
+}
+
+gnomonImageSeries *gnomonVisualizationImage::image(void)
+{
+    return dd->imageSeries;
 }
 
 void gnomonVisualizationImage::updateOpacity(void)

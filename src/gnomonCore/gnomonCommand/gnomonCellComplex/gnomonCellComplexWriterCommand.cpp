@@ -22,20 +22,29 @@ public:
     gnomonCellComplexSeries *cellComplex = nullptr;
 };
 
-gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(const QString& key) : d(new gnomonCellComplexWriterCommandPrivate)
+gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(void) : d(new gnomonCellComplexWriterCommandPrivate)
 {
     this->factory_name = "cellComplexWriter";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellComplexWriter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellComplexWriter::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellComplexWriter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellComplexWriterCommand::~gnomonCellComplexWriterCommand()
 {
     delete d;
+}
+
+void gnomonCellComplexWriterCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::cellComplexWriter::pluginFactory().create(algo_name);
 }
 
 void gnomonCellComplexWriterCommand::redo(void)
@@ -51,14 +60,14 @@ void gnomonCellComplexWriterCommand::undo(void)
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath("");
 }
 
-void gnomonCellComplexWriterCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
 void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cellComplex)
 {
     d->cellComplex = cellComplex;
+}
+
+void gnomonCellComplexWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::inputs(void)

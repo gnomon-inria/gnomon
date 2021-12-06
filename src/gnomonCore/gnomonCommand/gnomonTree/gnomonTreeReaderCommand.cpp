@@ -30,19 +30,26 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeReaderCommand::gnomonTreeReaderCommand(const QString& key) : d(new gnomonTreeReaderCommandPrivate)
+gnomonTreeReaderCommand::gnomonTreeReaderCommand(void) : d(new gnomonTreeReaderCommandPrivate)
 {
     this->factory_name = "treeReader";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::treeReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (auto key: gnomonCore::treeReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::treeReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 

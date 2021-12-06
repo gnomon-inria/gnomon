@@ -19,6 +19,7 @@
 #include "gnomonCellComplex/gnomonCellComplex.h"
 #include "gnomonCellGraph/gnomonCellGraph.h"
 #include "gnomonCellImage/gnomonCellImage.h"
+#include "gnomonDataDict/gnomonDataDict.h"
 #include "gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonImage/gnomonImage.h"
 #include "gnomonLString/gnomonLString.h"
@@ -42,6 +43,9 @@ gnomonCellGraph *gnomonAbstractForm::asCellGraph()
 
 gnomonCellImage *gnomonAbstractForm::asCellImage()
 { return dynamic_cast<gnomonCellImage *>(this); }
+
+gnomonDataDict *gnomonAbstractForm::asDataDict()
+{ return dynamic_cast<gnomonDataDict *>(this); }
 
 gnomonDataFrame *gnomonAbstractForm::asDataFrame()
 { return dynamic_cast<gnomonDataFrame *>(this); }

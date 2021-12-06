@@ -54,8 +54,9 @@ void gnomonImageReaderCommandTestCase::initTestCase(void)
 
 void gnomonImageReaderCommandTestCase::init(void)
 {
-    d->command = new gnomonImageReaderCommand("dummyImageReader");
+    d->command = new gnomonImageReaderCommand();
     QVERIFY(d->command);
+    d->command->setAlgorithmName("dummyImageReader");
 }
 
 void gnomonImageReaderCommandTestCase::readInr(void)

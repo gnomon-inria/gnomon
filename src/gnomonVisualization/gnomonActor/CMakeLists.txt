@@ -29,7 +29,7 @@ add_subdirectory(gnomonPolyData)
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
-    gnomonActor
+#   gnomonActor
     gnomonActor.h
     gnomonLandmarkActor.h
     ${${PROJECT_NAME}_ACTOR_ACTORLEGACY_HEADERS}

@@ -13,20 +13,20 @@
 // Code:
 
 #include "gnomonWorkspaceBrowser.h"
-
-#include <gnomonWidgets>
 #include <gnomonVisualization>
-#include <gnomonComposer>
 
-#include <dtkThemes>
-#include <dtkWidgets>
-#include <dtkWidgetsMenuBar_p.h>
-#include <dtkWidgetsMenu+ux.h>
+// #include <gnomonWidgets>
+#include <gnomonPipeline>
 
-#include <QtGui>
-#include <QtWidgets>
-#include <QtQuick>
-#include <QtQuickWidgets>
+// #include <dtkThemes>
+// #include <dtkWidgets>
+// #include <dtkWidgetsMenuBar_p.h>
+// #include <dtkWidgetsMenu+ux.h>
+
+// #include <QtGui>
+// #include <QtWidgets>
+// #include <QtQuick>
+// #include <QtQuickWidgets>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
@@ -41,283 +41,282 @@
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-class gnomonFinderListView : public QListView
-{
-    Q_OBJECT
+// class gnomonFinderListView : public QListView
+// {
+//     Q_OBJECT
 
-public:
-     gnomonFinderListView(QWidget *parent = 0);
-    ~gnomonFinderListView(void);
+// public:
+//      gnomonFinderListView(QWidget *parent = 0);
+//     ~gnomonFinderListView(void);
 
-signals:
-    void changed(const QString& path);
-    void opened(const QString& path);
+// signals:
+//     void changed(const QString& path);
+//     void opened(const QString& path);
 
-protected:
-     void keyPressEvent(QKeyEvent *event);
-     void mouseDoubleClickEvent(QMouseEvent *event);
-     void startDrag(Qt::DropActions supportedActions);
-};
+// protected:
+//      void keyPressEvent(QKeyEvent *event);
+//      void mouseDoubleClickEvent(QMouseEvent *event);
+//      void startDrag(Qt::DropActions supportedActions);
+// };
+
+// // /////////////////////////////////////////////////////////////////////////////
+
+// gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
+// {
+//     this->setViewMode(QListView::IconMode);
+//     this->setResizeMode(QListView::Adjust);
+//     this->setGridSize(QSize(96, 96));
+//     this->setFrameStyle(QFrame::NoFrame);
+//     this->setWordWrap(true);
+//     this->setAttribute(Qt::WA_MacShowFocusRect, false);
+// }
+
+// gnomonFinderListView::~gnomonFinderListView(void)
+// {
+
+// }
+
+// void gnomonFinderListView::keyPressEvent(QKeyEvent *event)
+// {
+//     if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
+//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
+//             QDir dir = QDir(model->filePath(this->rootIndex()));
+//             dir.cdUp();
+//             this->setRootIndex(model->index(dir.absolutePath()));
+//             emit changed(dir.absolutePath());
+//             event->accept();
+//             return;
+//         }
+//     }
+
+//     if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
+//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
+
+//             if(!this->selectionModel()->selectedIndexes().count())
+//                 return;
+
+//             QFileInfo selection = model->fileInfo(this->selectionModel()->selectedIndexes().first());
+
+//             if(selection.isDir()) {
+//                 this->setRootIndex(model->index(selection.filePath()));
+//                 emit changed(selection.absoluteFilePath());
+//                 event->accept();
+//             }
+
+//             return;
+//         }
+//     }
+
+//     QListView::keyPressEvent(event);
+// }
+
+// void gnomonFinderListView::mouseDoubleClickEvent(QMouseEvent *event)
+// {
+//     if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
+
+//         QModelIndex index = indexAt(event->pos());
+
+//         if(!index.isValid())
+//             return;
+
+//         QFileInfo info(model->filePath(index));
+
+//         if(info.isDir()) {
+
+//             QDir dir = QDir(model->filePath(index));
+
+//             emit changed(dir.absolutePath());
+
+//             this->setRootIndex(index);
+
+//         } else {
+
+//             emit opened(model->filePath(index));
+//         }
+//     }
+
+//     QListView::mouseDoubleClickEvent(event);
+// }
+
+// void gnomonFinderListView::startDrag(Qt::DropActions supportedActions)
+// {
+//     QModelIndexList indexes = selectedIndexes();
+
+//     if(indexes.count() > 0) {
+
+//         QMimeData *data = model()->mimeData(indexes);
+//         if(!data)
+//             return;
+
+//         QFileIconProvider provider;
+
+//         QPixmap pixmap = provider.icon(QFileInfo(data->urls().first().toLocalFile())).pixmap(64, 64);
+//         QDrag *drag = new QDrag(this);
+//         drag->setPixmap(pixmap);
+//         drag->setMimeData(data);
+//         drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
+//         drag->exec(supportedActions, Qt::IgnoreAction);
+//     }
+// }
 
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
-{
-    this->setViewMode(QListView::IconMode);
-    this->setResizeMode(QListView::Adjust);
-    this->setGridSize(QSize(96, 96));
-    this->setFrameStyle(QFrame::NoFrame);
-    this->setWordWrap(true);
-    this->setAttribute(Qt::WA_MacShowFocusRect, false);
-}
+// /////////////////////////////////////////////////////////////////////////////
 
-gnomonFinderListView::~gnomonFinderListView(void)
-{
+// class gnomonFinderTreeView : public QTreeView
+// {
+//     Q_OBJECT
 
-}
+// public:
+//      gnomonFinderTreeView(QWidget *parent = 0);
+//     ~gnomonFinderTreeView(void);
 
-void gnomonFinderListView::keyPressEvent(QKeyEvent *event)
-{
-    if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
-        if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-            QDir dir = QDir(model->filePath(this->rootIndex()));
-            dir.cdUp();
-            this->setRootIndex(model->index(dir.absolutePath()));
-            emit changed(dir.absolutePath());
-            event->accept();
-            return;
-        }
-    }
+// signals:
+//     void changed(const QString& path);
+//     void opened(const QString& path);
 
-    if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
-        if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
+// protected:
+//      void keyPressEvent(QKeyEvent *event);
+//      void mouseDoubleClickEvent(QMouseEvent *event);
+//      void startDrag(Qt::DropActions supportedActions);
+// };
 
-            if(!this->selectionModel()->selectedIndexes().count())
-                return;
+// /////////////////////////////////////////////////////////////////////////////
 
-            QFileInfo selection = model->fileInfo(this->selectionModel()->selectedIndexes().first());
+// gnomonFinderTreeView::gnomonFinderTreeView(QWidget *parent) : QTreeView(parent)
+// {
+//     this->setDragEnabled(true);
+//     this->setFrameStyle(QFrame::NoFrame);
+//     this->setAttribute(Qt::WA_MacShowFocusRect, false);
+//     this->setSortingEnabled(true);
+//     this->sortByColumn(0, Qt::AscendingOrder);
 
-            if(selection.isDir()) {
-                this->setRootIndex(model->index(selection.filePath()));
-                emit changed(selection.absoluteFilePath());
-                event->accept();
-            }
+//     this->header()->setSectionResizeMode(QHeaderView::Interactive);
+// }
 
-            return;
-        }
-    }
+// gnomonFinderTreeView::~gnomonFinderTreeView(void)
+// {
 
-    QListView::keyPressEvent(event);
-}
+// }
 
-void gnomonFinderListView::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
+// void gnomonFinderTreeView::keyPressEvent(QKeyEvent *event)
+// {
+//     if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
+//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
+//             QDir dir = QDir(model->filePath(this->rootIndex()));
+//             dir.cdUp();
+//             this->setRootIndex(model->index(dir.absolutePath()));
+//             emit changed(dir.absolutePath());
+//             event->accept();
+//             return;
+//         }
+//     }
 
-        QModelIndex index = indexAt(event->pos());
+//     if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
+//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
 
-        if(!index.isValid())
-            return;
+//             if(!this->selectionModel()->selectedIndexes().count())
+//                 return;
 
-        QFileInfo info(model->filePath(index));
+//             QFileInfo selection = model->fileInfo(this->selectionModel()->selectedIndexes().first());
 
-        if(info.isDir()) {
+//             if(selection.isDir()) {
+//                 this->setRootIndex(model->index(selection.filePath()));
+//                 emit changed(selection.absoluteFilePath());
+//                 event->accept();
+//             }
 
-            QDir dir = QDir(model->filePath(index));
+//             return;
+//         }
+//     }
 
-            emit changed(dir.absolutePath());
+//     QTreeView::keyPressEvent(event);
+// }
 
-            this->setRootIndex(index);
+// void gnomonFinderTreeView::mouseDoubleClickEvent(QMouseEvent *event)
+// {
+//     if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
 
-        } else {
+//         QModelIndex index = indexAt(event->pos());
 
-            emit opened(model->filePath(index));
-        }
-    }
+//         if(!index.isValid())
+//             return;
 
-    QListView::mouseDoubleClickEvent(event);
-}
+//         QFileInfo info(model->filePath(index));
 
-void gnomonFinderListView::startDrag(Qt::DropActions supportedActions)
-{
-    QModelIndexList indexes = selectedIndexes();
+//         if(info.isDir()) {
 
-    if(indexes.count() > 0) {
+//             QDir dir = QDir(model->filePath(index));
 
-        QMimeData *data = model()->mimeData(indexes);
-        if(!data)
-            return;
+//             emit changed(dir.absolutePath());
 
-        QFileIconProvider provider;
+//             this->setRootIndex(index);
 
-        QPixmap pixmap = provider.icon(QFileInfo(data->urls().first().toLocalFile())).pixmap(64, 64);
-        QDrag *drag = new QDrag(this);
-        drag->setPixmap(pixmap);
-        drag->setMimeData(data);
-        drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
-        drag->exec(supportedActions, Qt::IgnoreAction);
-    }
-}
+//         } else {
 
-/////////////////////////////////////////////////////////////////////////////
+//             emit opened(model->filePath(index));
+//         }
+//     }
 
-/////////////////////////////////////////////////////////////////////////////
+//     QTreeView::mouseDoubleClickEvent(event);
+// }
 
-class gnomonFinderTreeView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-     gnomonFinderTreeView(QWidget *parent = 0);
-    ~gnomonFinderTreeView(void);
-
-signals:
-    void changed(const QString& path);
-    void opened(const QString& path);
-
-protected:
-     void keyPressEvent(QKeyEvent *event);
-     void mouseDoubleClickEvent(QMouseEvent *event);
-     void startDrag(Qt::DropActions supportedActions);
-};
-
-/////////////////////////////////////////////////////////////////////////////
-
-gnomonFinderTreeView::gnomonFinderTreeView(QWidget *parent) : QTreeView(parent)
-{
-    this->setDragEnabled(true);
-    this->setFrameStyle(QFrame::NoFrame);
-    this->setAttribute(Qt::WA_MacShowFocusRect, false);
-    this->setSortingEnabled(true);
-    this->sortByColumn(0, Qt::AscendingOrder);
-
-    this->header()->setSectionResizeMode(QHeaderView::Interactive);
-}
-
-gnomonFinderTreeView::~gnomonFinderTreeView(void)
-{
-
-}
-
-void gnomonFinderTreeView::keyPressEvent(QKeyEvent *event)
-{
-    if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
-        if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-            QDir dir = QDir(model->filePath(this->rootIndex()));
-            dir.cdUp();
-            this->setRootIndex(model->index(dir.absolutePath()));
-            emit changed(dir.absolutePath());
-            event->accept();
-            return;
-        }
-    }
-
-    if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
-        if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-
-            if(!this->selectionModel()->selectedIndexes().count())
-                return;
-
-            QFileInfo selection = model->fileInfo(this->selectionModel()->selectedIndexes().first());
-
-            if(selection.isDir()) {
-                this->setRootIndex(model->index(selection.filePath()));
-                emit changed(selection.absoluteFilePath());
-                event->accept();
-            }
-
-            return;
-        }
-    }
-
-    QTreeView::keyPressEvent(event);
-}
-
-void gnomonFinderTreeView::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-
-        QModelIndex index = indexAt(event->pos());
-
-        if(!index.isValid())
-            return;
-
-        QFileInfo info(model->filePath(index));
-
-        if(info.isDir()) {
-
-            QDir dir = QDir(model->filePath(index));
-
-            emit changed(dir.absolutePath());
-
-            this->setRootIndex(index);
-
-        } else {
-
-            emit opened(model->filePath(index));
-        }
-    }
-
-    QTreeView::mouseDoubleClickEvent(event);
-}
-
-void gnomonFinderTreeView::startDrag(Qt::DropActions supportedActions)
-{
-    QModelIndexList indexes = selectedIndexes();
-
-    if(indexes.count() > 0) {
-
-        QMimeData *data = model()->mimeData(indexes);
-        if(!data)
-            return;
-
-        QFileIconProvider provider;
-
-        QPixmap pixmap = provider.icon(QFileInfo(data->urls().first().toLocalFile())).pixmap(64, 64);
-        QDrag *drag = new QDrag(this);
-        drag->setPixmap(pixmap);
-        drag->setMimeData(data);
-        drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
-        drag->exec(supportedActions, Qt::IgnoreAction);
-    }
-}
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonBrowserReaderMenu : public QQuickWidget
-{
-    Q_OBJECT
-
-public:
-    gnomonBrowserReaderMenu(QVariantMap, QWidget *parent = nullptr);
-
-protected:
-    void focusOutEvent(QFocusEvent *event) override
-    {
-        this->close();
-        this->deleteLater();
-
-        QQuickWidget::focusOutEvent(event);
-    }
-};
-
-gnomonBrowserReaderMenu::gnomonBrowserReaderMenu(QVariantMap reader_descs, QWidget *parent) : QQuickWidget(parent)
-{
-    this->engine()->addImportPath("qrc:/");
-
-    QQmlContext *context = this->rootContext();
-    context->setContextProperty("font", dtkFontAwesome::instance());
-    context->setContextProperty("theme", dtkThemesEngine::instance());
-    context->setContextProperty("reader_descs", reader_descs);
-
-    this->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    this->setSource(QUrl("qrc:/gnomonWorkspaceBrowser.qml"));
-    this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
-    this->setFocus(Qt::PopupFocusReason);
-}
-
+// void gnomonFinderTreeView::startDrag(Qt::DropActions supportedActions)
+// {
+//     QModelIndexList indexes = selectedIndexes();
+
+//     if(indexes.count() > 0) {
+
+//         QMimeData *data = model()->mimeData(indexes);
+//         if(!data)
+//             return;
+
+//         QFileIconProvider provider;
+
+//         QPixmap pixmap = provider.icon(QFileInfo(data->urls().first().toLocalFile())).pixmap(64, 64);
+//         QDrag *drag = new QDrag(this);
+//         drag->setPixmap(pixmap);
+//         drag->setMimeData(data);
+//         drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
+//         drag->exec(supportedActions, Qt::IgnoreAction);
+//     }
+// }
+
+// // ///////////////////////////////////////////////////////////////////
+// //
+// // ///////////////////////////////////////////////////////////////////
+
+// class gnomonBrowserReaderMenu : public QQuickWidget
+// {
+//     Q_OBJECT
+
+// public:
+//     gnomonBrowserReaderMenu(QVariantMap, QWidget *parent = nullptr);
+
+// protected:
+//     void focusOutEvent(QFocusEvent *event) override
+//     {
+//         this->close();
+//         this->deleteLater();
+
+//         QQuickWidget::focusOutEvent(event);
+//     }
+// };
+
+// gnomonBrowserReaderMenu::gnomonBrowserReaderMenu(QVariantMap reader_descs, QWidget *parent) : QQuickWidget(parent)
+// {
+//     this->engine()->addImportPath("qrc:/");
+
+//     QQmlContext *context = this->rootContext();
+//     context->setContextProperty("font", dtkFontAwesome::instance());
+//     context->setContextProperty("theme", dtkThemesEngine::instance());
+//     context->setContextProperty("reader_descs", reader_descs);
+
+//     this->setResizeMode(QQuickWidget::SizeRootObjectToView);
+//     this->setSource(QUrl("qrc:/gnomonWorkspaceBrowser.qml"));
+//     this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+//     this->setFocus(Qt::PopupFocusReason);
+// }
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -326,18 +325,18 @@ class gnomonWorkspaceBrowserPrivate: public QObject
     Q_OBJECT
 
 public:
-   gnomonPipeline *pipeline;
+    gnomonPipeline *pipeline;
 
 public:
     gnomonViewForm *browse_view;
-    gnomonViewMatplotlib *browse_figure;
+//    gnomonViewMatplotlib *browse_figure;
 
 public:
-    QStackedWidget *view_stack = nullptr;
-    gnomonMessageBoard *view_message = nullptr;
+//    QStackedWidget *view_stack = nullptr;
+//    gnomonMessageBoard *view_message = nullptr;
 
 public:
-    QSplitter *splitter;
+//    QSplitter *splitter;
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractCommand *> > fileReaderCommands;
@@ -346,7 +345,7 @@ public:
 public:
     QString filename;
     QString ext;
-    gnomonBrowserReaderMenu *menu = nullptr;
+//    gnomonBrowserReaderMenu *menu = nullptr;
 
 public:
     gnomonWorkspaceBrowser *q;
@@ -356,6 +355,7 @@ public:
     ~gnomonWorkspaceBrowserPrivate(void);
 
 public:
+//    void addFormFromFile(const QString& path, vtkRenderer *renderer);
     void addFormFromFile(const QString& path);
 
 public slots:
@@ -368,151 +368,32 @@ public slots:
 
 gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
 {
-    loadPluginGroup("imageReader");
-    QStringList image_reader_plugins = gnomonCore::imageReader::pluginFactory().keys();
-    for (const auto& key : image_reader_plugins)
-    {
-        gnomonAbstractImageReader *reader = dynamic_cast<gnomonAbstractImageReader *>(gnomonCore::imageReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonImageReaderCommand(key);
-        }
-        delete reader;
-    }
+    QList<gnomonAbstractReaderCommand*> commands;
+    commands << new gnomonImageReaderCommand;
+    commands << new gnomonCellImageReaderCommand;
+    commands << new gnomonCellComplexReaderCommand;
+    commands << new gnomonDataFrameReaderCommand;
+    commands << new gnomonMeshReaderCommand;
+    commands << new gnomonPointCloudReaderCommand;
+    commands << new gnomonTreeReaderCommand;
 
-    loadPluginGroup("cellImageReader");
-    QStringList cellImage_reader_plugins = gnomonCore::cellImageReader::pluginFactory().keys();
-    for (const auto& key : cellImage_reader_plugins)
-    {
-        gnomonAbstractCellImageReader *reader = dynamic_cast<gnomonAbstractCellImageReader *>(gnomonCore::cellImageReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonCellImageReaderCommand(key);
-        }
-        delete reader;
-    }
+    for (auto command: commands) {
+        QMap<QString, QStringList> extensions = command->extensions();
+        auto descriptions = command->descriptions();
+        for (const auto& algo_name : command->algorithmNames()) {
+            for (QString ext : extensions[algo_name]) {
 
-    loadPluginGroup("cellComplexReader");
-    QStringList cellComplex_reader_plugins = gnomonCore::cellComplexReader::pluginFactory().keys();
-    for (const auto& key : cellComplex_reader_plugins)
-    {
-        gnomonAbstractCellComplexReader *reader = dynamic_cast<gnomonAbstractCellComplexReader *>(gnomonCore::cellComplexReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonCellComplexReaderCommand(key);
-        }
-        delete reader;
-    }
+                if (!this->fileReaderCommands.contains(ext)) {
+                    QMap<QString, QString> empty_desc;
+                    fileReaderDescriptions[ext] = empty_desc;
+                    QMap<QString, gnomonAbstractCommand *> empty_list;
+                    fileReaderCommands[ext] = empty_list;
+                }
 
-    loadPluginGroup("dataFrameReader");
-    QStringList dataFrame_reader_plugins = gnomonCore::dataFrameReader::pluginFactory().keys();
-    for (const auto& key : dataFrame_reader_plugins)
-    {
-        gnomonAbstractDataFrameReader *reader = dynamic_cast<gnomonAbstractDataFrameReader *>(gnomonCore::dataFrameReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
+                fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
+                fileReaderCommands[ext][algo_name] = command;
             }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonDataFrameReaderCommand(key);
         }
-        delete reader;
-    }
-
-    loadPluginGroup("meshReader");
-    QStringList mesh_reader_plugins = gnomonCore::meshReader::pluginFactory().keys();
-    for (const auto& key : mesh_reader_plugins)
-    {
-        gnomonAbstractMeshReader *reader = dynamic_cast<gnomonAbstractMeshReader *>(gnomonCore::meshReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonMeshReaderCommand(key);
-        }
-        delete reader;
-    }
-
-    loadPluginGroup("pointCloudReader");
-    QStringList pointCloud_reader_plugins = gnomonCore::pointCloudReader::pluginFactory().keys();
-    for (const auto& key : pointCloud_reader_plugins)
-    {
-        gnomonAbstractPointCloudReader *reader = dynamic_cast<gnomonAbstractPointCloudReader *>(gnomonCore::pointCloudReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonPointCloudReaderCommand(key);
-        }
-        delete reader;
-    }
-
-    loadPluginGroup("treeReader");
-    QStringList tree_reader_plugins = gnomonCore::treeReader::pluginFactory().keys();
-    for (const auto& key : tree_reader_plugins)
-    {
-        gnomonAbstractTreeReader *reader = dynamic_cast<gnomonAbstractTreeReader *>(gnomonCore::treeReader::pluginFactory().create(key));
-        qDebug()<<key<<reader->extensions();
-        for (const auto& ext : reader->extensions())
-        {
-            if (!this->fileReaderCommands.contains(ext))
-            {
-                QMap<QString, QString> empty_desc;
-                fileReaderDescriptions[ext] = empty_desc;
-                QMap<QString, gnomonAbstractCommand *> empty_list;
-                fileReaderCommands[ext] = empty_list;
-            }
-            fileReaderDescriptions[ext][key] = reader->documentation().split("\n")[1];
-            fileReaderCommands[ext][key] = new gnomonTreeReaderCommand(key);
-        }
-        delete reader;
     }
 }
 
@@ -530,11 +411,16 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
         this->ext = this->filename.split(".")[this->filename.split(".").size()-1];
     }
 
+    qDebug() << Q_FUNC_INFO << "WANTS" << this->ext << "IN" << this->fileReaderCommands.keys();
+
     if (this->fileReaderCommands.contains(this->ext))
     {
         qDebug()<< Q_FUNC_INFO <<  this->fileReaderCommands[this->ext];
 
         if (this->fileReaderCommands[this->ext].size()==1) {
+
+            qDebug() << Q_FUNC_INFO << "Reading using" << this->ext;
+
             this->readForm(this->fileReaderCommands[this->ext].keys()[0]);
         } else {
             QVariantMap reader_descs;
@@ -542,17 +428,7 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
                 reader_descs[key] = fileReaderDescriptions[ext][key];
             }
 
-            this->menu = new gnomonBrowserReaderMenu(reader_descs);
-            this->menu->setAttribute(Qt::WA_DeleteOnClose, true);
-            this->menu->resize(dtkApp->window()->width() * 1/3, dtkApp->window()->height() - 40);
-//            this->menu->move(dtkApp->window()->frameGeometry().topRight() - QPoint(this->menu->width(),0));
-            this->menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
-            this->menu->show();
-
-            QObject *context = this->menu->rootObject();
-            connect(context, SIGNAL(clicked(const QString&)), this, SLOT(readForm(const QString&)));
-
-            QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(menu);
+            emit q->available(reader_descs);
         }
 
     } else {
@@ -566,6 +442,9 @@ void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
 void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
+    readerCommand->setAlgorithmName(reader_plugin);
+
+    qDebug() << Q_FUNC_INFO << readerCommand;
 
     QString path = filename.remove("file://");
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
@@ -583,6 +462,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(readerCommand))
     {
+
+
         cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
@@ -615,8 +496,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!dataFrame_series) {
             qWarning() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
         } else {
-            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
-            this->pipeline->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
+//            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
+//            this->pipeline->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
 //            this->view_stack->setCurrentWidget(this->browse_figure);
             this->pipeline->addReader(dataFrameCommand);
         }
@@ -654,22 +535,22 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         if (!tree_series) {
             qWarning() << Q_FUNC_INFO << "Resulting tree series is void.";
         } else {
-            this->browse_figure->setForm("gnomonTree",tree_series->clone());
-            this->pipeline->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
-//            this->view_stack->setCurrentWidget(this->browse_figure);
+//            this->browse_figure->setForm("gnomonTree",tree_series->clone());
+//            this->pipeline->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
+ //            this->view_stack->setCurrentWidget(this->browse_figure);
             this->pipeline->addReader(treeCommand);
         }
     }
-    if (this->menu) {
-        this->menu->close();
-    }
+    // if (this->menu) {
+    //     this->menu->close();
+    // }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceBrowser
 /////////////////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent)
 {
     d = new gnomonWorkspaceBrowserPrivate;
     d->q = this;
@@ -677,238 +558,240 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QWidget *parent) : dtkWidgetsWork
     d->pipeline = gnomonPipeline::instance();
 
     d->browse_view = new gnomonViewForm(this);
-    d->browse_view->setExportColor(this->color);
+    // d->browse_view->setExportColor(this->color);
     d->browse_view->setAcceptForm("gnomonCellComplex",true);
     d->browse_view->setAcceptForm("gnomonCellImage",true);
     d->browse_view->setAcceptForm("gnomonImage",true);
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
-    d->browse_view->setAcceptDrops(true);
+    // d->browse_view->setAcceptDrops(true);
 
     connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->browse_figure = new gnomonViewMatplotlib(this);
-    d->browse_figure->setAcceptForm("gnomonTree",true);
-    d->browse_figure->setAcceptForm("gnomonDataFrame",true);
-    d->browse_figure->setAcceptForm("gnomonLString",true);
-    d->browse_figure->setAcceptDrops(true);
+    // d->browse_figure = new gnomonViewMatplotlib(this);
+    // d->browse_figure->setAcceptForm("gnomonTree",true);
+    // d->browse_figure->setAcceptForm("gnomonDataFrame",true);
+    // d->browse_figure->setAcceptForm("gnomonLString",true);
+    // d->browse_figure->setAcceptDrops(true);
 
-    connect(d->browse_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    // connect(d->browse_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->view_message = new gnomonMessageBoard(this);
-    d->view_message->setMessage("Double-click or drop a file");
+    // d->view_message = new gnomonMessageBoard(this);
+    // d->view_message->setMessage("Double-click or drop a file");
 
-    d->view_stack = new QStackedWidget(this);
-    d->view_stack->addWidget(d->view_message);
-    d->view_stack->addWidget(d->browse_view);
-    d->view_stack->addWidget(d->browse_figure);
+    // d->view_stack = new QStackedWidget(this);
+    // d->view_stack->addWidget(d->view_message);
+    // d->view_stack->addWidget(d->browse_view);
+    // d->view_stack->addWidget(d->browse_figure);
 
-    connect(d->browse_view, &gnomonViewForm::formAdded, [=] (const QString&)
-    {
-        d->view_stack->setCurrentWidget(d->browse_view);
-    });
+    // connect(d->browse_view, &gnomonViewForm::formAdded, [=] (const QString&)
+    // {
+    //     d->view_stack->setCurrentWidget(d->browse_view);
+    // });
 
-    connect(d->browse_figure, &gnomonViewMatplotlib::formAdded, [=] (const QString&)
-    {
-        d->view_stack->setCurrentWidget(d->browse_figure);
-        d->browse_figure->updateVisualizations();
-    });
+    // connect(d->browse_figure, &gnomonViewMatplotlib::formAdded, [=] (const QString&)
+    // {
+    //     d->view_stack->setCurrentWidget(d->browse_figure);
+    //     d->browse_figure->updateVisualizations();
+    // });
 
-    QToolButton *view_button = new QToolButton(this);
-    view_button->setIcon(dtkFontAwesome::instance()->icon(fa::cubes));
-    view_button->setToolTip("3D Form Viewer");
-    QToolButton *figure_button = new QToolButton(this);
-    figure_button->setIcon(dtkFontAwesome::instance()->icon(fa::square));
-    figure_button->setToolTip("2D Form Viewer");
+    // QToolButton *view_button = new QToolButton(this);
+    // view_button->setIcon(dtkFontAwesome::instance()->icon(fa::cubes));
+    // view_button->setToolTip("3D Form Viewer");
+    // QToolButton *figure_button = new QToolButton(this);
+    // figure_button->setIcon(dtkFontAwesome::instance()->icon(fa::square));
+    // figure_button->setToolTip("2D Form Viewer");
 
-    QHBoxLayout *v_layout = new QHBoxLayout;
-    v_layout->addWidget(view_button);
-    v_layout->addWidget(figure_button);
-    v_layout->addStretch();
+    // QHBoxLayout *v_layout = new QHBoxLayout;
+    // v_layout->addWidget(view_button);
+    // v_layout->addWidget(figure_button);
+    // v_layout->addStretch();
 
-    QVBoxLayout *viewers_layout = new QVBoxLayout;
-    viewers_layout->setContentsMargins(0, 0, 0, 0);
-    viewers_layout->setSpacing(0);
-    viewers_layout->addLayout(v_layout);
-    viewers_layout->addWidget(d->view_stack);
+    // QVBoxLayout *viewers_layout = new QVBoxLayout;
+    // viewers_layout->setContentsMargins(0, 0, 0, 0);
+    // viewers_layout->setSpacing(0);
+    // viewers_layout->addLayout(v_layout);
+    // viewers_layout->addWidget(d->view_stack);
 
-    QWidget *viewers = new QWidget(this);
-    viewers->setLayout(viewers_layout);
+    // QWidget *viewers = new QWidget(this);
+    // viewers->setLayout(viewers_layout);
 
-    connect(view_button, &QToolButton::clicked, [=] (void) -> void
-    {
-        d->view_stack->setCurrentWidget(d->browse_view);
-    });
+    // connect(view_button, &QToolButton::clicked, [=] (void) -> void
+    // {
+    //     d->view_stack->setCurrentWidget(d->browse_view);
+    // });
 
-    connect(figure_button, &QToolButton::clicked, [=] (void) -> void
-    {
-        d->view_stack->setCurrentWidget(d->browse_figure);
-    });
-
-/////////////////////////////////////////////////////////////////////////////
-
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-
-    QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
-
-    QToolButton *up = new QToolButton(this); up->setIcon(dtkFontAwesome::instance()->icon(fa::arrowleft));
-    QToolButton *ls = new QToolButton(this); ls->setIcon(dtkFontAwesome::instance()->icon(fa::th));
-    QToolButton *tr = new QToolButton(this); tr->setIcon(dtkFontAwesome::instance()->icon(fa::list));
-
-    QHBoxLayout *t_layout = new QHBoxLayout;
-    t_layout->addWidget(up);
-    t_layout->addWidget(ls);
-    t_layout->addWidget(tr);
-    t_layout->addWidget(path);
-
-    QFileSystemModel *model = new QFileSystemModel(this);
-
-    gnomonFinderListView *l_browser = new gnomonFinderListView(this);
-    l_browser->setModel(model);
-    l_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
-
-    gnomonFinderTreeView *t_browser = new gnomonFinderTreeView(this);
-    t_browser->setModel(model);
-    t_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
-
-    QStackedWidget *browser = new QStackedWidget(this);
-    browser->addWidget(t_browser);
-    browser->addWidget(l_browser);
-
-    QVBoxLayout *r_layout = new QVBoxLayout;
-    r_layout->setContentsMargins(0, 0, 0, 0);
-    r_layout->setSpacing(0);
-    r_layout->addLayout(t_layout);
-    r_layout->addWidget(browser);
-
-    QWidget *finder = new QWidget(this);
-    finder->setLayout(r_layout);
-
-    d->splitter = new QSplitter(this);
-    d->splitter->addWidget(viewers);
-    d->splitter->addWidget(finder);
+    // connect(figure_button, &QToolButton::clicked, [=] (void) -> void
+    // {
+    //     d->view_stack->setCurrentWidget(d->browse_figure);
+    // });
 
 /////////////////////////////////////////////////////////////////////////////
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d->splitter);
 
-/////////////////////////////////////////////////////////////////////////////
-    connect(d->browse_view, &gnomonViewForm::fileDropped, [=] (const QString& filename)
-    {
-        d->addFormFromFile(filename);
-    });
 
-    connect(d->browse_figure, &gnomonViewMatplotlib::fileDropped, [=] (const QString& filename)
-    {
-        d->addFormFromFile(filename);
-    });
+//     QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
 
-    connect(d->view_message, &gnomonMessageBoard::fileDropped, [=] (const QString& filename)
-    {
-        d->addFormFromFile(filename);
-    });
+//     QToolButton *up = new QToolButton(this); up->setIcon(dtkFontAwesome::instance()->icon(fa::arrowleft));
+//     QToolButton *ls = new QToolButton(this); ls->setIcon(dtkFontAwesome::instance()->icon(fa::th));
+//     QToolButton *tr = new QToolButton(this); tr->setIcon(dtkFontAwesome::instance()->icon(fa::list));
 
-    connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
-    {
-        d->addFormFromFile(filename);
-    });
+//     QHBoxLayout *t_layout = new QHBoxLayout;
+//     t_layout->addWidget(up);
+//     t_layout->addWidget(ls);
+//     t_layout->addWidget(tr);
+//     t_layout->addWidget(path);
 
-    connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
-    {
-        d->addFormFromFile(filename);
-    });
+//     QFileSystemModel *model = new QFileSystemModel(this);
 
-    connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
-    {
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("path", value);
+//     gnomonFinderListView *l_browser = new gnomonFinderListView(this);
+//     l_browser->setModel(model);
+//     l_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
 
-        t_browser->setRootIndex(model->setRootPath(value));
+//     gnomonFinderTreeView *t_browser = new gnomonFinderTreeView(this);
+//     t_browser->setModel(model);
+//     t_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
 
-        path->setText(value);
-    });
+//     QStackedWidget *browser = new QStackedWidget(this);
+//     browser->addWidget(t_browser);
+//     browser->addWidget(l_browser);
 
-    connect(t_browser, &gnomonFinderTreeView::changed, [=] (const QString& value) -> void
-    {
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("path", value);
+//     QVBoxLayout *r_layout = new QVBoxLayout;
+//     r_layout->setContentsMargins(0, 0, 0, 0);
+//     r_layout->setSpacing(0);
+//     r_layout->addLayout(t_layout);
+//     r_layout->addWidget(browser);
 
-        l_browser->setRootIndex(model->setRootPath(value));
+//     QWidget *finder = new QWidget(this);
+//     finder->setLayout(r_layout);
 
-        path->setText(value);
-    });
+//     d->splitter = new QSplitter(this);
+//     d->splitter->addWidget(viewers);
+//     d->splitter->addWidget(finder);
 
-    connect(path, &QLineEdit::editingFinished, [=] (void) -> void
-    {
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("path", path->text());
+// /////////////////////////////////////////////////////////////////////////////
 
-        l_browser->setRootIndex(model->setRootPath(path->text()));
-        t_browser->setRootIndex(model->setRootPath(path->text()));
-    });
+//     QHBoxLayout *layout = new QHBoxLayout(this);
+//     layout->setContentsMargins(0, 0, 0, 0);
+//     layout->setSpacing(0);
+//     layout->addWidget(d->splitter);
 
-    connect(up, &QToolButton::clicked, [=] (void) -> void
-    {
-        QDir dir = QDir(model->filePath(l_browser->rootIndex()));
-        dir.cdUp();
+// /////////////////////////////////////////////////////////////////////////////
+//     connect(d->browse_view, &gnomonViewForm::fileDropped, [=] (const QString& filename)
+//     {
+//         d->addFormFromFile(filename);
+//     });
 
-        l_browser->setRootIndex(model->index(dir.absolutePath()));
-        t_browser->setRootIndex(model->index(dir.absolutePath()));
+//     connect(d->browse_figure, &gnomonViewMatplotlib::fileDropped, [=] (const QString& filename)
+//     {
+//         d->addFormFromFile(filename);
+//     });
 
-        path->setText(dir.absolutePath());
+//     connect(d->view_message, &gnomonMessageBoard::fileDropped, [=] (const QString& filename)
+//     {
+//         d->addFormFromFile(filename);
+//     });
 
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("path", dir.absolutePath());
-    });
+//     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
+//     {
+//         d->addFormFromFile(filename);
+//     });
 
-    connect(ls, &QToolButton::clicked, [=] (void) -> void
-    {
-        browser->setCurrentWidget(l_browser);
-    });
+//     connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
+//     {
+//         d->addFormFromFile(filename);
+//     });
 
-    connect(tr, &QToolButton::clicked, [=] (void) -> void
-    {
-        browser->setCurrentWidget(t_browser);
-    });
+//     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
+//     {
+//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+//         settings.setValue("path", value);
 
-/////////////////////////////////////////////////////////////////////////////
+//         t_browser->setRootIndex(model->setRootPath(value));
 
-    d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
+//         path->setText(value);
+//     });
 
-    t_browser->header()->resizeSection(0,300);
+//     connect(t_browser, &gnomonFinderTreeView::changed, [=] (const QString& value) -> void
+//     {
+//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+//         settings.setValue("path", value);
+
+//         l_browser->setRootIndex(model->setRootPath(value));
+
+//         path->setText(value);
+//     });
+
+//     connect(path, &QLineEdit::editingFinished, [=] (void) -> void
+//     {
+//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+//         settings.setValue("path", path->text());
+
+//         l_browser->setRootIndex(model->setRootPath(path->text()));
+//         t_browser->setRootIndex(model->setRootPath(path->text()));
+//     });
+
+//     connect(up, &QToolButton::clicked, [=] (void) -> void
+//     {
+//         QDir dir = QDir(model->filePath(l_browser->rootIndex()));
+//         dir.cdUp();
+
+//         l_browser->setRootIndex(model->index(dir.absolutePath()));
+//         t_browser->setRootIndex(model->index(dir.absolutePath()));
+
+//         path->setText(dir.absolutePath());
+
+//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+//         settings.setValue("path", dir.absolutePath());
+//     });
+
+//     connect(ls, &QToolButton::clicked, [=] (void) -> void
+//     {
+//         browser->setCurrentWidget(l_browser);
+//     });
+
+//     connect(tr, &QToolButton::clicked, [=] (void) -> void
+//     {
+//         browser->setCurrentWidget(t_browser);
+//     });
+
+// /////////////////////////////////////////////////////////////////////////////
+
+//     d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
+
+//     t_browser->header()->resizeSection(0,300);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-    settings.setValue("browser/splitter", d->splitter->saveState());
+    // QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    // settings.setValue("browser/splitter", d->splitter->saveState());
 
     delete d;
 }
 
-void gnomonWorkspaceBrowser::enter(void)
+void gnomonWorkspaceBrowser::read(const QString& path)
 {
-    dtkApp->window()->menubar()->touch();
+    d->addFormFromFile(path);
+
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    settings.setValue("path", QUrl(path).adjusted(QUrl::RemoveFilename).toString());
 }
 
-void gnomonWorkspaceBrowser::leave(void)
+void gnomonWorkspaceBrowser::readWith(const QString& reader)
 {
-    dtkApp->window()->menubar()->touch();
+    d->readForm(reader);
 }
 
-void gnomonWorkspaceBrowser::apply(void)
+gnomonViewForm *gnomonWorkspaceBrowser::view(void)
 {
-
+    return d->browse_view;
 }
 
-const QColor gnomonWorkspaceBrowser::color = QColor("#ff3b30");
-
-bool gnomonWorkspaceBrowser::isEmpty(void)
+QUrl gnomonWorkspaceBrowser::defaultReadPath()
 {
-    return false;
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    return settings.value("path").toString();
 }
 
 // /////////////////////////////////////////////////////////////////////////////

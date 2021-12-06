@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageRegistrationCommand.h"
 
 #include <dtkScript>
@@ -23,29 +9,40 @@
 class gnomonImageRegistrationCommandPrivate
 {
 public:
-    QVector<gnomonImageSeries *> images_series;
+    gnomonAbstractCommand::orderedMap input_types = {{"reference", "gnomonImage"}, {"input", "gnomonImage"}};
+    QMap<QString, gnomonAbstractDynamicForm *> inputs = {{"reference", nullptr}, {"input", nullptr}};
+    //QVector<gnomonImageSeries *> images_series;
 
-    gnomonImageSeries* output = nullptr;
+    gnomonImageSeries* output = nullptr; //TODO do same thing as for input with second member a dataDict
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(const QString& key) : d(new gnomonImageRegistrationCommandPrivate)
+gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(void) : d(new gnomonImageRegistrationCommandPrivate)
 {
     this->factory_name = "imageRegistration";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::imageRegistration::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::imageRegistration::pluginFactory().keys();
+    if (keys.size() > 0) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageRegistration::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonImageRegistrationCommand::~gnomonImageRegistrationCommand()
 {
     delete d;
+}
+
+void gnomonImageRegistrationCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+    if (this->action)
+        delete this->action;
+    this->action = gnomonCore::imageRegistration::pluginFactory().create(algo_name);
 }
 
 void gnomonImageRegistrationCommand::redo(void)
@@ -64,17 +61,25 @@ void gnomonImageRegistrationCommand::redo(void)
 
 void gnomonImageRegistrationCommand::undo(void)
 {
-    d->images_series.clear();
+    d->inputs["reference"] = nullptr;
+    d->inputs["input"] = nullptr;
 }
 
 void gnomonImageRegistrationCommand::addImage(gnomonImageSeries *image_series)
 {
-    d->images_series.push_back(image_series);
+    //first set reference, then set input
+    if (d->inputs["reference"] == nullptr) {
+        d->inputs["reference"] = image_series;
+    } else if (d->inputs["input"] == nullptr) {
+        d->inputs["input"] = image_series;
 
-    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
-    for(auto& image_series : d->images_series) {
+        ((gnomonAbstractImageRegistration *) this->action)->removeImages();
+        ((gnomonAbstractImageRegistration *) this->action)->addImage(static_cast<gnomonImageSeries *>(d->inputs["reference"]));
         ((gnomonAbstractImageRegistration *) this->action)->addImage(image_series);
-    };
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "reference and input are already set. Do a undo/clear before. I will do nothing.";
+    }
+
 }
 
 gnomonImageSeries* gnomonImageRegistrationCommand::output()
@@ -94,14 +99,22 @@ void gnomonImageRegistrationCommand::setParameter(const QString& parameter, cons
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::inputs(void)
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
-    int input_count = 1;
-    for(auto& image_series : d->images_series) {
-        QString input_name = "image" + QString::number(input_count);
-        inputs[input_name] = image_series;
-        input_count++;
+    return d->inputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::inputTypes(void)
+{
+    return d->input_types;
+}
+
+void gnomonImageRegistrationCommand::addInputForm(gnomonAbstractDynamicForm *form)
+{
+    gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form);
+    if (image) {
+        this->addImage(image);
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "cannot cast form to gnomonImageSeries, bad input: " << form;
     }
-    return inputs;
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs(void)
@@ -109,6 +122,13 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outpu
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::outputTypes(void)
+{
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonImage"));
+    return output_types;
 }
 
 bool gnomonImageRegistrationCommand::isEmpty(void)

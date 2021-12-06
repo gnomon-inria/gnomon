@@ -19,7 +19,7 @@ project(gnomonVisualization VERSION ${gnomon_VERSION})
 ## #################################################################
 
 add_subdirectory(gnomonActor)
-add_subdirectory(gnomonInspector)
+# add_subdirectory(gnomonInspector)
 add_subdirectory(gnomonInteractorStyle)
 add_subdirectory(gnomonManager)
 add_subdirectory(gnomonView)
@@ -32,8 +32,14 @@ add_subdirectory(gnomonVisualizations)
 set(${PROJECT_NAME}_HEADERS
     gnomonVisualization
     gnomonVisualization.h
+
+    gnomonCoreParameterColor.h # NOTE: Transitional
+    gnomonCoreParameterColorObject # NOTE: Transitional
+    gnomonCoreParameterColorObject.h # NOTE: Transitional
+    gnomonLookupTable.h # NOTE: Transitional
+
     ${${PROJECT_NAME}_ACTOR_HEADERS}
-    ${${PROJECT_NAME}_INSPECTOR_HEADERS}
+#   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
     ${${PROJECT_NAME}_INTERACTORSTYLE_HEADERS}
     ${${PROJECT_NAME}_MANAGER_HEADERS}
     ${${PROJECT_NAME}_VIEW_HEADERS}
@@ -41,8 +47,13 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
     gnomonVisualization.cpp
+
+    gnomonCoreParameterColor.cpp # NOTE: Transitional
+    gnomonCoreParameterColorObject.cpp # NOTE: Transitional
+    gnomonLookupTable.cpp # NOTE: Transitional
+
     ${${PROJECT_NAME}_ACTOR_SOURCES}
-    ${${PROJECT_NAME}_INSPECTOR_SOURCES}
+#   ${${PROJECT_NAME}_INSPECTOR_SOURCES}
     ${${PROJECT_NAME}_INTERACTORSTYLE_SOURCES}
     ${${PROJECT_NAME}_MANAGER_SOURCES}
     ${${PROJECT_NAME}_VIEW_SOURCES}
@@ -71,24 +82,26 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Gui)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Xml)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Qml)
+# target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
+# target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
-
+# target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
 #target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
-
+#
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonComposer)
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonWidgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)
+# target_link_libraries(${PROJECT_NAME} PRIVATE gnomonWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE "-L$ENV{CONDA_PREFIX}/lib -lxVis")
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
@@ -124,6 +137,15 @@ set(${PROJECT_NAME}_HEADERS
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
+  DESTINATION include/${PROJECT_NAME})
+
+## TODO: Shame on me ....
+install(DIRECTORY
+    gnomonActor
+    gnomonInteractorStyle
+    gnomonManager
+    gnomonView
+    gnomonVisualizations
   DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################

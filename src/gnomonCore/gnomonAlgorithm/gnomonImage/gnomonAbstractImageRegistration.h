@@ -21,8 +21,8 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
 
-class gnomonImagesSerie;
 class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@ public:
     virtual void removeImages(void) = 0;
 
     virtual gnomonImageSeries* output() = 0;
+    virtual gnomonDataDictSeries* outputTransformation() = 0;
 
 };
 

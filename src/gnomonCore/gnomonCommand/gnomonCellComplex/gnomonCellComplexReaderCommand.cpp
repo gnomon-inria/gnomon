@@ -20,19 +20,26 @@ public:
     gnomonCellComplexSeries *cellComplex = nullptr;
 };
 
-gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(const QString& key) : d(new gnomonCellComplexReaderCommandPrivate)
+gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(void) : d(new gnomonCellComplexReaderCommandPrivate)
 {
     this->factory_name = "cellComplexReader";
     loadPluginGroup(this->factoryName());
 
-    this->algorithm_name = key;
-    this->action = gnomonCore::cellComplexReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+     for (auto key: gnomonCore::cellComplexReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::cellComplexReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonCellComplexReaderCommand::~gnomonCellComplexReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 
