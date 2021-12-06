@@ -67,15 +67,12 @@ requirements:
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
     - dtk-script =2.5.1
-    - jupyter
-    - jupyter_client=5.3.4
     - pillow
     - numpy
     - matplotlib
     - mongodb =4.0
     - pymongo =3.11
-    - python >=3.7
-    - sip
+    - python =3.7
     - vtk=8.2.0
     - ffmpeg=4.1
     - libnetcdf =4.8
