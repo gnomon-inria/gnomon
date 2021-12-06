@@ -44,58 +44,43 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt =5.12.9
-    - dtk-log >=2.4.0,<2.5.0
-    - dtk-macs >=2.0.3,<2.1.0
-    - dtk-fonts >=2.1.1,<2.2.0
-    - dtk-themes >=2.1.17,<2.2.0
-    - dtk-themes-python >=2.0.4,<2.1.0
-    - dtk-core >=2.11.0,<2.12.0
-    - dtk-core-python >=2.8.0,<2.9.0
+    - qt =5.15.2
+    - dtk-log =2.5.0
+    - dtk-core =2.11.0
+    - dtk-core-python =2.8.0
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
-    - dtk-script >=2.5.0,<2.6.0
-    - dtk-widgets =2.28.0,<2.29.0
-    - dtk-composer =2.0.0
-    - python >=3.7,<3.8
+    - dtk-script =2.5.1
+    - python =3.7
     - swig =4.0
-    - pyqt >=5.6.0
-    - sip
-    - vtk=9.0
-    - ffmpeg =4.3
+    - vtk=8.2.0
+    - ffmpeg=4.1
     - libnetcdf =4.8
-    - tbb-devel =2020.3
-    - zlib
+    - tbb-devel =2021.3
+    - zlib=1.2.11
 
   run:
-    - qt =5.12.9
-    - dtk-log >=2.4.0,<2.5.0
-    - dtk-macs >=2.0.3,<2.1.0
-    - dtk-fonts >=2.1.1,<2.2.0
-    - dtk-themes >=2.1.17,<2.2.0
-    - dtk-themes-python >=2.0.4,<2.1.0
-    - dtk-core >=2.11.0,<2.12.0
-    - dtk-core-python >=2.8.0,<2.9.0
+    - qt =5.15.2
+    - dtk-log =2.5.0
+    - dtk-core =2.11.0
+    - dtk-core-python =2.8.0
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
-    - dtk-script >=2.5.0,<2.6.0
-    - dtk-widgets =2.28.0
-    - dtk-composer =2.0.0
+    - dtk-script =2.5.1
     - jupyter
     - jupyter_client=5.3.4
-    - luigi
     - pillow
     - numpy
     - matplotlib
     - mongodb =4.0
     - pymongo =3.11
-    - python >=3.7,<3.8
+    - python >=3.7
     - sip
-    - vtk=9.0
-    - ffmpeg =4.3
+    - vtk=8.2.0
+    - ffmpeg=4.1
     - libnetcdf =4.8
-    - tbb-devel =2020.3
-    - zlib
+    - tbb-devel =2021.3
+    - zlib=1.2.11
 
 app:
   entry: gnomon # [linux]
