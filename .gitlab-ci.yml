@@ -4,10 +4,12 @@ stages:
   - build
   - deploy
 
+
 .template_retry:
   retry:
     max: 2
     when: runner_system_failure
+
 
 conda_build_linux:
   stage: build
@@ -23,6 +25,22 @@ conda_build_linux:
   only:
   - master
   - develop
+
+
+conda_build_linux_develop:
+  stage: build
+  script:
+    - conda install -n base -c defaults conda python=3.7 -y
+    - conda install python=3.7 conda-build git anaconda-client conda-verify
+    - mkdir conda-bld
+    - conda build . -c dtk-forge -c conda-forge --output-folder conda-bld/
+  extends: .template_retry
+  when: manual
+  artifacts:
+    paths:
+      - conda-bld
+  only:
+    - develop
 
 
 anaconda_linux_master:
@@ -52,16 +70,20 @@ anaconda_linux_develop :
 pages:
   stage: deploy
   script:
-  - cd doc
-  - conda update -n base -c defaults conda
-  - conda install sphinx make matplotlib
-  - conda install -c conda-forge doxygen breathe
-  - make html
-  - mv build/html ../public
+    - conda update -n base -c defaults conda
+    - conda install sphinx make matplotlib
+    - conda install -c conda-forge myst-parser doxygen breathe
+    - cd doc
+    - make html
+    - mv build/html ../public
+    - cd ../doc_md
+    - make html
+    - mkdir -p ../public/staging
+    - cp -R _build/html/* ../public/staging
   extends: .template_retry
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
-  - develop
+    - master
+    - develop
