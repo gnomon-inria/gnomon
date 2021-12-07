@@ -140,7 +140,7 @@ Item {
                 onClicked: {
                     if (_auto_render.checked) {
                         console.info('launching Render!')
-                        d.run();
+                        view.viewLogic.update();
                     }
                 }
             }
