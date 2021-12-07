@@ -48,6 +48,7 @@ Item {
             onCurrentValueChanged: {
                 _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_combobox.currentValue))
 
+                _auto_render.checked = false
                 _params.parameters =  view.viewLogic.formVisuParameters(_form_combobox.currentValue);
                 _params.updateParametersModel();
             }
@@ -72,6 +73,16 @@ Item {
                 height: 70;
                 width: _l.width;
                 sourceComponent: component;
+
+                Connections {
+                    target: param
+                    function onValueChanged() {
+                        if (_auto_render.checked) {
+                            console.info('launching Render!')
+                            view.viewLogic.update();
+                        }
+                    }
+                }
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
@@ -94,6 +105,44 @@ Item {
 
             onClicked: {
                 view.viewLogic.update();
+            }
+
+            X.CheckBox{ id: _auto_render
+
+                text: ""
+                contentItem: { }
+
+                anchors.top: parent.top
+                anchors.topMargin: 5
+                anchors.right: parent.right
+                anchors.rightMargin: 5
+
+                height: parent.height - 10;
+
+
+                MouseArea { id: _auto_render_mouse_area;
+                    anchors.fill: parent;
+                    hoverEnabled: true;
+
+                    propagateComposedEvents: true
+
+                    onClicked: mouse.accepted = false;
+                    onPressed: mouse.accepted = false;
+                    onReleased: mouse.accepted = false;
+                    onDoubleClicked: mouse.accepted = false;
+                    onPositionChanged: mouse.accepted = false;
+                    onPressAndHold: mouse.accepted = false;
+                }
+
+                ToolTip.visible: _auto_render_mouse_area.containsMouse;
+                ToolTip.text: "Auto-render";
+
+                onClicked: {
+                    if (_auto_render.checked) {
+                        console.info('launching Render!')
+                        d.run();
+                    }
+                }
             }
         }
 
