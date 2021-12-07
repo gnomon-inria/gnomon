@@ -9,4 +9,5 @@ Project.qml 1.0 Project.qml
 Stack 1.0 Stack.qml
 View 1.0 View.qml
 World 1.0 World.qml
+WorldDelegate 1.0 WorldDelegate.qml
 Parameters 1.0 Parameters.qml

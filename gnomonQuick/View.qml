@@ -127,6 +127,66 @@ Rectangle {
         ToolTip.text: "2D mode";
     }
 
+    Image {
+        id: _2d_xy;
+        source: "qrc:/qml/gnomonQuick/View-XY.png";
+        // size: 32;
+        // color: X.Style.foregroundColor;
+
+        anchors.top: _view.top
+        anchors.topMargin: 50
+        anchors.left: _view.left
+        anchors.leftMargin: 13
+
+        MouseArea { id: _2d_xy_area;
+            anchors.fill: parent;
+
+            onClicked: {
+                console.log('2DXY clicked');
+            }
+        }
+    }
+
+    Image {
+        id: _2d_xz;
+        source: "qrc:/qml/gnomonQuick/View-XZ-off.png";
+        // size: 32;
+        // color: X.Style.foregroundColor;
+
+        anchors.top: _view.top
+        anchors.topMargin: 90
+        anchors.left: _view.left
+        anchors.leftMargin: 13
+
+        MouseArea { id: _2d_xz_area;
+            anchors.fill: parent;
+
+            onClicked: {
+                console.log('2DXZ clicked');
+            }
+        }
+    }
+
+    Image {
+        id: _2d_yz;
+        source: "qrc:/qml/gnomonQuick/View-YZ-off.png";
+        // size: 32;
+        // color: X.Style.foregroundColor;
+
+        anchors.top: _view.top
+        anchors.topMargin: 130
+        anchors.left: _view.left
+        anchors.leftMargin: 13
+
+        MouseArea { id: _2d_yz_area;
+            anchors.fill: parent;
+
+            onClicked: {
+                console.log('2DYZ clicked');
+            }
+        }
+    }
+
     X.Icon { id: _3d_icon;
         icon: X.Icons.icons._3d_rotation;
         size: 32;
@@ -149,6 +209,33 @@ Rectangle {
 
         ToolTip.visible: _3d_mouse_area.containsMouse;
         ToolTip.text: "3D mode";
+    }
+
+    X.Icon {
+        id: _link;
+        icon: viewLogic.synced ? X.Icons.icons.lock_outline : X.Icons.icons.lock_open;
+        size: 32;
+        color: X.Style.foregroundColor;
+
+        anchors.top: _view.top
+        anchors.topMargin: 10
+        anchors.left: _view.left
+        anchors.leftMargin: 90
+
+        MouseArea {
+            id: _link_area;
+
+            anchors.fill: parent;
+
+            hoverEnabled: true;
+
+            onClicked: {
+                viewLogic.tryLinking();
+            }
+        }
+
+        ToolTip.visible: _link_area.containsMouse;
+        ToolTip.text: "(Un)Link with other views for this workspace";
     }
 
     X.Icon { id: _export_icon;
