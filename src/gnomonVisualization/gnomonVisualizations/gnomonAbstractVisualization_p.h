@@ -28,8 +28,6 @@ class vtkRenderWindowInteractor;
 
 #include <vtkSmartPointer.h>
 
-class xVisViewer;
-
 class gnomonAbstractVisualizationPrivate
 {
 
@@ -54,9 +52,8 @@ public:
     QMetaObject::Connection connectYZ;
 
 public:
-    vtkSmartPointer <vtkRenderer> offscreenRenderer;
-
-    xVisViewer *offscreenRenderWindow = 0;
+    vtkSmartPointer<vtkRenderer>     offscreenRenderer;
+    vtkSmartPointer<vtkRenderWindow> offscreenRenderWindow;
 };
 
 //
