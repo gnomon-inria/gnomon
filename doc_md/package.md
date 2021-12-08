@@ -92,7 +92,34 @@ This python file includes the following functions from [`setuptools`](https://se
 - run `python setup.py develop`
 
 You can check that everything is okay by importing your package in your python interpreter:
-`python -c "import plugin_name; print(plugin_name)"`
+```bash
+  python -c "import plugin_name; print(plugin_name)"
+```
+
+## Adding unit tests
+
+**Each plugin should be tested**
+- add a `test/` folder at the root of the package
+- write one module per plugin, defining a test class inheriting [`unittest.TestCase`](https://docs.python.org/3/library/unittest.html#unittest.TestCase)
+- the `test_XXX` methods should check that the plugin runs without errors and generates the expected ouptut
+- if necessary, you may add a `resources` folder with (**small !**) sample data to run your tests on
+
+```
+gnomon-package-pkgname
+│   ...   
+│
+└───src   
+│   │   ...
+│
+└───test  
+    └───resources
+    │   │   ...
+    │
+    │   test_algorithm_plugin1.py
+    │   test_algorithm_plugin2.py
+    │   test_form_plugin1.py
+    │   test_io_plugin1.py
+```
 
 ## Publishing as a conda package
 
