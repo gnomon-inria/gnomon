@@ -46,8 +46,6 @@ class vtkRenderer;
 class vtkRenderWindowInteractor;
 class vtkGenericOpenGLRenderWindow;
 
-class xVisViewer;
-
 class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
     Q_OBJECT
@@ -66,7 +64,7 @@ public:
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    void associate(xVisViewer *);
+    void associate(vtkGenericOpenGLRenderWindow *);
 // /////////////////////////////////////////////////////////////////////////////
 
 signals:

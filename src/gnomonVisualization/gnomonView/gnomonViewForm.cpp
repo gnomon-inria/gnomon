@@ -56,8 +56,6 @@
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
 
-#include <xVis/xVisViewer.hpp>
-
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewFormPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -222,8 +220,6 @@ public:
     // QMap<QString, dtkWidgetsMenuItemDIY *> formVisualizationPaneItems;
 
     // dtkWidgetsMenuItemDIY *paneItemButton = nullptr;
-
-    xVisViewer *viewer = 0;
 
 public:
     // dtkWidgetsMenu *menu(void);
@@ -1078,11 +1074,9 @@ void gnomonViewForm::transmit(void)
     d->exportToManager();
 }
 
-void gnomonViewForm::associate(xVisViewer *viewer)
+void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
-    d->viewer = viewer;
-
-    d->window = d->viewer->GetRenderWindow();
+    d->window = window;
 //     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
 // #if defined(Q_OS_LINUX)
 //     d->window->GetInteractor()->Initialize();
@@ -1381,7 +1375,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
     d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
-    other->d->viewer->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+    other->d->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
     connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
     connect(other, &gnomonViewForm::switchedTo2D, [=] () {

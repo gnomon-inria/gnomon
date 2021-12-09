@@ -101,8 +101,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE "-L$ENV{CONDA_PREFIX}/lib -lxVis")
-
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

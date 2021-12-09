@@ -30,8 +30,6 @@ class gnomonFormManagerItem;
 class vtkCamera;
 class vtkGenericOpenGLRenderWindow;
 
-class xVisViewer;
-
 class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QObject
 {
     Q_OBJECT
