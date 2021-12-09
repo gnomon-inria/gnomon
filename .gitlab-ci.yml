@@ -24,7 +24,6 @@ conda_build_linux:
       - conda-bld
   only:
   - master
-  - develop
 
 
 conda_build_linux_develop:
