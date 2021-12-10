@@ -46,6 +46,8 @@
 #include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
+#include "gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
+#include "gnomonCore/gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 // #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
@@ -451,6 +453,7 @@
     }
 %enddef
 
+WRAP_GNOMONCORE_FORM_SERIES(BinaryImage)
 WRAP_GNOMONCORE_FORM_SERIES(CellComplex)
 WRAP_GNOMONCORE_FORM_SERIES(CellImage)
 WRAP_GNOMONCORE_FORM_SERIES(DataDict)
@@ -664,6 +667,20 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 %include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 %include <gnomonCore/gnomonForm/gnomonWallForm.h>
+
+%include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h>
+%include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
+%extend gnomonBinaryImage {
+        const char* __repr__()
+        {
+            static std::string s;
+            auto&& image = $self;
+            QString str("<gnomoncore.gnomonBinaryImage");
+            str += QString(" at 0x%1>").arg((quintptr)image, 12, 16, QChar('0'));
+            s = str.toStdString();
+            return s.data();
+        }
+}
 
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
