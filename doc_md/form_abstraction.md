@@ -1,4 +1,4 @@
-# Defining a new Form to implement a data structure 
+# Defining a new Form to implement a data structure
 
 The objective is to add a Form concept (e.g. `gnomonNewForm`) to the gnomoncore layer, but to do it in such way that the object could be seen from different perspectives, using a Bridge design pattern. Then the idea is to use an implementation of this concept using a Python library.
 
@@ -16,7 +16,7 @@ gnomon
                 │   gnomonAbstractNewFormData
                 │   gnomonAbstractNewFormData.h
                 │   gnomonAbstractNewFormData.cpp
-                
+
 ```
 
 ### Define the abstraction for the data of the Form
@@ -27,22 +27,9 @@ The starting point is the definition of an abstract class that will be implement
 * Create an empty header file that will contain an abstract class to define the abstraction of the data contained in the Form structure: `gnomonAbstractNewFormData.h`
 
 ```c++
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
+#include <gnomonCoreExport.h>
 ```
 
 ```c++
@@ -150,20 +137,6 @@ namespace gnomonCore {
 * Create the corresponding `gnomonAbstractNewFormData.cpp` file that will implement the namespace registration macro that will enable its registration to the manager of the layer. Again, be careful to have a lowercase concept.
 
 ```c++
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonCore.h"
 #include "gnomonAbstractNewFormData.h"
 
@@ -188,7 +161,7 @@ namespace gnomonCore {
 #include "gnomonAbstractCellImageData.h"
 ```
 
-### Define the concrete Form class as a data bridge 
+### Define the concrete Form class as a data bridge
 
 We will now create an **instantiable** class that will basically wrap some or all of the abstraction methods to produce an interface for some given use. Note that one abstraction may have several bridges, exposing different aspects of the class depending on the final use.
 
@@ -197,20 +170,6 @@ We will now create an **instantiable** class that will basically wrap some or al
 * Create a new empty header file `gnomonNewForm.h`. The class is no longer abstract but will inheriting the `gnomonAbstractForm` (abstract) class. This concrete class only has one member which is a **pointer** on an implementation of the abstract data class:
 
 ```c++
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 
@@ -291,7 +250,7 @@ public:
 
 * Then all the other class methods (including the ones overriding the `gnomonAbstractForm` methods) will simply be calls to the same method of the abstract data class, passing the arguments when necessary.
 
-```c++ 
+```c++
 public:
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
@@ -350,21 +309,6 @@ DTK_DECLARE_OBJECT(gnomonCellImage *)
 * In the `CMakeLists.txt` of the `gnomonNewForm/` directory, add the headers and sources using the gnomon-specific macros (defined in `gnomon/cmake/gnomonSubdirectoryAddFiles.cmake`)
 
 ```cmake
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
-
 ## #################################################################
 ## Sources
 ## #################################################################
@@ -389,20 +333,6 @@ ADD_GNOMON_SUBDIRECTORY_SOURCES(
 * In the `CMakeLists.txt` of the `gnomonForm/` directory, add the `gnomonNewForm`  subdirectory, and also add the (exported) `_HEADERS` and `_SOURCES` in the respective sections.
 
 ```cmake
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 ## #################################################################
 ## Inputs
 ## #################################################################
