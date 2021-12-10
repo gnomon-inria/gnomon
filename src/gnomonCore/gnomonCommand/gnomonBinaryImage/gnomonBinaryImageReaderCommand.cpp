@@ -35,5 +35,43 @@ void gnomonBinaryImageReaderCommand::redo(void)
 
 
     ((gnomonAbstractBinaryImageReader *)this->action)->setPath(this->m_path);
+    this->action->run();
 
+    gnomonBinaryImageSeries *binaryImage = ((gnomonAbstractBinaryImageReader *) this->action)->binaryImage();
+    if ((!binaryImage)||(binaryImage->times().size()==0)) {
+        d->binaryImage = nullptr;
+    } else {
+        d->binaryImage = binaryImage;
+    }
+
+}
+
+void gnomonBinaryImageReaderCommand::undo(void)
+{
+    ((gnomonAbstractBinaryImageReader *) this->action)->setPath("");
+}
+
+void gnomonBinaryImageReaderCommand::setPath(const QString& path)
+{
+    this->m_path = path;
+}
+
+gnomonBinaryImageSeries *gnomonBinaryImageReaderCommand::binaryImage(void)
+{
+    return d->binaryImage;
+}
+
+
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageReaderCommand::outputs(void)
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["binaryImage"] = this->binaryImage();
+    return outputs;
+}
+
+bool gnomonBinaryImageReaderCommand::isEmpty(void)
+{
+    loadPluginGroup("binaryImageReader");
+    return gnomonCore::binaryImageReader::pluginFactory().keys().size() == 0;
 }

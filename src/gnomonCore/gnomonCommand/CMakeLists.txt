@@ -17,6 +17,7 @@
 ## Inputs
 ## #################################################################
 
+add_subdirectory(gnomonBinaryImage)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonDataFrame)
@@ -45,6 +46,7 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractWriterCommand.h
   gnomonFormAlgorithmCommand
   gnomonFormAlgorithmCommand.h
+  ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}
@@ -57,6 +59,7 @@ ADD_GNOMON_HEADERS(
 
 
 ADD_GNOMON_SOURCES(
+  ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_SOURCES}
