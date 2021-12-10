@@ -15,9 +15,9 @@ conda_build_linux:
   stage: build
   script:
   - conda install -n base -c defaults conda python=3.7 -y
-  - conda install python=3.7 conda-build git anaconda-client conda-verify
+  - conda install -c conda-forge mamba python=3.7 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
-  - conda build . -c dtk-forge -c conda-forge --output-folder conda-bld/
+  - mamba build . -c dtk-forge-staging -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
@@ -62,7 +62,7 @@ anaconda_linux_develop :
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
   extends: .template_retry
   when: manual
-  only: 
+  only:
   - develop
 
 
