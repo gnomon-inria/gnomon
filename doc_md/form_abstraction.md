@@ -434,3 +434,111 @@ rm -rf $CONDA_PREFIX/wrp/gnomon*
 ```python
 from gnomoncore import gnomonAbstractNewFormData, newFormData_pluginFactory
 ```
+
+## Provide a Python plugin that implements the form abstraction
+
+Within an [already existing plugin package](package.md), we will implement a Python class inheriting the abstract data class `gnomonAbstractNewFormData` that will override all its pure virtual methods.
+
+The concrete class will typically **wrap an existing Python data structure** (e.g. `MyStructure`) to adapt it to the API specified by the abstract C++ class. The idea is then that the class has a **data structure member** (e.g. `data`) that will be used to fill in the different methods.
+
+### Implement the Python class
+
+* Create a new module `newFormDataMyStructure.py` that defines a class inheriting our Form data abstraction
+
+```python
+from gnomoncore import gnomonAbstractNewFormData
+
+class newFormDataMyStructure(gnomonAbstractNewFormData):
+    def __init__(self):
+        super().__init__()
+```
+
+* Add a (hidden) `_data` member (that should be of type `MyStructure`) containing the actual data structure representing the Form. We also add a specific `set_data` method that *makes a copy* of the provided data structure to keep it as the `_data` member.
+
+```python
+from copy import deepcopy
+
+from my_module import MyStructure
+```
+
+```python
+    def __init__(self):
+        super().__init__()
+        self._data = MyStructure()
+
+    def __del__(self):
+        del self._data
+
+    def set_data(self, data: MyStructure):
+        self._data = deepcopy(data)
+```
+
+* To make sure that Forms can be manipulated safely memorywise on the C++ side, we need to implement the `clone` method that duplicates the underlying data structure:
+
+```python
+    def clone(self):
+        _clone = newFormDataMyStructure()
+        _clone.set_data(self._data)
+        _clone.__disown__()
+        return _clone
+```
+
+* To enable the **interoperability** of the form data class we also define a method to instantiate our Python class from an existing instance of the Form (potentially implemented by a different form data plugin)
+
+```python
+    def from_gnomonNewForm(self, form):
+        form_data = form.data()
+        if isinstance(data, newFormDataMyStructure):
+            self.set_data(form_data._data)
+        else:
+            self._data = MyStructure()
+            
+            # fill in the structure using the Form API
+            for eid in data.elementIds():
+                self._data.add_element(eid)
+                ...
+        
+        return self
+```
+
+* Then, we implement the virtual methods of the abstract class using the methods / attributes of the underlying data structure. First the methods needed by `gnomonAbstractForm`:
+
+```python
+    def metadata(self):
+        metadata = {}
+        metadata['Number of elements'] = str(self._data.nb_elements())
+        
+        return metadata
+
+    def dataName(self):
+        return "my_module.MyStructure"
+```
+
+* ...and the rest of the Form API
+
+```python
+    def elementIds(self):
+        return [int(eid) for eid in self._data.elements()]
+
+    def elementCount(self):
+        return self._data.nb_elements()
+    
+    def elementPropertyNames(self):
+        ...
+
+    def elementProperty(self, propertyName):
+        ...
+```
+
+* Finally, we add the `gnomonDecorator` plugin that implements all the
+  necessary methods to register the plugin to the platform. Since the abstraction (and its plugin factory) is registered to the `gnomonCore` namespace, we need to specify it explicitly to the decorator.
+
+```python
+import gnomoncore
+from gnomoncore import gnomonAbstractNewFormData
+
+from gnomon_utils import gnomonPlugin
+
+@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
+class newFormDataMyStructure(gnomonAbstractNewFormData):
+```
