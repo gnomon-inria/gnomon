@@ -44,8 +44,8 @@
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h"
 
-#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 #include "gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h"
