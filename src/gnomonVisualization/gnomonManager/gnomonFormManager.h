@@ -30,8 +30,6 @@ class gnomonFormManagerItem;
 class vtkCamera;
 class vtkGenericOpenGLRenderWindow;
 
-class xVisViewer;
-
 class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QObject
 {
     Q_OBJECT
@@ -43,7 +41,7 @@ signals:
     void added(int id);
 
 public slots:
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, xVisViewer *viewer, vtkCamera *cam=0);
+    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, vtkCamera *cam=0);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
