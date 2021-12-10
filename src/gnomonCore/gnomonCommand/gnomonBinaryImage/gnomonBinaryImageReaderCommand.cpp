@@ -1,24 +1,25 @@
 #include "gnomonBinaryImageReaderCommand.h"
 
 
-gnomonBinaryImageReaderCommandPrivate 
+class gnomonBinaryImageReaderCommandPrivate
 {
 public:
-    gnomonBinaryImageReaderCommandPrivate *gnomonBinaryImage = nullptr;
+    gnomonBinaryImageSeries *binaryImage = nullptr;
 };
 
-gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand(void):
-    d(new gnomonBinaryImageReaderCommandPrivate)
+gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand(void): d(new gnomonBinaryImageReaderCommandPrivate)
 {
     this->factory_name = "binaryImageReader";
-    load_plugin(this->factory_name());
+
+    loadPluginGroup(this->factoryName());
+
     for(auto key: gnomonCore::binaryImageReader::pluginFactory().keys()){
         auto algo = gnomonCore::binaryImageReader::pluginFactory().create(key);
-        if(!this->action){
+        if(!this->action) {
             this->action = algo;
-            this-key = key;
+            this->algorithm_name = key;
         }
-        m_description.insert(key, algo->documentation());
+        m_descriptions.insert(key, algo->documentation());
         m_extensions.insert(key, algo->extensions());
         m_actions.insert(key, algo);
     }
