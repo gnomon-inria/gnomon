@@ -65,7 +65,7 @@ Item {
         if (type == "dtk::d_path") {
             return _path_component;
         }
-        if (type == "dtk::d_range_real") {
+        if (type == "dtk::d_range_real" || type == "dtk::d_range_int") {
             return _range_component;
         }
 
