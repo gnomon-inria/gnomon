@@ -445,6 +445,17 @@ The concrete class will typically **wrap an existing Python data structure** (e.
 
 * Create a new module `newFormDataMyStructure.py` that defines a class inheriting our Form data abstraction
 
+```
+gnomon-package-pkgname
+└───src
+    └───plugin_name
+        └───form
+        │   │   __init__.py
+        │   │   newFormDataMyStructure.py
+        │
+        │   __init__.py
+```
+
 ```python
 from gnomoncore import gnomonAbstractNewFormData
 
@@ -477,10 +488,10 @@ from my_module import MyStructure
 
 ```python
     def clone(self):
-        _clone = newFormDataMyStructure()
-        _clone.set_data(self._data)
-        _clone.__disown__()
-        return _clone
+        clone = newFormDataMyStructure()
+        clone.set_data(self._data)
+        clone.__disown__()
+        return clone
 ```
 
 * To enable the **interoperability** of the form data class we also define a method to instantiate our Python class from an existing instance of the Form (potentially implemented by a different form data plugin)
@@ -541,4 +552,193 @@ from gnomon_utils import gnomonPlugin
 
 @gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
 class newFormDataMyStructure(gnomonAbstractNewFormData):
+```
+
+### Install the newly defined plugin 
+
+* Install the package again to update the entry points
+
+```bash
+python setup.py develop
+```
+
+* We can now check that the registration has been successful by trying to instantiate our class directly through the plugin factory. To do so, you can check it in a python interpreter:
+
+```python
+from gnomoncore import newFormData_pluginFactory
+from gnomon_utils.gnomonPlugin import load_plugin_group
+
+load_plugin_group("newFormData")
+
+form_data = newFormData_pluginFactory().create("newFormDataMyStructure")
+assert(form_data is not None)
+```
+
+### Add a test of the Form data plugin
+
+* In the `test/` folder at the root of the plugin package, add a `test_newFormData.py` file containing a test class inheriting [`unittest.TestCase`](https://docs.python.org/3/library/unittest.html#unittest.TestCase)
+
+* The `setUp` method of the class should instantiate:
+  - A form data plugin from the `newFormData_pluginFactory`
+  - A `gnomonNewForm` form, which will receive the data plugin using `setData`
+  - A data structure `MyStructure` that will be passed to the data plugin
+
+```python
+import unittest
+
+import gnomoncore
+from gnomoncore import gnomonNewForm, newFormData_pluginFactory
+from gnomon_utils import load_plugin_group
+
+from my_module import example_data_structure
+
+load_plugin_group("newFormData")
+
+
+class TestGnomonNewForm(unittest.TestCase):
+    """Tests the gnomonNewForm class.
+    """
+
+    def setUp(self):
+        self.data = example_data_structure()
+
+        self.form = gnomonNewForm()
+        self.form_data = newFormData_pluginFactory().create("newFormDataMyStructure")
+        self.form_data.set_data(self.data)
+        self.form.setData(self.form_data)
+```
+
+* The `tearDown` should leave the objects created in the setup to be destroyed
+
+```python
+
+    def tearDown(self):
+        self.form.this.disown()
+        self.form_data.this.disown()
+```
+
+* Then, add a test method for each overriden method of the Form API, e.g.:
+
+```python
+    def test_gnomonewForm_elementIds(self):
+        assert np.all([eid in self.data.elements() for eid in self.form.elementIds])
+```
+
+## Add the Form decorators in the gnomon_utils module
+
+To facilitate the writing of algorithm plugins, `gnomon` provides Python decorators to declare Form types of inputs and outputs, along with a preferred `data_plugin`. To make our new Form compatible with this system, we need to include it to the existing decorators.
+
+* Add a Python file named `new_data_decorator.py` in the `gnomonDecorator` module of `gnomon_utils`
+
+```
+gnomon
+└───python
+    └───gnomon_utils
+        └───gnomonDecorator
+            │   __init__.py
+            │   ...
+            │   new_data_decorator.py
+            │   ... 
+```
+
+* The module should declare an input and an output decorator as follows:  
+
+```python
+import gnomoncore
+
+from gnomoncore import gnomonNewForm
+from gnomon_utils.gnomonPlugin import load_plugin_group
+
+from .form_series import buildFormSeries, formDictFromSeries
+
+load_plugin_group("newFormData")
+
+default_plugin = "gnomonNewFormDataSpatialImage"
+default_setter = "set_image"
+default_attr = "_image"
+
+form_class = gnomonNewForm
+form_data_factory = gnomoncore.newFormData_pluginFactory()
+from_form_method = "from_gnomonNewForm"
+
+
+def _gnomonNewFormInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
+    def func(self, update=True):
+        update = update or not hasattr(self, "_in_newForm")
+        if update:
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
+            self._in_newForm = form_dict
+            self._in_newForm_data = data_dict
+        return self._in_newForm
+
+    setattr(cls, method, func)
+
+    def setter_func(self, newForm):
+        self._in_newForm = newForm
+        setattr(self, attr, {})
+
+        if self._in_newForm is not None:
+            newForm_dict = formDictFromSeries(form=self._in_newForm,
+                                                  form_data_factory=form_data_factory,
+                                                  from_form_method=from_form_method,
+                                                  data_plugin=data_plugin,
+                                                  data_attr=data_attr)
+            setattr(self, attr, newForm_dict)
+
+            if hasattr(self,"refresh_parameters"):
+                self.refresh_parameters()
+
+    setattr(cls, setter_method, setter_func)
+
+    return cls
+
+
+def gnomonNewFormInput(cls=None, attr=None, method='input', setter_method='setInput', data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+    if cls is not None:
+        return _gnomonNewFormInput(cls, attr, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+    else:
+        def wrapper(cls):
+            return _gnomonNewFormInput(cls, attr, method, setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+
+        return wrapper
+
+
+def _gnomonNewFormOutput(cls, attr, method, data_plugin, data_setter):
+    def func(self, update=True):
+        update = update or not hasattr(self, "_out_newForm")
+        if update:
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
+                                                   form_class=form_class,
+                                                   form_data_factory=form_data_factory,
+                                                   data_plugin=data_plugin,
+                                                   data_setter=data_setter)
+            self._out_newForm = form_dict
+            self._out_newForm_data = data_dict
+        return self._out_newForm
+
+    setattr(cls, method, func)
+
+    return cls
+
+
+def gnomonNewFormOutput(cls=None, attr=None, method='output', data_plugin=default_plugin, data_setter=default_setter):
+    if cls is not None:
+        return _gnomonNewFormOutput(cls, attr, data_plugin=data_plugin, data_setter=data_setter)
+    else:
+        def wrapper(cls):
+            return _gnomonNewFormOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
+
+        return wrapper
+```
+
+* Add the new decorators to the `__init__.py` of the `gnomonDecorator` module
+
+```python
+...
+from .new_form_decorator import gnomoNewFormInput, gnomonewFormOutput
+...
 ```
