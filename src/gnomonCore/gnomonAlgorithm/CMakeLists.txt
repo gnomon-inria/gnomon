@@ -25,6 +25,7 @@ add_subdirectory(gnomonLString)
 add_subdirectory(gnomonMesh)
 add_subdirectory(gnomonPointCloud)
 add_subdirectory(gnomonTree)
+add_subdirectory(gnomonBinaryImage)
 
 ## #################################################################
 ## Sources
@@ -45,7 +46,9 @@ ADD_GNOMON_HEADERS(
   ${${PROJECT_NAME}_ALGORITHM_LSTRING_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_MESH_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_POINTCLOUD_HEADERS}
-  ${${PROJECT_NAME}_ALGORITHM_TREE_HEADERS})
+  ${${PROJECT_NAME}_ALGORITHM_TREE_HEADERS}
+        ${${PROJECT_NAME}_ALGORITHM_BINARYIMAGE_HEADERS}
+)
 
 ADD_GNOMON_SOURCES(
   gnomonAbstractAlgorithm.cpp
@@ -58,7 +61,9 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_ALGORITHM_LSTRING_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_MESH_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_POINTCLOUD_SOURCES}
-  ${${PROJECT_NAME}_ALGORITHM_TREE_SOURCES})
+  ${${PROJECT_NAME}_ALGORITHM_TREE_SOURCES}
+        ${${PROJECT_NAME}_ALGORITHM_BINARYIMAGE_SOURCES}
+)
 
 ######################################################################
 ### CMakeLists.txt ends here
