@@ -43,6 +43,8 @@
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h"
 #include "gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h"
+#include "gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageWriter.h"
+#include "gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h"
 
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
