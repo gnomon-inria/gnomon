@@ -56,8 +56,6 @@
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
 
-#include <xVis/xVisViewer.hpp>
-
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewFormPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -85,7 +83,6 @@ public:
     }
 
 public slots:
-    void exportOne(void);
     void exportToManager(void);
     void saveScreenshot(void);
     void clear(void);
@@ -224,8 +221,6 @@ public:
 
     // dtkWidgetsMenuItemDIY *paneItemButton = nullptr;
 
-    xVisViewer *viewer = 0;
-
 public:
     // dtkWidgetsMenu *menu(void);
 
@@ -264,25 +259,12 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
     delete this->xyz_style;
 }
 
-void gnomonViewFormPrivate::exportOne(void)
-{
-    if(!this->to_export.count())
-        return;
-
-    QString key = this->to_export.firstKey();
-
-    gnomonAbstractDynamicForm *form = this->to_export.take(key);
-
-    gnomonFormManager::instance()->addForm(form, this->export_color, this->formVisualization[key], this->viewer, this->renderer3D->GetActiveCamera());
-
-    q->emit exportedForm(this->forms[key]);
-}
-
 void gnomonViewFormPrivate::exportToManager(void)
 {
-    this->to_export = this->forms;
-
-    this->exportOne();
+    for (const auto& key : this->forms.keys()) {
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
+        q->emit exportedForm(this->forms[key]);
+    }
 }
 
 void gnomonViewFormPrivate::saveScreenshot(void)
@@ -1092,11 +1074,9 @@ void gnomonViewForm::transmit(void)
     d->exportToManager();
 }
 
-void gnomonViewForm::associate(xVisViewer *viewer)
+void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
-    d->viewer = viewer;
-
-    d->window = d->viewer->GetRenderWindow();
+    d->window = window;
 //     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
 // #if defined(Q_OS_LINUX)
 //     d->window->GetInteractor()->Initialize();
@@ -1112,8 +1092,6 @@ void gnomonViewForm::associate(xVisViewer *viewer)
 
     d->updateOrientation();
     // d->updateTimeSlider();
-
-    connect(viewer, &xVisViewer::captureRetrieved, d, &gnomonViewFormPrivate::exportOne);
 }
 
 gnomonViewForm::~gnomonViewForm(void)
@@ -1397,7 +1375,7 @@ void gnomonViewForm::link(gnomonViewForm *other)
     d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
-    other->d->viewer->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+    other->d->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
     connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
     connect(other, &gnomonViewForm::switchedTo2D, [=] () {

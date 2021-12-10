@@ -15,8 +15,6 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkWindowToImageFilter.h>
 
-#include <xVis/xVisViewer.hpp>
-
 // /////////////////////////////////////////////////////////////////
 // gnomonAbstractVisualization
 // /////////////////////////////////////////////////////////////////
@@ -104,20 +102,17 @@ vtkRenderer *gnomonAbstractVisualization::offscreenRenderer(void)
     return d->offscreenRenderer;
 }
 
-void gnomonAbstractVisualization::setOffscreenRenderWindow(xVisViewer *viewer)
-{
-    d->offscreenRenderWindow = viewer;
-}
-
 void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax)
 {
-    if(!d->offscreenRenderer) {
+    if(!d->offscreenRenderer)
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
-    }
+    d->offscreenRenderer->SetBackground(0,0,0);
 
-    d->offscreenRenderer->DrawOn();
-    d->offscreenRenderer->InteractiveOn();
-    d->offscreenRenderWindow->GetRenderWindow()->AddRenderer(d->offscreenRenderer);
+    if(!d->offscreenRenderWindow)
+        d->offscreenRenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+    d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
+    d->offscreenRenderWindow->SetOffScreenRendering(1);
+    d->offscreenRenderWindow->SetSize(1500, 1500);
 
     vtkSmartPointer<vtkCamera> cam = d->offscreenRenderer->GetActiveCamera();
     cam->ParallelProjectionOn();
@@ -137,12 +132,32 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
 
 QImage gnomonAbstractVisualization::offscreenImageRendering(void)
 {
-    return QImage();
-}
+    d->offscreenRenderWindow->Render();
 
-void gnomonAbstractVisualization::cleanup(void)
-{
-    d->offscreenRenderWindow->GetRenderWindow()->RemoveRenderer(d->offscreenRenderer);
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(d->offscreenRenderWindow);
+    windowToImageFilter->SetInputBufferTypeToRGBA();
+    // windowToImageFilter->ReadFrontBufferOff();
+    windowToImageFilter->Update();
+
+    vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
+    int width = renderedImage->GetDimensions()[0];
+    int height = renderedImage->GetDimensions()[1];
+    QImage image( width, height, QImage::Format_RGB32);
+
+    QRgb *rgbPtr = reinterpret_cast<QRgb *>(image.bits());
+    for(int col = 0; col < width; ++col) {
+        for(int row = 0; row < height; ++row) {
+            double r, g, b;
+            r = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[0];
+            g = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[1];
+            b = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row, width-col-1, 0))[2];
+            *(rgbPtr) = QColor(r,g,b).rgb();
+            ++rgbPtr;
+        }
+    }
+
+    return image;
 }
 
 //
