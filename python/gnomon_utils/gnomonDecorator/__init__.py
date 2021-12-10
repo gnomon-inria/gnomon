@@ -1,3 +1,4 @@
+from .binary_image_decorator import gnomonBinaryImageInput, gnomonBinaryImageOutput
 from .cell_complex_decorator import gnomonCellComplexInput, gnomonCellComplexOutput
 from .cell_image_decorator import gnomonCellImageInput, gnomonCellImageOutput
 from .data_dict_decorator import gnomonDataDictInput, gnomonDataDictOutput
