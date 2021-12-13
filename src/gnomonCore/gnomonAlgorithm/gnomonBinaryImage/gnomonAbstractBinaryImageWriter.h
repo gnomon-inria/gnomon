@@ -24,7 +24,7 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setBinaryImage(gnomonBinaryImageSeries *cellcomplex) = 0;
+    virtual void setBinaryImage(gnomonBinaryImageSeries *binaryImage) = 0;
     virtual void setPath(const QString& path) = 0;
 
 public:

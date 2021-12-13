@@ -4,12 +4,11 @@
 
 class gnomonBinaryImageWriterCommandPrivate
 {
-public: 
-    gnomonBinaryImageSeries *binaryImage = nullptr; 
+public:
+    gnomonBinaryImageSeries *binaryImage = nullptr;
 };
 
-gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand(void):
-    d(new gnomonBinaryImageWriterCommandPrivate)
+gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand(void) : d(new gnomonBinaryImageWriterCommandPrivate)
 {
     this->factory_name = "binaryImageWriter";
     loadPluginGroup(this->factoryName());
@@ -38,7 +37,7 @@ void gnomonBinaryImageWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath(this->m_path);
-    ((gnomonAbstractBinaryImageWriter *) this->action)->setCellComplex(d->cellComplex);
+    ((gnomonAbstractBinaryImageWriter *) this->action)->setBinaryImage(d->binaryImage);
     this->action->run();
 }
 
@@ -47,21 +46,20 @@ void gnomonBinaryImageWriterCommand::undo(void)
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath("");
 }
 
-
-void gnomonBinaryImageWriterCommand::setBinaryImage(gnomonBinaryimageSeries *binaryImage)
+void gnomonBinaryImageWriterCommand::setBinaryImage(gnomonBinaryImageSeries *binaryImage)
 {
     d->binaryImage = binaryImage;
 }
 
 void gnomonBinaryImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
 {
-    d->binaryImage = dynamic_cast<gnomonBinaryimageSeries *>(form);
+    d->binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageWriterCommand::inputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
-    inputs["cellComplex"] = d->binaryImage;
+    inputs["binaryImage"] = d->binaryImage;
     return inputs;
 }
 

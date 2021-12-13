@@ -1,12 +1,11 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 #include "gnomonCommand/gnomonAbstractWriterCommand.h"
 
-
 class GNOMONCORE_EXPORT gnomonBinaryImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-    gnomonBinaryImageWriterCommand(void);
-    ~gnomonBinaryImageWriterCommand();
+     gnomonBinaryImageWriterCommand(void);
+    ~gnomonBinaryImageWriterCommand(void);
 
 public:
     void redo(void) override;
@@ -14,15 +13,14 @@ public:
 
 public:
     void setForm(gnomonAbstractDynamicForm *) override;
-    void setBinaryImage(gnomonBinaryImageSeries * binaryImage);
+    void setBinaryImage(gnomonBinaryImageSeries *binaryImage);
     void setAlgorithmName(const QString &) override;
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
 public:
-    static bool isEmpoty(void);
+    static bool isEmpty(void);
 
 private:
     class gnomonBinaryImageWriterCommandPrivate *d;
-
 };
