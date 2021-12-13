@@ -35,6 +35,8 @@
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
 
+#include "gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand.h"
+
 // #include <dtkFonts>
 // #include <dtkThemes>
 #include <dtkScript>
@@ -185,6 +187,9 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
+
+    // TODO : Make it possible to choose an adapted writer plugin, rather than checking writer one by one (get inspiration from reader)
+    
     if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         writer_plugin = "gnomonImageWriter";
         if (!d->commands.contains(writer_plugin)) {
@@ -209,6 +214,11 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
         writer_plugin = "gnomonCellComplexWriterPropertyTopomesh";
         if (!d->commands.contains(writer_plugin)) {
             d->commands.insert(writer_plugin, new gnomonCellComplexWriterCommand);
+        }
+    } else if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
+        writer_plugin = "binaryImageWriter";
+        if (!d->commands.contains(writer_plugin)) {
+            d->commands.insert(writer_plugin, new gnomonBinaryImageWriterCommand);
         }
     }
     d->formWriterCommand[item] = d->commands[writer_plugin];
