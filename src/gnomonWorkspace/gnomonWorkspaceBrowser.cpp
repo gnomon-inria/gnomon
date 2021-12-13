@@ -496,10 +496,11 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         binaryImageCommand->redo();
         gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
         if (!binaryImage_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
+            qWarning() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
         } else {
-            this->browse_view->setForm("gnomonCellComplex",binaryImage_series->clone());
-            this->pipeline->addClonedForm(binaryImage_series,this->browse_view->cellComplex());
+            this->browse_view->setForm("gnomonBinaryImage",binaryImage_series->clone());
+            // TODO : restore when view is done
+            //this->pipeline->addClonedForm(binaryImage_series, this->browse_view->binaryImage());
 //            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(binaryImageCommand);
         }
