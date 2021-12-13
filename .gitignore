@@ -64,6 +64,7 @@ python/gnomon_utils/gnomonPlugin.py
 
 *.pyc
 *.egg-info
+*.vscode
 
 ######################################################################
 ### .gitignore ends here
