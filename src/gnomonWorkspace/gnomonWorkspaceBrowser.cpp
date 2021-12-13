@@ -36,6 +36,7 @@
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
+#include "gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand"
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -376,6 +377,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
     commands << new gnomonMeshReaderCommand;
     commands << new gnomonPointCloudReaderCommand;
     commands << new gnomonTreeReaderCommand;
+    commands << new gnomonBinaryImageReaderCommand;
 
     for (auto command: commands) {
         QMap<QString, QStringList> extensions = command->extensions();
@@ -488,6 +490,19 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 //            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(cellComplexCommand);
         }
+    } else if (gnomonBinaryImageReaderCommand *binaryImageCommand = dynamic_cast<gnomonBinaryImageReaderCommand *>(readerCommand))
+    {
+        binaryImageCommand->setPath(path);
+        binaryImageCommand->redo();
+        gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
+        if (!binaryImage_series) {
+            qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
+        } else {
+            this->browse_view->setForm("gnomonCellComplex",binaryImage_series->clone());
+            this->pipeline->addClonedForm(binaryImage_series,this->browse_view->cellComplex());
+//            this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(binaryImageCommand);
+        }
     } else if (gnomonDataFrameReaderCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameReaderCommand *>(readerCommand))
     {
         dataFrameCommand->setPath(path);
@@ -564,6 +579,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent
     d->browse_view->setAcceptForm("gnomonImage",true);
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
+    d->browse_view->setAcceptForm("gnomonBinaryImage", true);
     // d->browse_view->setAcceptDrops(true);
 
     connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
