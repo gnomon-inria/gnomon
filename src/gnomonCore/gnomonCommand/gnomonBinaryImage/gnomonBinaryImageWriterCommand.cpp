@@ -38,7 +38,7 @@ void gnomonBinaryImageWriterCommand::redo(void)
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath(this->m_path);
-    ((gnomonAbstractBinaryImageWriter *) this->action)->setCellComplex(d->cellComplex);
+    ((gnomonAbstractBinaryImageWriter *) this->action)->setBinaryImage(d->binaryImage);
     this->action->run();
 }
 
@@ -61,7 +61,7 @@ void gnomonBinaryImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
 QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageWriterCommand::inputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
-    inputs["cellComplex"] = d->binaryImage;
+    inputs["binaryImage"] = d->binaryImage;
     return inputs;
 }
 

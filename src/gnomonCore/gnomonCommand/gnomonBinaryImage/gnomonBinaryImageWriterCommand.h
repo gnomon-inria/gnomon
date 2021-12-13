@@ -20,7 +20,7 @@ public:
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
 public:
-    static bool isEmpoty(void);
+    static bool isEmpty(void);
 
 private:
     class gnomonBinaryImageWriterCommandPrivate *d;
