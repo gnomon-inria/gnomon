@@ -690,6 +690,12 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name)
             formVisualizationImage->setImage((gnomonImageSeries *)form);
             update = true;
         }
+    } else if (name == "gnomonBinaryImage") {
+        auto formVisualizationBinaryImage = (gnomonAbstractVisualizationBinaryImage *)visu;
+        if (formVisualizationBinaryImage->image() != (gnomonBinaryImageSeries *)form) {
+            formVisualizationBinaryImage->setImage((gnomonBinaryImageSeries *)form);
+            update = true;
+        }
     } else if (name == "gnomonMesh") {
         auto formVisualizationMesh = (gnomonAbstractVisualizationMesh *)visu;
         if (formVisualizationMesh->mesh() != (gnomonMeshSeries *)form) {
