@@ -27,12 +27,13 @@
 #include <gnomonCore>
 #include <gnomonPipeline>
 
-#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
-#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand.h>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
-#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
 
 // #include <dtkFonts>
@@ -185,7 +186,25 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
-    if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
+
+    // TODO : Make it possible to choose an adapted writer plugin, rather than checking writer one by one (get inspiration from reader)
+
+    if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
+        writer_plugin = "binaryImageWriter";
+        if (!d->commands.contains(writer_plugin)) {
+            d->commands.insert(writer_plugin, new gnomonBinaryImageWriterCommand);
+        }
+    } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
+        writer_plugin = "gnomonCellComplexWriterPropertyTopomesh";
+        if (!d->commands.contains(writer_plugin)) {
+            d->commands.insert(writer_plugin, new gnomonCellComplexWriterCommand);
+        }
+    } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
+        writer_plugin = "gnomonCellImageWriterPropertySpatialImage";
+        if (!d->commands.contains(writer_plugin)) {
+            d->commands.insert(writer_plugin, new gnomonCellImageWriterCommand);
+        }
+    } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         writer_plugin = "gnomonImageWriter";
         if (!d->commands.contains(writer_plugin)) {
             d->commands.insert(writer_plugin, new gnomonImageWriterCommand);
@@ -195,20 +214,10 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
         if (!d->commands.contains(writer_plugin)) {
             d->commands.insert(writer_plugin, new gnomonMeshWriterCommand);
         }
-    } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
-        writer_plugin = "gnomonCellImageWriterPropertySpatialImage";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonCellImageWriterCommand);
-        }
-    } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+    }else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         writer_plugin = "pointCloudWriterPropertyTopomesh";
         if (!d->commands.contains(writer_plugin)) {
             d->commands.insert(writer_plugin, new gnomonPointCloudWriterCommand);
-        }
-    } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-        writer_plugin = "gnomonCellComplexWriterPropertyTopomesh";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonCellComplexWriterCommand);
         }
     }
     d->formWriterCommand[item] = d->commands[writer_plugin];
