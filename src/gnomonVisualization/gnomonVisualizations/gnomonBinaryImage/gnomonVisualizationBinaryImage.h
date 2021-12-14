@@ -55,7 +55,7 @@ private:
     class gnomonVisualizationBinaryImagePrivate *dd;
 };
 
-inline gnomonAbstractVisualizationBinaryImage *gnomonVisualizationbinaryImageCreator(void)
+inline gnomonAbstractVisualizationBinaryImage *gnomonVisualizationBinaryImageCreator(void)
 {
     return new gnomonVisualizationBinaryImage();
 }
