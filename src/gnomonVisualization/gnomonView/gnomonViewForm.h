@@ -40,6 +40,7 @@ template <typename T> class gnomonTimeSeries;
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage"
 
 class vtkCamera;
 class vtkRenderer;
@@ -109,6 +110,7 @@ public:
     void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
     void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
     void setImage(gnomonImageSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setBinaryImage(gnomonBinaryImageSeries *, gnomonAbstractVisualization *  = nullptr);
     void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
     void setMesh(gnomonMeshSeries *, gnomonAbstractVisualization *  = nullptr);
     void setPointCloud(gnomonPointCloudSeries *, gnomonAbstractVisualization *  = nullptr);
@@ -129,6 +131,7 @@ signals:
 public:
     gnomonAbstractDynamicForm *form(const QString&);
     gnomonImageSeries *image(void);
+    gnomonBinaryImageSeries *binaryImage(void);
     gnomonCellImageSeries *cellImage(void);
     gnomonCellComplexSeries *cellComplex(void);
     gnomonMeshSeries *mesh(void);
