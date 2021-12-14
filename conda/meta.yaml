@@ -44,40 +44,32 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt =5.15.2
+    - qt >=5.15.2
     - dtk-log =2.5.0
     - dtk-core =2.11.0
     - dtk-core-python =2.8.0
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
-    - dtk-script =2.5.1
+    - dtk-script >=2.5.1
     - python =3.7
     - swig =4.0
-    - vtk=8.2.0
-    - ffmpeg=4.1
-    - libnetcdf =4.8
-    - tbb-devel =2021.3
-    - zlib=1.2.11
+    - vtk =9.1.0
 
   run:
-    - qt =5.15.2
+    - qt >=5.15.2
     - dtk-log =2.5.0
     - dtk-core =2.11.0
     - dtk-core-python =2.8.0
     - dtk-imaging =2.0.4
     - dtk-imaging-python =2.0.6
-    - dtk-script =2.5.1
+    - dtk-script >=2.5.1
     - pillow
     - numpy
     - matplotlib
     - mongodb =4.0
     - pymongo =3.11
     - python =3.7
-    - vtk=8.2.0
-    - ffmpeg=4.1
-    - libnetcdf =4.8
-    - tbb-devel =2021.3
-    - zlib=1.2.11
+    - vtk =9.1.0
 
 app:
   entry: gnomon # [linux]
