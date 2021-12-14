@@ -29,6 +29,7 @@
 // #include <QtQuickWidgets>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
@@ -369,10 +370,11 @@ public slots:
 gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
 {
     QList<gnomonAbstractReaderCommand*> commands;
-    commands << new gnomonImageReaderCommand;
+    commands << new gnomonBinaryImageReaderCommand;
     commands << new gnomonCellImageReaderCommand;
     commands << new gnomonCellComplexReaderCommand;
     commands << new gnomonDataFrameReaderCommand;
+    commands << new gnomonImageReaderCommand;
     commands << new gnomonMeshReaderCommand;
     commands << new gnomonPointCloudReaderCommand;
     commands << new gnomonTreeReaderCommand;
@@ -488,6 +490,20 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 //            this->view_stack->setCurrentWidget(this->browse_view);
             this->pipeline->addReader(cellComplexCommand);
         }
+    } else if (gnomonBinaryImageReaderCommand *binaryImageCommand = dynamic_cast<gnomonBinaryImageReaderCommand *>(readerCommand))
+    {
+        binaryImageCommand->setPath(path);
+        binaryImageCommand->redo();
+        gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
+        if (!binaryImage_series) {
+            qWarning() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
+        } else {
+            this->browse_view->setForm("gnomonBinaryImage",binaryImage_series->clone());
+            // TODO : restore when view is done
+            //this->pipeline->addClonedForm(binaryImage_series, this->browse_view->binaryImage());
+//            this->view_stack->setCurrentWidget(this->browse_view);
+            this->pipeline->addReader(binaryImageCommand);
+        }
     } else if (gnomonDataFrameReaderCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameReaderCommand *>(readerCommand))
     {
         dataFrameCommand->setPath(path);
@@ -559,6 +575,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent
 
     d->browse_view = new gnomonViewForm(this);
     // d->browse_view->setExportColor(this->color);
+    d->browse_view->setAcceptForm("gnomonBinaryImage", true);
     d->browse_view->setAcceptForm("gnomonCellComplex",true);
     d->browse_view->setAcceptForm("gnomonCellImage",true);
     d->browse_view->setAcceptForm("gnomonImage",true);
