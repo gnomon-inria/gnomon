@@ -1498,9 +1498,9 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
         if (d->acceptForms["gnomonImage"]) {
             this->setImage(image, visualization);
         }
-    } else if (gnomonBinaryImageSeries *image = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
+    } else if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
         if (d->acceptForms["gnomonBinaryImage"]) {
-            this->setBinaryImage(image, visualization);
+            this->setBinaryImage(binaryImage, visualization);
         }
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         if (d->acceptForms["gnomonMesh"]) {
