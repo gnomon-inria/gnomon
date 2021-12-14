@@ -42,9 +42,10 @@ public:
 
     gnomonActor2DImageWidget *actor2D = nullptr;
     gnomonActorImageVolume *volume = nullptr;
-
+/*
 public:
     QMap<QString, QMap<double, QColor> > channelColormaps;
+*/
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -58,13 +59,12 @@ gnomonVisualizationBinaryImage::gnomonVisualizationBinaryImage(void) : gnomonAbs
 
     d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for display ramps");
-    d->parameters["colormap"] = new gnomonCoreParameterColorMap("gray", "Colormap to apply to the image");
+    //d->parameters["colormap"] = new gnomonCoreParameterColorMap("gray", "Colormap to apply to the image");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
     d->parameters["channel"]->connect([=] (QVariant v) {
         if(!dd->image)
             return;
-        this->updateChannelColorMap();
         emit parametersChanged();
     });
 
@@ -109,7 +109,8 @@ void gnomonVisualizationBinaryImage::setImage(gnomonBinaryImageSeries *image)
 
     this->setParameter("alpha",1.0);
 
-    dd->channelColormaps.clear();
+    //dd->channelColormaps.clear();
+    /*
     if(dd->image->channels().size()==1) {
         //delete d->parameters["channel"];
         d->parameters.remove("channel");
@@ -134,6 +135,7 @@ void gnomonVisualizationBinaryImage::setImage(gnomonBinaryImageSeries *image)
         valueRangeParam->setMax(65535);
         valueRangeParam->setValue({0,65535});
      }
+     */
 }
 
 gnomonBinaryImageSeries *gnomonVisualizationBinaryImage::image(void)
@@ -149,16 +151,6 @@ void gnomonVisualizationBinaryImage::updateOpacity(void)
     dd->volume->setOpacity(alpha);
 }
 
-void gnomonVisualizationBinaryImage::updateChannelColorMap(void)
-{
-    if(dd->image->channels().size()>1) {
-        QString channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
-
-        if(dd->channelColormaps.contains(channel)) {
-            ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
-        }
-    }
-}
 
 QImage gnomonVisualizationBinaryImage::imageRendering(void)
 {
@@ -180,6 +172,7 @@ void gnomonVisualizationBinaryImage::update(void)
     std::array<long long int, 2> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
 
+    /*
     QString channel;
     if(dd->image->channels().size()>1) {
         channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
@@ -187,19 +180,20 @@ void gnomonVisualizationBinaryImage::update(void)
     } else {
         channel = "";
     }
-
+    
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
     converter->setInput(dd->image->image(channel));
     converter->convert();
     dd->image_data = static_cast<vtkImageData *>(converter->output());
     delete converter;
+    */
 
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageWidget::New();
     }
     dd->actor2D->setImage(dd->image_data);
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
-    dd->actor2D->setColorMap(colormap);
+    //dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
     dd->actor2D->setOpacity(alpha);
     dd->actor2D->update();
@@ -210,7 +204,7 @@ void gnomonVisualizationBinaryImage::update(void)
     }
     dd->volume->setInteractor(d->view->interactor());
     dd->volume->setImage(dd->image_data);
-    dd->volume->setColorMap(colormap);
+    //dd->volume->setColorMap(colormap);
     dd->volume->setValueRange(value_range);
 
     double bounds[6];
