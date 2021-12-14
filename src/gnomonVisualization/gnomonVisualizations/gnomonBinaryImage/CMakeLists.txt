@@ -1,20 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
-## #################################################################
-## Sources
-## #################################################################
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
         gnomonAbstractVisualizationBinaryImage.h
@@ -29,5 +12,3 @@ ADD_GNOMON_SUBDIRECTORY_SOURCES(
         gnomonVisualizationBinaryImage.cpp
         gnomonVisualizationBinaryImageChannelBlending.cpp)
 
-######################################################################
-### CMakeLists.txt ends here

@@ -1,16 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "gnomonVisualizationBinaryImage.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
@@ -38,14 +25,14 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// gnomonVisualizationImagePrivate
+// gnomonVisualizationBinaryImagePrivate
 // /////////////////////////////////////////////////////////////////
 
-class gnomonVisualizationImagePrivate
+class gnomonVisualizationBinaryImagePrivate
 {
 public:
-    gnomonImageSeries *imageSeries;
-    gnomonImage *image;
+    gnomonBinaryImageSeries *imageSeries;
+    gnomonBinaryImage *image;
 
 public:
     int orientation = 2;
@@ -61,10 +48,10 @@ public:
 };
 
 // /////////////////////////////////////////////////////////////////
-// gnomonVisualizationImage
+// gnomonVisualizationBinaryImage
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisualizationImage(), dd(new gnomonVisualizationImagePrivate)
+gnomonVisualizationBinaryImage::gnomonVisualizationBinaryImage(void) : gnomonAbstractVisualizationBinaryImage(), dd(new gnomonVisualizationBinaryImagePrivate)
 {
     dd->imageSeries = Q_NULLPTR;
     dd->image = Q_NULLPTR;
@@ -83,7 +70,7 @@ gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisuali
 
 }
 
-gnomonVisualizationImage::~gnomonVisualizationImage(void)
+gnomonVisualizationBinaryImage::~gnomonVisualizationBinaryImage(void)
 {
     this->clear();
 
@@ -92,7 +79,7 @@ gnomonVisualizationImage::~gnomonVisualizationImage(void)
     dd = NULL;
 }
 
-void gnomonVisualizationImage::clear(void)
+void gnomonVisualizationBinaryImage::clear(void)
 {
     if (dd->volume) {
         d->view->renderer3D()->RemoveActor(dd->volume);
@@ -115,10 +102,10 @@ void gnomonVisualizationImage::clear(void)
 //    disconnect(d->connectYZ);
 }
 
-void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
+void gnomonVisualizationBinaryImage::setImage(gnomonBinaryImageSeries *image)
 {
     dd->imageSeries = image;
-    dd->image = dynamic_cast<gnomonImage *>(image->current());
+    dd->image = dynamic_cast<gnomonBinaryImage *>(image->current());
 
     this->setParameter("alpha",1.0);
 
@@ -149,12 +136,12 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
      }
 }
 
-gnomonImageSeries *gnomonVisualizationImage::image(void)
+gnomonBinaryImageSeries *gnomonVisualizationBinaryImage::image(void)
 {
     return dd->imageSeries;
 }
 
-void gnomonVisualizationImage::updateOpacity(void)
+void gnomonVisualizationBinaryImage::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
@@ -162,7 +149,7 @@ void gnomonVisualizationImage::updateOpacity(void)
     dd->volume->setOpacity(alpha);
 }
 
-void gnomonVisualizationImage::updateChannelColorMap(void)
+void gnomonVisualizationBinaryImage::updateChannelColorMap(void)
 {
     if(dd->image->channels().size()>1) {
         QString channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
@@ -173,7 +160,7 @@ void gnomonVisualizationImage::updateChannelColorMap(void)
     }
 }
 
-QImage gnomonVisualizationImage::imageRendering(void)
+QImage gnomonVisualizationBinaryImage::imageRendering(void)
 {
     double bounds[6];
     dd->image_data->GetBounds(bounds);
@@ -184,7 +171,7 @@ QImage gnomonVisualizationImage::imageRendering(void)
     return this->offscreenImageRendering();
 }
 
-void gnomonVisualizationImage::update(void)
+void gnomonVisualizationBinaryImage::update(void)
 {
     if(!dd->image)
         return;
@@ -238,18 +225,18 @@ void gnomonVisualizationImage::update(void)
     this->render();
 }
 
-void gnomonVisualizationImage::render(void)
+void gnomonVisualizationBinaryImage::render(void)
 {
     this->updateOpacity();
     d->view->render();
 }
 
-dtkCoreParameters gnomonVisualizationImage::parameters(void) const
+dtkCoreParameters gnomonVisualizationBinaryImage::parameters(void) const
 {
     return d->parameters;
 }
 
-void gnomonVisualizationImage::setParameter(const QString& parameter, const QVariant& value)
+void gnomonVisualizationBinaryImage::setParameter(const QString& parameter, const QVariant& value)
 {
     if (d->parameters.contains(parameter)) {
         d->parameters[parameter]->setValue(value);
@@ -258,7 +245,7 @@ void gnomonVisualizationImage::setParameter(const QString& parameter, const QVar
         qWarning()<<parameter<<"is not a valid parameter!";
 }
 
-void gnomonVisualizationImage::setParameters(const dtkCoreParameters& parameters)
+void gnomonVisualizationBinaryImage::setParameters(const dtkCoreParameters& parameters)
 {
 //    d->parameters = parameters;
     for (const auto& param : parameters.keys()) {
@@ -268,50 +255,50 @@ void gnomonVisualizationImage::setParameters(const dtkCoreParameters& parameters
     }
 }
 
-void gnomonVisualizationImage::onSliceOrientationChanged(int value)
+void gnomonVisualizationBinaryImage::onSliceOrientationChanged(int value)
 {
     dd->actor2D->setSliceOrientation(value);
 }
 
 
-void gnomonVisualizationImage::onSliceChanged(int value)
+void gnomonVisualizationBinaryImage::onSliceChanged(int value)
 {
     dd->actor2D->setSlice(value);
     this->render();
 }
 
-void gnomonVisualizationImage::on3D(void)
+void gnomonVisualizationBinaryImage::on3D(void)
 {
     dd->actor2D->hide();
     this->render();
 }
 
-void gnomonVisualizationImage::on2D(void)
+void gnomonVisualizationBinaryImage::on2D(void)
 {
     dd->actor2D->show();
     this->render();
 }
 
-void gnomonVisualizationImage::onXY(void)
+void gnomonVisualizationBinaryImage::onXY(void)
 {
     this->render();
 }
 
-void gnomonVisualizationImage::onYZ(void)
+void gnomonVisualizationBinaryImage::onYZ(void)
 {
     this->render();
 }
 
-void gnomonVisualizationImage::onXZ(void)
+void gnomonVisualizationBinaryImage::onXZ(void)
 {
     this->render();
 }
 
-void gnomonVisualizationImage::onTimeChanged(double value)
+void gnomonVisualizationBinaryImage::onTimeChanged(double value)
 {
     qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
     this->render();
 }
 
 //
-// gnomonVisualizationImage.cpp ends here
+// gnomonVisualizationBinaryImage.cpp ends here

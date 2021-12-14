@@ -1,16 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
 
 #pragma once
 
@@ -24,17 +11,17 @@ class gnomonViewForm;
 
 class dtkCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImage : public gnomonAbstractVisualizationImage
+class GNOMONVISUALIZATION_EXPORT gnomonVisualizationBinaryImage : public gnomonAbstractVisualizationBinaryImage
 {
     Q_OBJECT
 
 public:
-     gnomonVisualizationImage(void);
-    ~gnomonVisualizationImage(void);
+    gnomonVisualizationBinaryImage(void);
+    ~gnomonVisualizationBinaryImage(void);
 
 public:
-    void setImage(gnomonImageSeries *image) override;
-    gnomonImageSeries *image(void) override;
+    void setImage(gnomonBinaryImageSeries *image) override;
+    gnomonBinaryImageSeries *image(void) override;
 
 public slots:
     void updateOpacity(void);
@@ -66,12 +53,12 @@ public:
     dtkCoreParameters parameters(void) const override;
 
 private:
-    class gnomonVisualizationImagePrivate *dd;
+    class gnomonVisualizationBinaryImagePrivate *dd;
 };
 
-inline gnomonAbstractVisualizationImage *gnomonVisualizationImageCreator(void)
+inline gnomonAbstractVisualizationBinaryImage *gnomonVisualizationbinaryImageCreator(void)
 {
-    return new gnomonVisualizationImage();
+    return new gnomonVisualizationBinaryImage();
 }
 
 //

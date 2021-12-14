@@ -1,15 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
 // Code:
 
 #pragma once
@@ -20,24 +8,24 @@
 
 #include <dtkCore>
 
-#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
 
 class gnomonViewForm;
 
 class dtkCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationImage : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationBinaryImage : public gnomonAbstractVisualization
 {
     Q_OBJECT
 
 public:
-             gnomonAbstractVisualizationImage(void) : gnomonAbstractVisualization() {}
-    virtual ~gnomonAbstractVisualizationImage(void) = default;
+    gnomonAbstractVisualizationBinaryImage(void) : gnomonAbstractVisualization() {}
+    virtual ~gnomonAbstractVisualizationBinaryImage(void) = default;
 
 public:
-    virtual void setImage(gnomonImageSeries *image) = 0;
-    virtual gnomonImageSeries *image(void) = 0;
+    virtual void setImage(gnomonBinaryImageSeries *image) = 0;
+    virtual gnomonBinaryImageSeries *image(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
@@ -67,17 +55,17 @@ public slots:
 // Give the concept the plugin machinery
 // ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationImage *)
-DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
+DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationBinaryImage *)
+DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
+DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
+DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT, visualizationImage);
+    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT, visualizationBinaryImage);
 }
 
 //
