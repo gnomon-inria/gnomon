@@ -23,7 +23,6 @@
 #include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageMarchingCubes.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageVolume.h"
 #include "gnomonVisualizations/gnomonImage/gnomonVisualizationImageChannelBlending.h"
-#include "gnomonVisualizations/gnomonBinaryImage/gnomonVisualizationBinaryImage.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVisualizationMesh.h"
 
 namespace gnomonVisualization {
@@ -60,8 +59,6 @@ void initialize(const QString& path)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
-    // TODO: check when plugin is done
-    gnomonVisualization::visualizationBinaryImage::pluginFactory().record("gnomonVisualizationBinaryImage", gnomonVisualizationBinaryImageCreator);
     gnomonVisualization::visualizationCellComplex::pluginFactory().record("gnomonVisualizationCellComplex", gnomonVisualizationCellComplexCreator);
     gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageMarchingCubes", gnomonVisualizationCellImageMarchingCubesCreator);
     gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageVolume", gnomonVisualizationCellImageVolumeCreator);
