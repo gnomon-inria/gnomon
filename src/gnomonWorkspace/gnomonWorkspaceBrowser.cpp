@@ -29,6 +29,7 @@
 // #include <QtQuickWidgets>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
@@ -36,7 +37,6 @@
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
-#include "gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand"
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -370,14 +370,14 @@ public slots:
 gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
 {
     QList<gnomonAbstractReaderCommand*> commands;
-    commands << new gnomonImageReaderCommand;
+    commands << new gnomonBinaryImageReaderCommand;
     commands << new gnomonCellImageReaderCommand;
     commands << new gnomonCellComplexReaderCommand;
     commands << new gnomonDataFrameReaderCommand;
+    commands << new gnomonImageReaderCommand;
     commands << new gnomonMeshReaderCommand;
     commands << new gnomonPointCloudReaderCommand;
     commands << new gnomonTreeReaderCommand;
-    commands << new gnomonBinaryImageReaderCommand;
 
     for (auto command: commands) {
         QMap<QString, QStringList> extensions = command->extensions();
@@ -575,12 +575,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent
 
     d->browse_view = new gnomonViewForm(this);
     // d->browse_view->setExportColor(this->color);
+    d->browse_view->setAcceptForm("gnomonBinaryImage", true);
     d->browse_view->setAcceptForm("gnomonCellComplex",true);
     d->browse_view->setAcceptForm("gnomonCellImage",true);
     d->browse_view->setAcceptForm("gnomonImage",true);
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
-    d->browse_view->setAcceptForm("gnomonBinaryImage", true);
     // d->browse_view->setAcceptDrops(true);
 
     connect(d->browse_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
