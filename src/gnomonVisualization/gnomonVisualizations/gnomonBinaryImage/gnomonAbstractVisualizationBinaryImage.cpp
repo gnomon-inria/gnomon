@@ -1,5 +1,3 @@
-
-
 #include "gnomonVisualization.h"
 #include "gnomonAbstractVisualizationBinaryImage.h"
 
@@ -8,4 +6,4 @@ namespace gnomonVisualization {
 }
 
 //
-// gnomonAbstractVisualizationImage.cpp ends here
+// gnomonAbstractVisualizationBinaryImage.cpp ends here

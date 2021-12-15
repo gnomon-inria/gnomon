@@ -1,5 +1,3 @@
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -69,4 +67,4 @@ namespace gnomonVisualization {
 }
 
 //
-// gnomonAbstractVisualizationImage.h ends here
+// gnomonAbstractVisualizationBinaryImage.h ends here
