@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 %module(directors="1") gnomoncore
@@ -19,6 +5,15 @@
 #ifdef SWIGWIN
 %include <windows.i>
 #endif
+%{
+#define SWIG_FILE_WITH_INIT
+%}
+
+%include "numpy.i" // in {CONDA_ENV}/wrp/numpy.i
+
+%init %{
+import_array();
+%}
 
 %include "std_array.i"
 %include "std_vector.i"
@@ -142,6 +137,73 @@
 
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
+
+// numpy
+%template(vecInt) std::vector<int>;
+
+// TODO decompose these apply and make QVariant ..
+
+%define %apply_numpy_typemaps(TYPE)
+
+//Input arrays are defined as arrays of data that are passed into a routine but are not altered in-place
+//or returned to the user. The Python input array is therefore allowed to be almost any Python sequence (such as a list)
+//that can be converted to the requested type of array.
+
+//%apply (TYPE IN_ARRAY1[ANY] ) {(TYPE array[ANY])};
+%apply (TYPE* IN_ARRAY1, int DIM1 ) {(TYPE *array, int rows)};
+//%apply (TYPE ARGOUT_ARRAY1[ANY] ) {(Type out_array[ANY])}; //
+//%apply (TYPE* ARGOUT_ARRAY1, int DIM1 ) {(TYPE *out_array, int rows)};
+
+//%apply (TYPE IN_ARRAY2[ANY][ANY]) {(TYPE array[ANY][ANY])};
+//%apply (TYPE* IN_ARRAY2, int DIM1, int DIM2) {(TYPE* array, int rows, int cols)};
+
+
+//%insert("header") %{
+//%}
+
+
+%extend gnomonAbstractDataDictData {
+
+
+
+    QVector<TYPE> from_array(TYPE *array, int rows) {
+        qDebug() << Q_FUNC_INFO << "create array size " << rows ;
+        QVector<TYPE> vec;
+        vec.reserve(rows); // warning: size_t->int cast
+        std::copy(array, array + rows, std::back_inserter(vec));
+        //std::vector<std::reference_wrapper<int>> vec(array, array + rows);
+        qDebug() << vec;
+        return vec;
+        //QVariant var = QVariant::fromValue(vec);
+        //qDebug() << "variant" << var;
+        //return var;
+    }
+    /*void toArray(int *out_array, int rows) const { // out arrays
+        for(int i=0; i<rows; ++i) {
+            out_array[i] = ;//TODO
+        }
+        return $self->value<gnomonCellComplex *>();
+    }*/
+}
+
+
+%enddef    /* %apply_numpy_typemaps() macro */
+
+//%apply_numpy_typemaps(signed char       )
+//%apply_numpy_typemaps(unsigned char     )
+//%apply_numpy_typemaps(short             )
+//%apply_numpy_typemaps(unsigned short    )
+%apply_numpy_typemaps(int               )
+//%apply_numpy_typemaps(unsigned int      )
+%apply_numpy_typemaps(long              )
+//%apply_numpy_typemaps(unsigned long     )
+//%apply_numpy_typemaps(long long         )
+//%apply_numpy_typemaps(unsigned long long)
+//%apply_numpy_typemaps(float             )
+%apply_numpy_typemaps(double            )
+
+
+// VTK
 
 %typemap(out) vtkImageData* {
 
