@@ -24,8 +24,8 @@ public:
     virtual ~gnomonAbstractVisualizationBinaryImage(void) = default;
 
 public:
-    virtual void setImage(gnomonBinaryImageSeries *image) = 0;
-    virtual gnomonBinaryImageSeries *image(void) = 0;
+    virtual void setBinaryImage(gnomonBinaryImageSeries *image) = 0;
+    virtual gnomonBinaryImageSeries *binaryImage(void) = 0;
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
