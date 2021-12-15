@@ -5,11 +5,12 @@ def buildFormSeries(form_dict, form_class, form_data_factory, data_plugin, data_
     form = {}
     form_data = {}
 
-    for time in form_dict.keys():
-        form[time] = form_class()
-        form_data[time] = form_data_factory.create(data_plugin)
-        form[time].setData(form_data[time])
-        getattr(form_data[time], data_setter)(form_dict[time])
+    if isinstance(form_dict, dict):
+        for time in form_dict.keys():
+            form[time] = form_class()
+            form_data[time] = form_data_factory.create(data_plugin)
+            form[time].setData(form_data[time])
+            getattr(form_data[time], data_setter)(form_dict[time])
 
     return form, form_data
 

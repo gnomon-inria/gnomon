@@ -59,7 +59,6 @@ void initialize(const QString& path)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
-
     gnomonVisualization::visualizationCellComplex::pluginFactory().record("gnomonVisualizationCellComplex", gnomonVisualizationCellComplexCreator);
     gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageMarchingCubes", gnomonVisualizationCellImageMarchingCubesCreator);
     gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageVolume", gnomonVisualizationCellImageVolumeCreator);

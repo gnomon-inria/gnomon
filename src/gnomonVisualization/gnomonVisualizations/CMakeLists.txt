@@ -1,21 +1,5 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
 
-## #################################################################
-## Inputs
-## #################################################################
-
+add_subdirectory(gnomonBinaryImage)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonDataFrame)
@@ -36,6 +20,7 @@ ADD_GNOMON_HEADERS(
     gnomonAbstractVisualization
     gnomonAbstractVisualization.h
     gnomonAbstractVisualization_p.h
+    ${${PROJECT_NAME}_VISUALIZATIONS_BINARYIMAGE_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_CELLCOMPLEX_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_CELLIMAGE_HEADERS}
     ${${PROJECT_NAME}_VISUALIZATIONS_DATAFRAME_HEADERS}
@@ -48,6 +33,7 @@ ADD_GNOMON_HEADERS(
 ADD_GNOMON_SOURCES(
     gnomonAbstractMatplotlibVisualization.cpp
     gnomonAbstractVisualization.cpp
+    ${${PROJECT_NAME}_VISUALIZATIONS_BINARYIMAGE_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_CELLCOMPLEX_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_CELLIMAGE_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_DATAFRAME_SOURCES}
