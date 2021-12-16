@@ -1,19 +1,22 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 #include "gnomonCommand/gnomonAbstractConstructorCommand.h"
 
-class GNOMONCORE_EXPORT gnomonBinaryImageFromImageConstructorCommand : public gnomonAbstractConstructorCommand
+class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonBinaryImageFromImageConstructorCommand(void);
-    ~gnomonBinaryImageFromImageConstructorCommand(void);
+     gnomonBinaryImageFromImageCommand(void);
+    ~gnomonBinaryImageFromImageCommand(void);
 
 public:
     void redo(void) override;
     void undo(void) override;
 
 public:
-    gnomonBinaryImageSeries *output(void);
+    void setInput(gnomonImageSeries *image);
+    gnomonImageSeries *input(void);
+    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
 
+    gnomonBinaryImageSeries *output(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
     virtual void setParameter(const QString&, const QVariant&);
@@ -26,5 +29,5 @@ public:
     static bool isEmpty(void);
 
 private:
-    class gnomonBinaryImageFromImageConstructorCommandPrivate *d;
+    class gnomonBinaryImageFromImageCommandPrivate *d;
 };
