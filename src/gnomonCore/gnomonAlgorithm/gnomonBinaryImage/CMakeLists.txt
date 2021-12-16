@@ -4,18 +4,18 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
+    gnomonAbstractBinaryImageFromImage
+    gnomonAbstractBinaryImageFromImage.h
     gnomonAbstractBinaryImageReader
     gnomonAbstractBinaryImageReader.h
     gnomonAbstractBinaryImageWriter
-    gnomonAbstractBinaryImageWriter.h
-    gnomonAbstractBinaryImageFromImage
-    gnomonAbstractBinaryImageFromImage.h)
+    gnomonAbstractBinaryImageWriter.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
+    gnomonAbstractBinaryImageFromImage.cpp
     gnomonAbstractBinaryImageReader.cpp
-    gnomonAbstractBinaryImageWriter.cpp
-    gnomonAbstractBinaryImageFromImage.cpp)
+    gnomonAbstractBinaryImageWriter.cpp)
 
 
 ######################################################################

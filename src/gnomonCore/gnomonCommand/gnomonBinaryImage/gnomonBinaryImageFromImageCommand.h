@@ -15,12 +15,16 @@ public:
 public:
     void setInput(gnomonImageSeries *image);
     gnomonImageSeries *input(void);
+    void setInitialization(gnomonBinaryImageSeries *init);
+    gnomonBinaryImageSeries *initialization(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+
+    virtual orderedMap inputTypes(void) override;
+    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
     gnomonBinaryImageSeries *output(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-
-    gnomonBinaryImageSeries *initialization(void);
+    virtual orderedMap outputTypes(void);
 
     virtual void setParameter(const QString&, const QVariant&);
     void setAlgorithmName(const QString &) override;

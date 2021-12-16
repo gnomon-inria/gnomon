@@ -7,6 +7,7 @@ class gnomonBinaryImageFromImageCommandPrivate
 public:
     gnomonBinaryImageSeries* output = nullptr;
     gnomonImageSeries *input = nullptr;
+    gnomonBinaryImageSeries* initialization = nullptr;
 
 };
 
@@ -57,6 +58,7 @@ void gnomonBinaryImageFromImageCommand::redo(void)
 void gnomonBinaryImageFromImageCommand::undo(void)
 {
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(nullptr);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(nullptr);
 }
 
 void gnomonBinaryImageFromImageCommand::setParameter(const QString& parameter, const QVariant& value)
@@ -84,13 +86,48 @@ gnomonImageSeries *gnomonBinaryImageFromImageCommand::input(void)
     return d->input;
 }
 
+void gnomonBinaryImageFromImageCommand::setInitialization(gnomonBinaryImageSeries *init)
+{
+    if ((!init)||(init->times().size()==0)) {
+        d->initialization = nullptr;
+    } else {
+        d->initialization = init;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
+    }
+}
+
+gnomonBinaryImageSeries *gnomonBinaryImageFromImageCommand::initialization(void)
+{
+    return d->initialization;
+}
+
 QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageFromImageCommand::inputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
+    inputs["initialization"] = this->initialization();
     return inputs;
 }
 
+gnomonAbstractCommand::orderedMap gnomonBinaryImageFromImageCommand::inputTypes(void)
+{
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("initialization", "gnomonBinaryImage"));
+    return input_types;
+}
+
+void gnomonBinaryImageFromImageCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+{
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else if (name == "initialization") {
+        this->setInitialization(dynamic_cast<gnomonBinaryImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
 
 gnomonBinaryImageSeries *gnomonBinaryImageFromImageCommand::output(void)
 {
@@ -104,12 +141,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageFromImageCommand::ou
     return outputs;
 }
 
-gnomonBinaryImageSeries *gnomonBinaryImageFromImageCommand::initialization(void)
+gnomonAbstractCommand::orderedMap gnomonBinaryImageFromImageCommand::outputTypes(void)
 {
-    d->output = nullptr;
-    Q_ASSERT(this->action);
-    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
-    return d->output;
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonBinaryImage"));
+    return output_types;
 }
 
 bool gnomonBinaryImageFromImageCommand::isEmpty(void)
