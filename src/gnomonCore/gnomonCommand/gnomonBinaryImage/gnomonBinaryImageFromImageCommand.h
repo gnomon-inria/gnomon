@@ -19,6 +19,8 @@ public:
     gnomonBinaryImageSeries *output(void);
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
 
+    gnomonBinaryImageSeries *initialization(void);
+
     virtual void setParameter(const QString&, const QVariant&);
     void setAlgorithmName(const QString &) override;
 

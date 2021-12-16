@@ -22,6 +22,9 @@ public:
     virtual gnomonImageSeries *input(void) = 0;
     virtual gnomonBinaryImageSeries *output(void) const = 0;
 
+    virtual  gnomonBinaryImageSeries *initialization(void) = 0;
+
+
 
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;

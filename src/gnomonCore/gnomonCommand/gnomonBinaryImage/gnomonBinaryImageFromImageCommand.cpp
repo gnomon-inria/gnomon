@@ -104,6 +104,14 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageFromImageCommand::ou
     return outputs;
 }
 
+gnomonBinaryImageSeries *gnomonBinaryImageFromImageCommand::initialization(void)
+{
+    d->output = nullptr;
+    Q_ASSERT(this->action);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
+    return d->output
+}
+
 bool gnomonBinaryImageFromImageCommand::isEmpty(void)
 {
     loadPluginGroup("binaryImageFromImage");
