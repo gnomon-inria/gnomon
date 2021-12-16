@@ -7,12 +7,15 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonBinaryImageReaderCommand
     gnomonBinaryImageReaderCommand.h
     gnomonBinaryImageWriterCommand
-    gnomonBinaryImageWriterCommand.h)
+    gnomonBinaryImageWriterCommand.h
+    gnomonBinaryImageFromImageCommand
+    gnomonBinaryImageFromImageCommand.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonBinaryImageReaderCommand.cpp
-    gnomonBinaryImageWriterCommand.cpp)
+    gnomonBinaryImageWriterCommand.cpp
+    gnomonBinaryImageFromImageCommand.cpp)
 
 
 ######################################################################
