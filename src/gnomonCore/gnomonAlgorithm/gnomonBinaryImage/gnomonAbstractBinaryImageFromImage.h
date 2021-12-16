@@ -8,6 +8,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
+#include "gnomonForm/gnomonImage/gnomonImage.h"
 
 class dtkImage;
 

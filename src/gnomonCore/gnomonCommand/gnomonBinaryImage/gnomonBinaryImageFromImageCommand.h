@@ -1,7 +1,8 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractConstructorCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractConstructorCommand
+
+class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonBinaryImageFromImageCommand(void);
