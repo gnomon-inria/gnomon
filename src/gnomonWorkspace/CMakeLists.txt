@@ -23,6 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonAlgorithmWorkspace.h
   gnomonAlgorithmWorkspace_p.h
   gnomonWorkspace
+  gnomonWorkspaceBinarization
+  gnomonWorkspaceBinarization.h
   gnomonWorkspaceBrowser
   gnomonWorkspaceBrowser.h
   # gnomonWorkspaceDatabaseBrowser.h
@@ -83,6 +85,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
   gnomonAlgorithmWorkspace.cpp
+  gnomonWorkspaceBinarization.cpp
   gnomonWorkspaceBrowser.cpp
   # gnomonWorkspaceDatabaseBrowser.cpp
   # gnomonWorkspaceCellComplexConstructor.cpp
