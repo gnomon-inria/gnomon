@@ -8,8 +8,6 @@
 #include <QtCore>
 #include <QtQml>
 
-class gnomonViewForm;
-
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBinarization : public gnomonAlgorithmWorkspace
 {
 Q_OBJECT
