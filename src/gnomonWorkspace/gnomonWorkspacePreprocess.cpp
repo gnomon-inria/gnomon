@@ -46,6 +46,7 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
     this->targets()->addView();
 
     d->updateViewFormTypes();
+    d->updatePool();
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
