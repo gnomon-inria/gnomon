@@ -18,7 +18,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class [[deprecated]] gnomonAbstractAdapterCommand : public gnomonAbstractCommand
+class gnomonAbstractAdapterCommand : public gnomonAbstractCommand
 {
 public:
     orderedMap outputTypes() override {

@@ -18,7 +18,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-class [[deprecated]] gnomonAbstractConstructorCommand : public gnomonAbstractCommand
+class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {
 public:
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override {
