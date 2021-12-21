@@ -140,6 +140,45 @@ import_array();
 #define GNOMONCORE_EXPORT
 
 
+//TODO
+// redefine typemap for gnomonAbstractDataDict get to cast in np array 
+// not working yet
+%define WRAP(gnomonDataDict,get)
+%typemap(out) QVariant gnomonDataDict::get {
+    // Next line is copied from java.swg: %typemap(javaout) void
+    qDebug() << Q_FUNC_INFO << "In the good typemap out";
+    int type = $1.type();
+
+    //temp to see class name
+    QVector<int> i_1d;
+    QVector<double> d_1d;
+    qDebug() << i_1d.metaObject()->className() << d_1d.metaObject()->className();
+    //int class_type = QMetaType::type(t.metaObject()->className());
+
+    if (type == QMetaType::Int ||
+        type == QMetaType::UInt ||
+        type == QMetaType::Long ||
+        type == QMetaType::ULong ||
+        type == QMetaType::LongLong ||
+        type == QMetaType::ULongLong) {
+        $result = PyLong_FromLong($1.value<long>());
+    } else if (type == QMetaType::Float ||
+        type == QMetaType::Double) {
+        $result = PyFloat_FromDouble($1.value<double>());
+    } else if (type == QMetaType::QString) {
+        $result = PyUnicode_FromString(qPrintable($1.value<QString>()));
+    } else if (type == QMetaType::Bool) {
+        bool b = $1.value<bool>();
+        $result = b ? Py_True : Py_False;
+    } else if (type == QMetaType::type("QVector<int>")) {
+        PyObject *arr;
+        $result = $1.value<QVector<int>>().as1DNpArray(arr); // TODO find how to call it
+    } else {
+        $result = SWIG_NewPointerObj(SWIG_as_voidptr(&$1), SWIGTYPE_p_QVariant, 0 |  0 );
+    }
+  }
+%enddef
+
 %define %apply_numpy_typemaps(TYPE)
 
 //Input arrays are defined as arrays of data that are passed into a routine but are not altered in-place
@@ -148,29 +187,18 @@ import_array();
 
 
 %apply (TYPE* IN_ARRAY1, int DIM1 ) {(TYPE *IN_ARRAY1, int DIM)};
-//%apply (TYPE* ARGOUT_ARRAY1) {(TYPE *out_array1)};
-
-//%apply (TYPE ARGOUT_ARRAY1[5] ) {(TYPE out_array1[5])};
-
-//%apply (TYPE ARGOUT_ARRAY1[ANY] ) {(Type out_array[ANY])}; //
-//%apply (TYPE* ARGOUT_ARRAY1, int DIM1 ) {(TYPE *out_array, int rows)};
-
-//%apply (TYPE IN_ARRAY2[ANY][ANY]) {(TYPE array[ANY][ANY])};
 //%apply (TYPE* IN_ARRAY2, int DIM1, int DIM2) {(TYPE* array, int rows, int cols)};
 
 
-//%insert("header") %{
-//%}
-
-
-%typemap(in,numinputs=0,
+%typemap(in, numinputs=0,
          fragment="NumPy_Backward_Compatibility,NumPy_Macros")
   (TYPE* out_array1)   (PyObject* array = NULL)
 {
   void *v_ptr = nullptr;
-  int ok = SWIG_ConvertPtr($self, &v_ptr,SWIGTYPE_p_QVariant, 0 |  0 );
+  int ok = SWIG_ConvertPtr(args, &v_ptr,SWIGTYPE_p_QVariant, 0 |  0 );
   if (!SWIG_IsOK(ok)) {
-    SWIG_exception_fail(SWIG_ArgError(ok), "in typemap for out_array1"); 
+    SWIG_exception_fail(SWIG_ArgError(ok), "in method '" "$symname" "', failed "
+                       "to convert to QVariant *"); 
   }
   QVariant *var = reinterpret_cast< QVariant * >(v_ptr);
  
@@ -187,14 +215,8 @@ import_array();
 }
 
 %typemap(argout) (TYPE* out_array1)
-{
-  //PyObject* obj = PyArray_SimpleNewFromData(1, dims, DATA_TYPECODE, (void*)(*$1));
-  //PyArrayObject* array = (PyArrayObject*) obj;
-
-  //if (!array) SWIG_fail;
-  //$result = SWIG_Python_AppendOutput($result,obj);
-
-  $result = SWIG_Python_AppendOutput($result,(PyObject*)$1);
+{ 
+  $result = SWIG_Python_AppendOutput($result,(PyObject*)array$argnum);
 }
 
 
@@ -202,30 +224,25 @@ import_array();
 %extend QVariant {
 
     void setValue(TYPE *IN_ARRAY1, int DIM) {
-        //1
-        qDebug() << Q_FUNC_INFO << "create array size " << DIM ;
         QVector<TYPE> vec(IN_ARRAY1, IN_ARRAY1 + DIM);
-        qDebug() << "set value data ptr" << vec.data();        
         $self->setValue(vec);
-        //$self->setValue(dtk::variantFromValue(vec));
+        qDebug() << Q_FUNC_INFO << "vec.data:" << vec.data() << " self data" << $self->value<QVector<TYPE>>().data();        
+    }
 
-        }
-
+    //temp for debugging
     int get1DArrayDim() {
         QVector<TYPE> vec = $self->value<QVector<TYPE>>();
-        qDebug() << Q_FUNC_INFO << vec << vec.data() << $self;
+        qDebug() << Q_FUNC_INFO << vec << " data:" << vec.data() << " self:" << $self;
         return vec.size();
     }
 
     void as1DNpArray(TYPE *out_array1) {
-        //1
         qDebug() << "variant typename" << $self->typeName() << $self;
         QVector<TYPE> vec = $self->value<QVector<TYPE>>();
         qDebug() << Q_FUNC_INFO << " vec --> " << vec << vec.size() << vec.data();
         for(int i=0; i< vec.size(); ++i) {
             out_array1[i] = vec[i];
         }
-
     }
 }
 
@@ -278,7 +295,7 @@ import_array();
         qDebug("Fail to convert to vtkImageData*");
     }
 }
-
+   
 // /////////////////////////////////////////////////////////////////
 // String dictionary
 // /////////////////////////////////////////////////////////////////
