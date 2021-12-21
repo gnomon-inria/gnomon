@@ -9,7 +9,7 @@
 #define SWIG_FILE_WITH_INIT
 %}
 
-%include "numpy.i" // in {CONDA_ENV}/wrp/numpy.i
+%include "numpy.i"
 
 %init %{
 import_array();
@@ -126,6 +126,7 @@ import_array();
 #include <vtkPythonUtil.h>
 #include <vtkImageData.h>
 
+
 %}
 
 %feature("director");
@@ -138,10 +139,6 @@ import_array();
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
-// numpy
-%template(vecInt) std::vector<int>;
-
-// TODO decompose these apply and make QVariant ..
 
 %define %apply_numpy_typemaps(TYPE)
 
@@ -149,8 +146,12 @@ import_array();
 //or returned to the user. The Python input array is therefore allowed to be almost any Python sequence (such as a list)
 //that can be converted to the requested type of array.
 
-//%apply (TYPE IN_ARRAY1[ANY] ) {(TYPE array[ANY])};
-%apply (TYPE* IN_ARRAY1, int DIM1 ) {(TYPE *array, int rows)};
+
+%apply (TYPE* IN_ARRAY1, int DIM1 ) {(TYPE *IN_ARRAY1, int DIM)};
+//%apply (TYPE* ARGOUT_ARRAY1) {(TYPE *out_array1)};
+
+//%apply (TYPE ARGOUT_ARRAY1[5] ) {(TYPE out_array1[5])};
+
 //%apply (TYPE ARGOUT_ARRAY1[ANY] ) {(Type out_array[ANY])}; //
 //%apply (TYPE* ARGOUT_ARRAY1, int DIM1 ) {(TYPE *out_array, int rows)};
 
@@ -162,30 +163,71 @@ import_array();
 //%}
 
 
-%extend gnomonAbstractDataDictData {
+%typemap(in,numinputs=0,
+         fragment="NumPy_Backward_Compatibility,NumPy_Macros")
+  (TYPE* out_array1)   (PyObject* array = NULL)
+{
+  void *v_ptr = nullptr;
+  int ok = SWIG_ConvertPtr($self, &v_ptr,SWIGTYPE_p_QVariant, 0 |  0 );
+  if (!SWIG_IsOK(ok)) {
+    SWIG_exception_fail(SWIG_ArgError(ok), "in typemap for out_array1"); 
+  }
+  QVariant *var = reinterpret_cast< QVariant * >(v_ptr);
+ 
+ 
+  QVector<TYPE> vec = var->value<QVector<TYPE>>();
+  qDebug() << Q_FUNC_INFO << vec << var;
+  int rows = vec.size();
 
+  npy_intp dims[1] = { rows };
 
-
-    QVector<TYPE> from_array(TYPE *array, int rows) {
-        qDebug() << Q_FUNC_INFO << "create array size " << rows ;
-        QVector<TYPE> vec;
-        vec.reserve(rows); // warning: size_t->int cast
-        std::copy(array, array + rows, std::back_inserter(vec));
-        //std::vector<std::reference_wrapper<int>> vec(array, array + rows);
-        qDebug() << vec;
-        return vec;
-        //QVariant var = QVariant::fromValue(vec);
-        //qDebug() << "variant" << var;
-        //return var;
-    }
-    /*void toArray(int *out_array, int rows) const { // out arrays
-        for(int i=0; i<rows; ++i) {
-            out_array[i] = ;//TODO
-        }
-        return $self->value<gnomonCellComplex *>();
-    }*/
+  array = PyArray_SimpleNew(1, dims, NPY_INT);
+  if (!array) SWIG_fail;
+  $1 = (TYPE*) array_data(array);
 }
 
+%typemap(argout) (TYPE* out_array1)
+{
+  //PyObject* obj = PyArray_SimpleNewFromData(1, dims, DATA_TYPECODE, (void*)(*$1));
+  //PyArrayObject* array = (PyArrayObject*) obj;
+
+  //if (!array) SWIG_fail;
+  //$result = SWIG_Python_AppendOutput($result,obj);
+
+  $result = SWIG_Python_AppendOutput($result,(PyObject*)$1);
+}
+
+
+// struct for 1 dimension array
+%extend QVariant {
+
+    void setValue(TYPE *IN_ARRAY1, int DIM) {
+        //1
+        qDebug() << Q_FUNC_INFO << "create array size " << DIM ;
+        QVector<TYPE> vec(IN_ARRAY1, IN_ARRAY1 + DIM);
+        qDebug() << "set value data ptr" << vec.data();        
+        $self->setValue(vec);
+        //$self->setValue(dtk::variantFromValue(vec));
+
+        }
+
+    int get1DArrayDim() {
+        QVector<TYPE> vec = $self->value<QVector<TYPE>>();
+        qDebug() << Q_FUNC_INFO << vec << vec.data() << $self;
+        return vec.size();
+    }
+
+    void as1DNpArray(TYPE *out_array1) {
+        //1
+        qDebug() << "variant typename" << $self->typeName() << $self;
+        QVector<TYPE> vec = $self->value<QVector<TYPE>>();
+        qDebug() << Q_FUNC_INFO << " vec --> " << vec << vec.size() << vec.data();
+        for(int i=0; i< vec.size(); ++i) {
+            out_array1[i] = vec[i];
+        }
+
+    }
+}
 
 %enddef    /* %apply_numpy_typemaps() macro */
 
@@ -195,12 +237,12 @@ import_array();
 //%apply_numpy_typemaps(unsigned short    )
 %apply_numpy_typemaps(int               )
 //%apply_numpy_typemaps(unsigned int      )
-%apply_numpy_typemaps(long              )
+  //%apply_numpy_typemaps(long              )
 //%apply_numpy_typemaps(unsigned long     )
 //%apply_numpy_typemaps(long long         )
 //%apply_numpy_typemaps(unsigned long long)
 //%apply_numpy_typemaps(float             )
-%apply_numpy_typemaps(double            )
+  //%apply_numpy_typemaps(double            )
 
 
 // VTK
@@ -528,17 +570,24 @@ WRAP_GNOMONCORE_FORM_SERIES(LString)
 WRAP_GNOMONCORE_FORM_SERIES(Mesh)
 WRAP_GNOMONCORE_FORM_SERIES(PointCloud)
 WRAP_GNOMONCORE_FORM_SERIES(Tree)
-
+ 
 // /////////////////////////////////////////////////////////////////
 
 %extend QVariant {
+
+    //TODO in dtk-script repo -> QVariant.i line 30
+    void setValue(QString value) {
+        $self->setValue(QVariant::fromValue(value));
+    }
+
+
     void setValue(gnomonCellComplex *value) {
         $self->setValue(dtk::variantFromValue(value));
     }
     gnomonCellComplex* tognomonCellComplex() const {
         return $self->value<gnomonCellComplex *>();
     }
-
+   
     void setValue(gnomonCellImage *value) {
         $self->setValue(dtk::variantFromValue(value));
     }
