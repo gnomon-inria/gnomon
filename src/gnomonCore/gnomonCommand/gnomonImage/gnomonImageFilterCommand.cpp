@@ -18,19 +18,19 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageFilterCommand::gnomonImageFilterCommand(void) : d(new gnomonImageFilterCommandPrivate)
+gnomonImageFilterCommand::gnomonImageFilterCommand() : d(new gnomonImageFilterCommandPrivate)
 {
     this->factory_name = "imageFilter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageFilter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::imageFilter::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonImageFilterCommand::~gnomonImageFilterCommand(void)
+gnomonImageFilterCommand::~gnomonImageFilterCommand()
 {
     delete d;
 }
@@ -38,33 +38,33 @@ gnomonImageFilterCommand::~gnomonImageFilterCommand(void)
 void gnomonImageFilterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::imageFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonImageFilterCommand::redo(void)
+void gnomonImageFilterCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->output();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->output = nullptr;
     } else {
         d->output = image;
     }
 }
 
-void gnomonImageFilterCommand::undo(void)
+void gnomonImageFilterCommand::undo()
 {
     ((gnomonAbstractImageFilter *) this->action)->setInput(nullptr);
 }
 
 void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
 {
-    if ((!input)||(input->times().size()==0)||(((gnomonImage *)input->current())->channels().size()==0)) {
+    if ((!input)||(input->times().empty())||(((gnomonImage *)input->current())->channels().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -73,34 +73,24 @@ void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
     }
 }
 
-void gnomonImageFilterCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonImageFilterCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonImageSeries *gnomonImageFilterCommand::input(void)
+gnomonImageSeries *gnomonImageFilterCommand::input()
 {
     return d->input;
 }
 
-gnomonImageSeries *gnomonImageFilterCommand::output(void)
+gnomonImageSeries *gnomonImageFilterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes(void)
+gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes()
 {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonImage"));
@@ -121,24 +111,24 @@ void gnomonImageFilterCommand::addInputForm(gnomonAbstractDynamicForm *form) {
 }
 
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::outputTypes(void)
+gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::outputTypes()
 {
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("output", "gnomonImage"));
     return output_types;
 }
 
-bool gnomonImageFilterCommand::isEmpty(void)
+bool gnomonImageFilterCommand::isEmpty()
 {
     loadPluginGroup("imageFilter");
-    return gnomonCore::imageFilter::pluginFactory().keys().size() == 0;
+    return gnomonCore::imageFilter::pluginFactory().keys().empty();
 }
 
 //

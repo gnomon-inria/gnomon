@@ -6,28 +6,26 @@ class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractCo
 {
 public:
     gnomonImageRegistrationCommand();
-    virtual ~gnomonImageRegistrationCommand();
+    ~gnomonImageRegistrationCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void addImage(gnomonImageSeries *);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
-    virtual orderedMap inputTypes(void) override;
-    virtual void addInputForm(gnomonAbstractDynamicForm *form) override;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    orderedMap inputTypes() override;
+    void addInputForm(gnomonAbstractDynamicForm *form) override;
 
     gnomonImageSeries *output();
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-    virtual orderedMap outputTypes(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
 
-    dtkCoreParameters parameters(void) const override;
-    void setParameter(const QString&, const QVariant&);
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonImageRegistrationCommandPrivate *d;

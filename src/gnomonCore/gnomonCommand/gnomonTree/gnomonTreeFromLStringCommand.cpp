@@ -23,19 +23,19 @@ public:
     gnomonTreeSeries *output = nullptr;
 };
 
-gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand(void) : d(new gnomonTreeFromLStringCommandPrivate)
+gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand() : d(new gnomonTreeFromLStringCommandPrivate)
 {
     this->factory_name = "treeFromLString";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonTreeFromLStringCommand::~gnomonTreeFromLStringCommand(void)
+gnomonTreeFromLStringCommand::~gnomonTreeFromLStringCommand()
 {
     delete d;
 }
@@ -43,27 +43,27 @@ gnomonTreeFromLStringCommand::~gnomonTreeFromLStringCommand(void)
 void gnomonTreeFromLStringCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::treeFromLString::pluginFactory().create(algo_name);
 }
 
 
-void gnomonTreeFromLStringCommand::redo(void)
+void gnomonTreeFromLStringCommand::redo()
 {
     Q_ASSERT(this->action);
 //    ((gnomonAbstractTreeFromLString *) this->action)->setLSystem(d->lsystem);
     this->action->run();
 
     gnomonTreeSeries *tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
-    if ((!tree)||(tree->times().size()==0)) {
+    if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
     } else {
         d->output = tree;
     }
 }
 
-void gnomonTreeFromLStringCommand::undo(void)
+void gnomonTreeFromLStringCommand::undo()
 {
     ((gnomonAbstractTreeFromLString *) this->action)->setInput(nullptr);
 }
@@ -75,7 +75,7 @@ void gnomonTreeFromLStringCommand::undo(void)
 
 void gnomonTreeFromLStringCommand::setInput(gnomonLStringSeries *input)
 {
-    if ((!input)||(input->times().size()==0)) {
+    if ((!input)||(input->times().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -84,44 +84,46 @@ void gnomonTreeFromLStringCommand::setInput(gnomonLStringSeries *input)
     }
 }
 
-gnomonLStringSeries *gnomonTreeFromLStringCommand::input(void)
+gnomonLStringSeries *gnomonTreeFromLStringCommand::input()
 {
     return d->input;
 }
 
-gnomonTreeSeries *gnomonTreeFromLStringCommand::output(void)
+gnomonTreeSeries *gnomonTreeFromLStringCommand::output()
 {
     return d->output;
 }
 
-dtkCoreParameters gnomonTreeFromLStringCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-void gnomonTreeFromLStringCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonTreeFromLStringCommand::isEmpty(void)
+bool gnomonTreeFromLStringCommand::isEmpty()
 {
     loadPluginGroup("treeFromLString");
-    return gnomonCore::treeFromLString::pluginFactory().keys().size() == 0;
+    return gnomonCore::treeFromLString::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeFromLStringCommand::inputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("input", "gnomonLString"));
+    return types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeFromLStringCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("input", "gnomonTree"));
+    return types;
 }
 
 //

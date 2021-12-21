@@ -23,13 +23,13 @@ public:
     gnomonAbstractDynamicForm* output = nullptr;
 };
 
-gnomonTreeAdapterCommand::gnomonTreeAdapterCommand(void) : d(new gnomonTreeAdapterCommandPrivate)
+gnomonTreeAdapterCommand::gnomonTreeAdapterCommand() : d(new gnomonTreeAdapterCommandPrivate)
 {
     this->factory_name = "treeAdapter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeAdapter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::treeAdapter::pluginFactory().create(this->algorithm_name);
     }
@@ -43,12 +43,12 @@ gnomonTreeAdapterCommand::~gnomonTreeAdapterCommand()
 void gnomonTreeAdapterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::treeAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeAdapterCommand::redo(void)
+void gnomonTreeAdapterCommand::redo()
 {
     Q_ASSERT(this->action);
     
@@ -58,21 +58,21 @@ void gnomonTreeAdapterCommand::redo(void)
     qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output()->times().size();
     
     gnomonAbstractDynamicForm *output = ((gnomonAbstractTreeAdapter *) this->action)->output();
-    if ((!output)||(output->times().size()==0)) {
+    if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {
         d->output = output;
     }
 }
 
-void gnomonTreeAdapterCommand::undo(void)
+void gnomonTreeAdapterCommand::undo()
 {
     ((gnomonAbstractTreeAdapter *) this->action)->setInput(nullptr);
 }
 
 void gnomonTreeAdapterCommand::setInput(gnomonTreeSeries *input)
 {
-    if ((!input)||(input->times().size()==0)) {
+    if ((!input)||(input->times().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -82,34 +82,46 @@ void gnomonTreeAdapterCommand::setInput(gnomonTreeSeries *input)
     }
 }
 
-gnomonTreeSeries *gnomonTreeAdapterCommand::input(void)
+gnomonTreeSeries *gnomonTreeAdapterCommand::input()
 {
     return d->input;
 }
 
-gnomonAbstractDynamicForm *gnomonTreeAdapterCommand::output(void)
+gnomonAbstractDynamicForm *gnomonTreeAdapterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonTreeAdapterCommand::isEmpty(void)
+bool gnomonTreeAdapterCommand::isEmpty()
 {
     loadPluginGroup("treeAdapter");
-    return gnomonCore::treeAdapter::pluginFactory().keys().size() == 0;
+    return gnomonCore::treeAdapter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeAdapterCommand::inputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("input", "gnomonTree"));
+    return types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeAdapterCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonAbstractDynamicForm"));
+    return types;
 }
 
 //

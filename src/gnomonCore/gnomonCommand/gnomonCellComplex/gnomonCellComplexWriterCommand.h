@@ -4,22 +4,24 @@
 class GNOMONCORE_EXPORT gnomonCellComplexWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonCellComplexWriterCommand(void);
-    ~gnomonCellComplexWriterCommand(void);
+     gnomonCellComplexWriterCommand();
+    ~gnomonCellComplexWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *) override;
     void setCellComplex(gnomonCellComplexSeries *cellcomplex);
     void setAlgorithmName(const QString &) override;
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    orderedMap inputTypes() override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonCellComplexWriterCommandPrivate *d;

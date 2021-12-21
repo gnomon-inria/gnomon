@@ -30,12 +30,12 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeReaderCommand::gnomonTreeReaderCommand(void) : d(new gnomonTreeReaderCommandPrivate)
+gnomonTreeReaderCommand::gnomonTreeReaderCommand() : d(new gnomonTreeReaderCommandPrivate)
 {
     this->factory_name = "treeReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::treeReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::treeReader::pluginFactory().keys()) {
         auto algo = gnomonCore::treeReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
@@ -53,45 +53,46 @@ gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
     delete d;
 }
 
-void gnomonTreeReaderCommand::redo(void)
+void gnomonTreeReaderCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractTreeReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
-    if ((!tree)||(tree->times().size()==0)) {
+    if ((!tree)||(tree->times().empty())) {
         d->tree = nullptr;
     } else {
         d->tree = tree;
     }
 }
 
-void gnomonTreeReaderCommand::undo(void)
+void gnomonTreeReaderCommand::undo()
 {
     ((gnomonAbstractTreeReader *) this->action)->setPath("");
 }
 
-void gnomonTreeReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonTreeSeries *gnomonTreeReaderCommand::tree(void)
+gnomonTreeSeries *gnomonTreeReaderCommand::tree()
 {
     return d->tree;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["tree"] = this->tree();
     return outputs;
 }
 
-bool gnomonTreeReaderCommand::isEmpty(void)
+bool gnomonTreeReaderCommand::isEmpty()
 {
     loadPluginGroup("treeReader");
-    return gnomonCore::treeReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::treeReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("tree", "gnomonTree"));
+    return types;
 }
 
 //

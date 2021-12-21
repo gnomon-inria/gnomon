@@ -1,33 +1,32 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-class GNOMONCORE_EXPORT gnomonTreeFromLStringCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonTreeFromLStringCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonTreeFromLStringCommand(void);
-    ~gnomonTreeFromLStringCommand(void);
+     gnomonTreeFromLStringCommand();
+    ~gnomonTreeFromLStringCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonLStringSeries *lString_series);
 
-    gnomonLStringSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonLStringSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonTreeSeries *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    gnomonTreeSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
     void setAlgorithmName(const QString &) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonTreeFromLStringCommandPrivate *d;

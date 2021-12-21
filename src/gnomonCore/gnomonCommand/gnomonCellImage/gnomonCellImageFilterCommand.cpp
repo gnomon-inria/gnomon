@@ -32,19 +32,19 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageFilterCommand::gnomonCellImageFilterCommand(void) : d(new gnomonCellImageFilterCommandPrivate)
+gnomonCellImageFilterCommand::gnomonCellImageFilterCommand() : d(new gnomonCellImageFilterCommandPrivate)
 {
     this->factory_name = "cellImageFilter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageFilter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::cellImageFilter::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonCellImageFilterCommand::~gnomonCellImageFilterCommand(void)
+gnomonCellImageFilterCommand::~gnomonCellImageFilterCommand()
 {
     delete d;
 }
@@ -52,33 +52,33 @@ gnomonCellImageFilterCommand::~gnomonCellImageFilterCommand(void)
 void gnomonCellImageFilterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::cellImageFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageFilterCommand::redo(void)
+void gnomonCellImageFilterCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFilter *) this->action)->output();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
+    if ((!cellImage)||(cellImage->times().empty())) {
         d->output = nullptr;
     } else {
         d->output = cellImage;
     }
 }
 
-void gnomonCellImageFilterCommand::undo(void)
+void gnomonCellImageFilterCommand::undo()
 {
     ((gnomonAbstractCellImageFilter *) this->action)->setInput(nullptr);
 }
 
 void gnomonCellImageFilterCommand::setInput(gnomonCellImageSeries *input)
 {
-    if ((!input)||(input->times().size()==0)) {
+    if ((!input)||(input->times().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -87,44 +87,46 @@ void gnomonCellImageFilterCommand::setInput(gnomonCellImageSeries *input)
     }
 }
 
-void gnomonCellImageFilterCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonCellImageFilterCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonCellImageSeries *gnomonCellImageFilterCommand::input(void)
+gnomonCellImageSeries *gnomonCellImageFilterCommand::input()
 {
     return d->input;
 }
 
-gnomonCellImageSeries *gnomonCellImageFilterCommand::output(void)
+gnomonCellImageSeries *gnomonCellImageFilterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFilterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFilterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFilterCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFilterCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonCellImageFilterCommand::isEmpty(void)
+bool gnomonCellImageFilterCommand::isEmpty()
 {
     loadPluginGroup("cellImageFilter");
-    return gnomonCore::cellImageFilter::pluginFactory().keys().size() == 0;
+    return gnomonCore::cellImageFilter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageFilterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonCellImage"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageFilterCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonCellImage"));
+    return types;
 }
 
 //

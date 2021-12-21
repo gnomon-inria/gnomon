@@ -4,26 +4,24 @@
 class GNOMONCORE_EXPORT gnomonImageConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonImageConstructorCommand(void);
-    ~gnomonImageConstructorCommand(void);
+     gnomonImageConstructorCommand();
+    ~gnomonImageConstructorCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    gnomonImageSeries *output(void);
+    gnomonImageSeries *output();
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap outputTypes() override;
+
     void setAlgorithmName(const QString &) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonImageConstructorCommandPrivate *d;

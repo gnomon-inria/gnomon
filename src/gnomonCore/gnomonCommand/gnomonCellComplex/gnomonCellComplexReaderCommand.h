@@ -4,21 +4,20 @@
 class GNOMONCORE_EXPORT gnomonCellComplexReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonCellComplexReaderCommand(void);
-    ~gnomonCellComplexReaderCommand(void);
+     gnomonCellComplexReaderCommand();
+    ~gnomonCellComplexReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    void setPath(const QString& path);
-
-    gnomonCellComplexSeries *cellComplex(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    gnomonCellComplexSeries *cellComplex();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonCellComplexReaderCommandPrivate *d;

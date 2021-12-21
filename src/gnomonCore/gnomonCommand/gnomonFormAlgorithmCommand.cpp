@@ -49,16 +49,16 @@ gnomonFormAlgorithmCommand::gnomonFormAlgorithmCommand(const QString& key) : d(n
     this->algorithm_name = key;
 }
 
-gnomonFormAlgorithmCommand::~gnomonFormAlgorithmCommand(void)
+gnomonFormAlgorithmCommand::~gnomonFormAlgorithmCommand()
 {
     delete d;
 }
 
-void gnomonFormAlgorithmCommand::redo(void)
+void gnomonFormAlgorithmCommand::redo()
 {
 }
 
-void gnomonFormAlgorithmCommand::undo(void)
+void gnomonFormAlgorithmCommand::undo()
 {
 }
 
@@ -105,12 +105,12 @@ void gnomonFormAlgorithmCommand::addParameter(const QString& name, dtkCoreParame
     d->parameters[name] = parameter;
 }
 
-dtkCoreParameters gnomonFormAlgorithmCommand::parameters(void) const
+dtkCoreParameters gnomonFormAlgorithmCommand::parameters() const
 {
     return d->parameters;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     if (d->inputCellComplex) {
@@ -131,7 +131,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::inputs(vo
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     if (d->outputCellComplex) {

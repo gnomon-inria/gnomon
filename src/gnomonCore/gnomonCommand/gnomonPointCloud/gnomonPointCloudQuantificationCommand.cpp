@@ -27,19 +27,19 @@ public:
     gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
-gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand(void) : d(new gnomonPointCloudQuantificationCommandPrivate)
+gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand() : d(new gnomonPointCloudQuantificationCommandPrivate)
 {
     this->factory_name = "pointCloudQuantification";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonPointCloudQuantificationCommand::~gnomonPointCloudQuantificationCommand(void)
+gnomonPointCloudQuantificationCommand::~gnomonPointCloudQuantificationCommand()
 {
     delete d;
 }
@@ -47,26 +47,26 @@ gnomonPointCloudQuantificationCommand::~gnomonPointCloudQuantificationCommand(vo
 void gnomonPointCloudQuantificationCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudQuantificationCommand::redo(void)
+void gnomonPointCloudQuantificationCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
-    if ((!pointCloud)||(pointCloud->times().size())==0) {
+    if ((!pointCloud)||pointCloud->times().empty()) {
         d->pointCloud = nullptr;
     } else {
         d->pointCloud = pointCloud;
     }
 
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
-    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+    if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     }
     else {
@@ -74,7 +74,7 @@ void gnomonPointCloudQuantificationCommand::redo(void)
     }
 }
 
-void gnomonPointCloudQuantificationCommand::undo(void)
+void gnomonPointCloudQuantificationCommand::undo()
 {
     ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(nullptr);
     ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(nullptr);
@@ -82,7 +82,7 @@ void gnomonPointCloudQuantificationCommand::undo(void)
 
 void gnomonPointCloudQuantificationCommand::setImage(gnomonImageSeries *image)
 {
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
@@ -93,7 +93,7 @@ void gnomonPointCloudQuantificationCommand::setImage(gnomonImageSeries *image)
 
 void gnomonPointCloudQuantificationCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)
 {
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+    if ((!pointCloud)||(pointCloud->times().empty())) {
         d->input_pointCloud = nullptr;
     } else {
         d->input_pointCloud = pointCloud;
@@ -103,27 +103,17 @@ void gnomonPointCloudQuantificationCommand::setPointCloud(gnomonPointCloudSeries
     }
 }
 
-void gnomonPointCloudQuantificationCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonPointCloudQuantificationCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonPointCloudSeries *gnomonPointCloudQuantificationCommand::pointCloud(void)
+gnomonPointCloudSeries *gnomonPointCloudQuantificationCommand::pointCloud()
 {
     return d->pointCloud;
 }
 
-gnomonDataFrameSeries *gnomonPointCloudQuantificationCommand::dataFrame(void)
+gnomonDataFrameSeries *gnomonPointCloudQuantificationCommand::dataFrame()
 {
     return d->dataFrame;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["image"] = d->image;
@@ -131,7 +121,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["pointCloud"] = this->pointCloud();
@@ -139,10 +129,24 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand
     return outputs;
 }
 
-bool gnomonPointCloudQuantificationCommand::isEmpty(void)
+bool gnomonPointCloudQuantificationCommand::isEmpty()
 {
     loadPluginGroup("pointCloudQuantification");
-    return gnomonCore::pointCloudQuantification::pluginFactory().keys().size() == 0;
+    return gnomonCore::pointCloudQuantification::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("image", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
+    output_types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    return output_types;
 }
 
 //

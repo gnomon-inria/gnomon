@@ -1,37 +1,38 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 #include "gnomonLandmark.h"
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFusionCommand(void);
-    ~gnomonImageFusionCommand(void);
+     gnomonImageFusionCommand();
+    ~gnomonImageFusionCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void addImage(gnomonImageSeries *);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
     void setAlgorithmName(const QString &) override;
 
-    gnomonImageSeries *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    gnomonImageSeries *output() const;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
     void addLandmarks(const std::vector<gnomonLandmark>&);
-    void removeLandmarks(void);
+    void removeLandmarks();
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
-public:
-    dtkCoreParameters parameters(void) const override;
+private:
     class gnomonImageFusionCommandPrivate *d;
 };

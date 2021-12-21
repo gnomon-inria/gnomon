@@ -1,33 +1,33 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonCellComplexFromCellImageCommand(void);
-    ~gnomonCellComplexFromCellImageCommand(void);
+     gnomonCellComplexFromCellImageCommand();
+    ~gnomonCellComplexFromCellImageCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonCellImageSeries *image_series);
 
-    gnomonCellImageSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonCellImageSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonCellComplexSeries *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap inputTypes() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap outputTypes() override;
+
+    gnomonCellComplexSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+
     void setAlgorithmName(const QString &) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonCellComplexFromCellImageCommandPrivate *d;

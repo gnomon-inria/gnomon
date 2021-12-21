@@ -30,12 +30,12 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageReaderCommand::gnomonCellImageReaderCommand(void) : d(new gnomonCellImageReaderCommandPrivate)
+gnomonCellImageReaderCommand::gnomonCellImageReaderCommand() : d(new gnomonCellImageReaderCommandPrivate)
 {
     this->factory_name = "cellImageReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::cellImageReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::cellImageReader::pluginFactory().keys()) {
         auto algo = gnomonCore::cellImageReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
@@ -53,45 +53,46 @@ gnomonCellImageReaderCommand::~gnomonCellImageReaderCommand()
     delete d;
 }
 
-void gnomonCellImageReaderCommand::redo(void)
+void gnomonCellImageReaderCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
+    if ((!cellImage)||(cellImage->times().empty())) {
         d->cellImage = nullptr;
     } else {
         d->cellImage = cellImage;
     }
 }
 
-void gnomonCellImageReaderCommand::undo(void)
+void gnomonCellImageReaderCommand::undo()
 {
     ((gnomonAbstractCellImageReader *) this->action)->setPath("");
 }
 
-void gnomonCellImageReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage(void)
+gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage()
 {
     return d->cellImage;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["cellImage"] = this->cellImage();
     return outputs;
 }
 
-bool gnomonCellImageReaderCommand::isEmpty(void)
+bool gnomonCellImageReaderCommand::isEmpty()
 {
     loadPluginGroup("cellImageReader");
-    return gnomonCore::cellImageReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::cellImageReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    return types;
 }
 
 //

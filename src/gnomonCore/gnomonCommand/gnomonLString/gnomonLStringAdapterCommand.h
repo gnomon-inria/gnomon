@@ -6,24 +6,26 @@ class gnomonLString;
 class GNOMONCORE_EXPORT gnomonLStringAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonLStringAdapterCommand(void);
-    ~gnomonLStringAdapterCommand(void);
+     gnomonLStringAdapterCommand();
+    ~gnomonLStringAdapterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonLStringSeries *lString_series);
     void setAlgorithmName(const QString &) override;
-    gnomonLStringSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonLStringSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonAbstractDynamicForm *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap inputTypes() override;
+
+    gnomonAbstractDynamicForm *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonLStringAdapterCommandPrivate *d;

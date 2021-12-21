@@ -22,13 +22,13 @@ public:
     gnomonCellComplexSeries *cellComplex = nullptr;
 };
 
-gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand(void) : d(new gnomonCellComplexWriterCommandPrivate)
+gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand() : d(new gnomonCellComplexWriterCommandPrivate)
 {
     this->factory_name = "cellComplexWriter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellComplexWriter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::cellComplexWriter::pluginFactory().create(this->algorithm_name);
     }
@@ -42,12 +42,12 @@ gnomonCellComplexWriterCommand::~gnomonCellComplexWriterCommand()
 void gnomonCellComplexWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::cellComplexWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexWriterCommand::redo(void)
+void gnomonCellComplexWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath(this->m_path);
@@ -55,7 +55,7 @@ void gnomonCellComplexWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonCellComplexWriterCommand::undo(void)
+void gnomonCellComplexWriterCommand::undo()
 {
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath("");
 }
@@ -70,17 +70,23 @@ void gnomonCellComplexWriterCommand::setForm(gnomonAbstractDynamicForm *form)
     d->cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["cellComplex"] = d->cellComplex;
     return inputs;
 }
 
-bool gnomonCellComplexWriterCommand::isEmpty(void)
+bool gnomonCellComplexWriterCommand::isEmpty()
 {
     loadPluginGroup("cellComplexWriter");
-    return gnomonCore::cellComplexWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::cellComplexWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellComplexWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonCellComplex"));
+    return input_types;
 }
 
 //

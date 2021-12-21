@@ -27,7 +27,6 @@
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
-#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>

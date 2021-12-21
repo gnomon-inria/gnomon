@@ -6,26 +6,30 @@ class gnomonTree;
 class GNOMONCORE_EXPORT gnomonTreeAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonTreeAdapterCommand(void);
-    ~gnomonTreeAdapterCommand(void);
+     gnomonTreeAdapterCommand();
+    ~gnomonTreeAdapterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonTreeSeries *tree_series);
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    gnomonTreeSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonTreeSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonAbstractDynamicForm *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    gnomonAbstractDynamicForm *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonTreeAdapterCommandPrivate *d;

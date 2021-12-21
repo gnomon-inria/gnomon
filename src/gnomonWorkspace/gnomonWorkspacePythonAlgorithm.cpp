@@ -185,7 +185,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::configure(void)
 void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 {
     if (this->command) {
-        gnomonAbstractAlgorithmCommand *algorithm_command = dynamic_cast<gnomonAbstractAlgorithmCommand *>(this->command);
+        gnomonAbstractCommand *algorithm_command = dynamic_cast<gnomonAbstractCommand *>(this->command);
         gnomonPipeline::instance()->addAlgorithm(algorithm_command);
     }
 }
