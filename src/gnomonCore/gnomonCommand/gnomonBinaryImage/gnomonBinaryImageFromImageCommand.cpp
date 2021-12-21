@@ -37,7 +37,7 @@ void gnomonBinaryImageFromImageCommand::setAlgorithmName(const QString& algo_nam
 {
     this->algorithm_name = algo_name;
 
-        delete this->action;
+    delete this->action;
     this->action = gnomonCore::binaryImageFromImage::pluginFactory().create(algo_name);
 }
 
