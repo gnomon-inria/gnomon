@@ -7,7 +7,7 @@
 
 #include <gnomonVisualization/gnomonView/gnomonViewFormList>
 
-class gnomonAbstractAlgorithmCommand;
+class gnomonAbstractCommand;
 class gnomonViewForm;
 
 class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public QObject
