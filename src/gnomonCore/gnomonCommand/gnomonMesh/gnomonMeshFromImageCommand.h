@@ -1,33 +1,32 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
-class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonMeshFromImageCommand(void);
-    ~gnomonMeshFromImageCommand(void);
+     gnomonMeshFromImageCommand();
+    ~gnomonMeshFromImageCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonImageSeries *image_series);
 
-    gnomonImageSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonImageSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonMeshSeries *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    gnomonMeshSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonMeshFromImageCommandPrivate *d;

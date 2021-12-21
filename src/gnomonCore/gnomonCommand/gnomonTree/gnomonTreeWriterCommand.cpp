@@ -30,13 +30,13 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeWriterCommand::gnomonTreeWriterCommand(void) : d(new gnomonTreeWriterCommandPrivate)
+gnomonTreeWriterCommand::gnomonTreeWriterCommand() : d(new gnomonTreeWriterCommandPrivate)
 {
     this->factory_name = "treeWriter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
     }
@@ -50,12 +50,12 @@ gnomonTreeWriterCommand::~gnomonTreeWriterCommand()
 void gnomonTreeWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::treeWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeWriterCommand::redo(void)
+void gnomonTreeWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractTreeWriter *) this->action)->setPath(this->m_path);
@@ -63,7 +63,7 @@ void gnomonTreeWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonTreeWriterCommand::undo(void)
+void gnomonTreeWriterCommand::undo()
 {
     ((gnomonAbstractTreeWriter *) this->action)->setPath("");
 }
@@ -78,17 +78,23 @@ void gnomonTreeWriterCommand::setForm(gnomonAbstractDynamicForm *form)
     d->tree = dynamic_cast<gnomonTreeSeries *>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["tree"] = d->tree;
     return inputs;
 }
 
-bool gnomonTreeWriterCommand::isEmpty(void)
+bool gnomonTreeWriterCommand::isEmpty()
 {
     loadPluginGroup("treeWriter");
-    return gnomonCore::treeWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::treeWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeWriterCommand::inputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("tree", "gnomonTree"));
+    return types;
 }
 
 //

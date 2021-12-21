@@ -33,19 +33,19 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageFusionCommand::gnomonImageFusionCommand(void) : d(new gnomonImageFusionCommandPrivate)
+gnomonImageFusionCommand::gnomonImageFusionCommand() : d(new gnomonImageFusionCommandPrivate)
 {
     this->factory_name = "imageFusion";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageFusion::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::imageFusion::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonImageFusionCommand::~gnomonImageFusionCommand(void)
+gnomonImageFusionCommand::~gnomonImageFusionCommand()
 {
     delete d;
 }
@@ -53,12 +53,12 @@ gnomonImageFusionCommand::~gnomonImageFusionCommand(void)
 void gnomonImageFusionCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::imageFusion::pluginFactory().create(algo_name);
 }
 
-void gnomonImageFusionCommand::redo(void)
+void gnomonImageFusionCommand::redo()
 {
     Q_ASSERT(this->action);
 
@@ -68,19 +68,19 @@ void gnomonImageFusionCommand::redo(void)
 
     for(auto& landmarks : d->landmarks) {
         ((gnomonAbstractImageFusion *) this->action)->addLandmarks(landmarks);
-    };
+    }
 
     this->action->run();
 
     gnomonImageSeries *image = ((gnomonAbstractImageFusion *) this->action)->output();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->output = nullptr;
     } else {
         d->output = image;
     }
 }
 
-void gnomonImageFusionCommand::undo(void)
+void gnomonImageFusionCommand::undo()
 {
     d->images_series.clear();
     ((gnomonAbstractImageFusion *) this->action)->removeLandmarks();
@@ -93,7 +93,7 @@ void gnomonImageFusionCommand::addImage(gnomonImageSeries *image_series)
     ((gnomonAbstractImageFusion *) this->action)->removeImages();
     for(auto& image_series : d->images_series) {
         ((gnomonAbstractImageFusion *) this->action)->addImage(image_series);
-    };
+    }
 }
 
 void gnomonImageFusionCommand::addLandmarks(const std::vector<gnomonLandmark>& landmarks)
@@ -101,27 +101,17 @@ void gnomonImageFusionCommand::addLandmarks(const std::vector<gnomonLandmark>& l
     d->landmarks.append(landmarks);
 }
 
-void gnomonImageFusionCommand::removeLandmarks(void)
+void gnomonImageFusionCommand::removeLandmarks()
 {
     d->landmarks.clear();
 }
 
-void gnomonImageFusionCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonImageFusionCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonImageSeries *gnomonImageFusionCommand::output(void)
+gnomonImageSeries *gnomonImageFusionCommand::output() const
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     int input_count = 1;
@@ -133,17 +123,34 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs(void
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonImageFusionCommand::isEmpty(void)
+bool gnomonImageFusionCommand::isEmpty()
 {
     loadPluginGroup("imageFusion");
-    return gnomonCore::imageFusion::pluginFactory().keys().size() == 0;
+    return gnomonCore::imageFusion::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::inputTypes() {
+    orderedMap input_types;
+    int input_count = 0;
+    for(auto& image_series : d->images_series) {
+        QString input_name = "image" + QString::number(input_count);
+        input_types.emplace_back(std::make_pair(input_name, "gnomonImage"));
+        input_count++;
+    }
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonImage"));
+    return types;
 }
 
 //

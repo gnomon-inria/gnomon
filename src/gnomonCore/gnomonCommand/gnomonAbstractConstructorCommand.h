@@ -20,7 +20,14 @@
 
 class [[deprecated]] gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {
+public:
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override {
+        return {};
+    }
 
+    orderedMap inputTypes() override {
+        return {};
+    }
 };
 
 

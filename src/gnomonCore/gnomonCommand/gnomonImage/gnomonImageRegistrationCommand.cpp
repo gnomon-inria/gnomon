@@ -20,13 +20,13 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageRegistrationCommand::gnomonImageRegistrationCommand(void) : d(new gnomonImageRegistrationCommandPrivate)
+gnomonImageRegistrationCommand::gnomonImageRegistrationCommand() : d(new gnomonImageRegistrationCommandPrivate)
 {
     this->factory_name = "imageRegistration";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageRegistration::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::imageRegistration::pluginFactory().create(this->algorithm_name);
     }
@@ -40,26 +40,26 @@ gnomonImageRegistrationCommand::~gnomonImageRegistrationCommand()
 void gnomonImageRegistrationCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::imageRegistration::pluginFactory().create(algo_name);
 }
 
-void gnomonImageRegistrationCommand::redo(void)
+void gnomonImageRegistrationCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonImageSeries *image = ((gnomonAbstractImageRegistration *) this->action)->output();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->output = nullptr;
     } else {
         d->output = image;
     }
 }
 
-void gnomonImageRegistrationCommand::undo(void)
+void gnomonImageRegistrationCommand::undo()
 {
     d->inputs["reference"] = nullptr;
     d->inputs["input"] = nullptr;
@@ -74,7 +74,7 @@ void gnomonImageRegistrationCommand::addImage(gnomonImageSeries *image_series)
         d->inputs["input"] = image_series;
 
         ((gnomonAbstractImageRegistration *) this->action)->removeImages();
-        ((gnomonAbstractImageRegistration *) this->action)->addImage(static_cast<gnomonImageSeries *>(d->inputs["reference"]));
+        ((gnomonAbstractImageRegistration *) this->action)->addImage(dynamic_cast<gnomonImageSeries *>(d->inputs["reference"]));
         ((gnomonAbstractImageRegistration *) this->action)->addImage(image_series);
     } else {
         dtkWarn() << Q_FUNC_INFO << "reference and input are already set. Do a undo/clear before. I will do nothing.";
@@ -87,22 +87,13 @@ gnomonImageSeries* gnomonImageRegistrationCommand::output()
     return d->output;
 }
 
-dtkCoreParameters gnomonImageRegistrationCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
 
-void gnomonImageRegistrationCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::inputs()
 {
     return d->inputs;
 }
 
-gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::inputTypes(void)
+gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::inputTypes()
 {
     return d->input_types;
 }
@@ -117,24 +108,24 @@ void gnomonImageRegistrationCommand::addInputForm(gnomonAbstractDynamicForm *for
     }
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::outputTypes(void)
+gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::outputTypes()
 {
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("output", "gnomonImage"));
     return output_types;
 }
 
-bool gnomonImageRegistrationCommand::isEmpty(void)
+bool gnomonImageRegistrationCommand::isEmpty()
 {
     loadPluginGroup("imageRegistration");
-    return gnomonCore::imageRegistration::pluginFactory().keys().size() == 0;
+    return gnomonCore::imageRegistration::pluginFactory().keys().empty();
 }
 
 //

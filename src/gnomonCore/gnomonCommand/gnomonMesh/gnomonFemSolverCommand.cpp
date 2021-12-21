@@ -33,18 +33,18 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonFemSolverCommand::gnomonFemSolverCommand(void) : d(new gnomonFemSolverCommandPrivate)
+gnomonFemSolverCommand::gnomonFemSolverCommand() : d(new gnomonFemSolverCommandPrivate)
 {
     loadPluginGroup("femSolver");
 
     QStringList keys = gnomonCore::femSolver::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::femSolver::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonFemSolverCommand::~gnomonFemSolverCommand(void)
+gnomonFemSolverCommand::~gnomonFemSolverCommand()
 {
     delete d;
 }
@@ -52,12 +52,12 @@ gnomonFemSolverCommand::~gnomonFemSolverCommand(void)
 void gnomonFemSolverCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::femSolver::pluginFactory().create(algo_name);
 }
 
-void gnomonFemSolverCommand::redo(void)
+void gnomonFemSolverCommand::redo()
 {
     Q_ASSERT(this->action);
     qDebug()<<"redo command"<<d->mesh;
@@ -66,7 +66,7 @@ void gnomonFemSolverCommand::redo(void)
     this->action->run();
 }
 
-void gnomonFemSolverCommand::undo(void)
+void gnomonFemSolverCommand::undo()
 {
     ((gnomonAbstractFemSolver *) this->action)->setMesh(nullptr);
 }
@@ -77,25 +77,43 @@ void gnomonFemSolverCommand::setMesh(gnomonMeshSeries *mesh)
     qDebug()<<"setmesh"<<d->mesh;
 }
 
-void gnomonFemSolverCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh(void)
+gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh()
 {
     return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
 }
 
-dtkCoreParameters gnomonFemSolverCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-bool gnomonFemSolverCommand::isEmpty(void)
+bool gnomonFemSolverCommand::isEmpty()
 {
     loadPluginGroup("femSolver");
-    return gnomonCore::femSolver::pluginFactory().keys().size() == 0;
+    return gnomonCore::femSolver::pluginFactory().keys().empty();
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonFemSolverCommand::inputs() {
+    QMap<QString, gnomonAbstractDynamicForm*> inputs;
+    inputs["inputMesh"] = this->inputMesh();
+    return inputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonFemSolverCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("inputMesh", "gnomonMesh"));
+    return input_types;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonFemSolverCommand::outputs() {
+    QMap<QString, gnomonAbstractDynamicForm*> outputs;
+    outputs["updatedMesh"] = this->updatedMesh();
+    return outputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonFemSolverCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("updatedMesh", "gnomonMesh"));
+    return output_types;
+}
+
+gnomonMeshSeries *gnomonFemSolverCommand::inputMesh() {
+    return this->d->mesh;
 }
 
 //

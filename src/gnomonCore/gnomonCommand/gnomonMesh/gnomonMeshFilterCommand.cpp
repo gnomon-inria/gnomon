@@ -32,19 +32,19 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonMeshFilterCommand::gnomonMeshFilterCommand(void) : d(new gnomonMeshFilterCommandPrivate)
+gnomonMeshFilterCommand::gnomonMeshFilterCommand() : d(new gnomonMeshFilterCommandPrivate)
 {
     this->factory_name = "meshFilter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshFilter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::meshFilter::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonMeshFilterCommand::~gnomonMeshFilterCommand(void)
+gnomonMeshFilterCommand::~gnomonMeshFilterCommand()
 {
     delete d;
 }
@@ -52,33 +52,33 @@ gnomonMeshFilterCommand::~gnomonMeshFilterCommand(void)
 void gnomonMeshFilterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::meshFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshFilterCommand::redo(void)
+void gnomonMeshFilterCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshFilter *) this->action)->output();
-    if ((!mesh)||(mesh->times().size()==0)) {
+    if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
     } else {
         d->output = mesh;
     }
 }
 
-void gnomonMeshFilterCommand::undo(void)
+void gnomonMeshFilterCommand::undo()
 {
     ((gnomonAbstractMeshFilter *) this->action)->setInput(nullptr);
 }
 
 void gnomonMeshFilterCommand::setInput(gnomonMeshSeries *input)
 {
-    if ((!input)||(input->times().size()==0)) {
+    if ((!input)||(input->times().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -87,44 +87,46 @@ void gnomonMeshFilterCommand::setInput(gnomonMeshSeries *input)
     }
 }
 
-void gnomonMeshFilterCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonMeshFilterCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonMeshSeries *gnomonMeshFilterCommand::input(void)
+gnomonMeshSeries *gnomonMeshFilterCommand::input()
 {
     return d->input;
 }
 
-gnomonMeshSeries *gnomonMeshFilterCommand::output(void)
+gnomonMeshSeries *gnomonMeshFilterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonMeshFilterCommand::isEmpty(void)
+bool gnomonMeshFilterCommand::isEmpty()
 {
     loadPluginGroup("meshFilter");
-    return gnomonCore::meshFilter::pluginFactory().keys().size() == 0;
+    return gnomonCore::meshFilter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshFilterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonMesh"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshFilterCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonMesh"));
+    return output_types;
 }
 
 //

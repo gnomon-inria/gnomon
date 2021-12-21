@@ -6,21 +6,21 @@ class gnomonPointCloud;
 class GNOMONCORE_EXPORT gnomonPointCloudReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonPointCloudReaderCommand(void);
-    ~gnomonPointCloudReaderCommand(void);
+     gnomonPointCloudReaderCommand();
+    ~gnomonPointCloudReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    void setPath(const QString& path);
+    gnomonPointCloudSeries *pointCloud();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonPointCloudSeries *pointCloud(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap outputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonPointCloudReaderCommandPrivate *d;

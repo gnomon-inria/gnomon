@@ -36,7 +36,7 @@ gnomonMeshWriterCommand::gnomonMeshWriterCommand() : d(new gnomonMeshWriterComma
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshWriter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::meshWriter::pluginFactory().create(this->algorithm_name);
     }
@@ -50,12 +50,12 @@ gnomonMeshWriterCommand::~gnomonMeshWriterCommand()
 void gnomonMeshWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::meshWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshWriterCommand::redo(void)
+void gnomonMeshWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractMeshWriter *) this->action)->setPath(this->m_path);
@@ -63,7 +63,7 @@ void gnomonMeshWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonMeshWriterCommand::undo(void)
+void gnomonMeshWriterCommand::undo()
 {
     ((gnomonAbstractMeshWriter *) this->action)->setPath("");
 }
@@ -78,17 +78,23 @@ void gnomonMeshWriterCommand::setForm(gnomonAbstractDynamicForm *form)
     d->mesh = dynamic_cast<gnomonMeshSeries*>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["mesh"] = d->mesh;
     return inputs;
 }
 
-bool gnomonMeshWriterCommand::isEmpty(void)
+bool gnomonMeshWriterCommand::isEmpty()
 {
     loadPluginGroup("meshWriter");
-    return gnomonCore::meshWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::meshWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
+    return input_types;
 }
 
 //

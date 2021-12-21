@@ -1,6 +1,6 @@
 #include "gnomonAbstractReaderCommand.h"
 
-gnomonAbstractReaderCommand::~gnomonAbstractReaderCommand(void)
+gnomonAbstractReaderCommand::~gnomonAbstractReaderCommand()
 {
     for (auto algo: m_actions.values())
         delete algo;
@@ -8,11 +8,13 @@ gnomonAbstractReaderCommand::~gnomonAbstractReaderCommand(void)
     m_actions.clear();
 }
 
+/*
 QMap<QString, gnomonAbstractDynamicForm *> gnomonAbstractReaderCommand::outputs(void)
 {
     QMap<QString, gnomonAbstractDynamicForm *> empty;
     return empty;
 }
+*/
 
 void gnomonAbstractReaderCommand::setAlgorithmName(const QString& algo_name)
 {
@@ -20,22 +22,34 @@ void gnomonAbstractReaderCommand::setAlgorithmName(const QString& algo_name)
     this->action = m_actions[algo_name];
 }
 
-const QString& gnomonAbstractReaderCommand::path(void)
+const QString& gnomonAbstractReaderCommand::path()
 {
     return this->m_path;
 }
 
-QMap<QString,QString> gnomonAbstractReaderCommand::descriptions(void) const
+QMap<QString,QString> gnomonAbstractReaderCommand::descriptions() const
 {
     return m_descriptions;
 }
 
-QMap<QString,QStringList> gnomonAbstractReaderCommand::extensions(void) const
+QMap<QString,QStringList> gnomonAbstractReaderCommand::extensions() const
 {
     return m_extensions;
 }
 
-QStringList gnomonAbstractReaderCommand::algorithmNames(void) const
+QStringList gnomonAbstractReaderCommand::algorithmNames() const
 {
     return m_actions.keys();
+}
+
+void gnomonAbstractReaderCommand::setPath(const QString &path) {
+    this->m_path = path;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonAbstractReaderCommand::inputs() {
+    return {};
+}
+
+gnomonAbstractCommand::orderedMap gnomonAbstractReaderCommand::inputTypes() {
+    return {};
 }

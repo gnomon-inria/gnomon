@@ -23,13 +23,13 @@ public:
     gnomonAbstractDynamicForm* output = nullptr;
 };
 
-gnomonLStringAdapterCommand::gnomonLStringAdapterCommand(void) : d(new gnomonLStringAdapterCommandPrivate)
+gnomonLStringAdapterCommand::gnomonLStringAdapterCommand() : d(new gnomonLStringAdapterCommandPrivate)
 {
     this->factory_name = "lStringAdapter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::cellImageConstructor::pluginFactory().create(this->algorithm_name);
     }
@@ -43,33 +43,33 @@ gnomonLStringAdapterCommand::~gnomonLStringAdapterCommand()
 void gnomonLStringAdapterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::lStringAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonLStringAdapterCommand::redo(void)
+void gnomonLStringAdapterCommand::redo()
 {
     Q_ASSERT(this->action);
     
     this->action->run();
     
     gnomonAbstractDynamicForm *output = ((gnomonAbstractLStringAdapter *) this->action)->output();
-    if ((!output)||(output->times().size()==0)) {
+    if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {
         d->output = output;
     }
 }
 
-void gnomonLStringAdapterCommand::undo(void)
+void gnomonLStringAdapterCommand::undo()
 {
     ((gnomonAbstractLStringAdapter *) this->action)->setInput(nullptr);
 }
 
 void gnomonLStringAdapterCommand::setInput(gnomonLStringSeries *input)
 {
-    if ((!input)||(input->times().size()==0)) {
+    if ((!input)||(input->times().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -78,35 +78,42 @@ void gnomonLStringAdapterCommand::setInput(gnomonLStringSeries *input)
     }
 }
 
-gnomonLStringSeries *gnomonLStringAdapterCommand::input(void)
+gnomonLStringSeries *gnomonLStringAdapterCommand::input()
 {
     return d->input;
 }
 
-gnomonAbstractDynamicForm *gnomonLStringAdapterCommand::output(void)
+gnomonAbstractDynamicForm *gnomonLStringAdapterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonLStringAdapterCommand::isEmpty(void)
+bool gnomonLStringAdapterCommand::isEmpty()
 {
     loadPluginGroup("lStringAdapter");
-    return gnomonCore::lStringAdapter::pluginFactory().keys().size() == 0;
+    return gnomonCore::lStringAdapter::pluginFactory().keys().empty();
 }
+
+gnomonAbstractCommand::orderedMap gnomonLStringAdapterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonLString"));
+    return input_types;
+}
+
 
 //
 // gnomonLStringAdapterCommand.cpp ends here

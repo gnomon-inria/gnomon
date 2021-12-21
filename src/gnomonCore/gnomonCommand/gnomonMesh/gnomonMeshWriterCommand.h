@@ -4,22 +4,24 @@
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonMeshWriterCommand(void);
-    ~gnomonMeshWriterCommand(void);
+     gnomonMeshWriterCommand();
+    ~gnomonMeshWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;
     void setMesh(gnomonMeshSeries *image_series);
     void setAlgorithmName(const QString& algo_name) override;
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    orderedMap inputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonMeshWriterCommandPrivate *d;

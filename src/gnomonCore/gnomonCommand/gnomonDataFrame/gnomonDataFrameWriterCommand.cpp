@@ -30,13 +30,13 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand(void) : d(new gnomonDataFrameWriterCommandPrivate)
+gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand() : d(new gnomonDataFrameWriterCommandPrivate)
 {
     this->factory_name = "dataFrameWriter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::dataFrameWriter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::dataFrameWriter::pluginFactory().create(this->algorithm_name);
     }
@@ -50,12 +50,12 @@ gnomonDataFrameWriterCommand::~gnomonDataFrameWriterCommand()
 void gnomonDataFrameWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::dataFrameWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonDataFrameWriterCommand::redo(void)
+void gnomonDataFrameWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath(this->m_path);
@@ -63,7 +63,7 @@ void gnomonDataFrameWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonDataFrameWriterCommand::undo(void)
+void gnomonDataFrameWriterCommand::undo()
 {
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath("");
 }
@@ -78,17 +78,23 @@ void gnomonDataFrameWriterCommand::setForm(gnomonAbstractDynamicForm *form)
     d->dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["dataFrame"] = d->dataFrame;
     return inputs;
 }
 
-bool gnomonDataFrameWriterCommand::isEmpty(void)
+bool gnomonDataFrameWriterCommand::isEmpty()
 {
     loadPluginGroup("dataFrameWriter");
-    return gnomonCore::dataFrameWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::dataFrameWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonDataFrameWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    return input_types;
 }
 
 //

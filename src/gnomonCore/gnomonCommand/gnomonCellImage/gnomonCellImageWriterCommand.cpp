@@ -30,13 +30,13 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageWriterCommand::gnomonCellImageWriterCommand(void) : d(new gnomonCellImageWriterCommandPrivate)
+gnomonCellImageWriterCommand::gnomonCellImageWriterCommand() : d(new gnomonCellImageWriterCommandPrivate)
 {
     this->factory_name = "cellImageWriter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageWriter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::cellImageWriter::pluginFactory().create(this->algorithm_name);
     }
@@ -50,12 +50,12 @@ gnomonCellImageWriterCommand::~gnomonCellImageWriterCommand()
 void gnomonCellImageWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::cellImageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageWriterCommand::redo(void)
+void gnomonCellImageWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageWriter *) this->action)->setPath(this->m_path);
@@ -63,7 +63,7 @@ void gnomonCellImageWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonCellImageWriterCommand::undo(void)
+void gnomonCellImageWriterCommand::undo()
 {
     ((gnomonAbstractCellImageWriter *) this->action)->setPath("");
 }
@@ -78,17 +78,23 @@ void gnomonCellImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
     d->cellImage = dynamic_cast<gnomonCellImageSeries*>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["cellImage"] = d->cellImage;
     return inputs;
 }
 
-bool gnomonCellImageWriterCommand::isEmpty(void)
+bool gnomonCellImageWriterCommand::isEmpty()
 {
     loadPluginGroup("cellImageWriter");
-    return gnomonCore::cellImageWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::cellImageWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    return input_types;
 }
 
 //

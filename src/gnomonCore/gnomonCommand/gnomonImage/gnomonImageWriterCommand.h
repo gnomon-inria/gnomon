@@ -4,22 +4,24 @@
 class GNOMONCORE_EXPORT gnomonImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonImageWriterCommand(void);
-    ~gnomonImageWriterCommand(void);
+     gnomonImageWriterCommand();
+    ~gnomonImageWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;
     void setImage(gnomonImageSeries *image_series);
     void setAlgorithmName(const QString &) override;
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    orderedMap inputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonImageWriterCommandPrivate *d;

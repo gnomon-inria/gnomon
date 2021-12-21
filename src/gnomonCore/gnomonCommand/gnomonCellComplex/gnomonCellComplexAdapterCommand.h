@@ -6,25 +6,27 @@ class gnomonCellComplex;
 class GNOMONCORE_EXPORT gnomonCellComplexAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonCellComplexAdapterCommand(void);
-    ~gnomonCellComplexAdapterCommand(void);
+     gnomonCellComplexAdapterCommand();
+    ~gnomonCellComplexAdapterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonCellComplexSeries *cellComplex_series);
     void setAlgorithmName(const QString &) override;
 
-    gnomonCellComplexSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonCellComplexSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonAbstractDynamicForm *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    gnomonAbstractDynamicForm *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap inputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonCellComplexAdapterCommandPrivate *d;

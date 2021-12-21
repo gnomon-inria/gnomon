@@ -26,20 +26,20 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageConstructorCommand::gnomonImageConstructorCommand(void) : d(new gnomonImageConstructorCommandPrivate)
+gnomonImageConstructorCommand::gnomonImageConstructorCommand() : d(new gnomonImageConstructorCommandPrivate)
 {
     this->factory_name = "imageConstructor";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageConstructor::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::imageConstructor::pluginFactory().create(this->algorithm_name);
     }
 
 }
 
-gnomonImageConstructorCommand::~gnomonImageConstructorCommand(void)
+gnomonImageConstructorCommand::~gnomonImageConstructorCommand()
 {
     delete d;
 }
@@ -47,55 +47,51 @@ gnomonImageConstructorCommand::~gnomonImageConstructorCommand(void)
 void gnomonImageConstructorCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::imageConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonImageConstructorCommand::redo(void)
+void gnomonImageConstructorCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonImageSeries *image = ((gnomonAbstractImageConstructor *) this->action)->output();
-    if ((!image)||(image->times().size()==0)) {
+    if ((!image)||(image->times().empty())) {
         d->output = nullptr;
     } else {
         d->output = image;
     }
 }
 
-void gnomonImageConstructorCommand::undo(void)
+void gnomonImageConstructorCommand::undo()
 {
 }
 
-void gnomonImageConstructorCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonImageConstructorCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonImageSeries *gnomonImageConstructorCommand::output(void)
+gnomonImageSeries *gnomonImageConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageConstructorCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageConstructorCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["output"] = this->output();
     return outputs;
 }
 
-bool gnomonImageConstructorCommand::isEmpty(void)
+bool gnomonImageConstructorCommand::isEmpty()
 {
     loadPluginGroup("imageConstructor");
-    return gnomonCore::imageConstructor::pluginFactory().keys().size() == 0;
+    return gnomonCore::imageConstructor::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageConstructorCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonImage"));
+    return types;
 }
 
 //

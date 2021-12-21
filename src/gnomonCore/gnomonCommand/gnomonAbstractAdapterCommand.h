@@ -20,7 +20,12 @@
 
 class [[deprecated]] gnomonAbstractAdapterCommand : public gnomonAbstractCommand
 {
-
+public:
+    orderedMap outputTypes() override {
+        orderedMap types;
+        types.emplace_back(std::make_pair("output", "gnomonAbstractDynamicForm"));
+        return types;
+    }
 };
 
 

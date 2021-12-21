@@ -4,26 +4,24 @@
 class GNOMONCORE_EXPORT gnomonTreeConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonTreeConstructorCommand(void);
-    ~gnomonTreeConstructorCommand(void);
+     gnomonTreeConstructorCommand();
+    ~gnomonTreeConstructorCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    gnomonTreeSeries *output(void);
+    gnomonTreeSeries *output();
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap outputTypes() override;
+
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonTreeConstructorCommandPrivate *d;

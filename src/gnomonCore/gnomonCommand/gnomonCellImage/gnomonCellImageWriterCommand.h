@@ -4,22 +4,24 @@
 class GNOMONCORE_EXPORT gnomonCellImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonCellImageWriterCommand(void);
-    ~gnomonCellImageWriterCommand(void);
+     gnomonCellImageWriterCommand();
+    ~gnomonCellImageWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;
     void setCellImage(gnomonCellImageSeries *image_series);
     void setAlgorithmName(const QString &) override;
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    orderedMap inputTypes() override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonCellImageWriterCommandPrivate *d;

@@ -27,19 +27,19 @@ public:
     gnomonDataFrameSeries* dataFrame = nullptr;
 };
 
-gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand(void) : d(new gnomonCellImageQuantificationCommandPrivate)
+gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand() : d(new gnomonCellImageQuantificationCommandPrivate)
 {
     this->factory_name = "cellImageQuantification";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::cellImageQuantification::pluginFactory().create(this->algorithm_name);
     }
 }
 
-gnomonCellImageQuantificationCommand::~gnomonCellImageQuantificationCommand(void)
+gnomonCellImageQuantificationCommand::~gnomonCellImageQuantificationCommand()
 {
     delete d;
 }
@@ -47,26 +47,26 @@ gnomonCellImageQuantificationCommand::~gnomonCellImageQuantificationCommand(void
 void gnomonCellImageQuantificationCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageQuantificationCommand::redo(void)
+void gnomonCellImageQuantificationCommand::redo()
 {
     Q_ASSERT(this->action);
 
     this->action->run();
 
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
-    if ((!cellImage)||(cellImage->times().size())==0) {
+    if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
     } else {
         d->cellImage = cellImage;
     }
 
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
-    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+    if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     }
     else {
@@ -74,7 +74,7 @@ void gnomonCellImageQuantificationCommand::redo(void)
     }
 }
 
-void gnomonCellImageQuantificationCommand::undo(void)
+void gnomonCellImageQuantificationCommand::undo()
 {
     ((gnomonAbstractCellImageQuantification *) this->action)->setImage(nullptr);
     ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(nullptr);
@@ -82,7 +82,7 @@ void gnomonCellImageQuantificationCommand::undo(void)
 
 void gnomonCellImageQuantificationCommand::setImage(gnomonImageSeries *image)
 {
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
@@ -93,7 +93,7 @@ void gnomonCellImageQuantificationCommand::setImage(gnomonImageSeries *image)
 
 void gnomonCellImageQuantificationCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
-    if ((!cellImage)||(cellImage->times().size()==0)) {
+    if ((!cellImage)||(cellImage->times().empty())) {
         d->input_cellImage = nullptr;
     } else {
         d->input_cellImage = cellImage;
@@ -103,27 +103,17 @@ void gnomonCellImageQuantificationCommand::setCellImage(gnomonCellImageSeries *c
     }
 }
 
-void gnomonCellImageQuantificationCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-dtkCoreParameters gnomonCellImageQuantificationCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonCellImageSeries *gnomonCellImageQuantificationCommand::cellImage(void)
+gnomonCellImageSeries *gnomonCellImageQuantificationCommand::cellImage()
 {
     return d->cellImage;
 }
 
-gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame(void)
+gnomonDataFrameSeries *gnomonCellImageQuantificationCommand::dataFrame()
 {
     return d->dataFrame;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["image"] = d->image;
@@ -131,7 +121,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand:
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["cellImage"] = this->cellImage();
@@ -139,10 +129,24 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand:
     return outputs;
 }
 
-bool gnomonCellImageQuantificationCommand::isEmpty(void)
+bool gnomonCellImageQuantificationCommand::isEmpty()
 {
     loadPluginGroup("cellImageQuantification");
-    return gnomonCore::cellImageQuantification::pluginFactory().keys().size() == 0;
+    return gnomonCore::cellImageQuantification::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("image", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    return types;
 }
 
 //
