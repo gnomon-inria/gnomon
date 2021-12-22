@@ -139,21 +139,10 @@ import_array();
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
-
-//TODO
-// redefine typemap for gnomonAbstractDataDict get to cast in np array 
-// not working yet
-%define WRAP(gnomonDataDict,get)
 %typemap(out) QVariant gnomonDataDict::get {
-    // Next line is copied from java.swg: %typemap(javaout) void
     qDebug() << Q_FUNC_INFO << "In the good typemap out";
     int type = $1.type();
-
-    //temp to see class name
-    QVector<int> i_1d;
-    QVector<double> d_1d;
-    qDebug() << i_1d.metaObject()->className() << d_1d.metaObject()->className();
-    //int class_type = QMetaType::type(t.metaObject()->className());
+    QString name($1.typeName());
 
     if (type == QMetaType::Int ||
         type == QMetaType::UInt ||
@@ -170,14 +159,21 @@ import_array();
     } else if (type == QMetaType::Bool) {
         bool b = $1.value<bool>();
         $result = b ? Py_True : Py_False;
-    } else if (type == QMetaType::type("QVector<int>")) {
-        PyObject *arr;
-        $result = $1.value<QVector<int>>().as1DNpArray(arr); // TODO find how to call it
+    } else if (name == "QVector<int>") {
+        //todo call toNpArray1Int  -> fragment   toNpArray ##TYPE
+        QVector<int> vec = $1.value<QVector<int>>();
+        npy_intp dims[1] = { vec.size() };
+        PyObject *array = PyArray_SimpleNew(1, dims, NPY_INT);
+        if (!array) SWIG_fail;
+        int *array_data = (int *) array_data(array);
+        for(int i=0; i< vec.size(); ++i) {
+            array_data[i] = vec[i];
+        }
+        $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
     } else {
         $result = SWIG_NewPointerObj(SWIG_as_voidptr(&$1), SWIGTYPE_p_QVariant, 0 |  0 );
     }
-  }
-%enddef
+}
 
 %define %apply_numpy_typemaps(TYPE)
 
