@@ -18,6 +18,8 @@ public:
     orderedMap inputTypes() override;
     void addInputForm(gnomonAbstractDynamicForm *form) override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
     gnomonImageSeries *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
     orderedMap outputTypes() override;

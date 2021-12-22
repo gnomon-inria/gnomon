@@ -120,5 +120,13 @@ gnomonAbstractCommand::orderedMap gnomonMeshAdapterCommand::outputTypes() {
     return output_types;
 }
 
+void gnomonMeshAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonMeshSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonMeshAdapterCommand.cpp ends here

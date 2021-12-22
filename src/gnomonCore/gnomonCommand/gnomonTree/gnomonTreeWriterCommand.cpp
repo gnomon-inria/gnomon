@@ -71,11 +71,12 @@ void gnomonTreeWriterCommand::undo()
 void gnomonTreeWriterCommand::setTree(gnomonTreeSeries *tree)
 {
     d->tree = tree;
+    ((gnomonAbstractTreeWriter *) this->action)->setTree(tree);
 }
 
 void gnomonTreeWriterCommand::setForm(gnomonAbstractDynamicForm *form)
 {
-    d->tree = dynamic_cast<gnomonTreeSeries *>(form);
+    setTree(dynamic_cast<gnomonTreeSeries *>(form));
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs()
@@ -95,6 +96,14 @@ gnomonAbstractCommand::orderedMap gnomonTreeWriterCommand::inputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("tree", "gnomonTree"));
     return types;
+}
+
+void gnomonTreeWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "tree") {
+        this->setTree(dynamic_cast<gnomonTreeSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
 }
 
 //

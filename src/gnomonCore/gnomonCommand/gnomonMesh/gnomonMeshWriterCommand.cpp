@@ -97,5 +97,13 @@ gnomonAbstractCommand::orderedMap gnomonMeshWriterCommand::inputTypes() {
     return input_types;
 }
 
+void gnomonMeshWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "mesh") {
+        this->setMesh(dynamic_cast<gnomonMeshSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonMeshWriterCommand.cpp ends here

@@ -20,6 +20,8 @@ public:
 
     orderedMap inputTypes() override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
 public:
     static bool isEmpty();
 

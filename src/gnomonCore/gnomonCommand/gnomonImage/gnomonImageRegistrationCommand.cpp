@@ -128,5 +128,16 @@ bool gnomonImageRegistrationCommand::isEmpty()
     return gnomonCore::imageRegistration::pluginFactory().keys().empty();
 }
 
+void gnomonImageRegistrationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    // TODO: come back later to check if correct
+    if (name == "reference") {
+        this->addImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else if (name == "input") {
+        this->addImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonImageRegistrationCommand.cpp ends here

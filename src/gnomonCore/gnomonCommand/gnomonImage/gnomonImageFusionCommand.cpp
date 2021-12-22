@@ -153,5 +153,15 @@ gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::outputTypes() {
     return types;
 }
 
+void gnomonImageFusionCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    // TODO: come back later to see if correct
+    dtkWarn()<<Q_FUNC_INFO<<"Implementation uncertain !!!";
+    if (name == "image") {
+        this->addImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonImageFusionCommand.cpp ends here

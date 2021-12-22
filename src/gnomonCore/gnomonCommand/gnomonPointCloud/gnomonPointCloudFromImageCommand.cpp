@@ -130,5 +130,13 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::outputTypes(
     return output_types;
 }
 
+void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "image") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonPointCloudFromImageCommand.cpp ends here

@@ -122,5 +122,13 @@ gnomonAbstractCommand::orderedMap gnomonCellComplexFromCellImageCommand::outputT
     return types;
 }
 
+void gnomonCellComplexFromCellImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonCellImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonCellComplexFromCellImageCommand.cpp ends here

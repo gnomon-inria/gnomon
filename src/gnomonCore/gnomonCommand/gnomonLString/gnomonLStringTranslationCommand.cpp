@@ -163,5 +163,15 @@ gnomonAbstractCommand::orderedMap gnomonLStringTranslationCommand::outputTypes()
     return types;
 }
 
+void gnomonLStringTranslationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "inputTree") {
+        this->setInputTree(dynamic_cast<gnomonTreeSeries *>(form));
+    } else if (name == "inputLString") {
+        this->setInputLString(dynamic_cast<gnomonLStringSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonLStringTranslationCommand.cpp ends here

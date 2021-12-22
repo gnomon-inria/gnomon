@@ -16,6 +16,8 @@ public:
     void setImage(gnomonImageSeries *image_series);
     void setAlgorithmName(const QString &) override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
     orderedMap inputTypes() override;

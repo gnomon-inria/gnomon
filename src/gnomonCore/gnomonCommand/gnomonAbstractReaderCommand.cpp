@@ -53,3 +53,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonAbstractReaderCommand::inputs()
 gnomonAbstractCommand::orderedMap gnomonAbstractReaderCommand::inputTypes() {
     return {};
 }
+
+void gnomonAbstractReaderCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    dtkWarn() << Q_FUNC_INFO << "Reader takes no input form";
+}

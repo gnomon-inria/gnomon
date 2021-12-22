@@ -17,6 +17,8 @@ public:
     gnomonMeshSeries *input();
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
