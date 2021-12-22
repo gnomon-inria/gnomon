@@ -1388,7 +1388,6 @@ void gnomonViewForm::link(gnomonViewForm *other)
 
     other->d->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
-    connect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
     connect(other, &gnomonViewForm::switchedTo2D, [=] () {
         this->switchTo2D();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
