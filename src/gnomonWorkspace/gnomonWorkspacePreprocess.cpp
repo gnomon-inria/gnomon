@@ -57,5 +57,21 @@ gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
     }
 }
 
+void gnomonWorkspacePreprocess::setInputs()
+{
+    d->command->undo();
+
+    gnomonImageFilterCommand *command = static_cast<gnomonImageFilterCommand *>(d->command);
+    //gnomonBinaryImageFromImageCommand *command = static_cast<gnomonBinaryImageFromImageCommand *>(d->command);
+    for(gnomonViewForm *view : d->sources->views()){
+        if(auto image = view->image()){
+            command->setInput(image);
+        }
+        if(auto initialization = view->binaryImage()){
+            command->setMask(initialization);
+        }
+    }
+}
+
 //
 // gnomonWorkspacePreprocess.cpp ends here

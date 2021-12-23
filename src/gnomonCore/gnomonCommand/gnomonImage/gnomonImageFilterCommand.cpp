@@ -12,6 +12,7 @@ class gnomonImageFilterCommandPrivate
 public:
     gnomonImageSeries* input = nullptr;
     gnomonImageSeries* output = nullptr;
+    gnomonBinaryImageSeries* mask = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -141,5 +142,21 @@ bool gnomonImageFilterCommand::isEmpty(void)
     return gnomonCore::imageFilter::pluginFactory().keys().size() == 0;
 }
 
-//
+void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
+{
+    if ((!init)||(init->times().size()==0)) {
+        d->mask = nullptr;
+    } else {
+        d->mask = init;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
+    }
+
+}
+
+gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)
+{
+    return d->mask;
+}
+
 // gnomonImageFilterCommand.cpp ends here

@@ -21,6 +21,10 @@ public:
     virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
     virtual void addInputForm(gnomonAbstractDynamicForm *form) override;
 
+    gnomonBinaryImageSeries *mask(void);
+    void setMask(gnomonBinaryImageSeries *init);
+
+
     gnomonImageSeries *output(void);
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
