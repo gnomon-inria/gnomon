@@ -61,6 +61,7 @@ void gnomonImageFilterCommand::redo(void)
 void gnomonImageFilterCommand::undo(void)
 {
     ((gnomonAbstractImageFilter *) this->action)->setInput(nullptr);
+    ((gnomonAbstractImageFilter *) this->action)->setMask(nullptr);
 }
 
 void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
@@ -98,6 +99,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs(void
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
+    inputs["mask"] = this->mask();
     return inputs;
 }
 
@@ -105,6 +107,7 @@ gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes(void)
 {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("mask", "gnomonBinaryImage"));
     return input_types;
 }
 
@@ -112,6 +115,8 @@ void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractD
 {
     if (name == "input") {
         this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else if(name == 'mask') {
+        this->setMask(dynamic_cast<gnomonBinaryImageSeries *>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
