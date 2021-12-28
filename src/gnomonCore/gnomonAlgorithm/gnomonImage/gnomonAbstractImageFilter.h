@@ -44,8 +44,8 @@ public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
     virtual gnomonImageSeries *input() = 0;
 
-    virtual void setMask(gnomonBinaryImageSeries *init) = 0;
-    virtual gnomonBinaryImageSeries *mask() = 0;
+    virtual void setMask(gnomonBinaryImageSeries *init) {qWarning()<<"Not implemented";};
+    virtual gnomonBinaryImageSeries *mask() {qWarning()<<"Not implemented";};
 
     virtual gnomonImageSeries *output() = 0;
 };
