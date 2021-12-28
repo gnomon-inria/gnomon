@@ -61,30 +61,16 @@ gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)
 
 void gnomonWorkspacePreprocess::setInputs()
 {
-    std::cout<<"**************************"<<std::endl;
-    std::cout<< "Before call1" << std::endl;
-    std::cout<<"**************************"<<std::endl;
-
     d->command->undo();
-    std::cout<<"**************************"<<std::endl;
-    std::cout<< "Before call2" << std::endl;
-    std::cout<<"**************************"<<std::endl;
-
+    
     gnomonImageFilterCommand *command = static_cast<gnomonImageFilterCommand *>(d->command);
-    std::cout<<"**************************"<<std::endl;
-    std::cout<< command << std::endl;
-    std::cout<<"**************************"<<std::endl;
+
     for(gnomonViewForm *view : d->sources->views()){
         if(auto image = view->image()){
             command->setInput(image);
-            std::cout<<"first cond..."<<std::endl;
         }
-        std::cout<<"**************************"<<std::endl;
-        std::cout<<view->binaryImage()<<endl;
-        std::cout<<"**************************"<<std::endl;
         if(auto mask = view->binaryImage()){
             command->setMask(mask);
-            std::cout<<"last cond..."<<std::endl;
         }
     }
 }
