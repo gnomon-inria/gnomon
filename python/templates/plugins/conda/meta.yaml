@@ -1,0 +1,38 @@
+package:
+  name: plugin_{{package_name}}
+{% raw %}
+  version: {{ environ.get('GIT_DESCRIBE_TAG', 'default') }}
+
+source:
+  path: ../
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER }}
+  preserve_egg_dir: True
+{% endraw %}
+
+requirements:
+  build:
+    - setuptools
+    - python=3.7.*
+    - gnomon >=0.17
+    - dtk-plugins-imaging >=2.0.2
+  host:
+    - python=3.7.*
+    - gnomon >=0.17
+    - dtk-plugins-imaging >=2.0.2
+  run: 
+    - python=3.7.*
+    - gnomon>=0.17
+    - ipython
+    - dtk-plugins-imaging >=2.0.2
+    - nose
+    - coverage
+    - timagetk
+    - plugin_data
+    - plugin_tissueimage
+
+about:
+  home: {{url}}
+  license: {{license}}
+  summary: {{short_descr}}
