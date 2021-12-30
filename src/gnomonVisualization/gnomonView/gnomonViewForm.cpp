@@ -420,7 +420,7 @@ void gnomonViewFormPrivate::clear(void)
          this->formVisualization[key]->disconnect();
          this->formVisualization[key]->clearConnections();
          this->formVisualization[key]->clear();
-         delete this->formVisualization[key];
+         //delete this->formVisualization[key];
 
 //         this->parameterLayouts[key]->disconnect();
 //         delete this->parameterLayouts[key];
