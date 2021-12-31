@@ -8,6 +8,8 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
+import gnomonQuick        1.0 as G
+
 import gnomon.Visualization 1.0 as GV
 
 Rectangle {
@@ -28,6 +30,9 @@ Rectangle {
     signal transmit();
 
     signal switchTo2D();
+    signal switchTo2DXY();
+    signal switchTo2DXZ();
+    signal switchTo2DYZ();
     signal switchTo3D();
     signal sliceChange(int value);
     signal clear();
@@ -82,7 +87,7 @@ Rectangle {
     Slider { id: _2d_slider
         from: 0
         to: 100
-        value: 50
+        value: 10
         stepSize: 1
         snapMode: Slider.SnapAlways
 
@@ -131,9 +136,12 @@ Rectangle {
         ToolTip.text: "2D mode";
     }
 
+    
+    // G.ButtonViewer {}
+
     Image {
         id: _2d_xy;
-        source: "qrc:/qml/gnomonQuick/View-XY.png";
+        source: "qrc:/qml/gnomonQuick/View-XY-off.png";
         visible: false
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -148,6 +156,11 @@ Rectangle {
 
             onClicked: {
                 console.log('2DXY clicked');
+                self.switchTo2DXY();
+                self.sliceChange(_2d_slider.value);
+                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY.png";
+                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ-off.png";
+                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ-off.png";
             }
         }
     }
@@ -169,6 +182,12 @@ Rectangle {
 
             onClicked: {
                 console.log('2DXZ clicked');
+                self.switchTo2DXZ();
+                self.sliceChange(_2d_slider.value);
+                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY-off.png";
+                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ.png";
+                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ-off.png";
+                
             }
         }
     }
@@ -190,6 +209,12 @@ Rectangle {
 
             onClicked: {
                 console.log('2DYZ clicked');
+                self.switchTo2DYZ();
+                self.sliceChange(_2d_slider.value);
+                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY-off.png";
+                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ-off.png";
+                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ.png";
+
             }
         }
     }
@@ -214,6 +239,9 @@ Rectangle {
                 _2d_xy.visible = false;
                 _2d_xz.visible = false;
                 _2d_yz.visible = false;
+                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY-off.png";
+                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ-off.png";
+                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ-off.png";
 
             }
         }

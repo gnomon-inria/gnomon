@@ -12,3 +12,4 @@ View 1.0 View.qml
 World 1.0 World.qml
 WorldDelegate 1.0 WorldDelegate.qml
 Parameters 1.0 Parameters.qml
+ButtonViewer 1.0 ButtonViewer.qml
