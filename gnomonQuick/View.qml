@@ -120,6 +120,10 @@ Rectangle {
                 self.switchTo2D();
                 self.sliceChange(_2d_slider.value);
                 _2d_slider.visible = true;
+                _2d_xy.visible = true;
+                _2d_xz.visible = true;
+                _2d_yz.visible = true;
+
             }
         }
 
@@ -130,6 +134,7 @@ Rectangle {
     Image {
         id: _2d_xy;
         source: "qrc:/qml/gnomonQuick/View-XY.png";
+        visible: false
         // size: 32;
         // color: X.Style.foregroundColor;
 
@@ -150,6 +155,7 @@ Rectangle {
     Image {
         id: _2d_xz;
         source: "qrc:/qml/gnomonQuick/View-XZ-off.png";
+        visible: false
         // size: 32;
         // color: X.Style.foregroundColor;
 
@@ -170,6 +176,7 @@ Rectangle {
     Image {
         id: _2d_yz;
         source: "qrc:/qml/gnomonQuick/View-YZ-off.png";
+        visible: false;
         // size: 32;
         // color: X.Style.foregroundColor;
 
@@ -204,6 +211,10 @@ Rectangle {
             onClicked: {
                 self.switchTo3D();
                 _2d_slider.visible = false;
+                _2d_xy.visible = false;
+                _2d_xz.visible = false;
+                _2d_yz.visible = false;
+
             }
         }
 
