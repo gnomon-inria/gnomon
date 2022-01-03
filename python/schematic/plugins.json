@@ -1,0 +1,82 @@
+{
+  "name": "plugin",
+  "vars": {
+    "package_name": "imageenhancement",
+    "short_descr": "",
+    "author": {
+      "name": "Name",
+      "mail": "mail@mail.net"
+    }
+  },
+  "tree": [
+    {
+      "name": "conda",
+      "tree": [
+        {
+          "name": "env.yaml",
+          "template": "plugins/conda/env.yaml",
+          "vars": {
+
+          }
+        },
+        {
+          "name": "meta.yaml",
+          "template": "plugins/conda/meta.yaml",
+          "vars": {
+
+          }
+        },
+        {
+          "name": "build.sh",
+          "template": "plugins/conda/build.sh",
+          "vars": {
+
+          }
+        }
+      ]
+    },
+    {
+      "name": "src",
+      "tree": [
+        {
+          "name": "plugin_{{package_name}}",
+          "python_package": true,
+          "tree": [
+            {
+              "name": "algorithm",
+              "python_package": true,
+              "tree": []
+            },
+            {
+              "name": "io",
+              "python_package": true,
+              "tree": []
+            },
+            {
+              "name": "visu",
+              "python_package": true,
+              "tree": []
+            },
+            {
+              "name": "form",
+              "python_package": true,
+              "tree": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "setup.py",
+      "template": "plugins/setup.py"
+    },
+    {
+      "name": "README.md",
+      "template": "plugins/README.md"
+    },
+    {
+      "name": "LICENSE",
+      "template": "plugins/LICENSE"
+    }
+  ]
+}
