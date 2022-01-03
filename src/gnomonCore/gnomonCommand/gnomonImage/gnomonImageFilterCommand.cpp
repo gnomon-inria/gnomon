@@ -115,7 +115,7 @@ void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractD
 {
     if (name == "input") {
         this->setInput(dynamic_cast<gnomonImageSeries *>(form));
-    } else if(name == 'mask') {
+    } else if(name == "mask") {
         this->setMask(dynamic_cast<gnomonBinaryImageSeries *>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;

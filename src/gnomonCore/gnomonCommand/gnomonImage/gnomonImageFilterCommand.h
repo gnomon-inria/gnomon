@@ -3,7 +3,7 @@
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
 {
 public:
      gnomonImageFilterCommand(void);
