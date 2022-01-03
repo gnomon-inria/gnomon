@@ -3,23 +3,30 @@
 class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonFemSolverCommand(void);
-    ~gnomonFemSolverCommand(void);
+     gnomonFemSolverCommand();
+    ~gnomonFemSolverCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setMesh(gnomonMeshSeries *mesh);
-    void setParameter(const QString&, const QVariant&);
+    gnomonMeshSeries* inputMesh();
     void setAlgorithmName(const QString& algo_name) override;
 
-    dtkCoreParameters parameters(void) const;
-    gnomonMeshSeries *updatedMesh(void);
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    orderedMap inputTypes() override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap outputTypes() override;
+
+    gnomonMeshSeries *updatedMesh();
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonFemSolverCommandPrivate *d;

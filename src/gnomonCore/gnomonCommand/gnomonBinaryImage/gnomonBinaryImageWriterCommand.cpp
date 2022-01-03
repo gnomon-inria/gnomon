@@ -8,13 +8,13 @@ public:
     gnomonBinaryImageSeries *binaryImage = nullptr;
 };
 
-gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand(void) : d(new gnomonBinaryImageWriterCommandPrivate)
+gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand() : d(new gnomonBinaryImageWriterCommandPrivate)
 {
     this->factory_name = "binaryImageWriter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::binaryImageWriter::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::binaryImageWriter::pluginFactory().create(this->algorithm_name);
     }
@@ -28,12 +28,12 @@ gnomonBinaryImageWriterCommand::~gnomonBinaryImageWriterCommand()
 void gnomonBinaryImageWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::binaryImageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonBinaryImageWriterCommand::redo(void)
+void gnomonBinaryImageWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath(this->m_path);
@@ -41,7 +41,7 @@ void gnomonBinaryImageWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonBinaryImageWriterCommand::undo(void)
+void gnomonBinaryImageWriterCommand::undo()
 {
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath("");
 }
@@ -56,15 +56,21 @@ void gnomonBinaryImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
     d->binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["binaryImage"] = d->binaryImage;
     return inputs;
 }
 
-bool gnomonBinaryImageWriterCommand::isEmpty(void)
+bool gnomonBinaryImageWriterCommand::isEmpty()
 {
     loadPluginGroup("binaryImageWriter");
-    return gnomonCore::binaryImageWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::binaryImageWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonBinaryImageWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("initialization", "gnomonBinaryImage"));
+    return input_types;
 }

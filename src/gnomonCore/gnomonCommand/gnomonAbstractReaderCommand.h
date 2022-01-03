@@ -23,19 +23,23 @@
 class gnomonAbstractReaderCommand : public gnomonAbstractCommand
 {
 public:
-    ~gnomonAbstractReaderCommand(void);
+    ~gnomonAbstractReaderCommand() override;
 
 public:
-    QMap<QString, QString> descriptions(void) const;
-    QMap<QString, QStringList>  extensions(void) const;
-    QStringList algorithmNames(void) const;
+    QMap<QString, QString> descriptions() const;
+    QMap<QString, QStringList>  extensions() const;
+    QStringList algorithmNames() const;
 
 public:
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-    virtual const QString& path(void);
+    const QString& path();
+    void setPath(const QString& path);
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    orderedMap inputTypes() override;
 
 protected:
     QString m_path = "";

@@ -1,34 +1,33 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 class gnomonMesh;
 
-class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonMeshFilterCommand(void);
-    ~gnomonMeshFilterCommand(void);
+     gnomonMeshFilterCommand();
+    ~gnomonMeshFilterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonMeshSeries *mesh_series);
-    gnomonMeshSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonMeshSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonMeshSeries *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap inputTypes() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap outputTypes() override;
+
+    gnomonMeshSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonMeshFilterCommandPrivate *d;

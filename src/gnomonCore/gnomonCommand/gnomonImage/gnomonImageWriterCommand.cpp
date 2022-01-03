@@ -30,13 +30,13 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageWriterCommand::gnomonImageWriterCommand(void) : d(new gnomonImageWriterCommandPrivate)
+gnomonImageWriterCommand::gnomonImageWriterCommand() : d(new gnomonImageWriterCommandPrivate)
 {
     this->factory_name = "imageWriter";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::imageWriter::pluginFactory().create(this->algorithm_name);
     }
@@ -50,12 +50,12 @@ gnomonImageWriterCommand::~gnomonImageWriterCommand()
 void gnomonImageWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::imageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonImageWriterCommand::redo(void)
+void gnomonImageWriterCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractImageWriter *) this->action)->setPath(this->m_path);
@@ -63,7 +63,7 @@ void gnomonImageWriterCommand::redo(void)
     this->action->run();
 }
 
-void gnomonImageWriterCommand::undo(void)
+void gnomonImageWriterCommand::undo()
 {
     ((gnomonAbstractImageWriter *) this->action)->setPath("");
 }
@@ -78,17 +78,23 @@ void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)
     d->image = image;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageWriterCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageWriterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["image"] = d->image;
     return inputs;
 }
 
-bool gnomonImageWriterCommand::isEmpty(void)
+bool gnomonImageWriterCommand::isEmpty()
 {
     loadPluginGroup("imageWriter");
-    return gnomonCore::imageWriter::pluginFactory().keys().size() == 0;
+    return gnomonCore::imageWriter::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("image", "gnomonImage"));
+    return input_types;
 }
 
 //

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageReaderCommand.h"
 
 #include <dtkScript>
@@ -30,13 +16,13 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageReaderCommand::gnomonImageReaderCommand(void) : d(new gnomonImageReaderCommandPrivate)
+gnomonImageReaderCommand::gnomonImageReaderCommand() : d(new gnomonImageReaderCommandPrivate)
 {
     this->factory_name = "imageReader";
 
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::imageReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::imageReader::pluginFactory().keys()) {
 
         auto algo = gnomonCore::imageReader::pluginFactory().create(key);
 
@@ -56,45 +42,46 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
     delete d;
 }
 
-void gnomonImageReaderCommand::redo(void)
+void gnomonImageReaderCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
     }
 }
 
-void gnomonImageReaderCommand::undo(void)
+void gnomonImageReaderCommand::undo()
 {
     ((gnomonAbstractImageReader *) this->action)->setPath("");
 }
 
-void gnomonImageReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonImageSeries *gnomonImageReaderCommand::image(void)
+gnomonImageSeries *gnomonImageReaderCommand::image()
 {
     return d->image;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["image"] = this->image();
     return outputs;
 }
 
-bool gnomonImageReaderCommand::isEmpty(void)
+bool gnomonImageReaderCommand::isEmpty()
 {
     loadPluginGroup("imageReader");
-    return gnomonCore::imageReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::imageReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("image", "gnomonImage"));
+    return types;
 }
 
 //

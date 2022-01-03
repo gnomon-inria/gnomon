@@ -27,20 +27,20 @@ public:
     gnomonLStringSeries *output_lString_series = nullptr;
 };
 
-gnomonLStringTranslationCommand::gnomonLStringTranslationCommand(void) : d(new gnomonLStringTranslationCommandPrivate)
+gnomonLStringTranslationCommand::gnomonLStringTranslationCommand() : d(new gnomonLStringTranslationCommandPrivate)
 {
     this->factory_name = "lStringTranslation";
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::lStringTranslation::pluginFactory().keys();
-    if (keys.size() > 0) {
+    if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::lStringTranslation::pluginFactory().create(this->algorithm_name);
     }
 
 }
 
-gnomonLStringTranslationCommand::~gnomonLStringTranslationCommand(void)
+gnomonLStringTranslationCommand::~gnomonLStringTranslationCommand()
 {
     delete d;
 }
@@ -48,12 +48,12 @@ gnomonLStringTranslationCommand::~gnomonLStringTranslationCommand(void)
 void gnomonLStringTranslationCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-    if (this->action)
+
         delete this->action;
     this->action = gnomonCore::lStringTranslation::pluginFactory().create(algo_name);
 }
 
-void gnomonLStringTranslationCommand::redo(void)
+void gnomonLStringTranslationCommand::redo()
 {
     Q_ASSERT(this->action);
 
@@ -61,7 +61,7 @@ void gnomonLStringTranslationCommand::redo(void)
 
     gnomonTreeSeries *tree = ((gnomonAbstractLStringTranslation *) this->action)->outputTree();
     qDebug()<<Q_FUNC_INFO<<tree;
-    if ((!tree)||(tree->times().size()==0)) {
+    if ((!tree)||(tree->times().empty())) {
         d->output_tree_series = nullptr;
     } else {
         d->output_tree_series = tree;
@@ -69,14 +69,14 @@ void gnomonLStringTranslationCommand::redo(void)
 
     gnomonLStringSeries *lString = ((gnomonAbstractLStringTranslation *) this->action)->outputLString();
     qDebug()<<Q_FUNC_INFO<<lString;
-    if ((!lString)||(lString->times().size()==0)) {
+    if ((!lString)||(lString->times().empty())) {
         d->output_lString_series = nullptr;
     } else {
         d->output_lString_series = lString;
     }
 }
 
-void gnomonLStringTranslationCommand::undo(void)
+void gnomonLStringTranslationCommand::undo()
 {
     Q_ASSERT(this->action);
 
@@ -86,7 +86,7 @@ void gnomonLStringTranslationCommand::undo(void)
 
 void gnomonLStringTranslationCommand::setInputTree(gnomonTreeSeries* tree_series)
 {
-    if ((!tree_series)||(tree_series->times().size()==0)) {
+    if ((!tree_series)||(tree_series->times().empty())) {
         d->tree_series = nullptr;
     } else {
         d->tree_series = tree_series;
@@ -97,7 +97,7 @@ void gnomonLStringTranslationCommand::setInputTree(gnomonTreeSeries* tree_series
 
 void gnomonLStringTranslationCommand::setInputLString(gnomonLStringSeries* lString_series)
 {
-    if ((!lString_series)||(lString_series->times().size()==0)) {
+    if ((!lString_series)||(lString_series->times().empty())) {
         d->lString_series = nullptr;
     } else {
         d->lString_series = lString_series;
@@ -116,7 +116,7 @@ gnomonLStringSeries *gnomonLStringTranslationCommand::inputLString()
     return d->lString_series;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::inputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["inputTree"] = this->inputTree();
@@ -134,7 +134,7 @@ gnomonLStringSeries *gnomonLStringTranslationCommand::outputLString()
     return d->output_lString_series;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["outputTree"] = this->outputTree();
@@ -142,20 +142,25 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::outp
     return outputs;
 }
 
-dtkCoreParameters gnomonLStringTranslationCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
 
-void gnomonLStringTranslationCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-bool gnomonLStringTranslationCommand::isEmpty(void)
+bool gnomonLStringTranslationCommand::isEmpty()
 {
     loadPluginGroup("lStringTranslation");
-    return gnomonCore::lStringTranslation::pluginFactory().keys().size() == 0;
+    return gnomonCore::lStringTranslation::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonLStringTranslationCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("inputTree", "gnomonTree"));
+    input_types.emplace_back(std::make_pair("inputLString", "gnomonLString"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonLStringTranslationCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("outputTree", "gnomonTree"));
+    types.emplace_back(std::make_pair("outputLString", "gnomonLString"));
+    return types;
 }
 
 //

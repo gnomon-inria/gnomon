@@ -4,22 +4,24 @@
 class GNOMONCORE_EXPORT gnomonBinaryImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonBinaryImageWriterCommand(void);
-    ~gnomonBinaryImageWriterCommand(void);
+     gnomonBinaryImageWriterCommand();
+    ~gnomonBinaryImageWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *) override;
     void setBinaryImage(gnomonBinaryImageSeries *binaryImage);
     void setAlgorithmName(const QString &) override;
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    orderedMap inputTypes() override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonBinaryImageWriterCommandPrivate *d;

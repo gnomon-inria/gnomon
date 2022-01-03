@@ -1,39 +1,34 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 
 
-class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractAlgorithmCommand
+class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonBinaryImageFromImageCommand(void);
-    ~gnomonBinaryImageFromImageCommand(void);
+     gnomonBinaryImageFromImageCommand();
+    ~gnomonBinaryImageFromImageCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonImageSeries *image);
-    gnomonImageSeries *input(void);
+    gnomonImageSeries *input();
     void setInitialization(gnomonBinaryImageSeries *init);
-    gnomonBinaryImageSeries *initialization(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonBinaryImageSeries *initialization();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    virtual orderedMap inputTypes(void) override;
-    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    orderedMap inputTypes() override;
+    void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
-    gnomonBinaryImageSeries *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-    virtual orderedMap outputTypes(void);
+    gnomonBinaryImageSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
     void setAlgorithmName(const QString &) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonBinaryImageFromImageCommandPrivate *d;

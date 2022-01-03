@@ -4,22 +4,21 @@
 class GNOMONCORE_EXPORT gnomonImageReaderCommand: public gnomonAbstractReaderCommand
 {
 public:
-     gnomonImageReaderCommand(void);
-    ~gnomonImageReaderCommand(void);
+     gnomonImageReaderCommand();
+    ~gnomonImageReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    void setPath(const QString& path);
+    gnomonImageSeries *image();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap outputTypes() override;
 
 public:
-    gnomonImageSeries *image(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-
-public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonImageReaderCommandPrivate *d;

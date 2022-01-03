@@ -30,12 +30,12 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand(void) : d(new gnomonDataFrameReaderCommandPrivate)
+gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand() : d(new gnomonDataFrameReaderCommandPrivate)
 {
     this->factory_name = "dataFrameReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::dataFrameReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::dataFrameReader::pluginFactory().keys()) {
         auto algo = gnomonCore::dataFrameReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
@@ -53,45 +53,46 @@ gnomonDataFrameReaderCommand::~gnomonDataFrameReaderCommand()
     delete d;
 }
 
-void gnomonDataFrameReaderCommand::redo(void)
+void gnomonDataFrameReaderCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractDataFrameReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
-    if ((!dataFrame)||(dataFrame->times().size()==0)) {
+    if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     } else {
         d->dataFrame = dataFrame;
     }
 }
 
-void gnomonDataFrameReaderCommand::undo(void)
+void gnomonDataFrameReaderCommand::undo()
 {
     ((gnomonAbstractDataFrameReader *) this->action)->setPath("");
 }
 
-void gnomonDataFrameReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame(void)
+gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame()
 {
     return d->dataFrame;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["dataFrame"] = this->dataFrame();
     return outputs;
 }
 
-bool gnomonDataFrameReaderCommand::isEmpty(void)
+bool gnomonDataFrameReaderCommand::isEmpty()
 {
     loadPluginGroup("dataFrameReader");
-    return gnomonCore::dataFrameReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::dataFrameReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    return types;
 }
 
 //

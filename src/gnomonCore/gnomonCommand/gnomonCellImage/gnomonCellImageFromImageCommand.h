@@ -3,12 +3,12 @@
 class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonCellImageFromImageCommand(void);
-    ~gnomonCellImageFromImageCommand(void);
+     gnomonCellImageFromImageCommand();
+    ~gnomonCellImageFromImageCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonImageSeries *image_series);
@@ -18,24 +18,21 @@ public:
     void setCellPoints(gnomonPointCloudSeries *pointCloud_series);
     gnomonPointCloudSeries *cellPoints();
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
-    virtual orderedMap inputTypes(void) override;
-    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    orderedMap inputTypes() override;
+    void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
 public:
-    virtual void setParameter(const QString&, const QVariant&);
-    virtual void setAlgorithmName(const QString &) override;
-
-    virtual dtkCoreParameters parameters(void) const override;
+    void setAlgorithmName(const QString &) override;
 
 public:
     gnomonCellImageSeries *output();
 
-    QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-    orderedMap outputTypes(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonCellImageFromImageCommandPrivate *d;

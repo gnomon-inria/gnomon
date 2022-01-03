@@ -6,12 +6,12 @@ public:
     gnomonBinaryImageSeries *binaryImage = nullptr;
 };
 
-gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand(void) : d(new gnomonBinaryImageReaderCommandPrivate)
+gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand() : d(new gnomonBinaryImageReaderCommandPrivate)
 {
     this->factory_name = "binaryImageReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::binaryImageReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::binaryImageReader::pluginFactory().keys()) {
         auto algo = gnomonCore::binaryImageReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
@@ -29,44 +29,45 @@ gnomonBinaryImageReaderCommand::~gnomonBinaryImageReaderCommand()
     delete d;
 }
 
-void gnomonBinaryImageReaderCommand::redo(void)
+void gnomonBinaryImageReaderCommand::redo()
 {
     Q_ASSERT(this->action);
 
     ((gnomonAbstractBinaryImageReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonBinaryImageSeries *binaryImage = ((gnomonAbstractBinaryImageReader *) this->action)->binaryImage();
-    if ((!binaryImage)||(binaryImage->times().size()==0)) {
+    if ((!binaryImage)||(binaryImage->times().empty())) {
         d->binaryImage = nullptr;
     } else {
         d->binaryImage = binaryImage;
     }
 }
 
-void gnomonBinaryImageReaderCommand::undo(void)
+void gnomonBinaryImageReaderCommand::undo()
 {
     ((gnomonAbstractBinaryImageReader *) this->action)->setPath("");
 }
 
-void gnomonBinaryImageReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonBinaryImageSeries *gnomonBinaryImageReaderCommand::binaryImage(void)
+gnomonBinaryImageSeries *gnomonBinaryImageReaderCommand::binaryImage()
 {
     return d->binaryImage;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["binaryImage"] = this->binaryImage();
     return outputs;
 }
 
-bool gnomonBinaryImageReaderCommand::isEmpty(void)
+bool gnomonBinaryImageReaderCommand::isEmpty()
 {
     loadPluginGroup("binaryImageReader");
-    return gnomonCore::binaryImageReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::binaryImageReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonBinaryImageReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
+    return types;
 }

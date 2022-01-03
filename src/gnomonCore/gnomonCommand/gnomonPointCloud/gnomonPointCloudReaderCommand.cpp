@@ -22,12 +22,12 @@ public:
     gnomonPointCloudSeries *pointCloud = nullptr;
 };
 
-gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand(void) : d(new gnomonPointCloudReaderCommandPrivate)
+gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand() : d(new gnomonPointCloudReaderCommandPrivate)
 {
     this->factory_name = "pointCloudReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::pointCloudReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::pointCloudReader::pluginFactory().keys()) {
         auto algo = gnomonCore::pointCloudReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
@@ -45,45 +45,46 @@ gnomonPointCloudReaderCommand::~gnomonPointCloudReaderCommand()
     delete d;
 }
 
-void gnomonPointCloudReaderCommand::redo(void)
+void gnomonPointCloudReaderCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractPointCloudReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudReader *) this->action)->pointCloud();
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
+    if ((!pointCloud)||(pointCloud->times().empty())) {
         d->pointCloud = nullptr;
     } else {
         d->pointCloud = pointCloud;
     }
 }
 
-void gnomonPointCloudReaderCommand::undo(void)
+void gnomonPointCloudReaderCommand::undo()
 {
     ((gnomonAbstractPointCloudReader *) this->action)->setPath("");
 }
 
-void gnomonPointCloudReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonPointCloudSeries *gnomonPointCloudReaderCommand::pointCloud(void)
+gnomonPointCloudSeries *gnomonPointCloudReaderCommand::pointCloud()
 {
     return d->pointCloud;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["pointCloud"] = this->pointCloud();
     return outputs;
 }
 
-bool gnomonPointCloudReaderCommand::isEmpty(void)
+bool gnomonPointCloudReaderCommand::isEmpty()
 {
     loadPluginGroup("pointCloudReader");
-    return gnomonCore::pointCloudReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::pointCloudReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonPointCloudReaderCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
+    return output_types;
 }
 //
 // gnomonPointCloudReaderCommand.cpp ends here

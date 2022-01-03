@@ -22,12 +22,12 @@ public:
     gnomonMeshSeries *mesh = nullptr;
 };
 
-gnomonMeshReaderCommand::gnomonMeshReaderCommand(void) : d(new gnomonMeshReaderCommandPrivate)
+gnomonMeshReaderCommand::gnomonMeshReaderCommand() : d(new gnomonMeshReaderCommandPrivate)
 {
     this->factory_name = "meshReader";
     loadPluginGroup(this->factoryName());
 
-    for (auto key: gnomonCore::meshReader::pluginFactory().keys()) {
+    for (const auto& key: gnomonCore::meshReader::pluginFactory().keys()) {
         auto algo = gnomonCore::meshReader::pluginFactory().create(key);
         if (!this->action) {
             this->action = algo;
@@ -45,45 +45,46 @@ gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
     delete d;
 }
 
-void gnomonMeshReaderCommand::redo(void)
+void gnomonMeshReaderCommand::redo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractMeshReader *) this->action)->setPath(this->m_path);
     this->action->run();
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
-    if ((!mesh)||(mesh->times().size()==0)) {
+    if ((!mesh)||(mesh->times().empty())) {
         d->mesh = nullptr;
     } else {
         d->mesh = mesh;
     }
 }
 
-void gnomonMeshReaderCommand::undo(void)
+void gnomonMeshReaderCommand::undo()
 {
     ((gnomonAbstractMeshReader *) this->action)->setPath("");
 }
 
-void gnomonMeshReaderCommand::setPath(const QString& path)
-{
-    this->m_path = path;
-}
-
-gnomonMeshSeries *gnomonMeshReaderCommand::mesh(void)
+gnomonMeshSeries *gnomonMeshReaderCommand::mesh()
 {
     return d->mesh;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshReaderCommand::outputs(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshReaderCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
     outputs["mesh"] = this->mesh();
     return outputs;
 }
 
-bool gnomonMeshReaderCommand::isEmpty(void)
+bool gnomonMeshReaderCommand::isEmpty()
 {
     loadPluginGroup("meshReader");
-    return gnomonCore::meshReader::pluginFactory().keys().size() == 0;
+    return gnomonCore::meshReader::pluginFactory().keys().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshReaderCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
+    return output_types;
 }
 
 //

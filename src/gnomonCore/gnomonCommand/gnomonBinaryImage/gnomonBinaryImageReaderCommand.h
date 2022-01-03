@@ -4,21 +4,21 @@
 class GNOMONCORE_EXPORT gnomonBinaryImageReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonBinaryImageReaderCommand(void);
-    ~gnomonBinaryImageReaderCommand(void);
+     gnomonBinaryImageReaderCommand();
+    ~gnomonBinaryImageReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    void setPath(const QString& path);
+    gnomonBinaryImageSeries *binaryImage();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonBinaryImageSeries *binaryImage(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap outputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonBinaryImageReaderCommandPrivate *d;

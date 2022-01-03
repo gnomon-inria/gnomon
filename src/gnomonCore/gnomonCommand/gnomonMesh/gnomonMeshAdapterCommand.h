@@ -6,24 +6,28 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonMeshAdapterCommand(void);
-    ~gnomonMeshAdapterCommand(void);
+     gnomonMeshAdapterCommand();
+    ~gnomonMeshAdapterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonMeshSeries *mesh_series);
     void setAlgorithmName(const QString & algo) override;
-    gnomonMeshSeries *input(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
+    gnomonMeshSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonAbstractDynamicForm *output(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
+    gnomonAbstractDynamicForm *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonMeshAdapterCommandPrivate *d;

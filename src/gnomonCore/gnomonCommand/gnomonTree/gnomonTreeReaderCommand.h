@@ -4,21 +4,21 @@
 class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonTreeReaderCommand(void);
-    ~gnomonTreeReaderCommand(void);
+     gnomonTreeReaderCommand();
+    ~gnomonTreeReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
-    void setPath(const QString& path);
+    gnomonTreeSeries *tree();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonTreeSeries *tree(void);
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
+    orderedMap outputTypes() override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonTreeReaderCommandPrivate *d;
