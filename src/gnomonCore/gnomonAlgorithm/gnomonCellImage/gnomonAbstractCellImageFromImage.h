@@ -38,11 +38,11 @@ public:
 
 public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
-    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) { qWarning()<< "not implented";};
+    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {qWarning()<<Q_FUNC_INFO<< "not implemented";};
 
 public:
     virtual gnomonImageSeries *input(void) const = 0;
-    virtual gnomonPointCloudSeries *cellPoints(void) const { qWarning()<< "not implented";};
+    virtual gnomonPointCloudSeries *cellPoints(void) const {qWarning()<<Q_FUNC_INFO<< "not implemented";};
     virtual gnomonCellImageSeries *output(void) const = 0;
 };
 
