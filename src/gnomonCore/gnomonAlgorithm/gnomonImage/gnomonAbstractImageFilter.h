@@ -21,6 +21,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonBinaryimage/gnomonBinaryimage.h"
 
 class dtkCoreParameter;
 
@@ -42,6 +43,10 @@ public:
 public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
     virtual gnomonImageSeries *input() = 0;
+
+    virtual void setMask(gnomonBinaryImageSeries *init) {dtkWarn()<<Q_FUNC_INFO<<"Not implemented";};
+    virtual gnomonBinaryImageSeries *mask() {dtkWarn()<< Q_FUNC_INFO <<"Not implemented";
+                                             return nullptr;};
 
     virtual gnomonImageSeries *output() = 0;
 };

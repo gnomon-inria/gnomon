@@ -20,6 +20,8 @@ public:
     orderedMap inputTypes() override;
     void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
     void addInputForm(gnomonAbstractDynamicForm *form) override;
+    gnomonBinaryImageSeries *mask();
+    void setMask(gnomonBinaryImageSeries *init);
 
     gnomonImageSeries *output();
 
