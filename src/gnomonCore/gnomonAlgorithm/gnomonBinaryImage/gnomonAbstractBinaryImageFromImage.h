@@ -22,7 +22,8 @@ public:
     // Outputs
 public:
     virtual gnomonImageSeries *input(void) = 0;
-    virtual gnomonBinaryImageSeries *initialization(void) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual gnomonBinaryImageSeries *initialization(void) { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+                                                            return nullptr;};
     virtual gnomonBinaryImageSeries *output(void) const = 0;
 
 
