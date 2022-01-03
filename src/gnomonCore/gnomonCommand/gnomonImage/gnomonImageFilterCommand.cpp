@@ -12,6 +12,7 @@ class gnomonImageFilterCommandPrivate
 public:
     gnomonImageSeries* input = nullptr;
     gnomonImageSeries* output = nullptr;
+    gnomonBinaryImageSeries* mask = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ void gnomonImageFilterCommand::redo()
 void gnomonImageFilterCommand::undo()
 {
     ((gnomonAbstractImageFilter *) this->action)->setInput(nullptr);
+    ((gnomonAbstractImageFilter *) this->action)->setMask(nullptr);
 }
 
 void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
@@ -87,6 +89,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
+    inputs["mask"] = this->mask();
     return inputs;
 }
 
@@ -94,6 +97,7 @@ gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes()
 {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("mask", "gnomonBinaryImage"));
     return input_types;
 }
 
@@ -101,6 +105,8 @@ void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractD
 {
     if (name == "input") {
         this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else if(name == "mask") {
+        this->setMask(dynamic_cast<gnomonBinaryImageSeries *>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -131,5 +137,21 @@ bool gnomonImageFilterCommand::isEmpty()
     return gnomonCore::imageFilter::pluginFactory().keys().empty();
 }
 
-//
+void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
+{
+    if ((!init)||(init->times().size()==0)) {
+        d->mask = nullptr;
+    } else {
+        d->mask = init;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
+    }
+
+}
+
+gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)
+{
+    return d->mask;
+}
+
 // gnomonImageFilterCommand.cpp ends here

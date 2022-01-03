@@ -21,20 +21,20 @@ public:
 
     // Outputs
 public:
-    virtual gnomonImageSeries *input(void) = 0;
-    virtual gnomonBinaryImageSeries *initialization(void) { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+    virtual gnomonImageSeries *input() = 0;
+    virtual gnomonBinaryImageSeries *initialization() { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
                                                             return nullptr;};
-    virtual gnomonBinaryImageSeries *output(void) const = 0;
+    virtual gnomonBinaryImageSeries *output() const = 0;
 
 
 public:
-  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual dtkCoreParameters parameters(void) const override = 0;
+    void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual dtkCoreParameters parameters() const override = 0;
 
 
 public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
+    void run() override = 0;
+    virtual QString documentation() override = 0;
 
 };
 
