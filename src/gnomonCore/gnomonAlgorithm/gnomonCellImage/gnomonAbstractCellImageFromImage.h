@@ -38,11 +38,12 @@ public:
 
 public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
-    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) = 0;
+    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
 
 public:
     virtual gnomonImageSeries *input(void) const = 0;
-    virtual gnomonPointCloudSeries *cellPoints(void) const = 0;
+    virtual gnomonPointCloudSeries *cellPoints(void) const { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+                                                             return nullptr;};
     virtual gnomonCellImageSeries *output(void) const = 0;
 };
 

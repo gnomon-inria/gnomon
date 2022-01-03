@@ -17,12 +17,13 @@ class GNOMONCORE_EXPORT gnomonAbstractBinaryImageFromImage : public gnomonAbstra
     //Inputs
 public:
     virtual void setInput(gnomonImageSeries *image) = 0;
-    virtual void setInitialization(gnomonBinaryImageSeries *init) = 0;
+    virtual void setInitialization(gnomonBinaryImageSeries *init) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
 
     // Outputs
 public:
     virtual gnomonImageSeries *input() = 0;
-    virtual gnomonBinaryImageSeries *initialization() = 0;
+    virtual gnomonBinaryImageSeries *initialization() { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+                                                            return nullptr;};
     virtual gnomonBinaryImageSeries *output() const = 0;
 
 
