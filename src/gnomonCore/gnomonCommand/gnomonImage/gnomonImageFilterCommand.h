@@ -6,39 +6,39 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFilterCommand(void);
-    ~gnomonImageFilterCommand(void);
+     gnomonImageFilterCommand();
+    ~gnomonImageFilterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void redo() override;
+    void undo() override;
 
 public:
     void setInput(gnomonImageSeries *image_series);
-    gnomonImageSeries *input(void);
+    gnomonImageSeries *input();
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs(void) override;
-    virtual orderedMap inputTypes(void) override;
-    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
-    virtual void addInputForm(gnomonAbstractDynamicForm *form) override;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    orderedMap inputTypes() override;
+    void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    void addInputForm(gnomonAbstractDynamicForm *form) override;
 
-    gnomonBinaryImageSeries *mask(void);
+    gnomonBinaryImageSeries *mask();
     void setMask(gnomonBinaryImageSeries *init);
 
 
-    gnomonImageSeries *output(void);
+    gnomonImageSeries *output();
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs(void) override;
-    virtual orderedMap outputTypes(void) override;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
 
     virtual void setParameter(const QString&, const QVariant&);
     void setAlgorithmName(const QString &) override;
 
 public:
-    dtkCoreParameters parameters(void) const override;
+    [[nodiscard]] dtkCoreParameters parameters() const override;
 
 public:
-    static bool isEmpty(void);
+    static bool isEmpty();
 
 private:
     class gnomonImageFilterCommandPrivate *d;
