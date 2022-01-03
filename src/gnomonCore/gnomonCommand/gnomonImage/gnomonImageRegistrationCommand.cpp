@@ -130,13 +130,18 @@ bool gnomonImageRegistrationCommand::isEmpty()
 
 void gnomonImageRegistrationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
     // TODO: come back later to check if correct
-    if (name == "reference") {
-        this->addImage(dynamic_cast<gnomonImageSeries *>(form));
-    } else if (name == "input") {
-        this->addImage(dynamic_cast<gnomonImageSeries *>(form));
+    if(name == "reference") {
+        d->inputs["reference"] = form;
+    } else if(name == "input") {
+        d->inputs["input"] = form;
     } else {
-        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+        dtkWarn() << Q_FUNC_INFO << "unknown input " << name;
+        return;
     }
+
+    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
+    ((gnomonAbstractImageRegistration *) this->action)->addImage(dynamic_cast<gnomonImageSeries *>(d->inputs["reference"]));
+    ((gnomonAbstractImageRegistration *) this->action)->addImage(dynamic_cast<gnomonImageSeries *>(d->inputs["input"]));
 }
 
 //

@@ -13,10 +13,10 @@ public:
     void undo() override;
 
 public:
-    void addImage(gnomonImageSeries *);
+    [[deprecated]] void addImage(gnomonImageSeries *);
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
     orderedMap inputTypes() override;
-    void addInputForm(gnomonAbstractDynamicForm *form) override;
+    [[deprecated]] void addInputForm(gnomonAbstractDynamicForm *form) override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
