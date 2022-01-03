@@ -116,5 +116,13 @@ gnomonMeshSeries *gnomonFemSolverCommand::inputMesh() {
     return this->d->mesh;
 }
 
+void gnomonFemSolverCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "inputMesh") {
+        this->setMesh(dynamic_cast<gnomonMeshSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonFemSolverCommand.cpp ends here

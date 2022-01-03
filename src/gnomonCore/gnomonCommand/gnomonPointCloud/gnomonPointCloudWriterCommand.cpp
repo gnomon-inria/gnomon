@@ -96,5 +96,13 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudWriterCommand::inputTypes() {
     input_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
     return input_types;
 }
+
+void gnomonPointCloudWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "pointCloud") {
+        this->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
 //
 // gnomonPointCloudWriterCommand.cpp ends here

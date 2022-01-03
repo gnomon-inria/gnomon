@@ -157,17 +157,22 @@ void gnomonAlgorithmWorkspace::setInputs()
     //you need to overwrite this function if you don't have an exact mapping between
     // the number of views (sources) and the number of input types for your command.
     // example: workspaceSegmentation
-    if(d->command->inputs().size() != d->sources->views().size()) {
+
+    if (d->command->inputs().size() == d->sources->views().size()) {
+        d->command->undo(); //clean
+        int i=0;
+        for(auto [name, input_type] : d->command->inputTypes()) {
+            d->command->setInputForm(name, (*d->sources)[i]->form(input_type));
+            ++i;
+        }
+    } else if (d->sources->views().size() == 1) {
+        d->command->undo(); //clean
+        for(auto [name, input_type] : d->command->inputTypes()) {
+            d->command->setInputForm(name, (*d->sources)[0]->form(input_type));
+        }
+    } else {
         dtkWarn() << Q_FUNC_INFO << "inputs size " <<d->command->inputs().size() << " but nb input views " << d->sources->views().size();
         return;
-    }
-
-    d->command->undo(); //clean
-
-    int i=0;
-    for(auto [name, input_type] : d->command->inputTypes()) {
-        d->command->addInputForm((*d->sources)[i]->form(input_type));
-        ++i;
     }
 }
 

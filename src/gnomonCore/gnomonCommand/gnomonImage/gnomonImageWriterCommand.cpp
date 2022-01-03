@@ -97,5 +97,13 @@ gnomonAbstractCommand::orderedMap gnomonImageWriterCommand::inputTypes() {
     return input_types;
 }
 
+void gnomonImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "image") {
+        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonImageWriterCommand.cpp ends here

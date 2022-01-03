@@ -71,6 +71,14 @@ bool gnomonBinaryImageWriterCommand::isEmpty()
 
 gnomonAbstractCommand::orderedMap gnomonBinaryImageWriterCommand::inputTypes() {
     orderedMap input_types;
-    input_types.emplace_back(std::make_pair("initialization", "gnomonBinaryImage"));
+    input_types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
     return input_types;
+}
+
+void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "binaryImage") {
+        this->setForm(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
 }

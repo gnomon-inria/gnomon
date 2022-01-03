@@ -121,5 +121,13 @@ gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::outputTypes() {
     return output_types;
 }
 
+void gnomonMeshFromImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonMeshFromImageCommand.cpp ends here

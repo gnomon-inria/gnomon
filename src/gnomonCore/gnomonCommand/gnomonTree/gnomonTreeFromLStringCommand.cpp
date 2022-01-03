@@ -122,8 +122,16 @@ gnomonAbstractCommand::orderedMap gnomonTreeFromLStringCommand::inputTypes() {
 
 gnomonAbstractCommand::orderedMap gnomonTreeFromLStringCommand::outputTypes() {
     orderedMap types;
-    types.emplace_back(std::make_pair("input", "gnomonTree"));
+    types.emplace_back(std::make_pair("output", "gnomonTree"));
     return types;
+}
+
+void gnomonTreeFromLStringCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonLStringSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
 }
 
 //

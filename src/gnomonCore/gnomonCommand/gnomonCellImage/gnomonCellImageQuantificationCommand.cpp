@@ -149,5 +149,15 @@ gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::outputTy
     return types;
 }
 
+void gnomonCellImageQuantificationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "image") {
+        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else if (name == "cellImage") {
+        this->setCellImage(dynamic_cast<gnomonCellImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonCellImageQuantificationCommand.cpp ends here

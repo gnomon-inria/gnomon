@@ -124,5 +124,13 @@ gnomonAbstractCommand::orderedMap gnomonTreeAdapterCommand::outputTypes() {
     return types;
 }
 
+void gnomonTreeAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonTreeSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonTreeAdapterCommand.cpp ends here

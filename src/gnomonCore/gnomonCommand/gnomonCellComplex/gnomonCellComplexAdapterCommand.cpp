@@ -114,5 +114,13 @@ gnomonAbstractCommand::orderedMap gnomonCellComplexAdapterCommand::inputTypes() 
     return types;
 }
 
+void gnomonCellComplexAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonCellComplexSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonCellComplexAdapterCommand.cpp ends here

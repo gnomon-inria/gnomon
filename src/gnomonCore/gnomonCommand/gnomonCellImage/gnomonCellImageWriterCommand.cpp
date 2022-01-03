@@ -97,5 +97,13 @@ gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {
     return input_types;
 }
 
+void gnomonCellImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "cellImage") {
+        this->setCellImage(dynamic_cast<gnomonCellImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonCellImageWriterCommand.cpp ends here

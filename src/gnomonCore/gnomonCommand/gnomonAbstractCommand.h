@@ -38,8 +38,8 @@ public:
     };
     virtual QMap<QString, gnomonAbstractDynamicForm *> inputs() = 0;
     virtual orderedMap inputTypes() = 0;
-    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) {}
-    virtual void addInputForm(gnomonAbstractDynamicForm *form) {}
+    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) = 0;
+    [[deprecated]] virtual void addInputForm(gnomonAbstractDynamicForm *form) {}
 
 
     virtual QMap<QString, gnomonAbstractDynamicForm *> outputs() = 0;

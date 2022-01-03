@@ -149,5 +149,15 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::outputT
     return output_types;
 }
 
+void gnomonPointCloudQuantificationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "image") {
+        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else if (name == "pointCloud") {
+        this->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonPointCloudQuantificationCommand.cpp ends here
