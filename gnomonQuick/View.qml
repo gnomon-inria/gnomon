@@ -128,6 +128,7 @@ Rectangle {
                 _2d_xy.visible = true;
                 _2d_xz.visible = true;
                 _2d_yz.visible = true;
+                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY.png";
 
             }
         }
