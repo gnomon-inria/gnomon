@@ -14,6 +14,7 @@ namespace filter{
 bool t_run_called = false;
 bool t_set_input_called = false;
 bool t_set_parameter_called = false;
+bool t_set_mask_called = false;
 }
 
 class dummyImageFilterPlugin : public gnomonAbstractImageFilter {
@@ -26,6 +27,8 @@ public:
     void setInput(gnomonImageSeries *image_series) override {filter::t_set_input_called = true;};
     gnomonImageSeries *input() override {return nullptr;};
     gnomonImageSeries *output() override {return nullptr;};
+    gnomonBinaryImageSeries *mask() override {return nullptr;}
+    void setMask(gnomonBinaryImageSeries *init) override {filter::t_set_mask_called = true;};
 };
 
 inline gnomonAbstractImageFilter* dummyImageFilterPluginCreator(void)  {

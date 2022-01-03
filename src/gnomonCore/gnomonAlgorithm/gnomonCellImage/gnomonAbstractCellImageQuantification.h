@@ -36,7 +36,7 @@ public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
   virtual dtkCoreParameters parameters(void) const override = 0;
 
-  virtual void setImage(gnomonImageSeries *image) = 0;
+  virtual void setImage(gnomonImageSeries *image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
   virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
 
     // Outputs
