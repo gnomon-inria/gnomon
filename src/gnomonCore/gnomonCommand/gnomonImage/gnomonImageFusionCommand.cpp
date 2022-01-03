@@ -174,8 +174,8 @@ void gnomonImageFusionCommand::setInputForm(const QString &name, gnomonAbstractD
     dtkWarn()<<Q_FUNC_INFO<<"Implementation uncertain !!!";
     if (this->inputs().contains(name)) {
         this->changeImage(name, dynamic_cast<gnomonImageSeries *>(form));
-    } else if (name == "image") {
-        this->addImage(dynamic_cast<gnomonImageSeries *>(form));
+    } else if (auto *form_cast = dynamic_cast<gnomonImageSeries *>(form)) {
+        this->addImage(form_cast);
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
