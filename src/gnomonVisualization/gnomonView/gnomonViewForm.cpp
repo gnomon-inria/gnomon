@@ -1763,7 +1763,8 @@ void gnomonViewForm::setBounds(double bounds[6])
         changed = true;
     }
 
-//     if (changed) {
+    if (changed) {
+        emit boundsChanged();
 
 //         d->c_x = (d->xBounds[0]+d->xBounds[1])/2;
 //         d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
@@ -1798,10 +1799,9 @@ void gnomonViewForm::setBounds(double bounds[6])
 //                 break;
 //         };
 
-    d->renderer2D->ResetCamera();
-    d->renderer3D->ResetCamera();
-//     }
-
+        d->renderer2D->ResetCamera();
+        d->renderer3D->ResetCamera();
+    }
 }
 
 void gnomonViewForm::setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
@@ -1824,6 +1824,36 @@ void gnomonViewForm::getBounds(double bounds[6])
     bounds[3] = d->yBounds[1];
     bounds[4] = d->zBounds[0];
     bounds[5] = d->zBounds[1];
+}
+
+double gnomonViewForm::xMin(void) const
+{
+    return d->xBounds[0];
+}
+
+double gnomonViewForm::xMax(void) const
+{
+    return d->xBounds[1];
+}
+
+double gnomonViewForm::yMin(void) const
+{
+    return d->yBounds[0];
+}
+
+double gnomonViewForm::yMax(void) const
+{
+    return d->yBounds[1];
+}
+
+double gnomonViewForm::zMin(void) const
+{
+    return d->zBounds[0];
+}
+
+double gnomonViewForm::zMax(void) const
+{
+    return d->zBounds[1];
 }
 
 void gnomonViewForm::setCamera(vtkCamera *cam)
