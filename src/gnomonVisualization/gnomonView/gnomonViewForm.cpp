@@ -122,7 +122,8 @@ public:
 
     QMap<QString, QString> formVisualizationNames;
     QMap<QString, gnomonAbstractVisualization *> formVisualization;
-
+    QMap<QString, QJsonObject *> visualization_description; 
+    QVariantMap parameters;
 public:
     QMap<QString, bool> acceptForms;
 
@@ -263,7 +264,23 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
+
+        QJsonObject json;
+
+        json.insert("plugin_name","cellImageVisualizationMarchingCubes"); // a test Iwill manage later another to retrieve algorithm name
+        
+        QJsonObject parameters;
+        for(auto it = this->parameters.begin(); it != this->parameters.begin(); ++it){
+            auto&& param = it.key();
+            QVariant parameter = this->parameters[param];
+            parameters.insert(param, QJsonValue::fromVariant(parameter));
+        }
+        json.insert("parameters", parameters);
+
+        this->visualization_description[key] = &json;
+        QImage image = this->formVisualization[key]->imageRendering();
+        // gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key], this->renderer3D->GetActiveCamera());
+        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->visualization_description[key],image, this->renderer3D->GetActiveCamera());
         q->emit exportedForm(this->forms[key]);
     }
 }
@@ -420,7 +437,7 @@ void gnomonViewFormPrivate::clear(void)
          this->formVisualization[key]->disconnect();
          this->formVisualization[key]->clearConnections();
          this->formVisualization[key]->clear();
-         //delete this->formVisualization[key];
+         delete this->formVisualization[key];
 
 //         this->parameterLayouts[key]->disconnect();
 //         delete this->parameterLayouts[key];
@@ -663,7 +680,7 @@ void gnomonViewFormPrivate::clear(void)
 
 // }
 
-void gnomonViewFormPrivate::updateFormVisualization(const QString& name)
+void gnomonViewFormPrivate::updateFormVisualization(const QString& name, QJsonObject& parameters)
 {
     auto&& visu = this->formVisualization[name];
     auto&& form = this->forms[name];
@@ -688,6 +705,9 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name)
         auto formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)visu;
         if (formVisualizationCellImage->cellImage() != (gnomonCellImageSeries *)form) {
             formVisualizationCellImage->setCellImage((gnomonCellImageSeries *)form);
+            for(auto& [key, value]:parameters){
+                formVisualizationCellImage->setParameter(key,value);
+            }
             update = true;
         }
     } else if (name == "gnomonImage") {
@@ -716,8 +736,10 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name)
     }
 }
 
-void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QString& visu)
+void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QString& visu, QJsonObject& parameters)
 {
+    auto&& visual = this->formVisualization[name];
+
     if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu) {
 
         if (this->formVisualization[name]) {
@@ -731,7 +753,10 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
         } else if (name == "gnomonCellComplex") {
             this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu);
         } else if (name == "gnomonCellImage") {
-            this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
+            //this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
+            for(auto& [key, value]: parameters) {
+                visual->setParameter(key, value);
+            }
         } else if (name == "gnomonImage") {
             this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu);
         } else if (name == "gnomonMesh") {
@@ -742,7 +767,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
     }
 
     this->formVisualizationNames[name] = visu;
-    this->updateFormVisualization(name);
+    this->updateFormVisualization(name, parameters);
 }
 
 // void gnomonViewFormPrivate::refresh(void)
@@ -1550,18 +1575,29 @@ gnomonCellImageSeries *gnomonViewForm::cellImage(void)
     }
 }
 
-void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstractVisualization *visualization)
+void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage, gnomonAbstractVisualization *visualization, QJsonObject *visu_properties)
 {
+    // d->forms["gnomonCellImage"] = cellImage;
+
+    // if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
+    // {
+    //     QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+    //     d->setFormVisualization("gnomonCellImage", key);
+    // } else {
+    //     d->updateFormVisualization("gnomonCellImage");
+    // }
+    
+    // emit formAdded("gnomonCellImage");
+
     d->forms["gnomonCellImage"] = cellImage;
 
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
     {
-        QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
-        d->setFormVisualization("gnomonCellImage", key);
+        this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"]); 
+        d->setFormVisualization("gnomonCellImage", visu_properties["parameters"]);
     } else {
-        d->updateFormVisualization("gnomonCellImage");
+        d->updateFormVisualization("gnomonCellImage", visu_properties["parameters"]);
     }
-    
     emit formAdded("gnomonCellImage");
 }
 

@@ -170,15 +170,19 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkCamera *cam)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, const QJsonObject &visualization_description, const QImage& image,  vtkCamera *cam)
 {
-    QImage image = visualization->imageRendering();
+    // gnomonAbstractVisualization *visualization,
+
+    // QImage image = visualization->imageRendering();
+
 
 //        gnomonFormManagerItem *item = d->create(form, color, image);
     int item = d->item_counter++;
 
     d->forms.insert(item, form->clone());
-    d->formVisualizations.insert(item, visualization);
+    // d->formVisualizations.insert(item, visualization);
+    d->visualization_description.insert(item, visualization_description);
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
 
