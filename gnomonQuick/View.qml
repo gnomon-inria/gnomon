@@ -151,7 +151,6 @@ Rectangle {
 
             onClicked: {
                 self.switchTo2DXY();
-                self.sliceChange(_2d_slider.value);
             }
         }
     }
@@ -260,6 +259,10 @@ Rectangle {
             _2d_xy.active = false;
             _2d_xz.active = false;
             _2d_yz.active = true;
+        }
+
+        function onSliceChanged(value) {
+            _2d_slider.value = value;
         }
     }
 
