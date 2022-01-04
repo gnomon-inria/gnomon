@@ -85,8 +85,8 @@ Rectangle {
     }
 
     Slider { id: _2d_slider
-        from: 0
-        to: 100
+        from: _2d_xy.active? viewLogic.zMin : _2d_xz.active? viewLogic.yMin : viewLogic.xMin;
+        to:   _2d_xy.active? viewLogic.zMax : _2d_xz.active? viewLogic.yMax : viewLogic.xMax;
         value: 10
         stepSize: 1
         snapMode: Slider.SnapAlways
@@ -123,13 +123,6 @@ Rectangle {
 
             onClicked: {
                 self.switchTo2D();
-                self.sliceChange(_2d_slider.value);
-                _2d_slider.visible = true;
-                _2d_xy.visible = true;
-                _2d_xz.visible = true;
-                _2d_yz.visible = true;
-                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY.png";
-
             }
         }
 
@@ -142,7 +135,8 @@ Rectangle {
 
     Image {
         id: _2d_xy;
-        source: "qrc:/qml/gnomonQuick/View-XY-off.png";
+        property bool active: true
+        source: active? "qrc:/qml/gnomonQuick/View-XY.png" : "qrc:/qml/gnomonQuick/View-XY-off.png";
         visible: false
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -156,19 +150,16 @@ Rectangle {
             anchors.fill: parent;
 
             onClicked: {
-                console.log('2DXY clicked');
                 self.switchTo2DXY();
                 self.sliceChange(_2d_slider.value);
-                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY.png";
-                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ-off.png";
-                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ-off.png";
             }
         }
     }
 
     Image {
         id: _2d_xz;
-        source: "qrc:/qml/gnomonQuick/View-XZ-off.png";
+        property bool active: false
+        source: active? "qrc:/qml/gnomonQuick/View-XZ.png" : "qrc:/qml/gnomonQuick/View-XZ-off.png";
         visible: false
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -182,20 +173,15 @@ Rectangle {
             anchors.fill: parent;
 
             onClicked: {
-                console.log('2DXZ clicked');
                 self.switchTo2DXZ();
-                self.sliceChange(_2d_slider.value);
-                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY-off.png";
-                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ.png";
-                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ-off.png";
-                
             }
         }
     }
 
     Image {
         id: _2d_yz;
-        source: "qrc:/qml/gnomonQuick/View-YZ-off.png";
+        property bool active: false
+        source: active? "qrc:/qml/gnomonQuick/View-YZ.png" : "qrc:/qml/gnomonQuick/View-YZ-off.png";
         visible: false;
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -209,13 +195,7 @@ Rectangle {
             anchors.fill: parent;
 
             onClicked: {
-                console.log('2DYZ clicked');
                 self.switchTo2DYZ();
-                self.sliceChange(_2d_slider.value);
-                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY-off.png";
-                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ-off.png";
-                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ.png";
-
             }
         }
     }
@@ -236,19 +216,51 @@ Rectangle {
 
             onClicked: {
                 self.switchTo3D();
-                _2d_slider.visible = false;
-                _2d_xy.visible = false;
-                _2d_xz.visible = false;
-                _2d_yz.visible = false;
-                _2d_xy.source =  "qrc:/qml/gnomonQuick/View-XY-off.png";
-                _2d_xz.source = "qrc:/qml/gnomonQuick/View-XZ-off.png";
-                _2d_yz.source = "qrc:/qml/gnomonQuick/View-YZ-off.png";
-
             }
         }
 
         ToolTip.visible: _3d_mouse_area.containsMouse;
         ToolTip.text: "3D mode";
+    }
+
+    Connections {
+        target: viewLogic
+
+        function onSwitchedTo3D() {
+            _2d_slider.visible = false;
+            _2d_xy.visible = false;
+            _2d_xz.visible = false;
+            _2d_yz.visible = false;
+        }
+
+        function onSwitchedTo2D() {
+            _2d_slider.visible = true;
+            self.sliceChange(_2d_slider.value);
+            _2d_xy.visible = true;
+            _2d_xz.visible = true;
+            _2d_yz.visible = true;
+        }
+
+        function onSwitchedTo2DXY() {
+            self.sliceChange(_2d_slider.value);
+            _2d_xy.active = true;
+            _2d_xz.active = false;
+            _2d_yz.active = false;
+        }
+
+        function onSwitchedTo2DXZ() {
+            self.sliceChange(_2d_slider.value);
+            _2d_xy.active = false;
+            _2d_xz.active = true;
+            _2d_yz.active = false;
+        }
+
+        function onSwitchedTo2DYZ() {
+            self.sliceChange(_2d_slider.value);
+            _2d_xy.active = false;
+            _2d_xz.active = false;
+            _2d_yz.active = true;
+        }
     }
 
     X.Icon {
