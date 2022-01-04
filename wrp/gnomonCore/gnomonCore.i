@@ -139,8 +139,123 @@ import_array();
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
+%define %apply_numpy_typemaps(TYPE, DATA_TYPECODE)
+
+//Input arrays are defined as arrays of data that are passed into a routine but are not altered in-place
+//or returned to the user. The Python input array is therefore allowed to be almost any Python sequence (such as a list)
+//that can be converted to the requested type of array.
+
+
+//%apply (TYPE* IN_ARRAY1, int DIM1 ) {(TYPE *IN_ARRAY1, int DIM)};
+//%apply (TYPE* IN_ARRAY2, int DIM1, int DIM2) {(TYPE* array, int rows, int cols)};
+
+
+//%typecheck(SWIG_TYPECHECK_DOUBLE_ARRAY,
+//           fragment="NumPy_Macros")
+%typemap(typecheck, precedence=SWIG_TYPECHECK_DOUBLE_ARRAY, noblock=1) (TYPE* IN_ARRAY1, int DIM) {
+    qDebug() << Q_FUNC_INFO << "ttttypecheck " << PyArray_Check($input) 
+             << "DATA_TYPECODE" << PyArray_TYPE((PyArrayObject*)$input)
+             << PyArray_EquivTypenums(array_type($input), DATA_TYPECODE);
+
+  $1 = (($input)
+        && PyArray_Check($input) 
+        && PyArray_EquivTypenums(PyArray_TYPE((PyArrayObject*)$input), DATA_TYPECODE) ) ? 1 : 0;
+}
+%typemap(in, fragment="NumPy_Fragments")
+  (TYPE* IN_ARRAY1, int DIM)
+  (PyArrayObject* array=NULL, int is_new_object=0)
+{
+  npy_intp size[1] = { -1 };
+  array = obj_to_array_contiguous_allow_conversion($input,
+                                                   DATA_TYPECODE,
+                                                   &is_new_object);
+  if (!array || !require_dimensions(array, 1) ||
+      !require_size(array, size, 1)) SWIG_fail;
+  $1 = (TYPE*) array_data(array);
+  $2 = (int) array_size(array,0);
+}
+%typemap(freearg)
+  (TYPE* IN_ARRAY1, int DIM)
+{
+  if (is_new_object$argnum && array$argnum)
+    { Py_DECREF(array$argnum); }
+}
+
+
+%typemap(in, numinputs=0,
+         fragment="NumPy_Backward_Compatibility,NumPy_Macros")
+  (TYPE* out_array1)   (PyObject* array = NULL)
+{
+  void *v_ptr = nullptr;
+  //int ok = SWIG_ConvertPtr(args, &v_ptr,SWIGTYPE_p_QVariant, 0 |  0 );
+  int ok = SWIG_ConvertPtr(swig_obj[0]  , &v_ptr,SWIGTYPE_p_QVariant, 0 |  0 );
+  if (!SWIG_IsOK(ok)) {
+    SWIG_exception_fail(SWIG_ArgError(ok), "in method '" "$symname" "', failed "
+                       "to convert to QVariant *"); 
+  }
+  QVariant *var = reinterpret_cast< QVariant * >(v_ptr);
+ 
+  QVector<TYPE> vec = var->value<QVector<TYPE>>();
+  //qDebug() << Q_FUNC_INFO << vec << var;
+  int rows = vec.size();
+
+  npy_intp dims[1] = { rows };
+
+  array = PyArray_SimpleNew(1, dims, DATA_TYPECODE);
+  if (!array) SWIG_fail;
+  $1 = (TYPE*) array_data(array);
+}
+
+%typemap(argout) (TYPE* out_array1)
+{ 
+  $result = SWIG_Python_AppendOutput($result,(PyObject*)array$argnum);
+}
+
+
+// struct for 1 dimension array
+%extend QVariant {
+    void setValue(TYPE *IN_ARRAY1, int DIM) {
+        QVector<TYPE> vec(IN_ARRAY1, IN_ARRAY1 + DIM);
+        $self->setValue(vec);
+     }
+}
+
+%inline %{
+    PyObject *toNpArray1##TYPE (const QVariant &var) {
+        //qDebug() << "toNpArray1";
+        QVector<TYPE> vec = var.value<QVector<TYPE>>();
+        npy_intp dims[1] = { vec.size() };
+        PyObject *array = PyArray_SimpleNew(1, dims, DATA_TYPECODE);
+        if (!array) {
+            qWarning() << Q_FUNC_INFO << "cant create new python array of dim" << dims[0] << " and type DATA_TYPECODE";
+            return nullptr;
+        }
+        TYPE *data = (TYPE *) PyArray_DATA((PyArrayObject*)array);
+        for(int i=0; i< vec.size(); ++i) {
+            data[i] = vec[i];
+        }
+
+        return array;
+    }
+%}
+
+%enddef    /* %apply_numpy_typemaps() macro */
+
+//%apply_numpy_typemaps(signed char       )
+//%apply_numpy_typemaps(unsigned char     )
+//%apply_numpy_typemaps(short             )
+//%apply_numpy_typemaps(unsigned short    )
+%apply_numpy_typemaps(int, NPY_INT)
+//%apply_numpy_typemaps(unsigned int      )
+  //%apply_numpy_typemaps(long              )
+//%apply_numpy_typemaps(unsigned long     )
+//%apply_numpy_typemaps(long long         )
+//%apply_numpy_typemaps(unsigned long long)
+//%apply_numpy_typemaps(float             )
+%apply_numpy_typemaps(double, NPY_DOUBLE)
+
+
 %typemap(out) QVariant gnomonDataDict::get {
-    qDebug() << Q_FUNC_INFO << "In the good typemap out";
     int type = $1.type();
     QString name($1.typeName());
 
@@ -160,102 +275,15 @@ import_array();
         bool b = $1.value<bool>();
         $result = b ? Py_True : Py_False;
     } else if (name == "QVector<int>") {
-        //todo call toNpArray1Int  -> fragment   toNpArray ##TYPE
-        QVector<int> vec = $1.value<QVector<int>>();
-        npy_intp dims[1] = { vec.size() };
-        PyObject *array = PyArray_SimpleNew(1, dims, NPY_INT);
-        if (!array) SWIG_fail;
-        int *array_data = (int *) array_data(array);
-        for(int i=0; i< vec.size(); ++i) {
-            array_data[i] = vec[i];
-        }
+        PyObject *array = toNpArray1int($1);
+        $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
+    } else if (name == "QVector<double>") {
+        PyObject *array = toNpArray1double($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
     } else {
         $result = SWIG_NewPointerObj(SWIG_as_voidptr(&$1), SWIGTYPE_p_QVariant, 0 |  0 );
     }
 }
-
-%define %apply_numpy_typemaps(TYPE)
-
-//Input arrays are defined as arrays of data that are passed into a routine but are not altered in-place
-//or returned to the user. The Python input array is therefore allowed to be almost any Python sequence (such as a list)
-//that can be converted to the requested type of array.
-
-
-%apply (TYPE* IN_ARRAY1, int DIM1 ) {(TYPE *IN_ARRAY1, int DIM)};
-//%apply (TYPE* IN_ARRAY2, int DIM1, int DIM2) {(TYPE* array, int rows, int cols)};
-
-
-%typemap(in, numinputs=0,
-         fragment="NumPy_Backward_Compatibility,NumPy_Macros")
-  (TYPE* out_array1)   (PyObject* array = NULL)
-{
-  void *v_ptr = nullptr;
-  int ok = SWIG_ConvertPtr(args, &v_ptr,SWIGTYPE_p_QVariant, 0 |  0 );
-  if (!SWIG_IsOK(ok)) {
-    SWIG_exception_fail(SWIG_ArgError(ok), "in method '" "$symname" "', failed "
-                       "to convert to QVariant *"); 
-  }
-  QVariant *var = reinterpret_cast< QVariant * >(v_ptr);
- 
- 
-  QVector<TYPE> vec = var->value<QVector<TYPE>>();
-  qDebug() << Q_FUNC_INFO << vec << var;
-  int rows = vec.size();
-
-  npy_intp dims[1] = { rows };
-
-  array = PyArray_SimpleNew(1, dims, NPY_INT);
-  if (!array) SWIG_fail;
-  $1 = (TYPE*) array_data(array);
-}
-
-%typemap(argout) (TYPE* out_array1)
-{ 
-  $result = SWIG_Python_AppendOutput($result,(PyObject*)array$argnum);
-}
-
-
-// struct for 1 dimension array
-%extend QVariant {
-
-    void setValue(TYPE *IN_ARRAY1, int DIM) {
-        QVector<TYPE> vec(IN_ARRAY1, IN_ARRAY1 + DIM);
-        $self->setValue(vec);
-        qDebug() << Q_FUNC_INFO << "vec.data:" << vec.data() << " self data" << $self->value<QVector<TYPE>>().data();        
-    }
-
-    //temp for debugging
-    int get1DArrayDim() {
-        QVector<TYPE> vec = $self->value<QVector<TYPE>>();
-        qDebug() << Q_FUNC_INFO << vec << " data:" << vec.data() << " self:" << $self;
-        return vec.size();
-    }
-
-    void as1DNpArray(TYPE *out_array1) {
-        qDebug() << "variant typename" << $self->typeName() << $self;
-        QVector<TYPE> vec = $self->value<QVector<TYPE>>();
-        qDebug() << Q_FUNC_INFO << " vec --> " << vec << vec.size() << vec.data();
-        for(int i=0; i< vec.size(); ++i) {
-            out_array1[i] = vec[i];
-        }
-    }
-}
-
-%enddef    /* %apply_numpy_typemaps() macro */
-
-//%apply_numpy_typemaps(signed char       )
-//%apply_numpy_typemaps(unsigned char     )
-//%apply_numpy_typemaps(short             )
-//%apply_numpy_typemaps(unsigned short    )
-%apply_numpy_typemaps(int               )
-//%apply_numpy_typemaps(unsigned int      )
-  //%apply_numpy_typemaps(long              )
-//%apply_numpy_typemaps(unsigned long     )
-//%apply_numpy_typemaps(long long         )
-//%apply_numpy_typemaps(unsigned long long)
-//%apply_numpy_typemaps(float             )
-  //%apply_numpy_typemaps(double            )
 
 
 // VTK
