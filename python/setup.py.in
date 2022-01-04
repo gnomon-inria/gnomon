@@ -1,8 +1,17 @@
 from setuptools import setup, find_packages
+import os
 
-pkgs = find_packages('${CMAKE_CURRENT_SOURCE_DIR}')
+pkgs = find_packages(os.path.relpath('${CMAKE_CURRENT_SOURCE_DIR}'))
 
 setup(name='gnomon_utils',
       version='${gnomon_VERSION}',
-      package_dir={ '': '${CMAKE_CURRENT_SOURCE_DIR}' },
-      packages=pkgs)
+      package_dir={'': os.path.relpath('${CMAKE_CURRENT_SOURCE_DIR}')},
+      packages=pkgs,
+      entry_points={
+        "console_scripts": [
+            "gnomon=gnomon_utils.gnomonCommandLineTools:main"
+        ]
+      },
+      package_data={"": ["templates/*", "templates/*/*", "templates/*/*/*", "schematic/*"]},
+      include_package_data=True,
+      )

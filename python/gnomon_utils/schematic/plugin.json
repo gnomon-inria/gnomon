@@ -1,12 +1,20 @@
 {
   "name": "plugin",
   "vars": {
-    "package_name": "imageenhancement",
     "short_descr": "",
+    "version": "0.0.1",
+    "license": "",
+    "url": ""
+  },
+  "ask": {
+    "package_name": "Package name : ",
+    "short_descr": "Short description : ",
     "author": {
-      "name": "Name",
-      "mail": "mail@mail.net"
-    }
+      "name": "Author(s) name(s) : ",
+      "mail": "Author(s) email address(es) : "
+    },
+    "license": "License : ",
+    "url": "Url for the homepage of the project : "
   },
   "tree": [
     {
@@ -15,23 +23,17 @@
         {
           "name": "env.yaml",
           "template": "plugins/conda/env.yaml",
-          "vars": {
-
-          }
+          "vars": {}
         },
         {
           "name": "meta.yaml",
           "template": "plugins/conda/meta.yaml",
-          "vars": {
-
-          }
+          "vars": {}
         },
         {
           "name": "build.sh",
           "template": "plugins/conda/build.sh",
-          "vars": {
-
-          }
+          "vars": {}
         }
       ]
     },
@@ -44,23 +46,19 @@
           "tree": [
             {
               "name": "algorithm",
-              "python_package": true,
-              "tree": []
+              "python_package": true
             },
             {
               "name": "io",
-              "python_package": true,
-              "tree": []
+              "python_package": true
             },
             {
               "name": "visu",
-              "python_package": true,
-              "tree": []
+              "python_package": true
             },
             {
               "name": "form",
-              "python_package": true,
-              "tree": []
+              "python_package": true
             }
           ]
         }
@@ -73,10 +71,6 @@
     {
       "name": "README.md",
       "template": "plugins/README.md"
-    },
-    {
-      "name": "LICENSE",
-      "template": "plugins/LICENSE"
     }
   ]
 }
