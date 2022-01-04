@@ -66,6 +66,11 @@ class gnomonViewFormPrivate : public QObject // QVTKOpenGLNativeWidget
     Q_OBJECT
 
 public:
+    enum Mode {
+        VIEW_MODE_3D = 3,
+        VIEW_MODE_2D = 2,
+    };
+
     enum Orientation {
         SLICE_ORIENTATION_XY = 2,
         SLICE_ORIENTATION_XZ = 1,
@@ -98,6 +103,7 @@ public:
     Orientation orientation(void);
 
 public:
+    void setViewMode(Mode mode);
     void setSliceOrientation(Orientation orientation);
     void updateOrientation(void);
 
@@ -113,6 +119,7 @@ public:
     gnomonViewForm *q = nullptr;
 
 public:
+    Mode mode = VIEW_MODE_3D;
     Orientation ori = NONE;
     QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
@@ -357,6 +364,25 @@ void gnomonViewFormPrivate::saveScreenshot(void)
 gnomonViewFormPrivate::Orientation gnomonViewFormPrivate::orientation(void)
 {
     return this->ori;
+}
+
+void gnomonViewFormPrivate::setViewMode(Mode mode)
+{
+    this->mode = mode;
+
+    if (this->mode == gnomonViewFormPrivate::VIEW_MODE_3D) {
+        this->renderer2D->DrawOff();
+        this->renderer2D->InteractiveOff();
+
+        this->renderer3D->InteractiveOn();
+        this->renderer3D->DrawOn();
+    } else if (this->mode == gnomonViewFormPrivate::VIEW_MODE_2D) {
+        this->renderer3D->DrawOff();
+        this->renderer3D->InteractiveOff();
+
+        this->renderer2D->InteractiveOn();
+        this->renderer2D->DrawOn();
+    }
 }
 
 void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
@@ -1124,13 +1150,11 @@ void gnomonViewForm::switchTo3D(void)
     // d->renderer2D_XZ->setVisible(false);
     // d->renderer2D_YZ->setVisible(false);
 
-    d->renderer2D->DrawOff();
-    d->renderer2D->InteractiveOff();
+    bool hasChanged = d->mode != gnomonViewFormPrivate::VIEW_MODE_3D;
+    d->setViewMode(gnomonViewFormPrivate::VIEW_MODE_3D);
 
-    d->renderer3D->InteractiveOn();
-    d->renderer3D->DrawOn();
-
-    emit switchedTo3D();
+    if (hasChanged)
+        emit switchedTo3D();
 
     // d->slice_slider->setEnabled(false);
     // d->slice_slider->setVisible(false);
@@ -1153,30 +1177,29 @@ void gnomonViewForm::switchTo2D(void)
     // d->renderer2D_YZ->setVisible(true);
     // d->renderer2D_YZ->toggle(false);
 
-    d->renderer3D->DrawOff();
-    d->renderer3D->InteractiveOff();
+    bool hasChanged = d->mode != gnomonViewFormPrivate::VIEW_MODE_2D;
+    d->setViewMode(gnomonViewFormPrivate::VIEW_MODE_2D);
 
-    d->renderer2D->InteractiveOn();
-    d->renderer2D->DrawOn();
+    if (hasChanged) {
+        switch(d->ori) {
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+                this->switchTo2DXY();
+                break;
 
-    switch(d->ori) {
-        case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
-            this->switchTo2DXY();
-            break;
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+                this->switchTo2DXZ();
+                break;
 
-        case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
-            this->switchTo2DXZ();
-            break;
+            case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+                this->switchTo2DYZ();
+                break;
 
-        case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
-            this->switchTo2DYZ();
-            break;
+            default:
+                break;
+        }
 
-        default:
-            break;
+        emit switchedTo2D();
     }
-
-    emit switchedTo2D();
 
     // d->slice_slider->setVisible(true);
     // d->slice_slider->setEnabled(true);
@@ -1388,6 +1411,10 @@ void gnomonViewForm::link(gnomonViewForm *other)
 
     other->d->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
 
+    connect(other, &gnomonViewForm::switchedTo3D, [=] () {
+        this->switchTo3D();
+        d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
+    });
     connect(other, &gnomonViewForm::switchedTo2D, [=] () {
         this->switchTo2D();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
@@ -1404,8 +1431,6 @@ void gnomonViewForm::link(gnomonViewForm *other)
         this->switchTo2DYZ();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     });
-    connect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
-    connect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
     connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
     connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
 
