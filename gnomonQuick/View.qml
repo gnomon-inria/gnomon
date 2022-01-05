@@ -108,9 +108,10 @@ Rectangle {
     }
 
     X.Icon { id: _2d_icon;
+        property bool active: false
         icon: X.Icons.icons.crop_square;
         size: 32;
-        color: X.Style.foregroundColor;
+        color: active? X.Style.foregroundColor : X.Style.backgroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
@@ -200,9 +201,10 @@ Rectangle {
     }
 
     X.Icon { id: _3d_icon;
+        property bool active: true;
         icon: X.Icons.icons._3d_rotation;
         size: 32;
-        color: X.Style.foregroundColor;
+        color: active? X.Style.foregroundColor : X.Style.backgroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
@@ -226,6 +228,8 @@ Rectangle {
         target: viewLogic
 
         function onSwitchedTo3D() {
+            _3d_icon.active = true;
+            _2d_icon.active = false;
             _2d_slider.visible = false;
             _2d_xy.visible = false;
             _2d_xz.visible = false;
@@ -233,6 +237,8 @@ Rectangle {
         }
 
         function onSwitchedTo2D() {
+            _3d_icon.active = false;
+            _2d_icon.active = true;
             _2d_slider.visible = true;
             self.sliceChange(_2d_slider.value);
             _2d_xy.visible = true;
@@ -270,7 +276,7 @@ Rectangle {
         id: _link;
         icon: viewLogic.synced ? X.Icons.icons.lock_outline : X.Icons.icons.lock_open;
         size: 32;
-        color: X.Style.foregroundColor;
+        color: viewLogic.synced ? X.Style.foregroundColor : X.Style.backgroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
