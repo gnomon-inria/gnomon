@@ -16,7 +16,8 @@ template_env = Environment(
     autoescape=False,
     undefined=StrictUndefined,
 )
-print(template_env.list_templates())
+# print(template_env.list_templates())
+
 
 class Schematic(UserDict):
     def __init__(self, *args, **kwargs):
@@ -40,32 +41,37 @@ class Schematic(UserDict):
 
 
 def dispatch(node: Schematic, env: dir, cur_path):
-    # updating env
+    # updating env: env resolution priority - ask > env > node["vars"]
     new_env = node.get("vars", {})
-    new_env.update(env)
+    new_env.update(env)  # base env gets priority
     # getting asks
     if "ask" in node:
         new_env = get_asks(node["ask"], new_env)
     # dispatching
-    if "tree" in node:
+    if "tree" in node:  # directory
         return directory_walker(node, new_env, cur_path)
-    elif node.get("python_package", False) is True:
+    elif node.get("python_package", False) is True:  # empty python package
         return empty_package(node, new_env, cur_path)
-    elif "template" in node:
+    elif "template" in node:  # file from template
         return template_handler(node, new_env, cur_path)
-    elif "source" in node:
+    elif "source" in node:  # file from template string
         return source_handler(node, new_env, cur_path)
+    elif "schematic" in node:  # sub schematic
+        return schematic_handler(node, new_env, cur_path)
     else:
         raise TypeError(f"node {node.get('name', '[name is not defined either]')} does not define either a filetree"
                         f" [tree] or a source template [template]")
 
 
 def directory_walker(node: Schematic, env: dir, cur_path):
-    new_path = os.path.join(cur_path, node.get_templated("name", env))
-    try:
-        os.mkdir(new_path)
-    except FileExistsError:
-        pass
+    if "schematic_name" not in node:  # True if node is not the root of the schematic
+        new_path = os.path.join(cur_path, node.get_templated("name", env))
+        try:
+            os.mkdir(new_path)
+        except FileExistsError:
+            pass
+    else:
+        new_path = cur_path
     if node.get("python_package", False) is True:
         with open(os.path.join(new_path, "__init__.py"), "w"):
             pass
@@ -95,6 +101,16 @@ def source_handler(leaf: Schematic, env, cur_path):
     template = template_env.from_string(leaf["source"])
     with open(file_path, "w") as file:
         file.write(template.render(env))
+
+
+def schematic_handler(node, new_env, cur_path):
+    # resolve path
+    if os.path.isabs(node["path"]):
+        path = node["path"]
+    else:
+        path = os.path.join(cur_path, node["path"])
+    # calling the schematic
+    schematic_reader_from_path(node["schematic"], path, new_env)
 
 
 def get_asks(questions, base_env):
@@ -128,7 +144,7 @@ def register_known_schematics(path="") -> OrderedDict:
     #print(path)
     for entry in sorted(glob(os.path.join(path, "*.json"), recursive=True)):
         with open(entry, "r") as file:
-            name = json.load(file)["name"]
+            name = json.load(file)["schematic_name"]
         schematic_list[name] = entry
     return schematic_list
 

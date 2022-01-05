@@ -1,5 +1,5 @@
 {
-  "name": "plugin",
+  "schematic_name": "plugin",
   "vars": {
     "short_descr": "",
     "version": "0.0.1",
