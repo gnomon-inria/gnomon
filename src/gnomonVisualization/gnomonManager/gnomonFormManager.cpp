@@ -106,7 +106,7 @@ void gnomonFormManager::deleteForm(int id)
         return;
     }
     d->forms.remove(id);
-    d->formVisualizations.remove(id);
+    // d->formVisualizations.remove(id);
     d->formCameras.remove(id);
     d->formData.remove(id);
     d->formWriterCommand.remove(id);
@@ -291,10 +291,10 @@ gnomonAbstractDynamicForm *gnomonFormManager::get(int index)
     return d->forms.value(index, nullptr);
 }
 
-gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
-{
-    return d->formVisualizations.value(index, nullptr);
-}
+// gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
+// {
+//     return d->formVisualizations.value(index, nullptr);
+// }
 
 QJsonObject gnomonFormManager::getVisuDescription(int index)
 {

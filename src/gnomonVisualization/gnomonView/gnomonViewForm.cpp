@@ -740,9 +740,9 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
 
 void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QJsonObject& parameters)
 {
-    auto&& visual = this->formVisualizationNames[name];
+    auto&& visu_name = this->formVisualizationNames[name];
 
-    if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visual) {
+    if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu_name) {
 
         if (this->formVisualization[name]) {
             this->formVisualization[name]->clear();
@@ -751,26 +751,51 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QJso
         }
 
         if (name == "gnomonBinaryImage") {
-            this->formVisualization[name] = gnomonVisualization::visualizationBinaryImage::pluginFactory().create(visual);
+            // this->formVisualization[name] = gnomonVisualization::visualizationBinaryImage::pluginFactory().create(visu_name);
+            for(auto& key: parameters.keys()) {
+                QJsonValue value = parameters.value(key);
+                qDebug()<<value;
+                this->formVisualization[name]->setParameter(key, value.toString());
+            }
         } else if (name == "gnomonCellComplex") {
-            this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visual);
+            // this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu_name);
+            for(auto& key: parameters.keys()) {
+                QJsonValue value = parameters.value(key);
+                qDebug()<<value;
+                this->formVisualization[name]->setParameter(key, value.toString());
+            }
         } else if (name == "gnomonCellImage") {
-            //this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu);
+            //this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QJsonValue value = parameters.value(key);
                 qDebug()<<value;
                 this->formVisualization[name]->setParameter(key, value.toString());
             }
         } else if (name == "gnomonImage") {
-            this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visual);
+            // this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu_name);
+            for(auto& key: parameters.keys()) {
+                QJsonValue value = parameters.value(key);
+                qDebug()<<value;
+                this->formVisualization[name]->setParameter(key, value.toString());
+            }
         } else if (name == "gnomonMesh") {
-            this->formVisualization[name] = gnomonVisualization::visualizationMesh::pluginFactory().create(visual);
+            // this->formVisualization[name] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu_name);
+            for(auto& key: parameters.keys()) {
+                QJsonValue value = parameters.value(key);
+                qDebug()<<value;
+                this->formVisualization[name]->setParameter(key, value.toString());
+            }
         } else if (name == "gnomonPointCloud") {
-            this->formVisualization[name] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visual);
+            // this->formVisualization[name] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu_name);
+            for(auto& key: parameters.keys()) {
+                QJsonValue value = parameters.value(key);
+                qDebug()<<value;
+                this->formVisualization[name]->setParameter(key, value.toString());
+            }
         }
     }
 
-    this->formVisualizationNames[name] = visual;
+    this->formVisualizationNames[name] = visu_name;
     this->updateFormVisualization(name, parameters);
 }
 
@@ -1508,19 +1533,19 @@ gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
     }
 }
 
-void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, const QJsonObject &visualization,  gnomonAbstractVisualization *visu)
+void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, const QJsonObject &visualization)
 {
     qDebug() << Q_FUNC_INFO << name << form << visualization;
 
     if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
         if (d->acceptForms["gnomonBinaryImage"]) {
-            //this->setBinaryImage(binaryImage, visualization);
+            this->setBinaryImage(binaryImage, visualization);
         }
     }  else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
         if (d->acceptForms["gnomonCellComplex"]) {
-            //this->setCellComplex(cellComplex, visualization);
+            this->setCellComplex(cellComplex, visualization);
         } else {
-            //this->setAdaptedForm("gnomonCellComplex", cellComplex, visualization);
+            this->setAdaptedForm("gnomonCellComplex", cellComplex);
         }
     } else if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         if (d->acceptForms["gnomonCellImage"]) {
@@ -1528,17 +1553,17 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
         }
     } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         if (d->acceptForms["gnomonImage"]) {
-            //this->setImage(image, visualization);
+            this->setImage(image, visualization);
         }
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         if (d->acceptForms["gnomonMesh"]) {
-            //this->setMesh(mesh, visualization);
+            this->setMesh(mesh, visualization);
         } else {
-            //this->setAdaptedForm("gnomonMesh", mesh, visualization);
+            this->setAdaptedForm("gnomonMesh", mesh);
         }
     } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         if (d->acceptForms["gnomonPointCloud"]) {
-            //this->setPointCloud(pointCloud, visualization);
+            this->setPointCloud(pointCloud, visualization);
         }
     }
     return;
@@ -1595,12 +1620,21 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage,const QJsonOb
 
     d->forms["gnomonCellImage"] = cellImage;
 
+
     if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
     {
-        d->formVisualization["gnomonCellImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonCellImage", visu_properties);
+        QString key;
+
+        if(visu_properties.contains("plugin_name")) {
+            key = visu_properties["plugin_name"].toString();
+        } else {
+            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+        }
+
+        d->formVisualization["gnomonCellImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
+        d->setFormVisualization("gnomonCellImage", visu_properties["parameters"].toObject());
     } else {
-        d->updateFormVisualization("gnomonCellImage", visu_properties);
+        d->updateFormVisualization("gnomonCellImage", visu_properties["parameters"].toObject());
     }
     emit formAdded("gnomonCellImage");
 }
@@ -1630,12 +1664,22 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, const 
 
     d->forms["gnomonCellComplex"] = cellComplex;
 
+
+
     if ((!d->formVisualization.contains("gnomonCellComplex"))||(!d->formVisualization["gnomonCellComplex"]))
     {
-        d->formVisualization["gnomonCellComplex"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonCellComplex", visu_properties);
+        QString key;
+
+        if(visu_properties.contains("plugin_name")) {
+            key = visu_properties["plugin_name"].toString();
+        } else {
+            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+        }
+
+        d->formVisualization["gnomonCellComplex"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
+        d->setFormVisualization("gnomonCellComplex", visu_properties["parameters"].toObject());
     } else {
-        d->updateFormVisualization("gnomonCellComplex", visu_properties);
+        d->updateFormVisualization("gnomonCellComplex", visu_properties["parameters"].toObject());
     }
 
     emit formAdded("gnomonCellComplex");
@@ -1671,10 +1715,18 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, const QJsonObject &visu_
     
     if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
     {
-        d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonImage", visu_properties);
+        QString key;
+
+        if(visu_properties.contains("plugin_name")) {
+            key = visu_properties["plugin_name"].toString();
+        } else {
+            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+        }
+
+        d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
+        d->setFormVisualization("gnomonImage", visu_properties["parameters"].toObject());
     } else {
-        d->updateFormVisualization("gnomonImage",visu_properties);
+        d->updateFormVisualization("gnomonImage",visu_properties["parameters"].toObject());
     }
 
     emit formAdded("gnomonImage");
@@ -1707,10 +1759,18 @@ void gnomonViewForm::setBinaryImage(gnomonBinaryImageSeries *image, const QJsonO
 
     if ((!d->formVisualization.contains("gnomonBinaryImage"))||(!d->formVisualization["gnomonBinaryImage"]))
     {
+        QString key;
+
+        if(visu_properties.contains("plugin_name")) {
+            key = visu_properties["plugin_name"].toString();
+        } else {
+            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+        }
+
         d->formVisualization["gnomonBinaryImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonBinaryImage", visu_properties);
+        d->setFormVisualization("gnomonBinaryImage", visu_properties["parameters"].toObject());
     } else {
-        d->updateFormVisualization("gnomonBinaryImage", visu_properties);
+        d->updateFormVisualization("gnomonBinaryImage", visu_properties["parameters"].toObject());
     }
 
     emit formAdded("gnomonBinaryImage");
@@ -1746,10 +1806,18 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, const QJsonObject &visu_pro
 
     if ((!d->formVisualization.contains("gnomonMesh"))||(!d->formVisualization["gnomonMesh"]))
     {
-        d->formVisualization["gnomonMesh"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonMesh", visu_properties);
+        QString key;
+
+        if(visu_properties.contains("plugin_name")) {
+            key = visu_properties["plugin_name"].toString();
+        } else {
+            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+        }
+
+        d->formVisualization["gnomonMesh"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
+        d->setFormVisualization("gnomonMesh", visu_properties["parameters"].toObject());
     } else {
-        d->updateFormVisualization("gnomonMesh",visu_properties);
+        d->updateFormVisualization("gnomonMesh",visu_properties["parameters"].toObject());
     }
 
     emit formAdded("gnomonMesh");
@@ -1782,10 +1850,18 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, const QJs
     
     if ((!d->formVisualization.contains("gnomonPointCloud"))||(!d->formVisualization["gnomonPointCloud"]))
     {
-        d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonPointCloud", visu_properties);
+        QString key;
+
+        if(visu_properties.contains("plugin_name")) {
+            key = visu_properties["plugin_name"].toString();
+        } else {
+            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+        }
+
+        d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
+        d->setFormVisualization("gnomonPointCloud", visu_properties["parameters"].toObject());
     } else {
-        d->updateFormVisualization("gnomonPointCloud",visu_properties);
+        d->updateFormVisualization("gnomonPointCloud",visu_properties["parameters"].toObject());
     }
     
     emit formAdded("gnomonPointCloud");
@@ -2172,8 +2248,8 @@ void gnomonViewForm::drop(int index)
     qDebug() << Q_FUNC_INFO << gnomonFormManager::instance()->getVisualization(index);
 
     QJsonObject visu_descr = gnomonFormManager::instance()->getVisuDescription(index);
-
-    this->setForm("formManager", form, visu_descr, gnomonFormManager::instance()->getVisualization(index));
+    
+    this->setForm("formManager", form, visu_descr);
 
     d->interactor()->Render();
 }

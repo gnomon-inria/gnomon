@@ -107,7 +107,7 @@ public slots:
     void setExportColor(const QColor& color);
 
 public:
-    void setForm(const QString&, gnomonAbstractDynamicForm *,const QJsonObject &visualization={}, gnomonAbstractVisualization *  = nullptr);
+    void setForm(const QString&, gnomonAbstractDynamicForm *,const QJsonObject &visualization={});
     void setBinaryImage(gnomonBinaryImageSeries *, const QJsonObject &visu_properties={});
     void setCellComplex(gnomonCellComplexSeries *, const QJsonObject &visu_properties={});
     void setCellImage(gnomonCellImageSeries *,const QJsonObject &visu_properties={});
