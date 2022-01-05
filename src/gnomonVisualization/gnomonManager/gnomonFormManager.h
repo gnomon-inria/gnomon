@@ -54,7 +54,7 @@ public slots:
 
 public:
     gnomonAbstractDynamicForm *get(int index);
-    gnomonAbstractVisualization *getVisualization(int index);
+    // gnomonAbstractVisualization *getVisualization(int index);
     QJsonObject getVisuDescription(int index);
     vtkCamera *getCamera(int index);
 

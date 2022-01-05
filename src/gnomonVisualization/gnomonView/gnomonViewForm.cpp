@@ -192,7 +192,7 @@ public slots:
     // void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
     // void addFormMenu(const QString& key);
     // void refresh(void);
-    void setFormVisualization(const QString& name, const QJsonObject& parameters);
+    void setFormVisualization(const QString& name, const QString& visu_name, const QJsonObject& parameters);
     void updateFormVisualization(const QString& name, const QJsonObject& parameters);
 
 public:
@@ -268,13 +268,15 @@ void gnomonViewFormPrivate::exportToManager(void)
     for (const auto& key : this->forms.keys()) {
 
         QJsonObject json;
-        qDebug()<<this->formVisualizationNames[key];
+        qDebug()<<Q_FUNC_INFO<<this->formVisualizationNames[key];
         json.insert("plugin_name",this->formVisualizationNames[key]);
         QJsonObject parameters;
-        for(auto it = this->parameters.begin(); it != this->parameters.begin(); ++it){
-            auto&& param = it.key();
-            QVariant parameter = this->parameters[param];
-            parameters.insert(param, QJsonValue::fromVariant(parameter));
+
+        dtkCoreParameters visu_parameters = this->formVisualization[key]->parameters();
+        for (auto param_name : visu_parameters.keys()){
+            QVariantHash param_value = visu_parameters[param_name]->toVariantHash();
+            qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
+            parameters.insert(param_name, QJsonObject::fromVariantHash(param_value));
         }
         json.insert("parameters", parameters);
 
@@ -716,6 +718,12 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
         auto formVisualizationImage = (gnomonAbstractVisualizationImage *)visu;
         if (formVisualizationImage->image() != (gnomonImageSeries *)form) {
             formVisualizationImage->setImage((gnomonImageSeries *)form);
+            for(auto& key: parameters.keys()) {
+                QVariantHash param = parameters[key].toObject().toVariantHash();
+                qDebug()<<Q_FUNC_INFO<<key<<param;
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    formVisualizationImage->setParameter(key, dtkCoreParameter::create(param)->variant());
+            }
             update = true;
         }
     } else if (name == "gnomonMesh") {
@@ -738,9 +746,9 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
     }
 }
 
-void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QJsonObject& parameters)
+void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QString& visu_name, const QJsonObject& parameters)
 {
-    auto&& visu_name = this->formVisualizationNames[name];
+    //auto&& visu_name = this->formVisualizationNames[name];
 
     if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu_name) {
 
@@ -772,7 +780,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QJso
                 this->formVisualization[name]->setParameter(key, value.toString());
             }
         } else if (name == "gnomonImage") {
-            // this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu_name);
+            this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QJsonValue value = parameters.value(key);
                 qDebug()<<value;
@@ -1632,7 +1640,7 @@ void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage,const QJsonOb
         }
 
         d->formVisualization["gnomonCellImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
-        d->setFormVisualization("gnomonCellImage", visu_properties["parameters"].toObject());
+        d->setFormVisualization("gnomonCellImage", key, visu_properties["parameters"].toObject());
     } else {
         d->updateFormVisualization("gnomonCellImage", visu_properties["parameters"].toObject());
     }
@@ -1677,7 +1685,7 @@ void gnomonViewForm::setCellComplex(gnomonCellComplexSeries *cellComplex, const 
         }
 
         d->formVisualization["gnomonCellComplex"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
-        d->setFormVisualization("gnomonCellComplex", visu_properties["parameters"].toObject());
+        d->setFormVisualization("gnomonCellComplex", key, visu_properties["parameters"].toObject());
     } else {
         d->updateFormVisualization("gnomonCellComplex", visu_properties["parameters"].toObject());
     }
@@ -1712,21 +1720,23 @@ void gnomonViewForm::setImage(gnomonImageSeries* image, const QJsonObject &visu_
     // emit formAdded("gnomonImage");
 
     d->forms["gnomonImage"] = image;
-    
+
+    QString key = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
+    if(visu_properties.contains("plugin_name")) {
+        key = visu_properties["plugin_name"].toString();
+    }
+
+    QJsonObject parameters = {};
+    if (visu_properties.contains("parameters")) {
+        parameters = visu_properties["parameters"].toObject();
+    }
+
     if ((!d->formVisualization.contains("gnomonImage"))||(!d->formVisualization["gnomonImage"]))
     {
-        QString key;
-
-        if(visu_properties.contains("plugin_name")) {
-            key = visu_properties["plugin_name"].toString();
-        } else {
-            key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
-        }
-
-        d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
-        d->setFormVisualization("gnomonImage", visu_properties["parameters"].toObject());
+        // d->formVisualization["gnomonImage"] = gnomonVisualization::visualizationImage::pluginFactory().create(key);
+        d->setFormVisualization("gnomonImage", key, parameters);
     } else {
-        d->updateFormVisualization("gnomonImage",visu_properties["parameters"].toObject());
+        d->updateFormVisualization("gnomonImage", parameters);
     }
 
     emit formAdded("gnomonImage");
@@ -1768,7 +1778,7 @@ void gnomonViewForm::setBinaryImage(gnomonBinaryImageSeries *image, const QJsonO
         }
 
         d->formVisualization["gnomonBinaryImage"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_properties["plugin_name"].toString()); 
-        d->setFormVisualization("gnomonBinaryImage", visu_properties["parameters"].toObject());
+        d->setFormVisualization("gnomonBinaryImage", key, visu_properties["parameters"].toObject());
     } else {
         d->updateFormVisualization("gnomonBinaryImage", visu_properties["parameters"].toObject());
     }
@@ -1815,7 +1825,7 @@ void gnomonViewForm::setMesh(gnomonMeshSeries *mesh, const QJsonObject &visu_pro
         }
 
         d->formVisualization["gnomonMesh"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
-        d->setFormVisualization("gnomonMesh", visu_properties["parameters"].toObject());
+        d->setFormVisualization("gnomonMesh", key, visu_properties["parameters"].toObject());
     } else {
         d->updateFormVisualization("gnomonMesh",visu_properties["parameters"].toObject());
     }
@@ -1859,7 +1869,7 @@ void gnomonViewForm::setPointCloud(gnomonPointCloudSeries *pointCloud, const QJs
         }
 
         d->formVisualization["gnomonPointCloud"] = gnomonVisualization::visualizationCellImage::pluginFactory().create(key); 
-        d->setFormVisualization("gnomonPointCloud", visu_properties["parameters"].toObject());
+        d->setFormVisualization("gnomonPointCloud", key, visu_properties["parameters"].toObject());
     } else {
         d->updateFormVisualization("gnomonPointCloud",visu_properties["parameters"].toObject());
     }
@@ -2245,7 +2255,7 @@ void gnomonViewForm::drop(int index)
         }
     }
 
-    qDebug() << Q_FUNC_INFO << gnomonFormManager::instance()->getVisualization(index);
+    qDebug() << Q_FUNC_INFO << gnomonFormManager::instance()->getVisuDescription(index);
 
     QJsonObject visu_descr = gnomonFormManager::instance()->getVisuDescription(index);
     
