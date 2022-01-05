@@ -15,7 +15,7 @@ requirements:
   build:
     - setuptools
     - python=3.7.*
-    - gnomon >=0.17
+    - gnomon=${gnomon_VERSION}
     - dtk-plugins-imaging >=2.0.2
   host:
     - python=3.7.*
