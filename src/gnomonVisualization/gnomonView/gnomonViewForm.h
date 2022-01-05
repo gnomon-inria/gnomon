@@ -62,6 +62,13 @@ public:
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
     Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
 
+    Q_PROPERTY(double xMin READ xMin NOTIFY boundsChanged);
+    Q_PROPERTY(double xMax READ xMax NOTIFY boundsChanged);
+    Q_PROPERTY(double yMin READ xMin NOTIFY boundsChanged);
+    Q_PROPERTY(double yMax READ yMax NOTIFY boundsChanged);
+    Q_PROPERTY(double zMin READ zMin NOTIFY boundsChanged);
+    Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -77,6 +84,10 @@ signals:
     void switchedTo2DXY(void);
     void switchedTo2DXZ(void);
     void switchedTo2DYZ(void);
+
+signals:
+    void boundsChanged(void);
+
     void syncedChanged(void);
     void syncingChanged(void);
 
@@ -162,6 +173,12 @@ public slots:
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
     void getBounds(double bounds[6]);
+    double xMin(void) const;
+    double xMax(void) const;
+    double yMin(void) const;
+    double yMax(void) const;
+    double zMin(void) const;
+    double zMax(void) const;
 
 public:
     void setCamera(vtkCamera *);
