@@ -100,9 +100,6 @@ public slots:
 //     void resizeEvent(QResizeEvent *);
 
 public:
-    Orientation orientation(void);
-
-public:
     void setViewMode(Mode mode);
     void setSliceOrientation(Orientation orientation);
     void updateOrientation(void);
@@ -133,6 +130,18 @@ public:
 public:
     QMap<QString, bool> acceptForms;
 
+public:
+    QMetaObject::Connection connect3D;
+    QMetaObject::Connection connect2D;
+    QMetaObject::Connection connectXY;
+    QMetaObject::Connection connectXZ;
+    QMetaObject::Connection connectYZ;
+    QMetaObject::Connection connectSlice;
+    QMetaObject::Connection connectTime;
+    
+public:
+    void clearConnections(void);
+    
 public:
     // gnomonOverlayButton *renderer2D_button = nullptr;
     // gnomonOverlayButton *renderer3D_button = nullptr;
@@ -263,6 +272,7 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QObject *parent) : QObject(parent)
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 {
+    this->clearConnections();
     delete this->default_style;
     delete this->xyz_style;
 }
@@ -361,9 +371,15 @@ void gnomonViewFormPrivate::saveScreenshot(void)
 //     QVTKOpenGLNativeWidget::resizeEvent(event);
 // }
 
-gnomonViewFormPrivate::Orientation gnomonViewFormPrivate::orientation(void)
+void gnomonViewFormPrivate::clearConnections(void)
 {
-    return this->ori;
+    disconnect(this->connect3D);
+    disconnect(this->connect2D);
+    disconnect(this->connectXY);
+    disconnect(this->connectYZ);
+    disconnect(this->connectXZ);
+    disconnect(this->connectSlice);
+    disconnect(this->connectTime);
 }
 
 void gnomonViewFormPrivate::setViewMode(Mode mode)
@@ -1392,70 +1408,68 @@ void gnomonViewForm::tryLinking(void)
 
 void gnomonViewForm::link(gnomonViewForm *other)
 {
-    // if (d->syncing_timer) {
-    //     d->syncing_timer->stop();
-    //     d->syncing = false;
-    //     emit syncingChanged();
-    // }
+    d->synced = true;
 
-    // d->sync->toggle(true);
-    // d->sync->changeIcon(fa::lock);
-
-           d->synced = true;
-//    other->d->synced = true;
-
-    // ///////////////////////////////////////////////////////////////
+    if (d->mode == gnomonViewFormPrivate::VIEW_MODE_3D) {
+        other->switchTo3D();
+    } else if (d->mode == gnomonViewFormPrivate::VIEW_MODE_2D) {
+        other->switchTo2D();
+        if (d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XY) {
+            other->switchTo2DXY();
+        } else if (d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+            other->switchTo2DXZ();
+        } else if (d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+            other->switchTo2DYZ();
+        }
+    }
 
     d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
 
     other->d->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+    this->render();
 
-    connect(other, &gnomonViewForm::switchedTo3D, [=] () {
+    d->clearConnections();
+    d->connect3D = connect(other, &gnomonViewForm::switchedTo3D, [=] () {
         this->switchTo3D();
         d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
     });
-    connect(other, &gnomonViewForm::switchedTo2D, [=] () {
+    d->connect2D = connect(other, &gnomonViewForm::switchedTo2D, [=] () {
         this->switchTo2D();
+        if (other->d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XY) {
+            this->switchTo2DXY();
+        } else if (other->d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+            this->switchTo2DXZ();
+        } else if (other->d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+            this->switchTo2DYZ();
+        }
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     });
-    connect(other, &gnomonViewForm::switchedTo2DXY, [=] () {
+    d->connectXY = connect(other, &gnomonViewForm::switchedTo2DXY, [=] () {
         this->switchTo2DXY();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     });
-    connect(other, &gnomonViewForm::switchedTo2DXZ, [=] () {
+    d->connectXZ = connect(other, &gnomonViewForm::switchedTo2DXZ, [=] () {
         this->switchTo2DXZ();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     });
-    connect(other, &gnomonViewForm::switchedTo2DYZ, [=] () {
+    d->connectYZ = connect(other, &gnomonViewForm::switchedTo2DYZ, [=] () {
         this->switchTo2DYZ();
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
     });
-    connect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
-    connect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+    d->connectSlice = connect(other, &gnomonViewForm::sliceChanged, [=] (int value) {
+        this->sliceChange(value);
+    });
+    d->connectTime = connect(other, &gnomonViewForm::timeChanged, [=] (double value) {
+        this->onTimeChanged(value);
+    });
 
-    emit        syncedChanged();
-//    emit other->syncedChanged();
+    emit syncedChanged();
 }
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
 {
-    // if (d->syncing_timer) {
-    //     d->syncing_timer->stop();
-    //     d->syncing_timer->disconnect();
-    //     delete d->syncing_timer;
-    //     d->syncing_timer = nullptr;
-    //     d->syncing = false;
-    //     emit syncingChanged();
-    // }
-
-    // d->sync->toggle(false);
-    // d->sync->changeIcon(fa::unlock);
-
-           d->synced = false;
-//    other->d->synced = false;
-
-    // ///////////////////////////////////////////////////////////////
+    d->synced = false;
 
     vtkSmartPointer<vtkCamera> camera2D = vtkCamera::New();
     camera2D->ShallowCopy(d->renderer2D->GetActiveCamera());
@@ -1465,18 +1479,9 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     camera3D->ShallowCopy(d->renderer3D->GetActiveCamera());
     d->renderer3D->SetActiveCamera(camera3D);
 
-    // ///////////////////////////////////////////////////////////////
+    d->clearConnections();
 
-    disconnect(other, SIGNAL(switchedTo3D()), this, SLOT(switchTo3D()));
-    disconnect(other, SIGNAL(switchedTo2D()), this, SLOT(switchTo2D()));
-    disconnect(other, SIGNAL(switchedTo2DXY()), this, SLOT(switchTo2DXY()));
-    disconnect(other, SIGNAL(switchedTo2DXZ()), this, SLOT(switchTo2DXZ()));
-    disconnect(other, SIGNAL(switchedTo2DYZ()), this, SLOT(switchTo2DYZ()));
-    disconnect(other, SIGNAL(sliceChanged(int)), this, SLOT(sliceChange(int)));
-    disconnect(other, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
-
-    emit        syncedChanged();
-//    emit other->syncedChanged();
+    emit syncedChanged();
 }
 
 void gnomonViewForm::setExportColor(const QColor& color)
