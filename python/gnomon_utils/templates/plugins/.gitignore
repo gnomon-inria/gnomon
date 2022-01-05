@@ -1,10 +1,6 @@
-# {# pkglts, git
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
-# pkglts files
-.pkglts/info.log*
 
 # Packages
 *.egg
@@ -39,7 +35,6 @@ lib64/
 .project
 .pydevproject
 .settings
-
 
 # C extensions
 *.so
@@ -89,11 +84,5 @@ target/
 # coverage
 .coverage
 
-
-# #}
-
+# Mac OS
 .DS_Store
-
-# user custom filters
-
-step.md

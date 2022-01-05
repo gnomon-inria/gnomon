@@ -28,9 +28,6 @@ requirements:
     - dtk-plugins-imaging >=2.0.2
     - nose
     - coverage
-    - timagetk
-    - plugin_data
-    - plugin_tissueimage
 
 about:
   home: {{url}}
