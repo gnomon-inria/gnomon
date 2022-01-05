@@ -296,6 +296,11 @@ gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
     return d->formVisualizations.value(index, nullptr);
 }
 
+QJsonObject gnomonFormManager::getVisuDescription(int index)
+{
+    return d->visualization_description.value(index);
+}
+
 vtkCamera *gnomonFormManager::getCamera(int index)
 {
     return d->formCameras.value(index, nullptr);
