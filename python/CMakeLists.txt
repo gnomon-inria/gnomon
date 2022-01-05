@@ -23,5 +23,8 @@ if (PYTHON)
 
     add_custom_target(target ALL DEPENDS ${OUTPUT})
 
-    install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install)")
+    install(
+        CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} clean)"
+        CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install)"
+    )
 endif()
