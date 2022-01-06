@@ -440,7 +440,8 @@ void gnomonViewFormPrivate::clear(void)
          this->formVisualization[key]->disconnect();
          this->formVisualization[key]->clearConnections();
          this->formVisualization[key]->clear();
-         delete this->formVisualization[key];
+         // TODO: Fix offscreen rendering related segFault when destroying Visualization
+         // delete this->formVisualization[key];
 
 //         this->parameterLayouts[key]->disconnect();
 //         delete this->parameterLayouts[key];
@@ -695,75 +696,49 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
         auto formVisualizationBinaryImage = (gnomonAbstractVisualizationBinaryImage *)visu;
         if (formVisualizationBinaryImage->binaryImage() != (gnomonBinaryImageSeries *)form) {
             formVisualizationBinaryImage->setBinaryImage((gnomonBinaryImageSeries *)form);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    formVisualizationBinaryImage->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
             update = true;
         }
     } else if (name == "gnomonCellComplex") {
         auto formVisualizationCellComplex = (gnomonAbstractVisualizationCellComplex *)visu;
         if (formVisualizationCellComplex->cellComplex() != (gnomonCellComplexSeries *)form) {
             formVisualizationCellComplex->setCellComplex((gnomonCellComplexSeries *)form);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    formVisualizationCellComplex->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
             update = true;
         }
     } else if (name == "gnomonCellImage") {
         auto formVisualizationCellImage = (gnomonAbstractVisualizationCellImage *)visu;
         if (formVisualizationCellImage->cellImage() != (gnomonCellImageSeries *)form) {
             formVisualizationCellImage->setCellImage((gnomonCellImageSeries *)form);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    formVisualizationCellImage->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
             update = true;
         }
     } else if (name == "gnomonImage") {
         auto formVisualizationImage = (gnomonAbstractVisualizationImage *)visu;
         if (formVisualizationImage->image() != (gnomonImageSeries *)form) {
             formVisualizationImage->setImage((gnomonImageSeries *)form);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    formVisualizationImage->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
             update = true;
         }
     } else if (name == "gnomonMesh") {
         auto formVisualizationMesh = (gnomonAbstractVisualizationMesh *)visu;
         if (formVisualizationMesh->mesh() != (gnomonMeshSeries *)form) {
             formVisualizationMesh->setMesh((gnomonMeshSeries *)form);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    formVisualizationMesh->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
             update = true;
         }
     } else if (name == "gnomonPointCloud") {
         auto formVisualizationPointCloud = (gnomonAbstractVisualizationPointCloud *)visu;
         if (formVisualizationPointCloud->pointCloud() != (gnomonPointCloudSeries *)form) {
             formVisualizationPointCloud->setPointCloud((gnomonPointCloudSeries *)form);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    formVisualizationPointCloud->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
             update = true;
         }
     }
+
+    dtkCoreParameters visu_parameters;
+    for(auto& key: parameters.keys()) {
+        QVariantHash param = parameters[key].toObject().toVariantHash();
+        QString param_type = param["type"].toString();
+        // TODO : properly handle color parameters
+        if ((param_type != "gnomonCoreParameterLookupTable") &&  (param_type != "gnomonCoreParameterColorMap"))
+            visu_parameters[key] = dtkCoreParameter::create(param);
+    }
+    visu->setParameters(visu_parameters);
 
     if (update) {
         visu->update();
@@ -779,58 +754,23 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
 
         if (this->formVisualization[name]) {
             this->formVisualization[name]->clear();
-            delete this->formVisualization[name];
-            this->formVisualization[name] = nullptr;
+            // TODO: Fix offscreen rendering related segFault when destroying Visualization
+            // delete this->formVisualization[name];
+            // this->formVisualization[name] = nullptr;
         }
 
         if (name == "gnomonBinaryImage") {
             this->formVisualization[name] = gnomonVisualization::visualizationBinaryImage::pluginFactory().create(visu_name);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
         } else if (name == "gnomonCellComplex") {
             this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu_name);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
         } else if (name == "gnomonCellImage") {
             this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_name);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
         } else if (name == "gnomonImage") {
             this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu_name);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
         } else if (name == "gnomonMesh") {
             this->formVisualization[name] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu_name);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
         } else if (name == "gnomonPointCloud") {
             this->formVisualization[name] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu_name);
-            for(auto& key: parameters.keys()) {
-                QVariantHash param = parameters[key].toObject().toVariantHash();
-                qDebug()<<Q_FUNC_INFO<<key<<param;
-                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
-                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
-            }
         }
     }
 
