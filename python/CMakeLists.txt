@@ -15,6 +15,7 @@ macro(configure_files_recur WORKDIR GLOBPAT DESTINATION)
 endmacro(configure_files_recur)
 
 if (PYTHON)
+    set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
     set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
     set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
     set(PLUGIN_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonPlugin.py.in")
