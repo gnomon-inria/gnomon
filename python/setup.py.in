@@ -9,7 +9,7 @@ setup(name='gnomon_utils',
       packages=pkgs,
       entry_points={
         "console_scripts": [
-            "gnomon=gnomon_utils.gnomonCommandLineTools:main"
+            "gnomon-utils=gnomon_utils.gnomonCommandLineTools:main"
         ]
       },
       package_data={"": ["templates/*", "templates/*/*", "templates/*/*/*", "schematic/*"]},
