@@ -19,13 +19,13 @@ requirements:
     - dtk-plugins-imaging >=2.0.2
   host:
     - python=3.7.*
-    - gnomon >=0.17
+    - gnomon=${gnomon_VERSION}
     - dtk-plugins-imaging >=2.0.2
   run: 
     - python=3.7.*
-    - gnomon>=0.17
+    - gnomon=${gnomon_VERSION}
     - ipython
-    - dtk-plugins-imaging >=2.0.2
+    - dtk-plugins-imaging>=2.0.2
     - nose
     - coverage
 
