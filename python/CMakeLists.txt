@@ -1,4 +1,5 @@
 find_program(PYTHON "python")
+set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 
 macro(configure_files_recur WORKDIR GLOBPAT DESTINATION)
     file(GLOB_RECURSE COPY_FILES
