@@ -789,42 +789,48 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
             for(auto& key: parameters.keys()) {
                 QVariantHash param = parameters[key].toObject().toVariantHash();
                 qDebug()<<Q_FUNC_INFO<<key<<param;
-                this->formVisualization["name"]->setParameter(key, dtkCoreParameter::create(param)->variant());
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
             }
         } else if (name == "gnomonCellComplex") {
             this->formVisualization[name] = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QVariantHash param = parameters[key].toObject().toVariantHash();
                 qDebug()<<Q_FUNC_INFO<<key<<param;
-                this->formVisualization["name"]->setParameter(key, dtkCoreParameter::create(param)->variant());
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
             }
         } else if (name == "gnomonCellImage") {
             this->formVisualization[name] = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QVariantHash param = parameters[key].toObject().toVariantHash();
                 qDebug()<<Q_FUNC_INFO<<key<<param;
-                this->formVisualization["name"]->setParameter(key, dtkCoreParameter::create(param)->variant());
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
             }
         } else if (name == "gnomonImage") {
             this->formVisualization[name] = gnomonVisualization::visualizationImage::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QVariantHash param = parameters[key].toObject().toVariantHash();
                 qDebug()<<Q_FUNC_INFO<<key<<param;
-                this->formVisualization["name"]->setParameter(key, dtkCoreParameter::create(param)->variant());
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
             }
         } else if (name == "gnomonMesh") {
             this->formVisualization[name] = gnomonVisualization::visualizationMesh::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QVariantHash param = parameters[key].toObject().toVariantHash();
                 qDebug()<<Q_FUNC_INFO<<key<<param;
-                this->formVisualization["name"]->setParameter(key, dtkCoreParameter::create(param)->variant());
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
             }
         } else if (name == "gnomonPointCloud") {
             this->formVisualization[name] = gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu_name);
             for(auto& key: parameters.keys()) {
                 QVariantHash param = parameters[key].toObject().toVariantHash();
                 qDebug()<<Q_FUNC_INFO<<key<<param;
-                this->formVisualization["name"]->setParameter(key, dtkCoreParameter::create(param)->variant());
+                if (param["type"].toString() != "gnomonCoreParameterLookupTable")
+                    this->formVisualization[name]->setParameter(key, dtkCoreParameter::create(param)->variant());
             }
         }
     }
