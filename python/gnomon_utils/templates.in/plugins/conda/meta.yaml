@@ -14,15 +14,15 @@ build:
 requirements:
   build:
     - setuptools
-    - python=3.7.*
+    - python=${PYTHON_VERSION}.*
     - gnomon=${gnomon_VERSION}
     - dtk-plugins-imaging >=2.0.2
   host:
-    - python=3.7.*
+    - python=${PYTHON_VERSION}.*
     - gnomon=${gnomon_VERSION}
     - dtk-plugins-imaging >=2.0.2
   run: 
-    - python=3.7.*
+    - python=${PYTHON_VERSION}.*
     - gnomon=${gnomon_VERSION}
     - ipython
     - dtk-plugins-imaging>=2.0.2
