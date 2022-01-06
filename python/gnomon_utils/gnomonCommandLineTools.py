@@ -33,7 +33,7 @@ def generate(args: argparse.Namespace):
 
 
 # setting parsers
-main_parser = argparse.ArgumentParser(prog="gnomon", description="Gnomon command line tools")
+main_parser = argparse.ArgumentParser(prog="gnomon-utils", description="Gnomon command line tools")
 subparsers = main_parser.add_subparsers(required=True)
 
 

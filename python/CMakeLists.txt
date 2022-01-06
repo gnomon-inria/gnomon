@@ -24,6 +24,8 @@ if (PYTHON)
     set(TEMPLATES_GLOB "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/templates.in/**")
     set(TEMPLATES "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/templates/")
 
+    file(REMOVE_RECURSE "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils.egg-info")
+
     configure_file(${SETUP_PY_IN} ${SETUP_PY})
     configure_file(${PLUGIN_PY_IN} ${PLUGIN_PY})
     configure_files_recur(${TEMPLATES_WD} ${TEMPLATES_GLOB} ${TEMPLATES})
