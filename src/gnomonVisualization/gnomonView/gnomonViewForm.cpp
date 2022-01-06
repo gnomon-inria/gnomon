@@ -192,8 +192,8 @@ public slots:
     // void configure(dtkWidgetsMenuItemDIY *parent, const QString& key);
     // void addFormMenu(const QString& key);
     // void refresh(void);
-    void setFormVisualization(const QString& name, const QString& visu_name, const QJsonObject& parameters);
-    void updateFormVisualization(const QString& name, const QJsonObject& parameters);
+    void setFormVisualization(const QString& name, const QString& visu_name, const QJsonObject& parameters = {});
+    void updateFormVisualization(const QString& name, const QJsonObject& parameters = {});
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
@@ -459,16 +459,15 @@ void gnomonViewFormPrivate::clear(void)
     }
 
     this->formVisualizationNames.clear();
-
-     this->formVisualization.clear();
-     this->forms.clear();
+    this->formVisualization.clear();
+    this->forms.clear();
     // this->parameterLayouts.clear();
     // this->formVisualizationMenus.clear();
     // this->formVisualizationPaneItems.clear();
 
     // this->updateInteractorStyleMenu();
 
-    // this->empty = true;
+    this->empty = true;
 
     // this->refresh();
     // this->view_menubar->touch();
@@ -1166,8 +1165,8 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
          if (d->empty) {
              d->renderer3D->ResetCamera();
          }
-         d->empty = false;
          this->render();*/
+         d->empty = false;
          emit formsChanged();
      });
 
@@ -1950,7 +1949,7 @@ QStringList gnomonViewForm::formVisualizations(const QString& name)
 void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_name)
 {
     if (d->forms.contains(name)) {
-        // d->setFormVisualization(name, visu_name);
+        d->setFormVisualization(name, visu_name);
     }
 }
 

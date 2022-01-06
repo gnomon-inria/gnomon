@@ -42,7 +42,7 @@ public:
 
 public:
     QHash<int, gnomonAbstractDynamicForm *> forms;
-    QHash<int, gnomonAbstractVisualization *> formVisualizations;
+    // QHash<int, gnomonAbstractVisualization *> formVisualizations;
     QHash<int, QJsonObject> visualization_description;
     QHash<int, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
