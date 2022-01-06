@@ -14,8 +14,8 @@ class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSegmentation : public gnomonAlgorith
     Q_OBJECT
 
 public:
-     gnomonWorkspaceSegmentation(QObject *parent = nullptr);
-    ~gnomonWorkspaceSegmentation(void);
+     explicit gnomonWorkspaceSegmentation(QObject *parent = nullptr);
+    ~gnomonWorkspaceSegmentation() override;
 
 public:
     void setInputs() final;

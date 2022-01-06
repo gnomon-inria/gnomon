@@ -17,6 +17,8 @@ public:
 public:
     void setCellPoints(gnomonPointCloudSeries *pointCloud_series);
     gnomonPointCloudSeries *cellPoints();
+    void setBinaryImage(gnomonBinaryImageSeries *binary_image_series);
+    gnomonBinaryImageSeries *binaryImage();;
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
     orderedMap inputTypes() override;
