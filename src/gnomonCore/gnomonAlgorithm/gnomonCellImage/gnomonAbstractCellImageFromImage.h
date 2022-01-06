@@ -26,25 +26,31 @@ class dtkCoreParameter;
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstractAlgorithm
 {
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
+    void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    dtkCoreParameters parameters() const override = 0;
+    void run() override = 0;
+    QString documentation() override = 0;
 
 public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
-    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual inline void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual inline void setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
 
 public:
-    virtual gnomonImageSeries *input(void) const = 0;
-    virtual gnomonPointCloudSeries *cellPoints(void) const { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+    virtual gnomonImageSeries *input() const = 0;
+    virtual gnomonPointCloudSeries *cellPoints() const { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
                                                              return nullptr;};
-    virtual gnomonCellImageSeries *output(void) const = 0;
+    virtual inline gnomonBinaryImageSeries *binaryImageSeries() const {
+        dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+        return nullptr;
+    };
+    virtual gnomonCellImageSeries *output() const = 0;
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)

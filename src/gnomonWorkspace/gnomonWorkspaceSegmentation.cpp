@@ -36,25 +36,26 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnom
     d->updatePool();
 }
 
-gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation(void)
+gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation()
 {
-    gnomonCellImageFromImageCommand *command = (gnomonCellImageFromImageCommand *)d->command;
-    if (command) {
-        delete command;
-    }
+    auto *command = (gnomonCellImageFromImageCommand *)d->command;
+    delete command;
 }
 
 void gnomonWorkspaceSegmentation::setInputs()
 {
     d->command->undo(); //clean
 
-    gnomonCellImageFromImageCommand *command = static_cast<gnomonCellImageFromImageCommand *>(d->command);
+    auto *command = dynamic_cast<gnomonCellImageFromImageCommand *>(d->command);
     for(gnomonViewForm *f : d->sources->views()) {
         if (f->image()) {
             command->setInput(f->image());
         }
         if (f->pointCloud()) {
             command->setCellPoints(f->pointCloud());
+        }
+        if (f->binaryImage()) {
+            command->setBinaryImage(f->binaryImage());
         }
     }
 
