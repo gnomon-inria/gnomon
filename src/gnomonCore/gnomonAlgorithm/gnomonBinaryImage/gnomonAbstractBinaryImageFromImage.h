@@ -18,10 +18,12 @@ public:
 
     // Outputs
 public:
-    virtual gnomonImageSeries *input(void) = 0;
-    virtual gnomonBinaryImageSeries *initialization(void ) {dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
-                                                            return nullptr;};
-    virtual gnomonBinaryImageSeries *output() = 0;
+    virtual gnomonImageSeries *input(void) const = 0;
+    virtual inline gnomonBinaryImageSeries *initialization(void) const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual gnomonBinaryImageSeries *output() const = 0;
 
 
 public:

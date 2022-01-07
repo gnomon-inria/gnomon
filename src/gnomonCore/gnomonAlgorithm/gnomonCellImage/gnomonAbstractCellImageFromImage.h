@@ -21,8 +21,6 @@
 #include <dtkCore>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class dtkCoreParameter;
-
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
@@ -32,22 +30,28 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstract
 {
 
 public:
-    void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    dtkCoreParameters parameters() const override = 0;
-    void run() override = 0;
-    QString documentation() override = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual dtkCoreParameters parameters() const override = 0;
+    virtual void run() override = 0;
+    virtual QString documentation() override = 0;
 
 public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
-    virtual inline void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
-    virtual inline void setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual inline void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
+    virtual inline void setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
 
 public:
-    virtual gnomonImageSeries *input() const = 0;
-    virtual gnomonPointCloudSeries *cellPoints() const { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
-                                                             return nullptr;};
+    virtual gnomonImageSeries *input(void) const = 0;
+    virtual inline gnomonPointCloudSeries *cellPoints(void) const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
     virtual inline gnomonBinaryImageSeries *binaryImageSeries() const {
-        dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
     virtual gnomonCellImageSeries *output() const = 0;
