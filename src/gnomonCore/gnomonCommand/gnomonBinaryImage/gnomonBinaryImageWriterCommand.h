@@ -20,6 +20,8 @@ public:
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
 public:
     static bool isEmpty();
 

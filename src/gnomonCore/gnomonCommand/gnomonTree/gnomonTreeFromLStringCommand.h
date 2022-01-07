@@ -23,6 +23,8 @@ public:
 
     orderedMap outputTypes() override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
     void setAlgorithmName(const QString &) override;
 
 public:

@@ -21,7 +21,7 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonImage/gnomonImage.h"
-#include "gnomonForm/gnomonBinaryimage/gnomonBinaryimage.h"
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 
 class dtkCoreParameter;
 

@@ -114,6 +114,14 @@ gnomonAbstractCommand::orderedMap gnomonLStringAdapterCommand::inputTypes() {
     return input_types;
 }
 
+void gnomonLStringAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonLStringSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 
 //
 // gnomonLStringAdapterCommand.cpp ends here

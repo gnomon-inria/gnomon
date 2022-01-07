@@ -41,6 +41,8 @@ public:
 
     orderedMap inputTypes() override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
 protected:
     QString m_path = "";
     QMap<QString, QString> m_descriptions;

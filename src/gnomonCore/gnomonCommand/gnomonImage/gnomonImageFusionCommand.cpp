@@ -25,6 +25,7 @@ class gnomonImageFusionCommandPrivate
 public:
     QVector<gnomonImageSeries *> images_series;
     QVector<std::vector<gnomonLandmark>> landmarks;
+    QMap<QString, int> image_indices;
 
     gnomonImageSeries* output = nullptr;
 };
@@ -88,11 +89,26 @@ void gnomonImageFusionCommand::undo()
 
 void gnomonImageFusionCommand::addImage(gnomonImageSeries *image_series)
 {
+    int index = d->images_series.size();
+    QString input_name = "image" + QString::number(index);
+    d->image_indices[input_name] = index;
     d->images_series.push_back(image_series);
 
-    ((gnomonAbstractImageFusion *) this->action)->removeImages();
+    reloadImages();
+}
+
+void gnomonImageFusionCommand::changeImage(const QString& name, gnomonImageSeries *image_series) {
+    const auto& current_inputs = this->inputs();
+    if (current_inputs.contains(name)) {
+        d->images_series[d->image_indices[name]] = image_series;
+    }
+    reloadImages();
+}
+
+void gnomonImageFusionCommand::reloadImages() {
+    ((gnomonAbstractImageFusion *) action)->removeImages();
     for(auto& image_series : d->images_series) {
-        ((gnomonAbstractImageFusion *) this->action)->addImage(image_series);
+        ((gnomonAbstractImageFusion *) action)->addImage(image_series);
     }
 }
 
@@ -114,11 +130,11 @@ gnomonImageSeries *gnomonImageFusionCommand::output() const
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
-    int input_count = 1;
+    int i = 0;
     for(auto& image_series : d->images_series) {
-        QString input_name = "image" + QString::number(input_count);
+        QString input_name = d->image_indices.key(i);
         inputs[input_name] = image_series;
-        input_count++;
+        i++;
     }
     return inputs;
 }
@@ -151,6 +167,18 @@ gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("output", "gnomonImage"));
     return types;
+}
+
+void gnomonImageFusionCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    // TODO: come back later to see if correct
+    dtkWarn()<<Q_FUNC_INFO<<"Implementation uncertain !!!";
+    if (this->inputs().contains(name)) {
+        this->changeImage(name, dynamic_cast<gnomonImageSeries *>(form));
+    } else if (auto *form_cast = dynamic_cast<gnomonImageSeries *>(form)) {
+        this->addImage(form_cast);
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
 }
 
 //

@@ -128,5 +128,13 @@ gnomonAbstractCommand::orderedMap gnomonTreeTransformCommand::outputTypes() {
     types.emplace_back(std::make_pair("output", "gnomonTree"));
     return types;}
 
+void gnomonTreeTransformCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonTreeSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonTreeTransformCommand.cpp ends here

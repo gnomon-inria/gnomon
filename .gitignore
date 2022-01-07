@@ -57,6 +57,7 @@ src/gnomonStyle/gnomonStyleValues.h
 src/gnomonOmero/gnomonOmeroConfig.h
 
 python/gnomon_utils/gnomonPlugin.py
+python/gnomon_utils/templates/
 
 ## ###################################################################
 ## Python

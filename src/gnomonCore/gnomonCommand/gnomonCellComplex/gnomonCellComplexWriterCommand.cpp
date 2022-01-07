@@ -89,5 +89,13 @@ gnomonAbstractCommand::orderedMap gnomonCellComplexWriterCommand::inputTypes() {
     return input_types;
 }
 
+void gnomonCellComplexWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setForm(dynamic_cast<gnomonCellComplexSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonCellComplexWriterCommand.cpp ends here

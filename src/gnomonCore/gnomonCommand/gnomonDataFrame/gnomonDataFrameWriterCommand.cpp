@@ -97,5 +97,13 @@ gnomonAbstractCommand::orderedMap gnomonDataFrameWriterCommand::inputTypes() {
     return input_types;
 }
 
+void gnomonDataFrameWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "dataFrame") {
+        this->setDataFrame(dynamic_cast<gnomonDataFrameSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
 //
 // gnomonDataFrameWriterCommand.cpp ends here

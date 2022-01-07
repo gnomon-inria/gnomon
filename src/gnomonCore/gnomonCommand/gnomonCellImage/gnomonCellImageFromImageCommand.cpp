@@ -9,6 +9,7 @@ class gnomonCellImageFromImageCommandPrivate
 public:
     gnomonImageSeries *image_series = nullptr;
     gnomonPointCloudSeries *pointCloud_series = nullptr;
+    gnomonBinaryImageSeries *binary_image_series = nullptr;
 
     gnomonCellImageSeries *output = nullptr;
 };
@@ -100,6 +101,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::inpu
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["input"] = this->input();
     inputs["cellPoints"] = this->cellPoints();
+    inputs["binaryImage"] = this->binaryImage();
     return inputs;
 }
 
@@ -108,6 +110,7 @@ gnomonAbstractCommand::orderedMap gnomonCellImageFromImageCommand::inputTypes()
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonImage"));
     input_types.emplace_back(std::make_pair("cellPoints", "gnomonPointCloud"));
+    input_types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
     return input_types;
 }
 
@@ -117,6 +120,8 @@ void gnomonCellImageFromImageCommand::setInputForm(const QString& name, gnomonAb
         this->setInput(dynamic_cast<gnomonImageSeries *>(form));
     } else if (name == "cellPoints") {
         this->setCellPoints(dynamic_cast<gnomonPointCloudSeries *>(form));
+    } else if (name == "binaryImage") {
+        this->setBinaryImage(dynamic_cast<gnomonBinaryImageSeries *>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -140,6 +145,19 @@ bool gnomonCellImageFromImageCommand::isEmpty()
 {
     loadPluginGroup("cellImageFromImage");
     return gnomonCore::cellImageFromImage::pluginFactory().keys().empty();
+}
+
+void gnomonCellImageFromImageCommand::setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {
+    if ((!binary_image_series)||(binary_image_series->times().empty())) {
+        d->binary_image_series = nullptr;
+    } else {
+        d->binary_image_series = binary_image_series;
+    }
+    ((gnomonAbstractCellImageFromImage *) this->action)->setBinaryImage(d->binary_image_series);
+}
+
+gnomonBinaryImageSeries *gnomonCellImageFromImageCommand::binaryImage() {
+    return d->binary_image_series;
 }
 
 //

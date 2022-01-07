@@ -1,0 +1,76 @@
+{
+  "schematic_name": "plugin-package",
+  "vars": {
+    "short_descr": "",
+    "version": "0.0.1",
+    "license": "",
+    "url": ""
+  },
+  "ask": {
+    "package_name": "Package name : ",
+    "short_descr": "Short description : ",
+    "author": {
+      "name": "Author(s) name(s) : ",
+      "mail": "Author(s) email address(es) : "
+    },
+    "license": "License : ",
+    "url": "Url for the homepage of the project : "
+  },
+  "tree": [
+    {
+      "name": "conda",
+      "tree": [
+        {
+          "name": "env.yaml",
+          "template": "plugins/conda/env.yaml",
+          "vars": {}
+        },
+        {
+          "name": "meta.yaml",
+          "template": "plugins/conda/meta.yaml",
+          "vars": {}
+        },
+        {
+          "name": "build.sh",
+          "template": "plugins/conda/build.sh",
+          "vars": {}
+        }
+      ]
+    },
+    {
+      "name": "src",
+      "tree": [
+        {
+          "name": "plugin_{{package_name}}",
+          "python_package": true,
+          "tree": [
+            {
+              "name": "algorithm",
+              "python_package": true
+            },
+            {
+              "name": "io",
+              "python_package": true
+            },
+            {
+              "name": "visu",
+              "python_package": true
+            },
+            {
+              "name": "form",
+              "python_package": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "setup.py",
+      "template": "plugins/setup.py"
+    },
+    {
+      "name": "README.md",
+      "template": "plugins/README.md"
+    }
+  ]
+}

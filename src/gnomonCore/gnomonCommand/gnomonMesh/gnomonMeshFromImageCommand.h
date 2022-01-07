@@ -16,6 +16,8 @@ public:
     gnomonImageSeries *input();
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
     gnomonMeshSeries *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 

@@ -1,45 +1,40 @@
 #pragma once
 
-#include <QtCore>
-
-#include <gnomonCoreExport.h> // enables the visibility of the concept
+#include <gnomonCoreExport>
 
 #include <dtkCore>
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
-
-class dtkImage;
 
 class GNOMONCORE_EXPORT gnomonAbstractBinaryImageFromImage : public gnomonAbstractAlgorithm
 {
     //Inputs
 public:
     virtual void setInput(gnomonImageSeries *image) = 0;
-    virtual void setInitialization(gnomonBinaryImageSeries *init) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual void setInitialization(gnomonBinaryImageSeries *init) {dtkWarn()<<Q_FUNC_INFO<<"Not implemented";};
 
     // Outputs
 public:
-    virtual gnomonImageSeries *input() = 0;
-    virtual gnomonBinaryImageSeries *initialization() { dtkWarn()<<Q_FUNC_INFO<< "not implemented";
+    virtual gnomonImageSeries *input(void) = 0;
+    virtual gnomonBinaryImageSeries *initialization(void ) {dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
                                                             return nullptr;};
-    virtual gnomonBinaryImageSeries *output() const = 0;
+    virtual gnomonBinaryImageSeries *output() = 0;
 
 
 public:
-    void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
     virtual dtkCoreParameters parameters() const override = 0;
 
 
 public:
-    void run() override = 0;
+    virtual void run() override = 0;
     virtual QString documentation() override = 0;
 
 };
-
 DTK_DECLARE_OBJECT(gnomonAbstractBinaryImageFromImage *)
-
 DTK_DECLARE_PLUGIN(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)

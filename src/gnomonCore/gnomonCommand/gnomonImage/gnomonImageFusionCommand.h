@@ -16,11 +16,15 @@ public:
 
 public:
     void addImage(gnomonImageSeries *);
+    void changeImage(const QString&, gnomonImageSeries *);
+    void reloadImages();
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
     void setAlgorithmName(const QString &) override;
 

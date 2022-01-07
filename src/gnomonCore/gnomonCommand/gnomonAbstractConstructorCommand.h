@@ -28,6 +28,10 @@ public:
     orderedMap inputTypes() override {
         return {};
     }
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override {
+        dtkWarn() << Q_FUNC_INFO << "Constructor takes no input form";
+    }
 };
 
 
