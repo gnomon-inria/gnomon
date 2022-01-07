@@ -41,7 +41,10 @@ signals:
     void added(int id);
 
 public slots:
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, vtkCamera *cam=0);
+    //void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, vtkCamera *cam=0);
+    
+    void addForm(gnomonAbstractDynamicForm *, const QColor&, const QJsonObject &visualization_description,const QImage& image, vtkCamera *cam=0);
+
     void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
     void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
 
@@ -51,7 +54,8 @@ public slots:
 
 public:
     gnomonAbstractDynamicForm *get(int index);
-    gnomonAbstractVisualization *getVisualization(int index);
+    // gnomonAbstractVisualization *getVisualization(int index);
+    QJsonObject getVisuDescription(int index);
     vtkCamera *getCamera(int index);
 
 public:

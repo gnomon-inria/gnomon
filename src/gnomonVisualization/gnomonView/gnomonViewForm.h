@@ -118,13 +118,13 @@ public slots:
     void setExportColor(const QColor& color);
 
 public:
-    void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization *  = nullptr);
-    void setBinaryImage(gnomonBinaryImageSeries *, gnomonAbstractVisualization *  = nullptr);
-    void setCellComplex(gnomonCellComplexSeries *, gnomonAbstractVisualization *  = nullptr);
-    void setCellImage(gnomonCellImageSeries *, gnomonAbstractVisualization *  = nullptr);
-    void setImage(gnomonImageSeries *, gnomonAbstractVisualization *  = nullptr);
-    void setMesh(gnomonMeshSeries *, gnomonAbstractVisualization *  = nullptr);
-    void setPointCloud(gnomonPointCloudSeries *, gnomonAbstractVisualization *  = nullptr);
+    void setForm(const QString&, gnomonAbstractDynamicForm *,const QJsonObject &visualization={});
+    void setBinaryImage(gnomonBinaryImageSeries *, const QJsonObject &visu_properties={});
+    void setCellComplex(gnomonCellComplexSeries *, const QJsonObject &visu_properties={});
+    void setCellImage(gnomonCellImageSeries *,const QJsonObject &visu_properties={});
+    void setImage(gnomonImageSeries *, const QJsonObject &visu_properties={});
+    void setMesh(gnomonMeshSeries *, const QJsonObject &visu_properties={});
+    void setPointCloud(gnomonPointCloudSeries *, const QJsonObject &visu_properties={});
 
 public:
     void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization * = nullptr);

@@ -106,7 +106,7 @@ void gnomonFormManager::deleteForm(int id)
         return;
     }
     d->forms.remove(id);
-    d->formVisualizations.remove(id);
+    // d->formVisualizations.remove(id);
     d->formCameras.remove(id);
     d->formData.remove(id);
     d->formWriterCommand.remove(id);
@@ -170,15 +170,19 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, gnomonAbstractVisualization *visualization, vtkCamera *cam)
+void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, const QJsonObject &visualization_description, const QImage& image,  vtkCamera *cam)
 {
-    QImage image = visualization->imageRendering();
+    // gnomonAbstractVisualization *visualization,
+
+    // QImage image = visualization->imageRendering();
+
 
 //        gnomonFormManagerItem *item = d->create(form, color, image);
     int item = d->item_counter++;
 
     d->forms.insert(item, form->clone());
-    d->formVisualizations.insert(item, visualization);
+    // d->formVisualizations.insert(item, visualization);
+    d->visualization_description.insert(item, visualization_description);
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
 
@@ -287,9 +291,14 @@ gnomonAbstractDynamicForm *gnomonFormManager::get(int index)
     return d->forms.value(index, nullptr);
 }
 
-gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
+// gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
+// {
+//     return d->formVisualizations.value(index, nullptr);
+// }
+
+QJsonObject gnomonFormManager::getVisuDescription(int index)
 {
-    return d->formVisualizations.value(index, nullptr);
+    return d->visualization_description.value(index);
 }
 
 vtkCamera *gnomonFormManager::getCamera(int index)

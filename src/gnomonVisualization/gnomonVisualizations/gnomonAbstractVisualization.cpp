@@ -108,9 +108,10 @@ void gnomonAbstractVisualization::updateOffscreenRenderer(double xMin,double xMa
         d->offscreenRenderer = vtkSmartPointer<vtkRenderer>::New();
     d->offscreenRenderer->SetBackground(0,0,0);
 
-    if(!d->offscreenRenderWindow)
+    if(!d->offscreenRenderWindow) {
         d->offscreenRenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-    d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
+        d->offscreenRenderWindow->AddRenderer(d->offscreenRenderer);
+    }
     d->offscreenRenderWindow->SetOffScreenRendering(1);
     d->offscreenRenderWindow->SetSize(1500, 1500);
 
