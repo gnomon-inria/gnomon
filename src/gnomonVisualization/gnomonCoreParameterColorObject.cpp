@@ -47,6 +47,11 @@ QString gnomonCoreParameterColorMapObject::name(void) const
     return m_param->name();
 }
 
+QStringList gnomonCoreParameterColorMapObject::availableCluts() const
+{
+    return m_param->availableCluts();
+}
+
 gnomonCoreParameterColorMap *gnomonCoreParameterColorMapObject::parameter(void)
 {
     return m_param;

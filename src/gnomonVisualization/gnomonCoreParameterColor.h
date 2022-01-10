@@ -22,8 +22,8 @@ public:
 
      gnomonCoreParameterColorMap(void);
      gnomonCoreParameterColorMap(const dtkCoreParameter *);
-     gnomonCoreParameterColorMap(const QMap<double, QColor>& color_map, const QString& doc = QString());
-     gnomonCoreParameterColorMap(const QString& color_map_id, const QString& doc = QString());
+     gnomonCoreParameterColorMap(const QString& label, const QMap<double, QColor>& color_map, const QString& doc = QString());
+     gnomonCoreParameterColorMap(const QString& label, const QString& color_map_id, const QString& doc = QString());
      gnomonCoreParameterColorMap(const QVariant&);
      gnomonCoreParameterColorMap(const gnomonCoreParameterColorMap&);
     ~gnomonCoreParameterColorMap(void);
@@ -41,6 +41,10 @@ public:
     QMap<double, QColor> value(void) const;
     QString name(void) const;
 
+public:
+    QStringList availableCluts(void);
+
+public:
     QVariantHash toVariantHash(void) const override;
 
     dtkCoreParameterObject *object(void) override;

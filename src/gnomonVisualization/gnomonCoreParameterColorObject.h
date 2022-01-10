@@ -20,6 +20,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorMapObject : public dtkC
     Q_PROPERTY(QString identifier READ identifier WRITE setIdentifier NOTIFY identifierChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
+    Q_PROPERTY(QStringList availableCluts READ availableCluts CONSTANT)
+
 public:
      gnomonCoreParameterColorMapObject(gnomonCoreParameterColorMap *);
     ~gnomonCoreParameterColorMapObject(void);
@@ -32,6 +34,9 @@ public:
 
     void setName(const QString&);
     QString name(void) const;
+
+public:
+    QStringList availableCluts(void) const;
 
 signals:
     void colorMapChanged(const QMap<double, QColor>&);

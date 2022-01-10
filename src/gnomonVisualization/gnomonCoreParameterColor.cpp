@@ -42,15 +42,17 @@ gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const dtkCoreParameter 
     *this = p->variant();
 }
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QMap<double, QColor>& cm, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(), m_c(cm)
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& label, const QMap<double, QColor>& cm, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(), m_c(cm)
 {
     m_object = new gnomonCoreParameterColorMapObject(this);
+    m_label = label;
     m_doc = doc;
 }
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& cm_id, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>()
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& label, const QString& cm_id, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>()
 {
     m_object = new gnomonCoreParameterColorMapObject(this);
+    m_label = label;
     m_doc = doc;
     this->setValue(cm_id);
 }
@@ -150,6 +152,16 @@ QString gnomonCoreParameterColorMap::name(void) const
     return m_n;
 }
 
+QStringList gnomonCoreParameterColorMap::availableCluts(void)
+{
+    QDir clut_dir(":gnomon/cluts/");
+    QStringList clut_filenames = clut_dir.entryList(QStringList() << "*.clut", QDir::Files);
+    QStringList cluts;
+    for (auto& clut_filename : clut_filenames) {
+        cluts << clut_filename.split(".clut")[0];
+    }
+    return cluts;
+}
 
 void gnomonCoreParameterColorMap::setValue(const QMap<double, QColor>& c)
 {
