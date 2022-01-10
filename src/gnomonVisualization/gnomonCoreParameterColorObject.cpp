@@ -37,6 +37,25 @@ QString gnomonCoreParameterColorMapObject::identifier(void) const
     return m_param->name();
 }
 
+void gnomonCoreParameterColorMapObject::setValue(const QVariantMap& color_map)
+{
+    QMap<double, QColor> map;
+    for (auto it = color_map.begin(); it != color_map.end(); ++it) {
+        map[it.key().toDouble()] = it.value().value<QColor>();
+    }
+    m_param->setValue(map);
+}
+
+QVariantMap gnomonCoreParameterColorMapObject::value(void) const
+{
+    QMap<double, QColor> map = m_param->value();
+    QVariantMap color_map;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        color_map[QString::number(it.key())] = QVariant(it.value());
+    }
+    return color_map;
+}
+
 void gnomonCoreParameterColorMapObject::setName(const QString& name)
 {
     m_param->setName(name);
@@ -60,6 +79,11 @@ gnomonCoreParameterColorMap *gnomonCoreParameterColorMapObject::parameter(void)
 void gnomonCoreParameterColorMapObject::notifyColorMap(const QMap<double, QColor>& map)
 {
     emit colorMapChanged(map);
+    QVariantMap color_map;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        color_map[QString::number(it.key())] = QVariant(it.value());
+    }
+    emit valueChanged(color_map);
 }
 
 void gnomonCoreParameterColorMapObject::notifyName(const QString& name)
