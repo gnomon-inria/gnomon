@@ -35,6 +35,7 @@ swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_
 
 swig_link_libraries(${PROJECT_NAME}
   Python3::Python
+  Python3::NumPy
   ${VTK_LIBRARIES}
   dtkCore
   dtkImagingCore)
