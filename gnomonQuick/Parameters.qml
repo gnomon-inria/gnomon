@@ -8,6 +8,8 @@ import xQuick.Controls  1.0 as X
 import xQuick.Fonts     1.0 as X
 import xQuick.Style     1.0 as X
 
+import gnomonQuick      1.0 as G
+
 Item {
 
     id: _self;
@@ -50,6 +52,11 @@ Item {
         C.Range {param: lparam}
     }
 
+    Component {
+        id: _colormap_component
+        G.Colormap {param: lparam}
+    }
+
     ListModel {
         id: params_model;
         dynamicRoles: true;
@@ -68,12 +75,14 @@ Item {
         if (type == "dtk::d_range_real" || type == "dtk::d_range_int") {
             return _range_component;
         }
-
         if (type == "dtk::d_inliststring") {
             return _liststring_component;
         }
         if (type == "dtk::d_inliststringlist") {
             return _liststringlist_component;
+        }
+        if (type == "gnomonCoreParameterColorMap") {
+            return _colormap_component
         }
 
         return _dummy_component;

@@ -1,5 +1,6 @@
 module gnomonQuick
 
+Colormap 1.0 Colormap.qml
 Dragger 1.0 Dragger.qml
 Figure 1.0 Figure.qml
 Pipeline 1.0 Pipeline.qml
