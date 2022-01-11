@@ -21,3 +21,4 @@
 
 
 GNOMONCORE_EXPORT void loadPluginGroup(const QString&);
+GNOMONCORE_EXPORT std::vector<QString> availablePluginsFromGroup(const QString&);

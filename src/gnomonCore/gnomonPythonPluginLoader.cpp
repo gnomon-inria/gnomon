@@ -17,6 +17,8 @@
 
 #include <dtkScript>
 #include <QtCore>
+#include <Python.h>
+
 
 void loadPluginGroup (const QString& module)
 {
@@ -28,4 +30,46 @@ void loadPluginGroup (const QString& module)
   dtkScriptInterpreterPython::instance()->interpret(code, &stat);
 
   //Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+}
+
+std::vector<QString> availablePluginsFromGroup(const QString & module) {
+    std::vector<QString> available_plugins;
+
+    Py_Initialize();
+
+    PyObject* pName = PyUnicode_FromString("gnomon_utils");
+    PyObject* pModule = PyImport_Import(pName);
+
+    if(pModule)
+    {
+        PyObject* pFunc = PyObject_GetAttrString(pModule, "available_plugins");
+        if(pFunc && PyCallable_Check(pFunc))
+        {
+            PyObject* args = Py_BuildValue("(s)", module.toStdString().c_str());
+            PyObject* entry_points = PyObject_CallObject(pFunc, args);
+
+            for (Py_ssize_t i = 0; i < PyList_Size(entry_points); ++i) {
+                PyObject *tmp = PyUnicode_AsASCIIString(PyList_GetItem(entry_points, i));
+                //Py_INCREF(tmp);
+                available_plugins.emplace_back(PyByteArray_AsString(tmp));
+                Py_DECREF(tmp);
+            }
+            Py_DECREF(args);
+            Py_DECREF(entry_points);
+        }
+        else
+        {
+            // TODO: change printf to dtkWarn
+            printf("ERROR: function getInteger()\n");
+        }
+        Py_DECREF(pFunc);
+    }
+    else
+    {
+        printf("ERROR: Module not imported\n");
+    }
+    Py_DECREF(pModule);
+    Py_DECREF(pName);
+    Py_Finalize();
+    return available_plugins;
 }

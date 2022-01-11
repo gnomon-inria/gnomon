@@ -131,6 +131,7 @@ if(GNOMON_ENABLE_WIDGETS)
 endif(GNOMON_ENABLE_WIDGETS)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
+include_directories(${Python3_INCLUDE_DIRS})
 
 ## #################################################################
 ## Install prefix Modules
