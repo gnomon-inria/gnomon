@@ -16,7 +16,7 @@
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorMapObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(QMap<double, QColor> colorMap READ colorMap WRITE setColorMap NOTIFY colorMapChanged)
+    Q_PROPERTY(gnomonColorMap colorMap READ colorMap WRITE setColorMap NOTIFY colorMapChanged)
     Q_PROPERTY(QVariantMap value READ value WRITE setValue NOTIFY valueChanged);
     Q_PROPERTY(QString identifier READ identifier WRITE setIdentifier NOTIFY identifierChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
@@ -27,8 +27,8 @@ public:
      gnomonCoreParameterColorMapObject(gnomonCoreParameterColorMap *);
     ~gnomonCoreParameterColorMapObject(void);
 
-    void setColorMap(const QMap<double, QColor>&);
-    QMap<double, QColor> colorMap(void) const;
+    void setColorMap(const gnomonColorMap&);
+    gnomonColorMap colorMap(void) const;
 
     void setIdentifier(const QString&);
     QString identifier(void) const;
@@ -43,7 +43,7 @@ public:
     QStringList availableCluts(void) const;
 
 signals:
-    void colorMapChanged(const QMap<double, QColor>&);
+    void colorMapChanged(const gnomonColorMap&);
     void identifierChanged(const QString&);
     void valueChanged(const QVariantMap&);
     void nameChanged(const QString&);
@@ -52,7 +52,7 @@ public:
     gnomonCoreParameterColorMap *parameter(void) override;
 
 public:
-    void notifyColorMap(const QMap<double, QColor>&);
+    void notifyColorMap(const gnomonColorMap&);
     void notifyName(const QString&);
 
 private:

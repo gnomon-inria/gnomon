@@ -42,7 +42,7 @@ gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const dtkCoreParameter 
     *this = p->variant();
 }
 
-gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& label, const QMap<double, QColor>& cm, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(), m_c(cm)
+gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QString& label, const gnomonColorMap& cm, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorMap>(), m_c(cm)
 {
     m_object = new gnomonCoreParameterColorMapObject(this);
     m_label = label;
@@ -64,8 +64,8 @@ gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QVariant& v) : dt
         auto o(v.value<gnomonCoreParameterColorMap>());
         *this = o;
 
-    } else if (v.canConvert<QMap<double, QColor>>()) {
-        this->setValue(v.value<QMap<double, QColor>>());
+    } else if (v.canConvert<gnomonColorMap>()) {
+        this->setValue(v.value<gnomonColorMap>());
 
     } else if (v.canConvert<QString>()) {
         this->setValue(v.toString());
@@ -111,8 +111,8 @@ gnomonCoreParameterColorMap& gnomonCoreParameterColorMap::operator = (const QVar
         }
         m_object->notifyColorMap(m_c);
 
-    } else if (v.canConvert<QMap<double, QColor>>()) {
-        this->setValue(v.value<QMap<double, QColor>>());
+    } else if (v.canConvert<gnomonColorMap>()) {
+        this->setValue(v.value<gnomonColorMap>());
 
     } else if (v.canConvert<QString>()) {
         this->setValue(v.toString());
@@ -142,7 +142,7 @@ gnomonCoreParameterColorMap& gnomonCoreParameterColorMap::operator = (const gnom
     return *this;
 }
 
-QMap<double, QColor> gnomonCoreParameterColorMap::value(void) const
+gnomonColorMap gnomonCoreParameterColorMap::value(void) const
 {
     return m_c;
 }
@@ -163,7 +163,7 @@ QStringList gnomonCoreParameterColorMap::availableCluts(void)
     return cluts;
 }
 
-void gnomonCoreParameterColorMap::setValue(const QMap<double, QColor>& c)
+void gnomonCoreParameterColorMap::setValue(const gnomonColorMap& c)
 {
     m_c = c;
     m_object->notifyColorMap(m_c);
@@ -187,7 +187,7 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
 
     file.close();
 
-    QMap<double, QColor> colormap;
+    gnomonColorMap colormap;
 
     QDomElement root = doc.documentElement();
     double min = root.attribute("min").toDouble();
@@ -243,8 +243,8 @@ void gnomonCoreParameterColorMap::setValue(const QVariant& v)
         }
         m_object->notifyColorMap(m_c);
 
-    } else if (v.canConvert<QMap<double, QColor>>()) {
-        this->setValue(v.value<QMap<double, QColor>>());
+    } else if (v.canConvert<gnomonColorMap>()) {
+        this->setValue(v.value<gnomonColorMap>());
 
     } else if (v.canConvert<QString>()) {
         this->setValue(v.toString());
@@ -272,7 +272,7 @@ QVariantHash gnomonCoreParameterColorMap::toVariantHash(void) const
 
     QList<QVariant> keys; keys.reserve(m_c.size());
     QList<QVariant> colors; colors.reserve(m_c.size());
-    QMap<double, QColor>::const_iterator i = m_c.constBegin();
+    gnomonColorMap::const_iterator i = m_c.constBegin();
     while (i != m_c.constEnd()) {
         keys << QVariant::fromValue(i.key());
         colors << QVariant::fromValue(i.value());

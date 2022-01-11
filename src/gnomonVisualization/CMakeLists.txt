@@ -33,10 +33,15 @@ set(${PROJECT_NAME}_HEADERS
     gnomonVisualization
     gnomonVisualization.h
 
-    gnomonCoreParameterColor.h # NOTE: Transitional
-    gnomonCoreParameterColorObject # NOTE: Transitional
-    gnomonCoreParameterColorObject.h # NOTE: Transitional
-    gnomonLookupTable.h # NOTE: Transitional
+    gnomonCoreParameterColor # NOTE: Transitional ?
+    gnomonCoreParameterColor.h # NOTE: Transitional ?
+    gnomonCoreParameterColorObject # NOTE: Transitional ?
+    gnomonCoreParameterColorObject.h # NOTE: Transitional ?
+    gnomonLookupTable.h # NOTE: Transitional ?
+    gnomonCoreParameterLookupTable # NOTE: Transitional ?
+    gnomonCoreParameterLookupTable.h # NOTE: Transitional ?
+    gnomonCoreParameterLookupTableObject # NOTE: Transitional ?
+    gnomonCoreParameterLookupTableObject.h # NOTE: Transitional ?
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
 #   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
@@ -48,9 +53,11 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
     gnomonVisualization.cpp
 
-    gnomonCoreParameterColor.cpp # NOTE: Transitional
-    gnomonCoreParameterColorObject.cpp # NOTE: Transitional
-    gnomonLookupTable.cpp # NOTE: Transitional
+    gnomonCoreParameterColor.cpp # NOTE: Transitional ?
+    gnomonCoreParameterColorObject.cpp # NOTE: Transitional ?
+    gnomonLookupTable.cpp # NOTE: Transitional ?
+    gnomonCoreParameterLookupTable.cpp # NOTE: Transitional ?
+    gnomonCoreParameterLookupTableObject.cpp # NOTE: Transitional ?
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
 #   ${${PROJECT_NAME}_INSPECTOR_SOURCES}

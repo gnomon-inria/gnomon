@@ -14,15 +14,18 @@
 // gnomonCoreParameterColorMap declaration
 // ///////////////////////////////////////////////////////////////////
 
+using gnomonColorMap = QMap<double, QColor>;
+
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorMap : public dtkCoreParameterBase<gnomonCoreParameterColorMap>
 {
 public:
+
     using self_type = gnomonCoreParameterColorMap;
     using base_type = dtkCoreParameterBase<self_type>;
 
      gnomonCoreParameterColorMap(void);
      gnomonCoreParameterColorMap(const dtkCoreParameter *);
-     gnomonCoreParameterColorMap(const QString& label, const QMap<double, QColor>& color_map, const QString& doc = QString());
+     gnomonCoreParameterColorMap(const QString& label, const gnomonColorMap& color_map, const QString& doc = QString());
      gnomonCoreParameterColorMap(const QString& label, const QString& color_map_id, const QString& doc = QString());
      gnomonCoreParameterColorMap(const QVariant&);
      gnomonCoreParameterColorMap(const gnomonCoreParameterColorMap&);
@@ -32,13 +35,13 @@ public:
     gnomonCoreParameterColorMap& operator = (const QVariant&);
     gnomonCoreParameterColorMap& operator = (const gnomonCoreParameterColorMap&);
 
-    void setValue(const QMap<double, QColor>&);
+    void setValue(const gnomonColorMap&);
     void setValue(const QString&);
     void setValue(const QVariant&) override;
 
     void setName(const QString&);
 
-    QMap<double, QColor> value(void) const;
+    gnomonColorMap value(void) const;
     QString name(void) const;
 
 public:
@@ -58,7 +61,7 @@ private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
-    QMap<double, QColor> m_c;
+    gnomonColorMap m_c;
     QString m_n = QStringLiteral("no name");
 
 private:

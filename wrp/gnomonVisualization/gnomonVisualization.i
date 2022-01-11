@@ -52,6 +52,7 @@
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 #include <gnomonVisualization/gnomonLookupTable.h>
+#include <gnomonVisualization/gnomonCoreParameterLookupTable.h>
 
 %}
 
@@ -591,9 +592,11 @@
 WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterColorMap)
 %include <gnomonVisualization/gnomonCoreParameterColor.h>
 
-%ignore dtkCoreParameterSimple<gnomonLookupTable>::__str__;
+// %ignore dtkCoreParameterSimple<gnomonLookupTable>::__str__;
 %include <gnomonVisualization/gnomonLookupTable.h>
-WRAP_DTKCORE_PARAMETER(dtkCoreParameterSimple<gnomonLookupTable>, ParameterLookupTable)
+WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterLookupTable)
+%include <gnomonVisualization/gnomonCoreParameterLookupTable.h>
+//WRAP_DTKCORE_PARAMETER(dtkCoreParameterSimple<gnomonLookupTable>, ParameterLookupTable)
 
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
