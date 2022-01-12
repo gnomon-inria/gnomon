@@ -21,7 +21,7 @@ Item {
     Connections {
         target: view.viewLogic
         function onFormVisuParametersChanged() {
-            _params.parameters =  view.viewLogic.formVisuParameters(_form_combobox.currentValue);
+            _params.parameters = view.viewLogic.formVisuParameters(_form_combobox.currentValue);
             _params.updateParametersModel();
         }
     }
@@ -31,7 +31,6 @@ Item {
 
         anchors.fill: parent;
         anchors.margins: 12;
-
 
         ComboBox { id: _form_combobox
             model: view.viewLogic.formNames;
