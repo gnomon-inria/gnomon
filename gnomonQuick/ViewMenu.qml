@@ -18,6 +18,15 @@ Item {
 
     required property Item view;
 
+    Connections {
+        target: view.viewLogic
+        function onFormVisuParametersChanged() {
+            _params.parameters =  view.viewLogic.formVisuParameters(_form_combobox.currentValue);
+            _params.updateParametersModel();
+        }
+    }
+
+
     ColumnLayout {
 
         anchors.fill: parent;
