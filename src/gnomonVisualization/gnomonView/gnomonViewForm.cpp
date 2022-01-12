@@ -820,6 +820,10 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
     }
 
     this->formVisualizationNames[name] = visu_name;
+    connect(this->formVisualization[name], &gnomonAbstractVisualization::parametersChanged, [=] () {
+        emit q->formVisuParametersChanged();
+    });
+
     this->updateFormVisualization(name, parameters);
 }
 
