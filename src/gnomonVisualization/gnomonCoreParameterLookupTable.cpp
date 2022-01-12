@@ -190,6 +190,17 @@ void gnomonCoreParameterLookupTable::setValue(const QVariant& v)
     return;
 }
 
+void gnomonCoreParameterLookupTable::setValue(const gnomonLookupTable& lut)
+{
+    m_l = lut;
+    m_object->notifyColorMap(m_l.colorMap());
+    m_object->notifyColorMapName(m_l.colorMapName());
+    m_object->notifyValueRangeMin(m_l.valueRange()[0]);
+    m_object->notifyValueRangeMax(m_l.valueRange()[1]);
+    m_object->notifyVisibility(m_l.visibility());
+}
+
+
 void gnomonCoreParameterLookupTable::setName(const QString& clut)
 {
     m_l.setName(clut) ;
