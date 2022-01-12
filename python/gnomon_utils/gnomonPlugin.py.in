@@ -43,6 +43,15 @@ def available_plugins(group_name):
     return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
 
 
+def plugin_metadata(group_name):
+    out = []
+    for ep in iter_entry_points(group_name):
+        *module, resource = ep.module_name.split(".")
+        path = resource_filename(".".join(module), resource+".json")
+        out.append((ep.name, path))
+    return out
+
+
 def gnomon_declare_plugins(path):
     script = findall(path)
     script = [f for f in script if (f.endswith('.py'))  and ('__init__' not in f)]

@@ -38,7 +38,7 @@ void loadPluginGroup (const QString& module)
 QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
 
-    Py_Initialize();
+    Py_Initialize(); // NO OP if already initialized
 
     PyObject* pName = PyUnicode_FromString("gnomon_utils");
     PyObject* pModule = PyImport_Import(pName);
