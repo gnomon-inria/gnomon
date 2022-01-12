@@ -5,6 +5,8 @@ import QtQuick.Layouts  1.15
 import xQuick.Controls 1.0 as X
 import xQuick.Style    1.0 as X
 
+import gnomonQuick     1.0 as G
+
 Control {
 	id: _self
 
@@ -43,13 +45,8 @@ Control {
                 border.color: X.Style.borderColor;
                 radius: X.Style.controls.radius;
 
-                gradient: Gradient { id: _gradient
-                    orientation: Gradient.Horizontal
-                    stops: []
-                }
-
-                Component.onCompleted: {
-                    updateGradient(param.value);
+                gradient: G.ClutGradient { id: _gradient
+                    cmap: param.value
                 }
             }
         }
@@ -60,20 +57,9 @@ Control {
     Connections {
         target: _self.param
         function onValueChanged(cmap) {
-            updateGradient(cmap);
+            // TODO: Find a better way to ensure gradient refresh
+            _gradient.orientation = Gradient.Vertical
+            _gradient.orientation = Gradient.Horizontal
         }
-    }
-
-    function updateGradient(cmap) {
-        var stops = [];
-        for (var c in cmap) {
-            var stop_str = "import QtQuick 2.15; GradientStop { position: "+c+"; color: '"+cmap[c]+"'}";
-            var stop = Qt.createQmlObject(stop_str, _gradient);
-            stops.push(stop);
-        }
-        _gradient.stops = stops;
-        // TODO: Find a better way to ensure gradient refresh
-        _gradient.orientation = Gradient.Vertical
-        _gradient.orientation = Gradient.Horizontal
     }
 }

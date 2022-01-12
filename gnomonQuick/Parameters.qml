@@ -57,6 +57,11 @@ Item {
         G.Colormap {param: lparam}
     }
 
+    Component {
+        id: _lookuptable_component
+        G.LookupTable {param: lparam}
+    }
+
     ListModel {
         id: params_model;
         dynamicRoles: true;
@@ -83,6 +88,9 @@ Item {
         }
         if (type == "gnomonCoreParameterColorMap") {
             return _colormap_component
+        }
+        if (type == "gnomonCoreParameterLookupTable") {
+            return _lookuptable_component
         }
 
         return _dummy_component;
