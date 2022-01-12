@@ -29,6 +29,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "meshFromImage";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshFromImageCommandPrivate *d;

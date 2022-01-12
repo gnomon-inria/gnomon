@@ -30,6 +30,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "treeTransform";
+    static QStringList availablePlugins();
 
 private:
     class gnomonTreeTransformCommandPrivate *d;

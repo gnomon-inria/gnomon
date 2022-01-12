@@ -75,5 +75,9 @@ void gnomonWorkspacePreprocess::setInputs()
     }
 }
 
+QStringList gnomonWorkspacePreprocess::availablePlugins() {
+    return QStringList();
+}
+
 //
 // gnomonWorkspacePreprocess.cpp ends here

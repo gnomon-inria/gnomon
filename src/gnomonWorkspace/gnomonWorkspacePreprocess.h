@@ -20,6 +20,9 @@ public:
 public:
     void setInputs() final;
 
+public:
+    Q_PROPERTY(QStringList availablePlugins READ availablePlugins);
+    static QStringList availablePlugins();
 };
 
 //

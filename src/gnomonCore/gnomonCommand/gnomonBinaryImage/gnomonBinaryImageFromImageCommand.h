@@ -29,6 +29,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "binaryImageReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonBinaryImageFromImageCommandPrivate *d;

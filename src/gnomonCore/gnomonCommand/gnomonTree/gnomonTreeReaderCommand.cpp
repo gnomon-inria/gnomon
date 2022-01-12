@@ -32,7 +32,7 @@ public:
 
 gnomonTreeReaderCommand::gnomonTreeReaderCommand() : d(new gnomonTreeReaderCommandPrivate)
 {
-    this->factory_name = "treeReader";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     for (const auto& key: gnomonCore::treeReader::pluginFactory().keys()) {
@@ -85,8 +85,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeReaderCommand::outputs()
 
 bool gnomonTreeReaderCommand::isEmpty()
 {
-    loadPluginGroup("treeReader");
-    return gnomonCore::treeReader::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {

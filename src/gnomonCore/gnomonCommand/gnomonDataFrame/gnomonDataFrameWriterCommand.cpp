@@ -32,7 +32,7 @@ public:
 
 gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand() : d(new gnomonDataFrameWriterCommandPrivate)
 {
-    this->factory_name = "dataFrameWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::dataFrameWriter::pluginFactory().keys();
@@ -87,8 +87,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameWriterCommand::inputs(
 
 bool gnomonDataFrameWriterCommand::isEmpty()
 {
-    loadPluginGroup("dataFrameWriter");
-    return gnomonCore::dataFrameWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonDataFrameWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataFrameWriterCommand::inputTypes() {

@@ -29,7 +29,7 @@ public:
 
 gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand() : d(new gnomonPointCloudQuantificationCommandPrivate)
 {
-    this->factory_name = "pointCloudQuantification";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
@@ -131,8 +131,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand
 
 bool gnomonPointCloudQuantificationCommand::isEmpty()
 {
-    loadPluginGroup("pointCloudQuantification");
-    return gnomonCore::pointCloudQuantification::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonPointCloudQuantificationCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::inputTypes() {

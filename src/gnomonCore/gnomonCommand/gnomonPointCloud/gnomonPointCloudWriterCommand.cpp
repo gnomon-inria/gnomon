@@ -31,7 +31,7 @@ public:
 
 gnomonPointCloudWriterCommand::gnomonPointCloudWriterCommand() : d(new gnomonPointCloudWriterCommandPrivate)
 {
-    this->factory_name = "pointCloudWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshFromImage::pluginFactory().keys();
@@ -87,8 +87,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudWriterCommand::inputs
 
 bool gnomonPointCloudWriterCommand::isEmpty()
 {
-    loadPluginGroup("pointCloudWriter");
-    return gnomonCore::pointCloudWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonPointCloudWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudWriterCommand::inputTypes() {

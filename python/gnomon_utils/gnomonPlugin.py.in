@@ -39,6 +39,7 @@ def load_plugin_group(group_name):
 
 
 def available_plugins(group_name):
+    print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
     return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
 
 

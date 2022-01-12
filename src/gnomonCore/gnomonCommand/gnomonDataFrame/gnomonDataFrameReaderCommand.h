@@ -19,6 +19,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "dataFrameReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonDataFrameReaderCommandPrivate *d;

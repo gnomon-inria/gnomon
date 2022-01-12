@@ -22,7 +22,7 @@ public:
 
 gnomonImageRegistrationCommand::gnomonImageRegistrationCommand() : d(new gnomonImageRegistrationCommandPrivate)
 {
-    this->factory_name = "imageRegistration";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageRegistration::pluginFactory().keys();
@@ -124,8 +124,11 @@ gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::outputTypes()
 
 bool gnomonImageRegistrationCommand::isEmpty()
 {
-    loadPluginGroup("imageRegistration");
-    return gnomonCore::imageRegistration::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageRegistrationCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonImageRegistrationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {

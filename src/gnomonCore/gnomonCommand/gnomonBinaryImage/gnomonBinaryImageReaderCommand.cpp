@@ -8,7 +8,7 @@ public:
 
 gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand() : d(new gnomonBinaryImageReaderCommandPrivate)
 {
-    this->factory_name = "binaryImageReader";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     for (const auto& key: gnomonCore::binaryImageReader::pluginFactory().keys()) {
@@ -62,12 +62,15 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageReaderCommand::outpu
 
 bool gnomonBinaryImageReaderCommand::isEmpty()
 {
-    loadPluginGroup("binaryImageReader");
-    return gnomonCore::binaryImageReader::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonBinaryImageReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
     return types;
+}
+
+QStringList gnomonBinaryImageReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
