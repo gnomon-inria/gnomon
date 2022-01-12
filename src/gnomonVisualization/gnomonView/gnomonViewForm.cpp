@@ -774,8 +774,7 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
 
     dtkCoreParameters visu_parameters;
     // TODO : properly handle range parameters
-    // TODO : properly handle color parameters
-    QStringList excluded_types = {"dtk::d_range_int", "dtk::d_range_real", "gnomonCoreParameterColorMap"};
+    QStringList excluded_types = {"dtk::d_range_int", "dtk::d_range_real"};
     for(auto& key: parameters.keys()) {
         QVariantHash param = parameters[key].toObject().toVariantHash();
         QString param_type = param["type"].toString();

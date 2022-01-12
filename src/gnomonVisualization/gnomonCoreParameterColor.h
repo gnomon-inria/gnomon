@@ -68,6 +68,10 @@ private:
     class gnomonCoreParameterColorMapObject *m_object = nullptr;
 };
 
+GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream&, const gnomonCoreParameterColorMap&);
+GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream&, gnomonCoreParameterColorMap&);
+GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug, gnomonCoreParameterColorMap);
+
 DTK_DECLARE_PARAMETER(gnomonCoreParameterColorMap);
 
 //
