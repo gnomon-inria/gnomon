@@ -47,6 +47,7 @@ public:
     QStringList availableCluts(void) const;
 
 signals:
+    void valueChanged(const gnomonLookupTable&);
     void colorMapChanged(const QVariantMap&);
     void colorMapNameChanged(const QString&);
     void valueRangeMinChanged(double);

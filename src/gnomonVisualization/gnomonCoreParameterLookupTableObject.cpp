@@ -93,26 +93,31 @@ void gnomonCoreParameterLookupTableObject::notifyColorMap(const gnomonColorMap& 
         color_map[QString::number(it.key())] = QVariant(it.value());
     }
     emit colorMapChanged(color_map);
+    emit valueChanged(m_param->value());
 }
 
 void gnomonCoreParameterLookupTableObject::notifyColorMapName(const QString &name)
 {
     emit colorMapNameChanged(name);
+    emit valueChanged(m_param->value());
 }
 
 void gnomonCoreParameterLookupTableObject::notifyValueRangeMin(double value)
 {
     emit valueRangeMinChanged(value);
+    emit valueChanged(m_param->value());
 }
 
 void gnomonCoreParameterLookupTableObject::notifyValueRangeMax(double value)
 {
     emit valueRangeMaxChanged(value);
+    emit valueChanged(m_param->value());
 }
 
 void gnomonCoreParameterLookupTableObject::notifyVisibility(bool value)
 {
     emit visibilityChanged(value);
+    emit valueChanged(m_param->value());
 }
 
 //
