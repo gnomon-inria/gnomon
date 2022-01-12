@@ -15,9 +15,12 @@
 
 #include "gnomonPythonPluginLoader.h"
 
-#include <dtkScript>
 #include <QtCore>
+#pragma push_macro("slots")
+#undef slots
 #include <Python.h>
+#pragma pop_macro("slots")
+#include <dtkScript>
 
 
 void loadPluginGroup (const QString& module)
@@ -32,8 +35,8 @@ void loadPluginGroup (const QString& module)
   //Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 }
 
-std::vector<QString> availablePluginsFromGroup(const QString & module) {
-    std::vector<QString> available_plugins;
+QStringList availablePluginsFromGroup(const QString & module) {
+    QStringList available_plugins;
 
     Py_Initialize();
 
@@ -48,10 +51,11 @@ std::vector<QString> availablePluginsFromGroup(const QString & module) {
             PyObject* args = Py_BuildValue("(s)", module.toStdString().c_str());
             PyObject* entry_points = PyObject_CallObject(pFunc, args);
 
+            qDebug() << "Number of entry_point for " << module << " : " << (int) PyList_Size(entry_points);
             for (Py_ssize_t i = 0; i < PyList_Size(entry_points); ++i) {
-                PyObject *tmp = PyUnicode_AsASCIIString(PyList_GetItem(entry_points, i));
-                //Py_INCREF(tmp);
-                available_plugins.emplace_back(PyByteArray_AsString(tmp));
+                Py_ssize_t size = 0;
+                char const *tmp = PyUnicode_AsUTF8AndSize(PyList_GetItem(entry_points, i), &size);
+                available_plugins.push_back(tmp);
                 Py_DECREF(tmp);
             }
             Py_DECREF(args);
@@ -70,6 +74,6 @@ std::vector<QString> availablePluginsFromGroup(const QString & module) {
     }
     Py_DECREF(pModule);
     Py_DECREF(pName);
-    Py_Finalize();
+    //Py_Finalize();
     return available_plugins;
 }
