@@ -78,6 +78,10 @@ private:
     class gnomonCoreParameterLookupTableObject *m_object = nullptr;
 };
 
+GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream&, const gnomonCoreParameterLookupTable&);
+GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream&, gnomonCoreParameterLookupTable&);
+GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug, gnomonCoreParameterLookupTable);
+
 DTK_DECLARE_PARAMETER(gnomonCoreParameterLookupTable);
 
 //

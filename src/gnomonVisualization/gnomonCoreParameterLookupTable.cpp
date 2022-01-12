@@ -89,6 +89,43 @@ gnomonCoreParameterLookupTable& gnomonCoreParameterLookupTable::operator = (cons
     } else if (v.canConvert<gnomonLookupTable>()) {
         this->setValue(v.value<gnomonLookupTable>());
 
+    } else if (v.canConvert<QVariantHash>()) {
+            auto hash = v.toHash();
+
+            m_label = hash["label"].toString();
+            m_doc = hash["doc"].toString();
+
+            auto cmap_hash = hash["colormap"].toHash();
+            QString cmap_name = cmap_hash["clut"].toString();
+
+            gnomonColorMap cmap;
+            auto keys = cmap_hash["keys"].toList();
+            auto colors = cmap_hash["colors"].toList();
+            int i = 0;
+            for (auto key : keys) {
+                cmap[key.value<double>()] = colors[i].value<QColor>();
+                ++i;
+            }
+
+            auto range_hash = hash["value_range"].toHash();
+            double range_min = range_hash["min"].value<double>();
+            double range_max = range_hash["max"].value<double>();
+
+            bool visible = hash["visibility"].value<bool>();
+
+            m_l.setName(cmap_name);
+            m_l.setColorMap(cmap);
+            m_l.setValueRange(QList<double>({range_min, range_max}));
+            m_l.setVisibility(visible);
+
+            m_object->notifyLabel(m_label);
+            m_object->notifyDoc(m_doc);
+            m_object->notifyColorMap(m_l.colorMap());
+            m_object->notifyColorMapName(m_l.colorMapName());
+            m_object->notifyValueRangeMin(m_l.valueRange()[0]);
+            m_object->notifyValueRangeMax(m_l.valueRange()[1]);
+            m_object->notifyVisibility(m_l.visibility());
+
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
@@ -180,6 +217,43 @@ void gnomonCoreParameterLookupTable::setValue(const QVariant& v)
     } else if (v.canConvert<gnomonLookupTable>()) {
         this->setValue(v.value<gnomonLookupTable>());
 
+    } else if (v.canConvert<QVariantHash>()) {
+        auto hash = v.toHash();
+
+        m_label = hash["label"].toString();
+        m_doc = hash["doc"].toString();
+
+        auto cmap_hash = hash["colormap"].toHash();
+        QString cmap_name = cmap_hash["clut"].toString();
+
+        gnomonColorMap cmap;
+        auto keys = cmap_hash["keys"].toList();
+        auto colors = cmap_hash["colors"].toList();
+        int i = 0;
+        for (auto key : keys) {
+            cmap[key.value<double>()] = colors[i].value<QColor>();
+            ++i;
+        }
+
+        auto range_hash = hash["value_range"].toHash();
+        double range_min = range_hash["min"].value<double>();
+        double range_max = range_hash["max"].value<double>();
+
+        bool visible = hash["visibility"].value<bool>();
+
+        m_l.setName(cmap_name);
+        m_l.setColorMap(cmap);
+        m_l.setValueRange(QList<double>({range_min, range_max}));
+        m_l.setVisibility(visible);
+
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyColorMap(m_l.colorMap());
+        m_object->notifyColorMapName(m_l.colorMapName());
+        m_object->notifyValueRangeMin(m_l.valueRange()[0]);
+        m_object->notifyValueRangeMax(m_l.valueRange()[1]);
+        m_object->notifyVisibility(m_l.visibility());
+
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
@@ -251,7 +325,7 @@ QVariantHash gnomonCoreParameterLookupTable::toVariantHash(void) const
     range_hash.insert("max", m_l.valueRange()[1]);
     hash.insert("value_range", range_hash);
 
-    hash.insert("visiblility", m_l.visibility());
+    hash.insert("visibility", m_l.visibility());
 
     return hash;
 }
@@ -261,6 +335,48 @@ dtkCoreParameterObject *gnomonCoreParameterLookupTable::object(void)
     return m_object;
 }
 
+
+inline QDataStream& operator << (QDataStream& s, const gnomonCoreParameterLookupTable& p)
+{
+    s << p.label();
+    s << p.name();
+    s << p.valueRangeMin() << p.valueRangeMax();
+    s << p.visibility();
+    s << p.documentation();
+
+    return s;
+}
+
+inline QDataStream& operator >> (QDataStream& s, gnomonCoreParameterLookupTable& p)
+{
+    QString label; s >> label;
+    QString clut; s >> clut;
+    double range_min; s >> range_min;
+    double range_max; s >> range_max;
+    bool visible; s >> visible;
+    QString doc; s >> doc;
+
+    gnomonLookupTable lut(clut, QList<double>({range_min, range_max}), visible);
+    p = gnomonCoreParameterLookupTable(label, lut, doc);
+    return s;
+}
+
+inline QDebug operator << (QDebug dbg, gnomonCoreParameterLookupTable p)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << p.variant().typeName() << " : { ";
+    dbg.nospace() << "label " << p.label() << ", "
+                  << "colormap_name " << p.name() << ", "
+                  << "value_range [" << p.valueRangeMin() << "," << p.valueRangeMax() << "], "
+                  << "visibility" << p.visibility()
+                  << "documentation : " << p.documentation()
+                  << " }";
+
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
+}
+
+DTK_DEFINE_PARAMETER(gnomonCoreParameterLookupTable, g_lut);
 
 /*
 // ///////////////////////////////////////////////////////////////////
