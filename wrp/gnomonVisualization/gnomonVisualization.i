@@ -16,6 +16,16 @@
 
 %module(directors="1") gnomonvisualization
 
+%{
+#define SWIG_FILE_WITH_INIT
+%}
+
+%include "numpy.i"
+
+%init %{
+import_array();
+%}
+
 %include "std_array.i"
 %include "std_vector.i"
 %include "carrays.i"
@@ -56,7 +66,7 @@
 
 %}
 
-//%include <gnomonCore/gnomonCore.i>
+%include <gnomonCore/gnomonCore.i>
 
 %{
 // VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
