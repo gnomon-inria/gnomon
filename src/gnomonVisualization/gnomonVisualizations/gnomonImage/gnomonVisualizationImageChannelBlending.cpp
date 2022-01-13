@@ -155,7 +155,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             dd->channelLookupTables.remove("");
         }
         dd->channelLookupTables[""] = gnomonLookupTable("gray", valueRange, true);
-        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("Lookuptable to apply to the image", dd->channelLookupTables[""]);
+        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("LUT", dd->channelLookupTables[""], "Lookuptable to apply to the image");
         /*d->parameters["lookuptable"]->connect([this](QVariant v) {
               // this->update();
         });*/
@@ -167,7 +167,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
                 dd->channelLookupTables.remove(channelName);
             }
             dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
-            auto param = new gnomonCoreParameterLookupTable("Lookuptable to apply to the "+channelName+" image channel", dd->channelLookupTables[channelName]);
+            auto param = new gnomonCoreParameterLookupTable(channelName+"\nLUT", dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
             /*param->connect( [this](QVariant v) {
                 // this->update();
             });*/
@@ -175,6 +175,8 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             iChannel++;
         }
     }
+
+    emit parametersChanged();
 }
 
 gnomonImageSeries *gnomonVisualizationImageChannelBlending::image(void)

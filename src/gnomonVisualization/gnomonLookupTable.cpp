@@ -20,7 +20,7 @@
 // gnomonLookupTable
 // ///////////////////////////////////////////////////////////////////
 
-gnomonLookupTable::gnomonLookupTable(const QMap<double, QColor>& c, const QList<double> r, bool v) : colormap(c), value_range(r), visible(v)
+gnomonLookupTable::gnomonLookupTable(const gnomonColorMap& c, const QList<double> r, bool v) : colormap(c), value_range(r), visible(v)
 {
     this->name = "no_name";
 }
@@ -63,7 +63,7 @@ const QString& gnomonLookupTable::colorMapName(void) const
     return this->name;
 }
 
-const QMap<double, QColor>& gnomonLookupTable::colorMap(void) const
+const gnomonColorMap& gnomonLookupTable::colorMap(void) const
 {
     return this->colormap;
 }
@@ -83,7 +83,7 @@ void gnomonLookupTable::setName(const QString& n)
     this->name = n;
 }
 
-void gnomonLookupTable::setColorMap(const QMap<double, QColor>& c)
+void gnomonLookupTable::setColorMap(const gnomonColorMap& c)
 {
     this->colormap = c;
 }
@@ -108,7 +108,7 @@ void gnomonLookupTable::setColorMap(const QString& clut)
 
     file.close();
 
-    QMap<double, QColor> colormap;
+    gnomonColorMap colormap;
 
     QDomElement root = doc.documentElement();
     double min = root.attribute("min").toDouble();
