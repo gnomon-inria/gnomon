@@ -51,16 +51,17 @@ def _gnomonBinaryImageInput(cls, attr, method, setter_method, data_plugin, data_
     return cls
 
 
-def gnomonBinaryImageInput(attr, method=None, setter_method=None, data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
-    def wrapper(cls):
-        if method is None or setter_method is None:
+def binaryImageInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+    def decorator(cls):
+        if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
+        elif len(methods) == 2:
+            local_getter_method, local_setter_method = methods
         else:
-            local_getter_method, local_setter_method = method, setter_method
-
+            raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
         return _gnomonBinaryImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
 
-    return wrapper
+    return decorator
 
 
 def _gnomonBinaryImageOutput(cls, attr, method, data_plugin, data_setter):
@@ -81,12 +82,12 @@ def _gnomonBinaryImageOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def gnomonBinaryImageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
-    def wrapper(cls):
+def binaryImageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+    def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
         return _gnomonBinaryImageOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
 
-    return wrapper
+    return decorator

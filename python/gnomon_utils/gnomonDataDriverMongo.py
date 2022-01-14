@@ -5,19 +5,18 @@ import subprocess
 import traceback
 import weakref
 
-import gnomoncore
 from datetime import date
 from gnomoncore import gnomonAbstractDataDriver, gnomonAbstractDataDriverPlugin
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
 
-from .gnomonPlugin import gnomonPlugin
+from .gnomonPlugin import corePlugin
 
 def get_username():
     return getpass.getuser()
 
-@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore, base_class=gnomonAbstractDataDriver)
+@corePlugin(version="0.1.0", coreversion="0.19.0", base_class=gnomonAbstractDataDriver)
 class gnomonDataDriverMongo(gnomonAbstractDataDriver):
     def __init__(self):
         super().__init__()

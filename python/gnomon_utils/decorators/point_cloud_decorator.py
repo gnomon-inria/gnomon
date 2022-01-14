@@ -51,16 +51,17 @@ def _gnomonPointCloudInput(cls, attr, method, setter_method, data_plugin, data_s
     return cls
 
 
-def gnomonPointCloudInput(attr, method=None, setter_method=None, data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
-    def wrapper(cls):
-        if method is None or setter_method is None:
+def pointCloudInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+    def decorator(cls):
+        if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
+        elif len(methods) == 2:
+            local_getter_method, local_setter_method = methods
         else:
-            local_getter_method, local_setter_method = method, setter_method
-
+            raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
         return _gnomonPointCloudInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
 
-    return wrapper
+    return decorator
 
 
 def _gnomonPointCloudOutput(cls, attr, method, data_plugin, data_setter):
@@ -81,12 +82,12 @@ def _gnomonPointCloudOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def gnomonPointCloudOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
-    def wrapper(cls):
+def pointCloudOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+    def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
         return _gnomonPointCloudOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
 
-    return wrapper
+    return decorator

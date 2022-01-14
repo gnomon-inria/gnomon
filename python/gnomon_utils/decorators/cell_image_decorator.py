@@ -1,47 +1,47 @@
 import gnomoncore
 
-from gnomoncore import gnomonMesh
+from gnomoncore import gnomonCellImage
 from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries
 
-load_plugin_group("meshData")
+load_plugin_group("cellImageData")
 
-default_plugin = "gnomonMeshDataPropertyTopomesh"
-default_setter = "set_property_topomesh"
-default_attr = "_topomesh"
+default_plugin = "gnomonCellImageDataPropertySpatialImage"
+default_setter = "set_property_image"
+default_attr = "_p_img"
 
-form_class = gnomonMesh
-form_data_factory = gnomoncore.meshData_pluginFactory()
-from_form_method = "from_gnomonMesh"
+form_class = gnomonCellImage
+form_data_factory = gnomoncore.cellImageData_pluginFactory()
+from_form_method = "from_gnomonCellImage"
 
 
-def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
+def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
-        update = update or not hasattr(self, "_in_mesh")
+        update = update or not hasattr(self, "_in_cellImage")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
                                                    form_class=form_class,
                                                    form_data_factory=form_data_factory,
                                                    data_plugin=data_plugin,
                                                    data_setter=data_setter)
-            self._in_mesh = form_dict
-            self._in_mesh_data = data_dict
-        return self._in_mesh
+            self._in_cellImage = form_dict
+            self._in_cellImage_data = data_dict
+        return self._in_cellImage
 
     setattr(cls, method, func)
 
-    def setter_func(self, mesh):
-        self._in_mesh = mesh
+    def setter_func(self, cellImage):
+        self._in_cellImage = cellImage
         setattr(self, attr, {})
 
-        if self._in_mesh is not None:
-            mesh_dict = formDictFromSeries(form=self._in_mesh,
+        if self._in_cellImage is not None:
+            cellImage_dict = formDictFromSeries(form=self._in_cellImage,
                                                   form_data_factory=form_data_factory,
                                                   from_form_method=from_form_method,
                                                   data_plugin=data_plugin,
                                                   data_attr=data_attr)
-            setattr(self, attr, mesh_dict)
+            setattr(self, attr, cellImage_dict)
 
             if hasattr(self,"refresh_parameters"):
                 self.refresh_parameters()
@@ -51,42 +51,43 @@ def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter,
     return cls
 
 
-def gnomonMeshInput(attr, method=None, setter_method=None, data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
-    def wrapper(cls):
-        if method is None or setter_method is None:
+def cellImageInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+    def decorator(cls):
+        if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
+        elif len(methods) == 2:
+            local_getter_method, local_setter_method = methods
         else:
-            local_getter_method, local_setter_method = method, setter_method
+            raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
+        return _gnomonCellImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
 
-        return _gnomonMeshInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
-
-    return wrapper
+    return decorator
 
 
-def _gnomonMeshOutput(cls, attr, method, data_plugin, data_setter):
+def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
-        update = update or not hasattr(self, "_out_mesh")
+        update = update or not hasattr(self, "_out_cellImage")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
                                                    form_class=form_class,
                                                    form_data_factory=form_data_factory,
                                                    data_plugin=data_plugin,
                                                    data_setter=data_setter)
-            self._out_mesh = form_dict
-            self._out_mesh_data = data_dict
-        return self._out_mesh
+            self._out_cellImage = form_dict
+            self._out_cellImage_data = data_dict
+        return self._out_cellImage
 
     setattr(cls, method, func)
 
     return cls
 
 
-def gnomonMeshOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
-    def wrapper(cls):
+def cellImageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+    def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
-        return _gnomonMeshOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
+        return _gnomonCellImageOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
 
-    return wrapper
+    return decorator
