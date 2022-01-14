@@ -57,7 +57,7 @@ public:
 public:
     // TODO: check later with Guillaume
     static inline QString defaultSetter(QString formName) {
-        dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void addImage(gnomonImageSeries *)";
+        dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void addImage(gnomonImageSeries *) since this method accept multiple images of the same type";
         return {};
     };
     static inline QString defaultGetter(QString formName) {
