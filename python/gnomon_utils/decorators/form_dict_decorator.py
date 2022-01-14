@@ -26,10 +26,7 @@ def _gnomonFormDictOutput(cls, form_attr, method):
 
 
 def gnomonFormDictOutput(cls=None, form_attr={}, method='forms'):
-    if cls is not None:
-        return _gnomonFormDictOutput(cls, form_attr)
-    else:
-        def wrapper(cls):
-            return _gnomonFormDictOutput(cls, form_attr, method)
+    def decorator(cls):
+        return _gnomonFormDictOutput(cls, form_attr, method)
 
-        return wrapper
+    return decorator
