@@ -23,6 +23,29 @@ public:
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setInput"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"setInitialization"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"input"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"initialization"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonBinaryImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
     virtual gnomonBinaryImageSeries *output() const = 0;
 
 

@@ -40,6 +40,27 @@ public:
     virtual gnomonCellImageSeries *input() const = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"setInput"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"input"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
+
+public:
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 

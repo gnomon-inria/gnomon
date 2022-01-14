@@ -53,6 +53,24 @@ public:
 
 public:
     virtual gnomonImageSeries *output() = 0;
+
+public:
+    // TODO: check later with Guillaume
+    static inline QString defaultSetter(QString formName) {
+        dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void addImage(gnomonImageSeries *)";
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        dtkWarn() << Q_FUNC_INFO << "No getter defined";
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

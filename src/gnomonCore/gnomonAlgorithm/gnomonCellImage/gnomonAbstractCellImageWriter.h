@@ -42,6 +42,24 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"setCellImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"cellImage"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        return {};
+    };
+
+
+public:
     virtual QStringList extensions(void) = 0;
 };
 

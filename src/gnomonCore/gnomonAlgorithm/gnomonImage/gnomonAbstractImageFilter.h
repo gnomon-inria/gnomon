@@ -53,6 +53,31 @@ public:
     };
 
     virtual gnomonImageSeries *output() = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setInput"};
+        } else if(formName == "gnomonBinaryImage") {
+            return {"setMask"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"input"};
+        } else if(formName == "gnomonBinaryImage") {
+            return {"mask"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

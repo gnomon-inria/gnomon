@@ -39,6 +39,27 @@ public:
 
 public:
     virtual gnomonMeshSeries *updatedMesh(void) const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"setMesh"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"mesh"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"updatedMesh"};
+        }
+        return {};
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

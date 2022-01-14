@@ -43,6 +43,33 @@ public:
     virtual gnomonTreeSeries *tree() const = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setImage"};
+        } else if(formName == "gnomonCellImage") {
+            return {"setCellImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"image"};
+        } else if(formName == "gnomonCellImage") {
+            return {"cellImageInput"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"cellImage"};
+        } else if(formName == "gnomonTree") {
+            return {"tree"};
+        }
+        return {};
+    };
+
+
+public:
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 
