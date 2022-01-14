@@ -39,6 +39,19 @@ public:
 	virtual void setDataFrame(gnomonDataFrame *dataFrame) = 0;
 	virtual gnomonDataFrame *dataFrame(void) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"setDataFrame"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"dataFrame"};
+        }
+        return {};
+    };
+
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
     virtual void setParameters(const dtkCoreParameters&) override = 0;

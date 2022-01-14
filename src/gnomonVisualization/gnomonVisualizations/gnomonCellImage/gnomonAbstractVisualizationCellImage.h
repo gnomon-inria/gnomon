@@ -40,6 +40,19 @@ public:
 	virtual void setCellImage(gnomonCellImageSeries *cellImage) = 0;
 	virtual gnomonCellImageSeries *cellImage(void) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"setCellImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"cellImage"};
+        }
+        return {};
+    };
+
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
     virtual void setParameters(const dtkCoreParameters&) override = 0;
