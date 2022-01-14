@@ -1,7 +1,7 @@
 import gnomoncore
 
 from gnomoncore import gnomonDataDict
-from gnomon_utils.gnomonPlugin import load_plugin_group
+from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries
 
@@ -51,14 +51,17 @@ def _gnomonDataDictInput(cls, attr, method, setter_method, data_plugin, data_set
     return cls
 
 
-def gnomonDataDictInput(cls=None, attr=None, method='input', setter_method='setInput', data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
-    if cls is not None:
-        return _gnomonDataDictInput(cls, attr, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
-    else:
-        def wrapper(cls):
-            return _gnomonDataDictInput(cls, attr, method, setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+def gnomonDataDictInput(attr, method=None, setter_method=None, data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+    def wrapper(cls):
+        if method is None or setter_method is None:
+            local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
+        else:
+            local_getter_method, local_setter_method = method, setter_method
 
-        return wrapper
+        return _gnomonDataDictInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+
+    return wrapper
+
 
 
 def _gnomonDataDictOutput(cls, attr, method, data_plugin, data_setter):
@@ -79,11 +82,12 @@ def _gnomonDataDictOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def gnomonDataDictOutput(cls=None, attr=None, method='output', data_plugin=default_plugin, data_setter=default_setter):
-    if cls is not None:
-        return _gnomonDataDictOutput(cls, attr, data_plugin=data_plugin, data_setter=data_setter)
-    else:
-        def wrapper(cls):
-            return _gnomonDataDictOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
+def gnomonDataDictOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+    def wrapper(cls):
+        if method is None:
+            bound_method = default_output_accessors(cls, form_class)
+        else:
+            bound_method = method
+        return _gnomonDataDictOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
 
-        return wrapper
+    return wrapper
