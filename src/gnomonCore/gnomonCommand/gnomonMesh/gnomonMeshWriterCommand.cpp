@@ -32,7 +32,7 @@ public:
 
 gnomonMeshWriterCommand::gnomonMeshWriterCommand() : d(new gnomonMeshWriterCommandPrivate)
 {
-    this->factory_name = "meshWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshWriter::pluginFactory().keys();
@@ -87,8 +87,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshWriterCommand::inputs()
 
 bool gnomonMeshWriterCommand::isEmpty()
 {
-    loadPluginGroup("meshWriter");
-    return gnomonCore::meshWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshWriterCommand::inputTypes() {

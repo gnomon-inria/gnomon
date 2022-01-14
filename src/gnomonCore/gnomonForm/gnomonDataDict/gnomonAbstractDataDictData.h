@@ -33,7 +33,8 @@ public:
 public:
     virtual QStringList keys() const = 0;
 
-    virtual QVariant get(const QString& key) const = 0;
+    virtual QVariant get(const QString& key) = 0; 
+    //virtual QVariantMap get() const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

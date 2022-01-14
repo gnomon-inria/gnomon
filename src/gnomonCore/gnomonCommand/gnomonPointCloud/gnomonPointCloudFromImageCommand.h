@@ -28,6 +28,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "pointCloudFromImage";
+    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudFromImageCommandPrivate *d;

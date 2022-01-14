@@ -32,6 +32,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "imageFilter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonImageFilterCommandPrivate *d;

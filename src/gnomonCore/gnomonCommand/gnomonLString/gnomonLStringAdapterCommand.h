@@ -28,6 +28,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "lStringAdapter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonLStringAdapterCommandPrivate *d;

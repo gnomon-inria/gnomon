@@ -17,7 +17,7 @@ public:
 
 gnomonBinaryImageFromImageCommand::gnomonBinaryImageFromImageCommand() : d(new gnomonBinaryImageFromImageCommandPrivate)
 {
-    this->factory_name = "binaryImageFromImage";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::binaryImageFromImage::pluginFactory().keys();
@@ -140,8 +140,11 @@ gnomonAbstractCommand::orderedMap gnomonBinaryImageFromImageCommand::outputTypes
 
 bool gnomonBinaryImageFromImageCommand::isEmpty()
 {
-    loadPluginGroup("binaryImageFromImage");
-    return gnomonCore::binaryImageFromImage::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonBinaryImageFromImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

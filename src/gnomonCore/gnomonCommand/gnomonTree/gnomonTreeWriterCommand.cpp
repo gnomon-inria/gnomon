@@ -32,7 +32,7 @@ public:
 
 gnomonTreeWriterCommand::gnomonTreeWriterCommand() : d(new gnomonTreeWriterCommandPrivate)
 {
-    this->factory_name = "treeWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
@@ -88,8 +88,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs()
 
 bool gnomonTreeWriterCommand::isEmpty()
 {
-    loadPluginGroup("treeWriter");
-    return gnomonCore::treeWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeWriterCommand::inputTypes() {

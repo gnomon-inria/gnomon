@@ -35,7 +35,7 @@ public:
 
 gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand() : d(new gnomonPointCloudFromImageCommandPrivate)
 {
-    this->factory_name = "pointCloudFromImage";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::pointCloudFromImage::pluginFactory().keys();
@@ -114,8 +114,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::out
 
 bool gnomonPointCloudFromImageCommand::isEmpty()
 {
-    loadPluginGroup("pointCloudFromImage");
-    return gnomonCore::pointCloudFromImage::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonPointCloudFromImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::inputTypes() {

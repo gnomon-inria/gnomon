@@ -110,7 +110,7 @@ if (WIN32)
   set(Python3_FIND_REGISTRY LAST)
 endif()
 
-find_package (Python3 3.7 EXACT COMPONENTS Interpreter Development)
+find_package (Python3 3.7 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
@@ -131,6 +131,7 @@ if(GNOMON_ENABLE_WIDGETS)
 endif(GNOMON_ENABLE_WIDGETS)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
+include_directories(${Python3_INCLUDE_DIRS})
 
 ## #################################################################
 ## Install prefix Modules

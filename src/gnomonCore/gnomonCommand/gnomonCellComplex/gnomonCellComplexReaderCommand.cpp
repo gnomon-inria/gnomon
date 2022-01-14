@@ -22,7 +22,7 @@ public:
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand() : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    this->factory_name = "cellComplexReader";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
      for (const auto& key: gnomonCore::cellComplexReader::pluginFactory().keys()) {
@@ -76,14 +76,17 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexReaderCommand::outpu
 
 bool gnomonCellComplexReaderCommand::isEmpty()
 {
-    loadPluginGroup("cellComplexReader");
-    return gnomonCore::cellComplexReader::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellComplexReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("cellComplex", "gnomonCellComplex"));
     return types;
+}
+
+QStringList gnomonCellComplexReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

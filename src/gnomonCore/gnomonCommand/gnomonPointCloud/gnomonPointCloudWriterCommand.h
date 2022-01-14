@@ -24,6 +24,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "pointCloudWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudWriterCommandPrivate *d;

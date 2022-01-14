@@ -15,6 +15,7 @@ from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
 
+
 def import_plugins(file, excludes=[]):
     file = os.path.dirname(file)
     module = os.path.basename(file)
@@ -31,9 +32,25 @@ def import_plugins(file, excludes=[]):
             logging.info(module_path + "." + submodule[:-3])
             traceback.print_exc()
 
+
 def load_plugin_group(group_name):
     for entry_point in iter_entry_points(group=group_name, name=None):
         importlib.import_module(entry_point.module_name)
+
+
+def available_plugins(group_name):
+    print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
+    return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
+
+
+def plugin_metadata(group_name):
+    out = []
+    for ep in iter_entry_points(group_name):
+        *module, resource = ep.module_name.split(".")
+        path = resource_filename(".".join(module), resource+".json")
+        out.append((ep.name, path))
+    return out
+
 
 def gnomon_declare_plugins(path):
     script = findall(path)
@@ -57,6 +74,7 @@ def gnomon_declare_plugins(path):
                     module_dict[cls].append(name+' = ' + module.replace('.py', ''))
 
     return module_dict
+
 
 def gnomonParametric(cls):
     # -----------------------------------------------------
@@ -110,6 +128,7 @@ def gnomonPlugin(version, coreversion, cls=None, namespace=gnomoncore, base_clas
         def wrapper(cls):
             return _gnomonPlugin(version, coreversion, cls, namespace=namespace, base_class=base_class)
         return wrapper
+
 
 def _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class = None):
     # -----------------------------------------------------
