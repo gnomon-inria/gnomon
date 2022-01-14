@@ -35,7 +35,7 @@ public:
     };
     static inline QString defaultGetter(QString formName) {
         if(formName == "gnomonBinaryImage") {
-            return {"binaryImag"};
+            return {"binaryImage"};
         }
         return {};
     };
