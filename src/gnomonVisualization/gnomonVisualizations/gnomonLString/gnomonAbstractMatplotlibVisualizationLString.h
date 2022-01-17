@@ -39,6 +39,19 @@ public:
 	virtual void setLString(gnomonLString *lString) = 0;
 	virtual gnomonLString *lString(void) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"setLString"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"lString"};
+        }
+        return {};
+    };
+
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
     virtual void setParameters(const dtkCoreParameters&) override = 0;

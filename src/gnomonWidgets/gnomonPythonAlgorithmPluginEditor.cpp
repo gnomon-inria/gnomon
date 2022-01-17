@@ -507,7 +507,7 @@ void gnomonPythonAlgorithmPluginEditor::updateCode(void)
     plugin_code += "from gnomon_utils import gnomonPlugin, gnomonParametric\n";
 
     if (dd->input_forms.size() + dd->output_forms.size() > 0) {
-        plugin_code += "from gnomon_utils.gnomonDecorator import";
+        plugin_code += "from gnomon_utils.decorators import";
     }
     int n_forms = 0;
     for (const auto &form_type : dd->input_forms.keys()) {

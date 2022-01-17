@@ -42,6 +42,24 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"setDataFrame"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"dataFrame"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        return {};
+    };
+
+
+public:
     virtual QStringList extensions(void) = 0;
 };
 

@@ -1,7 +1,7 @@
 import gnomoncore
 
 from gnomoncore import gnomonImage
-from gnomon_utils.gnomonPlugin import load_plugin_group
+from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries
 
@@ -51,14 +51,18 @@ def _gnomonImageInput(cls, attr, method, setter_method, data_plugin, data_setter
     return cls
 
 
-def gnomonImageInput(cls=None, attr=None, method='input', setter_method='setInput', data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
-    if cls is not None:
-        return _gnomonImageInput(cls, attr, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
-    else:
-        def wrapper(cls):
-            return _gnomonImageInput(cls, attr, method, setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+def imageInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+    def decorator(cls):
+        if None in methods:
+            local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
+        elif len(methods) == 2:
+            local_getter_method, local_setter_method = methods
+        else:
+            raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
+        return _gnomonImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
 
-        return wrapper
+    return decorator
+
 
 
 def _gnomonImageOutput(cls, attr, method, data_plugin, data_setter):
@@ -79,11 +83,12 @@ def _gnomonImageOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def gnomonImageOutput(cls=None, attr=None, method='output', data_plugin=default_plugin, data_setter=default_setter):
-    if cls is not None:
-        return _gnomonImageOutput(cls, attr, data_plugin=data_plugin, data_setter=data_setter)
-    else:
-        def wrapper(cls):
-            return _gnomonImageOutput(cls, attr, method, data_plugin=data_plugin, data_setter=data_setter)
+def imageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+    def decorator(cls):
+        if method is None:
+            bound_method = default_output_accessors(cls, form_class)
+        else:
+            bound_method = method
+        return _gnomonImageOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
 
-        return wrapper
+    return decorator

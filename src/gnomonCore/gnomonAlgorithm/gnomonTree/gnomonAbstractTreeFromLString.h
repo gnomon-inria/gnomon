@@ -49,6 +49,27 @@ public:
     virtual gnomonLStringSeries *input() = 0;
 
     virtual gnomonTreeSeries *output() = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"setInput"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"input"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonTree") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

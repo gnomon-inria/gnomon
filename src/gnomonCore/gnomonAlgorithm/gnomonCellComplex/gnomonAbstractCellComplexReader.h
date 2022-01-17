@@ -44,6 +44,21 @@ public:
     virtual gnomonCellComplexSeries *cellComplex(void) = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellComplex") {
+            return {"cellComplex"};
+        }
+        return {};
+    };
+
+
+public:
     virtual QStringList extensions(void) = 0;
 };
 

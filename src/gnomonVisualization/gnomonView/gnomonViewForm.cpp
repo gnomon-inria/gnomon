@@ -798,6 +798,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
     if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu_name) {
 
         if (this->formVisualization[name]) {
+            this->formVisualization[name]->clearConnections();
             this->formVisualization[name]->clear();
             // TODO: Fix offscreen rendering related segFault when destroying Visualization
             // delete this->formVisualization[name];

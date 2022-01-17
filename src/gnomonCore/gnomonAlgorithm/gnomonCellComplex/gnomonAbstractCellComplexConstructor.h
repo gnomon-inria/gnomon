@@ -30,12 +30,27 @@ class GNOMONCORE_EXPORT gnomonAbstractCellComplexConstructor : public gnomonAbst
 
     //Inputs
 public:
-  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual dtkCoreParameters parameters(void) const override = 0;
+    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
+
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+
+
 
     // Outputs
 public:
     virtual gnomonCellComplexSeries *output() const = 0;
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellComplex") {
+            return {"output"};
+        }
+        return {};
+    };
 
 public:
     virtual void run(void) override = 0;
