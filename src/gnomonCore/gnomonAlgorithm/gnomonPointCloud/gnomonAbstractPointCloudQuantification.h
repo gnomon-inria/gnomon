@@ -45,6 +45,33 @@ public:
     virtual gnomonDataFrameSeries *dataFrame() const = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setImage"};
+        } else if(formName == "gnomonPointCloud") {
+            return {"setPointCloud"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"getImageInput"};
+        } else if(formName == "gnomonPointCloud") {
+            return {"getPointCloudInput"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonPointCloud") {
+            return {"pointCloud"};
+        } else if(formName == "gnomonDataFrame") {
+            return {"dataFrame"};
+        }
+        return {};
+    };
+
+
+public:
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 
