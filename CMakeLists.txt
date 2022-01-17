@@ -8,6 +8,8 @@ project(gnomon)
 ## cmake modules folder
 ## ###################################################################
 
+set(LAYER_TARGETS ${PROJECT_NAME}-targets)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 ## ###################################################################
@@ -186,7 +188,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 
-install(EXPORT layer-targets
+install(EXPORT ${LAYER_TARGETS}
   FILE ${PROJECT_NAME}Targets.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 

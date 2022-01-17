@@ -33,7 +33,7 @@ endif(GNOMON_ENABLE_WIDGETS)
 ## Targets
 ## #################################################################
 
-export(EXPORT layer-targets
+export(EXPORT  ${LAYER_TARGETS}
   FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 ######################################################################
