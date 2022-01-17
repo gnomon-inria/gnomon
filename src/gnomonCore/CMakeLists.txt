@@ -113,31 +113,24 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVER
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export")
 
-set(${PROJECT_NAME}_HEADERS
-  ${${PROJECT_NAME}_HEADERS}
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
+install( FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"  DESTINATION include/${PROJECT_NAME}/${dir} )
+install( FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h"  DESTINATION include/${PROJECT_NAME}/${dir} )
 
 ## ###################################################################
 ## Install rules - files
 ## ###################################################################
 
-install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/${PROJECT_NAME})
+foreach ( file ${${PROJECT_NAME}_HEADERS} )
+    get_filename_component( dir ${file} DIRECTORY )
+    install( FILES ${file} DESTINATION include/${PROJECT_NAME}/${dir} )
+endforeach()
 
-## TODO: Shame on me ....
-install(DIRECTORY
-    gnomonAlgorithm
-    gnomonCommand
-    gnomonForm
-    gnomonModel
-  DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
+install(TARGETS ${PROJECT_NAME} EXPORT ${LAYER_TARGETS}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
