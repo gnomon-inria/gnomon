@@ -101,9 +101,9 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbs
     dd->q = this;
     dd->cellComplex = Q_NULLPTR;
 
-    d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "CellComplex property to be displayed");
+    d->parameters["property_name"] = new dtk::d_inliststring("property", "", {""}, "CellComplex property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
-    d->parameters["colormap"] = new gnomonCoreParameterColorMap("glasbey", "Colormap to apply to the cellComplex");
+    d->parameters["colormap"] = new gnomonCoreParameterColorMap("colormap", "glasbey", "Colormap to apply to the cellComplex");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellComplex rendering");
     d->parameters["scale_factor"] = new dtk::d_real("scale_factor", 0.99, 0, 1, 2, "Scale for cell surface visualization");
 }
