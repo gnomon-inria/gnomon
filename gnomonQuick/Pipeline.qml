@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
 import gnomon.Pipeline 1.0 as G
@@ -9,20 +10,64 @@ import gnomonQuick     1.0 as GX
 // TODO: Use actual resolution as propertues bound to the shader
 // /////////////////////////////////////////////////////////////////////////////
 
-Rectangle {
+Control {
+    id: _self;
+    clip: true;
 
-    id: self;
+    Item {
+        id: _internal;
 
-    layer.enabled: true
-    layer.samples: 4
+        property double factor: 1.25
+        property int zoomLevel: 0;
+        property double originX: _canvas.width / 2;
 
-    ShaderEffect {
+    }
 
-        anchors.fill: parent;
+    MouseArea {
+        id: _mouse_area
+        anchors.fill: _self;
+        propagateComposedEvents: true
 
-        property real u_time;
+        onWheel: {
+            if(wheel.angleDelta.y < 30 && wheel.angleDelta.y > -30) return
+            if((_internal.zoomLevel === 0 && wheel.angleDelta.y > 0) || _internal.zoomLevel === -5 && wheel.angleDelta.y < 0) return
+            _internal.zoomLevel = wheel.angleDelta.y > 0 ? Math.min(_internal.zoomLevel + 1, 0) : Math.max(_internal.zoomLevel - 1, -5);
 
-        fragmentShader: "#version 330
+            let scaleChange = _transform.scale - Math.pow(_internal.factor, _internal.zoomLevel)
+            let dx = (1 - scaleChange) * wheel.x * _transform.scale;
+            let dy = (1 - scaleChange) * wheel.y * _transform.scale;
+            _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
+
+            let lx = _self.width - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
+            let ly = _self.height - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
+
+            _canvas.x = dx > 0 ? Math.max(_canvas.x - dx, lx) : Math.min(0, _canvas.x - dx);
+            _canvas.y = dy > 0 ? Math.max(_canvas.y - dy, ly) : Math.min(0, _canvas.y - dy);
+
+        }
+    }
+
+    Rectangle {
+
+        id: _canvas;
+        width: _self.width * Math.pow(_internal.factor, 5);
+        height: _self.height * Math.pow(_internal.factor, 5);
+        x: -_canvas.width / 2 + _self.width / 2;
+        y: -_canvas.height / 2+ _self.height / 2;
+
+        layer.enabled: true
+        layer.samples: 4
+
+        readonly property real transitionDuration: 200;
+
+
+        ShaderEffect {
+
+            anchors.fill: _canvas;
+
+            property real u_time;
+
+            fragmentShader: "#version 330
 uniform lowp float qt_Opacity;
 uniform float u_time;
 
@@ -91,109 +136,141 @@ void main() {
     fragColor = vec4( color , 1.0);
 }
 "
-        NumberAnimation on u_time { running: true; from: 0; to: 1000; loops: Animation.Infinite; duration: 1000000; }
-    }
+            NumberAnimation on u_time { running: true; from: 0; to: 1000; loops: Animation.Infinite; duration: 1000000; }
+        }
 
-// /////////////////////////////////////////////////////////////////////////////
-// Nodes
-// /////////////////////////////////////////////////////////////////////////////
+        /* ***************************************************************************
+           ;;
+           ;; ****************************************************************************/
 
-    property var nodes: new Object();
-    property var edges: [];
+        Drag.active: _drag_area.drag.active
 
-    Connections {
-        target: G.Pipeline
-        function onNodeAdded (node) {
-            console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
-            var n = self.addNode(node);
+        MouseArea {
+            id: _drag_area;
+            anchors.fill: _canvas;
+            drag.target: _canvas;
+            drag.maximumX: 0;
+            drag.minimumX: _self.width - _canvas.width * _transform.xScale;
+            drag.maximumY: 0;
+            drag.minimumY: _self.height - _canvas.height * _transform.yScale;
+        }
 
-            console.log(node.inputEdgeCount, "input edges")
-            if (node.inputEdgeCount > 0) {
-                for (var i=0; i<node.inputEdgeCount; i++) {
-                    var edge = node.inputEdgeAt(i);
-                    console.log(" --> edge", i, ":",
-                                edge.source.node.name, "(", edge.source.label, ")",
-                                "->",
-                                edge.target.node.name, "(", edge.target.label,")")
-                    var e = self.addEdge(edge);
+        transform: Scale {
+            id: _transform
+
+            property double scale: 1.0;
+
+            xScale: _transform.scale;
+            yScale: _transform.scale;
+            Behavior on xScale { PropertyAnimation { duration: _canvas.transitionDuration;  easing.type: Easing.InOutCubic } }
+            Behavior on yScale { PropertyAnimation { duration: _canvas.transitionDuration;  easing.type: Easing.InOutCubic } }
+        }
+
+        Behavior on x { PropertyAnimation { duration: _canvas.transitionDuration;  easing.type: Easing.InOutCubic } }
+        Behavior on y { PropertyAnimation { duration: _canvas.transitionDuration;  easing.type: Easing.InOutCubic } }
+
+        // /////////////////////////////////////////////////////////////////////////////
+        // Nodes
+        // /////////////////////////////////////////////////////////////////////////////
+
+        property var nodes: new Object();
+        property var edges: [];
+
+        Connections {
+            target: G.Pipeline
+            function onNodeAdded (node) {
+                console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
+                var n = _canvas.addNode(node);
+
+                console.log(node.inputEdgeCount, "input edges")
+                if (node.inputEdgeCount > 0) {
+                    for (var i=0; i<node.inputEdgeCount; i++) {
+                        var edge = node.inputEdgeAt(i);
+                        console.log(" --> edge", i, ":",
+                                    edge.source.node.name, "(", edge.source.label, ")",
+                                    "->",
+                                    edge.target.node.name, "(", edge.target.label,")")
+                        var e = _canvas.addEdge(edge);
+                    }
                 }
             }
         }
-    }
 
-    function addNode(node) {
-        var node_component = Qt.createComponent("PipelineNode.qml");
-        if (node_component.status == Component.Ready) {
-            var n = node_component.createObject(self, {
-                "algorithmClass": node.algorithmClass,
-                "algorithmPlugin": node.algorithmPlugin,
-                "inputPortsNames": node.inputPortsNames,
-                "outputPortsNames": node.outputPortsNames,
-                "color": node.color,
-                "x": Qt.binding(function() { return self.width/2 + node.position.x }),
-                "y": Qt.binding(function() { return self.height/2 + node.position.y })
-            });
-            nodes[node.name] = n;
-            console.log("Adding node...", n)
-            return n;
-        } else {
-            console.error(node_component.errorString());
+        function addNode(node) {
+            var node_component = Qt.createComponent("PipelineNode.qml");
+            if (node_component.status == Component.Ready) {
+                var n = node_component.createObject(_canvas, {
+                    "algorithmClass": node.algorithmClass,
+                    "algorithmPlugin": node.algorithmPlugin,
+                    "inputPortsNames": node.inputPortsNames,
+                    "outputPortsNames": node.outputPortsNames,
+                    "color": node.color,
+                    "x": Qt.binding(function() { return _canvas.width/2 + node.position.x }),
+                    "y": Qt.binding(function() { return _canvas.height/2 + node.position.y })
+                });
+                nodes[node.name] = n;
+                console.log("Adding node...", n)
+                return n;
+            } else {
+                console.error(node_component.errorString());
+            }
         }
-    }
 
-    function addEdge(edge) {
-        var edge_component = Qt.createComponent("PipelineEdge.qml");
-        if (edge_component.status == Component.Ready) {
-            var src_node = nodes[edge.source.node.name];
-            var src = src_node.outputPorts[edge.source.label];
-            var tgt_node = nodes[edge.target.node.name];
-            var tgt = tgt_node.inputPorts[edge.target.label]
+        function addEdge(edge) {
+            var edge_component = Qt.createComponent("PipelineEdge.qml");
+            if (edge_component.status == Component.Ready) {
+                var src_node = nodes[edge.source.node.name];
+                var src = src_node.outputPorts[edge.source.label];
+                var tgt_node = nodes[edge.target.node.name];
+                var tgt = tgt_node.inputPorts[edge.target.label]
 
-            var e = edge_component.createObject(self, {
-                //"stt": Qt.binding(function() { return src.mapToItem(self, Qt.point(src.width, src.height/2)) }),
-                "stt": Qt.binding(function() { return Qt.point((src_node.x + src.parent.x + src.x + src.width),
-                                                               (src_node.y + src.parent.y + src.y + src.height/2)) }),
-                //"end": Qt.binding(function() { return tgt.mapToItem(self, Qt.point(0, tgt.height/2)) }),
-                "end": Qt.binding(function() { return Qt.point((tgt_node.x + tgt.parent.x + tgt.x),
-                                                               (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
-            });
+                var e = edge_component.createObject(_canvas, {
+                    //"stt": Qt.binding(function() { return src.mapToItem(_canvas, Qt.point(src.width, src.height/2)) }),
+                    "stt": Qt.binding(function() { return Qt.point((src_node.x + src.parent.x + src.x + src.width),
+                                                                   (src_node.y + src.parent.y + src.y + src.height/2)) }),
+                    //"end": Qt.binding(function() { return tgt.mapToItem(_canvas, Qt.point(0, tgt.height/2)) }),
+                    "end": Qt.binding(function() { return Qt.point((tgt_node.x + tgt.parent.x + tgt.x),
+                                                                   (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
+                });
 
-            edges.push(e);
-            console.log("Adding edge...", e)
-            return e;
-        } else {
-            console.error(edge_component.errorString());
+                edges.push(e);
+                console.log("Adding edge...", e)
+                return e;
+            } else {
+                console.error(edge_component.errorString());
+            }
         }
+
+        /*GX.PipelineNode { id: _source;
+          algorithmClass: "source";
+          algorithmPlugin: "dummySource";
+          outputPortsNames: ["output1", "output2"];
+
+          x:300
+          y:100
+
+          Component.onCompleted: {
+          console.log(_source.outputPorts);
+          }
+          }
+
+          GX.PipelineNode { id: _target;
+          algorithmClass: "target";
+          algorithmPlugin: "dummyTarget";
+          inputPortsNames: ["input1", "input2"];
+
+          x:600
+          y:100
+
+          Component.onCompleted: {
+          console.log(_target.inputPorts);
+          }
+          }
+
+          GX.PipelineEdge { id: _edge;
+          src: _source.outputPorts["output2"];
+          tgt: _target.inputPorts["input1"];
+          }*/
     }
 
-    /*GX.PipelineNode { id: _source;
-        algorithmClass: "source";
-        algorithmPlugin: "dummySource";
-        outputPortsNames: ["output1", "output2"];
-
-        x:300
-        y:100
-
-        Component.onCompleted: {
-            console.log(_source.outputPorts);
-        }
-    }
-
-    GX.PipelineNode { id: _target;
-        algorithmClass: "target";
-        algorithmPlugin: "dummyTarget";
-        inputPortsNames: ["input1", "input2"];
-
-        x:600
-        y:100
-
-        Component.onCompleted: {
-            console.log(_target.inputPorts);
-        }
-    }
-
-    GX.PipelineEdge { id: _edge;
-        src: _source.outputPorts["output2"];
-        tgt: _target.inputPorts["input1"];
-    }*/
 }
