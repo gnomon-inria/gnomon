@@ -82,7 +82,7 @@ def _gnomonBinaryImageOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def binaryImageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+def imageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
     def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
