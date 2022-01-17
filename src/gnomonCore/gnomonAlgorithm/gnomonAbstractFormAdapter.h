@@ -38,8 +38,20 @@ public:
 public:
     virtual void setInput(T *form_series) = 0;
     virtual T *input() = 0;
+    
+    // TODO : use value from template to check form type
+    static inline QString defaultSetter(QString formName) {
+        return {"setInput"};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {"input"};
+    };
 
+    // TODO : use target value to check form type
     virtual gnomonAbstractDynamicForm *output() = 0;
+    static inline QString defaultOutput(QString formName) {
+        return {"output"};
+    };
 
 public:
     virtual QString target(void) = 0;
