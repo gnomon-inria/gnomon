@@ -34,6 +34,7 @@ public:
     QString workspace;
     QStringList keys;
     QString algorithm;
+    int currentIndex = 0;
 
 public:
     gnomonPipeline *pipeline;

@@ -126,6 +126,14 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
     }
 }
 
+int gnomonAlgorithmWorkspace::currentIndex(void) const {
+    return d->currentIndex;
+}
+
+void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
+    d->currentIndex = i;
+}
+
 QJSValue gnomonAlgorithmWorkspace::parameters(void)
 {
     return dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
