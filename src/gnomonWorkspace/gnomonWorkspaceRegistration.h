@@ -27,6 +27,7 @@ class gnomonViewFormList;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "Registration Workspace description from cxx")
 
 public:
      gnomonWorkspaceRegistration(QObject *parent = nullptr);

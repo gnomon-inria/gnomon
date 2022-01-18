@@ -11,6 +11,7 @@
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBinarization : public gnomonAlgorithmWorkspace
 {
 Q_OBJECT
+Q_CLASSINFO("description", "Binarization Workspace description from cxx")
 
 public:
     explicit gnomonWorkspaceBinarization(QObject *parent = nullptr);

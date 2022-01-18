@@ -23,6 +23,7 @@ class gnomonViewForm;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "Browsing Workspace description from cxx")
 
 public:
      gnomonWorkspaceBrowser(QObject *parent = nullptr);

@@ -12,6 +12,7 @@ class gnomonViewForm;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspacePreprocess : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "Preprocess Workspace description from cxx")
 
 public:
      gnomonWorkspacePreprocess(QObject *parent = nullptr);
@@ -20,10 +21,6 @@ public:
 public:
     void setInputs() final;
 
-public:
-    Q_PROPERTY(QStringList availablePlugins READ availablePlugins);
-    static QStringList availablePlugins();
 };
-
 //
 // gnomonWorkspacePreprocess.h ends here

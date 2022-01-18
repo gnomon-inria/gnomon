@@ -12,6 +12,7 @@ class gnomonViewForm;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSegmentation : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "Segmentation Workspace description from cxx")
 
 public:
      explicit gnomonWorkspaceSegmentation(QObject *parent = nullptr);

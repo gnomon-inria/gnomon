@@ -26,6 +26,7 @@ class gnomonViewMatplotlib;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "CellImageQuantification Workspace description from cxx")
 
 public:
      gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
