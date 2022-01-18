@@ -57,13 +57,15 @@ void gnomonCellImageFilterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellImageFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageFilterCommand::redo()
+void gnomonCellImageFilterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellImageFilterCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFilter *) this->action)->output();
+
     if ((!cellImage)||(cellImage->times().empty())) {
         d->output = nullptr;
     } else {

@@ -51,13 +51,15 @@ void gnomonTreeConstructorCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::treeConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeConstructorCommand::redo()
+void gnomonTreeConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonTreeConstructorCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
+
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
     } else {

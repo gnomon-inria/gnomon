@@ -45,12 +45,15 @@ gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
     delete d;
 }
 
-void gnomonMeshReaderCommand::redo()
+void gnomonMeshReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractMeshReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonMeshReaderCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->mesh = nullptr;
     } else {

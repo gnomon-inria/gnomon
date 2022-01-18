@@ -57,13 +57,14 @@ void gnomonFemSolverCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::femSolver::pluginFactory().create(algo_name);
 }
 
-void gnomonFemSolverCommand::redo()
+void gnomonFemSolverCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    qDebug()<<"redo command"<<d->mesh;
     ((gnomonAbstractFemSolver *) this->action)->setMesh(d->mesh);
+}
 
-    this->action->run();
+void gnomonFemSolverCommand::postdo(void)
+{
+
 }
 
 void gnomonFemSolverCommand::undo()

@@ -52,13 +52,15 @@ void gnomonPointCloudQuantificationCommand::setAlgorithmName(const QString& algo
     this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudQuantificationCommand::redo()
+void gnomonPointCloudQuantificationCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonPointCloudQuantificationCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
+
     if ((!pointCloud)||pointCloud->times().empty()) {
         d->pointCloud = nullptr;
     } else {
@@ -66,6 +68,7 @@ void gnomonPointCloudQuantificationCommand::redo()
     }
 
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
+
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     }

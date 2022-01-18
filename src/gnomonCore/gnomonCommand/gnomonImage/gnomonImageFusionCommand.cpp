@@ -59,10 +59,8 @@ void gnomonImageFusionCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::imageFusion::pluginFactory().create(algo_name);
 }
 
-void gnomonImageFusionCommand::redo()
+void gnomonImageFusionCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
 //    for(auto& images_serie : d->images_series) {
 //        ((gnomonAbstractImageFusion *) this->action)->addImage(images_serie);
 //    };
@@ -70,10 +68,12 @@ void gnomonImageFusionCommand::redo()
     for(auto& landmarks : d->landmarks) {
         ((gnomonAbstractImageFusion *) this->action)->addLandmarks(landmarks);
     }
+}
 
-    this->action->run();
-
+void gnomonImageFusionCommand::postdo(void)
+{
     gnomonImageSeries *image = ((gnomonAbstractImageFusion *) this->action)->output();
+
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->output = nullptr;
     } else {

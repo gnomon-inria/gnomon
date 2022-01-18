@@ -50,15 +50,19 @@ gnomonCellImageReaderCommand::gnomonCellImageReaderCommand() : d(new gnomonCellI
 gnomonCellImageReaderCommand::~gnomonCellImageReaderCommand()
 {
     this->action = nullptr;
+
     delete d;
 }
 
-void gnomonCellImageReaderCommand::redo()
+void gnomonCellImageReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractCellImageReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonCellImageReaderCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
+
     if ((!cellImage)||(cellImage->times().empty())) {
         d->cellImage = nullptr;
     } else {

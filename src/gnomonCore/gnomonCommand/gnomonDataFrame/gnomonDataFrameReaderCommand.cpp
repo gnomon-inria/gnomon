@@ -53,12 +53,15 @@ gnomonDataFrameReaderCommand::~gnomonDataFrameReaderCommand()
     delete d;
 }
 
-void gnomonDataFrameReaderCommand::redo()
+void gnomonDataFrameReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractDataFrameReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonDataFrameReaderCommand::postdo(void)
+{
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     } else {

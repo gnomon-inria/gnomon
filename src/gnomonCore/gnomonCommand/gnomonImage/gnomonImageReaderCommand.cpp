@@ -42,17 +42,30 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
     delete d;
 }
 
-void gnomonImageReaderCommand::redo()
+void gnomonImageReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
+    qWarning() << Q_FUNC_INFO;
+
     ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+
+    qWarning() << Q_FUNC_INFO << "Done";
+}
+
+void gnomonImageReaderCommand::postdo(void)
+{
+    qWarning() << Q_FUNC_INFO;
+
     gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
+
+    qWarning() << Q_FUNC_INFO << "Data" << image;
+
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
     }
+
+    qWarning() << Q_FUNC_INFO << "Done" << this->image();
 }
 
 void gnomonImageReaderCommand::undo()

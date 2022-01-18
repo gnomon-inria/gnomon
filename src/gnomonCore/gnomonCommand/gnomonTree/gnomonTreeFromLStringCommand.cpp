@@ -49,13 +49,15 @@ void gnomonTreeFromLStringCommand::setAlgorithmName(const QString& algo_name)
 }
 
 
-void gnomonTreeFromLStringCommand::redo()
+void gnomonTreeFromLStringCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-//    ((gnomonAbstractTreeFromLString *) this->action)->setLSystem(d->lsystem);
-    this->action->run();
 
+}
+
+void gnomonTreeFromLStringCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
+
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
     } else {

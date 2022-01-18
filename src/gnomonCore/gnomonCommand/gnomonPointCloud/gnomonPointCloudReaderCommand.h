@@ -6,12 +6,13 @@ class gnomonPointCloud;
 class GNOMONCORE_EXPORT gnomonPointCloudReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonPointCloudReaderCommand();
-    ~gnomonPointCloudReaderCommand() override;
+     gnomonPointCloudReaderCommand(void);
+    ~gnomonPointCloudReaderCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonPointCloudSeries *pointCloud();

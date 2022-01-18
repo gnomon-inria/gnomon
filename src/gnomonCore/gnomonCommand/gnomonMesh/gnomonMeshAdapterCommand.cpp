@@ -48,13 +48,15 @@ void gnomonMeshAdapterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshAdapterCommand::redo()
+void gnomonMeshAdapterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    
-    this->action->run();
-    
+
+}
+
+void gnomonMeshAdapterCommand::postdo(void)
+{
     gnomonAbstractDynamicForm *output = ((gnomonAbstractMeshAdapter *) this->action)->output();
+
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {

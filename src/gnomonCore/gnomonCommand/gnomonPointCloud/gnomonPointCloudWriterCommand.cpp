@@ -55,12 +55,15 @@ void gnomonPointCloudWriterCommand::setAlgorithmName(const QString& algo_name)
 }
 
 
-void gnomonPointCloudWriterCommand::redo()
+void gnomonPointCloudWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractPointCloudWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractPointCloudWriter *) this->action)->setPointCloud(d->pointCloud);
-    this->action->run();
+}
+
+void gnomonPointCloudWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonPointCloudWriterCommand::undo()

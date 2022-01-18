@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonPointCloudWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonPointCloudWriterCommand();
-    ~gnomonPointCloudWriterCommand() override;
+     gnomonPointCloudWriterCommand(void);
+    ~gnomonPointCloudWriterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;

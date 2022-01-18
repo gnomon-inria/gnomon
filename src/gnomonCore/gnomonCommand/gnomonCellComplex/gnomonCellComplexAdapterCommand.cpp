@@ -48,13 +48,11 @@ void gnomonCellComplexAdapterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellComplexAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexAdapterCommand::redo()
+void gnomonCellComplexAdapterCommand::predo(void) {}
+void gnomonCellComplexAdapterCommand::postdo(void)
 {
-    Q_ASSERT(this->action);
-    
-    this->action->run();
-    
     gnomonAbstractDynamicForm *output = ((gnomonAbstractCellComplexAdapter *) this->action)->output();
+
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {

@@ -49,13 +49,15 @@ void gnomonMeshFromImageCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshFromImageCommand::redo()
+void gnomonMeshFromImageCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonMeshFromImageCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
     } else {

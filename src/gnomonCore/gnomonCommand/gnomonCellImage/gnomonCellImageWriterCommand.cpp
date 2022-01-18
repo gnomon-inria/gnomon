@@ -55,12 +55,15 @@ void gnomonCellImageWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellImageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageWriterCommand::redo()
+void gnomonCellImageWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractCellImageWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractCellImageWriter *) this->action)->setCellImage(d->cellImage);
-    this->action->run();
+}
+
+void gnomonCellImageWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonCellImageWriterCommand::undo()

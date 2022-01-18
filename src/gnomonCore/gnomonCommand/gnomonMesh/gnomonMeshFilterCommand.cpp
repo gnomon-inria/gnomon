@@ -57,13 +57,15 @@ void gnomonMeshFilterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshFilterCommand::redo()
+void gnomonMeshFilterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonMeshFilterCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshFilter *) this->action)->output();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
     } else {

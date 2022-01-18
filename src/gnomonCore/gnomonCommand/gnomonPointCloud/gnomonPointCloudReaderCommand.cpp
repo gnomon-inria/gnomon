@@ -45,12 +45,15 @@ gnomonPointCloudReaderCommand::~gnomonPointCloudReaderCommand()
     delete d;
 }
 
-void gnomonPointCloudReaderCommand::redo()
+void gnomonPointCloudReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractPointCloudReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonPointCloudReaderCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudReader *) this->action)->pointCloud();
+
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->pointCloud = nullptr;
     } else {

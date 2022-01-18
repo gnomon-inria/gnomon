@@ -52,13 +52,15 @@ void gnomonCellImageQuantificationCommand::setAlgorithmName(const QString& algo_
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageQuantificationCommand::redo()
+void gnomonCellImageQuantificationCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellImageQuantificationCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
     } else {
@@ -66,6 +68,7 @@ void gnomonCellImageQuantificationCommand::redo()
     }
 
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     }

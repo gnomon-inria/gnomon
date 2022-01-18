@@ -51,13 +51,15 @@ void gnomonPointCloudConstructorCommand::setAlgorithmName(const QString& algo_na
     this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudConstructorCommand::redo()
+void gnomonPointCloudConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonPointCloudConstructorCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
+
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->output = nullptr;
     } else {

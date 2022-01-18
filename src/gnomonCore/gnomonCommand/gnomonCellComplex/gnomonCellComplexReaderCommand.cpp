@@ -43,14 +43,16 @@ gnomonCellComplexReaderCommand::~gnomonCellComplexReaderCommand()
     delete d;
 }
 
-void gnomonCellComplexReaderCommand::redo()
+void gnomonCellComplexReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
     ((gnomonAbstractCellComplexReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonCellComplexReaderCommand::postdo(void)
+{
     gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
-    if ((!cellComplex)||(cellComplex->times().empty())) {
+
+    if((!cellComplex)||(cellComplex->times().empty())) {
         d->cellComplex = nullptr;
     } else {
         d->cellComplex = cellComplex;

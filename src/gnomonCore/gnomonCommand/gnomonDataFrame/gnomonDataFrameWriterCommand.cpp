@@ -55,12 +55,15 @@ void gnomonDataFrameWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::dataFrameWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonDataFrameWriterCommand::redo()
+void gnomonDataFrameWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractDataFrameWriter *) this->action)->setDataFrame(d->dataFrame);
-    this->action->run();
+}
+
+void gnomonDataFrameWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonDataFrameWriterCommand::undo()

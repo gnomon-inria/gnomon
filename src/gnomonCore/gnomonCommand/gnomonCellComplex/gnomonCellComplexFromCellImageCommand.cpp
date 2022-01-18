@@ -50,13 +50,15 @@ void gnomonCellComplexFromCellImageCommand::setAlgorithmName(const QString& algo
     this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexFromCellImageCommand::redo()
+void gnomonCellComplexFromCellImageCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellComplexFromCellImageCommand::postdo(void)
+{
     gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
+
     if ((!cellComplex)||(cellComplex->times().empty())) {
         d->output = nullptr;
     } else {

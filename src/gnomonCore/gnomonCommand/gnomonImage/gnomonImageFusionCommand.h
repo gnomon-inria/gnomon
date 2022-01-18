@@ -7,12 +7,13 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFusionCommand();
-    ~gnomonImageFusionCommand() override;
+     gnomonImageFusionCommand(void);
+    ~gnomonImageFusionCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void addImage(gnomonImageSeries *);

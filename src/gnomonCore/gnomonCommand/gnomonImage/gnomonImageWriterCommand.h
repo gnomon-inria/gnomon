@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonImageWriterCommand();
-    ~gnomonImageWriterCommand() override;
+     gnomonImageWriterCommand(void);
+    ~gnomonImageWriterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;

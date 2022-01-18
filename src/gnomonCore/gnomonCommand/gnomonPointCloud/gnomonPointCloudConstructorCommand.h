@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonPointCloudConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonPointCloudConstructorCommand();
-    ~gnomonPointCloudConstructorCommand() override;
+     gnomonPointCloudConstructorCommand(void);
+    ~gnomonPointCloudConstructorCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonPointCloudSeries *output();

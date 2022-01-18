@@ -54,12 +54,19 @@ gnomonFormAlgorithmCommand::~gnomonFormAlgorithmCommand()
     delete d;
 }
 
-void gnomonFormAlgorithmCommand::redo()
+void gnomonFormAlgorithmCommand::predo(void)
 {
+
 }
 
-void gnomonFormAlgorithmCommand::undo()
+void gnomonFormAlgorithmCommand::postdo(void)
 {
+
+}
+
+void gnomonFormAlgorithmCommand::undo(void)
+{
+
 }
 
 void gnomonFormAlgorithmCommand::addInput(gnomonAbstractDynamicForm *input)

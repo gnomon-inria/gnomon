@@ -51,13 +51,15 @@ void gnomonCellImageConstructorCommand::setAlgorithmName(const QString& algo_nam
     this->action = gnomonCore::cellImageConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageConstructorCommand::redo()
+void gnomonCellImageConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellImageConstructorCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageConstructor *) this->action)->output();
+
     if ((!cellImage)||(cellImage->times().empty())) {
         d->output = nullptr;
     } else {

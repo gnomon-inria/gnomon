@@ -53,12 +53,15 @@ gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
     delete d;
 }
 
-void gnomonTreeReaderCommand::redo()
+void gnomonTreeReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractTreeReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonTreeReaderCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
+
     if ((!tree)||(tree->times().empty())) {
         d->tree = nullptr;
     } else {

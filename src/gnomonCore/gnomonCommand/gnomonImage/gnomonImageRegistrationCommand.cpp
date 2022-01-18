@@ -45,13 +45,15 @@ void gnomonImageRegistrationCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::imageRegistration::pluginFactory().create(algo_name);
 }
 
-void gnomonImageRegistrationCommand::redo()
+void gnomonImageRegistrationCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonImageRegistrationCommand::postdo(void)
+{
     gnomonImageSeries *image = ((gnomonAbstractImageRegistration *) this->action)->output();
+
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->output = nullptr;
     } else {

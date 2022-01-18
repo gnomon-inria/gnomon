@@ -52,13 +52,11 @@ void gnomonCellComplexConstructorCommand::setAlgorithmName(const QString& algo_n
 }
 
 
-void gnomonCellComplexConstructorCommand::redo()
+void gnomonCellComplexConstructorCommand::predo(void) {}
+void gnomonCellComplexConstructorCommand::postdo(void)
 {
-    Q_ASSERT(this->action);
-
-    this->action->run();
-
     gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexConstructor *) this->action)->output();
+
     if ((!cellComplex)||(cellComplex->times().empty())) {
         d->output = nullptr;
     } else {

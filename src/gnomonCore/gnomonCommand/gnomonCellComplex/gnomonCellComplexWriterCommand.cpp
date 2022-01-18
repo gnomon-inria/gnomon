@@ -25,6 +25,7 @@ public:
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand() : d(new gnomonCellComplexWriterCommandPrivate)
 {
     this->factory_name = "cellComplexWriter";
+
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellComplexWriter::pluginFactory().keys();
@@ -47,12 +48,15 @@ void gnomonCellComplexWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellComplexWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexWriterCommand::redo()
+void gnomonCellComplexWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractCellComplexWriter *) this->action)->setCellComplex(d->cellComplex);
-    this->action->run();
+}
+
+void gnomonCellComplexWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonCellComplexWriterCommand::undo()

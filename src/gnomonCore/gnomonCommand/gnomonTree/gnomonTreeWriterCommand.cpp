@@ -55,12 +55,15 @@ void gnomonTreeWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::treeWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeWriterCommand::redo()
+void gnomonTreeWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractTreeWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractTreeWriter *) this->action)->setTree(d->tree);
-    this->action->run();
+}
+
+void gnomonTreeWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonTreeWriterCommand::undo()

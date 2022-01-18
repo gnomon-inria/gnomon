@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonTreeFromLStringCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonTreeFromLStringCommand();
-    ~gnomonTreeFromLStringCommand() override;
+     gnomonTreeFromLStringCommand(void);
+    ~gnomonTreeFromLStringCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonLStringSeries *lString_series);

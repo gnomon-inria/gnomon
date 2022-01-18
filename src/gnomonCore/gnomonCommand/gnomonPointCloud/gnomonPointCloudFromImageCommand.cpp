@@ -58,13 +58,15 @@ void gnomonPointCloudFromImageCommand::setAlgorithmName(const QString& algo_name
     this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudFromImageCommand::redo()
+void gnomonPointCloudFromImageCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonPointCloudFromImageCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->output = nullptr;
     } else {

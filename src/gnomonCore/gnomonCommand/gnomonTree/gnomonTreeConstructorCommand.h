@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonTreeConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonTreeConstructorCommand();
-    ~gnomonTreeConstructorCommand() override;
+     gnomonTreeConstructorCommand(void);
+    ~gnomonTreeConstructorCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonTreeSeries *output();

@@ -6,12 +6,13 @@ class gnomonTree;
 class GNOMONCORE_EXPORT gnomonTreeAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonTreeAdapterCommand();
-    ~gnomonTreeAdapterCommand() override;
+     gnomonTreeAdapterCommand(void);
+    ~gnomonTreeAdapterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonTreeSeries *tree_series);

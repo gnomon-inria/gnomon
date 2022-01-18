@@ -29,13 +29,15 @@ gnomonBinaryImageReaderCommand::~gnomonBinaryImageReaderCommand()
     delete d;
 }
 
-void gnomonBinaryImageReaderCommand::redo()
+void gnomonBinaryImageReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
     ((gnomonAbstractBinaryImageReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonBinaryImageReaderCommand::postdo(void)
+{
     gnomonBinaryImageSeries *binaryImage = ((gnomonAbstractBinaryImageReader *) this->action)->binaryImage();
+
     if ((!binaryImage)||(binaryImage->times().empty())) {
         d->binaryImage = nullptr;
     } else {

@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonImageReaderCommand: public gnomonAbstractReaderCommand
 {
 public:
-     gnomonImageReaderCommand();
-    ~gnomonImageReaderCommand() override;
+     gnomonImageReaderCommand(void);
+    ~gnomonImageReaderCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonImageSeries *image();

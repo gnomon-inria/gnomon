@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonTreeWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonTreeWriterCommand();
-    ~gnomonTreeWriterCommand() override;
+     gnomonTreeWriterCommand(void);
+    ~gnomonTreeWriterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;

@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonTreeReaderCommand();
-    ~gnomonTreeReaderCommand() override;
+     gnomonTreeReaderCommand(void);
+    ~gnomonTreeReaderCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonTreeSeries *tree();

@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonPointCloudQuantificationCommand();
-    ~gnomonPointCloudQuantificationCommand() override;
+     gnomonPointCloudQuantificationCommand(void);
+    ~gnomonPointCloudQuantificationCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setImage(gnomonImageSeries *image);

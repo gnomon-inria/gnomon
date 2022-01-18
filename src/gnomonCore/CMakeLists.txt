@@ -75,6 +75,7 @@ add_library(${PROJECT_NAME} SHARED
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Concurrent)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)

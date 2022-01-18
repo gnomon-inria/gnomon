@@ -52,13 +52,15 @@ void gnomonImageConstructorCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::imageConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonImageConstructorCommand::redo()
+void gnomonImageConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonImageConstructorCommand::postdo(void)
+{
     gnomonImageSeries *image = ((gnomonAbstractImageConstructor *) this->action)->output();
+
     if ((!image)||(image->times().empty())) {
         d->output = nullptr;
     } else {

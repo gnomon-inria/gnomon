@@ -55,12 +55,15 @@ void gnomonImageWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::imageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonImageWriterCommand::redo()
+void gnomonImageWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractImageWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractImageWriter *) this->action)->setImage(d->image);
-    this->action->run();
+}
+
+void gnomonImageWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonImageWriterCommand::undo()
