@@ -40,14 +40,9 @@ Control {
             let scaleChange = Math.pow(_internal.factor, _internal.zoomLevel) / _transform.scale
             let dx = (1 - scaleChange) * (wheel.x - _canvas.x);
             let dy = (1 - scaleChange) * (wheel.y - _canvas.y);
-            /* let dx = (1 - scaleChange) * wheel.x * _transform.scale; */
-            /* let dy = (1 - scaleChange) * wheel.y * _transform.scale; */
             //pan lower bounds
             let lx = _self.width - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
             let ly = _self.height - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
-
-            console.log("SCALE CHANGE, dx, dy", scaleChange, dx, dy)
-            console.log("X, X + dx, lx", _canvas.x, _canvas.x + dx, lx)
 
             // update scale (zoom factor powered to the current zoom level)
             _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
@@ -70,7 +65,7 @@ Control {
         layer.enabled: true
         layer.samples: 4
 
-        readonly property real transitionDuration: 200;
+        readonly property real transitionDuration: 0;
 
 
         ShaderEffect {
