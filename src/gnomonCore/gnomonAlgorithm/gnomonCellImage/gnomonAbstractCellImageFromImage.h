@@ -55,6 +55,35 @@ public:
         return nullptr;
     };
     virtual gnomonCellImageSeries *output() const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setInput"};
+        } else if (formName == "gnomonPointCloud") {
+            return {"setCellPoints"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"setBinaryImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"input"};
+        } else if (formName == "gnomonPointCloud") {
+            return {"cellPoints"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"binaryImageSeries"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)

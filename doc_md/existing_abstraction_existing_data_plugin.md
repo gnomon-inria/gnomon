@@ -57,9 +57,9 @@ Keep the cls arg equal to `None`
 import gnomoncore
 from gnomoncore import gnomonAbstractImageFilter
 
-from gnomon_utils import gnomonPlugin
+from gnomon_utils import corePlugin
 
-@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
+@corePlugin(version="0.1.0", coreversion="0.19.0")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 ```
 
@@ -82,7 +82,7 @@ the setter and getter methods of the abstraction.
 **Inputs**
 
 The `gnomonAbstractImageFilter` abstraction requires an image as input.
-Therefore we use the `gnomonImageInput` decorator to make the link
+Therefore we use the `imageInput` decorator to make the link
 between the `images` attribute of the class (that will contain the input
 images) and the accessor methods from the signature of the abstraction :
 `setInput` and `input`.
@@ -91,7 +91,7 @@ images) and the accessor methods from the signature of the abstraction :
 **Outputs**
 
 The `gnomonAbstractImageFilter` abstraction returns an image as output.
-Therefore we use the `gnomonImageOutput` decorator to make the link
+Therefore we use the `imageOutput` decorator to make the link
 between the `filtered_images` attribute of the class (that will contain
 the output images) and the accessor method from the signature of the
 abstraction : `output`.
@@ -107,11 +107,11 @@ are channel names.
 ```
 
 ``` python
-from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+from gnomon_utils.decorators import imageInput, imageOutput
 
-@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
-@gnomonImageInput(attr='images',method='input',setter_method='setInput')
-@gnomonImageOutput(attr='filtered_images',method='output')
+@gnomonPlugin(version="0.1.0", coreversion="0.19.0")
+@imageInput(attr='images')
+@imageOutput(attr='filtered_images')
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 
     def __init__(self):
@@ -127,8 +127,37 @@ To provide parameters for the algorithm which will be accessible from the interf
 **gnomon** uses the parameter classes provided by the **dtkcore** module. 
 
 **dtkcore** provides for a variety of classes for different types notably for 
-integers, real numbers, character strings, boolean and so on. For an exhaustive list see
-[TODO](TODO)
+integers, real numbers, character strings, boolean and so on:
+
+#### simple
+ - dtk::d_string
+
+#### Numeric
+ - dtk::d_uchar
+ - dtk::d_char
+ - dtk::d_uint
+ - dtk::d_int 
+ - dtk::d_real
+ - dtk::d_bool
+
+#### List parameters
+ - dtk::d_inliststring
+ - dtk::d_inlistreal
+ - dtk::d_inlistint
+
+#### List of List
+ - dtk::d_inliststringlist
+
+#### Path
+ - dtk::d_path
+
+#### Range
+ - dtk::d_range_uchar
+ - dtk::d_range_char
+ - dtk::d_range_uint
+ - dtk::d_range_int 
+ - dtk::d_range_real
+
 
 
 In the example case, we define a single parameter that corresponds to
@@ -154,23 +183,21 @@ self._parameters["sigma"] = dtkcore.d_real("sigma", 1., 0, 10., 2, "Standard dev
 The `gnomonParametric` Python class decorator allows to map the
 parameters to a graphical rendering in the Gnomon interface by defining
 all the necessary functions. It also provides shortened access to the
-parameter values as `self['parameter_name']`.
+parameter values as `self['parameter_name']`. It is included in the `corePlugin` decorator.
 
 
 ``` python
 import gnomoncore
 from gnomoncore import gnomonAbstractImageFilter
 
-from gnomon_utils import gnomonPlugin
-from gnomon_utils import gnomonParametric
-from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+from gnomon_utils import corePlugin
+from gnomon_utils.decorators import imageInput, imageOutput
 
 import dtkcore
 
-@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
-@gnomonParametric
-@gnomonImageInput(attr="images",method='input',setter_method='setInput')
-@gnomonImageOutput(attr="filtered_images",method='output')
+@corePlugin(version="0.1.0", coreversion="0.19.0")
+@imageInput("images")
+@imageOutput("filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 
     def __init__(self):
@@ -304,18 +331,16 @@ or at least all modules defining Gnomon plugins.
 import gnomoncore
 from gnomoncore import gnomonAbstractImageFilter
 
-from gnomon_utils import gnomonPlugin
-from gnomon_utils import gnomonParametric
-from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+from gnomon_utils import corePlugin
+from gnomon_utils.decorators import imageInput, imageOutput
 
 import dtkcore
 
 from timagetk.plugins.linear_filtering import linear_filtering
 
-@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
-@gnomonParametric
-@gnomonImageInput(attr="images",method='input',setter_method='setInput')
-@gnomonImageOutput(attr="filtered_images",method='output')
+@corePlugin(version="0.1.0", coreversion="0.19.0")
+@imageInput(attr="images")
+@imageOutput(attr="filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
     """Compute the Gaussian smoothing of an image.
 

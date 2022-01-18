@@ -43,6 +43,27 @@ public:
 public:
     virtual gnomonCellImageSeries *input(void) = 0;
     virtual gnomonCellComplexSeries *output(void) const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"setInput"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"input"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellComplex") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexFromCellImage *)
