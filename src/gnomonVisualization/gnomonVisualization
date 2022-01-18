@@ -8,4 +8,5 @@
 #include "gnomonView/gnomonViewFormPool.h"
 #include "gnomonView/gnomonViewMatplotlib.h"
 #include "gnomonCoreParameterColor.h"
+#include "gnomonCoreParameterLookupTable.h"
 #include "gnomonLookupTable.h"

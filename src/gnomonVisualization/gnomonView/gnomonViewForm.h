@@ -138,6 +138,7 @@ public:
 
 signals:
     void formsChanged(void);
+    void formVisuParametersChanged(void);
 
 public:
     gnomonAbstractDynamicForm *form(const QString&);

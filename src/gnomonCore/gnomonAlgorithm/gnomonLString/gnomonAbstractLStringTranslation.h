@@ -11,7 +11,7 @@
 //
 
 // Code:
-
+// TODO: revoir tout ça :
 #pragma once
 
 #include <gnomonCoreExport>

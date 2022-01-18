@@ -22,9 +22,9 @@ copyright = '2021, Inria'
 author = 'Mosaic project-team and AMDT team'
 
 # The short X.Y version
-version = '0.18'
+version = '0.19'
 # The full version, including alpha/beta/rc tags
-release = '0.18.0'
+release = '0.19.0'
 
 
 # -- General configuration ---------------------------------------------------

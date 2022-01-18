@@ -5,15 +5,14 @@ from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist
 
 import gnomoncore
 
-from gnomon_utils import load_plugin_group, gnomonPlugin, gnomonParametric
-from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+from gnomon_utils import load_plugin_group, corePlugin
+from gnomon_utils.decorators import imageInput, imageOutput
 
 from timagetk.components import SpatialImage
 
-@gnomonPlugin(version='0.1.0', coreversion='0.18.0', namespace=gnomoncore)
-@gnomonParametric
-@gnomonImageInput(attr='in_img', method='inputImage', setter_method='setInputImage')
-@gnomonImageOutput(attr='out_img', method='outputImage')
+@corePlugin(version='0.1.0', coreversion='0.19.0')
+@imageInput(attr='in_img')
+@imageOutput(attr='out_img')
 class imageAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):
 
     def __init__(self):

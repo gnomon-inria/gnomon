@@ -33,10 +33,15 @@ set(${PROJECT_NAME}_HEADERS
     gnomonVisualization
     gnomonVisualization.h
 
-    gnomonCoreParameterColor.h # NOTE: Transitional
-    gnomonCoreParameterColorObject # NOTE: Transitional
-    gnomonCoreParameterColorObject.h # NOTE: Transitional
-    gnomonLookupTable.h # NOTE: Transitional
+    gnomonCoreParameterColor # NOTE: Transitional ?
+    gnomonCoreParameterColor.h # NOTE: Transitional ?
+    gnomonCoreParameterColorObject # NOTE: Transitional ?
+    gnomonCoreParameterColorObject.h # NOTE: Transitional ?
+    gnomonLookupTable.h # NOTE: Transitional ?
+    gnomonCoreParameterLookupTable # NOTE: Transitional ?
+    gnomonCoreParameterLookupTable.h # NOTE: Transitional ?
+    gnomonCoreParameterLookupTableObject # NOTE: Transitional ?
+    gnomonCoreParameterLookupTableObject.h # NOTE: Transitional ?
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
 #   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
@@ -48,9 +53,11 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
     gnomonVisualization.cpp
 
-    gnomonCoreParameterColor.cpp # NOTE: Transitional
-    gnomonCoreParameterColorObject.cpp # NOTE: Transitional
-    gnomonLookupTable.cpp # NOTE: Transitional
+    gnomonCoreParameterColor.cpp # NOTE: Transitional ?
+    gnomonCoreParameterColorObject.cpp # NOTE: Transitional ?
+    gnomonLookupTable.cpp # NOTE: Transitional ?
+    gnomonCoreParameterLookupTable.cpp # NOTE: Transitional ?
+    gnomonCoreParameterLookupTableObject.cpp # NOTE: Transitional ?
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
 #   ${${PROJECT_NAME}_INSPECTOR_SOURCES}
@@ -125,32 +132,23 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVER
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export")
 
-set(${PROJECT_NAME}_HEADERS
-  ${${PROJECT_NAME}_HEADERS}
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
+install( FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"  DESTINATION include/${PROJECT_NAME})
+install( FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h"  DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################
 ## Install rules - files
 ## ###################################################################
 
-install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/${PROJECT_NAME})
-
-## TODO: Shame on me ....
-install(DIRECTORY
-    gnomonActor
-    gnomonInteractorStyle
-    gnomonManager
-    gnomonView
-    gnomonVisualizations
-  DESTINATION include/${PROJECT_NAME})
+foreach ( file ${${PROJECT_NAME}_HEADERS} )
+    get_filename_component( dir ${file} DIRECTORY )
+    install( FILES ${file} DESTINATION include/${PROJECT_NAME}/${dir} )
+endforeach()
 
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
+install(TARGETS ${PROJECT_NAME} EXPORT ${LAYER_TARGETS}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

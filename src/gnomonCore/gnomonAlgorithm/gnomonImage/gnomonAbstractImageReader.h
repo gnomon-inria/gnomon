@@ -47,6 +47,21 @@ public:
     virtual gnomonImageSeries *image() = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"image"};
+        }
+        return {};
+    };
+
+
+public:
     virtual QStringList extensions(void) = 0;
 };
 

@@ -53,7 +53,7 @@ add_custom_command(
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i  DESTINATION ${CMAKE_INSTALL_PREFIX}/wrp/${LAYER_NAME}/)
+#install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i  DESTINATION ${CMAKE_INSTALL_PREFIX}/wrp/${LAYER_NAME}/)
 
 ######################################################################
 ### CMakeLists.txt ends here

@@ -38,6 +38,21 @@ public:
     virtual gnomonImageSeries *output() const = 0;
 
 public:
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
+
+public:
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 

@@ -548,9 +548,9 @@ from my_module import MyStructure
 import gnomoncore
 from gnomoncore import gnomonAbstractNewFormData
 
-from gnomon_utils import gnomonPlugin
+from gnomon_utils import corePlugin
 
-@gnomonPlugin(version="0.1.0", coreversion="0.18.0", namespace=gnomoncore)
+@corePlugin(version="0.1.0", coreversion="0.19.0")
 class newFormDataMyStructure(gnomonAbstractNewFormData):
 ```
 
