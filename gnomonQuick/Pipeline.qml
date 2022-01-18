@@ -29,18 +29,25 @@ Control {
         propagateComposedEvents: true
 
         onWheel: {
+            //We use only significant mouse wheel events to avoid sensitivity issues
             if(wheel.angleDelta.y < 30 && wheel.angleDelta.y > -30) return
+            //We only enable 5 zoom levels by default
             if((_internal.zoomLevel === 0 && wheel.angleDelta.y > 0) || _internal.zoomLevel === -5 && wheel.angleDelta.y < 0) return
+            //update zoom level
             _internal.zoomLevel = wheel.angleDelta.y > 0 ? Math.min(_internal.zoomLevel + 1, 0) : Math.max(_internal.zoomLevel - 1, -5);
 
+            //This is to compute the pan
             let scaleChange = _transform.scale - Math.pow(_internal.factor, _internal.zoomLevel)
             let dx = (1 - scaleChange) * wheel.x * _transform.scale;
             let dy = (1 - scaleChange) * wheel.y * _transform.scale;
-            _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
-
+            //pan lower bounds
             let lx = _self.width - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
             let ly = _self.height - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
 
+            // update scale (zoom factor powered to the current zoom level)
+            _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
+
+            //update pan
             _canvas.x = dx > 0 ? Math.max(_canvas.x - dx, lx) : Math.min(0, _canvas.x - dx);
             _canvas.y = dy > 0 ? Math.max(_canvas.y - dy, ly) : Math.min(0, _canvas.y - dy);
 
@@ -155,6 +162,11 @@ void main() {
             drag.minimumY: _self.height - _canvas.height * _transform.yScale;
         }
 
+
+/* ***************************************************************************
+;; Properties for zoom and pan
+;; ****************************************************************************/
+
         transform: Scale {
             id: _transform
 
@@ -206,7 +218,8 @@ void main() {
                     "outputPortsNames": node.outputPortsNames,
                     "color": node.color,
                     "x": Qt.binding(function() { return _canvas.width/2 + node.position.x }),
-                    "y": Qt.binding(function() { return _canvas.height/2 + node.position.y })
+                    "y": Qt.binding(function() { return _canvas.height/2 + node.position.y }),
+                    "workspaceIndex": window.current_workspace_index()
                 });
                 nodes[node.name] = n;
                 console.log("Adding node...", n)
@@ -231,6 +244,8 @@ void main() {
                     //"end": Qt.binding(function() { return tgt.mapToItem(_canvas, Qt.point(0, tgt.height/2)) }),
                     "end": Qt.binding(function() { return Qt.point((tgt_node.x + tgt.parent.x + tgt.x),
                                                                    (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
+                    "inputWorkspaceIndex": src_node.workspaceIndex,
+                    "outputWorkspaceIndex": tgt_node.workspaceIndex,
                 });
 
                 edges.push(e);

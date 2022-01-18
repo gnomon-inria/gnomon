@@ -9,6 +9,8 @@ Shape { id: self;
     property Item src;
     property Item tgt;
 
+    property int inputWorkspaceIndex;
+    property int outputWorkspaceIndex;
     property point stt: Qt.point((src.x + src.width), (src.y + src.height/2));
     property point end: Qt.point( tgt.x,              (tgt.y + tgt.height/2));
     property point mid: Qt.point((stt.x + end.x)/2,   (stt.y + end.y)/2);
@@ -22,7 +24,10 @@ Shape { id: self;
         fillColor: "transparent";
 
         strokeWidth: 3
-        strokeColor: X.Style.borderColor
+        strokeColor: (inputWorkspaceIndex === window.current_workspace_index() ||
+                      outputWorkspaceIndex === window.current_workspace_index())
+            ? X.Style.accentColor
+            : X.Style.foregroundColor;
 
         startX: self.stt.x;
         startY: self.stt.y;
@@ -36,4 +41,9 @@ Shape { id: self;
                     y: self.end.y
         }
     }
+
+        Component.onCompleted: {
+            console.log("in: ", inputWorkspaceIndex)
+            console.log("out: ", outputWorkspaceIndex)
+        }
 }

@@ -4,30 +4,51 @@ import QtQuick.Shapes 1.15
 
 import xQuick           1.0 as X
 import xQuick.Controls  1.0 as X
+import xQuick.Style     1.0 as X
 
 import gnomonQuick     1.0 as GX
 
-Rectangle { id: self;
+Rectangle {
+
+    id: _self;
+
+    property int workspaceIndex;
 
     property string algorithmClass: "";
     property string algorithmPlugin: "";
 
     property var inputPortsNames: [];
     property var outputPortsNames: [];
+    property var inputPorts: new Object();
 
     width: 200;
-    height: 30 + 15*Math.max(self.inputPortsNames.length, self.outputPortsNames.length) - 5;
+    height: 30 + 15*Math.max(_self.inputPortsNames.length, _self.outputPortsNames.length) - 5;
     radius: 8;
+
+    border.color: X.Style.accentColor;
+    border.width: _self.workspaceIndex === window.current_workspace_index() ? 2 : 0;
+
+    opacity: _dragArea.containsMouse ? 0.8 : 1.0
 
     Drag.active: _dragArea.drag.active
 
-    MouseArea { id: _dragArea
+
+    MouseArea {
+        id: _dragArea
         anchors.fill: parent
         drag.target: parent
+        hoverEnabled: true
+
+        onDoubleClicked: {
+            console.log("Switching to workspace ", _self.workspaceIndex)
+            window.switch_workspace(_self.workspaceIndex)
+        }
+
     }
 
-    X.Label { id: _classLabel
-        text: self.algorithmClass;
+    X.Label {
+        id: _classLabel
+        text: _self.algorithmClass;
 
         color: "#333333"; //TODO: get value from theme
         font.pixelSize: 12; //TODO: get value from theme
@@ -38,8 +59,9 @@ Rectangle { id: self;
         horizontalAlignment: Text.AlignLeft;
     }
 
-    X.Label { id: _pluginLabel
-        text: self.algorithmPlugin;
+    X.Label {
+        id: _pluginLabel
+        text: _self.algorithmPlugin;
 
         color: "#333333";
         font.pixelSize: 10;
@@ -50,23 +72,25 @@ Rectangle { id: self;
         horizontalAlignment: Text.AlignRight;
     }
 
-    property var inputPorts: new Object();
-
     Column {
         spacing: 5;
         anchors.horizontalCenter: parent.left
         anchors.top: parent.top
         anchors.topMargin: 15
 
-        Repeater { id: _input_ports
-            model: self.inputPortsNames;
-            GX.PipelinePort { id: _port
+        Repeater {
+            id: _input_ports
+            model: _self.inputPortsNames;
+            GX.PipelinePort {
+                id: _port
                 name: modelData
+                highlighted: _self.workspaceIndex === window.current_workspace_index()
                 Component.onCompleted: {
-                    self.inputPorts[_port.name] = _input_ports.itemAt(index)
+                    _self.inputPorts[_port.name] = _input_ports.itemAt(index)
                 }
             }
         }
+
     }
 
     property var outputPorts: new Object();
@@ -77,14 +101,19 @@ Rectangle { id: self;
         anchors.top: parent.top
         anchors.topMargin: 15
 
-        Repeater { id: _output_ports
-            model: self.outputPortsNames;
-            GX.PipelinePort { id: _port
+        Repeater {
+            id: _output_ports
+            model: _self.outputPortsNames;
+            GX.PipelinePort {
+                id: _port
                 name: modelData
+                highlighted: _self.workspaceIndex === window.current_workspace_index()
                 Component.onCompleted: {
-                    self.outputPorts[_port.name] = _output_ports.itemAt(index)
+                    _self.outputPorts[_port.name] = _output_ports.itemAt(index)
+                    console.log(_self.workspaceIndex, window.current_workspace_index())
                 }
             }
         }
+
     }
 }
