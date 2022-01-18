@@ -147,9 +147,7 @@ void gnomonAlgorithmWorkspace::run(void)
     this->setInputs();
     d->command->redo();
 
-    this->getOutputs();
-        qDebug() << "finish";
-
+    this->viewOutputs();
 }
 
 void gnomonAlgorithmWorkspace::setInputs()
@@ -176,7 +174,7 @@ void gnomonAlgorithmWorkspace::setInputs()
     }
 }
 
-void gnomonAlgorithmWorkspace::getOutputs(void)
+void gnomonAlgorithmWorkspace::viewOutputs(void)
 {
     Q_ASSERT(d->command);
 

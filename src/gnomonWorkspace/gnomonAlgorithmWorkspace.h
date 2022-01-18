@@ -36,7 +36,7 @@ signals:
 public slots:
     virtual void run(void);
     virtual void setInputs(void);
-    virtual void getOutputs(void);
+    virtual void viewOutputs(void);
 
 public:
     QString algoName(void) const;

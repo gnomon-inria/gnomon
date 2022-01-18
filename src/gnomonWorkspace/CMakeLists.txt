@@ -19,6 +19,8 @@ project(gnomonWorkspace VERSION ${gnomon_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  gnomonPythonAlgorithmPluginCode
+  gnomonPythonAlgorithmPluginCode.h
   gnomonAlgorithmWorkspace
   gnomonAlgorithmWorkspace.h
   gnomonAlgorithmWorkspace_p.h
@@ -64,8 +66,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspacePointCloudQuantification.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
-  # gnomonWorkspacePythonAlgorithm
-  # gnomonWorkspacePythonAlgorithm.h
+  gnomonWorkspacePythonAlgorithm
+  gnomonWorkspacePythonAlgorithm.h
   # gnomonWorkspacePythonSimulator
   # gnomonWorkspacePythonSimulator.h
   gnomonWorkspaceRegistration
@@ -84,6 +86,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonWorkspaceTemplate_p.tpp)
 
 set(${PROJECT_NAME}_SOURCES
+  gnomonPythonAlgorithmPluginCode.cpp
   gnomonAlgorithmWorkspace.cpp
   gnomonWorkspaceBinarization.cpp
   gnomonWorkspaceBrowser.cpp
@@ -106,7 +109,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspacePointCloudFromImage.cpp
   # gnomonWorkspacePointCloudQuantification.cpp
   gnomonWorkspacePreprocess.cpp
-  # gnomonWorkspacePythonAlgorithm.cpp
+  gnomonWorkspacePythonAlgorithm.cpp
   # gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp

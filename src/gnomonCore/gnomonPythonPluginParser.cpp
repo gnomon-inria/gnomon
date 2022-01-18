@@ -32,6 +32,18 @@ QString stripQuotes(const QString& str)
     }
 }
 
+QString capitalize(const QString& str)
+{
+    QString cap = str.at(0).toUpper() + str.mid(1);
+    return cap;
+}
+
+QString unCapitalize(const QString& str)
+{
+    QString cap = str.at(0).toLower() + str.mid(1);
+    return cap;
+}
+
 QString argumentValue(const QString& arguments, const QString& argument_name, int argument_position)
 {
     QStringList args = arguments.split(",");
@@ -76,6 +88,7 @@ public:
 
 gnomonPythonPluginParserPrivate::gnomonPythonPluginParserPrivate(void)
 {
+    this->default_data_plugins["gnomonBinaryImage"] = "gnomonBinaryImageDataSpatialImage";
     this->default_data_plugins["gnomonCellComplex"] = "gnomonCellComplexDataPropertyTopomesh";
     this->default_data_plugins["gnomonCellImage"] = "gnomonCellImageDataPropertySpatialImage";
     this->default_data_plugins["gnomonImage"] = "gnomonImageDataSpatialImageDict";
@@ -127,6 +140,11 @@ const QMap<QString, QString>& gnomonPythonPluginParser::parameterTypes(void) con
     return d->parameter_types;
 }
 
+const QMap<QString, QString>& gnomonPythonPluginParser::defaultFormDataPlugins(void) const
+{
+    return d->default_data_plugins;
+}
+
 void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 {
     d->input_forms.clear();
@@ -139,8 +157,8 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
     QRegExp init_rx("def[ ]*__init__[(]self");
     QRegExp method_rx("def.*[(]self");
 
-    QRegExp input_rx("@(gnomon.*)Input[(](.*)[)]");
-    QRegExp output_rx("@(gnomon.*)Output[(](.*)[)]");
+    QRegExp input_rx("@(.*)Input[(](.*)[)]");
+    QRegExp output_rx("@(.*)Output[(](.*)[)]");
     QRegExp parameter_rx("self._parameters\\[(.*)\\][ ]*=[ ]*([\\S]*)[(](.*)[)]");
 
     int pos = -1;
@@ -153,7 +171,7 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 
         pos = input_rx.indexIn(line);
         if (pos != -1) {
-            QString form_type = input_rx.capturedTexts()[1];
+            QString form_type = "gnomon" + capitalize(input_rx.capturedTexts()[1]);
             QString args = input_rx.capturedTexts()[2];
             QString attr_name = stripQuotes(argumentValue(args, "attr", 0));
             QString data_plugin = stripQuotes(argumentValue(args, "data_plugin", 3));
@@ -165,7 +183,7 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 
         pos = output_rx.indexIn(line);
         if (pos != -1) {
-            QString form_type = output_rx.capturedTexts()[1];
+            QString form_type = "gnomon" + capitalize(output_rx.capturedTexts()[1]);
             QString args = output_rx.capturedTexts()[2];
             QString attr_name = stripQuotes(argumentValue(args, "attr", 0));
             QString data_plugin = stripQuotes(argumentValue(args, "data_plugin", 2));

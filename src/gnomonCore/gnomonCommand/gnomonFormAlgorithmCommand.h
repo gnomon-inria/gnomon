@@ -24,6 +24,14 @@ public:
 public:
     dtkCoreParameters parameters() const override;
 
+public:
+    virtual void setAlgorithmName(const QString &name) override;
+
+    virtual orderedMap inputTypes() override;
+    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+
+    virtual orderedMap outputTypes() override;
+
 private:
     class gnomonFormAlgorithmCommandPrivate *d;
 };
