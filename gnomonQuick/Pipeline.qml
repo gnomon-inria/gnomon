@@ -37,19 +37,24 @@ Control {
             _internal.zoomLevel = wheel.angleDelta.y > 0 ? Math.min(_internal.zoomLevel + 1, 0) : Math.max(_internal.zoomLevel - 1, -5);
 
             //This is to compute the pan
-            let scaleChange = _transform.scale - Math.pow(_internal.factor, _internal.zoomLevel)
-            let dx = (1 - scaleChange) * wheel.x * _transform.scale;
-            let dy = (1 - scaleChange) * wheel.y * _transform.scale;
+            let scaleChange = Math.pow(_internal.factor, _internal.zoomLevel) / _transform.scale
+            let dx = (1 - scaleChange) * (wheel.x - _canvas.x);
+            let dy = (1 - scaleChange) * (wheel.y - _canvas.y);
+            /* let dx = (1 - scaleChange) * wheel.x * _transform.scale; */
+            /* let dy = (1 - scaleChange) * wheel.y * _transform.scale; */
             //pan lower bounds
             let lx = _self.width - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
             let ly = _self.height - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
+
+            console.log("SCALE CHANGE, dx, dy", scaleChange, dx, dy)
+            console.log("X, X + dx, lx", _canvas.x, _canvas.x + dx, lx)
 
             // update scale (zoom factor powered to the current zoom level)
             _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
 
             //update pan
-            _canvas.x = dx > 0 ? Math.max(_canvas.x - dx, lx) : Math.min(0, _canvas.x - dx);
-            _canvas.y = dy > 0 ? Math.max(_canvas.y - dy, ly) : Math.min(0, _canvas.y - dy);
+            _canvas.x = dx < 0 ? Math.max(_canvas.x + dx, lx) : Math.min(0, _canvas.x + dx);
+            _canvas.y = dy < 0 ? Math.max(_canvas.y + dy, ly) : Math.min(0, _canvas.y + dy);
 
         }
     }
