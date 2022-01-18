@@ -48,8 +48,11 @@ Control {
             _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
 
             //update pan
-            _canvas.x = dx < 0 ? Math.max(_canvas.x + dx, lx) : Math.min(0, _canvas.x + dx);
-            _canvas.y = dy < 0 ? Math.max(_canvas.y + dy, ly) : Math.min(0, _canvas.y + dy);
+
+            /* _canvas.x = dx < 0 ? Math.max(_canvas.x + dx, lx) : Math.min(0, _canvas.x + dx); */
+            /* _canvas.y = dy < 0 ? Math.max(_canvas.y + dy, ly) : Math.min(0, _canvas.y + dy); */
+            _canvas.x = Math.max(Math.min(0, _canvas.x + dx), lx);
+            _canvas.y = Math.max(Math.min(0, _canvas.y + dy), ly);
 
         }
     }
@@ -58,7 +61,7 @@ Control {
 
         id: _canvas;
         width: _self.width * Math.pow(_internal.factor, 5);
-        height: _self.height * Math.pow(_internal.factor, 5);
+        height: _self.height * Math.pow(_internal.factor, 5) + _self.height;
         x: -_canvas.width / 2 + _self.width / 2;
         y: -_canvas.height / 2+ _self.height / 2;
 
