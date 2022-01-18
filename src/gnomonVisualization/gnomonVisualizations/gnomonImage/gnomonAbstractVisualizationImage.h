@@ -39,6 +39,19 @@ public:
     virtual void setImage(gnomonImageSeries *image) = 0;
     virtual gnomonImageSeries *image(void) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"image"};
+        }
+        return {};
+    };
+
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
     virtual void setParameters(const dtkCoreParameters&) override = 0;

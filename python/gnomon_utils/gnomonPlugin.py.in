@@ -11,9 +11,11 @@ from pkg_resources import iter_entry_points
 from setuptools import findall
 
 import gnomoncore
+import gnomonvisualization
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
+
 
 def import_plugins(file, excludes=[]):
     file = os.path.dirname(file)
@@ -31,9 +33,28 @@ def import_plugins(file, excludes=[]):
             logging.info(module_path + "." + submodule[:-3])
             traceback.print_exc()
 
+
 def load_plugin_group(group_name):
     for entry_point in iter_entry_points(group=group_name, name=None):
         importlib.import_module(entry_point.module_name)
+
+
+def default_input_accessors(algo_class, form_class):
+    setter_method = algo_class.defaultSetter(form_class.__name__)
+    if not setter_method:
+        raise KeyError(f"{algo_class.__name__} does not accept input form {form_class.__name__}")
+    getter_method = algo_class.defaultGetter(form_class.__name__)
+    if not getter_method:
+        raise KeyError(f"{algo_class.__name__} does not accept input form {form_class.__name__}")
+    return getter_method, setter_method
+
+
+def default_output_accessors(algo_class, form_class):
+    bound_method = algo_class.defaultOutput(form_class.__name__)
+    if not bound_method:
+        raise KeyError(f"{algo_class.__name__} does not accept output form {form_class.__name__}")
+    return bound_method
+
 
 def gnomon_declare_plugins(path):
     script = findall(path)
@@ -58,6 +79,7 @@ def gnomon_declare_plugins(path):
 
     return module_dict
 
+
 def gnomonParametric(cls):
     # -----------------------------------------------------
     # Plugin parameters concept
@@ -68,10 +90,7 @@ def gnomonParametric(cls):
     cls.__setitem__ = __setitem__
 
     def __getitem__(self, key):
-        if key in self._parameters:
-            return self._parameters[key].value()
-        else:
-            raise KeyError(str(key))
+        return self._parameters[key].value()
     cls.__getitem__ = __getitem__
 
     def setParameter(self, parameter_name, parameter_value):
@@ -103,15 +122,23 @@ def gnomonParametric(cls):
     return cls
 
 
-def gnomonPlugin(version, coreversion, cls=None, namespace=gnomoncore, base_class=None):
-    if cls is not None:
-        return _gnomonPlugin(version, coreversion, cls, namespace=namespace, base_class=base_class)
-    else:
-        def wrapper(cls):
-            return _gnomonPlugin(version, coreversion, cls, namespace=namespace, base_class=base_class)
-        return wrapper
+def corePlugin(version, coreversion, base_class=None):
+    def decorator(cls):
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
+        cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
+        return cls
+    return decorator
 
-def _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class = None):
+
+def visualizationPlugin(version, coreversion, base_class=None):
+    def decorator(cls):
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomonvisualization, base_class=base_class)
+        cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
+        return cls
+    return decorator
+
+
+def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
     # -----------------------------------------------------
     # Python error management
     # -----------------------------------------------------

@@ -25,6 +25,19 @@ public:
     virtual void setBinaryImage(gnomonBinaryImageSeries *image) = 0;
     virtual gnomonBinaryImageSeries *binaryImage(void) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonBinaryImage") {
+            return {"setBinaryImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonBinaryImage") {
+            return {"binaryImage"};
+        }
+        return {};
+    };
+
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
     virtual void setParameters(const dtkCoreParameters&) override = 0;
