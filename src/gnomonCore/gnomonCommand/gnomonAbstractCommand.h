@@ -19,42 +19,7 @@ public:
     virtual void  predo(void) = 0;
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
-    virtual void   redo(void) final {
-
-        Q_ASSERT(this->action);
-        // this->action->setAutoDelete(false);
-
-        qInfo() << this->algorithm_name << "from" << this->factory_name;
-
-        this->predo();
-
-        // this->action->run();
-
-        int a = QThreadPool::globalInstance()->activeThreadCount();
-
-        // qDebug() << Q_FUNC_INFO << QThreadPool::globalInstance()->activeThreadCount();
-        // QThreadPool::globalInstance()->start(this->action);
-        // qDebug() << Q_FUNC_INFO << QThreadPool::globalInstance()->activeThreadCount();
-        // QThreadPool::globalInstance()->waitForDone(2500);
-        // qDebug() << Q_FUNC_INFO << QThreadPool::globalInstance()->activeThreadCount();
-        // qWarning() << Q_FUNC_INFO << qApp->thread();
-
-        qDebug() << Q_FUNC_INFO << "Before" << a;
-
-        QtConcurrent::run([this] (void) -> void
-        {
-            qDebug() << "Coucou from thread;";
-            this->action->run();
-            qDebug() << "ReCoucou from thread;";
-        });
-
-        while(QThreadPool::globalInstance()->activeThreadCount() > a) {
-            qDebug() << "Processing ..." << a << QThreadPool::globalInstance()->activeThreadCount();
-            qApp->processEvents();
-        }
-
-        this->postdo();
-    }
+    virtual void   redo(void) final;
 
 public:
     QString documentation(void)
