@@ -37,6 +37,8 @@ signals:
 public slots:
     void read    (const QString&);
     void readWith(const QString&);
+    inline void saveState() {};  // nothing to be saved or restored
+    inline void restoreState() {};
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();
