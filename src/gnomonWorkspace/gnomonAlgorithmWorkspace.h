@@ -26,7 +26,7 @@ public:
     Q_PROPERTY(gnomonViewFormList* targets READ targets CONSTANT);
     Q_PROPERTY(gnomonViewForm* source READ source CONSTANT); //for ease of use
     Q_PROPERTY(gnomonViewForm* target READ target CONSTANT); //for ease of use
-w
+
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
