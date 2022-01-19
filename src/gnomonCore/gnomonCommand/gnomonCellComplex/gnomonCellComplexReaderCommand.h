@@ -18,6 +18,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellComplexReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexReaderCommandPrivate *d;

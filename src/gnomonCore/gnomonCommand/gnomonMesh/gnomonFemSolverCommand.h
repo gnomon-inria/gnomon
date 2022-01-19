@@ -29,6 +29,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "femSolver";
+    static QStringList availablePlugins();
 
 private:
     class gnomonFemSolverCommandPrivate *d;

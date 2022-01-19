@@ -25,7 +25,7 @@ public:
 
 gnomonMeshAdapterCommand::gnomonMeshAdapterCommand() : d(new gnomonMeshAdapterCommandPrivate)
 {
-    this->factory_name = "meshAdapter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshAdapter::pluginFactory().keys();
@@ -104,8 +104,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshAdapterCommand::outputs()
 
 bool gnomonMeshAdapterCommand::isEmpty()
 {
-    loadPluginGroup("meshAdapter");
-    return gnomonCore::meshAdapter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshAdapterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshAdapterCommand::inputTypes() {

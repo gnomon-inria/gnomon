@@ -1,2 +1,2 @@
 from .gnomonDataDriverMongo import gnomonDataDriverMongo
-from .gnomonPlugin import load_plugin_group, corePlugin, visualizationPlugin
+from .gnomonPlugin import load_plugin_group, corePlugin, visualizationPlugin, available_plugins

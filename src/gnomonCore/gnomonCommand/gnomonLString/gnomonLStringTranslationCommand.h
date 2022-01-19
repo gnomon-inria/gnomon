@@ -46,6 +46,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "lStringTranslation";
+    static QStringList availablePlugins();
 
 private:
     class gnomonLStringTranslationCommandPrivate *d;

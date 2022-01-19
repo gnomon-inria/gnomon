@@ -25,7 +25,7 @@ public:
 
 gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand() : d(new gnomonTreeFromLStringCommandPrivate)
 {
-    this->factory_name = "treeFromLString";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
@@ -110,8 +110,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::outputs
 
 bool gnomonTreeFromLStringCommand::isEmpty()
 {
-    loadPluginGroup("treeFromLString");
-    return gnomonCore::treeFromLString::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeFromLStringCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeFromLStringCommand::inputTypes() {
