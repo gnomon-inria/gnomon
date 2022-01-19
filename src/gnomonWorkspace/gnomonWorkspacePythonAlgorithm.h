@@ -16,32 +16,75 @@
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include <QtCore>
+#include <QtQml>
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonAlgorithm : public dtkWidgetsWorkspace
+#include <gnomonVisualization/gnomonView/gnomonViewFormList>
+
+class gnomonViewForm;
+class gnomonPythonAlgorithmPluginCode;
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonAlgorithm : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonWorkspacePythonAlgorithm(QWidget *parent = nullptr);
+     gnomonWorkspacePythonAlgorithm(QObject *parent = nullptr);
     ~gnomonWorkspacePythonAlgorithm(void);
 
 public:
-    void enter(void) override;
-    void leave(void) override;
-    void apply(void) override;
+    Q_PROPERTY(QString algorithm READ algorithm NOTIFY algorithmLoaded)
+
+    Q_PROPERTY(bool editMode READ editMode WRITE setEditMode NOTIFY editModeChanged)
+
+    Q_PROPERTY(gnomonPythonAlgorithmPluginCode* code READ code CONSTANT);
+
+    Q_PROPERTY(gnomonViewFormList* sources READ sources CONSTANT);
+    Q_PROPERTY(gnomonViewFormList* targets READ targets CONSTANT);
+    Q_PROPERTY(gnomonViewForm* source READ source CONSTANT); //for ease of use
+    Q_PROPERTY(gnomonViewForm* target READ target CONSTANT); //for ease of use
+
+    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
+
+signals:
+    void editModeChanged(void);
+    void algorithmLoaded(void);
+    void parametersChanged(void);
+
+public slots:
+    void read(const QString& file_url);
 
 public:
+    Q_INVOKABLE QUrl defaultReadPath();
+
+public slots:
+    void loadAlgorithm(void);
+
+public:
+    QString algorithm(void) const;
+
+public slots:
     void run(void);
-
-public:
-    static const QColor color;
-
-protected:
-    void resizeEvent(QResizeEvent *event) override;
+    virtual void setInputs(void);
+    virtual void viewOutputs(void);
 
 public:
     static bool isEmpty(void);
+
+public:
+    bool editMode(void);
+    void setEditMode(bool edit);
+
+public:
+    gnomonPythonAlgorithmPluginCode *code(void) const;
+
+    gnomonViewFormList *sources(void) const;
+    gnomonViewFormList *targets(void) const;
+
+    gnomonViewForm *source(void) const { return (*this->sources())[0]; };
+    gnomonViewForm *target(void) const { return (*this->targets())[0]; };
+
+    QJSValue parameters(void);
 
 private:
     class gnomonWorkspacePythonAlgorithmPrivate *d;
