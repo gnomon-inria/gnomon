@@ -27,8 +27,14 @@ class gnomonViewFormList;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceRegistration : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
-    Q_CLASSINFO("description", "Registration Workspace description from cxx")
-
+    Q_CLASSINFO("description", "\
+This workspace allows to perform the geometrical registration of an Image \
+form (called \"floating\") onto another Image form (called \"reference\").\n\
+\n\
+The output is a Image form that corresponds to the transformed floating Image. \
+The resulting geometrical trasformation is also stored as an output, displayed \
+in the right menu.\n\
+\n")
 public:
      gnomonWorkspaceRegistration(QObject *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
