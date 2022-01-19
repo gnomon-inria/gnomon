@@ -49,6 +49,8 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
 
     d->updateViewFormTypes();
     d->updatePool();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)

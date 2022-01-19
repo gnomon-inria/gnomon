@@ -43,6 +43,8 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->targets()->addView();
 
     d->updateViewFormTypes();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
