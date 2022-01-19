@@ -19,7 +19,8 @@ Control {
 
         property double factor: 1.25
         property int zoomLevel: 0;
-        property double originX: _canvas.width / 2;
+        property double originX: (_self.width / 2 - _canvas.x) * Math.pow(_internal.factor, - _internal.zoomLevel);
+        property double originY: (_self.height / 2 - _canvas.y) * Math.pow(_internal.factor, - _internal.zoomLevel);
 
     }
 
@@ -212,6 +213,8 @@ void main() {
         }
 
         function addNode(node) {
+            console.log("originx, x", _internal.originX, node.position.x)
+            console.log("originy, y", _internal.originY, node.position.y)
             var node_component = Qt.createComponent("PipelineNode.qml");
             if (node_component.status == Component.Ready) {
                 var n = node_component.createObject(_canvas, {
@@ -220,8 +223,8 @@ void main() {
                     "inputPortsNames": node.inputPortsNames,
                     "outputPortsNames": node.outputPortsNames,
                     "color": node.color,
-                    "x": Qt.binding(function() { return _canvas.width/2 + node.position.x }),
-                    "y": Qt.binding(function() { return _canvas.height/2 + node.position.y }),
+                    "x": _internal.originX, //+ node.position.x, //Qt.binding(function() { return _internal.originX + node.position.x }),
+                    "y": _internal.originY, //+ node.position.y, //Qt.binding(function() { return _internal.originY + node.position.y }),
                     "workspaceIndex": window.current_workspace_index()
                 });
                 nodes[node.name] = n;
