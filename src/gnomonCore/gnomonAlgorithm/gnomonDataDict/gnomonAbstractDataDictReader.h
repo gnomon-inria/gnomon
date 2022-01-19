@@ -26,6 +26,19 @@ public:
 public:
     virtual gnomonDataDictSeries *DataDict(void) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonDataDict") {
+            return {"dataDict"};
+        }
+        return {};
+    };
+
 public:
     virtual QStringList extensions(void) = 0;
 };
@@ -44,7 +57,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT, DataDictReader);
+    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT, dataDictReader);
 }
 
 //

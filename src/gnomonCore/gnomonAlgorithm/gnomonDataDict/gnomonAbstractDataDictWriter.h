@@ -24,6 +24,22 @@ public:
     virtual void setDataDict(gnomonDataDictSeries *datadict) = 0;
     virtual void setPath(const QString& path) = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonDataDict") {
+            return {"setDataDict"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonDataDict") {
+            return {"dataDict"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        return {};
+    };
+
 public:
     virtual QStringList extensions(void) = 0;
 };
@@ -42,7 +58,7 @@ DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictWriter, GNOMONCORE_EXPORT)
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictWriter, GNOMONCORE_EXPORT, DataDictWriter);
+    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictWriter, GNOMONCORE_EXPORT, dataDictWriter);
 }
 
 //
