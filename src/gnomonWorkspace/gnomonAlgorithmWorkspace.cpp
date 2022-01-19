@@ -80,7 +80,7 @@ void gnomonAlgorithmWorkspacePrivate::updatePool(void)
 // gnomonAlgorithmWorkspace
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : QObject(parent)
+gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbstractWorkspace(parent)
 {
     d = new gnomonAlgorithmWorkspacePrivate;
 
@@ -144,7 +144,11 @@ gnomonViewFormList* gnomonAlgorithmWorkspace::targets(void) const
 void gnomonAlgorithmWorkspace::run(void)
 {
     Q_ASSERT(d->command);
+
+    emit started();
+
     this->setInputs();
+
     d->command->redo();
 
     this->viewOutputs();

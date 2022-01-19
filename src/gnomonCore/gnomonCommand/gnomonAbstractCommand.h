@@ -6,8 +6,10 @@
 
 #include <QtConcurrent>
 
-class gnomonAbstractCommand
+class gnomonAbstractCommand : public QObject
 {
+    Q_OBJECT
+
 public:
     using orderedMap = std::vector<std::pair <QString, QString>>; // to respect the order of inserting
 
@@ -20,6 +22,9 @@ public:
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
     virtual void   redo(void) final;
+
+signals:
+    void finished(void);
 
 public:
     QString documentation(void)

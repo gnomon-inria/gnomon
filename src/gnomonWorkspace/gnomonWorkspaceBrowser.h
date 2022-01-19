@@ -15,12 +15,11 @@
 #pragma once
 
 #include <gnomonWorkspaceExport>
-
-#include <QtCore>
+#include "gnomonAbstractWorkspace.h"
 
 class gnomonViewForm;
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public QObject
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public gnomonAbstractWorkspace
 {
     Q_OBJECT
 
