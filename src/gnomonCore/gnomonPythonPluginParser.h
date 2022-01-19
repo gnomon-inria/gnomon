@@ -49,6 +49,9 @@ public:
 
 GNOMONCORE_EXPORT QString argumentValue(const QString& arguments, const QString& argument_name, int argument_position=0);
 
+GNOMONCORE_EXPORT QString capitalize(const QString& str);
+GNOMONCORE_EXPORT QString unCapitalize(const QString& str);
+
 GNOMONCORE_EXPORT QString stripQuotes(const QString& str);
 
 class GNOMONCORE_EXPORT gnomonPythonPluginParser
@@ -64,6 +67,7 @@ public:
 
 public:
     const QMap<QString, QString>& parameterTypes(void) const;
+    const QMap<QString, QString>& defaultFormDataPlugins(void) const;
 
 public:
     void parsePluginCode(const QString&);

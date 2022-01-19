@@ -21,6 +21,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
@@ -45,7 +46,15 @@ public:
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
     virtual dtkCoreParameters parameters(void) const override = 0;
+    
+    // BinaryImage
+public:
+    virtual void setInputBinaryImage(gnomonBinaryImageSeries *binaryImage) { return; };
+    // set update argument to false to avoid re-generating gnomon classes in Python plugins
+    virtual gnomonBinaryImageSeries *inputBinaryImage(bool update=true) const { return nullptr; };
+    virtual gnomonBinaryImageSeries *outputBinaryImage(bool update=true) const { return nullptr; };
 
+    
     // CellComplex
 public:
     virtual void setInputCellComplex(gnomonCellComplexSeries *cellComplex) { return; };
@@ -94,6 +103,17 @@ public:
     virtual void setInputTree(gnomonTreeSeries *tree) { return; };
     virtual gnomonTreeSeries *inputTree(bool update=true) const { return nullptr; };
     virtual gnomonTreeSeries *outputTree(bool update=true) const { return nullptr; };
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        return "setInput" +  formName.split("gnomon")[1];
+    };
+    static inline QString defaultGetter(QString formName) {
+        return "input" +  formName.split("gnomon")[1];
+    };
+    static inline QString defaultOutput(QString formName) {
+        return "output" +  formName.split("gnomon")[1];
+    };
 
 public:
     virtual void run(void) override = 0;
