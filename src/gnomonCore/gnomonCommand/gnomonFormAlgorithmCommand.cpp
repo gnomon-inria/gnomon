@@ -54,6 +54,11 @@ gnomonFormAlgorithmCommand::~gnomonFormAlgorithmCommand()
     delete d;
 }
 
+void gnomonFormAlgorithmCommand::setAlgorithmName(const QString& algo_name)
+{
+    this->algorithm_name = algo_name;
+}
+
 void gnomonFormAlgorithmCommand::predo(void)
 {
 
@@ -138,6 +143,22 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::inputs()
     return inputs;
 }
 
+gnomonAbstractCommand::orderedMap gnomonFormAlgorithmCommand::inputTypes()
+{
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("inputCellComplex", "gnomonCellComplex"));
+    input_types.emplace_back(std::make_pair("inputCellImage", "gnomonCellImage"));
+    input_types.emplace_back(std::make_pair("inputImage", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("inputMesh", "gnomonMesh"));
+    input_types.emplace_back(std::make_pair("inputPointCloud", "gnomonPontCloud"));
+    return input_types;
+}
+
+void gnomonFormAlgorithmCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+{
+    this->addInput(form);
+}
+
 QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::outputs()
 {
     QMap<QString, gnomonAbstractDynamicForm *> outputs;
@@ -157,6 +178,17 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::outputs()
         outputs["outputPointCloud"] = d->outputPointCloud;
     }
     return outputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonFormAlgorithmCommand::outputTypes()
+{
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("outputCellComplex", "gnomonCellComplex"));
+    output_types.emplace_back(std::make_pair("outputCellImage", "gnomonCellImage"));
+    output_types.emplace_back(std::make_pair("outputImage", "gnomonImage"));
+    output_types.emplace_back(std::make_pair("outputMesh", "gnomonMesh"));
+    output_types.emplace_back(std::make_pair("outputPointCloud", "gnomonPontCloud"));
+    return output_types;
 }
 
 
