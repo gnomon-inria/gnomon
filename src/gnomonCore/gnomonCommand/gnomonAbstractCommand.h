@@ -4,8 +4,6 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-#include <QtConcurrent>
-
 class gnomonAbstractCommand : public QObject
 {
     Q_OBJECT
@@ -14,7 +12,7 @@ public:
     using orderedMap = std::vector<std::pair <QString, QString>>; // to respect the order of inserting
 
 public:
-             gnomonAbstractCommand(void) = default;
+             gnomonAbstractCommand(void);
     virtual ~gnomonAbstractCommand(void);
 
 public:
@@ -25,6 +23,7 @@ public:
 
 signals:
     void finished(void);
+    void logged(const QString&);
 
 public:
     QString documentation(void)
@@ -61,15 +60,4 @@ protected:
     gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
-
 };
-
-// ///////////////////////////////////////////////////////////////////
-
-inline gnomonAbstractCommand::~gnomonAbstractCommand()
-{
-    if (action) {
-        delete action;
-        action = nullptr;
-    }
-}
