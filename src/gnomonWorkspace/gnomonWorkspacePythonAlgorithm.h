@@ -27,6 +27,7 @@ class gnomonPythonAlgorithmPluginCode;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonAlgorithm : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "PythonAlgorithm Workspace description from cxx")
 
 public:
      gnomonWorkspacePythonAlgorithm(QObject *parent = nullptr);
