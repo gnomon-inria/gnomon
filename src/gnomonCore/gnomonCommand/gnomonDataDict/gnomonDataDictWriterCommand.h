@@ -24,6 +24,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "dataDictWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonDataDictWriterCommandPrivate *d;

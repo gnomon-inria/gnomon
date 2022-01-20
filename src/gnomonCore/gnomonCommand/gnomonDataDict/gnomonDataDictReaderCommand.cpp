@@ -8,7 +8,7 @@ public:
 
 gnomonDataDictReaderCommand::gnomonDataDictReaderCommand() : d(new gnomonDataDictReaderCommandPrivate)
 {
-    this->factory_name = "dataDictReader";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     for (const auto& key: gnomonCore::dataDictReader::pluginFactory().keys()) {
@@ -70,4 +70,8 @@ gnomonAbstractCommand::orderedMap gnomonDataDictReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("dataDict", "gnomonDataDict"));
     return types;
+}
+
+QStringList gnomonDataDictReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }

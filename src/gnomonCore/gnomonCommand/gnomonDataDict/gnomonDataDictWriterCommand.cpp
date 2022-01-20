@@ -10,7 +10,7 @@ public:
 
 gnomonDataDictWriterCommand::gnomonDataDictWriterCommand() : d(new gnomonDataDictWriterCommandPrivate)
 {
-    this->factory_name = "dataDictWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::dataDictWriter::pluginFactory().keys();
@@ -81,4 +81,8 @@ void gnomonDataDictWriterCommand::setInputForm(const QString &name, gnomonAbstra
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonDataDictWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
