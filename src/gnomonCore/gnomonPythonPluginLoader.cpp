@@ -56,7 +56,6 @@ QStringList availablePluginsFromGroup(const QString & module) {
                 Py_ssize_t size = 0;
                 char const *tmp = PyUnicode_AsUTF8AndSize(PyList_GetItem(entry_points, i), &size);
                 available_plugins.push_back(tmp);
-                Py_DECREF(tmp);
             }
             Py_DECREF(args);
             Py_DECREF(entry_points);
