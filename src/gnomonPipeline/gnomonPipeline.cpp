@@ -62,6 +62,8 @@ public:
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeConstructor *> constructor_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> constructor_output;
 
+    QMap<gnomonAbstractDynamicForm *, int> form_manager_index;
+
     QMap<gnomonPipelineNode *, QMap<QString, gnomonAbstractDynamicForm *> > node_input_forms;
 
     QMap<gnomonAbstractDynamicForm *, gnomonAbstractDynamicForm *> form_clones;
@@ -553,8 +555,11 @@ void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
     }
 }
 
-void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
+void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form, int index)
 {
+    if (index > -1) {
+        d->form_manager_index[form] = index;
+    }
     qDebug()<<Q_FUNC_INFO<<form<<d->algorithm_nodes.contains(form);
     if (d->reader_nodes.contains(form)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form];
@@ -642,8 +647,12 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
     }
 }
 
-void gnomonPipeline::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone)
+void gnomonPipeline::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone, int index)
 {
+    if (index > -1) {
+        d->form_manager_index[clone] = index;
+        d->form_manager_index[form] = index;
+    }
     d->form_clones[clone] = form;
 }
 

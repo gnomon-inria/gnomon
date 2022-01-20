@@ -55,8 +55,8 @@ public slots:
     void addAdaptedForm(gnomonAbstractDynamicForm *form); //todo delete ?
     void addAlgorithm(gnomonAbstractCommand *command);
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
-    void addForm(gnomonAbstractDynamicForm *form); //todo delete ?
-    void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
+    void addForm(gnomonAbstractDynamicForm *form, int index=-1); //todo delete ?
+    void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone, int index=-1);
 
 signals:
     void nodeAdded(gnomonPipelineNode *);
