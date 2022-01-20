@@ -133,6 +133,9 @@ void gnomonPipelinePrivate::linkNodeInputs(gnomonPipelineNode *node)
                     edge->setTarget(algorithm_node->inputPorts()[input]);
                 }
                 edge->link();
+                if (this->form_manager_index.contains(input_form)) {
+                    edge->setFormIndex(this->form_manager_index[input_form]);
+                }
                 //node->addInputEdge(edge);
                 edge_target.first = this->pipeline_nodes.key(node);
                 edge_target.second = input;
