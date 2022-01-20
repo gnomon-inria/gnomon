@@ -26,6 +26,15 @@ class gnomonViewMatplotlib;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to compute properties over the cells of a CellImage form \
+and to display them in a 2D interactive figure.\n\
+\n\
+Depending on the chosen plugin, the properties are computed either only on \
+the CellImage itself, or using an optional Image a input. In any case, cell \
+properties are added to the input CellImage, and a DataFrame representing \
+the data asociated with each cell is returned as an output.\n\
+\n")
 
 public:
      gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);

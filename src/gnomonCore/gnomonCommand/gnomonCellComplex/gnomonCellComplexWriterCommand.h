@@ -24,6 +24,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellComplexWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexWriterCommandPrivate *d;

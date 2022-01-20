@@ -34,7 +34,7 @@ public:
 
 gnomonTreeTransformCommand::gnomonTreeTransformCommand() : d(new gnomonTreeTransformCommandPrivate)
 {
-    this->factory_name = "treeTransform";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
@@ -113,8 +113,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeTransformCommand::outputs()
 
 bool gnomonTreeTransformCommand::isEmpty()
 {
-    loadPluginGroup("treeTransform");
-    return gnomonCore::treeTransform::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeTransformCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeTransformCommand::inputTypes() {

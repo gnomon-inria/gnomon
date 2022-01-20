@@ -29,7 +29,7 @@ public:
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand() : d(new gnomonCellImageQuantificationCommandPrivate)
 {
-    this->factory_name = "cellImageQuantification";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
@@ -131,8 +131,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageQuantificationCommand:
 
 bool gnomonCellImageQuantificationCommand::isEmpty()
 {
-    loadPluginGroup("cellImageQuantification");
-    return gnomonCore::cellImageQuantification::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::inputTypes() {
@@ -157,6 +156,10 @@ void gnomonCellImageQuantificationCommand::setInputForm(const QString &name, gno
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonCellImageQuantificationCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

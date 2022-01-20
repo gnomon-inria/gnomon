@@ -34,7 +34,7 @@ public:
 
 gnomonMeshFilterCommand::gnomonMeshFilterCommand() : d(new gnomonMeshFilterCommandPrivate)
 {
-    this->factory_name = "meshFilter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshFilter::pluginFactory().keys();
@@ -113,8 +113,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::outputs()
 
 bool gnomonMeshFilterCommand::isEmpty()
 {
-    loadPluginGroup("meshFilter");
-    return gnomonCore::meshFilter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshFilterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshFilterCommand::inputTypes() {

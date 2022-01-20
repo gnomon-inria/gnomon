@@ -100,6 +100,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : QObject(pa
         emit parametersChanged();
     });
 
+    connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
@@ -126,6 +127,14 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
     }
 }
 
+int gnomonAlgorithmWorkspace::currentIndex(void) const {
+    return d->currentIndex;
+}
+
+void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
+    d->currentIndex = i;
+}
+
 QJSValue gnomonAlgorithmWorkspace::parameters(void)
 {
     return dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
@@ -147,9 +156,7 @@ void gnomonAlgorithmWorkspace::run(void)
     this->setInputs();
     d->command->redo();
 
-    this->getOutputs();
-        qDebug() << "finish";
-
+    this->viewOutputs();
 }
 
 void gnomonAlgorithmWorkspace::setInputs()
@@ -176,7 +183,7 @@ void gnomonAlgorithmWorkspace::setInputs()
     }
 }
 
-void gnomonAlgorithmWorkspace::getOutputs(void)
+void gnomonAlgorithmWorkspace::viewOutputs(void)
 {
     Q_ASSERT(d->command);
 
@@ -200,6 +207,43 @@ void gnomonAlgorithmWorkspace::getOutputs(void)
     if (!empty_output) {
         d->registerPipeline();
     }
+}
+
+QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
+    QJsonObject state;
+    state.insert("algoName", algoName());
+    state.insert("currentIndex", currentIndex());
+
+    QVariantMap parameters_json;
+    dtkCoreParameters dtkParameters = d->command->parameters();
+    for(const auto& param_name : dtkParameters.keys()){
+        QVariant param_value = dtkParameters[param_name]->variant();
+        qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
+        parameters_json.insert(param_name, param_value);
+    }
+    state.insert("parameters_json", QJsonObject::fromVariantMap(parameters_json));
+    return state;
+}
+
+void gnomonAlgorithmWorkspace::unSerialize(QJsonObject & state) {
+    setCurrentIndex(state["currentIndex"].toInt());
+    setAlgoName(state["algoName"].toString());
+
+    QJsonObject parameters_json = state["parameters"].toObject();
+    for(const auto& param_name: parameters_json.keys()) {
+        QVariant param = parameters_json[param_name].toVariant();
+        d->command->setParameter(param_name, param);
+    }
+    emit parametersChanged();
+}
+
+void gnomonAlgorithmWorkspace::saveState(void) {
+    d->savedState = serialize();
+}
+
+void gnomonAlgorithmWorkspace::restoreState(void) {
+    QString previousAlgo = algoName();
+    unSerialize(d->savedState);
 }
 
 //

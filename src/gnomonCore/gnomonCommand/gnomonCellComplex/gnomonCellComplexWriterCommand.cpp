@@ -24,7 +24,7 @@ public:
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand() : d(new gnomonCellComplexWriterCommandPrivate)
 {
-    this->factory_name = "cellComplexWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellComplexWriter::pluginFactory().keys();
@@ -79,8 +79,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::input
 
 bool gnomonCellComplexWriterCommand::isEmpty()
 {
-    loadPluginGroup("cellComplexWriter");
-    return gnomonCore::cellComplexWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellComplexWriterCommand::inputTypes() {
@@ -95,6 +94,10 @@ void gnomonCellComplexWriterCommand::setInputForm(const QString &name, gnomonAbs
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonCellComplexWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

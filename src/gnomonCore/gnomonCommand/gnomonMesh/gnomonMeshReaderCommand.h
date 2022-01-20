@@ -21,6 +21,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "meshReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshReaderCommandPrivate *d;
