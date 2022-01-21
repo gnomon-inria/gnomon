@@ -137,7 +137,7 @@ Rectangle {
 
     Image {
         id: _2d_xy;
-        property bool active: viewLogic.plane == 2;
+        property bool active: viewLogic.orientation == 2;
         source: active? "qrc:/qml/gnomonQuick/View-XY.png" : "qrc:/qml/gnomonQuick/View-XY-off.png";
         visible: _2d_icon.active
         // size: 32;
@@ -160,7 +160,7 @@ Rectangle {
 
     Image {
         id: _2d_xz;
-        property bool active: viewLogic.plane == 1;
+        property bool active: viewLogic.orientation == 1;
         source: active? "qrc:/qml/gnomonQuick/View-XZ.png" : "qrc:/qml/gnomonQuick/View-XZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
@@ -183,7 +183,7 @@ Rectangle {
 
     Image {
         id: _2d_yz;
-        property bool active: viewLogic.plane == 0;
+        property bool active: viewLogic.orientation == 0;
         source: active? "qrc:/qml/gnomonQuick/View-YZ.png" : "qrc:/qml/gnomonQuick/View-YZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
