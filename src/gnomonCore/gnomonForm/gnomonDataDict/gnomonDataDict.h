@@ -46,9 +46,12 @@ public:
     }
 
 public:
-    QString name(void) const override { return"gnomonDataDict";}
+    QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+
+public:
+    static inline QString formName(void) { return "gnomonDataDict"; }
 
 public:
     const gnomonAbstractDataDictData *data(void) const { return m_data; }

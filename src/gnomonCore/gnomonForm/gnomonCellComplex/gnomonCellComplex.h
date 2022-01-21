@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
@@ -58,9 +44,12 @@ public:
     }
 
 public:
-    QString name(void) const override { return "gnomonCellComplex"; }
+    QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+
+public:
+    static inline QString formName(void) { return "gnomonCellComplex"; }
 
 public:
     const gnomonAbstractCellComplexData *data(void) const { return m_data; }
