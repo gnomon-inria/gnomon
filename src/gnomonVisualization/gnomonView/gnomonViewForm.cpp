@@ -66,19 +66,6 @@ class gnomonViewFormPrivate : public QObject // QVTKOpenGLNativeWidget
     Q_OBJECT
 
 public:
-    enum Mode {
-        VIEW_MODE_3D = 3,
-        VIEW_MODE_2D = 2,
-    };
-
-    enum Orientation {
-        SLICE_ORIENTATION_XY = 2,
-        SLICE_ORIENTATION_XZ = 1,
-        SLICE_ORIENTATION_YZ = 0,
-        NONE = -1
-    };
-
-public:
      gnomonViewFormPrivate(QObject *parent = Q_NULLPTR);
     ~gnomonViewFormPrivate(void);
 
@@ -100,8 +87,8 @@ public slots:
 //     void resizeEvent(QResizeEvent *);
 
 public:
-    void setViewMode(Mode mode);
-    void setSliceOrientation(Orientation orientation);
+    void setViewMode(gnomonViewForm::Mode mode);
+    void setSliceOrientation(gnomonViewForm::Orientation orientation);
     void updateOrientation(void);
 
 // public:
@@ -116,9 +103,9 @@ public:
     gnomonViewForm *q = nullptr;
 
 public:
-    Mode mode = VIEW_MODE_3D;
-    Orientation ori = NONE;
-    QMap<Orientation, vtkSmartPointer<vtkCamera> > cameras;
+    gnomonViewForm::Mode mode = gnomonViewForm::VIEW_MODE_3D;
+    gnomonViewForm::Orientation ori = gnomonViewForm::NONE;
+    QMap<gnomonViewForm::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
     QMap<QString, gnomonAbstractDynamicForm *> forms;
@@ -402,17 +389,17 @@ void gnomonViewFormPrivate::clearConnections(void)
     disconnect(this->connectTime);
 }
 
-void gnomonViewFormPrivate::setViewMode(Mode mode)
+void gnomonViewFormPrivate::setViewMode(gnomonViewForm::Mode mode)
 {
     this->mode = mode;
 
-    if (this->mode == gnomonViewFormPrivate::VIEW_MODE_3D) {
+    if (this->mode == gnomonViewForm::VIEW_MODE_3D) {
         this->renderer2D->DrawOff();
         this->renderer2D->InteractiveOff();
 
         this->renderer3D->InteractiveOn();
         this->renderer3D->DrawOn();
-    } else if (this->mode == gnomonViewFormPrivate::VIEW_MODE_2D) {
+    } else if (this->mode == gnomonViewForm::VIEW_MODE_2D) {
         this->renderer3D->DrawOff();
         this->renderer3D->InteractiveOff();
 
@@ -421,7 +408,7 @@ void gnomonViewFormPrivate::setViewMode(Mode mode)
     }
 }
 
-void gnomonViewFormPrivate::setSliceOrientation(Orientation orientation)
+void gnomonViewFormPrivate::setSliceOrientation(gnomonViewForm::Orientation orientation)
 {
     this->ori = orientation;
     this->updateOrientation();
@@ -440,19 +427,19 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
         switch(this->ori)
         {
-            case SLICE_ORIENTATION_XY:
+            case gnomonViewForm::SLICE_ORIENTATION_XY:
                 cam->SetPosition((xBounds[0]+xBounds[1])/2,(yBounds[0]+yBounds[1])/2,zBounds[1]);
                 cam->SetViewUp(0,1,0);
                 cam->SetClippingRange((zBounds[1] - zBounds[0]) - 3.0, (zBounds[1] - zBounds[0]) + 3.0);
                 break;
 
-            case SLICE_ORIENTATION_XZ:
+            case gnomonViewForm::SLICE_ORIENTATION_XZ:
                 cam->SetPosition((xBounds[0]+xBounds[1])/2,yBounds[0],(zBounds[0]+zBounds[1])/2);
                 cam->SetViewUp(0,0,1);
                 cam->SetClippingRange((yBounds[1] - yBounds[0]) - 3.0, (yBounds[1] - yBounds[0]) + 3.0);
                 break;
 
-            case SLICE_ORIENTATION_YZ:
+            case gnomonViewForm::SLICE_ORIENTATION_YZ:
                 cam->SetPosition(xBounds[1],(yBounds[0]+yBounds[1])/2,(zBounds[0]+zBounds[1])/2);
                 cam->SetViewUp(0,0,1);
                 cam->SetClippingRange((xBounds[1] - xBounds[0]) - 3.0, (xBounds[1] - xBounds[0]) + 3.0);
@@ -1207,11 +1194,12 @@ void gnomonViewForm::switchTo3D(void)
     // d->renderer2D_XZ->setVisible(false);
     // d->renderer2D_YZ->setVisible(false);
 
-    bool hasChanged = d->mode != gnomonViewFormPrivate::VIEW_MODE_3D;
-    d->setViewMode(gnomonViewFormPrivate::VIEW_MODE_3D);
+    bool hasChanged = d->mode != gnomonViewForm::VIEW_MODE_3D;
+    d->setViewMode(gnomonViewForm::VIEW_MODE_3D);
 
     if (hasChanged)
         emit switchedTo3D();
+        emit modeChanged();
 
     // d->slice_slider->setEnabled(false);
     // d->slice_slider->setVisible(false);
@@ -1234,20 +1222,20 @@ void gnomonViewForm::switchTo2D(void)
     // d->renderer2D_YZ->setVisible(true);
     // d->renderer2D_YZ->toggle(false);
 
-    bool hasChanged = d->mode != gnomonViewFormPrivate::VIEW_MODE_2D;
-    d->setViewMode(gnomonViewFormPrivate::VIEW_MODE_2D);
+    bool hasChanged = d->mode != gnomonViewForm::VIEW_MODE_2D;
+    d->setViewMode(gnomonViewForm::VIEW_MODE_2D);
 
     if (hasChanged) {
         switch(d->ori) {
-            case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+            case gnomonViewForm::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
                 break;
 
-            case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+            case gnomonViewForm::SLICE_ORIENTATION_XZ:
                 this->switchTo2DXZ();
                 break;
 
-            case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+            case gnomonViewForm::SLICE_ORIENTATION_YZ:
                 this->switchTo2DYZ();
                 break;
 
@@ -1256,6 +1244,7 @@ void gnomonViewForm::switchTo2D(void)
         }
 
         emit switchedTo2D();
+        emit modeChanged();
     }
 
     // d->slice_slider->setVisible(true);
@@ -1264,7 +1253,7 @@ void gnomonViewForm::switchTo2D(void)
 
 void gnomonViewForm::switchTo2DXY(void)
 {
-    emit sliceOrientationChanged(gnomonViewFormPrivate::SLICE_ORIENTATION_XY);
+    emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_XY);
 
     // TODO: Call the slider's callback directly
     // d->slice_slider->blockSignals(true);
@@ -1274,8 +1263,8 @@ void gnomonViewForm::switchTo2DXY(void)
     // d->slice_slider->setValue(d->c_z);
     // emit sliceChanged(d->c_z);
 
-    bool hasChanged = d->ori != gnomonViewFormPrivate::SLICE_ORIENTATION_XY;
-    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XY);
+    bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_XY;
+    d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XY);
 
     // d->renderer2D_XY->toggle(true);
     // d->renderer2D_XZ->toggle(false);
@@ -1283,11 +1272,12 @@ void gnomonViewForm::switchTo2DXY(void)
 
     if (hasChanged)
         emit switchedTo2DXY();
+        emit planeChanged();
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
 {
-    emit sliceOrientationChanged(gnomonViewFormPrivate::SLICE_ORIENTATION_XZ);
+    emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_XZ);
 
     // TODO: Call the slider's callback directly
     // d->slice_slider->blockSignals(true);
@@ -1297,8 +1287,8 @@ void gnomonViewForm::switchTo2DXZ(void)
     // d->slice_slider->setValue(d->c_y);
     emit sliceChanged(d->c_y);
 
-    bool hasChanged = d->ori != gnomonViewFormPrivate::SLICE_ORIENTATION_XZ;
-    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_XZ);
+    bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_XZ;
+    d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XZ);
 
     // d->renderer2D_XY->toggle(false);
     // d->renderer2D_XZ->toggle(true);
@@ -1306,11 +1296,12 @@ void gnomonViewForm::switchTo2DXZ(void)
 
     if (hasChanged)
         emit switchedTo2DXZ();
+        emit planeChanged();
 }
 
 void gnomonViewForm::switchTo2DYZ(void)
 {
-    emit sliceOrientationChanged(gnomonViewFormPrivate::SLICE_ORIENTATION_YZ);
+    emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_YZ);
 
     // TODO: Call the slider's callback directly
     // d->slice_slider->blockSignals(true);
@@ -1320,8 +1311,8 @@ void gnomonViewForm::switchTo2DYZ(void)
     // d->slice_slider->setValue(d->c_x);
     // emit sliceChanged(d->c_x);
 
-    bool hasChanged = d->ori != gnomonViewFormPrivate::SLICE_ORIENTATION_YZ;
-    d->setSliceOrientation(gnomonViewFormPrivate::SLICE_ORIENTATION_YZ);
+    bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_YZ;
+    d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_YZ);
 
     // d->renderer2D_XY->toggle(false);
     // d->renderer2D_XZ->toggle(false);
@@ -1329,6 +1320,7 @@ void gnomonViewForm::switchTo2DYZ(void)
 
     if (hasChanged)
         emit switchedTo2DYZ();
+        emit planeChanged();
 }
 
 void gnomonViewForm::sliceChange(int value)
@@ -1337,19 +1329,19 @@ void gnomonViewForm::sliceChange(int value)
 
     switch(d->ori)
     {
-        case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
+        case gnomonViewForm::SLICE_ORIENTATION_XY:
             if (d->c_z != value) {
                 d->c_z = value;
                 valueChanged = true;
             }
             break;
-        case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
+        case gnomonViewForm::SLICE_ORIENTATION_XZ:
             if (d->c_y != value) {
                 d->c_y = value;
                 valueChanged = true;
             }
             break;
-        case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
+        case gnomonViewForm::SLICE_ORIENTATION_YZ:
             if (d->c_x != value){
                 d->c_x = value;
                 valueChanged = true;
@@ -1451,15 +1443,15 @@ void gnomonViewForm::link(gnomonViewForm *other)
 {
     d->synced = true;
 
-    if (d->mode == gnomonViewFormPrivate::VIEW_MODE_3D) {
+    if (d->mode == gnomonViewForm::VIEW_MODE_3D) {
         other->switchTo3D();
-    } else if (d->mode == gnomonViewFormPrivate::VIEW_MODE_2D) {
+    } else if (d->mode == gnomonViewForm::VIEW_MODE_2D) {
         other->switchTo2D();
-        if (d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XY) {
+        if (d->ori == gnomonViewForm::SLICE_ORIENTATION_XY) {
             other->switchTo2DXY();
-        } else if (d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+        } else if (d->ori == gnomonViewForm::SLICE_ORIENTATION_XZ) {
             other->switchTo2DXZ();
-        } else if (d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+        } else if (d->ori == gnomonViewForm::SLICE_ORIENTATION_YZ) {
             other->switchTo2DYZ();
         }
     }
@@ -1477,11 +1469,11 @@ void gnomonViewForm::link(gnomonViewForm *other)
     });
     d->connect2D = connect(other, &gnomonViewForm::switchedTo2D, [=] () {
         this->switchTo2D();
-        if (other->d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XY) {
+        if (other->d->ori == gnomonViewForm::SLICE_ORIENTATION_XY) {
             this->switchTo2DXY();
-        } else if (other->d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+        } else if (other->d->ori == gnomonViewForm::SLICE_ORIENTATION_XZ) {
             this->switchTo2DXZ();
-        } else if (other->d->ori == gnomonViewFormPrivate::SLICE_ORIENTATION_XZ) {
+        } else if (other->d->ori == gnomonViewForm::SLICE_ORIENTATION_YZ) {
             this->switchTo2DYZ();
         }
         d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
@@ -2062,6 +2054,15 @@ double gnomonViewForm::zMax(void) const
     return d->zBounds[1];
 }
 
+gnomonViewForm::Mode gnomonViewForm::mode(void) const
+{
+    return d->mode;
+}
+
+gnomonViewForm::Orientation gnomonViewForm::plane(void) const
+{
+    return d->ori;
+}
 void gnomonViewForm::setCamera(vtkCamera *cam)
 {
     vtkSmartPointer<vtkCamera> camera3D = d->renderer3D->GetActiveCamera();

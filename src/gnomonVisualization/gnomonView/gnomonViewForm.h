@@ -50,10 +50,23 @@ class vtkGenericOpenGLRenderWindow;
 class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
     Q_OBJECT
-
 public:
      gnomonViewForm(QObject *parent = nullptr);
     ~gnomonViewForm(void);
+
+public:
+    enum Mode {
+        VIEW_MODE_3D = 3,
+        VIEW_MODE_2D = 2,
+    };
+
+    enum Orientation {
+        SLICE_ORIENTATION_XY = 2,
+        SLICE_ORIENTATION_XZ = 1,
+        SLICE_ORIENTATION_YZ = 0,
+        NONE = -1
+    };
+
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
@@ -68,7 +81,11 @@ public:
     Q_PROPERTY(double yMax READ yMax NOTIFY boundsChanged);
     Q_PROPERTY(double zMin READ zMin NOTIFY boundsChanged);
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
-
+    Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
+    Q_PROPERTY(Orientation plane READ plane NOTIFY planeChanged);
+    
+    Q_ENUM(Mode);
+    Q_ENUM(Orientation);
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -87,6 +104,8 @@ signals:
 
 signals:
     void boundsChanged(void);
+    void modeChanged(void);
+    void planeChanged(void);
 
     void syncedChanged(void);
     void syncingChanged(void);
@@ -180,6 +199,8 @@ public slots:
     double yMax(void) const;
     double zMin(void) const;
     double zMax(void) const;
+    Mode mode(void) const;
+    Orientation plane(void) const;
 
 public:
     void setCamera(vtkCamera *);
