@@ -44,8 +44,6 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation()
 
 void gnomonWorkspaceSegmentation::setInputs()
 {
-    d->command->undo(); //clean
-
     auto *command = dynamic_cast<gnomonCellImageFromImageCommand *>(d->command);
     for(gnomonViewForm *f : d->sources->views()) {
         if (f->image()) {
@@ -58,7 +56,6 @@ void gnomonWorkspaceSegmentation::setInputs()
             command->setBinaryImage(f->binaryImage());
         }
     }
-
 }
 
 //

@@ -39,8 +39,6 @@ gnomonWorkspaceBinarization::~gnomonWorkspaceBinarization(void)
 
 void gnomonWorkspaceBinarization::setInputs()
 {
-    d->command->undo(); //clean
-
     gnomonBinaryImageFromImageCommand *command = static_cast<gnomonBinaryImageFromImageCommand *>(d->command);
     for(gnomonViewForm *view : d->sources->views()) {
         if (auto image = view->image()) {

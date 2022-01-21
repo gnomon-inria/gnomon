@@ -173,7 +173,6 @@ void gnomonAlgorithmWorkspace::setInputs()
             ++i;
         }
     } else if (d->sources->views().size() == 1) {
-        d->command->undo(); //clean
         for(auto [name, input_type] : d->command->inputTypes()) {
             d->command->setInputForm(name, (*d->sources)[0]->form(input_type));
         }
