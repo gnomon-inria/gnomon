@@ -249,6 +249,7 @@ void main() {
                                                                    (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
                     "inputWorkspaceIndex": src_node.workspaceIndex,
                     "outputWorkspaceIndex": tgt_node.workspaceIndex,
+                    "formIndex": edge.formIndex
                 });
 
                 edges.push(e);

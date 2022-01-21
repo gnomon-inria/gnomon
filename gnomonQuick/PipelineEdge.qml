@@ -4,13 +4,17 @@ import QtQuick.Shapes 1.15
 
 import xQuick.Style       1.0 as X
 
-Shape { id: self;
+Shape {
+
+    id: _self;
 
     property Item src;
     property Item tgt;
 
     property int inputWorkspaceIndex;
     property int outputWorkspaceIndex;
+    property int formIndex;
+
     property point stt: Qt.point((src.x + src.width), (src.y + src.height/2));
     property point end: Qt.point( tgt.x,              (tgt.y + tgt.height/2));
     property point mid: Qt.point((stt.x + end.x)/2,   (stt.y + end.y)/2);
@@ -24,21 +28,20 @@ Shape { id: self;
         fillColor: "transparent";
 
         strokeWidth: 3
-        strokeColor: (inputWorkspaceIndex === window.current_workspace_index() ||
-                      outputWorkspaceIndex === window.current_workspace_index())
+        strokeColor: window.world.currentIndex === _self.formIndex
             ? X.Style.accentColor
             : X.Style.foregroundColor;
 
-        startX: self.stt.x;
-        startY: self.stt.y;
+        startX: _self.stt.x;
+        startY: _self.stt.y;
 
         PathCubic {
-            control1X: self.end.x - self.delt;
-            control1Y: self.stt.y;
-            control2X: self.stt.x + self.delt;
-            control2Y: self.end.y;
-                    x: self.end.x;
-                    y: self.end.y
+            control1X: _self.end.x - _self.delt;
+            control1Y: _self.stt.y;
+            control2X: _self.stt.x + _self.delt;
+            control2Y: _self.end.y;
+                    x: _self.end.x;
+                    y: _self.end.y
         }
     }
 
