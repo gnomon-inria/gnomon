@@ -1272,7 +1272,7 @@ void gnomonViewForm::switchTo2DXY(void)
 
     if (hasChanged)
         emit switchedTo2DXY();
-        emit planeChanged();
+        emit orientationChanged();
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
@@ -1296,7 +1296,7 @@ void gnomonViewForm::switchTo2DXZ(void)
 
     if (hasChanged)
         emit switchedTo2DXZ();
-        emit planeChanged();
+        emit orientationChanged();
 }
 
 void gnomonViewForm::switchTo2DYZ(void)
@@ -1320,7 +1320,7 @@ void gnomonViewForm::switchTo2DYZ(void)
 
     if (hasChanged)
         emit switchedTo2DYZ();
-        emit planeChanged();
+        emit orientationChanged();
 }
 
 void gnomonViewForm::sliceChange(int value)
@@ -2059,10 +2059,6 @@ gnomonViewForm::Mode gnomonViewForm::mode(void) const
     return d->mode;
 }
 
-gnomonViewForm::Orientation gnomonViewForm::plane(void) const
-{
-    return d->ori;
-}
 void gnomonViewForm::setCamera(vtkCamera *cam)
 {
     vtkSmartPointer<vtkCamera> camera3D = d->renderer3D->GetActiveCamera();
@@ -2128,7 +2124,7 @@ vtkRenderer *gnomonViewForm::renderer3D(void)
 //     return d->view_menubar;
 // }
 
-int gnomonViewForm::orientation(void)
+gnomonViewForm::Orientation gnomonViewForm::orientation(void)
 {
     return d->ori;
 }

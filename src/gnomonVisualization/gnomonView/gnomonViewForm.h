@@ -82,7 +82,7 @@ public:
     Q_PROPERTY(double zMin READ zMin NOTIFY boundsChanged);
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
-    Q_PROPERTY(Orientation plane READ plane NOTIFY planeChanged);
+    Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -105,7 +105,7 @@ signals:
 signals:
     void boundsChanged(void);
     void modeChanged(void);
-    void planeChanged(void);
+    void orientationChanged(void);
 
     void syncedChanged(void);
     void syncingChanged(void);
@@ -186,7 +186,7 @@ public:
     vtkRenderWindowInteractor *interactor(void);
 
 public:
-    int orientation(void);
+    Orientation orientation(void);
 
 public slots:
     void setBounds(double bounds[6]);
@@ -200,7 +200,6 @@ public slots:
     double zMin(void) const;
     double zMax(void) const;
     Mode mode(void) const;
-    Orientation plane(void) const;
 
 public:
     void setCamera(vtkCamera *);
