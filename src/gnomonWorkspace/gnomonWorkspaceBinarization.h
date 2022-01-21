@@ -26,8 +26,5 @@ public:
     explicit gnomonWorkspaceBinarization(QObject *parent = nullptr);
     ~gnomonWorkspaceBinarization(void);
 
-public:
-    void setInputs() final;
-
 };
 

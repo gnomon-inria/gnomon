@@ -25,9 +25,6 @@ public:
      gnomonWorkspacePreprocess(QObject *parent = nullptr);
     ~gnomonWorkspacePreprocess(void);
 
-public:
-    void setInputs() final;
-
 };
 //
 // gnomonWorkspacePreprocess.h ends here

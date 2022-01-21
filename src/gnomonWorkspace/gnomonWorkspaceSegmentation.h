@@ -27,9 +27,6 @@ public:
      explicit gnomonWorkspaceSegmentation(QObject *parent = nullptr);
     ~gnomonWorkspaceSegmentation() override;
 
-public:
-    void setInputs() final;
-
 };
 
 //
