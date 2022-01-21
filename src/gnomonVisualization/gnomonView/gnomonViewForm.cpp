@@ -1197,9 +1197,10 @@ void gnomonViewForm::switchTo3D(void)
     bool hasChanged = d->mode != gnomonViewForm::VIEW_MODE_3D;
     d->setViewMode(gnomonViewForm::VIEW_MODE_3D);
 
-    if (hasChanged)
+    if (hasChanged){
         emit switchedTo3D();
         emit modeChanged();
+    }
 
     // d->slice_slider->setEnabled(false);
     // d->slice_slider->setVisible(false);
@@ -1270,9 +1271,11 @@ void gnomonViewForm::switchTo2DXY(void)
     // d->renderer2D_XZ->toggle(false);
     // d->renderer2D_YZ->toggle(false);
 
-    if (hasChanged)
+    if (hasChanged) {
         emit switchedTo2DXY();
         emit orientationChanged();
+    }
+    
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
