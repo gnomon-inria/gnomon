@@ -122,6 +122,7 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
 {
     if (d->setAlgorithm(algorithm)) {
         emit algorithmChanged(algorithm);
+        d->command->undo();
         this->setInputs();
         emit parametersChanged();
     }
@@ -132,7 +133,11 @@ int gnomonAlgorithmWorkspace::currentIndex(void) const {
 }
 
 void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
-    d->currentIndex = i;
+    if ((d->currentIndex != i) & (i < d->keys.size())) {
+        d->currentIndex = i;
+        emit currentIndexChanged();
+        this->setAlgoName(d->keys[i]);
+    }
 }
 
 QJSValue gnomonAlgorithmWorkspace::parameters(void)
@@ -161,20 +166,19 @@ void gnomonAlgorithmWorkspace::run(void)
 
 void gnomonAlgorithmWorkspace::setInputs()
 {
-    //you need to overwrite this function if you don't have an exact mapping between
-    // the number of views (sources) and the number of input types for your command.
-    // example: workspaceSegmentation
+    // you need to overwrite this function if you don't have an exact mapping between
+    // the number of views (sources) and the number of input types for your command,
+    // and that all inputs can not be loaded from a single view.
 
-    if (d->command->inputs().size() == d->sources->views().size()) {
-        d->command->undo(); //clean
+    if (d->sources->views().size() == 1) {
+        for(auto [name, input_type] : d->command->inputTypes()) {
+            d->command->setInputForm(name, (*d->sources)[0]->form(input_type));
+        }
+    } else  if (d->command->inputs().size() == d->sources->views().size()) {
         int i=0;
         for(auto [name, input_type] : d->command->inputTypes()) {
             d->command->setInputForm(name, (*d->sources)[i]->form(input_type));
             ++i;
-        }
-    } else if (d->sources->views().size() == 1) {
-        for(auto [name, input_type] : d->command->inputTypes()) {
-            d->command->setInputForm(name, (*d->sources)[0]->form(input_type));
         }
     } else {
         dtkWarn() << Q_FUNC_INFO << "inputs size " <<d->command->inputs().size() << " but nb input views " << d->sources->views().size();

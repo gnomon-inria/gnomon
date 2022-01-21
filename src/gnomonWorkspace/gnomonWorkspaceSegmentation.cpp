@@ -42,21 +42,6 @@ gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation()
     delete command;
 }
 
-void gnomonWorkspaceSegmentation::setInputs()
-{
-    auto *command = dynamic_cast<gnomonCellImageFromImageCommand *>(d->command);
-    for(gnomonViewForm *f : d->sources->views()) {
-        if (f->image()) {
-            command->setInput(f->image());
-        }
-        if (f->pointCloud()) {
-            command->setCellPoints(f->pointCloud());
-        }
-        if (f->binaryImage()) {
-            command->setBinaryImage(f->binaryImage());
-        }
-    }
-}
 
 //
 // gnomonWorkspaceSegmentation.cpp ends here

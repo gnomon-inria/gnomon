@@ -70,9 +70,9 @@ void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
 }
 
 gnomonImageSeries *gnomonImageFilterCommand::input()
@@ -146,10 +146,9 @@ void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
         d->mask = nullptr;
     } else {
         d->mask = init;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
     }
-
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
 }
 
 gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)

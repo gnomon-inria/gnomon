@@ -68,6 +68,7 @@ void gnomonCellImageFromImageCommand::setInput(gnomonImageSeries* image_series)
     } else {
         d->image_series = image_series;
     }
+    Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->image_series);
 }
 
@@ -83,6 +84,7 @@ void gnomonCellImageFromImageCommand::setCellPoints(gnomonPointCloudSeries *poin
     } else {
         d->pointCloud_series = pointCloud_series;
     }
+    Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(d->pointCloud_series);
 }
 
