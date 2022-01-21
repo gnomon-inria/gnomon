@@ -108,7 +108,7 @@ Rectangle {
     }
 
     X.Icon { id: _2d_icon;
-        property bool active: viewLogic.mode == "2";
+        property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
         icon: X.Icons.icons.crop_square;
         size: 32;
         color: active? X.Style.foregroundColor : X.Style.backgroundColor;
@@ -137,7 +137,7 @@ Rectangle {
 
     Image {
         id: _2d_xy;
-        property bool active: viewLogic.orientation == 2;
+        property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XY;
         source: active? "qrc:/qml/gnomonQuick/View-XY.png" : "qrc:/qml/gnomonQuick/View-XY-off.png";
         visible: _2d_icon.active
         // size: 32;
@@ -160,7 +160,7 @@ Rectangle {
 
     Image {
         id: _2d_xz;
-        property bool active: viewLogic.orientation == 1;
+        property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XZ;
         source: active? "qrc:/qml/gnomonQuick/View-XZ.png" : "qrc:/qml/gnomonQuick/View-XZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
@@ -183,7 +183,7 @@ Rectangle {
 
     Image {
         id: _2d_yz;
-        property bool active: viewLogic.orientation == 0;
+        property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_YZ;
         source: active? "qrc:/qml/gnomonQuick/View-YZ.png" : "qrc:/qml/gnomonQuick/View-YZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
@@ -205,7 +205,7 @@ Rectangle {
     }
 
     X.Icon { id: _3d_icon;
-        property bool active: viewLogic.mode == 3;
+        property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
         icon: X.Icons.icons._3d_rotation;
         size: 32;
         color: active? X.Style.foregroundColor : X.Style.backgroundColor;
