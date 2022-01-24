@@ -31,6 +31,9 @@ protected:
 public:
     explicit gnomonIntensityImage(void) : m_data(nullptr) {}
     explicit gnomonIntensityImage(dtkImage *data) : m_data(data) {}
+    explicit gnomonIntensityImage(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonIntensityImage*>(this)->deserialize(serialization);
+    }
     gnomonIntensityImage(const gnomonIntensityImage& o) : m_data(new dtkImage(*o.m_data)) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonIntensityImage(*this); }
@@ -65,11 +68,11 @@ public:
         return QString();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
     }
 
 public:

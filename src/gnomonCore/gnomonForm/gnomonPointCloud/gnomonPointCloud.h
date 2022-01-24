@@ -21,7 +21,7 @@ public:
     explicit gnomonPointCloud(void) : m_data(nullptr) {}
     explicit gnomonPointCloud(gnomonAbstractPointCloudData *data) : m_data(data) {}
     explicit gnomonPointCloud(QJsonObject& serialization) : m_data(nullptr) {
-        deserialize(serialization);
+        static_cast<gnomonPointCloud*>(this)->deserialize(serialization);
     }
              gnomonPointCloud(const gnomonPointCloud& o) : m_data(o.m_data->clone()) {}
 
@@ -56,13 +56,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::pointCloudData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

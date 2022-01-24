@@ -120,7 +120,7 @@ QJsonObject gnomonTimeSeries<T>::serialize(void) {
     out["current_time"] = d->current_time;
     QJsonObject forms;
     for(auto& t: times()) {
-        forms[t] = d->forms->serialize();
+        forms[QString::number(t)] = d->forms[t]->serialize();
     }
     out["forms"] = forms;
     return out;
@@ -138,7 +138,8 @@ void gnomonTimeSeries<T>::deserialize(QJsonObject &serialization) {
     d->forms.clear();
     QJsonObject forms = serialization["forms"].toObject();
     for(auto& key: forms.keys()) {
-        d->forms[key.toDouble()] = new T(forms[key].toObject());
+        auto formSerialization = forms[key].toObject();
+        d->forms[key.toDouble()] = new T(formSerialization);
     }
 }
 

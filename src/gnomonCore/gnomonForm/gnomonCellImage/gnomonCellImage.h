@@ -17,7 +17,7 @@ public:
     explicit gnomonCellImage(void) : m_data(nullptr) {}
     explicit gnomonCellImage(gnomonAbstractCellImageData *data) : m_data(data) {}
     explicit gnomonCellImage(QJsonObject& serialization) : m_data(nullptr) {
-        deserialize(serialization);
+        static_cast<gnomonCellImage*>(this)->deserialize(serialization);
     }
     gnomonCellImage(const gnomonCellImage& o) : m_data(o.m_data->clone()) {}
 
@@ -65,13 +65,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::cellImageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

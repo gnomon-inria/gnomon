@@ -21,7 +21,7 @@ public:
     explicit gnomonTree(void) : m_data(nullptr) {}
     explicit gnomonTree(gnomonAbstractTreeData *data) : m_data(data) {}
     explicit gnomonTree(QJsonObject& serialization) : m_data(nullptr) {
-        deserialize(serialization);
+        static_cast<gnomonTree*>(this)->deserialize(serialization);
     }
     gnomonTree(const gnomonTree& o) : m_data(o.m_data->clone()) {}
 
@@ -53,13 +53,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::treeData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

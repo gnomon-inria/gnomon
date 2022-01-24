@@ -20,6 +20,9 @@ protected:
 public:
     explicit gnomonCellGraph(void) : m_data(nullptr) {}
     explicit gnomonCellGraph(gnomonAbstractCellGraphData *data) : m_data(data) {}
+    explicit gnomonCellGraph(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonCellGraph*>(this)->deserialize(serialization);
+    }
              gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonCellGraph(*this); };
@@ -50,13 +53,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::cellGraphData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

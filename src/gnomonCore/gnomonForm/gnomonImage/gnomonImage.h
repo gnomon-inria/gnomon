@@ -23,7 +23,7 @@ public:
     explicit gnomonImage(void) : m_data(nullptr) {}
     explicit gnomonImage(gnomonAbstractImageData *data) : m_data(data) {}
     explicit gnomonImage(QJsonObject& serialization) : m_data(nullptr) {
-        deserialize(serialization);
+        static_cast<gnomonImage*>(this)->deserialize(serialization);
     }
              gnomonImage(const gnomonImage& o) : m_data(o.m_data->clone()) {}
 
@@ -67,13 +67,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::imageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

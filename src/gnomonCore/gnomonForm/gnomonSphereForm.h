@@ -13,6 +13,9 @@ class GNOMONCORE_EXPORT gnomonSphereForm : public gnomonAbstractForm
 
 public:
     gnomonSphereForm(void);
+    explicit gnomonSphereForm(QJsonObject& serialization) {
+        deserialize(serialization);
+    }
     ~gnomonSphereForm(void) = default;
     gnomonSphereForm *clone(void);
 
@@ -24,7 +27,7 @@ public:
         return "";
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         QJsonArray center;
         for (int i = 0; i < m_center.size(); ++i) {
@@ -34,7 +37,7 @@ public:
         out["m_radius"] = m_radius;
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_radius = serialization["m_radius"].toDouble();
         auto center = serialization["m_center"].toArray();
         for (int i = 0; i < m_center.size(); ++i) {

@@ -18,7 +18,7 @@ public:
     explicit gnomonBinaryImage() : m_data(nullptr) {}
     explicit gnomonBinaryImage(gnomonAbstractBinaryImageData *data) : m_data(data) {}
     explicit gnomonBinaryImage(QJsonObject& serialization) : m_data(nullptr) {
-        deserialize(serialization);
+        static_cast<gnomonBinaryImage*>(this)->deserialize(serialization);
     }
     gnomonBinaryImage(const gnomonBinaryImage& other) : m_data(other.m_data->clone()) {}
 
@@ -61,13 +61,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::binaryImageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
