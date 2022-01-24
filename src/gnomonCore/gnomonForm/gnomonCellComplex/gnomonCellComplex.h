@@ -21,6 +21,9 @@ protected:
 public:
     explicit gnomonCellComplex(void) : m_data(nullptr) {}
     explicit gnomonCellComplex(gnomonAbstractCellComplexData *data) : m_data(data) {}
+    explicit gnomonCellComplex(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonCellComplex*>(this)->deserialize(serialization);
+    }
     gnomonCellComplex(const gnomonCellComplex& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonCellComplex(*this); };
@@ -51,13 +54,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::cellComplexData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

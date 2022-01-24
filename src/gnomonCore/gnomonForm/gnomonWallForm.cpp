@@ -70,3 +70,7 @@ void gnomonWallForm::deserialize(QJsonObject &serialization) {
         d->normal[i] = normal[i].toDouble();;
     }
 }
+
+gnomonWallForm::gnomonWallForm(QJsonObject &serialization): d(new gnomonWallFormPrivate) {
+    deserialize(serialization);
+}

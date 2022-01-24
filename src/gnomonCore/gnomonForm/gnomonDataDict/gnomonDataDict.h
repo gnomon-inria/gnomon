@@ -21,7 +21,7 @@ public:
     explicit gnomonDataDict(void) : m_data(nullptr) {}
     explicit gnomonDataDict(gnomonAbstractDataDictData *data) : m_data(data) {}
     explicit gnomonDataDict(QJsonObject& serialization) : m_data(nullptr) {
-        deserialize(serialization);
+        static_cast<gnomonDataDict*>(this)->deserialize(serialization);
     }
              gnomonDataDict(const gnomonDataDict& o) : m_data(o.m_data->clone()) {}
 
@@ -56,13 +56,13 @@ public:
         return m_data->pluginName();
     }
 
-    QJsonObject serialize(void) final {
+    QJsonObject serialize(void) override {
         QJsonObject out;
         out["pluginName"] = pluginName();
         out["data"] = m_data->serialize();
         return out;
     }
-    void deserialize(QJsonObject &serialization) final {
+    void deserialize(QJsonObject &serialization) override {
         m_data = gnomonCore::dataDictData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
