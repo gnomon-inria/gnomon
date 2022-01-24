@@ -93,6 +93,9 @@ public:
     QStringList inputPortsNames(void);
     QStringList outputPortsNames(void);
 
+    Q_INVOKABLE gnomonPipelinePort *inputPort(const QString& name);
+    Q_INVOKABLE gnomonPipelinePort *outputPort(const QString& name);
+
     int  addInputPort(const QString& name, gnomonPipelinePort *port);
     void addOutputPort(const QString& name, gnomonPipelinePort *port);
 

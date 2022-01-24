@@ -121,6 +121,12 @@ void gnomonPipelineEdge::setFormIndex(int index)
         d->formIndex = index;
         emit formIndexChanged(index);
     }
+    if (d->source) {
+        d->source->setFormIndex(index);
+    }
+    if (d->target) {
+        d->target->setFormIndex(index);
+    }
 }
 
 

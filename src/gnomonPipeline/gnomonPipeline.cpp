@@ -17,6 +17,7 @@
 #include "gnomon"
 #include "gnomonPipelineNode.h"
 #include "gnomonPipelineEdge.h"
+#include "gnomonPipelinePort.h"
 
 #include "gnomonPipelineNodeAdapter.h"
 #include "gnomonPipelineNodeAlgorithm.h"
@@ -558,12 +559,8 @@ void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
     }
 }
 
-void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form, int index)
+void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
 {
-    if (index > -1) {
-        d->form_manager_index[form] = index;
-    }
-    qDebug()<<Q_FUNC_INFO<<form<<d->algorithm_nodes.contains(form);
     if (d->reader_nodes.contains(form)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form];
 
@@ -650,14 +647,35 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form, int index)
     }
 }
 
-void gnomonPipeline::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone, int index)
+void gnomonPipeline::addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone)
+{
+    d->form_clones[clone] = form;
+    if (d->form_manager_index.contains(form)) {
+        d->form_manager_index[clone] = d->form_manager_index[form];
+    }
+}
+
+void gnomonPipeline::setFormIndex(gnomonAbstractDynamicForm *form, int index)
 {
     if (index > -1) {
-        d->form_manager_index[clone] = index;
         d->form_manager_index[form] = index;
+
+        gnomonPipelinePort *output_port = nullptr;
+        if (d->reader_nodes.contains(form)) {
+            output_port= d->reader_nodes[form]->outputPorts()[d->reader_output[form]];
+        } else if (d->constructor_nodes.contains(form)) {
+            output_port = d->constructor_nodes[form]->outputPorts()[d->constructor_output[form]];
+        } else if (d->adapter_nodes.contains(form)) {
+            output_port = d->adapter_nodes[form]->outputPorts()[d->adapter_output[form]];
+        } else if (d->algorithm_nodes.contains(form)) {
+            output_port = d->algorithm_nodes[form]->outputPorts()[d->algorithm_output[form]];
+        }
+        if (output_port) {
+            output_port->setFormIndex(d->form_manager_index[form]);
+        }
     }
-    d->form_clones[clone] = form;
 }
+
 
 void gnomonPipeline::exportToToml(const QString& path)
 {

@@ -340,6 +340,25 @@ QStringList gnomonPipelineNode::outputPortsNames(void)
     return d->output_ports.keys();
 }
 
+
+gnomonPipelinePort *gnomonPipelineNode::inputPort(const QString& name)
+{
+    if (d->input_ports.contains(name)) {
+        return d->input_ports[name];
+    } else {
+        return nullptr;
+    }
+}
+
+gnomonPipelinePort *gnomonPipelineNode::outputPort(const QString& name)
+{
+    if (d->output_ports.contains(name)) {
+        return d->output_ports[name];
+    } else {
+        return nullptr;
+    }
+}
+
 int gnomonPipelineNode::addInputPort(const QString& name, gnomonPipelinePort *port)
 {
     d->input_ports[name] = port;

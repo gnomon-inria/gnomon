@@ -27,6 +27,8 @@ class GNOMONPIPELINE_EXPORT gnomonPipelinePort : public QObject
     Q_PROPERTY(gnomonPipelineNode *node READ node);
     Q_PROPERTY(QString label READ label WRITE setLabel);
 
+    Q_PROPERTY(int formIndex READ formIndex WRITE setFormIndex NOTIFY formIndexChanged)
+
 public:
     enum Type {
         Input,
@@ -49,6 +51,13 @@ public:
     QString label(void);
 
     void setLabel(const QString& label);
+
+public:
+    int formIndex(void);
+    void setFormIndex(int index);
+
+signals:
+    void formIndexChanged(int);
 
 private:
     class gnomonPipelinePortPrivate *d;

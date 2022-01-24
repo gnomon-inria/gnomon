@@ -186,7 +186,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
 
-    d->pipeline->addClonedForm(form, d->forms[item], item);
+    d->pipeline->setFormIndex(form, item);
+    d->pipeline->addClonedForm(form, d->forms[item]);
 
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
@@ -241,7 +242,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->formMatplotlibVisualizations.insert(item, visualization);
     d->formData.insert(item, image);
 
-    d->pipeline->addClonedForm(form, d->forms[item], item);
+    d->pipeline->setFormIndex(form, item);
+    d->pipeline->addClonedForm(form, d->forms[item]);
 
     QString writer_plugin;
 
