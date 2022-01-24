@@ -92,7 +92,7 @@ Rectangle {
         snapMode: Slider.SnapAlways
 
         rotation: 90
-        visible: false
+        visible: _2d_icon.active;
         width: _view.height
 
         anchors.verticalCenter: _view.verticalCenter
@@ -108,7 +108,7 @@ Rectangle {
     }
 
     X.Icon { id: _2d_icon;
-        property bool active: false
+        property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
         icon: X.Icons.icons.crop_square;
         size: 32;
         color: active? X.Style.foregroundColor : X.Style.backgroundColor;
@@ -124,6 +124,7 @@ Rectangle {
 
             onClicked: {
                 self.switchTo2D();
+                self.sliceChange(_2d_slider.value);
             }
         }
 
@@ -136,9 +137,9 @@ Rectangle {
 
     Image {
         id: _2d_xy;
-        property bool active: true
+        property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XY;
         source: active? "qrc:/qml/gnomonQuick/View-XY.png" : "qrc:/qml/gnomonQuick/View-XY-off.png";
-        visible: false
+        visible: _2d_icon.active
         // size: 32;
         // color: X.Style.foregroundColor;
 
@@ -152,15 +153,16 @@ Rectangle {
 
             onClicked: {
                 self.switchTo2DXY();
+                self.sliceChange(_2d_slider.value);
             }
         }
     }
 
     Image {
         id: _2d_xz;
-        property bool active: false
+        property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XZ;
         source: active? "qrc:/qml/gnomonQuick/View-XZ.png" : "qrc:/qml/gnomonQuick/View-XZ-off.png";
-        visible: false
+        visible: _2d_icon.active;
         // size: 32;
         // color: X.Style.foregroundColor;
 
@@ -174,15 +176,16 @@ Rectangle {
 
             onClicked: {
                 self.switchTo2DXZ();
+                self.sliceChange(_2d_slider.value);
             }
         }
     }
 
     Image {
         id: _2d_yz;
-        property bool active: false
+        property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_YZ;
         source: active? "qrc:/qml/gnomonQuick/View-YZ.png" : "qrc:/qml/gnomonQuick/View-YZ-off.png";
-        visible: false;
+        visible: _2d_icon.active;
         // size: 32;
         // color: X.Style.foregroundColor;
 
@@ -196,12 +199,13 @@ Rectangle {
 
             onClicked: {
                 self.switchTo2DYZ();
+                self.sliceChange(_2d_slider.value);
             }
         }
     }
 
     X.Icon { id: _3d_icon;
-        property bool active: true;
+        property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
         icon: X.Icons.icons._3d_rotation;
         size: 32;
         color: active? X.Style.foregroundColor : X.Style.backgroundColor;
@@ -226,47 +230,6 @@ Rectangle {
 
     Connections {
         target: viewLogic
-
-        function onSwitchedTo3D() {
-            _3d_icon.active = true;
-            _2d_icon.active = false;
-            _2d_slider.visible = false;
-            _2d_xy.visible = false;
-            _2d_xz.visible = false;
-            _2d_yz.visible = false;
-        }
-
-        function onSwitchedTo2D() {
-            _3d_icon.active = false;
-            _2d_icon.active = true;
-            _2d_slider.visible = true;
-            self.sliceChange(_2d_slider.value);
-            _2d_xy.visible = true;
-            _2d_xz.visible = true;
-            _2d_yz.visible = true;
-        }
-
-        function onSwitchedTo2DXY() {
-            self.sliceChange(_2d_slider.value);
-            _2d_xy.active = true;
-            _2d_xz.active = false;
-            _2d_yz.active = false;
-        }
-
-        function onSwitchedTo2DXZ() {
-            self.sliceChange(_2d_slider.value);
-            _2d_xy.active = false;
-            _2d_xz.active = true;
-            _2d_yz.active = false;
-        }
-
-        function onSwitchedTo2DYZ() {
-            self.sliceChange(_2d_slider.value);
-            _2d_xy.active = false;
-            _2d_xz.active = false;
-            _2d_yz.active = true;
-        }
-
         function onSliceChanged(value) {
             _2d_slider.value = value;
         }
