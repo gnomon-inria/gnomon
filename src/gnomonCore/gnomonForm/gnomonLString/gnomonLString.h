@@ -20,6 +20,9 @@ protected:
 public:
     explicit gnomonLString(void) : m_data(nullptr) {}
     explicit gnomonLString(gnomonAbstractLStringData *data) : m_data(data) {}
+    explicit gnomonLString(QJsonObject& serialization) : m_data(nullptr) {
+        deserialize(serialization);
+    }
     gnomonLString(const gnomonLString& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonLString(*this); };
@@ -46,6 +49,20 @@ public:
     QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+    const QString pluginName(void) override {
+        return m_data->pluginName();
+    }
+
+    QJsonObject serialize(void) final {
+        QJsonObject out;
+        out["pluginName"] = pluginName();
+        out["data"] = m_data->serialize();
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) final {
+        m_data = gnomonCore::lStringData::pluginFactory().create(serialization["pluginName"].toString());
+        m_data->deserialize(serialization["data"].toString());
+    }
 
 public:
     static inline QString formName(void) { return "gnomonLString"; }

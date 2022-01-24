@@ -17,6 +17,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonAbstractIntensityImageData.h"
 
 #include <QtCore>
 
@@ -59,6 +60,17 @@ public:
     QString name(void) const override { return"gnomonIntensityImage";}
     QMap<QString,QString> metadata(void) const override { return QMap<QString,QString>(); }
     QString dataName(void) const override { return "dtkImage"; }
+
+    const QString pluginName(void) override {
+        return QString();
+    }
+
+    QJsonObject serialize(void) final {
+        QJsonObject out;
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) final {
+    }
 
 public:
     const dtkImage *data(void) const { return m_data; }

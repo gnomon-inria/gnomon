@@ -17,6 +17,9 @@ protected:
 public:
     explicit gnomonBinaryImage() : m_data(nullptr) {}
     explicit gnomonBinaryImage(gnomonAbstractBinaryImageData *data) : m_data(data) {}
+    explicit gnomonBinaryImage(QJsonObject& serialization) : m_data(nullptr) {
+        deserialize(serialization);
+    }
     gnomonBinaryImage(const gnomonBinaryImage& other) : m_data(other.m_data->clone()) {}
 
     gnomonAbstractForm* clone() { return new gnomonBinaryImage(*this);}
@@ -54,6 +57,20 @@ public:
     QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+    const QString pluginName(void) override {
+        return m_data->pluginName();
+    }
+
+    QJsonObject serialize(void) final {
+        QJsonObject out;
+        out["pluginName"] = pluginName();
+        out["data"] = m_data->serialize();
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) final {
+        m_data = gnomonCore::binaryImageData::pluginFactory().create(serialization["pluginName"].toString());
+        m_data->deserialize(serialization["data"].toString());
+    }
 
 public:
     static inline QString formName(void) { return "gnomonBinaryImage"; }

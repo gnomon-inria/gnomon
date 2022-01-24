@@ -21,12 +21,13 @@ class dtkImage;
 #include <dtkCore>
 
 #include <gnomonCoreExport.h>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractIntensityImageData
+class GNOMONCORE_EXPORT gnomonAbstractIntensityImageData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractIntensityImageData(void) = default;
