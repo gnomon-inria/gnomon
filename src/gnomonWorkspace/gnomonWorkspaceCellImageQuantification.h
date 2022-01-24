@@ -4,12 +4,10 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
+#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+
 #include <QtCore>
 #include <QtQml>
-
-class gnomonViewForm;
-class gnomonViewMatplotlib;
-
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public gnomonAlgorithmWorkspace
 {
@@ -28,13 +26,15 @@ public:
      explicit gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
     ~gnomonWorkspaceCellImageQuantification(void) override;
 
+public:
+    Q_PROPERTY(gnomonViewMatplotlib* targetMpl READ targetMpl CONSTANT);
 
 public slots:
     void setInputs(void) override;
     void viewOutputs(void) override;
 
 public:
-    gnomonViewMatplotlib *target_mpl(void) const;
+    gnomonViewMatplotlib *targetMpl(void) const { return this->m_target_mpl;};
 
 private: 
     gnomonViewMatplotlib *m_target_mpl = nullptr;

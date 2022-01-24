@@ -60,7 +60,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
 {
     gnomonCellImageQuantificationCommand * command = dynamic_cast<gnomonCellImageQuantificationCommand *>(d->command);
     if(command->dataFrame()) {
-        m_target_mpl->setForm("gnomonDataFrame",command->dataFrame());
+        this->m_target_mpl->setForm("gnomonDataFrame",command->dataFrame());
     }
 }
 
