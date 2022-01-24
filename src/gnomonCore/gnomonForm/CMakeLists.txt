@@ -37,6 +37,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractDynamicForm.h
   gnomonAbstractForm
   gnomonAbstractForm.h
+  gnomonAbstractFormData
+  gnomonAbstractFormData.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTimeSeries
