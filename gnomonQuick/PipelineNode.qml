@@ -19,6 +19,8 @@ Rectangle {
 
     property var inputPortsNames: [];
     property var outputPortsNames: [];
+    property var inputPortFormIndexes: [];
+    property var outputPortFormIndexes: [];
     property var inputPorts: new Object();
 
     width: 200;
@@ -84,7 +86,7 @@ Rectangle {
             GX.PipelinePort {
                 id: _port
                 name: modelData
-                highlighted: _self.workspaceIndex === window.current_workspace_index()
+                highlighted: _self.inputPortFormIndexes[index] === window.world.currentIndex
                 Component.onCompleted: {
                     _self.inputPorts[_port.name] = _input_ports.itemAt(index)
                 }
@@ -107,7 +109,7 @@ Rectangle {
             GX.PipelinePort {
                 id: _port
                 name: modelData
-                highlighted: _self.workspaceIndex === window.current_workspace_index()
+                highlighted: _self.outputPortFormIndexes[index] === window.world.currentIndex
                 Component.onCompleted: {
                     _self.outputPorts[_port.name] = _output_ports.itemAt(index)
                     console.log(_self.workspaceIndex, window.current_workspace_index())

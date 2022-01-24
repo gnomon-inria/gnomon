@@ -14,7 +14,7 @@ Control {
     id: _self;
     clip: true;
 
-    Item {
+    QtObject {
         id: _internal;
 
         property double factor: 1.25
@@ -215,13 +215,28 @@ void main() {
         function addNode(node) {
             console.log("originx, x", _internal.originX, node.position.x)
             console.log("originy, y", _internal.originY, node.position.y)
+
+            const inputPortNames = node.inputPortsNames;
+            const outputPortNames = node.outputPortsNames;
+            const inputPortFormIndexes = inputPortNames.map(name => {
+                return node.inputPort(name).formIndex
+            });
+            const outputPortFormIndexes = outputPortNames.map(name => {
+                return node.outputPort(name).formIndex
+            });
+
+            console.log("Input form indexes", inputPortFormIndexes)
+            console.log("Output form indexes", outputPortFormIndexes)
+
             var node_component = Qt.createComponent("PipelineNode.qml");
             if (node_component.status == Component.Ready) {
                 var n = node_component.createObject(_canvas, {
                     "algorithmClass": node.algorithmClass,
                     "algorithmPlugin": node.algorithmPlugin,
-                    "inputPortsNames": node.inputPortsNames,
-                    "outputPortsNames": node.outputPortsNames,
+                    "inputPortsNames": inputPortNames,
+                    "outputPortsNames": outputPortNames,
+                    "inputPortFormIndexes": inputPortFormIndexes,
+                    "outputPortFormIndexes": outputPortFormIndexes,
                     "color": node.color,
                     "x": _internal.originX, //+ node.position.x, //Qt.binding(function() { return _internal.originX + node.position.x }),
                     "y": _internal.originY, //+ node.position.y, //Qt.binding(function() { return _internal.originY + node.position.y }),
