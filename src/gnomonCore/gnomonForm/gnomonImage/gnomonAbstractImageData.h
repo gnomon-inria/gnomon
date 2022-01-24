@@ -19,6 +19,7 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 class dtkImage;
 
@@ -26,7 +27,7 @@ class dtkImage;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImageData
+class GNOMONCORE_EXPORT gnomonAbstractImageData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractImageData(void) = default;

@@ -45,6 +45,8 @@ public:
 //    virtual void insert(double t, T *form) = 0;
 //    virtual void insert(const T& form) = 0;
     virtual void drop(double t) = 0;
+    virtual QJsonObject serialize() = 0;
+    virtual void deserialize(QJsonObject &) = 0;
 
 //public:
 //    virtual void setInitialTime(gnomonTime T_i) = 0;

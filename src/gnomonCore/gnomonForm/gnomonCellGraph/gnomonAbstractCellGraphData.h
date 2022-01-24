@@ -19,12 +19,13 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellGraphData
+class GNOMONCORE_EXPORT gnomonAbstractCellGraphData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractCellGraphData(void) = default;

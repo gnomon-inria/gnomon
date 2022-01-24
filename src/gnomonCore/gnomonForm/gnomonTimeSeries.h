@@ -64,6 +64,10 @@ public:
 //    void insert(const T& form) override;
     void drop(double t) override;
 
+    QJsonObject serialize(void) override;
+
+    void deserialize(QJsonObject &serialization) override;
+
 private:
     gnomonTimeSeriesPrivate<T> *d;
 

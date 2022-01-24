@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
@@ -34,6 +20,9 @@ protected:
 public:
     explicit gnomonDataFrame(void) : m_data(nullptr) {}
     explicit gnomonDataFrame(gnomonAbstractDataFrameData *data) : m_data(data) {}
+    explicit gnomonDataFrame(QJsonObject& serialization) : m_data(nullptr) {
+        deserialize(serialization);
+    }
              gnomonDataFrame(const gnomonDataFrame& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonDataFrame(*this); };
@@ -63,6 +52,20 @@ public:
     QString name(void) const override { return"gnomonDataFrame";}
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+    const QString pluginName(void) override {
+        return m_data->pluginName();
+    }
+
+    QJsonObject serialize(void) final {
+        QJsonObject out;
+        out["pluginName"] = pluginName();
+        out["data"] = m_data->serialize();
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) final {
+        m_data = gnomonCore::dataFrameData::pluginFactory().create(serialization["pluginName"].toString());
+        m_data->deserialize(serialization["data"].toString());
+    }
 
 public:
     const gnomonAbstractDataFrameData *data(void) const { return m_data; }

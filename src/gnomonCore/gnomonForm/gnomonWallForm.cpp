@@ -40,3 +40,33 @@ const gnomon::vec3_t gnomonWallForm::position(void) const
 {
     return d->position;
 }
+
+const QString gnomonWallForm::pluginName(void) {
+    return QString();
+}
+
+QJsonObject gnomonWallForm::serialize(void) {
+    QJsonObject out;
+    QJsonArray position;
+    for (int i = 0; i < d->position.size(); ++i) {
+        position[i] = d->position[i];
+    }
+    out["position"] = position;
+    QJsonArray normal;
+    for (int i = 0; i < d->normal.size(); ++i) {
+        normal[i] = d->normal[i];
+    }
+    out["normal"] = normal;
+    return out;
+}
+
+void gnomonWallForm::deserialize(QJsonObject &serialization) {
+    auto position = serialization["position"].toArray();
+    for (int i = 0; i < d->position.size(); ++i) {
+        d->position[i] = position[i].toDouble();
+    }
+    auto normal = serialization["normal"].toArray();
+    for (int i = 0; i < d->normal.size(); ++i) {
+        d->normal[i] = normal[i].toDouble();;
+    }
+}

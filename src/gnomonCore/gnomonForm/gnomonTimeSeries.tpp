@@ -114,6 +114,34 @@ template <typename T> void gnomonTimeSeries<T>::drop(const double t)
     }
 }
 
+template<typename T>
+QJsonObject gnomonTimeSeries<T>::serialize(void) {
+    QJsonObject out;
+    out["current_time"] = d->current_time;
+    QJsonObject forms;
+    for(auto& t: times()) {
+        forms[t] = d->forms->serialize();
+    }
+    out["forms"] = forms;
+    return out;
+}
+
+template<typename T>
+void gnomonTimeSeries<T>::deserialize(QJsonObject &serialization) {
+    d->current_time = serialization["current_time"].toDouble();
+    // emptying current forms map and deleting forms
+    for(auto& key: d->forms.keys()) {
+        delete d->forms[key];
+        d->forms[key] = nullptr;
+    }
+    // filling back
+    d->forms.clear();
+    QJsonObject forms = serialization["forms"].toObject();
+    for(auto& key: forms.keys()) {
+        d->forms[key.toDouble()] = new T(forms[key].toObject());
+    }
+}
+
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////

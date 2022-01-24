@@ -6,20 +6,15 @@
 
 #include <dtkCore>
 
+#include "gnomonForm/gnomonAbstractFormData.h"
+
 class dtkImage;
 
-class GNOMONCORE_EXPORT gnomonAbstractBinaryImageData {
+class GNOMONCORE_EXPORT gnomonAbstractBinaryImageData: public gnomonAbstractFormData {
 public:
     gnomonAbstractBinaryImageData(void) = default;
     virtual ~gnomonAbstractBinaryImageData(void) = default;
     virtual gnomonAbstractBinaryImageData* clone(void) const = 0;
-
-/*
- *  METADATA
- */
-public:
-    virtual QMap<QString,QString> metadata(void) const = 0;
-    virtual QString dataName(void) const = 0;
 
 public:
     virtual void setImage(dtkImage* image) = 0;

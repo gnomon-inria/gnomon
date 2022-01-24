@@ -21,12 +21,13 @@ class dtkImage;
 #include <dtkCore>
 
 #include <gnomonCoreExport.h>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellImageData
+class GNOMONCORE_EXPORT gnomonAbstractCellImageData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractCellImageData(void) = default;

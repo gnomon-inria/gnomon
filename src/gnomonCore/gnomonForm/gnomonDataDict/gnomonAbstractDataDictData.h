@@ -5,12 +5,13 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractDataDictData
+class GNOMONCORE_EXPORT gnomonAbstractDataDictData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractDataDictData(void) = default;

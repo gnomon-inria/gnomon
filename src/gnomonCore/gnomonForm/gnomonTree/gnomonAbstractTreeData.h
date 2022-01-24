@@ -21,6 +21,7 @@ class dtkImage;
 #include <dtkCore>
 
 #include <gnomonCoreExport>
+#include "gnomonForm/gnomonAbstractFormData"
 
 class gnomonTree;
 
@@ -28,7 +29,7 @@ class gnomonTree;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractTreeData
+class GNOMONCORE_EXPORT gnomonAbstractTreeData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractTreeData(void) = default;

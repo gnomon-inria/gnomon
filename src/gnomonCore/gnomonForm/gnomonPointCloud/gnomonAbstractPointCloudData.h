@@ -19,12 +19,13 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractPointCloudData
+class GNOMONCORE_EXPORT gnomonAbstractPointCloudData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractPointCloudData(void) = default;
