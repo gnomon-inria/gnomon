@@ -20,6 +20,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellImageReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageReaderCommandPrivate *d;

@@ -23,6 +23,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellImageConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageConstructorCommandPrivate *d;

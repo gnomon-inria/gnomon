@@ -39,7 +39,23 @@ public:
     virtual void setInput(T *form_series) = 0;
     virtual T *input() = 0;
 
+    static inline QString defaultSetter(QString formName) {
+        if(formName == T::formName()) {
+            return {"setInput"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == T::formName()) {
+            return {"input"};
+        }
+        return {};
+    };
+
     virtual gnomonAbstractDynamicForm *output() = 0;
+    static inline QString defaultOutput(QString formName) {
+        return {"output"};
+    };
 
 public:
     virtual QString target(void) = 0;

@@ -100,6 +100,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
         emit parametersChanged();
     });
 
+    connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
@@ -121,8 +122,21 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
 {
     if (d->setAlgorithm(algorithm)) {
         emit algorithmChanged(algorithm);
+        d->command->undo();
         this->setInputs();
         emit parametersChanged();
+    }
+}
+
+int gnomonAlgorithmWorkspace::currentIndex(void) const {
+    return d->currentIndex;
+}
+
+void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
+    if ((d->currentIndex != i) & (i < d->keys.size())) {
+        d->currentIndex = i;
+        emit currentIndexChanged();
+        this->setAlgoName(d->keys[i]);
     }
 }
 
@@ -156,21 +170,19 @@ void gnomonAlgorithmWorkspace::run(void)
 
 void gnomonAlgorithmWorkspace::setInputs()
 {
-    //you need to overwrite this function if you don't have an exact mapping between
-    // the number of views (sources) and the number of input types for your command.
-    // example: workspaceSegmentation
+    // you need to overwrite this function if you don't have an exact mapping between
+    // the number of views (sources) and the number of input types for your command,
+    // and that all inputs can not be loaded from a single view.
 
-    if (d->command->inputs().size() == d->sources->views().size()) {
-        d->command->undo(); //clean
+    if (d->sources->views().size() == 1) {
+        for(auto [name, input_type] : d->command->inputTypes()) {
+            d->command->setInputForm(name, (*d->sources)[0]->form(input_type));
+        }
+    } else  if (d->command->inputs().size() == d->sources->views().size()) {
         int i=0;
         for(auto [name, input_type] : d->command->inputTypes()) {
             d->command->setInputForm(name, (*d->sources)[i]->form(input_type));
             ++i;
-        }
-    } else if (d->sources->views().size() == 1) {
-        d->command->undo(); //clean
-        for(auto [name, input_type] : d->command->inputTypes()) {
-            d->command->setInputForm(name, (*d->sources)[0]->form(input_type));
         }
     } else {
         dtkWarn() << Q_FUNC_INFO << "inputs size " <<d->command->inputs().size() << " but nb input views " << d->sources->views().size();
@@ -202,6 +214,43 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     if (!empty_output) {
         d->registerPipeline();
     }
+}
+
+QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
+    QJsonObject state;
+    state.insert("algoName", algoName());
+    state.insert("currentIndex", currentIndex());
+
+    QVariantMap parameters_json;
+    dtkCoreParameters dtkParameters = d->command->parameters();
+    for(const auto& param_name : dtkParameters.keys()){
+        QVariant param_value = dtkParameters[param_name]->variant();
+        qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
+        parameters_json.insert(param_name, param_value);
+    }
+    state.insert("parameters_json", QJsonObject::fromVariantMap(parameters_json));
+    return state;
+}
+
+void gnomonAlgorithmWorkspace::unSerialize(QJsonObject & state) {
+    setCurrentIndex(state["currentIndex"].toInt());
+    setAlgoName(state["algoName"].toString());
+
+    QJsonObject parameters_json = state["parameters"].toObject();
+    for(const auto& param_name: parameters_json.keys()) {
+        QVariant param = parameters_json[param_name].toVariant();
+        d->command->setParameter(param_name, param);
+    }
+    emit parametersChanged();
+}
+
+void gnomonAlgorithmWorkspace::saveState(void) {
+    d->savedState = serialize();
+}
+
+void gnomonAlgorithmWorkspace::restoreState(void) {
+    QString previousAlgo = algoName();
+    unSerialize(d->savedState);
 }
 
 //

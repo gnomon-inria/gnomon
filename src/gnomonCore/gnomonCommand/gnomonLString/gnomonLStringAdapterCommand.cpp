@@ -25,7 +25,7 @@ public:
 
 gnomonLStringAdapterCommand::gnomonLStringAdapterCommand() : d(new gnomonLStringAdapterCommandPrivate)
 {
-    this->factory_name = "lStringAdapter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
@@ -106,8 +106,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::outputs(
 
 bool gnomonLStringAdapterCommand::isEmpty()
 {
-    loadPluginGroup("lStringAdapter");
-    return gnomonCore::lStringAdapter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonLStringAdapterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringAdapterCommand::inputTypes() {

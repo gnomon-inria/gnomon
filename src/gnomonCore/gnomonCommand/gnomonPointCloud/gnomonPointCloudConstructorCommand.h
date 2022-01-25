@@ -23,6 +23,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "pointCloudConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudConstructorCommandPrivate *d;

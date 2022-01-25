@@ -34,7 +34,7 @@ public:
 
 gnomonCellImageFilterCommand::gnomonCellImageFilterCommand() : d(new gnomonCellImageFilterCommandPrivate)
 {
-    this->factory_name = "cellImageFilter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageFilter::pluginFactory().keys();
@@ -115,8 +115,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFilterCommand::outputs
 
 bool gnomonCellImageFilterCommand::isEmpty()
 {
-    loadPluginGroup("cellImageFilter");
-    return gnomonCore::cellImageFilter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageFilterCommand::inputTypes() {
@@ -137,6 +136,10 @@ void gnomonCellImageFilterCommand::setInputForm(const QString &name, gnomonAbstr
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonCellImageFilterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

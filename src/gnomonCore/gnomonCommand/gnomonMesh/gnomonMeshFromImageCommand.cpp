@@ -26,7 +26,7 @@ public:
 
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand() : d(new gnomonMeshFromImageCommandPrivate)
 {
-    this->factory_name = "meshFromImage";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshFromImage::pluginFactory().keys();
@@ -107,8 +107,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFromImageCommand::outputs()
 
 bool gnomonMeshFromImageCommand::isEmpty()
 {
-    loadPluginGroup("meshFromImage");
-    return gnomonCore::meshFromImage::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshFromImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::inputTypes() {

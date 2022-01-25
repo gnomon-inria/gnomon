@@ -3,7 +3,7 @@ import gnomoncore
 from gnomoncore import gnomonDataDict
 from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
 load_plugin_group("dataDictData")
 
@@ -32,19 +32,20 @@ def _gnomonDataDictInput(cls, attr, method, setter_method, data_plugin, data_set
     setattr(cls, method, func)
 
     def setter_func(self, dataDict):
-        self._in_dataDict = dataDict
-        setattr(self, attr, {})
+        if is_form_series_modified(self, "_in_dataDict", dataDict):
+            self._in_dataDict = dataDict
+            setattr(self, attr, {})
 
-        if self._in_dataDict is not None:
-            dataDict_dict = formDictFromSeries(form=self._in_dataDict,
-                                                  form_data_factory=form_data_factory,
-                                                  from_form_method=from_form_method,
-                                                  data_plugin=data_plugin,
-                                                  data_attr=data_attr)
-            setattr(self, attr, dataDict_dict)
+            if self._in_dataDict is not None:
+                dataDict_dict = formDictFromSeries(form=self._in_dataDict,
+                                                   form_data_factory=form_data_factory,
+                                                   from_form_method=from_form_method,
+                                                   data_plugin=data_plugin,
+                                                   data_attr=data_attr)
+                setattr(self, attr, dataDict_dict)
 
-            if hasattr(self,"refresh_parameters"):
-                self.refresh_parameters()
+                if hasattr(self,"refresh_parameters"):
+                    self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
 

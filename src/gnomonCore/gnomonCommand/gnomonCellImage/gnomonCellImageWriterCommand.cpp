@@ -32,7 +32,7 @@ public:
 
 gnomonCellImageWriterCommand::gnomonCellImageWriterCommand() : d(new gnomonCellImageWriterCommandPrivate)
 {
-    this->factory_name = "cellImageWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageWriter::pluginFactory().keys();
@@ -90,8 +90,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageWriterCommand::inputs(
 
 bool gnomonCellImageWriterCommand::isEmpty()
 {
-    loadPluginGroup("cellImageWriter");
-    return gnomonCore::cellImageWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonCellImageWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {

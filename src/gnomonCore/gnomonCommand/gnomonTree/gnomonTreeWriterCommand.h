@@ -25,6 +25,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "treeWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonTreeWriterCommandPrivate *d;

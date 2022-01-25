@@ -33,6 +33,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "treeAdapter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonTreeAdapterCommandPrivate *d;

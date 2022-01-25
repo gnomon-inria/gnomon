@@ -29,7 +29,7 @@ public:
 
 gnomonCellImageTrackingCommand::gnomonCellImageTrackingCommand() : d(new gnomonCellImageTrackingCommandPrivate)
 {
-    this->factory_name = "cellImageTracking";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageTracking::pluginFactory().keys();
@@ -133,8 +133,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageTrackingCommand::outpu
 
 bool gnomonCellImageTrackingCommand::isEmpty()
 {
-    loadPluginGroup("cellImageTracking");
-    return gnomonCore::cellImageTracking::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageTrackingCommand::inputTypes() {
@@ -159,6 +158,10 @@ void gnomonCellImageTrackingCommand::setInputForm(const QString &name, gnomonAbs
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonCellImageTrackingCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

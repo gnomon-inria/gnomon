@@ -21,7 +21,7 @@ public:
 
 gnomonImageFilterCommand::gnomonImageFilterCommand() : d(new gnomonImageFilterCommandPrivate)
 {
-    this->factory_name = "imageFilter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageFilter::pluginFactory().keys();
@@ -72,9 +72,9 @@ void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
 }
 
 gnomonImageSeries *gnomonImageFilterCommand::input()
@@ -135,8 +135,11 @@ gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::outputTypes()
 
 bool gnomonImageFilterCommand::isEmpty()
 {
-    loadPluginGroup("imageFilter");
-    return gnomonCore::imageFilter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageFilterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
@@ -145,10 +148,9 @@ void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
         d->mask = nullptr;
     } else {
         d->mask = init;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
     }
-
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
 }
 
 gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)

@@ -1,5 +1,13 @@
 import gnomoncore
 
+def is_form_series_modified(algo, form_name, form_series):
+    modified = not hasattr(algo, form_name)
+    modified = modified or any([i is None for i in (getattr(algo, form_name), form_series)])
+    modified = modified or (len(getattr(algo, form_name)) != len(form_series))
+    modified = modified or any([time not in getattr(algo, form_name) for time in form_series.keys()])
+    # TODO: compare C++ object addresses instead of data objects!
+    modified = modified or any([getattr(algo, form_name)[time].data() != form_series[time].data() for time in form_series.keys()])
+    return modified
 
 def buildFormSeries(form_dict, form_class, form_data_factory, data_plugin, data_setter):
     form = {}

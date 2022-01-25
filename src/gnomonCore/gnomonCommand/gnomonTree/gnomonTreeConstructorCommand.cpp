@@ -28,7 +28,7 @@ public:
 
 gnomonTreeConstructorCommand::gnomonTreeConstructorCommand() : d(new gnomonTreeConstructorCommandPrivate)
 {
-    this->factory_name = "treeConstructor";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeConstructor::pluginFactory().keys();
@@ -85,8 +85,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeConstructorCommand::outputs
 
 bool gnomonTreeConstructorCommand::isEmpty()
 {
-    loadPluginGroup("treeConstructor");
-    return gnomonCore::treeConstructor::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeConstructorCommand::outputTypes() {

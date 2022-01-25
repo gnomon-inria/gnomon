@@ -28,7 +28,7 @@ public:
 
 gnomonImageConstructorCommand::gnomonImageConstructorCommand() : d(new gnomonImageConstructorCommandPrivate)
 {
-    this->factory_name = "imageConstructor";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::imageConstructor::pluginFactory().keys();
@@ -86,8 +86,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageConstructorCommand::output
 
 bool gnomonImageConstructorCommand::isEmpty()
 {
-    loadPluginGroup("imageConstructor");
-    return gnomonCore::imageConstructor::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonImageConstructorCommand::outputTypes() {

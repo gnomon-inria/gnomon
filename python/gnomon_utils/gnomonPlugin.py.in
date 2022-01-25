@@ -39,6 +39,20 @@ def load_plugin_group(group_name):
         importlib.import_module(entry_point.module_name)
 
 
+def available_plugins(group_name):
+    print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
+    return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
+
+
+def plugin_metadata(group_name):
+    out = []
+    for ep in iter_entry_points(group_name):
+        *module, resource = ep.module_name.split(".")
+        path = resource_filename(".".join(module), resource+".json")
+        out.append((ep.name, path))
+    return out
+
+
 def default_input_accessors(algo_class, form_class):
     setter_method = algo_class.defaultSetter(form_class.__name__)
     if not setter_method:
@@ -177,7 +191,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
             setattr(cls, key, wrapper(value))
 
     def pluginName(self):
-        return self.__name__
+        return cls.__name__
     setattr(cls, "pluginName", pluginName)
 
     # -----------------------------------------------------

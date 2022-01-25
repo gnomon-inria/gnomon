@@ -3,7 +3,7 @@ import gnomoncore
 from gnomoncore import gnomonLString
 from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
 load_plugin_group("lStringData")
 
@@ -32,19 +32,20 @@ def _gnomonLStringInput(cls, attr, method, setter_method, data_plugin, data_sett
     setattr(cls, method, func)
 
     def setter_func(self, lString):
-        self._in_lString = lString
-        setattr(self, attr, {})
+        if is_form_series_modified(self, "_in_lString", lString):
+            self._in_lString = lString
+            setattr(self, attr, {})
 
-        if self._in_lString is not None:
-            lString_dict = formDictFromSeries(form=self._in_lString,
+            if self._in_lString is not None:
+                lString_dict = formDictFromSeries(form=self._in_lString,
                                                   form_data_factory=form_data_factory,
                                                   from_form_method=from_form_method,
                                                   data_plugin=data_plugin,
                                                   data_attr=data_attr)
-            setattr(self, attr, lString_dict)
+                setattr(self, attr, lString_dict)
 
-            if hasattr(self,"refresh_parameters"):
-                self.refresh_parameters()
+                if hasattr(self,"refresh_parameters"):
+                    self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
 

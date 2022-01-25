@@ -28,7 +28,7 @@ public:
 
 gnomonCellImageConstructorCommand::gnomonCellImageConstructorCommand() : d(new gnomonCellImageConstructorCommandPrivate)
 {
-    this->factory_name = "cellImageConstructor";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
@@ -85,14 +85,17 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageConstructorCommand::ou
 
 bool gnomonCellImageConstructorCommand::isEmpty()
 {
-    loadPluginGroup("cellImageConstructor");
-    return gnomonCore::cellImageConstructor::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageConstructorCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("output", "gnomonCellImage"));
     return types;
+}
+
+QStringList gnomonCellImageConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

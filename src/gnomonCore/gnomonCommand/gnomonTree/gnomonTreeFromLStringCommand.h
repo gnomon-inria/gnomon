@@ -30,6 +30,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "treeFromLString";
+    static QStringList availablePlugins();
 
 private:
     class gnomonTreeFromLStringCommandPrivate *d;

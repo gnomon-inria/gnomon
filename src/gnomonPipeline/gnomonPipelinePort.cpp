@@ -25,6 +25,9 @@ public:
 
 public:
     QString label;
+
+public:
+    int formIndex = -1;
 };
 
 gnomonPipelinePort::gnomonPipelinePort(Type type, gnomonPipelineNode *parent) :  d(new gnomonPipelinePortPrivate)
@@ -63,7 +66,23 @@ QString gnomonPipelinePort::label(void)
 
 void gnomonPipelinePort::setLabel(const QString& label)
 {
-    d->label = label;
+    if (label != d->label) {
+        d->label = label;
+        emit labelChanged();
+    }
+}
+
+int gnomonPipelinePort::formIndex(void)
+{
+    return d->formIndex;
+}
+
+void gnomonPipelinePort::setFormIndex(int index)
+{
+    if (index != d->formIndex) {
+        d->formIndex = index;
+        emit formIndexChanged(index);
+    }
 }
 
 //

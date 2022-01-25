@@ -16,7 +16,7 @@ public:
 
 gnomonBinaryImageFromImageCommand::gnomonBinaryImageFromImageCommand() : d(new gnomonBinaryImageFromImageCommandPrivate)
 {
-    this->factory_name = "binaryImageFromImage";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::binaryImageFromImage::pluginFactory().keys();
@@ -62,9 +62,9 @@ void gnomonBinaryImageFromImageCommand::setInput(gnomonImageSeries *image){
         d->input = nullptr;
     } else {
         d->input = image;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
 }
 
 gnomonImageSeries *gnomonBinaryImageFromImageCommand::input()
@@ -78,9 +78,9 @@ void gnomonBinaryImageFromImageCommand::setInitialization(gnomonBinaryImageSerie
         d->initialization = nullptr;
     } else {
         d->initialization = init;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
 }
 
 gnomonBinaryImageSeries *gnomonBinaryImageFromImageCommand::initialization()
@@ -136,8 +136,11 @@ gnomonAbstractCommand::orderedMap gnomonBinaryImageFromImageCommand::outputTypes
 
 bool gnomonBinaryImageFromImageCommand::isEmpty()
 {
-    loadPluginGroup("binaryImageFromImage");
-    return gnomonCore::binaryImageFromImage::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonBinaryImageFromImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 //

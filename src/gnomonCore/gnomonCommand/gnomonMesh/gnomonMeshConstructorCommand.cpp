@@ -28,7 +28,7 @@ public:
 
 gnomonMeshConstructorCommand::gnomonMeshConstructorCommand() : d(new gnomonMeshConstructorCommandPrivate)
 {
-    this->factory_name = "meshConstructor";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::meshConstructor::pluginFactory().keys();
@@ -86,8 +86,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshConstructorCommand::outputs
 
 bool gnomonMeshConstructorCommand::isEmpty()
 {
-    loadPluginGroup("meshConstructor");
-    return gnomonCore::meshConstructor::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshConstructorCommand::outputTypes() {

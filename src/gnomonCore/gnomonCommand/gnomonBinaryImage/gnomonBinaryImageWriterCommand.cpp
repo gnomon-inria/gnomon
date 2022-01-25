@@ -10,7 +10,7 @@ public:
 
 gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand() : d(new gnomonBinaryImageWriterCommandPrivate)
 {
-    this->factory_name = "binaryImageWriter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::binaryImageWriter::pluginFactory().keys();
@@ -68,8 +68,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageWriterCommand::input
 
 bool gnomonBinaryImageWriterCommand::isEmpty()
 {
-    loadPluginGroup("binaryImageWriter");
-    return gnomonCore::binaryImageWriter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonBinaryImageWriterCommand::inputTypes() {
@@ -84,4 +83,8 @@ void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, gnomonAbs
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonBinaryImageWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }

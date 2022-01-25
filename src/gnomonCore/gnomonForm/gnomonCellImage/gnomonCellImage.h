@@ -58,7 +58,7 @@ public:
     }
 
 public:
-    QString name(void) const override { return"gnomonCellImage";}
+    QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
     const QString pluginName(void) override {
@@ -75,6 +75,9 @@ public:
         m_data = gnomonCore::cellImageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
+
+public:
+    static inline QString formName(void) { return "gnomonCellImage"; }
 
 public:
     virtual void setImage(dtkImage *image) { return m_data->setImage(image); }

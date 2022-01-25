@@ -25,7 +25,7 @@ public:
 
 gnomonTreeAdapterCommand::gnomonTreeAdapterCommand() : d(new gnomonTreeAdapterCommandPrivate)
 {
-    this->factory_name = "treeAdapter";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeAdapter::pluginFactory().keys();
@@ -111,8 +111,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::outputs()
 
 bool gnomonTreeAdapterCommand::isEmpty()
 {
-    loadPluginGroup("treeAdapter");
-    return gnomonCore::treeAdapter::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeAdapterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeAdapterCommand::inputTypes() {

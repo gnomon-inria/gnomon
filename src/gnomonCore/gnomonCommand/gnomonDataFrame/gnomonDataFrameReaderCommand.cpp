@@ -32,7 +32,7 @@ public:
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand() : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    this->factory_name = "dataFrameReader";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     for (const auto& key: gnomonCore::dataFrameReader::pluginFactory().keys()) {
@@ -88,8 +88,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameReaderCommand::outputs
 
 bool gnomonDataFrameReaderCommand::isEmpty()
 {
-    loadPluginGroup("dataFrameReader");
-    return gnomonCore::dataFrameReader::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonDataFrameReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {

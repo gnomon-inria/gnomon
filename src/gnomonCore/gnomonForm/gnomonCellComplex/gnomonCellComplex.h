@@ -47,7 +47,7 @@ public:
     }
 
 public:
-    QString name(void) const override { return "gnomonCellComplex"; }
+    QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
     const QString pluginName(void) override {
@@ -64,6 +64,9 @@ public:
         m_data = gnomonCore::cellComplexData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
+
+public:
+    static inline QString formName(void) { return "gnomonCellComplex"; }
 
 public:
     const gnomonAbstractCellComplexData *data(void) const { return m_data; }

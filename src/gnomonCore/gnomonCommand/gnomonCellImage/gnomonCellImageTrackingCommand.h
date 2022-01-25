@@ -31,6 +31,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellImageTracking";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageTrackingCommandPrivate *d;

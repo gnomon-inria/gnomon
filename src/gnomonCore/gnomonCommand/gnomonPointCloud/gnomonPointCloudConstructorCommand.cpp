@@ -28,7 +28,7 @@ public:
 
 gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand() : d(new gnomonPointCloudConstructorCommandPrivate)
 {
-    this->factory_name = "pointCloudConstructor";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
@@ -83,10 +83,12 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudConstructorCommand::o
     return outputs;
 }
 
-bool gnomonPointCloudConstructorCommand::isEmpty()
-{
-    loadPluginGroup("pointCloudConstructor");
-    return gnomonCore::pointCloudConstructor::pluginFactory().keys().empty();
+bool gnomonPointCloudConstructorCommand::isEmpty(){
+    return availablePlugins().empty();
+}
+
+QStringList gnomonPointCloudConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudConstructorCommand::outputTypes() {

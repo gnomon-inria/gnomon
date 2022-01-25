@@ -36,6 +36,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellImageFromImage";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageFromImageCommandPrivate *d;

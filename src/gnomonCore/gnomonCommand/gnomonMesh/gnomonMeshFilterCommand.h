@@ -31,6 +31,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "meshFilter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshFilterCommandPrivate *d;

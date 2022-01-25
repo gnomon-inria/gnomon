@@ -30,6 +30,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "cellComplexAdapter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexAdapterCommandPrivate *d;

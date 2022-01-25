@@ -18,7 +18,7 @@ public:
 
 gnomonImageReaderCommand::gnomonImageReaderCommand() : d(new gnomonImageReaderCommandPrivate)
 {
-    this->factory_name = "imageReader";
+    this->factory_name = groupName;
 
     loadPluginGroup(this->factoryName());
 
@@ -87,8 +87,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageReaderCommand::outputs()
 
 bool gnomonImageReaderCommand::isEmpty()
 {
-    loadPluginGroup("imageReader");
-    return gnomonCore::imageReader::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {

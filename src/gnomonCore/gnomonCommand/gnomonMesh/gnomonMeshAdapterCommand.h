@@ -31,6 +31,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "meshAdapter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshAdapterCommandPrivate *d;

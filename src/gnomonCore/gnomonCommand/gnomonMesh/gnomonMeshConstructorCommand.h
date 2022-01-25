@@ -23,6 +23,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "meshConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshConstructorCommandPrivate *d;

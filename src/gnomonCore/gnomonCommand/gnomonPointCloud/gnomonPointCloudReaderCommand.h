@@ -22,6 +22,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "pointCloudReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudReaderCommandPrivate *d;

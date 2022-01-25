@@ -34,6 +34,8 @@ public:
     QString workspace;
     QStringList keys;
     QString algorithm;
+    int currentIndex = 0;
+    QJsonObject savedState;
 
 public:
     gnomonPipeline *pipeline;

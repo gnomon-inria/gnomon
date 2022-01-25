@@ -3,7 +3,7 @@ import gnomoncore
 from gnomoncore import gnomonPointCloud
 from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
 load_plugin_group("pointCloudData")
 
@@ -32,19 +32,20 @@ def _gnomonPointCloudInput(cls, attr, method, setter_method, data_plugin, data_s
     setattr(cls, method, func)
 
     def setter_func(self, pointCloud):
-        self._in_pointCloud = pointCloud
-        setattr(self, attr, {})
+        if is_form_series_modified(self, "_in_pointCloud", pointCloud):
+            self._in_pointCloud = pointCloud
+            setattr(self, attr, {})
 
-        if self._in_pointCloud is not None:
-            pointCloud_dict = formDictFromSeries(form=self._in_pointCloud,
-                                            form_data_factory=form_data_factory,
-                                            from_form_method=from_form_method,
-                                            data_plugin=data_plugin,
-                                            data_attr=data_attr)
-            setattr(self, attr, pointCloud_dict)
+            if self._in_pointCloud is not None:
+                pointCloud_dict = formDictFromSeries(form=self._in_pointCloud,
+                                                form_data_factory=form_data_factory,
+                                                from_form_method=from_form_method,
+                                                data_plugin=data_plugin,
+                                                data_attr=data_attr)
+                setattr(self, attr, pointCloud_dict)
 
-            if hasattr(self, "refresh_parameters"):
-                self.refresh_parameters()
+                if hasattr(self, "refresh_parameters"):
+                    self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
 

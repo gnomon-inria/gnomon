@@ -25,6 +25,8 @@ public:
 
 public:
     static bool isEmpty();
+    inline static const QString groupName = "imageWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonImageWriterCommandPrivate *d;

@@ -22,6 +22,17 @@ class gnomonViewForm;
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public gnomonAbstractWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to load data from a local file system into the \
+application. It reads a local file, provided there exists a reader plugin \
+that is able to open it.\n\
+\n\
+When a file is dropped into the main view in the center, a menu pops up with \
+the choice of available readers for this file format. If the reader is unique, \
+the file is read directly. The form contained in the file is then displayed in \
+the main view, replacing an existing form of the same type is there was one.\n\
+\n")
+
 
 public:
      gnomonWorkspaceBrowser(QObject *parent = nullptr);
@@ -36,6 +47,8 @@ signals:
 public slots:
     void read    (const QString&);
     void readWith(const QString&);
+    inline void saveState() {};  // nothing to be saved or restored
+    inline void restoreState() {};
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();

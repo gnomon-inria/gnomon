@@ -35,7 +35,8 @@ public:
 
 gnomonFemSolverCommand::gnomonFemSolverCommand() : d(new gnomonFemSolverCommandPrivate)
 {
-    loadPluginGroup("femSolver");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::femSolver::pluginFactory().keys();
     if (!keys.empty()) {
@@ -85,8 +86,11 @@ gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh()
 
 bool gnomonFemSolverCommand::isEmpty()
 {
-    loadPluginGroup("femSolver");
-    return gnomonCore::femSolver::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonFemSolverCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonFemSolverCommand::inputs() {

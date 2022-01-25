@@ -3,7 +3,7 @@ import gnomoncore
 from gnomoncore import gnomonCellImage
 from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
 load_plugin_group("cellImageData")
 
@@ -32,19 +32,20 @@ def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_se
     setattr(cls, method, func)
 
     def setter_func(self, cellImage):
-        self._in_cellImage = cellImage
-        setattr(self, attr, {})
-
-        if self._in_cellImage is not None:
-            cellImage_dict = formDictFromSeries(form=self._in_cellImage,
-                                                  form_data_factory=form_data_factory,
-                                                  from_form_method=from_form_method,
-                                                  data_plugin=data_plugin,
-                                                  data_attr=data_attr)
-            setattr(self, attr, cellImage_dict)
-
-            if hasattr(self,"refresh_parameters"):
-                self.refresh_parameters()
+        if is_form_series_modified(self, "_in_cellImage", cellImage):
+            self._in_cellImage = cellImage
+            setattr(self, attr, {})
+    
+            if self._in_cellImage is not None:
+                cellImage_dict = formDictFromSeries(form=self._in_cellImage,
+                                                      form_data_factory=form_data_factory,
+                                                      from_form_method=from_form_method,
+                                                      data_plugin=data_plugin,
+                                                      data_attr=data_attr)
+                setattr(self, attr, cellImage_dict)
+    
+                if hasattr(self,"refresh_parameters"):
+                    self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
 

@@ -22,7 +22,9 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
+    static bool isEmpty();;
+    inline static const QString groupName = "cellComplexConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexConstructorCommandPrivate *d;

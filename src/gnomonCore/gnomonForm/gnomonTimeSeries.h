@@ -64,6 +64,9 @@ public:
 //    void insert(const T& form) override;
     void drop(double t) override;
 
+public:
+    static inline QString formName(void) {return T::formName();}
+
     QJsonObject serialize(void) override;
 
     void deserialize(QJsonObject &serialization) override;

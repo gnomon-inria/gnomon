@@ -29,7 +29,7 @@ public:
 
 gnomonLStringTranslationCommand::gnomonLStringTranslationCommand() : d(new gnomonLStringTranslationCommandPrivate)
 {
-    this->factory_name = "lStringTranslation";
+    this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
     QStringList keys = gnomonCore::lStringTranslation::pluginFactory().keys();
@@ -150,8 +150,11 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringTranslationCommand::outp
 
 bool gnomonLStringTranslationCommand::isEmpty()
 {
-    loadPluginGroup("lStringTranslation");
-    return gnomonCore::lStringTranslation::pluginFactory().keys().empty();
+    return availablePlugins().empty();
+}
+
+QStringList gnomonLStringTranslationCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringTranslationCommand::inputTypes() {
