@@ -58,6 +58,9 @@ public slots:
     void addForm(gnomonAbstractDynamicForm *form); //todo delete ?
     void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
 
+public:
+    void setFormIndex(gnomonAbstractDynamicForm *form, int index=-1);
+
 signals:
     void nodeAdded(gnomonPipelineNode *);
 
