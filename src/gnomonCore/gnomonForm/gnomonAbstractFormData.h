@@ -6,6 +6,10 @@
 
 class GNOMONCORE_EXPORT gnomonAbstractFormData {
 public:
+             gnomonAbstractFormData(void) = default;
+    virtual ~gnomonAbstractFormData(void) = default;
+
+public:
     virtual QString serialize(void) {
         dtkError() << Q_FUNC_INFO << "No serialization defined !";
         return "";
