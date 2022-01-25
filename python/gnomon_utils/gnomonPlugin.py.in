@@ -191,7 +191,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
             setattr(cls, key, wrapper(value))
 
     def pluginName(self):
-        return self.__name__
+        return cls.__name__
     setattr(cls, "pluginName", pluginName)
 
     # -----------------------------------------------------
