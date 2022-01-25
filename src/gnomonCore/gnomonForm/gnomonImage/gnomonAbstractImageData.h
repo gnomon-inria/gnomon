@@ -42,6 +42,7 @@ public:
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual dtkImage *image(QString channel="") const = 0;

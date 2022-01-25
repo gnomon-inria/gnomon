@@ -42,7 +42,7 @@ public:
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
-
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual void fromString(const QString&) const = 0;
