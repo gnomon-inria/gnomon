@@ -221,8 +221,8 @@ void main() {
                 var n = node_component.createObject(_canvas, {
                     "node": node,
                     "color": node.color,
-                    "x": _internal.originX, //+ node.position.x, //Qt.binding(function() { return _internal.originX + node.position.x }),
-                    "y": _internal.originY, //+ node.position.y, //Qt.binding(function() { return _internal.originY + node.position.y }),
+                    "x": Qt.binding(function() { return _canvas.width/2 + node.position.x }), //_internal.originX, //Qt.binding(function() { return _internal.originX + node.position.x }),
+                    "y": Qt.binding(function() { return _canvas.height/2 + 0.33*node.position.y }), //_internal.originY, //Qt.binding(function() { return _internal.originY + node.position.y }),
                     "workspaceIndex": window.current_workspace_index()
                 });
                 nodes[node.name] = n;

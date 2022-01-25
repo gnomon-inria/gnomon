@@ -30,6 +30,17 @@ Rectangle {
 
     Drag.active: _dragArea.drag.active
 
+    onXChanged: {
+        if (_self.x != _canvas.width/2 + node.position.x) {
+            node.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)
+        }
+    }
+
+    onYChanged: {
+        if (_self.y != _canvas.height/2 + 0.33*node.position.y) {
+            node.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)
+        }
+    }
 
     MouseArea {
         id: _dragArea
