@@ -810,6 +810,11 @@ QUrl gnomonWorkspaceBrowser::defaultReadPath()
     return settings.value("path").toString();
 }
 
+QStringList gnomonWorkspaceBrowser::getReaderExtensions(void)
+{
+    return d->fileReaderCommands.keys();
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"
