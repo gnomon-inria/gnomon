@@ -176,7 +176,7 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
                                             tr("Python (*.py)"));
     if(!file_path.isEmpty()) {
         QFile f(file_path);
-        if(f.open(QIODevice::WriteOnly)) {
+        if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
             QTextStream out(&f);
             out << d->code->text();
             settings.setValue("Python/save", file_path);
