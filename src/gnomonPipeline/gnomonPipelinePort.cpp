@@ -66,7 +66,10 @@ QString gnomonPipelinePort::label(void)
 
 void gnomonPipelinePort::setLabel(const QString& label)
 {
-    d->label = label;
+    if (label != d->label) {
+        d->label = label;
+        emit labelChanged();
+    }
 }
 
 int gnomonPipelinePort::formIndex(void)

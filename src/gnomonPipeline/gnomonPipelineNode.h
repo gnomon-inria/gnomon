@@ -34,13 +34,13 @@ public:
 
 public:
     Q_PROPERTY(QString name READ name WRITE setName);
-    Q_PROPERTY(QString algorithmClass READ algorithmClass);
-    Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin);
+    Q_PROPERTY(QString algorithmClass READ algorithmClass CONSTANT);
+    Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin CONSTANT);
     Q_PROPERTY(QColor color READ color);
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
-    Q_PROPERTY(QStringList inputPortsNames READ inputPortsNames);
-    Q_PROPERTY(QStringList outputPortsNames READ outputPortsNames);
+    Q_PROPERTY(QStringList inputPortsNames READ inputPortsNames NOTIFY inputPortsChanged);
+    Q_PROPERTY(QStringList outputPortsNames READ outputPortsNames NOTIFY outputPortsChanged);
 
     Q_PROPERTY(int inputEdgeCount READ inputEdgeCount);
     Q_PROPERTY(int outputEdgeCount READ outputEdgeCount);
@@ -60,6 +60,9 @@ public:
 
 signals:
     void positionChanged(void);
+
+    void inputPortsChanged(void);
+    void outputPortsChanged(void);
 
 /*public:
     void layout(void);
