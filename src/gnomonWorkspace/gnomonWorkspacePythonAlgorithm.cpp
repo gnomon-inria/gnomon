@@ -169,17 +169,12 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
 {
     QString file_path;
     const QUrl url(file_url);
-    // if(url.isLocalFile())
-    // {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     QString old_path = settings.value("Python/save", QDir::toNativeSeparators(url.toLocalFile())).toString();
     file_path = QFileDialog::getSaveFileName(nullptr,
                                             tr("Save Python File"),
                                             old_path,
                                             tr("Python (*.py)"));
-    // } else {
-    //     file_path = file_url;
-    // }
     if(!file_path.isEmpty()) {
         QFile f(file_path);
         if(f.open(QIODevice::WriteOnly)) {
