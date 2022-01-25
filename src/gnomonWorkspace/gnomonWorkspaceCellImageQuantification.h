@@ -1,29 +1,15 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
+#include "gnomonAlgorithmWorkspace.h"
+
+#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+
 #include <QtCore>
 #include <QtQml>
 
-class gnomonViewForm;
-class gnomonViewMatplotlib;
-
-
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public QObject
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
@@ -37,35 +23,21 @@ the data asociated with each cell is returned as an output.\n\
 \n")
 
 public:
-     gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
-    ~gnomonWorkspaceCellImageQuantification(void);
+     explicit gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
+    ~gnomonWorkspaceCellImageQuantification(void) override;
 
 public:
-    Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName);
-    Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded)
-    Q_PROPERTY(gnomonViewForm* source READ source CONSTANT);
-    Q_PROPERTY(gnomonViewMatplotlib* target READ target CONSTANT);
-    Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
-
-signals:
-    void algorithmsLoaded(void);
-    void parametersChanged(void);
+    Q_PROPERTY(gnomonViewMatplotlib* targetMpl READ targetMpl CONSTANT);
 
 public slots:
-    void run(void);
+    void setInputs(void) override;
+    void viewOutputs(void) override;
 
 public:
-    QString algoName(void) const;
-    QStringList algorithms(void) const;
-    Q_INVOKABLE void setAlgoName(const QString &);
+    gnomonViewMatplotlib *targetMpl(void) const { return this->m_target_mpl;};
 
-public:
-    gnomonViewForm *source(void) const;
-    gnomonViewMatplotlib *target(void) const;
-    QJSValue parameters(void);
-
-private:
-    class gnomonWorkspaceCellImageQuantificationPrivate *d;
+private: 
+    gnomonViewMatplotlib *m_target_mpl = nullptr;
 };
 
 //
