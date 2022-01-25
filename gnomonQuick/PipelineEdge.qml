@@ -8,12 +8,14 @@ Shape {
 
     id: _self;
 
+    property var edge;
+
     property Item src;
     property Item tgt;
 
     property int inputWorkspaceIndex;
     property int outputWorkspaceIndex;
-    property int formIndex;
+    property int formIndex: edge ? edge.formIndex : -1;
 
     property point stt: Qt.point((src.x + src.width), (src.y + src.height/2));
     property point end: Qt.point( tgt.x,              (tgt.y + tgt.height/2));
@@ -45,8 +47,8 @@ Shape {
         }
     }
 
-        Component.onCompleted: {
-            console.log("in: ", inputWorkspaceIndex)
-            console.log("out: ", outputWorkspaceIndex)
-        }
+    Component.onCompleted: {
+        console.log("in: ", inputWorkspaceIndex)
+        console.log("out: ", outputWorkspaceIndex)
+    }
 }

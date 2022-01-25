@@ -14,17 +14,13 @@ Rectangle {
 
     property int workspaceIndex;
 
-    property string algorithmClass: "";
-    property string algorithmPlugin: "";
+    property var node;
 
-    property var inputPortsNames: [];
-    property var outputPortsNames: [];
-    property var inputPortFormIndexes: [];
-    property var outputPortFormIndexes: [];
     property var inputPorts: new Object();
+    property var outputPorts: new Object();
 
     width: 200;
-    height: 30 + 15*Math.max(_self.inputPortsNames.length, _self.outputPortsNames.length) - 5;
+    height: 30 + 15*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 5;
     radius: 8;
 
     border.color: X.Style.accentColor;
@@ -45,12 +41,11 @@ Rectangle {
             console.log("Switching to workspace ", _self.workspaceIndex)
             window.switch_workspace(_self.workspaceIndex)
         }
-
     }
 
     X.Label {
         id: _classLabel
-        text: _self.algorithmClass;
+        text: node.algorithmClass;
 
         color: "#333333"; //TODO: get value from theme
         font.pixelSize: 12; //TODO: get value from theme
@@ -63,7 +58,7 @@ Rectangle {
 
     X.Label {
         id: _pluginLabel
-        text: _self.algorithmPlugin;
+        text: node.algorithmPlugin;
 
         color: "#333333";
         font.pixelSize: 10;
@@ -82,20 +77,16 @@ Rectangle {
 
         Repeater {
             id: _input_ports
-            model: _self.inputPortsNames;
+            model: node.inputPortsNames;
             GX.PipelinePort {
                 id: _port
-                name: modelData
-                highlighted: _self.inputPortFormIndexes[index] === window.world.currentIndex
+                port: node.inputPort(modelData)
                 Component.onCompleted: {
-                    _self.inputPorts[_port.name] = _input_ports.itemAt(index)
+                    _self.inputPorts[port.label] = _input_ports.itemAt(index)
                 }
             }
         }
-
     }
-
-    property var outputPorts: new Object();
 
     Column {
         spacing: 5;
@@ -105,17 +96,14 @@ Rectangle {
 
         Repeater {
             id: _output_ports
-            model: _self.outputPortsNames;
+            model: node.outputPortsNames;
             GX.PipelinePort {
                 id: _port
-                name: modelData
-                highlighted: _self.outputPortFormIndexes[index] === window.world.currentIndex
+                port: node.outputPort(modelData)
                 Component.onCompleted: {
-                    _self.outputPorts[_port.name] = _output_ports.itemAt(index)
-                    console.log(_self.workspaceIndex, window.current_workspace_index())
+                    _self.outputPorts[port.label] = _output_ports.itemAt(index)
                 }
             }
         }
-
     }
 }

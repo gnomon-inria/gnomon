@@ -8,8 +8,9 @@ Rectangle {
 
     id: _self
 
-    property string name: "";
-    property bool highlighted: false;
+    property var port;
+
+    property bool highlighted: port ? port.formIndex === window.world.currentIndex : false;
 
     color: _self.highlighted ? X.Style.accentColor : "#CCCCCC"
     height: 10;
@@ -17,7 +18,7 @@ Rectangle {
     radius: 5;
 
     ToolTip {
-         text: _self.name
+         text: port.label
          visible: _mouse_area.containsMouse
     }
 
@@ -26,5 +27,4 @@ Rectangle {
         anchors.fill: parent;
         hoverEnabled: true;
     }
-
 }

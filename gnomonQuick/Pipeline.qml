@@ -216,27 +216,10 @@ void main() {
             console.log("originx, x", _internal.originX, node.position.x)
             console.log("originy, y", _internal.originY, node.position.y)
 
-            const inputPortNames = node.inputPortsNames;
-            const outputPortNames = node.outputPortsNames;
-            const inputPortFormIndexes = inputPortNames.map(name => {
-                return node.inputPort(name).formIndex
-            });
-            const outputPortFormIndexes = outputPortNames.map(name => {
-                return node.outputPort(name).formIndex
-            });
-
-            console.log("Input form indexes", inputPortFormIndexes)
-            console.log("Output form indexes", outputPortFormIndexes)
-
             var node_component = Qt.createComponent("PipelineNode.qml");
             if (node_component.status == Component.Ready) {
                 var n = node_component.createObject(_canvas, {
-                    "algorithmClass": node.algorithmClass,
-                    "algorithmPlugin": node.algorithmPlugin,
-                    "inputPortsNames": inputPortNames,
-                    "outputPortsNames": outputPortNames,
-                    "inputPortFormIndexes": inputPortFormIndexes,
-                    "outputPortFormIndexes": outputPortFormIndexes,
+                    "node": node,
                     "color": node.color,
                     "x": _internal.originX, //+ node.position.x, //Qt.binding(function() { return _internal.originX + node.position.x }),
                     "y": _internal.originY, //+ node.position.y, //Qt.binding(function() { return _internal.originY + node.position.y }),
@@ -259,6 +242,7 @@ void main() {
                 var tgt = tgt_node.inputPorts[edge.target.label]
 
                 var e = edge_component.createObject(_canvas, {
+                    "edge" : edge,
                     //"stt": Qt.binding(function() { return src.mapToItem(_canvas, Qt.point(src.width, src.height/2)) }),
                     "stt": Qt.binding(function() { return Qt.point((src_node.x + src.parent.x + src.x + src.width),
                                                                    (src_node.y + src.parent.y + src.y + src.height/2)) }),
@@ -267,7 +251,6 @@ void main() {
                                                                    (tgt_node.y + tgt.parent.y + tgt.y + tgt.height/2)) }),
                     "inputWorkspaceIndex": src_node.workspaceIndex,
                     "outputWorkspaceIndex": tgt_node.workspaceIndex,
-                    "formIndex": edge.formIndex
                 });
 
                 edges.push(e);
