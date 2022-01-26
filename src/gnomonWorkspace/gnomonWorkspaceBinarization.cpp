@@ -36,18 +36,3 @@ gnomonWorkspaceBinarization::~gnomonWorkspaceBinarization(void)
         delete command;
     }
 }
-
-void gnomonWorkspaceBinarization::setInputs()
-{
-    d->command->undo(); //clean
-
-    gnomonBinaryImageFromImageCommand *command = static_cast<gnomonBinaryImageFromImageCommand *>(d->command);
-    for(gnomonViewForm *view : d->sources->views()) {
-        if (auto image = view->image()) {
-            command->setInput(image);
-        }
-        if (auto initialization = view->binaryImage()) {
-            command->setInitialization(initialization);
-        }
-    }
-}

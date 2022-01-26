@@ -25,6 +25,9 @@ public:
 public:
     gnomonPipelinePort *source;
     gnomonPipelinePort *target;
+
+public:
+    int formIndex = -1;
 };
 
 gnomonPipelineEdge::gnomonPipelineEdge(void) : d(new gnomonPipelineEdgePrivate)
@@ -107,6 +110,24 @@ void gnomonPipelineEdge::setParent(gnomonPipelineNode *parent)
     d->parent = parent;
 }
 
+int gnomonPipelineEdge::formIndex(void)
+{
+    return d->formIndex;
+}
+
+void gnomonPipelineEdge::setFormIndex(int index)
+{
+    if (index != d->formIndex) {
+        d->formIndex = index;
+        emit formIndexChanged(index);
+    }
+    if (d->source) {
+        d->source->setFormIndex(index);
+    }
+    if (d->target) {
+        d->target->setFormIndex(index);
+    }
+}
 
 
 //

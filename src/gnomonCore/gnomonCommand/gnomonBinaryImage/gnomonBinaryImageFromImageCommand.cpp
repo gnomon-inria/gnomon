@@ -66,9 +66,9 @@ void gnomonBinaryImageFromImageCommand::setInput(gnomonImageSeries *image){
         d->input = nullptr;
     } else {
         d->input = image;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
 }
 
 gnomonImageSeries *gnomonBinaryImageFromImageCommand::input()
@@ -82,9 +82,9 @@ void gnomonBinaryImageFromImageCommand::setInitialization(gnomonBinaryImageSerie
         d->initialization = nullptr;
     } else {
         d->initialization = init;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
 }
 
 gnomonBinaryImageSeries *gnomonBinaryImageFromImageCommand::initialization()

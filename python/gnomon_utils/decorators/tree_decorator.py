@@ -3,7 +3,7 @@ import gnomoncore
 from gnomoncore import gnomonTree
 from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
 load_plugin_group("treeData")
 
@@ -32,19 +32,20 @@ def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter,
     setattr(cls, method, func)
 
     def setter_func(self, tree):
-        self._in_tree = tree
-        setattr(self, attr, {})
+        if is_form_series_modified(self, "_in_tree", tree):
+            self._in_tree = tree
+            setattr(self, attr, {})
 
-        if self._in_tree is not None:
-            tree_dict = formDictFromSeries(form=self._in_tree,
-                                                  form_data_factory=form_data_factory,
-                                                  from_form_method=from_form_method,
-                                                  data_plugin=data_plugin,
-                                                  data_attr=data_attr)
-            setattr(self, attr, tree_dict)
+            if self._in_tree is not None:
+                tree_dict = formDictFromSeries(form=self._in_tree,
+                                                      form_data_factory=form_data_factory,
+                                                      from_form_method=from_form_method,
+                                                      data_plugin=data_plugin,
+                                                      data_attr=data_attr)
+                setattr(self, attr, tree_dict)
 
-            if hasattr(self,"refresh_parameters"):
-                self.refresh_parameters()
+                if hasattr(self,"refresh_parameters"):
+                    self.refresh_parameters()
 
     setattr(cls, setter_method, setter_func)
 
