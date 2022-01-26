@@ -20,6 +20,9 @@ protected:
 public:
     explicit gnomonCellGraph(void) : m_data(nullptr) {}
     explicit gnomonCellGraph(gnomonAbstractCellGraphData *data) : m_data(data) {}
+    explicit gnomonCellGraph(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonCellGraph*>(this)->deserialize(serialization);
+    }
              gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonCellGraph(*this); };
@@ -46,6 +49,21 @@ public:
     QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+    const QString pluginName(void) override {
+        return m_data->pluginName();
+    }
+
+    QJsonObject serialize(void) override {
+        QJsonObject out;
+        out["pluginName"] = pluginName();
+        out["data"] = m_data->serialize();
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) override {
+        delete m_data;
+        m_data = gnomonCore::cellGraphData::pluginFactory().create(serialization["pluginName"].toString());
+        m_data->deserialize(serialization["data"].toString());
+    }
 
 public:
     static inline QString formName(void) { return "gnomonCellGraph"; }

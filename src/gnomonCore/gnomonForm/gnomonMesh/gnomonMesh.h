@@ -20,6 +20,9 @@ protected:
 public:
     explicit gnomonMesh(void) : m_data(nullptr) {}
     explicit gnomonMesh(gnomonAbstractMeshData *data) : m_data(data) {}
+    explicit gnomonMesh(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonMesh*>(this)->deserialize(serialization);
+    }
              gnomonMesh(const gnomonMesh& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonMesh(*this); };
@@ -49,6 +52,21 @@ public:
     QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
     QString dataName(void) const override { return m_data->dataName(); }
+    const QString pluginName(void) override {
+        return m_data->pluginName();
+    }
+
+    QJsonObject serialize(void) override {
+        QJsonObject out;
+        out["pluginName"] = pluginName();
+        out["data"] = m_data->serialize();
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) override {
+        delete m_data;
+        m_data = gnomonCore::meshData::pluginFactory().create(serialization["pluginName"].toString());
+        m_data->deserialize(serialization["data"].toString());
+    }
 
 public:
     static inline QString formName(void) { return "gnomonMesh"; }

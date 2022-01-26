@@ -67,6 +67,10 @@ public:
 public:
     static inline QString formName(void) {return T::formName();}
 
+    QJsonObject serialize(void) override;
+
+    void deserialize(QJsonObject &serialization) override;
+
 private:
     gnomonTimeSeriesPrivate<T> *d;
 

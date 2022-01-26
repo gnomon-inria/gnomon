@@ -19,12 +19,13 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractPointCloudData
+class GNOMONCORE_EXPORT gnomonAbstractPointCloudData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractPointCloudData(void) = default;
@@ -36,10 +37,11 @@ public:
 //  ///////////////////////////////////////////////////////////////////
 //  Metadata
 //  ///////////////////////////////////////////////////////////////////
+
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
-
+    virtual const QString pluginName(void) = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  Point Id concept

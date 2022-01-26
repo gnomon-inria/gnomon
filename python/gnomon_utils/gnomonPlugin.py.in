@@ -190,6 +190,10 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
         if callable(value):
             setattr(cls, key, wrapper(value))
 
+    def pluginName(self):
+        return cls.__name__
+    setattr(cls, "pluginName", pluginName)
+
     # -----------------------------------------------------
     # Factory registration
     # -----------------------------------------------------

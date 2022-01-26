@@ -5,12 +5,13 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractDataDictData
+class GNOMONCORE_EXPORT gnomonAbstractDataDictData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractDataDictData(void) = default;
@@ -25,6 +26,7 @@ public:
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
 
 //  ///////////////////////////////////////////////////////////////////
 //  DataDict concept

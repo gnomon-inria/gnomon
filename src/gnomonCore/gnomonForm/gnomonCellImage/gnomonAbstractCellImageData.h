@@ -21,12 +21,13 @@ class dtkImage;
 #include <dtkCore>
 
 #include <gnomonCoreExport.h>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellImageData
+class GNOMONCORE_EXPORT gnomonAbstractCellImageData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractCellImageData(void) = default;
@@ -41,7 +42,7 @@ public:
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
-
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual void setImage(dtkImage *image) = 0;

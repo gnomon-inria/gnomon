@@ -19,6 +19,7 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 class dtkImage;
 
@@ -26,7 +27,7 @@ class dtkImage;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractImageData
+class GNOMONCORE_EXPORT gnomonAbstractImageData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractImageData(void) = default;
@@ -41,6 +42,7 @@ public:
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual dtkImage *image(QString channel="") const = 0;

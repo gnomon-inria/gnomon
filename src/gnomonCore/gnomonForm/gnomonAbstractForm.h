@@ -51,6 +51,10 @@ public:
     virtual QString name(void) const = 0;
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
+    virtual QJsonObject serialize(void) = 0;
+    virtual void deserialize(QJsonObject&) = 0;
+
 
 public:
     gnomonCellComplex *asCellComplex();
