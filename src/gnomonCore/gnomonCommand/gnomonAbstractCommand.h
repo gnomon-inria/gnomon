@@ -21,7 +21,7 @@ public slots:
     virtual void   undo(void) = 0;
     virtual void   redo(void) final;
     virtual void futureFinished(){
-        deserializeResults(watcher.result());
+        deserializeResults(watcher->result());
     }
 
 public:
@@ -67,5 +67,5 @@ protected:
     gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
-    QFutureWatcher<QJsonObject> watcher;
+    QFutureWatcher<QJsonObject> *watcher = nullptr;
 };

@@ -25,15 +25,20 @@ void gnomonAbstractCommand::redo(void)
 {
     Q_ASSERT(this->action);
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-
-
-    connect(&watcher, &QFutureWatcher<QJsonObject>::finished,
+    // cleaning watcher
+    if(watcher){
+        watcher->disconnect();
+        if(watcher->isRunning()) {
+            watcher->cancel();
+            watcher->waitForFinished();
+        }
+    }
+    delete watcher;
+    // preparing watcher
+    watcher = new QFutureWatcher<QJsonObject>();
+    connect(watcher, &QFutureWatcher<QJsonObject>::finished,
             this,&gnomonAbstractCommand::futureFinished);
-    connect(&watcher, &QFutureWatcher<QJsonObject>::finished,
+    connect(watcher, &QFutureWatcher<QJsonObject>::finished,
             this, &gnomonAbstractCommand::finished);
 
     // prepare forking
@@ -97,7 +102,7 @@ void gnomonAbstractCommand::redo(void)
                                             close(outputPipe[0]);  // close reading end
                                             return outputs;
                                         });
-        watcher.setFuture(future);
+        watcher->setFuture(future);
         while(future.isRunning()) {
             qApp->processEvents();
         }
