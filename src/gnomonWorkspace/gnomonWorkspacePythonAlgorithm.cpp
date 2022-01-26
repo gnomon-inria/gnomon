@@ -7,7 +7,6 @@
 
 #include <dtkCore>
 #include <dtkScript>
-#include <QFileDialog>
 
 #include "gnomonPythonAlgorithmPluginCode.h"
 
@@ -167,19 +166,21 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
 
 void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
 {
+    QString file_path;
     const QUrl url(file_url);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-    QString old_path = settings.value("Python/save", QDir::toNativeSeparators(url.toLocalFile())).toString();
-    QString file_path = QFileDialog::getSaveFileName(nullptr,
-                                            tr("Save Python File"),
-                                            old_path,
-                                            tr("Python (*.py)"));
+    if(url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = file_url;
+    }
+    
     if(!file_path.isEmpty()) {
         QFile f(file_path);
         if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
             QTextStream out(&f);
             out << d->code->text();
-            settings.setValue("Python/save", file_path);
+            settings.setValue("Python/load", file_path);
             f.close();
         } else {
             qWarning() << "couldn t save to file" << file_path;
