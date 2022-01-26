@@ -37,7 +37,7 @@ import_array();
 %import <dtkImagingCore/dtkImagingCore.i>
 
 %{
-
+ 
 #include <dtkCore>
 #include <dtkImagingCore>
 
