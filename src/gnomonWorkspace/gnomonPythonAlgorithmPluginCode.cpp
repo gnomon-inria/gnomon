@@ -12,6 +12,9 @@ public:
     QString text;
 
 public:
+    QString plugin_name;
+
+public:
     QMap<QString, QString> parameter_types;
     QMap<QString, QStringList> form_data_plugins;
 
@@ -31,6 +34,8 @@ public:
 
 gnomonPythonAlgorithmPluginCodePrivate::gnomonPythonAlgorithmPluginCodePrivate(void)
 {
+    this->plugin_name = "pythonAlgorithm";
+
     this->parser = new gnomonPythonPluginParser();
 
     this->parameter_types = this->parser->parameterTypes();
@@ -64,6 +69,20 @@ void gnomonPythonAlgorithmPluginCode::setText(const QString& text)
 {
     d->text = text;
     emit textChanged(d->text);
+}
+
+const QString& gnomonPythonAlgorithmPluginCode::pluginName(void) const
+{
+    return d->plugin_name;
+}
+
+void gnomonPythonAlgorithmPluginCode::setPluginName(const QString& name)
+{
+    if (name != d->plugin_name) {
+        d->plugin_name = name;
+        emit pluginNameChanged();
+        this->updateCode();
+    }
 }
 
 QJsonObject gnomonPythonAlgorithmPluginCode::inputFormsJson(void) const
@@ -291,7 +310,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += "attr='" + desc.name + "', ";
         plugin_code += "data_plugin='" + desc.data_plugin + "')\n";
     }
-    plugin_code += "class pythonAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):\n";
+    plugin_code += "class " + d->plugin_name + "(gnomoncore.gnomonAbstractFormAlgorithm):\n";
     plugin_code += "    \"\"\"\n";
     plugin_code += "    Implements a custom form algorithm plugin.\n";
     plugin_code += "    \"\"\"\n";
@@ -385,7 +404,10 @@ void gnomonPythonAlgorithmPluginCode::parseCode(void)
 
     QString current_code = this->text();
     d->parser->parsePluginCode(current_code);
-    
+
+    d->plugin_name = d->parser->pluginName();
+    emit pluginNameChanged();
+
     auto input_forms = d->parser->inputForms();
     for (const auto& form_name : input_forms.keys()) {
         this->addInputForm(input_forms[form_name], false);

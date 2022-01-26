@@ -73,6 +73,9 @@ QString argumentValue(const QString& arguments, const QString& argument_name, in
 class gnomonPythonPluginParserPrivate: public QObject
 {
 public:
+    QString plugin_name;
+
+public:
     QMap<QString, gnomonFormDescription> input_forms;
     QMap<QString, gnomonFormDescription> output_forms;
     QMap<QString, gnomonParameterDescription> parameters;
@@ -120,6 +123,11 @@ gnomonPythonPluginParser::~gnomonPythonPluginParser(void)
     delete d;
 }
 
+const QString& gnomonPythonPluginParser::pluginName(void) const
+{
+    return d->plugin_name;
+}
+
 const QMap<QString, gnomonFormDescription>& gnomonPythonPluginParser::inputForms(void) const
 {
     return d->input_forms;
@@ -154,6 +162,8 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
     QStringList code_lines = plugin_code.split("\n");
 
     bool in_init = false;
+    QRegExp plugin_rx("class (.*)[(]gnomon");
+
     QRegExp init_rx("def[ ]*__init__[(]self");
     QRegExp method_rx("def.*[(]self");
 
@@ -167,6 +177,11 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
             in_init = true;
         } else if (method_rx.indexIn(line) != -1) {
             in_init = false;
+        }
+
+        pos = plugin_rx.indexIn(line);
+        if (pos != -1) {
+            d->plugin_name = plugin_rx.capturedTexts()[1];
         }
 
         pos = input_rx.indexIn(line);

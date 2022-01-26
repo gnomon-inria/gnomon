@@ -61,6 +61,9 @@ public:
     ~gnomonPythonPluginParser(void);
 
 public:
+    const QString& pluginName(void) const;
+
+public:
     const QMap<QString, gnomonFormDescription>& inputForms(void) const;
     const QMap<QString, gnomonFormDescription>& outputForms(void) const;
     const QMap<QString, gnomonParameterDescription>& parameters(void) const;
