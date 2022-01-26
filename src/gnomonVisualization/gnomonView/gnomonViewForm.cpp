@@ -1548,10 +1548,11 @@ gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, const QJsonObject &visualization)
 {
     qDebug() << Q_FUNC_INFO << name << form << visualization;
-
     if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
         if (d->acceptForms["gnomonBinaryImage"]) {
             this->setBinaryImage(binaryImage, visualization);
+        } else {
+            emit badFormDropped("gnomonbinaryImage", acceptedForms().join(", "));
         }
     }  else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
         if (d->acceptForms["gnomonCellComplex"]) {
@@ -1562,20 +1563,27 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
     } else if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
         if (d->acceptForms["gnomonCellImage"]) {
             this->setCellImage(cellImage, visualization);
+        } else {
+            emit badFormDropped("gnomonCellImage", acceptedForms().join(", "));
         }
     } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
         if (d->acceptForms["gnomonImage"]) {
             this->setImage(image, visualization);
+        } else {
+            emit badFormDropped("gnomonImage", acceptedForms().join(", "));
         }
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
         if (d->acceptForms["gnomonMesh"]) {
             this->setMesh(mesh, visualization);
         } else {
             this->setAdaptedForm("gnomonMesh", mesh);
+
         }
     } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
         if (d->acceptForms["gnomonPointCloud"]) {
             this->setPointCloud(pointCloud, visualization);
+        } else {
+            emit badFormDropped("gnomonPointCloud", acceptedForms().join(", "));
         }
     }
     return;
@@ -1583,11 +1591,13 @@ void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *for
 
 void gnomonViewForm::setAdaptedForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractVisualization *visualization)
 {
+    bool adapter_found = false;
     if (d->adapterCommands.contains(name)) {
         QVariantMap adapter_descs;
         for (const auto &key : d->adapterCommands[name].keys()) {
             if (d->acceptForms[d->adapterTargets[name][key]]) {
                 adapter_descs[key] = d->adapterDescriptions[name][key];
+                adapter_found = true;
             }
         }
         // TODO: Bind that to QML
@@ -1604,6 +1614,10 @@ void gnomonViewForm::setAdaptedForm(const QString& name, gnomonAbstractDynamicFo
 
         //     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(d->adapter_menu);
         // }
+    }
+
+    if(!adapter_found) {
+        emit badFormDropped(name ,acceptedForms().join(", "));
     }
 }
 
