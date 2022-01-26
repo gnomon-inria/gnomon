@@ -84,6 +84,28 @@ Rectangle {
         }
     }
 
+    X.Dialog {
+        id: _bad_form_warning_dialog;
+
+        property string bad_form_name: "";
+        property string accepted_forms: "";
+
+        y: parent.height/3
+        x: parent.width/6
+
+        parent: Overlay.overlay
+        
+
+            X.Label {
+                anchors.fill: parent
+                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.bad_form_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
+                font {
+                    weight: Font.Bold
+                    pointSize: 14;                
+                }
+            }
+    }
+
     Slider { id: _2d_slider
         from: _2d_xy.active? viewLogic.zMin : _2d_xz.active? viewLogic.yMin : viewLogic.xMin;
         to:   _2d_xy.active? viewLogic.zMax : _2d_xz.active? viewLogic.yMax : viewLogic.xMax;
@@ -232,6 +254,11 @@ Rectangle {
         target: viewLogic
         function onSliceChanged(value) {
             _2d_slider.value = value;
+        }
+        function onBadFormDropped(badFormName, acceptedForms) {
+            _bad_form_warning_dialog.bad_form_name = badFormName;
+            _bad_form_warning_dialog.accepted_forms = acceptedForms;
+            _bad_form_warning_dialog.open();
         }
     }
 
