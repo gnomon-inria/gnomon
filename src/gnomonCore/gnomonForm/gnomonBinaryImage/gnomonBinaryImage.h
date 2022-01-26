@@ -68,6 +68,7 @@ public:
         return out;
     }
     void deserialize(QJsonObject &serialization) override {
+        delete m_data;
         m_data = gnomonCore::binaryImageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

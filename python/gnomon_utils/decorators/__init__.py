@@ -8,3 +8,4 @@ from .l_string_decorator import lStringInput, lStringOutput
 from .mesh_decorator import meshInput, meshOutput
 from .point_cloud_decorator import pointCloudInput, pointCloudOutput
 from .tree_decorator import treeInput, treeOutput
+from .serialization import serialize
