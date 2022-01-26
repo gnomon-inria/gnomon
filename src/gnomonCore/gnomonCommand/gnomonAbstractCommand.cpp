@@ -47,6 +47,16 @@ void gnomonAbstractCommand::redo(void)
     if(pid<0) {
         PyOS_AfterFork_Parent();
         dtkError() << Q_FUNC_INFO << "Fork failed";
+
+        // cleaning up
+        close(stdoutPipe[0]);  // close reading end
+        close(outputPipe[0]);  // close reading end
+        close(stdoutPipe[1]);  // close writing end
+        close(outputPipe[1]);  // close writing end
+        // running
+        this->action->run();
+        this->postdo();
+
     } else if(pid==0) {
         // child
         PyOS_AfterFork_Child();
