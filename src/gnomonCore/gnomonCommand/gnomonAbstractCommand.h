@@ -15,11 +15,18 @@ public:
              gnomonAbstractCommand(void);
     virtual ~gnomonAbstractCommand(void);
 
-public:
+public slots:
     virtual void  predo(void) = 0;
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
     virtual void   redo(void) final;
+    virtual void futureFinished(){
+        deserializeResults(watcher.result());
+    }
+
+public:
+    virtual void deserializeResults(QJsonObject serialization) {};
+    virtual QJsonObject serializeResults(void) { return {}; };
 
 signals:
     void finished(void);
@@ -60,4 +67,5 @@ protected:
     gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
+    QFutureWatcher<QJsonObject> watcher;
 };

@@ -2,6 +2,7 @@
 #include <QtConcurrent>
 
 #include <dtkScript>
+#include <unistd.h>
 
 #include "gnomonAbstractCommand.h"
 
@@ -24,60 +25,70 @@ void gnomonAbstractCommand::redo(void)
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    QFile file("/tmp/gnomon_command.log");
-    file.open(QIODevice::ReadOnly);
 
-    QString buffer;
-    QString buffered;
 
-    QTextStream stream(&file);
+    connect(&watcher, &QFutureWatcher<QJsonObject>::finished,
+            this,&gnomonAbstractCommand::futureFinished);
+    connect(&watcher, &QFutureWatcher<QJsonObject>::finished,
+            this, &gnomonAbstractCommand::finished);
 
-    while(!stream.atEnd())
-        stream.seek(stream.pos()+1);
-
-    qInfo() << "Buffered:" << stream.pos();
-
-// /////////////////////////////////////////////////////////////////////////////
-
-    this->predo();
-
-    int s;
-    int a = QThreadPool::globalInstance()->activeThreadCount();
-
-    dtkScriptInterpreterPython::instance()->interpret("old_stdout = sys.stdout", &s);
-    dtkScriptInterpreterPython::instance()->interpret("fsock = open('/tmp/gnomon_command.log','a', 0)", &s);
-    dtkScriptInterpreterPython::instance()->interpret("sys.stdout = fsock", &s);
-
-    void *main_t = dtkScriptInterpreterPython::instance()->allowThreads();
-
-    QtConcurrent::run([=] (void) -> void
+    auto future = QtConcurrent::run([=] (void) -> QJsonObject
     {
+        int stdoutPipe[2];  // [read, write]
+        pipe(stdoutPipe);
+        int outputPipe[2];  // [read, write]
+        pipe(outputPipe);
+        int pid = fork();
+        if(pid<0) {
+            dtkError() << Q_FUNC_INFO << "Fork failed";
+        } else if(pid==0) {
+            // child
+            close(stdoutPipe[0]);  // close reading end
+            close(outputPipe[0]);  // close reading end
+            dup2(stdoutPipe[1], STDOUT_FILENO); // changing output
+
+            this->action->run();
+            this->postdo();
+            auto outputs = this->serializeResults();
+            QFile outputFile;
+            outputFile.open(outputPipe[1], QIODevice::WriteOnly);
+            QDataStream outputStream(&outputFile);
+            outputStream << outputs;
+            outputFile.close();
+            close(stdoutPipe[1]);  // close writing end
+            close(outputPipe[1]);  // close writing end
+            exit(0);
+        } else {
+            // parent
+            close(stdoutPipe[1]);  // close writing end
+            close(outputPipe[1]);  // close writing end
+
+            QFile outputFile;
+            outputFile.open(outputPipe[0], QIODevice::ReadOnly);
+            QDataStream outputStream(&outputFile);
+            QJsonObject outputs ;
+            outputStream >> outputs;
+            outputFile.close();
+            // closing thread
+            int status;
+            waitpid(pid, &status, WEXITED);
+            close(stdoutPipe[0]);  // close reading end
+            close(outputPipe[0]);  // close reading end
+            return outputs;
+        }
+
+        return {};
         // dtkScriptInterpreterPython::instance()->childAcquireLock(main_t);
         // QThread::msleep(1000);
-        this->action->run();
+
         // QThread::msleep(1000);
         // dtkScriptInterpreterPython::instance()->childReleaseLock();
     });
-
-    while(QThreadPool::globalInstance()->activeThreadCount() > a) {
+    watcher.setFuture(future);
+    while(future.isRunning()) {
 
         qApp->processEvents();
 
-        if(!stream.atEnd()) {
-            qInfo() << "There is something to read";
-
-            // get the stream diff
-            // emit logged(...);
-        }
-
     }
 
-    dtkScriptInterpreterPython::instance()->endAllowThreads();
-
-    dtkScriptInterpreterPython::instance()->interpret("sys.stdout = old_stdout", &s);
-    dtkScriptInterpreterPython::instance()->interpret("fsock.close()", &s);
-
-    emit finished();
-
-    this->postdo();
 }
