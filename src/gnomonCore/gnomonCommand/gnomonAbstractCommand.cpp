@@ -1,6 +1,11 @@
 #include <QtCore>
 #include <QtConcurrent>
 
+#pragma push_macro("slots")
+#undef slots
+#include <Python.h>
+#pragma pop_macro("slots")
+
 #include <dtkScript>
 #include <unistd.h>
 
@@ -13,8 +18,7 @@ gnomonAbstractCommand::gnomonAbstractCommand(void)
 
 gnomonAbstractCommand::~gnomonAbstractCommand(void)
 {
-    if (action)
-        delete action;
+    delete action;
 }
 
 void gnomonAbstractCommand::redo(void)
@@ -32,63 +36,60 @@ void gnomonAbstractCommand::redo(void)
     connect(&watcher, &QFutureWatcher<QJsonObject>::finished,
             this, &gnomonAbstractCommand::finished);
 
-    auto future = QtConcurrent::run([=] (void) -> QJsonObject
-    {
-        int stdoutPipe[2];  // [read, write]
-        pipe(stdoutPipe);
-        int outputPipe[2];  // [read, write]
-        pipe(outputPipe);
-        int pid = fork();
-        if(pid<0) {
-            dtkError() << Q_FUNC_INFO << "Fork failed";
-        } else if(pid==0) {
-            // child
-            close(stdoutPipe[0]);  // close reading end
-            close(outputPipe[0]);  // close reading end
-            dup2(stdoutPipe[1], STDOUT_FILENO); // changing output
+    // prepare forking
+    int stdoutPipe[2];  // [read, write]
+    pipe(stdoutPipe);
+    int outputPipe[2];  // [read, write]
+    pipe(outputPipe);
 
-            this->action->run();
-            this->postdo();
-            auto outputs = this->serializeResults();
-            QFile outputFile;
-            outputFile.open(outputPipe[1], QIODevice::WriteOnly);
-            QDataStream outputStream(&outputFile);
-            outputStream << outputs;
-            outputFile.close();
-            close(stdoutPipe[1]);  // close writing end
-            close(outputPipe[1]);  // close writing end
-            exit(0);
-        } else {
-            // parent
-            close(stdoutPipe[1]);  // close writing end
-            close(outputPipe[1]);  // close writing end
+    PyOS_BeforeFork();
+    int pid = fork();
+    if(pid<0) {
+        PyOS_AfterFork_Parent();
+        dtkError() << Q_FUNC_INFO << "Fork failed";
+    } else if(pid==0) {
+        // child
+        PyOS_AfterFork_Child();
+        close(stdoutPipe[0]);  // close reading end
+        close(outputPipe[0]);  // close reading end
+        dup2(stdoutPipe[1], STDOUT_FILENO); // changing output
 
-            QFile outputFile;
-            outputFile.open(outputPipe[0], QIODevice::ReadOnly);
-            QDataStream outputStream(&outputFile);
-            QJsonObject outputs ;
-            outputStream >> outputs;
-            outputFile.close();
-            // closing thread
-            int status;
-            waitpid(pid, &status, WEXITED);
-            close(stdoutPipe[0]);  // close reading end
-            close(outputPipe[0]);  // close reading end
-            return outputs;
+        this->action->run();
+        this->postdo();
+
+        auto outputs = this->serializeResults();
+        QFile outputFile;
+        outputFile.open(outputPipe[1], QIODevice::WriteOnly);
+        QDataStream outputStream(&outputFile);
+        outputStream << outputs;
+        outputFile.close();
+        close(stdoutPipe[1]);  // close writing end
+        close(outputPipe[1]);  // close writing end
+        exit(0);
+    } else {
+        // parent
+        PyOS_AfterFork_Parent();
+        close(stdoutPipe[1]);  // close writing end
+        close(outputPipe[1]);  // close writing end
+        auto future = QtConcurrent::run([=] (void) -> QJsonObject
+                                        {
+                                            // monitoring child process and capturing output
+                                            QFile outputFile;
+                                            outputFile.open(outputPipe[0], QIODevice::ReadOnly);
+                                            QDataStream outputStream(&outputFile);
+                                            QJsonObject outputs ;
+                                            outputStream >> outputs;
+                                            outputFile.close();
+                                            // closing thread
+                                            int status;
+                                            waitpid(pid, &status, WEXITED);
+                                            close(stdoutPipe[0]);  // close reading end
+                                            close(outputPipe[0]);  // close reading end
+                                            return outputs;
+                                        });
+        watcher.setFuture(future);
+        while(future.isRunning()) {
+            qApp->processEvents();
         }
-
-        return {};
-        // dtkScriptInterpreterPython::instance()->childAcquireLock(main_t);
-        // QThread::msleep(1000);
-
-        // QThread::msleep(1000);
-        // dtkScriptInterpreterPython::instance()->childReleaseLock();
-    });
-    watcher.setFuture(future);
-    while(future.isRunning()) {
-
-        qApp->processEvents();
-
     }
-
 }
