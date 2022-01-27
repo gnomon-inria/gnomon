@@ -8,6 +8,7 @@
 
 #include <dtkScript>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "gnomonAbstractCommand.h"
 
