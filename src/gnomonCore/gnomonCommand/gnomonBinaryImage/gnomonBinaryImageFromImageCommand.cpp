@@ -143,5 +143,19 @@ QStringList gnomonBinaryImageFromImageCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonBinaryImageFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonBinaryImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonBinaryImageFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonBinaryImageFromImageCommand.cpp ends here

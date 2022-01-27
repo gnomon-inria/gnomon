@@ -34,6 +34,10 @@ public:
 
     virtual orderedMap outputTypes() override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
 private:
     class gnomonFormAlgorithmCommandPrivate *d;
 };

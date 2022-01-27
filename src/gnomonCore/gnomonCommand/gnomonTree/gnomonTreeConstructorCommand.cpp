@@ -98,5 +98,19 @@ gnomonAbstractCommand::orderedMap gnomonTreeConstructorCommand::outputTypes() {
     return types;
 }
 
+void gnomonTreeConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonTreeConstructorCommand.cpp ends here

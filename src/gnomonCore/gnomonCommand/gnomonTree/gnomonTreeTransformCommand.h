@@ -25,6 +25,10 @@ public:
 
     orderedMap outputTypes() override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
     void setAlgorithmName(const QString& algo_name) override;

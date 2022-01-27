@@ -97,5 +97,19 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudConstructorCommand::outputType
     return output_types;
 }
 
+void gnomonPointCloudConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonPointCloudConstructorCommand.cpp ends here

@@ -127,6 +127,17 @@ void gnomonLStringAdapterCommand::setInputForm(const QString &name, gnomonAbstra
     }
 }
 
+void gnomonLStringAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonLStringAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 
 //
 // gnomonLStringAdapterCommand.cpp ends here

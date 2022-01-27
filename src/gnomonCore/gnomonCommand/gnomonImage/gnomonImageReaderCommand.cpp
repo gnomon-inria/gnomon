@@ -100,5 +100,19 @@ gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {
     return types;
 }
 
+void gnomonImageReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->image) {
+        d->image = new gnomonImageSeries();
+    }
+    auto tmp = serialization["image"].toObject();
+    d->image->deserialize(tmp);
+}
+
+QJsonObject gnomonImageReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["image"] = d->image->serialize();
+    return out;
+}
+
 //
 // gnomonImageReaderCommand.cpp ends here

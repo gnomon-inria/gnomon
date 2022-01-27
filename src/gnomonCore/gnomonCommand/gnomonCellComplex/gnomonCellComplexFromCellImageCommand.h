@@ -26,6 +26,9 @@ public:
     gnomonCellComplexSeries *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

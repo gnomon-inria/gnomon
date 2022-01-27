@@ -21,6 +21,10 @@ public:
 
     void setAlgorithmName(const QString &) override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
 public:
     static bool isEmpty();
     inline static const QString groupName = "cellImageConstructor";

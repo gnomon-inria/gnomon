@@ -38,6 +38,10 @@ public:
 
     orderedMap outputTypes() override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
     void setAlgorithmName(const QString &) override;
 
 public:

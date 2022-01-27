@@ -142,5 +142,19 @@ void gnomonMeshFilterCommand::setInputForm(const QString &name, gnomonAbstractDy
     }
 }
 
+void gnomonMeshFilterCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshFilterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonMeshFilterCommand.cpp ends here

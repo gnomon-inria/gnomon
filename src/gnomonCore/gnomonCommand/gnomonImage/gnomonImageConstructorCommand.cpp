@@ -99,5 +99,19 @@ gnomonAbstractCommand::orderedMap gnomonImageConstructorCommand::outputTypes() {
     return types;
 }
 
+void gnomonImageConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonImageConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonImageConstructorCommand.cpp ends here

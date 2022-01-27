@@ -152,5 +152,25 @@ void gnomonImageRegistrationCommand::setInputForm(const QString &name, gnomonAbs
     ((gnomonAbstractImageRegistration *) this->action)->addImage(dynamic_cast<gnomonImageSeries *>(d->inputs["input"]));
 }
 
+void gnomonImageRegistrationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->outputs["output"]) {
+        d->outputs["output"] = new gnomonBinaryImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    dynamic_cast<gnomonImageSeries *>(d->outputs["output"])->deserialize(tmp);
+    if(!d->outputs["transformation"]) {
+        d->outputs["transformation"] = new gnomonBinaryImageSeries();
+    }
+    auto tmp2 = serialization["transformation"].toObject();
+    dynamic_cast<gnomonDataDictSeries *>(d->outputs["transformation"])->deserialize(tmp2);
+}
+
+QJsonObject gnomonImageRegistrationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = dynamic_cast<gnomonImageSeries *>(d->outputs["output"])->serialize();
+    out["transformation"] = dynamic_cast<gnomonDataDictSeries *>(d->outputs["transformation"])->serialize();
+    return out;
+}
+
 //
 // gnomonImageRegistrationCommand.cpp ends here

@@ -98,5 +98,19 @@ QStringList gnomonCellImageConstructorCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellImageConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellImageConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonCellImageConstructorCommand.cpp ends here

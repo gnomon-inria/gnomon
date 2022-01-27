@@ -181,5 +181,25 @@ void gnomonLStringTranslationCommand::setInputForm(const QString &name, gnomonAb
     }
 }
 
+void gnomonLStringTranslationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output_lString_series) {
+        d->output_lString_series = new gnomonLStringSeries();
+    }
+    auto tmp = serialization["outputLString"].toObject();
+    d->output_lString_series->deserialize(tmp);
+    if(!d->output_tree_series) {
+        d->output_tree_series = new gnomonTreeSeries();
+    }
+    auto tmp2 = serialization["outputTree"].toObject();
+    d->output_tree_series->deserialize(tmp2);
+}
+
+QJsonObject gnomonLStringTranslationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["outputLString"] = d->output_lString_series->serialize();
+    out["outputTree"] = d->output_tree_series->serialize();
+    return out;
+}
+
 //
 // gnomonLStringTranslationCommand.cpp ends here

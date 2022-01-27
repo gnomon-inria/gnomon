@@ -26,6 +26,10 @@ public:
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
     void setAlgorithmName(const QString &) override;
 
 public:

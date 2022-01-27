@@ -139,5 +139,19 @@ void gnomonTreeFromLStringCommand::setInputForm(const QString &name, gnomonAbstr
     }
 }
 
+void gnomonTreeFromLStringCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeFromLStringCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonTreeFromLStringCommand.cpp ends here

@@ -101,5 +101,19 @@ gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {
     return types;
 }
 
+void gnomonDataFrameReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->dataFrame) {
+        d->dataFrame = new gnomonDataFrameSeries();
+    }
+    auto tmp = serialization["dataFrame"].toObject();
+    d->dataFrame->deserialize(tmp);
+}
+
+QJsonObject gnomonDataFrameReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["dataFrame"] = d->dataFrame->serialize();
+    return out;
+}
+
 //
 // gnomonDataFrameReaderCommand.cpp ends here

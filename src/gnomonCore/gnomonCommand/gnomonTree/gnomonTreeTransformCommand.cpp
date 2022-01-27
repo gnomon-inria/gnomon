@@ -141,5 +141,19 @@ void gnomonTreeTransformCommand::setInputForm(const QString &name, gnomonAbstrac
     }
 }
 
+void gnomonTreeTransformCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeTransformCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonTreeTransformCommand.cpp ends here

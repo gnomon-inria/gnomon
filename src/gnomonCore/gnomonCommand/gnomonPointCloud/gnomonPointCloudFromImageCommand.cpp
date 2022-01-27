@@ -143,5 +143,19 @@ void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, gnomonA
     }
 }
 
+void gnomonPointCloudFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonPointCloudFromImageCommand.cpp ends here

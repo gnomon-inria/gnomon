@@ -135,5 +135,19 @@ QStringList gnomonCellComplexFromCellImageCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellComplexFromCellImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexFromCellImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonCellComplexFromCellImageCommand.cpp ends here

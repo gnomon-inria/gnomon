@@ -134,5 +134,19 @@ void gnomonMeshFromImageCommand::setInputForm(const QString &name, gnomonAbstrac
     }
 }
 
+void gnomonMeshFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonMeshFromImageCommand.cpp ends here

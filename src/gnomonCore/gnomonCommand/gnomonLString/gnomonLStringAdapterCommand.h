@@ -27,6 +27,10 @@ public:
     gnomonAbstractDynamicForm *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
 public:
     static bool isEmpty();
     inline static const QString groupName = "lStringAdapter";

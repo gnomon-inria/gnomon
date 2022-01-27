@@ -164,5 +164,25 @@ QStringList gnomonCellImageTrackingCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellImageTrackingCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellImage) {
+        d->cellImage = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["cellImage"].toObject();
+    d->cellImage->deserialize(tmp);
+    if(!d->tree) {
+        d->tree = new gnomonTreeSeries();
+    }
+    auto tmp2 = serialization["tree"].toObject();
+    d->tree->deserialize(tmp2);
+}
+
+QJsonObject gnomonCellImageTrackingCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellImage"] = d->cellImage->serialize();
+    out["tree"] = d->tree->serialize();
+    return out;
+}
+
 //
 // gnomonCellImageTrackingCommand.cpp ends here

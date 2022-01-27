@@ -95,5 +95,19 @@ QStringList gnomonCellComplexConstructorCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellComplexConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonCellComplexConstructorCommand.cpp ends here

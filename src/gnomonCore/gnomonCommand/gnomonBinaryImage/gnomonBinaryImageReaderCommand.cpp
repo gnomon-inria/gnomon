@@ -76,3 +76,17 @@ gnomonAbstractCommand::orderedMap gnomonBinaryImageReaderCommand::outputTypes() 
 QStringList gnomonBinaryImageReaderCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
+
+void gnomonBinaryImageReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->binaryImage) {
+        d->binaryImage = new gnomonBinaryImageSeries();
+    }
+    auto tmp = serialization["binaryImage"].toObject();
+    d->binaryImage->deserialize(tmp);
+}
+
+QJsonObject gnomonBinaryImageReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["binaryImage"] = d->binaryImage->serialize();
+    return out;
+}

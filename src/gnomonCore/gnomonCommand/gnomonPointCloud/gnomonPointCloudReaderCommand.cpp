@@ -92,5 +92,19 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudReaderCommand::outputTypes() {
     output_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
     return output_types;
 }
+
+void gnomonPointCloudReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->pointCloud) {
+        d->pointCloud = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["pointCloud"].toObject();
+    d->pointCloud->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["pointCloud"] = d->pointCloud->serialize();
+    return out;
+}
 //
 // gnomonPointCloudReaderCommand.cpp ends here

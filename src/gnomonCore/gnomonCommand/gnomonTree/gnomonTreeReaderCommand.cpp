@@ -101,5 +101,19 @@ gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {
     return types;
 }
 
+void gnomonTreeReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->tree) {
+        d->tree = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["tree"].toObject();
+    d->tree->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["tree"] = d->tree->serialize();
+    return out;
+}
+
 //
 // gnomonTreeReaderCommand.cpp ends here

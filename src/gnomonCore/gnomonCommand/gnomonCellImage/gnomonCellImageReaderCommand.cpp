@@ -103,5 +103,19 @@ QStringList gnomonCellImageReaderCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellImageReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellImage) {
+        d->cellImage = new gnomonCellImageSeries ();
+    }
+    auto tmp = serialization["cellImage"].toObject();
+    d->cellImage->deserialize(tmp);
+}
+
+QJsonObject gnomonCellImageReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellImage"] = d->cellImage->serialize();
+    return out;
+}
+
 //
 // gnomonCellImageReaderCommand.cpp ends here

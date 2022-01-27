@@ -21,12 +21,13 @@ public slots:
     virtual void   undo(void) = 0;
     virtual void   redo(void) final;
     virtual void futureFinished(){
-        deserializeResults(watcher->result());
+        auto tmp = watcher->result();
+        deserializeResults(tmp);
     }
 
 public:
-    virtual void deserializeResults(QJsonObject serialization) {};
-    virtual QJsonObject serializeResults(void) { return {}; };
+    virtual void deserializeResults(QJsonObject &serialization) = 0;
+    virtual QJsonObject serializeResults(void) = 0;
 
 signals:
     void finished(void);

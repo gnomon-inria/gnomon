@@ -91,5 +91,19 @@ QStringList gnomonCellComplexReaderCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellComplexReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellComplex) {
+        d->cellComplex = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["cellComplex"].toObject();
+    d->cellComplex->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellComplex"] = d->cellComplex->serialize();
+    return out;
+}
+
 //
 // gnomonCellComplexReaderCommand.cpp ends here

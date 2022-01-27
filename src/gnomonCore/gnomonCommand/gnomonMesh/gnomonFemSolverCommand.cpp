@@ -129,5 +129,19 @@ void gnomonFemSolverCommand::setInputForm(const QString &name, gnomonAbstractDyn
     }
 }
 
+void gnomonFemSolverCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->mesh) {
+        d->mesh = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["updatedMesh"].toObject();
+    d->mesh->deserialize(tmp);
+}
+
+QJsonObject gnomonFemSolverCommand::serializeResults(void) {
+    QJsonObject out;
+    out["updatedMesh"] = d->mesh->serialize();
+    return out;
+}
+
 //
 // gnomonFemSolverCommand.cpp ends here

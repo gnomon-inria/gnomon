@@ -138,5 +138,16 @@ void gnomonTreeAdapterCommand::setInputForm(const QString &name, gnomonAbstractD
     }
 }
 
+void gnomonTreeAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonTreeAdapterCommand.cpp ends here

@@ -93,5 +93,19 @@ gnomonAbstractCommand::orderedMap gnomonMeshReaderCommand::outputTypes() {
     return output_types;
 }
 
+void gnomonMeshReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->mesh) {
+        d->mesh = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["mesh"].toObject();
+    d->mesh->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["mesh"] = d->mesh->serialize();
+    return out;
+}
+
 //
 // gnomonMeshReaderCommand.cpp ends here

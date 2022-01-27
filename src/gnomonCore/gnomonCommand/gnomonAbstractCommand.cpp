@@ -23,6 +23,7 @@ gnomonAbstractCommand::~gnomonAbstractCommand(void)
 
 void gnomonAbstractCommand::redo(void)
 {
+    // TODO: adapters command will probably need to run in main thread due to difficulties in deserialization
     Q_ASSERT(this->action);
 
     // cleaning watcher

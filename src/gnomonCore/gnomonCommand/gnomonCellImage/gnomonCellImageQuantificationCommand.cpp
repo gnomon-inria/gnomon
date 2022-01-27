@@ -165,5 +165,25 @@ QStringList gnomonCellImageQuantificationCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellImageQuantificationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellImage) {
+        d->cellImage = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["cellImage"].toObject();
+    d->cellImage->deserialize(tmp);
+    if(!d->dataFrame) {
+        d->dataFrame = new gnomonDataFrameSeries();
+    }
+    auto tmp2 = serialization["dataFrame"].toObject();
+    d->dataFrame->deserialize(tmp2);
+}
+
+QJsonObject gnomonCellImageQuantificationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellImage"] = d->cellImage->serialize();
+    out["dataFrame"] = d->dataFrame->serialize();
+    return out;
+}
+
 //
 // gnomonCellImageQuantificationCommand.cpp ends here

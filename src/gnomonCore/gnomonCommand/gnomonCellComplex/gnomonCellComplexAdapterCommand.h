@@ -24,6 +24,10 @@ public:
     gnomonAbstractDynamicForm *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
     orderedMap inputTypes() override;

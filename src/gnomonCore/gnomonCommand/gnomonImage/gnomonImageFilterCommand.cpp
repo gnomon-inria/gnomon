@@ -158,4 +158,18 @@ gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)
     return d->mask;
 }
 
+void gnomonImageFilterCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonImageFilterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 // gnomonImageFilterCommand.cpp ends here

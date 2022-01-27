@@ -133,5 +133,16 @@ void gnomonMeshAdapterCommand::setInputForm(const QString &name, gnomonAbstractD
     }
 }
 
+void gnomonMeshAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonMeshAdapterCommand.cpp ends here

@@ -123,5 +123,16 @@ QStringList gnomonCellComplexAdapterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+void gnomonCellComplexAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 //
 // gnomonCellComplexAdapterCommand.cpp ends here

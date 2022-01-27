@@ -191,6 +191,59 @@ gnomonAbstractCommand::orderedMap gnomonFormAlgorithmCommand::outputTypes()
     return output_types;
 }
 
+void gnomonFormAlgorithmCommand::deserializeResults(QJsonObject &serialization) {
+    delete d->outputCellComplex;
+    delete d->outputCellImage;
+    delete d->outputImage;
+    delete d->outputMesh;
+    delete d->outputPointCloud;
+    if (serialization.contains("outputCellComplex")) {
+        d->outputCellComplex = new gnomonCellComplexSeries();
+        auto cellComplexSerialization = serialization["outputCellComplex"].toObject();
+        d->outputCellComplex->deserialize(cellComplexSerialization);
+    }
+    if (serialization.contains("outputCellImage")) {
+        d->outputCellImage = new gnomonCellImageSeries();
+        auto cellImageSerialization = serialization["outputCellImage"].toObject();
+        d->outputCellImage->deserialize(cellImageSerialization);
+    }
+    if (serialization.contains("outputImage")) {
+        d->outputImage = new gnomonImageSeries();
+        auto imageSerialization = serialization["outputImage"].toObject();
+        d->outputImage->deserialize(imageSerialization);
+    }
+    if (serialization.contains("outputMesh")) {
+        d->outputMesh = new gnomonMeshSeries();
+        auto meshSerialization = serialization["outputMesh"].toObject();
+        d->outputMesh->deserialize(meshSerialization);
+    }
+    if (serialization.contains("outputPointCloud")) {
+        d->outputPointCloud = new gnomonPointCloudSeries();
+        auto pointCloudSerialization = serialization["outputPointCloud"].toObject();
+        d->outputPointCloud->deserialize(pointCloudSerialization);
+    }
+}
+
+QJsonObject gnomonFormAlgorithmCommand::serializeResults(void) {
+    QJsonObject outputs;
+    if (d->outputCellComplex) {
+        outputs["outputCellComplex"] = d->outputCellComplex->serialize();
+    }
+    if (d->outputCellImage) {
+        outputs["outputCellImage"] = d->outputCellImage->serialize();
+    }
+    if (d->outputImage) {
+        outputs["outputImage"] = d->outputImage->serialize();
+    }
+    if (d->outputMesh) {
+        outputs["outputMesh"] = d->outputMesh->serialize();
+    }
+    if (d->outputPointCloud) {
+        outputs["outputPointCloud"] = d->outputPointCloud->serialize();
+    }
+    return outputs;
+}
+
 
 //
 // gnomonFormAlgorithmCommand.cpp ends here

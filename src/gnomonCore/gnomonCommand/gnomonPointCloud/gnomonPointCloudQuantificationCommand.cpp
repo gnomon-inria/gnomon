@@ -165,5 +165,25 @@ void gnomonPointCloudQuantificationCommand::setInputForm(const QString &name, gn
     }
 }
 
+void gnomonPointCloudQuantificationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->pointCloud) {
+        d->pointCloud = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["pointCloud"].toObject();
+    d->pointCloud->deserialize(tmp);
+    if(!d->dataFrame) {
+        d->dataFrame = new gnomonDataFrameSeries ();
+    }
+    auto tmp2 = serialization["dataFrame"].toObject();
+    d->dataFrame->deserialize(tmp2);
+}
+
+QJsonObject gnomonPointCloudQuantificationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["pointCloud"] = d->pointCloud->serialize();
+    out["dataFrame"] = d->dataFrame->serialize();
+    return out;
+}
+
 //
 // gnomonPointCloudQuantificationCommand.cpp ends here
