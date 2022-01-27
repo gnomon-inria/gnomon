@@ -4,7 +4,9 @@ import logging
 import warnings
 import importlib
 import re
+import pickle
 
+from base64 import b64decode, b64encode
 from functools import wraps
 from pkg_resources import iter_entry_points
 
@@ -134,6 +136,20 @@ def gnomonParametric(cls):
 
 
     return cls
+
+
+def serialize(attr):
+    def decorator(cls: type):
+        def serialize_func(self: object) -> str:
+            return b64encode(pickle.dumps(getattr(self, attr))).decode("ascii")
+
+        def deserialize_func(self: object, serialization: str):
+            setattr(self, attr, pickle.loads(b64decode(serialization.encode("ascii"))))
+
+        setattr(cls, "serialize", serialize_func)
+        setattr(cls, "deserialize", deserialize_func)
+        return cls
+    return decorator
 
 
 def corePlugin(version, coreversion, base_class=None):
