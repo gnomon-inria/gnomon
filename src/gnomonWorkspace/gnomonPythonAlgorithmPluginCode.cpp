@@ -13,6 +13,7 @@ public:
 
 public:
     QString plugin_name;
+    QString plugin_documentation;
 
 public:
     QMap<QString, QString> parameter_types;
@@ -35,6 +36,7 @@ public:
 gnomonPythonAlgorithmPluginCodePrivate::gnomonPythonAlgorithmPluginCodePrivate(void)
 {
     this->plugin_name = "pythonAlgorithm";
+    this->plugin_documentation = "Implements a custom form algorithm plugin.";
 
     this->parser = new gnomonPythonPluginParser();
 
@@ -67,8 +69,10 @@ QString gnomonPythonAlgorithmPluginCode::text(void)
 
 void gnomonPythonAlgorithmPluginCode::setText(const QString& text)
 {
-    d->text = text;
-    emit textChanged(d->text);
+    if (text != d->text) {
+        d->text = text;
+        emit textChanged(d->text);
+    }
 }
 
 const QString& gnomonPythonAlgorithmPluginCode::pluginName(void) const
@@ -81,6 +85,20 @@ void gnomonPythonAlgorithmPluginCode::setPluginName(const QString& name)
     if (name != d->plugin_name) {
         d->plugin_name = name;
         emit pluginNameChanged();
+        this->updateCode();
+    }
+}
+
+const QString& gnomonPythonAlgorithmPluginCode::pluginDocumentation(void) const
+{
+    return d->plugin_documentation;
+}
+
+void gnomonPythonAlgorithmPluginCode::setPluginDocumentation(const QString& doc)
+{
+    if (doc != d->plugin_documentation) {
+        d->plugin_documentation = doc;
+        emit pluginDocumentationChanged();
         this->updateCode();
     }
 }
@@ -255,8 +273,8 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
 
     QString plugin_code = "";
 
-    plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
     plugin_code += "# {# gnomon, plugin.imports\n";
+    plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
     plugin_code += "from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist\n";
     plugin_code += "\n";
@@ -295,8 +313,8 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += import_code;
     }
 
-    plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
     plugin_code += "# {# gnomon, plugin.class\n";
+    plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
     plugin_code += "@corePlugin(version='0.1.0', coreversion='0.19.0')\n";
 
@@ -313,8 +331,13 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += "data_plugin='" + desc.data_plugin + "')\n";
     }
     plugin_code += "class " + d->plugin_name + "(gnomoncore.gnomonAbstractFormAlgorithm):\n";
-    plugin_code += "    \"\"\"\n";
-    plugin_code += "    Implements a custom form algorithm plugin.\n";
+    plugin_code += "    \"\"\"";
+    QStringList doc_lines = d->plugin_documentation.split("\n");
+    for (int i=0; i<doc_lines.size(); i++) {
+        QString doc_line = doc_lines[i];
+        plugin_code += (i>0 ? "    " : "") + doc_line + "\n";
+    }
+    plugin_code += "\n";
     plugin_code += "    \"\"\"\n";
     plugin_code += "\n";
     plugin_code += "    def __init__(self):\n";
@@ -409,6 +432,9 @@ void gnomonPythonAlgorithmPluginCode::parseCode(void)
 
     d->plugin_name = d->parser->pluginName();
     emit pluginNameChanged();
+
+    d->plugin_documentation = d->parser->pluginDocumentation();
+    emit pluginDocumentationChanged();
 
     auto input_forms = d->parser->inputForms();
     for (const auto& form_name : input_forms.keys()) {

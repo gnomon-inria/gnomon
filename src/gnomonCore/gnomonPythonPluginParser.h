@@ -62,6 +62,7 @@ public:
 
 public:
     const QString& pluginName(void) const;
+    const QString& pluginDocumentation(void) const;
 
 public:
     const QMap<QString, gnomonFormDescription>& inputForms(void) const;
