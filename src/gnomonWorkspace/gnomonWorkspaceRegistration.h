@@ -35,9 +35,16 @@ The output is a Image form that corresponds to the transformed floating Image. \
 The resulting geometrical trasformation is also stored as an output, displayed \
 in the right menu.\n\
 \n")
+
 public:
      gnomonWorkspaceRegistration(QObject *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
+
+public slots:
+    void iterate(void);
+
+protected:
+    class gnomonWorkspaceRegistrationPrivate *dd = nullptr;
 };
 
 //
