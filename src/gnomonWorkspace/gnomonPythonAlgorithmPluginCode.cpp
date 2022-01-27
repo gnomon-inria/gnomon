@@ -255,6 +255,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
 
     QString plugin_code = "";
 
+    plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
     plugin_code += "# {# gnomon, plugin.imports\n";
 
     plugin_code += "from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist\n";
@@ -294,6 +295,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += import_code;
     }
 
+    plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
     plugin_code += "# {# gnomon, plugin.class\n";
 
     plugin_code += "@corePlugin(version='0.1.0', coreversion='0.19.0')\n";
