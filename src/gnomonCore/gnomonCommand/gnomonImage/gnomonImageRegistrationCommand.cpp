@@ -10,10 +10,10 @@ class gnomonImageRegistrationCommandPrivate
 {
 public:
     gnomonAbstractCommand::orderedMap input_types = {{"reference", "gnomonImage"}, {"input", "gnomonImage"}};
-    QMap<QString, gnomonAbstractDynamicForm *> inputs = {{"reference", nullptr}, {"input", nullptr}};
-    //QVector<gnomonImageSeries *> images_series;
+    gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"transformation", "gnomonDataDict"}};
 
-    gnomonImageSeries* output = nullptr; //TODO do same thing as for input with second member a dataDict
+    QMap<QString, gnomonAbstractDynamicForm *> inputs = {{"reference", nullptr}, {"input", nullptr}};
+    QMap<QString, gnomonAbstractDynamicForm *> outputs = {{"output", nullptr}, {"transformation", nullptr}};
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -55,9 +55,16 @@ void gnomonImageRegistrationCommand::postdo(void)
     gnomonImageSeries *image = ((gnomonAbstractImageRegistration *) this->action)->output();
 
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
-        d->output = nullptr;
+        d->outputs["output"] = nullptr;
     } else {
-        d->output = image;
+        d->outputs["output"] = image;
+    }
+
+    gnomonDataDictSeries *transformation = ((gnomonAbstractImageRegistration *) this->action)->outputTransformation();
+    if ((!transformation)||(transformation->times().empty())||(((gnomonDataDict *)transformation->current())->keys().empty())) {
+        d->outputs["transformation"] = nullptr;
+    } else {
+        d->outputs["transformation"] = transformation;
     }
 }
 
@@ -86,7 +93,7 @@ void gnomonImageRegistrationCommand::addImage(gnomonImageSeries *image_series)
 
 gnomonImageSeries* gnomonImageRegistrationCommand::output()
 {
-    return d->output;
+    return (gnomonImageSeries *)d->outputs["output"];
 }
 
 
@@ -112,16 +119,12 @@ void gnomonImageRegistrationCommand::addInputForm(gnomonAbstractDynamicForm *for
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
-    outputs["output"] = this->output();
-    return outputs;
+    return d->outputs;
 }
 
 gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::outputTypes()
 {
-    orderedMap output_types;
-    output_types.emplace_back(std::make_pair("output", "gnomonImage"));
-    return output_types;
+    return d->output_types;
 }
 
 bool gnomonImageRegistrationCommand::isEmpty()

@@ -90,5 +90,6 @@ private:
     class gnomonViewMatplotlibPrivate *d;
 };
 
+Q_DECLARE_METATYPE(gnomonViewMatplotlib *);
 //
 // gnomonViewMatplotlib.h ends here

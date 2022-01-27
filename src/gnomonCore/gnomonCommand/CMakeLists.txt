@@ -20,6 +20,7 @@
 add_subdirectory(gnomonBinaryImage)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
+add_subdirectory(gnomonDataDict)
 add_subdirectory(gnomonDataFrame)
 add_subdirectory(gnomonImage)
 add_subdirectory(gnomonLString)
@@ -48,6 +49,7 @@ ADD_GNOMON_HEADERS(
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}
+  ${${PROJECT_NAME}_COMMAND_DATADICT_HEADERS}
   ${${PROJECT_NAME}_COMMAND_DATAFRAME_HEADERS}
   ${${PROJECT_NAME}_COMMAND_IMAGE_HEADERS}
   ${${PROJECT_NAME}_COMMAND_LSTRING_HEADERS}

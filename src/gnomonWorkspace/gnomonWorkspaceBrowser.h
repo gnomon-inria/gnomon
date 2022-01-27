@@ -40,6 +40,7 @@ public:
 
 public:
     Q_PROPERTY(gnomonViewForm* view READ view);
+    Q_PROPERTY(QStringList extensions READ getReaderExtensions);
 
 signals:
     void available(const QVariantMap& readers);
@@ -53,6 +54,7 @@ public slots:
 public:
     Q_INVOKABLE QUrl defaultReadPath();
     Q_INVOKABLE gnomonViewForm *view(void);
+    QStringList getReaderExtensions(void);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

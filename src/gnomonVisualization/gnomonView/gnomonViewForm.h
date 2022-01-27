@@ -106,6 +106,7 @@ signals:
     void boundsChanged(void);
     void modeChanged(void);
     void orientationChanged(void);
+    void badFormDropped(QString badFormName, QString acceptedForms);
 
     void syncedChanged(void);
     void syncingChanged(void);
@@ -173,6 +174,7 @@ public:
     Q_INVOKABLE QStringList formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+    
 
 public:
     vtkRenderer *renderer2D(void);
