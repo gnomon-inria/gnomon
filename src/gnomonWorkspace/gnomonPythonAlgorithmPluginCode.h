@@ -15,6 +15,9 @@ public:
 public:
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 
+    Q_PROPERTY(QString pluginName READ pluginName WRITE setPluginName NOTIFY pluginNameChanged)
+    Q_PROPERTY(QString pluginDocumentation READ pluginDocumentation WRITE setPluginDocumentation NOTIFY pluginDocumentationChanged)
+
     Q_PROPERTY(QJsonObject inputForms READ inputFormsJson NOTIFY inputFormsChanged)
     Q_PROPERTY(QJsonObject outputForms READ outputFormsJson NOTIFY outputFormsChanged)
     Q_PROPERTY(QJsonObject parameters READ parametersJson NOTIFY parametersChanged)
@@ -34,12 +37,23 @@ public:
 signals:
     void textChanged(const QString&);
 
+    void pluginNameChanged(void);
+    void pluginDocumentationChanged(void);
+
     void inputFormsChanged(void);
     void outputFormsChanged(void);
     void parametersChanged(void);
 //    void openButtonClicked(void);
 //    void saveButtonClicked(void);
 //    void loadButtonClicked(void);
+
+public:
+    const QString& pluginName(void) const;
+    void setPluginName(const QString& name);
+
+public:
+    const QString& pluginDocumentation(void) const;
+    void setPluginDocumentation(const QString& doc);
 
 public:
     const QMap<QString, gnomonFormDescription>& inputForms(void) const;

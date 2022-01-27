@@ -73,6 +73,10 @@ QString argumentValue(const QString& arguments, const QString& argument_name, in
 class gnomonPythonPluginParserPrivate: public QObject
 {
 public:
+    QString plugin_name;
+    QString plugin_documentation;
+
+public:
     QMap<QString, gnomonFormDescription> input_forms;
     QMap<QString, gnomonFormDescription> output_forms;
     QMap<QString, gnomonParameterDescription> parameters;
@@ -120,6 +124,16 @@ gnomonPythonPluginParser::~gnomonPythonPluginParser(void)
     delete d;
 }
 
+const QString& gnomonPythonPluginParser::pluginName(void) const
+{
+    return d->plugin_name;
+}
+
+const QString& gnomonPythonPluginParser::pluginDocumentation(void) const
+{
+    return d->plugin_documentation;
+}
+
 const QMap<QString, gnomonFormDescription>& gnomonPythonPluginParser::inputForms(void) const
 {
     return d->input_forms;
@@ -154,6 +168,14 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
     QStringList code_lines = plugin_code.split("\n");
 
     bool in_init = false;
+    bool in_docstring = false;
+    bool docstring_read = false;
+
+    d->plugin_documentation = "";
+
+    QRegExp plugin_rx("class (.*)[(]gnomon");
+    QRegExp docstring_rx("(\"\"\"|''')(.*)");
+
     QRegExp init_rx("def[ ]*__init__[(]self");
     QRegExp method_rx("def.*[(]self");
 
@@ -167,6 +189,29 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
             in_init = true;
         } else if (method_rx.indexIn(line) != -1) {
             in_init = false;
+        }
+
+        if (in_docstring) {
+            if (docstring_rx.indexIn(line) == -1) {
+                if (line.startsWith("    ")) {
+                    d->plugin_documentation += line.mid(4) + "\n";
+                } else {
+                    d->plugin_documentation += line + "\n";
+                }
+            } else {
+                in_docstring = false;
+                docstring_read = true;
+            }
+        } else {
+            if ((docstring_rx.indexIn(line) != -1) & (!docstring_read)) {
+                in_docstring = true;
+                d->plugin_documentation += docstring_rx.capturedTexts()[2] + "\n";
+            }
+        }
+
+        pos = plugin_rx.indexIn(line);
+        if (pos != -1) {
+            d->plugin_name = plugin_rx.capturedTexts()[1];
         }
 
         pos = input_rx.indexIn(line);
@@ -203,5 +248,14 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
                 d->parameters[parameter_name] = gnomonParameterDescription(parameter_name, parameter_type, parameter_doc);
             }
         }
+    }
+    if (d->plugin_documentation.startsWith('\n')) {
+        d->plugin_documentation.remove(0, 1);
+    }
+    if (d->plugin_documentation.endsWith('\n')) {
+        d->plugin_documentation.remove(d->plugin_documentation.size()-1, 1);
+    }
+    if (d->plugin_documentation.endsWith('\n')) {
+        d->plugin_documentation.remove(d->plugin_documentation.size()-1, 1);
     }
 }

@@ -150,20 +150,47 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
 {
     QString file_path;
     const QUrl url(file_url);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     if (url.isLocalFile()) {
         file_path = QDir::toNativeSeparators(url.toLocalFile());
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("Python/load", url);
     } else {
         file_path = file_url;
     }
 
     QFile f(file_path);
     if (f.open(QIODevice::ReadOnly)) {
+        settings.setValue("Python/load", file_path);
         QTextStream s(&f);
         d->code->setText(s.readAll());
         d->code->parseCode();
+    } else {
+        dtkWarn()<<"Could not open file"<<file_path;
     }
+}
+
+void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
+{
+    QString file_path;
+    const QUrl url(file_url);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    if(url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = file_url;
+    }
+    
+    if(!file_path.isEmpty()) {
+        QFile f(file_path);
+        if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
+            QTextStream out(&f);
+            out << d->code->text();
+            settings.setValue("Python/load", file_path);
+            f.close();
+        } else {
+            dtkWarn()<<"Could not save to file"<<file_path;
+        }
+    }
+
 }
 
 QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
