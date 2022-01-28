@@ -46,7 +46,7 @@ public:
 
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
     Q_INVOKABLE void exportToJson(const QString& url);
-    Q_INVOKABLE void setPipeplineInfoForJsonExport(const QString& description);
+    Q_INVOKABLE void setPipeplineInfoForJsonExport(const QString&, const QString&, const QString& );
 
 
 public slots:
