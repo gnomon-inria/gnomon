@@ -6,6 +6,33 @@
 #include <gnomonPipeline>
 #include <gnomonVisualization>
 
+
+QString transformMatrixString(QVector<QVector<double> > transform_matrix)
+{
+    QString matrix_string;
+
+    matrix_string += "[";
+    for (int row=0; row<transform_matrix.size(); row++) {
+        if (row > 0) matrix_string += "\n ";
+        matrix_string += " [";
+        for (int col=0; col<transform_matrix[row].size(); col++) {
+            if (col > 0) matrix_string += ",";
+            if (transform_matrix[row][col]>=0) matrix_string += " ";
+            matrix_string += " " + QString::number(transform_matrix[row][col], 'f', 3);
+        }
+        matrix_string += "]";
+    }
+    matrix_string += " ]";
+
+    return matrix_string;
+}
+
+QVector<QVector<double> > identityMatrix(void)
+{
+    QVector<QVector<double> > identity_matrix = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
+    return identity_matrix;
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceRegistrationPrivate
 // /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +46,7 @@ public:
 
 public:
     QHash<int, gnomonImageSeries *> image_stack;
-    QHash<int, gnomonDataDictSeries *> data_stack;
+    QHash<int, gnomonDataDictSeries *> transformation_stack;
 
     int stack_level = -1;
 };
@@ -33,8 +60,8 @@ gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
     if (!this->image_stack.isEmpty()) {
         this->image_stack.clear();
     }
-    if (!this->data_stack.isEmpty()) {
-        this->data_stack.clear();
+    if (!this->transformation_stack.isEmpty()) {
+        this->transformation_stack.clear();
     }
 }
 
@@ -125,13 +152,37 @@ void gnomonWorkspaceRegistration::setInputs(void)
     }
 }
 
+QString gnomonWorkspaceRegistration::transformStringAt(int level) const
+{
+    if (dd->image_stack.contains(level)) {
+        if (dd->transformation_stack.contains(level)) {
+            gnomonDataDictSeries *transformation = dd->transformation_stack[level];
+            if (transformation->current()->keys().contains("transform")) {
+                QVariant transform = transformation->current()->get("transform");
+                QVector<QVector< double>> transform_matrix = transform.value<QVector<QVector< double> > >();
+                return transformMatrixString(transform_matrix);
+            } else {
+                dtkWarn()<<Q_FUNC_INFO<<"Transformation info has no transform matrix, Identity is returned";
+                return transformMatrixString(identityMatrix());
+            }
+        } else {
+            dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"has no Transformation info, Identity is returned";
+            return transformMatrixString(identityMatrix());
+        }
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Invalid level! Image stack only contains"<<dd->image_stack.keys();
+        return "";
+    }
+}
+
 void gnomonWorkspaceRegistration::iterate(void)
 {
     gnomonImageSeries *output_image = dynamic_cast<gnomonImageSeries *>(d->command->outputs()["output"]);
     if (output_image) {
         gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone());
-
         dd->image_stack.insert(dd->stack_level+1, input_image);
+        gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(d->command->outputs()["transformation"]->clone());
+        dd->transformation_stack.insert(dd->stack_level+1, transformation);
         emit stackSizeChanged();
 
         this->setStackLevel(dd->stack_level+1);
