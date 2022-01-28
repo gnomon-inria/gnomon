@@ -13,6 +13,7 @@ import gnomonQuick     1.0 as GX
 Control {
     id: _self;
     clip: true;
+    property var _node;
 
     QtObject {
         id: _internal;
@@ -195,6 +196,7 @@ void main() {
         Connections {
             target: G.Pipeline
             function onNodeAdded (node) {
+                _self._node = node;
                 console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
                 var n = _canvas.addNode(node);
 
