@@ -123,7 +123,13 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
             gnomonImageSeries *input_image = dd->image_stack[dd->stack_level];
             if (input_image != this->sources()->views()[1]->image()) {
                 this->sources()->views()[1]->setImage(input_image);
-                this->targets()->views()[0]->clear();
+
+                if (dd->image_stack.contains(dd->stack_level+1)) {
+                    gnomonImageSeries *output_image = dd->image_stack[dd->stack_level+1];
+                    this->targets()->views()[0]->setImage(output_image);
+                } else {
+                    this->targets()->views()[0]->clear();
+                }
             }
         }
 
