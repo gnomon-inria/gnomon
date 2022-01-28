@@ -16,13 +16,31 @@
 
 class gnomonWorkspaceRegistrationPrivate
 {
+
 public:
-    QList<gnomonImageSeries *> image_stack;
-    QList<gnomonDataDictSeries *> data_stack;
+     gnomonWorkspaceRegistrationPrivate(void);
+    ~gnomonWorkspaceRegistrationPrivate(void);
+
+public:
+    QHash<int, gnomonImageSeries *> image_stack;
+    QHash<int, gnomonDataDictSeries *> data_stack;
 
     int stack_level = -1;
 };
 
+gnomonWorkspaceRegistrationPrivate::gnomonWorkspaceRegistrationPrivate(void)
+{
+}
+
+gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
+{
+    if (!this->image_stack.isEmpty()) {
+        this->image_stack.clear();
+    }
+    if (!this->data_stack.isEmpty()) {
+        this->data_stack.clear();
+    }
+}
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceRegistration
@@ -31,6 +49,7 @@ public:
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     dd = new gnomonWorkspaceRegistrationPrivate;
+    qDebug()<<Q_FUNC_INFO<<dd->stack_level;
 
     loadPluginGroup("imageRegistration");
     emit algorithmsLoaded();
@@ -61,14 +80,16 @@ void gnomonWorkspaceRegistration::iterate(void)
 {
     gnomonImageSeries *output_image = dynamic_cast<gnomonImageSeries *>(d->command->outputs()["output"]);
     if (output_image) {
-        (*d->sources)[1]->setImage(output_image);
+        gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone());
+
+        int level = dd->stack_level++;
+        dd->image_stack.insert(level, input_image);
+        this->sources()->views()[1]->setImage(input_image);
+
         gnomonPipeline::instance()->addForm(output_image);
-        gnomonPipeline::instance()->addClonedForm(output_image, (*d->sources)[1]->image());
+        gnomonPipeline::instance()->addClonedForm(output_image, input_image);
 
-        dd->image_stack.push_back((*d->sources)[1]->image());
-        dd->stack_level++;
-
-        (*d->targets)[0]->clear();
+        this->targets()->views()[0]->clear();
     }
 }
 
