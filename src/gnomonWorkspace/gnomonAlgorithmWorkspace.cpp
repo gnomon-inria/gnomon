@@ -170,6 +170,8 @@ void gnomonAlgorithmWorkspace::setInputs()
     // the number of views (sources) and the number of input types for your command,
     // and that all inputs can not be loaded from a single view.
 
+    qDebug()<<Q_FUNC_INFO;
+
     if (d->sources->views().size() == 1) {
         for(auto [name, input_type] : d->command->inputTypes()) {
             d->command->setInputForm(name, (*d->sources)[0]->form(input_type));

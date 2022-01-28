@@ -6,13 +6,9 @@
 #include <gnomonPipeline>
 #include <gnomonVisualization>
 
-#include <dtkImagingCore>
-#include <dtkScript>
-
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceRegistrationPrivate
 // /////////////////////////////////////////////////////////////////////////////
-
 
 class gnomonWorkspaceRegistrationPrivate
 {
@@ -49,7 +45,6 @@ gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
 gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     dd = new gnomonWorkspaceRegistrationPrivate;
-    qDebug()<<Q_FUNC_INFO<<dd->stack_level;
 
     loadPluginGroup("imageRegistration");
     emit algorithmsLoaded();
@@ -61,9 +56,15 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     emit parametersChanged();
 
     //create the views
-    this->sources()->addView();
-    this->sources()->addView();
-    this->targets()->addView();
+    this->sources()->addView(); // reference
+    this->sources()->addView(); // floating
+    this->targets()->addView(); // registered
+
+    if(!d->pool)
+        d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(this->sources()->views()[0]);
+    d->pool->addView(this->sources()->views()[1]);
+    d->pool->addView(this->targets()->views()[0]);
 
     d->updateViewFormTypes();
 }
@@ -76,14 +77,55 @@ gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
     }
 }
 
+int gnomonWorkspaceRegistration::stackSize(void) const
+{
+    return dd->image_stack.size();
+}
+
+int gnomonWorkspaceRegistration::stackLevel(void) const
+{
+    return dd->stack_level;
+}
+
+void gnomonWorkspaceRegistration::setStackLevel(int level)
+{
+    if (level != dd->stack_level) {
+        dd->stack_level = level;
+        emit stackLevelChanged();
+    }
+}
+
+void gnomonWorkspaceRegistration::setInputs(void)
+{
+    gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
+    bool empty_input = (input_image == nullptr);
+
+    gnomonAlgorithmWorkspace::setInputs();
+
+    if (empty_input) {
+        dd->image_stack.clear();
+        emit stackSizeChanged();
+        this->setStackLevel(-1);
+
+        if (d->command->inputs()["input"]) {
+            input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
+            dd->image_stack.insert(0, input_image);
+            emit stackSizeChanged();
+            this->setStackLevel(0);
+        }
+    }
+}
+
 void gnomonWorkspaceRegistration::iterate(void)
 {
     gnomonImageSeries *output_image = dynamic_cast<gnomonImageSeries *>(d->command->outputs()["output"]);
     if (output_image) {
         gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone());
 
-        int level = dd->stack_level++;
-        dd->image_stack.insert(level, input_image);
+        dd->image_stack.insert(dd->stack_level+1, input_image);
+        emit stackSizeChanged();
+
+        this->setStackLevel(dd->stack_level+1);
         this->sources()->views()[1]->setImage(input_image);
 
         gnomonPipeline::instance()->addForm(output_image);

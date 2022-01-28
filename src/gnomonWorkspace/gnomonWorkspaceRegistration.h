@@ -40,7 +40,22 @@ public:
      gnomonWorkspaceRegistration(QObject *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
 
+public:
+    Q_PROPERTY(int stackSize READ stackSize NOTIFY stackSizeChanged);
+    Q_PROPERTY(int stackLevel READ stackLevel WRITE setStackLevel NOTIFY stackLevelChanged);
+
+public:
+    int stackSize(void) const;
+
+    int stackLevel(void) const;
+    void setStackLevel(int level);
+
+signals:
+    void stackSizeChanged(void);
+    void stackLevelChanged(void);
+
 public slots:
+    virtual void setInputs(void) override;
     void iterate(void);
 
 protected:
