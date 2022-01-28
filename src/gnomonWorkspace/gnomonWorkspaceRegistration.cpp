@@ -91,6 +91,15 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
 {
     if (level != dd->stack_level) {
         dd->stack_level = level;
+
+        if (dd->image_stack.contains(dd->stack_level)) {
+            gnomonImageSeries *input_image = dd->image_stack[dd->stack_level];
+            if (input_image != this->sources()->views()[1]->image()) {
+                this->sources()->views()[1]->setImage(input_image);
+                this->targets()->views()[0]->clear();
+            }
+        }
+
         emit stackLevelChanged();
     }
 }
@@ -102,7 +111,7 @@ void gnomonWorkspaceRegistration::setInputs(void)
 
     gnomonAlgorithmWorkspace::setInputs();
 
-    if (empty_input) {
+    if (empty_input | !d->command->inputs()["input"]) {
         dd->image_stack.clear();
         emit stackSizeChanged();
         this->setStackLevel(-1);
@@ -126,12 +135,9 @@ void gnomonWorkspaceRegistration::iterate(void)
         emit stackSizeChanged();
 
         this->setStackLevel(dd->stack_level+1);
-        this->sources()->views()[1]->setImage(input_image);
 
         gnomonPipeline::instance()->addForm(output_image);
         gnomonPipeline::instance()->addClonedForm(output_image, input_image);
-
-        this->targets()->views()[0]->clear();
     }
 }
 
