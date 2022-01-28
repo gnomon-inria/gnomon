@@ -52,6 +52,7 @@ public:
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
     QMap< QPair<QString, QString>, QPair<QString, QString> > pipeline_edges;
+    QString pipeline_desc;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> reader_output;
@@ -710,7 +711,7 @@ void gnomonPipeline::exportToJson(const QString& url)
     pipeline_json.insert("gnomonVersion", GNOMON_VERSION);
     pipeline_json.insert("fileFormatVersion", "0.0.1");
     pipeline_json.insert("name", pipeline_name);
-    pipeline_json.insert("description", "TODO");
+    pipeline_json.insert("description", d->pipeline_desc);
 
     QJsonArray inputs_json;  // input_name, node_name -> method
     QJsonArray outputs_json; // output_name, node_name -> method
@@ -885,6 +886,11 @@ void gnomonPipeline::updateLayout(void)
     d->forceDrivenLayout();
 }
 
+void gnomonPipeline::setPipeplineInfoForJsonExport(const QString& description)
+{
+    d->pipeline_desc = description;
+
+}
 
 gnomonPipeline *gnomonPipeline::s_instance = nullptr;
 
