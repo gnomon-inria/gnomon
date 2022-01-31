@@ -27,11 +27,7 @@ QString transformMatrixString(QVector<QVector<double> > transform_matrix)
     return matrix_string;
 }
 
-QVector<QVector<double> > identityMatrix(void)
-{
-    QVector<QVector<double> > identity_matrix = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
-    return identity_matrix;
-}
+QVector<QVector<double> > identity_matrix = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceRegistrationPrivate
@@ -58,9 +54,15 @@ gnomonWorkspaceRegistrationPrivate::gnomonWorkspaceRegistrationPrivate(void)
 gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
 {
     if (!this->image_stack.isEmpty()) {
+        for (const auto& level : this->image_stack.keys()) {
+            delete this->image_stack[level];
+        }
         this->image_stack.clear();
     }
     if (!this->transformation_stack.isEmpty()) {
+        for (const auto& level : this->transformation_stack.keys()) {
+            delete this->transformation_stack[level];
+        }
         this->transformation_stack.clear();
     }
 }
@@ -144,7 +146,7 @@ void gnomonWorkspaceRegistration::setInputs(void)
 
     gnomonAlgorithmWorkspace::setInputs();
 
-    if (empty_input | !d->command->inputs()["input"]) {
+    if (empty_input || !d->command->inputs()["input"]) {
         dd->image_stack.clear();
         emit stackSizeChanged();
         this->setStackLevel(-1);
@@ -169,14 +171,14 @@ QString gnomonWorkspaceRegistration::transformStringAt(int level) const
                 return transformMatrixString(transform_matrix);
             } else {
                 dtkWarn()<<Q_FUNC_INFO<<"Transformation info has no transform matrix, Identity is returned";
-                return transformMatrixString(identityMatrix());
+                return transformMatrixString(identity_matrix);
             }
         } else {
             dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"has no Transformation info, Identity is returned";
-            return transformMatrixString(identityMatrix());
+            return transformMatrixString(identity_matrix);
         }
     } else {
-        dtkWarn()<<Q_FUNC_INFO<<"Invalid level! Image stack only contains"<<dd->image_stack.keys();
+        dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"is invalid! Image stack only contains"<<dd->image_stack.keys();
         return "";
     }
 }
