@@ -174,6 +174,7 @@ public:
     Q_INVOKABLE QStringList formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+    Q_INVOKABLE bool inputView();
     
 
 public:

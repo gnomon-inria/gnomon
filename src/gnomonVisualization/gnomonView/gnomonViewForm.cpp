@@ -1949,6 +1949,11 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
     }
 }
 
+bool gnomonViewForm::inputView() 
+{
+    return d->input_view
+}
+
 void gnomonViewForm::setBounds(double bounds[6])
 {
     bool changed = false;

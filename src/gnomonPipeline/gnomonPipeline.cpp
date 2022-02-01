@@ -53,7 +53,7 @@ public:
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
     QMap< QPair<QString, QString>, QPair<QString, QString> > pipeline_edges;
     QString pipeline_desc;
-    QString pipeline_inputs; // TODO: see how to use a QStringList another to retrieve inputs from qml
+    QMap<QString, QString> pipeline_input_names; // TODO: see how to use a QStringList another to retrieve inputs from qml
     QString pipeline_output;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
@@ -736,7 +736,7 @@ void gnomonPipeline::exportToJson(const QString& url)
         if (node_reader) {
             //this is a nodeReader add to inputs
             QJsonObject input;
-            QString input_name = d->pipeline_inputs  + QString::number(inputs_json.count()); // "my_input_"
+            QString input_name = d->pipeline_input_names[node_name]  + QString::number(inputs_json.count()); // "my_input_"
             input.insert(input_name, node_name + " -> path");
             inputs_json.append(input);
 
@@ -888,9 +888,9 @@ void gnomonPipeline::updateLayout(void)
     d->forceDrivenLayout();
 }
 
-void gnomonPipeline::setPipeplineInfoForJsonExport(const QString& inputs, const QString& output, const QString& description)
+void gnomonPipeline::setPipeplineInfoForJsonExport(const QMap<QString, QString> input_names , const QString& output, const QString& description)
 {
-    d->pipeline_inputs = inputs;
+    d->pipeline_input_names = input_names;
     d->pipeline_output = output;
     d->pipeline_desc = description;
 }
