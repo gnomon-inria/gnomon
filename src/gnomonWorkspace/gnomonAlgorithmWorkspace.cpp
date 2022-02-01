@@ -190,7 +190,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
 {
     Q_ASSERT(d->command);
 
-    if(d->command->outputs().size() != d->targets->views().size()) {
+    if((d->targets->views().size()>1) & (d->command->outputs().size() != d->targets->views().size())) {
         dtkWarn() << Q_FUNC_INFO << "outputs size " <<d->command->outputs().size() << " but nb output views " << d->targets->views().size();
         return;
     }
@@ -204,7 +204,8 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
             (*d->targets)[i]->render();
             empty_output = false;
         }
-        ++i;
+        if(d->targets->views().size()>1)
+            ++i;
     }
 
     if (!empty_output) {
