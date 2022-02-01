@@ -290,7 +290,8 @@ Rectangle {
     }
 
     X.Icon { id: _export_icon;
-        icon: X.Icons.icons.arrow_circle_up;
+        icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
+        enabled: !viewLogic.inputView
         size: 32;
         color: X.Style.foregroundColor;
 
