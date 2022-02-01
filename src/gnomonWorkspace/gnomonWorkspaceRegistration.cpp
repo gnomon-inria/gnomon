@@ -147,7 +147,14 @@ void gnomonWorkspaceRegistration::setInputs(void)
     gnomonAlgorithmWorkspace::setInputs();
 
     if (empty_input || !d->command->inputs()["input"]) {
+        for (const auto& level : dd->image_stack.keys()) {
+            delete dd->image_stack[level];
+        }
         dd->image_stack.clear();
+        for (const auto& level : dd->transformation_stack.keys()) {
+            delete dd->transformation_stack[level];
+        }
+        dd->transformation_stack.clear();
         emit stackSizeChanged();
         this->setStackLevel(-1);
 
