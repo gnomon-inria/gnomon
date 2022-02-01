@@ -23,8 +23,10 @@ Shape {
 
     property real delt: (mid.x - stt.x)/2;
 
-     width: end.x - stt.x;
+    width: end.x - stt.x;
     height: end.y - stt.y;
+
+    containsMode: Shape.FillContains
 
     ShapePath {
         fillColor: "transparent";
@@ -45,6 +47,10 @@ Shape {
                     x: _self.end.x;
                     y: _self.end.y
         }
+    }
+
+    TapHandler {
+        onDoubleTapped: window.world.currentIndex = _self.formIndex;
     }
 
     Component.onCompleted: {
