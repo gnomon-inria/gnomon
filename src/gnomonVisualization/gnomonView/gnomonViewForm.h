@@ -83,6 +83,7 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
+    Q_PROPERTY(bool inPool READ inPool WRITE setInPool)
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -155,6 +156,7 @@ public:
     bool inputView(void);
     bool synced(void);
     bool syncing(void);
+    bool inPool(void);
 
 signals:
     void formsChanged(void);
@@ -244,6 +246,7 @@ public slots:
 
 public slots:
     void setInputView(bool);
+    void setInPool(bool);
 
 public slots:
     void setEnableMenus(bool);
