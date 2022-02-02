@@ -294,7 +294,7 @@ Rectangle {
         icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
         enabled: !viewLogic.inputView
         size: 32;
-        color: X.Style.foregroundColor;
+        color: viewLogic.inputView ? X.Style.backgroundColor : X.Style.foregroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
