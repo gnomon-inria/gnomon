@@ -12,6 +12,8 @@ import xQuick.Vis         1.0 as XVis
 
 import gnomon.Visualization 1.0 as GV
 
+import gnomonQuick  1.0 as G
+
 Item {
 
     id: _world_delegate;
@@ -141,7 +143,7 @@ Item {
         color: "#00000000";
 
         border.width: 2;
-        border.color: X.Style.accentColor;
+        border.color: G.Style.highlightColor; //X.Style.accentColor;
 
         visible: _world.currentIndex == model.index;
     }
