@@ -267,6 +267,7 @@ Rectangle {
         icon: viewLogic.synced ? X.Icons.icons.lock_outline : X.Icons.icons.lock_open;
         size: 32;
         color: viewLogic.synced ? X.Style.foregroundColor : X.Style.backgroundColor;
+        visible: viewLogic.inPool
 
         anchors.top: _view.top
         anchors.topMargin: 10
