@@ -165,6 +165,7 @@ public:
 
 public:
     bool input_view = false;
+    bool in_pool = false;
 
 public:
     QColor export_color = QColor("#cccccc");
@@ -2201,9 +2202,19 @@ void gnomonViewForm::setInputView(bool input)
     // }
 }
 
+void gnomonViewForm::setInPool(bool inpool)
+{
+    d->in_pool = inpool;
+}
+
 bool gnomonViewForm::inputView(void)
 {
     return d->input_view;
+}
+
+bool gnomonViewForm::inPool(void)
+{
+    return d->in_pool;
 }
 
 bool gnomonViewForm::synced(void)
