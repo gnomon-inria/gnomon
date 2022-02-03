@@ -76,6 +76,9 @@ gnomonViewFormPool::gnomonViewFormPool(QObject *parent) : QObject(parent)
 
 gnomonViewFormPool::~gnomonViewFormPool(void)
 {
+    foreach(gnomonViewForm *view, d->views) {
+        view->setInPool(false);
+    }
     d->views.clear();
 }
 
