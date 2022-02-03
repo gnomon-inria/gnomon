@@ -267,6 +267,7 @@ Rectangle {
         icon: viewLogic.synced ? X.Icons.icons.lock_outline : X.Icons.icons.lock_open;
         size: 32;
         color: viewLogic.synced ? X.Style.foregroundColor : X.Style.backgroundColor;
+        visible: viewLogic.inPool
 
         anchors.top: _view.top
         anchors.topMargin: 10
@@ -290,9 +291,10 @@ Rectangle {
     }
 
     X.Icon { id: _export_icon;
-        icon: X.Icons.icons.arrow_circle_up;
+        icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
+        enabled: !viewLogic.inputView
         size: 32;
-        color: X.Style.foregroundColor;
+        color: viewLogic.inputView ? X.Style.backgroundColor : X.Style.foregroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
