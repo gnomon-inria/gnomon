@@ -7,7 +7,7 @@ from .form_series import buildFormSeries, formDictFromSeries, is_form_series_mod
 
 load_plugin_group("imageData")
 
-default_plugin = "gnomonImageDataSpatialImageDict"
+default_plugin = "gnomonImageDataMultiChannelImage"
 default_setter = "set_image_dict"
 default_attr = "_img_dict"
 
