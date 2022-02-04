@@ -71,7 +71,7 @@ public:
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
-    Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
+    Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
     Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
 
@@ -111,6 +111,7 @@ signals:
 
     void syncedChanged(void);
     void syncingChanged(void);
+    void inputViewChanged(void);
 
 signals:
     void   linking(void);
