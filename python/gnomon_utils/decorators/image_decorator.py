@@ -6,10 +6,9 @@ from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
 load_plugin_group("imageData")
-
 default_plugin = "gnomonImageDataMultiChannelImage"
-default_setter = "set_image_dict"
-default_attr = "_img_dict"
+default_setter = "setImage"
+default_attr = "_image"
 
 form_class = gnomonImage
 form_data_factory = gnomoncore.imageData_pluginFactory()
