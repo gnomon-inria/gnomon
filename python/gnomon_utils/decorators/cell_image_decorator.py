@@ -7,9 +7,9 @@ from .form_series import buildFormSeries, formDictFromSeries, is_form_series_mod
 
 load_plugin_group("cellImageData")
 
-default_plugin = "gnomonCellImageDataPropertySpatialImage"
-default_setter = "set_property_image"
-default_attr = "_p_img"
+default_plugin = "gnomonCellImageDataTissueImage"
+default_setter = "set_tissue_image"
+default_attr = "_tissue"
 
 form_class = gnomonCellImage
 form_data_factory = gnomoncore.cellImageData_pluginFactory()

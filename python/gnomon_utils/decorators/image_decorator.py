@@ -7,7 +7,7 @@ from .form_series import buildFormSeries, formDictFromSeries, is_form_series_mod
 
 load_plugin_group("imageData")
 default_plugin = "gnomonImageDataMultiChannelImage"
-default_setter = "setImage"
+default_setter = "set_image"
 default_attr = "_image"
 
 form_class = gnomonImage
