@@ -8,7 +8,7 @@ import pickle
 
 from base64 import b64decode, b64encode
 from functools import wraps
-from pkg_resources import iter_entry_points
+from pkg_resources import iter_entry_points, resource_filename
 
 from setuptools import findall
 
@@ -17,6 +17,7 @@ import gnomonvisualization
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
+DEBUG = False
 
 
 def import_plugins(file, excludes=[]):
@@ -197,6 +198,8 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
             try:
                 return f(self, *args, **kwargs)
             except Exception as e:
+                if DEBUG:  # if debug let it throw
+                    raise
                 traceback.print_exc()
                 print(e)
 
