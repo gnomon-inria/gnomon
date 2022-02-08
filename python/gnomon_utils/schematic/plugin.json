@@ -65,6 +65,10 @@
       ]
     },
     {
+      "name": "pyproject.toml",
+      "template": "plugins/pyproject.toml"
+    },
+    {
       "name": "setup.py",
       "template": "plugins/setup.py"
     },
