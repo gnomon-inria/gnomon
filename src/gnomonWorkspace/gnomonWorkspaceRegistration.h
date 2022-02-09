@@ -35,9 +35,34 @@ The output is a Image form that corresponds to the transformed floating Image. \
 The resulting geometrical trasformation is also stored as an output, displayed \
 in the right menu.\n\
 \n")
+
 public:
      gnomonWorkspaceRegistration(QObject *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
+
+public:
+    Q_PROPERTY(int stackSize READ stackSize NOTIFY stackSizeChanged);
+    Q_PROPERTY(int stackLevel READ stackLevel WRITE setStackLevel NOTIFY stackLevelChanged);
+
+public:
+    int stackSize(void) const;
+
+    int stackLevel(void) const;
+    void setStackLevel(int level);
+
+signals:
+    void stackSizeChanged(void);
+    void stackLevelChanged(void);
+
+public:
+    Q_INVOKABLE QString transformStringAt(int level) const;
+
+public slots:
+    virtual void setInputs(void) override;
+    void iterate(void);
+
+protected:
+    class gnomonWorkspaceRegistrationPrivate *dd = nullptr;
 };
 
 //

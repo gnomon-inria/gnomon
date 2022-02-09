@@ -659,6 +659,9 @@ void gnomonPipeline::setFormIndex(gnomonAbstractDynamicForm *form, int index)
 {
     if (index > -1) {
         d->form_manager_index[form] = index;
+        if (d->form_clones.contains(form)) {
+            this->setFormIndex(d->form_clones[form], index);
+        }
 
         gnomonPipelinePort *output_port = nullptr;
         if (d->reader_nodes.contains(form)) {
