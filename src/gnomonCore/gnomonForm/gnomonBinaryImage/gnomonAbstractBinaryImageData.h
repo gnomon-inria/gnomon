@@ -19,6 +19,7 @@ public:
 public:
     virtual void setImage(dtkImage* image) = 0;
     virtual dtkImage* image(void) = 0;
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
 
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;

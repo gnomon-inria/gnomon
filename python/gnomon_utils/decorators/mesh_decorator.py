@@ -16,15 +16,12 @@ form_data_factory = gnomoncore.meshData_pluginFactory()
 from_form_method = "from_gnomonMesh"
 
 
-def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
+def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin):
     def func(self, update=True):
         update = update or not hasattr(self, "_in_mesh")
         if update:
-            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
-                                                   form_class=form_class,
-                                                   form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin,
-                                                   data_setter=data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+                                                   form_data_factory=form_data_factory, data_plugin=data_plugin)
             self._in_mesh = form_dict
             self._in_mesh_data = data_dict
         return self._in_mesh
@@ -37,11 +34,8 @@ def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter,
             setattr(self, attr, {})
 
             if self._in_mesh is not None:
-                mesh_dict = formDictFromSeries(form=self._in_mesh,
-                                                      form_data_factory=form_data_factory,
-                                                      from_form_method=from_form_method,
-                                                      data_plugin=data_plugin,
-                                                      data_attr=data_attr)
+                mesh_dict = formDictFromSeries(form=self._in_mesh, form_data_factory=form_data_factory,
+                                               data_plugin=data_plugin)
                 setattr(self, attr, mesh_dict)
 
                 if hasattr(self,"refresh_parameters"):
@@ -52,7 +46,7 @@ def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin, data_setter,
     return cls
 
 
-def meshInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+def meshInput(attr, data_plugin, methods=(None, None)):
     def decorator(cls):
         if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
@@ -60,20 +54,17 @@ def meshInput(attr, methods=(None, None), data_plugin=default_plugin, data_sette
             local_getter_method, local_setter_method = methods
         else:
             raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
-        return _gnomonMeshInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+        return _gnomonMeshInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin)
 
     return decorator
 
 
-def _gnomonMeshOutput(cls, attr, method, data_plugin, data_setter):
+def _gnomonMeshOutput(cls, attr, method, data_plugin):
     def func(self, update=True):
         update = update or not hasattr(self, "_out_mesh")
         if update:
-            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
-                                                   form_class=form_class,
-                                                   form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin,
-                                                   data_setter=data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+                                                   form_data_factory=form_data_factory, data_plugin=data_plugin)
             self._out_mesh = form_dict
             self._out_mesh_data = data_dict
         return self._out_mesh
@@ -83,12 +74,12 @@ def _gnomonMeshOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def meshOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+def meshOutput(attr, data_plugin, method=None):
     def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
-        return _gnomonMeshOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
+        return _gnomonMeshOutput(cls, attr, bound_method, data_plugin=data_plugin)
 
     return decorator

@@ -33,6 +33,8 @@ public:
 
     virtual gnomonAbstractCellGraphData* clone(void) const = 0;
 
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
+
 public:
     virtual bool isValid(void) const = 0;
 
