@@ -7,7 +7,7 @@
 class gnomonAbstractCommand : public QObject
 {
     Q_OBJECT
-    friend void runner(gnomonAbstractCommand* command);
+//    friend void runner(gnomonAbstractCommand* command);
 
 public:
     using orderedMap = std::vector<std::pair <QString, QString>>; // to respect the order of inserting
@@ -66,7 +66,7 @@ protected:
     gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
-    QFutureWatcher<void> *watcher = nullptr;
+//    QFutureWatcher<void> *watcher = nullptr;
 };
 
 void runner(gnomonAbstractCommand* command);

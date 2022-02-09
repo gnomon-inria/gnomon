@@ -38,7 +38,7 @@ void loadPluginGroup (const QString& module)
 QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
 
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
+    //dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
 
     PyObject* pName = PyUnicode_FromString("gnomon_utils");
     PyObject* pModule = PyImport_Import(pName);
@@ -72,6 +72,6 @@ QStringList availablePluginsFromGroup(const QString & module) {
     Py_DECREF(pModule);
     Py_DECREF(pName);
     //Py_Finalize();
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
+    //dtkScriptInterpreterPython::instance()->childReleaseLock();
     return available_plugins;
 }

@@ -18,7 +18,8 @@ void activateObjectManager(void)
 
 void initialize(const QString& path)
 {
-    dtkScriptInterpreterPython::instance()->allowThreads();
+    // Should work with an future dtkScript version
+    // dtkScriptInterpreterPython::instance()->allowThreads();
     QString realpath = path;
     QStringList pathslist;
 
@@ -46,7 +47,8 @@ void initialize(const QString& path)
 
 void uninitialize(void)
 {
-    dtkScriptInterpreterPython::instance()->endAllowThreads();
+    // Should work with an future dtkScript version
+    // dtkScriptInterpreterPython::instance()->endAllowThreads();
     manager().uninitialize();
 }
 
