@@ -1,14 +1,7 @@
 #include <QtCore>
 #include <QtConcurrent>
 
-#pragma push_macro("slots")
-#undef slots
-#include <Python.h>
-#pragma pop_macro("slots")
-
 #include <dtkScript>
-#include <unistd.h>
-#include <sys/wait.h>
 
 #include "gnomonAbstractCommand.h"
 
@@ -50,9 +43,15 @@ void gnomonAbstractCommand::redo(void)
 }
 
 extern void runner(gnomonAbstractCommand* command) {
-    dtkScriptInterpreterPython::instance()->childAcquireLock(1);
+    qDebug() << Q_FUNC_INFO << "start runner with command" << command;
+
     command->predo();
+    qDebug() << Q_FUNC_INFO << "start run";
+
     command->action->run();
+    qDebug() << Q_FUNC_INFO << "end run";
+
     command->postdo();
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
+    qDebug() << Q_FUNC_INFO << "end postdo";
+
 }

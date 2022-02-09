@@ -1,16 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include <gnomonConfig.h>
 
@@ -32,8 +19,6 @@ void activateObjectManager(void)
 void initialize(const QString& path)
 {
     dtkScriptInterpreterPython::instance()->allowThreads();
-    sub_interpreters.append(dtkScriptInterpreterPython::instance()->newInterpreter());
-
     QString realpath = path;
     QStringList pathslist;
 
@@ -61,9 +46,6 @@ void initialize(const QString& path)
 
 void uninitialize(void)
 {
-    for (auto interp: sub_interpreters) {
-        dtkScriptInterpreterPython::instance()->deleteInterpreter(interp);
-    }
     dtkScriptInterpreterPython::instance()->endAllowThreads();
     manager().uninitialize();
 }

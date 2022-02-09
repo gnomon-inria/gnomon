@@ -34,7 +34,7 @@ namespace gnomonCore {
     GNOMONCORE_EXPORT void setVerboseLoading(bool b);
     GNOMONCORE_EXPORT void setAutoLoading(bool auto_loading);
 
-    GNOMONCORE_EXPORT static QVector<void *> sub_interpreters;
+    //static void * visu_interpreter = nullptr;
 };
 
 //
