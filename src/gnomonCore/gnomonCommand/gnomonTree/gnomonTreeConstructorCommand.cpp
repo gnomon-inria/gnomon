@@ -51,13 +51,15 @@ void gnomonTreeConstructorCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::treeConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeConstructorCommand::redo()
+void gnomonTreeConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonTreeConstructorCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
+
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
     } else {
@@ -94,6 +96,20 @@ gnomonAbstractCommand::orderedMap gnomonTreeConstructorCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("output", "gnomonTree"));
     return types;
+}
+
+void gnomonTreeConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

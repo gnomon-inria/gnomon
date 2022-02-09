@@ -48,13 +48,11 @@ void gnomonCellComplexAdapterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellComplexAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexAdapterCommand::redo()
+void gnomonCellComplexAdapterCommand::predo(void) {}
+void gnomonCellComplexAdapterCommand::postdo(void)
 {
-    Q_ASSERT(this->action);
-    
-    this->action->run();
-    
     gnomonAbstractDynamicForm *output = ((gnomonAbstractCellComplexAdapter *) this->action)->output();
+
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {
@@ -123,6 +121,17 @@ void gnomonCellComplexAdapterCommand::setInputForm(const QString &name, gnomonAb
 
 QStringList gnomonCellComplexAdapterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellComplexAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

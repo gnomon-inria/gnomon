@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonMeshWriterCommand();
-    ~gnomonMeshWriterCommand() override;
+     gnomonMeshWriterCommand(void);
+    ~gnomonMeshWriterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *form) override;

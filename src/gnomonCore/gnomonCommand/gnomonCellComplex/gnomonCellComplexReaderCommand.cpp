@@ -43,14 +43,16 @@ gnomonCellComplexReaderCommand::~gnomonCellComplexReaderCommand()
     delete d;
 }
 
-void gnomonCellComplexReaderCommand::redo()
+void gnomonCellComplexReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
     ((gnomonAbstractCellComplexReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonCellComplexReaderCommand::postdo(void)
+{
     gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
-    if ((!cellComplex)||(cellComplex->times().empty())) {
+
+    if((!cellComplex)||(cellComplex->times().empty())) {
         d->cellComplex = nullptr;
     } else {
         d->cellComplex = cellComplex;
@@ -87,6 +89,20 @@ gnomonAbstractCommand::orderedMap gnomonCellComplexReaderCommand::outputTypes() 
 
 QStringList gnomonCellComplexReaderCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellComplexReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellComplex) {
+        d->cellComplex = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["cellComplex"].toObject();
+    d->cellComplex->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellComplex"] = d->cellComplex->serialize();
+    return out;
 }
 
 //

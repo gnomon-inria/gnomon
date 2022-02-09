@@ -8,7 +8,6 @@ public:
     gnomonBinaryImageSeries* output = nullptr;
     gnomonImageSeries *input = nullptr;
     gnomonBinaryImageSeries* initialization = nullptr;
-
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +24,6 @@ gnomonBinaryImageFromImageCommand::gnomonBinaryImageFromImageCommand() : d(new g
         this->algorithm_name = keys[0];
         this->action = gnomonCore::binaryImageFromImage::pluginFactory().create(this->algorithm_name);
     }
-
 }
 
 gnomonBinaryImageFromImageCommand::~gnomonBinaryImageFromImageCommand()
@@ -41,12 +39,10 @@ void gnomonBinaryImageFromImageCommand::setAlgorithmName(const QString& algo_nam
     this->action = gnomonCore::binaryImageFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonBinaryImageFromImageCommand::redo()
+void gnomonBinaryImageFromImageCommand::predo(void) {}
+
+void gnomonBinaryImageFromImageCommand::postdo(void)
 {
-    Q_ASSERT(this->action);
-
-    this->action->run();
-
     gnomonBinaryImageSeries *image = ((gnomonAbstractBinaryImageFromImage *) this->action)->output();
     if ((!image)||(image->times().empty())) {
         d->output = nullptr;
@@ -145,6 +141,20 @@ bool gnomonBinaryImageFromImageCommand::isEmpty()
 
 QStringList gnomonBinaryImageFromImageCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonBinaryImageFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonBinaryImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonBinaryImageFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

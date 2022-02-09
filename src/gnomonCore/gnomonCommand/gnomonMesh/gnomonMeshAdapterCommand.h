@@ -6,12 +6,13 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
-     gnomonMeshAdapterCommand();
-    ~gnomonMeshAdapterCommand() override;
+     gnomonMeshAdapterCommand(void);
+    ~gnomonMeshAdapterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonMeshSeries *mesh_series);
@@ -27,6 +28,10 @@ public:
 
     gnomonAbstractDynamicForm *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

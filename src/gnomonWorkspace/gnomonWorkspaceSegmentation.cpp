@@ -34,6 +34,8 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnom
 
     d->updateViewFormTypes();
     d->updatePool();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation()

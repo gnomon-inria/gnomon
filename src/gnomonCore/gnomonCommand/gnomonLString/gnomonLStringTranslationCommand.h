@@ -17,12 +17,13 @@
 class GNOMONCORE_EXPORT gnomonLStringTranslationCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonLStringTranslationCommand();
-    ~gnomonLStringTranslationCommand() override;
+     gnomonLStringTranslationCommand(void);
+    ~gnomonLStringTranslationCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInputTree(gnomonTreeSeries *tree_series);
@@ -36,6 +37,10 @@ public:
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

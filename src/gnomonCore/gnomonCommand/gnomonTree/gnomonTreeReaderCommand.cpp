@@ -53,12 +53,15 @@ gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
     delete d;
 }
 
-void gnomonTreeReaderCommand::redo()
+void gnomonTreeReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractTreeReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonTreeReaderCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
+
     if ((!tree)||(tree->times().empty())) {
         d->tree = nullptr;
     } else {
@@ -96,6 +99,20 @@ gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("tree", "gnomonTree"));
     return types;
+}
+
+void gnomonTreeReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->tree) {
+        d->tree = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["tree"].toObject();
+    d->tree->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["tree"] = d->tree->serialize();
+    return out;
 }
 
 //

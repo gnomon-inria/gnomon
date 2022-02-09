@@ -53,14 +53,17 @@ void gnomonLStringTranslationCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::lStringTranslation::pluginFactory().create(algo_name);
 }
 
-void gnomonLStringTranslationCommand::redo()
+void gnomonLStringTranslationCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonLStringTranslationCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractLStringTranslation *) this->action)->outputTree();
+
     qDebug()<<Q_FUNC_INFO<<tree;
+
     if ((!tree)||(tree->times().empty())) {
         d->output_tree_series = nullptr;
     } else {
@@ -68,7 +71,9 @@ void gnomonLStringTranslationCommand::redo()
     }
 
     gnomonLStringSeries *lString = ((gnomonAbstractLStringTranslation *) this->action)->outputLString();
+
     qDebug()<<Q_FUNC_INFO<<lString;
+
     if ((!lString)||(lString->times().empty())) {
         d->output_lString_series = nullptr;
     } else {
@@ -174,6 +179,26 @@ void gnomonLStringTranslationCommand::setInputForm(const QString &name, gnomonAb
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonLStringTranslationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output_lString_series) {
+        d->output_lString_series = new gnomonLStringSeries();
+    }
+    auto tmp = serialization["outputLString"].toObject();
+    d->output_lString_series->deserialize(tmp);
+    if(!d->output_tree_series) {
+        d->output_tree_series = new gnomonTreeSeries();
+    }
+    auto tmp2 = serialization["outputTree"].toObject();
+    d->output_tree_series->deserialize(tmp2);
+}
+
+QJsonObject gnomonLStringTranslationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["outputLString"] = d->output_lString_series->serialize();
+    out["outputTree"] = d->output_tree_series->serialize();
+    return out;
 }
 
 //

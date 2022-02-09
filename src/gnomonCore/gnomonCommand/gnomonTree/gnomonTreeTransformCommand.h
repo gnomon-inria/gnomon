@@ -5,12 +5,13 @@ class gnomonTree;
 class GNOMONCORE_EXPORT gnomonTreeTransformCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonTreeTransformCommand();
-    ~gnomonTreeTransformCommand() override;
+     gnomonTreeTransformCommand(void);
+    ~gnomonTreeTransformCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonTreeSeries *tree_series);
@@ -23,6 +24,10 @@ public:
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 

@@ -8,14 +8,19 @@ public:
     ~gnomonBinaryImageReaderCommand() override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonBinaryImageSeries *binaryImage();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

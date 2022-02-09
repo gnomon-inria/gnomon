@@ -21,6 +21,7 @@ project(gnomonWorkspace VERSION ${gnomon_VERSION})
 set(${PROJECT_NAME}_HEADERS
   gnomonPythonAlgorithmPluginCode
   gnomonPythonAlgorithmPluginCode.h
+  gnomonAbstractWorkspace.h
   gnomonAlgorithmWorkspace
   gnomonAlgorithmWorkspace.h
   gnomonAlgorithmWorkspace_p.h

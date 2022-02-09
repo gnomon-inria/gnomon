@@ -33,6 +33,8 @@ namespace gnomonCore {
 
     GNOMONCORE_EXPORT void setVerboseLoading(bool b);
     GNOMONCORE_EXPORT void setAutoLoading(bool auto_loading);
+
+    //static void * visu_interpreter = nullptr;
 };
 
 //

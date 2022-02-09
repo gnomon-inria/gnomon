@@ -10,8 +10,9 @@ public:
     ~gnomonCellComplexAdapterCommand() override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonCellComplexSeries *cellComplex_series);
@@ -22,6 +23,10 @@ public:
 
     gnomonAbstractDynamicForm *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 

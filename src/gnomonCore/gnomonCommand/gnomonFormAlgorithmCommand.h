@@ -1,16 +1,18 @@
 #include "gnomonCommand/gnomonAbstractCommand.h"
 
-//TODO reemove ? is it used somewhere?
+// TODO reemove ? is it used somewhere?
+// NOTE: Good question !
 class GNOMONCORE_EXPORT gnomonFormAlgorithmCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonFormAlgorithmCommand() = delete;
+     gnomonFormAlgorithmCommand(void) = delete;
      gnomonFormAlgorithmCommand(const QString&);
-    ~gnomonFormAlgorithmCommand() override;
+    ~gnomonFormAlgorithmCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void addInput(gnomonAbstractDynamicForm *input);
@@ -31,6 +33,10 @@ public:
     virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
     virtual orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 private:
     class gnomonFormAlgorithmCommandPrivate *d;

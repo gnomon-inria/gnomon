@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonWorkspaceExport>
+#include "gnomonAbstractWorkspace.h"
 
 #include <QtCore>
 #include <QtQml>
@@ -10,12 +11,12 @@
 class gnomonAbstractCommand;
 class gnomonViewForm;
 
-class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public QObject
+class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public gnomonAbstractWorkspace
 {
     Q_OBJECT
 
 public:
-     gnomonAlgorithmWorkspace(QObject *parent = nullptr);
+             gnomonAlgorithmWorkspace(QObject *parent = nullptr);
     virtual ~gnomonAlgorithmWorkspace(void);
 
 public:
@@ -30,6 +31,7 @@ public:
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
+    void started(void);
     void algorithmsLoaded(void);
     void algorithmChanged(const QString& algorithm);
     void parametersChanged(void);
