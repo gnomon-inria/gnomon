@@ -1,4 +1,4 @@
-import gnomoncore
+import gnomon.core
 
 def is_form_series_modified(algo, form_name, form_series):
     modified = not hasattr(algo, form_name)

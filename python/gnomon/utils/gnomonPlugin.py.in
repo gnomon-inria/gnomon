@@ -12,8 +12,8 @@ from pkg_resources import iter_entry_points, resource_filename
 
 from setuptools import findall
 
-import gnomoncore
-import gnomonvisualization
+import gnomon.core
+import gnomon.visualization
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
@@ -155,7 +155,7 @@ def serialize(attr):
 
 def corePlugin(version, coreversion, base_class=None):
     def decorator(cls):
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         return cls
     return decorator
@@ -163,7 +163,7 @@ def corePlugin(version, coreversion, base_class=None):
 
 def visualizationPlugin(version, coreversion, base_class=None):
     def decorator(cls):
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomonvisualization, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.visualization, base_class=base_class)
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         return cls
     return decorator

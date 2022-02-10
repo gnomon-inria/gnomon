@@ -19,7 +19,7 @@ Create a Python class inheriting the algorithm abstraction
 .. code-block::
     python
 
-    from gnomoncore import gnomonAbstractImageFilter
+    from gnomon.core import gnomonAbstractImageFilter
 
     class linearFilterTimagetk(gnomonAbstractImageFilter):
 
@@ -40,10 +40,10 @@ Create a Python class inheriting the algorithm abstraction
 .. code-block::
     python
 
-    import gnomoncore
-    from gnomoncore import gnomonAbstractImageFilter
+    import gnomon.core
+    from gnomon.core import gnomonAbstractImageFilter
 
-    from gnomon_utils import gnomonPlugin
+    from gnomon.utils import gnomonPlugin
 
     @gnomonPlugin(namespace=gnomoncore)
     class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -74,7 +74,7 @@ Define the inputs and outputs of the plugin
 .. code-block::
     python
 
-    from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+    from gnomon.utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
 
     @gnomonPlugin(namespace=gnomoncore)
     @gnomonImageInput(attr='images',method='input',setter_method='setInput')
@@ -114,12 +114,12 @@ Define the parameters of the algorithm
 .. code-block::
     python
 
-    import gnomoncore
-    from gnomoncore import gnomonAbstractImageFilter
+    import gnomon.core
+    from gnomon.core import gnomonAbstractImageFilter
 
-    from gnomon_utils import gnomonPlugin
-    from gnomon_utils import gnomonParametric
-    from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+    from gnomon.utils import gnomonPlugin
+    from gnomon.utils import gnomonParametric
+    from gnomon.utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
 
     @gnomonPlugin(namespace=gnomoncore)
     @gnomonParametric
@@ -227,7 +227,7 @@ Edit the setup.py of the Python package
     python
 
 
-    from gnomon_utils.gnomonPlugin import gnomon_declare_plugins
+    from gnomon.utils.gnomonPlugin import gnomon_declare_plugins
 
     setup_kwds['entry_points'] = gnomon_declare_plugins('src/package_name')
 
@@ -242,12 +242,12 @@ Complete plugin module
 .. code-block::
     python
 
-    import gnomoncore
-    from gnomoncore import gnomonAbstractImageFilter
+    import gnomon.core
+    from gnomon.core import gnomonAbstractImageFilter
     
-    from gnomon_utils import gnomonPlugin
-    from gnomon_utils import gnomonParametric
-    from gnomon_utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
+    from gnomon.utils import gnomonPlugin
+    from gnomon.utils import gnomonParametric
+    from gnomon.utils.gnomonDecorator import gnomonImageInput, gnomonImageOutput
 
     from timagetk.plugins.linear_filtering import linear_filtering
 

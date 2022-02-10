@@ -1,7 +1,7 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonImage
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon.core import gnomonImage
+from gnomon.utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
@@ -11,7 +11,7 @@ default_setter = "set_image"
 default_attr = "_image"
 
 form_class = gnomonImage
-form_data_factory = gnomoncore.imageData_pluginFactory()
+form_data_factory = gnomon.core.imageData_pluginFactory()
 from_form_method = "from_gnomonImage"
 
 

@@ -1,7 +1,7 @@
 import unittest
 
-from gnomoncore import gnomonAbstractModel, gnomonAbstractForm
-from gnomoncore import gnomonTime
+from gnomon.core import gnomonAbstractModel, gnomonAbstractForm
+from gnomon.core import gnomonTime
 
 
 class Sphere(gnomonAbstractForm):

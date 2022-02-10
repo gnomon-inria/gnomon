@@ -1,6 +1,6 @@
 import luigi
 
-import gnomoncore
+import gnomon.core
 
 
 class DynamicFormTarget(luigi.Target):
@@ -9,7 +9,7 @@ class DynamicFormTarget(luigi.Target):
         self.form = form
 
     def exists(self):
-        return isinstance(self.form, gnomoncore.gnomonAbstractDynamicForm) and len(self.form.times()) > 0
+        return isinstance(self.form, gnomon.core.gnomonAbstractDynamicForm) and len(self.form.times()) > 0
 
 
 class AlgorithmPluginTask(luigi.Task):

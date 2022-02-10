@@ -1,49 +1,49 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonTree
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon.core import gnomonCellImage
+from gnomon.utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
-load_plugin_group("treeData")
+load_plugin_group("cellImageData")
 
-default_plugin = "gnomonTreeDataTreex"
-default_setter = "set_tree"
-default_attr = "_tree"
+default_plugin = "gnomonCellImageDataTissueImage"
+default_setter = "set_tissue_image"
+default_attr = "_tissue"
 
-form_class = gnomonTree
-form_data_factory = gnomoncore.treeData_pluginFactory()
-from_form_method = "from_gnomonTree"
+form_class = gnomonCellImage
+form_data_factory = gnomon.core.cellImageData_pluginFactory()
+from_form_method = "from_gnomonCellImage"
 
 
-def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
+def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
     def func(self, update=True):
-        update = update or not hasattr(self, "_in_tree")
+        update = update or not hasattr(self, "_in_cellImage")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
                                                    form_class=form_class,
                                                    form_data_factory=form_data_factory,
                                                    data_plugin=data_plugin,
                                                    data_setter=data_setter)
-            self._in_tree = form_dict
-            self._in_tree_data = data_dict
-        return self._in_tree
+            self._in_cellImage = form_dict
+            self._in_cellImage_data = data_dict
+        return self._in_cellImage
 
     setattr(cls, method, func)
 
-    def setter_func(self, tree):
-        if is_form_series_modified(self, "_in_tree", tree):
-            self._in_tree = tree
+    def setter_func(self, cellImage):
+        if is_form_series_modified(self, "_in_cellImage", cellImage):
+            self._in_cellImage = cellImage
             setattr(self, attr, {})
-
-            if self._in_tree is not None:
-                tree_dict = formDictFromSeries(form=self._in_tree,
+    
+            if self._in_cellImage is not None:
+                cellImage_dict = formDictFromSeries(form=self._in_cellImage,
                                                       form_data_factory=form_data_factory,
                                                       from_form_method=from_form_method,
                                                       data_plugin=data_plugin,
                                                       data_attr=data_attr)
-                setattr(self, attr, tree_dict)
-
+                setattr(self, attr, cellImage_dict)
+    
                 if hasattr(self,"refresh_parameters"):
                     self.refresh_parameters()
 
@@ -52,7 +52,7 @@ def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin, data_setter,
     return cls
 
 
-def treeInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+def cellImageInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
     def decorator(cls):
         if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
@@ -60,35 +60,35 @@ def treeInput(attr, methods=(None, None), data_plugin=default_plugin, data_sette
             local_getter_method, local_setter_method = methods
         else:
             raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
-        return _gnomonTreeInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+        return _gnomonCellImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
 
     return decorator
 
 
-def _gnomonTreeOutput(cls, attr, method, data_plugin, data_setter):
+def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
     def func(self, update=True):
-        update = update or not hasattr(self, "_out_tree")
+        update = update or not hasattr(self, "_out_cellImage")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
                                                    form_class=form_class,
                                                    form_data_factory=form_data_factory,
                                                    data_plugin=data_plugin,
                                                    data_setter=data_setter)
-            self._out_tree = form_dict
-            self._out_tree_data = data_dict
-        return self._out_tree
+            self._out_cellImage = form_dict
+            self._out_cellImage_data = data_dict
+        return self._out_cellImage
 
     setattr(cls, method, func)
 
     return cls
 
 
-def treeOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+def cellImageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
     def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
-        return _gnomonTreeOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
+        return _gnomonCellImageOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
 
     return decorator

@@ -6,7 +6,7 @@ import traceback
 import weakref
 
 from datetime import date
-from gnomoncore import gnomonAbstractDataDriver, gnomonAbstractDataDriverPlugin
+from gnomon.core import gnomonAbstractDataDriver, gnomonAbstractDataDriverPlugin
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 

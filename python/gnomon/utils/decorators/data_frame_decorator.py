@@ -1,7 +1,7 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonDataFrame
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon.core import gnomonDataFrame
+from gnomon.utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
@@ -12,7 +12,7 @@ default_setter = "set_dataframe"
 default_attr = "_df"
 
 form_class = gnomonDataFrame
-form_data_factory = gnomoncore.dataFrameData_pluginFactory()
+form_data_factory = gnomon.core.dataFrameData_pluginFactory()
 from_form_method = "from_gnomonDataFrame"
 
 

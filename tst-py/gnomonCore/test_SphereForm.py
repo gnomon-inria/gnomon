@@ -1,5 +1,5 @@
 import unittest
-from gnomoncore import gnomonSphereForm
+from gnomon.core import gnomonSphereForm
 
 
 class TestSphereFrom(unittest.TestCase):

@@ -3,10 +3,10 @@ import scipy.ndimage as nd
 
 from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist
 
-import gnomoncore
+import gnomon.core
 
-from gnomon_utils import load_plugin_group, corePlugin
-from gnomon_utils.decorators import imageInput, imageOutput
+from gnomon.utils import load_plugin_group, corePlugin
+from gnomon.utils.decorators import imageInput, imageOutput
 
 from timagetk.components import SpatialImage
 

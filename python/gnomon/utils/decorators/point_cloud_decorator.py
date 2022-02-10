@@ -1,7 +1,7 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonPointCloud
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon.core import gnomonPointCloud
+from gnomon.utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
 
@@ -12,7 +12,7 @@ default_setter = "set_property_topomesh"
 default_attr = "_topomesh"
 
 form_class = gnomonPointCloud
-form_data_factory = gnomoncore.pointCloudData_pluginFactory()
+form_data_factory = gnomon.core.pointCloudData_pluginFactory()
 from_form_method = "from_gnomonPointCloud"
 
 
