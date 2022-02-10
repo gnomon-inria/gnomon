@@ -179,7 +179,7 @@ def algorithmPlugin(version, coreversion, base_class=None):
 def corePlugin(version, coreversion, base_class=None):
     def decorator(cls):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
         return cls
     return decorator
 
