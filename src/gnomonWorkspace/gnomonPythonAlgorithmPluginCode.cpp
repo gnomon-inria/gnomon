@@ -278,12 +278,12 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
 
     plugin_code += "from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist\n";
     plugin_code += "\n";
-    plugin_code += "import gnomoncore\n";
+    plugin_code += "import gnomon.core\n";
     plugin_code += "\n";
-    plugin_code += "from gnomon_utils import corePlugin\n";
+    plugin_code += "from gnomon.utils import corePlugin\n";
 
     if (d->input_forms.size() + d->output_forms.size() > 0) {
-        plugin_code += "from gnomon_utils.decorators import";
+        plugin_code += "from gnomon.decorators import";
     }
     int n_forms = 0;
     for (const auto &form_type : d->input_forms.keys()) {

@@ -432,7 +432,7 @@ rm -rf $CONDA_PREFIX/wrp/gnomon*
 * If all goes well, you should be able to run in `ipython`:
 
 ```python
-from gnomoncore import gnomonAbstractNewFormData, newFormData_pluginFactory
+from gnomon.core import gnomonAbstractNewFormData, newFormData_pluginFactory
 ```
 
 ## Provide a Python plugin that implements the form abstraction
@@ -457,7 +457,7 @@ gnomon-package-pkgname
 ```
 
 ```python
-from gnomoncore import gnomonAbstractNewFormData
+from gnomon.core import gnomonAbstractNewFormData
 
 class newFormDataMyStructure(gnomonAbstractNewFormData):
     def __init__(self):
@@ -545,10 +545,10 @@ from my_module import MyStructure
   necessary methods to register the plugin to the platform. Since the abstraction (and its plugin factory) is registered to the `gnomonCore` namespace, we need to specify it explicitly to the decorator.
 
 ```python
-import gnomoncore
-from gnomoncore import gnomonAbstractNewFormData
+import gnomon.core
+from gnomon.core import gnomonAbstractNewFormData
 
-from gnomon_utils import corePlugin
+from gnomon.utils import corePlugin
 
 @corePlugin(version="0.1.0", coreversion="0.19.0")
 class newFormDataMyStructure(gnomonAbstractNewFormData):
@@ -565,8 +565,8 @@ python setup.py develop
 * We can now check that the registration has been successful by trying to instantiate our class directly through the plugin factory. To do so, you can check it in a python interpreter:
 
 ```python
-from gnomoncore import newFormData_pluginFactory
-from gnomon_utils.gnomonPlugin import load_plugin_group
+from gnomon.core import newFormData_pluginFactory
+from gnomon.utils.gnomonPlugin import load_plugin_group
 
 load_plugin_group("newFormData")
 
@@ -586,9 +586,9 @@ assert(form_data is not None)
 ```python
 import unittest
 
-import gnomoncore
-from gnomoncore import gnomonNewForm, newFormData_pluginFactory
-from gnomon_utils import load_plugin_group
+import gnomon.core
+from gnomon.core import gnomonNewForm, newFormData_pluginFactory
+from gnomon.utils import load_plugin_group
 
 from my_module import example_data_structure
 
@@ -624,16 +624,16 @@ class TestGnomonNewForm(unittest.TestCase):
         assert np.all([eid in self.data.elements() for eid in self.form.elementIds])
 ```
 
-## Add the Form decorators in the gnomon_utils module
+## Add the Form decorators in the gnomon.utils module
 
 To facilitate the writing of algorithm plugins, `gnomon` provides Python decorators to declare Form types of inputs and outputs, along with a preferred `data_plugin`. To make our new Form compatible with this system, we need to include it to the existing decorators.
 
-* Add a Python file named `new_data_decorator.py` in the `gnomonDecorator` module of `gnomon_utils`
+* Add a Python file named `new_data_decorator.py` in the `gnomonDecorator` module of `gnomon.utils`
 
 ```
 gnomon
 └───python
-    └───gnomon_utils
+    └───gnomon.utils
         └───gnomonDecorator
             │   __init__.py
             │   ...
@@ -644,10 +644,10 @@ gnomon
 * The module should declare an input and an output decorator as follows:  
 
 ```python
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonNewForm
-from gnomon_utils.gnomonPlugin import load_plugin_group
+from gnomon.core import gnomonNewForm
+from gnomon.utils.gnomonPlugin import load_plugin_group
 
 from .form_series import buildFormSeries, formDictFromSeries
 

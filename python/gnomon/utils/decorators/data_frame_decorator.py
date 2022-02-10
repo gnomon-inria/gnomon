@@ -1,14 +1,13 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonDataFrame
-from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
+from gnomon.core import gnomonDataFrame
+from gnomon.utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
 plugin_group = "dataFrameData"
-
 form_class = gnomonDataFrame
-form_data_factory = gnomoncore.dataFrameData_pluginFactory()
+form_data_factory = gnomon.core.dataFrameData_pluginFactory()
 
 
 def _gnomonDataFrameInput(cls, attr, method, setter_method, data_plugin):

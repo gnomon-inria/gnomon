@@ -15,14 +15,14 @@
 import sip
 import sys
 
-import gnomoncore
+import gnomon.core
 
-from gnomonvisualization import setupMatplotlib
+from gnomon.visualization import setupMatplotlib
 
 import matplotlib.pyplot as plt
 
 try:
-    from gnomon_utils.gnomonMplTabWidget import all_widgets
+    from gnomon.utils.matplotlib_tools.legacy.gnomonMplTabWidget import all_widgets
 except:
     print("Could not import mpl view class", sys.exc_info())
 else:

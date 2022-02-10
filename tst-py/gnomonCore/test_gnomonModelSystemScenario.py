@@ -15,9 +15,9 @@
 import unittest
 
 
-from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
-from gnomoncore import gnomonAbstractModel
-from gnomoncore import gnomonAbstractForm, gnomonSphereForm
+from gnomon.core import gnomonAbstractSystemScenario, gnomonSystem
+from gnomon.core import gnomonAbstractModel
+from gnomon.core import gnomonAbstractForm, gnomonSphereForm
 
 
 class gnomonWallForm(gnomonAbstractForm):

@@ -2,9 +2,9 @@
 
 import unittest
 
-import gnomoncore
-from gnomon_utils.gnomonPlugin import gnomonPlugin
-from gnomoncore import gnomonAbstractDataDriver
+import gnomon.core
+from gnomon.utils.gnomonPlugin import gnomonPlugin
+from gnomon.core import gnomonAbstractDataDriver
 
 class dummyPlugin(gnomonAbstractDataDriver):
     def __init__(self):

@@ -1,5 +1,5 @@
-import gnomoncore
-from gnomon_utils.gnomonPlugin import load_plugin_group
+import gnomon.core
+from gnomon.utils import load_plugin_group
 from typing import Union
 
 
