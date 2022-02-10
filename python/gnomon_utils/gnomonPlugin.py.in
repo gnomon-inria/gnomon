@@ -178,8 +178,6 @@ def algorithmPlugin(version, coreversion, base_class=None):
 
 def corePlugin(version, coreversion, base_class=None):
     def decorator(cls):
-        if cls not in dir(gnomoncore):
-            raise TypeError(f"Class {cls.__name__} should be a in gnomoncore")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
         return cls
