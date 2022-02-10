@@ -1,30 +1,23 @@
 import gnomoncore
 
 from gnomoncore import gnomonCellImage
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
-load_plugin_group("cellImageData")
-
-default_plugin = "gnomonCellImageDataTissueImage"
-default_setter = "set_tissue_image"
-default_attr = "_tissue"
+plugin_group = "cellImageData"
 
 form_class = gnomonCellImage
 form_data_factory = gnomoncore.cellImageData_pluginFactory()
-from_form_method = "from_gnomonCellImage"
 
 
-def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
+def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_in_cellImage")
         if update:
-            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
-                                                   form_class=form_class,
-                                                   form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin,
-                                                   data_setter=data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+                                                   data_plugin=data_plugin)
             self._in_cellImage = form_dict
             self._in_cellImage_data = data_dict
         return self._in_cellImage
@@ -37,11 +30,7 @@ def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_se
             setattr(self, attr, {})
     
             if self._in_cellImage is not None:
-                cellImage_dict = formDictFromSeries(form=self._in_cellImage,
-                                                      form_data_factory=form_data_factory,
-                                                      from_form_method=from_form_method,
-                                                      data_plugin=data_plugin,
-                                                      data_attr=data_attr)
+                cellImage_dict = formDictFromSeries(form=self._in_cellImage, data_plugin=data_plugin)
                 setattr(self, attr, cellImage_dict)
     
                 if hasattr(self,"refresh_parameters"):
@@ -52,7 +41,7 @@ def _gnomonCellImageInput(cls, attr, method, setter_method, data_plugin, data_se
     return cls
 
 
-def cellImageInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+def cellImageInput(attr, data_plugin, methods=(None, None)):
     def decorator(cls):
         if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
@@ -60,20 +49,18 @@ def cellImageInput(attr, methods=(None, None), data_plugin=default_plugin, data_
             local_getter_method, local_setter_method = methods
         else:
             raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
-        return _gnomonCellImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+        return _gnomonCellImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin)
 
     return decorator
 
 
-def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
+def _gnomonCellImageOutput(cls, attr, method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_out_cellImage")
         if update:
-            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
-                                                   form_class=form_class,
-                                                   form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin,
-                                                   data_setter=data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+                                                   data_plugin=data_plugin)
             self._out_cellImage = form_dict
             self._out_cellImage_data = data_dict
         return self._out_cellImage
@@ -83,12 +70,12 @@ def _gnomonCellImageOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def cellImageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+def cellImageOutput(attr, data_plugin, method=None):
     def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
-        return _gnomonCellImageOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
+        return _gnomonCellImageOutput(cls, attr, bound_method, data_plugin=data_plugin)
 
     return decorator

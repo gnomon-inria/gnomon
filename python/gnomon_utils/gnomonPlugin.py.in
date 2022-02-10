@@ -135,7 +135,6 @@ def gnomonParametric(cls):
         return {key : value.value() for key, value in self.parameters().items()}
     cls.parameterDict = parameterDict
 
-
     return cls
 
 
@@ -153,23 +152,51 @@ def serialize(attr):
     return decorator
 
 
+def formDataPlugin(version, coreversion, data_setter, data_getter, base_class=None):
+    def decorator(cls):
+        if not issubclass(cls, gnomoncore.gnomonAbstractFormData):
+            raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractFormData interface."
+                            f" Otherwise try using corePlugin or visualizationPlugin")
+
+        cls.__data_setter = getattr(cls, data_setter)
+        cls.__data_getter = getattr(cls, data_getter)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
+        return cls
+    return decorator
+
+
+def algorithmPlugin(version, coreversion, base_class=None):
+    def decorator(cls):
+        if not issubclass(cls, gnomoncore.gnomonAbstractAlgorithm):
+            raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractFormAlgorithm interface."
+                            f" Otherwise try using formDataPlugin or visualizationPlugin")
+        cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
+        return cls
+    return decorator
+
+
 def corePlugin(version, coreversion, base_class=None):
     def decorator(cls):
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
         return cls
     return decorator
 
 
 def visualizationPlugin(version, coreversion, base_class=None):
     def decorator(cls):
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomonvisualization, base_class=base_class)
+        if not (issubclass(cls, gnomonvisualization.gnomonAbstractVisualization) or
+                issubclass(cls, gnomonvisualization.gnomonAbstractMatplotlibVisualization)):
+            raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."
+                            f" Otherwise try using corePlugin or formDataPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomonvisualization, base_class=base_class)
         return cls
     return decorator
 
 
-def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
+def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     # -----------------------------------------------------
     # Python error management
     # -----------------------------------------------------

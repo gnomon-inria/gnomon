@@ -1,29 +1,23 @@
 import gnomoncore
 
 from gnomoncore import gnomonImage
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
-load_plugin_group("imageData")
-default_plugin = "gnomonImageDataMultiChannelImage"
-default_setter = "set_image"
-default_attr = "_image"
+plugin_group = "imageData"
 
 form_class = gnomonImage
 form_data_factory = gnomoncore.imageData_pluginFactory()
-from_form_method = "from_gnomonImage"
 
 
-def _gnomonImageInput(cls, attr, method, setter_method, data_plugin, data_setter, data_attr):
+def _gnomonImageInput(cls, attr, method, setter_method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_in_image")
         if update:
-            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
-                                                   form_class=form_class,
-                                                   form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin,
-                                                   data_setter=data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+                                                   data_plugin=data_plugin)
             self._in_image = form_dict
             self._in_image_data = data_dict
         return self._in_image
@@ -36,11 +30,7 @@ def _gnomonImageInput(cls, attr, method, setter_method, data_plugin, data_setter
             setattr(self, attr, {})
 
             if self._in_image is not None:
-                image_dict = formDictFromSeries(form=self._in_image,
-                                                form_data_factory=form_data_factory,
-                                                from_form_method=from_form_method,
-                                                data_plugin=data_plugin,
-                                                data_attr=data_attr)
+                image_dict = formDictFromSeries(form=self._in_image, data_plugin=data_plugin)
                 setattr(self, attr, image_dict)
 
                 if hasattr(self, "refresh_parameters"):
@@ -51,7 +41,7 @@ def _gnomonImageInput(cls, attr, method, setter_method, data_plugin, data_setter
     return cls
 
 
-def imageInput(attr, methods=(None, None), data_plugin=default_plugin, data_setter=default_setter, data_attr=default_attr):
+def imageInput(attr, data_plugin, methods=(None, None)):
     def decorator(cls):
         if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
@@ -59,21 +49,19 @@ def imageInput(attr, methods=(None, None), data_plugin=default_plugin, data_sett
             local_getter_method, local_setter_method = methods
         else:
             raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
-        return _gnomonImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin, data_setter=data_setter, data_attr=data_attr)
+        return _gnomonImageInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin)
 
     return decorator
 
 
 
-def _gnomonImageOutput(cls, attr, method, data_plugin, data_setter):
+def _gnomonImageOutput(cls, attr, method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_out_image")
         if update:
-            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr),
-                                                   form_class=form_class,
-                                                   form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin,
-                                                   data_setter=data_setter)
+            form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+                                                   data_plugin=data_plugin)
             self._out_image = form_dict
             self._out_image_data = data_dict
         return self._out_image
@@ -83,12 +71,12 @@ def _gnomonImageOutput(cls, attr, method, data_plugin, data_setter):
     return cls
 
 
-def imageOutput(attr, method=None, data_plugin=default_plugin, data_setter=default_setter):
+def imageOutput(attr, data_plugin, method=None):
     def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
-        return _gnomonImageOutput(cls, attr, bound_method, data_plugin=data_plugin, data_setter=data_setter)
+        return _gnomonImageOutput(cls, attr, bound_method, data_plugin=data_plugin)
 
     return decorator
