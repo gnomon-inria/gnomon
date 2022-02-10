@@ -1,21 +1,22 @@
 import gnomoncore
 
 from gnomoncore import gnomonCellComplex
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
-load_plugin_group("cellComplexData")
+plugin_group = "cellComplexData"
 form_class = gnomonCellComplex
 form_data_factory = gnomoncore.cellComplexData_pluginFactory()
 
 
 def _gnomonCellComplexInput(cls, attr, method, setter_method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_in_cellComplex")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
-                                                   form_data_factory=form_data_factory, data_plugin=data_plugin)
+                                                   data_plugin=data_plugin)
             self._in_cellComplex = form_dict
             self._in_cellComplex_data = data_dict
         return self._in_cellComplex
@@ -28,8 +29,7 @@ def _gnomonCellComplexInput(cls, attr, method, setter_method, data_plugin):
             setattr(self, attr, {})
     
             if self._in_cellComplex is not None:
-                cellComplex_dict = formDictFromSeries(form=self._in_cellComplex, form_data_factory=form_data_factory,
-                                                      data_plugin=data_plugin)
+                cellComplex_dict = formDictFromSeries(form=self._in_cellComplex, data_plugin=data_plugin)
                 setattr(self, attr, cellComplex_dict)
     
                 if hasattr(self,"refresh_parameters"):
@@ -54,11 +54,12 @@ def cellComplexInput(attr, data_plugin, methods=(None, None)):
 
 
 def _gnomonCellComplexOutput(cls, attr, method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_out_cellComplex")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
-                                                   form_data_factory=form_data_factory, data_plugin=data_plugin)
+                                                   data_plugin=data_plugin)
             self._out_cellComplex = form_dict
             self._out_cellComplex_data = data_dict
         return self._out_cellComplex

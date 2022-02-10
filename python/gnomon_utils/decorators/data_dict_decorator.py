@@ -1,22 +1,23 @@
 import gnomoncore
 
 from gnomoncore import gnomonDataDict
-from gnomon_utils.gnomonPlugin import load_plugin_group, default_input_accessors, default_output_accessors
+from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
-from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified
+from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
-load_plugin_group("dataDictData")
+plugin_group = "dataDictData"
 
 form_class = gnomonDataDict
 form_data_factory = gnomoncore.dataDictData_pluginFactory()
 
 
 def _gnomonDataDictInput(cls, attr, method, setter_method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_in_dataDict")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
-                                                   form_data_factory=form_data_factory, data_plugin=data_plugin)
+                                                   data_plugin=data_plugin)
             self._in_dataDict = form_dict
             self._in_dataDict_data = data_dict
         return self._in_dataDict
@@ -29,8 +30,7 @@ def _gnomonDataDictInput(cls, attr, method, setter_method, data_plugin):
             setattr(self, attr, {})
 
             if self._in_dataDict is not None:
-                dataDict_dict = formDictFromSeries(form=self._in_dataDict, form_data_factory=form_data_factory,
-                                                   data_plugin=data_plugin)
+                dataDict_dict = formDictFromSeries(form=self._in_dataDict, data_plugin=data_plugin)
                 setattr(self, attr, dataDict_dict)
 
                 if hasattr(self,"refresh_parameters"):
@@ -55,11 +55,12 @@ def dataDictInput(attr, data_plugin, methods=(None, None)):
 
 
 def _gnomonDataDictOutput(cls, attr, method, data_plugin):
+    data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
         update = update or not hasattr(self, "_out_dataDict")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
-                                                   form_data_factory=form_data_factory, data_plugin=data_plugin)
+                                                   data_plugin=data_plugin)
             self._out_dataDict = form_dict
             self._out_dataDict_data = data_dict
         return self._out_dataDict
