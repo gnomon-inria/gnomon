@@ -165,7 +165,7 @@ def formDataPlugin(version, coreversion, data_setter, data_getter, base_class=No
     return decorator
 
 
-def corePlugin(version, coreversion, base_class=None):
+def algorithmPlugin(version, coreversion, base_class=None):
     def decorator(cls):
         if not issubclass(cls, gnomon.core.gnomonAbstractAlgorithm):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractFormAlgorithm interface."
@@ -176,9 +176,18 @@ def corePlugin(version, coreversion, base_class=None):
     return decorator
 
 
+def corePlugin(version, coreversion, base_class=None):
+    def decorator(cls):
+        cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomoncore, base_class=base_class)
+        return cls
+    return decorator
+
+
 def visualizationPlugin(version, coreversion, base_class=None):
     def decorator(cls):
-        if not issubclass(cls, gnomon.visualization.gnomonAbstractVisualization):
+        if not (issubclass(cls, gnomon.visualization.gnomonAbstractVisualization) or
+                issubclass(cls, gnomon.visualization.gnomonAbstractMatplotlibVisualization)):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."
                             f" Otherwise try using corePlugin or formDataPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
@@ -187,7 +196,7 @@ def visualizationPlugin(version, coreversion, base_class=None):
     return decorator
 
 
-def _gnomonPlugin(version, coreversion, cls, namespace, base_class = None):
+def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     # -----------------------------------------------------
     # Python error management
     # -----------------------------------------------------

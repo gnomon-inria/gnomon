@@ -15,7 +15,8 @@ from .gnomonPlugin import corePlugin
 def get_username():
     return getpass.getuser()
 
-# @corePlugin(version="0.1.0", coreversion="0.19.0", base_class=gnomonAbstractDataDriver)
+
+@corePlugin(version="0.1.0", coreversion="0.19.0")
 class gnomonDataDriverMongo(gnomonAbstractDataDriver):
     def __init__(self):
         super().__init__()
