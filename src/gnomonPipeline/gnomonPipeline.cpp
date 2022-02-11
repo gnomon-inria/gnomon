@@ -814,10 +814,10 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "\n";
     out << "import luigi\n";
     out << "\n";
-    out << "import gnomoncore\n";
-    out << "from gnomon_utils import load_plugin_group\n";
+    out << "import gnomon.core\n";
+    out << "from gnomon.utils import load_plugin_group\n";
     out << "\n";
-    out << "from gnomon_utils.gnomonLuigi import AlgorithmPluginTask\n";
+    out << "from gnomon.gnomonLuigi import AlgorithmPluginTask\n";
     out << "\n";
     for (const auto& node_name : d->pipeline_node_names) {
         if (d->node_type_count.contains(node_name)) {

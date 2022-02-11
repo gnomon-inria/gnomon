@@ -155,7 +155,7 @@ void gnomonViewMatplotlibPrivate::clear(void)
     }
     if (this->figureNumber != -1) {
         int stat;
-        QString clearStatement = "from gnomon_utils.gnomonMpl import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.clf()\nfigure.canvas.draw()";
+        QString clearStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.clf()\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
     }
 }
@@ -333,7 +333,7 @@ void gnomonViewMatplotlibPrivate::render(void)
 {
     if (this->figureNumber != -1) {
         int stat;
-        QString clearStatement = "from gnomon_utils.gnomonMpl import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
+        QString clearStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
     }
 }
@@ -439,7 +439,7 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QObject *parent) : QObject(parent)
     }
 
     int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomon_utils.gnomonMpl", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("import gnomon.utils.matplotlib_tools", &stat);
 
     /*QFile file(":gnomon/matplotlib_figure.py");
     if (file.open(QIODevice::ReadOnly)) {

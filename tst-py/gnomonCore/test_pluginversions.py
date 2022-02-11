@@ -1,10 +1,8 @@
-
-
 import unittest
 
-import gnomoncore
-from gnomon_utils.gnomonPlugin import gnomonPlugin
-from gnomoncore import gnomonAbstractDataDriver
+import gnomon.core
+from gnomon.utils.gnomonPlugin import gnomonPlugin
+from gnomon.core import gnomonAbstractDataDriver
 
 class dummyPlugin(gnomonAbstractDataDriver):
     def __init__(self):
@@ -38,7 +36,7 @@ split[2] = str(int(split[2]) - 1)
 version_old_good = '.'.join(split)
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_old_good, namespace=gnomoncore, base_class=gnomonAbstractDataDriver)
+@gnomonPlugin(version="0.1.0", coreversion=version_old_good, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
 class dummyOldPlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -46,7 +44,7 @@ class dummyOldPlugin(dummyPlugin):
         self.myname = "ooooold"
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_old_bad, namespace=gnomoncore, base_class=gnomonAbstractDataDriver)
+@gnomonPlugin(version="0.1.0", coreversion=version_old_bad, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
 class dummyOldBadPlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -54,7 +52,7 @@ class dummyOldBadPlugin(dummyPlugin):
         self.myname = "ooooold"
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_exact, namespace=gnomoncore, base_class=gnomonAbstractDataDriver)
+@gnomonPlugin(version="0.1.0", coreversion=version_exact, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
 class dummyExactPlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -62,7 +60,7 @@ class dummyExactPlugin(dummyPlugin):
         self.myname = "exact"
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_future, namespace=gnomoncore, base_class=gnomonAbstractDataDriver)
+@gnomonPlugin(version="0.1.0", coreversion=version_future, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
 class dummyFuturePlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -76,18 +74,18 @@ class TestPluginsVerrsion(unittest.TestCase):
     '''
 
     def test_good_old_plugin(self):
-        plugin = gnomoncore.dataDriver_pluginFactory().create("dummyOldPlugin")
+        plugin = gnomon.core.dataDriver_pluginFactory().create("dummyOldPlugin")
         assert plugin
 
     def test_bad_old_plugin(self):
-        plugin = gnomoncore.dataDriver_pluginFactory().create("dummyOldBadPlugin")
+        plugin = gnomon.core.dataDriver_pluginFactory().create("dummyOldBadPlugin")
         assert not plugin
 
     def test_good_exact_plugin(self):
-        plugin = gnomoncore.dataDriver_pluginFactory().create("dummyExactPlugin")
+        plugin = gnomon.core.dataDriver_pluginFactory().create("dummyExactPlugin")
         assert plugin
 
     def test_bad_future_plugin(self):
-        plugin = gnomoncore.dataDriver_pluginFactory().create("dummyFuturePlugin")
+        plugin = gnomon.core.dataDriver_pluginFactory().create("dummyFuturePlugin")
         assert not plugin
 

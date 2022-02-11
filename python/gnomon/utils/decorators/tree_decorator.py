@@ -1,14 +1,13 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonTree
-from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
+from gnomon.core import gnomonTree
+from gnomon.utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
 plugin_group = "treeData"
-
 form_class = gnomonTree
-form_data_factory = gnomoncore.treeData_pluginFactory()
+form_data_factory = gnomon.core.treeData_pluginFactory()
 
 
 def _gnomonTreeInput(cls, attr, method, setter_method, data_plugin):

@@ -465,7 +465,7 @@ import_array();
 
 /*%pythoncode %{
     def _figure_func(self):
-        from gnomon_utils.gnomonMpl import gnomon_figure
+        from gnomon.utils.matplotlib_tools import gnomon_figure
         return gnomon_figure(self.figureNumber())
 
     setattr(gnomonViewMatplotlib, "figure", _figure_func)

@@ -1,7 +1,7 @@
 import json
 import os
 import unittest
-from gnomon_utils import gnomonDataDriverMongo
+from gnomon.utils import gnomonDataDriverMongo
 
 os.environ["IS_TEST"]="1"
 driver = gnomonDataDriverMongo()

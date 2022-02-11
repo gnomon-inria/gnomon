@@ -1,37 +1,37 @@
-import gnomoncore
+import gnomon.core
 
-from gnomoncore import gnomonCellComplex
-from gnomon_utils.gnomonPlugin import default_input_accessors, default_output_accessors
+from gnomon.core import gnomonMesh
+from gnomon.utils.gnomonPlugin import default_input_accessors, default_output_accessors
 
 from .form_series import buildFormSeries, formDictFromSeries, is_form_series_modified, getFormDataClass
 
-plugin_group = "cellComplexData"
-form_class = gnomonCellComplex
-form_data_factory = gnomoncore.cellComplexData_pluginFactory()
+plugin_group = "meshData"
+form_class = gnomonMesh
+form_data_factory = gnomon.core.meshData_pluginFactory()
 
 
-def _gnomonCellComplexInput(cls, attr, method, setter_method, data_plugin):
+def _gnomonMeshInput(cls, attr, method, setter_method, data_plugin):
     data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
-        update = update or not hasattr(self, "_in_cellComplex")
+        update = update or not hasattr(self, "_in_mesh")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
                                                    data_plugin=data_plugin)
-            self._in_cellComplex = form_dict
-            self._in_cellComplex_data = data_dict
-        return self._in_cellComplex
+            self._in_mesh = form_dict
+            self._in_mesh_data = data_dict
+        return self._in_mesh
 
     setattr(cls, method, func)
 
-    def setter_func(self, cellComplex):
-        if is_form_series_modified(self, "_in_cellComplex", cellComplex):
-            self._in_cellComplex = cellComplex
+    def setter_func(self, mesh):
+        if is_form_series_modified(self, "_in_mesh", mesh):
+            self._in_mesh = mesh
             setattr(self, attr, {})
-    
-            if self._in_cellComplex is not None:
-                cellComplex_dict = formDictFromSeries(form=self._in_cellComplex, data_plugin=data_plugin)
-                setattr(self, attr, cellComplex_dict)
-    
+
+            if self._in_mesh is not None:
+                mesh_dict = formDictFromSeries(form=self._in_mesh, data_plugin=data_plugin)
+                setattr(self, attr, mesh_dict)
+
                 if hasattr(self,"refresh_parameters"):
                     self.refresh_parameters()
 
@@ -40,7 +40,7 @@ def _gnomonCellComplexInput(cls, attr, method, setter_method, data_plugin):
     return cls
 
 
-def cellComplexInput(attr, data_plugin, methods=(None, None)):
+def meshInput(attr, data_plugin, methods=(None, None)):
     def decorator(cls):
         if None in methods:
             local_getter_method, local_setter_method = default_input_accessors(cls, form_class)
@@ -48,33 +48,33 @@ def cellComplexInput(attr, data_plugin, methods=(None, None)):
             local_getter_method, local_setter_method = methods
         else:
             raise TypeError("Expected 2-tuple (getter, setter) of type (str, str)")
-        return _gnomonCellComplexInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin)
-    
+        return _gnomonMeshInput(cls, attr, local_getter_method, local_setter_method, data_plugin=data_plugin)
+
     return decorator
 
 
-def _gnomonCellComplexOutput(cls, attr, method, data_plugin):
+def _gnomonMeshOutput(cls, attr, method, data_plugin):
     data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
     def func(self, update=True):
-        update = update or not hasattr(self, "_out_cellComplex")
+        update = update or not hasattr(self, "_out_mesh")
         if update:
             form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
                                                    data_plugin=data_plugin)
-            self._out_cellComplex = form_dict
-            self._out_cellComplex_data = data_dict
-        return self._out_cellComplex
+            self._out_mesh = form_dict
+            self._out_mesh_data = data_dict
+        return self._out_mesh
 
     setattr(cls, method, func)
 
     return cls
 
 
-def cellComplexOutput(attr, data_plugin, method=None):
+def meshOutput(attr, data_plugin, method=None):
     def decorator(cls):
         if method is None:
             bound_method = default_output_accessors(cls, form_class)
         else:
             bound_method = method
-        return _gnomonCellComplexOutput(cls, attr, bound_method, data_plugin=data_plugin)
+        return _gnomonMeshOutput(cls, attr, bound_method, data_plugin=data_plugin)
 
     return decorator

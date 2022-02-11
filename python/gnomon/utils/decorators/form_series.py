@@ -1,5 +1,5 @@
-import gnomoncore
-from gnomon_utils.gnomonPlugin import load_plugin_group
+import gnomon.core
+from gnomon.utils import load_plugin_group
 from typing import Union
 
 
@@ -21,6 +21,7 @@ def buildFormSeries(form_dict: dict, form_class: type, data_plugin: type):
         for time in form_dict.keys():
             form[time] = form_class()
             form_data[time] = data_plugin()
+            form_data[time].__disown__()
             form[time].setData(form_data[time])
             form_data[time].__data_setter(form_dict[time])
 
@@ -34,6 +35,7 @@ def formDictFromSeries(form, data_plugin: type):
             form_dict[time] = form[time].data().__data_getter()
         except AttributeError:
             form_data = data_plugin()
+            form_data.__disown__()
             form_data.fromGnomonForm(form[time])
             form_dict[time] = form_data.__data_getter()
 
