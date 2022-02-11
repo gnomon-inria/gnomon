@@ -5,15 +5,15 @@ from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist
 
 import gnomon.core
 
-from gnomon.utils import load_plugin_group, corePlugin
+from gnomon.utils import algorithmPlugin
 from gnomon.utils.decorators import imageInput, imageOutput
 
-from timagetk.components import SpatialImage
+from timagetk import SpatialImage, MultiChannelImage
 
-@corePlugin(version='0.1.0', coreversion='0.20.0')
-@imageInput(attr='in_img')
-@imageOutput(attr='out_img')
-class imageAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):
+@algorithmPlugin(version='0.1.0', coreversion='0.20.0')
+@imageInput(attr='in_img', data_plugin="gnomonImageDataMultiChannelImage")
+@imageOutput(attr='out_img', data_plugin="gnomonImageDataMultiChannelImage")
+class imageAlgorithm(gnomon.core.gnomonAbstractFormAlgorithm):
 
     def __init__(self):
         super().__init__()
@@ -28,10 +28,12 @@ class imageAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):
         self.out_img = {}
 
         for time in self.in_img.keys():
-            self.out_img[time] = {}
+            out_img = {}
 
             for channel in self.in_img[time].keys():
                 img = self.in_img[time][channel]
                 filtered_img = nd.gaussian_filter(img.get_array(),sigma=self['sigma']/np.array(img.voxelsize))
-                self.out_img[time][channel] = SpatialImage(filtered_img,voxelsize=img.voxelsize)
+                out_img[channel] = SpatialImage(filtered_img,voxelsize=img.voxelsize)
+
+            self.out_img[time] = MultiChannelImage(out_img)
 
