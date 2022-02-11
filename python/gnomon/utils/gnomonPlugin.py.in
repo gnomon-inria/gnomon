@@ -38,8 +38,14 @@ def import_plugins(file, excludes=[]):
 
 
 def load_plugin_group(group_name):
-    for entry_point in iter_entry_points(group=group_name, name=None):
-        importlib.import_module(entry_point.module_name)
+    for i, entry_point in enumerate(iter_entry_points(group=group_name, name=None)):
+        print(f"loading {entry_point.name}: ", end="")
+        try:
+            importlib.import_module(entry_point.module_name)
+            print("DONE")
+        except Exception as e:
+            print("FAIL")
+            print(e)
 
 
 def available_plugins(group_name):
@@ -168,7 +174,7 @@ def formDataPlugin(version, coreversion, data_setter, data_getter, base_class=No
 def algorithmPlugin(version, coreversion, base_class=None):
     def decorator(cls):
         if not issubclass(cls, gnomon.core.gnomonAbstractAlgorithm):
-            raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractFormAlgorithm interface."
+            raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractAlgorithm interface."
                             f" Otherwise try using formDataPlugin or visualizationPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
