@@ -56,8 +56,8 @@ src/gnomonStyle/gnomonStyleValues.h
 
 src/gnomonOmero/gnomonOmeroConfig.h
 
-python/gnomon/utils/gnomonPlugin.py
-python/gnomon/utils/templates/
+#python/gnomon/utils/gnomonPlugin.py
+#python/gnomon/utils/templates/
 
 ## ###################################################################
 ## Python
@@ -69,3 +69,4 @@ python/gnomon/utils/templates/
 
 ######################################################################
 ### .gitignore ends here
+!/python/gnomon/utils/gnomonPlugin.py
