@@ -10,7 +10,7 @@ from gnomon.utils.decorators import imageInput, imageOutput
 
 from timagetk.components import SpatialImage
 
-@corePlugin(version='0.1.0', coreversion='0.19.0')
+@corePlugin(version='0.1.0', coreversion='0.20.0')
 @imageInput(attr='in_img')
 @imageOutput(attr='out_img')
 class imageAlgorithm(gnomoncore.gnomonAbstractFormAlgorithm):
