@@ -8,6 +8,8 @@ import pickle
 
 from base64 import b64decode, b64encode
 from functools import wraps
+from typing import Dict, List, Tuple
+
 from pkg_resources import iter_entry_points, resource_filename
 
 from setuptools import findall
@@ -37,7 +39,15 @@ def import_plugins(file, excludes=[]):
             traceback.print_exc()
 
 
-def load_plugin_group(group_name):
+def load_plugin_group(group_name: str):
+    """
+    Load a plugin group by importing the module of every entry point in the group
+
+    Parameters
+    ----------
+    group_name: str
+        Entry point group
+    """
     for i, entry_point in enumerate(iter_entry_points(group=group_name, name=None)):
         print(f"loading {entry_point.name}: ", end="")
         try:
@@ -48,12 +58,36 @@ def load_plugin_group(group_name):
             print(e)
 
 
-def available_plugins(group_name):
+def available_plugins(group_name: str) -> List[str]:
+    """
+    Return the name of every entry point registered in the group (group_name)
+
+    Parameters
+    ----------
+    group_name: str
+        plugin group
+
+    Returns
+    -------
+    List[str]
+        list of the plugin names in the plugin group (keys of the related factory)
+    """
     print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
     return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
 
 
 def plugin_metadata(group_name):
+    """
+    ***Unused***
+    returns list of path to resource files associated with a plugin and sharing the name
+    Parameters
+    ----------
+    group_name
+
+    Returns
+    -------
+
+    """
     out = []
     for ep in iter_entry_points(group_name):
         *module, resource = ep.module_name.split(".")
@@ -62,7 +96,27 @@ def plugin_metadata(group_name):
     return out
 
 
-def default_input_accessors(algo_class, form_class):
+def default_input_accessors(algo_class, form_class: type) -> Tuple[str, str]:
+    """
+    Returns the default accessors for an input of type form_class from algo_class.
+
+    Requires algo_class to define the static methods:
+        defaultGetter(form_class.__name__)
+
+        defaultSetter(form_class.__name__)
+
+    Parameters
+    ----------
+    algo_class: gnomon.core.gnomonAbstractAlgorithm
+        base class of the plugin which must implement two static methods
+        `defaultGetter(form_class.__name__)` and `defaultSetter(form_class.__name__)`
+    form_class: gnomon.core.gnomonAbstractForm
+        type of the form for those accessors
+
+    Returns
+    -------
+
+    """
     setter_method = algo_class.defaultSetter(form_class.__name__)
     if not setter_method:
         raise KeyError(f"{algo_class.__name__} does not accept input form {form_class.__name__}")
@@ -72,14 +126,52 @@ def default_input_accessors(algo_class, form_class):
     return getter_method, setter_method
 
 
-def default_output_accessors(algo_class, form_class):
+def default_output_accessors(algo_class, form_class) -> str:
+    """
+    Returns the default getter for an output of type form_class from algo_class.
+
+    Requires algo_class to define the static methods:
+        defaultOutput(form_class.__name__)
+
+    Parameters
+    ----------
+    algo_class: gnomon.core.gnomonAbstractAlgorithm
+        base class of the plugin which must implement two static methods
+        `defaultOutput(form_class.__name__)`
+    form_class: gnomon.core.gnomonAbstractForm
+        type of the form for those accessors
+
+    Returns
+    -------
+
+    """
     bound_method = algo_class.defaultOutput(form_class.__name__)
     if not bound_method:
         raise KeyError(f"{algo_class.__name__} does not accept output form {form_class.__name__}")
     return bound_method
 
 
-def gnomon_declare_plugins(path):
+def gnomon_declare_plugins(path: str) -> Dict[str, List[str]]:
+    """
+    Returns the entry_points dict used to declare the plugins in plugin groups.
+
+    Pre-defines setuptools entry_points by parsing every python file in path (recursively)
+    scanning for the class name and the base class to generate the correct entry point.
+
+    Parsing as follows: `class [class name](gnomonAbstract[base class])`
+    where [base class] is the entry_points group and [class name] the entry_point name.
+
+    The entry_point exposes the module.
+
+    Parameters
+    ----------
+    path: str
+        path where to scan the modules for entry_points (usually package root)
+
+    Returns
+    -------
+    entry_points dict used to declare the plugins in setuptools
+    """
     script = findall(path)
     script = [f for f in script if (f.endswith('.py'))  and ('__init__' not in f)]
 
@@ -104,6 +196,30 @@ def gnomon_declare_plugins(path):
 
 
 def gnomonParametric(cls):
+    """
+    Class decorator: implements methods and special methods related to dtkCoreParameter use.
+
+    Those methods access dtkCoreParameter (cross-parameters) which are stored in the dict attribute
+    _parameters mapping keys to dtkCoreParameter.
+
+    Implements:
+        special methods __setitem__ and __getitem__ to set and get values to and from parameters
+
+        setParameter(self, parameter_name, parameter_value)
+            sets parameter_value to self._parameters[parameter_name]
+        setParameters(self, params)
+            params is a dict of (parameter_name, parameter_value) and setParameters sets the value
+            of each self._parameters[parameter_name] to parameter_value.
+            parameter_name must already be a key of self._parameters
+        parameters(self)
+            returns a copy of _parameters
+        parameterDict(self)
+            returns a dict of (parameter_name, parameter_value)
+
+    Returns
+    -------
+    decorated class
+    """
     # -----------------------------------------------------
     # Plugin parameters concept
     # -----------------------------------------------------
@@ -129,22 +245,37 @@ def gnomonParametric(cls):
     cls.setParameter = setParameter
 
     def setParameters(self, params):
-        for (parameter_name,parameter_value) in params.items():
-            self.setParameter(parameter_name,parameter_value)
+        for (parameter_name, parameter_value) in params.items():
+            self.setParameter(parameter_name, parameter_value)
     cls.setParameters = setParameters
 
     def parameters(self):
-        return {k:v for k,v in self._parameters.items()}
+        return {k: v for k, v in self._parameters.items()}
     cls.parameters = parameters
 
     def parameterDict(self):
-        return {key : value.value() for key, value in self.parameters().items()}
+        return {key: value.value() for key, value in self.parameters().items()}
     cls.parameterDict = parameterDict
 
     return cls
 
 
 def serialize(attr):
+    """
+    Decorator which implements a 'serialize' and 'deserialize' method.
+
+    'serialize' serializes attribute attr with pickle and then encodes it in base64
+    'deserialize' does the inverse operation
+
+    Parameters
+    ----------
+    attr: str
+        name of the attribute that will be serialized
+
+    Returns
+    -------
+    class with a 'serialize' and 'deserialize' method implemented
+    """
     def decorator(cls: type):
         def serialize_func(self: object) -> str:
             return b64encode(pickle.dumps(getattr(self, attr))).decode("ascii")
@@ -158,7 +289,35 @@ def serialize(attr):
     return decorator
 
 
-def formDataPlugin(version, coreversion, data_setter, data_getter, base_class=None):
+def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, base_class=None):
+    """
+    Registers form data plugins to the plugin factory.
+
+    Must be the top decorator as it will wrap every method of the class to suppress errors.
+    Error suppression can be deactivated by setting gnomon.utils.gnomonPlugin.DEBUG to True.
+
+    A form data plugin is a class which implements a subclass of gnomon.core.gnomonAbstractFormData
+
+    Parameters
+    ----------
+    version: str
+        Version of the plugin.
+    coreversion: str
+        Exact version of gnomon to check for API compatibility.
+    data_setter: str
+        Name of the setter method which sets the data attribute (where the data is internally stored).
+        The setter must take only one argument of the type of the data attribute. For instance, if
+        the data attribute is a numpy array, then the prototype of the data_setter method must be
+        `def data_setter(self, arr: np.ndarray) -> None:`
+    data_getter: str
+        Name of the getter method which returns a reference to the data attribute.
+        The getter takes no arguments and returns (a reference to) the data attribute.
+    base_class
+
+    Returns
+    -------
+
+    """
     def decorator(cls):
         if not issubclass(cls, gnomon.core.gnomonAbstractFormData):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractFormData interface."
@@ -171,7 +330,47 @@ def formDataPlugin(version, coreversion, data_setter, data_getter, base_class=No
     return decorator
 
 
-def algorithmPlugin(version, coreversion, base_class=None):
+def algorithmPlugin(version: str, coreversion: str, base_class=None):
+    """
+    Registers algorithm plugins to the plugin factory.
+
+    Must be the top decorator as it will wrap every method of the class to suppress errors.
+    Error suppression can be deactivated by setting gnomon.utils.gnomonPlugin.DEBUG to True.
+
+    A form data plugin is a class which implements a subclass of gnomon.core.gnomonAbstractAlgorithm
+
+    Applies the gnomonParametric decorator:
+        Implements methods and special methods related to dtkCoreParameter use.
+        Those methods access dtkCoreParameter (cross-parameters) which are stored in the dict attribute
+        _parameters mapping keys to dtkCoreParameter.
+
+        Implements:
+            special methods __setitem__ and __getitem__ to set and get values to and from parameters
+
+            setParameter(self, parameter_name, parameter_value)
+                sets parameter_value to self._parameters[parameter_name]
+            setParameters(self, params)
+                params is a dict of (parameter_name, parameter_value) and setParameters sets the value
+                of each self._parameters[parameter_name] to parameter_value.
+                parameter_name must already be a key of self._parameters
+            parameters(self)
+                returns a copy of _parameters
+            parameterDict(self)
+                returns a dict of (parameter_name, parameter_value)
+
+
+    Parameters
+    ----------
+    version: str
+        Version of the plugin.
+    coreversion: str
+        Exact version of gnomon to check for API compatibility.
+    base_class
+
+    Returns
+    -------
+
+    """
     def decorator(cls):
         if not issubclass(cls, gnomon.core.gnomonAbstractAlgorithm):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractAlgorithm interface."
@@ -182,7 +381,45 @@ def algorithmPlugin(version, coreversion, base_class=None):
     return decorator
 
 
-def corePlugin(version, coreversion, base_class=None):
+def corePlugin(version: str, coreversion: str, base_class=None):
+    """
+    Registers gnomon plugins which implements an interface from gnomon.core to the plugin factory.
+
+    Must be the top decorator as it will wrap every method of the class to suppress errors.
+    Error suppression can be deactivated by setting gnomon.utils.gnomonPlugin.DEBUG to True.
+
+    Applies the gnomonParametric decorator:
+        Implements methods and special methods related to dtkCoreParameter use.
+        Those methods access dtkCoreParameter (cross-parameters) which are stored in the dict attribute
+        _parameters mapping keys to dtkCoreParameter.
+
+        Implements:
+            special methods __setitem__ and __getitem__ to set and get values to and from parameters
+
+            setParameter(self, parameter_name, parameter_value)
+                sets parameter_value to self._parameters[parameter_name]
+            setParameters(self, params)
+                params is a dict of (parameter_name, parameter_value) and setParameters sets the value
+                of each self._parameters[parameter_name] to parameter_value.
+                parameter_name must already be a key of self._parameters
+            parameters(self)
+                returns a copy of _parameters
+            parameterDict(self)
+                returns a dict of (parameter_name, parameter_value)
+
+
+    Parameters
+    ----------
+    version: str
+        Version of the plugin.
+    coreversion: str
+        Exact version of gnomon to check for API compatibility.
+    base_class
+
+    Returns
+    -------
+
+    """
     def decorator(cls):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
@@ -190,7 +427,48 @@ def corePlugin(version, coreversion, base_class=None):
     return decorator
 
 
-def visualizationPlugin(version, coreversion, base_class=None):
+def visualizationPlugin(version: str, coreversion: str, base_class=None):
+    """
+    Registers visualization plugins to the plugin factory.
+
+    Must be the top decorator as it will wrap every method of the class to suppress errors.
+    Error suppression can be deactivated by setting gnomon.utils.gnomonPlugin.DEBUG to True.
+
+    A form data plugin is a class which implements a subclass of either
+    gnomon.visualization.gnomonAbstractVisualization or gnomon.visualization.gnomonAbstractMatplotlibVisualization
+
+    Applies the gnomonParametric decorator:
+        Implements methods and special methods related to dtkCoreParameter use.
+        Those methods access dtkCoreParameter (cross-parameters) which are stored in the dict attribute
+        _parameters mapping keys to dtkCoreParameter.
+
+        Implements:
+            special methods __setitem__ and __getitem__ to set and get values to and from parameters
+
+            setParameter(self, parameter_name, parameter_value)
+                sets parameter_value to self._parameters[parameter_name]
+            setParameters(self, params)
+                params is a dict of (parameter_name, parameter_value) and setParameters sets the value
+                of each self._parameters[parameter_name] to parameter_value.
+                parameter_name must already be a key of self._parameters
+            parameters(self)
+                returns a copy of _parameters
+            parameterDict(self)
+                returns a dict of (parameter_name, parameter_value)
+
+
+    Parameters
+    ----------
+    version: str
+        Version of the plugin.
+    coreversion: str
+        Exact version of gnomon to check for API compatibility.
+    base_class
+
+    Returns
+    -------
+
+    """
     def decorator(cls):
         if not (issubclass(cls, gnomon.visualization.gnomonAbstractVisualization) or
                 issubclass(cls, gnomon.visualization.gnomonAbstractMatplotlibVisualization)):
@@ -309,7 +587,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         factory.recordPlugin(plugin_name, __PLUGINS__[-1])
         if plugin_name in factory.keys():
             logging.info("Python plugin "+str(plugin_name)+" has been successfully loaded!")
-    else :
+    else:
         logging.info("Python plugin" + str(plugin_name) + "defined for core version " + str(coreversion) + " but actual version is ${gnomon_VERSION}")
         logging.info("plugin not loaded")
     return cls
