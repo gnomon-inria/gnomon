@@ -91,7 +91,7 @@ def plugin_metadata(group_name):
     out = []
     for ep in iter_entry_points(group_name):
         *module, resource = ep.module_name.split(".")
-        path = resource_filename(".".join(module), resource+".json")
+        path = resource_filename(".".join(module), resource + ".json")
         out.append((ep.name, path))
     return out
 
@@ -173,7 +173,7 @@ def gnomon_declare_plugins(path: str) -> Dict[str, List[str]]:
     entry_points dict used to declare the plugins in setuptools
     """
     script = findall(path)
-    script = [f for f in script if (f.endswith('.py'))  and ('__init__' not in f)]
+    script = [f for f in script if (f.endswith('.py')) and ('__init__' not in f)]
 
     module_dict = {}
 
@@ -181,16 +181,16 @@ def gnomon_declare_plugins(path: str) -> Dict[str, List[str]]:
 
     for module, file in zip(path_form, script):
         with open(file) as f:
-            print("  --> Parsing "+str(file))
+            print("  --> Parsing " + str(file))
             datafile = f.readlines()
             for line in datafile:
                 if 'class' in line and 'gnomonAbstract' in line:
                     cls = line.split('gnomonAbstract')[1].split(')')[0]
                     name = line.split('class ')[1].split('(')[0]
-                    cls = cls[0].lower()+cls[1:]
+                    cls = cls[0].lower() + cls[1:]
                     if cls not in module_dict.keys():
                         module_dict[cls] = []
-                    module_dict[cls].append(name+' = ' + module.replace('.py', ''))
+                    module_dict[cls].append(name + ' = ' + module.replace('.py', ''))
 
     return module_dict
 
@@ -220,16 +220,19 @@ def gnomonParametric(cls):
     -------
     decorated class
     """
+
     # -----------------------------------------------------
     # Plugin parameters concept
     # -----------------------------------------------------
 
     def __setitem__(self, key, value):
         self.setParameter(key, value)
+
     cls.__setitem__ = __setitem__
 
     def __getitem__(self, key):
         return self._parameters[key].value()
+
     cls.__getitem__ = __getitem__
 
     def setParameter(self, parameter_name, parameter_value):
@@ -247,14 +250,17 @@ def gnomonParametric(cls):
     def setParameters(self, params):
         for (parameter_name, parameter_value) in params.items():
             self.setParameter(parameter_name, parameter_value)
+
     cls.setParameters = setParameters
 
     def parameters(self):
         return {k: v for k, v in self._parameters.items()}
+
     cls.parameters = parameters
 
     def parameterDict(self):
         return {key: value.value() for key, value in self.parameters().items()}
+
     cls.parameterDict = parameterDict
 
     return cls
@@ -276,6 +282,7 @@ def serialize(attr):
     -------
     class with a 'serialize' and 'deserialize' method implemented
     """
+
     def decorator(cls: type):
         def serialize_func(self: object) -> str:
             return b64encode(pickle.dumps(getattr(self, attr))).decode("ascii")
@@ -286,6 +293,7 @@ def serialize(attr):
         setattr(cls, "serialize", serialize_func)
         setattr(cls, "deserialize", deserialize_func)
         return cls
+
     return decorator
 
 
@@ -318,6 +326,7 @@ def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter
     -------
 
     """
+
     def decorator(cls):
         if not issubclass(cls, gnomon.core.gnomonAbstractFormData):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractFormData interface."
@@ -327,6 +336,7 @@ def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter
         cls.__data_getter = getattr(cls, data_getter)
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
         return cls
+
     return decorator
 
 
@@ -371,6 +381,7 @@ def algorithmPlugin(version: str, coreversion: str, base_class=None):
     -------
 
     """
+
     def decorator(cls):
         if not issubclass(cls, gnomon.core.gnomonAbstractAlgorithm):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractAlgorithm interface."
@@ -378,6 +389,7 @@ def algorithmPlugin(version: str, coreversion: str, base_class=None):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
         return cls
+
     return decorator
 
 
@@ -420,10 +432,12 @@ def corePlugin(version: str, coreversion: str, base_class=None):
     -------
 
     """
+
     def decorator(cls):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
         return cls
+
     return decorator
 
 
@@ -469,6 +483,7 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
     -------
 
     """
+
     def decorator(cls):
         if not (issubclass(cls, gnomon.visualization.gnomonAbstractVisualization) or
                 issubclass(cls, gnomon.visualization.gnomonAbstractMatplotlibVisualization)):
@@ -477,6 +492,7 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.visualization, base_class=base_class)
         return cls
+
     return decorator
 
 
@@ -489,16 +505,17 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         doc = self.__doc__
         if doc is not None:
             # doc = doc.replace("    ","")
-            doc = re.split("--+",doc)[0]
-            doc = re.split("\n  +[A-z]*\n",doc)[0]
-            doc = doc.replace("\n    \n","\n\n\n")
-            doc = doc.replace("\n\n","\n\n\n")
-            doc = doc.replace("\n    "," ")
-            doc = doc.replace("\n ","\n")
+            doc = re.split("--+", doc)[0]
+            doc = re.split("\n  +[A-z]*\n", doc)[0]
+            doc = doc.replace("\n    \n", "\n\n\n")
+            doc = doc.replace("\n\n", "\n\n\n")
+            doc = doc.replace("\n    ", " ")
+            doc = doc.replace("\n ", "\n")
             doc = "\n" + doc + "\n\n"
         else:
             doc = "\nThis plugin has no documentation\n\n"
         return doc
+
     cls.documentation = documentation
 
     cls.version = version
@@ -522,34 +539,36 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
 
     def pluginName(self):
         return cls.__name__
+
     setattr(cls, "pluginName", pluginName)
 
     # -----------------------------------------------------
     # Factory registration
     # -----------------------------------------------------
     if base_class is None:
-        base_class =  cls.__bases__[0]
+        base_class = cls.__bases__[0]
 
     gnomonPluginBaseClass = getattr(namespace, base_class.__name__ + "Plugin")
 
-    def checkVersion(plugin_coreversion : str) -> bool:
+    def checkVersion(plugin_coreversion: str) -> bool:
         coreversion = ("${gnomon_VERSION}").split('.')
         plugin_coreversion = plugin_coreversion.split('.')
 
-        if int(coreversion[0]) != int(plugin_coreversion[0]) :
+        if int(coreversion[0]) != int(plugin_coreversion[0]):
             return False
 
         # if minor level of ref < elem return false
         # TODO put < when major > 0
-        if int(coreversion[1]) < int(plugin_coreversion[1]) :
+        if int(coreversion[1]) < int(plugin_coreversion[1]):
             return False
-        else :
+        else:
             # no patch level specified in ref
-            if len(coreversion) < 3 or  len(plugin_coreversion) < 3:
+            if len(coreversion) < 3 or len(plugin_coreversion) < 3:
                 return True
 
             # if same minor level, compare patch level
-            if (int(coreversion[1]) == int(plugin_coreversion[1])) and (int(coreversion[2]) <  int(plugin_coreversion[2])) :
+            if (int(coreversion[1]) == int(plugin_coreversion[1])) and (
+                    int(coreversion[2]) < int(plugin_coreversion[2])):
                 return False
             # else minor level of elem < ref , then don't compare patch level
 
@@ -579,15 +598,15 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     plugin_name = cls.__name__
     plugin_name = plugin_name[0].lower() + plugin_name[1:]
 
-
     # TODO
     # check plugin gnomon_version to actual version before registering it
     # register plugin_version to be able to get it ?
     if checkVersion(coreversion):
         factory.recordPlugin(plugin_name, __PLUGINS__[-1])
         if plugin_name in factory.keys():
-            logging.info("Python plugin "+str(plugin_name)+" has been successfully loaded!")
+            logging.info("Python plugin " + str(plugin_name) + " has been successfully loaded!")
     else:
-        logging.info("Python plugin" + str(plugin_name) + "defined for core version " + str(coreversion) + " but actual version is ${gnomon_VERSION}")
+        logging.info("Python plugin" + str(plugin_name) + "defined for core version " + str(
+            coreversion) + " but actual version is ${gnomon_VERSION}")
         logging.info("plugin not loaded")
     return cls
