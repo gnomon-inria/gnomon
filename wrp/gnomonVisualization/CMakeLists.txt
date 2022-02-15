@@ -27,6 +27,9 @@ set(SWIG_MODULE_NAME ${PROJECT_NAME})
 list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
+message("  -- Python3_NumPy_FOUND=${Python3_NumPy_FOUND}")
+message("  -- Python3_NumPy_INCLUDE_DIRS=${Python3_NumPy_INCLUDE_DIRS}")
+
 swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
   Python3::Python
