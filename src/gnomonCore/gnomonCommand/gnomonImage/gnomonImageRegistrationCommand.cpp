@@ -70,6 +70,7 @@ void gnomonImageRegistrationCommand::undo()
 {
     d->inputs["reference"] = nullptr;
     d->inputs["input"] = nullptr;
+    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
 }
 
 void gnomonImageRegistrationCommand::addImage(gnomonImageSeries *image_series)

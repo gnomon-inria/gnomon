@@ -1,7 +1,7 @@
 import unittest
 
 import gnomon.core
-from gnomon.utils.gnomonPlugin import gnomonPlugin
+from gnomon.utils.gnomonPlugin import corePlugin
 from gnomon.core import gnomonAbstractDataDriver
 
 class dummyPlugin(gnomonAbstractDataDriver):
@@ -24,7 +24,7 @@ class dummyPlugin(gnomonAbstractDataDriver):
     def find(self, query):
         return [""]
 
-version_exact = "0.19.0"
+version_exact = "0.20.0"
 
 split = version_exact.split('.')
 split[1] = str(int(split[1]) + 1)
@@ -36,7 +36,7 @@ split[2] = str(int(split[2]) - 1)
 version_old_good = '.'.join(split)
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_old_good, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
+@corePlugin(version="0.1.0", coreversion=version_old_good, base_class=gnomonAbstractDataDriver)
 class dummyOldPlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -44,7 +44,7 @@ class dummyOldPlugin(dummyPlugin):
         self.myname = "ooooold"
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_old_bad, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
+@corePlugin(version="0.1.0", coreversion=version_old_bad, base_class=gnomonAbstractDataDriver)
 class dummyOldBadPlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -52,7 +52,7 @@ class dummyOldBadPlugin(dummyPlugin):
         self.myname = "ooooold"
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_exact, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
+@corePlugin(version="0.1.0", coreversion=version_exact, base_class=gnomonAbstractDataDriver)
 class dummyExactPlugin(dummyPlugin):
     def __init__(self):
         super().__init__()
@@ -60,7 +60,7 @@ class dummyExactPlugin(dummyPlugin):
         self.myname = "exact"
 
 
-@gnomonPlugin(version="0.1.0", coreversion=version_future, namespace=gnomon.core, base_class=gnomonAbstractDataDriver)
+@corePlugin(version="0.1.0", coreversion=version_future, base_class=gnomonAbstractDataDriver)
 class dummyFuturePlugin(dummyPlugin):
     def __init__(self):
         super().__init__()

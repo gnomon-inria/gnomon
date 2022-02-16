@@ -70,7 +70,7 @@ void gnomonImageFilterCommandTestCase::redo(void)
     d->filter_command->setInput(new gnomonImageSeries());
     d->filter_command->redo();
 
-    QVERIFY(filter::t_run_called && !filter::t_set_input_called);
+    QVERIFY(filter::t_run_called && filter::t_set_input_called);
 
 }
 
