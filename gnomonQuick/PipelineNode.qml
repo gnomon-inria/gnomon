@@ -9,6 +9,7 @@ import xQuick.Style     1.0 as X
 import xQuick.Fonts     1.0 as X
 
 import gnomonQuick     1.0 as GX
+import gnomon.Pipeline  1.0 as GP
 
 Rectangle {
 
@@ -147,6 +148,7 @@ Rectangle {
                 text: "Save"
                 foregroundColor: X.Style.accentColor
                 onClicked: {
+                    GP.Pipeline.setPipeplineInfoForJsonExport(node.name, pipeline_inputs.text, _input_edit.text, _node_description_edit.text);
                     _node_edit_dialog.close();
                 }
             }
