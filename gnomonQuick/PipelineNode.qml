@@ -5,6 +5,7 @@ import QtQuick.Shapes 1.15
 import xQuick           1.0 as X
 import xQuick.Controls  1.0 as X
 import xQuick.Style     1.0 as X
+import xQuick.Fonts     1.0 as X
 
 import gnomonQuick     1.0 as GX
 
@@ -42,6 +43,27 @@ Rectangle {
         }
     }
 
+    X.Icon {
+        id: _edit_button
+
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 3;
+        visible: _dragArea.containsMouse
+
+        size: 15;
+        color: "#333333"; //TODO: get value from theme
+
+        icon: X.Icons.icons.edit
+
+        Component.onCompleted: {
+            console.log("THERE SHOULD BE A PENCIL")
+        }
+
+
+    }
+
+
     MouseArea {
         id: _dragArea
         anchors.fill: parent
@@ -51,6 +73,16 @@ Rectangle {
         onDoubleClicked: {
             console.log("Switching to workspace ", _self.workspaceIndex)
             window.switch_workspace(_self.workspaceIndex)
+        }
+    }
+
+    MouseArea {
+        id: _save_area;
+
+        anchors.fill: _edit_button;
+
+        onClicked: {
+            console.log("Trigger save dialog")
         }
     }
 
