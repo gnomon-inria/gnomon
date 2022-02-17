@@ -15,7 +15,7 @@
 # Code:
 
 import sip
-import gnomoncore
+import gnomon.core
 
 from gnomonwidgets import *
 from gnomonworkspace import *
@@ -135,7 +135,7 @@ class lpyThemesEngineCallBack(dtkThemesEngineCallBack):
 cb1 = lpyThemesEngineCallBack()
 cb1.register()
 
-from gnomonvisualization import gnomonFormManager
+from gnomon.visualization import gnomonFormManager
 
 class gnomonLpyView3D(LpyView3D):
 

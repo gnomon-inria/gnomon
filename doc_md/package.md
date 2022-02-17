@@ -44,7 +44,7 @@ To write the `setup.py` you can follow this minimal template:
 
 from setuptools import setup, find_packages
 
-from gnomon_utils.gnomonPlugin import gnomon_declare_plugins
+from gnomon.utils.gnomonPlugin import gnomon_declare_plugins
 
 short_descr = "package description"
 readme = open("README.md")

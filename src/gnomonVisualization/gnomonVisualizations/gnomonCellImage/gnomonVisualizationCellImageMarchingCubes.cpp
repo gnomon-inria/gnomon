@@ -106,8 +106,11 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
      }
      auto mm = std::minmax_element(cellScalarPropertyValues.begin(),cellScalarPropertyValues.end());
 
-     ((dtk::d_range_real *)q->parameters()["value_range"])->setMin(*(mm.first));
-     ((dtk::d_range_real *)q->parameters()["value_range"])->setMax(*(mm.second));
+    double range_min = *(mm.first) - (*(mm.second) - *(mm.first))/2;
+    double range_max = *(mm.second) + (*(mm.second) - *(mm.first))/2;
+
+     ((dtk::d_range_real *)q->parameters()["value_range"])->setMin(range_min);
+     ((dtk::d_range_real *)q->parameters()["value_range"])->setMax(range_max);
      ((dtk::d_range_real *)q->parameters()["value_range"])->setValue({*(mm.first),*(mm.second)});
 }
 

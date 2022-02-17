@@ -35,6 +35,8 @@ public:
 
     virtual gnomonAbstractCellImageData* clone(void) const = 0;
 
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
+
 
 //  ///////////////////////////////////////////////////////////////////
 //  Metadata

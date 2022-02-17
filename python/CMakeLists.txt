@@ -19,34 +19,35 @@ if (PYTHON)
     set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
     set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
     set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
-    set(PLUGIN_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonPlugin.py.in")
-    set(PLUGIN_PY    "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonPlugin.py")
-    set(OUTPUT      "${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/__init__.py")
-    set(TEMPLATES_WD "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/templates.in")
-    set(TEMPLATES_GLOB "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/templates.in/**")
-    set(TEMPLATES "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/templates/")
+    set(PLUGIN_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gnomon/utils/gnomonPlugin.py.in")
+    set(PLUGIN_PY    "${CMAKE_CURRENT_BINARY_DIR}/gnomon/utils/gnomonPlugin.py")
+    set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/gnomon/__init__.py")
+    #set(TEMPLATES_WD "${CMAKE_CURRENT_SOURCE_DIR}/gnomon/utils/templates")
+    #set(TEMPLATES_GLOB "${CMAKE_CURRENT_SOURCE_DIR}/gnomon/utils/templates/**")
+    #set(TEMPLATES "${CMAKE_CURRENT_BINARY_DIR}/gnomon/utils/templates/")
+    set(TEMPLATES_WD "${CMAKE_CURRENT_SOURCE_DIR}/gnomon/")
+    set(TEMPLATES_GLOB "${CMAKE_CURRENT_SOURCE_DIR}/gnomon/**")
+    set(TEMPLATES "${CMAKE_CURRENT_BINARY_DIR}/gnomon/")
 
-    file(REMOVE_RECURSE "${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils.egg-info")
+    file(REMOVE_RECURSE "${CMAKE_CURRENT_BINARY_DIR}/gnomon/")
 
     configure_file(${SETUP_PY_IN} ${SETUP_PY})
-    configure_file(${PLUGIN_PY_IN} ${PLUGIN_PY})
+    #configure_file(${PLUGIN_PY_IN} ${PLUGIN_PY})
     configure_files_recur(${TEMPLATES_WD} ${TEMPLATES_GLOB} ${TEMPLATES})
-    add_custom_command(
-        OUTPUT ${OUTPUT}
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/*.py
-                                                   ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonDecorator
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/decorators/*.py
-                                                   ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonDecorator/
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonMpl
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gnomon_utils/gnomonMpl/*.py
-                                                   ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/gnomon_utils/gnomonMpl/)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyproject.toml ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml)
+    #add_custom_command(
+    #    OUTPUT ${OUTPUT}
+    #    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/pyproject.toml
+    #        ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml
+    #    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gnomon/
+    #        ${CMAKE_CURRENT_BINARY_DIR}/gnomon/
+    #    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/gnomon/utils/templates.in
+    #    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_BINARY_DIR}/gnomon/utils/gnomonPlugin.py.in
+    #)
 
     add_custom_target(target ALL DEPENDS ${OUTPUT})
 
     install(
-        CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} clean)"
-        CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install)"
+        CODE "execute_process(COMMAND ${PYTHON} -m pip install python/)"
     )
 endif()

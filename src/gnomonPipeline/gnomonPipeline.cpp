@@ -662,6 +662,9 @@ void gnomonPipeline::setFormIndex(gnomonAbstractDynamicForm *form, int index)
 {
     if (index > -1) {
         d->form_manager_index[form] = index;
+        if (d->form_clones.contains(form)) {
+            this->setFormIndex(d->form_clones[form], index);
+        }
 
         gnomonPipelinePort *output_port = nullptr;
         if (d->reader_nodes.contains(form)) {
@@ -814,10 +817,10 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "\n";
     out << "import luigi\n";
     out << "\n";
-    out << "import gnomoncore\n";
-    out << "from gnomon_utils import load_plugin_group\n";
+    out << "import gnomon.core\n";
+    out << "from gnomon.utils import load_plugin_group\n";
     out << "\n";
-    out << "from gnomon_utils.gnomonLuigi import AlgorithmPluginTask\n";
+    out << "from gnomon.gnomonLuigi import AlgorithmPluginTask\n";
     out << "\n";
     for (const auto& node_name : d->pipeline_node_names) {
         if (d->node_type_count.contains(node_name)) {

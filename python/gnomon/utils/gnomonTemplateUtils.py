@@ -9,7 +9,7 @@ from pprint import pprint
 from jinja2 import Environment, StrictUndefined, FileSystemLoader, BaseLoader
 
 if not __package__:
-    __package__ = "gnomon_utils"
+    __package__ = "gnomon"
 
 template_env = Environment(
     loader=FileSystemLoader(pkg_resources.resource_filename(__package__, "templates")),
@@ -73,7 +73,7 @@ def directory_walker(node: Schematic, env: dir, cur_path):
     else:
         new_path = cur_path
     if node.get("python_package", False) is True:
-        with open(os.path.join(new_path, "__init__.py"), "w"):
+        with open(os.path.join(new_path, "../__init__.py"), "w"):
             pass
     for child in node["tree"]:
         dispatch(Schematic(child), env, new_path)
@@ -85,7 +85,7 @@ def empty_package(node: Schematic, env: dir, cur_path):
         os.mkdir(new_path)
     except FileExistsError:
         pass
-    with open(os.path.join(new_path, "__init__.py"), "w"):
+    with open(os.path.join(new_path, "../__init__.py"), "w"):
         pass
 
 

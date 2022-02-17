@@ -3,7 +3,6 @@
 
 
 from setuptools import setup, find_packages
-from gnomon_utils.gnomonPlugin import gnomon_declare_plugins
 
 short_descr = "{{short_descr}}"
 readme = open("README.md")
@@ -36,8 +35,9 @@ setup_kwds = dict(
     tests_require=[
 
     ],
+    # declare package plugins
     entry_points={
-        'entry_points': gnomon_declare_plugins('src/plugin_{{package_name}}'),
+        # "plugin-group": ["plugin-module = package_name.import.path.plugin-module"]
     },
     keywords='',
 

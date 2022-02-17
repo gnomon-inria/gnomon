@@ -1,6 +1,6 @@
 import sys
 import argparse
-from gnomon_utils import gnomonTemplateUtils
+from gnomon.utils import gnomonTemplateUtils
 
 
 def main():

@@ -278,12 +278,12 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
 
     plugin_code += "from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist\n";
     plugin_code += "\n";
-    plugin_code += "import gnomoncore\n";
+    plugin_code += "import gnomon.core\n";
     plugin_code += "\n";
-    plugin_code += "from gnomon_utils import corePlugin\n";
+    plugin_code += "from gnomon.utils import algorithmPlugin\n";
 
     if (d->input_forms.size() + d->output_forms.size() > 0) {
-        plugin_code += "from gnomon_utils.decorators import";
+        plugin_code += "from gnomon.utils.decorators import";
     }
     int n_forms = 0;
     for (const auto &form_type : d->input_forms.keys()) {
@@ -316,7 +316,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     plugin_code += "# {# gnomon, plugin.class\n";
     plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
-    plugin_code += "@corePlugin(version='0.1.0', coreversion='0.19.0')\n";
+    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.20.0')\n";
 
     for (const auto &form_type : d->input_forms.keys()) {
         gnomonFormDescription desc = d->input_forms[form_type];

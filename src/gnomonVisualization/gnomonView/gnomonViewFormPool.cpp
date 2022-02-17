@@ -76,6 +76,9 @@ gnomonViewFormPool::gnomonViewFormPool(QObject *parent) : QObject(parent)
 
 gnomonViewFormPool::~gnomonViewFormPool(void)
 {
+    foreach(gnomonViewForm *view, d->views) {
+        view->setInPool(false);
+    }
     d->views.clear();
 }
 
@@ -83,6 +86,7 @@ void gnomonViewFormPool::addView(gnomonViewForm *view)
 {
     if(!d->views.contains(view)) {
         d->views << view;
+        view->setInPool(true);
 //
 //        connect(view, SIGNAL(  linking()), d, SLOT(  linking()));
 //        connect(view, SIGNAL(unlinking()), d, SLOT(unlinking()));

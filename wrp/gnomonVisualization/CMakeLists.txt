@@ -27,6 +27,9 @@ set(SWIG_MODULE_NAME ${PROJECT_NAME})
 list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
+message("  -- Python3_NumPy_FOUND=${Python3_NumPy_FOUND}")
+message("  -- Python3_NumPy_INCLUDE_DIRS=${Python3_NumPy_INCLUDE_DIRS}")
+
 swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
   Python3::Python
@@ -39,16 +42,18 @@ swig_link_libraries(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} ${LAYER_NAME})
 
-# To copy file at build time
+## #############################################################################
+## Install rules
+## #############################################################################
+
+set(GNOMON_PYTHON "${CMAKE_BINARY_DIR}/python/gnomon/")
+
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD VERBATIM
-    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PROJECT_NAME}>" ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_${PROJECT_NAME}.so
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py  ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/${PROJECT_NAME}.py)
+    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PROJECT_NAME}>" ${GNOMON_PYTHON}/visualization/_${PROJECT_NAME}.so
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py  ${GNOMON_PYTHON}/visualization/__${PROJECT_NAME}.py)
 
-# install rules
-install(TARGETS ${PROJECT_NAME} DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
-#install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i  DESTINATION ${CMAKE_INSTALL_PREFIX}/wrp/${LAYER_NAME}/)
+# install(TARGETS ${PROJECT_NAME} DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
 
 ######################################################################
 ### CMakeLists.txt ends here

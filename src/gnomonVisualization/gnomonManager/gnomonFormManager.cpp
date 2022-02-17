@@ -191,41 +191,48 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
 
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
+    QString form_name;
 
     // TODO : Make it possible to choose an adapted writer plugin, rather than checking writer one by one (get inspiration from reader)
 
     if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
-        writer_plugin = "binaryImageWriter";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonBinaryImageWriterCommand);
+        form_name = binaryImage->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonBinaryImageWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonBinaryImageWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     } else if (gnomonCellComplexSeries *cellcomplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-        writer_plugin = "gnomonCellComplexWriterPropertyTopomesh";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonCellComplexWriterCommand);
+        form_name = cellcomplex->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonCellComplexWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonCellComplexWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     } else if (gnomonCellImageSeries *cellimage = dynamic_cast<gnomonCellImageSeries *>(form)) {
-        writer_plugin = "gnomonCellImageWriterPropertySpatialImage";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonCellImageWriterCommand);
+        form_name = cellimage->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonCellImageWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonCellImageWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
-        writer_plugin = "gnomonImageWriter";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonImageWriterCommand);
+        form_name = image->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonImageWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonImageWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
-        writer_plugin = "gnomonMeshWriterPropertyTopomesh";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonMeshWriterCommand);
+        form_name = mesh->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonMeshWriterCommand);
         }
-    }else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
-        writer_plugin = "pointCloudWriterPropertyTopomesh";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonPointCloudWriterCommand);
+        writer_plugin = dynamic_cast<gnomonMeshWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
+    } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
+        form_name = pointCloud->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonPointCloudWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonPointCloudWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     }
-    d->formWriterCommand[item] = d->commands[writer_plugin];
+    d->formWriterCommand[item] = d->commands[form_name];
     d->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 
     emit added(item);
@@ -246,19 +253,22 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->pipeline->addClonedForm(form, d->forms[item]);
 
     QString writer_plugin;
+    QString form_name;
 
     if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
-        writer_plugin = "gnomonDataFrameWriterPandas";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonDataFrameWriterCommand);
+        form_name = dataFrame->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonDataFrameWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonDataFrameWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
-        writer_plugin = "gnomonTreeWriterTreex";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonTreeWriterCommand);
+        form_name = tree->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonTreeWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonTreeWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     }
-    d->formWriterCommand[item] = d->commands[writer_plugin];
+    d->formWriterCommand[item] = d->commands[form_name];
     d->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 
     emit added(item);
@@ -275,14 +285,22 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->formData.insert(item, image);
 
     QString writer_plugin;
+    QString form_name;
 
     if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
-        writer_plugin = "gnomonDataFrameWriterPandas";
-        if (!d->commands.contains(writer_plugin)) {
-            d->commands.insert(writer_plugin, new gnomonDataFrameWriterCommand);
+        form_name = dataFrame->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonDataFrameWriterCommand);
         }
+        writer_plugin = dynamic_cast<gnomonDataFrameWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
+    } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
+        form_name = tree->formName();
+        if (!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonTreeWriterCommand);
+        }
+        writer_plugin = dynamic_cast<gnomonTreeWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     }
-    d->formWriterCommand[item] = d->commands[writer_plugin];
+    d->formWriterCommand[item] = d->commands[form_name];
     d->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 
     emit added(item);

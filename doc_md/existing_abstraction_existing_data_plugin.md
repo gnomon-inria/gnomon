@@ -23,7 +23,7 @@ a plugin package)
     linearFilterTimagetk.py
 
 ``` python
-from gnomoncore import gnomonAbstractImageFilter
+from gnomon.core import gnomonAbstractImageFilter
 
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 
@@ -54,12 +54,12 @@ Keep the cls arg equal to `None`
 ```
 
 ``` python
-import gnomoncore
-from gnomoncore import gnomonAbstractImageFilter
+import gnomon.core
+from gnomon.core import gnomonAbstractImageFilter
 
-from gnomon_utils import corePlugin
+from gnomon.utils import corePlugin
 
-@corePlugin(version="0.1.0", coreversion="0.19.0")
+@corePlugin(version="0.1.0", coreversion="0.20.0")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 ```
 
@@ -107,9 +107,9 @@ are channel names.
 ```
 
 ``` python
-from gnomon_utils.decorators import imageInput, imageOutput
+from gnomon.utils.decorators import imageInput, imageOutput
 
-@gnomonPlugin(version="0.1.0", coreversion="0.19.0")
+@gnomonPlugin(version="0.1.0", coreversion="0.20.0")
 @imageInput(attr='images')
 @imageOutput(attr='filtered_images')
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -187,15 +187,15 @@ parameter values as `self['parameter_name']`. It is included in the `corePlugin`
 
 
 ``` python
-import gnomoncore
-from gnomoncore import gnomonAbstractImageFilter
+import gnomon.core
+from gnomon.core import gnomonAbstractImageFilter
 
-from gnomon_utils import corePlugin
-from gnomon_utils.decorators import imageInput, imageOutput
+from gnomon.utils import corePlugin
+from gnomon.utils.decorators import imageInput, imageOutput
 
 import dtkcore
 
-@corePlugin(version="0.1.0", coreversion="0.19.0")
+@corePlugin(version="0.1.0", coreversion="0.20.0")
 @imageInput("images")
 @imageOutput("filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -314,7 +314,7 @@ of the Python package containing the plugin module.
     setup.py
 
 ``` python
-from gnomon_utils.gnomonPlugin import gnomon_declare_plugins
+from gnomon.utils.gnomonPlugin import gnomon_declare_plugins
 
 setup_kwds['entry_points'] = gnomon_declare_plugins('src/package_name')
 ```
@@ -328,17 +328,17 @@ or at least all modules defining Gnomon plugins.
 ## Complete plugin module
 
 ``` python
-import gnomoncore
-from gnomoncore import gnomonAbstractImageFilter
+import gnomon.core
+from gnomon.core import gnomonAbstractImageFilter
 
-from gnomon_utils import corePlugin
-from gnomon_utils.decorators import imageInput, imageOutput
+from gnomon.utils import corePlugin
+from gnomon.utils.decorators import imageInput, imageOutput
 
 import dtkcore
 
 from timagetk.plugins.linear_filtering import linear_filtering
 
-@corePlugin(version="0.1.0", coreversion="0.19.0")
+@corePlugin(version="0.1.0", coreversion="0.20.0")
 @imageInput(attr="images")
 @imageOutput(attr="filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):

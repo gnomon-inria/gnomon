@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-from gnomoncore import gnomonTime
+from gnomon.core import gnomonTime
 
 class TestGnomonTime(unittest.TestCase):
     '''

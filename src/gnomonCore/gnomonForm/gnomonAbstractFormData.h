@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonAbstractForm"
 
 class GNOMONCORE_EXPORT gnomonAbstractFormData {
 public:
@@ -22,5 +23,7 @@ public:
     virtual QMap<QString,QString> metadata(void) const = 0;
     virtual QString dataName(void) const = 0;
     virtual const QString pluginName(void) = 0;
+
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
 };
 

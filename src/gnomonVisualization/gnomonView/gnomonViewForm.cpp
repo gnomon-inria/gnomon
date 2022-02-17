@@ -165,6 +165,7 @@ public:
 
 public:
     bool input_view = false;
+    bool in_pool = false;
 
 public:
     QColor export_color = QColor("#cccccc");
@@ -2189,22 +2190,25 @@ void gnomonViewForm::onTimeChanged(double time)
 
 void gnomonViewForm::setInputView(bool input)
 {
-    d->input_view = input;
-    // this->setAcceptDrops(input);
-    // if (input) {
-    //     d->export_button->changeIcon(fa::arrowcircledown);
-    //     d->export_button->toggle(false);
-    //     d->export_button->activate(false);
-    // } else {
-    //     d->export_button->changeIcon(fa::arrowcircleup);
-    //     d->export_button->toggle(true);
-    //     d->export_button->activate(true);
-    // }
+    if (input != d->input_view) {
+        d->input_view = input;
+        emit inputViewChanged();
+    }
+}
+
+void gnomonViewForm::setInPool(bool inpool)
+{
+    d->in_pool = inpool;
 }
 
 bool gnomonViewForm::inputView(void)
 {
     return d->input_view;
+}
+
+bool gnomonViewForm::inPool(void)
+{
+    return d->in_pool;
 }
 
 bool gnomonViewForm::synced(void)

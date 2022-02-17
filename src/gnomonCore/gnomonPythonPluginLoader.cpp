@@ -40,7 +40,7 @@ QStringList availablePluginsFromGroup(const QString & module) {
 
     Py_Initialize(); // NO OP if already initialized
 
-    PyObject* pName = PyUnicode_FromString("gnomon_utils");
+    PyObject* pName = PyUnicode_FromString("gnomon.utils");
     PyObject* pModule = PyImport_Import(pName);
 
     if(pModule)
@@ -51,7 +51,6 @@ QStringList availablePluginsFromGroup(const QString & module) {
             PyObject* args = Py_BuildValue("(s)", module.toStdString().c_str());
             PyObject* entry_points = PyObject_CallObject(pFunc, args);
 
-            qDebug() << "Number of entry_point for " << module << " : " << (int) PyList_Size(entry_points);
             for (Py_ssize_t i = 0; i < PyList_Size(entry_points); ++i) {
                 Py_ssize_t size = 0;
                 char const *tmp = PyUnicode_AsUTF8AndSize(PyList_GetItem(entry_points, i), &size);
@@ -62,14 +61,13 @@ QStringList availablePluginsFromGroup(const QString & module) {
         }
         else
         {
-            // TODO: change printf to dtkWarn
-            printf("ERROR: function getInteger()\n");
+            dtkWarn() << Q_FUNC_INFO << "can't get available plugins for module " << module;
         }
         Py_DECREF(pFunc);
     }
     else
     {
-        printf("ERROR: Module not imported\n");
+         dtkWarn() << Q_FUNC_INFO << " Module" << module << " not imported";
     }
     Py_DECREF(pModule);
     Py_DECREF(pName);

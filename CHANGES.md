@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 0.20.0 - 2022-02-11
+- refactor python gnomon module
+- simplify and clarify decorators
+
 ## version 0.17.0 - 2021-09-17
  - replace series by dict in Python
  - use dtkCoreParameters

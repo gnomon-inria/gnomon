@@ -71,7 +71,7 @@ public:
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
-    Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
+    Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
     Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
 
@@ -83,6 +83,7 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
+    Q_PROPERTY(bool inPool READ inPool WRITE setInPool)
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -110,6 +111,7 @@ signals:
 
     void syncedChanged(void);
     void syncingChanged(void);
+    void inputViewChanged(void);
 
 signals:
     void   linking(void);
@@ -155,6 +157,7 @@ public:
     bool inputView(void);
     bool synced(void);
     bool syncing(void);
+    bool inPool(void);
 
 signals:
     void formsChanged(void);
@@ -244,6 +247,7 @@ public slots:
 
 public slots:
     void setInputView(bool);
+    void setInPool(bool);
 
 public slots:
     void setEnableMenus(bool);
