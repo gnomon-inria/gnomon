@@ -57,13 +57,15 @@ void gnomonCellImageFilterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellImageFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageFilterCommand::redo()
+void gnomonCellImageFilterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellImageFilterCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFilter *) this->action)->output();
+
     if ((!cellImage)||(cellImage->times().empty())) {
         d->output = nullptr;
     } else {
@@ -138,6 +140,20 @@ void gnomonCellImageFilterCommand::setInputForm(const QString &name, gnomonAbstr
 
 QStringList gnomonCellImageFilterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellImageFilterCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellImageFilterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

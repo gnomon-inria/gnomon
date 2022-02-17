@@ -96,6 +96,8 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     d->pool->addView(this->targets()->views()[0]);
 
     d->updateViewFormTypes();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)

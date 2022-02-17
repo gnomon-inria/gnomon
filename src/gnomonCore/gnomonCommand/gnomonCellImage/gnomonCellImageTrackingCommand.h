@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonCellImageTrackingCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonCellImageTrackingCommand();
-    ~gnomonCellImageTrackingCommand() override;
+     gnomonCellImageTrackingCommand(void);
+    ~gnomonCellImageTrackingCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setImage(gnomonImageSeries *image);
@@ -25,6 +26,10 @@ public:
     gnomonCellImageSeries *cellImage();
     gnomonTreeSeries *tree();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

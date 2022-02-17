@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonImageConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonImageConstructorCommand();
-    ~gnomonImageConstructorCommand() override;
+     gnomonImageConstructorCommand(void);
+    ~gnomonImageConstructorCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonImageSeries *output();
@@ -17,6 +18,10 @@ public:
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

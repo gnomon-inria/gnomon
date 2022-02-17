@@ -48,13 +48,15 @@ void gnomonLStringAdapterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::lStringAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonLStringAdapterCommand::redo()
+void gnomonLStringAdapterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    
-    this->action->run();
-    
+
+}
+
+void gnomonLStringAdapterCommand::postdo(void)
+{
     gnomonAbstractDynamicForm *output = ((gnomonAbstractLStringAdapter *) this->action)->output();
+
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {
@@ -123,6 +125,17 @@ void gnomonLStringAdapterCommand::setInputForm(const QString &name, gnomonAbstra
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonLStringAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonLStringAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 

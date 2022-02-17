@@ -53,12 +53,15 @@ gnomonDataFrameReaderCommand::~gnomonDataFrameReaderCommand()
     delete d;
 }
 
-void gnomonDataFrameReaderCommand::redo()
+void gnomonDataFrameReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractDataFrameReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonDataFrameReaderCommand::postdo(void)
+{
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     } else {
@@ -96,6 +99,20 @@ gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
     return types;
+}
+
+void gnomonDataFrameReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->dataFrame) {
+        d->dataFrame = new gnomonDataFrameSeries();
+    }
+    auto tmp = serialization["dataFrame"].toObject();
+    d->dataFrame->deserialize(tmp);
+}
+
+QJsonObject gnomonDataFrameReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["dataFrame"] = d->dataFrame->serialize();
+    return out;
 }
 
 //

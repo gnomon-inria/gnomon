@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonMeshFromImageCommand();
-    ~gnomonMeshFromImageCommand() override;
+     gnomonMeshFromImageCommand(void);
+    ~gnomonMeshFromImageCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonImageSeries *image_series);
@@ -24,6 +25,10 @@ public:
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString& algo_name) override;
 

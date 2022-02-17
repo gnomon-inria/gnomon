@@ -51,13 +51,15 @@ void gnomonPointCloudConstructorCommand::setAlgorithmName(const QString& algo_na
     this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudConstructorCommand::redo()
+void gnomonPointCloudConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonPointCloudConstructorCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
+
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->output = nullptr;
     } else {
@@ -93,6 +95,20 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudConstructorCommand::outputType
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("output", "gnomonPointCloud"));
     return output_types;
+}
+
+void gnomonPointCloudConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

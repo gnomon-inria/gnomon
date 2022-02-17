@@ -52,13 +52,15 @@ void gnomonImageConstructorCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::imageConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonImageConstructorCommand::redo()
+void gnomonImageConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonImageConstructorCommand::postdo(void)
+{
     gnomonImageSeries *image = ((gnomonAbstractImageConstructor *) this->action)->output();
+
     if ((!image)||(image->times().empty())) {
         d->output = nullptr;
     } else {
@@ -95,6 +97,20 @@ gnomonAbstractCommand::orderedMap gnomonImageConstructorCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("output", "gnomonImage"));
     return types;
+}
+
+void gnomonImageConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonImageConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //
