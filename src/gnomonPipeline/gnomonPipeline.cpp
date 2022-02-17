@@ -52,9 +52,9 @@ public:
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
     QMap< QPair<QString, QString>, QPair<QString, QString> > pipeline_edges;
-    QString pipeline_desc;
-    QMap<QString, QString> pipeline_input_names; // TODO: see how to use a QStringList another to retrieve inputs from qml
-    QString pipeline_output;
+    QMap<QString, QString> pipeline_desc;
+    QMap<QString, QString> pipeline_input_name; 
+    QMap<QString, QString> pipeline_output;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
     QMap<gnomonAbstractDynamicForm *, QString> reader_output;
@@ -716,7 +716,7 @@ void gnomonPipeline::exportToJson(const QString& url)
     pipeline_json.insert("gnomonVersion", GNOMON_VERSION);
     pipeline_json.insert("fileFormatVersion", "0.0.1");
     pipeline_json.insert("name", pipeline_name);
-    pipeline_json.insert("description", d->pipeline_desc);
+    pipeline_json.insert("description", d->pipeline_desc["binaryImageReader"]); // TODO change key to a generic one
 
     QJsonArray inputs_json;  // input_name, node_name -> method
     QJsonArray outputs_json; // output_name, node_name -> method
@@ -739,7 +739,7 @@ void gnomonPipeline::exportToJson(const QString& url)
         if (node_reader) {
             //this is a nodeReader add to inputs
             QJsonObject input;
-            QString input_name = d->pipeline_input_names[node_name]  + QString::number(inputs_json.count()); // "my_input_"
+            QString input_name = d->pipeline_input_name[node_name]  + QString::number(inputs_json.count()); // "my_input_"
             input.insert(input_name, node_name + " -> path");
             inputs_json.append(input);
 
@@ -755,7 +755,7 @@ void gnomonPipeline::exportToJson(const QString& url)
         if (node_writer) {
             //this is a nodeReader add to inputs
             QJsonObject output;
-            output.insert(d->pipeline_output ,node_name + " -> path"); // "my_output"
+            output.insert(d->pipeline_output[node_name] ,node_name + " -> path"); // "my_output"
             outputs_json.append(output); // "output": {"anOutput": "cellImageQuantification -> cellImage"},
         }
     }
@@ -891,11 +891,11 @@ void gnomonPipeline::updateLayout(void)
     d->forceDrivenLayout();
 }
 
-void gnomonPipeline::setPipeplineInfoForJsonExport(const QMap<QString, QString> input_names , const QString& output, const QString& description)
+void gnomonPipeline::setPipeplineInfoForJsonExport(const QString& node_name, const QString& input_names , const QString& output, const QString& description)
 {
-    d->pipeline_input_names = input_names;
-    d->pipeline_output = output;
-    d->pipeline_desc = description;
+    d->pipeline_input_name[node_name] = input_names;
+    d->pipeline_output[node_name] = output;
+    d->pipeline_desc[node_name] = description;
 }
 
 gnomonPipeline *gnomonPipeline::s_instance = nullptr;
