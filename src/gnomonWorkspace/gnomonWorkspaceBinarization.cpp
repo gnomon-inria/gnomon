@@ -25,7 +25,6 @@ gnomonWorkspaceBinarization::gnomonWorkspaceBinarization(QObject *parent) : gnom
 
     emit parametersChanged();
 
-    // d->updateViewFormTypes();
     d->updatePool();
 }
 

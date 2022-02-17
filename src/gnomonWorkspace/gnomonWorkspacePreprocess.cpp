@@ -47,7 +47,6 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
 
     emit parametersChanged();
 
-    // d->updateViewFormTypes();
     d->updatePool();
 }
 

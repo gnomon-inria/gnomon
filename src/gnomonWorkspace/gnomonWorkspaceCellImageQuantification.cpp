@@ -30,7 +30,6 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     connect(this->m_target_mpl, &gnomonViewMatplotlib::exportedForm , d->pipeline, &gnomonPipeline::addForm);
 
     emit parametersChanged();
-    // d->updateViewFormTypes();
     d->updatePool(); //unused here
 }
 

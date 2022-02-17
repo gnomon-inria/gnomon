@@ -44,26 +44,6 @@ void gnomonAlgorithmWorkspacePrivate::registerPipeline(void)
     }
 }
 
-void gnomonAlgorithmWorkspacePrivate::updateViewFormTypes(void)
-{
-    if(!this->command) {
-        dtkError() << Q_FUNC_INFO << "command should be created before calling this function";
-    }
-
-    for(auto [input_name, input_type] : this->command->inputTypes()) {
-        for(auto* source: this->sources->views()) {
-            source->setAcceptForm(input_type, true);
-        }
-    }
-
-    // auto&& output_types = this->command->outputTypes();
-    for (auto [output_name, output_type] : this->command->outputTypes()) {
-        for(auto * target: this->targets->views()) {
-            target->setAcceptForm(output_type, true);
-        }
-    }
-}
-
 void gnomonAlgorithmWorkspacePrivate::updatePool(void)
 {
     if(!this->pool)
