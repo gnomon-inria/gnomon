@@ -25,6 +25,7 @@ Control {
 
     }
 
+
     MouseArea {
         id: _mouse_area
         anchors.fill: _self;

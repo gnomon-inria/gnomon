@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
+import QtQuick.Layouts  1.15
 
 import xQuick           1.0 as X
 import xQuick.Controls  1.0 as X
@@ -56,11 +57,100 @@ Rectangle {
 
         icon: X.Icons.icons.edit
 
-        Component.onCompleted: {
-            console.log("THERE SHOULD BE A PENCIL")
+    }
+
+
+    X.Dialog {
+        id: _node_edit_dialog;
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        width: Math.round(window.width / 3 * 2)
+
+        parent: Overlay.overlay
+        focus: true
+        modal: true
+
+        title: "Node info"
+        GridLayout {
+
+            columns: 2
+            rows: 3
+
+            width: parent.width
+
+            X.Label {
+                text: "Input";
+                font {
+                    pointSize: 14;
+                    weight: Font.Bold
+                }
+            }
+
+            X.TextField {
+                id: _input_edit;
+
+                placeholderText: qsTr("Enter input name")
+                implicitWidth: Math.round(js_info_dialog.width/2)
+                implicitHeight: Math.round(js_info_dialog.height/8)
+                wrapMode: TextInput.WrapAnywhere
+            }
+
+            X.Label {
+                text: "Output";
+                font {
+                    pointSize: 14;
+                    weight: Font.Bold
+                }
+            }
+
+            X.TextField {
+                id: _output_edit;
+                placeholderText: qsTr("Enter output name")
+                implicitWidth: Math.round(js_info_dialog.width/2)
+                implicitHeight: Math.round(js_info_dialog.height/8)
+                wrapMode: TextInput.WrapAnywhere
+
+            }
+
+            X.Label {
+                text: "Description";
+                font {
+                    pointSize: 14;
+                    weight: Font.Bold
+                }
+            }
+
+            X.TextField {
+                id: _node_description_edit
+                placeholderText: qsTr("Enter description")
+                implicitWidth: Math.round(js_info_dialog.width/2)
+                implicitHeight: Math.round(js_info_dialog.height/4)
+                wrapMode: TextInput.WrapAnywhere
+            }
+
         }
 
+        footer: X.DialogButtonBox {
+            visible: true
 
+            X.ButtonRaw {
+                text: "Cancel"
+                foregroundColor: X.Style.accentColor
+                onClicked: {
+                    _node_edit_dialog.close();
+                }
+            }
+
+            X.ButtonRaw {
+                text: "Save"
+                foregroundColor: X.Style.accentColor
+                onClicked: {
+                    _node_edit_dialog.close();
+                }
+            }
+        }
     }
 
 
@@ -81,9 +171,7 @@ Rectangle {
 
         anchors.fill: _edit_button;
 
-        onClicked: {
-            console.log("Trigger save dialog")
-        }
+        onClicked: _node_edit_dialog.open();
     }
 
     X.Label {
