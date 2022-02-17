@@ -1,6 +1,6 @@
 #pragma once
 
-%module(directors="1") gnomoncore
+%module(directors="1", package="gnomon.core", moduleimport="import _gnomoncore") gnomoncore
 
 #ifdef SWIGWIN
 %include <windows.i>

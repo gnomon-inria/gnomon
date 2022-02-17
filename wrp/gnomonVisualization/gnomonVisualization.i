@@ -1,20 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
-%module(directors="1") gnomonvisualization
+%module(directors="1", package="gnomon.visualization", moduleimport="import _gnomonvisualization") gnomonvisualization
 
 %{
 #define SWIG_FILE_WITH_INIT

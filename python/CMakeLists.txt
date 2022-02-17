@@ -1,3 +1,5 @@
+project(gnomonPython VERSION ${gnomon_VERSION})
+
 find_program(PYTHON "python")
 set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 
@@ -45,7 +47,12 @@ if (PYTHON)
     #    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_BINARY_DIR}/gnomon/utils/gnomonPlugin.py.in
     #)
 
-    add_custom_target(target ALL DEPENDS ${OUTPUT})
+    add_custom_target(${PROJECT_NAME} ALL DEPENDS ${OUTPUT})
+
+    add_dependencies(${PROJECT_NAME} gnomonCore)
+    add_dependencies(${PROJECT_NAME} gnomoncore)
+    add_dependencies(${PROJECT_NAME} gnomonVisualization)
+    add_dependencies(${PROJECT_NAME} gnomonvisualization)
 
     install(
         CODE "execute_process(COMMAND ${PYTHON} -m pip install python/)"
