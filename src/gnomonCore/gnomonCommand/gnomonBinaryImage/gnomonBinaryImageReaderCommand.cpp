@@ -29,13 +29,15 @@ gnomonBinaryImageReaderCommand::~gnomonBinaryImageReaderCommand()
     delete d;
 }
 
-void gnomonBinaryImageReaderCommand::redo()
+void gnomonBinaryImageReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
     ((gnomonAbstractBinaryImageReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonBinaryImageReaderCommand::postdo(void)
+{
     gnomonBinaryImageSeries *binaryImage = ((gnomonAbstractBinaryImageReader *) this->action)->binaryImage();
+
     if ((!binaryImage)||(binaryImage->times().empty())) {
         d->binaryImage = nullptr;
     } else {
@@ -73,4 +75,18 @@ gnomonAbstractCommand::orderedMap gnomonBinaryImageReaderCommand::outputTypes() 
 
 QStringList gnomonBinaryImageReaderCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonBinaryImageReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->binaryImage) {
+        d->binaryImage = new gnomonBinaryImageSeries();
+    }
+    auto tmp = serialization["binaryImage"].toObject();
+    d->binaryImage->deserialize(tmp);
+}
+
+QJsonObject gnomonBinaryImageReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["binaryImage"] = d->binaryImage->serialize();
+    return out;
 }

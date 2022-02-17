@@ -52,13 +52,15 @@ void gnomonCellImageQuantificationCommand::setAlgorithmName(const QString& algo_
     this->action = gnomonCore::cellImageQuantification::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageQuantificationCommand::redo()
+void gnomonCellImageQuantificationCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellImageQuantificationCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
     } else {
@@ -66,6 +68,7 @@ void gnomonCellImageQuantificationCommand::redo()
     }
 
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     }
@@ -160,6 +163,26 @@ void gnomonCellImageQuantificationCommand::setInputForm(const QString &name, gno
 
 QStringList gnomonCellImageQuantificationCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellImageQuantificationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellImage) {
+        d->cellImage = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["cellImage"].toObject();
+    d->cellImage->deserialize(tmp);
+    if(!d->dataFrame) {
+        d->dataFrame = new gnomonDataFrameSeries();
+    }
+    auto tmp2 = serialization["dataFrame"].toObject();
+    d->dataFrame->deserialize(tmp2);
+}
+
+QJsonObject gnomonCellImageQuantificationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellImage"] = d->cellImage->serialize();
+    out["dataFrame"] = d->dataFrame->serialize();
+    return out;
 }
 
 //

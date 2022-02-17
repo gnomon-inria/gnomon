@@ -15,8 +15,6 @@
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
 
-find_package (Python3 3.7 EXACT COMPONENTS NumPy)
-
 find_package(dtkCorePython REQUIRED)
 find_package(dtkImagingPython REQUIRED)
 

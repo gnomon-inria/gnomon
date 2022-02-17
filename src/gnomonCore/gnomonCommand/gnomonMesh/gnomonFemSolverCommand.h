@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonFemSolverCommand();
-    ~gnomonFemSolverCommand() override;
+     gnomonFemSolverCommand(void);
+    ~gnomonFemSolverCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setMesh(gnomonMeshSeries *mesh);
@@ -26,6 +27,10 @@ public:
     orderedMap outputTypes() override;
 
     gnomonMeshSeries *updatedMesh();
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

@@ -49,13 +49,15 @@ void gnomonMeshFromImageCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshFromImageCommand::redo()
+void gnomonMeshFromImageCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonMeshFromImageCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
     } else {
@@ -130,6 +132,20 @@ void gnomonMeshFromImageCommand::setInputForm(const QString &name, gnomonAbstrac
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonMeshFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

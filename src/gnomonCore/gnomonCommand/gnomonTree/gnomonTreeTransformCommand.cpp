@@ -57,13 +57,15 @@ void gnomonTreeTransformCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::treeTransform::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeTransformCommand::redo()
+void gnomonTreeTransformCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonTreeTransformCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeTransform *) this->action)->output();
+
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
     } else {
@@ -137,6 +139,20 @@ void gnomonTreeTransformCommand::setInputForm(const QString &name, gnomonAbstrac
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeTransformCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeTransformCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

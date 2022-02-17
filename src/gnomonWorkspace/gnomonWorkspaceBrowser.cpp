@@ -352,7 +352,7 @@ public:
     gnomonWorkspaceBrowser *q;
 
 public:
-     gnomonWorkspaceBrowserPrivate(void);
+     gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrowser *);
     ~gnomonWorkspaceBrowserPrivate(void);
 
 public:
@@ -367,8 +367,10 @@ public slots:
 // gnomonWorkspaceBrowserPrivate
 /////////////////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
+gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrowser *q)
 {
+    this->q = q;
+
     QList<gnomonAbstractReaderCommand*> commands;
     commands << new gnomonBinaryImageReaderCommand;
     commands << new gnomonCellImageReaderCommand;
@@ -396,6 +398,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(void)
                 fileReaderCommands[ext][algo_name] = command;
             }
         }
+        QObject::connect(command, SIGNAL(finished()), q, SIGNAL(finished()));
     }
 }
 
@@ -565,10 +568,9 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 // gnomonWorkspaceBrowser
 /////////////////////////////////////////////////////////////////////////////
 
-gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : QObject(parent)
+gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstractWorkspace(parent)
 {
-    d = new gnomonWorkspaceBrowserPrivate;
-    d->q = this;
+    d = new gnomonWorkspaceBrowserPrivate(this);
 
     d->pipeline = gnomonPipeline::instance();
 

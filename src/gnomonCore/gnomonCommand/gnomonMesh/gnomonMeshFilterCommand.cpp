@@ -57,13 +57,15 @@ void gnomonMeshFilterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshFilterCommand::redo()
+void gnomonMeshFilterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonMeshFilterCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshFilter *) this->action)->output();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
     } else {
@@ -138,6 +140,20 @@ void gnomonMeshFilterCommand::setInputForm(const QString &name, gnomonAbstractDy
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonMeshFilterCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshFilterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

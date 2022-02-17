@@ -52,13 +52,15 @@ void gnomonCellImageTrackingCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::cellImageTracking::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageTrackingCommand::redo()
+void gnomonCellImageTrackingCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellImageTrackingCommand::postdo(void)
+{
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
+
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
     } else {
@@ -66,10 +68,10 @@ void gnomonCellImageTrackingCommand::redo()
     }
 
     gnomonTreeSeries *tree = ((gnomonAbstractCellImageTracking *) this->action)->tree();
+
     if ((!tree)||(tree->times().empty())) {
         d->tree = nullptr;
-    }
-    else {
+    } else {
         d->tree = tree;
     }
 }
@@ -160,6 +162,26 @@ void gnomonCellImageTrackingCommand::setInputForm(const QString &name, gnomonAbs
 
 QStringList gnomonCellImageTrackingCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellImageTrackingCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellImage) {
+        d->cellImage = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["cellImage"].toObject();
+    d->cellImage->deserialize(tmp);
+    if(!d->tree) {
+        d->tree = new gnomonTreeSeries();
+    }
+    auto tmp2 = serialization["tree"].toObject();
+    d->tree->deserialize(tmp2);
+}
+
+QJsonObject gnomonCellImageTrackingCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellImage"] = d->cellImage->serialize();
+    out["tree"] = d->tree->serialize();
+    return out;
 }
 
 //

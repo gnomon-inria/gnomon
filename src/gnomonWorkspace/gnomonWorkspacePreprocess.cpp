@@ -48,6 +48,8 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
     emit parametersChanged();
 
     d->updatePool();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)

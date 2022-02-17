@@ -5,12 +5,13 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFilterCommand();
-    ~gnomonImageFilterCommand() override;
+     gnomonImageFilterCommand(void);
+    ~gnomonImageFilterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonImageSeries *image_series);
@@ -27,6 +28,10 @@ public:
 
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

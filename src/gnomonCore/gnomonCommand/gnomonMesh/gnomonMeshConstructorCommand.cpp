@@ -52,13 +52,15 @@ void gnomonMeshConstructorCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshConstructorCommand::redo()
+void gnomonMeshConstructorCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonMeshConstructorCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshConstructor *) this->action)->output();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
     } else {
@@ -95,6 +97,20 @@ gnomonAbstractCommand::orderedMap gnomonMeshConstructorCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("output", "gnomonMesh"));
     return types;
+}
+
+void gnomonMeshConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

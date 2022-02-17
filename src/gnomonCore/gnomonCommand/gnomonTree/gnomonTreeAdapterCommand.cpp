@@ -48,16 +48,19 @@ void gnomonTreeAdapterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::treeAdapter::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeAdapterCommand::redo()
+void gnomonTreeAdapterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    
-    this->action->run();
+
+}
+
+void gnomonTreeAdapterCommand::postdo(void)
+{
     qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output();
     qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output()->times();
     qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output()->times().size();
     
     gnomonAbstractDynamicForm *output = ((gnomonAbstractTreeAdapter *) this->action)->output();
+
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
     } else {
@@ -133,6 +136,17 @@ void gnomonTreeAdapterCommand::setInputForm(const QString &name, gnomonAbstractD
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeAdapterCommand::deserializeResults(QJsonObject &serialization) {
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeAdapterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

@@ -7,8 +7,9 @@ public:
     ~gnomonCellImageQuantificationCommand() override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setImage(gnomonImageSeries *image);
@@ -25,6 +26,10 @@ public:
     gnomonCellImageSeries *cellImage();
     gnomonDataFrameSeries *dataFrame();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

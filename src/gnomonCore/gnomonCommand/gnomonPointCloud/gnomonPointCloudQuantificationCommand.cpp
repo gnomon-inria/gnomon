@@ -52,13 +52,15 @@ void gnomonPointCloudQuantificationCommand::setAlgorithmName(const QString& algo
     this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudQuantificationCommand::redo()
+void gnomonPointCloudQuantificationCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonPointCloudQuantificationCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
+
     if ((!pointCloud)||pointCloud->times().empty()) {
         d->pointCloud = nullptr;
     } else {
@@ -66,6 +68,7 @@ void gnomonPointCloudQuantificationCommand::redo()
     }
 
     gnomonDataFrameSeries *dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
+
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
     }
@@ -160,6 +163,26 @@ void gnomonPointCloudQuantificationCommand::setInputForm(const QString &name, gn
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonPointCloudQuantificationCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->pointCloud) {
+        d->pointCloud = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["pointCloud"].toObject();
+    d->pointCloud->deserialize(tmp);
+    if(!d->dataFrame) {
+        d->dataFrame = new gnomonDataFrameSeries ();
+    }
+    auto tmp2 = serialization["dataFrame"].toObject();
+    d->dataFrame->deserialize(tmp2);
+}
+
+QJsonObject gnomonPointCloudQuantificationCommand::serializeResults(void) {
+    QJsonObject out;
+    out["pointCloud"] = d->pointCloud->serialize();
+    out["dataFrame"] = d->dataFrame->serialize();
+    return out;
 }
 
 //

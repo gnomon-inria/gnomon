@@ -4,12 +4,13 @@
 class GNOMONCORE_EXPORT gnomonMeshConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonMeshConstructorCommand();
-    ~gnomonMeshConstructorCommand() override;
+     gnomonMeshConstructorCommand(void);
+    ~gnomonMeshConstructorCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonMeshSeries *output();
@@ -17,6 +18,10 @@ public:
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString& algo_name) override;
 

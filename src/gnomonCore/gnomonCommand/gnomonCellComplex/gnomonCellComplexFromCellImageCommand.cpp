@@ -50,13 +50,15 @@ void gnomonCellComplexFromCellImageCommand::setAlgorithmName(const QString& algo
     this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexFromCellImageCommand::redo()
+void gnomonCellComplexFromCellImageCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonCellComplexFromCellImageCommand::postdo(void)
+{
     gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
+
     if ((!cellComplex)||(cellComplex->times().empty())) {
         d->output = nullptr;
     } else {
@@ -131,6 +133,20 @@ void gnomonCellComplexFromCellImageCommand::setInputForm(const QString &name, gn
 
 QStringList gnomonCellComplexFromCellImageCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellComplexFromCellImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexFromCellImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

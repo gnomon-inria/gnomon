@@ -49,13 +49,15 @@ void gnomonTreeFromLStringCommand::setAlgorithmName(const QString& algo_name)
 }
 
 
-void gnomonTreeFromLStringCommand::redo()
+void gnomonTreeFromLStringCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-//    ((gnomonAbstractTreeFromLString *) this->action)->setLSystem(d->lsystem);
-    this->action->run();
 
+}
+
+void gnomonTreeFromLStringCommand::postdo(void)
+{
     gnomonTreeSeries *tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
+
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
     } else {
@@ -135,6 +137,20 @@ void gnomonTreeFromLStringCommand::setInputForm(const QString &name, gnomonAbstr
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeFromLStringCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeFromLStringCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //
