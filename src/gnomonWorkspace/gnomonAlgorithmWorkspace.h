@@ -62,6 +62,10 @@ public:
     void unSerialize(QJsonObject&);
 
 protected:
+    void addInputView(const QVector<QString>& accepted_forms = {});
+    void addOutputView(const QVector<QString>& accepted_forms = {});
+
+protected:
     class gnomonAlgorithmWorkspacePrivate *d = nullptr;
 };
 

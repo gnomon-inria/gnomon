@@ -56,7 +56,7 @@ void gnomonAlgorithmWorkspacePrivate::updateViewFormTypes(void)
         }
     }
 
-    auto&& output_types = this->command->outputTypes();
+    // auto&& output_types = this->command->outputTypes();
     for (auto [output_name, output_type] : this->command->outputTypes()) {
         for(auto * target: this->targets->views()) {
             target->setAcceptForm(output_type, true);
@@ -248,6 +248,30 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 void gnomonAlgorithmWorkspace::restoreState(void) {
     QString previousAlgo = algoName();
     unSerialize(d->savedState);
+}
+
+void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms) {
+    if(accepted_forms.empty()) {
+        QVector<QString> default_forms;
+        for(auto [name, input_type] : d->command->inputTypes()) {
+            default_forms.push_back(input_type);
+        }
+        d->sources->addView(default_forms);
+    } else {
+        d->sources->addView(accepted_forms);
+    }
+}
+
+void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_forms) {
+    if(accepted_forms.empty()) {
+        QVector<QString> default_forms;
+        for(auto [name, input_type] : d->command->outputTypes()) {
+            default_forms.push_back(input_type);
+        }
+        d->targets->addView(default_forms);
+    } else {
+        d->targets->addView(accepted_forms);
+    }
 }
 
 //

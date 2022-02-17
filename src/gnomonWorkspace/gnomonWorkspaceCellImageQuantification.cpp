@@ -23,14 +23,14 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
     d->algorithm = d->command->algorithmName();
 
-    this->sources()->addView();
+    this->addInputView();
 
     this->m_target_mpl = new gnomonViewMatplotlib(this);
     this->m_target_mpl->setAcceptForm("gnomonDataFrame",true);
     connect(this->m_target_mpl, &gnomonViewMatplotlib::exportedForm , d->pipeline, &gnomonPipeline::addForm);
 
     emit parametersChanged();
-    d->updateViewFormTypes();
+    // d->updateViewFormTypes();
     d->updatePool(); //unused here
 }
 
