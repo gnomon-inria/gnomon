@@ -117,8 +117,8 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
     });
 
-    d->sources->addView(QVector<struct QString>());
-    d->targets->addView(QVector<struct QString>());
+    d->sources->addView();
+    d->targets->addView();
 
     d->pool->addView(this->source());
     d->pool->addView(this->target());
