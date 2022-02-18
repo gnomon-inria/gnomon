@@ -68,22 +68,20 @@ void gnomonImageRegistrationCommandTestCase::redo(void)
 {
     d->image_series.push_back(new gnomonImageSeries());
     d->image_series.push_back(new gnomonImageSeries());
-    d->image_series.push_back(new gnomonImageSeries());
 
     d->registration_command->addImage(d->image_series[0]);
     d->registration_command->addImage(d->image_series[1]);
-    d->registration_command->addImage(d->image_series[2]);
 
     d->registration_command->setParameter("method", "rigid");
     d->registration_command->redo();
 
-    QVERIFY(registration::t_add_image_called == 3 && registration::t_run_called && registration::t_set_parameter_called);
+    QVERIFY(registration::t_add_image_called == 2 && registration::t_run_called && registration::t_set_parameter_called);
 }
 
 void gnomonImageRegistrationCommandTestCase::undo(void)
 {
     d->registration_command->undo();
-    QVERIFY(d->registration_command->inputs().count() == 0);
+    QVERIFY(registration::t_add_image_called == 0);
 }
 
 void gnomonImageRegistrationCommandTestCase::cleanup(void)

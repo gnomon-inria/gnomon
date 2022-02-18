@@ -40,7 +40,7 @@ QStringList availablePluginsFromGroup(const QString & module) {
 
     //dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
 
-    PyObject* pName = PyUnicode_FromString("gnomon_utils");
+    PyObject* pName = PyUnicode_FromString("gnomon.utils");
     PyObject* pModule = PyImport_Import(pName);
 
     if(pModule)

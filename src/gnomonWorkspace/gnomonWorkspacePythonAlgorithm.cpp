@@ -222,7 +222,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
 
     int stat;
     QString output;
-    output = dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import objectManagerFormAlgorithm", &stat);
+    output = dtkScriptInterpreterPython::instance()->interpret("from gnomon.core import objectManagerFormAlgorithm", &stat);
     output = dtkScriptInterpreterPython::instance()->interpret("algorithm = objectManagerFormAlgorithm(\"" + d->object_key + "\")", &stat);
 
     d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
@@ -293,7 +293,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 
     int stat;
     QString output;
-    output = dtkScriptInterpreterPython::instance()->interpret("from gnomoncore import objectManagerFormAlgorithm", &stat);
+    output = dtkScriptInterpreterPython::instance()->interpret("from gnomon.core import objectManagerFormAlgorithm", &stat);
     output = dtkScriptInterpreterPython::instance()->interpret("algorithm = objectManagerFormAlgorithm(\"" + d->object_key + "\")", &stat);
 
     this->target()->clear();

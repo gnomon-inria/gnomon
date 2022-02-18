@@ -17,7 +17,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 ## ###################################################################
 
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 19)
+set(${PROJECT_NAME}_VERSION_MINOR 20)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -107,12 +107,13 @@ include(GenerateExportHeader)
 ## Dependencies
 ## ###################################################################
 
+set(Python3_FIND_VIRTUALENV FIRST)
 if (WIN32)
   # needed when we run cmake in a conda environment
   set(Python3_FIND_REGISTRY LAST)
 endif()
 
-find_package (Python3 3.7 EXACT COMPONENTS Interpreter Development NumPy)
+find_package(Python3 3.7 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)

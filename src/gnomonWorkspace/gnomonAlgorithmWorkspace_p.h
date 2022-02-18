@@ -27,7 +27,7 @@ public:
 public:
     bool setAlgorithm(const QString& algorithm);
     void registerPipeline(void);
-    void updateViewFormTypes(void);
+
     void updatePool(void);
 
 public:

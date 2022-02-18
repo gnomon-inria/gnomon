@@ -1,7 +1,7 @@
 import unittest
-from gnomoncore import gnomonAbstractSystemScenario, gnomonSystem
-from gnomoncore import gnomonSphereForm, gnomonWallForm
-from gnomoncore import vec3_t
+from gnomon.core import gnomonAbstractSystemScenario, gnomonSystem
+from gnomon.core import gnomonSphereForm, gnomonWallForm
+from gnomon.core import vec3_t
 
 class sphereExpansionScenario(gnomonAbstractSystemScenario):
     def __init__(self, sphere=None, wall=None):

@@ -1,20 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
-%module(directors="1") gnomonvisualization
+%module(directors="1", package="gnomon.visualization", moduleimport="import _gnomonvisualization") gnomonvisualization
 
 %{
 #define SWIG_FILE_WITH_INIT
@@ -465,7 +451,7 @@ import_array();
 
 /*%pythoncode %{
     def _figure_func(self):
-        from gnomon_utils.gnomonMpl import gnomon_figure
+        from gnomon.utils.matplotlib_tools import gnomon_figure
         return gnomon_figure(self.figureNumber())
 
     setattr(gnomonViewMatplotlib, "figure", _figure_func)
