@@ -89,6 +89,10 @@ gnomonViewFormList::gnomonViewFormList(QObject *parent) : QObject(parent)
 gnomonViewFormList::~gnomonViewFormList(void)
 {
     // delete d->button;
+    for(auto view: d->views) {
+        delete view;
+    }
+    d->views.clear();
     delete d;
 }
 
@@ -141,6 +145,9 @@ QList<QObject *> gnomonViewFormList::viewsAsQObject(void)
 
 void gnomonViewFormList::removeAllViews(void)
 {
+    for(auto view: d->views) {
+        delete view;
+    }
     d->views.clear();
     // this->update();
 }
