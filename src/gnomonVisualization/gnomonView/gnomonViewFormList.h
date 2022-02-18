@@ -32,7 +32,7 @@ public:
     Q_PROPERTY(QList<QObject *> views READ viewsAsQObject);
 
 public slots:
-    void addView(void);
+    void addView(const QVector<QString> &accepted_forms = {});
 	void removeAllViews(void);
 
 public:

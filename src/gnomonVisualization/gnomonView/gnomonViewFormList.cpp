@@ -92,7 +92,7 @@ gnomonViewFormList::~gnomonViewFormList(void)
     delete d;
 }
 
-void gnomonViewFormList::addView(void)
+void gnomonViewFormList::addView(const QVector<QString> &accepted_forms)
 {
     gnomonViewForm *new_view = new gnomonViewForm(this->parent());
 
@@ -113,6 +113,10 @@ void gnomonViewFormList::addView(void)
     // this->update();
 
     emit viewAdded(new_view);
+
+    for(const auto & form_type: accepted_forms) {
+        new_view->setAcceptForm(form_type, true);
+    }
 }
 
 gnomonViewForm *gnomonViewFormList::operator[](int i)

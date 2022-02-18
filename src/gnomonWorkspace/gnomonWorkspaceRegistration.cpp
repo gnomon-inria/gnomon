@@ -85,17 +85,15 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     emit parametersChanged();
 
     //create the views
-    this->sources()->addView(); // reference
-    this->sources()->addView(); // floating
-    this->targets()->addView(); // registered
+    this->addInputView(); // reference
+    this->addInputView(); // floating
+    this->addOutputView(); // registered
 
     if(!d->pool)
         d->pool = new gnomonViewFormPool(this);
     d->pool->addView(this->sources()->views()[0]);
     d->pool->addView(this->sources()->views()[1]);
     d->pool->addView(this->targets()->views()[0]);
-
-    d->updateViewFormTypes();
 
     connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
