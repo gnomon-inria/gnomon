@@ -5,12 +5,13 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonMeshFilterCommand();
-    ~gnomonMeshFilterCommand() override;
+     gnomonMeshFilterCommand(void);
+    ~gnomonMeshFilterCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonMeshSeries *mesh_series);
@@ -25,6 +26,10 @@ public:
 
     gnomonMeshSeries *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString& algo_name) override;
 

@@ -6,18 +6,23 @@ class gnomonMesh;
 class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonMeshReaderCommand();
-    ~gnomonMeshReaderCommand() override;
+     gnomonMeshReaderCommand(void);
+    ~gnomonMeshReaderCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonMeshSeries *mesh();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

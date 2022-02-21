@@ -58,13 +58,14 @@ void gnomonFemSolverCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::femSolver::pluginFactory().create(algo_name);
 }
 
-void gnomonFemSolverCommand::redo()
+void gnomonFemSolverCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    qDebug()<<"redo command"<<d->mesh;
     ((gnomonAbstractFemSolver *) this->action)->setMesh(d->mesh);
+}
 
-    this->action->run();
+void gnomonFemSolverCommand::postdo(void)
+{
+
 }
 
 void gnomonFemSolverCommand::undo()
@@ -126,6 +127,20 @@ void gnomonFemSolverCommand::setInputForm(const QString &name, gnomonAbstractDyn
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonFemSolverCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->mesh) {
+        d->mesh = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["updatedMesh"].toObject();
+    d->mesh->deserialize(tmp);
+}
+
+QJsonObject gnomonFemSolverCommand::serializeResults(void) {
+    QJsonObject out;
+    out["updatedMesh"] = d->mesh->serialize();
+    return out;
 }
 
 //

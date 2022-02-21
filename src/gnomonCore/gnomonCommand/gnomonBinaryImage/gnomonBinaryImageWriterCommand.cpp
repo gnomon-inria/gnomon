@@ -33,12 +33,15 @@ void gnomonBinaryImageWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::binaryImageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonBinaryImageWriterCommand::redo()
+void gnomonBinaryImageWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractBinaryImageWriter *) this->action)->setBinaryImage(d->binaryImage);
-    this->action->run();
+}
+
+void gnomonBinaryImageWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonBinaryImageWriterCommand::undo()

@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonPointCloudQuantificationCommand();
-    ~gnomonPointCloudQuantificationCommand() override;
+     gnomonPointCloudQuantificationCommand(void);
+    ~gnomonPointCloudQuantificationCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setImage(gnomonImageSeries *image);
@@ -26,6 +27,10 @@ public:
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

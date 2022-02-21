@@ -44,13 +44,15 @@ void gnomonImageFilterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::imageFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonImageFilterCommand::redo()
+void gnomonImageFilterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonImageFilterCommand::postdo(void)
+{
     gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->output();
+
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->output = nullptr;
     } else {
@@ -154,6 +156,20 @@ void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
 gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)
 {
     return d->mask;
+}
+
+void gnomonImageFilterCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonImageFilterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 // gnomonImageFilterCommand.cpp ends here

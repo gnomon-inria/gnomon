@@ -1,6 +1,21 @@
 #pragma once
 
-%module(directors="1") gnomoncore
+//%begin %{
+//// threads handling
+//#define SWIG_PYTHON_NO_USE_GIL
+//
+//#pragma push_macro("slots")
+//#undef slots
+//#include <Python.h>
+//#pragma pop_macro("slots")
+//
+//#include <dtkScript>
+//
+//#define SWIG_PYTHON_THREAD_BEGIN_BLOCK dtkScriptInterpreterPython::instance()->childAcquireLock();
+//#define SWIG_PYTHON_THREAD_END_BLOCK dtkScriptInterpreterPython::instance()->childReleaseLock();
+//%}
+
+%module(directors="1", package="gnomon.core", moduleimport="import _gnomoncore") gnomoncore
 
 #ifdef SWIGWIN
 %include <windows.i>

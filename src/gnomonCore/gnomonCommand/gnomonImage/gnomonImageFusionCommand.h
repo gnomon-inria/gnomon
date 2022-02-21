@@ -7,12 +7,13 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFusionCommand();
-    ~gnomonImageFusionCommand() override;
+     gnomonImageFusionCommand(void);
+    ~gnomonImageFusionCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void addImage(gnomonImageSeries *);
@@ -30,6 +31,10 @@ public:
 
     gnomonImageSeries *output() const;
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void addLandmarks(const std::vector<gnomonLandmark>&);
     void removeLandmarks();

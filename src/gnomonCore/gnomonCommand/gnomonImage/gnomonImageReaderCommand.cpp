@@ -42,17 +42,30 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
     delete d;
 }
 
-void gnomonImageReaderCommand::redo()
+void gnomonImageReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
+    qWarning() << Q_FUNC_INFO;
+
     ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+
+    qWarning() << Q_FUNC_INFO << "Done";
+}
+
+void gnomonImageReaderCommand::postdo(void)
+{
+    qWarning() << Q_FUNC_INFO;
+
     gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
+
+    qWarning() << Q_FUNC_INFO << "Data" << image;
+
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
     }
+
+    qWarning() << Q_FUNC_INFO << "Done" << this->image();
 }
 
 void gnomonImageReaderCommand::undo()
@@ -85,6 +98,20 @@ gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("image", "gnomonImage"));
     return types;
+}
+
+void gnomonImageReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->image) {
+        d->image = new gnomonImageSeries();
+    }
+    auto tmp = serialization["image"].toObject();
+    d->image->deserialize(tmp);
+}
+
+QJsonObject gnomonImageReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["image"] = d->image->serialize();
+    return out;
 }
 
 //

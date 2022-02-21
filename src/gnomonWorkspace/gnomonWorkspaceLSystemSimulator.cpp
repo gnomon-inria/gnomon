@@ -519,13 +519,13 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
+    dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomon.core.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
     dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);
 
     dtkScriptInterpreterPython::instance()->interpret("import gnomon.visualization", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("manager = gnomonvisualization.gnomonFormManager.instance()", &stat);
+    dtkScriptInterpreterPython::instance()->interpret("manager = gnomon.visualization.gnomonFormManager.instance()", &stat);
 
     dtkScriptInterpreterPython::instance()->interpret("from openalea.lpy.gui.lpystudio import Viewer", &stat);
     dtkScriptInterpreterPython::instance()->interpret("import tempfile", &stat);
@@ -648,7 +648,7 @@ void gnomonWorkspaceLSystemSimulator::reparentAction(QMenuBar * menu, const char
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series = gnomonLStringSeries()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring = gnomonLString()", &stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_series.insert(0, gnomon_lstring)", &stat);
-                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomoncore.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
+                        dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data = gnomon.core.lStringData_pluginFactory().create('gnomonLStringDataLPy')",&stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.set_lstring(lstring)",&stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring_data.this.disown()",&stat);
                         dtkScriptInterpreterPython::instance()->interpret("gnomon_lstring.setData(gnomon_lstring_data)",&stat);

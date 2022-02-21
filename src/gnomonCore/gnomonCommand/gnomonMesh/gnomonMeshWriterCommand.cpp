@@ -55,12 +55,15 @@ void gnomonMeshWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::meshWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshWriterCommand::redo()
+void gnomonMeshWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractMeshWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractMeshWriter *) this->action)->setMesh(d->mesh);
-    this->action->run();
+}
+
+void gnomonMeshWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonMeshWriterCommand::undo()

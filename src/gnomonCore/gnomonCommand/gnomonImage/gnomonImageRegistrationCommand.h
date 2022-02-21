@@ -5,12 +5,13 @@ class gnomonImage;
 class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractCommand
 {
 public:
-    gnomonImageRegistrationCommand();
-    ~gnomonImageRegistrationCommand() override;
+     gnomonImageRegistrationCommand(void);
+    ~gnomonImageRegistrationCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     [[deprecated]] void addImage(gnomonImageSeries *);
@@ -23,6 +24,10 @@ public:
     gnomonImageSeries *output();
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void setAlgorithmName(const QString &) override;
 

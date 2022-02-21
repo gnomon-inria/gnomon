@@ -42,13 +42,14 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
     
 
     //create the views
-    this->sources()->addView();
-    this->targets()->addView();
+    this->addInputView();
+    this->addOutputView();
 
     emit parametersChanged();
 
-    d->updateViewFormTypes();
     d->updatePool();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)

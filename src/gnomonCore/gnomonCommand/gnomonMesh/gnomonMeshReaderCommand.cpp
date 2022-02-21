@@ -45,12 +45,15 @@ gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
     delete d;
 }
 
-void gnomonMeshReaderCommand::redo()
+void gnomonMeshReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractMeshReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonMeshReaderCommand::postdo(void)
+{
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
+
     if ((!mesh)||(mesh->times().empty())) {
         d->mesh = nullptr;
     } else {
@@ -88,6 +91,20 @@ gnomonAbstractCommand::orderedMap gnomonMeshReaderCommand::outputTypes() {
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
     return output_types;
+}
+
+void gnomonMeshReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->mesh) {
+        d->mesh = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["mesh"].toObject();
+    d->mesh->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["mesh"] = d->mesh->serialize();
+    return out;
 }
 
 //

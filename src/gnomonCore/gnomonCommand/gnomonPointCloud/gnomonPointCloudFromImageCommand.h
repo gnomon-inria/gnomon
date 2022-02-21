@@ -3,12 +3,13 @@
 class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonPointCloudFromImageCommand();
-    ~gnomonPointCloudFromImageCommand() override;
+     gnomonPointCloudFromImageCommand(void);
+    ~gnomonPointCloudFromImageCommand(void) override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonImageSeries *image);
@@ -25,6 +26,10 @@ public:
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

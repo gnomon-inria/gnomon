@@ -8,8 +8,9 @@ public:
     ~gnomonCellImageConstructorCommand() override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonCellImageSeries *output();
@@ -19,6 +20,10 @@ public:
     orderedMap outputTypes() override;
 
     void setAlgorithmName(const QString &) override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
     static bool isEmpty();

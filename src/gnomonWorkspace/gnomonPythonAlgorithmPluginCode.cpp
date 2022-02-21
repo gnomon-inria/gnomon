@@ -330,7 +330,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += "attr='" + desc.name + "', ";
         plugin_code += "data_plugin='" + desc.data_plugin + "')\n";
     }
-    plugin_code += "class " + d->plugin_name + "(gnomoncore.gnomonAbstractFormAlgorithm):\n";
+    plugin_code += "class " + d->plugin_name + "(gnomon.core.gnomonAbstractFormAlgorithm):\n";
     plugin_code += "    \"\"\"";
     QStringList doc_lines = d->plugin_documentation.split("\n");
     for (int i=0; i<doc_lines.size(); i++) {

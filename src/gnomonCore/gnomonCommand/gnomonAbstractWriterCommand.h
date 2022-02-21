@@ -35,6 +35,14 @@ public:
         return {};
     }
 
+    void deserializeResults(QJsonObject &serialization) override {
+
+    }
+
+    QJsonObject serializeResults(void) override {
+        return QJsonObject();
+    }
+
 protected:
     QString m_path = "";
 };

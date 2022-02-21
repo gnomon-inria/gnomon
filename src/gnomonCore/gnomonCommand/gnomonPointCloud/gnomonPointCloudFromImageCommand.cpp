@@ -58,13 +58,15 @@ void gnomonPointCloudFromImageCommand::setAlgorithmName(const QString& algo_name
     this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudFromImageCommand::redo()
+void gnomonPointCloudFromImageCommand::predo(void)
 {
-    Q_ASSERT(this->action);
 
-    this->action->run();
+}
 
+void gnomonPointCloudFromImageCommand::postdo(void)
+{
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->output = nullptr;
     } else {
@@ -139,6 +141,20 @@ void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, gnomonA
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonPointCloudFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

@@ -20,13 +20,14 @@ gnomonWorkspaceBinarization::gnomonWorkspaceBinarization(QObject *parent) : gnom
     d->algorithm = d->command->algorithmName();
 
     //create the views
-    this->sources()->addView();
-    this->targets()->addView();
+    this->addInputView();
+    this->addOutputView();
 
     emit parametersChanged();
 
-    d->updateViewFormTypes();
     d->updatePool();
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspaceBinarization::~gnomonWorkspaceBinarization(void)
