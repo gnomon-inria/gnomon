@@ -26,5 +26,11 @@ Rectangle {
         id: _mouse_area;
         anchors.fill: parent;
         hoverEnabled: true;
+
+        onDoubleClicked: {
+            if(port.formIndex >= 0) {
+                window.world.currentIndex = port.formIndex
+            }
+        }
     }
 }
