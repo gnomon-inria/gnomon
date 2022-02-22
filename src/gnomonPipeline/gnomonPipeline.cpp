@@ -711,12 +711,12 @@ void gnomonPipeline::exportToJson(const QString& url)
 
     // 1 pipeline document
     QJsonObject pipeline_json;
-    QString pipeline_name = QFileInfo(path).baseName();
+    QString pipeline_name = d->pipeline_output["pipeline_from_ui"]; //QFileInfo(path).baseName();
     pipeline_json.insert("type", "pipeline");
     pipeline_json.insert("gnomonVersion", GNOMON_VERSION);
     pipeline_json.insert("fileFormatVersion", "0.0.1");
-    pipeline_json.insert("name", pipeline_name);
-    pipeline_json.insert("description", d->pipeline_desc["binaryImageReader"]); // TODO change key to a generic one
+    pipeline_json.insert("name", pipeline_name );
+    pipeline_json.insert("description", d->pipeline_desc["pipeline_from_ui"]); 
 
     QJsonArray inputs_json;  // input_name, node_name -> method
     QJsonArray outputs_json; // output_name, node_name -> method
