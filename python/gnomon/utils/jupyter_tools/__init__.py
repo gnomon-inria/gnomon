@@ -1,0 +1,1 @@
+from .backend_qtquick_item import IPythonConsole
