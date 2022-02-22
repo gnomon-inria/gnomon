@@ -148,7 +148,7 @@ Rectangle {
                 text: "Save"
                 foregroundColor: X.Style.accentColor
                 onClicked: {
-                    GP.Pipeline.setPipeplineInfoForJsonExport(node.name, pipeline_inputs.text, _input_edit.text, _node_description_edit.text);
+                    GP.Pipeline.setPipeplineInfoForJsonExport(node.name, _input_edit.text, _output_edit.text, _node_description_edit.text);
                     _node_edit_dialog.close();
                 }
             }
