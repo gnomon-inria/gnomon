@@ -1,13 +1,12 @@
 import logging
 
 from qtpy import QtQml
-from qtpy.QtCore import Qt, QObject, Slot, Signal, QEvent, QTimer, QUrl, qDebug, QRect, QPoint, QCoreApplication
+from qtpy.QtCore import Qt, Slot, QEvent, QRect, QPoint
 from qtpy.QtQuick import QQuickItem, QQuickPaintedItem
-from qtpy.QtGui import QColor, QPalette, QPainter, QBrush, QPixmap, QRegion, QKeyEvent, QTextCursor, QMouseEvent, QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent
-from qtpy.QtWidgets import QStyleOption, QStylePainter, QStyle, QWidget
-from qtpy.QtCore import QIODevice, QFile, QSize
+from qtpy.QtGui import QPainter, QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDropEvent
 
 from .backend_qtquick_widget import InProcessJupyterWidget
+
 
 class JupyterConsole(QQuickPaintedItem):
 
@@ -41,37 +40,48 @@ class JupyterConsole(QQuickPaintedItem):
 
     def mouseMoveEvent(self, event):
         logging.debug("mouseMoveEvent")
-        self.routeMouseEvents(event)
+        self.route_mouse_events(event)
 
     def mousePressEvent(self, event):
         logging.debug("mousePressEvent")
-        self.routeMouseEvents(event)
+        self.route_mouse_events(event)
 
     def mouseReleaseEvent(self, event):
         logging.debug("mouseReleaseEvent")
-        self.routeMouseEvents(event)
+        self.route_mouse_events(event)
 
     def mouseDoubleClickEvent(self, event):
-        self.routeMouseEvents(event)
+        self.route_mouse_events(event)
 
-    # TODO: Support drag events
+    def wheelEvent(self, event):
+        logging.debug("wheelEvent")
+        if self.widget is not None:
+            self.widget._control.wheelEvent(event)
+            event.accept()
+            self.update()
+
+    def keyPressEvent(self, event):
+        logging.debug("keyPressEvent")
+        self.route_key_events(event)
+
+    def keyReleaseEvent(self, event):
+        logging.debug("keyReleaseEvent")
+        self.route_key_events(event)
+
     def dragEnterEvent(self, event):
-        event.accept()
-        return
-        self.widget._control.dragEnterEvent(event)
+        self.route_drag_events(event)
 
     def dragLeaveEvent(self, event):
-        event.accept()
-        return
-        self.widget._control.dragLeaveEvent(event)
+        self.route_drag_events(event)
 
     def dragMoveEvent(self, event):
-        event.accept()
-        return
-        self.widget._control.dragMoveEvent(event)
+        self.route_drag_events(event)
 
-    def routeMouseEvents(self, event):
-        logging.debug("routeMouseEvents")
+    def dropEvent(self, event):
+        self.route_drag_events(event)
+
+    def route_mouse_events(self, event):
+        logging.debug("route_mouse_events")
         self.forceActiveFocus()
         if self.widget is not None:
             if event.type() == QEvent.MouseMove:
@@ -82,12 +92,11 @@ class JupyterConsole(QQuickPaintedItem):
                 self.widget._control.mouseReleaseEvent(event)
             elif event.type() == QEvent.MouseButtonDblClick:
                 self.widget._control.mouseDoubleClickEvent(event)
-            # TODO: Consider adding a MouseArea to catch scroll events
             event.accept()
             self.update()
 
-    def routeKeyEvents(self, event):
-        logging.debug("routeKeyEvents")
+    def route_key_events(self, event):
+        logging.debug("route_key_events")
         if self.widget is not None:
             intercepted = self.widget.eventFilter(self.widget._control, event)
             if not intercepted:
@@ -97,14 +106,21 @@ class JupyterConsole(QQuickPaintedItem):
                     self.widget._control.keyReleaseEvent(event)
         event.accept()
         self.update()
-
-    def keyPressEvent(self, event):
-        logging.debug("keyPressEvent")
-        self.routeKeyEvents(event)
-
-    def keyReleaseEvent(self, event):
-        logging.debug("keyReleaseEvent")
-        self.routeKeyEvents(event)
+        
+    def route_drag_events(self, event):
+        logging.debug("route_drag_events")
+        self.forceActiveFocus()
+        if self.widget is not None:
+            if isinstance(event, QDragEnterEvent):
+                self.widget._control.dragEnterEvent(event)
+            elif isinstance(event, QDragMoveEvent):
+                self.widget._control.dragMoveEvent(event)
+            elif isinstance(event, QDragLeaveEvent):
+                self.widget._control.dragLeaveEvent(event)
+            elif isinstance(event, QDropEvent):
+                self.widget._control.dropEvent(event)
+            event.accept()
+            self.update()
 
     def update_widget_size(self):
         if self.widget is not None:
