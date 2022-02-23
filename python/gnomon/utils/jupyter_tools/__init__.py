@@ -1,1 +1,1 @@
-from .backend_qtquick_item import IPythonConsole
+from .backend_qtquick_item import JupyterConsole
