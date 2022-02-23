@@ -9,60 +9,11 @@ from qtpy.QtCore import QIODevice, QFile, QSize
 
 from .backend_qtquick_widget import InProcessJupyterWidget
 
-
-AsciiToKeySymTable = [ None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None, # Tab is 9
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None,
-                       " ", "!", "\"", "#",
-                       "$", "%", "&", "'",
-                       "(", ")", "*", "+",
-                       ",", "-", ".", "/",
-                       "0", "1", "2", "3", "4", "5", "6", "7",
-                       "8", "9", ":", ";", "<", "=",
-                       ">", "?", "at", "A", "B", "C", "D", "E", "F", "G",
-                       "H", "I", "J", "K", "L", "M", "N", "O",
-                       "P", "Q", "R", "S", "T", "U", "V", "W",
-                       "X", "Y", "Z", "[",
-                       "\\", "]", "^", "_",
-                       "`", "a", "b", "c", "d", "e", "f", "g",
-                       "h", "i", "j", "k", "l", "m", "n", "o",
-                       "p", "q", "r", "s", "t", "u", "v", "w",
-                       "x", "y", "z", "{", "|", "}", "~", None, # Delete is 127
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None, None, None, None, None, None, None, None,
-                       None, None]
-
-
-def ascii_to_key_sym(i):
-    if i >= 0:
-        return AsciiToKeySymTable[i]
-    else:
-        return None
-
-
 class JupyterConsole(QQuickPaintedItem):
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.widget = None
-
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update)
-        self.timer.setInterval(1000/60.)
-        self.timer.start()
 
         self.setAcceptedMouseButtons(Qt.AllButtons)
         self.setFlag(QQuickItem.ItemAcceptsDrops, True)
