@@ -116,7 +116,7 @@ template <typename T> void gnomonTimeSeries<T>::drop(const double t)
 
 template<typename T>
 QJsonObject gnomonTimeSeries<T>::serialize(void) {
-    QJsonObject out;
+    QJsonObject out(gnomonAbstractDynamicForm::serialize());
     out["current_time"] = d->current_time;
     QJsonObject forms;
     for(auto& t: times()) {
@@ -128,6 +128,8 @@ QJsonObject gnomonTimeSeries<T>::serialize(void) {
 
 template<typename T>
 void gnomonTimeSeries<T>::deserialize(QJsonObject &serialization) {
+    gnomonAbstractDynamicForm::deserialize(serialization);
+
     d->current_time = serialization["current_time"].toDouble();
     // emptying current forms map and deleting forms
     for(auto& key: d->forms.keys()) {
