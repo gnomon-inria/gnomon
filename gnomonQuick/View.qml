@@ -306,11 +306,60 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
+                _form_export_dialog.reset();
+                _form_export_dialog.open();
+            }
+        }
 
+        X.Dialog {
+            id: _form_export_dialog;
+            title: "Export from";
+
+            parent: Overlay.overlay
+
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            width: window.width * 3/4
+
+            standardButtons:  Dialog.Ok | Dialog.Cancel
+
+            onAccepted: {
                 viewLogic.transmit();
+                _form_export_dialog.close();
+                //_form_export_dialog.destroy();
+            }
 
-                // _view.requestCapture();
-                // _view.update();
+            onRejected: {
+                _form_export_dialog.close();
+                //_form_export_dialog.destroy();
+
+            }
+
+            function reset(){
+                _form_name.text = "placeholder";
+                _form_name.selectAll();
+                _form_name.forceActiveFocus();
+            }
+
+            RowLayout {
+                id: _layout;
+                anchors.fill: parent;
+                Label {
+                    text: "Name: ";
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+                }
+
+                TextField {
+                    id: _form_name;
+                    text: "placeholder";
+                    focus: true;
+                    Component.onCompleted: {
+                        _form_name.accepted.connect(_form_export_dialog.accepted);
+                    }
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+                }
             }
         }
 
