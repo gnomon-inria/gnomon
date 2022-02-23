@@ -1,4 +1,4 @@
-module gnomonQuick
+module gnomonQuick.Controls
 
 ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml

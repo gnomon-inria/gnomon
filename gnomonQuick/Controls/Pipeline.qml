@@ -2,9 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
-import gnomon.Pipeline 1.0 as G
-
-import gnomonQuick     1.0 as GX
+import gnomon.Pipeline 1.0 as GP
 
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use actual resolution as propertues bound to the shader
@@ -193,9 +191,9 @@ void main() {
         property var edges: [];
 
         Connections {
-            target: G.Pipeline
+            target: GP.Pipeline
             function onNodeAdded (node) {
-                console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
+                console.log(node.name, "(", node.algorithmClass, ")", GP.Pipeline.nodeNames);
                 var n = _canvas.addNode(node);
 
                 console.log(node.inputEdgeCount, "input edges")
@@ -261,36 +259,6 @@ void main() {
             }
         }
 
-        /*GX.PipelineNode { id: _source;
-          algorithmClass: "source";
-          algorithmPlugin: "dummySource";
-          outputPortsNames: ["output1", "output2"];
-
-          x:300
-          y:100
-
-          Component.onCompleted: {
-          console.log(_source.outputPorts);
-          }
-          }
-
-          GX.PipelineNode { id: _target;
-          algorithmClass: "target";
-          algorithmPlugin: "dummyTarget";
-          inputPortsNames: ["input1", "input2"];
-
-          x:600
-          y:100
-
-          Component.onCompleted: {
-          console.log(_target.inputPorts);
-          }
-          }
-
-          GX.PipelineEdge { id: _edge;
-          src: _source.outputPorts["output2"];
-          tgt: _target.inputPorts["input1"];
-          }*/
     }
 
 }
