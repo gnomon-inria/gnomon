@@ -34,6 +34,7 @@ public:
 
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
+    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
     Q_PROPERTY(QString algorithmClass READ algorithmClass CONSTANT);
     Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin CONSTANT);
     Q_PROPERTY(QColor color READ color);
@@ -47,6 +48,7 @@ public:
 
 public:
     const QString& name(void);
+    const QString& description(void);
 
     const QString& algorithmClass(void);
     const QString& algorithmPlugin(void);
@@ -56,10 +58,13 @@ public:
 
 public:
     void setName(const QString& node_name);
+    void setDescription(const QString& desc);
+
     void setPosition(const QPointF& pos);
 
 signals:
     void nameChanged(void);
+    void descriptionChanged(void);
 
     void positionChanged(void);
 

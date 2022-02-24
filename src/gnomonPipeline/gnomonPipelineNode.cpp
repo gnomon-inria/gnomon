@@ -95,6 +95,19 @@ void gnomonPipelineNode::setName(const QString& node_name)
     }
 }
 
+const QString& gnomonPipelineNode::description(void)
+{
+    return d->description;
+}
+
+void gnomonPipelineNode::setDescription(const QString& desc)
+{
+    if (desc != d->description) {
+        d->description = desc;
+        emit descriptionChanged();
+    }
+}
+
 const QString& gnomonPipelineNode::algorithmClass(void)
 {
     return d->algorithm_class;
