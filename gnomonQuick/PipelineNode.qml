@@ -130,7 +130,7 @@ Rectangle {
                 id: _port
                 port: node.inputPort(modelData)
                 Component.onCompleted: {
-                    _self.inputPorts[modelData] = _input_ports.itemAt(index)
+                    _self.inputPorts[node.inputPort(modelData)] = _input_ports.itemAt(index)
                 }
             }
         }
@@ -149,7 +149,7 @@ Rectangle {
                 id: _port
                 port: node.outputPort(modelData)
                 Component.onCompleted: {
-                    _self.outputPorts[modelData] = _output_ports.itemAt(index)
+                    _self.outputPorts[node.outputPort(modelData)] = _output_ports.itemAt(index)
                 }
             }
         }

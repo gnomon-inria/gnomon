@@ -206,9 +206,9 @@ void main() {
                     for (var i=0; i<node.inputEdgeCount; i++) {
                         var edge = node.inputEdgeAt(i);
                         console.log(" --> edge", i, ":",
-                                    edge.source.node.name, "(", edge.source.label, ")",
+                                    edge.source.node.name, "(", edge.source.name, ")",
                                     "->",
-                                    edge.target.node.name, "(", edge.target.label,")")
+                                    edge.target.node.name, "(", edge.target.name,")")
                         var e = _canvas.addEdge(edge);
                     }
                 }
@@ -228,7 +228,7 @@ void main() {
                     "y": Qt.binding(function() { return _canvas.height/2 + 0.33*node.position.y }), //_internal.originY, //Qt.binding(function() { return _internal.originY + node.position.y }),
                     "workspaceIndex": window.current_workspace_index()
                 });
-                nodes[node.name] = n;
+                nodes[node] = n;
                 console.log("Adding node...", n)
                 return n;
             } else {
@@ -239,10 +239,10 @@ void main() {
         function addEdge(edge) {
             var edge_component = Qt.createComponent("PipelineEdge.qml");
             if (edge_component.status == Component.Ready) {
-                var src_node = nodes[edge.source.node.name];
-                var src = src_node.outputPorts[edge.source.name];
-                var tgt_node = nodes[edge.target.node.name];
-                var tgt = tgt_node.inputPorts[edge.target.name]
+                var src_node = nodes[edge.source.node];
+                var src = src_node.outputPorts[edge.source];
+                var tgt_node = nodes[edge.target.node];
+                var tgt = tgt_node.inputPorts[edge.target];
 
                 var e = edge_component.createObject(_canvas, {
                     "edge" : edge,
