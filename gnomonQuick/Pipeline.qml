@@ -240,9 +240,9 @@ void main() {
             var edge_component = Qt.createComponent("PipelineEdge.qml");
             if (edge_component.status == Component.Ready) {
                 var src_node = nodes[edge.source.node.name];
-                var src = src_node.outputPorts[edge.source.label];
+                var src = src_node.outputPorts[edge.source.name];
                 var tgt_node = nodes[edge.target.node.name];
-                var tgt = tgt_node.inputPorts[edge.target.label]
+                var tgt = tgt_node.inputPorts[edge.target.name]
 
                 var e = edge_component.createObject(_canvas, {
                     "edge" : edge,
