@@ -60,6 +60,7 @@ Rectangle {
 
         color: "#333333"; //TODO: get value from theme
         font.pixelSize: 12; //TODO: get value from theme
+        font.bold: _self.workspaceIndex === window.current_workspace_index()
 
         anchors.fill: parent
         anchors.topMargin: 3 //TODO: get value from theme
@@ -73,6 +74,7 @@ Rectangle {
 
         color: "#333333";
         font.pixelSize: 10;
+        font.bold: _self.workspaceIndex === window.current_workspace_index()
 
         anchors.fill: parent
         anchors.topMargin: 20
