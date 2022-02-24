@@ -28,6 +28,8 @@ X.Dialog {
 
     title: "Node info"
 
+    standardButtons: Dialog.Ok | Dialog.Cancel
+
     GridLayout {
         anchors.fill: parent
         columns: 2
@@ -61,10 +63,10 @@ X.Dialog {
             id: input_list
 
             Layout.fillWidth: true
-            Layout.preferredHeight: 40*node.inputPortsNames.length
+            Layout.preferredHeight: 42*node.inputPortsNames.length
             visible: node.inputPortsNames.length > 0
 
-            spacing: 10
+            spacing: 6
 
             model: node.inputPortsNames;
 
@@ -72,7 +74,7 @@ X.Dialog {
                 name: modelData
                 label: node.inputPort(modelData).label
 
-                height: 30
+                height: 36
                 width: output_list.width
             }
         }
@@ -91,10 +93,10 @@ X.Dialog {
             id: output_list
 
             Layout.fillWidth: true
-            Layout.preferredHeight: 40*node.outputPortsNames.length
+            Layout.preferredHeight: 42*node.outputPortsNames.length
             visible: node.outputPortsNames.length > 0
 
-            spacing: 10
+            spacing: 6
 
             model: node.outputPortsNames;
 
@@ -102,7 +104,7 @@ X.Dialog {
                 name: modelData
                 label: node.outputPort(modelData).label
 
-                height: 30
+                height: 36
                 width: output_list.width
             }
         }
@@ -125,37 +127,20 @@ X.Dialog {
 
     }
 
-    footer: X.DialogButtonBox {
-        visible: true
+    onAccepted: {
+        node.name = _name_edit.text
 
-        X.ButtonRaw {
-            text: "Cancel"
-            foregroundColor: X.Style.accentColor
-            onClicked: {
-                _self.close();
-            }
+        for (var input in node.inputPortsNames) {
+            var input_name = node.inputPortsNames[input]
+            node.inputPort(input_name).label = input_list.itemAtIndex(input).text
+        }
+        for (var output in node.outputPortsNames) {
+            var output_name = node.outputPortsNames[output]
+            node.outputPort(output_name).label = output_list.itemAtIndex(output).text
         }
 
-        X.ButtonRaw {
-            text: "Save"
-            foregroundColor: X.Style.accentColor
-            onClicked: {
-                //GP.Pipeline.setPipeplineInfoForJsonExport(node.name, _input_edit.text, _output_edit.text, _node_description_edit.text);
-                node.name = _name_edit.text
+        node.description = _node_description_edit.text
 
-                for (var input in node.inputPortsNames) {
-                    var input_name = node.inputPortsNames[input]
-                    node.inputPort(input_name).label = input_list.itemAtIndex(input).text
-                }
-                for (var output in node.outputPortsNames) {
-                    var output_name = node.outputPortsNames[output]
-                    node.outputPort(output_name).label = output_list.itemAtIndex(output).text
-                }
-
-                node.description = _node_description_edit.text
-
-                _self.close();
-            }
-        }
+        _self.close();
     }
 }

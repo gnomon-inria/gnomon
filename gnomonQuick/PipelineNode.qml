@@ -60,12 +60,6 @@ Rectangle {
 
     }
 
-    GX.PipelineNodeDialog {
-        id: _node_edit_dialog
-
-        node: _self.node
-    }
-
     ToolTip {
          text: node.description
          visible: (node.description != "") && _dragArea.containsMouse
@@ -88,7 +82,15 @@ Rectangle {
 
         anchors.fill: _edit_button;
 
-        onClicked: _node_edit_dialog.open();
+        onClicked: {
+            var node_dialog_component = Qt.createComponent("PipelineNodeDialog.qml");
+            if (node_dialog_component.status == Component.Ready) {
+                var dialog = node_dialog_component.createObject(_self, {
+                    "node": _self.node,
+                });
+                dialog.open()
+            }
+        }
     }
 
     X.Label {
