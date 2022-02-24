@@ -24,6 +24,7 @@ public:
     gnomonPipelineNode *node;
 
 public:
+    QString name;
     QString label;
 
 public:
@@ -36,11 +37,12 @@ gnomonPipelinePort::gnomonPipelinePort(Type type, gnomonPipelineNode *parent) : 
     d->node = parent;
 }
 
-gnomonPipelinePort::gnomonPipelinePort(Type type, const QString& label, gnomonPipelineNode *parent) : d(new gnomonPipelinePortPrivate)
+gnomonPipelinePort::gnomonPipelinePort(Type type, const QString& name, gnomonPipelineNode *parent) : d(new gnomonPipelinePortPrivate)
 {
     d->type = type;
     d->node = parent;
-    this->setLabel(label);
+    d->name = name;
+    this->setLabel(name);
 }
 
 gnomonPipelinePort::~gnomonPipelinePort(void)
@@ -57,6 +59,11 @@ gnomonPipelinePort::Type gnomonPipelinePort::type(void)
 gnomonPipelineNode *gnomonPipelinePort::node(void)
 {
     return d->node;
+}
+
+QString gnomonPipelinePort::name(void)
+{
+    return d->name;
 }
 
 QString gnomonPipelinePort::label(void)
