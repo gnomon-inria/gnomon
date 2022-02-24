@@ -421,6 +421,8 @@ const QJsonObject gnomonPipelineNode::toJson(void)
 {
     QJsonObject json;
     json.insert("name", d->name);
+    json.insert("plugin_group", d->algorithm_class);
+    json.insert("description", d->description);
     return json;
 }
 
