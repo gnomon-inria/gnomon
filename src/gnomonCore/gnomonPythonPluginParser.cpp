@@ -26,7 +26,7 @@ QString stripQuotes(const QString& str)
     QRegularExpression quote_rx("[\'\"](.*)[\'\"]");
     auto match = quote_rx.match(str);
     if (match.hasMatch()) {
-        return match.captured()[1];
+        return match.capturedTexts()[1];
     } else {
         return str;
     }
@@ -183,7 +183,6 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
     QRegularExpression output_rx("@(.*)Output[(](.*)[)]");
     QRegularExpression parameter_rx("self._parameters\\[(.*)\\][ ]*=[ ]*([\\S]*)[(](.*)[)]");
 
-    int pos = -1;
     for (const auto& line : code_lines) {
         if (init_rx.match(line).hasMatch()) {
             in_init = true;
@@ -212,13 +211,13 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 
         auto match = plugin_rx.match(line);
         if (match.hasMatch()) {
-            d->plugin_name = match.captured()[1];
+            d->plugin_name = match.capturedTexts()[1];
         }
 
         match = input_rx.match(line);
-        if (pos != -1) {
-            QString form_type = "gnomon" + capitalize(match.captured()[1]);
-            QString args = match.captured()[2];
+        if (match.hasMatch()) {
+            QString form_type = "gnomon" + capitalize(match.capturedTexts()[1]);
+            QString args = match.capturedTexts()[2];
             QString attr_name = stripQuotes(argumentValue(args, "attr", 0));
             QString data_plugin = stripQuotes(argumentValue(args, "data_plugin", 3));
             if (data_plugin == "") {
@@ -228,9 +227,9 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
         }
 
         match = output_rx.match(line);
-        if (pos != -1) {
-            QString form_type = "gnomon" + capitalize(match.captured()[1]);
-            QString args = match.captured()[2];
+        if (match.hasMatch()) {
+            QString form_type = "gnomon" + capitalize(match.capturedTexts()[1]);
+            QString args = match.capturedTexts()[2];
             QString attr_name = stripQuotes(argumentValue(args, "attr", 0));
             QString data_plugin = stripQuotes(argumentValue(args, "data_plugin", 2));
             if (data_plugin == "") {
@@ -241,9 +240,9 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 
         if (in_init) {
             match = parameter_rx.match(line);
-            if (pos != -1) {
-                QString parameter_name = stripQuotes(match.captured()[1]);
-                QString parameter_type = d->parameter_types.key(match.captured()[2]);
+            if (match.hasMatch()) {
+                QString parameter_name = stripQuotes(match.capturedTexts()[1]);
+                QString parameter_type = d->parameter_types.key(match.capturedTexts()[2]);
                 QString parameter_args = match.captured()[3];
                 QString parameter_doc = stripQuotes(argumentValue(parameter_args, "documentation", 0));
                 d->parameters[parameter_name] = gnomonParameterDescription(parameter_name, parameter_type, parameter_doc);
