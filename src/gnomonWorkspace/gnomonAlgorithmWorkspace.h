@@ -8,8 +8,9 @@
 
 #include <gnomonVisualization/gnomonView/gnomonViewFormList>
 
+#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
+
 class gnomonAbstractCommand;
-class gnomonViewForm;
 
 class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public gnomonAbstractWorkspace
 {

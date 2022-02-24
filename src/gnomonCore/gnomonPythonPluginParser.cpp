@@ -23,10 +23,10 @@
 
 QString stripQuotes(const QString& str)
 {
-    QRegExp quote_rx("[\'\"](.*)[\'\"]");
-    int pos = quote_rx.indexIn(str);
-    if (pos != -1) {
-        return quote_rx.capturedTexts()[1];
+    QRegularExpression quote_rx("[\'\"](.*)[\'\"]");
+    auto match = quote_rx.match(str);
+    if (match.hasMatch()) {
+        return match.captured()[1];
     } else {
         return str;
     }
@@ -173,26 +173,26 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 
     d->plugin_documentation = "";
 
-    QRegExp plugin_rx("class (.*)[(]gnomon");
-    QRegExp docstring_rx("(\"\"\"|''')(.*)");
+    QRegularExpression plugin_rx("class (.*)[(]gnomon");
+    QRegularExpression docstring_rx("(\"\"\"|''')(.*)");
 
-    QRegExp init_rx("def[ ]*__init__[(]self");
-    QRegExp method_rx("def.*[(]self");
+    QRegularExpression init_rx("def[ ]*__init__[(]self");
+    QRegularExpression method_rx("def.*[(]self");
 
-    QRegExp input_rx("@(.*)Input[(](.*)[)]");
-    QRegExp output_rx("@(.*)Output[(](.*)[)]");
-    QRegExp parameter_rx("self._parameters\\[(.*)\\][ ]*=[ ]*([\\S]*)[(](.*)[)]");
+    QRegularExpression input_rx("@(.*)Input[(](.*)[)]");
+    QRegularExpression output_rx("@(.*)Output[(](.*)[)]");
+    QRegularExpression parameter_rx("self._parameters\\[(.*)\\][ ]*=[ ]*([\\S]*)[(](.*)[)]");
 
     int pos = -1;
     for (const auto& line : code_lines) {
-        if (init_rx.indexIn(line) != -1) {
+        if (init_rx.match(line).hasMatch()) {
             in_init = true;
-        } else if (method_rx.indexIn(line) != -1) {
+        } else if (method_rx.match(line).hasMatch()) {
             in_init = false;
         }
 
         if (in_docstring) {
-            if (docstring_rx.indexIn(line) == -1) {
+            if (docstring_rx.match(line).hasMatch()) {
                 if (line.startsWith("    ")) {
                     d->plugin_documentation += line.mid(4) + "\n";
                 } else {
@@ -203,21 +203,22 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
                 docstring_read = true;
             }
         } else {
-            if ((docstring_rx.indexIn(line) != -1) & (!docstring_read)) {
+            auto match = docstring_rx.match(line);
+            if ((match.hasMatch()) & (!docstring_read)) {
                 in_docstring = true;
-                d->plugin_documentation += docstring_rx.capturedTexts()[2] + "\n";
+                d->plugin_documentation += match.capturedTexts()[2] + "\n";
             }
         }
 
-        pos = plugin_rx.indexIn(line);
-        if (pos != -1) {
-            d->plugin_name = plugin_rx.capturedTexts()[1];
+        auto match = plugin_rx.match(line);
+        if (match.hasMatch()) {
+            d->plugin_name = match.captured()[1];
         }
 
-        pos = input_rx.indexIn(line);
+        match = input_rx.match(line);
         if (pos != -1) {
-            QString form_type = "gnomon" + capitalize(input_rx.capturedTexts()[1]);
-            QString args = input_rx.capturedTexts()[2];
+            QString form_type = "gnomon" + capitalize(match.captured()[1]);
+            QString args = match.captured()[2];
             QString attr_name = stripQuotes(argumentValue(args, "attr", 0));
             QString data_plugin = stripQuotes(argumentValue(args, "data_plugin", 3));
             if (data_plugin == "") {
@@ -226,10 +227,10 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
             d->input_forms[attr_name] = gnomonFormDescription(attr_name, form_type, data_plugin);
         }
 
-        pos = output_rx.indexIn(line);
+        match = output_rx.match(line);
         if (pos != -1) {
-            QString form_type = "gnomon" + capitalize(output_rx.capturedTexts()[1]);
-            QString args = output_rx.capturedTexts()[2];
+            QString form_type = "gnomon" + capitalize(match.captured()[1]);
+            QString args = match.captured()[2];
             QString attr_name = stripQuotes(argumentValue(args, "attr", 0));
             QString data_plugin = stripQuotes(argumentValue(args, "data_plugin", 2));
             if (data_plugin == "") {
@@ -239,11 +240,11 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
         }
 
         if (in_init) {
-            pos = parameter_rx.indexIn(line);
+            match = parameter_rx.match(line);
             if (pos != -1) {
-                QString parameter_name = stripQuotes(parameter_rx.capturedTexts()[1]);
-                QString parameter_type = d->parameter_types.key(parameter_rx.capturedTexts()[2]);
-                QString parameter_args = parameter_rx.capturedTexts()[3];
+                QString parameter_name = stripQuotes(match.captured()[1]);
+                QString parameter_type = d->parameter_types.key(match.captured()[2]);
+                QString parameter_args = match.captured()[3];
                 QString parameter_doc = stripQuotes(argumentValue(parameter_args, "documentation", 0));
                 d->parameters[parameter_name] = gnomonParameterDescription(parameter_name, parameter_type, parameter_doc);
             }

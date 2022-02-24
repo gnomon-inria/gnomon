@@ -116,7 +116,7 @@ endif()
 find_package(Python3 3.7 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkCore     REQUIRED)

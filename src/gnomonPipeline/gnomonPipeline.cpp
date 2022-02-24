@@ -840,7 +840,7 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "    tasks = {}\n";
 
     for (const auto& node_name: d->pipeline_node_names) {
-        QString class_name = QString(node_name).remove(QRegExp("[0-9]")) + "Task";
+        QString class_name = QString(node_name).remove(QRegularExpression("[0-9]")) + "Task";
         class_name.replace(0, 1, class_name[0].toUpper());
         out << "    tasks[\"" << node_name <<"\"] = " << class_name << "(**config[\"" << node_name <<"\"])\n";
     }
