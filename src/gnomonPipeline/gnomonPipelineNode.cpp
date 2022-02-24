@@ -14,6 +14,8 @@
 
 #include <float.h>
 
+#include "gnomonPipelinePort.h"
+
 #include "gnomonPipelineNode.h"
 #include "gnomonPipelineNode_p.h"
 
@@ -87,7 +89,10 @@ const QString& gnomonPipelineNode::name(void)
 
 void gnomonPipelineNode::setName(const QString& node_name)
 {
-    d->name = node_name;
+    if (node_name != d->name) {
+        d->name = node_name;
+        emit nameChanged();
+    }
 }
 
 const QString& gnomonPipelineNode::algorithmClass(void)

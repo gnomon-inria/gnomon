@@ -33,7 +33,7 @@ public:
     ~gnomonPipelineNode(void);
 
 public:
-    Q_PROPERTY(QString name READ name WRITE setName);
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QString algorithmClass READ algorithmClass CONSTANT);
     Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin CONSTANT);
     Q_PROPERTY(QColor color READ color);
@@ -59,6 +59,8 @@ public:
     void setPosition(const QPointF& pos);
 
 signals:
+    void nameChanged(void);
+
     void positionChanged(void);
 
     void inputPortsChanged(void);

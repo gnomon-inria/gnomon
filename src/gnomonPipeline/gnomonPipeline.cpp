@@ -472,9 +472,9 @@ void gnomonPipeline::addWriter(gnomonAbstractWriterCommand *command)
     if (!d->node_type_count.contains(node->algorithmClass())) {
         d->node_type_count[node->algorithmClass()] = 1;
     } else {
-        node_name += QString::number(d->node_type_count[node->algorithmClass()]);
         d->node_type_count[node->algorithmClass()] += 1;
     }
+    node_name += QString::number(d->node_type_count[node->algorithmClass()]);
     d->pipeline_node_names.append(node_name);
     node->setName(node_name);
     d->pipeline_nodes[node_name] = node;
@@ -549,9 +549,9 @@ void gnomonPipeline::addAdaptedForm(gnomonAbstractDynamicForm *form)
             if (!d->node_type_count.contains(node->algorithmClass())) {
                 d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
                 d->node_type_count[node->algorithmClass()] += 1;
             }
+            node_name += QString::number(d->node_type_count[node->algorithmClass()]);
             d->pipeline_node_names.append(node_name);
             node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
@@ -573,9 +573,9 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             if (!d->node_type_count.contains(node->algorithmClass())) {
                 d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
                 d->node_type_count[node->algorithmClass()] += 1;
             }
+            node_name += QString::number(d->node_type_count[node->algorithmClass()]);
             d->pipeline_node_names.append(node_name);
             node->setName(node_name);
             qDebug()<<Q_FUNC_INFO<<node->name();
@@ -594,9 +594,9 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             if (!d->node_type_count.contains(node->algorithmClass())) {
                 d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
                 d->node_type_count[node->algorithmClass()] += 1;
             }
+            node_name += QString::number(d->node_type_count[node->algorithmClass()]);
             d->pipeline_node_names.append(node_name);
             node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
@@ -615,9 +615,9 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             if (!d->node_type_count.contains(node->algorithmClass())) {
                 d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
                 d->node_type_count[node->algorithmClass()] += 1;
             }
+            node_name += QString::number(d->node_type_count[node->algorithmClass()]);
             d->pipeline_node_names.append(node_name);
             node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
@@ -635,9 +635,9 @@ void gnomonPipeline::addForm(gnomonAbstractDynamicForm *form)
             if (!d->node_type_count.contains(node->algorithmClass())) {
                 d->node_type_count[node->algorithmClass()] = 1;
             } else {
-                node_name += QString::number(d->node_type_count[node->algorithmClass()]);
                 d->node_type_count[node->algorithmClass()] += 1;
             }
+            node_name += QString::number(d->node_type_count[node->algorithmClass()]);
             d->pipeline_node_names.append(node_name);
             node->setName(node_name);
             d->pipeline_nodes[node_name] = node;
