@@ -18,6 +18,46 @@ Item {
 
     required property Item view;
 
+    QtObject {
+        id: _internal;
+
+        property var menu: null;
+    }
+
+    function update_menu(name) {
+
+        if (_internal.menu) {
+            _internal.menu.destroy();
+            _auto_render_connect.target = null;
+        }
+
+        var source = "qrc:/qml/gnomonQuick/Menus/" + name + ".menu.qml"
+        var defaultSource = "qrc:/qml/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
+
+        var menu_component = Qt.createComponent(source)
+        if(menu_component.status != Component.Ready) {
+            const specific_error_msg = menu_component.errorString()
+
+            console.log("Can't create visualization menu for " + name, specific_error_msg)
+
+            menu_component = Qt.createComponent(defaultSource)
+
+            if(menu_component.status != Component.Ready) {
+                console.error("Can't create visualization menu for", name, specific_error_msg, menu_component.errorString())
+                return;
+            }
+        }
+
+        _internal.menu = menu_component.createObject(_menu, {
+            model: _params.params_model,
+            parameters: _params.parameters,
+        })
+
+        _internal.menu.anchors.fill = _menu;
+
+        _auto_render_connect.target = _internal.menu
+    }
+
     Connections {
         target: view.viewLogic
         function onFormVisuParametersChanged() {
@@ -26,20 +66,21 @@ Item {
         }
     }
 
-
     ColumnLayout {
 
         anchors.fill: parent;
         anchors.margins: 12;
 
-        ComboBox { id: _form_combobox
+        ComboBox {
+            id: _form_combobox
             model: view.viewLogic.formNames;
             visible: view.viewLogic.formNames.length > 0
 
             Layout.fillWidth: true;
         }
 
-        ComboBox { id: _visu_combobox;
+        ComboBox {
+            id: _visu_combobox;
             model: view.viewLogic.formVisualizations(_form_combobox.currentValue);
 
             Layout.fillWidth: true;
@@ -59,6 +100,8 @@ Item {
                 _auto_render.checked = false
                 _params.parameters =  view.viewLogic.formVisuParameters(_form_combobox.currentValue);
                 _params.updateParametersModel();
+
+                _self.update_menu(_visu_combobox.currentValue);
             }
         }
 
@@ -66,43 +109,22 @@ Item {
             id: _params;
         }
 
-        ListView {
-            id: _l;
-            model: _params.params_model;
-            spacing: 10;
-
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
-            visible: view.viewLogic.formNames.length > 0
-            clip: true;
-
-            delegate: Loader {
-                property var lparam: param;
-                height: 70;
-                width: _l.width;
-                sourceComponent: component;
-
-                Connections {
-                    target: param
-                    function onValueChanged() {
-                        if (_auto_render.checked) {
-                            console.info('launching Render!')
-                            view.viewLogic.update();
-                        }
-                    }
-                }
-            }
-
-            ScrollIndicator.vertical: ScrollIndicator {
-                visible: _l.contentHeight > _l.height;
-            }
-        }
-
         Item {
+            id: _menu;
+
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            visible: view.viewLogic.formNames.length == 0
+
+
         }
+
+
+        /* Item { */
+        /*     //a spacer for when there is no menu */
+        /*     Layout.fillWidth: true; */
+        /*     Layout.fillHeight: true; */
+        /*     visible: view.viewLogic.formNames.length == 0 */
+        /* } */
 
         X.ButtonRaw {
             text: "Render";
@@ -163,6 +185,21 @@ Item {
 
             onClicked: {
                 view.viewLogic.clear();
+            }
+        }
+
+    }
+
+    Connections {
+
+        id: _auto_render_connect;
+
+        target: null
+
+        function onValueChanged() {
+            if (_auto_render.checked) {
+                    console.info('launching Render!')
+                    view.viewLogic.update();
             }
         }
 

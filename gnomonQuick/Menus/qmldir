@@ -5,3 +5,5 @@ PythonPluginMenu 1.0 PythonPluginMenu.qml
 WorkspaceBrowsingMenu 1.0 WorkspaceBrowsingMenu.qml
 WorkspaceParameterMenu 1.0 WorkspaceParameterMenu.qml
 WorkspacePythonAlgorithmMenu 1.0 WorkspacePythonAlgorithmMenu.qml
+GnomonVisualizationImageSurfaceMenu 1.0 gnomonVisualizationImageSurface.menu.qml
+GnomonVisualizationDefaultMenu 1.0 gnomonVisualization.defaultMenu.qml

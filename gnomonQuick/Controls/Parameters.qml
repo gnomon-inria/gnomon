@@ -100,6 +100,7 @@ Item {
         console.log("UPDATING PARAMETERS", parameters)
         params_model.clear();
         for (var param_name in parameters) {
+            console.log(param_name)
             var p = parameters[param_name];
             var prop_dict = {};
             console.log("PARAMETER", p.type)
