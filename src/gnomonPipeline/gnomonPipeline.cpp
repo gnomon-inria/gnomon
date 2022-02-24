@@ -278,14 +278,6 @@ QList<QList<QVector2D> > gnomonPipelinePrivate::nodeVectors(QList<QPointF> node_
 // gnomonPipeline
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipeline *gnomonPipeline::instance(void)
-{
-    if(!s_instance)
-        s_instance = new gnomonPipeline;
-
-    return s_instance;
-}
-
 
 gnomonPipeline::gnomonPipeline(void)
 {
@@ -585,8 +577,6 @@ void gnomonPipeline::updateLayout(void)
 {
     d->forceDrivenLayout();
 }
-
-gnomonPipeline *gnomonPipeline::s_instance = nullptr;
 
 //
 // gnomonPipeline.cpp ends here

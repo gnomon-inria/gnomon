@@ -11,9 +11,6 @@ class GNOMONPIPELINE_EXPORT gnomonPipeline : public QObject
     Q_OBJECT
 
 public:
-    static gnomonPipeline *instance(void);
-
-protected:
      gnomonPipeline(void);
     ~gnomonPipeline(void);
 
@@ -53,9 +50,6 @@ public slots:
 
 private:
     class gnomonPipelinePrivate *d;
-
-private:
-    static gnomonPipeline *s_instance;
 };
 
 //

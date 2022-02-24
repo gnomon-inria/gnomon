@@ -4,6 +4,7 @@
 
 #include <QtCore>
 
+class gnomonPipeline;
 class gnomonPipelineNode;
 
 class gnomonAbstractDynamicForm;
@@ -21,6 +22,9 @@ public:
 protected:
      gnomonPipelineManager(void);
     ~gnomonPipelineManager(void);
+
+public:
+    gnomonPipeline *pipeline(void);
 
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);

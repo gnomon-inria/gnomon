@@ -30,6 +30,8 @@ class gnomonPipelineManagerPrivate
 public:
     gnomonPipelineManager *q;
 
+    gnomonPipeline *pipeline;
+
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
 
     QMap<gnomonAbstractDynamicForm *, gnomonPipelineNodeReader *> reader_nodes;
@@ -138,16 +140,21 @@ gnomonPipelineManager *gnomonPipelineManager::instance(void)
     return s_instance;
 }
 
-
 gnomonPipelineManager::gnomonPipelineManager(void)
 {
     d = new gnomonPipelineManagerPrivate;
+    d->pipeline = new gnomonPipeline;
     d->q = this;
 }
 
 gnomonPipelineManager::~gnomonPipelineManager(void)
 {
     delete d;
+}
+
+gnomonPipeline *gnomonPipelineManager::pipeline(void)
+{
+    return d->pipeline;
 }
 
 void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
@@ -176,7 +183,7 @@ void gnomonPipelineManager::addWriter(gnomonAbstractWriterCommand *command)
     d->node_input_forms[node] = input_forms;
     d->linkNodeInputs(node);
 
-    gnomonPipeline::instance()->addNode(node);
+    d->pipeline->addNode(node);
     d->pipeline_nodes[node->name()] = node;
 
 }
@@ -240,7 +247,7 @@ void gnomonPipelineManager::addAdaptedForm(gnomonAbstractDynamicForm *form)
         if (!d->pipeline_nodes.values().contains(node)) {
 
             d->linkNodeInputs(node);
-            gnomonPipeline::instance()->addNode(node);
+            d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
 
         }
@@ -254,7 +261,7 @@ void gnomonPipelineManager::addForm(gnomonAbstractDynamicForm *form)
 
         if (!d->hasNode(node))
         {
-            gnomonPipeline::instance()->addNode(node);
+            d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
         }
     } else if (d->adapter_nodes.contains(form)) {
@@ -263,7 +270,7 @@ void gnomonPipelineManager::addForm(gnomonAbstractDynamicForm *form)
         if (!d->hasNode(node))
         {
             d->linkNodeInputs(node);
-            gnomonPipeline::instance()->addNode(node);
+            d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
 
         }
@@ -272,7 +279,7 @@ void gnomonPipelineManager::addForm(gnomonAbstractDynamicForm *form)
 
         if (!d->hasNode(node))
         {
-            gnomonPipeline::instance()->addNode(node);
+            d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
         }
     } else if (d->algorithm_nodes.contains(form)) {
@@ -281,7 +288,7 @@ void gnomonPipelineManager::addForm(gnomonAbstractDynamicForm *form)
         if (!d->hasNode(node))
         {
             d->linkNodeInputs(node);
-            gnomonPipeline::instance()->addNode(node);
+            d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
 
         }
