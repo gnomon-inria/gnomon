@@ -11,7 +11,7 @@ import xQuick.Fonts     1.0 as X
 import gnomonQuick     1.0 as GX
 
 Control {
-    id: _port_edit;
+    id: _self;
 
     property var name: ""
     property var label: ""
@@ -25,7 +25,7 @@ Control {
             Layout.minimumWidth: parent.width/4
             Layout.fillHeight: true
 
-            text: _port_edit.name
+            text: _self.name
 
             font {
                 pointSize: 14
@@ -45,7 +45,7 @@ Control {
             Layout.minimumWidth: 2*parent.width/3
             Layout.fillHeight: true
 
-            text: _port_edit.label
+            text: _self.label
         }
     }
 }

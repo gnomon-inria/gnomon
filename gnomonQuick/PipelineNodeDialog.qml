@@ -61,15 +61,19 @@ X.Dialog {
             id: input_list
 
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            //Layout.preferredHeight: 40*node.inputPortsNames.length
+            Layout.preferredHeight: 40*node.inputPortsNames.length
             visible: node.inputPortsNames.length > 0
+
+            spacing: 10
 
             model: node.inputPortsNames;
 
             delegate: GX.PipelinePortEdit {
                 name: modelData
                 label: node.inputPort(modelData).label
+
+                height: 30
+                width: output_list.width
             }
         }
 
@@ -87,15 +91,19 @@ X.Dialog {
             id: output_list
 
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            //Layout.preferredHeight: 40*node.outputPortsNames.length
+            Layout.preferredHeight: 40*node.outputPortsNames.length
             visible: node.outputPortsNames.length > 0
+
+            spacing: 10
 
             model: node.outputPortsNames;
 
             delegate: GX.PipelinePortEdit {
                 name: modelData
                 label: node.outputPort(modelData).label
+
+                height: 30
+                width: output_list.width
             }
         }
 
