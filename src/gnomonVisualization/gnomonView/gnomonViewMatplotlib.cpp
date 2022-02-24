@@ -350,7 +350,7 @@ void gnomonViewMatplotlibPrivate::adaptForm(const QString& adapter_plugin)
         lStringCommand->redo();
         gnomonAbstractDynamicForm *adaptedLString = lStringCommand->output();
         if (adaptedLString) {
-            gnomonPipeline::instance()->addAdapter(lStringCommand);
+            gnomonPipelineManager::instance()->addAdapter(lStringCommand);
             q->setForm("gnomonLString",adaptedLString);
         }
     } else if (gnomonTreeSeries* tree = dynamic_cast<gnomonTreeSeries *>(form)) {
@@ -363,7 +363,7 @@ void gnomonViewMatplotlibPrivate::adaptForm(const QString& adapter_plugin)
         qDebug()<<Q_FUNC_INFO<<treeCommand->output();
         gnomonAbstractDynamicForm *adaptedTree = treeCommand->output();
         if (adaptedTree) {
-            gnomonPipeline::instance()->addAdapter(treeCommand);
+            gnomonPipelineManager::instance()->addAdapter(treeCommand);
             q->setForm("gnomonTree",adaptedTree);
         }
     }

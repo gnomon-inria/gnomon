@@ -140,7 +140,7 @@ gnomonWorkspaceDatabaseBrowser::gnomonWorkspaceDatabaseBrowser(QWidget *parent) 
     d = new gnomonWorkspaceDatabaseBrowserPrivate;
 
     d->dataDriver = gnomonDataDriver::instance();
-    d->pipeline = gnomonPipeline::instance();
+    d->pipeline_manager = gnomonPipelineManager::instance();
     d->q = this;
 
     QStringList columns_labels = {"id", "type", "date", "user", "gnomon_version", "name", "get_data", "remove", "protected", "expiration_date"};

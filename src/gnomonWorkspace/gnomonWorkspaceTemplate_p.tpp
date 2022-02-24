@@ -23,7 +23,7 @@
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::gnomonWorkspaceTemplatePrivate(void)
 {
-    this->pipeline = gnomonPipeline::instance();
+    this->pipeline_manager = gnomonPipelineManager::instance();
 }
 
 template <typename T> gnomonWorkspaceTemplatePrivate<T>::~gnomonWorkspaceTemplatePrivate(void)
@@ -76,9 +76,9 @@ template <typename T> void gnomonWorkspaceTemplatePrivate<T>::registerPipeline(v
 {
     if (this->command) {
         if (gnomonAbstractCommand *algorithm_command = dynamic_cast<gnomonAbstractCommand *>(this->command)) {
-            this->pipeline->addAlgorithm(algorithm_command);
+            this->pipeline_manager->addAlgorithm(algorithm_command);
         } else if (gnomonAbstractConstructorCommand *constructor_command = dynamic_cast<gnomonAbstractConstructorCommand *>(this->command)) {
-            this->pipeline->addConstructor(constructor_command);
+            this->pipeline_manager->addConstructor(constructor_command);
         }
     }
 }

@@ -28,7 +28,7 @@ class gnomonFormManagerItem;
 class gnomonFormManagerData;
 class gnomonViewForm;
 
-class gnomonPipeline;
+class gnomonPipelineManager;
 
 class vtkCamera;
 
@@ -54,7 +54,7 @@ public:
     gnomonFormManager *q;
 
 public:
-    gnomonPipeline *pipeline = nullptr;
+    gnomonPipelineManager *pipeline_manager = nullptr;
 
 public:
     gnomonViewForm *view = nullptr;

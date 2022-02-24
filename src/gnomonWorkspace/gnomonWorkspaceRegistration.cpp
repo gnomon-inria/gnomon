@@ -202,8 +202,8 @@ void gnomonWorkspaceRegistration::iterate(void)
 
         this->setStackLevel(dd->stack_level+1);
 
-        gnomonPipeline::instance()->addForm(output_image);
-        gnomonPipeline::instance()->addClonedForm(output_image, input_image);
+        gnomonPipelineManager::instance()->addForm(output_image);
+        gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
     }
 }
 

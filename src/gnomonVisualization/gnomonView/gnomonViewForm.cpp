@@ -935,7 +935,7 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
         meshCommand->redo();
         gnomonAbstractDynamicForm *adaptedMesh = meshCommand->output();
         if (adaptedMesh) {
-            // gnomonPipeline::instance()->addAdapter(meshCommand);
+            // gnomonPipelineManager::instance()->addAdapter(meshCommand);
             q->setForm("adaptedMesh",adaptedMesh);
         }
     } else if (gnomonCellComplexSeries* cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
@@ -945,7 +945,7 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
         cellComplexCommand->redo();
         gnomonAbstractDynamicForm *adaptedCellComplex = cellComplexCommand->output();
         if (adaptedCellComplex) {
-            // gnomonPipeline::instance()->addAdapter(cellComplexCommand);
+            // gnomonPipelineManager::instance()->addAdapter(cellComplexCommand);
             q->setForm("adaptedCellComplex",adaptedCellComplex);
         }
     }

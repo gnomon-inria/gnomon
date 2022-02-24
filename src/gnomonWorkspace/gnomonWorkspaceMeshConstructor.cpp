@@ -86,7 +86,7 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);
 
-    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view

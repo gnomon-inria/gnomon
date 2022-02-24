@@ -131,7 +131,7 @@ void gnomonFormManager::saveAs(int id, const QString& f) const
         command->setPath(file_name);
         command->setForm(form);
         command->redo();
-        d->pipeline->addWriter(command);
+        d->pipeline_manager->addWriter(command);
     }
 }
 
@@ -186,8 +186,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
 
-    d->pipeline->setFormIndex(form, item);
-    d->pipeline->addClonedForm(form, d->forms[item]);
+    d->pipeline_manager->setFormIndex(form, item);
+    d->pipeline_manager->addClonedForm(form, d->forms[item]);
 
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
@@ -249,8 +249,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->formMatplotlibVisualizations.insert(item, visualization);
     d->formData.insert(item, image);
 
-    d->pipeline->setFormIndex(form, item);
-    d->pipeline->addClonedForm(form, d->forms[item]);
+    d->pipeline_manager->setFormIndex(form, item);
+    d->pipeline_manager->addClonedForm(form, d->forms[item]);
 
     QString writer_plugin;
     QString form_name;
@@ -336,7 +336,7 @@ gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
     d = new gnomonFormManagerPrivate;
     d->q = this;
 
-    d->pipeline = gnomonPipeline::instance();
+    d->pipeline_manager = gnomonPipelineManager::instance();
 }
 
 gnomonFormManager::~gnomonFormManager(void)

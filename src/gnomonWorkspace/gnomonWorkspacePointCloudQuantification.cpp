@@ -99,12 +99,12 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
     d->view->setInputView(true);
     d->view->setEnableLinking(false);
 
-    connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_figure = new gnomonViewMatplotlib(this);
     d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
 
-    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_layout = new QVBoxLayout;
     d->mpl_layout->setContentsMargins(0, 0, 0, 0);
@@ -226,8 +226,8 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
 
     if(d->command->pointCloud()) {
         d->view->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(d->command->pointCloud()->clone()));
-        d->pipeline->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
-        d->pipeline->addForm(d->command->pointCloud());
+        d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
+        d->pipeline_manager->addForm(d->command->pointCloud());
         d->view->setInputView(false);
         d->view->setAcceptDrops(true);
     }
