@@ -60,101 +60,11 @@ Rectangle {
 
     }
 
+    GX.PipelineNodeDialog {
+        id: _node_edit_dialog
 
-    X.Dialog {
-        id: _node_edit_dialog;
-
-        x: Math.round((window.width - width) / 2)
-        y: Math.round((window.height - height) / 2)
-
-        width: Math.round(window.width / 3 * 2)
-
-        parent: Overlay.overlay
-        focus: true
-        modal: true
-
-        title: "Node info"
-        GridLayout {
-
-            columns: 2
-            rows: 3
-
-            width: parent.width
-
-            X.Label {
-                text: "Input";
-                font {
-                    pointSize: 14;
-                    weight: Font.Bold
-                }
-            }
-
-            X.TextField {
-                id: _input_edit;
-
-                placeholderText: qsTr("Enter input name")
-                implicitWidth: Math.round(js_info_dialog.width/2)
-                implicitHeight: Math.round(js_info_dialog.height/8)
-                wrapMode: TextInput.WrapAnywhere
-            }
-
-            X.Label {
-                text: "Output";
-                font {
-                    pointSize: 14;
-                    weight: Font.Bold
-                }
-            }
-
-            X.TextField {
-                id: _output_edit;
-                placeholderText: qsTr("Enter output name")
-                implicitWidth: Math.round(js_info_dialog.width/2)
-                implicitHeight: Math.round(js_info_dialog.height/8)
-                wrapMode: TextInput.WrapAnywhere
-
-            }
-
-            X.Label {
-                text: "Description";
-                font {
-                    pointSize: 14;
-                    weight: Font.Bold
-                }
-            }
-
-            X.TextField {
-                id: _node_description_edit
-                placeholderText: qsTr("Enter description")
-                implicitWidth: Math.round(js_info_dialog.width/2)
-                implicitHeight: Math.round(js_info_dialog.height/4)
-                wrapMode: TextInput.WrapAnywhere
-            }
-
-        }
-
-        footer: X.DialogButtonBox {
-            visible: true
-
-            X.ButtonRaw {
-                text: "Cancel"
-                foregroundColor: X.Style.accentColor
-                onClicked: {
-                    _node_edit_dialog.close();
-                }
-            }
-
-            X.ButtonRaw {
-                text: "Save"
-                foregroundColor: X.Style.accentColor
-                onClicked: {
-                    GP.Pipeline.setPipeplineInfoForJsonExport(node.name, _input_edit.text, _output_edit.text, _node_description_edit.text);
-                    _node_edit_dialog.close();
-                }
-            }
-        }
+        node: _self.node
     }
-
 
     MouseArea {
         id: _dragArea
@@ -178,7 +88,7 @@ Rectangle {
 
     X.Label {
         id: _classLabel
-        text: node.algorithmClass;
+        text: node.name;
 
         color: "#333333"; //TODO: get value from theme
         font.pixelSize: 12; //TODO: get value from theme
@@ -215,7 +125,7 @@ Rectangle {
                 id: _port
                 port: node.inputPort(modelData)
                 Component.onCompleted: {
-                    _self.inputPorts[port.label] = _input_ports.itemAt(index)
+                    _self.inputPorts[modelData] = _input_ports.itemAt(index)
                 }
             }
         }
@@ -234,7 +144,7 @@ Rectangle {
                 id: _port
                 port: node.outputPort(modelData)
                 Component.onCompleted: {
-                    _self.outputPorts[port.label] = _output_ports.itemAt(index)
+                    _self.outputPorts[modelData] = _output_ports.itemAt(index)
                 }
             }
         }
