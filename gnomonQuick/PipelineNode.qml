@@ -66,6 +66,11 @@ Rectangle {
         node: _self.node
     }
 
+    ToolTip {
+         text: node.description
+         visible: (node.description != "") && _dragArea.containsMouse
+    }
+
     MouseArea {
         id: _dragArea
         anchors.fill: parent

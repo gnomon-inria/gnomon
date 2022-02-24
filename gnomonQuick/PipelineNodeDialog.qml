@@ -110,7 +110,8 @@ X.Dialog {
         X.TextField { id: _node_description_edit
             Layout.fillWidth: true
             Layout.fillHeight: true
-            placeholderText: qsTr("Enter description")
+            text: node.description
+            placeholderText: qsTr("Enter node description")
             wrapMode: TextInput.WrapAnywhere
         }
 
@@ -142,6 +143,8 @@ X.Dialog {
                     var output_name = node.outputPortsNames[output]
                     node.outputPort(output_name).label = output_list.itemAtIndex(output).text
                 }
+
+                node.description = _node_description_edit.text
 
                 _self.close();
             }
