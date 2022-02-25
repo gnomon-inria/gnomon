@@ -62,7 +62,7 @@ gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(const QVariant& v
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterLookupTable>())
+                  << QMetaType::fromType<gnomonCoreParameterLookupTable>().name()
                   << ". Nothing is done.";
     }
 }
@@ -129,7 +129,7 @@ gnomonCoreParameterLookupTable& gnomonCoreParameterLookupTable::operator = (cons
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterLookupTable>())
+                  << QMetaType::fromType<gnomonCoreParameterLookupTable>().name()
                   << ". Nothing is done.";
         return *this;
     }
@@ -257,7 +257,7 @@ void gnomonCoreParameterLookupTable::setValue(const QVariant& v)
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterLookupTable>())
+                  << QMetaType::fromType<gnomonCoreParameterLookupTable>().name()
                   << ". Nothing is done.";
         return;
     }

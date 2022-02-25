@@ -73,7 +73,7 @@ gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QVariant& v) : dt
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << QMetaType::fromType<gnomonCoreParameterColorMap>().name()
                   << ". Nothing is done.";
     }
 }
@@ -145,7 +145,7 @@ gnomonCoreParameterColorMap& gnomonCoreParameterColorMap::operator = (const QVar
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << QMetaType::fromType<gnomonCoreParameterColorMap>().name()
                   << ". Nothing is done.";
         return *this;
     }
@@ -302,7 +302,7 @@ void gnomonCoreParameterColorMap::setValue(const QVariant& v)
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << QMetaType::fromType<gnomonCoreParameterColorMap>().name()
                   << ". Nothing is done.";
         return;
     }
