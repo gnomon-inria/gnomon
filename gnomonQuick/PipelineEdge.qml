@@ -4,6 +4,8 @@ import QtQuick.Shapes 1.15
 
 import xQuick.Style       1.0 as X
 
+import gnomonQuick  1.0 as G
+
 Shape {
 
     id: _self;
@@ -33,7 +35,7 @@ Shape {
 
         strokeWidth: 3
         strokeColor: window.world.currentIndex === _self.formIndex
-            ? X.Style.accentColor
+            ? G.Style.highlightColor //"#20E8C0"  // "#009C7D" //X.Style.accentColor
             : X.Style.foregroundColor;
 
         startX: _self.stt.x;
