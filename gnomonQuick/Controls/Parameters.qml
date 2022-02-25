@@ -107,6 +107,7 @@ Item {
             if(p.type === "dtk::d_inliststring") console.log("LIST", p.list)
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
+            prop_dict["group"] = p.group;
             params_model.append(prop_dict);
         }
     }

@@ -118,14 +118,6 @@ Item {
 
         }
 
-
-        /* Item { */
-        /*     //a spacer for when there is no menu */
-        /*     Layout.fillWidth: true; */
-        /*     Layout.fillHeight: true; */
-        /*     visible: view.viewLogic.formNames.length == 0 */
-        /* } */
-
         X.ButtonRaw {
             text: "Render";
 
