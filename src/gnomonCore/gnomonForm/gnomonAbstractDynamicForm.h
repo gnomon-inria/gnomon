@@ -31,8 +31,12 @@ class gnomonAbstractForm;
 class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
 {
 public:
-             gnomonAbstractDynamicForm(void) = default;
-    virtual ~gnomonAbstractDynamicForm(void) {};
+             gnomonAbstractDynamicForm(void) {
+                 metadata = new gnomonDynamicFormMetadata();
+             }
+    virtual ~gnomonAbstractDynamicForm(void) {
+                 delete metadata;
+             };
 
 public:
     virtual gnomonAbstractDynamicForm *clone(void) const = 0;
@@ -48,20 +52,25 @@ public:
     virtual void drop(double t) = 0;
     virtual QJsonObject serialize(void) {
         QJsonObject json;
-        json["metadata"] = metadata.serialize();
+        json["metadata"] = metadata->serialize();
         return json;
     }
 
     virtual void deserialize(QJsonObject & json) {
-        metadata.deserialize(json);
+        metadata->deserialize(json);
     }
 
-    gnomonDynamicFormMetadata& getMetadata(void) {
+    gnomonDynamicFormMetadata* getMetadata(void) {
         return metadata;
     }
 
+    void setMetadata(gnomonDynamicFormMetadata* metadata) {
+        delete this->metadata;
+        this->metadata = metadata;
+    }
+
 protected:
-    gnomonDynamicFormMetadata metadata;
+    gnomonDynamicFormMetadata* metadata;
 
 //public:
 //    virtual void setInitialTime(gnomonTime T_i) = 0;

@@ -83,7 +83,7 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
-    Q_PROPERTY(bool inPool READ inPool WRITE setInPool)
+    Q_PROPERTY(bool inPool READ inPool WRITE setInPool);
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -177,6 +177,8 @@ public:
     Q_INVOKABLE QStringList formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+
+    Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& name);
     
 
 public:

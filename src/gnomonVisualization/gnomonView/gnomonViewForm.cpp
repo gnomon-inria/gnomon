@@ -2326,6 +2326,10 @@ void gnomonViewForm::drop(int index)
     d->interactor()->Render();
 }
 
+gnomonDynamicFormMetadata* gnomonViewForm::formMetadata(const QString &name) {
+    return d->forms[name]->getMetadata();
+}
+
 // void gnomonViewForm::resizeEvent(QResizeEvent *event)
 // {
 //       d->style_menubar->setFixedHeight(32*(1+d->available_styles.size())+32);
