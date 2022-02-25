@@ -263,6 +263,12 @@ void gnomonVisualizationCellImageVolume::setParameters(const dtkCoreParameters& 
     }
 }
 
+QMap<QString, QString> gnomonVisualizationCellImageVolume::parameterGroups(void)
+{
+    QMap<QString, QString> groups;
+    return groups;
+}
+
 void gnomonVisualizationCellImageVolume::onSliceOrientationChanged(int value)
 {
     dd->actor2D->setSliceOrientation(value);

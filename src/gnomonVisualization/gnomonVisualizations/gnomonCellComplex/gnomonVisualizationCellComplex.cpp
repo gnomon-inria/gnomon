@@ -284,6 +284,12 @@ void gnomonVisualizationCellComplex::setParameters(const dtkCoreParameters& para
     }
 }
 
+QMap<QString, QString> gnomonVisualizationCellComplex::parameterGroups(void)
+{
+    QMap<QString, QString> groups;
+    return groups;
+}
+
 void gnomonVisualizationCellComplex::onSliceOrientationChanged(int value)
 {
     dd->actor2D->setSliceOrientation(value);

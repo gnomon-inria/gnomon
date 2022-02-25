@@ -268,6 +268,12 @@ void gnomonVisualizationImage::setParameters(const dtkCoreParameters& parameters
     }
 }
 
+QMap<QString, QString> gnomonVisualizationImage::parameterGroups(void)
+{
+    QMap<QString, QString> groups;
+    return groups;
+}
+
 void gnomonVisualizationImage::onSliceOrientationChanged(int value)
 {
     dd->actor2D->setSliceOrientation(value);

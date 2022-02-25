@@ -300,6 +300,12 @@ void gnomonVisualizationImageChannelBlending::setParameters(const dtkCoreParamet
     }
 }
 
+QMap<QString, QString> gnomonVisualizationImageChannelBlending::parameterGroups(void)
+{
+    QMap<QString, QString> groups;
+    return groups;
+}
+
 void gnomonVisualizationImageChannelBlending::onSliceOrientationChanged(int value)
 {
     dd->actor2D->setSliceOrientation(value);
