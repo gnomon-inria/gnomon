@@ -86,7 +86,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 // gnomonWorkspacePythonAlgorithm
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) : QObject(parent)
+gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) : gnomonAbstractWorkspace(parent)
 {
     d = new gnomonWorkspacePythonAlgorithmPrivate;
 
@@ -122,8 +122,6 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
     d->pool->addView(this->source());
     d->pool->addView(this->target());
-
-    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspacePythonAlgorithm::~gnomonWorkspacePythonAlgorithm(void)
@@ -214,6 +212,7 @@ void gnomonWorkspacePythonAlgorithm::run(void) {
 void gnomonWorkspacePythonAlgorithm::setInputs()
 {
     if (d->command) {
+        d->command->disconnect();
         delete d->command;
         d->command = nullptr;
     }
@@ -226,6 +225,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
     output = dtkScriptInterpreterPython::instance()->interpret("algorithm = objectManagerFormAlgorithm(\"" + d->object_key + "\")", &stat);
 
     d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
     
     if (this->source()->binaryImage()) {
         d->algorithm->setInputBinaryImage(this->source()->binaryImage());
