@@ -51,6 +51,7 @@ import_array();
 #include <dtkCore>
 #include <gnomonCore/gnomonAbstractDataDriver.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+#include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
@@ -858,6 +859,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 
 %include <gnomonCore/gnomonAbstractDataDriver.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+%include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
