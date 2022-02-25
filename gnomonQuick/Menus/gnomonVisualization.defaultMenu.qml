@@ -28,6 +28,7 @@ ListView {
 
     delegate: Loader {
         property var lparam: param;
+
         height: 70;
         width: _self.width;
         sourceComponent: component;
@@ -36,10 +37,6 @@ ListView {
             target: param
             function onValueChanged() {
                 _self.valueChanged();
-                /* if (_auto_render.checked) { */
-                /*     console.info('launching Render!') */
-                /*     view.viewLogic.update(); */
-                /* } */
             }
         }
     }
