@@ -15,6 +15,9 @@ class InProcessJupyterWidget(RichJupyterWidget):
         self.kernel_client = self._kernel_manager.client()
         self.kernel_client.start_channels()
 
+        self.enable_calltips = False
+        self._display_banner = False
+
         def stop():
             self.kernel_client.stop_channels()
             self.kernel_manager.shutdown_kernel()

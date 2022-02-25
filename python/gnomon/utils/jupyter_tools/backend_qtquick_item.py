@@ -1,6 +1,6 @@
 import logging
 
-from qtpy import QtQml
+from qtpy import QtQml, QtGui
 from qtpy.QtCore import Qt, Slot, QEvent, QRect, QPoint
 from qtpy.QtQuick import QQuickItem, QQuickPaintedItem
 from qtpy.QtGui import QPainter, QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDropEvent
@@ -37,6 +37,24 @@ class JupyterConsole(QQuickPaintedItem):
         # Connect signals
         self.widthChanged.connect(self.update_widget_size)
         self.heightChanged.connect(self.update_widget_size)
+
+    @Slot(str)
+    def set_style_sheet(self, bg_color):
+        self.widget.style_sheet = ""
+        self.widget.style_sheet = """QPlainTextEdit, QTextEdit {{
+    background-color: {0};
+    background-clip: padding;
+    color: #888888;
+    selection-background-color: transparent;
+}}
+        """.format(bg_color)
+        self.widget.style_sheet += ".error { color: orange; }"
+        self.widget.style_sheet += ".in-prompt { color: lightgreen; }"
+        self.widget.style_sheet += ".in-prompt-number { color: lightgreen; font-weight: bold; }"
+        self.widget.style_sheet += ".out-prompt { color: orange; }"
+        self.widget.style_sheet += ".out-prompt-number { color: orange; font-weight: bold; }"
+        self.widget.font = QtGui.QFont("Source Code Pro", 11)
+        self.update()
 
     def mouseMoveEvent(self, event):
         logging.debug("mouseMoveEvent")
