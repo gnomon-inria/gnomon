@@ -42,7 +42,7 @@ Item {
             nameFilters: [ "Image files (*.png *.tif *.inr *.gz *.ply)", "All files (*)" ]
             title: "save Gnomon Form"
             folder: shortcuts.home
-            modality: Qt.Modal;
+            modality: Qt.WindowModal;
             fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
