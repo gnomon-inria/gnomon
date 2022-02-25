@@ -234,7 +234,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         if (d->code->inputForms().contains("gnomonBinaryImage")) {
             form_name = d->code->inputForms()["gnomonBinaryImage"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.inputBinaryImage(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputBinaryImage(False).items()}", &stat);
     }
     if (this->source()->cellComplex()) {
         d->algorithm->setInputCellComplex(this->source()->cellComplex());
@@ -243,7 +243,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         if (d->code->inputForms().contains("gnomonCellComplex")) {
             form_name = d->code->inputForms()["gnomonCellComplex"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.inputCellComplex(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputCellComplex(False).items()}", &stat);
     }
     if (this->source()->cellImage()) {
         d->algorithm->setInputCellImage(this->source()->cellImage());
@@ -252,7 +252,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         if (d->code->inputForms().contains("gnomonCellImage")) {
             form_name = d->code->inputForms()["gnomonCellImage"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.inputCellImage(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputCellImage(False).items()}", &stat);
     }
     if (this->source()->image()) {
         d->algorithm->setInputImage(this->source()->image());
@@ -261,7 +261,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         if (d->code->inputForms().contains("gnomonImage")) {
             form_name = d->code->inputForms()["gnomonImage"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.inputImage(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputImage(False).items()}", &stat);
     }
     if (this->source()->mesh()) {
         d->algorithm->setInputMesh(this->source()->mesh());
@@ -270,7 +270,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         if (d->code->inputForms().contains("gnomonMesh")) {
             form_name = d->code->inputForms()["gnomonMesh"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.inputMesh(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputMesh(False).items()}", &stat);
     }
     if (this->source()->pointCloud()) {
         d->algorithm->setInputPointCloud(this->source()->pointCloud());
@@ -279,7 +279,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         if (d->code->inputForms().contains("gnomonPointCloud")) {
             form_name = d->code->inputForms()["gnomonPointCloud"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.inputPointCloud(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputPointCloud(False).items()}", &stat);
     }
 
     for (const auto &parameter_name: d->algorithm->parameters().keys()) {
@@ -308,7 +308,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         if (d->code->outputForms().contains("gnomonBinaryImage")) {
             form_name = d->code->outputForms()["gnomonBinaryImage"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputBinaryImage(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}", &stat);
         output_form_added = true;
     }
     
@@ -320,7 +320,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         if (d->code->outputForms().contains("gnomonCellComplex")) {
             form_name = d->code->outputForms()["gnomonCellComplex"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputCellComplex(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}", &stat);
         output_form_added = true;
     }
 
@@ -332,7 +332,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         if (d->code->outputForms().contains("gnomonCellImage")) {
             form_name = d->code->outputForms()["gnomonCellImage"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputCellImage(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}", &stat);
         output_form_added = true;
     }
 
@@ -344,7 +344,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         if (d->code->outputForms().contains("gnomonImage")) {
             form_name = d->code->outputForms()["gnomonImage"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputImage(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}", &stat);
         output_form_added = true;
     }
 
@@ -356,7 +356,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         if (d->code->outputForms().contains("gnomonMesh")) {
             form_name = d->code->outputForms()["gnomonMesh"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputMesh(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}", &stat);
         output_form_added = true;
     }
 
@@ -368,12 +368,13 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         if (d->code->outputForms().contains("gnomonPointCloud")) {
             form_name = d->code->outputForms()["gnomonPointCloud"].name;
         }
-        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = algorithm.outputPointCloud(False)", &stat);
+        output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}", &stat);
         output_form_added = true;
     }
 
     if (output_form_added) {
         this->target()->render();
+        this->target()->tryLinking();
         d->registerPipeline();
     }
 }
