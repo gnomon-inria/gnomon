@@ -336,7 +336,7 @@ dtkCoreParameterObject *gnomonCoreParameterLookupTable::object(void)
 }
 
 
-inline QDataStream& operator << (QDataStream& s, const gnomonCoreParameterLookupTable& p)
+GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream& s, const gnomonCoreParameterLookupTable& p)
 {
     s << p.label();
     s << p.name();
@@ -347,7 +347,7 @@ inline QDataStream& operator << (QDataStream& s, const gnomonCoreParameterLookup
     return s;
 }
 
-inline QDataStream& operator >> (QDataStream& s, gnomonCoreParameterLookupTable& p)
+GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream& s, gnomonCoreParameterLookupTable& p)
 {
     QString label; s >> label;
     QString clut; s >> clut;
@@ -361,7 +361,7 @@ inline QDataStream& operator >> (QDataStream& s, gnomonCoreParameterLookupTable&
     return s;
 }
 
-inline QDebug operator << (QDebug dbg, gnomonCoreParameterLookupTable p)
+GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterLookupTable p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
