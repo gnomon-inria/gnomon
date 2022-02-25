@@ -1,6 +1,5 @@
 import QtQuick            2.15
 import QtQuick.Controls   2.15
-import QtGraphicalEffects 1.15
 import QtQuick.Layouts    1.15
 
 import xQuick.Controls    1.0 as X
@@ -118,7 +117,7 @@ Item {
             X.CheckBox{ id: _auto_render
 
                 text: ""
-                contentItem: { }
+                contentItem: null
 
                 anchors.top: parent.top
                 anchors.topMargin: 5
