@@ -11,6 +11,8 @@ import xQuick.Vis         1.0 as XVis
 import gnomonQuick        1.0 as G
 
 import gnomon.Visualization 1.0 as GV
+import gnomon.MetaData    1.0 as GM
+
 
 Rectangle {
 
@@ -87,21 +89,21 @@ Rectangle {
     X.Dialog {
         id: _bad_form_warning_dialog;
 
-        property string bad_form_name: "";
+        property string badform_name: "";
         property string accepted_forms: "";
 
         y: parent.height/3
         x: parent.width/6
 
         parent: Overlay.overlay
-        
+
 
             X.Label {
                 anchors.fill: parent
-                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.bad_form_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
+                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.badform_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
                 font {
                     weight: Font.Bold
-                    pointSize: 14;                
+                    pointSize: 14;
                 }
             }
     }
@@ -154,7 +156,7 @@ Rectangle {
         ToolTip.text: "2D mode";
     }
 
-    
+
     // G.ButtonViewer {}
 
     Image {
@@ -256,7 +258,7 @@ Rectangle {
             _2d_slider.value = value;
         }
         function onBadFormDropped(badFormName, acceptedForms) {
-            _bad_form_warning_dialog.bad_form_name = badFormName;
+            _bad_form_warning_dialog.badform_name = badFormName;
             _bad_form_warning_dialog.accepted_forms = acceptedForms;
             _bad_form_warning_dialog.open();
         }
@@ -306,59 +308,171 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                _form_export_dialog.reset();
-                _form_export_dialog.open();
+                if(_list_view.count > 0) {
+                    _form_export_dialog.open();
+                    _form_export_dialog.reset();
+                }
             }
         }
 
         X.Dialog {
             id: _form_export_dialog;
-            title: "Export from";
-
-            parent: Overlay.overlay
 
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
             width: window.width * 3/4
+            height: window.height * 3/4
 
+            padding: 10;
+
+            parent: Overlay.overlay
+            modal: true
+            title: "Export forms"
             standardButtons:  Dialog.Ok | Dialog.Cancel
 
             onAccepted: {
+                _form_export_dialog.enabled = false;
+                console.log("============== count: ", _list_view.count)
+                for(let i = 0; i < _list_view.count; i++) {
+                    console.log("=================== ", i);
+                    var item_delegate = _list_view.itemAtIndex(i);
+                    item_delegate.save_metadata();
+                }
+
                 viewLogic.transmit();
                 _form_export_dialog.close();
                 //_form_export_dialog.destroy();
             }
 
             onRejected: {
+                _form_export_dialog.enabled = false;
                 _form_export_dialog.close();
                 //_form_export_dialog.destroy();
 
             }
 
             function reset(){
-                _form_name.text = "placeholder";
-                _form_name.selectAll();
-                _form_name.forceActiveFocus();
+                _list_view.currentIndex = 0;
+                _list_view.select_next_row();
+                _form_export_dialog.enabled = true;
+                //form_name.selectAll();
+                //form_name.forceActiveFocus();
             }
 
-            RowLayout {
-                id: _layout;
-                anchors.fill: parent;
-                Label {
-                    text: "Name: ";
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
+            Rectangle {
+                id: _form_selection_panel;
+
+                width: _form_export_dialog.width / 3;
+
+                anchors.top: parent.top;
+                anchors.bottom: parent.bottom;
+                anchors.left: parent.left;
+                anchors.right: parent.right;
+                anchors.margins: 10;
+
+                color: X.Style.backgroundColor;
+
+                Component {  id: _delegate;
+                    ItemDelegate {
+                        id: _form_metadata_panel;
+
+                        width: _list_view.width
+
+                        //color: X.Style.backgroundColor;
+                        property var metadata: viewLogic.formMetadata(modelData);
+                        property var form_name: _form_name;
+
+                        onClicked: {
+                            _list_view.currentIndex = index;
+                        }
+
+                        function save_metadata() {
+                            console.log("metadata.name: ", metadata.name)
+                            metadata.name = _form_name.text;
+                            console.log(" --> ", metadata.name)
+                        }
+
+                        Label {
+                            id: _name_label
+                            anchors.left: parent.left;
+                            anchors.bottom: parent.bottom;
+                            anchors.verticalCenter: _form_name.verticalCenter;
+
+                            //font.pointSize: 14;
+                            verticalAlignment: Text.AlignVCenter
+                            text: "Name: ";
+                        }
+
+                        TextField {
+                            id: _form_name;
+
+                            anchors.left: _name_label.right;
+                            anchors.right: parent.right;
+                            anchors.top: parent.top;
+                            anchors.bottom: parent.bottom;
+
+                            font.pointSize: 14;
+                            text: metadata.name;
+                            //focus: true;
+                            onAccepted: {
+                                if(index != _list_view.count - 1) {
+                                    _list_view.incrementCurrentIndex();
+                                } else {
+                                    _form_export_dialog.accept();
+                                }
+                            }
+
+                            onActiveFocusChanged: {
+                                if (_list_view.currentIndex != index) {
+                                    _list_view.currentIndex = index;
+                                }
+                            }
+                        }
+                    }
                 }
 
-                TextField {
-                    id: _form_name;
-                    text: "placeholder";
-                    focus: true;
+
+                ListView {
+                    id: _list_view
+
+                    anchors.top: _form_selection_panel.top;
+                    anchors.bottom: _form_selection_panel.bottom;
+                    anchors.right: _form_selection_panel.right;
+                    anchors.left: _form_selection_panel.left;
+                    clip: true;
+                    //focus: true;
+                    currentIndex: -1
+                    keyNavigationWraps: false;
+
+                    model: viewLogic.formNames
+
+                    ScrollIndicator.vertical: ScrollIndicator { }
+
+                    delegate: _delegate;
+
                     Component.onCompleted: {
-                        _form_name.accepted.connect(_form_export_dialog.accepted);
+
+                        for(let i = 0; i < model.count; i++)
+                            if(model.get(i).available) {
+                                currentIndex = i;
+                                break;
+                            }
+                        /* currentIndex = 0 */
                     }
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
+
+                    onCurrentIndexChanged: {
+                        //console.log("currentItem: ", currentItem)
+                        select_next_row();
+                    }
+
+                    function select_next_row() {
+                        currentItem.form_name.selectAll();
+                        currentItem.form_name.forceActiveFocus();
+                    }
+
+                    function save_metadata() {
+                        // body...
+                    }
                 }
             }
         }
