@@ -303,6 +303,7 @@ void gnomonVisualizationImageChannelBlending::setParameters(const dtkCoreParamet
 QMap<QString, QString> gnomonVisualizationImageChannelBlending::parameterGroups(void)
 {
     QMap<QString, QString> groups;
+    groups["alpha"] = "rendering";
     return groups;
 }
 
