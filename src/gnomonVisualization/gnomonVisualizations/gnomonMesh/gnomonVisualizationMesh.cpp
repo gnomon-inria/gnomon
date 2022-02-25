@@ -304,6 +304,9 @@ void gnomonVisualizationMesh::setParameters(const dtkCoreParameters& parameters)
 QMap<QString, QString> gnomonVisualizationMesh::parameterGroups(void)
 {
     QMap<QString, QString> groups;
+    groups["value_range"] = "rendering";
+    groups["colormap"] = "rendering";
+    groups["alpha"] = "rendering";
     return groups;
 }
 

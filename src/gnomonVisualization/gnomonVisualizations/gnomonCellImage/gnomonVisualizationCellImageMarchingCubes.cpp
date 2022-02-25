@@ -344,6 +344,9 @@ void gnomonVisualizationCellImageMarchingCubes::setParameters(const dtkCoreParam
 QMap<QString, QString> gnomonVisualizationCellImageMarchingCubes::parameterGroups(void)
 {
     QMap<QString, QString> groups;
+    groups["value_range"] = "rendering";
+    groups["colormap"] = "rendering";
+    groups["alpha"] = "rendering";
     return groups;
 }
 

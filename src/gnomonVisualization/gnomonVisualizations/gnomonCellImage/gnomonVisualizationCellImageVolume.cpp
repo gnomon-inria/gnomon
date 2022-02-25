@@ -266,6 +266,9 @@ void gnomonVisualizationCellImageVolume::setParameters(const dtkCoreParameters& 
 QMap<QString, QString> gnomonVisualizationCellImageVolume::parameterGroups(void)
 {
     QMap<QString, QString> groups;
+    groups["value_range"] = "rendering";
+    groups["colormap"] = "rendering";
+    groups["alpha"] = "rendering";
     return groups;
 }
 
