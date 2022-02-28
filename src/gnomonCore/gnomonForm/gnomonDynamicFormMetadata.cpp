@@ -1,12 +1,13 @@
-//
-// Created by Arthur Luciani on 22/02/2022.
-//
-
 #include "gnomonDynamicFormMetadata.h"
 
-gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const QJsonObject &json):
-                                    QObject(), name(), source(), description() {
+gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const QJsonObject &json) {
     deserialize(json);
+}
+
+gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const gnomonDynamicFormMetadata& other) {
+    name = other.name;
+    source = other.source;
+    description = other.description;
 }
 
 QJsonObject gnomonDynamicFormMetadata::serialize() const {
@@ -49,3 +50,4 @@ void gnomonDynamicFormMetadata::setDescription(const QString &description) {
     gnomonDynamicFormMetadata::description = description;
     emit descriptionChanged();
 }
+

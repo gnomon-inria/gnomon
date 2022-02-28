@@ -1,10 +1,4 @@
-//
-// Created by Arthur Luciani on 22/02/2022.
-//
-
-#ifndef GNOMON_GNOMONDYNAMICFORMMETADATA_H
-#define GNOMON_GNOMONDYNAMICFORMMETADATA_H
-
+#pragma once
 
 #include <QJsonObject>
 
@@ -12,7 +6,7 @@ class gnomonDynamicFormMetadata: public QObject {
     Q_OBJECT
 public:
     gnomonDynamicFormMetadata() = default;
-
+    gnomonDynamicFormMetadata(const gnomonDynamicFormMetadata& other);
     explicit gnomonDynamicFormMetadata(const QJsonObject& json);
 
     QJsonObject serialize() const;
@@ -49,6 +43,3 @@ private:
     QString source = "";
     QString description = "";
 };
-
-
-#endif //GNOMON_GNOMONDYNAMICFORMMETADATA_H
