@@ -398,6 +398,18 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     emit nodeAdded(node);
 }
 
+QList<gnomonPipelineNode *> gnomonPipeline::scheduledNodes(void)
+{
+    QList<gnomonPipelineNode *> scheduled_nodes;
+    QList<QStringList> node_groups = d->scheduledNodeNameGroups();
+    for (const auto& group_node_names : node_groups) {
+        for (const auto& node_name : group_node_names) {
+            scheduled_nodes.append(d->pipeline_nodes[node_name]);
+        }
+    }
+    return scheduled_nodes;
+}
+
 void gnomonPipeline::exportToToml(const QString& path)
 {
     Q_ASSERT(path.endsWith(".toml"));

@@ -40,6 +40,9 @@ signals:
 
     void nodeAdded(gnomonPipelineNode *);
 
+public:
+    Q_INVOKABLE QList<gnomonPipelineNode *> scheduledNodes(void);
+
 public slots:
     Q_INVOKABLE void exportToJson(const QString& url);
     void exportToToml(const QString& path);
