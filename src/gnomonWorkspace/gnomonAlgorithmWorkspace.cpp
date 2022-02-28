@@ -184,7 +184,10 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     int i=0;
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name]) {
-            (*d->targets)[i]->setForm(output_type, d->command->outputs()[name]);
+            auto form =  d->command->outputs()[name];
+            form->getMetadata()->setName(d->algorithm + " " + name);
+            form->getMetadata()->setSource(d->algorithm);
+            (*d->targets)[i]->setForm(output_type, form);
             (*d->targets)[i]->render();
             empty_output = false;
         }
