@@ -39,7 +39,7 @@ public:
     ~gnomonWorkspaceBrowser(void);
 
 public:
-    Q_PROPERTY(gnomonViewForm* view READ view);
+    Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
     Q_PROPERTY(QStringList extensions READ getReaderExtensions);
 
 signals:

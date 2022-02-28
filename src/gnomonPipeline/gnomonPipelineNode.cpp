@@ -14,6 +14,8 @@
 
 #include <float.h>
 
+#include "gnomonPipelinePort.h"
+
 #include "gnomonPipelineNode.h"
 #include "gnomonPipelineNode_p.h"
 
@@ -87,7 +89,23 @@ const QString& gnomonPipelineNode::name(void)
 
 void gnomonPipelineNode::setName(const QString& node_name)
 {
-    d->name = node_name;
+    if (node_name != d->name) {
+        d->name = node_name;
+        emit nameChanged();
+    }
+}
+
+const QString& gnomonPipelineNode::description(void)
+{
+    return d->description;
+}
+
+void gnomonPipelineNode::setDescription(const QString& desc)
+{
+    if (desc != d->description) {
+        d->description = desc;
+        emit descriptionChanged();
+    }
 }
 
 const QString& gnomonPipelineNode::algorithmClass(void)
@@ -403,6 +421,9 @@ const QJsonObject gnomonPipelineNode::toJson(void)
 {
     QJsonObject json;
     json.insert("name", d->name);
+    json.insert("plugin_group", d->algorithm_class);
+    json.insert("plugin_name", d->algorithm);
+    json.insert("description", d->description);
     return json;
 }
 

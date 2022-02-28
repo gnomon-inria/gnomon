@@ -83,7 +83,7 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
-    Q_PROPERTY(bool inPool READ inPool WRITE setInPool);
+    Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -107,6 +107,7 @@ signals:
     void boundsChanged(void);
     void modeChanged(void);
     void orientationChanged(void);
+    void inPoolChanged(void);
     void badFormDropped(QString badFormName, QString acceptedForms);
 
     void syncedChanged(void);
@@ -179,7 +180,7 @@ public:
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
 
     Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& name);
-    
+
 
 public:
     vtkRenderer *renderer2D(void);
