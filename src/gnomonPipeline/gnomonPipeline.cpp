@@ -452,17 +452,13 @@ void gnomonPipeline::exportToJson(const QString& url)
 
     QJsonArray inputs_json_run; // "input": {"toto" : {"monnom": "/home/trcabel/Dev/naviscope/gnomon/gnomon-data/p58-t0_imgFus_down_interp_2x.inr.gz"}},
 
-
     for (const auto& node_name : d->pipeline_node_names) {
         auto node = d->pipeline_nodes[node_name];
         auto node_json = node->toJson();
-        for (auto it = d->pipeline_edges.begin(); it != d->pipeline_edges.end(); ++it) {
-            auto&& edge_nodes = it.key();
-            if (edge_nodes.first == node_name) {
-                QString target_name = d->pipeline_nodes[d->pipeline_edges[edge_nodes].first]->name();
-                QString from = target_name + " -> " + d->pipeline_edges[edge_nodes].second;
-                node_json.insert(edge_nodes.second, from);
-            }
+        for (auto edge : node->inputEdges()) {
+            QString source_name = edge->source()->node()->name();
+            QString from = source_name + " -> " + edge->source()->name();
+            node_json.insert(edge->target()->name(), from);
         }
         pipeline_json.insert(node->name(), node_json);
 
