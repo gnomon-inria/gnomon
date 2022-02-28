@@ -12,6 +12,8 @@ import xQuick.Vis         1.0 as XVis
 
 import gnomon.Visualization 1.0 as GV
 
+import gnomonQuick.Style  1.0 as G
+
 Item {
 
     id: _world_delegate;
@@ -41,7 +43,7 @@ Item {
             nameFilters: [ "Image files (*.png *.tif *.inr *.gz *.ply)", "All files (*)" ]
             title: "save Gnomon Form"
             folder: shortcuts.home
-            modality: Qt.Modal;
+            modality: Qt.WindowModal;
             fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
@@ -141,7 +143,7 @@ Item {
         color: "#00000000";
 
         border.width: 2;
-        border.color: X.Style.accentColor;
+        border.color: G.Style.highlightColor;
 
         visible: _world.currentIndex == model.index;
     }

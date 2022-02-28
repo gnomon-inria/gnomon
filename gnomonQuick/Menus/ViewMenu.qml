@@ -132,7 +132,7 @@ Item {
             X.CheckBox{ id: _auto_render
 
                 text: ""
-                contentItem: { }
+                contentItem: null;
 
                 anchors.top: parent.top
                 anchors.topMargin: 5

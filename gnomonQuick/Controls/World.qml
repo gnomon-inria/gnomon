@@ -11,6 +11,7 @@ import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
 import gnomonQuick.Controls 1.0 as G
+
 import gnomon.Visualization 1.0 as GV
 
 ListView {

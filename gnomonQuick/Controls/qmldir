@@ -8,7 +8,9 @@ LookupTable 1.0 LookupTable.qml
 Pipeline 1.0 Pipeline.qml
 PipelineEdge 1.0 PipelineEdge.qml
 PipelineNode 1.0 PipelineNode.qml
+PipelineNodeDialog 1.0 PipelineNodeDialog.qml
 PipelinePort 1.0 PipelinePort.qml
+PipelinePortEdit 1.0 PipelinePortEdit.qml
 Project.qml 1.0 Project.qml
 Stack 1.0 Stack.qml
 View 1.0 View.qml

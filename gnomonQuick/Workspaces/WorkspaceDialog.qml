@@ -170,11 +170,12 @@ X.Dialog {
 
             Component.onCompleted: {
 
-                for(let i = 0; i < model.count; i++)
-                    if(model.get(i).available) {
+                for(let i = 0; i < _available_workspaces.count; i++) {
+                    if(_available_workspaces.get(i).available) {
                         currentIndex = i;
                         break;
                     }
+                }
                 /* currentIndex = 0 */
             }
         }

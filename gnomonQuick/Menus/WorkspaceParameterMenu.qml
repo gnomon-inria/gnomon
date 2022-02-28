@@ -32,12 +32,14 @@ Control {
             id: _algos
             Layout.fillWidth: true;
             Layout.preferredHeight: 28;
-            model: d.algorithms
-            currentIndex: d.currentIndex
+            model: d ? d.algorithms : null;
             onCurrentIndexChanged: {
                 _auto_apply.checked = false
-                d.currentIndex = currentIndex
-                d.algoName = d.algorithms[currentIndex]
+
+                if (d && d.algorithms) {
+                    d.currentIndex = _algos.currentIndex;
+                    d.algoName = d.algorithms[d.currentIndex];
+                }
             }
         }
 
@@ -88,7 +90,7 @@ Control {
             X.CheckBox{ id: _auto_apply
 
                 text: ""
-                contentItem: { }
+                contentItem: null;
 
                 anchors.top: parent.top
                 anchors.topMargin: 5

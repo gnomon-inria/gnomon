@@ -1,10 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
+import QtQuick.Layouts  1.15
 
 import xQuick           1.0 as X
 import xQuick.Controls  1.0 as X
 import xQuick.Style     1.0 as X
+import xQuick.Fonts     1.0 as X
 
 import gnomonQuick.Controls     1.0 as G
 
@@ -42,6 +44,26 @@ Rectangle {
         }
     }
 
+    X.Icon {
+        id: _edit_button
+
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 3;
+        visible: _dragArea.containsMouse
+
+        size: 15;
+        color: "#333333"; //TODO: get value from theme
+
+        icon: X.Icons.icons.edit
+
+    }
+
+    ToolTip {
+         text: node.description
+         visible: (node.description != "") && _dragArea.containsMouse
+    }
+
     MouseArea {
         id: _dragArea
         anchors.fill: parent
@@ -54,12 +76,29 @@ Rectangle {
         }
     }
 
+    MouseArea {
+        id: _save_area;
+
+        anchors.fill: _edit_button;
+
+        onClicked: {
+            var node_dialog_component = Qt.createComponent("PipelineNodeDialog.qml");
+            if (node_dialog_component.status == Component.Ready) {
+                var dialog = node_dialog_component.createObject(_self, {
+                    "node": _self.node,
+                });
+                dialog.open()
+            }
+        }
+    }
+
     X.Label {
         id: _classLabel
-        text: node.algorithmClass;
+        text: node.name;
 
         color: "#333333"; //TODO: get value from theme
         font.pixelSize: 12; //TODO: get value from theme
+        font.bold: _self.workspaceIndex === window.current_workspace_index()
 
         anchors.fill: parent
         anchors.topMargin: 3 //TODO: get value from theme
@@ -73,6 +112,7 @@ Rectangle {
 
         color: "#333333";
         font.pixelSize: 10;
+        font.bold: _self.workspaceIndex === window.current_workspace_index()
 
         anchors.fill: parent
         anchors.topMargin: 20
@@ -93,7 +133,7 @@ Rectangle {
                 id: _port
                 port: node.inputPort(modelData)
                 Component.onCompleted: {
-                    _self.inputPorts[port.label] = _input_ports.itemAt(index)
+                    _self.inputPorts[node.inputPort(modelData)] = _input_ports.itemAt(index)
                 }
             }
         }
@@ -112,7 +152,7 @@ Rectangle {
                 id: _port
                 port: node.outputPort(modelData)
                 Component.onCompleted: {
-                    _self.outputPorts[port.label] = _output_ports.itemAt(index)
+                    _self.outputPorts[node.outputPort(modelData)] = _output_ports.itemAt(index)
                 }
             }
         }

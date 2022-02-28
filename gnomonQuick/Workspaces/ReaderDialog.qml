@@ -54,8 +54,7 @@ X.Dialog { id: self;
         }
     }
 
-    RowLayout
-    {
+    RowLayout {
         spacing: 6
         anchors.fill: parent;
 

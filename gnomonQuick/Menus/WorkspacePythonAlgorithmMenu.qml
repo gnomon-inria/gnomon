@@ -44,7 +44,7 @@ Item {
         folder: d.defaultReadPath();
         fileMode: P.FileDialog.SaveFile
 
-        modality: Qt.Modal;
+        modality: Qt.WindowModal;
         nameFilters: ["Python source files (*.py)"]
 
         onAccepted: {
