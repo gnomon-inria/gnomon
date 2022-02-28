@@ -4,6 +4,8 @@ import QtQuick.Shapes 1.15
 
 import xQuick.Style       1.0 as X
 
+import gnomonQuick  1.0 as G
+
 Rectangle {
 
     id: _self
@@ -12,7 +14,9 @@ Rectangle {
 
     property bool highlighted: port ? port.formIndex === window.world.currentIndex : false;
 
-    color: _self.highlighted ? X.Style.accentColor : "#CCCCCC"
+    color: _self.highlighted
+        ? G.Style.highlightColor //"#20E8C0"//"#009C7D" //X.Style.accentColor
+        : "#CCCCCC"
     height: 10;
     width: 10;
     radius: 5;
