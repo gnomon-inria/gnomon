@@ -98,7 +98,11 @@ Item {
 
     function updateParametersModel() {
         console.log("UPDATING PARAMETERS", parameters)
+
         params_model.clear();
+        const params = [];
+        const groups = [];
+
         for (var param_name in parameters) {
             console.log(param_name)
             var p = parameters[param_name];
@@ -108,7 +112,15 @@ Item {
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
             prop_dict["group"] = p.group;
-            params_model.append(prop_dict);
+            if(!groups.includes(p.group)) groups.push(p.group)
+            params.push(prop_dict);
+        }
+
+        //Just making sure parameters are grouped correctly
+        for(let i in groups) {
+            const group_params = params.filter(p => p.group === groups[i])
+            for(let p in group_params)
+                params_model.append(group_params[p]);
         }
     }
 

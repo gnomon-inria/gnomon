@@ -22,6 +22,7 @@ ListView {
         id: _internal;
 
         property var expanded: [];
+        property var param_groups: [];
 
     }
 
@@ -39,10 +40,12 @@ ListView {
             required property string section;
 
             width: _self.width;
-            height: section ? childrenRect.height : 0;
+            height: section ? childrenRect.height : 0 //_self.computeSectionHeight(section);
+            z: -1;
 
             color: X.Style.backgroundColor;
             radius: 3;
+
 
             clip: true;
 
@@ -91,6 +94,7 @@ ListView {
     section.property: "group"
     section.criteria: ViewSection.FullString
     section.delegate: _section_heading;
+    //section.labelPositioning: ViewSection.CurrentLabelAtStart
 
     delegate: Loader {
         property var lparam: param;
@@ -101,6 +105,7 @@ ListView {
         width: _self.width;
 
         clip: true;
+        z: 1;
 
         sourceComponent: component;
 
@@ -136,23 +141,35 @@ ListView {
     }
 
     function collapseSection(group) {
-        console.log("collapse", group)
         _internal.expanded = _internal.expanded.filter((item) => item !== group)
     }
 
     function expandSection(group) {
-        console.log("expand", group)
         _internal.expanded = _internal.expanded.concat([group])
+    }
+
+    function computeSectionHeight(group) {
+        if(group) {
+            if(_self.isSectionExpanded(group)) {
+                const num_params = _internal.param_groups.filter(g => g === group).length
+                return num_params * 80;
+            }
+            return 40;
+        }
+        return 0;
     }
 
     Component.onCompleted: {
 
         const expanded = []
+
         for(let i = 0; i < _self.model.count; i++)
-            if(_self.model.get(i).group) {
+            if(_self.model.get(i).group)
                 expanded.push(_self.model.get(i).group)
-            }
+
         _internal.expanded = expanded
+        _internal.param_groups = expanded
+
     }
 
 }
