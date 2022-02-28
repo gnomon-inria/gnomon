@@ -84,6 +84,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);*/
     
 public:
+    QList<gnomonPipelineEdge *> inputEdges(void);
+    QList<gnomonPipelineEdge *> outputEdges(void);
+
     int inputEdgeCount(void);
     int outputEdgeCount(void);
 

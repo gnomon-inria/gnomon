@@ -17,8 +17,6 @@
 
 class gnomonPipelinePrivate
 {
-public:
-    gnomonPipeline *q;
 
 public:
     QString name;
@@ -35,6 +33,7 @@ public:
 public:
     QStringList sourceNodeNames(void);
     QStringList sinkNodeNames(void);
+    QList<QStringList> scheduledNodeNameGroups(void);
 
 public:
     QList<QList<double> > nodeDistances(QList<QPointF> node_positions);
@@ -78,6 +77,44 @@ QStringList gnomonPipelinePrivate::sinkNodeNames(void)
         }
     }
     return sink_nodes;
+}
+
+QList<QStringList> gnomonPipelinePrivate::scheduledNodeNameGroups(void)
+{
+    QStringList source_nodes = this->sourceNodeNames();
+    QList<QStringList> scheduled_node_groups;
+    qDebug()<<Q_FUNC_INFO<<"Group"<<scheduled_node_groups.size()<<":"<<source_nodes;
+    scheduled_node_groups.append(source_nodes);
+
+    QStringList unscheduled_nodes = QStringList(this->pipeline_node_names);
+    for (const auto& node_name : source_nodes) {
+        unscheduled_nodes.removeAll(node_name);
+    }
+
+    while (unscheduled_nodes.size() > 0) {
+        QStringList next_group_nodes;
+        for (const auto& node_name : unscheduled_nodes) {
+            bool node_next_group = true;
+            gnomonPipelineNode *node = this->pipeline_nodes[node_name];
+            for (auto edge : node->inputEdges()) {
+                gnomonPipelineNode *linked_node = edge->source()->node();
+                QString linked_node_name = this->pipeline_nodes.key(linked_node);
+                if (unscheduled_nodes.contains(linked_node_name)) {
+                    node_next_group = false;
+                }
+            }
+            if (node_next_group) {
+                next_group_nodes.append(node_name);
+            }
+        }
+        qDebug()<<Q_FUNC_INFO<<"Group"<<scheduled_node_groups.size()<<":"<<next_group_nodes;
+        scheduled_node_groups.append(next_group_nodes);
+        for (const auto& node_name : next_group_nodes) {
+            unscheduled_nodes.removeAll(node_name);
+        }
+    }
+
+    return scheduled_node_groups;
 }
 
 void gnomonPipelinePrivate::forceDrivenLayout(void)
@@ -282,7 +319,6 @@ QList<QList<QVector2D> > gnomonPipelinePrivate::nodeVectors(QList<QPointF> node_
 gnomonPipeline::gnomonPipeline(void)
 {
     d = new gnomonPipelinePrivate;
-    d->q = this;
 }
 
 gnomonPipeline::~gnomonPipeline(void)
@@ -379,6 +415,8 @@ void gnomonPipeline::exportToToml(const QString& path)
 
 void gnomonPipeline::exportToJson(const QString& url)
 {
+    d->scheduledNodeNameGroups();
+
     QUrl q_url(url);
     QString path = q_url.toLocalFile();
 

@@ -290,6 +290,16 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawText(label_pos, label_text);
 } */
 
+QList<gnomonPipelineEdge *> gnomonPipelineNode::inputEdges(void)
+{
+    return d->input_edges;
+}
+
+QList<gnomonPipelineEdge *> gnomonPipelineNode::outputEdges(void)
+{
+    return d->output_edges;
+}
+
 int gnomonPipelineNode::inputEdgeCount(void)
 {
     return d->input_edges.size();
