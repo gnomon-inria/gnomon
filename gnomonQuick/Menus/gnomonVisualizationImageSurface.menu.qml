@@ -19,7 +19,33 @@ Item {
 
     property var parameters;
 
+    QtObject {
+        id: _internal;
+        property var expanded: [
+            "surface",
+            "signal",
+            "rendering"
+        ]
+    }
+
     signal valueChanged()
+
+    function isSectionExpanded(name) {
+        return _internal.expanded.includes(name);
+    }
+
+    function toggleCollapse(group) {
+        if(_internal.expanded.includes(group)) _self.collapseSection(group)
+        else _self.expandSection(group)
+    }
+
+    function collapseSection(group) {
+        _internal.expanded = _internal.expanded.filter((item) => item !== group)
+    }
+
+    function expandSection(group) {
+        _internal.expanded = _internal.expanded.concat([group])
+    }
 
     C.InListStringList {
         id: _channel_options;
@@ -30,7 +56,7 @@ Item {
         width: 330;
         height: 70;
 
-        visible: parameters["channel"]
+        visible: parameters["channel"] !== undefined
 
         param: parameters["channel"]
 
@@ -52,23 +78,67 @@ Item {
         anchors.top: parameters["channel"] ? _channel_options.top : parent.top;
         anchors.topMargin: 10;
         width: _self.width;
-        height: 170;
+        height: _self.isSectionExpanded("surface") ? 170 : 10 + _surface_generation_header.height;
 
-        X.Label {
+        clip: true;
 
-            id: _surface_generation_label;
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
+
+        Item {
+
+            id: _surface_generation_header;
 
             anchors.top: parent.top;
             anchors.left: parent.left;
-            anchors.topMargin: 5;
-            anchors.leftMargin: 5;
+            anchors.right: parent.right;
 
-            text: "Surface generation"
+            height: childrenRect.height;
+
+            X.Label {
+
+                id: _surface_generation_label;
+
+                anchors.top: parent.top;
+                anchors.left: parent.left;
+                anchors.topMargin: 5;
+                anchors.leftMargin: 5;
+
+                text: "Surface generation"
+                font.pixelSize: 20;
+            }
+
+            X.Icon {
+                id: _icon_surface;
+
+                anchors.right: parent.right;
+                anchors.top: parent.top;
+                anchors.topMargin: 5;
+                anchors.rightMargin: 5;
+                size: 30;
+
+                icon: X.Icons.icons.keyboard_arrow_up;
+
+                rotation: _self.isSectionExpanded("surface") ? 0 : 180;
+
+                Behavior on rotation {
+                    NumberAnimation { duration: 200 }
+                }
+
+            }
+
+            MouseArea {
+                anchors.fill: parent;
+                onClicked: _self.toggleCollapse("surface")
+            }
+
         }
+
 
         Column {
 
-            anchors.top: _surface_generation_label.bottom;
+            anchors.top: _surface_generation_header.bottom;
             anchors.bottom: parent.bottom;
             spacing: 10;
 
@@ -119,23 +189,65 @@ Item {
         anchors.top : _surface_generation_options.bottom;
         anchors.topMargin: 10;
         width: _self.width;
-        height: 90;
+        height: _self.isSectionExpanded("signal") ? 90 : 10 + _signal_protection_header.height;
 
-        X.Label {
+        clip: true;
 
-            id: _signal_protection_label;
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
+
+        Item {
+
+            id: _signal_protection_header;
 
             anchors.top: parent.top;
             anchors.left: parent.left;
-            anchors.topMargin: 5;
-            anchors.leftMargin: 5;
+            anchors.right: parent.right;
 
-            text: "Signal protection"
+            height: childrenRect.height;
+
+            X.Label {
+
+                id: _signal_protection_label;
+
+                anchors.top: parent.top;
+                anchors.left: parent.left;
+                anchors.topMargin: 5;
+                anchors.leftMargin: 5;
+
+                text: "Signal protection"
+                font.pixelSize: 20;
+            }
+
+            X.Icon {
+                id: _icon_signal;
+
+                anchors.right: parent.right;
+                anchors.top: parent.top;
+                anchors.topMargin: 5;
+                anchors.rightMargin: 5;
+                size: 30;
+
+                icon: X.Icons.icons.keyboard_arrow_up;
+
+                rotation: _self.isSectionExpanded("signal") ? 0 : 180;
+
+                Behavior on rotation {
+                    NumberAnimation { duration: 200 }
+                }
+
+            }
+
+            MouseArea {
+                anchors.fill: parent;
+                onClicked: _self.toggleCollapse("signal")
+            }
         }
 
         Column {
 
-            anchors.top: _signal_protection_label.bottom;
+            anchors.top: _signal_protection_header.bottom;
             anchors.bottom: parent.bottom;
             spacing: 10;
 
@@ -168,23 +280,66 @@ Item {
         anchors.top: _signal_protection_options.bottom;
         anchors.topMargin: 10;
         width: _self.width;
-        height: 270;
+        height: _self.isSectionExpanded("rendering") ? 270 : 10 + _rendering_options_header.height;
 
-        X.Label {
+        clip: true;
 
-            id: _rendering_label;
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
+
+        Item {
+
+            id: _rendering_options_header;
 
             anchors.top: parent.top;
             anchors.left: parent.left;
-            anchors.topMargin: 5;
-            anchors.leftMargin: 5;
+            anchors.right: parent.right;
 
-            text: "Rendering"
+            height: childrenRect.height;
+
+            X.Label {
+
+                id: _rendering_label;
+
+                anchors.top: parent.top;
+                anchors.left: parent.left;
+                anchors.topMargin: 5;
+                anchors.leftMargin: 5;
+
+                text: "Rendering"
+                font.pixelSize: 20;
+            }
+
+            X.Icon {
+                id: _icon_rendering;
+
+                anchors.right: parent.right;
+                anchors.top: parent.top;
+                anchors.topMargin: 5;
+                anchors.rightMargin: 5;
+                size: 30;
+
+                icon: X.Icons.icons.keyboard_arrow_up;
+
+                rotation: _self.isSectionExpanded("rendering") ? 0 : 180;
+
+                Behavior on rotation {
+                    NumberAnimation { duration: 200 }
+                }
+
+            }
+
+            MouseArea {
+                anchors.fill: parent;
+                onClicked: _self.toggleCollapse("rendering")
+            }
+
         }
 
         Column {
 
-            anchors.top: _rendering_label.bottom;
+            anchors.top: _rendering_options_header.bottom;
             anchors.bottom: parent.bottom;
             spacing: 10;
 
