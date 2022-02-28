@@ -32,7 +32,8 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
         d->forms[time] = dynamic_cast<T *>(o.d->forms[time]->clone());
     }
     d->current_time = o.d->current_time;
-    metadata->setName(T::formName());
+    delete metadata;
+    metadata = new gnomonDynamicFormMetadata(*o.metadata);
 }
 
 template <typename T> gnomonTimeSeries<T>::~gnomonTimeSeries(void)
