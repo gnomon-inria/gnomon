@@ -320,8 +320,8 @@ Rectangle {
 
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
-            width: window.width * 3/4
-            height: window.height * 3/4
+            width: window.width * 2/4
+            height: window.height * 2/4
 
             padding: 10;
 
@@ -352,8 +352,12 @@ Rectangle {
             }
 
             function reset(){
+                for(let i = 0; i < _list_view.count; i++) {
+                    var item_delegate = _list_view.itemAtIndex(i);
+                    item_delegate.load_metadata();
+                }
                 _list_view.currentIndex = 0;
-                _list_view.select_next_row();
+                _list_view.select_field();
                 _form_export_dialog.enabled = true;
                 //form_name.selectAll();
                 //form_name.forceActiveFocus();
@@ -387,9 +391,15 @@ Rectangle {
                         }
 
                         function save_metadata() {
-                            console.log("metadata.name: ", metadata.name)
+                            //console.log("metadata.name: ", metadata.name)
                             metadata.name = _form_name.text;
-                            console.log(" --> ", metadata.name)
+                            //console.log(" --> ", metadata.name)
+                        }
+
+                        function load_metadata() {
+                            metadata = viewLogic.formMetadata(modelData);
+                            //console.log(" --> ", metadata.name)
+                            _form_name.text = metadata.name;
                         }
 
                         Label {
@@ -412,7 +422,7 @@ Rectangle {
                             anchors.bottom: parent.bottom;
 
                             font.pointSize: 14;
-                            text: metadata.name;
+                            text: "";
                             //focus: true;
                             onAccepted: {
                                 if(index != _list_view.count - 1) {
@@ -463,10 +473,10 @@ Rectangle {
                     onCurrentIndexChanged: {
                         console.log("currentItem: ", currentItem)
                         console.log("currentIndex: ", currentIndex)
-                        select_next_row();
+                        select_field();
                     }
 
-                    function select_next_row() {
+                    function select_field() {
                         currentItem.form_name.selectAll();
                         currentItem.form_name.forceActiveFocus();
                     }
