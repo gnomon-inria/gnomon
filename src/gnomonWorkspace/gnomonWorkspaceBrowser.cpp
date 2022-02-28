@@ -579,7 +579,6 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     //     this->menu->close();
     // }
 }
-#pragma clang diagnostic pop
 
 /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceBrowser
