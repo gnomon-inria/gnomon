@@ -423,7 +423,7 @@ Rectangle {
                             }
 
                             onActiveFocusChanged: {
-                                if (_list_view.currentIndex != index) {
+                                if (focus) {
                                     _list_view.currentIndex = index;
                                 }
                             }
@@ -461,7 +461,8 @@ Rectangle {
                     }
 
                     onCurrentIndexChanged: {
-                        //console.log("currentItem: ", currentItem)
+                        console.log("currentItem: ", currentItem)
+                        console.log("currentIndex: ", currentIndex)
                         select_next_row();
                     }
 
