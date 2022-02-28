@@ -2,6 +2,7 @@ import logging
 
 from matplotlib import cm, colors
 from matplotlib.colors import to_rgb
+import matplotlib.pyplot as plt
 
 from collections.abc import Iterable
 
@@ -37,7 +38,7 @@ def mpl_colormap(colormap, name=None, reverse=False):
 
 def register_gnomon_colormaps():
     p = ParameterColorMap()
-    mpl_cmaps = cm._colormaps()
+    mpl_cmaps = plt.colormaps()
 
     for colormap_name in p.availableCluts():
         if colormap_name not in mpl_cmaps:
