@@ -457,6 +457,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         imageCommand->setPath(path);
         imageCommand->redo();
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
+        image_series->getMetadata()->setName(QFileInfo(imageCommand->path()).fileName());
+        image_series->getMetadata()->setSource(imageCommand->path());
         if (!image_series) {
             qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
         } else {
@@ -472,6 +474,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
+        cellImage_series->getMetadata()->setName(QFileInfo(cellImageCommand->path()).fileName());
+        cellImage_series->getMetadata()->setSource(cellImageCommand->path());
         if (!cellImage_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
         } else {
@@ -485,6 +489,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellComplexCommand->setPath(path);
         cellComplexCommand->redo();
         gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex();
+        cellComplex_series->getMetadata()->setName(QFileInfo(cellComplexCommand->path()).fileName());
+        cellComplex_series->getMetadata()->setSource(cellComplexCommand->path());
         if (!cellComplex_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
         } else {
@@ -498,6 +504,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         binaryImageCommand->setPath(path);
         binaryImageCommand->redo();
         gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
+        binaryImage_series->getMetadata()->setName(QFileInfo(binaryImageCommand->path()).fileName());
+        binaryImage_series->getMetadata()->setSource(binaryImageCommand->path());
         if (!binaryImage_series) {
             qWarning() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
         } else {
@@ -511,6 +519,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         dataFrameCommand->setPath(path);
         dataFrameCommand->redo();
         gnomonDataFrameSeries * dataFrame_series = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame();
+        dataFrame_series->getMetadata()->setName(QFileInfo(dataFrameCommand->path()).fileName());
+        dataFrame_series->getMetadata()->setSource(dataFrameCommand->path());
         if (!dataFrame_series) {
             qWarning() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
         } else {
@@ -524,6 +534,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         meshCommand->setPath(path);
         meshCommand->redo();
         gnomonMeshSeries * mesh_series = (gnomonMeshSeries *) meshCommand->mesh();
+        mesh_series->getMetadata()->setName(QFileInfo(meshCommand->path()).fileName());
+        mesh_series->getMetadata()->setSource(meshCommand->path());
         if (!mesh_series) {
             qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
         } else {
@@ -537,6 +549,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         pointCloudCommand->setPath(path);
         pointCloudCommand->redo();
         gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud();
+        pointCloud_series->getMetadata()->setName(QFileInfo(pointCloudCommand->path()).fileName());
+        pointCloud_series->getMetadata()->setSource(pointCloudCommand->path());
         if (!pointCloud_series) {
             qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
         } else {
@@ -550,6 +564,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         treeCommand->setPath(path);
         treeCommand->redo();
         gnomonTreeSeries * tree_series = (gnomonTreeSeries *) treeCommand->tree();
+        tree_series->getMetadata()->setName(QFileInfo(treeCommand->path()).fileName());
+        tree_series->getMetadata()->setSource(treeCommand->path());
         if (!tree_series) {
             qWarning() << Q_FUNC_INFO << "Resulting tree series is void.";
         } else {
@@ -563,6 +579,7 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     //     this->menu->close();
     // }
 }
+#pragma clang diagnostic pop
 
 /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceBrowser
