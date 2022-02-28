@@ -65,9 +65,7 @@ QString gnomonPipelineNodeWriter::toToml(void)
 
 const QJsonObject gnomonPipelineNodeWriter::toJson(void)
 {
-    QJsonObject json;
-    json.insert("name", d->name);
-    json.insert("plugin_name", d->algorithm);
+    QJsonObject json = gnomonPipelineNode::toJson();
     json.insert("path", dd->path);
 
     QJsonArray in;

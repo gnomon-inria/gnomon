@@ -215,6 +215,9 @@ def gnomonParametric(cls):
             returns a copy of _parameters
         parameterDict(self)
             returns a dict of (parameter_name, parameter_value)
+        parameterGroups(self)
+            used the hidden attribute _parameter_groups to define a map that associates parameter names
+            to a group name. By default, the group name "" is assigned to all parameters
 
     Returns
     -------
@@ -262,6 +265,17 @@ def gnomonParametric(cls):
         return {key: value.value() for key, value in self.parameters().items()}
 
     cls.parameterDict = parameterDict
+
+    def parameterGroups(self):
+        groups = {}
+        for parameter_name in self._parameters.keys():
+            if not hasattr(self, "_parameter_groups") or parameter_name not in self._parameter_groups.keys():
+                groups[parameter_name] = ""
+            else:
+                groups[parameter_name] = self._parameter_groups[parameter_name]
+        return groups
+
+    cls.parameterGroups = parameterGroups
 
     return cls
 

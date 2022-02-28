@@ -196,6 +196,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
 
     if (!empty_output) {
         d->registerPipeline();
+        this->target()->tryLinking();
     }
 }
 
