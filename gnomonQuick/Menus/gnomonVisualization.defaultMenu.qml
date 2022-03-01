@@ -81,7 +81,7 @@ ListView {
                 //anchors.topMargin: 5;
                 anchors.leftMargin: 5;
 
-                text: parent.section;
+                text: sectionTitle(parent.section);
                 font.pixelSize: 12;
                 font.bold: true;
             }
@@ -143,6 +143,11 @@ ListView {
 
     function expandSection(group) {
         _internal.expanded = _internal.expanded.concat([group])
+    }
+
+    function sectionTitle(s) {
+        let title = s.replace('_', ' ');
+        return title.charAt(0).toUpperCase() + title.slice(1);
     }
 
     function computeSectionHeight(group) {
