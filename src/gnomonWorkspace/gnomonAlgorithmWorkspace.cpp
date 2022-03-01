@@ -182,12 +182,18 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     bool empty_output = true;
 
     int i=0;
-    auto inputForm = d->command->inputs().first();
+    gnomonAbstractDynamicForm* inputForm;
+    for(auto [name, output_type] : d->command->inputTypes()) {
+        if (d->command->inputs()[name]) {
+            inputForm = d->command->inputs()[name];
+            break;
+        }
+    }
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name]) {
             auto form =  d->command->outputs()[name];
-            form->getMetadata()->setName(inputForm->getMetadata()->getName() + "_" + d->algorithm + "_" + name);
-            form->getMetadata()->setSource(d->algorithm);
+            form->getMetadata()->set("name", inputForm->getMetadata()->get("name") + "_" + d->algorithm + "_" + name);
+            form->getMetadata()->set("source", d->algorithm);
             (*d->targets)[i]->setForm(output_type, form);
             (*d->targets)[i]->render();
             empty_output = false;

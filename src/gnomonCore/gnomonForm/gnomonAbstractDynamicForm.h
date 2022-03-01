@@ -61,6 +61,9 @@ public:
     }
 
     gnomonDynamicFormMetadata* getMetadata(void) {
+        if (!metadata) {
+            metadata = new gnomonDynamicFormMetadata();
+        }
         return metadata;
     }
 

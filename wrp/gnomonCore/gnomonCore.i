@@ -53,7 +53,7 @@ import_array();
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
-#include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
+//#include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 #include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
@@ -861,7 +861,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
-%include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
+//%include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 %include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 %include <gnomonCore/gnomonForm/gnomonWallForm.h>

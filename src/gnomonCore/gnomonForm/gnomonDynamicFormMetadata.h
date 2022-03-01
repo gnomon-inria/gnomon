@@ -2,10 +2,12 @@
 
 #include <QJsonObject>
 
+class gnomonDynamicFormMetadataPrivate;
+
 class gnomonDynamicFormMetadata: public QObject {
     Q_OBJECT
 public:
-    gnomonDynamicFormMetadata() = default;
+    gnomonDynamicFormMetadata();
     gnomonDynamicFormMetadata(const gnomonDynamicFormMetadata& other);
     explicit gnomonDynamicFormMetadata(const QJsonObject& json);
 
@@ -13,33 +15,19 @@ public:
 
     void deserialize(const QJsonObject& json);
 
+    Q_PROPERTY(QStringList keys READ keys NOTIFY keysChanged);
+
 public:
-    Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged)
-    Q_PROPERTY(QString source MEMBER source NOTIFY sourceChanged)
-    Q_PROPERTY(QString description MEMBER description NOTIFY descriptionChanged)
+    QStringList keys();
 
 signals:
-    void nameChanged(void);
-
-    void sourceChanged(void);
-
-    void descriptionChanged(void);
+    void keysChanged();
 
 public:
-    const QString &getName() const;
+    Q_INVOKABLE QString get(const QString &key);
 
-    void setName(const QString &name);
-
-    const QString &getSource() const;
-
-    void setSource(const QString &source);
-
-    const QString &getDescription() const;
-
-    void setDescription(const QString &description);
+    Q_INVOKABLE void set(const QString &key, const QString &value);
 
 private:
-    QString name = "";
-    QString source = "";
-    QString description = "";
+    gnomonDynamicFormMetadataPrivate* d = nullptr;
 };
