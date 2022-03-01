@@ -8,7 +8,7 @@ import xQuick.Controls  1.0 as X
 import xQuick.Style     1.0 as X
 import xQuick.Fonts     1.0 as X
 
-import gnomonQuick     1.0 as GX
+import gnomonQuick.Controls     1.0 as G
 
 
 X.Dialog {
@@ -70,7 +70,7 @@ X.Dialog {
 
             model: node.inputPortsNames;
 
-            delegate: GX.PipelinePortEdit {
+            delegate: G.PipelinePortEdit {
                 name: modelData
                 label: node.inputPort(modelData).label
 
@@ -100,7 +100,7 @@ X.Dialog {
 
             model: node.outputPortsNames;
 
-            delegate: GX.PipelinePortEdit {
+            delegate: G.PipelinePortEdit {
                 name: modelData
                 label: node.outputPort(modelData).label
 

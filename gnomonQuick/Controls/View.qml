@@ -8,7 +8,7 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
-import gnomonQuick        1.0 as G
+import gnomonQuick.Controls  1.0 as G
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM
@@ -162,7 +162,7 @@ Rectangle {
     Image {
         id: _2d_xy;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XY;
-        source: active? "qrc:/qml/gnomonQuick/View-XY.png" : "qrc:/qml/gnomonQuick/View-XY-off.png";
+        source: active? "qrc:/qml/gnomonQuick/assets/View-XY.png" : "qrc:/qml/gnomonQuick/assets/View-XY-off.png";
         visible: _2d_icon.active
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -185,7 +185,7 @@ Rectangle {
     Image {
         id: _2d_xz;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XZ;
-        source: active? "qrc:/qml/gnomonQuick/View-XZ.png" : "qrc:/qml/gnomonQuick/View-XZ-off.png";
+        source: active? "qrc:/qml/gnomonQuick/assets/View-XZ.png" : "qrc:/qml/gnomonQuick/assets/View-XZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -208,7 +208,7 @@ Rectangle {
     Image {
         id: _2d_yz;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_YZ;
-        source: active? "qrc:/qml/gnomonQuick/View-YZ.png" : "qrc:/qml/gnomonQuick/View-YZ-off.png";
+        source: active? "qrc:/qml/gnomonQuick/assets/View-YZ.png" : "qrc:/qml/gnomonQuick/assets/View-YZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
         // color: X.Style.foregroundColor;

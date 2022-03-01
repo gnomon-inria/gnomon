@@ -5,7 +5,7 @@ import QtQuick.Layouts  1.15
 import xQuick.Controls 1.0 as X
 import xQuick.Style    1.0 as X
 
-import gnomonQuick     1.0 as G
+import gnomonQuick.Controls     1.0 as G
 
 Control {
 	id: _self
