@@ -23,7 +23,6 @@ ListView {
 
         property var expanded: [];
         property var param_groups: [];
-
     }
 
     spacing: 10;
@@ -34,7 +33,6 @@ ListView {
         id: _section_heading;
 
         Rectangle {
-
             id: _section_rectangle;
 
             required property string section;
@@ -75,18 +73,17 @@ ListView {
                 Behavior on rotation {
                     NumberAnimation { duration: 200 }
                 }
-
             }
 
             X.Label {
-
                 anchors.left: parent.left;
-                anchors.top: parent.top;
-                anchors.topMargin: 5;
+                anchors.verticalCenter: parent.verticalCenter;
+                //anchors.topMargin: 5;
                 anchors.leftMargin: 5;
 
                 text: parent.section;
-                font.pixelSize: 20;
+                font.pixelSize: 12;
+                font.bold: true;
             }
         }
     }
@@ -161,14 +158,14 @@ ListView {
 
     Component.onCompleted: {
 
-        const expanded = []
+        const groups = []
 
         for(let i = 0; i < _self.model.count; i++)
             if(_self.model.get(i).group)
-                expanded.push(_self.model.get(i).group)
+                groups.push(_self.model.get(i).group)
 
-        _internal.expanded = expanded
-        _internal.param_groups = expanded
+        _internal.expanded = []
+        _internal.param_groups = groups
 
     }
 
