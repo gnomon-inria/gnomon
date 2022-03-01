@@ -109,7 +109,12 @@ QVariantMap gnomonPipelineManagerPrivate::parameterVariantValues(const dtkCorePa
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         auto&& parameter_name = it.key();
         auto&& param = it.value();
-        parameter_values[parameter_name] = param->variant();
+        QVariantHash param_hash = param->toVariantHash();
+        if (param_hash.contains("value")) {
+            parameter_values[parameter_name] = param_hash["value"];
+        } else if ((param_hash.contains("values"))&& (param_hash.contains("index"))) {
+            parameter_values[parameter_name] = param_hash["values"].toStringList()[param_hash["index"].toInt()];
+        }
     }
 
     return parameter_values;
