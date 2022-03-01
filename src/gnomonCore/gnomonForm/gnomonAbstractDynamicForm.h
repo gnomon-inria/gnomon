@@ -19,7 +19,7 @@
 #include <QtCore>
 
 #include <dtkCore>
-#include "gnomonDynamicFormMetadata.h"
+#include "gnomonAbstractDynamicForm_p.h"
 
 //#include <gnomonTime.h>
 
@@ -31,11 +31,11 @@ class gnomonAbstractForm;
 class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
 {
 public:
-             gnomonAbstractDynamicForm(void) {
-                 metadata = new gnomonDynamicFormMetadata();
+             gnomonAbstractDynamicForm(void): d(new gnomonAbstractDynamicFormPrivate) {
+
              }
     virtual ~gnomonAbstractDynamicForm(void) {
-                 delete metadata;
+                 delete d;
              };
 
 public:
@@ -52,28 +52,28 @@ public:
     virtual void drop(double t) = 0;
     virtual QJsonObject serialize(void) {
         QJsonObject json;
-        json["metadata"] = metadata->serialize();
+        json["metadata"] = d->metadata->serialize();
         return json;
     }
 
     virtual void deserialize(QJsonObject & json) {
-        metadata->deserialize(json);
+        d->metadata->deserialize(json);
     }
 
-    gnomonDynamicFormMetadata* getMetadata(void) {
-        if (!metadata) {
-            metadata = new gnomonDynamicFormMetadata();
-        }
-        return metadata;
+    gnomonDynamicFormMetadata* metadata(void) {
+        return d->metadata;
     }
 
     void setMetadata(gnomonDynamicFormMetadata* metadata) {
-        delete this->metadata;
-        this->metadata = metadata;
+        delete d->metadata;
+        d->metadata = metadata;
     }
 
 protected:
-    gnomonDynamicFormMetadata* metadata;
+    // for subclassing, see https://wiki.qt.io/D-Pointer#Inheriting_d-pointers_for_optimization
+    explicit gnomonAbstractDynamicForm(gnomonAbstractDynamicFormPrivate* otherPrivate): d(otherPrivate) {}
+
+    gnomonAbstractDynamicFormPrivate* d;
 
 //public:
 //    virtual void setInitialTime(gnomonTime T_i) = 0;

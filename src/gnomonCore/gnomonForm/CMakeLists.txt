@@ -36,6 +36,7 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
+  gnomonAbstractDynamicForm_p.h
   gnomonAbstractForm
   gnomonAbstractForm.h
   gnomonAbstractFormData

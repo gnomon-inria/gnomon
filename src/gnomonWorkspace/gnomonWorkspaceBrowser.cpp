@@ -457,8 +457,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         imageCommand->setPath(path);
         imageCommand->redo();
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
-        image_series->getMetadata()->set("name", QFileInfo(imageCommand->path()).fileName());
-        image_series->getMetadata()->set("source", imageCommand->path());
+        image_series->metadata()->set("name", QFileInfo(imageCommand->path()).fileName());
+        image_series->metadata()->set("source", imageCommand->path());
         if (!image_series) {
             qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
         } else {
@@ -474,8 +474,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
-        cellImage_series->getMetadata()->set("name", QFileInfo(cellImageCommand->path()).fileName());
-        cellImage_series->getMetadata()->set("source", cellImageCommand->path());
+        cellImage_series->metadata()->set("name", QFileInfo(cellImageCommand->path()).fileName());
+        cellImage_series->metadata()->set("source", cellImageCommand->path());
         if (!cellImage_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
         } else {
@@ -489,8 +489,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellComplexCommand->setPath(path);
         cellComplexCommand->redo();
         gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex();
-        cellComplex_series->getMetadata()->set("name", QFileInfo(cellComplexCommand->path()).fileName());
-        cellComplex_series->getMetadata()->set("source", cellComplexCommand->path());
+        cellComplex_series->metadata()->set("name", QFileInfo(cellComplexCommand->path()).fileName());
+        cellComplex_series->metadata()->set("source", cellComplexCommand->path());
         if (!cellComplex_series) {
             qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
         } else {
@@ -504,8 +504,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         binaryImageCommand->setPath(path);
         binaryImageCommand->redo();
         gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
-        binaryImage_series->getMetadata()->set("name", QFileInfo(binaryImageCommand->path()).fileName());
-        binaryImage_series->getMetadata()->set("source", binaryImageCommand->path());
+        binaryImage_series->metadata()->set("name", QFileInfo(binaryImageCommand->path()).fileName());
+        binaryImage_series->metadata()->set("source", binaryImageCommand->path());
         if (!binaryImage_series) {
             qWarning() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
         } else {
@@ -519,8 +519,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         dataFrameCommand->setPath(path);
         dataFrameCommand->redo();
         gnomonDataFrameSeries * dataFrame_series = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame();
-        dataFrame_series->getMetadata()->set("name", QFileInfo(dataFrameCommand->path()).fileName());
-        dataFrame_series->getMetadata()->set("source", dataFrameCommand->path());
+        dataFrame_series->metadata()->set("name", QFileInfo(dataFrameCommand->path()).fileName());
+        dataFrame_series->metadata()->set("source", dataFrameCommand->path());
         if (!dataFrame_series) {
             qWarning() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
         } else {
@@ -534,8 +534,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         meshCommand->setPath(path);
         meshCommand->redo();
         gnomonMeshSeries * mesh_series = (gnomonMeshSeries *) meshCommand->mesh();
-        mesh_series->getMetadata()->set("name", QFileInfo(meshCommand->path()).fileName());
-        mesh_series->getMetadata()->set("source", meshCommand->path());
+        mesh_series->metadata()->set("name", QFileInfo(meshCommand->path()).fileName());
+        mesh_series->metadata()->set("source", meshCommand->path());
         if (!mesh_series) {
             qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
         } else {
@@ -549,8 +549,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         pointCloudCommand->setPath(path);
         pointCloudCommand->redo();
         gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud();
-        pointCloud_series->getMetadata()->set("name", QFileInfo(pointCloudCommand->path()).fileName());
-        pointCloud_series->getMetadata()->set("source", pointCloudCommand->path());
+        pointCloud_series->metadata()->set("name", QFileInfo(pointCloudCommand->path()).fileName());
+        pointCloud_series->metadata()->set("source", pointCloudCommand->path());
         if (!pointCloud_series) {
             qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
         } else {
@@ -564,8 +564,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         treeCommand->setPath(path);
         treeCommand->redo();
         gnomonTreeSeries * tree_series = (gnomonTreeSeries *) treeCommand->tree();
-        tree_series->getMetadata()->set("name", QFileInfo(treeCommand->path()).fileName());
-        tree_series->getMetadata()->set("source", treeCommand->path());
+        tree_series->metadata()->set("name", QFileInfo(treeCommand->path()).fileName());
+        tree_series->metadata()->set("source", treeCommand->path());
         if (!tree_series) {
             qWarning() << Q_FUNC_INFO << "Resulting tree series is void.";
         } else {

@@ -2337,7 +2337,7 @@ void gnomonViewForm::drop(int index)
 }
 
 gnomonDynamicFormMetadata* gnomonViewForm::formMetadata(const QString &name) {
-    return d->forms[name]->getMetadata();
+    return d->forms[name]->metadata();
 }
 
 // void gnomonViewForm::resizeEvent(QResizeEvent *event)
