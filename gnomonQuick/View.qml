@@ -392,14 +392,14 @@ Rectangle {
 
                         function save_metadata() {
                             //console.log("metadata.name: ", metadata.name)
-                            metadata.name = _form_name.text;
+                            metadata.set("name", _form_name.text);
                             //console.log(" --> ", metadata.name)
                         }
 
                         function load_metadata() {
                             metadata = viewLogic.formMetadata(modelData);
-                            //console.log(" --> ", metadata.name)
-                            _form_name.text = metadata.name;
+                            console.log(metadata, " --> ", metadata.get("name"))
+                            _form_name.text = metadata.get("name");
                         }
 
                         Label {
@@ -479,10 +479,6 @@ Rectangle {
                     function select_field() {
                         currentItem.form_name.selectAll();
                         currentItem.form_name.forceActiveFocus();
-                    }
-
-                    function save_metadata() {
-                        // body...
                     }
                 }
             }
