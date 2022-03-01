@@ -38,10 +38,10 @@ ListView {
             required property string section;
 
             width: _self.width;
-            height: section ? childrenRect.height : 0 //_self.computeSectionHeight(section);
+            height: section ? 33 : 0 //_self.computeSectionHeight(section);
             z: -1;
 
-            color: X.Style.backgroundColor;
+            color: X.Style.baseColor;
             radius: 3;
 
             clip: true;

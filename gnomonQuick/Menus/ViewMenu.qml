@@ -73,6 +73,7 @@ Item {
 
         ComboBox {
             id: _form_combobox
+
             model: view.viewLogic.formNames;
             visible: view.viewLogic.formNames.length > 0
 
