@@ -54,9 +54,7 @@ QString gnomonPipelineNodeAdapter::toToml(void)
 
 const QJsonObject gnomonPipelineNodeAdapter::toJson(void)
 {
-    QJsonObject json;
-    json.insert("name", d->name);
-    json.insert("plugin_name", d->algorithm);
+    QJsonObject json = gnomonPipelineNode::toJson();
 
     QJsonArray in;
     for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {

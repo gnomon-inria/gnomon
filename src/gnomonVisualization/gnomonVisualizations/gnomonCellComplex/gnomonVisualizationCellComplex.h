@@ -61,6 +61,7 @@ public:
     void setParameter(const QString&, const QVariant&) override;
     void setParameters(const dtkCoreParameters&) override;
     dtkCoreParameters parameters(void) const override;
+    QMap<QString, QString> parameterGroups(void) override;
 
 private:
 	class gnomonVisualizationCellComplexPrivate *dd;

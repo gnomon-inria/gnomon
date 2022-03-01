@@ -1944,7 +1944,17 @@ void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_na
 QJSValue gnomonViewForm::formVisuParameters(const QString& name)
 {
     if (d->forms.contains(name)) {
-        return dtkCoreParameterCollection(d->formVisualization[name]->parameters()).toJSValue(this->parent());
+        QJSValue parameters = dtkCoreParameterCollection(d->formVisualization[name]->parameters()).toJSValue(this->parent());
+        QMap<QString, QString> parameter_groups = d->formVisualization[name]->parameterGroups();
+
+        QJSValueIterator it(parameters);
+        while (it.hasNext()) {
+            it.next();
+            QString group = parameter_groups.contains(it.name()) ? parameter_groups[it.name()] : "";
+            it.value().setProperty("group", group != "" ? group : nullptr);
+        }
+
+        return parameters;
     } else {
         return QJSValue();
     }

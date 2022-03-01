@@ -25,6 +25,7 @@ class GNOMONPIPELINE_EXPORT gnomonPipelinePort : public QObject
     Q_OBJECT
 
     Q_PROPERTY(gnomonPipelineNode *node READ node);
+    Q_PROPERTY(QString name READ name CONSTANT);
     Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged);
 
     Q_PROPERTY(int formIndex READ formIndex WRITE setFormIndex NOTIFY formIndexChanged)
@@ -38,7 +39,7 @@ public:
 public:
     gnomonPipelinePort(void) = default;
     gnomonPipelinePort(Type type, gnomonPipelineNode *parent);
-    gnomonPipelinePort(Type type, const QString& label, gnomonPipelineNode *parent);
+    gnomonPipelinePort(Type type, const QString& name, gnomonPipelineNode *parent);
     ~gnomonPipelinePort(void);
 
 public:
@@ -46,6 +47,9 @@ public:
 
 public:
     gnomonPipelineNode *node(void);
+
+public:
+    QString name(void);
 
 public:
     QString label(void);

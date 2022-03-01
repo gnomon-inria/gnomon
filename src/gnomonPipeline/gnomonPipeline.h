@@ -39,7 +39,17 @@ protected:
     ~gnomonPipeline(void);
 
 public:
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
+    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
     Q_PROPERTY(QStringList nodeNames READ nodeNames);
+
+public:
+    const QString& name(void);
+    const QString& description(void);
+
+public:
+    void setName(const QString& name);
+    void setDescription(const QString& desc);
 
 public:
     const QStringList& nodeNames(void);
@@ -62,6 +72,9 @@ public:
     void setFormIndex(gnomonAbstractDynamicForm *form, int index=-1);
 
 signals:
+    void nameChanged(void);
+    void descriptionChanged(void);
+
     void nodeAdded(gnomonPipelineNode *);
 
 public slots:

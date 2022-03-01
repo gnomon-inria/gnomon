@@ -15,6 +15,7 @@
 #pragma once
 
 #include <gnomonWorkspaceExport>
+#include "gnomonAbstractWorkspace.h"
 
 #include <QtCore>
 #include <QtQml>
@@ -24,7 +25,7 @@
 class gnomonViewForm;
 class gnomonPythonAlgorithmPluginCode;
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonAlgorithm : public QObject
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonAlgorithm : public gnomonAbstractWorkspace
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
