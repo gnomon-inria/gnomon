@@ -44,7 +44,6 @@ ListView {
             color: X.Style.backgroundColor;
             radius: 3;
 
-
             clip: true;
 
             Behavior on height {
@@ -78,7 +77,6 @@ ListView {
             X.Label {
                 anchors.left: parent.left;
                 anchors.verticalCenter: parent.verticalCenter;
-                //anchors.topMargin: 5;
                 anchors.leftMargin: 5;
 
                 text: sectionTitle(parent.section);
@@ -116,7 +114,6 @@ ListView {
         Behavior on height {
             NumberAnimation { duration: 200 }
         }
-
     }
 
     ScrollIndicator.vertical: ScrollIndicator {
@@ -162,7 +159,6 @@ ListView {
     }
 
     Component.onCompleted: {
-
         const groups = []
 
         for(let i = 0; i < _self.model.count; i++)
@@ -171,7 +167,5 @@ ListView {
 
         _internal.expanded = []
         _internal.param_groups = groups
-
     }
-
 }
