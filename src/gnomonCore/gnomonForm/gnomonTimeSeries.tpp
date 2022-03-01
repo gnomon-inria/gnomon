@@ -1,30 +1,12 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
-#include "gnomonCore.h"
+#include "gnomonTimeSeries.h"
 #include "gnomonTime.h"
 
 #include <QtGlobal>
 
 
-// ///////////////////////////////////////////////////////////////////
-// gnomonTimeSeries
-// ///////////////////////////////////////////////////////////////////
-
-template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(void) : gnomonAbstractDynamicForm(new gnomonTimeSeriesPrivate<T>())
+template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(void): gnomonAbstractDynamicForm(new gnomonTimeSeriesPrivate<T>())
 {
-    d = dynamic_cast<gnomonTimeSeriesPrivate<T>*>(gnomonAbstractDynamicForm::d);
+
 }
 
 template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeries<T>& o) : gnomonAbstractDynamicForm(new gnomonTimeSeriesPrivate<T>())
@@ -39,7 +21,6 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
 
 template <typename T> gnomonTimeSeries<T>::~gnomonTimeSeries(void)
 {
-    delete d;
 }
 
 template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(gnomonTimeSeriesPrivate<T>* otherPrivate) : gnomonAbstractDynamicForm(otherPrivate)
@@ -49,7 +30,7 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(gnomonTimeSeriesPriv
 template <typename T> gnomonAbstractDynamicForm *gnomonTimeSeries<T>::clone(void) const
 {
     return new gnomonTimeSeries(*this);
-};
+}
 
 template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const gnomonTimeSeries<T>& o)
 {
