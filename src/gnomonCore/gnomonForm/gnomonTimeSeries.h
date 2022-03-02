@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
@@ -76,6 +62,9 @@ public:
     QJsonObject serialize(void) override;
 
     void deserialize(QJsonObject &serialization) override;
+
+private:
+    inline gnomonTimeSeriesPrivate<T> *d_ptr(void) const {return dynamic_cast<gnomonTimeSeriesPrivate<T>*>(d);};
 
 };
 
