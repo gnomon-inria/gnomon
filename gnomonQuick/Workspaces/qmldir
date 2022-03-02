@@ -1,7 +1,6 @@
 module gnomonQuick.Workspaces
 
 PythonPluginDialog               1.0 PythonPluginDialog.qml
-PythonPluginMenu                 1.0 PythonPluginMenu.qml
 ReaderDialog                     1.0 ReaderDialog.qml
 SwitchWorkspaceDialog            1.0 SwitchWorkspaceDialog.qml
 Workspace                        1.0 Workspace.qml
@@ -12,9 +11,7 @@ WorkspaceDescriptionDelegate     1.0 WorkspaceDescriptionDelegate.qml
 WorkspaceLauncher                1.0 WorkspaceLauncher.qml
 WorkspacePreprocess              1.0 WorkspacePreprocess.qml
 WorkspacePythonAlgorithm         1.0 WorkspacePythonAlgorithm.qml
-WorkspacePythonAlgorithmMenu     1.0 WorkspacePythonAlgorithmMenu.qml
 WorkspaceSegmentation            1.0 WorkspaceSegmentation.qml
 WorkspaceRegistration            1.0 WorkspaceRegistration.qml
-WorkspaceParameterMenu           1.0 WorkspaceParameterMenu.qml
 WorkspaceProgressDialog          1.0 WorkspaceProgressDialog.qml
 WorkspaceBinarization            1.0 WorkspaceBinarization.qml

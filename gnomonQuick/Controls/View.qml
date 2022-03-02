@@ -407,10 +407,14 @@ Rectangle {
                             anchors.left: parent.left;
                             anchors.bottom: parent.bottom;
                             anchors.verticalCenter: _form_name.verticalCenter;
+                            anchors.margins: 5;
 
-                            //font.pointSize: 14;
+                            width: parent.width/3
+
+                            font.pointSize: 14;
+                            font.bold: true;
                             verticalAlignment: Text.AlignVCenter
-                            text: "Name: ";
+                            text: modelData;
                         }
 
                         TextField {
@@ -420,6 +424,9 @@ Rectangle {
                             anchors.right: parent.right;
                             anchors.top: parent.top;
                             anchors.bottom: parent.bottom;
+                            anchors.margins: 5;
+
+                            width: 3*parent.width/5
 
                             font.pointSize: 14;
                             text: "";
