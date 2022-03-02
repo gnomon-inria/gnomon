@@ -36,10 +36,13 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
+  gnomonAbstractDynamicForm_p.h
   gnomonAbstractForm
   gnomonAbstractForm.h
   gnomonAbstractFormData
   gnomonAbstractFormData.h
+  gnomonDynamicFormMetadata.
+  gnomonDynamicFormMetadata.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTimeSeries
@@ -64,6 +67,7 @@ ADD_GNOMON_HEADERS(
 
 ADD_GNOMON_SOURCES(
   gnomonAbstractForm.cpp
+  gnomonDynamicFormMetadata.cpp
   gnomonSphereForm.cpp
   gnomonWallForm.cpp
   ${${PROJECT_NAME}_FORM_BINARYIMAGE_SOURCES}
