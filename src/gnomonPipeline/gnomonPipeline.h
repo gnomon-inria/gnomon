@@ -18,6 +18,8 @@ public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
     Q_PROPERTY(QStringList nodeNames READ nodeNames);
+    Q_PROPERTY(QString file_path READ file_path);
+    Q_PROPERTY(QStringList scheduled_algo READ scheduled_algo);
 
 public:
     const QString& name(void);
@@ -29,6 +31,8 @@ public:
 
 public:
     const QStringList& nodeNames(void);
+    const QString& file_path(void);
+    const QStringList& scheduled_algo(void);
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
 
 public slots:
@@ -45,6 +49,7 @@ public:
 
 public slots:
     Q_INVOKABLE void exportToJson(const QString& url);
+    Q_INVOKABLE void readFromJson(const QString& url);
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
 

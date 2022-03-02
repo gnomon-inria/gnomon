@@ -24,6 +24,8 @@ public:
 
 public:
     QStringList pipeline_node_names;
+    QString pipeline_file_path;
+    QStringList pipeline_scheduled_algo;
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
     QMap< QPair<QString, QString>, QPair<QString, QString> > pipeline_edges;
@@ -358,6 +360,16 @@ const QStringList& gnomonPipeline::nodeNames(void)
     return d->pipeline_node_names;
 }
 
+const QString& gnomonPipeline::file_path(void)
+{
+    return d->pipeline_file_path;
+}
+
+const QStringList& gnomonPipeline::scheduled_algo(void)
+{
+    return d->pipeline_scheduled_algo;
+}
+
 gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
 {
     if (d->pipeline_node_names.contains(node_name)) {
@@ -623,6 +635,55 @@ void gnomonPipeline::updateLayout(void)
 {
     d->forceDrivenLayout();
 }
+
+
+void gnomonPipeline::readFromJson(const QString& url)
+{
+    // url = "/Users/ksamassa/Desktop/TestCode/jsonParser/test.json";
+    QUrl q_url(url);
+    QString path = q_url.toLocalFile();
+
+    QFile file(url);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << Q_FUNC_INFO << "can't open file " << path;
+        return;
+    }
+
+    QByteArray pipeline_json = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
+    QJsonObject rootObj = doc.object();
+    QString key_0;
+    for(auto k:rootObj.keys())
+    {
+        QJsonObject node_val = rootObj.value(k).toObject();
+        if(!node_val.keys().isEmpty()) { 
+            if(node_val.keys().contains("path")) {
+                key_0 = k;
+                qDebug()<< node_val.value("path").toString();
+                d->pipeline_file_path = node_val.value("path").toString();
+                d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
+            }
+        }
+    }
+    
+    QJsonObject node_0 = rootObj.value(key_0).toObject();
+    QString node_0_output =  node_0.value("outputs").toArray()[0].toString();
+
+    for(auto k:rootObj.keys())
+    {
+        QJsonObject node_val = rootObj.value(k).toObject();
+        if(!node_val.keys().isEmpty()) { 
+            if(node_val.value("input").toString().contains(node_0_output)){
+                d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
+            }
+        }
+    }
+
+
+}
+
 
 //
 // gnomonPipeline.cpp ends here
