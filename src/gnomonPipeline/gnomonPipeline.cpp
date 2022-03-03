@@ -641,11 +641,15 @@ void gnomonPipeline::updateLayout(void)
 
 void gnomonPipeline::readFromJson(const QString& url)
 {
-    // url = "/Users/ksamassa/Desktop/TestCode/jsonParser/test.json";
-    QUrl q_url(url);
-    QString path = q_url.toLocalFile();
+    QString path;
+    const QUrl q_url(url);
+    if (q_url.isLocalFile()) {
+        path = QDir::toNativeSeparators(q_url.toLocalFile());
+    } else {
+        path = url;
+    }
 
-    QFile file(url);
+    QFile file(path);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << Q_FUNC_INFO << "can't open file " << path;
         return;
