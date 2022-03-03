@@ -28,7 +28,6 @@ public:
     QStringList pipeline_scheduled_algo;
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
-    QMap< QPair<QString, QString>, QPair<QString, QString> > pipeline_edges;
 
     QMap<QString, QPointF> node_layout;
 
@@ -45,17 +44,10 @@ public:
 
 QStringList gnomonPipelinePrivate::sourceNodeNames(void)
 {
-    QMap<QString, bool> node_source;
-    for (const auto& node_name: this->pipeline_node_names) {
-        node_source[node_name] = true;
-    }
-    for (auto it = this->pipeline_edges.begin(); it != this->pipeline_edges.end(); ++it) {
-        auto&& edge_target = it.key();
-        node_source[edge_target.first] = false;
-    }
     QStringList source_nodes;
     for (const auto& node_name: this->pipeline_node_names) {
-        if (node_source[node_name]) {
+        gnomonPipelineNode *node = this->pipeline_nodes[node_name];
+        if (node->inputEdgeCount() == 0) {
             source_nodes.append(node_name);
         }
     }
@@ -64,17 +56,10 @@ QStringList gnomonPipelinePrivate::sourceNodeNames(void)
 
 QStringList gnomonPipelinePrivate::sinkNodeNames(void)
 {
-    QMap<QString, bool> node_sink;
-    for (const auto& node_name: this->pipeline_node_names) {
-        node_sink[node_name] = true;
-    }
-    for (auto it = this->pipeline_edges.begin(); it != this->pipeline_edges.end(); ++it) {
-        auto&& edge_source = it.value();
-        node_sink[edge_source.first] = false;
-    }
     QStringList sink_nodes;
     for (const auto& node_name: this->pipeline_node_names) {
-        if (node_sink[node_name]) {
+        gnomonPipelineNode *node = this->pipeline_nodes[node_name];
+        if (node->outputEdgeCount() == 0) {
             sink_nodes.append(node_name);
         }
     }
@@ -122,17 +107,17 @@ QList<QStringList> gnomonPipelinePrivate::scheduledNodeNameGroups(void)
 void gnomonPipelinePrivate::forceDrivenLayout(void)
 {
     QList<QPointF> node_positions;
+    QList<QPair<int, int> > node_edge_indices;
     for (const auto& node_name : this->pipeline_node_names) {
         node_positions.append(this->pipeline_nodes[node_name]->position()/10);
-    }
 
-    QList<QPair<int, int> > node_edge_indices;
-
-    for (auto it = this->pipeline_edges.begin(); it != this->pipeline_edges.end(); ++it) {
-        auto&& edge_target = it.key();
-        int target_index = this->pipeline_node_names.indexOf(edge_target.first);
-        int source_index = this->pipeline_node_names.indexOf(this->pipeline_edges[edge_target].first);
-        node_edge_indices.append(QPair<int,int>(source_index,target_index));
+        gnomonPipelineNode *node = this->pipeline_nodes[node_name];
+        for (auto edge : node->inputEdges()) {
+            int target_index = this->pipeline_node_names.indexOf(node_name);
+            gnomonPipelineNode *source_node = edge->source()->node();
+            QString source_node_name = this->pipeline_nodes.key(source_node);
+            int source_index = this->pipeline_node_names.indexOf(source_node_name);
+        }
     }
 
     int iterations = 1000;
@@ -318,7 +303,7 @@ QList<QList<QVector2D> > gnomonPipelinePrivate::nodeVectors(QList<QPointF> node_
 // /////////////////////////////////////////////////////////////////
 
 
-gnomonPipeline::gnomonPipeline(void)
+gnomonPipeline::gnomonPipeline(QObject *parent) : QObject(parent)
 {
     d = new gnomonPipelinePrivate;
 }
@@ -327,7 +312,6 @@ gnomonPipeline::~gnomonPipeline(void)
 {
     delete d;
 }
-
 
 const QString& gnomonPipeline::name(void)
 {
@@ -392,19 +376,6 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     node->setName(node_name);
     d->pipeline_nodes[node_name] = node;
 
-    for (int e=0; e<node->inputEdgeCount(); e++) {
-        gnomonPipelineEdge *edge = node->inputEdgeAt(e);
-
-        QPair<QString, QString> edge_source;
-        edge_source.first = d->pipeline_nodes.key(edge->source()->node());
-        edge_source.second = edge->source()->name();
-
-        QPair<QString, QString> edge_target;
-        edge_target.first = d->pipeline_nodes.key(node);
-        edge_target.second = edge->target()->name();
-        d->pipeline_edges[edge_target] = edge_source;
-    }
-
     this->updateLayout();
 
     emit nodeAdded(node);
@@ -466,12 +437,14 @@ void gnomonPipeline::exportToJson(const QString& url)
 
     for (const auto& node_name : d->pipeline_node_names) {
         auto node = d->pipeline_nodes[node_name];
-        auto node_json = node->toJson();
+        QJsonObject node_json = node->toJson();
+        QJsonObject in = node_json["inputs"].toObject();
         for (auto edge : node->inputEdges()) {
             QString source_name = edge->source()->node()->name();
             QString from = source_name + " -> " + edge->source()->name();
-            node_json.insert(edge->target()->name(), from);
+            in.insert(edge->target()->name(), from);
         }
+        node_json.insert("inputs", in);
         pipeline_json.insert(node->name(), node_json);
 
         auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
@@ -594,13 +567,15 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     }
 
     for (const auto& node_name: d->pipeline_node_names) {
-        for (auto it = d->pipeline_edges.begin(); it != d->pipeline_edges.end(); ++it) {
-            auto&& edge_target = it.key();
-            if (edge_target.first == node_name) {
-                out << "    tasks[\"" << node_name <<"\"].connect_input(tasks[\"" << d->pipeline_edges[edge_target].first << "\"], ";
-                out << "output_name=\"" << d->pipeline_edges[edge_target].second << "\", ";
-                out << "input_name=\"" << edge_target.second << "\")\n";
-            }
+
+        auto node = d->pipeline_nodes[node_name];
+        auto node_json = node->toJson();
+        for (auto edge : node->inputEdges()) {
+            auto source_node = edge->source()->node();
+            auto source_node_name = d->pipeline_nodes.key(source_node);
+            out << "    tasks[\"" << node_name <<"\"].connect_input(tasks[\"" <<  source_node_name << "\"], ";
+            out << "output_name=\"" << edge->source()->name() << "\", ";
+            out << "input_name=\"" << edge->target()->name() << "\")\n";
         }
         out << "\n";
     }
@@ -639,11 +614,15 @@ void gnomonPipeline::updateLayout(void)
 
 void gnomonPipeline::readFromJson(const QString& url)
 {
-    // url = "/Users/ksamassa/Desktop/TestCode/jsonParser/test.json";
-    QUrl q_url(url);
-    QString path = q_url.toLocalFile();
+    QString path;
+    const QUrl q_url(url);
+    if (q_url.isLocalFile()) {
+        path = QDir::toNativeSeparators(q_url.toLocalFile());
+    } else {
+        path = url;
+    }
 
-    QFile file(url);
+    QFile file(path);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << Q_FUNC_INFO << "can't open file " << path;
         return;

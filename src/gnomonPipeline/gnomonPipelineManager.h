@@ -14,14 +14,19 @@ class gnomonAbstractConstructorCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
 
-class GNOMONPIPELINE_EXPORT gnomonPipelineManager
+class GNOMONPIPELINE_EXPORT gnomonPipelineManager : public QObject
 {
+    Q_OBJECT
+
 public:
     static gnomonPipelineManager *instance(void);
 
 protected:
-     gnomonPipelineManager(void);
+     gnomonPipelineManager(QObject *parent = nullptr);
     ~gnomonPipelineManager(void);
+
+public:
+    Q_PROPERTY(gnomonPipeline *pipeline READ pipeline CONSTANT);
 
 public:
     gnomonPipeline *pipeline(void);

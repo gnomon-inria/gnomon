@@ -52,6 +52,7 @@ public:
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
     QVariantMap parameterVariantValues(const dtkCoreParameters&parameters);
+    QJsonObject parameterJson(const dtkCoreParameters& parameters);
 
 public:
     bool hasNode(gnomonPipelineNode *);
@@ -102,17 +103,33 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
     }
 }
 
-QVariantMap gnomonPipelineManagerPrivate::parameterVariantValues(const dtkCoreParameters&parameters)
+QVariantMap gnomonPipelineManagerPrivate::parameterVariantValues(const dtkCoreParameters& parameters)
 {
     QVariantMap parameter_values;
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         auto&& parameter_name = it.key();
         auto&& param = it.value();
-        parameter_values[parameter_name] = param->variant();
+        QVariantHash param_hash = param->toVariantHash();
+        if (param_hash.contains("value")) {
+            parameter_values[parameter_name] = param_hash["value"];
+        } else if ((param_hash.contains("values"))&& (param_hash.contains("index"))) {
+            parameter_values[parameter_name] = param_hash["values"].toStringList()[param_hash["index"].toInt()];
+        }
     }
 
     return parameter_values;
 }
+
+QJsonObject gnomonPipelineManagerPrivate::parameterJson(const dtkCoreParameters& parameters)
+{
+    QJsonObject parameter_json;
+    for (auto param_name : parameters.keys()){
+        QVariantHash param_value = parameters[param_name]->toVariantHash();
+        parameter_json.insert(param_name, QJsonObject::fromVariantHash(param_value));
+    }
+    return parameter_json;
+}
+
 
 bool gnomonPipelineManagerPrivate::hasNode(gnomonPipelineNode *node)
 {
@@ -140,7 +157,7 @@ gnomonPipelineManager *gnomonPipelineManager::instance(void)
     return s_instance;
 }
 
-gnomonPipelineManager::gnomonPipelineManager(void)
+gnomonPipelineManager::gnomonPipelineManager(QObject *parent) : QObject(parent)
 {
     d = new gnomonPipelineManagerPrivate;
     d->pipeline = new gnomonPipeline;
@@ -149,6 +166,7 @@ gnomonPipelineManager::gnomonPipelineManager(void)
 
 gnomonPipelineManager::~gnomonPipelineManager(void)
 {
+    delete d->pipeline;
     delete d;
 }
 
@@ -209,9 +227,8 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    QVariantMap parameter_values = d->parameterVariantValues(command->parameters());
-
-    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(),command->algorithmName(),parameter_values,input_forms.keys(),output_forms.keys());
+    QJsonObject parameter_json = d->parameterJson(command->parameters());
+    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(), command->algorithmName(), parameter_json, input_forms.keys(), output_forms.keys());
 
     d->node_input_forms[node] = input_forms;
 
@@ -228,9 +245,8 @@ void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *com
 {
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    QVariantMap parameter_values = d->parameterVariantValues(command->parameters());
-
-    gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(),command->algorithmName(),parameter_values,output_forms.keys());
+    QJsonObject parameter_json = d->parameterJson(command->parameters());
+    gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(), command->algorithmName(), parameter_json, output_forms.keys());
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();

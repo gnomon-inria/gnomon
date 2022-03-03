@@ -14,6 +14,8 @@
 
 #include "gnomonPipelineNodeConstructor.h"
 
+#include <dtkCore>
+
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 
@@ -24,14 +26,14 @@
 
 class gnomonPipelineNodeConstructorPrivate {
 public:
-    QVariantMap parameters;
+    QJsonObject parameters;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeConstructor
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeConstructor::gnomonPipelineNodeConstructor(const QString& algorithm_class, const QString& algorithm, QVariantMap parameters, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeConstructorPrivate)
+gnomonPipelineNodeConstructor::gnomonPipelineNodeConstructor(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeConstructorPrivate)
 {
     d->color = QColor(83, 153, 69);
 
@@ -60,8 +62,8 @@ QString gnomonPipelineNodeConstructor::toToml(void)
     out << "    [" << d->name << ".parameters]\n";
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
-        QVariant parameter = dd->parameters[param];
-        QString parameter_string = d->variantParameterString(parameter);
+        dtkCoreParameter *parameter = dtkCoreParameter::create(dd->parameters[param].toObject().toVariantHash());
+        QString parameter_string = d->variantParameterString(parameter->variant());
         out << "    " << param << " = " << parameter_string << "\n";
     }
     out << "\n";
@@ -75,8 +77,8 @@ const QJsonObject gnomonPipelineNodeConstructor::toJson(void)
     QJsonObject parameters;
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
-        QVariant parameter = dd->parameters[param];
-        parameters.insert(param, QJsonValue::fromVariant(parameter));
+        QVariantHash parameter = dd->parameters[param].toObject().toVariantHash();
+        parameters.insert(param, QJsonObject::fromVariantHash(parameter));
     }
     json.insert("parameters", parameters);
 

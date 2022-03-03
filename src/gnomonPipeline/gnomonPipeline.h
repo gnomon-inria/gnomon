@@ -11,7 +11,7 @@ class GNOMONPIPELINE_EXPORT gnomonPipeline : public QObject
     Q_OBJECT
 
 public:
-     gnomonPipeline(void);
+     gnomonPipeline(QObject *parent = nullptr);
     ~gnomonPipeline(void);
 
 public:
