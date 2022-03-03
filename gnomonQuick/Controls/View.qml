@@ -8,9 +8,11 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
-import gnomonQuick        1.0 as G
+import gnomonQuick.Controls  1.0 as G
 
 import gnomon.Visualization 1.0 as GV
+import gnomon.MetaData    1.0 as GM
+
 
 Rectangle {
 
@@ -87,21 +89,21 @@ Rectangle {
     X.Dialog {
         id: _bad_form_warning_dialog;
 
-        property string bad_form_name: "";
+        property string badform_name: "";
         property string accepted_forms: "";
 
         y: parent.height/3
         x: parent.width/6
 
         parent: Overlay.overlay
-        
+
 
             X.Label {
                 anchors.fill: parent
-                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.bad_form_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
+                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.badform_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
                 font {
                     weight: Font.Bold
-                    pointSize: 14;                
+                    pointSize: 14;
                 }
             }
     }
@@ -154,13 +156,13 @@ Rectangle {
         ToolTip.text: "2D mode";
     }
 
-    
+
     // G.ButtonViewer {}
 
     Image {
         id: _2d_xy;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XY;
-        source: active? "qrc:/qml/gnomonQuick/View-XY.png" : "qrc:/qml/gnomonQuick/View-XY-off.png";
+        source: active? "qrc:/qml/gnomonQuick/assets/View-XY.png" : "qrc:/qml/gnomonQuick/assets/View-XY-off.png";
         visible: _2d_icon.active
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -183,7 +185,7 @@ Rectangle {
     Image {
         id: _2d_xz;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XZ;
-        source: active? "qrc:/qml/gnomonQuick/View-XZ.png" : "qrc:/qml/gnomonQuick/View-XZ-off.png";
+        source: active? "qrc:/qml/gnomonQuick/assets/View-XZ.png" : "qrc:/qml/gnomonQuick/assets/View-XZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -206,7 +208,7 @@ Rectangle {
     Image {
         id: _2d_yz;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_YZ;
-        source: active? "qrc:/qml/gnomonQuick/View-YZ.png" : "qrc:/qml/gnomonQuick/View-YZ-off.png";
+        source: active? "qrc:/qml/gnomonQuick/assets/View-YZ.png" : "qrc:/qml/gnomonQuick/assets/View-YZ-off.png";
         visible: _2d_icon.active;
         // size: 32;
         // color: X.Style.foregroundColor;
@@ -256,7 +258,7 @@ Rectangle {
             _2d_slider.value = value;
         }
         function onBadFormDropped(badFormName, acceptedForms) {
-            _bad_form_warning_dialog.bad_form_name = badFormName;
+            _bad_form_warning_dialog.badform_name = badFormName;
             _bad_form_warning_dialog.accepted_forms = acceptedForms;
             _bad_form_warning_dialog.open();
         }
@@ -306,11 +308,186 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
+                if(_list_view.count > 0) {
+                    _form_export_dialog.open();
+                    _form_export_dialog.reset();
+                }
+            }
+        }
+
+        X.Dialog {
+            id: _form_export_dialog;
+
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            width: window.width * 2/4
+            height: window.height * 2/4
+
+            padding: 10;
+
+            parent: Overlay.overlay
+            modal: true
+            title: "Export forms"
+            standardButtons:  Dialog.Ok | Dialog.Cancel
+
+            onAccepted: {
+                _form_export_dialog.enabled = false;
+                console.log("============== count: ", _list_view.count)
+                for(let i = 0; i < _list_view.count; i++) {
+                    console.log("=================== ", i);
+                    var item_delegate = _list_view.itemAtIndex(i);
+                    item_delegate.save_metadata();
+                }
 
                 viewLogic.transmit();
+                _form_export_dialog.close();
+                //_form_export_dialog.destroy();
+            }
 
-                // _view.requestCapture();
-                // _view.update();
+            onRejected: {
+                _form_export_dialog.enabled = false;
+                _form_export_dialog.close();
+                //_form_export_dialog.destroy();
+
+            }
+
+            function reset(){
+                for(let i = 0; i < _list_view.count; i++) {
+                    var item_delegate = _list_view.itemAtIndex(i);
+                    item_delegate.load_metadata();
+                }
+                _list_view.currentIndex = 0;
+                _list_view.select_field();
+                _form_export_dialog.enabled = true;
+                //form_name.selectAll();
+                //form_name.forceActiveFocus();
+            }
+
+            Rectangle {
+                id: _form_selection_panel;
+
+                width: _form_export_dialog.width / 3;
+
+                anchors.top: parent.top;
+                anchors.bottom: parent.bottom;
+                anchors.left: parent.left;
+                anchors.right: parent.right;
+                anchors.margins: 10;
+
+                color: X.Style.backgroundColor;
+
+                Component {  id: _delegate;
+                    ItemDelegate {
+                        id: _form_metadata_panel;
+
+                        width: _list_view.width
+
+                        //color: X.Style.backgroundColor;
+                        property var metadata: viewLogic.formMetadata(modelData);
+                        property var form_name: _form_name;
+
+                        onClicked: {
+                            _list_view.currentIndex = index;
+                        }
+
+                        function save_metadata() {
+                            //console.log("metadata.name: ", metadata.name)
+                            metadata.set("name", _form_name.text);
+                            //console.log(" --> ", metadata.name)
+                        }
+
+                        function load_metadata() {
+                            metadata = viewLogic.formMetadata(modelData);
+                            console.log(metadata, " --> ", metadata.get("name"))
+                            _form_name.text = metadata.get("name");
+                        }
+
+                        Label {
+                            id: _name_label
+                            anchors.left: parent.left;
+                            anchors.bottom: parent.bottom;
+                            anchors.verticalCenter: _form_name.verticalCenter;
+                            anchors.margins: 5;
+
+                            width: parent.width/3
+
+                            font.pointSize: 14;
+                            font.bold: true;
+                            verticalAlignment: Text.AlignVCenter
+                            text: modelData;
+                        }
+
+                        TextField {
+                            id: _form_name;
+
+                            anchors.left: _name_label.right;
+                            anchors.right: parent.right;
+                            anchors.top: parent.top;
+                            anchors.bottom: parent.bottom;
+                            anchors.margins: 5;
+
+                            width: 3*parent.width/5
+
+                            font.pointSize: 14;
+                            text: "";
+                            //focus: true;
+                            onAccepted: {
+                                if(index != _list_view.count - 1) {
+                                    _list_view.incrementCurrentIndex();
+                                } else {
+                                    _form_export_dialog.accept();
+                                }
+                            }
+
+                            onActiveFocusChanged: {
+                                if (focus) {
+                                    _list_view.currentIndex = index;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                ListView {
+                    id: _list_view
+
+                    anchors.top: _form_selection_panel.top;
+                    anchors.bottom: _form_selection_panel.bottom;
+                    anchors.right: _form_selection_panel.right;
+                    anchors.left: _form_selection_panel.left;
+                    clip: true;
+                    //focus: true;
+                    currentIndex: -1
+                    keyNavigationWraps: false;
+
+                    model: viewLogic.formNames
+
+                    ScrollIndicator.vertical: ScrollIndicator { }
+
+                    delegate: _delegate;
+
+                    Component.onCompleted: {
+
+                        for(let i = 0; i < model.count; i++)
+                            if(model.get(i).available) {
+                                currentIndex = i;
+                                break;
+                            }
+                        /* currentIndex = 0 */
+                    }
+
+                    onCurrentIndexChanged: {
+                        console.log("currentItem: ", currentItem)
+                        console.log("currentIndex: ", currentIndex)
+                        select_field();
+                    }
+
+                    function select_field() {
+                        currentItem.form_name.selectAll();
+                        currentItem.form_name.forceActiveFocus();
+                    }
+                }
             }
         }
 

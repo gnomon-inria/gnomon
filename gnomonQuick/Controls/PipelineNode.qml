@@ -8,8 +8,7 @@ import xQuick.Controls  1.0 as X
 import xQuick.Style     1.0 as X
 import xQuick.Fonts     1.0 as X
 
-import gnomonQuick     1.0 as GX
-import gnomon.Pipeline  1.0 as GP
+import gnomonQuick.Controls     1.0 as G
 
 Rectangle {
 
@@ -130,7 +129,7 @@ Rectangle {
         Repeater {
             id: _input_ports
             model: node.inputPortsNames;
-            GX.PipelinePort {
+            G.PipelinePort {
                 id: _port
                 port: node.inputPort(modelData)
                 Component.onCompleted: {
@@ -149,7 +148,7 @@ Rectangle {
         Repeater {
             id: _output_ports
             model: node.outputPortsNames;
-            GX.PipelinePort {
+            G.PipelinePort {
                 id: _port
                 port: node.outputPort(modelData)
                 Component.onCompleted: {

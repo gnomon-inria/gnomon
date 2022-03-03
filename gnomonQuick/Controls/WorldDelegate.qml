@@ -12,7 +12,7 @@ import xQuick.Vis         1.0 as XVis
 
 import gnomon.Visualization 1.0 as GV
 
-import gnomonQuick  1.0 as G
+import gnomonQuick.Style  1.0 as G
 
 Item {
 
@@ -143,7 +143,7 @@ Item {
         color: "#00000000";
 
         border.width: 2;
-        border.color: G.Style.highlightColor; //X.Style.accentColor;
+        border.color: G.Style.highlightColor;
 
         visible: _world.currentIndex == model.index;
     }
