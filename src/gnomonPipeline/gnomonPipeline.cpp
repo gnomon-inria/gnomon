@@ -639,8 +639,6 @@ void gnomonPipeline::readFromJson(const QString& url)
     QStringList pipeline_scheduled_nodes;
     QStringList available_outputs;
     QStringList scheduled_algo;
-    QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
-    QJsonObject rootObj = doc.object();
 
     for(auto k:rootObj.keys())
     {
