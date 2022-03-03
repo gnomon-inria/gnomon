@@ -654,32 +654,6 @@ void gnomonPipeline::readFromJson(const QString& url)
 
     QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
     QJsonObject rootObj = doc.object();
-    // QString key_0;
-    // for(auto k:rootObj.keys())
-    // {
-    //     QJsonObject node_val = rootObj.value(k).toObject();
-    //     if(!node_val.keys().isEmpty()) { 
-    //         if(node_val.keys().contains("path")) {
-    //             key_0 = k;
-    //             qDebug()<< node_val.value("path").toString();
-    //             d->pipeline_file_path = node_val.value("path").toString();
-    //             d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
-    //         }
-    //     }
-    // }
-    
-    // QJsonObject node_0 = rootObj.value(key_0).toObject();
-    // QString node_0_output =  node_0.value("outputs").toArray()[0].toString();
-
-    // for(auto k:rootObj.keys())
-    // {
-    //     QJsonObject node_val = rootObj.value(k).toObject();
-    //     if(!node_val.keys().isEmpty()) { 
-    //         if(node_val.value("input").toString().contains(node_0_output)){
-    //             d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
-    //         }
-    //     }
-    // }
 
     QString source_node; //TODO change it to be a list 
     QStringList pipeline_nodes;
