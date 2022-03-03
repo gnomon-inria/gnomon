@@ -41,7 +41,7 @@ void gnomonCellImageFromImageCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonCellImageFromImageCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonCellImageFromImageCommand::postdo(void)

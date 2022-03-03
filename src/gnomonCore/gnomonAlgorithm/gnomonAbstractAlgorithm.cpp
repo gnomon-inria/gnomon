@@ -1,19 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
-
+#include "gnomonCommand/gnomonAbstractAdapterCommand.h"
 #include "gnomonCore.h"
 
 namespace gnomonCore {
