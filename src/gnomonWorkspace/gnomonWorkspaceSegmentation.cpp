@@ -34,7 +34,11 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnom
 
     d->updatePool();
 
-    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+    connect(d->command, &gnomonAbstractCommand::finished, [this]() { 
+        this->viewOutputs();
+        this->finished();
+    });
+
 }
 
 gnomonWorkspaceSegmentation::~gnomonWorkspaceSegmentation()

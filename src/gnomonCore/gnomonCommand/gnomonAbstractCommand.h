@@ -2,12 +2,10 @@
 
 #include <gnomonCore>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
-
 class gnomonAbstractCommand : public QObject
 {
     Q_OBJECT
-//    friend void runner(gnomonAbstractCommand* command);
+    friend void runner(gnomonAbstractCommand* command);
 
 public:
     using orderedMap = std::vector<std::pair <QString, QString>>; // to respect the order of inserting
@@ -21,7 +19,6 @@ public slots:
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
     virtual void   redo(void) final;
-    virtual void futureFinished(){}
 
 public:
     virtual void deserializeResults(QJsonObject &serialization) = 0;
@@ -63,10 +60,12 @@ public:
     virtual orderedMap outputTypes() = 0;
 
 protected:
-    gnomonAbstractAlgorithm *action = nullptr;
+    class gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
-//    QFutureWatcher<void> *watcher = nullptr;
+    QFutureWatcher<void> *watcher = nullptr;
+
 };
 
 void runner(gnomonAbstractCommand* command);
+

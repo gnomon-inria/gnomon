@@ -1,26 +1,8 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
 
@@ -33,8 +15,6 @@ namespace gnomonCore {
 
     GNOMONCORE_EXPORT void setVerboseLoading(bool b);
     GNOMONCORE_EXPORT void setAutoLoading(bool auto_loading);
-
-    //static void * visu_interpreter = nullptr;
 };
 
 //

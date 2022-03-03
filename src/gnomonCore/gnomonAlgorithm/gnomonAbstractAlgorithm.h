@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport>
@@ -19,11 +5,10 @@
 #include <QtCore>
 #include <dtkCore>
 
-class dtkCoreParameter;
-
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
+class gnomonAbstractCommand;
 
 class GNOMONCORE_EXPORT gnomonAbstractAlgorithm : public QRunnable
 {
@@ -37,7 +22,11 @@ public:
 
 public:
     virtual void run(void) = 0;
+    virtual void run_async(gnomonAbstractCommand *c) {};
     virtual QString documentation(void) = 0;
+    bool is_async = false;
+    void (* callback)(gnomonAbstractCommand *command) = nullptr;
+    
 };
 
 // ///////////////////////////////////////////////////////////////////

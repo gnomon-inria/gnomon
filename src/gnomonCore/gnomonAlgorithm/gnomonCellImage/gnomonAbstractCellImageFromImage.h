@@ -30,12 +30,6 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstract
 {
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters() const override = 0;
-    virtual void run() override = 0;
-    virtual QString documentation() override = 0;
-
-public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
     virtual inline void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
