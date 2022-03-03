@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
@@ -27,11 +13,13 @@ class gnomonAbstractForm;
 
 //template <typename T, typename Enable = std::enable_if_t<std::is_base_of<gnomonAbstractForm,T>::value>>
 template <typename T>
-class gnomonTimeSeriesPrivate
+class gnomonTimeSeriesPrivate: public gnomonAbstractDynamicFormPrivate
 {
 public:
+    gnomonTimeSeriesPrivate(): gnomonAbstractDynamicFormPrivate(), forms(), current_time(0.0) {}
+public:
     QMap<double, T*> forms;
-    double current_time;
+    double current_time = 0.;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -47,6 +35,10 @@ public:
      gnomonTimeSeries(void);
      gnomonTimeSeries(const gnomonTimeSeries& o);
     ~gnomonTimeSeries(void);
+
+protected:
+    // for subclassing, see https://wiki.qt.io/D-Pointer#Inheriting_d-pointers_for_optimization
+    gnomonTimeSeries(gnomonTimeSeriesPrivate<T>* otherPrivate);
 
 public:
     gnomonTimeSeries<T>& operator = (const gnomonTimeSeries<T>& o);
@@ -72,7 +64,7 @@ public:
     void deserialize(QJsonObject &serialization) override;
 
 private:
-    gnomonTimeSeriesPrivate<T> *d;
+    inline gnomonTimeSeriesPrivate<T> *d_ptr(void) const {return dynamic_cast<gnomonTimeSeriesPrivate<T>*>(d);};
 
 };
 

@@ -53,6 +53,7 @@ import_array();
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+//#include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
 #include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 #include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
@@ -83,6 +84,7 @@ import_array();
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>
@@ -144,7 +146,6 @@ import_array();
 #include <gnomonCore/gnomonTypeDef.h>
 #include <vtkPythonUtil.h>
 #include <vtkImageData.h>
-
 
 %}
 
@@ -860,6 +861,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 %include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
+//%include <gnomonCore/gnomonForm/gnomonDynamicFormMetadata.h>
 %include <gnomonCore/gnomonForm/gnomonSphereForm.h>
 %include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 %include <gnomonCore/gnomonForm/gnomonWallForm.h>
@@ -1017,7 +1019,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
-// %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, FormAlgorithm, gnomonCore/gnomonAlgorithm)
 %include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>  
@@ -1084,8 +1086,11 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudWriter, PointCloudWriter, gnomonC
 
 %include <QtCore/QVariant.i>
 
-
-
+%inline %{
+extern void callback_wrapper(gnomonAbstractAlgorithm *algo, gnomonAbstractCommand *command) {
+    algo->callback(command);
+}
+%}
 
 
 namespace std {

@@ -310,6 +310,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}", &stat);
         output_form_added = true;
+        binaryImage->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        binaryImage->metadata()->set("source", d->algorithm_key);
     }
     
     gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
@@ -322,6 +324,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}", &stat);
         output_form_added = true;
+        cellComplex->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        cellComplex->metadata()->set("source", d->algorithm_key);
     }
 
     gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
@@ -334,6 +338,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}", &stat);
         output_form_added = true;
+        cellImage->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        cellImage->metadata()->set("source", d->algorithm_key);
     }
 
     gnomonImageSeries *image = d->algorithm->outputImage();
@@ -346,6 +352,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}", &stat);
         output_form_added = true;
+        image->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        image->metadata()->set("source", d->algorithm_key);
     }
 
     gnomonMeshSeries *mesh = d->algorithm->outputMesh();
@@ -358,6 +366,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}", &stat);
         output_form_added = true;
+        mesh->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        mesh->metadata()->set("source", d->algorithm_key);
     }
 
     gnomonPointCloudSeries *pointCloud = d->algorithm->outputPointCloud();
@@ -370,6 +380,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}", &stat);
         output_form_added = true;
+        pointCloud->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        pointCloud->metadata()->set("source", d->algorithm_key);
     }
 
     if (output_form_added) {
