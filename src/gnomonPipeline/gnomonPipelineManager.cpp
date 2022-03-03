@@ -157,7 +157,7 @@ gnomonPipelineManager *gnomonPipelineManager::instance(void)
     return s_instance;
 }
 
-gnomonPipelineManager::gnomonPipelineManager(void)
+gnomonPipelineManager::gnomonPipelineManager(QObject *parent) : QObject(parent)
 {
     d = new gnomonPipelineManagerPrivate;
     d->pipeline = new gnomonPipeline;
@@ -166,6 +166,7 @@ gnomonPipelineManager::gnomonPipelineManager(void)
 
 gnomonPipelineManager::~gnomonPipelineManager(void)
 {
+    delete d->pipeline;
     delete d;
 }
 

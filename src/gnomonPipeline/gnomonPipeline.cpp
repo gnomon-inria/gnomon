@@ -303,7 +303,7 @@ QList<QList<QVector2D> > gnomonPipelinePrivate::nodeVectors(QList<QPointF> node_
 // /////////////////////////////////////////////////////////////////
 
 
-gnomonPipeline::gnomonPipeline(void)
+gnomonPipeline::gnomonPipeline(QObject *parent) : QObject(parent)
 {
     d = new gnomonPipelinePrivate;
 }
@@ -312,7 +312,6 @@ gnomonPipeline::~gnomonPipeline(void)
 {
     delete d;
 }
-
 
 const QString& gnomonPipeline::name(void)
 {
