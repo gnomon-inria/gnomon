@@ -61,28 +61,115 @@ Item {
     Connections {
         target: view.viewLogic
         function onFormVisuParametersChanged() {
-            _params.parameters = view.viewLogic.formVisuParameters(_form_combobox.currentValue);
+            _params.parameters = view.viewLogic.formVisuParameters(_form_selector.currentValue);
             _params.updateParametersModel();
         }
     }
 
+    ListView {
+        id: _form_selector;
+
+        property string currentValue: "";
+
+        height: parent.height / 3;
+
+        anchors.top: parent.top;
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+
+        model: view.viewLogic.formNames;
+
+        clip: true;
+        focus: true;
+        currentIndex: -1;
+
+
+        delegate: ItemDelegate {
+            width: _form_selector.width
+            height: 42;
+            highlighted: _form_selector.currentIndex == index
+
+            text: modelData;
+            font.pointSize: 14;
+
+            onClicked: {
+                _form_selector.currentIndex = index;
+                _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
+            }
+
+            Rectangle {
+                radius: 4;
+                anchors.fill: parent
+
+                color: "transparent"
+                z: Infinity
+
+                border.width: 2;
+                border.color: X.Style.accentColor;
+
+                visible: _form_selector.currentIndex == index
+            }
+
+            CheckBox {
+                id: _checkbox;
+
+                anchors.right: parent.right;
+                anchors.verticalCenter: parent.verticalCenter;
+
+                text: ""
+            }
+
+            X.Icon {
+
+                anchors.right: _checkbox.left;
+                anchors.verticalCenter: parent.verticalCenter;
+
+                size: 33;
+
+                icon: X.Icons.icons.delete;
+
+
+            }
+
+            background: Rectangle {
+                opacity: enabled ? 0.8 : 0.1
+                color: (down || highlighted || hovered) ? Qt.lighter(X.Style.backgroundColor, 1.2) : Qt.darker(X.Style.backgroundColor, 1.2)
+
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    color: X.Style.borderColor;
+                    anchors.bottom: parent.bottom
+                }
+            }
+
+        }
+
+        ScrollIndicator.vertical: ScrollIndicator { visible: _form_selector.contentHeight > _form_selector.height; }
+
+        Component.onCompleted: {
+            console.log(view.viewLogic.formNames)
+        }
+    }
+
+    X.Separator {
+        anchors.top: _form_selector.bottom;
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+    }
+
     ColumnLayout {
 
-        anchors.fill: parent;
+        anchors.top: _form_selector.bottom;
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+        anchors.bottom: parent.bottom;
+
         anchors.margins: 12;
 
         ComboBox {
-            id: _form_combobox
-
-            model: view.viewLogic.formNames;
-            visible: view.viewLogic.formNames.length > 0
-
-            Layout.fillWidth: true;
-        }
-
-        ComboBox {
             id: _visu_combobox;
-            model: view.viewLogic.formVisualizations(_form_combobox.currentValue);
+            model: view.viewLogic.formVisualizations(_form_selector.currentValue);
 
             Layout.fillWidth: true;
             /* Layout.leftMargin: 20 */
@@ -91,15 +178,15 @@ Item {
 
             onCurrentIndexChanged: {
                 if(_visu_combobox.currentValue) {
-                    view.viewLogic.setFormVisuName(_form_combobox.currentValue, model[_visu_combobox.currentIndex]);
+                    view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex]);
                 }
             }
 
             onCurrentValueChanged: {
-                _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_combobox.currentValue))
+                _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
 
                 _auto_render.checked = false
-                _params.parameters =  view.viewLogic.formVisuParameters(_form_combobox.currentValue);
+                _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
                 _params.updateParametersModel();
 
                 _self.update_menu(_visu_combobox.currentValue);
