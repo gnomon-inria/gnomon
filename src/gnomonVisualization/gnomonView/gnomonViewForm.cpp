@@ -1960,6 +1960,29 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
     }
 }
 
+
+void gnomonViewForm::setFormVisible(const QString& name, bool visible)
+{
+    dtkWarn()<<"Not implemented yet!";
+    return;
+}
+
+void gnomonViewForm::removeForm(const QString& name)
+{
+    if (d->formVisualization.contains(name)) {
+        if (d->formVisualization[name]) {
+            d->formVisualization[name]->disconnect();
+            d->formVisualization[name]->clearConnections();
+            d->formVisualization[name]->clear();
+            // TODO: Fix offscreen rendering related segFault when destroying Visualization
+            // delete d->formVisualization[name];
+        }
+    }
+    d->formVisualization.remove(name);
+    d->formVisualizationNames.remove(name);
+    d->forms.remove(name);
+}
+
 void gnomonViewForm::setBounds(double bounds[6])
 {
     bool changed = false;

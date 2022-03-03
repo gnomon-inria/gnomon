@@ -164,6 +164,7 @@ signals:
     void formsChanged(void);
     void formVisuParametersChanged(void);
 
+
 public:
     gnomonAbstractDynamicForm *form(const QString&);
     gnomonBinaryImageSeries *binaryImage(void);
@@ -178,6 +179,9 @@ public:
     Q_INVOKABLE QStringList formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+
+    Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
+    Q_INVOKABLE void removeForm(const QString& name);
 
     Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& name);
 
