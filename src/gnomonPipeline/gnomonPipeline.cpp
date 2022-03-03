@@ -654,32 +654,84 @@ void gnomonPipeline::readFromJson(const QString& url)
 
     QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
     QJsonObject rootObj = doc.object();
-    QString key_0;
+    // QString key_0;
+    // for(auto k:rootObj.keys())
+    // {
+    //     QJsonObject node_val = rootObj.value(k).toObject();
+    //     if(!node_val.keys().isEmpty()) { 
+    //         if(node_val.keys().contains("path")) {
+    //             key_0 = k;
+    //             qDebug()<< node_val.value("path").toString();
+    //             d->pipeline_file_path = node_val.value("path").toString();
+    //             d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
+    //         }
+    //     }
+    // }
+    
+    // QJsonObject node_0 = rootObj.value(key_0).toObject();
+    // QString node_0_output =  node_0.value("outputs").toArray()[0].toString();
+
+    // for(auto k:rootObj.keys())
+    // {
+    //     QJsonObject node_val = rootObj.value(k).toObject();
+    //     if(!node_val.keys().isEmpty()) { 
+    //         if(node_val.value("input").toString().contains(node_0_output)){
+    //             d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
+    //         }
+    //     }
+    // }
+
+    QString source_node; //TODO change it to be a list 
+    QStringList pipeline_nodes;
+    QStringList pipeline_scheduled_nodes;
+    QStringList available_outputs;
+    QStringList scheduled_algo;
+    QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
+    QJsonObject rootObj = doc.object();
+
     for(auto k:rootObj.keys())
     {
-        QJsonObject node_val = rootObj.value(k).toObject();
-        if(!node_val.keys().isEmpty()) { 
-            if(node_val.keys().contains("path")) {
-                key_0 = k;
-                qDebug()<< node_val.value("path").toString();
-                d->pipeline_file_path = node_val.value("path").toString();
-                d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
+        QJsonObject node = rootObj.value(k).toObject();
+        if(!node.keys().isEmpty()) { 
+            pipeline_nodes.append(k);
+            QJsonObject inputs = node.value("inputs").toObject();
+            if(node.keys().contains("path") && inputs.isEmpty()){
+                d->pipeline_file_path = node.value("path").toString();
+                d->pipeline_scheduled_algo.append(node.value("plugin_name").toString());
+                source_node = k;
             }
         }
     }
     
-    QJsonObject node_0 = rootObj.value(key_0).toObject();
-    QString node_0_output =  node_0.value("outputs").toArray()[0].toString();
+    pipeline_nodes.removeAt(pipeline_nodes.indexOf(source_node));
+    pipeline_scheduled_nodes.append(source_node);
 
-    for(auto k:rootObj.keys())
-    {
-        QJsonObject node_val = rootObj.value(k).toObject();
-        if(!node_val.keys().isEmpty()) { 
-            if(node_val.value("input").toString().contains(node_0_output)){
-                d->pipeline_scheduled_algo.append(node_val.value("plugin_name").toString());
+    while(pipeline_nodes.size()>1){
+        source_node = pipeline_scheduled_nodes.last();
+        QJsonObject p_node = rootObj.value(source_node).toObject();
+        QString source_out = source_node + " -> " + p_node.value("outputs").toArray()[0].toString();
+        available_outputs.append(source_out);
+        for(auto sk:pipeline_nodes)
+        {
+            QJsonObject node = rootObj.value(sk).toObject();
+            QJsonObject inputs = node.value("inputs").toObject();
+            if(!inputs.isEmpty())
+            {
+                bool inputsInList = true;
+                for(auto k:inputs.keys()){
+                    inputsInList = inputsInList && available_outputs.contains(inputs.value(k).toString());
+                }
+                if(inputsInList){
+                    pipeline_nodes.removeAt(pipeline_nodes.indexOf(sk));
+                    pipeline_scheduled_nodes.append(sk);
+                    d->pipeline_scheduled_algo.append(node.value("plugin_name").toString());
+                }
             }
+
         }
     }
+    pipeline_scheduled_nodes.append(pipeline_nodes.last());
+    pipeline_nodes.pop_back();
 
 
 }
