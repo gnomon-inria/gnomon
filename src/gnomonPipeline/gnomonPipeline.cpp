@@ -466,12 +466,14 @@ void gnomonPipeline::exportToJson(const QString& url)
 
     for (const auto& node_name : d->pipeline_node_names) {
         auto node = d->pipeline_nodes[node_name];
-        auto node_json = node->toJson();
+        QJsonObject node_json = node->toJson();
+        QJsonObject in = node_json["inputs"].toObject();
         for (auto edge : node->inputEdges()) {
             QString source_name = edge->source()->node()->name();
             QString from = source_name + " -> " + edge->source()->name();
-            node_json.insert(edge->target()->name(), from);
+            in.insert(edge->target()->name(), from);
         }
+        node_json.insert("inputs", in);
         pipeline_json.insert(node->name(), node_json);
 
         auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
