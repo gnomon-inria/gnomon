@@ -195,10 +195,10 @@ void main() {
         property var edges: [];
 
         Connections {
-            target: G.Pipeline
+            target: G.PipelineManager.pipeline
             function onNodeAdded (node) {
                 _self._node = node;
-                console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
+                console.log(node.name, "(", node.algorithmClass, ")", G.PipelineManager.pipeline.nodeNames);
                 var n = _canvas.addNode(node);
 
                 console.log(node.inputEdgeCount, "input edges")
