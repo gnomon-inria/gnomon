@@ -79,7 +79,6 @@ QString gnomonPipelineNodeAlgorithm::toToml(void)
 const QJsonObject gnomonPipelineNodeAlgorithm::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
-    json.insert("plugin_version", "TODO");
 
     QJsonObject parameters;
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {

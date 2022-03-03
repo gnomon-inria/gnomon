@@ -179,7 +179,8 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> forms = command->outputs();
 
-    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(),command->algorithmName(),command->path(),forms.keys());
+    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(), command->algorithmName(), command->path(), forms.keys());
+    node->setVersion(command->version());
 
     for (auto it = forms.begin(); it != forms.end(); ++it) {
         auto&& form_name = it.key();
@@ -196,7 +197,8 @@ void gnomonPipelineManager::addWriter(gnomonAbstractWriterCommand *command)
 {
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
 
-    gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(),command->algorithmName(),command->path(),input_forms.keys());
+    gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(), command->algorithmName(), command->path(), input_forms.keys());
+    node->setVersion(command->version());
 
     d->node_input_forms[node] = input_forms;
     d->linkNodeInputs(node);
@@ -211,7 +213,8 @@ void gnomonPipelineManager::addAdapter(gnomonAbstractAdapterCommand *command)
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = command->inputs();
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
-    gnomonPipelineNodeAdapter *node = new gnomonPipelineNodeAdapter(command->factoryName(),command->algorithmName(),input_forms.keys(),output_forms.keys());
+    gnomonPipelineNodeAdapter *node = new gnomonPipelineNodeAdapter(command->factoryName(), command->algorithmName(), input_forms.keys(), output_forms.keys());
+    node->setVersion(command->version());
 
     d->node_input_forms[node] = input_forms;
 
@@ -229,6 +232,7 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
     gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(), command->algorithmName(), parameter_json, input_forms.keys(), output_forms.keys());
+    node->setVersion(command->version());
 
     d->node_input_forms[node] = input_forms;
 
@@ -247,6 +251,7 @@ void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *com
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
     gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(), command->algorithmName(), parameter_json, output_forms.keys());
+    node->setVersion(command->version());
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();
