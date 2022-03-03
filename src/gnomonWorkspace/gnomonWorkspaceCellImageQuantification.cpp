@@ -59,18 +59,27 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
 {
     gnomonCellImageQuantificationCommand * command = dynamic_cast<gnomonCellImageQuantificationCommand *>(d->command);
 
+    gnomonAbstractDynamicForm* inputForm = d->command->inputs()["cellImage"];
+
     if ((command->cellImage() != nullptr) || (command->dataFrame() != nullptr)) {
         d->registerPipeline();
     }
 
     if(command->cellImage()) {
+
         d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage()->clone());
+
+        d->sources->views()[0]->cellImage()->metadata()->set("name", (inputForm? inputForm->metadata()->get("name") : "") + "_" + d->algorithm + "_cellImage");
+        d->sources->views()[0]->cellImage()->metadata()->set("source", d->algorithm);
+
         gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), d->sources->views()[0]->cellImage());
         gnomonPipelineManager::instance()->addForm(command->cellImage());
         d->sources->views()[0]->setInputView(false);
     }
     if(command->dataFrame()) {
         this->m_target_mpl->setForm("gnomonDataFrame", command->dataFrame());
+        command->dataFrame()->metadata()->set("name", (inputForm? inputForm->metadata()->get("name") : "") + "_" + d->algorithm + "_dataFrame");
+        command->dataFrame()->metadata()->set("source", d->algorithm);
     }
 
 }
