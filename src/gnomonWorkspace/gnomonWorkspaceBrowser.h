@@ -40,13 +40,19 @@ public:
 
 public:
     Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
-    Q_PROPERTY(QStringList extensions READ getReaderExtensions);
+    Q_PROPERTY(QStringList extensions READ readerExtensions);
+    Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
 
 signals:
     void available(const QVariantMap& readers);
+    void readerPathChanged(void);
+
+public:
+    const QString& readerPath(void) const;
 
 public slots:
-    void read    (const QString&);
+    void setReaderPath(const QString&);
+    void requestReaders(void);
     void readWith(const QString&);
     inline void saveState() {};  // nothing to be saved or restored
     inline void restoreState() {};
@@ -54,7 +60,7 @@ public slots:
 public:
     Q_INVOKABLE QUrl defaultReadPath();
     Q_INVOKABLE gnomonViewForm *view(void);
-    QStringList getReaderExtensions(void);
+    QStringList readerExtensions(void);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

@@ -356,8 +356,8 @@ public:
     ~gnomonWorkspaceBrowserPrivate(void);
 
 public:
-//    void addFormFromFile(const QString& path, vtkRenderer *renderer);
-    void addFormFromFile(const QString& path);
+//    void findReaders(const QString& path, vtkRenderer *renderer);
+    void findReaders(void);
 
 public slots:
     void readForm(const QString& reader_plugin);
@@ -406,41 +406,23 @@ gnomonWorkspaceBrowserPrivate::~gnomonWorkspaceBrowserPrivate(void)
 {
 }
 
-void gnomonWorkspaceBrowserPrivate::addFormFromFile(const QString& path)
+void gnomonWorkspaceBrowserPrivate::findReaders(void)
 {
-    this->filename = path;
-
-    if (this->filename.endsWith("gz")) {
-        this->ext = this->filename.split(".")[this->filename.split(".").size()-2] + ".gz";
-    } else {
-        this->ext = this->filename.split(".")[this->filename.split(".").size()-1];
-    }
-
-    qDebug() << Q_FUNC_INFO << "WANTS" << this->ext << "IN" << this->fileReaderCommands.keys();
-
     if (this->fileReaderCommands.contains(this->ext))
     {
-        qDebug()<< Q_FUNC_INFO <<  this->fileReaderCommands[this->ext];
-
         if (this->fileReaderCommands[this->ext].size()==1) {
-
-            qDebug() << Q_FUNC_INFO << "Reading using" << this->ext;
-
             this->readForm(this->fileReaderCommands[this->ext].keys()[0]);
         } else {
             QVariantMap reader_descs;
             for (const auto &key : this->fileReaderCommands[this->ext].keys()) {
                 reader_descs[key] = fileReaderDescriptions[ext][key];
             }
-
             emit q->available(reader_descs);
         }
-
     } else {
-        qWarning() << Q_FUNC_INFO << "File format"<<this->ext<<"is not supported.";
+        dtkWarn() << Q_FUNC_INFO << "File format"<<this->ext<<"is not supported.";
     }
-
-
+    
     return;
 }
 
@@ -714,27 +696,27 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
 // /////////////////////////////////////////////////////////////////////////////
 //     connect(d->browse_view, &gnomonViewForm::fileDropped, [=] (const QString& filename)
 //     {
-//         d->addFormFromFile(filename);
+//         d->findReaders(filename);
 //     });
 
 //     connect(d->browse_figure, &gnomonViewMatplotlib::fileDropped, [=] (const QString& filename)
 //     {
-//         d->addFormFromFile(filename);
+//         d->findReaders(filename);
 //     });
 
 //     connect(d->view_message, &gnomonMessageBoard::fileDropped, [=] (const QString& filename)
 //     {
-//         d->addFormFromFile(filename);
+//         d->findReaders(filename);
 //     });
 
 //     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
 //     {
-//         d->addFormFromFile(filename);
+//         d->findReaders(filename);
 //     });
 
 //     connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
 //     {
-//         d->addFormFromFile(filename);
+//         d->findReaders(filename);
 //     });
 
 //     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
@@ -805,12 +787,33 @@ gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
     delete d;
 }
 
-void gnomonWorkspaceBrowser::read(const QString& path)
-{
-    d->addFormFromFile(path);
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-    settings.setValue("path", QUrl(path).adjusted(QUrl::RemoveFilename).toString());
+const QString& gnomonWorkspaceBrowser::readerPath(void) const
+{
+    return d->filename;
+}
+
+void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
+{
+    if (path != d->filename) {
+        d->filename = path;
+
+        if (d->filename.endsWith("gz")) {
+            d->ext = d->filename.split(".")[d->filename.split(".").size()-2] + ".gz";
+        } else {
+            d->ext = d->filename.split(".")[d->filename.split(".").size() - 1];
+        }
+
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+        settings.setValue("path", QUrl(path).adjusted(QUrl::RemoveFilename).toString());
+        
+        emit readerPathChanged();
+    }
+}
+
+void gnomonWorkspaceBrowser::requestReaders(void)
+{
+    d->findReaders();
 }
 
 void gnomonWorkspaceBrowser::readWith(const QString& reader)
@@ -829,7 +832,7 @@ QUrl gnomonWorkspaceBrowser::defaultReadPath()
     return settings.value("path").toString();
 }
 
-QStringList gnomonWorkspaceBrowser::getReaderExtensions(void)
+QStringList gnomonWorkspaceBrowser::readerExtensions(void)
 {
     return d->fileReaderCommands.keys();
 }
