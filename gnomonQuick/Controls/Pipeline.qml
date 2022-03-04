@@ -2,9 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
-import gnomon.Pipeline 1.0 as G
-
-import gnomonQuick     1.0 as GX
+import gnomon.Pipeline 1.0 as GP
 
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use actual resolution as propertues bound to the shader
@@ -13,6 +11,7 @@ import gnomonQuick     1.0 as GX
 Control {
     id: _self;
     clip: true;
+    property var _node;
 
     QtObject {
         id: _internal;
@@ -23,6 +22,7 @@ Control {
         property double originY: (_self.height / 2 - _canvas.y) * Math.pow(_internal.factor, - _internal.zoomLevel);
 
     }
+
 
     MouseArea {
         id: _mouse_area
@@ -193,9 +193,11 @@ void main() {
         property var edges: [];
 
         Connections {
-            target: G.Pipeline
+            target: GP.Pipeline
             function onNodeAdded (node) {
-                console.log(node.name, "(", node.algorithmClass, ")", G.Pipeline.nodeNames);
+
+                console.log(node.name, "(", node.algorithmClass, ")", GP.Pipeline.nodeNames);
+                _self._node = node;
                 var n = _canvas.addNode(node);
 
                 console.log(node.inputEdgeCount, "input edges")
@@ -203,9 +205,9 @@ void main() {
                     for (var i=0; i<node.inputEdgeCount; i++) {
                         var edge = node.inputEdgeAt(i);
                         console.log(" --> edge", i, ":",
-                                    edge.source.node.name, "(", edge.source.label, ")",
+                                    edge.source.node.name, "(", edge.source.name, ")",
                                     "->",
-                                    edge.target.node.name, "(", edge.target.label,")")
+                                    edge.target.node.name, "(", edge.target.name,")")
                         var e = _canvas.addEdge(edge);
                     }
                 }
@@ -225,7 +227,7 @@ void main() {
                     "y": Qt.binding(function() { return _canvas.height/2 + 0.33*node.position.y }), //_internal.originY, //Qt.binding(function() { return _internal.originY + node.position.y }),
                     "workspaceIndex": window.current_workspace_index()
                 });
-                nodes[node.name] = n;
+                nodes[node] = n;
                 console.log("Adding node...", n)
                 return n;
             } else {
@@ -236,10 +238,10 @@ void main() {
         function addEdge(edge) {
             var edge_component = Qt.createComponent("PipelineEdge.qml");
             if (edge_component.status == Component.Ready) {
-                var src_node = nodes[edge.source.node.name];
-                var src = src_node.outputPorts[edge.source.label];
-                var tgt_node = nodes[edge.target.node.name];
-                var tgt = tgt_node.inputPorts[edge.target.label]
+                var src_node = nodes[edge.source.node];
+                var src = src_node.outputPorts[edge.source];
+                var tgt_node = nodes[edge.target.node];
+                var tgt = tgt_node.inputPorts[edge.target];
 
                 var e = edge_component.createObject(_canvas, {
                     "edge" : edge,
@@ -261,36 +263,6 @@ void main() {
             }
         }
 
-        /*GX.PipelineNode { id: _source;
-          algorithmClass: "source";
-          algorithmPlugin: "dummySource";
-          outputPortsNames: ["output1", "output2"];
-
-          x:300
-          y:100
-
-          Component.onCompleted: {
-          console.log(_source.outputPorts);
-          }
-          }
-
-          GX.PipelineNode { id: _target;
-          algorithmClass: "target";
-          algorithmPlugin: "dummyTarget";
-          inputPortsNames: ["input1", "input2"];
-
-          x:600
-          y:100
-
-          Component.onCompleted: {
-          console.log(_target.inputPorts);
-          }
-          }
-
-          GX.PipelineEdge { id: _edge;
-          src: _source.outputPorts["output2"];
-          tgt: _target.inputPorts["input1"];
-          }*/
     }
 
 }

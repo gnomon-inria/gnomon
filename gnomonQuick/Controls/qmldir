@@ -1,4 +1,4 @@
-module gnomonQuick
+module gnomonQuick.Controls
 
 ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml
@@ -8,7 +8,9 @@ LookupTable 1.0 LookupTable.qml
 Pipeline 1.0 Pipeline.qml
 PipelineEdge 1.0 PipelineEdge.qml
 PipelineNode 1.0 PipelineNode.qml
+PipelineNodeDialog 1.0 PipelineNodeDialog.qml
 PipelinePort 1.0 PipelinePort.qml
+PipelinePortEdit 1.0 PipelinePortEdit.qml
 Project.qml 1.0 Project.qml
 Stack 1.0 Stack.qml
 View 1.0 View.qml
@@ -16,4 +18,3 @@ World 1.0 World.qml
 WorldDelegate 1.0 WorldDelegate.qml
 Parameters 1.0 Parameters.qml
 ButtonViewer 1.0 ButtonViewer.qml
-singleton Style 1.0 Style.qml

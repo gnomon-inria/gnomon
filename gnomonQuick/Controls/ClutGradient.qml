@@ -5,7 +5,9 @@ import QtQuick.Layouts  1.15
 import xQuick.Controls 1.0 as X
 import xQuick.Style    1.0 as X
 
-Gradient { id: self
+Gradient {
+
+    id: self
 
     required property var cmap;
 
@@ -21,5 +23,5 @@ Gradient { id: self
         }
         return stops
     }
-}
 
+}
