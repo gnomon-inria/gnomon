@@ -218,7 +218,6 @@ Item {
                 onClicked: {
                     console.log("PRESSED CHECKBOX", index, checkState === Qt.Checked)
                     view.viewLogic.setFormVisible(view.viewLogic.formNames[index], checkState === Qt.Checked)
-                    view.viewLogic.update()
                 }
             }
 
