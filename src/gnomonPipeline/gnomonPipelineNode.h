@@ -57,7 +57,7 @@ public:
     const QString& algorithmClass(void);
     const QString& algorithmPlugin(void);
 
-    virtual const QJsonObject& parameters(void);
+    virtual QJsonObject parameters(void);
 
     const QColor& color(void);
 

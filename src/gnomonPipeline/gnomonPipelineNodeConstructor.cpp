@@ -52,7 +52,7 @@ gnomonPipelineNodeConstructor::~gnomonPipelineNodeConstructor(void)
 
 }
 
-const QJsonObject& gnomonPipelineNodeConstructor::parameters(void)
+QJsonObject gnomonPipelineNodeConstructor::parameters(void)
 {
     return dd->parameters;
 }

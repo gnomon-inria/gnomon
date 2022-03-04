@@ -58,7 +58,7 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
-const QJsonObject& gnomonPipelineNodeAlgorithm::parameters(void)
+QJsonObject gnomonPipelineNodeAlgorithm::parameters(void)
 {
     return dd->parameters;
 }
