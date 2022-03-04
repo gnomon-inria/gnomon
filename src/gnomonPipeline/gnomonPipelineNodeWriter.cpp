@@ -51,6 +51,10 @@ gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
 
 }
 
+QString gnomonPipelineNodeWriter::path(void) {
+    return dd->path;
+}
+
 QString gnomonPipelineNodeWriter::toToml(void)
 {
     QString node_string;

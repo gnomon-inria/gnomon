@@ -5,6 +5,7 @@
 #include "gnomonPipelineEdge.h"
 #include "gnomonPipelinePort.h"
 
+#include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeWriter.h"
 
@@ -24,12 +25,8 @@ public:
 
 public:
     QStringList pipeline_node_names;
-    QString pipeline_file_path;
-    QStringList pipeline_scheduled_algo;
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
-    QMap<QString, QList<int>> idx_form_drop;
-    QString current_algo_name;
 
     QMap<QString, QPointF> node_layout;
 
@@ -365,16 +362,6 @@ void gnomonPipeline::clear(void)
     d->clear();
 }
 
-const QString& gnomonPipeline::file_path(void)
-{
-    return d->pipeline_file_path;
-}
-
-const QStringList& gnomonPipeline::scheduled_algo(void)
-{
-    return d->pipeline_scheduled_algo;
-}
-
 gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
 {
     if (d->pipeline_node_names.contains(node_name)) {
@@ -382,16 +369,6 @@ gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
     } else {
         return nullptr;
     }
-}
-
-QVariantList gnomonPipeline::indices(const QString& plugin_name)
-{
-    if(!d->idx_form_drop.contains(plugin_name))
-        return QVariantList();
-    QVariantList indices;
-    foreach(int index, d->idx_form_drop.value(plugin_name))
-        indices << index;
-    return indices;
 }
 
 void gnomonPipeline::addNode(gnomonPipelineNode *node)
@@ -412,16 +389,29 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     emit nodeAdded(node);
 }
 
-QList<gnomonPipelineNode *> gnomonPipeline::scheduledNodes(void)
+QStringList gnomonPipeline::scheduledNodeNames(bool recompute_form_indices)
 {
-    QList<gnomonPipelineNode *> scheduled_nodes;
+    int form_index = 0;
+    QStringList scheduled_node_names;
     QList<QStringList> node_groups = d->scheduledNodeNameGroups();
     for (const auto& group_node_names : node_groups) {
         for (const auto& node_name : group_node_names) {
-            scheduled_nodes.append(d->pipeline_nodes[node_name]);
+            if (recompute_form_indices) {
+                auto node = d->pipeline_nodes[node_name];
+                for (auto output : node->outputPorts()) {
+                    for (auto edge : node->outputEdges()) {
+                        if (edge->source() == output) {
+                            edge->setFormIndex(form_index);
+                        }
+                    }
+                    form_index++;
+                }
+            }
+            scheduled_node_names.append(node_name);
         }
     }
-    return scheduled_nodes;
+
+    return scheduled_node_names;
 }
 
 void gnomonPipeline::exportToToml(const QString& path)
@@ -661,61 +651,66 @@ void gnomonPipeline::readFromJson(const QString& url)
 
     QByteArray pipeline_json = file.readAll();
     file.close();
-
-    QString source_node; //TODO change it to be a list 
-    QStringList pipeline_nodes;
-    QStringList pipeline_scheduled_nodes;
-    QStringList available_outputs;
-    QStringList scheduled_algo;
-    QMap<QString, QString> output_node;
+    
     QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
     QJsonObject rootObj = doc.object();
 
-    for(auto k:rootObj.keys())
-    {
-        QJsonObject node = rootObj.value(k).toObject();
-        if(!node.keys().isEmpty()) { 
-            pipeline_nodes.append(k);
-            output_node[node.value("name").toString() + " -> " + node.value("outputs").toArray()[0].toString()] =  k;
-            QJsonObject inputs = node.value("inputs").toObject();
-            if(node.keys().contains("path") && inputs.isEmpty()){
-                d->pipeline_file_path = node.value("path").toString();
-                d->pipeline_scheduled_algo.append(node.value("plugin_name").toString());
-                source_node = k;
+    QMap<QPair<QString, QString>, QPair<QString, QString> > edges;
+
+    for(auto k:rootObj.keys()) {
+        QJsonObject node_json = rootObj.value(k).toObject();
+
+        if (!node_json.keys().isEmpty()) {
+            QString name = node_json.value("name").toString();
+            QString algorithm_class = node_json.value("plugin_group").toString();
+            QString algorithm_plugin = node_json.value("plugin_name").toString();
+            if (algorithm_class.contains("Reader")) {
+                QString path = node_json.value("path").toString();
+                QStringList outputs;
+                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                    outputs.append(output_variant.toString());
+                }
+                gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(algorithm_class, algorithm_plugin, path, outputs);
+                node->setName(name);
+                this->addNode(node);
+            } else if (algorithm_class.contains("Writer")) {
+                QString path = node_json.value("path").toString();
+                QStringList inputs = node_json.value("inputs").toObject().keys();
+                gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(algorithm_class, algorithm_plugin, path, inputs);
+                node->setName(name);
+                this->addNode(node);
+            } else {
+                QStringList inputs = node_json.value("inputs").toObject().keys();
+                QStringList outputs;
+                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                    outputs.append(output_variant.toString());
+                }
+                QJsonObject parameters = node_json.value("parameters").toObject();
+                gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class, algorithm_plugin, parameters, inputs, outputs);
+                node->setName(name);
+                this->addNode(node);
+            }
+
+            if (node_json.contains("inputs")) {
+                QJsonObject inputs_json = node_json.value("inputs").toObject();
+                for (const QString &input_name: inputs_json.keys()) {
+                    QJsonValue in = inputs_json.value(input_name);
+                    if (in != QJsonValue::Null) {
+                        QStringList input_source = in.toString().split(" -> ");
+                        edges[QPair<QString, QString>(name, input_name)] = QPair<QString, QString>(input_source[0], input_source[1]);
+                    }
+                }
             }
         }
     }
-    
-    pipeline_nodes.removeAt(pipeline_nodes.indexOf(source_node));
-    pipeline_scheduled_nodes.append(source_node);
 
-    while(pipeline_nodes.size()>0){
-        source_node = pipeline_scheduled_nodes.last();
-        QJsonObject p_node = rootObj.value(source_node).toObject();
-        QString source_out = source_node + " -> " + p_node.value("outputs").toArray()[0].toString();
-        available_outputs.append(source_out);
-        for(auto sk:pipeline_nodes)
-        {
-            QJsonObject node = rootObj.value(sk).toObject();
-            QJsonObject inputs = node.value("inputs").toObject();
-            if(!inputs.isEmpty())
-            {
-                bool inputsInList = true;
-                for(auto k : inputs.keys()){
-                    QJsonValue in = inputs.value(k);
-                    inputsInList = inputsInList && (in == QJsonValue::Null || available_outputs.contains(in.toString()));
-                }
-                if(inputsInList){
-                    for(auto k:inputs.keys()){
-                        d->idx_form_drop[node.value("plugin_name").toString()].append(pipeline_scheduled_nodes.indexOf(output_node[inputs.value(k).toString()]));
-                    }
-                    pipeline_nodes.removeAt(pipeline_nodes.indexOf(sk));
-                    pipeline_scheduled_nodes.append(sk);
-                    d->pipeline_scheduled_algo.append(node.value("plugin_name").toString());
-                }
-            }
+    for (QPair<QString, QString> target : edges.keys()) {
+        QPair<QString, QString> source = edges[target];
 
-        }
+        gnomonPipelineEdge *edge = new gnomonPipelineEdge();
+        edge->setSource(d->pipeline_nodes[source.first]->outputPort(source.second));
+        edge->setTarget(d->pipeline_nodes[target.first]->inputPort(target.second));
+        edge->link();
     }
 }
 

@@ -38,6 +38,7 @@ public:
     Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged);
     Q_PROPERTY(QString algorithmClass READ algorithmClass CONSTANT);
     Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin CONSTANT);
+    Q_PROPERTY(QString path READ path CONSTANT);
     Q_PROPERTY(QJsonObject parameters READ parameters CONSTANT)
 
     Q_PROPERTY(QColor color READ color);
@@ -57,6 +58,7 @@ public:
     const QString& algorithmClass(void);
     const QString& algorithmPlugin(void);
 
+    virtual inline QString path(void) { return ""; };
     virtual QJsonObject parameters(void);
 
     const QColor& color(void);
