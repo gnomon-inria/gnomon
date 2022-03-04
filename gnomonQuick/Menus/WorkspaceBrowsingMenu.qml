@@ -44,7 +44,8 @@ Item {
         modality: Qt.NonModal;
 
         onAccepted: {
-            d.read(decodeURIComponent(_file_dialog.file));
+            d.readerPath = decodeURIComponent(_file_dialog.file);
+            d.requestReaders();
 
             _self._current_file = _file_dialog.file;
         }
@@ -61,7 +62,10 @@ Item {
 
             extensionFilters: _extensions_model;
 
-            onFileDoubleClicked: d.read(decodeURIComponent(fileUrl))
+            onFileDoubleClicked: {
+                d.readerPath = decodeURIComponent(fileUrl);
+                d.requestReaders();
+            }
         }
 
         X.ButtonRaw {
@@ -71,7 +75,10 @@ Item {
 
             onClicked: {
                 if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
-                if(_finder.selectedFile) d.read(decodeURIComponent(_finder.selectedFile))
+                if(_finder.selectedFile) {
+                    d.readerPath = decodeURIComponent(_finder.selectedFile);
+                    d.requestReaders();
+                }
             }
         }
     }
