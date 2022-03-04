@@ -11,7 +11,6 @@ import xQuick.Vis           1.0 as XVis
 import gnomonQuick.Controls 1.0 as G
 
 Item {
-
     id: _self;
 
     // TODO: Start with a flickable
@@ -25,7 +24,6 @@ Item {
     }
 
     function update_menu(name) {
-
         if (_internal.menu) {
             _internal.menu.destroy();
             _auto_render_connect.target = null;
@@ -65,7 +63,6 @@ Item {
             _params.updateParametersModel();
         }
         function onFormsChanged() {
-            console.log("FORMS CHANGED", view.viewLogic.formNames)
             if(view.viewLogic.formNames.length) {
                 _form_selector.currentIndex = 0;
                 _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
@@ -78,7 +75,6 @@ Item {
     }
 
     X.Dialog {
-
         id: _clear_view_modal;
 
         x: (parent.width - width)/2
@@ -114,16 +110,15 @@ Item {
     }
 
     X.Dialog {
-
         id: _form_delete_modal;
 
         property string formName: "";
         property int formIndex: -1;
 
-        x: (parent.width - width)/2
-        y: (parent.height - height)/2
-        width: window.width * 3/4;
-        height: window.height * 3/4;
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+        width: Math.round(window.width / 3 * 2)
+        height: Math.round(window.height / 3)
 
         title: "Confirm Action"
 
@@ -146,7 +141,6 @@ Item {
         standardButtons: Dialog.Ok | Dialog.Cancel
 
         onAccepted: {
-            console.log("REMOVE FORM", formIndex)
             if(formIndex === _form_selector.currentIndex) {
                 if(view.viewLogic.formNames.length)
                     _form_selector.currentIndex = 0;
@@ -178,7 +172,6 @@ Item {
         clip: true;
         focus: true;
         currentIndex: -1;
-
 
         delegate: ItemDelegate {
             width: _form_selector.width
@@ -284,7 +277,6 @@ Item {
     }
 
     ColumnLayout {
-
         anchors.top: _form_selector.bottom;
         anchors.right: parent.right;
         anchors.left: parent.left;
@@ -392,21 +384,17 @@ Item {
                 _clear_view_modal.open();
             }
         }
-
     }
 
     Connections {
-
         id: _auto_render_connect;
 
         target: null
 
         function onValueChanged() {
             if (_auto_render.checked) {
-                    console.info('launching Render!')
                     view.viewLogic.update();
             }
         }
-
     }
 }
