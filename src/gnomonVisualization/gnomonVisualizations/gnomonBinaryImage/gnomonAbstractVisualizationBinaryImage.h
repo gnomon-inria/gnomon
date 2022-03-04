@@ -51,6 +51,7 @@ public slots:
     virtual void update(void) override = 0;
     virtual void render(void) override = 0;
     virtual void clear(void) override = 0;
+    virtual void setVisible(bool visible) override = 0;
 
 public slots:
     virtual void on2D(void) override = 0;

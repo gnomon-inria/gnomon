@@ -46,6 +46,7 @@ public slots:
 
 public slots:
     void clear(void) override;
+    virtual void setVisible(bool visible) override;
 
 public slots:
     void on2D(void) override;

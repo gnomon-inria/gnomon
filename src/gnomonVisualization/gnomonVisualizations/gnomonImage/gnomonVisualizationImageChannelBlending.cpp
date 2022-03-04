@@ -122,6 +122,17 @@ void gnomonVisualizationImageChannelBlending::clear(void)
 //    disconnect(d->connectYZ);
 }
 
+void gnomonVisualizationImageChannelBlending::setVisible(bool visible)
+{
+    if (dd->volume) {
+        dd->volume->SetVisibility(visible);
+    }
+
+    if (dd->actor2D) {
+        dd->actor2D->SetVisibility(visible);
+    }
+}
+
 void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
 {
     dd->imageSeries = image;
