@@ -136,7 +136,6 @@ bool gnomonPipelineManagerPrivate::hasNode(gnomonPipelineNode *node)
     bool node_found = false;
     for (auto it = this->pipeline_nodes.begin(); it != this->pipeline_nodes.end(); ++it) {
         auto&& n = it.value();
-        qDebug()<<Q_FUNC_INFO<<n<<node;
         if (n == node) {
            node_found = true;
            break;

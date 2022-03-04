@@ -82,7 +82,6 @@ QList<QStringList> gnomonPipelinePrivate::scheduledNodeNameGroups(void)
 {
     QStringList source_nodes = this->sourceNodeNames();
     QList<QStringList> scheduled_node_groups;
-    qDebug()<<Q_FUNC_INFO<<"Group"<<scheduled_node_groups.size()<<":"<<source_nodes;
     scheduled_node_groups.append(source_nodes);
 
     QStringList unscheduled_nodes = QStringList(this->pipeline_node_names);
@@ -106,7 +105,6 @@ QList<QStringList> gnomonPipelinePrivate::scheduledNodeNameGroups(void)
                 next_group_nodes.append(node_name);
             }
         }
-        qDebug()<<Q_FUNC_INFO<<"Group"<<scheduled_node_groups.size()<<":"<<next_group_nodes;
         scheduled_node_groups.append(next_group_nodes);
         for (const auto& node_name : next_group_nodes) {
             unscheduled_nodes.removeAll(node_name);
