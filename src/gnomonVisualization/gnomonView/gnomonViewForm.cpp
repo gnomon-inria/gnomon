@@ -113,7 +113,8 @@ public:
 
     QMap<QString, QString> formVisualizationNames;
     QMap<QString, gnomonAbstractVisualization *> formVisualization;
-    QMap<QString, QJsonObject > visualization_description; 
+    QMap<QString, QJsonObject > visualization_description;
+    QMap<QString, bool > formVisibility;
     QVariantMap parameters;
 public:
     QMap<QString, bool> acceptForms;
@@ -777,6 +778,8 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
         visu->update();
         q->switchTo3D();
     }
+
+    visu->setVisible(this->formVisibility[name]);
 }
 
 void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QString& visu_name, const QJsonObject& parameters)
@@ -809,6 +812,9 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
     }
 
     this->formVisualizationNames[name] = visu_name;
+    if (!this->formVisibility.contains(name)) {
+        this->formVisibility[name] = true;
+    }
     connect(this->formVisualization[name], &gnomonAbstractVisualization::parametersChanged, [=] () {
         emit q->formVisuParametersChanged();
     });
@@ -1960,6 +1966,39 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
     }
 }
 
+void gnomonViewForm::setFormVisible(const QString& name, bool visible)
+{
+    if (d->formVisualization.contains(name)) {
+        if (d->formVisualization[name]) {
+            d->formVisualization[name]->setVisible(visible);
+            d->formVisibility[name] = visible;
+        }
+    }
+
+    this->render();
+}
+
+void gnomonViewForm::removeForm(const QString& name)
+{
+    if (d->formVisualization.contains(name)) {
+        if (d->formVisualization[name]) {
+            d->formVisualization[name]->disconnect();
+            d->formVisualization[name]->clearConnections();
+            d->formVisualization[name]->clear();
+            // TODO: Fix offscreen rendering related segFault when destroying Visualization
+            // delete d->formVisualization[name];
+        }
+    }
+    d->formVisualization.remove(name);
+    d->formVisualizationNames.remove(name);
+    d->formVisibility.remove(name);
+    d->forms.remove(name);
+
+    this->render();
+
+    emit formsChanged();
+}
+
 void gnomonViewForm::setBounds(double bounds[6])
 {
     bool changed = false;
@@ -2169,6 +2208,7 @@ void gnomonViewForm::update(void)
          gnomonAbstractVisualization *v = d->formVisualization[key];
          if(v) {
              v->update();
+             v->setVisible(d->formVisibility[key]);
          }
      }
 }

@@ -115,6 +115,17 @@ void gnomonVisualizationImage::clear(void)
 //    disconnect(d->connectYZ);
 }
 
+void gnomonVisualizationImage::setVisible(bool visible)
+{
+    if (dd->volume) {
+        dd->volume->SetVisibility(visible);
+    }
+
+    if (dd->actor2D) {
+        dd->actor2D->SetVisibility(visible);
+    }
+}
+
 void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
 {
     dd->imageSeries = image;
