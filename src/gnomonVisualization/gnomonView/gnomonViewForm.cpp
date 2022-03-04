@@ -1981,6 +1981,8 @@ void gnomonViewForm::removeForm(const QString& name)
     d->formVisualization.remove(name);
     d->formVisualizationNames.remove(name);
     d->forms.remove(name);
+
+    emit formsChanged();
 }
 
 void gnomonViewForm::setBounds(double bounds[6])
