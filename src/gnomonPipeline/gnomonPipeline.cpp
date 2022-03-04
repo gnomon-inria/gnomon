@@ -28,6 +28,8 @@ public:
     QStringList pipeline_scheduled_algo;
     QMap<QString, int> node_type_count;
     QMap<QString, gnomonPipelineNode *> pipeline_nodes;
+    QMap<QString, QList<int>> idx_form_drop;
+    QString current_algo_name;
 
     QMap<QString, QPointF> node_layout;
 
@@ -381,6 +383,16 @@ gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
     }
 }
 
+QVariantList gnomonPipeline::indices(const QString& plugin_name)
+{
+    if(!d->idx_form_drop.contains(plugin_name))
+        return QVariantList();
+    QVariantList indices;
+    foreach(int index, d->idx_form_drop.value(plugin_name))
+        indices << index;
+    return indices;
+}
+
 void gnomonPipeline::addNode(gnomonPipelineNode *node)
 {
     QString node_name = node->algorithmClass();
@@ -649,20 +661,21 @@ void gnomonPipeline::readFromJson(const QString& url)
     QByteArray pipeline_json = file.readAll();
     file.close();
 
-    QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
-    QJsonObject rootObj = doc.object();
-
     QString source_node; //TODO change it to be a list 
     QStringList pipeline_nodes;
     QStringList pipeline_scheduled_nodes;
     QStringList available_outputs;
     QStringList scheduled_algo;
+    QMap<QString, QString> output_node;
+    QJsonDocument doc = QJsonDocument::fromJson(pipeline_json);
+    QJsonObject rootObj = doc.object();
 
     for(auto k:rootObj.keys())
     {
         QJsonObject node = rootObj.value(k).toObject();
         if(!node.keys().isEmpty()) { 
             pipeline_nodes.append(k);
+            output_node[node.value("name").toString() + " -> " + node.value("outputs").toArray()[0].toString()] =  k;
             QJsonObject inputs = node.value("inputs").toObject();
             if(node.keys().contains("path") && inputs.isEmpty()){
                 d->pipeline_file_path = node.value("path").toString();
@@ -675,7 +688,7 @@ void gnomonPipeline::readFromJson(const QString& url)
     pipeline_nodes.removeAt(pipeline_nodes.indexOf(source_node));
     pipeline_scheduled_nodes.append(source_node);
 
-    while(pipeline_nodes.size()>1){
+    while(pipeline_nodes.size()>0){
         source_node = pipeline_scheduled_nodes.last();
         QJsonObject p_node = rootObj.value(source_node).toObject();
         QString source_out = source_node + " -> " + p_node.value("outputs").toArray()[0].toString();
@@ -691,6 +704,9 @@ void gnomonPipeline::readFromJson(const QString& url)
                     inputsInList = inputsInList && available_outputs.contains(inputs.value(k).toString());
                 }
                 if(inputsInList){
+                    for(auto k:inputs.keys()){
+                        d->idx_form_drop[node.value("plugin_name").toString()].append(pipeline_scheduled_nodes.indexOf(output_node[inputs.value(k).toString()]));
+                    }
                     pipeline_nodes.removeAt(pipeline_nodes.indexOf(sk));
                     pipeline_scheduled_nodes.append(sk);
                     d->pipeline_scheduled_algo.append(node.value("plugin_name").toString());
@@ -699,10 +715,6 @@ void gnomonPipeline::readFromJson(const QString& url)
 
         }
     }
-    pipeline_scheduled_nodes.append(pipeline_nodes.last());
-    pipeline_nodes.pop_back();
-
-
 }
 
 

@@ -37,6 +37,7 @@ public:
     const QString& file_path(void);
     const QStringList& scheduled_algo(void);
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
+    Q_INVOKABLE QVariantList indices(const QString&);
 
 public slots:
     void addNode(gnomonPipelineNode *node);
@@ -44,8 +45,8 @@ public slots:
 signals:
     void nameChanged(void);
     void descriptionChanged(void);
-
     void nodeAdded(gnomonPipelineNode *);
+    void pluginChanged(void);
 
 public:
     Q_INVOKABLE QList<gnomonPipelineNode *> scheduledNodes(void);
