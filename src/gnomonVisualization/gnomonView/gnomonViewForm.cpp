@@ -1963,7 +1963,11 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
 
 void gnomonViewForm::setFormVisible(const QString& name, bool visible)
 {
-    dtkWarn()<<"Not implemented yet!";
+    if (d->formVisualization.contains(name)) {
+        if (d->formVisualization[name]) {
+            d->formVisualization[name]->setVisible(visible);
+        }
+    }
     return;
 }
 

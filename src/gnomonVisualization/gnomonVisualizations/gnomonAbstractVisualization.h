@@ -61,6 +61,7 @@ public slots:
 public slots:
     void clearConnections(void);
     virtual void clear(void) = 0;
+    virtual void setVisible(bool visible) = 0;
 
 public slots:
     virtual void on2D(void) = 0;

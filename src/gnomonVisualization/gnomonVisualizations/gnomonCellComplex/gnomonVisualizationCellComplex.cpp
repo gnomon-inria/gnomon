@@ -131,6 +131,17 @@ void gnomonVisualizationCellComplex::clear(void)
     }
 }
 
+void gnomonVisualizationCellComplex::setVisible(bool visible)
+{
+    if (dd->actor) {
+        dd->actor->SetVisibility(visible);
+    }
+
+    if (dd->actor2D) {
+        dd->actor2D->SetVisibility(visible);
+    }
+}
+
 void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cellComplexSeries)
 {
     dd->cellComplexSeries = cellComplexSeries;
