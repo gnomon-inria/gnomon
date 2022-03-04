@@ -58,6 +58,11 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
+const QJsonObject& gnomonPipelineNodeAlgorithm::parameters(void)
+{
+    return dd->parameters;
+}
+
 QString gnomonPipelineNodeAlgorithm::toToml(void)
 {
     QString node_string;

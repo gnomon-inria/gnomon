@@ -136,6 +136,11 @@ const QColor& gnomonPipelineNode::color(void)
     return d->color;
 }
 
+const QJsonObject& gnomonPipelineNode::parameters(void)
+{
+    QJsonObject param;
+    return param;
+}
 
 const QPointF& gnomonPipelineNode::position(void)
 {

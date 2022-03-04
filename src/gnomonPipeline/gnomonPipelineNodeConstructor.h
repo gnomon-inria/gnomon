@@ -27,6 +27,9 @@ public:
     ~gnomonPipelineNodeConstructor(void);
 
 public:
+    virtual const QJsonObject& parameters(void) override;
+
+public:
     virtual QString toToml(void) override;
     virtual QString toLuigiClass(void) override;
     virtual const QJsonObject toJson(void) override;

@@ -52,6 +52,11 @@ gnomonPipelineNodeConstructor::~gnomonPipelineNodeConstructor(void)
 
 }
 
+const QJsonObject& gnomonPipelineNodeConstructor::parameters(void)
+{
+    return dd->parameters;
+}
+
 QString gnomonPipelineNodeConstructor::toToml(void)
 {
     QString node_string;
