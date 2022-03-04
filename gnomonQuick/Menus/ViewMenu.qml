@@ -64,6 +64,11 @@ Item {
             _params.parameters = view.viewLogic.formVisuParameters(_form_selector.currentValue);
             _params.updateParametersModel();
         }
+        function onFormsChanged() {
+            console.log("FORMS CHANGED", view.viewLogic.formNames)
+            _form_selector.currentIndex = 0;
+            _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
+        }
     }
 
     ListView {
@@ -113,10 +118,17 @@ Item {
             CheckBox {
                 id: _checkbox;
 
+                checked: true;
                 anchors.right: parent.right;
                 anchors.verticalCenter: parent.verticalCenter;
 
                 text: ""
+
+                onClicked: {
+                    console.log("PRESSED CHECKBOX", index, checkState === Qt.Checked)
+                    view.viewLogic.setFormVisible(view.viewLogic.formNames[index], checkState === Qt.Checked)
+                    view.viewLogic.update()
+                }
             }
 
             X.Icon {
@@ -128,6 +140,21 @@ Item {
 
                 icon: X.Icons.icons.delete;
 
+                MouseArea {
+
+                    anchors.fill: parent;
+                    onClicked: {
+                        console.log("REMOVE FORM", index)
+                        if(index === _form_selector.currentIndex) {
+                            if(view.viewLogic.formNames.length)
+                                _form_selector.currentIndex = 0;
+                            else
+                                _form_selector.currentIndex = -1;
+                        }
+                        view.viewLogic.removeForm(view.viewLogic.formNames[index]);
+                        view.viewLogic.update();
+                    }
+                }
 
             }
 
