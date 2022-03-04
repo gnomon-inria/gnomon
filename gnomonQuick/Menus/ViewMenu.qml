@@ -187,6 +187,7 @@ Item {
 
             text: modelData;
             font.pointSize: 14;
+            font.bold: true;
 
             onClicked: {
                 _form_selector.currentIndex = index;
@@ -206,25 +207,37 @@ Item {
                 visible: _form_selector.currentIndex == index
             }
 
-            CheckBox {
-                id: _checkbox;
+            X.Icon {
+                id: _visibility_icon;
 
-                checked: true;
+                property bool checked: true;
+
                 anchors.right: parent.right;
                 anchors.verticalCenter: parent.verticalCenter;
+                anchors.margins: 4
 
-                text: ""
+                size: 33;
 
-                onClicked: {
-                    console.log("PRESSED CHECKBOX", index, checkState === Qt.Checked)
-                    view.viewLogic.setFormVisible(view.viewLogic.formNames[index], checkState === Qt.Checked)
+                icon: checked? X.Icons.icons.visibility : X.Icons.icons.visibility_off;
+                color: checked? X.Style.foregroundColor : X.Style.backgroundColor;
+
+
+                MouseArea { id: _visibility_mouse_area;
+                    anchors.fill: parent;
+                    hoverEnabled: true;
+
+                    onClicked: {
+                        _visibility_icon.checked = !_visibility_icon.checked;
+                        view.viewLogic.setFormVisible(view.viewLogic.formNames[index], _visibility_icon.checked)
+                    }
                 }
             }
 
             X.Icon {
 
-                anchors.right: _checkbox.left;
+                anchors.right: _visibility_icon.left;
                 anchors.verticalCenter: parent.verticalCenter;
+                anchors.margins: 4
 
                 size: 33;
 
