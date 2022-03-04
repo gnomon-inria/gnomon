@@ -25,6 +25,9 @@ public:
     const QString& name(void);
     const QString& description(void);
 
+public slots:
+    void clear(void);
+
 public:
     void setName(const QString& name);
     void setDescription(const QString& desc);

@@ -32,6 +32,9 @@ public:
     QMap<QString, QPointF> node_layout;
 
 public:
+    void clear(void);
+
+public:
     QStringList sourceNodeNames(void);
     QStringList sinkNodeNames(void);
     QList<QStringList> scheduledNodeNameGroups(void);
@@ -41,6 +44,16 @@ public:
     QList<QList<QVector2D> > nodeVectors(QList<QPointF> node_positions);
     void forceDrivenLayout(void);
 };
+
+void gnomonPipelinePrivate::clear(void)
+{
+    this->pipeline_node_names.clear();
+    this->pipeline_nodes.clear();
+
+    this->node_type_count.clear();
+
+    this->node_layout.clear();
+}
 
 QStringList gnomonPipelinePrivate::sourceNodeNames(void)
 {
@@ -342,6 +355,11 @@ void gnomonPipeline::setDescription(const QString& desc)
 const QStringList& gnomonPipeline::nodeNames(void)
 {
     return d->pipeline_node_names;
+}
+
+void gnomonPipeline::clear(void)
+{
+    d->clear();
 }
 
 const QString& gnomonPipeline::file_path(void)
