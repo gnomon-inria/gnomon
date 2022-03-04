@@ -132,6 +132,7 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
             gnomonPipelineNode *source_node = edge->source()->node();
             QString source_node_name = this->pipeline_nodes.key(source_node);
             int source_index = this->pipeline_node_names.indexOf(source_node_name);
+            node_edge_indices.append(QPair<int,int>(source_index,target_index));
         }
     }
 
@@ -700,8 +701,9 @@ void gnomonPipeline::readFromJson(const QString& url)
             if(!inputs.isEmpty())
             {
                 bool inputsInList = true;
-                for(auto k:inputs.keys()){
-                    inputsInList = inputsInList && available_outputs.contains(inputs.value(k).toString());
+                for(auto k : inputs.keys()){
+                    QJsonValue in = inputs.value(k);
+                    inputsInList = inputsInList && (in == QJsonValue::Null || available_outputs.contains(in.toString()));
                 }
                 if(inputsInList){
                     for(auto k:inputs.keys()){
