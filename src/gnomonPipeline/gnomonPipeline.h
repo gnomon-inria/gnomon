@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonPipelineExport.h>
@@ -20,22 +6,12 @@
 
 class gnomonPipelineNode;
 
-class gnomonAbstractDynamicForm;
-class gnomonAbstractAdapterCommand;
-class gnomonAbstractCommand;
-class gnomonAbstractConstructorCommand;
-class gnomonAbstractReaderCommand;
-class gnomonAbstractWriterCommand;
-
 class GNOMONPIPELINE_EXPORT gnomonPipeline : public QObject
 {
     Q_OBJECT
 
 public:
-    static gnomonPipeline *instance(void);
-
-protected:
-     gnomonPipeline(void);
+     gnomonPipeline(QObject *parent = nullptr);
     ~gnomonPipeline(void);
 
 public:
@@ -47,37 +23,32 @@ public:
     const QString& name(void);
     const QString& description(void);
 
+public slots:
+    void clear(void);
+
 public:
     void setName(const QString& name);
     void setDescription(const QString& desc);
 
 public:
     const QStringList& nodeNames(void);
-
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
-    Q_INVOKABLE void exportToJson(const QString& url);
-
 
 public slots:
-    void addReader(gnomonAbstractReaderCommand *command);
-    void addWriter(gnomonAbstractWriterCommand *command);
-    void addAdapter(gnomonAbstractAdapterCommand *command); //todo delete ?
-    void addAdaptedForm(gnomonAbstractDynamicForm *form); //todo delete ?
-    void addAlgorithm(gnomonAbstractCommand *command);
-    void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
-    void addForm(gnomonAbstractDynamicForm *form); //todo delete ?
-    void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
-
-public:
-    void setFormIndex(gnomonAbstractDynamicForm *form, int index=-1);
+    void addNode(gnomonPipelineNode *node);
 
 signals:
     void nameChanged(void);
     void descriptionChanged(void);
-
     void nodeAdded(gnomonPipelineNode *);
+    void pluginChanged(void);
+
+public:
+    Q_INVOKABLE QStringList scheduledNodeNames(bool recompute_form_indices=false);
 
 public slots:
+    Q_INVOKABLE void exportToJson(const QString& url);
+    Q_INVOKABLE void readFromJson(const QString& url);
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
 
@@ -86,9 +57,6 @@ public slots:
 
 private:
     class gnomonPipelinePrivate *d;
-
-private:
-    static gnomonPipeline *s_instance;
 };
 
 //

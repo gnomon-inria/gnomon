@@ -51,6 +51,10 @@ gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)
 
 }
 
+QString gnomonPipelineNodeReader::path(void) {
+    return dd->path;
+}
+
 QString gnomonPipelineNodeReader::toToml(void)
 {
     QString node_string;

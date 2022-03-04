@@ -20,7 +20,7 @@
 
 gnomonAlgorithmWorkspacePrivate::gnomonAlgorithmWorkspacePrivate(void)
 {
-    this->pipeline = gnomonPipeline::instance();
+    this->pipeline_manager = gnomonPipelineManager::instance();
 }
 
 gnomonAlgorithmWorkspacePrivate::~gnomonAlgorithmWorkspacePrivate(void)
@@ -40,7 +40,7 @@ bool gnomonAlgorithmWorkspacePrivate::setAlgorithm(const QString& algorithm)
 void gnomonAlgorithmWorkspacePrivate::registerPipeline(void)
 {
     if (this->command) {
-        this->pipeline->addAlgorithm(this->command);
+        this->pipeline_manager->addAlgorithm(this->command);
     }
 }
 
@@ -71,7 +71,9 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 
     d->targets = new gnomonViewFormList(this);
     connect(d->targets, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
-        connect(v, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+        connect(v, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+            d->pipeline_manager->addForm(f);
+        });
     });
 
     connect(d->sources, &gnomonViewFormList::formsChanged, [=] ()

@@ -532,7 +532,13 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
 
     cls.documentation = documentation
 
-    cls.version = version
+    cls.__version__ = version
+    def _version(self):
+        return self.__version__
+
+    cls.version = _version
+
+
 
     def wrapper(f):
         @wraps(f)

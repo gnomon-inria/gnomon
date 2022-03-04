@@ -23,6 +23,7 @@ class gnomonPipelineNodePrivate
 public:
     QString name;
     QString description;
+    QString version;
     QString algorithm_class;
     QString algorithm;
 

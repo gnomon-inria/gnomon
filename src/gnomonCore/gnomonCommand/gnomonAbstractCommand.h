@@ -29,10 +29,8 @@ signals:
     void logged(const QString&);
 
 public:
-    QString documentation(void)
-    {
-        return action->documentation();
-    }
+    inline QString documentation(void) { return action->documentation(); }
+    inline QString version(void) { return action->version(); }
 
     const QString& algorithmName(void)
     {

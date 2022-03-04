@@ -13,6 +13,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPipeline
   gnomonPipeline.h
   gnomonPipelineEdge.h
+  gnomonPipelineManager.h
   gnomonPipelineNode.h
   gnomonPipelineNodeAdapter
   gnomonPipelineNodeAdapter.h
@@ -31,6 +32,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonComposerWidget.cpp
   gnomonPipeline.cpp
   gnomonPipelineEdge.cpp
+  gnomonPipelineManager.cpp
   gnomonPipelineNode.cpp
   gnomonPipelineNodeAdapter.cpp
   gnomonPipelineNodeAlgorithm.cpp

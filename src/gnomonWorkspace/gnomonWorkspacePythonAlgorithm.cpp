@@ -78,7 +78,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 {
     if (this->command) {
         gnomonAbstractCommand *algorithm_command = dynamic_cast<gnomonAbstractCommand *>(this->command);
-        gnomonPipeline::instance()->addAlgorithm(algorithm_command);
+        gnomonPipelineManager::instance()->addAlgorithm(algorithm_command);
     }
 }
 
@@ -113,8 +113,9 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonImage",true);
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
-        connect(v, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), gnomonPipeline::instance(), SLOT(addForm(gnomonAbstractDynamicForm *)));
-
+        connect(v, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+            gnomonPipelineManager::instance()->addForm(f);
+        });
     });
 
     d->sources->addView();

@@ -108,6 +108,19 @@ void gnomonPipelineNode::setDescription(const QString& desc)
     }
 }
 
+const QString& gnomonPipelineNode::version(void)
+{
+    return d->version;
+}
+
+void gnomonPipelineNode::setVersion(const QString& desc)
+{
+    if (desc != d->version) {
+        d->version = desc;
+        emit versionChanged();
+    }
+}
+
 const QString& gnomonPipelineNode::algorithmClass(void)
 {
     return d->algorithm_class;
@@ -123,6 +136,11 @@ const QColor& gnomonPipelineNode::color(void)
     return d->color;
 }
 
+QJsonObject gnomonPipelineNode::parameters(void)
+{
+    QJsonObject param;
+    return param;
+}
 
 const QPointF& gnomonPipelineNode::position(void)
 {
@@ -290,6 +308,16 @@ void gnomonPipelineNode::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawText(label_pos, label_text);
 } */
 
+QList<gnomonPipelineEdge *> gnomonPipelineNode::inputEdges(void)
+{
+    return d->input_edges;
+}
+
+QList<gnomonPipelineEdge *> gnomonPipelineNode::outputEdges(void)
+{
+    return d->output_edges;
+}
+
 int gnomonPipelineNode::inputEdgeCount(void)
 {
     return d->input_edges.size();
@@ -423,6 +451,7 @@ const QJsonObject gnomonPipelineNode::toJson(void)
     json.insert("name", d->name);
     json.insert("plugin_group", d->algorithm_class);
     json.insert("plugin_name", d->algorithm);
+    json.insert("plugin_version", d->version);
     json.insert("description", d->description);
     return json;
 }
