@@ -41,7 +41,8 @@ G.Workspace {
                     "description": readers[r].toString()
                 });
             }
-            _reader_dialog.open();
+            // if(d.displayReaderDialog)
+                _reader_dialog.open();          
         }
 
         onFinished: idleStop();
@@ -55,7 +56,10 @@ G.Workspace {
         anchors.fill: parent;
         anchors.margins: 10;
 
-        onDroppedFromFile: d.read(decodeURIComponent(path));
+        onDroppedFromFile: {
+            d.readerPath = decodeURIComponent(path);
+            d.requestReaders();
+        }
         viewLogic: d.view;
 
         Component.onCompleted: G.Associator.associate(_view, d.view);

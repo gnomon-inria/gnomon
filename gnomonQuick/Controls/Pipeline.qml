@@ -193,11 +193,11 @@ void main() {
         property var edges: [];
 
         Connections {
-            target: GP.Pipeline
+            target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
 
-                console.log(node.name, "(", node.algorithmClass, ")", GP.Pipeline.nodeNames);
-                _self._node = node;
+                console.log(node.name, "(", node.algorithmClass, ")", GP.PipelineManager.pipeline.nodeNames);
+                _self._node = node
                 var n = _canvas.addNode(node);
 
                 console.log(node.inputEdgeCount, "input edges")

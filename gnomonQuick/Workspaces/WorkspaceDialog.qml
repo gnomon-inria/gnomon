@@ -22,8 +22,11 @@ X.Dialog {
         property var selected_workspace: _list_view.currentIndex > -1 ? _available_workspaces.get(_list_view.currentIndex) : undefined;
         property var workspace_groups: []
         property var workspace_plugins: []
-    }
+        property var plugin_workspace: []
 
+    }
+    property alias plugin_workspace: _internal.plugin_workspace
+    property alias available_workspaces: _available_workspaces
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     width: window.width * 3/4
@@ -286,6 +289,9 @@ X.Dialog {
             let plugins = []
             if (w.type in _internal.workspace_groups) {
                 plugins = GM.MetaData.pluginGroupMetaData(_internal.workspace_groups[w.type])
+                for(var p=0; p<plugins.length; p++) {
+                    _internal.plugin_workspace[plugins[p]] = w.type
+                }                
             }
             _internal.workspace_plugins[w.type] = plugins
             _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm"))
