@@ -87,7 +87,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     d->target->setEnableLinking(false);
     d->target->setAcceptForm("gnomonImage",true);
 
-    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     QWidget *dummy = new QWidget(this);
     dummy->setLayout(d->sources_layout);

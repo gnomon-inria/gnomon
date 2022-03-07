@@ -2,7 +2,7 @@
 
 #include <QtCore>
 
-class gnomonPipeline;
+class gnomonPipelineManager;
 class gnomonAbstractCommand;
 
 class gnomonViewForm;
@@ -38,7 +38,7 @@ public:
     QJsonObject savedState;
 
 public:
-    gnomonPipeline *pipeline;
+    gnomonPipelineManager *pipeline_manager;
 
 public:
     gnomonAbstractCommand *command = nullptr;

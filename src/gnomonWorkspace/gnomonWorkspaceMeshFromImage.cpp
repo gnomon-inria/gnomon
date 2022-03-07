@@ -95,7 +95,7 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);
 
-    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);

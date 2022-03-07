@@ -171,6 +171,18 @@ void gnomonVisualizationCellImageMarchingCubes::clear(void)
 //    dd->interactor_style->Delete();
 }
 
+
+void gnomonVisualizationCellImageMarchingCubes::setVisible(bool visible)
+{
+    if (dd->actor) {
+        dd->actor->SetVisibility(visible);
+    }
+
+    if (dd->actor2D) {
+        dd->actor2D->SetVisibility(visible);
+    }
+}
+
 void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeries *cellImage)
 {
     dd->cellImageSeries = cellImage;

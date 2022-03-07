@@ -95,7 +95,7 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     d->target->setAcceptForm("gnomonTree",true);
 //    d->target->setExportColor(gnomonToolBar::treeFromLString_color);
 
-    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: LSystem Editor

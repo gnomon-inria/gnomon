@@ -24,9 +24,10 @@ public:
     virtual void run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};
     virtual QString documentation(void) = 0;
+    virtual QString version(void) { return "X.X.X"; }
+
     bool is_async = false;
     void (* callback)(gnomonAbstractCommand *command) = nullptr;
-    
 };
 
 // ///////////////////////////////////////////////////////////////////

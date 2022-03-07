@@ -99,7 +99,7 @@ gnomonWorkspaceLStringTranslation::gnomonWorkspaceLStringTranslation(QWidget *pa
     d->target->setAcceptForm("gnomonTree",true);
     d->target->setAcceptForm("gnomonLString",true);
 
-    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 
 // /////////////////////////////////////////////////////////////////////////////

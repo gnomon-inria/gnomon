@@ -14,6 +14,8 @@
 
 #include "gnomonPipelineNodeAlgorithm.h"
 
+#include <dtkCore>
+
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 
@@ -24,14 +26,14 @@
 
 class gnomonPipelineNodeAlgorithmPrivate {
 public:
-    QVariantMap parameters;
+    QJsonObject parameters;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QVariantMap parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
 {
     if (algorithm_class.contains("From")) {
         d->color = QColor(153, 69, 69);
@@ -56,6 +58,11 @@ gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
 
 }
 
+QJsonObject gnomonPipelineNodeAlgorithm::parameters(void)
+{
+    return dd->parameters;
+}
+
 QString gnomonPipelineNodeAlgorithm::toToml(void)
 {
     QString node_string;
@@ -66,8 +73,8 @@ QString gnomonPipelineNodeAlgorithm::toToml(void)
     out << "    [" << d->name << ".parameters]\n";
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
-        QVariant parameter = dd->parameters[param];
-        QString parameter_string = d->variantParameterString(parameter);
+        dtkCoreParameter *parameter = dtkCoreParameter::create(dd->parameters[param].toObject().toVariantHash());
+        QString parameter_string = d->variantParameterString(parameter->variant());
         out << "    " << param << " = " << parameter_string << "\n";
     }
     out << "\n";
@@ -77,22 +84,21 @@ QString gnomonPipelineNodeAlgorithm::toToml(void)
 const QJsonObject gnomonPipelineNodeAlgorithm::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
-    json.insert("plugin_version", "TODO");
 
     QJsonObject parameters;
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
-        QVariant parameter = dd->parameters[param];
-        parameters.insert(param, QJsonValue::fromVariant(parameter));
+        QVariantHash parameter = dd->parameters[param].toObject().toVariantHash();
+        parameters.insert(param, QJsonObject::fromVariantHash(parameter));
     }
     json.insert("parameters", parameters);
 
-    QJsonArray in;
+    QJsonObject in;
     for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
-        in.append(input_name);
+        in.insert(input_name, QJsonValue::Null);
     }
-    json.insert("input", in);
+    json.insert("inputs", in);
 
     QJsonArray out;
     for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {

@@ -31,9 +31,9 @@ copyright = '2018, Inria'
 author = 'Mosaic project-team and AMDT team'
 
 # The short X.Y version
-version = '0.17'
+version = '0.20'
 # The full version, including alpha/beta/rc tags
-release = '0.17.0'
+release = '0.20.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -50,6 +50,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
+    'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.intersphinx',

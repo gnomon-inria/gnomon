@@ -35,8 +35,12 @@ public:
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
+    Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged);
     Q_PROPERTY(QString algorithmClass READ algorithmClass CONSTANT);
     Q_PROPERTY(QString algorithmPlugin READ algorithmPlugin CONSTANT);
+    Q_PROPERTY(QString path READ path CONSTANT);
+    Q_PROPERTY(QJsonObject parameters READ parameters CONSTANT)
+
     Q_PROPERTY(QColor color READ color);
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
@@ -49,9 +53,14 @@ public:
 public:
     const QString& name(void);
     const QString& description(void);
+    const QString& version(void);
 
     const QString& algorithmClass(void);
     const QString& algorithmPlugin(void);
+
+    virtual inline QString path(void) { return ""; };
+    virtual QJsonObject parameters(void);
+
     const QColor& color(void);
 
     const QPointF& position(void);
@@ -59,12 +68,14 @@ public:
 public:
     void setName(const QString& node_name);
     void setDescription(const QString& desc);
+    void setVersion(const QString& version);
 
     void setPosition(const QPointF& pos);
 
 signals:
     void nameChanged(void);
     void descriptionChanged(void);
+    void versionChanged(void);
 
     void positionChanged(void);
 
@@ -84,6 +95,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);*/
     
 public:
+    QList<gnomonPipelineEdge *> inputEdges(void);
+    QList<gnomonPipelineEdge *> outputEdges(void);
+
     int inputEdgeCount(void);
     int outputEdgeCount(void);
 

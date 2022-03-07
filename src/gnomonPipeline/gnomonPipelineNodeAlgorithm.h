@@ -23,8 +23,11 @@ class gnomonPipelinePort;
 class GNOMONPIPELINE_EXPORT gnomonPipelineNodeAlgorithm : public gnomonPipelineNode
 {
 public:
-     gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QVariantMap parameters, QList<QString> inputs, QList<QString> outputs);
+     gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> inputs, QList<QString> outputs);
     ~gnomonPipelineNodeAlgorithm(void);
+
+public:
+    virtual QJsonObject parameters(void) override;
 
 public:
     virtual QString toToml(void) override;

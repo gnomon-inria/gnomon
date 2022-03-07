@@ -131,7 +131,7 @@ void gnomonFormManager::saveAs(int id, const QString& f) const
         command->setPath(file_name);
         command->setForm(form);
         command->redo();
-        d->pipeline->addWriter(command);
+        d->pipeline_manager->addWriter(command);
     }
 }
 
@@ -186,8 +186,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
 
-    d->pipeline->setFormIndex(form, item);
-    d->pipeline->addClonedForm(form, d->forms[item]);
+    d->pipeline_manager->setFormIndex(form, item);
+    d->pipeline_manager->addClonedForm(form, d->forms[item]);
 
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
@@ -249,8 +249,8 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
     d->formMatplotlibVisualizations.insert(item, visualization);
     d->formData.insert(item, image);
 
-    d->pipeline->setFormIndex(form, item);
-    d->pipeline->addClonedForm(form, d->forms[item]);
+    d->pipeline_manager->setFormIndex(form, item);
+    d->pipeline_manager->addClonedForm(form, d->forms[item]);
 
     QString writer_plugin;
     QString form_name;
@@ -336,7 +336,7 @@ gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
     d = new gnomonFormManagerPrivate;
     d->q = this;
 
-    d->pipeline = gnomonPipeline::instance();
+    d->pipeline_manager = gnomonPipelineManager::instance();
 }
 
 gnomonFormManager::~gnomonFormManager(void)
@@ -346,5 +346,50 @@ gnomonFormManager::~gnomonFormManager(void)
 
 gnomonFormManager *gnomonFormManager::s_instance = nullptr;
 
+gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
+    if(contains(id)) {
+        auto ptr = d->forms[id]->metadata();
+        QQmlEngine::setObjectOwnership(ptr, QQmlEngine::CppOwnership);
+        return ptr;
+    } else {
+        return new gnomonDynamicFormMetadata();
+    }
+}
+
+bool gnomonFormManager::contains(int id) {
+    return d->forms.contains(id);
+}
+
+QVariantList gnomonFormManager::timeKeys(int id) {
+    if(contains(id)) {
+        const auto& times = d->forms[id]->times();
+        QVariantList out;
+        //out.reserve(times.size());
+        for(double time : times) {
+            out.append(time);
+        }
+        return out;
+    } else {
+        return {};
+    }
+}
+
+QStringList gnomonFormManager::formMetadataKeysAtT(int id, double t) {
+    if(contains(id)) {
+        return d->forms[id]->at(t)->metadata().keys();
+    } else {
+        return {};
+    }
+}
+
+QString gnomonFormManager::formMetadataValueAtT(int id, double t, const QString& key) {
+    if(contains(id)){
+        auto metadata = d->forms[id]->at(t)->metadata();
+        if(metadata.contains(key)) {
+            return metadata[key];
+        }
+    }
+    return {};
+}
 //
 // gnomonFormManager.cpp ends here

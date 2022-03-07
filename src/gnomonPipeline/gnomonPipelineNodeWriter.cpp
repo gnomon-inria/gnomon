@@ -51,6 +51,10 @@ gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
 
 }
 
+QString gnomonPipelineNodeWriter::path(void) {
+    return dd->path;
+}
+
 QString gnomonPipelineNodeWriter::toToml(void)
 {
     QString node_string;
@@ -68,12 +72,12 @@ const QJsonObject gnomonPipelineNodeWriter::toJson(void)
     QJsonObject json = gnomonPipelineNode::toJson();
     json.insert("path", dd->path);
 
-    QJsonArray in;
+    QJsonObject in;
     for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
-        in.append(input_name);
+        in.insert(input_name, QJsonValue::Null);
     }
-    json.insert("input", in);
+    json.insert("inputs", in);
 
     return json;
 }
