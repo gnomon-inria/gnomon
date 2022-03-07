@@ -1,8 +1,9 @@
 import QtQuick            2.15
 import QtQuick.Controls   2.15
 import QtQuick.Window     2.15
-import Qt5Compat.GraphicalEffects
 import QtQuick.Layouts    1.15
+
+import Qt5Compat.GraphicalEffects
 
 import xQuick.Controls    1.0 as X
 import xQuick.Fonts       1.0 as X
