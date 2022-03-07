@@ -2377,7 +2377,9 @@ void gnomonViewForm::drop(int index)
 }
 
 gnomonDynamicFormMetadata* gnomonViewForm::formMetadata(const QString &name) {
-    return d->forms[name]->metadata();
+    auto ptr = d->forms[name]->metadata();
+    QQmlEngine::setObjectOwnership(ptr, QQmlEngine::CppOwnership);
+    return ptr;
 }
 
 // void gnomonViewForm::resizeEvent(QResizeEvent *event)

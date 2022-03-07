@@ -50,3 +50,8 @@ QString gnomonDynamicFormMetadata::get(const QString &key) {
 void gnomonDynamicFormMetadata::set(const QString &key, const QString &value) {
     d->data[key] = value;
 }
+
+gnomonDynamicFormMetadata::~gnomonDynamicFormMetadata() {
+    //qDebug() << Q_FUNC_INFO << "Deleting metadata";
+    delete d;
+}

@@ -11,6 +11,8 @@ public:
     gnomonDynamicFormMetadata(const gnomonDynamicFormMetadata& other);
     explicit gnomonDynamicFormMetadata(const QJsonObject& json);
 
+    virtual ~gnomonDynamicFormMetadata();
+
     QJsonObject serialize() const;
 
     void deserialize(const QJsonObject& json);

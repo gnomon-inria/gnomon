@@ -346,5 +346,50 @@ gnomonFormManager::~gnomonFormManager(void)
 
 gnomonFormManager *gnomonFormManager::s_instance = nullptr;
 
+gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
+    if(contains(id)) {
+        auto ptr = d->forms[id]->metadata();
+        QQmlEngine::setObjectOwnership(ptr, QQmlEngine::CppOwnership);
+        return ptr;
+    } else {
+        return new gnomonDynamicFormMetadata();
+    }
+}
+
+bool gnomonFormManager::contains(int id) {
+    return d->forms.contains(id);
+}
+
+QVariantList gnomonFormManager::timeKeys(int id) {
+    if(contains(id)) {
+        const auto& times = d->forms[id]->times();
+        QVariantList out;
+        //out.reserve(times.size());
+        for(double time : times) {
+            out.append(time);
+        }
+        return out;
+    } else {
+        return {};
+    }
+}
+
+QStringList gnomonFormManager::formMetadataKeysAtT(int id, double t) {
+    if(contains(id)) {
+        return d->forms[id]->at(t)->metadata().keys();
+    } else {
+        return {};
+    }
+}
+
+QString gnomonFormManager::formMetadataValueAtT(int id, double t, const QString& key) {
+    if(contains(id)){
+        auto metadata = d->forms[id]->at(t)->metadata();
+        if(metadata.contains(key)) {
+            return metadata[key];
+        }
+    }
+    return {};
+}
 //
 // gnomonFormManager.cpp ends here

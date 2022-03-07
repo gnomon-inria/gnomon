@@ -18,6 +18,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include "gnomonForm/gnomonDynamicFormMetadata.h"
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
@@ -51,6 +52,15 @@ public slots:
 public slots:
     void saveAs(int id, const QString& filename) const;
     void deleteForm(int id);
+
+public:
+    Q_INVOKABLE bool contains(int id);
+    Q_INVOKABLE gnomonDynamicFormMetadata* getDynamicFormMetadata(int id);
+
+    Q_INVOKABLE QVariantList timeKeys(int id);
+    Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
+    Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
+
 
 public:
     gnomonAbstractDynamicForm *get(int index);
