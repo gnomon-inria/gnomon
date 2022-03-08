@@ -23,6 +23,11 @@ void gnomonAbstractCommand::redo(void)
     Q_ASSERT(this->action);
 
     this->predo(); //setting is_async here
+
+    if(override_async) {
+        this->action->is_async = false;
+    }
+    
     if(this->action->is_async) {
         qDebug() << "launch in async mode";
 
