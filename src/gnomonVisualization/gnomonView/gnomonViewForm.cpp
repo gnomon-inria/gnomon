@@ -762,15 +762,14 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
     }
 
     dtkCoreParameters visu_parameters;
-    // TODO : properly handle range parameters
-    QStringList excluded_types = {"dtkCoreParameterRange<qlonglong>", "dtkCoreParameterRange<double>"};
     for(auto& key: parameters.keys()) {
         QVariantHash param = parameters[key].toObject().toVariantHash();
         QString param_type = param["type"].toString();
-        if (!excluded_types.contains(param_type)) {
-            visu_parameters[key] = dtkCoreParameter::create(param);
+        auto *parameter = dtkCoreParameter::create(param);
+        if(parameter) {
+            visu_parameters[key] = parameter;
         } else {
-            qWarning() << Q_FUNC_INFO << "TODO this parameter is not handled properly: " << param;
+            dtkWarn() << Q_FUNC_INFO << "this parameter is not handled properly: " << param_type << param;
         }
     }
     visu->setParameters(visu_parameters);
