@@ -108,7 +108,7 @@ Item {
             var p = parameters[param_name];
             var prop_dict = {};
             console.log("PARAMETER", p.type)
-            if(p.type === "dtk::d_inliststring") console.log("LIST", p.list)
+            if(p.type === "dtkCoreParameterInList<QString>") console.log("LIST", p.list)
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
 
