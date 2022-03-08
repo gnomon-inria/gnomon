@@ -62,22 +62,28 @@ G.Workspace { id: _self;
                 // anchors.margins: 10;
 
                 // TODO: use editor from x-vsc when ready
-                X.Editor { id: _editor;
+                // X.Editor { id: _editor;
 
+                //     Layout.fillWidth: true;
+                //     Layout.fillHeight: true;
+                //     visible: d.editMode;
+
+                //     actualContents: d.code.text;
+
+                //     X.SourceHighliter { Component.onCompleted: {
+                //             setup(_editor.document, X.Style.languages.python);
+                //         }
+                //     }
+
+                //     onActualContentsChanged: {
+                //         d.code.text = actualContents;
+                //     }
+                // }
+
+                G.Monaco {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
                     visible: d.editMode;
-
-                    actualContents: d.code.text;
-
-                    X.SourceHighliter { Component.onCompleted: {
-                            setup(_editor.document, X.Style.languages.python);
-                        }
-                    }
-
-                    onActualContentsChanged: {
-                        d.code.text = actualContents;
-                    }
                 }
 
                 G.View { id: _source_view;
