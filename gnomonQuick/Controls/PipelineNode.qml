@@ -9,6 +9,7 @@ import xQuick.Style     1.0 as X
 import xQuick.Fonts     1.0 as X
 
 import gnomonQuick.Controls     1.0 as G
+import gnomon.Visualization     1.0 as GV
 
 Rectangle {
 
@@ -133,7 +134,14 @@ Rectangle {
                 id: _port
                 port: node.inputPort(modelData)
                 Component.onCompleted: {
-                    _self.inputPorts[node.inputPort(modelData)] = _input_ports.itemAt(index)
+                    let port = node.inputPort(modelData);
+                    _self.inputPorts[port] = _input_ports.itemAt(index)
+                    let form_id = port.formIndex;
+                    if (form_id > -1) {
+                        port.label = Qt.binding(function() {
+                            return GV.World.getDynamicFormMetadata(form_id).data["name"]
+                        })
+                    }
                 }
             }
         }
@@ -152,7 +160,14 @@ Rectangle {
                 id: _port
                 port: node.outputPort(modelData)
                 Component.onCompleted: {
-                    _self.outputPorts[node.outputPort(modelData)] = _output_ports.itemAt(index)
+                    let port = node.outputPort(modelData);
+                    _self.outputPorts[port] = _output_ports.itemAt(index)
+                    let form_id = port.formIndex;
+                    if (form_id > -1) {
+                        port.label = Qt.binding(function() {
+                            return GV.World.getDynamicFormMetadata(form_id).data["name"]
+                        })
+                    }
                 }
             }
         }

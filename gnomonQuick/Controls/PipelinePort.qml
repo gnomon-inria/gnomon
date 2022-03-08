@@ -21,8 +21,8 @@ Rectangle {
     width: 10;
     radius: 5;
 
-    ToolTip {
-         text: port.label
+    X.ToolTip {
+         text: port.name + ": " + port.label
          visible: _mouse_area.containsMouse
     }
 
