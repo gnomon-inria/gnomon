@@ -311,7 +311,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}", &stat);
         output_form_added = true;
-        binaryImage->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        int form_count = gnomonFormManager::instance()->formCount(binaryImage->formName());
+        binaryImage->metadata()->set("name", binaryImage->formName().remove("gnomon") + QString::number(form_count+1));
         binaryImage->metadata()->set("source", d->algorithm_key);
     }
     
@@ -325,7 +326,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}", &stat);
         output_form_added = true;
-        cellComplex->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        int form_count = gnomonFormManager::instance()->formCount(cellComplex->formName());
+        cellComplex->metadata()->set("name", cellComplex->formName().remove("gnomon") + QString::number(form_count+1));
         cellComplex->metadata()->set("source", d->algorithm_key);
     }
 
@@ -339,7 +341,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}", &stat);
         output_form_added = true;
-        cellImage->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        int form_count = gnomonFormManager::instance()->formCount(cellImage->formName());
+        cellImage->metadata()->set("name", cellImage->formName().remove("gnomon") + QString::number(form_count+1));
         cellImage->metadata()->set("source", d->algorithm_key);
     }
 
@@ -353,7 +356,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}", &stat);
         output_form_added = true;
-        image->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        int form_count = gnomonFormManager::instance()->formCount(image->formName());
+        image->metadata()->set("name", image->formName().remove("gnomon") + QString::number(form_count+1));
         image->metadata()->set("source", d->algorithm_key);
     }
 
@@ -367,7 +371,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}", &stat);
         output_form_added = true;
-        mesh->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        int form_count = gnomonFormManager::instance()->formCount(mesh->formName());
+        mesh->metadata()->set("name", mesh->formName().remove("gnomon") + QString::number(form_count+1));
         mesh->metadata()->set("source", d->algorithm_key);
     }
 
@@ -381,7 +386,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
         }
         output = dtkScriptInterpreterPython::instance()->interpret(form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}", &stat);
         output_form_added = true;
-        pointCloud->metadata()->set("name", d->algorithm_key + "_" + form_name);
+        int form_count = gnomonFormManager::instance()->formCount(pointCloud->formName());
+        pointCloud->metadata()->set("name", pointCloud->formName().remove("gnomon") + QString::number(form_count+1));
         pointCloud->metadata()->set("source", d->algorithm_key);
     }
 

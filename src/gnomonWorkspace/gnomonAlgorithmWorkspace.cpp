@@ -199,7 +199,8 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name]) {
             auto form =  d->command->outputs()[name];
-            form->metadata()->set("name", (inputForm? inputForm->metadata()->get("name") : "") + "_" + d->algorithm + "_" + name);
+            int form_count = gnomonFormManager::instance()->formCount(output_type);
+            form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));
             form->metadata()->set("source", d->algorithm);
             (*d->targets)[i]->setForm(output_type, form);
             (*d->targets)[i]->render();
