@@ -157,9 +157,9 @@ G.Workspace {
                 color = X.Style.flavor_fedora.base00;
 
             if(X.Style.variant == 'LIGHT')
-                _editor.put("theme", "vs-light");
+                _editor.theme = "vs-light";
             else
-                _editor.put("theme", "vs-dark");
+                _editor.theme = "vs-dark";
 
             _console.set_style_sheet(color);
             _console.update();
