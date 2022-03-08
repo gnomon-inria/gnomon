@@ -15,7 +15,9 @@ import gnomon.Workspaces    1.0 as GW
 import gnomon.Jupyter    1.0 as G
 
 
-G.Workspace { id: _self;
+G.Workspace {
+
+    id: _self;
 
     workspace_title: "Python Algorithm";
 
@@ -26,10 +28,12 @@ G.Workspace { id: _self;
 
     focus: true;
 
-    GW.WorkspacePythonAlgorithm { id: d;
+    GW.WorkspacePythonAlgorithm {
+        id: d;
+
         onEditModeChanged: {
-            d.code.text = _editor.actualContents
-            if (!d.editMode) {
+            d.code.text = _editor.text
+            if(!d.editMode) {
                 d.loadAlgorithm()
                 _source_view.droppedFromManager(world.currentRef)
             }
@@ -76,9 +80,16 @@ G.Workspace { id: _self;
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 visible: d.editMode
-                text: d.code.text
 
-                onTextChanged: d.code.text = contents
+                theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
+                language: 'python';
+
+                onModified: (contents) => {
+                    console.warn("Setting code text to", contents);
+                    d.code.text = contents;
+                }
+
+                Component.onCompleted: _editor.contents = d.code.text;
             }
 
             G.View {
@@ -117,6 +128,14 @@ G.Workspace { id: _self;
     }
 
     Connections {
+        target: d.code
+
+        function  onInputFormsChanged() { _editor.contents = d.code.text; }
+        function onOutputFormsChanged() { _editor.contents = d.code.text; }
+        function  onParametersChanged() { _editor.contents = d.code.text; }
+    }
+
+    Connections {
         target: X.Style
 
         function onVariantChanged() {
@@ -148,10 +167,6 @@ G.Workspace { id: _self;
     }
 
     Component.onCompleted: {
-        if(X.Style.variant == 'LIGHT')
-            _editor.put("theme", "vs-light");
-        else
-            _editor.put("theme", "vs-dark");
         G.Associator.associate(_source_view, d.source);
         G.Associator.associate(_target_view, d.target);
         drawel.close();

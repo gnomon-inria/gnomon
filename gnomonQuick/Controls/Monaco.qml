@@ -8,17 +8,19 @@ Control {
 
     id: self;
 
-    function put(name, value) { bridge.send   (name, value); }
-    function get(name, value) { bridge.receive(name, value); }
+    property var connected: false;
+    property var theme;
+    property var language;
+    property var contents;
 
-    property string text;
+    signal modified(var content);
+
+       onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
+    onLanguageChanged: if(self.connected) bridge.send('language', self.language);
+    onContentsChanged: if(self.connected) bridge.send('value',    self.contents);
 
     QtObject {
         id: bridge;
-
-        property var contents: '';
-        property var language: '';
-        property var theme: '';
 
         signal sendDataChanged(string name, string value);
 
@@ -33,13 +35,14 @@ Control {
 
             switch(name) {
             case "theme":
-                theme = value;
+                console.log("Theme changed:", value);
                 break;
             case "language":
-                language = value;
+                console.log("Language changed:", value);
                 break;
             case "value":
-                contents = value;
+                console.log("Contents changed", value);
+                self.modified(value);
                 break;
             default:
                 break;
@@ -47,17 +50,11 @@ Control {
         }
 
         function init() {
-            send("language", "python");
-            send("theme", "vs-dark");
-            send("value", self.text);
+            self.connected = true;
 
-            self.textChanged.connect(() => {
-
-                if (contents != self.text)
-                    send("value", self.text);
-                else
-                    console.log('avoiding');
-            });
+            bridge.send('theme',    self.theme);
+            bridge.send('language', self.language);
+            bridge.send('value',    self.contents);
         }
     }
 
