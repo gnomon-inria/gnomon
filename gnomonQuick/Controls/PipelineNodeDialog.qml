@@ -134,7 +134,7 @@ X.Dialog {
         for (var input in node.inputPortsNames) {
             var input_name = node.inputPortsNames[input]
             node.inputPort(input_name).label = input_list.itemAtIndex(input).text
-            console.log(input_name, ":", form_id)
+            let form_id = node.inputPort(input_name).formIndex
             if (form_id != -1) {
                 GV.World.getDynamicFormMetadata(form_id).set("name", node.inputPort(input_name).label)
             }
