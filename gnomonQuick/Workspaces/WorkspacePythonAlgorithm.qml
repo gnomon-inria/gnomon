@@ -45,73 +45,66 @@ G.Workspace { id: _self;
         anchors.bottom: parent.bottom;
         anchors.left: parent.left;
         anchors.right: parent.right;
-        anchors.margins: 10;
+        anchors.margins: 0;
 
-        // Rectangle {
-        //     Layout.fillWidth: true;
-        //     Layout.fillHeight: true;
+        RowLayout {
+            Layout.fillWidth: true;
+            Layout.fillHeight: true;
+            Layout.margins: 0;
 
-            RowLayout {
-                Layout.fillWidth: true;
-                Layout.fillHeight: true;
-                Layout.margins: 10;
-                // anchors.top: parent.top;
-                // anchors.bottom: parent.bottom;
-                // anchors.left: parent.left;
-                // anchors.right: parent.right;
-                // anchors.margins: 10;
+            // TODO: use editor from x-vsc when ready
+            // X.Editor { id: _editor;
 
-                // TODO: use editor from x-vsc when ready
-                // X.Editor { id: _editor;
+            //     Layout.fillWidth: true;
+            //     Layout.fillHeight: true;
+            //     visible: d.editMode;
 
-                //     Layout.fillWidth: true;
-                //     Layout.fillHeight: true;
-                //     visible: d.editMode;
+            //     actualContents: d.code.text;
 
-                //     actualContents: d.code.text;
+            //     X.SourceHighliter { Component.onCompleted: {
+            //             setup(_editor.document, X.Style.languages.python);
+            //         }
+            //     }
 
-                //     X.SourceHighliter { Component.onCompleted: {
-                //             setup(_editor.document, X.Style.languages.python);
-                //         }
-                //     }
+            //     onActualContentsChanged: {
+            //         d.code.text = actualContents;
+            //     }
+            // }
 
-                //     onActualContentsChanged: {
-                //         d.code.text = actualContents;
-                //     }
-                // }
+            G.Monaco {
+                id: _editor
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: d.editMode
+                text: d.code.text
 
-                G.Monaco {
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
-                    visible: d.editMode;
-                }
-
-                G.View { id: _source_view;
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
-                    visible: !d.editMode;
-
-                    onDroppedFromManager: {
-                        console.info('Retrieving from manager');
-                        d.source.drop(index);
-                    }
-
-                    viewLogic: d.source;
-                }
-
-                G.View { id: _target_view;
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
-                    visible: !d.editMode;
-
-                    viewLogic: d.target;
-                }
+                onTextChanged: d.code.text = contents
             }
 
-        // color: Qt.darker(X.Style.backgroundColor)
-        //}
+            G.View {
+                id: _source_view
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: !d.editMode
 
-        // Rectangle {
+                onDroppedFromManager: {
+                    console.info('Retrieving from manager');
+                    d.source.drop(index);
+                }
+
+                viewLogic: d.source
+            }
+
+            G.View {
+                id: _target_view
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: !d.editMode
+
+                viewLogic: d.target
+            }
+        }
+
         G.JupyterConsole {
             id: _console;
             Layout.fillWidth: true;
@@ -144,12 +137,21 @@ G.Workspace { id: _self;
             if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'DARK')
                 color = X.Style.flavor_fedora.base00;
 
+            if(X.Style.variant == 'LIGHT')
+                _editor.put("theme", "vs-light");
+            else
+                _editor.put("theme", "vs-dark");
+
             _console.set_style_sheet(color);
             _console.update();
         }
     }
 
     Component.onCompleted: {
+        if(X.Style.variant == 'LIGHT')
+            _editor.put("theme", "vs-light");
+        else
+            _editor.put("theme", "vs-dark");
         G.Associator.associate(_source_view, d.source);
         G.Associator.associate(_target_view, d.target);
         drawel.close();

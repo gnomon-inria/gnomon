@@ -8,6 +8,11 @@ Control {
 
     id: self;
 
+    function put(name, value) { bridge.send   (name, value); }
+    function get(name, value) { bridge.receive(name, value); }
+
+    property string text;
+
     QtObject {
         id: bridge;
 
@@ -18,13 +23,13 @@ Control {
         signal sendDataChanged(string name, string value);
 
         function send(name, value) {
-            // console.log("QML: sending", name, value);
+            console.log("QML: sending", name, value);
 
             sendDataChanged(name, JSON.stringify(value));
         }
 
         function receive(name, value) {
-            // console.log("QML: receiving", name, value);
+            console.log("QML: receiving", name, value);
 
             switch(name) {
             case "theme":
@@ -44,6 +49,15 @@ Control {
         function init() {
             send("language", "python");
             send("theme", "vs-dark");
+            send("value", self.text);
+
+            self.textChanged.connect(() => {
+
+                if (contents != self.text)
+                    send("value", self.text);
+                else
+                    console.log('avoiding');
+            });
         }
     }
 
