@@ -137,13 +137,17 @@ gnomonViewFormList* gnomonAlgorithmWorkspace::targets(void) const
     return d->targets;
 }
 
-void gnomonAlgorithmWorkspace::run(void)
+void gnomonAlgorithmWorkspace::run(bool no_async)
 {
     Q_ASSERT(d->command);
 
     emit started();
 
     this->setInputs();
+
+    if(no_async){
+        d->command->setNoAsync();
+    }
 
     d->command->redo();
 

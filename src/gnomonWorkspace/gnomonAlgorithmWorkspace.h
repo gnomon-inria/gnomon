@@ -38,7 +38,7 @@ signals:
     void currentIndexChanged(void);
 
 public slots:
-    virtual void run(void);
+    virtual void run(bool no_async=false);
     virtual void setInputs(void);
     virtual void viewOutputs(void);
     virtual void saveState(void);
