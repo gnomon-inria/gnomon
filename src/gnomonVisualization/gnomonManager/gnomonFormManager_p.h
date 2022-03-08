@@ -50,6 +50,8 @@ public:
     QHash<int, vtkCamera *> formCameras;
     QHash<QString, gnomonAbstractWriterCommand *> commands;
 
+    QHash<QString, int> formCounter;
+
 public:
     gnomonFormManager *q;
 
