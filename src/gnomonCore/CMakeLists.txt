@@ -85,7 +85,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
-#find_package (Python3 3.7 EXACT COMPONENTS Interpreter Development NumPy)
 target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python)
 
 ## #############################################################################
