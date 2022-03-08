@@ -27,6 +27,8 @@ Item {
             "signal",
             "rendering"
         ]
+        property int parameter_height: 81;
+        property int parameter_width: 330;
     }
 
     signal valueChanged()
@@ -54,8 +56,8 @@ Item {
         anchors.top: parent.top;
         anchors.topMargin: 10;
 
-        width: 330;
-        height: 70;
+        width: _internal.parameter_width;
+        height: _internal.parameter_height;
 
         visible: parameters["channel"] !== undefined
 
@@ -79,7 +81,7 @@ Item {
         anchors.top: parameters["channel"] ? _channel_options.top : parent.top;
         anchors.topMargin: 10;
         width: _self.width;
-        height: _self.isSectionExpanded("surface") ? 170 : 10 + _surface_generation_header.height;
+        height: _self.isSectionExpanded("surface") ? 3 * _internal.parameter_height + _surface_generation_header.height + 15 : 10 + _surface_generation_header.height;
 
         clip: true;
 
@@ -145,8 +147,8 @@ Item {
 
             C.Numeric {
 
-                height: 70;
-                width: 330;
+                height: _internal.parameter_height;
+                width: _internal.parameter_width;
 
                 param: parameters["threshold"]
                 paramType: parameters["threshold"].type
@@ -162,8 +164,8 @@ Item {
 
             C.Numeric {
 
-                height: 70;
-                width: 330;
+                height: _internal.parameter_height;
+                width: _internal.parameter_width;
 
                 param: parameters["gaussian_sigma"]
                 paramType: parameters["gaussian_sigma"].type
@@ -190,7 +192,7 @@ Item {
         anchors.top : _surface_generation_options.bottom;
         anchors.topMargin: 10;
         width: _self.width;
-        height: _self.isSectionExpanded("signal") ? 90 : 10 + _signal_protection_header.height;
+        height: _self.isSectionExpanded("signal") ? _internal.parameter_height + _signal_protection_header.height + 10 : 10 + _signal_protection_header.height;
 
         clip: true;
 
@@ -254,8 +256,8 @@ Item {
 
             C.Numeric {
 
-                height: 70;
-                width: 330;
+                height: _internal.parameter_height;
+                width: _internal.parameter_width;
 
                 param: parameters["cell_radius"]
                 paramType: parameters["cell_radius"].type
@@ -281,7 +283,7 @@ Item {
         anchors.top: _signal_protection_options.bottom;
         anchors.topMargin: 10;
         width: _self.width;
-        height: _self.isSectionExpanded("rendering") ? 270 : 10 + _rendering_options_header.height;
+        height: _self.isSectionExpanded("rendering") ? _internal.parameter_height * 3 + _rendering_options_header.height + 15 : 10 + _rendering_options_header.height;
 
         clip: true;
 
@@ -346,8 +348,8 @@ Item {
 
             G.Colormap {
 
-                height: 70;
-                width: 330;
+                height: _internal.parameter_height;
+                width: _internal.parameter_width;
 
                 param: parameters["colormap"]
 
@@ -362,8 +364,8 @@ Item {
 
             C.Range {
 
-                height: 70;
-                width: 330;
+                height: _internal.parameter_height;
+                width: _internal.parameter_width;
 
                 param: parameters["intensity_range"]
                 decimals: 2
@@ -379,8 +381,8 @@ Item {
 
             C.Numeric {
 
-                height: 70;
-                width: 330;
+                height: _internal.parameter_height;
+                width: _internal.parameter_width;
 
                 param: parameters["opacity"]
                 paramType: parameters["opacity"].type
