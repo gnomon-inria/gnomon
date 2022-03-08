@@ -23,11 +23,7 @@ gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const gnomonDynamicFormMeta
 }
 
 QJsonObject gnomonDynamicFormMetadata::serialize() const {
-    QJsonObject json;
-    for(const auto& key: d->data.keys()) {
-        json[key] = d->data[key];
-    }
-    return json;
+    return this->data();
 }
 
 void gnomonDynamicFormMetadata::deserialize(const QJsonObject &json) {
@@ -40,6 +36,14 @@ QStringList gnomonDynamicFormMetadata::keys() {
     return d->data.keys();
 }
 
+QJsonObject gnomonDynamicFormMetadata::data(void) const {
+    QJsonObject json;
+    for(const auto& key: d->data.keys()) {
+        json[key] = d->data[key];
+    }
+    return json;
+}
+
 QString gnomonDynamicFormMetadata::get(const QString &key) {
     if (!d->data.contains(key)) {
         d->data[key] = "default";  // default
@@ -48,7 +52,10 @@ QString gnomonDynamicFormMetadata::get(const QString &key) {
 }
 
 void gnomonDynamicFormMetadata::set(const QString &key, const QString &value) {
-    d->data[key] = value;
+    if (!d->data.contains(key) || (value != d->data[key])) {
+        d->data[key] = value;
+        emit dataChanged();
+    }
 }
 
 gnomonDynamicFormMetadata::~gnomonDynamicFormMetadata() {
