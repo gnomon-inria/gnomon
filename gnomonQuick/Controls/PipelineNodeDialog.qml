@@ -133,18 +133,20 @@ X.Dialog {
 
         for (var input in node.inputPortsNames) {
             var input_name = node.inputPortsNames[input]
-            node.inputPort(input_name).label = input_list.itemAtIndex(input).text
             let form_id = node.inputPort(input_name).formIndex
             if (form_id != -1) {
-                GV.World.getDynamicFormMetadata(form_id).set("name", node.inputPort(input_name).label)
+                GV.World.getDynamicFormMetadata(form_id).set("name", input_list.itemAtIndex(input).text)
+            } else {
+                node.inputPort(input_name).label = input_list.itemAtIndex(input).text
             }
         }
         for (var output in node.outputPortsNames) {
             var output_name = node.outputPortsNames[output]
-            node.outputPort(output_name).label = output_list.itemAtIndex(output).text
             let form_id = node.outputPort(output_name).formIndex
             if (form_id != -1) {
-                GV.World.getDynamicFormMetadata(form_id).set("name", node.outputPort(output_name).label)
+                GV.World.getDynamicFormMetadata(form_id).set("name", output_list.itemAtIndex(output).text)
+            } else {
+                node.outputPort(output_name).label = output_list.itemAtIndex(output).text
             }
         }
 
