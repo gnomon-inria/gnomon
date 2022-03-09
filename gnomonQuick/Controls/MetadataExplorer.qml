@@ -248,7 +248,9 @@ Rectangle {
             }
 
             function load() {
-                _form_name.text = dynamicFormMetadata.get(modelData);
+                _form_name.text = Qt.binding(function() {
+                    return dynamicFormMetadata.data[modelData];
+                })
             }
 
             function save() {
