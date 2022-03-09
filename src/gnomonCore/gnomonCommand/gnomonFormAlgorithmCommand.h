@@ -29,6 +29,9 @@ public:
 public:
     virtual void setAlgorithmName(const QString &name) override;
 
+    void setFormAlgorithm(gnomonAbstractFormAlgorithm *algo);
+    gnomonAbstractFormAlgorithm *formAlgorithm(void);
+
     virtual orderedMap inputTypes() override;
     virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
 
