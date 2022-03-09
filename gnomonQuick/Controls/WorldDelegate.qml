@@ -80,6 +80,11 @@ Item {
             }
         }
 
+        X.ToolTip {
+            visible: _dragger.containsMouse
+            text: GV.World.getDynamicFormMetadata(form_id).data["name"]
+        }
+
         X.Icon {
             id: _delete_icon;
             icon: X.Icons.icons.delete;
@@ -93,15 +98,15 @@ Item {
             visible: parent.parent.height > 42
 
             MouseArea { id: _delete_mouse_area;
-                        anchors.fill: parent;
-                        hoverEnabled: true;
+                anchors.fill: parent;
+                hoverEnabled: true;
 
-                        onClicked: {
-                            GV.World.deleteForm(form_id)
-                            console.log("delete ...", model.index, form_id)
-                            _world_model.remove(model.index)
-                        }
-                      }
+                onClicked: {
+                    GV.World.deleteForm(form_id)
+                    console.log("delete ...", model.index, form_id)
+                    _world_model.remove(model.index)
+                }
+            }
 
             ToolTip.visible: _delete_mouse_area.containsMouse;
             ToolTip.text: "Delete form";
