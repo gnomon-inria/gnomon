@@ -59,6 +59,16 @@ void gnomonFormAlgorithmCommand::setAlgorithmName(const QString& algo_name)
     this->algorithm_name = algo_name;
 }
 
+void gnomonFormAlgorithmCommand::setFormAlgorithm(gnomonAbstractFormAlgorithm *algo)
+{
+    this->action = algo;
+}
+
+gnomonAbstractFormAlgorithm *gnomonFormAlgorithmCommand::formAlgorithm(void)
+{
+    return dynamic_cast<gnomonAbstractFormAlgorithm *>(this->action);
+}
+
 void gnomonFormAlgorithmCommand::predo(void)
 {
 

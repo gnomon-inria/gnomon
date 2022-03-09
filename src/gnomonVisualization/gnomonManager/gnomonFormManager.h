@@ -61,6 +61,8 @@ public:
     Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
 
+public:
+    int formCount(const QString& form_name);
 
 public:
     gnomonAbstractDynamicForm *get(int index);

@@ -66,19 +66,19 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
     }
 
     if(command->cellImage()) {
-
         d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage()->clone());
-
-        d->sources->views()[0]->cellImage()->metadata()->set("name", (inputForm? inputForm->metadata()->get("name") : "") + "_" + d->algorithm + "_cellImage");
-        d->sources->views()[0]->cellImage()->metadata()->set("source", d->algorithm);
-
-        gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), d->sources->views()[0]->cellImage());
+        gnomonCellImageSeries *out_cellimage = d->sources->views()[0]->cellImage();
+        int form_count = gnomonFormManager::instance()->formCount(out_cellimage->formName());
+        out_cellimage->metadata()->set("name", out_cellimage->formName().remove("gnomon") + QString::number(form_count+1));
+        out_cellimage->metadata()->set("source", d->algorithm);
+        gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), out_cellimage);
         gnomonPipelineManager::instance()->addForm(command->cellImage());
         d->sources->views()[0]->setInputView(false);
     }
     if(command->dataFrame()) {
         this->m_target_mpl->setForm("gnomonDataFrame", command->dataFrame());
-        command->dataFrame()->metadata()->set("name", (inputForm? inputForm->metadata()->get("name") : "") + "_" + d->algorithm + "_dataFrame");
+        int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
+        command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
         command->dataFrame()->metadata()->set("source", d->algorithm);
     }
 
