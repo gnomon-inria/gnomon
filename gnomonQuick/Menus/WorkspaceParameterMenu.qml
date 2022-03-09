@@ -33,6 +33,7 @@ Control {
             Layout.fillWidth: true;
             Layout.preferredHeight: 28;
             model: d ? d.algorithms : null;
+            currentIndex: d ? d.currentIndex : undefined;
             onCurrentIndexChanged: {
                 _auto_apply.checked = false
 
