@@ -6,9 +6,9 @@ import matplotlib
 from matplotlib import cbook
 from matplotlib.backend_bases import FigureCanvasBase, NavigationToolbar2, MouseButton
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import TimerQT, SPECIAL_KEYS, cursord
+from matplotlib.backends.backend_qt import TimerQT, SPECIAL_KEYS, _MODIFIER_KEYS, cursord
 from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
-
+from qtpy.QtCore import Slot
 
 class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     """ This class creates a QtQuick Item encapsulating a Matplotlib
@@ -163,7 +163,27 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
                 # Uncaught exceptions are fatal for PyQt5, so catch them.
                 traceback.print_exc()
 
+    @Slot(int, int)
+    def setGeom(self, wi, he):
+        print("Canvas size: {}x{}@{}".format(wi, he, self.dpi_ratio))
+
+        w = wi * self.dpi_ratio
+        h = he * self.dpi_ratio
+
+        if (w <= 0.0) or (h <= 0.0):
+            return
+
+        dpival = self.figure.dpi
+        winch = w / dpival
+        hinch = h / dpival
+        self.figure.set_size_inches(winch, hinch, forward=False)
+        FigureCanvasBase.resize_event(self)
+        self.draw_idle()
+
     def geometryChanged(self, new_geometry, old_geometry):
+
+        print("Canvas size: {}x{}@{}".format(new_geometry.width(), new_geometry.height(), self.dpi_ratio))
+
         w = new_geometry.width() * self.dpi_ratio
         h = new_geometry.height() * self.dpi_ratio
 
@@ -278,7 +298,8 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         # get names of the pressed modifier keys
         # bit twiddling to pick out modifier keys from event_mods bitmask,
         # if event_key is a MODIFIER, it should not be duplicated in mods
-        mods = [name for name, mod_key, qt_key in MODIFIER_KEYS
+        # mods = [name for name, mod_key, qt_key in MODIFIER_KEYS
+        mods = [SPECIAL_KEYS[qt_key] for mod_key, qt_key in _MODIFIER_KEYS
                 if event_key != qt_key and (event_mods & mod_key) == mod_key]
         try:
             # for certain keys (enter, left, backspace, etc) use a word for the
@@ -359,7 +380,7 @@ class NavigationToolbar2QtQuick(QtCore.QObject, NavigationToolbar2):
     def __init__(self, canvas, parent=None):
 
         # I think this is needed due to a bug in PySide2
-        if QT_API == QT_API_PYSIDE2:
+        if QT_API == QT_API_PYSIDE6:
             QtCore.QObject.__init__(self, parent)
             NavigationToolbar2.__init__(self, canvas)
         else:
