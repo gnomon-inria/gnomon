@@ -225,7 +225,6 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     dtkCoreParameters dtkParameters = d->command->parameters();
     for(const auto& param_name : dtkParameters.keys()){
         QVariant param_value = dtkParameters[param_name]->variant();
-        qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
         parameters_json.insert(param_name, param_value);
     }
     state.insert("parameters_json", QJsonObject::fromVariantMap(parameters_json));

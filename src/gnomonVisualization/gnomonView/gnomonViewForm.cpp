@@ -274,14 +274,12 @@ void gnomonViewFormPrivate::exportToManager(void)
     for (const auto& key : this->forms.keys()) {
 
         QJsonObject json;
-        qDebug()<<Q_FUNC_INFO<<this->formVisualizationNames[key];
         json.insert("plugin_name",this->formVisualizationNames[key]);
         QJsonObject parameters;
 
         dtkCoreParameters visu_parameters = this->formVisualization[key]->parameters();
         for (auto param_name : visu_parameters.keys()){
             QVariantHash param_value = visu_parameters[param_name]->toVariantHash();
-            qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
             parameters.insert(param_name, QJsonObject::fromVariantHash(param_value));
         }
         json.insert("parameters", parameters);

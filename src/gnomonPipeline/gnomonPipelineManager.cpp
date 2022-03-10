@@ -64,7 +64,6 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
     QMap<QString, gnomonAbstractDynamicForm *> input_forms = this->node_input_forms[node];
     for (auto it = input_forms.begin(); it != input_forms.end(); ++it) {
         auto&& input = it.key();
-        qDebug()<<Q_FUNC_INFO<<input;
         gnomonAbstractDynamicForm *input_form = input_forms[input];
         if (input_form) {
             while (this->form_clones.contains(input_form) & !this->reader_nodes.contains(input_form)) {
@@ -239,7 +238,6 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
         auto&& output = it.key();
         d->algorithm_nodes[output_forms[output]] = node;
         d->algorithm_output[output_forms[output]] = output;
-        qDebug()<<Q_FUNC_INFO<<output<<output_forms[output];
     }
 }
 

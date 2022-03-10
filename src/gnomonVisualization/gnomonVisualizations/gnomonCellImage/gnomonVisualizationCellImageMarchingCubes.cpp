@@ -205,8 +205,6 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
     QStringList properties = {""};
     for (const auto& propertyName : dd->cellImage->cellPropertyNames()) {
          QVariant property_variant = dd->cellImage->cellProperty(propertyName)[dd->cellImage->cellIds()[0]];
-         qDebug()<<propertyName<<property_variant.canConvert<double>()<<property_variant.canConvert<int>()<<property_variant.canConvert<long>();
-         qDebug()<<property_variant<<property_variant.value<double>();
          if(property_variant.canConvert<double>() || property_variant.canConvert<int>()) {
                 properties.append(propertyName);
          }
