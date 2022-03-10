@@ -22,6 +22,10 @@ __PLUGINS__ = []
 DEBUG = False
 
 
+def get_factory(plugin_group: str):
+    return getattr(gnomon.core, f"{plugin_group}_pluginFactory")
+
+
 def import_plugins(file, excludes=[]):
     file = os.path.dirname(file)
     module = os.path.basename(file)

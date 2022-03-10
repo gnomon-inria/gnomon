@@ -98,6 +98,7 @@ public:
     QList<gnomonPipelineEdge *> inputEdges(void);
     QList<gnomonPipelineEdge *> outputEdges(void);
 
+    gnomonPipelineEdge* inputEdgeFromPort(const QString& portName);
     int inputEdgeCount(void);
     int outputEdgeCount(void);
 

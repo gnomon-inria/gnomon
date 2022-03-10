@@ -44,6 +44,7 @@ signals:
     void pluginChanged(void);
 
 public:
+    QList<QStringList> scheduleGroups(void);
     Q_INVOKABLE QStringList scheduledNodeNames(bool recompute_form_indices=false);
 
 public slots:

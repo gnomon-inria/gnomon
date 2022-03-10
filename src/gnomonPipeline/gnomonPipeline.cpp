@@ -712,6 +712,10 @@ void gnomonPipeline::readFromJson(const QString& url)
     }
 }
 
+QList<QStringList> gnomonPipeline::scheduleGroups(void) {
+    return d->scheduledNodeNameGroups();
+}
+
 
 //
 // gnomonPipeline.cpp ends here
