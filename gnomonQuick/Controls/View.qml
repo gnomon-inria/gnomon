@@ -308,9 +308,11 @@ Rectangle {
             hoverEnabled: true;
 
             onClicked: {
-                if(_list_view.count > 0) {
+                if(_list_view.count > 1) {
                     _form_export_dialog.open();
                     _form_export_dialog.reset();
+                } else {
+                    viewLogic.transmit()
                 }
             }
         }

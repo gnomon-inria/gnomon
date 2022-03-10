@@ -73,41 +73,7 @@ Item {
     }
 
     X.Dialog {
-        id: _clear_view_modal;
-
-        x: (parent.width - width)/2
-        y: (parent.height - height)/2
-        width: window.width * 3/4;
-        height: window.height * 3/4;
-
-        title: "Confirm Action"
-
-        X.Label {
-
-            font {
-                pointSize: 14;
-                weight: Font.Bold;
-            }
-            //font.weight: bold;
-            //color: "red"
-            text: "Are you sure you wish to clear the current view ?";
-        }
-
-        parent: Overlay.overlay
-
-        focus: true;
-        modal: true;
-
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        onAccepted: {
-            view.viewLogic.clear();
-            _internal.menu.destroy();
-            _clear_view_modal.close();
-        }
-    }
-
-    X.Dialog {
+        //dialog deactivated for now. maybe to delete
         id: _form_delete_modal;
 
         property string formName: "";
@@ -238,10 +204,21 @@ Item {
 
                     anchors.fill: parent;
                     onClicked: {
-                        console.log("DELETING", index, view.viewLogic.formNames[index])
-                        _form_delete_modal.formName = view.viewLogic.formNames[index];
-                        _form_delete_modal.formIndex = index;
-                        _form_delete_modal.open();
+                        if(index === _form_selector.currentIndex) {
+                            if(view.viewLogic.formNames.length)
+                                _form_selector.currentIndex = 0;
+                            else {
+                                _form_selector.currentIndex = -1;
+                                _internal.menu.destroy();
+                            }
+                        }
+                        view.viewLogic.removeForm(view.viewLogic.formNames[index]);
+                        view.viewLogic.update();
+
+                        //console.log("DELETING", index, view.viewLogic.formNames[index])
+                        //_form_delete_modal.formName = view.viewLogic.formNames[index];
+                        //_form_delete_modal.formIndex = index;
+                        //_form_delete_modal.open();
                     }
                 }
 
@@ -376,7 +353,8 @@ Item {
             visible: view.viewLogic.formNames.length > 0;
 
             onClicked: {
-                _clear_view_modal.open();
+                view.viewLogic.clear();
+                _internal.menu.destroy();
             }
         }
     }
