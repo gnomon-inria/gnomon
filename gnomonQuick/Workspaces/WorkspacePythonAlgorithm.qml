@@ -32,7 +32,7 @@ G.Workspace {
         id: d;
 
         onEditModeChanged: {
-            d.code.text = _editor.text
+            d.code.text = _editor.contents
             if(!d.editMode) {
                 d.loadAlgorithm()
                 _source_view.droppedFromManager(world.currentRef)
@@ -85,11 +85,13 @@ G.Workspace {
                 language: 'python';
 
                 onModified: (contents) => {
-                    console.warn("Setting code text to", contents);
+                    // console.warn("Setting code text to", contents);
                     d.code.text = contents;
                 }
 
-                Component.onCompleted: _editor.contents = d.code.text;
+                Component.onCompleted: {
+                    _editor.contents = d.code.text;
+                }
             }
 
             G.View {

@@ -25,13 +25,13 @@ Control {
         signal sendDataChanged(string name, string value);
 
         function send(name, value) {
-            console.log("QML: sending", name, value);
+            // console.log("QML: sending", name, value);
 
             sendDataChanged(name, JSON.stringify(value));
         }
 
         function receive(name, value) {
-            console.log("QML: receiving", name, value);
+            // console.log("QML: receiving", name, value);
 
             switch(name) {
             case "theme":
