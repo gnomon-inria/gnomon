@@ -68,6 +68,7 @@ Item {
     }
 
     function getComponent(type) {
+        type = type.replace(',void', '')
         if (type == "dtkCoreParameterNumeric<qlonglong>" || type == "dtkCoreParameterNumeric<bool>" || type == "dtkCoreParameterNumeric<double>") {
             return _num_component;
         }
