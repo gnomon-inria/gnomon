@@ -70,8 +70,7 @@ pages:
   stage: deploy
   script:
     - conda update -n base -c defaults conda
-    - conda install sphinx make matplotlib
-    - conda install -c conda-forge myst-parser doxygen breathe
+    - conda install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
     - cd doc
     - make html
     - mv build/html ../public
