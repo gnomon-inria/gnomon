@@ -68,7 +68,7 @@ gnomonFileSystemFormReader::gnomonFileSystemFormReader(const QString& configurat
     }
 
     QString line = in->readLine().trimmed();
-    QRegExp re = QRegExp("\\s+");
+    QRegularExpression re = QRegularExpression("\\s+");
 
     if(line.isEmpty()) {
         return;

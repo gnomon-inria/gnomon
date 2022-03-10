@@ -73,7 +73,7 @@ gnomonCoreParameterColorMap::gnomonCoreParameterColorMap(const QVariant& v) : dt
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << QMetaType::fromType<gnomonCoreParameterColorMap>().name()
                   << ". Nothing is done.";
     }
 }
@@ -145,7 +145,7 @@ gnomonCoreParameterColorMap& gnomonCoreParameterColorMap::operator = (const QVar
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << QMetaType::fromType<gnomonCoreParameterColorMap>().name()
                   << ". Nothing is done.";
         return *this;
     }
@@ -302,7 +302,7 @@ void gnomonCoreParameterColorMap::setValue(const QVariant& v)
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<gnomonCoreParameterColorMap>())
+                  << QMetaType::fromType<gnomonCoreParameterColorMap>().name()
                   << ". Nothing is done.";
         return;
     }
@@ -340,7 +340,7 @@ dtkCoreParameterObject *gnomonCoreParameterColorMap::object(void)
 }
 
 
-inline QDataStream& operator << (QDataStream& s, const gnomonCoreParameterColorMap& p)
+GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream& s, const gnomonCoreParameterColorMap& p)
 {
     s << p.label();
     s << p.name();
@@ -349,7 +349,7 @@ inline QDataStream& operator << (QDataStream& s, const gnomonCoreParameterColorM
     return s;
 }
 
-inline QDataStream& operator >> (QDataStream& s, gnomonCoreParameterColorMap& p)
+GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream& s, gnomonCoreParameterColorMap& p)
 {
     QString label; s >> label;
     QString clut; s >> clut;
@@ -359,7 +359,7 @@ inline QDataStream& operator >> (QDataStream& s, gnomonCoreParameterColorMap& p)
     return s;
 }
 
-inline QDebug operator << (QDebug dbg, gnomonCoreParameterColorMap p)
+GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterColorMap p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";

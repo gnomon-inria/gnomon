@@ -62,10 +62,10 @@ void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
         dtkCoreObjectManager *object_manager = dtkCoreObjectManager::instance();
         int algo_id = 0;
         for (const auto& key : object_manager->keys()) {
-            QRegExp rx("gnomonAbstractFormAlgorithm[*] ([0-9]*)");
-            int pos = rx.indexIn(key);
-            if (pos != -1) {
-                int key_id = rx.capturedTexts()[1].toInt();
+            QRegularExpression rx("gnomonAbstractFormAlgorithm[*] ([0-9]*)");
+            auto match = rx.match(key);
+            if (match.hasMatch()) {
+                int key_id = match.capturedTexts()[1].toInt();
                 if (key_id > algo_id) {
                     this->object_key = key;
                     algo_id = key_id;

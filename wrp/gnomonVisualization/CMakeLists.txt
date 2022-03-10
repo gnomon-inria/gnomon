@@ -35,7 +35,7 @@ swig_link_libraries(${PROJECT_NAME}
   dtkImagingCore
   gnomonCore
   ${VTK_LIBRARIES}
-  Qt5::Gui)
+  Qt6::Gui)
 
 target_link_libraries(${PROJECT_NAME} ${LAYER_NAME})
 

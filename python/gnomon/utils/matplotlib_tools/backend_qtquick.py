@@ -7,7 +7,7 @@ from matplotlib import cbook
 from matplotlib.backend_bases import FigureCanvasBase, NavigationToolbar2, MouseButton
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import TimerQT, SPECIAL_KEYS, cursord
-from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE2
+from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
 
 
 class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
@@ -21,7 +21,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
 
     # map Qt button codes to MouseEvent's ones:
     buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,
-               QtCore.Qt.MidButton: MouseButton.MIDDLE,
+               QtCore.Qt.MiddleButton: MouseButton.MIDDLE,
                QtCore.Qt.RightButton: MouseButton.RIGHT,
                QtCore.Qt.XButton1: MouseButton.BACK,
                QtCore.Qt.XButton2: MouseButton.FORWARD,
