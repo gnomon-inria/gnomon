@@ -167,5 +167,13 @@ QString gnomonPipelineNodeAlgorithm::toLuigiClass(void)
     return luigi_string;
 }
 
+QStringList gnomonPipelineNodeAlgorithm::parametersName(void) {
+    return dd->parameters.keys();
+}
+
+dtkCoreParameter *gnomonPipelineNodeAlgorithm::parameter(const QString &name) {
+    return dtkCoreParameter::create(dd->parameters[name].toObject().toVariantHash());
+}
+
 //
 // gnomonPipelineNodeAlgorithm.cpp ends here

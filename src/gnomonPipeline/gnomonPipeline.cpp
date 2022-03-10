@@ -350,7 +350,7 @@ void gnomonPipeline::setDescription(const QString& desc)
     }
 }
 
-const QStringList& gnomonPipeline::nodeNames(void)
+QStringList gnomonPipeline::nodeNames(void)
 {
     return d->pipeline_node_names;
 }

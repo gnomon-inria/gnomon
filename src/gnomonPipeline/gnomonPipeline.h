@@ -31,7 +31,7 @@ public:
     void setDescription(const QString& desc);
 
 public:
-    const QStringList& nodeNames(void);
+    QStringList nodeNames(void);
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
 
 public slots:

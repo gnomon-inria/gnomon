@@ -28,6 +28,8 @@ public:
 
 public:
     virtual QJsonObject parameters(void) override;
+    virtual QStringList parametersName(void) override;
+    virtual dtkCoreParameter *parameter(const QString &name) override;
 
 public:
     virtual QString toToml(void) override;

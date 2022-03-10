@@ -1,5 +1,6 @@
 from typing import Tuple, List, Dict, Callable
 
+from dtkcore import dtkCoreParameter
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
@@ -9,35 +10,50 @@ class PNodeRunner:
     name: str
     algo: gnomonAbstractAlgorithm
     inputs_connections: Dict[str, Tuple[str, str]]
-    inputs: Dict[str, Callable[[gnomonAbstractDynamicForm], None]] = {}
-    outputs: Dict[str, Callable[[], gnomonAbstractDynamicForm]] = {}
+    inputs: Dict[str, Callable[[gnomonAbstractDynamicForm], None]]
+    outputs: Dict[str, Callable[[], gnomonAbstractDynamicForm]]
+    _node: gnomonPipelineNode
 
     def __init__(self, node: gnomonPipelineNode):
-        self.name = node.name()
-        load_plugin_group(node.algorithmClass())
-        factory = get_factory(node.algorithmClass())
+        self._node = node
+        algo_name = node.name()
+        algo_class = node.algorithmClass()
+        self.name = algo_name
+        load_plugin_group(algo_class)
+        factory = get_factory(algo_class)
         self.algo = factory().create(node.algorithmPlugin())
 
         # generating input setters
+        self.inputs = {}
         for input_name in node.inputPortsNames():
-            self.inputs[input_name] = lambda form: getattr(self.algo, input_name)(form)
+            input_method = "set{}{}".format(input_name[0].capitalize(), input_name[1:])
+            self.inputs[input_name] = lambda form: getattr(self.algo, input_method)(form)
         # generating output getters
+        self.outputs = {}
         for output_name in node.outputPortsNames():
             self.outputs[output_name] = lambda: getattr(self.algo, output_name)()
 
         # making connections
+        self.inputs_connections = {}
         for input_name in node.inputPortsNames():
             edge: gnomonPipelineEdge = node.inputEdgeFromPort(input_name)
             if edge:
                 source: gnomonPipelinePort = edge.source()
                 self.inputs_connections[input_name] = (source.node().name(), source.name())
 
+        # if reader or writer
+        if hasattr(self.algo, "setPath"):
+            self.algo.setPath(node.path())
+
+        # setting parameters
+        for param_name in node.parametersName():
+            param = node.parameter(param_name)
+            print(type(param), param, isinstance(param, dtkCoreParameter))
+            self.algo.setParameter(param_name, param)
+
+
     def run(self):
         self.algo.run()
-
-    def iter_connections(self):
-        for target_port, edge in self.inputs_connections.items():
-            yield edge.source(),
 
 
 class PipelineRunner:
@@ -66,6 +82,7 @@ class PipelineRunner:
             self.nodes[source_node].run()
 
         for node_group in groups[1:-1]:
+            print("computing group : ", node_group)
             # schedule nodes
             for node_name in node_group:
                 self.update_node_inputs(node_name)
@@ -79,6 +96,5 @@ def load_pipeline(path: str):
     pipeline = gnomonPipeline()
     print("reading")
     pipeline.readFromJson(path)
-    return pipeline
     print("making runner")
     return PipelineRunner(pipeline)

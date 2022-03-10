@@ -20,6 +20,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <dtkCoreParameter>
 
 class gnomonPipelineEdge;
 class gnomonPipelinePort;
@@ -60,6 +61,8 @@ public:
 
     virtual inline QString path(void) { return ""; };
     virtual QJsonObject parameters(void);
+    virtual QStringList parametersName(void);
+    virtual dtkCoreParameter* parameter(const QString& name);
 
     const QColor& color(void);
 

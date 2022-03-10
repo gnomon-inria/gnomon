@@ -143,6 +143,14 @@ QJsonObject gnomonPipelineNode::parameters(void)
     return param;
 }
 
+QStringList gnomonPipelineNode::parametersName(void) {
+    return {};
+}
+
+dtkCoreParameter *gnomonPipelineNode::parameter(const QString &name) {
+    return nullptr;
+}
+
 const QPointF& gnomonPipelineNode::position(void)
 {
     return d->position;
