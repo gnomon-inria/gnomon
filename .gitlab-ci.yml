@@ -14,10 +14,10 @@ stages:
 conda_build_linux:
   stage: build
   script:
-  - conda install -n base -c defaults conda python=3.7 -y
-  - conda install -c conda-forge mamba python=3.7 conda-build git anaconda-client conda-verify
+  - conda install -n base -c defaults conda python=3.9 -y
+  - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
-  - mamba build . -c dtk-forge-staging -c conda-forge --output-folder conda-bld/
+  - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
@@ -29,10 +29,10 @@ conda_build_linux:
 conda_build_linux_develop:
   stage: build
   script:
-    - conda install -n base -c defaults conda python=3.7 -y
-    - conda install -c conda-forge mamba python=3.7 conda-build git anaconda-client conda-verify
+    - conda install -n base -c defaults conda python=3.9 -y
+    - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
     - mkdir conda-bld
-    - mamba build . -c dtk-forge-staging -c conda-forge --output-folder conda-bld/
+    - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   when: manual
   artifacts:
@@ -45,7 +45,7 @@ conda_build_linux_develop:
 anaconda_linux_master:
   stage: deploy
   script:
-  - conda install -n base -c defaults conda python=3.7 -y
+  - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
   extends: .template_retry
@@ -56,7 +56,7 @@ anaconda_linux_master:
 anaconda_linux_develop :
   stage: deploy
   script:
-  - conda install -n base -c defaults conda python=3.7 -y
+  - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client curl
   - curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
   - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
@@ -70,8 +70,7 @@ pages:
   stage: deploy
   script:
     - conda update -n base -c defaults conda
-    - conda install sphinx make matplotlib
-    - conda install -c conda-forge myst-parser doxygen breathe
+    - conda install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
     - cd doc
     - make html
     - mv build/html ../public

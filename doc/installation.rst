@@ -19,7 +19,7 @@ Create a new conda environment (recommended)
 .. note:: the name of the new environment (here: 'gnomon') is defined by the option -n
 
 
-In an existing conda environment containing already Python 3.7.5+
+In an existing conda environment containing already Python 3.9
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block::

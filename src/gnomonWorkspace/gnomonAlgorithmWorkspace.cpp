@@ -137,13 +137,17 @@ gnomonViewFormList* gnomonAlgorithmWorkspace::targets(void) const
     return d->targets;
 }
 
-void gnomonAlgorithmWorkspace::run(void)
+void gnomonAlgorithmWorkspace::run(bool no_async)
 {
     Q_ASSERT(d->command);
 
     emit started();
 
     this->setInputs();
+
+    if(no_async){
+        d->command->setNoAsync();
+    }
 
     d->command->redo();
 
@@ -195,7 +199,8 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name]) {
             auto form =  d->command->outputs()[name];
-            form->metadata()->set("name", (inputForm? inputForm->metadata()->get("name") : "") + "_" + d->algorithm + "_" + name);
+            int form_count = gnomonFormManager::instance()->formCount(output_type);
+            form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));
             form->metadata()->set("source", d->algorithm);
             (*d->targets)[i]->setForm(output_type, form);
             (*d->targets)[i]->render();
@@ -220,7 +225,6 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     dtkCoreParameters dtkParameters = d->command->parameters();
     for(const auto& param_name : dtkParameters.keys()){
         QVariant param_value = dtkParameters[param_name]->variant();
-        qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
         parameters_json.insert(param_name, param_value);
     }
     state.insert("parameters_json", QJsonObject::fromVariantMap(parameters_json));

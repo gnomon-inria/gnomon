@@ -79,21 +79,21 @@ set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
 ## Build rules
 ## #################################################################
 
-qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
+qt6_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
 
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS}
   ${${PROJECT_NAME}_SOURCES_RCC})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Gui)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Xml)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Qml)
-# target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickWidgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Gui)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Xml)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
+# target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::QuickWidgets)
 
 # target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
 # target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)

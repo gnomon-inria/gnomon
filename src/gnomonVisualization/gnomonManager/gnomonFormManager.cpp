@@ -235,6 +235,11 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& c
     d->formWriterCommand[item] = d->commands[form_name];
     d->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 
+    if (!d->formCounter.contains(form_name)) {
+        d->formCounter.insert(form_name, 0);
+    }
+    d->formCounter[form_name]++;
+    
     emit added(item);
 }
 
@@ -391,5 +396,15 @@ QString gnomonFormManager::formMetadataValueAtT(int id, double t, const QString&
     }
     return {};
 }
+
+int gnomonFormManager::formCount(const QString& form_name)
+{
+    if (!d->formCounter.contains(form_name)) {
+        return 0;
+    } else {
+        return  d->formCounter[form_name];
+    }
+}
+
 //
 // gnomonFormManager.cpp ends here

@@ -44,6 +44,8 @@ public:
         return this->factory_name;
     }
 
+    void setNoAsync() {this->override_async = true;}
+
 public:
     inline virtual dtkCoreParameters parameters() const {return this->action->parameters();};
     inline virtual void setParameter(const QString& parameter, const QVariant& value) {
@@ -62,6 +64,8 @@ protected:
     QString algorithm_name = "";
     QString factory_name = "";
     QFutureWatcher<void> *watcher = nullptr;
+    bool override_async = false;
+
 
 };
 

@@ -18,8 +18,8 @@
 
 #include <QtCore>
 
-class gnomonPipelineNode;
-class gnomonPipelinePort;
+#include "gnomonPipelineNode.h"
+#include "gnomonPipelinePort.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineEdge

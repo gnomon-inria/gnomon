@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
@@ -53,7 +39,7 @@ public:
 public slots:
     void setReaderPath(const QString&);
     void requestReaders(void);
-    void readWith(const QString&);
+    bool readWith(const QString&);
     inline void saveState() {};  // nothing to be saved or restored
     inline void restoreState() {};
 

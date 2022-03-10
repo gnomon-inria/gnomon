@@ -68,9 +68,6 @@ template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
 
 template <typename T> void gnomonTimeSeries<T>::insert(double t, T* form)
 {
-    //Q_ASSERT_X(d_ptr()->forms.contains(t), "insert", "Invalid time position : the form is already defined at this time");
-    qDebug() << Q_FUNC_INFO << d_ptr()->forms;
-    qDebug() << Q_FUNC_INFO << d_ptr()->forms.size();
     if (d_ptr()->forms.size() == 0) {
         d_ptr()->current_time = t;
     }

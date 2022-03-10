@@ -274,14 +274,12 @@ void gnomonViewFormPrivate::exportToManager(void)
     for (const auto& key : this->forms.keys()) {
 
         QJsonObject json;
-        qDebug()<<Q_FUNC_INFO<<this->formVisualizationNames[key];
         json.insert("plugin_name",this->formVisualizationNames[key]);
         QJsonObject parameters;
 
         dtkCoreParameters visu_parameters = this->formVisualization[key]->parameters();
         for (auto param_name : visu_parameters.keys()){
             QVariantHash param_value = visu_parameters[param_name]->toVariantHash();
-            qDebug()<<Q_FUNC_INFO<<param_name<<param_value;
             parameters.insert(param_name, QJsonObject::fromVariantHash(param_value));
         }
         json.insert("parameters", parameters);
@@ -762,15 +760,15 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
     }
 
     dtkCoreParameters visu_parameters;
-    // TODO : properly handle range parameters
-    QStringList excluded_types = {"dtk::d_range_int", "dtk::d_range_real"};
     for(auto& key: parameters.keys()) {
         QVariantHash param = parameters[key].toObject().toVariantHash();
         QString param_type = param["type"].toString();
-        qDebug()<<Q_FUNC_INFO<<key<<param_type;
-        qDebug()<<Q_FUNC_INFO<<param;
-        if (!excluded_types.contains(param_type))
-            visu_parameters[key] = dtkCoreParameter::create(param);
+        auto *parameter = dtkCoreParameter::create(param);
+        if(parameter) {
+            visu_parameters[key] = parameter;
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "this parameter is not handled properly: " << param_type << param;
+        }
     }
     visu->setParameters(visu_parameters);
 
@@ -1554,7 +1552,6 @@ gnomonAbstractDynamicForm *gnomonViewForm::form(const QString& name)
 
 void gnomonViewForm::setForm(const QString& name, gnomonAbstractDynamicForm *form, const QJsonObject &visualization)
 {
-    qDebug() << Q_FUNC_INFO << name << form << visualization;
     if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
         if (d->acceptForms["gnomonBinaryImage"]) {
             this->setBinaryImage(binaryImage, visualization);
@@ -1639,18 +1636,6 @@ gnomonCellImageSeries *gnomonViewForm::cellImage(void)
 
 void gnomonViewForm::setCellImage(gnomonCellImageSeries* cellImage,const QJsonObject &visu_properties)
 {
-    // d->forms["gnomonCellImage"] = cellImage;
-
-    // if ((!d->formVisualization.contains("gnomonCellImage"))||(!d->formVisualization["gnomonCellImage"]))
-    // {
-    //     QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
-    //     d->setFormVisualization("gnomonCellImage", key);
-    // } else {
-    //     d->updateFormVisualization("gnomonCellImage");
-    // }
-    
-    // emit formAdded("gnomonCellImage");
-
     d->forms["gnomonCellImage"] = cellImage;
     QString key = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
     if(visu_properties.contains("plugin_name")) {
@@ -2355,19 +2340,13 @@ void gnomonViewForm::updateShortcutKeys(void)
 
 void gnomonViewForm::drop(int index)
 {
-    qDebug() << Q_FUNC_INFO << index;
-
     gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(index);
-
-    qDebug() << Q_FUNC_INFO << index << form;
 
     if (d->empty) {
         if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(index)) {
             this->setCamera(cam);
         }
     }
-
-    qDebug() << Q_FUNC_INFO << gnomonFormManager::instance()->getVisuDescription(index);
 
     QJsonObject visu_descr = gnomonFormManager::instance()->getVisuDescription(index);
     

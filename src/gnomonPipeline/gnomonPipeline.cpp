@@ -371,15 +371,20 @@ gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
 
 void gnomonPipeline::addNode(gnomonPipelineNode *node)
 {
-    QString node_name = node->algorithmClass();
     if (!d->node_type_count.contains(node->algorithmClass())) {
         d->node_type_count[node->algorithmClass()] = 1;
     } else {
         d->node_type_count[node->algorithmClass()] += 1;
     }
-    node_name += QString::number(d->node_type_count[node->algorithmClass()]);
+
+    QString node_name;
+    if (!node->name().isEmpty() && !d->pipeline_node_names.contains(node->name())) {
+        node_name = node->name();
+    } else {
+        node_name = node->algorithmClass() + QString::number(d->node_type_count[node->algorithmClass()]);
+        node->setName(node_name);
+    }
     d->pipeline_node_names.append(node_name);
-    node->setName(node_name);
     d->pipeline_nodes[node_name] = node;
 
     this->updateLayout();
@@ -580,7 +585,7 @@ void gnomonPipeline::exportToLuigiScript(const QString& path)
     out << "    tasks = {}\n";
 
     for (const auto& node_name: d->pipeline_node_names) {
-        QString class_name = QString(node_name).remove(QRegExp("[0-9]")) + "Task";
+        QString class_name = QString(node_name).remove(QRegularExpression("[0-9]")) + "Task";
         class_name.replace(0, 1, class_name[0].toUpper());
         out << "    tasks[\"" << node_name <<"\"] = " << class_name << "(**config[\"" << node_name <<"\"])\n";
     }
@@ -658,7 +663,7 @@ void gnomonPipeline::readFromJson(const QString& url)
     for(auto k:rootObj.keys()) {
         QJsonObject node_json = rootObj.value(k).toObject();
 
-        if (!node_json.keys().isEmpty()) {
+        if (node_json.keys().contains("plugin_group")) {
             QString name = node_json.value("name").toString();
             QString algorithm_class = node_json.value("plugin_group").toString();
             QString algorithm_plugin = node_json.value("plugin_name").toString();
