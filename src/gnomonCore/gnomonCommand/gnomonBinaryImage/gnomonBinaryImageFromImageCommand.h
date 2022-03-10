@@ -34,7 +34,7 @@ public:
 
 public:
     static bool isEmpty();
-    inline static const QString groupName = "binaryImageReader";
+    inline static const QString groupName = "binaryImageFromImage";
     static QStringList availablePlugins();
 
 private:
