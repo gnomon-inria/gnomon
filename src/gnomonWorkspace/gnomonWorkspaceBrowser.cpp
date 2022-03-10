@@ -1,32 +1,7 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWorkspaceBrowser.h"
 #include <gnomonVisualization>
 
-// #include <gnomonWidgets>
 #include <gnomonPipeline>
-
-// #include <dtkThemes>
-// #include <dtkWidgets>
-// #include <dtkWidgetsMenuBar_p.h>
-// #include <dtkWidgetsMenu+ux.h>
-
-// #include <QtGui>
-// #include <QtWidgets>
-// #include <QtQuick>
-// #include <QtQuickWidgets>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
@@ -38,329 +13,29 @@
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-// class gnomonFinderListView : public QListView
-// {
-//     Q_OBJECT
-
-// public:
-//      gnomonFinderListView(QWidget *parent = 0);
-//     ~gnomonFinderListView(void);
-
-// signals:
-//     void changed(const QString& path);
-//     void opened(const QString& path);
-
-// protected:
-//      void keyPressEvent(QKeyEvent *event);
-//      void mouseDoubleClickEvent(QMouseEvent *event);
-//      void startDrag(Qt::DropActions supportedActions);
-// };
-
-// // /////////////////////////////////////////////////////////////////////////////
-
-// gnomonFinderListView::gnomonFinderListView(QWidget *parent) : QListView(parent)
-// {
-//     this->setViewMode(QListView::IconMode);
-//     this->setResizeMode(QListView::Adjust);
-//     this->setGridSize(QSize(96, 96));
-//     this->setFrameStyle(QFrame::NoFrame);
-//     this->setWordWrap(true);
-//     this->setAttribute(Qt::WA_MacShowFocusRect, false);
-// }
-
-// gnomonFinderListView::~gnomonFinderListView(void)
-// {
-
-// }
-
-// void gnomonFinderListView::keyPressEvent(QKeyEvent *event)
-// {
-//     if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
-//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-//             QDir dir = QDir(model->filePath(this->rootIndex()));
-//             dir.cdUp();
-//             this->setRootIndex(model->index(dir.absolutePath()));
-//             emit changed(dir.absolutePath());
-//             event->accept();
-//             return;
-//         }
-//     }
-
-//     if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
-//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-
-//             if(!this->selectionModel()->selectedIndexes().count())
-//                 return;
-
-//             QFileInfo selection = model->fileInfo(this->selectionModel()->selectedIndexes().first());
-
-//             if(selection.isDir()) {
-//                 this->setRootIndex(model->index(selection.filePath()));
-//                 emit changed(selection.absoluteFilePath());
-//                 event->accept();
-//             }
-
-//             return;
-//         }
-//     }
-
-//     QListView::keyPressEvent(event);
-// }
-
-// void gnomonFinderListView::mouseDoubleClickEvent(QMouseEvent *event)
-// {
-//     if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-
-//         QModelIndex index = indexAt(event->pos());
-
-//         if(!index.isValid())
-//             return;
-
-//         QFileInfo info(model->filePath(index));
-
-//         if(info.isDir()) {
-
-//             QDir dir = QDir(model->filePath(index));
-
-//             emit changed(dir.absolutePath());
-
-//             this->setRootIndex(index);
-
-//         } else {
-
-//             emit opened(model->filePath(index));
-//         }
-//     }
-
-//     QListView::mouseDoubleClickEvent(event);
-// }
-
-// void gnomonFinderListView::startDrag(Qt::DropActions supportedActions)
-// {
-//     QModelIndexList indexes = selectedIndexes();
-
-//     if(indexes.count() > 0) {
-
-//         QMimeData *data = model()->mimeData(indexes);
-//         if(!data)
-//             return;
-
-//         QFileIconProvider provider;
-
-//         QPixmap pixmap = provider.icon(QFileInfo(data->urls().first().toLocalFile())).pixmap(64, 64);
-//         QDrag *drag = new QDrag(this);
-//         drag->setPixmap(pixmap);
-//         drag->setMimeData(data);
-//         drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
-//         drag->exec(supportedActions, Qt::IgnoreAction);
-//     }
-// }
-
-// /////////////////////////////////////////////////////////////////////////////
-
-// /////////////////////////////////////////////////////////////////////////////
-
-// class gnomonFinderTreeView : public QTreeView
-// {
-//     Q_OBJECT
-
-// public:
-//      gnomonFinderTreeView(QWidget *parent = 0);
-//     ~gnomonFinderTreeView(void);
-
-// signals:
-//     void changed(const QString& path);
-//     void opened(const QString& path);
-
-// protected:
-//      void keyPressEvent(QKeyEvent *event);
-//      void mouseDoubleClickEvent(QMouseEvent *event);
-//      void startDrag(Qt::DropActions supportedActions);
-// };
-
-// /////////////////////////////////////////////////////////////////////////////
-
-// gnomonFinderTreeView::gnomonFinderTreeView(QWidget *parent) : QTreeView(parent)
-// {
-//     this->setDragEnabled(true);
-//     this->setFrameStyle(QFrame::NoFrame);
-//     this->setAttribute(Qt::WA_MacShowFocusRect, false);
-//     this->setSortingEnabled(true);
-//     this->sortByColumn(0, Qt::AscendingOrder);
-
-//     this->header()->setSectionResizeMode(QHeaderView::Interactive);
-// }
-
-// gnomonFinderTreeView::~gnomonFinderTreeView(void)
-// {
-
-// }
-
-// void gnomonFinderTreeView::keyPressEvent(QKeyEvent *event)
-// {
-//     if(event->key() == Qt::Key_Up &&(event->modifiers() & Qt::ControlModifier)) {
-//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-//             QDir dir = QDir(model->filePath(this->rootIndex()));
-//             dir.cdUp();
-//             this->setRootIndex(model->index(dir.absolutePath()));
-//             emit changed(dir.absolutePath());
-//             event->accept();
-//             return;
-//         }
-//     }
-
-//     if(event->key() == Qt::Key_Down &&(event->modifiers() & Qt::ControlModifier)) {
-//         if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-
-//             if(!this->selectionModel()->selectedIndexes().count())
-//                 return;
-
-//             QFileInfo selection = model->fileInfo(this->selectionModel()->selectedIndexes().first());
-
-//             if(selection.isDir()) {
-//                 this->setRootIndex(model->index(selection.filePath()));
-//                 emit changed(selection.absoluteFilePath());
-//                 event->accept();
-//             }
-
-//             return;
-//         }
-//     }
-
-//     QTreeView::keyPressEvent(event);
-// }
-
-// void gnomonFinderTreeView::mouseDoubleClickEvent(QMouseEvent *event)
-// {
-//     if(QFileSystemModel *model = qobject_cast<QFileSystemModel *>(this->model())) {
-
-//         QModelIndex index = indexAt(event->pos());
-
-//         if(!index.isValid())
-//             return;
-
-//         QFileInfo info(model->filePath(index));
-
-//         if(info.isDir()) {
-
-//             QDir dir = QDir(model->filePath(index));
-
-//             emit changed(dir.absolutePath());
-
-//             this->setRootIndex(index);
-
-//         } else {
-
-//             emit opened(model->filePath(index));
-//         }
-//     }
-
-//     QTreeView::mouseDoubleClickEvent(event);
-// }
-
-// void gnomonFinderTreeView::startDrag(Qt::DropActions supportedActions)
-// {
-//     QModelIndexList indexes = selectedIndexes();
-
-//     if(indexes.count() > 0) {
-
-//         QMimeData *data = model()->mimeData(indexes);
-//         if(!data)
-//             return;
-
-//         QFileIconProvider provider;
-
-//         QPixmap pixmap = provider.icon(QFileInfo(data->urls().first().toLocalFile())).pixmap(64, 64);
-//         QDrag *drag = new QDrag(this);
-//         drag->setPixmap(pixmap);
-//         drag->setMimeData(data);
-//         drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
-//         drag->exec(supportedActions, Qt::IgnoreAction);
-//     }
-// }
-
-// // ///////////////////////////////////////////////////////////////////
-// //
-// // ///////////////////////////////////////////////////////////////////
-
-// class gnomonBrowserReaderMenu : public QQuickWidget
-// {
-//     Q_OBJECT
-
-// public:
-//     gnomonBrowserReaderMenu(QVariantMap, QWidget *parent = nullptr);
-
-// protected:
-//     void focusOutEvent(QFocusEvent *event) override
-//     {
-//         this->close();
-//         this->deleteLater();
-
-//         QQuickWidget::focusOutEvent(event);
-//     }
-// };
-
-// gnomonBrowserReaderMenu::gnomonBrowserReaderMenu(QVariantMap reader_descs, QWidget *parent) : QQuickWidget(parent)
-// {
-//     this->engine()->addImportPath("qrc:/");
-
-//     QQmlContext *context = this->rootContext();
-//     context->setContextProperty("font", dtkFontAwesome::instance());
-//     context->setContextProperty("theme", dtkThemesEngine::instance());
-//     context->setContextProperty("reader_descs", reader_descs);
-
-//     this->setResizeMode(QQuickWidget::SizeRootObjectToView);
-//     this->setSource(QUrl("qrc:/gnomonWorkspaceBrowser.qml"));
-//     this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
-//     this->setFocus(Qt::PopupFocusReason);
-// }
-
-/////////////////////////////////////////////////////////////////////////////
-
 class gnomonWorkspaceBrowserPrivate: public QObject
 {
     Q_OBJECT
-
-public:
-    gnomonPipelineManager *pipeline_manager;
-
-public:
-    gnomonViewForm *browse_view;
-//    gnomonViewMatplotlib *browse_figure;
-
-public:
-//    QStackedWidget *view_stack = nullptr;
-//    gnomonMessageBoard *view_message = nullptr;
-
-public:
-//    QSplitter *splitter;
-
-public:
-    QMap<QString, QMap<QString, gnomonAbstractCommand *> > fileReaderCommands;
-    QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
-
-public:
-    QString filename;
-    QString ext;
-//    gnomonBrowserReaderMenu *menu = nullptr;
-
-public:
-    gnomonWorkspaceBrowser *q;
 
 public:
      gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrowser *);
     ~gnomonWorkspaceBrowserPrivate(void);
 
 public:
-//    void findReaders(const QString& path, vtkRenderer *renderer);
     void findReaders(void);
 
 public slots:
-    void readForm(const QString& reader_plugin);
+    bool readForm(const QString& reader_plugin);
+
+public:
+    gnomonPipelineManager *pipeline_manager;
+    gnomonViewForm *browse_view;
+    gnomonWorkspaceBrowser *q;
+    QMap<QString, QMap<QString, gnomonAbstractCommand *> > fileReaderCommands;
+    QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
+    QString filename;
+    QString ext;
+
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -426,14 +101,17 @@ void gnomonWorkspaceBrowserPrivate::findReaders(void)
     return;
 }
 
-void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
+bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
     readerCommand->setAlgorithmName(reader_plugin);
 
-    qDebug() << Q_FUNC_INFO << readerCommand;
-
     QString path = filename.remove("file://");
+    if(!QFile::exists(path)) {
+        dtkWarn() << Q_FUNC_INFO << "file " << path << "doesn't exist";
+        return false;
+    }
+
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
     {
         imageCommand->setPath(path);
@@ -443,7 +121,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
         image_series->metadata()->set("source", QFileInfo(imageCommand->path()).fileName());
         if (!image_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting image series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting image series is void.";
+            return false;
         } else {
             this->browse_view->setForm("gnomonImage",image_series->clone());
             this->pipeline_manager->addClonedForm(image_series,this->browse_view->image());
@@ -458,7 +137,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
         cellImage_series->metadata()->set("source", QFileInfo(cellImageCommand->path()).fileName());
         if (!cellImage_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting cellImage series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting cellImage series is void.";
+            return false;
         } else {
             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
             this->pipeline_manager->addClonedForm(cellImage_series,this->browse_view->cellImage());
@@ -473,7 +153,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
         cellComplex_series->metadata()->set("source", QFileInfo(cellComplexCommand->path()).fileName());
         if (!cellComplex_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
+            return false;
         } else {
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
             this->pipeline_manager->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
@@ -488,7 +169,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
         binaryImage_series->metadata()->set("source", QFileInfo(binaryImageCommand->path()).fileName());
         if (!binaryImage_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
+            return false;
         } else {
             this->browse_view->setForm("gnomonBinaryImage",binaryImage_series->clone());
             this->pipeline_manager->addClonedForm(binaryImage_series, this->browse_view->binaryImage());
@@ -503,7 +185,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
         dataFrame_series->metadata()->set("source", QFileInfo(dataFrameCommand->path()).fileName());
         if (!dataFrame_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
+            return false;
         } else {
 //            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
 //            this->pipeline_manager->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
@@ -518,7 +201,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
         mesh_series->metadata()->set("source", QFileInfo(meshCommand->path()).fileName());
         if (!mesh_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting mesh series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting mesh series is void.";
+            return false;
         } else {
             this->browse_view->setForm("gnomonMesh",mesh_series->clone());
             this->pipeline_manager->addClonedForm(mesh_series,this->browse_view->mesh());
@@ -533,7 +217,8 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
         pointCloud_series->metadata()->set("source", QFileInfo(pointCloudCommand->path()).fileName());
         if (!pointCloud_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
+            return false;
         } else {
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
             this->pipeline_manager->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
@@ -548,13 +233,16 @@ void gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
         tree_series->metadata()->set("source", QFileInfo(treeCommand->path()).fileName());
         if (!tree_series) {
-            qWarning() << Q_FUNC_INFO << "Resulting tree series is void.";
+            dtkWarn() << Q_FUNC_INFO << "Resulting tree series is void.";
+            return false;
         } else {
 //            this->browse_figure->setForm("gnomonTree",tree_series->clone());
 //            this->pipeline_manager->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
             this->pipeline_manager->addReader(treeCommand);
         }
     }
+
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -811,9 +499,9 @@ void gnomonWorkspaceBrowser::requestReaders(void)
     d->findReaders();
 }
 
-void gnomonWorkspaceBrowser::readWith(const QString& reader)
+bool gnomonWorkspaceBrowser::readWith(const QString& reader)
 {
-    d->readForm(reader);
+    return d->readForm(reader);
 }
 
 gnomonViewForm *gnomonWorkspaceBrowser::view(void)
