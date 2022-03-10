@@ -68,22 +68,23 @@ Item {
     }
 
     function getComponent(type) {
-        if (type == "dtk::d_real" || type == "dtk::d_bool" || type == "dtk::d_int") {
+        type = type.replace(',void', '')
+        if (type == "dtkCoreParameterNumeric<qlonglong>" || type == "dtkCoreParameterNumeric<bool>" || type == "dtkCoreParameterNumeric<double>") {
             return _num_component;
         }
-        if (type == "dtk::d_string") {
+        if (type == "dtkCoreParameterSimple<QString>") {
             return  _string_component;
         }
-        if (type == "dtk::d_path") {
+        if (type == "dtkCoreParameterPath") {
             return _path_component;
         }
-        if (type == "dtk::d_range_real" || type == "dtk::d_range_int") {
+        if (type == "dtkCoreParameterRange<qlonglong>" || type == "dtkCoreParameterRange<double>") {
             return _range_component;
         }
-        if (type == "dtk::d_inliststring") {
+        if (type == "dtkCoreParameterInList<QString>") {
             return _liststring_component;
         }
-        if (type == "dtk::d_inliststringlist") {
+        if (type == "dtkCoreParameterInListStringList") {
             return _liststringlist_component;
         }
         if (type == "gnomonCoreParameterColorMap") {
@@ -108,7 +109,7 @@ Item {
             var p = parameters[param_name];
             var prop_dict = {};
             console.log("PARAMETER", p.type)
-            if(p.type === "dtk::d_inliststring") console.log("LIST", p.list)
+            if(p.type === "dtkCoreParameterInList<QString>") console.log("LIST", p.list)
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
 
