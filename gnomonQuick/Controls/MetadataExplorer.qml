@@ -47,10 +47,7 @@ Rectangle {
             // loading dynamicFormMetadata
             dynamicFormMetadata = GV.World.getDynamicFormMetadata(formId);
             form_collection_metadata.model = dynamicFormMetadata.keys;
-            for(let i = 0; i < form_collection_metadata.count; i++) {
-                var item_delegate = form_collection_metadata.itemAtIndex(i);
-                item_delegate.load();
-            }
+
             // setting slider
             time_slider.times = GV.World.timeKeys(formId);
             time_slider.to = time_slider.times.length - 1;
@@ -152,6 +149,11 @@ Rectangle {
 
                         }
                     }
+
+                    Component.onCompleted: {
+                        _f_delegate.load()
+                    }
+
                     function load() {
                         var text = GV.World.formMetadataValueAtT(
                             formId,
@@ -194,10 +196,6 @@ Rectangle {
             function load_frame() {
                 //t = times[Math.trunc(value)];
                 form_metadata.model = GV.World.formMetadataKeysAtT(formId, time_slider.t);
-                for(let i = 0; i < form_metadata.count; i++) {
-                    var item_delegate = form_metadata.itemAtIndex(i);
-                    item_delegate.load();
-                }
             }
         }
     }
@@ -215,6 +213,7 @@ Rectangle {
         delegate: ItemDelegate {
             id: _fc_delegate;
             width: form_collection_metadata.width;
+
             Label {
                 id: _name_label
                 anchors.left: parent.left;
@@ -245,6 +244,10 @@ Rectangle {
                 onEditingFinished: {
                     save();
                 }
+            }
+
+            Component.onCompleted: {
+                _fc_delegate.load()
             }
 
             function load() {

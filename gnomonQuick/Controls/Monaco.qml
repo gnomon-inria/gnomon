@@ -41,7 +41,7 @@ Control {
                 console.log("Language changed:", value);
                 break;
             case "value":
-                console.log("Contents changed", value);
+                //  console.log("Contents changed", value);
                 self.modified(value);
                 break;
             default:
@@ -82,7 +82,7 @@ Control {
         url: 'qrc:/js/monaco/monaco.html';
 
         onJavaScriptConsoleMessage: (level, message, lineNumber, sourceID) => {
-            console.log(message, lineNumber, sourceID);
+            // console.log(message, lineNumber, sourceID);
         }
     }
 }
