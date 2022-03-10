@@ -32,7 +32,7 @@ ListView {
     }
 
     delegate: G.WorldDelegate {
-
+        flickable: _control;
     }
 
     ScrollIndicator.horizontal: ScrollIndicator {
