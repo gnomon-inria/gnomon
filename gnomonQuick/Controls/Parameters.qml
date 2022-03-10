@@ -98,18 +98,13 @@ Item {
     }
 
     function updateParametersModel() {
-        console.log("UPDATING PARAMETERS", parameters)
-
         params_model.clear();
         const params = [];
         const groups = [];
 
         for (var param_name in parameters) {
-            console.log(param_name)
             var p = parameters[param_name];
             var prop_dict = {};
-            console.log("PARAMETER", p.type)
-            if(p.type === "dtkCoreParameterInList<QString>") console.log("LIST", p.list)
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
 

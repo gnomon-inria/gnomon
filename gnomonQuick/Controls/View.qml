@@ -74,7 +74,6 @@ Rectangle {
 
         onDropped: {
             if (drop.hasUrls) {
-                console.log("DROP", drop.mimeData)
                 drop.urls.forEach(function (item, index) {
                     console.log("DROP FILE", item)
                     self.droppedFromFile(item);
@@ -333,9 +332,7 @@ Rectangle {
 
             onAccepted: {
                 _form_export_dialog.enabled = false;
-                console.log("============== count: ", _list_view.count)
                 for(let i = 0; i < _list_view.count; i++) {
-                    console.log("=================== ", i);
                     var item_delegate = _list_view.itemAtIndex(i);
                     item_delegate.save_metadata();
                 }
@@ -392,14 +389,11 @@ Rectangle {
                         }
 
                         function save_metadata() {
-                            //console.log("metadata.name: ", metadata.name)
                             metadata.set("name", _form_name.text);
-                            //console.log(" --> ", metadata.name)
                         }
 
                         function load_metadata() {
                             metadata = viewLogic.formMetadata(modelData);
-                            console.log(metadata, " --> ", metadata.get("name"))
                             _form_name.text = metadata.get("name");
                         }
 
@@ -479,8 +473,6 @@ Rectangle {
                     }
 
                     onCurrentIndexChanged: {
-                        console.log("currentItem: ", currentItem)
-                        console.log("currentIndex: ", currentIndex)
                         select_field();
                     }
 

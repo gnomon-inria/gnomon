@@ -36,9 +36,6 @@ Item {
         var menu_component = Qt.createComponent(source)
         if(menu_component.status != Component.Ready) {
             const specific_error_msg = menu_component.errorString()
-
-            console.log("Can't create visualization menu for " + name, specific_error_msg)
-
             menu_component = Qt.createComponent(defaultSource)
 
             if(menu_component.status != Component.Ready) {
@@ -266,9 +263,6 @@ Item {
 
         ScrollIndicator.vertical: ScrollIndicator { visible: _form_selector.contentHeight > _form_selector.height; }
 
-        Component.onCompleted: {
-            console.log(view.viewLogic.formNames)
-        }
     }
 
     X.Separator {

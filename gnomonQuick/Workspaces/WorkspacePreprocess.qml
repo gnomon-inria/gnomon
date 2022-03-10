@@ -29,8 +29,6 @@ G.Workspace {
     property alias d: d;
 
     fill: () => {
-        console.log('Automatic filling of input source');
-
         if(world.currentRef < 0)
             return;
 
