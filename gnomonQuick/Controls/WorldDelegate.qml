@@ -20,6 +20,7 @@ Item {
     width: _world.height;
     height: _world.height;
 
+    property var flickable: null;
     property alias ref: _thumbnail.ref;
 
     Rectangle {
@@ -76,6 +77,10 @@ Item {
             onClicked: {
                 _world.currentIndex = model.index;
                 _world.currentRef = _world_delegate.ref;
+            }
+
+            onContainsMouseChanged: {
+                flickable.interactive = !containsMouse;
             }
         }
 
