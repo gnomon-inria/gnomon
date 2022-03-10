@@ -1,6 +1,6 @@
 package:
   name: libgnomon
-  version: {{ environ.get('GIT_DESCRIBE_TAG', 'default') }}
+  version: {{ environ.get('GIT_DESCRIBE_TAG', '0.20.0') }}
 
 source:
   #git_url: git@gitlab.inria.fr:gnomon/gnomon.git
@@ -15,7 +15,7 @@ requirements:
     - cmake >=3.17
     - make
     - python =3.9
-    - numpy
+    - numpy >=1.22
     - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
@@ -46,28 +46,28 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt >=5.15.2
-    - dtk-log =2.5.0
-    - dtk-core =2.11.0
-    - dtk-core-python =2.8.0
-    - dtk-imaging =2.0.4
-    - dtk-imaging-python =2.0.6
-    - dtk-script >=2.5.1
+    - qt >=6.2
+    - dtk-core >=2.11
+    - dtk-core-python >=2.8
+    - dtk-imaging >=2.0
+    - dtk-imaging-python >=2.0
+    - dtk-log >=2.5
+    - dtk-script >=2.5
     - python =3.9
-    - numpy
+    - numpy >=1.22
     - swig =4.0
     - vtk =9.1.0
 
   run:
-    - qt >=5.15.2
-    - dtk-log =2.5.0
-    - dtk-core =2.11.0
-    - dtk-core-python =2.8.0
-    - dtk-imaging =2.0.4
-    - dtk-imaging-python =2.0.6
-    - dtk-script >=2.5.1
+    - qt >=6.2
+    - dtk-core >=2.11
+    - dtk-core-python >=2.8
+    - dtk-imaging >=2.0
+    - dtk-imaging-python >=2.0
+    - dtk-log >=2.5
+    - dtk-script >=2.5
     - python =3.9
-    - numpy
+    - numpy >=1.22
     - pillow
     - matplotlib
     - mongodb =4.0

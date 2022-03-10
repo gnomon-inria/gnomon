@@ -17,7 +17,7 @@ conda_build_linux:
   - conda install -n base -c defaults conda python=3.9 -y
   - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
-  - mamba build . -c dtk-forge-staging -c conda-forge --output-folder conda-bld/
+  - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
@@ -32,7 +32,7 @@ conda_build_linux_develop:
     - conda install -n base -c defaults conda python=3.9 -y
     - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
     - mkdir conda-bld
-    - mamba build . -c dtk-forge-staging -c conda-forge --output-folder conda-bld/
+    - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   when: manual
   artifacts:
