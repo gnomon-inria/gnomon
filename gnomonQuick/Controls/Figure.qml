@@ -31,7 +31,8 @@ Rectangle {
 
     signal transmit();
 
-    GV.FigureCanvas { id: _view;
+    GV.FigureCanvas {
+        id: _view;
 
         dpi_ratio: Screen.devicePixelRatio
 
@@ -41,6 +42,9 @@ Rectangle {
             if (_view.activeFocus)
                 window.currentView = self;
         }
+
+        onWidthChanged: _view.setGeom(_view.width, _view.height);
+        onHeightChanged: _view.setGeom(_view.width, _view.height);
     }
 
     DropArea {
