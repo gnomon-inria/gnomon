@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonActor2DImage.h"
 
 #include <dtkImagingCore>
@@ -175,15 +161,12 @@ void gnomonActor2DImage::update(void)
         if (i == 0) {
             int pos = (x_min + x_max)/2;
             d->plane[i]->SetDisplayExtent(pos, pos, y_min, y_max, z_min, z_max);
-            qDebug()<<Q_FUNC_INFO<<"Plane"<<i<<": "<<pos<<pos<<y_min<<y_max<<z_min<<z_max;
         } else if (i == 1) {
             int pos = (y_min + y_max)/2;
             d->plane[i]->SetDisplayExtent(x_min, x_max, pos, pos, z_min, z_max);
-            qDebug()<<Q_FUNC_INFO<<"Plane"<<i<<": "<<x_min<<x_max<<pos<<pos<<z_min<<z_max;
         } else if (i ==2) {
             int pos = (z_min + z_max)/2;
             d->plane[i]->SetDisplayExtent(x_min, x_max, y_min, y_max, pos, pos);
-            qDebug()<<Q_FUNC_INFO<<"Plane"<<i<<": "<<x_min<<x_max<<y_min<<y_max<<pos<<pos;
         }
 //        d->plane[i]->SetPlaneOrientation(i);
         d->plane[i]->GetProperty()->UseLookupTableScalarRangeOn();
@@ -227,7 +210,6 @@ void gnomonActor2DImage::setSlice(int value)
         z_max = pos;
     }
 
-    qDebug()<<Q_FUNC_INFO<<"Plane"<<d->orientation<<": "<<x_min<<x_max<<y_min<<y_max<<z_min<<z_max;
     d->plane[d->orientation]->SetDisplayExtent(x_min, x_max, y_min, y_max, z_min, z_max);
     d->interactor->Render();
 }

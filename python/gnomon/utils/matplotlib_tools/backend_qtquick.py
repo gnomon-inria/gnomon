@@ -165,8 +165,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
 
     @Slot(int, int)
     def setGeom(self, wi, he):
-        print("Canvas size: {}x{}@{}".format(wi, he, self.dpi_ratio))
-
+        #print("Canvas size: {}x{}@{}".format(wi, he, self.dpi_ratio))
         w = wi * self.dpi_ratio
         h = he * self.dpi_ratio
 
@@ -181,9 +180,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         self.draw_idle()
 
     def geometryChanged(self, new_geometry, old_geometry):
-
-        print("Canvas size: {}x{}@{}".format(new_geometry.width(), new_geometry.height(), self.dpi_ratio))
-
+        #print("Canvas size: {}x{}@{}".format(new_geometry.width(), new_geometry.height(), self.dpi_ratio))
         w = new_geometry.width() * self.dpi_ratio
         h = new_geometry.height() * self.dpi_ratio
 
