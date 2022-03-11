@@ -16,13 +16,9 @@
 #include "gnomonActorMesh_p.h"
 #include "gnomonActorMeshCellImage.h"
 
-
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
-#include <gnomonCore>
 
 #include <dtkImagingCore>
-
-#include <QtWidgets>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

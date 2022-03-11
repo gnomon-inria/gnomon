@@ -1,18 +1,12 @@
 #include "gnomonAbstractVisualization.h"
 #include "gnomonAbstractVisualization_p.h"
 
-#include <QtWidgets>
-
 #include "gnomonView/gnomonViewForm.h"
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 #include <vtkCamera.h>
-#include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkImageData.h>
-#include <vtkOpenGLRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkWindowToImageFilter.h>
 
 // /////////////////////////////////////////////////////////////////

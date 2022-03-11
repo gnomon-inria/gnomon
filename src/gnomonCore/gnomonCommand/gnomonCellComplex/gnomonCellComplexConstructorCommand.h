@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractConstructorCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
 
 class GNOMONCORE_EXPORT gnomonCellComplexConstructorCommand : public gnomonAbstractConstructorCommand
 {

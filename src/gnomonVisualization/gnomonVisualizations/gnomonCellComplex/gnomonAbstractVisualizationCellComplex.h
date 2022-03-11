@@ -14,19 +14,13 @@
 
 #pragma once
 
-#include <QtCore>
-
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
+#include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
-
-class gnomonViewForm;
-
-class gnomonCellComplex;
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellComplex : public gnomonAbstractVisualization
 {

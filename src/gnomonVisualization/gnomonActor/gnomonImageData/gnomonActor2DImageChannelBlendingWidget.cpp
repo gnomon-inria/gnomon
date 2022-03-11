@@ -16,9 +16,6 @@
 
 #include <dtkImagingCore>
 
-#include <QtCore>
-#include <QtWidgets>
-
 #include <vtkActor.h>
 #include <vtkCellData.h>
 #include <vtkColorTransferFunction.h>

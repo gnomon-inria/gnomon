@@ -14,7 +14,8 @@
 
 #include "gnomonMeshConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshConstructorCommandPrivate
 {

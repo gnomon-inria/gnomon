@@ -14,7 +14,8 @@
 
 #include "gnomonMeshReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshReaderCommandPrivate
 {

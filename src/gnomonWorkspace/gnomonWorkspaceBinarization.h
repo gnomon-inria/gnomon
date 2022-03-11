@@ -5,9 +5,6 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-#include <QtCore>
-#include <QtQml>
-
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBinarization : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT

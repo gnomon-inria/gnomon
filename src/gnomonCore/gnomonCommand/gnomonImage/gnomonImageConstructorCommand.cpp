@@ -14,7 +14,8 @@
 
 #include "gnomonImageConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonImageConstructorCommandPrivate
 {

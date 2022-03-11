@@ -1,5 +1,5 @@
 #include "gnomonProjectManager.h"
-#include "gnomon"
+#include <gnomon>
 
 gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
 

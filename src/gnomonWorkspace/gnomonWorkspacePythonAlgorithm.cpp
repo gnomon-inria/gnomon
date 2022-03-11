@@ -1,15 +1,17 @@
 #include "gnomonWorkspacePythonAlgorithm.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
 #include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
-#include <gnomonPipeline>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <dtkCore>
-#include <dtkScript>
+#include <gnomonPipeline/gnomonPipelineManager.h>
+
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonView/gnomonViewFormPool.h>
 
 #include "gnomonPythonAlgorithmPluginCode.h"
 
+#include <dtkScript>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate

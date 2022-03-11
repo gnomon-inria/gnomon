@@ -15,8 +15,6 @@
 #include "gnomonActorMesh.h"
 #include "gnomonActorMesh_p.h"
 
-#include <QtWidgets>
-
 #include <vtkActor.h>
 #include <vtkCommand.h>
 #include <vtkPolyData.h>

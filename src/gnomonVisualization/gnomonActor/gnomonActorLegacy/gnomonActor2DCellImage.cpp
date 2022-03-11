@@ -15,11 +15,6 @@
 #include "gnomonActor2DCellImage.h"
 
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
-#include <gnomonCore>
-
-#include <dtkImagingCore>
-
-#include <QtWidgets>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

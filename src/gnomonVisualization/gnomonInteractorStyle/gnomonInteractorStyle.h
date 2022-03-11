@@ -15,10 +15,6 @@
 #pragma once
 
 #include <QtCore>
-// #include <QtWidgets>
-
-// #include <dtkFonts/dtkFontAwesome>
-
 #include <gnomonVisualizationExport>
 
 #include <vtkInteractorStyleTrackballCamera.h>
@@ -64,7 +60,7 @@ public:
     virtual int icon(void) const;
 
 protected:
-	class gnomonInteractorStylePrivate *d;
+    class gnomonInteractorStylePrivate *d;
 };
 
 //

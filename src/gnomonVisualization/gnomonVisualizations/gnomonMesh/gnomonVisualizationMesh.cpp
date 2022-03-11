@@ -15,11 +15,7 @@
 #include "gnomonVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-//#include <gnomonWidgets>
+#include <gnomonVisualization/gnomonCoreParameterColor.h>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -27,10 +23,7 @@
 #include "gnomonActor/gnomonPolyData/gnomonActorPolyData.h"
 #include "gnomonActor/gnomonPolyData/gnomonActor2DPolyData.h"
 
-#include <vtkCellData.h>
-#include <vtkPointData.h>
 #include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationMeshPrivate

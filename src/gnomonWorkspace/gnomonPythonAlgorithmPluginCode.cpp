@@ -1,10 +1,11 @@
 #include "gnomonPythonAlgorithmPluginCode.h"
 
-#include <gnomonCore>
-
-#include <dtkCore>
-#include <dtkScript>
-
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData>
 
 class gnomonPythonAlgorithmPluginCodePrivate
 {

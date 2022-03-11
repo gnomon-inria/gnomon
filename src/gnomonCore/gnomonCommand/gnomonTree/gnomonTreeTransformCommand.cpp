@@ -14,8 +14,8 @@
 
 #include "gnomonTreeTransformCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -37,10 +37,10 @@ gnomonTreeTransformCommand::gnomonTreeTransformCommand() : d(new gnomonTreeTrans
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    QStringList keys = gnomonCore::treeTransform::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+        this->action = gnomonCore::treeTransform::pluginFactory().create(this->algorithm_name);
     }
 }
 

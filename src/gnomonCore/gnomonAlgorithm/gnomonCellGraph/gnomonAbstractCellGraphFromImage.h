@@ -18,7 +18,7 @@
 
 #include <gnomonCoreExport.h> // enables the visibility of the concept
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
 
 class dtkImage;
 class gnomonCellGraph;

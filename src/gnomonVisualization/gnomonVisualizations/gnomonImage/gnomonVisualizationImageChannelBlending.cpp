@@ -15,12 +15,6 @@
 #include "gnomonVisualizationImageChannelBlending.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-// #include <gnomonWidgets>
-
 #include <dtkImagingCore>
 
 #include "gnomonView/gnomonViewForm.h"
@@ -28,13 +22,12 @@
 #include "gnomonActor/gnomonImageData/gnomonActorImageRGBAVolume.h"
 #include "gnomonActor/gnomonImageData/gnomonActor2DImageRGBA.h"
 
-#include <vtkDataArray.h>
+#include <gnomonVisualization/gnomonCoreParameterLookupTable>
+#include <gnomonVisualization/gnomonLookupTable.h>
+
 #include <vtkImageData.h>
-#include <vtkPointData.h>
-#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 
 // /////////////////////////////////////////////////////////////////

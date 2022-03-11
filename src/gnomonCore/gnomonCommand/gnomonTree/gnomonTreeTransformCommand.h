@@ -1,4 +1,9 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
 class gnomonTree;
 

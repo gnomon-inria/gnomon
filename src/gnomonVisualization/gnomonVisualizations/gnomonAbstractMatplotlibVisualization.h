@@ -14,10 +14,11 @@
 
 #pragma once
 
+#include <gnomonVisualizationExport.h>
+
 #include <QtCore>
 
-#include <dtkCore>
-#include <gnomonVisualizationExport.h>
+#include <dtkCore/dtkCoreParameters>
 
 class gnomonViewMatplotlib;
 

@@ -16,9 +16,9 @@
 #include "gnomonActorMesh_p.h"
 #include "gnomonActorMeshCellGraph.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph>
 
-#include <QtWidgets>
+#include <QtGui>
 
 #include <vtkActor.h>
 #include <vtkCommand.h>

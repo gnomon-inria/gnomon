@@ -1,6 +1,9 @@
 #include "gnomonBinaryImageReaderCommand.h"
 
-class gnomonBinaryImageReaderCommandPrivate
+#include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
+class GNOMONCORE_EXPORT gnomonBinaryImageReaderCommandPrivate
 {
 public:
     gnomonBinaryImageSeries *binaryImage = nullptr;

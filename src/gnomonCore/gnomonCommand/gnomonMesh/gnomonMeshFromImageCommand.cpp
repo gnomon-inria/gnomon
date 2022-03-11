@@ -14,8 +14,8 @@
 
 #include "gnomonMeshFromImageCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshFromImageCommandPrivate
 {

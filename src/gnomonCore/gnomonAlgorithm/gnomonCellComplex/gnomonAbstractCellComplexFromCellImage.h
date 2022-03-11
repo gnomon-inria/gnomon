@@ -23,8 +23,6 @@
 
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
-// class gnomonCellImageSeries;
-// class gnomonCellComplexSeries;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellComplexFromCellImage : public gnomonAbstractAlgorithm
 {

@@ -16,7 +16,8 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore>
+#include <dtkCore/dtkCoreLayerManager>
+
 
 // ///////////////////////////////////////////////////////////////////
 //
