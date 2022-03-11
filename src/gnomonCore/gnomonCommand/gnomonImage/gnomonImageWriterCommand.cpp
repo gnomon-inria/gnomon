@@ -97,6 +97,11 @@ QStringList gnomonImageWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+QStringList gnomonImageWriterCommand::extensions(void)
+{
+    return dynamic_cast<gnomonAbstractImageWriter *>(this->action)->extensions();
+}
+
 gnomonAbstractCommand::orderedMap gnomonImageWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("image", "gnomonImage"));

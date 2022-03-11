@@ -97,6 +97,11 @@ QStringList gnomonMeshWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+QStringList gnomonMeshWriterCommand::extensions(void)
+{
+    return dynamic_cast<gnomonAbstractMeshWriter *>(this->action)->extensions();
+}
+
 gnomonAbstractCommand::orderedMap gnomonMeshWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));

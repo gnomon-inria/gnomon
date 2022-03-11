@@ -97,6 +97,11 @@ QStringList gnomonPointCloudWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
+QStringList gnomonPointCloudWriterCommand::extensions(void)
+{
+    return dynamic_cast<gnomonAbstractPointCloudWriter *>(this->action)->extensions();
+}
+
 gnomonAbstractCommand::orderedMap gnomonPointCloudWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));

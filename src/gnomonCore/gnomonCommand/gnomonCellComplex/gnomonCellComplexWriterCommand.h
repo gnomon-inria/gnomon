@@ -17,6 +17,8 @@ public:
     void setCellComplex(gnomonCellComplexSeries *cellcomplex);
     void setAlgorithmName(const QString &) override;
 
+public:
+    QStringList extensions(void) override;
     orderedMap inputTypes() override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;

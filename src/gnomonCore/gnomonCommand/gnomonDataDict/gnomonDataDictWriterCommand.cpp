@@ -69,6 +69,11 @@ bool gnomonDataDictWriterCommand::isEmpty()
     return gnomonCore::dataDictWriter::pluginFactory().keys().empty();
 }
 
+QStringList gnomonDataDictWriterCommand::extensions(void)
+{
+    return dynamic_cast<gnomonAbstractDataDictWriter *>(this->action)->extensions();
+}
+
 gnomonAbstractCommand::orderedMap gnomonDataDictWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("dataDict", "gnomonDataDict"));

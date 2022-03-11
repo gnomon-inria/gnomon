@@ -27,6 +27,9 @@ public:
     virtual void setPath(const QString & path) { m_path = path; };
     virtual void setForm(gnomonAbstractDynamicForm* form) = 0;
 
+public:
+    virtual QStringList extensions(void) = 0;
+
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override {
         return {};
     }
