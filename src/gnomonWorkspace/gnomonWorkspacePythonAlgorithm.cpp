@@ -78,8 +78,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
 void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 {
     if (this->command) {
-        gnomonAbstractCommand *algorithm_command = dynamic_cast<gnomonAbstractCommand *>(this->command);
-        gnomonPipelineManager::instance()->addAlgorithm(algorithm_command);
+        gnomonPipelineManager::instance()->addAlgorithm(this->command);
     }
 }
 
@@ -233,6 +232,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
 
         d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
         d->command->setFormAlgorithm(d->algorithm);
+        d->command->setPythonCode(d->code->text());
         connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
         if (this->source()->binaryImage()) {

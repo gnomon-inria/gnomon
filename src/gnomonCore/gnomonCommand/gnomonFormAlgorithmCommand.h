@@ -29,6 +29,10 @@ public:
 public:
     virtual void setAlgorithmName(const QString &name) override;
 
+public:
+    void setPythonCode(const QString& code);
+    const QString& pythonCode(void) const;
+
     void setFormAlgorithm(gnomonAbstractFormAlgorithm *algo);
     gnomonAbstractFormAlgorithm *formAlgorithm(void);
 

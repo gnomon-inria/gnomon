@@ -37,6 +37,8 @@ public:
     gnomonPointCloudSeries* outputPointCloud = nullptr;
 
     dtkCoreParameters parameters;
+
+    QString python_code;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -62,6 +64,16 @@ void gnomonFormAlgorithmCommand::setAlgorithmName(const QString& algo_name)
 void gnomonFormAlgorithmCommand::setFormAlgorithm(gnomonAbstractFormAlgorithm *algo)
 {
     this->action = algo;
+}
+
+void gnomonFormAlgorithmCommand::setPythonCode(const QString& code)
+{
+    d->python_code = code;
+}
+
+const QString& gnomonFormAlgorithmCommand::pythonCode(void) const
+{
+    return d->python_code;
 }
 
 gnomonAbstractFormAlgorithm *gnomonFormAlgorithmCommand::formAlgorithm(void)
