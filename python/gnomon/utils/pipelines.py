@@ -27,11 +27,11 @@ class PNodeRunner:
         self.inputs = {}
         for input_name in node.inputPortsNames():
             input_method = "set{}{}".format(input_name[0].capitalize(), input_name[1:])
-            self.inputs[input_name] = lambda form: getattr(self.algo, input_method)(form)
+            self.inputs[input_name] = getattr(self.algo, input_method)
         # generating output getters
         self.outputs = {}
         for output_name in node.outputPortsNames():
-            self.outputs[output_name] = lambda: getattr(self.algo, output_name)()
+            self.outputs[output_name] = getattr(self.algo, output_name)
 
         # making connections
         self.inputs_connections = {}
@@ -41,18 +41,19 @@ class PNodeRunner:
                 source: gnomonPipelinePort = edge.source()
                 self.inputs_connections[input_name] = (source.node().name(), source.name())
 
-        # if reader or writer
+        # if reader or writer, set default path
         if hasattr(self.algo, "setPath"):
+            print(f"path for {self.name} -> {node.path()}")
             self.algo.setPath(node.path())
 
         # setting parameters
         for param_name in node.parametersName():
             param = node.parameter(param_name)
-            print(type(param), param, isinstance(param, dtkCoreParameter))
+            print(type(param), param)
             self.algo.setParameter(param_name, param)
 
-
     def run(self):
+        print(f" -- running {self.name}")
         self.algo.run()
 
 
@@ -71,17 +72,20 @@ class PipelineRunner:
         node = self.nodes[node_name]
         for target_port, source in node.inputs_connections.items():
             source_node, source_port = source
-            node.inputs[target_port](self.nodes[source_node].outputs[source_port]())
+            tmp = self.nodes[source_node].outputs[source_port]()
+            print(tmp)
+            node.inputs[target_port](tmp)
 
     def run(self):
         groups: List[List[str]] = self.pipeline.scheduleGroups()
 
         # getting sources
         sources = groups[0]
+        print("computing group : ", sources)
         for source_node in sources:
             self.nodes[source_node].run()
 
-        for node_group in groups[1:-1]:
+        for node_group in groups[1:]:
             print("computing group : ", node_group)
             # schedule nodes
             for node_name in node_group:
