@@ -28,7 +28,8 @@ G.Workspace {
         modality: Qt.NonModal;
 
         onAccepted: {
-            console.log('TODO: Opening workspace');
+            console.log('Loading an existing project');
+            load_session(_file_dialog.file);
         }
     }
 
@@ -86,6 +87,11 @@ G.Workspace {
 
                         onClicked: _file_dialog.open();
                     }
+
+                    X.ToolTip {
+                        visible: _area_1.containsMouse
+                        text: "Load an existing project";
+                    }
                 }
 
                 Rectangle {
@@ -109,7 +115,12 @@ G.Workspace {
                         hoverEnabled: true;
 
                         // onClicked: _workspace.state = 'CONF'
-                        onClicked: _create_project_dialog.open();
+                        // onClicked: _create_project_dialog.open();
+                        onClicked: add_workspace("qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml");
+                    }
+                    X.ToolTip {
+                        visible: _area_2.containsMouse
+                        text: "Create a new project";
                     }
                 }
             }
