@@ -23,6 +23,7 @@ G.Workspace {
 
     property alias d: d;
     property alias code: d.code;
+    property alias editor: _editor;
 
     fill: () => {}
 
@@ -56,25 +57,6 @@ G.Workspace {
             Layout.fillHeight: true;
             Layout.margins: 0;
 
-            // TODO: use editor from x-vsc when ready
-            // X.Editor { id: _editor;
-
-            //     Layout.fillWidth: true;
-            //     Layout.fillHeight: true;
-            //     visible: d.editMode;
-
-            //     actualContents: d.code.text;
-
-            //     X.SourceHighliter { Component.onCompleted: {
-            //             setup(_editor.document, X.Style.languages.python);
-            //         }
-            //     }
-
-            //     onActualContentsChanged: {
-            //         d.code.text = actualContents;
-            //     }
-            // }
-
             G.Monaco {
                 id: _editor
                 Layout.fillWidth: true
@@ -85,7 +67,6 @@ G.Workspace {
                 language: 'python';
 
                 onModified: (contents) => {
-                    // console.warn("Setting code text to", contents);
                     d.code.text = contents;
                 }
 
