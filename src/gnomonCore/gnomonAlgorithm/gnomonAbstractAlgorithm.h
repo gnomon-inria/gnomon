@@ -3,7 +3,9 @@
 #include <gnomonCoreExport>
 
 #include <QtCore>
-#include <dtkCore>
+
+#include <dtkCore/dtkCorePlugin>
+#include <dtkCore/dtkCoreParameters>
 
 // ///////////////////////////////////////////////////////////////////
 //

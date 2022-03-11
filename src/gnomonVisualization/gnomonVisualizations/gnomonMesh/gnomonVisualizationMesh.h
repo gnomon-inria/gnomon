@@ -14,15 +14,13 @@
 
 #pragma once
 
-#include <QtCore>
-
 #include <gnomonVisualizationExport.h>
 
 #include "gnomonAbstractVisualizationMesh.h"
 
-class gnomonViewForm;
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
+class gnomonViewForm;
 class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisualizationMesh

@@ -15,8 +15,6 @@
 #include "gnomonAbstractMatplotlibVisualization.h"
 #include "gnomonAbstractMatplotlibVisualization_p.h"
 
-#include <QtWidgets>
-
 #include "gnomonView/gnomonViewMatplotlib.h"
 
 

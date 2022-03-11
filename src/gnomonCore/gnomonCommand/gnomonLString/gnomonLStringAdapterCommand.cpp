@@ -14,7 +14,8 @@
 
 #include "gnomonLStringAdapterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonLStringAdapterCommandPrivate
 {
@@ -28,10 +29,10 @@ gnomonLStringAdapterCommand::gnomonLStringAdapterCommand() : d(new gnomonLString
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
+    QStringList keys = gnomonCore::lStringAdapter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        this->action = gnomonCore::cellImageConstructor::pluginFactory().create(this->algorithm_name);
+        this->action = gnomonCore::lStringAdapter::pluginFactory().create(this->algorithm_name);
     }
 }
 

@@ -1,8 +1,9 @@
 #include "gnomonCellImageFromImageCommand.h"
 
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
 #include <dtkLog>
-#include <dtkScript>
-#include <dtkImagingCore>
 
 class gnomonCellImageFromImageCommandPrivate
 {

@@ -15,11 +15,9 @@
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
 #include "gnomonPolyDataMesh.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 
 #include <dtkImagingCore>
-
-#include <QtWidgets>
 
 #include <vtkActor.h>
 #include <vtkAppendPolyData.h>

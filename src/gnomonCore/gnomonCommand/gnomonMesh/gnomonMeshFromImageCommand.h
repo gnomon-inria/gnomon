@@ -1,4 +1,9 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
 {

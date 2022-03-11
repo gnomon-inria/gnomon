@@ -14,7 +14,8 @@
 
 #include "gnomonCellComplexConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellComplexConstructorCommandPrivate
 {

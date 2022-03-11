@@ -14,7 +14,8 @@
 
 #include "gnomonPointCloudConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonPointCloudConstructorCommandPrivate
 {
@@ -31,10 +32,10 @@ gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand() : d(new
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    QStringList keys = gnomonCore::pointCloudConstructor::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+        this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(this->algorithm_name);
     }
 }
 

@@ -1,16 +1,9 @@
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageFromImageCommand.h>
-#include <gnomonVisualization>
-
-#include <dtkCore>
-#include <dtkImagingCore>
-#include <dtkScript>
-
-#include <vtkImageData.h>
-#include <vtkRenderer.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspaceSegmentation

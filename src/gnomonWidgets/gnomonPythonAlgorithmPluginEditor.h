@@ -18,7 +18,6 @@
 
 #include <dtkWidgets>
 
-#include <gnomonCore>
 #include <gnomonWidgets>
 
 class GNOMONWORKSPACE_EXPORT gnomonPythonAlgorithmPluginEditor : public gnomonPythonEditor

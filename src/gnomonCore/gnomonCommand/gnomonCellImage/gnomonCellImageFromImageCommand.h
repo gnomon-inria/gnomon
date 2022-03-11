@@ -1,4 +1,11 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
 class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractCommand
 {

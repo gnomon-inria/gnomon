@@ -14,7 +14,8 @@
 
 #include "gnomonTreeFromLStringCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeFromLString.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonTreeFromLStringCommandPrivate
 {

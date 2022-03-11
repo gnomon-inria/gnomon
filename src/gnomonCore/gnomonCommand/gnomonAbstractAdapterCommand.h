@@ -14,11 +14,12 @@
 
 #pragma once
 
-#include <gnomonCore>
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#include <gnomonCoreExport>
 
-class gnomonAbstractAdapterCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
+#include "gnomonAbstractCommand.h"
+
+class GNOMONCORE_EXPORT gnomonAbstractAdapterCommand : public gnomonAbstractCommand
 {
 public:
     orderedMap outputTypes() override {

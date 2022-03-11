@@ -13,8 +13,8 @@
 // Code:
 
 #include "gnomonCellComplexAdapterCommand.h"
-
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellComplexAdapterCommandPrivate
 {

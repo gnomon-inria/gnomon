@@ -16,11 +16,11 @@
 
 #include <gnomonCoreExport>
 
-#include <dtkCore>
+#include <dtkCore/dtkCoreParameters>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAbstractAlgorithm.h"
 
-#include "gnomonForm/gnomonAbstractDynamicForm.h"
+class gnomonAbstractDynamicForm;
 
 // ///////////////////////////////////////////////////////////////////
 //

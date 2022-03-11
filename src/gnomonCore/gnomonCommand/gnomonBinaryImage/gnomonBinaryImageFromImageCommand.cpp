@@ -1,5 +1,9 @@
 #include "gnomonBinaryImageFromImageCommand.h"
 
+#include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+#include <gnomonCore/gnomonCore.h>
+
 #include <dtkScript>
 
 class gnomonBinaryImageFromImageCommandPrivate

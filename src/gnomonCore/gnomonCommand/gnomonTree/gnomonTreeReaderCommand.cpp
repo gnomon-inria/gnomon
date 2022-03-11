@@ -14,7 +14,8 @@
 
 #include "gnomonTreeReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

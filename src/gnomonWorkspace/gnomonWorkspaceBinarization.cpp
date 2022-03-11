@@ -1,13 +1,9 @@
 #include "gnomonWorkspaceBinarization.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage>
 #include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageFromImageCommand.h>
-#include <gnomonVisualization>
-
-#include <vtkImageData.h>
-#include <vtkRenderer.h>
-
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 gnomonWorkspaceBinarization::gnomonWorkspaceBinarization(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {

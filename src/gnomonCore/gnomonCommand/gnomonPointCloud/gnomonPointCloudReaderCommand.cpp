@@ -14,7 +14,8 @@
 
 #include "gnomonPointCloudReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonPointCloudReaderCommandPrivate
 {

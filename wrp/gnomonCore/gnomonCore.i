@@ -62,8 +62,8 @@ import_array();
 #include "gnomonCore/gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
-// #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
-// #include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+#include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
@@ -895,8 +895,8 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 	}
 }
 
-// %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
-// %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
+%include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 %extend gnomonCellImage {

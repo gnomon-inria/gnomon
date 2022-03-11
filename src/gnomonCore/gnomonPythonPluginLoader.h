@@ -17,7 +17,6 @@
 #include <gnomonCoreExport.h>
 
 #include <QtCore>
-#include <dtkCore>
 
 
 GNOMONCORE_EXPORT void loadPluginGroup(const QString&);

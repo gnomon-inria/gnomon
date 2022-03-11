@@ -17,15 +17,13 @@
 
 #include "gnomonFormManager.h"
 #include "gnomonFormManager_p.h"
-#include "gnomonFormManagerData.h"
 #include "gnomonFormManagerFocus.h"
 #include "gnomonFormManagerItem.h"
 //#include "gnomonItemButton.h"
 
 #include "gnomonView/gnomonViewForm.h"
 
-#include <gnomonCore>
-#include <gnomonPipeline>
+#include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
@@ -35,10 +33,6 @@
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
-
-// #include <dtkFonts>
-// #include <dtkThemes>
-#include <dtkScript>
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>

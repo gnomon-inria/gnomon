@@ -1,4 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
 {

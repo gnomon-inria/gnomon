@@ -1,4 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
 class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractCommand
 {
