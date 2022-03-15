@@ -3,6 +3,7 @@ import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
 import Qt.labs.platform  1.0 as P
+import Qt.labs.settings 1.0
 
 import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
@@ -19,6 +20,8 @@ G.Workspace {
     fill: () => {}
 
     property string current_file: "";
+    property string _opened_file: "";
+    property string _opened_file_name: "";
 
     P.FileDialog {
         id: _file_dialog;
@@ -30,40 +33,74 @@ G.Workspace {
         onAccepted: {
             console.log('Loading an existing project');
             load_session(_file_dialog.file);
+            let file_path = _file_dialog.file.toString()
+            _workspace._opened_file_name = file_path.slice(file_path.lastIndexOf("/")+1)
+            _workspace._opened_file = _file_dialog.file;
         }
     }
 
     Pane {
         anchors.fill: parent;
 
-        Row {
+        RowLayout {
 
             anchors.centerIn: parent;
-
+            anchors.fill: parent
             spacing: 10;
 
-            Grid {
+            Rectangle {
 
-                columns: 3;
-                rows: 2;
+                width: parent.width/3;
+                height: parent.height/3;
 
-                spacing: 10;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left;
+                anchors.margins: 20;
+                color:  X.Style.baseColor;
 
-                Repeater {
-                    model: 3*2;
+                Rectangle {
+                    id: _header_1
+                    width: parent.width
+                    height:42
+                    color: Qt.darker(X.Style.baseColor)
+                    X.Label {
+                        anchors.centerIn: parent
+                        text: "Recentely opened project"
+                        font {
+                            weight: Font.Bold
+                            pointSize: 14;
+                        }
+                    }
+                }
+                ColumnLayout {
+                    anchors.top: _header_1.bottom
+                    spacing: 10
 
                     Rectangle {
-                        color: "#99D0A3BF"
-                        height: 200;
-                        width: 200;
-                        radius: 10;
-                    }
+                        id: _rect_1
+                        anchors.leftMargin: 20
+                        X.Label {
+                            text: ">>" + stt.opened_file_name
+                            font {
+                                weight: Font.Bold
+                                pointSize: 12;
+                            }
+                            MouseArea {
+                                anchors.fill: parent;
+                                onClicked: load_session(stt.opened_file);
+                            }
+                        }
+                    }                    
                 }
             }
 
-            Column {
+            ColumnLayout {
 
-                spacing: 10;
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight;
+                Layout.rightMargin: 20;
+
+                width: parent.width/2;
+                spacing: 10
 
                 Rectangle {
                     width: 200;
@@ -320,4 +357,11 @@ G.Workspace {
             window.create_project(new_p_name.text, new_p_context.text, new_p_tags.text);
         }
     }
+
+    Settings {
+        id: stt
+        property alias width: _workspace.width
+        property alias opened_file: _workspace._opened_file
+        property alias opened_file_name: _workspace._opened_file_name
+    }    
 }
