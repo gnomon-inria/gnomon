@@ -19,77 +19,53 @@
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
+class gnomonAbstractWriterCommand;
 class gnomonAbstractVisualization;
 class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManager;
 class gnomonFormManagerItem;
-class gnomonFormManagerFocus;
 class gnomonFormManagerData;
 class gnomonViewForm;
 
+class gnomonPipelineManager;
+
 class vtkCamera;
 
-class gnomonFormManagerPrivate : public QScrollArea
+class gnomonFormManagerPrivate : public QObject
 {
-public:
-    enum State {
-        Collapsed,
-        Expanded
-    };
+    Q_OBJECT
 
 public:
-     gnomonFormManagerPrivate(QWidget *parent = nullptr);
+     gnomonFormManagerPrivate(QObject *parent = nullptr);
     ~gnomonFormManagerPrivate(void);
 
 public:
-    QSize sizeHint(void) const;
+    QHash<int, gnomonAbstractDynamicForm *> forms;
+    // QHash<int, gnomonAbstractVisualization *> formVisualizations;
+    QHash<int, QJsonObject> visualization_description;
+    QHash<int, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
+    QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
+    QHash<int, QImage> formData;
+    QHash<int, vtkCamera *> formCameras;
+    QHash<QString, gnomonAbstractWriterCommand *> commands;
 
-public:
-    gnomonFormManagerItem *create(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
-    gnomonFormManagerItem *create(const QString&, const QColor&, const QImage& image);
-
-public:
-    QHash<gnomonFormManagerItem *, gnomonAbstractDynamicForm *> forms;
-    QHash<gnomonFormManagerItem *, gnomonAbstractVisualization *> formVisualizations;
-    QHash<gnomonFormManagerItem *, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
-    QHash<gnomonFormManagerItem *, gnomonAbstractCommand *> formWriterCommand;
-    QHash<gnomonFormManagerItem *, gnomonFormManagerData *> formData;
-    QHash<gnomonFormManagerItem *, vtkCamera *> formCameras;
+    QHash<QString, int> formCounter;
 
 public:
     gnomonFormManager *q;
 
 public:
-    gnomonFormManagerFocus *focus_item = nullptr;
+    gnomonPipelineManager *pipeline_manager = nullptr;
 
 public:
     gnomonViewForm *view = nullptr;
 
 public:
-    QScrollArea *focus_area = nullptr;
-
-public:
-    QSequentialAnimationGroup *animation = nullptr;
-
-public:
     static int item_counter;
 
 public:
-    bool inside = false;
-
-public:
-    QWidget *contents;
-
-public:
-    State state = Collapsed;
-
-public:
-    gnomonFormManagerItem *current_focus = nullptr;
-
-public:
-    void deleteAnimation(void);
-    void dismissView(void);
+        QMetaObject::Connection connection;
 };
 
 //

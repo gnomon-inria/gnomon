@@ -1,20 +1,7 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -23,52 +10,109 @@
 class gnomonImageReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonImageSeries *image = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageReaderCommand::gnomonImageReaderCommand(const QString& key) : d(new gnomonImageReaderCommandPrivate)
+gnomonImageReaderCommand::gnomonImageReaderCommand() : d(new gnomonImageReaderCommandPrivate)
 {
-    loadPluginGroup("imageReader");
+    this->factory_name = groupName;
 
-    this->action = gnomonCore::imageReader::pluginFactory().create(key);
+    loadPluginGroup(this->factoryName());
 
-    Q_ASSERT(this->action);
+    for (const auto& key: gnomonCore::imageReader::pluginFactory().keys()) {
+
+        auto algo = gnomonCore::imageReader::pluginFactory().create(key);
+
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonImageReaderCommand::~gnomonImageReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 
-void gnomonImageReaderCommand::redo(void)
+void gnomonImageReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    ((gnomonAbstractImageReader *) this->action)->setPath(d->path);
-    this->action->run();
+    qWarning() << Q_FUNC_INFO;
+
+    ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
+
+    qWarning() << Q_FUNC_INFO << "Done";
 }
 
-void gnomonImageReaderCommand::undo(void)
+void gnomonImageReaderCommand::postdo(void)
+{
+    qWarning() << Q_FUNC_INFO;
+
+    gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
+
+    qWarning() << Q_FUNC_INFO << "Data" << image;
+
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+        d->image = nullptr;
+    } else {
+        d->image = image;
+    }
+
+    qWarning() << Q_FUNC_INFO << "Done" << this->image();
+}
+
+void gnomonImageReaderCommand::undo()
 {
     ((gnomonAbstractImageReader *) this->action)->setPath("");
 }
 
-void gnomonImageReaderCommand::setPath(const QString& path)
+gnomonImageSeries *gnomonImageReaderCommand::image()
 {
-    d->path = path;
+    return d->image;
 }
 
-gnomonImageSeries *gnomonImageReaderCommand::image(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageReaderCommand::outputs()
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
-    } else {
-        return image;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["image"] = this->image();
+    return outputs;
+}
+
+bool gnomonImageReaderCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("image", "gnomonImage"));
+    return types;
+}
+
+void gnomonImageReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->image) {
+        d->image = new gnomonImageSeries();
     }
+    auto tmp = serialization["image"].toObject();
+    d->image->deserialize(tmp);
+}
+
+QJsonObject gnomonImageReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["image"] = d->image->serialize();
+    return out;
 }
 
 //

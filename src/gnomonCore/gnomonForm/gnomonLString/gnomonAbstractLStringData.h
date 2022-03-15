@@ -21,12 +21,13 @@ class dtkImage;
 #include <dtkCore>
 
 #include <gnomonCoreExport.h>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractLStringData
+class GNOMONCORE_EXPORT gnomonAbstractLStringData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractLStringData(void) = default;
@@ -34,13 +35,16 @@ public:
 
     virtual gnomonAbstractLStringData* clone(void) const = 0;
 
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
+
 
 //  ///////////////////////////////////////////////////////////////////
 //  Metadata
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
-
+    virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual void fromString(const QString&) const = 0;

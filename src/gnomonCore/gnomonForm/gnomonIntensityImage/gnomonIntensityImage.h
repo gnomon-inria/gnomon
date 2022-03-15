@@ -17,6 +17,7 @@
 #include <gnomonCoreExport.h>
 
 #include "gnomonForm/gnomonAbstractForm.h"
+#include "gnomonAbstractIntensityImageData.h"
 
 #include <QtCore>
 
@@ -30,6 +31,9 @@ protected:
 public:
     explicit gnomonIntensityImage(void) : m_data(nullptr) {}
     explicit gnomonIntensityImage(dtkImage *data) : m_data(data) {}
+    explicit gnomonIntensityImage(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonIntensityImage*>(this)->deserialize(serialization);
+    }
     gnomonIntensityImage(const gnomonIntensityImage& o) : m_data(new dtkImage(*o.m_data)) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonIntensityImage(*this); }
@@ -58,6 +62,18 @@ public:
 public:
     QString name(void) const override { return"gnomonIntensityImage";}
     QMap<QString,QString> metadata(void) const override { return QMap<QString,QString>(); }
+    QString dataName(void) const override { return "dtkImage"; }
+
+    const QString pluginName(void) override {
+        return QString();
+    }
+
+    QJsonObject serialize(void) override {
+        QJsonObject out;
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) override {
+    }
 
 public:
     const dtkImage *data(void) const { return m_data; }

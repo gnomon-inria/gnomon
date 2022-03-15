@@ -14,16 +14,14 @@
 
 #pragma once
 
-#include <QtCore>
-
 #include <gnomonVisualizationExport.h>
 
 #include "gnomonAbstractVisualizationMesh.h"
 
-class gnomonViewForm;
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
-class gnomonCoreParameter;
+class gnomonViewForm;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisualizationMesh
 {
@@ -35,6 +33,7 @@ public:
 
 public:
 	void setMesh(gnomonMeshSeries *mesh) override;
+	gnomonMeshSeries *mesh(void) override;
 
 public slots:
     void updateOpacity(void);
@@ -49,6 +48,7 @@ public slots:
 
 public slots:
     void clear(void) override;
+    virtual void setVisible(bool visible) override;
 
 public slots:
     void on2D(void) override;
@@ -62,8 +62,9 @@ public slots:
 
 public:
     void setParameter(const QString&, const QVariant&) override;
-    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    void setParameters(const dtkCoreParameters&) override;
+    dtkCoreParameters parameters(void) const override;
+    QMap<QString, QString> parameterGroups(void) override;
 
 private:
 	class gnomonVisualizationMeshPrivate *dd;

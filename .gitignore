@@ -30,6 +30,7 @@
 
 build
 build*
+_build
 
 ## ###################################################################
 ## Install directories
@@ -37,6 +38,7 @@ build*
 
 install
 install-conda
+conda-bld
 
 ## ###################################################################
 ## Generated files
@@ -54,11 +56,17 @@ src/gnomonStyle/gnomonStyleValues.h
 
 src/gnomonOmero/gnomonOmeroConfig.h
 
+#python/gnomon/utils/gnomonPlugin.py
+#python/gnomon/utils/templates/
+
 ## ###################################################################
 ## Python
 ## ###################################################################
 
 *.pyc
+*.egg-info
+*.vscode
 
 ######################################################################
 ### .gitignore ends here
+!/python/gnomon/utils/gnomonPlugin.py

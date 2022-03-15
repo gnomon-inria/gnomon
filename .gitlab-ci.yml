@@ -4,51 +4,84 @@ stages:
   - build
   - deploy
 
+
 .template_retry:
   retry:
     max: 2
     when: runner_system_failure
 
+
 conda_build_linux:
   stage: build
   script:
-  - conda update -n base -c defaults conda
-  - conda install conda-build git anaconda-client conda-verify
+  - conda install -n base -c defaults conda python=3.9 -y
+  - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
   - mkdir conda-bld
-  - conda build . -c dtk-forge -c conda-forge --output-folder conda-bld/
+  - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
-  allow_failure: true
   artifacts:
     paths:
       - conda-bld
   only:
-    - master
+  - master
+
+
+conda_build_linux_develop:
+  stage: build
+  script:
+    - conda install -n base -c defaults conda python=3.9 -y
+    - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
+    - mkdir conda-bld
+    - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+  extends: .template_retry
+  when: manual
+  artifacts:
+    paths:
+      - conda-bld
+  only:
     - develop
 
-anaconda_linux:
+
+anaconda_linux_master:
   stage: deploy
   script:
-  - conda update -n base -c defaults conda
+  - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client
-  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
+  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
-  allow_failure: true
   only:
   - master
+
+
+anaconda_linux_develop :
+  stage: deploy
+  script:
+  - conda install -n base -c defaults conda python=3.9 -y
+  - conda install conda-build anaconda-client curl
+  - curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
+  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
+  extends: .template_retry
+  when: manual
+  only:
+  - develop
+
 
 pages:
   stage: deploy
   script:
-  - cd doc
-  - conda update -n base -c defaults conda
-  - conda install sphinx make matplotlib
-  - conda install -c conda-forge doxygen breathe
-  - make html
-  - mv build/html ../public
+    - conda update -n base -c defaults conda
+    - conda install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
+    - cd doc
+    - make html
+    - mv build/html ../public
+    - cd ../doc_md
+    - make html
+    - mkdir -p ../public/staging
+    - cp -R _build/html/* ../public/staging
   extends: .template_retry
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
-  - develop
+    - master
+    - develop

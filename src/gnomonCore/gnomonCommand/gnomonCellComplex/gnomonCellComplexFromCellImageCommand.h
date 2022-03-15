@@ -1,26 +1,45 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
 class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonCellComplexFromCellImageCommand(void) = delete;
-     gnomonCellComplexFromCellImageCommand(const QString&);
-    ~gnomonCellComplexFromCellImageCommand(void);
+     gnomonCellComplexFromCellImageCommand();
+    ~gnomonCellComplexFromCellImageCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonCellImageSeries *image_series);
 
-    gnomonCellImageSeries *input(void);
-    gnomonCellComplexSeries *output(void);
+    gnomonCellImageSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
+    gnomonCellComplexSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString &) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "cellComplexFromCellImage";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexFromCellImageCommandPrivate *d;

@@ -1,20 +1,34 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
+
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
+
+class GNOMONCORE_EXPORT gnomonTreeReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonTreeReaderCommand(void) = delete;
-     gnomonTreeReaderCommand(const QString&);
-    ~gnomonTreeReaderCommand(void);
+     gnomonTreeReaderCommand(void);
+    ~gnomonTreeReaderCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    gnomonTreeSeries *tree();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonTreeSeries *tree(void);
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "treeReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonTreeReaderCommandPrivate *d;

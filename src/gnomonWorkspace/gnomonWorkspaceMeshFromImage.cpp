@@ -88,10 +88,14 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
+    d->source->setAcceptForm("gnomonImage",true);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonMesh",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -155,6 +159,12 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     });
 
 // /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+
+// /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -200,6 +210,8 @@ void gnomonWorkspaceMeshFromImage::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);
@@ -213,6 +225,11 @@ void gnomonWorkspaceMeshFromImage::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceMeshFromImage::color = QColor("#5f9ea0");
+
+bool gnomonWorkspaceMeshFromImage::isEmpty(void)
+{
+    return gnomonWorkspaceMeshFromImagePrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceMeshFromImage.cpp ends here

@@ -47,6 +47,7 @@ public:
 public:
     QString name() const override { return "gnomonImage"; };
     QMap<QString,QString> metadata(void) const override;
+    QString dataName(void) const override { return "dtkImage" }
 
 private:
     class gnomonImagePrivate *d;

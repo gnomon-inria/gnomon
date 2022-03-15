@@ -21,6 +21,7 @@ class dtkImage;
 #include <dtkCore>
 
 #include <gnomonCoreExport>
+#include "gnomonForm/gnomonAbstractFormData"
 
 class gnomonTree;
 
@@ -28,7 +29,7 @@ class gnomonTree;
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractTreeData
+class GNOMONCORE_EXPORT gnomonAbstractTreeData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractTreeData(void) = default;
@@ -36,13 +37,16 @@ public:
 
     virtual gnomonAbstractTreeData* clone(void) const = 0;
 
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
+
 
 //  ///////////////////////////////////////////////////////////////////
 //  Metadata
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
-
+    virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual QList<long> vertexIds(void) const = 0;

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
@@ -30,6 +16,9 @@ protected:
 public:
     explicit gnomonCellImage(void) : m_data(nullptr) {}
     explicit gnomonCellImage(gnomonAbstractCellImageData *data) : m_data(data) {}
+    explicit gnomonCellImage(QJsonObject& serialization) : m_data(nullptr) {
+        static_cast<gnomonCellImage*>(this)->deserialize(serialization);
+    }
     gnomonCellImage(const gnomonCellImage& o) : m_data(o.m_data->clone()) {}
 
     gnomonAbstractForm *clone(void) { return new gnomonCellImage(*this); };
@@ -69,8 +58,27 @@ public:
     }
 
 public:
-    QString name(void) const override { return"gnomonCellImage";}
+    QString name(void) const override { return formName(); }
     QMap<QString,QString> metadata(void) const override { return m_data->metadata(); }
+    QString dataName(void) const override { return m_data->dataName(); }
+    const QString pluginName(void) override {
+        return m_data->pluginName();
+    }
+
+    QJsonObject serialize(void) override {
+        QJsonObject out;
+        out["pluginName"] = pluginName();
+        out["data"] = m_data->serialize();
+        return out;
+    }
+    void deserialize(QJsonObject &serialization) override {
+        delete m_data;
+        m_data = gnomonCore::cellImageData::pluginFactory().create(serialization["pluginName"].toString());
+        m_data->deserialize(serialization["data"].toString());
+    }
+
+public:
+    static inline QString formName(void) { return "gnomonCellImage"; }
 
 public:
     virtual void setImage(dtkImage *image) { return m_data->setImage(image); }

@@ -78,12 +78,16 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     for(gnomonViewForm *view : d->sources_layout->views()) {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     }
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
     d->target->setMinimumWidth(250);
     d->target->setEnableLinking(false);
+    d->target->setAcceptForm("gnomonImage",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     QWidget *dummy = new QWidget(this);
     dummy->setLayout(d->sources_layout);
@@ -127,20 +131,21 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
     {
         d->command->undo();
+        d->target_message->setMessage("Result will be displayed here");
         for(gnomonViewForm *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
+                d->target_message->setMessage("Result will be displayed here");
             }
         }
         d->configure(d->algorithm);
-//        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
-//        dtkApp->window()->menubar()->touch();
     });
 
     connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
     {
         view->setInputView(true);
         view->setEnableLinking(false);
+        view->setAcceptForm("gnomonImage",true);
     });
 
 
@@ -153,6 +158,12 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
         }
         d->configure(algorithm);
     });
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -168,18 +179,10 @@ gnomonWorkspaceFusion::~gnomonWorkspaceFusion(void)
 
 void gnomonWorkspaceFusion::enter(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->addMenu(form->menu());
-//    dtkApp->window()->menubar()->addMenu(d->target->menu());
-    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceFusion::leave(void)
 {
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->removeMenu(form->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-    dtkApp->window()->menubar()->touch();
 }
 
 void gnomonWorkspaceFusion::apply(void)
@@ -187,7 +190,6 @@ void gnomonWorkspaceFusion::apply(void)
     if(d->sources_layout->views().isEmpty())
         return;
 
-    d->command->removeImages();
     //d->command->removeLandmarks();
     d->command->undo();
 
@@ -203,6 +205,8 @@ void gnomonWorkspaceFusion::apply(void)
     if (d->command->output()) {
         d->target->setImage(d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -214,6 +218,11 @@ void gnomonWorkspaceFusion::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceFusion::color = QColor("#ff9500");
+
+bool gnomonWorkspaceFusion::isEmpty(void)
+{
+    return gnomonWorkspaceFusionPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceFusion.cpp ends here

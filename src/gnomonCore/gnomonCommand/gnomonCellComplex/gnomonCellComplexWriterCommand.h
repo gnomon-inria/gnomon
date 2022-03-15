@@ -1,19 +1,34 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonCellComplexWriterCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
+
+class GNOMONCORE_EXPORT gnomonCellComplexWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonCellComplexWriterCommand(void) = delete;
-     gnomonCellComplexWriterCommand(const QString&);
-    ~gnomonCellComplexWriterCommand(void);
+     gnomonCellComplexWriterCommand();
+    ~gnomonCellComplexWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *) override;
     void setCellComplex(gnomonCellComplexSeries *cellcomplex);
+    void setAlgorithmName(const QString &) override;
+
+    orderedMap inputTypes() override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "cellComplexWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexWriterCommandPrivate *d;

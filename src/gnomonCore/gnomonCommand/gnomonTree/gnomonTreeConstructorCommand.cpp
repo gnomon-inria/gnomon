@@ -14,7 +14,8 @@
 
 #include "gnomonTreeConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonTreeConstructorCommandPrivate
 {
@@ -26,50 +27,90 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeConstructorCommand::gnomonTreeConstructorCommand(const QString& key) : d(new gnomonTreeConstructorCommandPrivate)
+gnomonTreeConstructorCommand::gnomonTreeConstructorCommand() : d(new gnomonTreeConstructorCommandPrivate)
 {
-    loadPluginGroup("treeConstructor");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::treeConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeConstructor::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonTreeConstructorCommand::~gnomonTreeConstructorCommand(void)
+gnomonTreeConstructorCommand::~gnomonTreeConstructorCommand()
 {
     delete d;
 }
 
-void gnomonTreeConstructorCommand::redo(void)
+void gnomonTreeConstructorCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::treeConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeConstructorCommand::undo(void)
+void gnomonTreeConstructorCommand::predo(void)
 {
+
 }
 
-void gnomonTreeConstructorCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonTreeConstructorCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonTreeSeries *gnomonTreeConstructorCommand::output(void)
+void gnomonTreeConstructorCommand::postdo(void)
 {
     gnomonTreeSeries *tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
+
+    if ((!tree)||(tree->times().empty())) {
+        d->output = nullptr;
     } else {
         d->output = tree;
-        return tree;
     }
+}
+
+void gnomonTreeConstructorCommand::undo()
+{
+}
+
+gnomonTreeSeries *gnomonTreeConstructorCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeConstructorCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonTreeConstructorCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeConstructorCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonTree"));
+    return types;
+}
+
+void gnomonTreeConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

@@ -35,7 +35,7 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 
@@ -44,6 +44,21 @@ public:
 
 public:
     virtual gnomonPointCloudSeries *pointCloud(void) = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonPointCloud") {
+            return {"pointCloud"};
+        }
+        return {};
+    };
+
 
 public:
     virtual QStringList extensions(void) = 0;

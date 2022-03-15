@@ -1,19 +1,34 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonCellImageWriterCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+
+class GNOMONCORE_EXPORT gnomonCellImageWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonCellImageWriterCommand(void) = delete;
-     gnomonCellImageWriterCommand(const QString&);
-    ~gnomonCellImageWriterCommand(void);
+     gnomonCellImageWriterCommand();
+    ~gnomonCellImageWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *form) override;
     void setCellImage(gnomonCellImageSeries *image_series);
+    void setAlgorithmName(const QString &) override;
+
+    orderedMap inputTypes() override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "cellImageWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageWriterCommandPrivate *d;

@@ -15,9 +15,6 @@
 #pragma once
 
 #include <QtCore>
-#include <QtWidgets>
-
-#include <dtkFonts/dtkFontAwesome>
 
 #include <gnomonVisualizationExport>
 

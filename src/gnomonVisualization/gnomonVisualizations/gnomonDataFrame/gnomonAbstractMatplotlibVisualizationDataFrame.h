@@ -25,7 +25,7 @@
 class gnomonViewMatplotlib;
 
 class gnomonDataFrame;
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualizationDataFrame : public gnomonAbstractMatplotlibVisualization
 {
@@ -37,11 +37,26 @@ public:
 
 public:
 	virtual void setDataFrame(gnomonDataFrame *dataFrame) = 0;
+	virtual gnomonDataFrame *dataFrame(void) = 0;
+
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"setDataFrame"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"dataFrame"};
+        }
+        return {};
+    };
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void setParameters(const dtkCoreParameters&) override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
+    virtual QMap<QString, QString> parameterGroups(void) override = 0;
 
 public:
     virtual QImage imageRendering(void) override = 0;

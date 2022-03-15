@@ -14,8 +14,8 @@
 
 #include "gnomonPointCloudFromImageCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -25,74 +25,136 @@ class gnomonPointCloudFromImageCommandPrivate
 {
 public:
     gnomonImageSeries* input = nullptr;
+
+    gnomonPointCloudSeries* output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand(const QString& key) : d(new gnomonPointCloudFromImageCommandPrivate)
+gnomonPointCloudFromImageCommand::gnomonPointCloudFromImageCommand() : d(new gnomonPointCloudFromImageCommandPrivate)
 {
-    loadPluginGroup("pointCloudFromImage");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::pointCloudFromImage::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonPointCloudFromImageCommand::~gnomonPointCloudFromImageCommand(void)
+gnomonPointCloudFromImageCommand::~gnomonPointCloudFromImageCommand()
 {
     delete d;
 }
 
-void gnomonPointCloudFromImageCommand::redo(void)
+void gnomonPointCloudFromImageCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::pointCloudFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudFromImageCommand::undo(void)
+void gnomonPointCloudFromImageCommand::predo(void)
+{
+
+}
+
+void gnomonPointCloudFromImageCommand::postdo(void)
+{
+    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+
+    if ((!pointCloud)||(pointCloud->times().empty())) {
+        d->output = nullptr;
+    } else {
+        d-> output = pointCloud;
+    }
+}
+
+void gnomonPointCloudFromImageCommand::undo()
 {
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *input)
+void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *image)
 {
-    d->input = input;
-
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+        d->input = nullptr;
+    } else {
+        d->input = image;
+    }
     Q_ASSERT(this->action);
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(d->input);
 }
 
-void gnomonPointCloudFromImageCommand::setParameter(const QString& parameter, const QVariant& value)
+gnomonImageSeries *gnomonPointCloudFromImageCommand::input()
 {
-    this->action->setParameter(parameter, value);
+    return d->input;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonPointCloudFromImageCommand::parameters(void) const
+gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output()
 {
-    return this->action->parameters();
+    return d->output;
 }
 
-gnomonImageSeries *gnomonPointCloudFromImageCommand::input(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::inputs()
 {
-    gnomonImageSeries *image = ((gnomonAbstractPointCloudFromImage *) this->action)->input();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonPointCloudFromImageCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonPointCloudFromImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonPointCloud"));
+    return output_types;
+}
+
+void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "image") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
     } else {
-        return image;
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
 
-gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output(void)
-{
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
-        return nullptr;
-    } else {
-        return pointCloud;
+void gnomonPointCloudFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonPointCloudSeries();
     }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

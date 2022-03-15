@@ -94,9 +94,13 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
     d->source->setInputView(true);
+    d->source->setAcceptForm("gnomonImage",true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonPointCloud",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -160,6 +164,12 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QWidget *
     });
 
 // /////////////////////////////////////////////////////////////////////////////
+// Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+
+// /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -205,6 +215,8 @@ void gnomonWorkspacePointCloudFromImage::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);
@@ -218,6 +230,11 @@ void gnomonWorkspacePointCloudFromImage::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspacePointCloudFromImage::color = QColor("#209820");
+
+bool gnomonWorkspacePointCloudFromImage::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudFromImagePrivate::isEmpty();
+}
 
 //
 // gnomonWorkspacePointCloudFromImage.cpp ends here

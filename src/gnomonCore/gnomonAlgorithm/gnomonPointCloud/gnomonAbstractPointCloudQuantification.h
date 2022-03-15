@@ -34,7 +34,7 @@ class GNOMONCORE_EXPORT gnomonAbstractPointCloudQuantification : public gnomonAb
     //Inputs
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+  virtual dtkCoreParameters parameters(void) const override = 0;
 
   virtual void setImage(gnomonImageSeries *image) = 0;
   virtual void setPointCloud(gnomonPointCloudSeries *pointCloud) = 0;
@@ -43,6 +43,33 @@ public:
 public:
     virtual gnomonPointCloudSeries *pointCloud() const = 0;
     virtual gnomonDataFrameSeries *dataFrame() const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setImage"};
+        } else if(formName == "gnomonPointCloud") {
+            return {"setPointCloud"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"getImageInput"};
+        } else if(formName == "gnomonPointCloud") {
+            return {"getPointCloudInput"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonPointCloud") {
+            return {"pointCloud"};
+        } else if(formName == "gnomonDataFrame") {
+            return {"dataFrame"};
+        }
+        return {};
+    };
+
 
 public:
     virtual void run(void) override = 0;

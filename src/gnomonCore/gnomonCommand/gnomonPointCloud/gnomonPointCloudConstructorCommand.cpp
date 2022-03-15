@@ -14,7 +14,8 @@
 
 #include "gnomonPointCloudConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonPointCloudConstructorCommandPrivate
 {
@@ -26,50 +27,89 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand(const QString& key) : d(new gnomonPointCloudConstructorCommandPrivate)
+gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand() : d(new gnomonPointCloudConstructorCommandPrivate)
 {
-    loadPluginGroup("pointCloudConstructor");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::pointCloudConstructor::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonPointCloudConstructorCommand::~gnomonPointCloudConstructorCommand(void)
+gnomonPointCloudConstructorCommand::~gnomonPointCloudConstructorCommand()
 {
     delete d;
 }
 
-void gnomonPointCloudConstructorCommand::redo(void)
+void gnomonPointCloudConstructorCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::pointCloudConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonPointCloudConstructorCommand::undo(void)
+void gnomonPointCloudConstructorCommand::predo(void)
 {
+
 }
 
-void gnomonPointCloudConstructorCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonPointCloudConstructorCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonPointCloudSeries *gnomonPointCloudConstructorCommand::output(void)
+void gnomonPointCloudConstructorCommand::postdo(void)
 {
     gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
-    if ((!pointCloud)||(pointCloud->times().size()==0)) {
-        return nullptr;
+
+    if ((!pointCloud)||(pointCloud->times().empty())) {
+        d->output = nullptr;
     } else {
         d->output = pointCloud;
-        return pointCloud;
     }
+}
+
+void gnomonPointCloudConstructorCommand::undo()
+{
+}
+
+gnomonPointCloudSeries *gnomonPointCloudConstructorCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudConstructorCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonPointCloudConstructorCommand::isEmpty(){
+    return availablePlugins().empty();
+}
+
+QStringList gnomonPointCloudConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonPointCloudConstructorCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonPointCloud"));
+    return output_types;
+}
+
+void gnomonPointCloudConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonPointCloudSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonPointCloudConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

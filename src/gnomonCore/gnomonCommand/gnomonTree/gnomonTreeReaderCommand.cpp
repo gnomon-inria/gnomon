@@ -14,7 +14,8 @@
 
 #include "gnomonTreeReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -23,52 +24,96 @@
 class gnomonTreeReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonTreeSeries *tree = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeReaderCommand::gnomonTreeReaderCommand(const QString& key) : d(new gnomonTreeReaderCommandPrivate)
+gnomonTreeReaderCommand::gnomonTreeReaderCommand() : d(new gnomonTreeReaderCommandPrivate)
 {
-    loadPluginGroup("treeReader");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::treeReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (const auto& key: gnomonCore::treeReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::treeReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 
-void gnomonTreeReaderCommand::redo(void)
+void gnomonTreeReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    ((gnomonAbstractTreeReader *) this->action)->setPath(d->path);
-    this->action->run();
+    ((gnomonAbstractTreeReader *) this->action)->setPath(this->m_path);
 }
 
-void gnomonTreeReaderCommand::undo(void)
+void gnomonTreeReaderCommand::postdo(void)
+{
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
+
+    if ((!tree)||(tree->times().empty())) {
+        d->tree = nullptr;
+    } else {
+        d->tree = tree;
+    }
+}
+
+void gnomonTreeReaderCommand::undo()
 {
     ((gnomonAbstractTreeReader *) this->action)->setPath("");
 }
 
-void gnomonTreeReaderCommand::setPath(const QString& path)
+gnomonTreeSeries *gnomonTreeReaderCommand::tree()
 {
-    d->path = path;
+    return d->tree;
 }
 
-gnomonTreeSeries *gnomonTreeReaderCommand::tree(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeReaderCommand::outputs()
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeReader *) this->action)->tree();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
-    } else {
-        return tree;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["tree"] = this->tree();
+    return outputs;
+}
+
+bool gnomonTreeReaderCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("tree", "gnomonTree"));
+    return types;
+}
+
+void gnomonTreeReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->tree) {
+        d->tree = new gnomonTreeSeries();
     }
+    auto tmp = serialization["tree"].toObject();
+    d->tree->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["tree"] = d->tree->serialize();
+    return out;
 }
 
 //

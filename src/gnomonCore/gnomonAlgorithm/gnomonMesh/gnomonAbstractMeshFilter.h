@@ -22,7 +22,7 @@
 
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -35,7 +35,7 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 
@@ -44,6 +44,27 @@ public:
     virtual gnomonMeshSeries *input() = 0;
 
     virtual gnomonMeshSeries *output() = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"setInput"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"input"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

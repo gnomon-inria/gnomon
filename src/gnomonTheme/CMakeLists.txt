@@ -12,7 +12,7 @@
 ##
 ### Code:
 
-project(gnomonTheme)
+project(gnomonTheme VERSION ${gnomon_VERSION})
 
 ## #################################################################
 ## Sources

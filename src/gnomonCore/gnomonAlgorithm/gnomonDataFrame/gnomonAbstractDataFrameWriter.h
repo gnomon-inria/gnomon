@@ -33,13 +33,31 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 
 public:
     virtual void setDataFrame(gnomonDataFrameSeries *DataFrame) = 0;
     virtual void setPath(const QString& path) = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"setDataFrame"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonDataFrame") {
+            return {"dataFrame"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        return {};
+    };
+
 
 public:
     virtual QStringList extensions(void) = 0;

@@ -1,19 +1,35 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
+
+class GNOMONCORE_EXPORT gnomonMeshWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonMeshWriterCommand(void) = delete;
-     gnomonMeshWriterCommand(const QString&);
-    ~gnomonMeshWriterCommand(void);
+     gnomonMeshWriterCommand(void);
+    ~gnomonMeshWriterCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
-    void setMesh(gnomonMeshSeries *mesh);
+    void setForm(gnomonAbstractDynamicForm *form) override;
+    void setMesh(gnomonMeshSeries *image_series);
+    void setAlgorithmName(const QString& algo_name) override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+    orderedMap inputTypes() override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "meshWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshWriterCommandPrivate *d;

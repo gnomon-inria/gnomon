@@ -1,20 +1,34 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonImageReaderCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+
+class GNOMONCORE_EXPORT gnomonImageReaderCommand: public gnomonAbstractReaderCommand
 {
 public:
-     gnomonImageReaderCommand(void) = delete;
-     gnomonImageReaderCommand(const QString&);
-    ~gnomonImageReaderCommand(void);
+     gnomonImageReaderCommand(void);
+    ~gnomonImageReaderCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    gnomonImageSeries *image();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonImageSeries *image(void);
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "imageReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonImageReaderCommandPrivate *d;

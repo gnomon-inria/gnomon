@@ -1,19 +1,35 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonDataFrameWriterCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
+
+class GNOMONCORE_EXPORT gnomonDataFrameWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonDataFrameWriterCommand(void) = delete;
-     gnomonDataFrameWriterCommand(const QString&);
-    ~gnomonDataFrameWriterCommand(void);
+     gnomonDataFrameWriterCommand();
+    ~gnomonDataFrameWriterCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
-    void setDataFrame(gnomonDataFrameSeries *dataFrame);
+    void setForm(gnomonAbstractDynamicForm *form) override;
+    void setDataFrame(gnomonDataFrameSeries *image_series);
+    void setAlgorithmName(const QString &) override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    orderedMap inputTypes() override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "dataFrameWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonDataFrameWriterCommandPrivate *d;

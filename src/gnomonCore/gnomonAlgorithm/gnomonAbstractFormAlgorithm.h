@@ -17,10 +17,11 @@
 #include <gnomonCoreExport>
 
 #include <QtCore>
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAbstractAlgorithm.h"
 
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
@@ -29,8 +30,6 @@
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonForm/gnomonTree/gnomonTree.h"
-
-class gnomonCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -44,56 +43,76 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
+    
+    // BinaryImage
+public:
+    virtual void setInputBinaryImage(gnomonBinaryImageSeries *binaryImage) { return; };
+    // set update argument to false to avoid re-generating gnomon classes in Python plugins
+    virtual gnomonBinaryImageSeries *inputBinaryImage(bool update=true) const { return nullptr; };
+    virtual gnomonBinaryImageSeries *outputBinaryImage(bool update=true) const { return nullptr; };
 
+    
     // CellComplex
 public:
     virtual void setInputCellComplex(gnomonCellComplexSeries *cellComplex) { return; };
-    virtual gnomonCellComplexSeries *inputCellComplex() const { return nullptr; };
-    virtual gnomonCellComplexSeries *outputCellComplex() const { return nullptr; };
+    // set update argument to false to avoid re-generating gnomon classes in Python plugins
+    virtual gnomonCellComplexSeries *inputCellComplex(bool update=true) const { return nullptr; };
+    virtual gnomonCellComplexSeries *outputCellComplex(bool update=true) const { return nullptr; };
 
     // CellImage
 public:
     virtual void setInputCellImage(gnomonCellImageSeries *cellImage) { return; };
-    virtual gnomonCellImageSeries *inputCellImage() const { return nullptr; };
-    virtual gnomonCellImageSeries *outputCellImage() const { return nullptr; };
+    virtual gnomonCellImageSeries *inputCellImage(bool update=true) const { return nullptr; };
+    virtual gnomonCellImageSeries *outputCellImage(bool update=true) const { return nullptr; };
 
     // DataFrame
 public:
     virtual void setInputDataFrame(gnomonDataFrameSeries *dataFrame) { return; };
-    virtual gnomonDataFrameSeries *inputDataFrame() const { return nullptr; };
-    virtual gnomonDataFrameSeries *outputDataFrame() const { return nullptr; };
+    virtual gnomonDataFrameSeries *inputDataFrame(bool update=true) const { return nullptr; };
+    virtual gnomonDataFrameSeries *outputDataFrame(bool update=true) const { return nullptr; };
 
     // Image
 public:
     virtual void setInputImage(gnomonImageSeries *image) { return; };
-    virtual gnomonImageSeries *inputImage() const { return nullptr; };
-    virtual gnomonImageSeries *outputImage() const { return nullptr; };
+    virtual gnomonImageSeries *inputImage(bool update=true) const { return nullptr; };
+    virtual gnomonImageSeries *outputImage(bool update=true) const { return nullptr; };
 
     // LString
 public:
     virtual void setInputLString(gnomonLStringSeries *lString) { return; };
-    virtual gnomonLStringSeries *inputLString() const { return nullptr; };
-    virtual gnomonLStringSeries *outputLString() const { return nullptr; };
+    virtual gnomonLStringSeries *inputLString(bool update=true) const { return nullptr; };
+    virtual gnomonLStringSeries *outputLString(bool update=true) const { return nullptr; };
 
     // Mesh
 public:
     virtual void setInputMesh(gnomonMeshSeries *mesh) { return; };
-    virtual gnomonMeshSeries *inputMesh() const { return nullptr; };
-    virtual gnomonMeshSeries *outputMesh() const { return nullptr; };
+    virtual gnomonMeshSeries *inputMesh(bool update=true) const { return nullptr; };
+    virtual gnomonMeshSeries *outputMesh(bool update=true) const { return nullptr; };
 
     // PointCloud
 public:
     virtual void setInputPointCloud(gnomonPointCloudSeries *pointCloud) { return; };
-    virtual gnomonPointCloudSeries *inputPointCloud() const { return nullptr; };
-    virtual gnomonPointCloudSeries *outputPointCloud() const { return nullptr; };
+    virtual gnomonPointCloudSeries *inputPointCloud(bool update=true) const { return nullptr; };
+    virtual gnomonPointCloudSeries *outputPointCloud(bool update=true) const { return nullptr; };
 
     // Tree
 public:
     virtual void setInputTree(gnomonTreeSeries *tree) { return; };
-    virtual gnomonTreeSeries *inputTree() const { return nullptr; };
-    virtual gnomonTreeSeries *outputTree() const { return nullptr; };
-    
+    virtual gnomonTreeSeries *inputTree(bool update=true) const { return nullptr; };
+    virtual gnomonTreeSeries *outputTree(bool update=true) const { return nullptr; };
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        return "setInput" +  formName.split("gnomon")[1];
+    };
+    static inline QString defaultGetter(QString formName) {
+        return "input" +  formName.split("gnomon")[1];
+    };
+    static inline QString defaultOutput(QString formName) {
+        return "output" +  formName.split("gnomon")[1];
+    };
+
 public:
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;

@@ -20,11 +20,6 @@
 
 #include "gnomonAbstractVisualizationCellImage.h"
 
-class gnomonViewForm;
-
-class gnomonCellImage;
-class gnomonCoreParameter;
-
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationCellImageVolume : public gnomonAbstractVisualizationCellImage
 {
     Q_OBJECT
@@ -35,6 +30,7 @@ public:
 
 public:
 	void setCellImage(gnomonCellImageSeries *cellImage) override;
+	gnomonCellImageSeries *cellImage(void) override;
 
 public slots:
     void updateOpacity(void);
@@ -49,6 +45,7 @@ public slots:
 
 public slots:
     void clear(void) override;
+    virtual void setVisible(bool visible) override;
 
 public slots:
     void on2D(void) override;
@@ -62,8 +59,9 @@ public slots:
 
 public:
     void setParameter(const QString&, const QVariant&) override;
-    void setParameters(const QMap<QString, gnomonCoreParameter *>&) override;
-    QMap<QString, gnomonCoreParameter *> parameters(void) const override;
+    void setParameters(const dtkCoreParameters&) override;
+    dtkCoreParameters parameters(void) const override;
+    QMap<QString, QString> parameterGroups(void) override;
 
 public:
     long cellId(long vtkId) override;

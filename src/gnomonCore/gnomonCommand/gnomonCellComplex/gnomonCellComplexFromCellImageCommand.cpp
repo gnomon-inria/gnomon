@@ -14,77 +14,139 @@
 
 #include "gnomonCellComplexFromCellImageCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellComplexFromCellImageCommandPrivate
 {
 public:
-    gnomonCellImageSeries* input = nullptr;
+    gnomonCellImageSeries *input = nullptr;
+    gnomonCellComplexSeries *output = nullptr;
 };
 
-gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand(const QString& key) : d(new gnomonCellComplexFromCellImageCommandPrivate)
+gnomonCellComplexFromCellImageCommand::gnomonCellComplexFromCellImageCommand() : d(new gnomonCellComplexFromCellImageCommandPrivate)
 {
-    loadPluginGroup("cellComplexFromCellImage");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(key);
+    QStringList keys = gnomonCore::cellComplexFromCellImage::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(this->algorithm_name);
+    }
 
-    Q_ASSERT(this->action);
 }
 
-gnomonCellComplexFromCellImageCommand::~gnomonCellComplexFromCellImageCommand(void)
+gnomonCellComplexFromCellImageCommand::~gnomonCellComplexFromCellImageCommand()
 {
     delete d;
 }
 
-void gnomonCellComplexFromCellImageCommand::redo(void)
+void gnomonCellComplexFromCellImageCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::cellComplexFromCellImage::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexFromCellImageCommand::undo(void)
+void gnomonCellComplexFromCellImageCommand::predo(void)
+{
+
+}
+
+void gnomonCellComplexFromCellImageCommand::postdo(void)
+{
+    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
+
+    if ((!cellComplex)||(cellComplex->times().empty())) {
+        d->output = nullptr;
+    } else {
+        d->output = cellComplex;
+    }
+}
+
+void gnomonCellComplexFromCellImageCommand::undo()
 {
     ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(nullptr);
 }
 
 void gnomonCellComplexFromCellImageCommand::setInput(gnomonCellImageSeries *input)
 {
-    d->input = input;
-
-    Q_ASSERT(this->action);
-    ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(d->input);
-}
-
-void gnomonCellComplexFromCellImageCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonCellComplexFromCellImageCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonCellImageSeries *gnomonCellComplexFromCellImageCommand::input(void)
-{
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellComplexFromCellImage *) this->action)->input();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
-        return nullptr;
+    if ((!input)||(input->times().empty())) {
+        d->input = nullptr;
     } else {
-        return cellImage;
+        d->input = input;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(d->input);
     }
 }
 
-gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output(void)
+gnomonCellImageSeries *gnomonCellComplexFromCellImageCommand::input()
 {
-    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexFromCellImage *) this->action)->output();
-    if ((!cellComplex)||(cellComplex->times().size()==0)) {
-        return nullptr;
+    return d->input;
+}
+
+gnomonCellComplexSeries *gnomonCellComplexFromCellImageCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexFromCellImageCommand::inputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexFromCellImageCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonCellComplexFromCellImageCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellComplexFromCellImageCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonCellImage"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellComplexFromCellImageCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonCellComplex"));
+    return types;
+}
+
+void gnomonCellComplexFromCellImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonCellImageSeries *>(form));
     } else {
-        return cellComplex;
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+QStringList gnomonCellComplexFromCellImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellComplexFromCellImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexFromCellImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

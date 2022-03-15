@@ -1,200 +1,95 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWidgetsParameter.h"
+
+#include <dtkWidgets>
 
 #include "gnomonColor/gnomonCoreParameterColor.h"
 
 #include "gnomonEditor/gnomonColorMapEditor.h"
-#include "gnomonEditor/gnomonDoubleRangeEditor.h"
-#include "gnomonEditor/gnomonStringListEditor.h"
 #include "gnomonEditor/gnomonLookupTableEditor.h"
 
-QWidget *gnomonWidgetsParameter::widget(gnomonCoreParameter *parameter, QWidget *parent)
+QWidget *gnomonWidgetsParameter::widget(dtkCoreParameter *parameter, QWidget *parent)
 {
-    if (gnomonCoreParameterInt *p = dynamic_cast<gnomonCoreParameterInt *>(parameter)) {
-        return gnomonWidgetsParameterInt::widget(p, parent);
+    if (dtk::d_bool *p = dynamic_cast<dtk::d_bool *>(parameter)) {
+        auto *w = new dtkWidgetsParameterBoolCheckBox(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterDouble *p = dynamic_cast<gnomonCoreParameterDouble *>(parameter)) {
-        return gnomonWidgetsParameterDouble::widget(p, parent);
+
+    if (dtk::d_int *p = dynamic_cast<dtk::d_int *>(parameter)) {
+        auto *w = new dtkWidgetsParameterIntSpinBox(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterIntRange *p = dynamic_cast<gnomonCoreParameterIntRange *>(parameter)) {
-        return gnomonWidgetsParameterIntRange::widget(p, parent);
+    if (dtk::d_real *p = dynamic_cast<dtk::d_real *>(parameter)) {
+        auto *w = new dtkWidgetsParameterDoubleSpinBox(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterDoubleRange *p = dynamic_cast<gnomonCoreParameterDoubleRange *>(parameter)) {
-        return gnomonWidgetsParameterDoubleRange::widget(p, parent);
+    if (dtk::d_range_int *p = dynamic_cast<dtk::d_range_int *>(parameter)) {
+        auto *w = new dtkWidgetsParameterIntRange(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterBool *p = dynamic_cast<gnomonCoreParameterBool *>(parameter)) {
-        return gnomonWidgetsParameterBool::widget(p, parent);
+    if (dtk::d_range_real *p = dynamic_cast<dtk::d_range_real *>(parameter)) {
+        auto *w = new dtkWidgetsParameterDoubleRange(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterText *p = dynamic_cast<gnomonCoreParameterText *>(parameter)) {
-        return gnomonWidgetsParameterText::widget(p, parent);
+    if (dtk::d_string *p = dynamic_cast<dtk::d_string *>(parameter)) {
+        auto *w = new dtkWidgetsParameterStringLineEdit(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterString *p = dynamic_cast<gnomonCoreParameterString *>(parameter)) {
-        return gnomonWidgetsParameterString::widget(p, parent);
+    if (dtk::d_inliststring *p = dynamic_cast<dtk::d_inliststring *>(parameter)) {
+        auto *w = new dtkWidgetsParameterStringListComboBox(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterStringList *p = dynamic_cast<gnomonCoreParameterStringList *>(parameter)) {
-        return gnomonWidgetsParameterStringList::widget(p, parent);
+    if (dtk::d_inliststringlist *p = dynamic_cast<dtk::d_inliststringlist *>(parameter)) {
+        auto *w = new dtkWidgetsParameterListStringListCheckBox(parent);
+        w->connect(p);
+        return w;
     }
-    if (gnomonCoreParameterFile *p = dynamic_cast<gnomonCoreParameterFile *>(parameter)) {
-        return gnomonWidgetsParameterFile::widget(p, parent);
+
+    if (dtk::d_path *p = dynamic_cast<dtk::d_path *>(parameter)) {
+        auto *w = new dtkWidgetsParameterFileBrowse(parent);
+        w->connect(p);
+        return w;
     }
     if (gnomonCoreParameterColorMap *p = dynamic_cast<gnomonCoreParameterColorMap *>(parameter)) {
-        return gnomonWidgetsParameterColorMap::widget(p, parent);
+
+        gnomonColorMapEditor *widget = new gnomonColorMapEditor(parent);
+        widget->setToolTip(p->documentation());
+        widget->setValue(p->name());
+
+        QObject::connect(widget, &gnomonColorMapEditor::valueChanged, [=](const QMap<double, QColor>& val) {
+            p->setValue(QVariant::fromValue(val));
+            p->setName(widget->name());
+        });
+
+        return widget;
     }
     if (gnomonCoreParameterLookupTable *p = dynamic_cast<gnomonCoreParameterLookupTable *>(parameter)) {
-        return gnomonWidgetsParameterLookupTable::widget(p, parent);
+        gnomonLookupTableEditor *widget = new gnomonLookupTableEditor(parent);
+
+        widget->setToolTip(p->documentation());
+        widget->setValue(p->value());
+
+        QObject::connect(widget, &gnomonLookupTableEditor::valueChanged, [=](gnomonLookupTable& val) {
+            p->setValue(QVariant::fromValue(val));
+        });
+
+        return widget;
     }
+
     return nullptr;
 }
 
-QString gnomonWidgetsParameterInt::style = QStringLiteral("spinbox");
-
-QWidget *gnomonWidgetsParameterInt::widget(gnomonCoreParameterInt *parameter, QWidget *parent)
-{
-    if (style == QStringLiteral("spinbox")) {
-        QSpinBox *widget = new QSpinBox(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setMinimum(parameter->min());
-        widget->setMaximum(parameter->max());
-        widget->setValue(parameter->value());
-
-        QObject::connect(widget, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [=](int value) {
-            parameter->setValue(value);
-        });
-
-        return widget;
-
-    } else if (style == QStringLiteral("slider")) {
-        QSlider *widget = new QSlider(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setMinimum(parameter->min());
-        widget->setMaximum(parameter->max());
-        widget->setValue(parameter->value());
-
-        QObject::connect(widget, static_cast<void (QSlider::*)(int)>(&QSlider::valueChanged),[=](int value) {
-            parameter->setValue(value);
-        });
-
-        return widget;
-
-    } else {
-        return nullptr;
-    }
-}
-
-QString gnomonWidgetsParameterDouble::style = QStringLiteral("spinbox");
-
-QWidget *gnomonWidgetsParameterDouble::widget(gnomonCoreParameterDouble *parameter, QWidget *parent)
-{
-    if (style == QStringLiteral("spinbox")) {
-        QDoubleSpinBox *widget = new QDoubleSpinBox(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setMinimum(parameter->min());
-        widget->setMaximum(parameter->max());
-        widget->setValue(parameter->value());
-        widget->setDecimals(parameter->accuracy());
-        widget->setSingleStep(pow(10.,-parameter->accuracy()));
-
-        QObject::connect(widget, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [=](double value) {
-            parameter->setValue(value);
-        });
-
-        return widget;
-
-    } else {
-        return nullptr;
-    }
-}
-
-QString gnomonWidgetsParameterIntRange::style = QStringLiteral("range_editor");
-
-QWidget *gnomonWidgetsParameterIntRange::widget(gnomonCoreParameterIntRange *parameter, QWidget *parent)
-{
-    if (style == QStringLiteral("range_editor")) {
-        gnomonDoubleRangeEditor *widget = new gnomonDoubleRangeEditor(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setRange(parameter->min(),parameter->max());
-        widget->setValueMin(parameter->value()[0]);
-        widget->setValueMax(parameter->value()[1]);
-
-        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMinChanged, [=](int value) {
-            parameter->setValue(value, widget->valueMax());
-        });
-
-        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMaxChanged,[=](int value) {
-            parameter->setValue(widget->valueMin(), value);
-        });
-
-        return widget;
-
-    } else {
-        return nullptr;
-    }
-}
-
-QString gnomonWidgetsParameterDoubleRange::style = QStringLiteral("range_editor");
-
-QWidget *gnomonWidgetsParameterDoubleRange::widget(gnomonCoreParameterDoubleRange *parameter, QWidget *parent)
-{
-    if (style == QStringLiteral("range_editor")) {
-        gnomonDoubleRangeEditor *widget = new gnomonDoubleRangeEditor(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setRange(parameter->min(),parameter->max());
-        widget->setValueMin(parameter->value()[0]);
-        widget->setValueMax(parameter->value()[1]);
-
-        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMinChanged, [=](int value) {
-            parameter->setValue(value, widget->valueMax());
-        });
-
-        QObject::connect(widget, &gnomonDoubleRangeEditor::valueMaxChanged, [=](int value) {
-            parameter->setValue(widget->valueMin(), value);
-        });
-
-        return widget;
-
-    } else {
-        return nullptr;
-    }
-}
-
-
-QString gnomonWidgetsParameterBool::style = QStringLiteral("checkbox");
-
-QWidget *gnomonWidgetsParameterBool::widget(gnomonCoreParameterBool *parameter, QWidget *parent)
-{
-    if (style == QStringLiteral("checkbox")) {
-        QCheckBox *widget = new QCheckBox(parent);
-        widget->setToolTip(parameter->doc());
-        widget->setCheckState(parameter->value() ? Qt::Checked : Qt::Unchecked);
-
-        QObject::connect(widget, &QCheckBox::stateChanged, [=](bool value) {
-            parameter->setValue(value);
-        });
-
-        return widget;
-
-    } else {
-        return nullptr;
-    }
-}
-
+/*
 
 QString gnomonWidgetsParameterText::style = QStringLiteral("textedit");
 
-QWidget *gnomonWidgetsParameterText::widget(gnomonCoreParameterText *parameter, QWidget *parent)
+QWidget *gnomonWidgetsParameterText::widget(dtkCoreParameterText *parameter, QWidget *parent)
 {
     if (style == QStringLiteral("textedit")) {
         QTextEdit *widget = new QTextEdit(parent);
@@ -214,7 +109,7 @@ QWidget *gnomonWidgetsParameterText::widget(gnomonCoreParameterText *parameter, 
 
 QString gnomonWidgetsParameterString::style = QStringLiteral("combobox");
 
-QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *parameter, QWidget *parent)
+QWidget *gnomonWidgetsParameterString::widget(dtk::d_inliststring *parameter, QWidget *parent)
 {
     if (style == QStringLiteral("combobox")) {
 
@@ -254,7 +149,7 @@ QWidget *gnomonWidgetsParameterString::widget(gnomonCoreParameterString *paramet
 
 QString gnomonWidgetsParameterStringList::style = QStringLiteral("checkboxes");
 
-QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList *parameter, QWidget *parent)
+QWidget *gnomonWidgetsParameterStringList::widget(dtk::d_inliststring *parameter, QWidget *parent)
 {
     if (style == QStringLiteral("checkboxes")) {
         gnomonStringListEditor *widget = new gnomonStringListEditor(parent);
@@ -274,7 +169,7 @@ QWidget *gnomonWidgetsParameterStringList::widget(gnomonCoreParameterStringList 
 
 QString gnomonWidgetsParameterFile::style = QStringLiteral("filedialog");
 
-QWidget *gnomonWidgetsParameterFile::widget(gnomonCoreParameterFile *parameter, QWidget *parent)
+QWidget *gnomonWidgetsParameterFile::widget(dtk::d_path *parameter, QWidget *parent)
 {
     if (style == QStringLiteral("filedialog")) {
         QWidget *widget = new QWidget(parent);
@@ -293,15 +188,25 @@ QWidget *gnomonWidgetsParameterFile::widget(gnomonCoreParameterFile *parameter, 
         widget->setToolTip(parameter->doc());
 
         QObject::connect(browse_button, &QPushButton::clicked, [=](void) {
-            QString format_string = "File (";
-            for (const auto& format : parameter->formats()) {
-                format_string += "*."+format;
-            }
-            format_string += ")";
             QString path;
-            path = QFileDialog::getOpenFileName(widget, "File path", path, format_string);
-
-            file_label->setText(QFileInfo(path).fileName());
+            if (!parameter->formats().contains("/")) {
+                QString format_string = "File (";
+                int i_format = 0;
+                for (const auto& format : parameter->formats()) {
+                    if (i_format>0) {
+                        format_string += " ";
+                    }
+                    format_string += "*."+format;
+                    i_format++;
+                }
+                format_string += ")";
+                qDebug()<<Q_FUNC_INFO<<format_string;
+                path = QFileDialog::getOpenFileName(widget, "File path", path, format_string);
+                file_label->setText(QFileInfo(path).fileName());
+            } else {
+                path = QFileDialog::getExistingDirectory(widget, "Select directory", path);
+                file_label->setText(QFileInfo(path).fileName());
+            }
             parameter->setValue(path);
         });
 
@@ -358,3 +263,4 @@ QWidget *gnomonWidgetsParameterLookupTable::widget(gnomonCoreParameterLookupTabl
 
 //
 // gnomonWidgetsParameter.cpp ends here
+*/

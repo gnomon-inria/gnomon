@@ -15,10 +15,9 @@
 #pragma once
 
 #include <QtCore>
-#include <QtWidgets>
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspacePrivateSignals : public QObject
@@ -30,10 +29,11 @@ signals:
 };
 
 // /////////////////////////////////////////////////////////////////////////////
-// 
+//
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonWorkspace;
+class gnomonPipeline;
 
 template <typename T> class gnomonWorkspaceTemplatePrivate : public gnomonWorkspacePrivateSignals
 {
@@ -45,20 +45,28 @@ public:
     virtual QString workspace(void) const = 0;
     virtual QStringList keys(void) const = 0;
 
-public:
-    dtkWidgetsMenu *menu(dtkWidgetsWorkspace *);
+// public:
+//     dtkWidgetsMenu *menu(dtkWidgetsWorkspace *);
 
 public:
     void configure(const QString& algorithm);
+
+    void registerPipeline(void);
 
 public:
     QString algorithm;
 
 public:
-    T *command = nullptr;
+    gnomonPipeline *pipeline;
 
 public:
-    QFormLayout *layout = nullptr;
+    T *command = nullptr;
+
+// public:
+//     QFormLayout *layout = nullptr;
+
+public:
+    static bool isEmpty(void);
 };
 
 #include "gnomonWorkspaceTemplate_p.tpp"

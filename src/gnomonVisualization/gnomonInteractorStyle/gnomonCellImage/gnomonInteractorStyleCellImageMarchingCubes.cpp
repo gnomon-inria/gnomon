@@ -17,14 +17,6 @@
 
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 
-
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonWidgets>
-
-#include <dtkImagingCore>
-
 #include "gnomonView/gnomonViewForm.h"
 
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
@@ -33,10 +25,7 @@
 
 #include "gnomonInteractorStyle/gnomonCellImage/gnomonInteractorStyleCellImageMarchingCubes.h"
 
-//#include <vtkCellData.h>
-//#include <vtkCellLocator.h>
 #include <vtkCellPicker.h>
-//#include <vtkPointData.h>
 #include <vtkProp3DCollection.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -53,10 +42,6 @@ class gnomonInteractorStyleCellImageMarchingCubesPrivate
 {
     public:
         gnomonAbstractVisualizationCellImage *visu = nullptr;
-
-    public:
-        // gnomonOverlayPaneItem *infoPaneItem = nullptr;
-        QFormLayout *infoLayout = nullptr;
 
     public:
         vtkSmartPointer<vtkCellPicker> picker = nullptr;
@@ -82,9 +67,6 @@ gnomonInteractorStyleCellImageMarchingCubes::~gnomonInteractorStyleCellImageMarc
 {
     dd->picker->Delete();
     dd->picker = nullptr;
-
-    delete dd->infoLayout;
-    dd->infoLayout = nullptr;
 
     dd->visu = nullptr;
 }
@@ -163,7 +145,7 @@ void gnomonInteractorStyleCellImageMarchingCubes::OnDoubleClick(long vtkId)
     QString text = "        Cell ";
     text.append(QString::number(cellId));
 
-    // QMap<QString, QVariant> cellInfo = q->cellInfo(cellId);
+    // QVariantMap cellInfo = q->cellInfo(cellId);
 
     // if(!this->visu->view()->infoPane()->isToggled())
     //     this->visu->view()->infoPane()->toggle();
@@ -224,6 +206,6 @@ QString gnomonInteractorStyleCellImageMarchingCubes::description(void) const
 
 int gnomonInteractorStyleCellImageMarchingCubes::icon(void) const
 {
-    return fa::crosshairs;
+    return 0; // fa::crosshairs;
 }
 

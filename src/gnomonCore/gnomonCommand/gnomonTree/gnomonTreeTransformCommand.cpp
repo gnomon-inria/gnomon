@@ -14,8 +14,8 @@
 
 #include "gnomonTreeTransformCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -25,74 +25,134 @@ class gnomonTreeTransformCommandPrivate
 {
 public:
     gnomonTreeSeries* input = nullptr;
+    gnomonTreeSeries* output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonTreeTransformCommand::gnomonTreeTransformCommand(const QString& key) : d(new gnomonTreeTransformCommandPrivate)
+gnomonTreeTransformCommand::gnomonTreeTransformCommand() : d(new gnomonTreeTransformCommandPrivate)
 {
-    loadPluginGroup("treeTransform");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::treeTransform::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::treeTransform::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::treeTransform::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonTreeTransformCommand::~gnomonTreeTransformCommand(void)
+gnomonTreeTransformCommand::~gnomonTreeTransformCommand()
 {
     delete d;
 }
 
-void gnomonTreeTransformCommand::redo(void)
+void gnomonTreeTransformCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::treeTransform::pluginFactory().create(algo_name);
 }
 
-void gnomonTreeTransformCommand::undo(void)
+void gnomonTreeTransformCommand::predo(void)
+{
+
+}
+
+void gnomonTreeTransformCommand::postdo(void)
+{
+    gnomonTreeSeries *tree = ((gnomonAbstractTreeTransform *) this->action)->output();
+
+    if ((!tree)||(tree->times().empty())) {
+        d->output = nullptr;
+    } else {
+        d->output = tree;
+    }
+}
+
+void gnomonTreeTransformCommand::undo()
 {
     ((gnomonAbstractTreeTransform *) this->action)->setInput(nullptr);
 }
 
 void gnomonTreeTransformCommand::setInput(gnomonTreeSeries *input)
 {
-    d->input = input;
-
-    Q_ASSERT(this->action);
-    ((gnomonAbstractTreeTransform *) this->action)->setInput(d->input);
-}
-
-void gnomonTreeTransformCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonTreeTransformCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonTreeSeries *gnomonTreeTransformCommand::input(void)
-{
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeTransform *) this->action)->input();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
+    if ((!input)||(input->times().empty())) {
+        d->input = nullptr;
     } else {
-        return tree;
+        d->input = input;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractTreeTransform *) this->action)->setInput(d->input);
     }
 }
 
-gnomonTreeSeries *gnomonTreeTransformCommand::output(void)
+gnomonTreeSeries *gnomonTreeTransformCommand::input()
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeTransform *) this->action)->output();
-    if ((!tree)||(tree->times().size()==0)) {
-        return nullptr;
+    return d->input;
+}
+
+gnomonTreeSeries *gnomonTreeTransformCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeTransformCommand::inputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeTransformCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonTreeTransformCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonTreeTransformCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeTransformCommand::inputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("input", "gnomonTree"));
+    return types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonTreeTransformCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonTree"));
+    return types;}
+
+void gnomonTreeTransformCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonTreeSeries *>(form));
     } else {
-        return tree;
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeTransformCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonTreeSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonTreeTransformCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

@@ -1,25 +1,44 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 class gnomonImage;
 
 class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractCommand
 {
 public:
-    gnomonImageRegistrationCommand() = delete;
-    gnomonImageRegistrationCommand(const QString&);
-    virtual ~gnomonImageRegistrationCommand();
+     gnomonImageRegistrationCommand(void);
+    ~gnomonImageRegistrationCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void addImage(gnomonImageSeries *);
+    [[deprecated]] void addImage(gnomonImageSeries *);
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    orderedMap inputTypes() override;
+    [[deprecated]] void addInputForm(gnomonAbstractDynamicForm *form) override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
     gnomonImageSeries *output();
-    
-    QMap<QString, gnomonCoreParameter*> parameters(void) const;
-    void setParameter(const QString&, const QVariant&);
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString &) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "imageRegistration";
+    static QStringList availablePlugins();
 
 private:
     class gnomonImageRegistrationCommandPrivate *d;

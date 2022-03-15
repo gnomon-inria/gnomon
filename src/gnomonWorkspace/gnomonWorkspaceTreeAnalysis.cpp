@@ -98,7 +98,14 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
     d = new gnomonWorkspaceTreeAnalysisPrivate;
 
     d->source = new gnomonViewMatplotlib(this);
+    d->source->setInputView(true);
+    d->source->setAcceptForm("gnomonTree",true);
+
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
+    d->target->setInputView(false);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -133,6 +140,12 @@ gnomonWorkspaceTreeAnalysis::gnomonWorkspaceTreeAnalysis(QWidget *parent) : dtkW
 //    layout->addWidget(d->target);
     layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -204,14 +217,21 @@ void gnomonWorkspaceTreeAnalysis::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+        d->target->setForm("gnomonTree",d->command->output());
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
 }
 
 const QColor gnomonWorkspaceTreeAnalysis::color = QColor("#734906");
+
+bool gnomonWorkspaceTreeAnalysis::isEmpty(void)
+{
+    return gnomonWorkspaceTreeAnalysisPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceTreeAnalysis.cpp ends here

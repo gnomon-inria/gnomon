@@ -14,7 +14,8 @@
 
 #include "gnomonCellImageConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellImageConstructorCommandPrivate
 {
@@ -26,50 +27,90 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageConstructorCommand::gnomonCellImageConstructorCommand(const QString& key) : d(new gnomonCellImageConstructorCommandPrivate)
+gnomonCellImageConstructorCommand::gnomonCellImageConstructorCommand() : d(new gnomonCellImageConstructorCommandPrivate)
 {
-    loadPluginGroup("cellImageConstructor");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::cellImageConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonCellImageConstructorCommand::~gnomonCellImageConstructorCommand(void)
+gnomonCellImageConstructorCommand::~gnomonCellImageConstructorCommand()
 {
     delete d;
 }
 
-void gnomonCellImageConstructorCommand::redo(void)
+void gnomonCellImageConstructorCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::cellImageConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageConstructorCommand::undo(void)
+void gnomonCellImageConstructorCommand::predo(void)
 {
+
 }
 
-void gnomonCellImageConstructorCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonCellImageConstructorCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonCellImageSeries *gnomonCellImageConstructorCommand::output(void)
+void gnomonCellImageConstructorCommand::postdo(void)
 {
     gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageConstructor *) this->action)->output();
-    if ((!cellImage)||(cellImage->times().size()==0)) {
-        return nullptr;
+
+    if ((!cellImage)||(cellImage->times().empty())) {
+        d->output = nullptr;
     } else {
         d->output = cellImage;
-        return cellImage;
     }
+}
+
+void gnomonCellImageConstructorCommand::undo()
+{
+}
+
+gnomonCellImageSeries *gnomonCellImageConstructorCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageConstructorCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonCellImageConstructorCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageConstructorCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonCellImage"));
+    return types;
+}
+
+QStringList gnomonCellImageConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellImageConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellImageConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

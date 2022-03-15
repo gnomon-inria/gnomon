@@ -1,226 +1,215 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWorkspaceRegistration.h"
-#include "gnomonWorkspaceTemplate_p.h"
+#include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageRegistrationCommand>
-#include <gnomonWidgets>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <dtkImagingCore>
-#include <dtkScript>
-#include <dtkWidgets>
-#include <dtkWidgetsMenuBar_p.h>
-#include <dtkWidgetsMenu+ux.h>
+#include <gnomonPipeline/gnomonPipelineManager.h>
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
+#include <gnomonVisualization/gnomonView/gnomonViewFormPool>
 
-class gnomonWorkspaceRegistrationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonImageRegistrationCommand>
+QString transformMatrixString(QVector<QVector<double> > transform_matrix)
 {
-public:
-    QString workspace(void) const override;
-    QStringList keys(void) const override;
+    QString matrix_string;
+
+    matrix_string += "[";
+    for (int row=0; row<transform_matrix.size(); row++) {
+        if (row > 0) matrix_string += "\n ";
+        matrix_string += " [";
+        for (int col=0; col<transform_matrix[row].size(); col++) {
+            if (col > 0) matrix_string += ",";
+            if (transform_matrix[row][col]>=0) matrix_string += " ";
+            matrix_string += " " + QString::number(transform_matrix[row][col], 'f', 3);
+        }
+        matrix_string += "]";
+    }
+    matrix_string += " ]";
+
+    return matrix_string;
+}
+
+QVector<QVector<double> > identity_matrix = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
+
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonWorkspaceRegistrationPrivate
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonWorkspaceRegistrationPrivate
+{
 
 public:
-    gnomonGridLayout *sources_layout;
-    gnomonViewForm *target = nullptr;
+     gnomonWorkspaceRegistrationPrivate(void);
+    ~gnomonWorkspaceRegistrationPrivate(void);
 
 public:
-    QStackedWidget *target_stack = nullptr;
-    gnomonMessageBoard *target_message = nullptr;
+    QHash<int, gnomonImageSeries *> image_stack;
+    QHash<int, gnomonDataDictSeries *> transformation_stack;
 
-    QSplitter *splitter = nullptr;
-
-public:
-    gnomonViewFormPool *pool = nullptr;
-
-public:
-    dtkWidgetsMenu *menu_;
-
-public:
-    dtkWidgetsMenuBarContainer *dashboard;
+    int stack_level = -1;
 };
 
-QString gnomonWorkspaceRegistrationPrivate::workspace(void) const
+gnomonWorkspaceRegistrationPrivate::gnomonWorkspaceRegistrationPrivate(void)
 {
-    return "Time Registration";
 }
 
-QStringList gnomonWorkspaceRegistrationPrivate::keys(void) const
+gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
 {
-    return gnomonCore::imageRegistration::pluginFactory().keys();
-}
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QWidget *parent) : dtkWidgetsWorkspace(parent)
-{
-    loadPluginGroup("imageRegistration");
-
-    d = new gnomonWorkspaceRegistrationPrivate;
-
-    d->sources_layout = new gnomonGridLayout;
-    d->sources_layout->addView();
-    d->sources_layout->addView();
-    d->sources_layout->addView();
-
-    QWidget *sources_dummy = new QWidget(this);
-    sources_dummy->setLayout(d->sources_layout);
-
-    d->target  = new gnomonViewForm(this);
-    d->target->setExportColor(this->color);
-
-    d->pool = new gnomonViewFormPool(this);
-    for(gnomonViewForm *view : d->sources_layout->views()) {
-        view->setInputView(true);
-        view->setEnableLinking(false);
-        d->pool->addView(view);
+    if (!this->image_stack.isEmpty()) {
+        for (const auto& level : this->image_stack.keys()) {
+            delete this->image_stack[level];
+        }
+        this->image_stack.clear();
     }
-    d->pool->addView(d->target);
-
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Stacked target view
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->target_message = new gnomonMessageBoard(this);
-    d->target_message->setMessage("Result will be displayed here");
-
-    d->target_stack = new QStackedWidget(this);
-    d->target_stack->addWidget(d->target_message);
-    d->target_stack->addWidget(d->target);
-
-    d->splitter = new QSplitter(this);
-    d->splitter->addWidget(sources_dummy);
-    d->splitter->addWidget(d->target_stack);
-
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Dashboard inception
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->dashboard = new dtkWidgetsMenuBarContainer(this);
-    d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
-    d->dashboard->setFixedWidth(300);
-
-// /////////////////////////////////////////////////////////////////////////////
-
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d->splitter);
-    layout->addWidget(d->dashboard);
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-    connect(d->sources_layout, &gnomonGridLayout::formAdded, [=] ()
-    {
-        d->command->undo();
-        d->target_message->setMessage("Result will be displayed here");
-        for(gnomonViewForm *view : d->sources_layout->views()) {
-            if (view->image()) {
-                d->command->addImage(view->image());
-                d->target_message->setMessage("Result will be displayed here");
-            }
+    if (!this->transformation_stack.isEmpty()) {
+        for (const auto& level : this->transformation_stack.keys()) {
+            delete this->transformation_stack[level];
         }
-//        dtkApp->window()->menubar()->addMenu(d->sources_layout->views().last()->menu());
-//        dtkApp->window()->menubar()->touch();
-        d->configure(d->algorithm);
-    });
-
-    connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
-    {
-        d->pool->addView(view);
-        view->setInputView(true);
-        view->setEnableLinking(false);
-    });
-
-    connect(d, &gnomonWorkspaceRegistrationPrivate::algorithmChanged, [=] (const QString& algorithm)
-    {
-        d->command->undo();
-        for(gnomonViewForm *view : d->sources_layout->views()) {
-            if (view->image()) {
-                d->command->addImage(view->image());
-            }
-        }
-        d->configure(algorithm);
-    });
+        this->transformation_stack.clear();
+    }
+}
 
 // /////////////////////////////////////////////////////////////////////////////
-//
+// gnomonWorkspaceRegistration
 // /////////////////////////////////////////////////////////////////////////////
 
-    this->enter();
+gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnomonAlgorithmWorkspace(parent)
+{
+    dd = new gnomonWorkspaceRegistrationPrivate;
+
+    loadPluginGroup("imageRegistration");
+    emit algorithmsLoaded();
+
+    d->workspace = "Time Registration";
+    d->command = new gnomonImageRegistrationCommand;
+    d->keys = gnomonCore::imageRegistration::pluginFactory().keys();
+    d->algorithm = d->command->algorithmName();
+    emit parametersChanged();
+
+    //create the views
+    this->addInputView(); // reference
+    this->addInputView(); // floating
+    this->addOutputView(); // registered
+
+    if(!d->pool)
+        d->pool = new gnomonViewFormPool(this);
+    d->pool->addView(this->sources()->views()[0]);
+    d->pool->addView(this->sources()->views()[1]);
+    d->pool->addView(this->targets()->views()[0]);
+
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
 {
-    delete d;
-}
-
-void gnomonWorkspaceRegistration::enter(void)
-{
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->addMenu(form->menu());
-//    dtkApp->window()->menubar()->addMenu(d->target->menu());
-//    dtkApp->window()->menubar()->touch();
-}
-
-void gnomonWorkspaceRegistration::leave(void)
-{
-//    foreach(gnomonViewForm *form, d->sources_layout->views())
-//        dtkApp->window()->menubar()->removeMenu(form->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->target->menu());
-//    dtkApp->window()->menubar()->touch();
-}
-
-void gnomonWorkspaceRegistration::apply(void)
-{
-    Q_ASSERT(d->command);
-
-    if(d->sources_layout->views().isEmpty())
-        return;
-
-    d->command->undo();
-
-    for(gnomonViewForm *view : d->sources_layout->views())
-        if (view->image())
-            d->command->addImage(view->image());
-
-    d->command->redo();
-
-    if (d->command->output()) {
-        d->target->setForm("gnomonImage",d->command->output());
-        d->target_stack->setCurrentWidget(d->target);
-    } else {
-        d->target_stack->setCurrentWidget(d->target_message);
+    gnomonImageRegistrationCommand *command = (gnomonImageRegistrationCommand *)d->command;
+    if (command) {
+        delete command;
     }
 }
 
-void gnomonWorkspaceRegistration::configure(const QString& algorithm)
+int gnomonWorkspaceRegistration::stackSize(void) const
 {
-    d->configure(algorithm);
+    return dd->image_stack.size();
 }
 
-const QColor gnomonWorkspaceRegistration::color = QColor("#ffcc00");
+int gnomonWorkspaceRegistration::stackLevel(void) const
+{
+    return dd->stack_level;
+}
+
+void gnomonWorkspaceRegistration::setStackLevel(int level)
+{
+    if (level != dd->stack_level) {
+        dd->stack_level = level;
+
+        if (dd->image_stack.contains(dd->stack_level)) {
+            gnomonImageSeries *input_image = dd->image_stack[dd->stack_level];
+            if (input_image != this->sources()->views()[1]->image()) {
+                this->sources()->views()[1]->setImage(input_image);
+
+                if (dd->image_stack.contains(dd->stack_level+1)) {
+                    gnomonImageSeries *output_image = dd->image_stack[dd->stack_level+1];
+                    this->targets()->views()[0]->setImage(output_image);
+                } else {
+                    this->targets()->views()[0]->clear();
+                }
+            }
+        }
+
+        emit stackLevelChanged();
+    }
+}
+
+void gnomonWorkspaceRegistration::setInputs(void)
+{
+    gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
+    bool empty_input = (input_image == nullptr);
+
+    gnomonAlgorithmWorkspace::setInputs();
+
+    if (empty_input || !d->command->inputs()["input"]) {
+        for (const auto& level : dd->image_stack.keys()) {
+            delete dd->image_stack[level];
+        }
+        dd->image_stack.clear();
+        for (const auto& level : dd->transformation_stack.keys()) {
+            delete dd->transformation_stack[level];
+        }
+        dd->transformation_stack.clear();
+        emit stackSizeChanged();
+        this->setStackLevel(-1);
+
+        if (d->command->inputs()["input"]) {
+            input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
+            dd->image_stack.insert(0, input_image);
+            emit stackSizeChanged();
+            this->setStackLevel(0);
+        }
+    }
+}
+
+QString gnomonWorkspaceRegistration::transformStringAt(int level) const
+{
+    if (dd->image_stack.contains(level)) {
+        if (dd->transformation_stack.contains(level)) {
+            gnomonDataDictSeries *transformation = dd->transformation_stack[level];
+            if (transformation->current()->keys().contains("transform")) {
+                QVariant transform = transformation->current()->get("transform");
+                QVector<QVector< double>> transform_matrix = transform.value<QVector<QVector< double> > >();
+                return transformMatrixString(transform_matrix);
+            } else {
+                dtkWarn()<<Q_FUNC_INFO<<"Transformation info has no transform matrix, Identity is returned";
+                return transformMatrixString(identity_matrix);
+            }
+        } else {
+            dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"has no Transformation info, Identity is returned";
+            return transformMatrixString(identity_matrix);
+        }
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"is invalid! Image stack only contains"<<dd->image_stack.keys();
+        return "";
+    }
+}
+
+void gnomonWorkspaceRegistration::iterate(void)
+{
+    gnomonImageSeries *output_image = dynamic_cast<gnomonImageSeries *>(d->command->outputs()["output"]);
+    if (output_image) {
+        gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone());
+        dd->image_stack.insert(dd->stack_level+1, input_image);
+        gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(d->command->outputs()["transformation"]->clone());
+        dd->transformation_stack.insert(dd->stack_level+1, transformation);
+        emit stackSizeChanged();
+
+        this->setStackLevel(dd->stack_level+1);
+
+        gnomonPipelineManager::instance()->addForm(output_image);
+        gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
+    }
+}
+
 
 //
 // gnomonWorkspaceRegistration.cpp ends here

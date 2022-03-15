@@ -1,23 +1,37 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonImageConstructorCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+
+class GNOMONCORE_EXPORT gnomonImageConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonImageConstructorCommand(void) = delete;
-     gnomonImageConstructorCommand(const QString&);
-    ~gnomonImageConstructorCommand(void);
+     gnomonImageConstructorCommand(void);
+    ~gnomonImageConstructorCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    gnomonImageSeries *output(void);
+    gnomonImageSeries *output();
 
-    virtual void setParameter(const QString&, const QVariant&);
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString &) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "imageConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonImageConstructorCommandPrivate *d;

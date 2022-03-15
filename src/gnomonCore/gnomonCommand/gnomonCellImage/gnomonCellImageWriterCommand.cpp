@@ -14,7 +14,8 @@
 
 #include "gnomonCellImageWriterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -23,9 +24,6 @@
 class gnomonCellImageWriterCommandPrivate
 {
 public:
-    QString path;
-
-public:
     gnomonCellImageSeries* cellImage = nullptr;
 };
 
@@ -33,13 +31,16 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellImageWriterCommand::gnomonCellImageWriterCommand(const QString& key) : d(new gnomonCellImageWriterCommandPrivate)
+gnomonCellImageWriterCommand::gnomonCellImageWriterCommand() : d(new gnomonCellImageWriterCommandPrivate)
 {
-    loadPluginGroup("cellImageWriter");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::cellImageWriter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellImageWriter::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellImageWriter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
 gnomonCellImageWriterCommand::~gnomonCellImageWriterCommand()
@@ -47,27 +48,68 @@ gnomonCellImageWriterCommand::~gnomonCellImageWriterCommand()
     delete d;
 }
 
-void gnomonCellImageWriterCommand::redo(void)
+void gnomonCellImageWriterCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageWriter *) this->action)->setPath(d->path);
-    ((gnomonAbstractCellImageWriter *) this->action)->setCellImage(d->cellImage);
-    this->action->run();
+    this->algorithm_name = algo_name;
+
+        delete this->action;
+    this->action = gnomonCore::cellImageWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonCellImageWriterCommand::undo(void)
+void gnomonCellImageWriterCommand::predo(void)
+{
+    ((gnomonAbstractCellImageWriter *) this->action)->setPath(this->m_path);
+    ((gnomonAbstractCellImageWriter *) this->action)->setCellImage(d->cellImage);
+}
+
+void gnomonCellImageWriterCommand::postdo(void)
+{
+
+}
+
+void gnomonCellImageWriterCommand::undo()
 {
     ((gnomonAbstractCellImageWriter *) this->action)->setPath("");
-}
-
-void gnomonCellImageWriterCommand::setPath(const QString& path)
-{
-    d->path = path;
 }
 
 void gnomonCellImageWriterCommand::setCellImage(gnomonCellImageSeries *cellImage)
 {
     d->cellImage = cellImage;
+}
+
+void gnomonCellImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+{
+    d->cellImage = dynamic_cast<gnomonCellImageSeries*>(form);
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageWriterCommand::inputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["cellImage"] = d->cellImage;
+    return inputs;
+}
+
+bool gnomonCellImageWriterCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonCellImageWriterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    return input_types;
+}
+
+void gnomonCellImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "cellImage") {
+        this->setCellImage(dynamic_cast<gnomonCellImageSeries *>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
 }
 
 //

@@ -14,8 +14,8 @@
 
 #include "gnomonActorScalarBar.h"
 
-#include <dtkFonts>
-#include <dtkThemes>
+// #include <dtkFonts>
+// #include <dtkThemes>
 
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkActor.h>
@@ -117,12 +117,12 @@ void gnomonActorScalarBar::update(void)
         d->scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
         d->scalarBar->SetWidth(0.035);
         d->scalarBar->SetHeight(0.7);
-        d->scalarBar->GetAnnotationTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
-        d->scalarBar->GetAnnotationTextProperty()->SetFontSize(11);
-        d->scalarBar->GetLabelTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
-        d->scalarBar->GetLabelTextProperty()->SetFontSize(11);
-        d->scalarBar->GetTitleTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
-        d->scalarBar->GetTitleTextProperty()->SetFontSize(11);
+        // d->scalarBar->GetAnnotationTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
+        // d->scalarBar->GetAnnotationTextProperty()->SetFontSize(11);
+        // d->scalarBar->GetLabelTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
+        // d->scalarBar->GetLabelTextProperty()->SetFontSize(11);
+        // d->scalarBar->GetTitleTextProperty()->SetFontFamilyAsString(qPrintable(dtkFontAwesome::instance()->fontName()));
+        // d->scalarBar->GetTitleTextProperty()->SetFontSize(11);
 
         vtkRenderer *renderer = d->interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer();
         renderer->AddActor2D(d->scalarBar);
@@ -203,8 +203,9 @@ gnomonActorScalarBar::gnomonActorScalarBar(void) : gnomonActor(), d(new gnomonAc
     d->scalarBar = NULL;
 
     d->scalarbar_state = false;
-    dtkFontAwesome::instance()->initFontAwesome();
-    dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
+
+    // dtkFontAwesome::instance()->initFontAwesome();
+    // dtkFontAwesome::instance()->setDefaultOption("color", dtkThemesEngine::instance()->color("@fg"));
 }
 
 gnomonActorScalarBar::~gnomonActorScalarBar(void)

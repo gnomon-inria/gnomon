@@ -15,9 +15,9 @@
 #include "gnomonActorPolyData.h"
 #include "gnomonPolyData.h"
 
-#include <dtkImagingCore>
+#include <QtGui>
 
-#include <QtWidgets>
+#include <dtkImagingCore>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>
@@ -71,7 +71,10 @@ void gnomonActorPolyDataPrivate::updateColorFunction(void)
     this->colorFunction->RemoveAllPoints();
     for (const auto& val : this->colormap.keys()) {
         double node = val*this->value_range[1] + (1-val)*this->value_range[0];
-        this->colorFunction->AddRGBPoint(node, this->colormap[val].red()/255., this->colormap[val].green()/255., this->colormap[val].blue()/255.);
+        double r = this->colormap[val].red()/255.;
+        double g = this->colormap[val].green()/255.;
+        double b = this->colormap[val].blue()/255.;
+        this->colorFunction->AddRGBPoint(node, r, g, b);
     }
 
     this->colorFunction->ClampingOn();
@@ -147,6 +150,14 @@ void gnomonActorPolyData::setLinewidth(double value)
 }
 
 void gnomonActorPolyData::setValueRange(const QList<double>& value)
+{
+    d->value_range[0] = value[0];
+    d->value_range[1] = value[1];
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
+void gnomonActorPolyData::setValueRange(const std::array<double, 2>& value)
 {
     d->value_range[0] = value[0];
     d->value_range[1] = value[1];

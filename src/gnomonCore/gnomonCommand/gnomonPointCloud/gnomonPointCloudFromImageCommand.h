@@ -1,26 +1,45 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
 class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonPointCloudFromImageCommand(void) = delete;
-     gnomonPointCloudFromImageCommand(const QString&);
-    ~gnomonPointCloudFromImageCommand(void);
+     gnomonPointCloudFromImageCommand(void);
+    ~gnomonPointCloudFromImageCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *image_series);
-    gnomonImageSeries *input(void);
+    void setInput(gnomonImageSeries *image);
+    gnomonImageSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonPointCloudSeries *output(void);
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    gnomonPointCloudSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void setAlgorithmName(const QString& algo_name) override;
+
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "pointCloudFromImage";
+    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudFromImageCommandPrivate *d;

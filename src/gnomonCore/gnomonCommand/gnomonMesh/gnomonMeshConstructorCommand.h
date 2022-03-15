@@ -1,23 +1,37 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonMeshConstructorCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
+
+class GNOMONCORE_EXPORT gnomonMeshConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonMeshConstructorCommand(void) = delete;
-     gnomonMeshConstructorCommand(const QString&);
-    ~gnomonMeshConstructorCommand(void);
+     gnomonMeshConstructorCommand(void);
+    ~gnomonMeshConstructorCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    gnomonMeshSeries *output(void);
+    gnomonMeshSeries *output();
 
-    virtual void setParameter(const QString&, const QVariant&);
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "meshConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshConstructorCommandPrivate *d;

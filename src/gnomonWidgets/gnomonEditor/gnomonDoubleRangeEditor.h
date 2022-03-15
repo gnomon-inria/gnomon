@@ -1,17 +1,3 @@
-// Version: $Id: 80be09c7cc19c2fc912fa461752bfbc2a211d0d6 $
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -24,7 +10,7 @@
 // gnomonDoubleRangeEditor
 // /////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonDoubleRangeEditor : public QWidget
+class GNOMONWIDGETS_DEPRECATED_EXPORT gnomonDoubleRangeEditor : public QWidget
 {
     Q_OBJECT
 

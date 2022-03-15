@@ -1,16 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include <gnomonConfig.h>
 
@@ -18,6 +5,7 @@
 #include "gnomonCoreSettings.h"
 
 #include <dtkLog>
+#include <dtkScript>
 
 namespace gnomonCore {
 
@@ -30,6 +18,8 @@ void activateObjectManager(void)
 
 void initialize(const QString& path)
 {
+    // Should work with an future dtkScript version
+    dtkScriptInterpreterPython::instance()->allowThreads();
     QString realpath = path;
     QStringList pathslist;
 
@@ -57,6 +47,7 @@ void initialize(const QString& path)
 
 void uninitialize(void)
 {
+    dtkScriptInterpreterPython::instance()->endAllowThreads();
     manager().uninitialize();
 }
 

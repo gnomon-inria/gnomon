@@ -26,7 +26,7 @@
 
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 
-class gnomonCoreParameter;
+class dtkCoreParameter;
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
     virtual void run(void) override = 0;
     virtual QString documentation(void) override = 0;
 
@@ -53,6 +53,24 @@ public:
 
 public:
     virtual gnomonImageSeries *output() = 0;
+
+public:
+    // TODO: check later with Guillaume
+    static inline QString defaultSetter(QString formName) {
+        dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void addImage(gnomonImageSeries *) since this method accept multiple images of the same type";
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        dtkWarn() << Q_FUNC_INFO << "No getter defined";
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

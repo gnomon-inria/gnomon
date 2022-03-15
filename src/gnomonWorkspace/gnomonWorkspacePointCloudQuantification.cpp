@@ -94,10 +94,17 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 
     d->view = new gnomonViewForm(this);
     d->view->setExportColor(this->color);
-    d->view->setInputView(false);
+    d->view->setAcceptForm("gnomonPointCloud",true);
+    d->view->setAcceptForm("gnomonImage",true);
+    d->view->setInputView(true);
     d->view->setEnableLinking(false);
 
+    connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
+
     d->mpl_figure = new gnomonViewMatplotlib(this);
+    d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
+
+    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->mpl_layout = new QVBoxLayout;
     d->mpl_layout->setContentsMargins(0, 0, 0, 0);
@@ -170,6 +177,12 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 //
 // /////////////////////////////////////////////////////////////////////////////
 
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
     this->enter();
 }
 
@@ -203,17 +216,25 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
         d->command->setImage(d->view->image());
     }
 
-    d->command->redo();
+    d->view->setInputView(true);
 
-    qDebug()<<Q_FUNC_INFO<<d->command->pointCloud();
+    d->command->redo();
+    
+    if(d->command->pointCloud() != nullptr | d->command->dataFrame() != nullptr) {
+        d->registerPipeline();
+    }
+
     if(d->command->pointCloud()) {
         d->view->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(d->command->pointCloud()->clone()));
+        d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
+        d->pipeline_manager->addForm(d->command->pointCloud());
         d->view->setInputView(false);
+        d->view->setAcceptDrops(true);
     }
 
     if(d->command->dataFrame()) {
-        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
         d->target_stack->setCurrentWidget(d->mpl_figure);
+        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -225,6 +246,11 @@ void gnomonWorkspacePointCloudQuantification::configure(const QString& algorithm
 }
 
 const QColor gnomonWorkspacePointCloudQuantification::color = QColor("#d94c64");
+
+bool gnomonWorkspacePointCloudQuantification::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudQuantificationPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspacePointCloudQuantification.cpp ends here

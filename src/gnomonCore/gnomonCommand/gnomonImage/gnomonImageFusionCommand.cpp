@@ -14,7 +14,8 @@
 
 #include "gnomonImageFusionCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFusion.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -25,66 +26,91 @@ class gnomonImageFusionCommandPrivate
 public:
     QVector<gnomonImageSeries *> images_series;
     QVector<std::vector<gnomonLandmark>> landmarks;
+    QMap<QString, int> image_indices;
+
+    gnomonImageSeries* output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageFusionCommand::gnomonImageFusionCommand(const QString& key) : d(new gnomonImageFusionCommandPrivate)
+gnomonImageFusionCommand::gnomonImageFusionCommand() : d(new gnomonImageFusionCommandPrivate)
 {
-    loadPluginGroup("imageFusion");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::imageFusion::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::imageFusion::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageFusion::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonImageFusionCommand::~gnomonImageFusionCommand(void)
+gnomonImageFusionCommand::~gnomonImageFusionCommand()
 {
     delete d;
 }
 
-void gnomonImageFusionCommand::redo(void)
+void gnomonImageFusionCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
+        delete this->action;
+    this->action = gnomonCore::imageFusion::pluginFactory().create(algo_name);
+}
+
+void gnomonImageFusionCommand::predo(void)
+{
 //    for(auto& images_serie : d->images_series) {
 //        ((gnomonAbstractImageFusion *) this->action)->addImage(images_serie);
 //    };
 
     for(auto& landmarks : d->landmarks) {
         ((gnomonAbstractImageFusion *) this->action)->addLandmarks(landmarks);
-    };
-
-    this->action->run();
+    }
 }
 
-void gnomonImageFusionCommand::undo(void)
+void gnomonImageFusionCommand::postdo(void)
+{
+    gnomonImageSeries *image = ((gnomonAbstractImageFusion *) this->action)->output();
+
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+        d->output = nullptr;
+    } else {
+        d->output = image;
+    }
+}
+
+void gnomonImageFusionCommand::undo()
 {
     d->images_series.clear();
     ((gnomonAbstractImageFusion *) this->action)->removeLandmarks();
 }
 
-
-void gnomonImageFusionCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
 void gnomonImageFusionCommand::addImage(gnomonImageSeries *image_series)
 {
+    int index = d->images_series.size();
+    QString input_name = "image" + QString::number(index);
+    d->image_indices[input_name] = index;
     d->images_series.push_back(image_series);
 
-    ((gnomonAbstractImageRegistration *) this->action)->removeImages();
-    for(auto& images_serie : d->images_series) {
-        ((gnomonAbstractImageRegistration *) this->action)->addImage(images_serie);
-    };
+    reloadImages();
 }
 
-void gnomonImageFusionCommand::removeImages(void)
-{
-    d->images_series.clear();
+void gnomonImageFusionCommand::changeImage(const QString& name, gnomonImageSeries *image_series) {
+    const auto& current_inputs = this->inputs();
+    if (current_inputs.contains(name)) {
+        d->images_series[d->image_indices[name]] = image_series;
+    }
+    reloadImages();
+}
+
+void gnomonImageFusionCommand::reloadImages() {
+    ((gnomonAbstractImageFusion *) action)->removeImages();
+    for(auto& image_series : d->images_series) {
+        ((gnomonAbstractImageFusion *) action)->addImage(image_series);
+    }
 }
 
 void gnomonImageFusionCommand::addLandmarks(const std::vector<gnomonLandmark>& landmarks)
@@ -92,24 +118,85 @@ void gnomonImageFusionCommand::addLandmarks(const std::vector<gnomonLandmark>& l
     d->landmarks.append(landmarks);
 }
 
-void gnomonImageFusionCommand::removeLandmarks(void)
+void gnomonImageFusionCommand::removeLandmarks()
 {
     d->landmarks.clear();
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonImageFusionCommand::parameters(void) const
+gnomonImageSeries *gnomonImageFusionCommand::output() const
 {
-    return this->action->parameters();
+    return d->output;
 }
 
-gnomonImageSeries *gnomonImageFusionCommand::output(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs()
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageFusion *) this->action)->output();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
-    } else {
-        return image;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    int i = 0;
+    for(auto& image_series : d->images_series) {
+        QString input_name = d->image_indices.key(i);
+        inputs[input_name] = image_series;
+        i++;
     }
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonImageFusionCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageFusionCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::inputTypes() {
+    orderedMap input_types;
+    int input_count = 0;
+    for(auto& image_series : d->images_series) {
+        QString input_name = "image" + QString::number(input_count);
+        input_types.emplace_back(std::make_pair(input_name, "gnomonImage"));
+        input_count++;
+    }
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonImage"));
+    return types;
+}
+
+void gnomonImageFusionCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    // TODO: come back later to see if correct
+    dtkWarn()<<Q_FUNC_INFO<<"Implementation uncertain !!!";
+    if (this->inputs().contains(name)) {
+        this->changeImage(name, dynamic_cast<gnomonImageSeries *>(form));
+    } else if (auto *form_cast = dynamic_cast<gnomonImageSeries *>(form)) {
+        this->addImage(form_cast);
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
+void gnomonImageFusionCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonImageFusionCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

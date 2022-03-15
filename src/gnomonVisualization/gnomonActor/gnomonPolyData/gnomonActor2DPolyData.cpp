@@ -18,7 +18,7 @@
 
 #include <dtkImagingCore>
 
-#include <QtWidgets>
+#include <QtGui>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>
@@ -271,6 +271,14 @@ void gnomonActor2DPolyData::setOpacity(double value)
 }
 
 void gnomonActor2DPolyData::setValueRange(const QList<double>& value)
+{
+    d->value_range[0] = value[0];
+    d->value_range[1] = value[1];
+    d->updateColorFunction();
+    d->interactor->Render();
+}
+
+void gnomonActor2DPolyData::setValueRange(const std::array<double, 2>& value)
 {
     d->value_range[0] = value[0];
     d->value_range[1] = value[1];

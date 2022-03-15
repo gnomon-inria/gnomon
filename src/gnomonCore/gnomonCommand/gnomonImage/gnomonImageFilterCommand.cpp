@@ -1,21 +1,8 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageFilterCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -25,75 +12,165 @@ class gnomonImageFilterCommandPrivate
 {
 public:
     gnomonImageSeries* input = nullptr;
+    gnomonImageSeries* output = nullptr;
+    gnomonBinaryImageSeries* mask = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonImageFilterCommand::gnomonImageFilterCommand(const QString& key) : d(new gnomonImageFilterCommandPrivate)
+gnomonImageFilterCommand::gnomonImageFilterCommand() : d(new gnomonImageFilterCommandPrivate)
 {
-    loadPluginGroup("imageFilter");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::imageFilter::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::imageFilter::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::imageFilter::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonImageFilterCommand::~gnomonImageFilterCommand(void)
+gnomonImageFilterCommand::~gnomonImageFilterCommand()
 {
     delete d;
 }
 
-void gnomonImageFilterCommand::redo(void)
+void gnomonImageFilterCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::imageFilter::pluginFactory().create(algo_name);
 }
 
-void gnomonImageFilterCommand::undo(void)
+void gnomonImageFilterCommand::predo(void)
+{
+
+}
+
+void gnomonImageFilterCommand::postdo(void)
+{
+    gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->output();
+
+    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+        d->output = nullptr;
+    } else {
+        d->output = image;
+    }
+}
+
+void gnomonImageFilterCommand::undo()
 {
     ((gnomonAbstractImageFilter *) this->action)->setInput(nullptr);
+    ((gnomonAbstractImageFilter *) this->action)->setMask(nullptr);
 }
 
 void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
 {
-    d->input = input;
-
+    if ((!input)||(input->times().empty())||(((gnomonImage *)input->current())->channels().empty())) {
+        d->input = nullptr;
+    } else {
+        d->input = input;
+    }
     Q_ASSERT(this->action);
     ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
 }
 
-void gnomonImageFilterCommand::setParameter(const QString& parameter, const QVariant& value)
+gnomonImageSeries *gnomonImageFilterCommand::input()
 {
-    this->action->setParameter(parameter, value);
+    return d->input;
 }
 
-QMap<QString, gnomonCoreParameter *> gnomonImageFilterCommand::parameters(void) const
+gnomonImageSeries *gnomonImageFilterCommand::output()
 {
-    return this->action->parameters();
+    return d->output;
 }
 
-gnomonImageSeries *gnomonImageFilterCommand::input(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs()
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->input();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    inputs["mask"] = this->mask();
+    return inputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes()
+{
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("mask", "gnomonBinaryImage"));
+    return input_types;
+}
+
+void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+{
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+    } else if(name == "mask") {
+        this->setMask(dynamic_cast<gnomonBinaryImageSeries *>(form));
     } else {
-        return image;
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
 
-gnomonImageSeries *gnomonImageFilterCommand::output(void)
-{
-    gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->output();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
-    } else {
-        return image;
-    }
+void gnomonImageFilterCommand::addInputForm(gnomonAbstractDynamicForm *form) {
+    this->setInputForm("input", form);
 }
 
-//
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::outputTypes()
+{
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonImage"));
+    return output_types;
+}
+
+bool gnomonImageFilterCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonImageFilterCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
+{
+    if ((!init)||(init->times().size()==0)) {
+        d->mask = nullptr;
+    } else {
+        d->mask = init;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
+}
+
+gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)
+{
+    return d->mask;
+}
+
+void gnomonImageFilterCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonImageSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonImageFilterCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
+}
+
 // gnomonImageFilterCommand.cpp ends here

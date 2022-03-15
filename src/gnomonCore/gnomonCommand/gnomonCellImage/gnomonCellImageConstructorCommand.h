@@ -1,23 +1,37 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonCellImageConstructorCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+
+class GNOMONCORE_EXPORT gnomonCellImageConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonCellImageConstructorCommand(void) = delete;
-     gnomonCellImageConstructorCommand(const QString&);
-    ~gnomonCellImageConstructorCommand(void);
+     gnomonCellImageConstructorCommand();
+    ~gnomonCellImageConstructorCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    gnomonCellImageSeries *output(void);
+    gnomonCellImageSeries *output();
 
-    virtual void setParameter(const QString&, const QVariant&);
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap outputTypes() override;
+
+    void setAlgorithmName(const QString &) override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "cellImageConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageConstructorCommandPrivate *d;

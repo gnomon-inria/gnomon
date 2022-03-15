@@ -89,9 +89,13 @@ gnomonWorkspaceMeshFilter::gnomonWorkspaceMeshFilter(QWidget *parent) : dtkWidge
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
     d->source->setInputView(true);
+    d->source->setAcceptForm("gnomonMesh",true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonMesh",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -129,6 +133,12 @@ gnomonWorkspaceMeshFilter::gnomonWorkspaceMeshFilter(QWidget *parent) : dtkWidge
     layout->setSpacing(0);
     layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -201,6 +211,8 @@ void gnomonWorkspaceMeshFilter::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);
@@ -214,6 +226,11 @@ void gnomonWorkspaceMeshFilter::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceMeshFilter::color = QColor("#4c64d9");
+
+bool gnomonWorkspaceMeshFilter::isEmpty(void)
+{
+    return gnomonWorkspaceMeshFilterPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceMeshFilter.cpp ends here

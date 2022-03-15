@@ -86,10 +86,11 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
-    d->source->setAcceptCellComplex(false);
+    d->source->setAcceptForm("gnomonMesh",true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonMesh",true);
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Dashboard inception
@@ -108,6 +109,12 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
     layout->addWidget(d->source);
     layout->addWidget(d->target);
     layout->addWidget(d->dashboard);
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -151,6 +158,11 @@ void gnomonWorkspaceSimulation::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceSimulation::color = QColor("#5856d6");
+
+bool gnomonWorkspaceSimulation::isEmpty(void)
+{
+    return gnomonWorkspaceSimulationPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceSimulation.cpp ends here

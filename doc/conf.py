@@ -27,13 +27,13 @@ sys.path.insert(0, os.path.join(project_root, 'python'))
 # -- Project information -----------------------------------------------------
 
 project = 'Gnomon'
-copyright = '2018, Inria'
+copyright = '2022, Inria'
 author = 'Mosaic project-team and AMDT team'
 
 # The short X.Y version
-version = '0.14'
+version = '0.60'
 # The full version, including alpha/beta/rc tags
-release = '0.14.0'
+release = '0.60.0'
 
 
 # -- General configuration ---------------------------------------------------

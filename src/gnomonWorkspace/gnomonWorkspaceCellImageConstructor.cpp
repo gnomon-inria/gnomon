@@ -84,6 +84,9 @@ gnomonWorkspaceCellImageConstructor::gnomonWorkspaceCellImageConstructor(QWidget
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellImage",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -117,9 +120,10 @@ gnomonWorkspaceCellImageConstructor::gnomonWorkspaceCellImageConstructor(QWidget
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
-//
+// TODO: Later on ...
 // /////////////////////////////////////////////////////////////////////////////
 
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -154,6 +158,8 @@ void gnomonWorkspaceCellImageConstructor::apply(void)
         d->target->setCellImage(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -165,6 +171,11 @@ void gnomonWorkspaceCellImageConstructor::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceCellImageConstructor::color = QColor("#9e5fa0");
+
+bool gnomonWorkspaceCellImageConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceCellImageConstructorPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceCellImageConstructor.cpp ends here

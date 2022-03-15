@@ -84,6 +84,9 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonMesh",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -117,9 +120,10 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
-//
+// TODO: Later on ...
 // /////////////////////////////////////////////////////////////////////////////
 
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -154,6 +158,8 @@ void gnomonWorkspaceMeshConstructor::apply(void)
         d->target->setMesh(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -165,6 +171,11 @@ void gnomonWorkspaceMeshConstructor::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceMeshConstructor::color = QColor("#5f9ea0");
+
+bool gnomonWorkspaceMeshConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceMeshConstructorPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceMeshConstructor.cpp ends here

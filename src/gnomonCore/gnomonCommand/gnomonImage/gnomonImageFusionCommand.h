@@ -1,33 +1,51 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 #include "gnomonLandmark.h"
-
-class gnomonImage;
 
 class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFusionCommand(void) = delete;
-     gnomonImageFusionCommand(const QString&);
-    ~gnomonImageFusionCommand(void);
+     gnomonImageFusionCommand(void);
+    ~gnomonImageFusionCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void addImage(gnomonImageSeries *);
+    void changeImage(const QString&, gnomonImageSeries *);
+    void reloadImages();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap inputTypes() override;
 
-    gnomonImageSeries *output(void);
+    orderedMap outputTypes() override;
 
-    void removeImages(void);
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+    void setAlgorithmName(const QString &) override;
+
+    gnomonImageSeries *output() const;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
 
     void addLandmarks(const std::vector<gnomonLandmark>&);
-    void removeLandmarks(void);
+    void removeLandmarks();
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "imageFusion";
+    static QStringList availablePlugins();
+
+private:
     class gnomonImageFusionCommandPrivate *d;
 };

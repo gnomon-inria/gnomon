@@ -1,20 +1,32 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonCellComplexReaderCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
+
+class GNOMONCORE_EXPORT gnomonCellComplexReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonCellComplexReaderCommand(void) = delete;
-     gnomonCellComplexReaderCommand(const QString&);
-    ~gnomonCellComplexReaderCommand(void);
+     gnomonCellComplexReaderCommand();
+    ~gnomonCellComplexReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    gnomonCellComplexSeries *cellComplex();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
 
-    gnomonCellComplexSeries *cellComplex(void);
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "cellComplexReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexReaderCommandPrivate *d;

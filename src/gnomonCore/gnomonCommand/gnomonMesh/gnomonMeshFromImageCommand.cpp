@@ -14,81 +14,138 @@
 
 #include "gnomonMeshFromImageCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFromImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshFromImageCommandPrivate
 {
 public:
-    gnomonImageSeries* input = nullptr;
+    gnomonImageSeries *input = nullptr;
+    gnomonMeshSeries *output = nullptr;
 };
 
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-gnomonMeshFromImageCommand::gnomonMeshFromImageCommand(const QString& key) : d(new gnomonMeshFromImageCommandPrivate)
+gnomonMeshFromImageCommand::gnomonMeshFromImageCommand() : d(new gnomonMeshFromImageCommandPrivate)
 {
-    loadPluginGroup("meshFromImage");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::meshFromImage::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::meshFromImage::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshFromImage::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonMeshFromImageCommand::~gnomonMeshFromImageCommand(void)
+gnomonMeshFromImageCommand::~gnomonMeshFromImageCommand()
 {
     delete d;
 }
 
-void gnomonMeshFromImageCommand::redo(void)
+void gnomonMeshFromImageCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::meshFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshFromImageCommand::undo(void)
+void gnomonMeshFromImageCommand::predo(void)
+{
+
+}
+
+void gnomonMeshFromImageCommand::postdo(void)
+{
+    gnomonMeshSeries *mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
+
+    if ((!mesh)||(mesh->times().empty())) {
+        d->output = nullptr;
+    } else {
+        d->output = mesh;
+    }
+}
+
+void gnomonMeshFromImageCommand::undo()
 {
     ((gnomonAbstractMeshFromImage *) this->action)->setInput(nullptr);
 }
 
 void gnomonMeshFromImageCommand::setInput(gnomonImageSeries *input)
 {
-    d->input = input;
-
-    Q_ASSERT(this->action);
-    ((gnomonAbstractMeshFromImage *) this->action)->setInput(d->input);
-}
-
-void gnomonMeshFromImageCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonMeshFromImageCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonImageSeries *gnomonMeshFromImageCommand::input(void)
-{
-    gnomonImageSeries *image = ((gnomonAbstractMeshFromImage *) this->action)->input();
-    if ((!image)||(image->times().size()==0)||(((gnomonImage *)image->current())->channels().size()==0)) {
-        return nullptr;
+    if ((!input)||(input->times().empty())) {
+        d->input = nullptr;
     } else {
-        return image;
+        d->input = input;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractMeshFromImage *) this->action)->setInput(d->input);
     }
 }
 
-gnomonMeshSeries *gnomonMeshFromImageCommand::output(void)
+gnomonImageSeries *gnomonMeshFromImageCommand::input()
 {
-    gnomonMeshSeries *mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
-    if ((!mesh)||(mesh->times().size()==0)) {
-        return nullptr;
+    return d->input;
+}
+
+gnomonMeshSeries *gnomonMeshFromImageCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFromImageCommand::inputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    inputs["input"] = this->input();
+    return inputs;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFromImageCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonMeshFromImageCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshFromImageCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    return input_types;
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("output", "gnomonMesh"));
+    return output_types;
+}
+
+void gnomonMeshFromImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+    if (name == "input") {
+        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
     } else {
-        return mesh;
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonMeshFromImageCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshFromImageCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

@@ -73,7 +73,7 @@ void gnomonMessageBoard::dragMoveEvent(QDragMoveEvent *event)
 
 void gnomonMessageBoard::dropEvent(QDropEvent *event)
 {
-    QString path = event->mimeData()->text();
+    QString path = QUrl::fromPercentEncoding(event->mimeData()->text().toUtf8());
 
     if (path.startsWith("file://")) {
         emit fileDropped(path);

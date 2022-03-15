@@ -17,9 +17,30 @@
 /* // dtkWidgetsMenu framework                                                      */
 /* // ///////////////////////////////////////////////////////////////////////////// */
 
+dtkWidgetsMenuNavigationFacade
+{
+    background: alpha(@base1, e5);
+}
+
+dtkWidgetsMenuInnerFacade
+{
+    background: alpha(@base1, e5);
+}
+
+dtkWidgetsMenuItemFacade
+{
+    background: alpha(@base1, e5);
+}
+
+dtkWidgetsMenuBar
+{
+    background: alpha(@base0, e5);
+}
+
 dtkWidgetsMenuBar#RHS
 {
-    background: alpha(@base0, dd);
+    background: alpha(@base0, e5);
+
     border-left: 1px solid @base1;
 }
 

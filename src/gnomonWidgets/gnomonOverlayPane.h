@@ -53,7 +53,7 @@ public:
     void addLayout(QLayout *);
 
 public:
-    void addInfoPaneItem(const QString& title, QMap<QString, QVariant> info);
+    void addInfoPaneItem(const QString& title, QVariantMap info);
 
 public:
     void addWidget(QWidget *);

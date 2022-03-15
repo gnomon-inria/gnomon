@@ -14,7 +14,8 @@
 
 #include "gnomonCellComplexConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellComplexConstructorCommandPrivate
 {
@@ -26,50 +27,87 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonCellComplexConstructorCommand::gnomonCellComplexConstructorCommand(const QString& key) : d(new gnomonCellComplexConstructorCommandPrivate)
+gnomonCellComplexConstructorCommand::gnomonCellComplexConstructorCommand() : d(new gnomonCellComplexConstructorCommandPrivate)
 {
-    loadPluginGroup("cellComplexConstructor");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    QStringList keys = gnomonCore::cellComplexConstructor::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(this->algorithm_name);
+    }
 }
 
-gnomonCellComplexConstructorCommand::~gnomonCellComplexConstructorCommand(void)
+gnomonCellComplexConstructorCommand::~gnomonCellComplexConstructorCommand()
 {
     delete d;
 }
 
-void gnomonCellComplexConstructorCommand::redo(void)
+void gnomonCellComplexConstructorCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::cellComplexConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonCellComplexConstructorCommand::undo(void)
-{
-}
 
-void gnomonCellComplexConstructorCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonCellComplexConstructorCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonCellComplexSeries *gnomonCellComplexConstructorCommand::output(void)
+void gnomonCellComplexConstructorCommand::predo(void) {}
+void gnomonCellComplexConstructorCommand::postdo(void)
 {
     gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexConstructor *) this->action)->output();
-    if ((!cellComplex)||(cellComplex->times().size()==0)) {
-        return nullptr;
+
+    if ((!cellComplex)||(cellComplex->times().empty())) {
+        d->output = nullptr;
     } else {
         d->output = cellComplex;
-        return cellComplex;
     }
+}
+
+void gnomonCellComplexConstructorCommand::undo()
+{
+}
+
+gnomonCellComplexSeries *gnomonCellComplexConstructorCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexConstructorCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonCellComplexConstructorCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellComplexConstructorCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonCellComplex"));
+    return types;
+}
+
+QStringList gnomonCellComplexConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellComplexConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonCellComplexSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

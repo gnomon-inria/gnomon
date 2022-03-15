@@ -14,19 +14,10 @@
 
 #pragma once
 
-#include <QtCore>
-
 #include <gnomonVisualizationExport.h>
-
-#include <dtkCore>
 
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
-
-class gnomonViewForm;
-
-class gnomonCellImage;
-class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellImage : public gnomonAbstractVisualization
 {
@@ -38,11 +29,26 @@ public:
 
 public:
 	virtual void setCellImage(gnomonCellImageSeries *cellImage) = 0;
+	virtual gnomonCellImageSeries *cellImage(void) = 0;
+
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"setCellImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"cellImage"};
+        }
+        return {};
+    };
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void setParameters(const dtkCoreParameters&) override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
+    virtual QMap<QString, QString> parameterGroups(void) override = 0;
 
 public:
     virtual QImage imageRendering(void) override = 0;
@@ -51,6 +57,7 @@ public slots:
     virtual void update(void) override = 0;
     virtual void render(void) override = 0;
     virtual void clear(void) override = 0;
+    virtual void setVisible(bool visible) override = 0;
 
 public slots:
     virtual void on2D(void) override = 0;

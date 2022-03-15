@@ -14,53 +14,98 @@
 
 #include "gnomonMeshReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonMeshSeries *mesh = nullptr;
 };
 
-gnomonMeshReaderCommand::gnomonMeshReaderCommand(const QString& key) : d(new gnomonMeshReaderCommandPrivate)
+gnomonMeshReaderCommand::gnomonMeshReaderCommand() : d(new gnomonMeshReaderCommandPrivate)
 {
-    loadPluginGroup("meshReader");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::meshReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+    for (const auto& key: gnomonCore::meshReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::meshReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 
-void gnomonMeshReaderCommand::redo(void)
+void gnomonMeshReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-    ((gnomonAbstractMeshReader *) this->action)->setPath(d->path);
-    this->action->run();
+    ((gnomonAbstractMeshReader *) this->action)->setPath(this->m_path);
 }
 
-void gnomonMeshReaderCommand::undo(void)
+void gnomonMeshReaderCommand::postdo(void)
+{
+    gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
+
+    if ((!mesh)||(mesh->times().empty())) {
+        d->mesh = nullptr;
+    } else {
+        d->mesh = mesh;
+    }
+}
+
+void gnomonMeshReaderCommand::undo()
 {
     ((gnomonAbstractMeshReader *) this->action)->setPath("");
 }
 
-void gnomonMeshReaderCommand::setPath(const QString& path)
+gnomonMeshSeries *gnomonMeshReaderCommand::mesh()
 {
-    d->path = path;
+    return d->mesh;
 }
 
-gnomonMeshSeries *gnomonMeshReaderCommand::mesh(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshReaderCommand::outputs()
 {
-    gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
-    if ((!mesh)||(mesh->times().size()==0)) {
-        return nullptr;
-    } else {
-        return mesh;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["mesh"] = this->mesh();
+    return outputs;
+}
+
+bool gnomonMeshReaderCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshReaderCommand::outputTypes() {
+    orderedMap output_types;
+    output_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
+    return output_types;
+}
+
+void gnomonMeshReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->mesh) {
+        d->mesh = new gnomonMeshSeries();
     }
+    auto tmp = serialization["mesh"].toObject();
+    d->mesh->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["mesh"] = d->mesh->serialize();
+    return out;
 }
 
 //

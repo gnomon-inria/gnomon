@@ -32,7 +32,7 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageTracking : public gnomonAbstractA
     //Inputs
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+  virtual dtkCoreParameters parameters(void) const override = 0;
 
   virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
   virtual void setImage(gnomonImageSeries *image) = 0;
@@ -41,6 +41,33 @@ public:
 public:
     virtual gnomonCellImageSeries *cellImage() const = 0;
     virtual gnomonTreeSeries *tree() const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setImage"};
+        } else if(formName == "gnomonCellImage") {
+            return {"setCellImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"image"};
+        } else if(formName == "gnomonCellImage") {
+            return {"cellImageInput"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"cellImage"};
+        } else if(formName == "gnomonTree") {
+            return {"tree"};
+        }
+        return {};
+    };
+
 
 public:
     virtual void run(void) override = 0;

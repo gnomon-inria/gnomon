@@ -15,7 +15,7 @@
 # Code:
 
 import sip
-import gnomoncore
+import gnomon.core
 
 from gnomonwidgets import *
 from gnomonworkspace import *

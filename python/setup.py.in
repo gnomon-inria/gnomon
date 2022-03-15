@@ -1,6 +1,23 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
+import os
 
-setup(name='gnomon_utils',
-      version='${PACKAGE_VERSION}',
-      package_dir={ '': '${CMAKE_CURRENT_SOURCE_DIR}' },
-      packages=['gnomon_utils'])
+pkgs = find_packages(os.path.relpath('${CMAKE_CURRENT_BINARY_DIR}'))
+
+setup(name='gnomon',
+      version='${gnomon_VERSION}',
+      package_dir={'': os.path.relpath('${CMAKE_CURRENT_BINARY_DIR}')},
+      packages=pkgs,
+      license='LGPL-3.0',
+      entry_points={
+        "console_scripts": [
+            "gnomon-utils=gnomon.utils.gnomonCommandLineTools:main"
+        ]
+      },
+      package_data={"": ["core/*.so",
+                         "visualization/*.so",
+                         "utils/templates/*",
+                         "utils/templates/*/*",
+                         "utils/templates/*/*/*",
+                         "utils/schematic/*"]},
+      include_package_data=True,
+      )

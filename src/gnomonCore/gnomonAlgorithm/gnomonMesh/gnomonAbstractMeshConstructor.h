@@ -31,11 +31,26 @@ class GNOMONCORE_EXPORT gnomonAbstractMeshConstructor : public gnomonAbstractAlg
     //Inputs
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+  virtual dtkCoreParameters parameters(void) const override = 0;
 
     // Outputs
 public:
     virtual gnomonMeshSeries *output() const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"output"};
+        }
+        return {};
+    };
+
 
 public:
     virtual void run(void) override = 0;

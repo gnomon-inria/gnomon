@@ -51,8 +51,8 @@ public:
 
     QSplitter *splitter = nullptr;
 
-public:
-    dtkMacsWidget *editor = nullptr;
+//public:
+//    dtkMacsWidget *editor = nullptr;
 
 public:
     dtkWidgetsMenu *menu_;
@@ -88,48 +88,52 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     d = new gnomonWorkspaceTreeFromLStringPrivate;
 
     d->source = new gnomonViewMatplotlib(this);
+    d->source->setAcceptForm("gnomonLString",true);
 //    d->source->setExportColor(gnomonToolBar::treeFromLString_color);
 
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
 //    d->target->setExportColor(gnomonToolBar::treeFromLString_color);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: LSystem Editor
 // /////////////////////////////////////////////////////////////////////////////
 
-    d->editor = new dtkMacsWidget(this);
+//    d->editor = new dtkMacsWidget(this);
+//
+//    QString default_lsystem = "";
+//    default_lsystem += "derivation length: 1\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "production:\n";
+//    default_lsystem += "B(t, s, a, dur, alpha,order):\n";
+//    default_lsystem += "  nproduce\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "A(a):\n";
+//    default_lsystem += "  nproduce\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "I(t,s):\n";
+//    default_lsystem += "  nproduce S(t,s)\n";
+//    default_lsystem += "\n";
+//    default_lsystem += "/(x) -->\n";
+//    default_lsystem += "f(x) -->\n";
+//    default_lsystem += "+(x) -->\n";
+//    default_lsystem += "-(x) -->\n";
+//    default_lsystem += "@Ts(x) --> \n";
+//    default_lsystem += "\n";
+//    default_lsystem += "endlsystem\n";
+//    d->editor->setText(default_lsystem);
 
-    QString default_lsystem = "";
-    default_lsystem += "derivation length: 1\n";
-    default_lsystem += "\n";
-    default_lsystem += "production:\n";
-    default_lsystem += "B(t, s, a, dur, alpha,order):\n";
-    default_lsystem += "  nproduce\n";
-    default_lsystem += "\n";
-    default_lsystem += "A(a):\n";
-    default_lsystem += "  nproduce\n";
-    default_lsystem += "\n";
-    default_lsystem += "I(t,s):\n";
-    default_lsystem += "  nproduce S(t,s)\n";
-    default_lsystem += "\n";
-    default_lsystem += "/(x) -->\n";
-    default_lsystem += "f(x) -->\n";
-    default_lsystem += "+(x) -->\n";
-    default_lsystem += "-(x) -->\n";
-    default_lsystem += "@Ts(x) --> \n";
-    default_lsystem += "\n";
-    default_lsystem += "endlsystem\n";
-    d->editor->setText(default_lsystem);
-
-    QVBoxLayout *input_layout = new QVBoxLayout;
-    input_layout->setContentsMargins(0, 0, 0, 0);
-    input_layout->setSpacing(0);
-    input_layout->addWidget(d->source);
-    input_layout->addWidget(d->editor);
-
-    QWidget *input_widget = new QWidget(this);
-    input_widget->setLayout(input_layout);
-    input_widget->resize(800, input_widget->height());
+//    QVBoxLayout *input_layout = new QVBoxLayout;
+//    input_layout->setContentsMargins(0, 0, 0, 0);
+//    input_layout->setSpacing(0);
+//    input_layout->addWidget(d->source);
+//    input_layout->addWidget(d->editor);
+//
+//    QWidget *input_widget = new QWidget(this);
+//    input_widget->setLayout(input_layout);
+//    input_widget->resize(800, input_widget->height());
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -143,7 +147,7 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     d->target_stack->addWidget(d->target);
 
     d->splitter = new QSplitter(this);
-    d->splitter->addWidget(input_widget);
+    d->splitter->addWidget(d->source);
     d->splitter->addWidget(d->target_stack);
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -162,6 +166,12 @@ gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) 
     layout->setSpacing(0);
     layout->addWidget(d->splitter);
     layout->addWidget(d->dashboard);
+
+// /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -225,13 +235,15 @@ void gnomonWorkspaceTreeFromLString::apply(void)
         qDebug() << "Not changed";
     }
 
-    d->command->setLSystem(d->editor->toPlainText());
+//    d->command->setLSystem(d->editor->toPlainText());
 
     d->command->redo();
 
     if (d->command->output()) {
         d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -243,6 +255,11 @@ void gnomonWorkspaceTreeFromLString::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceTreeFromLString::color = QColor("#734906");
+
+bool gnomonWorkspaceTreeFromLString::isEmpty(void)
+{
+    return gnomonWorkspaceTreeFromLStringPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceTreeFromLString.cpp ends here

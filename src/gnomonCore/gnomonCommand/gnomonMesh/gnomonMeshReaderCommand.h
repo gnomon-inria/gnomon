@@ -1,22 +1,36 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class gnomonMesh;
 
-class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonMeshReaderCommand(void) = delete;
-     gnomonMeshReaderCommand(const QString&);
-    ~gnomonMeshReaderCommand(void);
+     gnomonMeshReaderCommand(void);
+    ~gnomonMeshReaderCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    gnomonMeshSeries *mesh();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonMeshSeries *mesh(void);
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "meshReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshReaderCommandPrivate *d;

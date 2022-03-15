@@ -17,7 +17,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImageRegistrationCommandTest.h
   gnomonImageFilterCommandTest.h
   gnomonImageReaderCommandTest.h
-  gnomonSegmentationCommandTest.h
+  gnomonCellImageFromImageCommandTest.h
+  gnomonPythonPluginParserTest.h
   gnomonSystemScenarioTest.h
   gnomonTimeSeriesTest.h)
 
@@ -28,7 +29,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImageRegistrationCommandTest.cpp
   gnomonImageFilterCommandTest.cpp
   gnomonImageReaderCommandTest.cpp
-  gnomonSegmentationCommandTest.cpp
+  gnomonCellImageFromImageCommandTest.cpp
+  gnomonPythonPluginParserTest.cpp
   gnomonSystemScenarioTest.cpp
   gnomonTimeSeriesTest.cpp)
 
@@ -61,8 +63,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Test)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Test)
 
 ## ###################################################################
 ## Test rules
@@ -74,6 +76,7 @@ add_test(gnomonImageFusionCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PR
 add_test(gnomonImageRegistrationCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageRegistrationCommandTest)
 add_test(gnomonImageFilterCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageFilterCommandTest)
 add_test(gnomonImageReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageReaderCommandTest)
-add_test(gnomonSegmentationCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSegmentationCommandTest)
+add_test(gnomonCellImageFromImageCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonCellImageFromImageCommandTest)
+add_test(gnomonPythonPluginParserTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonPythonPluginParserTest)
 add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)
 add_test(gnomonTimeSeriesTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonTimeSeriesTest)

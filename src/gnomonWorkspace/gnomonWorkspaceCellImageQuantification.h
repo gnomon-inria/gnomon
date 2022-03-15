@@ -1,44 +1,42 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public dtkWidgetsWorkspace
+#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+
+#include <QtCore>
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to compute properties over the cells of a CellImage form \
+and to display them in a 2D interactive figure.\n\
+\n\
+Depending on the chosen plugin, the properties are computed either only on \
+the CellImage itself, or using an optional Image a input. In any case, cell \
+properties are added to the input CellImage, and a DataFrame representing \
+the data asociated with each cell is returned as an output.\n\
+\n")
 
 public:
-     gnomonWorkspaceCellImageQuantification(QWidget *parent = nullptr);
-    ~gnomonWorkspaceCellImageQuantification(void);
+     explicit gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
+    ~gnomonWorkspaceCellImageQuantification(void) override;
 
 public:
-    void enter(void) override;
-    void leave(void) override;
+    Q_PROPERTY(gnomonViewMatplotlib* targetMpl READ targetMpl CONSTANT);
 
 public slots:
-    void apply(void) override;
-    void configure(const QString& text);
+    void setInputs(void) override;
+    void viewOutputs(void) override;
 
 public:
-    static const QColor color;
+    gnomonViewMatplotlib *targetMpl(void) const { return this->m_target_mpl;};
 
-private:
-    class gnomonWorkspaceCellImageQuantificationPrivate *d;
+private: 
+    gnomonViewMatplotlib *m_target_mpl = nullptr;
 };
 
 //

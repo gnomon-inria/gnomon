@@ -1,19 +1,35 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonPointCloudWriterCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
+
+class GNOMONCORE_EXPORT gnomonPointCloudWriterCommand : public gnomonAbstractWriterCommand
 {
 public:
-     gnomonPointCloudWriterCommand(void) = delete;
-     gnomonPointCloudWriterCommand(const QString&);
-    ~gnomonPointCloudWriterCommand(void);
+     gnomonPointCloudWriterCommand(void);
+    ~gnomonPointCloudWriterCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    void setForm(gnomonAbstractDynamicForm *form) override;
     void setPointCloud(gnomonPointCloudSeries *pointCloud);
+    void setAlgorithmName(const QString& algo_name) override;
+
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+
+    orderedMap inputTypes() override;
+
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "pointCloudWriter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudWriterCommandPrivate *d;

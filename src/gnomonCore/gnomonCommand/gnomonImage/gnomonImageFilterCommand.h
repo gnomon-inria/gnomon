@@ -1,28 +1,49 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 class gnomonImage;
 
 class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonImageFilterCommand(void) = delete;
-     gnomonImageFilterCommand(const QString&);
-    ~gnomonImageFilterCommand(void);
+     gnomonImageFilterCommand(void);
+    ~gnomonImageFilterCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonImageSeries *image_series);
-    gnomonImageSeries *input(void);
+    gnomonImageSeries *input();
 
-    gnomonImageSeries *output(void);
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    orderedMap inputTypes() override;
+    void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    void addInputForm(gnomonAbstractDynamicForm *form) override;
+    gnomonBinaryImageSeries *mask();
+    void setMask(gnomonBinaryImageSeries *init);
 
-    virtual void setParameter(const QString&, const QVariant&);
+    gnomonImageSeries *output();
+
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString &) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "imageFilter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonImageFilterCommandPrivate *d;

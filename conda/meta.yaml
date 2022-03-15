@@ -1,6 +1,6 @@
 package:
-  name: gnomon
-  version: {{ environ.get('GIT_DESCRIBE_TAG', 'default') }}
+  name: libgnomon
+  version: {{ environ.get('GIT_DESCRIBE_TAG', '0.60.0') }}
 
 source:
   #git_url: git@gitlab.inria.fr:gnomon/gnomon.git
@@ -12,11 +12,13 @@ build:
 
 requirements:
   build:
-    - cmake >=3.2.0
+    - cmake >=3.17
     - make
-    - binutils_impl_linux-64<2.31.0      # [linux]
+    - python =3.9
+    - numpy >=1.22
     - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libglvnd-devel') }}        # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
     - {{ cdt('mesa-libegl-devel') }}     # [linux]
     - {{ cdt('mesa-dri-drivers') }}      # [linux]
@@ -26,6 +28,7 @@ requirements:
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ cdt('libuuid-devel') }}         # [linux]
     - {{ cdt('libICE-devel') }}          # [linux]
+    - {{ cdt('libxcb') }}                # [linux]
     - {{ cdt('libxrender-devel') }}      # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libdrm-devel') }}          # [linux]
@@ -44,55 +47,43 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
 
   host:
-    - qt >=5.9.0
-    - dtk-log >=2.2.0
-    - dtk-macs >=2.0.3
-    - dtk-fonts >=2.1.1
-    - dtk-themes =2.1.7
-    - dtk-core >=2.7.1
-    - dtk-core-python >=2.5.4
-    - dtk-imaging >=2.0.4
-    - dtk-imaging-python >=2.0.4
-    - dtk-widgets >=2.16.11
-    - dtk-composer >=2.0.0
-    - python=3.7
-    - swig >3.0.0
-    - pyqt >=5.6.0
-    - sip
-    - vtk=8.1.2
-    - zlib
-    - libnetcdf =4.6.1
+    - qt >=6.2
+    - dtk-core >=2.11
+    - dtk-core-python >=2.8
+    - dtk-imaging >=2.0
+    - dtk-imaging-python >=2.0
+    - dtk-log >=2.5
+    - dtk-script >=2.5
+    - python =3.9
+    - numpy >=1.22
+    - swig =4.0
+    - vtk =9.1.0
 
   run:
-    - dtk-log >=2.0.0
-    - dtk-macs >=2.0.3
-    - dtk-fonts >=2.1.1
-    - dtk-themes >=2.1.1
-    - dtk-core >=2.7.1
-    - dtk-core-python >=2.5.4
-    - dtk-imaging >=2.0.4
-    - dtk-imaging-python >=2.0.4
-    - dtk-plugins-imaging >=2.0.2
-    - dtk-widgets >=2.16.11
-    - dtk-composer >=2.0.0
-    - qt >=5.9.0
-    - jupyter
-    - numpy
+    - qt >=6.2
+    - dtk-core >=2.11
+    - dtk-core-python >=2.8
+    - dtk-imaging >=2.0
+    - dtk-imaging-python >=2.0
+    - dtk-log >=2.5
+    - dtk-script >=2.5
+    - python =3.9
+    - numpy >=1.22
+    - pillow
     - matplotlib
-    - python=3.7
-    - vtk=8.1.2
-    - zlib
-    - libnetcdf =4.6.1
-#   - fenics
+    - mongodb =4.0
+    - pymongo =3.11
+    - vtk =9.1.0
 
-app:
-  entry: gnomon # [linux]
-  entry: open ${PREFIX}/bin/gnomon # [osx]
-  summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
-  icon: gnomon_logo.png
-  type: desk
+# app:
+#   entry: gnomon # [linux]
+#   entry: open ${PREFIX}/bin/gnomon # [osx]
+#   summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
+#   icon: gnomon_logo.png
+#   type: desk
 
 about:
   home: https://gnomon.gitlabpages.inria.fr/gnomon
-  license: CECILL-C
-  summary:  Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
+  license: LGPL-3.0
+  license_file: LICENSE
+  summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D

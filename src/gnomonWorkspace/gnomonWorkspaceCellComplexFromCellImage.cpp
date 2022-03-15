@@ -96,10 +96,14 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
+    d->source->setAcceptForm("gnomonCellImage",true);
     d->source->setInputView(true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellComplex",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -164,6 +168,12 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
     });
 
 // /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ...
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+
+// /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -209,6 +219,8 @@ void gnomonWorkspaceCellComplexFromCellImage::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);
@@ -222,6 +234,11 @@ void gnomonWorkspaceCellComplexFromCellImage::configure(const QString& algorithm
 }
 
 const QColor gnomonWorkspaceCellComplexFromCellImage::color = QColor("#982374");
+
+bool gnomonWorkspaceCellComplexFromCellImage::isEmpty(void)
+{
+    return gnomonWorkspaceCellComplexFromCellImagePrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceCellComplexFromCellImage.cpp ends here

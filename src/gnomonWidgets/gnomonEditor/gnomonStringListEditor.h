@@ -24,7 +24,7 @@
 // gnomonStringListEditor
 // /////////////////////////////////////////////////////////////////
 
-class GNOMONWIDGETS_EXPORT gnomonStringListEditor : public QWidget
+class GNOMONWIDGETS_DEPRECATED_EXPORT gnomonStringListEditor : public QWidget
 {
     Q_OBJECT
 

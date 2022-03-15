@@ -84,6 +84,9 @@ gnomonWorkspacePointCloudConstructor::gnomonWorkspacePointCloudConstructor(QWidg
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonPointCloud",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -117,9 +120,10 @@ gnomonWorkspacePointCloudConstructor::gnomonWorkspacePointCloudConstructor(QWidg
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
-//
+// TODO: Later on ...
 // /////////////////////////////////////////////////////////////////////////////
 
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -154,6 +158,8 @@ void gnomonWorkspacePointCloudConstructor::apply(void)
         d->target->setPointCloud(d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -165,6 +171,11 @@ void gnomonWorkspacePointCloudConstructor::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspacePointCloudConstructor::color = QColor("#9e5fa0");
+
+bool gnomonWorkspacePointCloudConstructor::isEmpty(void)
+{
+    return gnomonWorkspacePointCloudConstructorPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspacePointCloudConstructor.cpp ends here

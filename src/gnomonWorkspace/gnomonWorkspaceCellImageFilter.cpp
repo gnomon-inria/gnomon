@@ -89,9 +89,13 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     d->source = new gnomonViewForm(this);
     d->source->setExportColor(this->color);
     d->source->setInputView(true);
+    d->source->setAcceptForm("gnomonCellImage",true);
 
     d->target = new gnomonViewForm(this);
     d->target->setExportColor(this->color);
+    d->target->setAcceptForm("gnomonCellImage",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
     d->pool = new gnomonViewFormPool(this);
     d->pool->addView(d->source);
@@ -159,6 +163,12 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     });
 
 // /////////////////////////////////////////////////////////////////////////////
+// TODO: Later on ..
+// /////////////////////////////////////////////////////////////////////////////
+
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+
+// /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -204,6 +214,8 @@ void gnomonWorkspaceCellImageFilter::apply(void)
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
         d->target->setEnableLinking(true);
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
         d->source->setEnableLinking(false);
@@ -217,6 +229,11 @@ void gnomonWorkspaceCellImageFilter::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceCellImageFilter::color = QColor("#dc143c");
+
+bool gnomonWorkspaceCellImageFilter::isEmpty(void)
+{
+    return gnomonWorkspaceCellImageFilterPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceCellImageFilter.cpp ends here

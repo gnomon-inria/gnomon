@@ -14,12 +14,11 @@
 
 #include "gnomonImageDataChannelBlending.h"
 
-#include <gnomonWidgets>
+#include <gnomonVisualization/gnomonLookupTable.h>
 
 #include <dtkImagingCore>
 
-#include <QtCore>
-#include <QtWidgets>
+#include <QtGui>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

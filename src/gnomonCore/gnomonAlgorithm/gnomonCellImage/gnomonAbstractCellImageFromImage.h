@@ -21,29 +21,63 @@
 #include <dtkCore>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-class gnomonCoreParameter;
-
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstractAlgorithm
 {
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
     virtual void setInput(gnomonImageSeries *image_series) = 0;
-    virtual void setCellPoints(gnomonPointCloudSeries *pointCloud_series) = 0;
+    virtual inline void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
+    virtual inline void setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
 
 public:
     virtual gnomonImageSeries *input(void) const = 0;
-    virtual gnomonPointCloudSeries *cellPoints(void) const = 0;
-    virtual gnomonCellImageSeries *output(void) const = 0;
+    virtual inline gnomonPointCloudSeries *cellPoints(void) const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual inline gnomonBinaryImageSeries *binaryImageSeries() const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual gnomonCellImageSeries *output() const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setInput"};
+        } else if (formName == "gnomonPointCloud") {
+            return {"setCellPoints"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"setBinaryImage"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"input"};
+        } else if (formName == "gnomonPointCloud") {
+            return {"cellPoints"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"binaryImageSeries"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonCellImage") {
+            return {"output"};
+        }
+        return {};
+    };
+
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)

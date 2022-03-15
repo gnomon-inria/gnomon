@@ -1,20 +1,33 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+
+class GNOMONCORE_EXPORT gnomonCellImageReaderCommand : public gnomonAbstractReaderCommand
 {
 public:
-     gnomonCellImageReaderCommand(void) = delete;
-     gnomonCellImageReaderCommand(const QString&);
-    ~gnomonCellImageReaderCommand(void);
+     gnomonCellImageReaderCommand();
+    ~gnomonCellImageReaderCommand() override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    void setPath(const QString& path);
+    gnomonCellImageSeries *cellImage();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
 
-    gnomonCellImageSeries *cellImage(void);
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+public:
+    static bool isEmpty();
+    inline static const QString groupName = "cellImageReader";
+    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageReaderCommandPrivate *d;

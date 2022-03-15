@@ -1,23 +1,37 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class GNOMONCORE_EXPORT gnomonTreeConstructorCommand : public gnomonAbstractCommand
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
+
+class GNOMONCORE_EXPORT gnomonTreeConstructorCommand : public gnomonAbstractConstructorCommand
 {
 public:
-     gnomonTreeConstructorCommand(void) = delete;
-     gnomonTreeConstructorCommand(const QString&);
-    ~gnomonTreeConstructorCommand(void);
+     gnomonTreeConstructorCommand(void);
+    ~gnomonTreeConstructorCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
-    gnomonTreeSeries *output(void);
+    gnomonTreeSeries *output();
 
-    virtual void setParameter(const QString&, const QVariant&);
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    orderedMap outputTypes() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "treeConstructor";
+    static QStringList availablePlugins();
 
 private:
     class gnomonTreeConstructorCommandPrivate *d;

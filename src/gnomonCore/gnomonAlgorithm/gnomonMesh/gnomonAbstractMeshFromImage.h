@@ -32,13 +32,34 @@ class GNOMONCORE_EXPORT gnomonAbstractMeshFromImage : public gnomonAbstractAlgor
     //Inputs
 public:
   virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+  virtual dtkCoreParameters parameters(void) const override = 0;
   virtual void setInput(gnomonImageSeries *images) = 0;
 
     // Outputs
 public:
     virtual gnomonMeshSeries *output() const = 0;
     virtual gnomonImageSeries *input() const = 0;
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"setInput"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonImage") {
+            return {"input"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"output"};
+        }
+        return {};
+    };
+
 
 public:
     virtual void run(void) override = 0;

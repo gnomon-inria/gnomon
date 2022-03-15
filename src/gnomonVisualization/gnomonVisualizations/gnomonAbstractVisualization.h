@@ -16,11 +16,13 @@
 
 #include <QtCore>
 
+#include <dtkCore/dtkCoreParameters>
 #include <gnomonVisualizationExport.h>
 
 class gnomonViewForm;
 class gnomonInteractorStyle;
-class gnomonCoreParameter;
+
+class vtkGenericOpenGLRenderWindow;
 class vtkRenderer;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
@@ -36,12 +38,13 @@ public:
 
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) = 0;
+    virtual void setParameters(const dtkCoreParameters&) = 0;
 
 public:
     gnomonViewForm* view(void);
     virtual gnomonInteractorStyle * interactorStyle(void);
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const = 0;
+    virtual dtkCoreParameters parameters(void) const = 0;
+    virtual QMap<QString, QString> parameterGroups(void) = 0;
 
 public:
     virtual QImage imageRendering(void) = 0;
@@ -58,6 +61,7 @@ public slots:
 public slots:
     void clearConnections(void);
     virtual void clear(void) = 0;
+    virtual void setVisible(bool visible) = 0;
 
 public slots:
     virtual void on2D(void) = 0;

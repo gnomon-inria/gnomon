@@ -16,7 +16,7 @@
 #include "gnomonActor/gnomonActorLegacy/gnomonActorMeshCellGraph.h"
 
 #include <gnomonCore>
-#include <gnomonWidgets>
+// #include <gnomonWidgets>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonInspectorCellGraphPrivate

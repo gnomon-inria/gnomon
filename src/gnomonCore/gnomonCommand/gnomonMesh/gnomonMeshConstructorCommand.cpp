@@ -14,7 +14,8 @@
 
 #include "gnomonMeshConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshConstructorCommandPrivate
 {
@@ -26,50 +27,91 @@ public:
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-gnomonMeshConstructorCommand::gnomonMeshConstructorCommand(const QString& key) : d(new gnomonMeshConstructorCommandPrivate)
+gnomonMeshConstructorCommand::gnomonMeshConstructorCommand() : d(new gnomonMeshConstructorCommandPrivate)
 {
-    loadPluginGroup("meshConstructor");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::meshConstructor::pluginFactory().create(key);
+    QStringList keys = gnomonCore::meshConstructor::pluginFactory().keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+        this->action = gnomonCore::meshConstructor::pluginFactory().create(this->algorithm_name);
+    }
 
-    Q_ASSERT(this->action);
 }
 
-gnomonMeshConstructorCommand::~gnomonMeshConstructorCommand(void)
+gnomonMeshConstructorCommand::~gnomonMeshConstructorCommand()
 {
     delete d;
 }
 
-void gnomonMeshConstructorCommand::redo(void)
+void gnomonMeshConstructorCommand::setAlgorithmName(const QString& algo_name)
 {
-    Q_ASSERT(this->action);
+    this->algorithm_name = algo_name;
 
-    this->action->run();
+        delete this->action;
+    this->action = gnomonCore::meshConstructor::pluginFactory().create(algo_name);
 }
 
-void gnomonMeshConstructorCommand::undo(void)
+void gnomonMeshConstructorCommand::predo(void)
 {
+
 }
 
-void gnomonMeshConstructorCommand::setParameter(const QString& parameter, const QVariant& value)
-{
-    this->action->setParameter(parameter, value);
-}
-
-QMap<QString, gnomonCoreParameter *> gnomonMeshConstructorCommand::parameters(void) const
-{
-    return this->action->parameters();
-}
-
-gnomonMeshSeries *gnomonMeshConstructorCommand::output(void)
+void gnomonMeshConstructorCommand::postdo(void)
 {
     gnomonMeshSeries *mesh = ((gnomonAbstractMeshConstructor *) this->action)->output();
-    if ((!mesh)||(mesh->times().size()==0)) {
-        return nullptr;
+
+    if ((!mesh)||(mesh->times().empty())) {
+        d->output = nullptr;
     } else {
         d->output = mesh;
-        return mesh;
     }
+}
+
+void gnomonMeshConstructorCommand::undo()
+{
+}
+
+gnomonMeshSeries *gnomonMeshConstructorCommand::output()
+{
+    return d->output;
+}
+
+QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshConstructorCommand::outputs()
+{
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["output"] = this->output();
+    return outputs;
+}
+
+bool gnomonMeshConstructorCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonMeshConstructorCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonMeshConstructorCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("output", "gnomonMesh"));
+    return types;
+}
+
+void gnomonMeshConstructorCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->output) {
+        d->output = new gnomonMeshSeries();
+    }
+    auto tmp = serialization["output"].toObject();
+    d->output->deserialize(tmp);
+}
+
+QJsonObject gnomonMeshConstructorCommand::serializeResults(void) {
+    QJsonObject out;
+    out["output"] = d->output->serialize();
+    return out;
 }
 
 //

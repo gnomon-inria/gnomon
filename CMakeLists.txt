@@ -1,17 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 cmake_minimum_required(VERSION 3.6.0)
 
 ######################################################################
@@ -19,11 +5,19 @@ cmake_minimum_required(VERSION 3.6.0)
 project(gnomon)
 
 ## ###################################################################
+## cmake modules folder
+## ###################################################################
+
+set(LAYER_TARGETS ${PROJECT_NAME}-targets)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+## ###################################################################
 ## Version setup
 ## ###################################################################
 
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 14)
+set(${PROJECT_NAME}_VERSION_MINOR 20)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
@@ -38,7 +32,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
@@ -51,7 +44,12 @@ endif()
 ## #################################################################
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
+  if (DEFINED ENV{CONDA_PREFIX})
+    set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "${PROJECT_NAME} libdir" FORCE)
+    set(CMAKE_INSTALL_PREFIX "$ENV{CONDA_PREFIX}" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
+  else()
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
+  endif()
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 ## #################################################################
@@ -67,19 +65,36 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -Wno-deprecated-register -Wno-unused-value")
-endif(UNIX)
+set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+
+if("${isSystemDir}" STREQUAL "-1")
+   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+endif("${isSystemDir}" STREQUAL "-1")
+
+
+#if(UNIX)
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -Wno-deprecated-register -Wno-unused-value")
+#endif(UNIX)
+
+## #################################################################
+## Options
+## #################################################################
+
+option(GNOMON_ENABLE_WIDGETS "Enable Widgets and Visualization View" false)
 
 ## ###################################################################
 ## Test setup
 ## ###################################################################
 
 include(CTest)
-
 enable_testing()
 
 ## ###################################################################
@@ -89,63 +104,43 @@ enable_testing()
 include(GenerateExportHeader)
 
 ## ###################################################################
-## Dependencies - Python
+## Dependencies
 ## ###################################################################
 
-find_package (Python3 COMPONENTS Interpreter Development)
+set(Python3_FIND_VIRTUALENV FIRST)
+if (WIN32)
+  # needed when we run cmake in a conda environment
+  set(Python3_FIND_REGISTRY LAST)
+endif()
 
-include_directories(${Python3_INCLUDE_DIRS})
+find_package(Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy)
+set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
-set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
-
-## #################################################################
-## Dependencies - external
-## #################################################################
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
-
-## #################################################################
-## Dependencies - external
-## #################################################################
-
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
 
 find_package(dtkLog      REQUIRED)
-find_package(dtkFonts    REQUIRED)
-find_package(dtkThemes   REQUIRED)
 find_package(dtkCore     REQUIRED)
-find_package(dtkMacs     REQUIRED)
 find_package(dtkImaging  REQUIRED)
 find_package(dtkScript   REQUIRED)
-find_package(dtkWidgets  REQUIRED)
-find_package(dtkComposer REQUIRED)
+find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
+find_package(xtensor     REQUIRED) # because of dtkImaging
 
-find_package(xtensor REQUIRED)
+if(GNOMON_ENABLE_WIDGETS)
+  find_package(dtkFonts    REQUIRED)
+  find_package(dtkThemes   REQUIRED)
+  find_package(dtkMacs     REQUIRED)
+  find_package(dtkWidgets  REQUIRED)
+  find_package(dtkComposer REQUIRED)
+endif(GNOMON_ENABLE_WIDGETS)
 
-find_package(VTK REQUIRED)
-
-include(${VTK_USE_FILE})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
+include_directories(${Python3_INCLUDE_DIRS})
 
 ## #################################################################
-## Install prefix
- ## #################################################################
-
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  if (DEFINED ENV{CONDA_PREFIX})
-    set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "${PROJECT_NAME} libdir" FORCE)
-    set(CMAKE_INSTALL_PREFIX "$ENV{CONDA_PREFIX}" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
-  else()
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
-  endif()
-endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+## Install prefix Modules
+## #################################################################
 
 set(CMAKE_MODULES_INSTALL_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${DTK_PYTHON_INSTALL_PATH})
-
-## #################################################################
-## Targets
-## #################################################################
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
 include(gnomonSubdirectoryAddFiles)
 
@@ -158,8 +153,9 @@ add_subdirectory(app)
 add_subdirectory(wrp)
 add_subdirectory(python)
 add_subdirectory(doc)
-# add_subdirectory(tst)
-# add_subdirectory(tst-py)
+
+add_subdirectory(tst)
+add_subdirectory(tst-py)
 
 ## ###################################################################
 ## Export configuration
@@ -194,7 +190,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 
-install(EXPORT layer-targets
+install(EXPORT ${LAYER_TARGETS}
   FILE ${PROJECT_NAME}Targets.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 
@@ -222,7 +218,6 @@ mark_as_advanced(Qt5Test_DIR)
 mark_as_advanced(Qt5Widgets_DIR)
 mark_as_advanced(Qt5Xml_DIR)
 mark_as_advanced(Qt5Sql_DIR)
-mark_as_advanced(Qt5OpenGL_DIR)
 mark_as_advanced(Qt5Svg_DIR)
 
 mark_as_advanced(CMAKE_AR)
@@ -290,7 +285,7 @@ mark_as_advanced(omero-ice_DIR)
 ## ###################################################################
 ## Packaging
 ## ###################################################################
-
+# TODO remove?
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")

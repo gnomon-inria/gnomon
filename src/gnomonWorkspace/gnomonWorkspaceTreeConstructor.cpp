@@ -83,6 +83,9 @@ gnomonWorkspaceTreeConstructor::gnomonWorkspaceTreeConstructor(QWidget *parent) 
     d = new gnomonWorkspaceTreeConstructorPrivate;
 
     d->target = new gnomonViewMatplotlib(this);
+    d->target->setAcceptForm("gnomonTree",true);
+
+    connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
 // /////////////////////////////////////////////////////////////////////////////
 // NOTE: Stacked target view
@@ -116,9 +119,10 @@ gnomonWorkspaceTreeConstructor::gnomonWorkspaceTreeConstructor(QWidget *parent) 
     layout->addWidget(d->dashboard);
 
 // /////////////////////////////////////////////////////////////////////////////
-//
+// TODO: Later on ...
 // /////////////////////////////////////////////////////////////////////////////
 
+//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -150,8 +154,10 @@ void gnomonWorkspaceTreeConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setForm("gnomonTree",d->command->output());
         d->target_stack->setCurrentWidget(d->target);
+        d->target->setForm("gnomonTree",d->command->output());
+
+        d->registerPipeline();
     } else {
         d->target_stack->setCurrentWidget(d->target_message);
     }
@@ -163,6 +169,11 @@ void gnomonWorkspaceTreeConstructor::configure(const QString& algorithm)
 }
 
 const QColor gnomonWorkspaceTreeConstructor::color = QColor("#9e5fa0");
+
+bool gnomonWorkspaceTreeConstructor::isEmpty(void)
+{
+    return gnomonWorkspaceTreeConstructorPrivate::isEmpty();
+}
 
 //
 // gnomonWorkspaceTreeConstructor.cpp ends here

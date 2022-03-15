@@ -19,12 +19,13 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractMeshData
+class GNOMONCORE_EXPORT gnomonAbstractMeshData: public gnomonAbstractFormData
 {
 public:
              gnomonAbstractMeshData(void) = default;
@@ -32,13 +33,16 @@ public:
 
     virtual gnomonAbstractMeshData* clone(void) const = 0;
 
+    virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
+
 
 //  ///////////////////////////////////////////////////////////////////
 //  Metadata
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual QMap<QString,QString> metadata(void) const = 0;
-
+    virtual QString dataName(void) const = 0;
+    virtual const QString pluginName(void) = 0;
 
 public:
     virtual bool isValid(void) const = 0;

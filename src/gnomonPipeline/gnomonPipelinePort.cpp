@@ -1,0 +1,96 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#include "gnomonPipelineNode.h"
+#include "gnomonPipelinePort.h"
+
+class gnomonPipelinePortPrivate
+{
+public:
+    gnomonPipelinePort::Type type;
+
+public:
+    gnomonPipelineNode *node;
+
+public:
+    QString name;
+    QString label;
+
+public:
+    int formIndex = -1;
+};
+
+gnomonPipelinePort::gnomonPipelinePort(Type type, gnomonPipelineNode *parent) :  d(new gnomonPipelinePortPrivate)
+{
+    d->type = type;
+    d->node = parent;
+}
+
+gnomonPipelinePort::gnomonPipelinePort(Type type, const QString& name, gnomonPipelineNode *parent) : d(new gnomonPipelinePortPrivate)
+{
+    d->type = type;
+    d->node = parent;
+    d->name = name;
+    this->setLabel(name);
+}
+
+gnomonPipelinePort::~gnomonPipelinePort(void)
+{
+    delete d;
+    d = nullptr;
+}
+
+gnomonPipelinePort::Type gnomonPipelinePort::type(void)
+{
+    return d->type;
+}
+
+gnomonPipelineNode *gnomonPipelinePort::node(void)
+{
+    return d->node;
+}
+
+QString gnomonPipelinePort::name(void)
+{
+    return d->name;
+}
+
+QString gnomonPipelinePort::label(void)
+{
+    return d->label;
+}
+
+void gnomonPipelinePort::setLabel(const QString& label)
+{
+    if (label != d->label) {
+        d->label = label;
+        emit labelChanged();
+    }
+}
+
+int gnomonPipelinePort::formIndex(void)
+{
+    return d->formIndex;
+}
+
+void gnomonPipelinePort::setFormIndex(int index)
+{
+    if (index != d->formIndex) {
+        d->formIndex = index;
+        emit formIndexChanged(index);
+    }
+}
+
+//
+// gnomonPipelinePort.cpp ends here

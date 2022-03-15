@@ -1,40 +1,52 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
+#include "gnomonAbstractWorkspace.h"
 
-#include <dtkWidgets>
+class gnomonViewForm;
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public dtkWidgetsWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public gnomonAbstractWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to load data from a local file system into the \
+application. It reads a local file, provided there exists a reader plugin \
+that is able to open it.\n\
+\n\
+When a file is dropped into the main view in the center, a menu pops up with \
+the choice of available readers for this file format. If the reader is unique, \
+the file is read directly. The form contained in the file is then displayed in \
+the main view, replacing an existing form of the same type is there was one.\n\
+\n")
+
 
 public:
-     gnomonWorkspaceBrowser(QWidget *parent = nullptr);
+     gnomonWorkspaceBrowser(QObject *parent = nullptr);
     ~gnomonWorkspaceBrowser(void);
 
 public:
-    void enter(void) override;
-    void leave(void) override;
+    Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
+    Q_PROPERTY(QStringList extensions READ readerExtensions);
+    Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
+
+signals:
+    void available(const QVariantMap& readers);
+    void readerPathChanged(void);
 
 public:
-    void apply(void) override;
+    const QString& readerPath(void) const;
+
+public slots:
+    void setReaderPath(const QString&);
+    void requestReaders(void);
+    bool readWith(const QString&);
+    inline void saveState() {};  // nothing to be saved or restored
+    inline void restoreState() {};
 
 public:
-    static const QColor color;
+    Q_INVOKABLE QUrl defaultReadPath();
+    Q_INVOKABLE gnomonViewForm *view(void);
+    QStringList readerExtensions(void);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

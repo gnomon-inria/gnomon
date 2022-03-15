@@ -18,14 +18,14 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
+#include <dtkCore/dtkCoreParameters>
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include <gnomonVisualizations/gnomonAbstractVisualization.h>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class gnomonViewForm;
-
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
-class gnomonCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractVisualization
 {
@@ -37,11 +37,26 @@ public:
 
 public:
 	virtual void setMesh(gnomonMeshSeries *mesh) = 0;
+	virtual gnomonMeshSeries *mesh(void) = 0;
+
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"setMesh"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonMesh") {
+            return {"mesh"};
+        }
+        return {};
+    };
 
 public:
     virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const QMap<QString, gnomonCoreParameter *>&) override = 0;
-    virtual QMap<QString, gnomonCoreParameter *> parameters(void) const override = 0;
+    virtual void setParameters(const dtkCoreParameters&) override = 0;
+    virtual dtkCoreParameters parameters(void) const override = 0;
+    virtual QMap<QString, QString> parameterGroups(void) override = 0;
 
 public:
     virtual QImage imageRendering(void) override = 0;
@@ -50,6 +65,7 @@ public slots:
     virtual void update(void) override = 0;
     virtual void render(void) override = 0;
     virtual void clear(void) override = 0;
+    virtual void setVisible(bool visible) override = 0;
 
 public slots:
     virtual void on2D(void) override = 0;

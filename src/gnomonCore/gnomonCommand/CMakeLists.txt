@@ -17,8 +17,10 @@
 ## Inputs
 ## #################################################################
 
+add_subdirectory(gnomonBinaryImage)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
+add_subdirectory(gnomonDataDict)
 add_subdirectory(gnomonDataFrame)
 add_subdirectory(gnomonImage)
 add_subdirectory(gnomonLString)
@@ -31,11 +33,23 @@ add_subdirectory(gnomonTree)
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
+  gnomonAbstractAdapterCommand
+  gnomonAbstractAdapterCommand.h
   gnomonAbstractCommand
   gnomonAbstractCommand.h
+  gnomonAbstractConstructorCommand
+  gnomonAbstractConstructorCommand.h
+  gnomonAbstractReaderCommand
+  gnomonAbstractReaderCommand.h
+  gnomonAbstractWriterCommand
+  gnomonAbstractWriterCommand.h
+  gnomonFormAlgorithmCommand
+  gnomonFormAlgorithmCommand.h
+  ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_HEADERS}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}
+  ${${PROJECT_NAME}_COMMAND_DATADICT_HEADERS}
   ${${PROJECT_NAME}_COMMAND_DATAFRAME_HEADERS}
   ${${PROJECT_NAME}_COMMAND_IMAGE_HEADERS}
   ${${PROJECT_NAME}_COMMAND_LSTRING_HEADERS}
@@ -45,6 +59,8 @@ ADD_GNOMON_HEADERS(
 
 
 ADD_GNOMON_SOURCES(
+  gnomonAbstractCommand.cpp
+  ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLIMAGE_SOURCES}
@@ -53,7 +69,9 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_COMMAND_LSTRING_SOURCES}
   ${${PROJECT_NAME}_COMMAND_MESH_SOURCES}
   ${${PROJECT_NAME}_COMMAND_POINTCLOUD_SOURCES}
-  ${${PROJECT_NAME}_COMMAND_TREE_SOURCES})
+  ${${PROJECT_NAME}_COMMAND_TREE_SOURCES}
+  gnomonAbstractReaderCommand.cpp
+  gnomonFormAlgorithmCommand.cpp)
 
 
 ######################################################################

@@ -1,28 +1,44 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class gnomonMesh;
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractCommand
 {
 public:
-     gnomonMeshFilterCommand(void) = delete;
-     gnomonMeshFilterCommand(const QString&);
-    ~gnomonMeshFilterCommand(void);
+     gnomonMeshFilterCommand(void);
+    ~gnomonMeshFilterCommand(void) override;
 
 public:
-    void redo(void) override;
-    void undo(void) override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setInput(gnomonMeshSeries *mesh_series);
-    gnomonMeshSeries *input(void);
+    gnomonMeshSeries *input();
+    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
-    gnomonMeshSeries *output(void);
+    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
-    virtual void setParameter(const QString&, const QVariant&);
+    orderedMap inputTypes() override;
+
+    orderedMap outputTypes() override;
+
+    gnomonMeshSeries *output();
+    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+
+    void deserializeResults(QJsonObject &serialization) override;
+
+    QJsonObject serializeResults(void) override;
+
+    void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    QMap<QString, gnomonCoreParameter *> parameters(void) const;
+    static bool isEmpty();
+    inline static const QString groupName = "meshFilter";
+    static QStringList availablePlugins();
 
 private:
     class gnomonMeshFilterCommandPrivate *d;

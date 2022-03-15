@@ -20,17 +20,21 @@ set(layer_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(gnomon)
 add_subdirectory(gnomonCore)
+add_subdirectory(gnomonPipeline)
 add_subdirectory(gnomonVisualization)
-add_subdirectory(gnomonTheme)
-add_subdirectory(gnomonWidgets)
 add_subdirectory(gnomonWorkspace)
-add_subdirectory(gnomonComposer)
+
+if(GNOMON_ENABLE_WIDGETS)
+  add_subdirectory(gnomonTheme)
+  add_subdirectory(gnomonWidgets)
+endif(GNOMON_ENABLE_WIDGETS)
 
 ## #################################################################
 ## Targets
 ## #################################################################
 
-export(EXPORT layer-targets FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+export(EXPORT  ${LAYER_TARGETS}
+  FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 ######################################################################
 ### CMakeLists.txt ends here

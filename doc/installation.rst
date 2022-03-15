@@ -14,17 +14,17 @@ Create a new conda environment (recommended)
 
 .. code-block::
 
-    $ conda create -n gnomon -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
+    $ conda create -n gnomon -c gnomon -c dtk-forge -c conda-forge -c mosaic gnomon plugin_tissueimage
 
 .. note:: the name of the new environment (here: 'gnomon') is defined by the option -n
 
 
-In an existing conda environment containing already Python 3.7.5+
+In an existing conda environment containing already Python 3.9
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block::
 
-    $ conda install -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
+    $ conda install -c gnomon -c dtk-forge -c conda-forge -c mosaic gnomon plugin_tissueimage
 
 Launching Gnomon
 --------------------------------------------------------------------------------
@@ -38,12 +38,12 @@ First activate the ``gnomon`` environment, then launch the executable:
 
 Updating Gnomon
 --------------------------------------------------------------------------------
-First activate the *gnomon* environment, then update the environment from conda channels dtk, mosaic & gnomon:
+First activate the *gnomon* environment, then update the environment from conda channels conda-forge, dtk-forge, mosaic & gnomon:
 
 .. code-block::
 
     $ conda activate gnomon
-    $ conda update -c dtk -c mosaic -c gnomon gnomon plugin_tissueimage
+    $ conda update -c gnomon -c dtk-forge -c conda-forge -c mosaic gnomon plugin_tissueimage
 
 About Conda
 --------------------------------------------------------------------------------
@@ -78,18 +78,6 @@ Activate the newly created environment:
 .. code-block::
 
     $ conda activate gnomon-dev
-
-(OPTIONAL) check the `libuuid` has been taken from `dtk` channel:
-
-.. code-block::
-
-    $ conda list libuuid
-
-If not:
-
-.. code-block::
-
-    $ conda install -c dtk libuuid
 
 Then, compile and install the sources:
 
@@ -142,5 +130,5 @@ Desinstall a gnomon environment
 
     $ conda deactivate (if you are not already in (base) environment)
     $ conda env remove -n gnomon
-    $ conda create -n gnomon -c dtk -c gnomon -c mosaic gnomon plugin-tissueimage
+    $ conda create -n gnomon -c gnomon -c dtk-forge -c conda-forge -c mosaic gnomon plugin-tissueimage
     $ conda activate gnomon

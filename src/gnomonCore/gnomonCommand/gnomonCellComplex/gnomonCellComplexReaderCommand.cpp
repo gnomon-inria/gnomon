@@ -14,53 +14,98 @@
 
 #include "gnomonCellComplexReaderCommand.h"
 
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
 class gnomonCellComplexReaderCommandPrivate
 {
 public:
-    QString path;
+    gnomonCellComplexSeries *cellComplex = nullptr;
 };
 
-gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand(const QString& key) : d(new gnomonCellComplexReaderCommandPrivate)
+gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand() : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    loadPluginGroup("cellComplexReader");
+    this->factory_name = groupName;
+    loadPluginGroup(this->factoryName());
 
-    this->action = gnomonCore::cellComplexReader::pluginFactory().create(key);
-
-    Q_ASSERT(this->action);
+     for (const auto& key: gnomonCore::cellComplexReader::pluginFactory().keys()) {
+        auto algo = gnomonCore::cellComplexReader::pluginFactory().create(key);
+        if (!this->action) {
+            this->action = algo;
+            this->algorithm_name = key;
+        }
+        m_descriptions.insert(key, algo->documentation());
+        m_extensions.insert(key, algo->extensions());
+        m_actions.insert(key, algo);
+    }
 }
 
 gnomonCellComplexReaderCommand::~gnomonCellComplexReaderCommand()
 {
+    this->action = nullptr;
     delete d;
 }
 
-void gnomonCellComplexReaderCommand::redo(void)
+void gnomonCellComplexReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
-    ((gnomonAbstractCellComplexReader *) this->action)->setPath(d->path);
-
-    this->action->run();
+    ((gnomonAbstractCellComplexReader *) this->action)->setPath(this->m_path);
 }
 
-void gnomonCellComplexReaderCommand::undo(void)
+void gnomonCellComplexReaderCommand::postdo(void)
+{
+    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
+
+    if((!cellComplex)||(cellComplex->times().empty())) {
+        d->cellComplex = nullptr;
+    } else {
+        d->cellComplex = cellComplex;
+    }
+}
+
+void gnomonCellComplexReaderCommand::undo()
 {
     ((gnomonAbstractCellComplexReader *) this->action)->setPath("");
 }
 
-void gnomonCellComplexReaderCommand::setPath(const QString& path)
+gnomonCellComplexSeries *gnomonCellComplexReaderCommand::cellComplex()
 {
-    d->path = path;
+    return d->cellComplex;
 }
 
-gnomonCellComplexSeries *gnomonCellComplexReaderCommand::cellComplex(void)
+QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexReaderCommand::outputs()
 {
-    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
-    if ((!cellComplex)||(cellComplex->times().size()==0)) {
-        return nullptr;
-    } else {
-        return cellComplex;
+    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    outputs["cellComplex"] = this->cellComplex();
+    return outputs;
+}
+
+bool gnomonCellComplexReaderCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+gnomonAbstractCommand::orderedMap gnomonCellComplexReaderCommand::outputTypes() {
+    orderedMap types;
+    types.emplace_back(std::make_pair("cellComplex", "gnomonCellComplex"));
+    return types;
+}
+
+QStringList gnomonCellComplexReaderCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+void gnomonCellComplexReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->cellComplex) {
+        d->cellComplex = new gnomonCellComplexSeries();
     }
+    auto tmp = serialization["cellComplex"].toObject();
+    d->cellComplex->deserialize(tmp);
+}
+
+QJsonObject gnomonCellComplexReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["cellComplex"] = d->cellComplex->serialize();
+    return out;
 }
 
 //

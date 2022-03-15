@@ -19,12 +19,14 @@
 #include "gnomonCellComplex/gnomonCellComplex.h"
 #include "gnomonCellGraph/gnomonCellGraph.h"
 #include "gnomonCellImage/gnomonCellImage.h"
+#include "gnomonDataDict/gnomonDataDict.h"
 #include "gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonImage/gnomonImage.h"
 #include "gnomonLString/gnomonLString.h"
 #include "gnomonMesh/gnomonMesh.h"
 #include "gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonTree/gnomonTree.h"
+#include "gnomonSphereForm.h"
 
 //void gnomonAbstractForm::record(void)
 //{
@@ -42,6 +44,9 @@ gnomonCellGraph *gnomonAbstractForm::asCellGraph()
 gnomonCellImage *gnomonAbstractForm::asCellImage()
 { return dynamic_cast<gnomonCellImage *>(this); }
 
+gnomonDataDict *gnomonAbstractForm::asDataDict()
+{ return dynamic_cast<gnomonDataDict *>(this); }
+
 gnomonDataFrame *gnomonAbstractForm::asDataFrame()
 { return dynamic_cast<gnomonDataFrame *>(this); }
 
@@ -56,6 +61,9 @@ gnomonMesh *gnomonAbstractForm::asMesh()
 
 gnomonPointCloud *gnomonAbstractForm::asPointCloud()
 { return dynamic_cast<gnomonPointCloud *>(this); }
+
+gnomonSphereForm *gnomonAbstractForm::asSphere()
+{ return dynamic_cast<gnomonSphereForm *>(this); }
 
 gnomonTree *gnomonAbstractForm::asTree()
 { return dynamic_cast<gnomonTree *>(this); }
