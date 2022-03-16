@@ -14,8 +14,14 @@
 
 #include "gnomonFormAlgorithmCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
+
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -37,6 +43,8 @@ public:
     gnomonPointCloudSeries* outputPointCloud = nullptr;
 
     dtkCoreParameters parameters;
+
+    QString python_code;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -62,6 +70,16 @@ void gnomonFormAlgorithmCommand::setAlgorithmName(const QString& algo_name)
 void gnomonFormAlgorithmCommand::setFormAlgorithm(gnomonAbstractFormAlgorithm *algo)
 {
     this->action = algo;
+}
+
+void gnomonFormAlgorithmCommand::setPythonCode(const QString& code)
+{
+    d->python_code = code;
+}
+
+const QString& gnomonFormAlgorithmCommand::pythonCode(void) const
+{
+    return d->python_code;
 }
 
 gnomonAbstractFormAlgorithm *gnomonFormAlgorithmCommand::formAlgorithm(void)

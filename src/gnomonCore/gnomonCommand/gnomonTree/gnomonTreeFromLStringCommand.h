@@ -1,4 +1,9 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
 class GNOMONCORE_EXPORT gnomonTreeFromLStringCommand : public gnomonAbstractCommand
 {

@@ -14,13 +14,16 @@
 
 #pragma once
 
-#include <gnomonCore>
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include <gnomonCoreExport>
+
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 #include "gnomonAbstractCommand.h"
 
 #include <QtCore>
 
-class gnomonAbstractReaderCommand : public gnomonAbstractCommand
+class gnomonAbstractDynamicForm;
+
+class GNOMONCORE_EXPORT gnomonAbstractReaderCommand : public gnomonAbstractCommand
 {
 public:
     ~gnomonAbstractReaderCommand() override;

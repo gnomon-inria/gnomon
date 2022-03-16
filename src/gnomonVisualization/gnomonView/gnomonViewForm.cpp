@@ -16,21 +16,11 @@
 
 // TODO: Script
 
-#include <dtkCore>
-// #include <dtkThemes>
-// #include <dtkWidgets>
-//#include <dtkScript>
-#include <dtkImagingCore>
-
-#include <QtQuick>
-#include <QtQuickWidgets>
-
-#include <gnomonCore>
-// #include <gnomonComposer>
-// #include <gnomonWidgets>
-
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshAdapterCommand>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 #include "gnomonManager/gnomonFormManager.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
@@ -43,7 +33,7 @@
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 #include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
 
-#include "gnomonFormAdapterMenu.h"
+// #include "gnomonFormAdapterMenu.h"
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>

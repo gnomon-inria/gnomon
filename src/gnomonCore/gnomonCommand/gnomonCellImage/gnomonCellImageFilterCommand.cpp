@@ -14,8 +14,10 @@
 
 #include "gnomonCellImageFilterCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFilter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
+#include <dtkLog>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

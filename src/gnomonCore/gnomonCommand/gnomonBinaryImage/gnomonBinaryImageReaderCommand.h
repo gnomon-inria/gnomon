@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractReaderCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand.h>
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
+
 
 class GNOMONCORE_EXPORT gnomonBinaryImageReaderCommand : public gnomonAbstractReaderCommand
 {

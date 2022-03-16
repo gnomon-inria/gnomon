@@ -1,4 +1,11 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCoreExport>
+
+#include "gnomonAbstractCommand.h"
+
+class gnomonAbstractDynamicForm;
+class gnomonAbstractFormAlgorithm;
 
 // TODO reemove ? is it used somewhere?
 // NOTE: Good question !
@@ -28,6 +35,10 @@ public:
 
 public:
     virtual void setAlgorithmName(const QString &name) override;
+
+public:
+    void setPythonCode(const QString& code);
+    const QString& pythonCode(void) const;
 
     void setFormAlgorithm(gnomonAbstractFormAlgorithm *algo);
     gnomonAbstractFormAlgorithm *formAlgorithm(void);

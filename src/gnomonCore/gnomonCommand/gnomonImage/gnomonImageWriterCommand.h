@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractWriterCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 class GNOMONCORE_EXPORT gnomonImageWriterCommand : public gnomonAbstractWriterCommand
 {

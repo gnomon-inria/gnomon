@@ -11,12 +11,12 @@
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeWriter.h"
 
-#include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
 
 #include <dtkCore>
 
@@ -229,6 +229,11 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
     QMap<QString, gnomonAbstractDynamicForm *> output_forms = command->outputs();
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
+    if (auto python_command = dynamic_cast<gnomonFormAlgorithmCommand *>(command)) {
+        QString code = python_command->pythonCode();
+        parameter_json.insert("python_code", QJsonValue(code));
+    }
+
     gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(), command->algorithmName(), parameter_json, input_forms.keys(), output_forms.keys());
     node->setVersion(command->version());
 
@@ -239,6 +244,7 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
         d->algorithm_nodes[output_forms[output]] = node;
         d->algorithm_output[output_forms[output]] = output;
     }
+
 }
 
 

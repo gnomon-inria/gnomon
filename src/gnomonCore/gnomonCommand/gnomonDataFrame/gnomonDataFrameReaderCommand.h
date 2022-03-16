@@ -1,5 +1,7 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractReaderCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 
 class GNOMONCORE_EXPORT gnomonDataFrameReaderCommand : public gnomonAbstractReaderCommand
 {

@@ -14,13 +14,9 @@
 
 #include "gnomonVisualizationCellComplex.h"
 
+#include <gnomonVisualization/gnomonCoreParameterColor>
+
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
-
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-// #include <gnomonWidgets>
 
 #include "gnomonView/gnomonViewForm.h"
 

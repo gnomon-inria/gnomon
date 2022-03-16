@@ -16,13 +16,12 @@
 
 #include <gnomonCoreExport>
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
+#include <dtkCore/dtkCoreParameters>
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
-#include "gnomonForm/gnomonTree/gnomonTree.h"
-
-class gnomonTree;
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 
 // ///////////////////////////////////////////////////////////////////
 //

@@ -14,7 +14,8 @@
 
 #include "gnomonTreeWriterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -35,10 +36,10 @@ gnomonTreeWriterCommand::gnomonTreeWriterCommand() : d(new gnomonTreeWriterComma
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    QStringList keys = gnomonCore::treeWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+        this->action = gnomonCore::treeWriter::pluginFactory().create(this->algorithm_name);
     }
 }
 

@@ -88,8 +88,12 @@ const QJsonObject gnomonPipelineNodeAlgorithm::toJson(void)
     QJsonObject parameters;
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
-        QVariantHash parameter = dd->parameters[param].toObject().toVariantHash();
-        parameters.insert(param, QJsonObject::fromVariantHash(parameter));
+        if (param == "python_code") {
+            parameters.insert(param, dd->parameters[param]);
+        } else {
+            QVariantHash parameter = dd->parameters[param].toObject().toVariantHash();
+            parameters.insert(param, QJsonObject::fromVariantHash(parameter));
+        }
     }
     json.insert("parameters", parameters);
 

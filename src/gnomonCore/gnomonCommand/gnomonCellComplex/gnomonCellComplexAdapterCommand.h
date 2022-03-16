@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAdapterCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 
 class gnomonCellComplex;
 

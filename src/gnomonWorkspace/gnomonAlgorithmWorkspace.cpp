@@ -1,17 +1,12 @@
 #include "gnomonAlgorithmWorkspace.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
-#include <gnomonPipeline>
-#include <gnomonVisualization>
 
-#include <dtkCore>
-#include <dtkImagingCore>
-#include <dtkScript>
+#include <gnomonPipeline/gnomonPipelineManager.h>
 
-#include <vtkImageData.h>
-#include <vtkRenderer.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonView/gnomonViewFormPool.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspacePrivate

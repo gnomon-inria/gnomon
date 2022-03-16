@@ -16,8 +16,6 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QtWidgets>
-
 #include <dtkCore/dtkCoreParameters>
 
 #include "gnomonView/gnomonViewMatplotlib.h"

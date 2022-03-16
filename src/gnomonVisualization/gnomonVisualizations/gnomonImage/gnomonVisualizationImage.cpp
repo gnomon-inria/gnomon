@@ -15,11 +15,7 @@
 #include "gnomonVisualizationImage.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-// #include <gnomonWidgets>
+#include <gnomonVisualization/gnomonCoreParameterColor.h>
 
 #include <dtkImagingCore>
 

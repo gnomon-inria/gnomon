@@ -1,10 +1,11 @@
 #include "gnomonPythonAlgorithmPluginCode.h"
 
-#include <gnomonCore>
-
-#include <dtkCore>
-#include <dtkScript>
-
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData>
 
 class gnomonPythonAlgorithmPluginCodePrivate
 {
@@ -316,7 +317,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     plugin_code += "# {# gnomon, plugin.class\n";
     plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
-    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.20.0')\n";
+    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.60.0')\n";
 
     for (const auto &form_type : d->input_forms.keys()) {
         gnomonFormDescription desc = d->input_forms[form_type];

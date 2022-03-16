@@ -2,7 +2,7 @@
 
 #include <gnomonWorkspaceExport>
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonPythonPluginParser>
 
 class GNOMONWORKSPACE_EXPORT gnomonPythonAlgorithmPluginCode : public QObject
 {

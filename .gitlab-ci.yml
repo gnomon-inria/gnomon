@@ -47,7 +47,7 @@ anaconda_linux_master:
   script:
   - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client
-  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
+  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
   only:
   - master
@@ -59,7 +59,7 @@ anaconda_linux_develop :
   - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client curl
   - curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
-  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-* --force --user gnomon
+  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
   when: manual
   only:

@@ -17,9 +17,9 @@
 #include <gnomonCoreExport>
 
 #include <QtCore>
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
@@ -30,8 +30,6 @@
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonForm/gnomonTree/gnomonTree.h"
-
-class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
 //

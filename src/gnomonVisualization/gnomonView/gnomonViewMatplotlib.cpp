@@ -16,13 +16,14 @@
 
 #include <dtkScript>
 
-#include <gnomonCore>
-#include <gnomonPipeline>
-
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeAdapter>
 #include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeAdapterCommand>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include "gnomonFormAdapterMenu.h"
+#include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include "gnomonManager/gnomonFormManager.h"
 

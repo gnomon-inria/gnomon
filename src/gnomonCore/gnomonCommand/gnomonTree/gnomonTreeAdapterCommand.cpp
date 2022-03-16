@@ -14,7 +14,8 @@
 
 #include "gnomonTreeAdapterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeAdapter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonTreeAdapterCommandPrivate
 {

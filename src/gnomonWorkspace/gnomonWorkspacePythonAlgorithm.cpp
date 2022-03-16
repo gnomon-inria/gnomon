@@ -1,15 +1,17 @@
 #include "gnomonWorkspacePythonAlgorithm.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
 #include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
-#include <gnomonPipeline>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <dtkCore>
-#include <dtkScript>
+#include <gnomonPipeline/gnomonPipelineManager.h>
+
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonView/gnomonViewFormPool.h>
 
 #include "gnomonPythonAlgorithmPluginCode.h"
 
+#include <dtkScript>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
@@ -78,8 +80,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
 void gnomonWorkspacePythonAlgorithmPrivate::registerPipeline(void)
 {
     if (this->command) {
-        gnomonAbstractCommand *algorithm_command = dynamic_cast<gnomonAbstractCommand *>(this->command);
-        gnomonPipelineManager::instance()->addAlgorithm(algorithm_command);
+        gnomonPipelineManager::instance()->addAlgorithm(this->command);
     }
 }
 
@@ -233,6 +234,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
 
         d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
         d->command->setFormAlgorithm(d->algorithm);
+        d->command->setPythonCode(d->code->text());
         connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 
         if (this->source()->binaryImage()) {

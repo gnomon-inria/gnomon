@@ -1,13 +1,12 @@
 #include "gnomonWorkspaceCellImageQuantification.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageQuantificationCommand>
-#include <gnomonPipeline>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <dtkCore>
-#include <dtkScript>
+#include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageQuantification

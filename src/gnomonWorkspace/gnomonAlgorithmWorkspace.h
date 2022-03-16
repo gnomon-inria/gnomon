@@ -3,11 +3,9 @@
 #include <gnomonWorkspaceExport>
 #include "gnomonAbstractWorkspace.h"
 
-#include <QtCore>
-#include <QtQml>
+#include <QJSValue>
 
 #include <gnomonVisualization/gnomonView/gnomonViewFormList>
-
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 
 class gnomonAbstractCommand;

@@ -14,7 +14,8 @@
 
 #include "gnomonCellImageConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellImageConstructorCommandPrivate
 {

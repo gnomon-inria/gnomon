@@ -14,8 +14,8 @@
 
 #include "gnomonCellImageTrackingCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageTracking.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellImageTrackingCommandPrivate
 {

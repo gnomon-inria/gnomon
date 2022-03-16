@@ -1,6 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
-class gnomonMesh;
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractCommand
 {

@@ -1,5 +1,10 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
 
+#include <gnomonCoreExport>
+
+#include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
+#include "gnomonForm/gnomonImage/gnomonImage.h"
 
 class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractCommand
 {
