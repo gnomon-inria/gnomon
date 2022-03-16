@@ -1,6 +1,5 @@
 from typing import Tuple, List, Dict, Callable
 
-from dtkcore import dtkCoreParameter
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
@@ -43,7 +42,7 @@ class PNodeRunner:
 
         # if reader or writer, set default path
         if hasattr(self.algo, "setPath"):
-            print(f"path for {self.name} -> {node.path()}")
+            #print(f"path for {self.name} -> {node.path()}")
             self.algo.setPath(node.path())
 
         # setting parameters
@@ -75,7 +74,7 @@ class PipelineRunner:
         for target_port, source in node.inputs_connections.items():
             source_node, source_port = source
             tmp = self.nodes[source_node].outputs[source_port]()
-            print(tmp)
+            # print(tmp)
             node.inputs[target_port](tmp)
 
     def run(self):
