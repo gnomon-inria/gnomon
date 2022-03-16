@@ -20,8 +20,7 @@ G.Workspace {
     fill: () => {}
 
     property string current_file: "";
-    property string _opened_file: "";
-    property string _opened_file_name: "";
+    property string _opened_files: "";
 
     P.FileDialog {
         id: _file_dialog;
@@ -33,9 +32,7 @@ G.Workspace {
         onAccepted: {
             console.log('Loading an existing project');
             load_session(_file_dialog.file);
-            let file_path = _file_dialog.file.toString()
-            _workspace._opened_file_name = file_path.slice(file_path.lastIndexOf("/")+1)
-            _workspace._opened_file = _file_dialog.file;
+            add_to_history(_file_dialog.file)  
         }
     }
 
@@ -56,41 +53,60 @@ G.Workspace {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left;
                 anchors.margins: 20;
-                color:  X.Style.baseColor;
+                color: X.Style.backgroundColor;
 
                 Rectangle {
                     id: _header_1
                     width: parent.width
                     height:42
-                    color: Qt.darker(X.Style.baseColor)
+                    color: Qt.darker(X.Style.backgroundColor, 1.2)
                     X.Label {
                         anchors.centerIn: parent
-                        text: "Recentely opened project"
+                        text: "Recentely opened projects"
                         font {
                             weight: Font.Bold
                             pointSize: 14;
                         }
                     }
                 }
-                ColumnLayout {
-                    anchors.top: _header_1.bottom
-                    spacing: 10
+                ListView {
+                    id: _recent_projects_lview
 
-                    Rectangle {
-                        id: _rect_1
-                        anchors.leftMargin: 20
-                        X.Label {
-                            text: ">>" + stt.opened_file_name
-                            font {
-                                weight: Font.Bold
-                                pointSize: 12;
-                            }
-                            MouseArea {
-                                anchors.fill: parent;
-                                onClicked: load_session(stt.opened_file);
+                    anchors.top: _header_1.bottom;
+                    anchors.bottom: parent.bottom;
+                    width: parent.width
+                    clip: true;
+                    focus: true;
+                    currentIndex: -1
+
+                    verticalLayoutDirection: ListView.BottomToTop
+
+                    model: _recent_projects
+                    delegate: ItemDelegate {
+                        width: _recent_projects_lview.width
+                        height: 42;
+                        highlighted: _recent_projects_lview.currentIndex == index
+
+                        onClicked: {
+                            _recent_projects_lview.currentIndex = index
+                            load_session(model.source)
+                        }
+
+                        text: model.name;
+                        font.pointSize: 14;
+                        background: Rectangle {
+                            opacity: enabled ? 0.8 : 0.1
+                            color: (down || highlighted || hovered) ? Qt.lighter(X.Style.backgroundColor, 1.2) : Qt.darker(X.Style.backgroundColor, 1.2)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: X.Style.borderColor;
+                                anchors.bottom: parent.bottom
                             }
                         }
-                    }                    
+
+                    }
                 }
             }
 
@@ -358,10 +374,37 @@ G.Workspace {
         }
     }
 
+    ListModel {
+        id: _recent_projects;
+    }
+
     Settings {
         id: stt
-        property alias width: _workspace.width
-        property alias opened_file: _workspace._opened_file
-        property alias opened_file_name: _workspace._opened_file_name
+        property alias opened_projects: _workspace._opened_files;
+    }
+
+    Component.onCompleted: {
+        _recent_projects.clear()
+        let files = JSON.parse(stt.opened_projects)
+        for(let i=0; i<files.length; i++){
+            _recent_projects.append(files[i])
+        }
+    }
+
+    function add_to_history(_file){
+
+        let file_path = _file.toString()
+        let file_name = file_path.slice(file_path.lastIndexOf("/")+1)
+        let file_source = _file.toString();
+
+        if(_recent_projects.count > 4) _recent_projects.remove(0)
+        _recent_projects.append({name: file_name, 
+                                source : file_source
+                                })
+        let _projects = []
+        for(let i=0; i<_recent_projects.count; i++){
+            _projects.push(_recent_projects.get(i))
+        }
+        _workspace._opened_files = JSON.stringify(_projects)
     }    
 }
