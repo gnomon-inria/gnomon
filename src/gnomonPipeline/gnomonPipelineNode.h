@@ -20,10 +20,10 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <dtkCoreParameter>
 
 class gnomonPipelineEdge;
 class gnomonPipelinePort;
+class dtkCoreParameter;
 
 class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
 {

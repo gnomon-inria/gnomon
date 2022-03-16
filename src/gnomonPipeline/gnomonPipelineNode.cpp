@@ -20,6 +20,7 @@
 #include "gnomonPipelineNode.h"
 #include "gnomonPipelineNode_p.h"
 
+#include <dtkCoreParameter>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodePrivate
