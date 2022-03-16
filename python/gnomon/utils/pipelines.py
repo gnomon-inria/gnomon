@@ -48,9 +48,11 @@ class PNodeRunner:
 
         # setting parameters
         for param_name in node.parametersName():
-            param = node.parameter(param_name)
-            print(type(param), param)
+            param = self.algo._parameters[param_name]
+            #print(type(param), param)
+            node.configureParameter(param_name, param)
             self.algo.setParameter(param_name, param)
+            #print(" ----> ", type(self.algo._parameters[param_name]), self.algo._parameters[param_name])
 
     def run(self):
         print(f" -- running {self.name}")

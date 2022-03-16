@@ -147,8 +147,8 @@ QStringList gnomonPipelineNode::parametersName(void) {
     return {};
 }
 
-dtkCoreParameter *gnomonPipelineNode::parameter(const QString &name) {
-    return nullptr;
+void gnomonPipelineNode::configureParameter(const QString &name, dtkCoreParameter *param) {
+
 }
 
 const QPointF& gnomonPipelineNode::position(void)

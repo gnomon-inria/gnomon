@@ -134,8 +134,8 @@ QStringList gnomonPipelineNodeConstructor::parametersName(void) {
     return dd->parameters.keys();
 }
 
-dtkCoreParameter *gnomonPipelineNodeConstructor::parameter(const QString &name) {
-    return dtkCoreParameter::create(dd->parameters[name].toObject().toVariantHash());
+void gnomonPipelineNodeConstructor::configureParameter(const QString &name, dtkCoreParameter *param) {
+    param->setValue(QVariant(dd->parameters[name].toObject().toVariantHash()));
 }
 
 //

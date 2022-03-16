@@ -62,7 +62,7 @@ public:
     virtual inline QString path(void) { return ""; };
     virtual QJsonObject parameters(void);
     virtual QStringList parametersName(void);
-    virtual dtkCoreParameter* parameter(const QString& name);
+    virtual void configureParameter(const QString &name, dtkCoreParameter *param);
 
     const QColor& color(void);
 
