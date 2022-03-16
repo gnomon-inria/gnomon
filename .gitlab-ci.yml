@@ -13,11 +13,14 @@ stages:
 
 conda_build_linux:
   stage: build
+  tags: 
+    - linux
+    - large
   script:
-  - conda install -n base -c defaults conda python=3.9 -y
-  - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
-  - mkdir conda-bld
-  - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - conda install -n base -c defaults conda python=3.9 -y
+    - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
+    - mkdir conda-bld
+    - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
@@ -28,6 +31,9 @@ conda_build_linux:
 
 conda_build_linux_develop:
   stage: build
+  tags: 
+    - linux
+    - large
   script:
     - conda install -n base -c defaults conda python=3.9 -y
     - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
@@ -44,6 +50,9 @@ conda_build_linux_develop:
 
 anaconda_linux_master:
   stage: deploy
+  tags: 
+    - linux
+    - large
   script:
   - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client
@@ -55,6 +64,9 @@ anaconda_linux_master:
 
 anaconda_linux_develop :
   stage: deploy
+  tags: 
+    - linux
+    - large
   script:
   - conda install -n base -c defaults conda python=3.9 -y
   - conda install conda-build anaconda-client curl
@@ -68,6 +80,8 @@ anaconda_linux_develop :
 
 pages:
   stage: deploy
+  tags:
+    - linux
   script:
     - conda update -n base -c defaults conda
     - conda install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
