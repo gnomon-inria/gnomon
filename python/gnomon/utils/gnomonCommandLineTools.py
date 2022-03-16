@@ -1,4 +1,3 @@
-import sys
 import argparse
 from gnomon.utils import gnomonTemplateUtils
 
@@ -31,6 +30,12 @@ def generate(args: argparse.Namespace):
             {},
         )
 
+def run(args: argparse.Namespace):
+    from gnomon.utils.pipelines import load_pipeline
+    pr = load_pipeline(args.pipeline)
+    pr.run()
+
+
 
 # setting parsers
 main_parser = argparse.ArgumentParser(prog="gnomon-utils", description="Gnomon command line tools")
@@ -51,3 +56,14 @@ generate_parser.set_defaults(func=generate)
 generate_parser.add_argument("schematic", help="Name of the schematic")
 generate_parser.add_argument("outpath", help="Target folder where the files will be generated")
 generate_parser.add_argument("--inpath", help="Optional path to a json schematic that will be used instead")
+
+
+# generate command
+generate_parser = subparsers.add_parser(
+    "run",
+    description=f"""
+    Run a pipeline from a pipeline file.
+    """
+)
+generate_parser.set_defaults(func=run)
+generate_parser.add_argument("pipeline", help="Path to the pipeline file")
