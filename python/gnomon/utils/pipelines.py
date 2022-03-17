@@ -1,4 +1,5 @@
 from typing import Tuple, List, Dict, Callable
+from threading import Thread
 
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineEdge, gnomonPipelinePort
@@ -112,9 +113,14 @@ class PipelineRunner:
             for node_name in node_group:
                 self.update_node_inputs(node_name)
 
+            jobs = []
             for node_name in node_group:
-                # TODO: try to run in parallel
-                self.nodes[node_name].run()
+                job = Thread(target=self.nodes[node_name].run)
+                job.start()
+                jobs.append(job)
+
+            for job in jobs:
+                job.join()
 
     def set_paths(self, path_dict: Dict[str, str]):
         for node, path in path_dict.items():
