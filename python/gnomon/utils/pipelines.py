@@ -11,6 +11,7 @@ class PNodeRunner:
     inputs_connections: Dict[str, Tuple[str, str]]
     inputs: Dict[str, Callable[[gnomonAbstractDynamicForm], None]]
     outputs: Dict[str, Callable[[], gnomonAbstractDynamicForm]]
+    _has_path: bool
     _node: gnomonPipelineNode
 
     def __init__(self, node: gnomonPipelineNode):
@@ -21,6 +22,7 @@ class PNodeRunner:
         load_plugin_group(algo_class)
         factory = get_factory(algo_class)
         self.algo = factory().create(node.algorithmPlugin())
+        self._has_path = False
 
         # generating input setters
         self.inputs = {}
@@ -43,6 +45,7 @@ class PNodeRunner:
         # if reader or writer, set default path
         if hasattr(self.algo, "setPath"):
             #print(f"path for {self.name} -> {node.path()}")
+            self._has_path = True
             self.algo.setPath(node.path())
 
         # setting parameters
@@ -57,17 +60,30 @@ class PNodeRunner:
         print(f" -- running {self.name}")
         self.algo.run()
 
+    def has_path(self):
+        return self._has_path
+
+    def setPath(self, path: str):
+        if self.has_path():
+            self.algo.setPath(path)
+
 
 class PipelineRunner:
     pipeline: gnomonPipeline
     nodes: Dict[str, PNodeRunner]
+    path_dict: Dict[str, str]
 
     def __init__(self, pipeline: gnomonPipeline):
         self.pipeline = pipeline
         self.nodes = {}
+        self.path_dict = {}
         for node_name in self.pipeline.nodeNames():
             print(f"making node {node_name}")
-            self.nodes[node_name] = PNodeRunner(self.pipeline.node(node_name))
+            node = self.pipeline.node(node_name)
+            runner = PNodeRunner(node)
+            if runner.has_path():
+                self.path_dict[node_name] = node.path()
+            self.nodes[node_name] = runner
 
     def update_node_inputs(self, node_name: str):
         node = self.nodes[node_name]
@@ -79,6 +95,10 @@ class PipelineRunner:
 
     def run(self):
         groups: List[List[str]] = self.pipeline.scheduleGroups()
+
+        # setting path
+        for node_name, path in self.path_dict.items():
+            self.nodes[node_name].setPath(path)
 
         # getting sources
         sources = groups[0]
@@ -93,13 +113,18 @@ class PipelineRunner:
                 self.update_node_inputs(node_name)
 
             for node_name in node_group:
+                # TODO: try to run in parallel
                 self.nodes[node_name].run()
+
+    def set_paths(self, path_dict: Dict[str, str]):
+        for node, path in path_dict.items():
+            self.path_dict[node] = path
 
 
 def load_pipeline(path: str):
-    print("instantiating")
+    # print("instantiating")
     pipeline = gnomonPipeline()
-    print("reading")
+    # print("reading")
     pipeline.readFromJson(path)
-    print("making runner")
+    # print("making runner")
     return PipelineRunner(pipeline)
