@@ -55,17 +55,27 @@ G.Workspace {
                 Repeater {
                     model: _recent_projects
                     Rectangle {
-                        color: "#99D0A3BF"
+                        color: X.Style.baseColor;
                         height: 200;
                         width: 200;
                         radius: 10;
+                        
+
+                        border.width: 2;
+                        border.color: X.Style.accentColor;
+
                         X.Label {
-                            anchors.centerIn: parent
-                            text: name
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            verticalAlignment: Text.AlignVCenter
+
+                            text: "Projet: " + name +   "\n description: " + description
+                            wrapMode: Text.Wrap
                             font {
                                 weight: Font.Bold
                                 pointSize: 14;
                             }
+                            color: X.Style.foregroundColor;
                         }
 
                         MouseArea {
@@ -90,8 +100,8 @@ G.Workspace {
                     height: 200;
                     radius: 10;
                     color: "transparent";
-                    border.width: 3;
-                    border.color: X.Style.baseColor;
+                    border.width: 2;
+                    border.color: X.Style.accentColor;
 
                     X.Icon {
                         icon: X.Icons.icons.folder;
@@ -119,8 +129,8 @@ G.Workspace {
                     height: 200;
                     radius: 10;
                     color: "transparent";
-                    border.width: 3;
-                    border.color: X.Style.baseColor;
+                    border.width: 2;
+                    border.color: X.Style.accentColor;
 
                     X.Icon {
                         icon: X.Icons.icons.create_new_folder;
@@ -359,14 +369,24 @@ G.Workspace {
     }
 
     function add_to_history(_file){
-
-        let file_path = _file.toString()
-        let file_name = file_path.slice(file_path.lastIndexOf("/")+1)
+        
         let file_source = _file.toString();
+
+        let pipeline = Qt.createQmlObject("import gnomon.Pipeline 1.0 as GP; GP.Pipeline { }", window, "")
+        pipeline.readFromJson(file_source)
+
+        let file_name = pipeline.name
+        let file_description = pipeline.description
+
+        if(!file_name){
+            let file_path = _file.toString()
+            file_name = file_path.slice(file_path.lastIndexOf("/")+1)
+        }
 
         if(_recent_projects.count > 5) _recent_projects.remove(0)
         _recent_projects.append({name: file_name, 
-                                source : file_source
+                                source : file_source,
+                                description: file_description,
                                 })
         let _projects = []
         for(let i=0; i<_recent_projects.count; i++){
