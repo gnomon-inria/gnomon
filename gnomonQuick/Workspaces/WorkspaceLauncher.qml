@@ -45,67 +45,34 @@ G.Workspace {
             anchors.fill: parent
             spacing: 10;
 
-            Rectangle {
+            Grid {
 
-                width: parent.width/3;
-                height: parent.height/3;
+                columns: 3;
+                rows: 2;
 
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left;
-                anchors.margins: 20;
-                color: X.Style.backgroundColor;
+                spacing: 10;
 
-                Rectangle {
-                    id: _header_1
-                    width: parent.width
-                    height:42
-                    color: Qt.darker(X.Style.backgroundColor, 1.2)
-                    X.Label {
-                        anchors.centerIn: parent
-                        text: "Recentely opened projects"
-                        font {
-                            weight: Font.Bold
-                            pointSize: 14;
-                        }
-                    }
-                }
-                ListView {
-                    id: _recent_projects_lview
-
-                    anchors.top: _header_1.bottom;
-                    anchors.bottom: parent.bottom;
-                    width: parent.width
-                    clip: true;
-                    focus: true;
-                    currentIndex: -1
-
-                    verticalLayoutDirection: ListView.BottomToTop
-
+                Repeater {
                     model: _recent_projects
-                    delegate: ItemDelegate {
-                        width: _recent_projects_lview.width
-                        height: 42;
-                        highlighted: _recent_projects_lview.currentIndex == index
-
-                        onClicked: {
-                            _recent_projects_lview.currentIndex = index
-                            load_session(model.source)
-                        }
-
-                        text: model.name;
-                        font.pointSize: 14;
-                        background: Rectangle {
-                            opacity: enabled ? 0.8 : 0.1
-                            color: (down || highlighted || hovered) ? Qt.lighter(X.Style.backgroundColor, 1.2) : Qt.darker(X.Style.backgroundColor, 1.2)
-
-                            Rectangle {
-                                width: parent.width
-                                height: 1
-                                color: X.Style.borderColor;
-                                anchors.bottom: parent.bottom
+                    Rectangle {
+                        color: "#99D0A3BF"
+                        height: 200;
+                        width: 200;
+                        radius: 10;
+                        X.Label {
+                            anchors.centerIn: parent
+                            text: name
+                            font {
+                                weight: Font.Bold
+                                pointSize: 14;
                             }
                         }
 
+                        MouseArea {
+                            anchors.fill: parent;
+                            hoverEnabled: true;
+                            onClicked: load_session(source)
+                        }
                     }
                 }
             }
@@ -397,7 +364,7 @@ G.Workspace {
         let file_name = file_path.slice(file_path.lastIndexOf("/")+1)
         let file_source = _file.toString();
 
-        if(_recent_projects.count > 4) _recent_projects.remove(0)
+        if(_recent_projects.count > 5) _recent_projects.remove(0)
         _recent_projects.append({name: file_name, 
                                 source : file_source
                                 })
