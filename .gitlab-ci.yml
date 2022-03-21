@@ -154,6 +154,7 @@ deploy_pages:
   tags:
     - linux
   script:
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"  
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
     - cd doc
     - make html
