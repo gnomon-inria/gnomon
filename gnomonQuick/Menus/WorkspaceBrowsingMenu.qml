@@ -42,12 +42,13 @@ Item {
         folder: d.defaultReadPath();
 
         modality: Qt.NonModal;
+        fileMode: P.FileDialog.OpenFiles;
 
         onAccepted: {
-            d.readerPath = decodeURIComponent(_file_dialog.file);
-            d.requestReaders();
-
-            _self._current_file = _file_dialog.file;
+            for(let i_n in _file_dialog.files){
+                d.readerPath = decodeURIComponent(_file_dialog.files[i_n]);
+                d.requestReaders();
+            }
         }
     }
 
@@ -68,19 +69,35 @@ Item {
             }
         }
 
-        X.ButtonRaw {
-            text: _finder.selectedFolder ? "Open" : "Load";
-            enabled: _finder.selectedFolder || _finder.selectedFile
-            Layout.fillWidth: true;
+        RowLayout {
 
-            onClicked: {
-                if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
-                if(_finder.selectedFile) {
-                    d.readerPath = decodeURIComponent(_finder.selectedFile);
-                    d.requestReaders();
+            spacing: 10
+
+            X.ButtonRaw {
+                text: _finder.selectedFolder ? "Open" : "Load";
+                enabled: _finder.selectedFolder || _finder.selectedFile
+                Layout.fillWidth: true;
+
+                onClicked: {
+                    if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
+                    if(_finder.selectedFile) {
+                        d.readerPath = decodeURIComponent(_finder.selectedFile);
+                        d.requestReaders();
+                    }
                 }
             }
+
+            X.ButtonRaw {
+                text: "Multi-Data";
+                Layout.fillWidth: true;
+
+                onClicked: {
+                    _file_dialog.open()
+                }
+            }
+
         }
+
     }
 
     Component.onCompleted: {
