@@ -94,7 +94,7 @@ conda_build_linux_develop:
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"  
     - mkdir conda-bld
-    - mamba mambabuild . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   when: manual
   artifacts:
