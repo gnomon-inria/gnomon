@@ -63,10 +63,12 @@ requirements:
     - dtk-core-python >=2.8
     - dtk-imaging >=2.0
     - dtk-imaging-python >=2.0
+    - dtk-plugins-imaging >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
     - python =3.9
     - numpy >=1.22
+    - pymongo
     - swig =4.0
     - vtk =9.1.0
 
