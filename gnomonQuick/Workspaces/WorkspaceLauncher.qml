@@ -20,7 +20,6 @@ G.Workspace {
     fill: () => {}
 
     property string current_file: "";
-    property string _opened_files: "";
 
     P.FileDialog {
         id: _file_dialog;
@@ -45,15 +44,15 @@ G.Workspace {
             anchors.fill: parent
             spacing: 10;
 
-            Grid {
+            GridLayout {
 
                 columns: 3;
                 rows: 2;
 
-                spacing: 10;
+                Layout.leftMargin: 40;
 
                 Repeater {
-                    model: _recent_projects
+                    model: window.recent_projects
                     Rectangle {
                         color: X.Style.baseColor;
                         height: 200;
@@ -351,47 +350,5 @@ G.Workspace {
         }
     }
 
-    ListModel {
-        id: _recent_projects;
-    }
-
-    Settings {
-        id: stt
-        property alias opened_projects: _workspace._opened_files;
-    }
-
-    Component.onCompleted: {
-        _recent_projects.clear()
-        let files = JSON.parse(stt.opened_projects)
-        for(let i=0; i<files.length; i++){
-            _recent_projects.append(files[i])
-        }
-    }
-
-    function add_to_history(_file){
-        
-        let file_source = _file.toString();
-
-        let pipeline = Qt.createQmlObject("import gnomon.Pipeline 1.0 as GP; GP.Pipeline { }", window, "")
-        pipeline.readFromJson(file_source)
-
-        let file_name = pipeline.name
-        let file_description = pipeline.description
-
-        if(!file_name){
-            let file_path = _file.toString()
-            file_name = file_path.slice(file_path.lastIndexOf("/")+1)
-        }
-
-        if(_recent_projects.count > 5) _recent_projects.remove(0)
-        _recent_projects.append({name: file_name, 
-                                source : file_source,
-                                description: file_description,
-                                })
-        let _projects = []
-        for(let i=0; i<_recent_projects.count; i++){
-            _projects.push(_recent_projects.get(i))
-        }
-        _workspace._opened_files = JSON.stringify(_projects)
-    }    
+    Component.onCompleted:  window.drawelr_closed = true;
 }
