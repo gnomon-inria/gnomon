@@ -66,18 +66,20 @@ G.Workspace {
                         X.Label {
                             anchors.fill: parent
                             anchors.margins: 10
-                            verticalAlignment: Text.AlignVCenter
-
-                            text: "Projet: " + name +   "\n description: " + description
-                            wrapMode: Text.Wrap
+                            text: "<b>" + name + "</b> <br> <br> <i>description: </i> <br>" + description
                             font {
-                                weight: Font.Bold
-                                pointSize: 14;
+                                pointSize: 12;
                             }
+
+                            wrapMode: Text.Wrap
                             color: X.Style.foregroundColor;
+
+                            ToolTip.visible: _mouse_area_loader.containsMouse;
+                            ToolTip.text: source;
                         }
 
                         MouseArea {
+                            id: _mouse_area_loader
                             anchors.fill: parent;
                             hoverEnabled: true;
                             onClicked: load_session(source)
