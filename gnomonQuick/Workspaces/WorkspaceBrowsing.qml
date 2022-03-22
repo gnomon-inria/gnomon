@@ -74,4 +74,6 @@ G.Workspace {
             d.readWith(reader);
         }
     }
+
+    Component.onCompleted :  window.drawelr_closed = false;
 }

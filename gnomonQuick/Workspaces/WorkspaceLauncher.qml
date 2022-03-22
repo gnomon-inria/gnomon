@@ -3,6 +3,7 @@ import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
 import Qt.labs.platform  1.0 as P
+import Qt.labs.settings 1.0
 
 import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
@@ -30,48 +31,78 @@ G.Workspace {
         onAccepted: {
             console.log('Loading an existing project');
             load_session(_file_dialog.file);
+            add_to_history(_file_dialog.file)  
         }
     }
 
     Pane {
         anchors.fill: parent;
 
-        Row {
+        RowLayout {
 
             anchors.centerIn: parent;
-
+            anchors.fill: parent
             spacing: 10;
 
-            Grid {
+            GridLayout {
 
                 columns: 3;
                 rows: 2;
 
-                spacing: 10;
+                Layout.leftMargin: 40;
 
                 Repeater {
-                    model: 3*2;
-
+                    model: window.recent_projects
                     Rectangle {
-                        color: "#99D0A3BF"
+                        color: X.Style.baseColor;
                         height: 200;
                         width: 200;
                         radius: 10;
+                        
+
+                        border.width: 2;
+                        border.color: X.Style.accentColor;
+
+                        X.Label {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            text: "<b>" + name + "</b> <br> <br> <i>description: </i> <br>" + description
+                            font {
+                                pointSize: 12;
+                            }
+
+                            wrapMode: Text.Wrap
+                            color: X.Style.foregroundColor;
+
+                            ToolTip.visible: _mouse_area_loader.containsMouse;
+                            ToolTip.text: source;
+                        }
+
+                        MouseArea {
+                            id: _mouse_area_loader
+                            anchors.fill: parent;
+                            hoverEnabled: true;
+                            onClicked: load_session(source)
+                        }
                     }
                 }
             }
 
-            Column {
+            ColumnLayout {
 
-                spacing: 10;
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight;
+                Layout.rightMargin: 20;
+
+                width: parent.width/2;
+                spacing: 10
 
                 Rectangle {
                     width: 200;
                     height: 200;
                     radius: 10;
                     color: "transparent";
-                    border.width: 3;
-                    border.color: X.Style.baseColor;
+                    border.width: 2;
+                    border.color: X.Style.accentColor;
 
                     X.Icon {
                         icon: X.Icons.icons.folder;
@@ -99,8 +130,8 @@ G.Workspace {
                     height: 200;
                     radius: 10;
                     color: "transparent";
-                    border.width: 3;
-                    border.color: X.Style.baseColor;
+                    border.width: 2;
+                    border.color: X.Style.accentColor;
 
                     X.Icon {
                         icon: X.Icons.icons.create_new_folder;
@@ -320,4 +351,6 @@ G.Workspace {
             window.create_project(new_p_name.text, new_p_context.text, new_p_tags.text);
         }
     }
+
+    Component.onCompleted:  window.drawelr_closed = true;
 }
