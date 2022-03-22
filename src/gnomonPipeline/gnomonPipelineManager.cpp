@@ -11,7 +11,6 @@
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeWriter.h"
 
-#include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "gnomonCommand/gnomonAbstractCommand.h"
 #include "gnomonCommand/gnomonAbstractWriterCommand.h"
 

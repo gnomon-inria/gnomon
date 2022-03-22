@@ -14,7 +14,8 @@
 
 #include "gnomonTreeConstructorCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeConstructor.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonTreeConstructorCommandPrivate
 {

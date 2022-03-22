@@ -18,9 +18,6 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-#include <QtCore>
-#include <QtQml>
-
 class gnomonViewForm;
 class gnomonViewFormList;
 

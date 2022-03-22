@@ -14,8 +14,8 @@
 
 #include "gnomonPointCloudQuantificationCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonPointCloudQuantificationCommandPrivate
 {
@@ -32,10 +32,10 @@ gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand() :
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::treeFromLString::pluginFactory().keys();
+    QStringList keys = gnomonCore::pointCloudQuantification::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        this->action = gnomonCore::treeFromLString::pluginFactory().create(this->algorithm_name);
+        this->action = gnomonCore::pointCloudQuantification::pluginFactory().create(this->algorithm_name);
     }
 }
 

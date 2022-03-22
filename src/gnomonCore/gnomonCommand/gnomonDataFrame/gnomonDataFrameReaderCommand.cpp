@@ -14,7 +14,8 @@
 
 #include "gnomonDataFrameReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

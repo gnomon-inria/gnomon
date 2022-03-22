@@ -14,8 +14,8 @@
 
 #include "gnomonPointCloudFromImageCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

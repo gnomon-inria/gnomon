@@ -18,7 +18,8 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
+#include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
@@ -26,7 +27,6 @@
 class gnomonViewForm;
 
 class gnomonPointCloud;
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationPointCloud : public gnomonAbstractVisualization
 {

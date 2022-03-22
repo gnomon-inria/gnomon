@@ -13,7 +13,9 @@
 // Code:
 
 #include "gnomonPointCloudWriterCommand.h"
-#include <dtkScript>
+
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudWriter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -34,10 +36,10 @@ gnomonPointCloudWriterCommand::gnomonPointCloudWriterCommand() : d(new gnomonPoi
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::meshFromImage::pluginFactory().keys();
+    QStringList keys = gnomonCore::pointCloudWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        this->action = gnomonCore::meshFromImage::pluginFactory().create(this->algorithm_name);
+        this->action = gnomonCore::pointCloudWriter::pluginFactory().create(this->algorithm_name);
     }
 }
 

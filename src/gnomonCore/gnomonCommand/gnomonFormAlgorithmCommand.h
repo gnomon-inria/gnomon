@@ -1,4 +1,11 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCoreExport>
+
+#include "gnomonAbstractCommand.h"
+
+class gnomonAbstractDynamicForm;
+class gnomonAbstractFormAlgorithm;
 
 // TODO reemove ? is it used somewhere?
 // NOTE: Good question !

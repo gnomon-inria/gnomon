@@ -14,7 +14,8 @@
 
 #include "gnomonImageWriterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -35,7 +36,7 @@ gnomonImageWriterCommand::gnomonImageWriterCommand() : d(new gnomonImageWriterCo
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::cellImageConstructor::pluginFactory().keys();
+    QStringList keys = gnomonCore::imageWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
         this->action = gnomonCore::imageWriter::pluginFactory().create(this->algorithm_name);

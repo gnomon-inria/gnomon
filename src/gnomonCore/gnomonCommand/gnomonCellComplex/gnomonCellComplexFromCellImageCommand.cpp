@@ -14,8 +14,8 @@
 
 #include "gnomonCellComplexFromCellImageCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexFromCellImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellComplexFromCellImageCommandPrivate
 {

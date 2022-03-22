@@ -14,9 +14,8 @@
 
 #pragma once
 
-#include <gnomonCore>
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
+#include "gnomonAbstractCommand.h"
 
 class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {

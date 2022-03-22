@@ -16,14 +16,6 @@
 
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-// #include <gnomonWidgets>
-
-#include <dtkImagingCore>
-
 #include "gnomonView/gnomonViewForm.h"
 
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"

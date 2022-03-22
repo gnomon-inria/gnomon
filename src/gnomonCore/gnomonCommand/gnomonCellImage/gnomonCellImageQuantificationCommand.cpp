@@ -14,8 +14,8 @@
 
 #include "gnomonCellImageQuantificationCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageQuantification.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonCellImageQuantificationCommandPrivate
 {

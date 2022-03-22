@@ -20,15 +20,6 @@
 
 #include "gnomonActor/gnomonActor.h"
 
-#include <vtkActor.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkSmartPointer.h>
-
-
 // /////////////////////////////////////////////////////////////////
 // gnomonActor2DCellImage
 // /////////////////////////////////////////////////////////////////

@@ -18,7 +18,7 @@
 
 #include <dtkImagingCore>
 
-#include <QtWidgets>
+#include <QtGui>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

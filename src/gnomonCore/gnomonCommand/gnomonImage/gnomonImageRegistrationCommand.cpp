@@ -1,6 +1,9 @@
 #include "gnomonImageRegistrationCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

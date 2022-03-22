@@ -21,9 +21,7 @@
 #include "gnomonAbstractVisualizationCellComplex.h"
 
 class gnomonViewForm;
-
 class gnomonCellComplex;
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationCellComplex : public gnomonAbstractVisualizationCellComplex
 {
@@ -34,8 +32,8 @@ public:
     ~gnomonVisualizationCellComplex(void);
 
 public:
-	void setCellComplex(gnomonCellComplexSeries *cellComplex) override;
-	gnomonCellComplexSeries *cellComplex(void) override;
+    void setCellComplex(gnomonCellComplexSeries *cellComplex) override;
+    gnomonCellComplexSeries *cellComplex(void) override;
 
 public:
     QImage imageRendering(void) override;

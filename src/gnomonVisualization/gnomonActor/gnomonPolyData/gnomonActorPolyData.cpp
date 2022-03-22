@@ -15,9 +15,9 @@
 #include "gnomonActorPolyData.h"
 #include "gnomonPolyData.h"
 
-#include <dtkImagingCore>
+#include <QtGui>
 
-#include <QtWidgets>
+#include <dtkImagingCore>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

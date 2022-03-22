@@ -26,8 +26,6 @@
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 
-class gnomonDataFrame;
-
 class GNOMONCORE_EXPORT gnomonAbstractCellImageQuantification : public gnomonAbstractAlgorithm
 {
 

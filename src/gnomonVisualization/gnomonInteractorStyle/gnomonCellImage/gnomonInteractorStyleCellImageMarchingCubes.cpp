@@ -17,15 +17,6 @@
 
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 
-
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-// #include <gnomonWidgets>
-
-#include <dtkImagingCore>
-
 #include "gnomonView/gnomonViewForm.h"
 
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
@@ -34,10 +25,7 @@
 
 #include "gnomonInteractorStyle/gnomonCellImage/gnomonInteractorStyleCellImageMarchingCubes.h"
 
-//#include <vtkCellData.h>
-//#include <vtkCellLocator.h>
 #include <vtkCellPicker.h>
-//#include <vtkPointData.h>
 #include <vtkProp3DCollection.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -54,10 +42,6 @@ class gnomonInteractorStyleCellImageMarchingCubesPrivate
 {
     public:
         gnomonAbstractVisualizationCellImage *visu = nullptr;
-
-    public:
-        // gnomonOverlayPaneItem *infoPaneItem = nullptr;
-        QFormLayout *infoLayout = nullptr;
 
     public:
         vtkSmartPointer<vtkCellPicker> picker = nullptr;
@@ -83,9 +67,6 @@ gnomonInteractorStyleCellImageMarchingCubes::~gnomonInteractorStyleCellImageMarc
 {
     dd->picker->Delete();
     dd->picker = nullptr;
-
-    delete dd->infoLayout;
-    dd->infoLayout = nullptr;
 
     dd->visu = nullptr;
 }

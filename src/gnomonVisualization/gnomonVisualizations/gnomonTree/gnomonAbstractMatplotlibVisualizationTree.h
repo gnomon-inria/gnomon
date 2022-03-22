@@ -18,7 +18,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
 
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 

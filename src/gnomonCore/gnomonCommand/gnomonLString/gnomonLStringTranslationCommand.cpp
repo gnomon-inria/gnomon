@@ -14,8 +14,8 @@
 
 #include "gnomonLStringTranslationCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringTranslation.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonLStringTranslationCommandPrivate
 {

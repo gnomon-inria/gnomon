@@ -1,1 +1,1 @@
-#import "gnomonDataDict.h"
+#include "gnomonDataDict.h"

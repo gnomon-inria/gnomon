@@ -4,9 +4,6 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-#include <QtCore>
-#include <QtQml>
-
 class gnomonViewForm;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspacePreprocess : public gnomonAlgorithmWorkspace
