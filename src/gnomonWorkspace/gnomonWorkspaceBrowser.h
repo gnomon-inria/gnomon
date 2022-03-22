@@ -27,17 +27,17 @@ public:
 public:
     Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
     Q_PROPERTY(QStringList extensions READ readerExtensions);
-    Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
+    Q_PROPERTY(QStringList readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
 
 signals:
     void available(const QVariantMap& readers);
     void readerPathChanged(void);
 
 public:
-    const QString& readerPath(void) const;
+    const QStringList& readerPath(void) const;
 
 public slots:
-    void setReaderPath(const QString&);
+    void setReaderPath(const QStringList&);
     void requestReaders(void);
     bool readWith(const QString&);
     inline void saveState() {};  // nothing to be saved or restored
