@@ -59,6 +59,7 @@ conda_build_linux:
     - large
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate base
     - mkdir conda-bld
     - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
@@ -92,7 +93,8 @@ conda_build_linux_develop:
     - linux
     - large
   script:
-    - . "/builds/miniconda3/etc/profile.d/conda.sh"  
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate base  
     - mkdir conda-bld
     - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
@@ -111,7 +113,8 @@ anaconda_linux_master:
     - large
   needs: [conda_build_linux]
   script:
-    - . "/builds/miniconda3/etc/profile.d/conda.sh"  
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate base  
     - mamba install -c conda-forge anaconda-client
     - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
@@ -128,7 +131,7 @@ anaconda_macos_master:
     - source /Users/ci/miniconda3/etc/profile.d/conda.sh
     - conda activate base
     - mamba install -c conda-forge anaconda-client
-    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/macos-64/libgnomon-* --force --user gnomon
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/osx-64/libgnomon-* --force --user gnomon
   extends: .template_retry
   only:
     - master
@@ -139,10 +142,12 @@ anaconda_linux_develop :
     - linux
     - large
   script:
-  - conda install -n base -c defaults conda python=3.9 -y
-  - conda install conda-build anaconda-client curl
-  #- curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
-  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
+    - . "/builds/miniconda3/etc/profile.d/conda.sh" 
+    - conda activate base 
+    - conda install -n base -c defaults conda python=3.9 -y
+    - conda install conda-build anaconda-client curl
+    #- curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
   when: manual
   only:
@@ -154,7 +159,8 @@ deploy_pages:
   tags:
     - linux
   script:
-    - . "/builds/miniconda3/etc/profile.d/conda.sh"  
+    - . "/builds/miniconda3/etc/profile.d/conda.sh" 
+    - conda activate base 
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
     - cd doc
     - make html
