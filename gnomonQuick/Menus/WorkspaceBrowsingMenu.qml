@@ -45,10 +45,12 @@ Item {
         fileMode: P.FileDialog.OpenFiles;
 
         onAccepted: {
+            let paths = [];
             for(let i_n in _file_dialog.files){
-                d.readerPath = decodeURIComponent(_file_dialog.files[i_n]);
-                d.requestReaders();
+                paths.push(decodeURIComponent(_file_dialog.files[i_n]))
             }
+            d.readerPath = paths 
+            d.requestReaders();
         }
     }
 
@@ -88,7 +90,7 @@ Item {
             }
 
             X.ButtonRaw {
-                text: "Multi-Data";
+                text: "Time Series Data";
                 Layout.fillWidth: true;
 
                 onClicked: {
