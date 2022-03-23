@@ -13,293 +13,34 @@
 // Code:
 
 #include "gnomonWorkspaceCellImageTracking.h"
-#include "gnomonWorkspaceTemplate_p.h"
+#include "gnomonAlgorithmWorkspace_p.h"
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
-#include <gnomonWidgets>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <dtkImagingCore>
-#include <dtkScript>
-#include <dtkWidgets>
-#include <dtkWidgetsMenuBar_p.h>
-#include <dtkWidgetsMenu+ux.h>
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonWorkspaceCellImageTrackingPrivate
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonWorkspaceCellImageTrackingPrivate : public gnomonWorkspaceTemplatePrivate<gnomonCellImageTrackingCommand>
-{
-public:
-     gnomonWorkspaceCellImageTrackingPrivate(void);
-    ~gnomonWorkspaceCellImageTrackingPrivate(void);
-
-public:
-    QString workspace(void) const override;
-    QStringList keys(void) const override;
-
-public:
-    gnomonViewForm *prev_view = nullptr;
-    gnomonViewForm *next_view = nullptr;
-
-    QHBoxLayout *view_layout = nullptr;
-    QWidget *view_widget = nullptr;
-    
-    gnomonViewMatplotlib *mpl_figure = nullptr;
-
-public:
-    QStackedWidget *next_stack = nullptr;
-    gnomonMessageBoard *next_message = nullptr;
-
-    QStackedWidget *mpl_stack = nullptr;
-    gnomonMessageBoard *mpl_message = nullptr;
-
-    QSplitter *splitter = nullptr;
-
-public:
-    dtkWidgetsMenu *menu_;
-
-public:
-    dtkWidgetsMenuBarContainer *dashboard;
-
-public:
-    QVBoxLayout *mpl_layout = nullptr;
-    QWidget *mpl_view = nullptr;
-};
-
-gnomonWorkspaceCellImageTrackingPrivate::gnomonWorkspaceCellImageTrackingPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonCellImageTrackingCommand >()
-{
-
-}
-
-gnomonWorkspaceCellImageTrackingPrivate::~gnomonWorkspaceCellImageTrackingPrivate(void)
-{
-
-}
-
-QString gnomonWorkspaceCellImageTrackingPrivate::workspace(void) const
-{
-    return "Cell Image Tracking";
-}
-
-QStringList gnomonWorkspaceCellImageTrackingPrivate::keys(void) const
-{
-    return gnomonCore::cellImageTracking::pluginFactory().keys();
-}
-
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonWorkspaceCellImageTracking
-// ///////////////////////////////////////////////////////////////////
-
-gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *parent): gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("cellImageTracking");
+    emit algorithmsLoaded();
 
-    d = new gnomonWorkspaceCellImageTrackingPrivate;
+    d->workspace = "Cellular Tracking";
+    d->command   = new gnomonCellImageTrackingCommand;
+    d->keys = gnomonCore::cellImageTracking::pluginFactory().keys();
+    d->algorithm = d->command->algorithmName();
 
-    d->prev_view = new gnomonViewForm(this);
-    d->prev_view->setExportColor(this->color);
-    d->prev_view->setInputView(true);
-    d->prev_view->setEnableLinking(false);
-    d->prev_view->setAcceptForm("gnomonCellImage",true);
-    d->prev_view->setAcceptForm("gnomonImage",true);
+    //create the views
+    this->addInputView();
+    this->addOutputView();
 
-    connect(d->prev_view, &gnomonViewForm::timeChanged, [=] (double time)
-    {
-        QList<double> prev_times = d->prev_view->times();
-        int time_index = prev_times.indexOf(time);
-        if (time_index < prev_times.size()-1) {
-            d->next_view->timeIndexChange(time_index+1);
-        } else {
-//            d->prev_view->timeIndexChange(time_index-1);
-        }
-    });
-    
-    d->next_view = new gnomonViewForm(this);
-    d->next_view->setExportColor(this->color);
-    d->next_view->setInputView(false);
-    d->next_view->setEnableLinking(false);
-    d->next_view->setAcceptForm("gnomonCellImage",true);
-    d->next_view->setAcceptForm("gnomonImage",true);
+    emit parametersChanged();
 
-    connect(d->next_view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    d->updatePool();
 
-    connect(d->next_view, &gnomonViewForm::timeChanged, [=] (double time)
-    {
-        QList<double> next_times = d->next_view->times();
-        int time_index = next_times.indexOf(time);
-        if (time_index > 0) {
-            d->prev_view->timeIndexChange(time_index-1);
-        } else {
-//            d->next_view->timeIndexChange(time_index+1);
-        }
-    });
-
-    d->mpl_figure = new gnomonViewMatplotlib(this);
-    d->mpl_figure->setAcceptForm("gnomonTree",true);
-
-    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
-
-    d->mpl_layout = new QVBoxLayout;
-    d->mpl_layout->setContentsMargins(0, 0, 0, 0);
-    d->mpl_layout->setSpacing(0);
-    d->mpl_layout->addWidget(d->mpl_figure);
-
-    d->mpl_view = new QWidget(this);
-    d->mpl_view->setLayout(d->mpl_layout);
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Stacked next view
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->next_message = new gnomonMessageBoard(this);
-    d->next_message->setMessage("Result will be displayed here");
-
-    d->next_stack = new QStackedWidget(this);
-    d->next_stack->addWidget(d->next_message);
-    d->next_stack->addWidget(d->next_view);
-    
-    d->mpl_message = new gnomonMessageBoard(this);
-    d->mpl_message->setMessage("Result will be displayed here");
-
-    d->mpl_stack = new QStackedWidget(this);
-    d->mpl_stack->addWidget(d->mpl_message);
-    d->mpl_stack->addWidget(d->mpl_view);
-
-    d->view_layout = new QHBoxLayout;
-    d->view_layout->setContentsMargins(0, 0, 0, 0);
-    d->view_layout->setSpacing(0);
-    d->view_layout->addWidget(d->prev_view);
-    d->view_layout->addWidget(d->next_stack);
-
-    d->view_widget = new QWidget(this);
-    d->view_widget->setLayout(d->view_layout);
-
-    d->splitter = new QSplitter(this);
-    d->splitter->setOrientation(Qt::Vertical);
-    d->splitter->addWidget(d->view_widget);
-    d->splitter->addWidget(d->mpl_stack);
-    d->splitter->setSizes(QList<int>({800, 200}));
-
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Dashboard inception
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->dashboard = new dtkWidgetsMenuBarContainer(this);
-    d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
-    d->dashboard->setFixedWidth(300);
-
-// /////////////////////////////////////////////////////////////////////////////
-
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d->splitter);
-    layout->addWidget(d->dashboard);
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-    connect(d->prev_view, &gnomonViewForm::formAdded, [=] ()
-    {
-        if(d->prev_view->cellImage()) {
-            d->command->setCellImage(d->prev_view->cellImage());
-        }
-        if(d->prev_view->image()) {
-            d->command->setImage(d->prev_view->image());
-        }
-        d->configure(d->algorithm);
-    });
-
-    connect(d, &gnomonWorkspaceCellImageTrackingPrivate::algorithmChanged, [=] (const QString& algorithm)
-    {
-        if(d->prev_view->cellImage()) {
-            d->command->setCellImage(d->prev_view->cellImage());
-        }
-        if(d->prev_view->image()) {
-            d->command->setImage(d->prev_view->image());
-        }
-        d->configure(algorithm);
-    });
-
-// /////////////////////////////////////////////////////////////////////////////
-// TODO: Later on ...
-// /////////////////////////////////////////////////////////////////////////////
-
-//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-    this->enter();
+    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
 }
 
 gnomonWorkspaceCellImageTracking::~gnomonWorkspaceCellImageTracking(void)
 {
-    delete d;
+
 }
-
-void gnomonWorkspaceCellImageTracking::enter(void)
-{
-    dtkApp->window()->menubar()->touch();
-}
-
-void gnomonWorkspaceCellImageTracking::leave(void)
-{
-    dtkApp->window()->menubar()->touch();
-}
-
-void gnomonWorkspaceCellImageTracking::apply(void)
-{
-    Q_ASSERT(d->command);
-
-    if(d->prev_view->cellImage()) {
-        d->command->setCellImage(d->prev_view->cellImage());
-    }
-    if(d->prev_view->image()) {
-        d->command->setImage(d->prev_view->image());
-    }
-
-    d->command->redo();
-
-    if(d->command->cellImage()) {
-        d->next_view->setCellImage(d->command->cellImage());
-        d->next_view->setInputView(false);
-        d->next_view->timeIndexChange(1);
-
-        d->registerPipeline();
-
-        d->next_stack->setCurrentWidget(d->next_view);
-    } else {
-        d->next_stack->setCurrentWidget(d->next_message);
-    }
-
-    if(d->command->tree()) {
-        d->mpl_figure->setForm("gnomonTree",d->command->tree());
-        d->mpl_stack->setCurrentWidget(d->mpl_view);
-
-        d->registerPipeline();
-    } else {
-        d->mpl_stack->setCurrentWidget(d->mpl_message);
-    }
-}
-
-void gnomonWorkspaceCellImageTracking::configure(const QString& algorithm)
-{
-    d->configure(algorithm);
-}
-
-const QColor gnomonWorkspaceCellImageTracking::color = QColor("#742ce1");
-
-bool gnomonWorkspaceCellImageTracking::isEmpty(void)
-{
-    return gnomonWorkspaceCellImageTrackingPrivate::isEmpty();
-}
-
-//
-// gnomonWorkspaceCellImageTracking.cpp ends here
