@@ -1,7 +1,9 @@
 #include "gnomonWorkspaceBrowser.h"
-#include <gnomonVisualization>
 
-#include <gnomonPipeline>
+#include <gnomonPipeline/gnomonPipelineManager.h>
+
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>

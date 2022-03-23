@@ -27,7 +27,6 @@ import_array();
 #include <dtkCore>
 #include <dtkImagingCore>
 
-#include <gnomonCore>
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>

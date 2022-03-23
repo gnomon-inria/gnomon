@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
 #include "gnomonCommand/gnomonAbstractWriterCommand.h"
+
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 
 class GNOMONCORE_EXPORT gnomonBinaryImageWriterCommand : public gnomonAbstractWriterCommand
 {

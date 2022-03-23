@@ -1,9 +1,8 @@
 #include "gnomonActorImageVolume.h"
 
-#include <dtkImagingCore>
+#include <QtGui>
 
-#include <QtCore>
-#include <QtWidgets>
+#include <dtkImagingCore>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

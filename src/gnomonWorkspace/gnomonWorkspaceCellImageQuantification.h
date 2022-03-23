@@ -7,7 +7,6 @@
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 
 #include <QtCore>
-#include <QtQml>
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageQuantification : public gnomonAlgorithmWorkspace
 {

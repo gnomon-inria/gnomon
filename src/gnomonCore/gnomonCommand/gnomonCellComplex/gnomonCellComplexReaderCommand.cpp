@@ -14,6 +14,9 @@
 
 #include "gnomonCellComplexReaderCommand.h"
 
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
 class gnomonCellComplexReaderCommandPrivate
 {
 public:

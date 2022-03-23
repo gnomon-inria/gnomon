@@ -20,11 +20,6 @@
 
 #include "gnomonAbstractVisualizationCellImage.h"
 
-class gnomonViewForm;
-
-class gnomonCellImage;
-class dtkCoreParameter;
-
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationCellImageVolume : public gnomonAbstractVisualizationCellImage
 {
     Q_OBJECT

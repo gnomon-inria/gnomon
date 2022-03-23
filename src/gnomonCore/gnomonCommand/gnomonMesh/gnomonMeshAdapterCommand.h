@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractAdapterCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class gnomonMesh;
 

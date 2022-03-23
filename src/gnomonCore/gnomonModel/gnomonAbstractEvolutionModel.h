@@ -17,12 +17,11 @@
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
-#include <gnomonCore>
 
 #include "gnomonAbstractModel.h"
 
-class gnomonAbstractForm;
-class gnomonAbstractDynamicForm;
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
 
 class GNOMONCORE_EXPORT gnomonAbstractEvolutionModel : public gnomonAbstractModel
 {

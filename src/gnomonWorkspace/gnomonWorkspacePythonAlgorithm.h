@@ -17,10 +17,9 @@
 #include <gnomonWorkspaceExport>
 #include "gnomonAbstractWorkspace.h"
 
-#include <QtCore>
-#include <QtQml>
-
 #include <gnomonVisualization/gnomonView/gnomonViewFormList>
+
+#include <QJSValue>
 
 class gnomonViewForm;
 class gnomonPythonAlgorithmPluginCode;

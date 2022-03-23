@@ -1,6 +1,7 @@
 #include "gnomonImageReaderCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

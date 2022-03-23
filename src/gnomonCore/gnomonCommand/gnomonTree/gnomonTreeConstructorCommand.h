@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractConstructorCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
 class GNOMONCORE_EXPORT gnomonTreeConstructorCommand : public gnomonAbstractConstructorCommand
 {

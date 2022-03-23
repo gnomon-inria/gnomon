@@ -1,11 +1,14 @@
 #include "gnomonWorkspaceRegistration.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageRegistrationCommand>
-#include <gnomonPipeline>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonPipeline/gnomonPipelineManager.h>
+
+#include <gnomonVisualization/gnomonView/gnomonViewFormPool>
 
 QString transformMatrixString(QVector<QVector<double> > transform_matrix)
 {

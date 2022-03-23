@@ -1,4 +1,10 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
 class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractCommand
 {

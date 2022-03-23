@@ -1,4 +1,9 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 
 class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
 {

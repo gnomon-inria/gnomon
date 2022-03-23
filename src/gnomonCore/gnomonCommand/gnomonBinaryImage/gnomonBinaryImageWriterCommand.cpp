@@ -1,6 +1,8 @@
 #include "gnomonBinaryImageWriterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageWriter.h>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonBinaryImageWriterCommandPrivate
 {

@@ -1,7 +1,8 @@
 #include "gnomonImageFilterCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
 
 // /////////////////////////////////////////////////////////////////////////////
 //

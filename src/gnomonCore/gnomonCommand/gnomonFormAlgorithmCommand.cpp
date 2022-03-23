@@ -14,8 +14,14 @@
 
 #include "gnomonFormAlgorithmCommand.h"
 
-#include <dtkScript>
-#include <dtkImagingCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
+
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

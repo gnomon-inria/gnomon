@@ -1,8 +1,10 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 #include "gnomonLandmark.h"
-
-class gnomonImage;
 
 class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractCommand
 {

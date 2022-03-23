@@ -1,5 +1,14 @@
 # ChangeLog
 
+## version 0.60.0 - 2022-03-15
+- qt6
+- monaco editor for python workspace
+- can save/load pipelines
+- visualize metadata
+- better includes
+- python 3.9
+
+
 ## version 0.20.0 - 2022-02-11
 - refactor python gnomon module
 - simplify and clarify decorators

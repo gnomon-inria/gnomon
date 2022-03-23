@@ -14,7 +14,8 @@
 
 #include "gnomonMeshAdapterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonMeshAdapterCommandPrivate
 {

@@ -15,11 +15,9 @@
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
 #include "gnomonPolyDataCellImage.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 
 #include <dtkImagingCore>
-
-#include <QtWidgets>
 
 #include <vtkActor.h>
 #include <vtkAppendPolyData.h>

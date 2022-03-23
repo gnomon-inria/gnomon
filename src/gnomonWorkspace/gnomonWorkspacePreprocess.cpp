@@ -15,16 +15,9 @@
 #include "gnomonWorkspacePreprocess.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFilterCommand.h>
-#include <gnomonVisualization>
-
-#include <dtkCore>
-#include <dtkImagingCore>
-#include <dtkScript>
-
-#include <vtkImageData.h>
-#include <vtkRenderer.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePreprocess

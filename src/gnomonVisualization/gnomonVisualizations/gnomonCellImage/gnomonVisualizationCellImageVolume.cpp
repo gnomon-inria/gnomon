@@ -15,13 +15,9 @@
 #include "gnomonVisualizationCellImageVolume.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
-#include <QtWidgets>
-
-#include <gnomonCore>
-#include <gnomonVisualization>
-// #include <gnomonWidgets>
-
 #include <dtkImagingCore>
+
+#include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -174,6 +170,10 @@ void gnomonVisualizationCellImageVolume::update(void)
     }
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+    if(!converter) {
+        dtkWarn() << Q_FUNC_INFO << "cannot instanciate a dtkVtkImageConverter, please check that dtk-plugins-imaging is installed!";
+        return;
+    }
     converter->setInput(dd->cellImage->image());
     converter->convert();
     dd->image = static_cast<vtkImageData *>(converter->output());

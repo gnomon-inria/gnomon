@@ -14,12 +14,14 @@
 
 #pragma once
 
-#include <gnomonCore>
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include <gnomonCoreExport>
 
-class gnomonAbstractCommand;
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
+#include "gnomonAbstractCommand.h"
 
-class gnomonAbstractWriterCommand : public gnomonAbstractCommand
+class gnomonAbstractDynamicForm;
+
+class GNOMONCORE_EXPORT  gnomonAbstractWriterCommand : public gnomonAbstractCommand
 {
 
 public:

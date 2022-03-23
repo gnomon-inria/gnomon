@@ -15,8 +15,6 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <QtWidgets>
-
 #include <dtkCore/dtkCoreParameters>
 
 #include "gnomonView/gnomonViewForm.h"

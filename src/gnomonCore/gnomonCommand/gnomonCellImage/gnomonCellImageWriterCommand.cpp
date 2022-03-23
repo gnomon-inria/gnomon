@@ -14,7 +14,8 @@
 
 #include "gnomonCellImageWriterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageWriter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 //

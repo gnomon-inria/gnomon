@@ -1,8 +1,16 @@
 #pragma once
 
-#include <gnomonCore>
+#include <gnomonCoreExport>
 
-class gnomonAbstractCommand : public QObject
+#include <QtCore>
+
+#include <dtkCore/dtkCoreParameter>
+
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm>
+
+class gnomonAbstractDynamicForm;
+
+class GNOMONCORE_EXPORT gnomonAbstractCommand : public QObject
 {
     Q_OBJECT
     friend void runner(gnomonAbstractCommand* command);

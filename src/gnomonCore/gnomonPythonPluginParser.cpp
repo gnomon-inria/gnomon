@@ -17,9 +17,6 @@
 
 #include <dtkScript>
 #include <QtCore>
-#include <gnomonCore>
-
-
 
 QString stripQuotes(const QString& str)
 {

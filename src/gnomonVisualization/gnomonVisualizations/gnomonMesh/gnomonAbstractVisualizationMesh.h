@@ -18,14 +18,14 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore>
+#include <dtkCore/dtkCorePlugin>
+#include <dtkCore/dtkCoreParameters>
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include <gnomonVisualizations/gnomonAbstractVisualization.h>
+
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class gnomonViewForm;
-
-#include "gnomonForm/gnomonMesh/gnomonMesh.h"
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractVisualization
 {

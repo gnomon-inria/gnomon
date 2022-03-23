@@ -1,5 +1,8 @@
-#include "gnomonCommand/gnomonAbstractCommand.h"
-#include "gnomonCommand/gnomonAbstractWriterCommand.h"
+#pragma once
+
+#include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
+
+#include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
 class GNOMONCORE_EXPORT gnomonPointCloudWriterCommand : public gnomonAbstractWriterCommand
 {
