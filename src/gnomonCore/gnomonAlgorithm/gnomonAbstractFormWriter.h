@@ -46,4 +46,4 @@ namespace gnomonCore {
 }
 
 //
-// gnomonAbstractImageWriter.h ends here
+// gnomonAbstractFormWriter.h ends here
