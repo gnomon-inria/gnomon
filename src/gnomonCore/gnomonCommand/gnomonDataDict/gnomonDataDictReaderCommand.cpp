@@ -1,5 +1,8 @@
 #include "gnomonDataDictReaderCommand.h"
 
+#include <gnomonCore/gnomonAlgorithm/gnomonDataDict/gnomonAbstractDataDictReader.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
 class gnomonDataDictReaderCommandPrivate
 {
 public:
@@ -29,17 +32,18 @@ gnomonDataDictReaderCommand::~gnomonDataDictReaderCommand()
     delete d;
 }
 
-void gnomonDataDictReaderCommand::redo()
+void gnomonDataDictReaderCommand::predo(void)
 {
-    Q_ASSERT(this->action);
-
     ((gnomonAbstractDataDictReader *) this->action)->setPath(this->m_path);
-    this->action->run();
+}
+
+void gnomonDataDictReaderCommand::postdo(void)
+{
     gnomonDataDictSeries *dataDict = ((gnomonAbstractDataDictReader *) this->action)->dataDict();
     if ((!dataDict)||(dataDict->times().empty())) {
         d->dataDict = nullptr;
     } else {
-        d->dataDict = DataDict;
+        d->dataDict = dataDict;
     }
 }
 
@@ -63,7 +67,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonDataDictReaderCommand::outputs(
 bool gnomonDataDictReaderCommand::isEmpty()
 {
     loadPluginGroup("dataDictReader");
-    return gnomonCore::DataDictReader::pluginFactory().keys().empty();
+    return gnomonCore::dataDictReader::pluginFactory().keys().empty();
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataDictReaderCommand::outputTypes() {

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonTreeWriterCommand.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>

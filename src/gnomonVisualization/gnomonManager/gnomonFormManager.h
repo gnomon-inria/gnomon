@@ -62,6 +62,9 @@ public:
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
 
 public:
+    Q_INVOKABLE QString formWriterNameFilter(int id);
+
+public:
     int formCount(const QString& form_name);
 
 public:

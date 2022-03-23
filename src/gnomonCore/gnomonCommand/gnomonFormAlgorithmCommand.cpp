@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonFormAlgorithmCommand.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
