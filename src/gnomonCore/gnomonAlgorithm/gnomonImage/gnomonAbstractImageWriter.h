@@ -18,14 +18,7 @@ public:
     virtual ~gnomonAbstractImageWriter(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
     virtual void setImage(gnomonImageSeries *image_series) = 0;
-    virtual void setPath(const QString& path) override = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -43,10 +36,6 @@ public:
     static inline QString defaultOutput(QString formName) {
         return {};
     };
-
-
-public:
-    virtual QStringList extensions(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

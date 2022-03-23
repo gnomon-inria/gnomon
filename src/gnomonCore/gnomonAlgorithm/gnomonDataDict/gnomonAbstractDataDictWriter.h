@@ -15,14 +15,7 @@ public:
     virtual ~gnomonAbstractDataDictWriter(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
     virtual void setDataDict(gnomonDataDictSeries *datadict) = 0;
-    virtual void setPath(const QString& path) override = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonDataDict") {
@@ -39,9 +32,6 @@ public:
     static inline QString defaultOutput(QString formName) {
         return {};
     };
-
-public:
-    virtual QStringList extensions(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
