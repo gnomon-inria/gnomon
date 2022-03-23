@@ -57,7 +57,7 @@ public:
     void drop(double t) override;
 
 public:
-    static inline QString formName(void) {return T::formName();}
+    virtual inline QString formName(void) override { return T::formName(); }
 
     QJsonObject serialize(void) override;
 

@@ -399,25 +399,7 @@ QString gnomonFormManager::formWriterNameFilter(int id)
         gnomonAbstractDynamicForm* form = d->forms[id];
         gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
         QStringList extensions = writer_command->extensions();
-        if (gnomonBinaryImageSeries *binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form)) {
-            filter += binaryImage->formName().remove("gnomon");
-        } else if (gnomonCellComplexSeries *cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form)) {
-            filter += cellComplex->formName().remove("gnomon");
-        } else if (gnomonCellImageSeries *cellImage = dynamic_cast<gnomonCellImageSeries *>(form)) {
-            filter += cellImage->formName().remove("gnomon");
-        } else if (gnomonDataDictSeries *dataDict = dynamic_cast<gnomonDataDictSeries *>(form)) {
-            filter += dataDict->formName().remove("gnomon");
-        } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
-            filter += dataFrame->formName().remove("gnomon");
-        } else if (gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form)) {
-            filter += image->formName().remove("gnomon");
-        } else if (gnomonMeshSeries *mesh = dynamic_cast<gnomonMeshSeries *>(form)) {
-            filter += mesh->formName().remove("gnomon");
-        } else if (gnomonPointCloudSeries *pointCloud = dynamic_cast<gnomonPointCloudSeries *>(form)) {
-            filter += pointCloud->formName().remove("gnomon");
-        } else if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
-            filter += tree->formName().remove("gnomon");
-        }
+        filter += form->formName().remove("gnomon");
         filter += " files (";
         for (const auto& ext : extensions) {
             filter += "*." + ext + " ";
