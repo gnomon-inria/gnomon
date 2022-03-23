@@ -70,15 +70,23 @@ void gnomonCellImageTrackingCommandTestCase::initTestCase(void) {
 void gnomonCellImageTrackingCommandTestCase::init(void) {
     d->tracking_command = new gnomonCellImageTrackingCommand();
     QVERIFY(d->tracking_command);
-    d->tracking_command->setAlgorithmName("dummyImageFilter");
+    d->tracking_command->setAlgorithmName("dummyCellImageTracking");
 }
 
 void gnomonCellImageTrackingCommandTestCase::redo(void) {
-    d->tracking_command->setImage(new gnomonImageSeries());
-    d->tracking_command->setCellImage(new gnomonCellImageSeries());
-    d->tracking_command->redo();
 
-    QVERIFY(tracking::t_run_called && tracking::t_set_image_called && tracking::t_set_cell_image_called);
+    auto img_series = gnomonImageSeries();
+    d->tracking_command->setImage(&img_series);
+    QVERIFY(!tracking::t_set_image_called); //empty time series so not called
+
+    auto cellimg_series = gnomonCellImageSeries();
+    auto cellimg = gnomonCellImage();
+    cellimg_series.insert(0, &cellimg);
+    d->tracking_command->setCellImage(&cellimg_series);
+    QVERIFY(tracking::t_set_cell_image_called);
+
+    d->tracking_command->redo();
+    QVERIFY(tracking::t_run_called);
 }
 
 void gnomonCellImageTrackingCommandTestCase::undo(void) {
