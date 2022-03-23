@@ -84,6 +84,7 @@ import_array();
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageWriter.h>
@@ -1019,6 +1020,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAdapter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, FormAlgorithm, gnomonCore/gnomonAlgorithm)
 %include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage.h>

@@ -24,6 +24,7 @@ public:
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
+public:
     orderedMap inputTypes() override;
 
 public:

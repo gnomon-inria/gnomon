@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gnomonCommand/gnomonAbstractCommand.h"
 #include "gnomonCommand/gnomonAbstractReaderCommand.h"
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
 
 class GNOMONCORE_EXPORT gnomonDataDictReaderCommand : public gnomonAbstractReaderCommand
 {
@@ -10,8 +10,9 @@ public:
     ~gnomonDataDictReaderCommand() override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     gnomonDataDictSeries *dataDict();

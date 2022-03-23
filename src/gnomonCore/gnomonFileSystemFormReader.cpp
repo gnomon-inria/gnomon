@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonFileSystemFormReader.h"
 #include "gnomonForm/gnomonIntensityImage/gnomonIntensityImage.h"
 

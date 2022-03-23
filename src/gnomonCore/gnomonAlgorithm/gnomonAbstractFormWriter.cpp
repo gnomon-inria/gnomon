@@ -1,4 +1,4 @@
-#include "gnomonAbstractImageFusion.h"
+#include "gnomonAbstractFormWriter.h"
 
 #include "gnomonCore.h"
 
@@ -7,8 +7,8 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImageFusion, imageFusion, gnomonCore);
+    DTK_DEFINE_CONCEPT(gnomonAbstractFormWriter, formWriter, gnomonCore);
 }
 
 //
-// gnomonAbstractImageFusionReader.cpp ends here
+// gnomonAbstractFormWriter.cpp ends here
