@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonCoreSettings.h"
 
 gnomonCoreSettings::gnomonCoreSettings(void) : QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon-core")

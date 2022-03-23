@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport>
@@ -40,16 +26,18 @@ public:
     virtual T *input() = 0;
 
     static inline QString defaultSetter(QString formName) {
-        if(formName == T::formName()) {
+        // TODO: find a clever way to do this
+        // if(formName == T::formName()) {
             return {"setInput"};
-        }
-        return {};
+        // }
+        // return {};
     };
     static inline QString defaultGetter(QString formName) {
-        if(formName == T::formName()) {
+        // TODO: find a clever way to do this
+        // if(formName == T::formName()) {
             return {"input"};
-        }
-        return {};
+        // }
+        // return {};
     };
 
     virtual gnomonAbstractDynamicForm *output() = 0;

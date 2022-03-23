@@ -28,6 +28,7 @@
 #include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
@@ -389,6 +390,23 @@ QString gnomonFormManager::formMetadataValueAtT(int id, double t, const QString&
         }
     }
     return {};
+}
+
+QString gnomonFormManager::formWriterNameFilter(int id)
+{
+    QString filter;
+    if (this->contains(id)) {
+        gnomonAbstractDynamicForm* form = d->forms[id];
+        gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
+        QStringList extensions = writer_command->extensions();
+        filter += form->formName().remove("gnomon");
+        filter += " files (";
+        for (const auto& ext : extensions) {
+            filter += "*." + ext + " ";
+        }
+        filter += ")";
+    }
+    return filter;
 }
 
 int gnomonFormManager::formCount(const QString& form_name)
