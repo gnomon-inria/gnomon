@@ -2,14 +2,14 @@
 
 #include <gnomonCoreExport.h> 
 #include <dtkCore>
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 #include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
 
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractDataDictWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractDataDictWriter : public gnomonAbstractFormWriter
 {
 public:
     virtual ~gnomonAbstractDataDictWriter(void) = default;
@@ -22,7 +22,7 @@ public:
 
 public:
     virtual void setDataDict(gnomonDataDictSeries *datadict) = 0;
-    virtual void setPath(const QString& path) = 0;
+    virtual void setPath(const QString& path) override = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonDataDict") {
@@ -41,7 +41,7 @@ public:
     };
 
 public:
-    virtual QStringList extensions(void) = 0;
+    virtual QStringList extensions(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

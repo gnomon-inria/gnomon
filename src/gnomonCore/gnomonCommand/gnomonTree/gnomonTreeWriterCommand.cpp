@@ -99,11 +99,6 @@ QStringList gnomonTreeWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
-QStringList gnomonTreeWriterCommand::extensions(void)
-{
-    return dynamic_cast<gnomonAbstractTreeWriter *>(this->action)->extensions();
-}
-
 gnomonAbstractCommand::orderedMap gnomonTreeWriterCommand::inputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("tree", "gnomonTree"));

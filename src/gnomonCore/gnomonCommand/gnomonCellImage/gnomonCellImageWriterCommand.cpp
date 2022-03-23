@@ -98,11 +98,6 @@ QStringList gnomonCellImageWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
-QStringList gnomonCellImageWriterCommand::extensions(void)
-{
-    return dynamic_cast<gnomonAbstractCellImageWriter *>(this->action)->extensions();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));

@@ -30,7 +30,7 @@ public:
     virtual void setForm(gnomonAbstractDynamicForm* form) = 0;
 
 public:
-    virtual QStringList extensions(void) = 0;
+    virtual QStringList extensions(void);
 
     QMap<QString, gnomonAbstractDynamicForm *> outputs() override {
         return {};

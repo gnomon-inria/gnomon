@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 
@@ -26,7 +26,7 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractCellComplexWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractCellComplexWriter : public gnomonAbstractFormWriter
 {
 public:
     virtual ~gnomonAbstractCellComplexWriter(void) = default;
@@ -39,7 +39,7 @@ public:
 
 public:
     virtual void setCellComplex(gnomonCellComplexSeries *cellcomplex) = 0;
-    virtual void setPath(const QString& path) = 0;
+    virtual void setPath(const QString& path) override = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -60,7 +60,7 @@ public:
 
 
 public:
-    virtual QStringList extensions(void) = 0;
+    virtual QStringList extensions(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

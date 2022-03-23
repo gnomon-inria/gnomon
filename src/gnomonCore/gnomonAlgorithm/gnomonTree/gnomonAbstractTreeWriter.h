@@ -18,7 +18,7 @@
 
 #include <dtkCore>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 
 #include "gnomonForm/gnomonTree/gnomonTree.h"
 
@@ -26,7 +26,7 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractTreeWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractTreeWriter : public gnomonAbstractFormWriter
 {
 public:
     virtual ~gnomonAbstractTreeWriter(void) = default;
@@ -39,7 +39,7 @@ public:
 
 public:
     virtual void setTree(gnomonTreeSeries *tree) = 0;
-    virtual void setPath(const QString& path) = 0;
+    virtual void setPath(const QString& path) override = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -60,7 +60,7 @@ public:
 
 
 public:
-    virtual QStringList extensions(void) = 0;
+    virtual QStringList extensions(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

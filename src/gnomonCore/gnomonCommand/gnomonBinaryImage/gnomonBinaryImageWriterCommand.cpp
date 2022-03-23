@@ -73,11 +73,6 @@ bool gnomonBinaryImageWriterCommand::isEmpty()
     return availablePlugins().empty();
 }
 
-QStringList gnomonBinaryImageWriterCommand::extensions(void)
-{
-    return dynamic_cast<gnomonAbstractBinaryImageWriter *>(this->action)->extensions();
-}
-
 gnomonAbstractCommand::orderedMap gnomonBinaryImageWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));

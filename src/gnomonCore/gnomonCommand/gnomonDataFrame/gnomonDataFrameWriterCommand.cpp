@@ -99,11 +99,6 @@ QStringList gnomonDataFrameWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
-QStringList gnomonDataFrameWriterCommand::extensions(void)
-{
-    return dynamic_cast<gnomonAbstractDataFrameWriter *>(this->action)->extensions();
-}
-
 gnomonAbstractCommand::orderedMap gnomonDataFrameWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));

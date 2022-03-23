@@ -1,6 +1,7 @@
 #include "gnomonDataDictWriterCommand.h"
 
-#include <dtkScript>
+#include <gnomonCore/gnomonAlgorithm/gnomonDataDict/gnomonAbstractDataDictWriter.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
 class gnomonDataDictWriterCommandPrivate
 {
@@ -33,12 +34,17 @@ void gnomonDataDictWriterCommand::setAlgorithmName(const QString& algo_name)
     this->action = gnomonCore::dataDictWriter::pluginFactory().create(algo_name);
 }
 
-void gnomonDataDictWriterCommand::redo()
+
+
+void gnomonDataDictWriterCommand::predo(void)
 {
-    Q_ASSERT(this->action);
     ((gnomonAbstractDataDictWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractDataDictWriter *) this->action)->setDataDict(d->dataDict);
-    this->action->run();
+}
+
+void gnomonDataDictWriterCommand::postdo(void)
+{
+
 }
 
 void gnomonDataDictWriterCommand::undo()
@@ -69,11 +75,6 @@ bool gnomonDataDictWriterCommand::isEmpty()
     return gnomonCore::dataDictWriter::pluginFactory().keys().empty();
 }
 
-QStringList gnomonDataDictWriterCommand::extensions(void)
-{
-    return dynamic_cast<gnomonAbstractDataDictWriter *>(this->action)->extensions();
-}
-
 gnomonAbstractCommand::orderedMap gnomonDataDictWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("dataDict", "gnomonDataDict"));
@@ -82,7 +83,7 @@ gnomonAbstractCommand::orderedMap gnomonDataDictWriterCommand::inputTypes() {
 
 void gnomonDataDictWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
     if (name == "dataDict") {
-        this->setForm(dynamic_cast<gnomonImageSeries *>(form));
+        this->setForm(dynamic_cast<gnomonDataDictSeries *>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

@@ -21,7 +21,6 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    QStringList extensions(void) override;
     orderedMap inputTypes() override;
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;

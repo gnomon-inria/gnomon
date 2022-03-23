@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gnomonCommand/gnomonAbstractCommand.h"
 #include "gnomonCommand/gnomonAbstractWriterCommand.h"
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
 
 class GNOMONCORE_EXPORT gnomonDataDictWriterCommand : public gnomonAbstractWriterCommand
 {
@@ -10,8 +10,9 @@ public:
     ~gnomonDataDictWriterCommand() override;
 
 public:
-    void redo() override;
-    void undo() override;
+    void  predo(void) override;
+    void postdo(void) override;
+    void   undo(void) override;
 
 public:
     void setForm(gnomonAbstractDynamicForm *) override;
@@ -19,7 +20,6 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    QStringList extensions(void) override;
     orderedMap inputTypes() override;
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;

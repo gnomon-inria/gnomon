@@ -82,11 +82,6 @@ bool gnomonCellComplexWriterCommand::isEmpty()
     return availablePlugins().empty();
 }
 
-QStringList gnomonCellComplexWriterCommand::extensions(void)
-{
-    return dynamic_cast<gnomonAbstractCellComplexWriter *>(this->action)->extensions();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellComplexWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonCellComplex"));

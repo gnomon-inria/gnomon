@@ -23,7 +23,6 @@ public:
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 
 public:
-    QStringList extensions(void) override;
     orderedMap inputTypes() override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
