@@ -660,6 +660,9 @@ void gnomonPipeline::readFromJson(const QString& url)
 
     QMap<QPair<QString, QString>, QPair<QString, QString> > edges;
 
+    d->name = rootObj.value("name").toString();
+    d->description = rootObj.value("description").toString();
+
     for(auto k:rootObj.keys()) {
         QJsonObject node_json = rootObj.value(k).toObject();
 

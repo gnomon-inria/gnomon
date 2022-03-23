@@ -7,6 +7,7 @@
 .. toctree::
     :maxdepth: 2
     
+    installation
     package
     existing_abstraction_existing_data_plugin
     form_abstraction

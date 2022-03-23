@@ -1,7 +1,9 @@
 image: conda/miniconda3
 
 stages:
-  - build
+  - test
+  - pages
+  - condabuild
   - deploy
 
 
@@ -11,28 +13,90 @@ stages:
     when: runner_system_failure
 
 
-conda_build_linux:
-  stage: build
+test_linux:
+  stage: test
+  tags: 
+    - linux
+    - large
   script:
-  - conda install -n base -c defaults conda python=3.9 -y
-  - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
-  - mkdir conda-bld
-  - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - mamba env update -f conda/env_linux.yaml
+    - conda activate gnomon-dev
+    - rm -rf build
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make -j3
+    - CTEST_OUTPUT_ON_FAILURE=1 make test
+  extends: .template_retry
+  only:
+    - merge_requests
+
+test_macos:
+  stage: test
+  tags: 
+    - macos
+    - large
+  script:
+    - source /Users/ci/miniconda3/etc/profile.d/conda.sh
+    - mamba env update -f conda/env_macos.yaml
+    - conda activate gnomon-dev
+    - rm -rf build
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make -j2
+    - ctest -T test --timeout 120 --no-compress-output --output-on-failure
+  extends: .template_retry
+  only:
+    - merge_requests
+
+
+conda_build_linux:
+  stage: condabuild
+  tags: 
+    - linux
+    - large
+  script:
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate base
+    - mkdir conda-bld
+    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
       - conda-bld
   only:
-  - master
+    - master
+
+conda_build_macos:
+  stage: condabuild
+  tags: 
+    - macos
+    - large
+  script:
+    - source /Users/ci/miniconda3/etc/profile.d/conda.sh
+    - conda activate base
+    - mkdir conda-bld
+    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+  extends: .template_retry
+  artifacts:
+    paths:
+      - conda-bld
+  only:
+    - master
 
 
 conda_build_linux_develop:
-  stage: build
+  stage: condabuild
+  tags: 
+    - linux
+    - large
   script:
-    - conda install -n base -c defaults conda python=3.9 -y
-    - conda install -c conda-forge mamba python=3.9 conda-build git anaconda-client conda-verify
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate base  
     - mkdir conda-bld
-    - mamba build . -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   when: manual
   artifacts:
@@ -44,33 +108,60 @@ conda_build_linux_develop:
 
 anaconda_linux_master:
   stage: deploy
+  tags: 
+    - linux
+    - large
+  needs: [conda_build_linux]
   script:
-  - conda install -n base -c defaults conda python=3.9 -y
-  - conda install conda-build anaconda-client
-  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate base  
+    - mamba install -c conda-forge anaconda-client
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
   only:
-  - master
+    - master
 
+anaconda_macos_master:
+  stage: deploy
+  tags: 
+    - macos
+    - large
+  needs: [conda_build_macos]
+  script:
+    - source /Users/ci/miniconda3/etc/profile.d/conda.sh
+    - conda activate base
+    - mamba install -c conda-forge anaconda-client
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/osx-64/libgnomon-* --force --user gnomon
+  extends: .template_retry
+  only:
+    - master
 
 anaconda_linux_develop :
   stage: deploy
+  tags: 
+    - linux
+    - large
   script:
-  - conda install -n base -c defaults conda python=3.9 -y
-  - conda install conda-build anaconda-client curl
-  - curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
-  - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
+    - . "/builds/miniconda3/etc/profile.d/conda.sh" 
+    - conda activate base 
+    - conda install -n base -c defaults conda python=3.9 -y
+    - conda install conda-build anaconda-client curl
+    #- curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
   extends: .template_retry
   when: manual
   only:
-  - develop
+    - develop
 
 
-pages:
-  stage: deploy
+deploy_pages:
+  stage: pages
+  tags:
+    - linux
   script:
-    - conda update -n base -c defaults conda
-    - conda install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
+    - . "/builds/miniconda3/etc/profile.d/conda.sh" 
+    - conda activate base 
+    - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
     - cd doc
     - make html
     - mv build/html ../public
