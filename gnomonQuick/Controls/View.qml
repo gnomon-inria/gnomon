@@ -74,10 +74,7 @@ Rectangle {
 
         onDropped: {
             if (drop.hasUrls) {
-                drop.urls.forEach(function (item, index) {
-                    console.log("DROP FILE", item)
-                    self.droppedFromFile(item);
-                });
+                self.droppedFromFile(drop.urls);
             } else {
                 self.droppedFromManager(drag.source.ref);
             }
