@@ -6,6 +6,7 @@ SwitchWorkspaceDialog            1.0 SwitchWorkspaceDialog.qml
 Workspace                        1.0 Workspace.qml
 WorkspaceBrowsing                1.0 WorkspaceBrowsing.qml
 WorkspaceCellImageQuantification 1.0 WorkspaceCellImageQuantification.qml
+WorkspaceCellImageTracking       1.0 WorkspaceCellImageTracking.qml
 WorkspaceDialog                  1.0 WorkspaceDialog.qml
 WorkspaceDescriptionDelegate     1.0 WorkspaceDescriptionDelegate.qml
 WorkspaceLauncher                1.0 WorkspaceLauncher.qml

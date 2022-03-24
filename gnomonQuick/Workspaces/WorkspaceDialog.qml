@@ -264,6 +264,12 @@ X.Dialog {
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
             available: true
         }
+        ListElement {
+            type: "gnomonWorkspaceCellImageTracking"
+            title: "CellImageTracking"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
+            available: true
+        }
     }
 
     function has_loaded_plugins(index) {
@@ -276,6 +282,7 @@ X.Dialog {
         _internal.workspace_groups["gnomonWorkspaceBinarization"] = "binaryImageFromImage"
         _internal.workspace_groups["gnomonWorkspaceBrowser"] = ["binaryImageReader", "cellImageReader", "cellComplexReader", "imageReader", "meshReader", "pointCloudReader"]
         _internal.workspace_groups["gnomonWorkspaceCellImageQuantification"] = "cellImageQuantification"
+        _internal.workspace_groups["gnomonWorkspaceCellImageTracking"] = "cellImageTracking"
         _internal.workspace_groups["gnomonWorkspacePreprocess"] = "imageFilter"
         _internal.workspace_groups["gnomonWorkspacePythonAlgorithm"] = "formAlgorithm"
         _internal.workspace_groups["gnomonWorkspaceRegistration"] = "imageRegistration"
@@ -291,7 +298,7 @@ X.Dialog {
                 plugins = GM.MetaData.pluginGroupMetaData(_internal.workspace_groups[w.type])
                 for(var p=0; p<plugins.length; p++) {
                     _internal.plugin_workspace[plugins[p]] = w.type
-                }                
+                }
             }
             _internal.workspace_plugins[w.type] = plugins
             _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm"))
