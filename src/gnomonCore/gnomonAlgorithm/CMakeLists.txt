@@ -39,6 +39,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractFormAdapter.h
   gnomonAbstractFormAlgorithm
   gnomonAbstractFormAlgorithm.h
+  gnomonAbstractFormWriter
+  gnomonAbstractFormWriter.h
   ${${PROJECT_NAME}_ALGORITHM_BINARYIMAGE_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_CELLCOMPLEX_HEADERS}
   ${${PROJECT_NAME}_ALGORITHM_CELLGRAPH_HEADERS}
@@ -55,6 +57,7 @@ ADD_GNOMON_HEADERS(
 ADD_GNOMON_SOURCES(
   gnomonAbstractAlgorithm.cpp
   gnomonAbstractFormAlgorithm.cpp
+  gnomonAbstractFormWriter.cpp
   ${${PROJECT_NAME}_ALGORITHM_BINARYIMAGE_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_CELLCOMPLEX_SOURCES}
   ${${PROJECT_NAME}_ALGORITHM_CELLGRAPH_SOURCES}

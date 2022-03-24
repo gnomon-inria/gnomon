@@ -24,7 +24,7 @@ public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonDataDictSeries *DataDict(void) = 0;
+    virtual gnomonDataDictSeries *dataDict(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         return {};

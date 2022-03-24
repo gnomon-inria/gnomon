@@ -753,6 +753,11 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
     for(auto& key: parameters.keys()) {
         QVariantHash param = parameters[key].toObject().toVariantHash();
         QString param_type = param["type"].toString();
+        // TODO: Remove when fixed in dtk-core-python
+        if (param_type.contains("dtkCoreParameterRange<") or param_type.contains("dtkCoreParameterNumeric<")) {
+            param_type = param_type.remove(",void");
+            param.insert("type", param_type);
+        }
         auto *parameter = dtkCoreParameter::create(param);
         if(parameter) {
             visu_parameters[key] = parameter;
