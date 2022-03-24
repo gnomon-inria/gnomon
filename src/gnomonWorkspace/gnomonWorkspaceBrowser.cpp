@@ -108,11 +108,24 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
     readerCommand->setAlgorithmName(reader_plugin);
 
-    QString path = filename.remove("file://");
-    if(!QFile::exists(path)) {
-        dtkWarn() << Q_FUNC_INFO << "file " << path << "doesn't exist";
+    QStringList paths;
+    QStringList sources;
+    for (auto file : this->filename.split(",")) {
+        QString file_path = file.remove("file://");
+        if(!QFile::exists(file_path)) {
+            dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
+        } else {
+            paths.append(file_path);
+        }
+    }
+    if (paths.size() == 0) {
         return false;
     }
+    for (auto file_path: paths) {
+        sources.append(QFileInfo(file_path).fileName());
+    }
+    QString path = paths.join(",");
+    QString source = sources.join(",");
 
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(readerCommand))
     {
@@ -121,7 +134,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
         int form_count = gnomonFormManager::instance()->formCount(image_series->formName());
         image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
-        image_series->metadata()->set("source", QFileInfo(imageCommand->path()).fileName());
+        image_series->metadata()->set("source", source);
         if (!image_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting image series is void.";
             return false;
@@ -137,7 +150,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
         int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
         cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
-        cellImage_series->metadata()->set("source", QFileInfo(cellImageCommand->path()).fileName());
+        cellImage_series->metadata()->set("source", source);
         if (!cellImage_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting cellImage series is void.";
             return false;
@@ -153,7 +166,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex();
         int form_count = gnomonFormManager::instance()->formCount(cellComplex_series->formName());
         cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
-        cellComplex_series->metadata()->set("source", QFileInfo(cellComplexCommand->path()).fileName());
+        cellComplex_series->metadata()->set("source", source);
         if (!cellComplex_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
             return false;
@@ -168,8 +181,8 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         binaryImageCommand->redo();
         gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
         int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
-        binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
-        binaryImage_series->metadata()->set("source", QFileInfo(binaryImageCommand->path()).fileName());
+        binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));        QStringList sources;
+        binaryImage_series->metadata()->set("source", source);
         if (!binaryImage_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
             return false;
@@ -185,7 +198,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonDataFrameSeries * dataFrame_series = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame();
         int form_count = gnomonFormManager::instance()->formCount(dataFrame_series->formName());
         dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
-        dataFrame_series->metadata()->set("source", QFileInfo(dataFrameCommand->path()).fileName());
+        dataFrame_series->metadata()->set("source", source);
         if (!dataFrame_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
             return false;
@@ -201,7 +214,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonMeshSeries * mesh_series = (gnomonMeshSeries *) meshCommand->mesh();
         int form_count = gnomonFormManager::instance()->formCount(mesh_series->formName());
         mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
-        mesh_series->metadata()->set("source", QFileInfo(meshCommand->path()).fileName());
+        mesh_series->metadata()->set("source", source);
         if (!mesh_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting mesh series is void.";
             return false;
@@ -217,7 +230,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud();
         int form_count = gnomonFormManager::instance()->formCount(pointCloud_series->formName());
         pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
-        pointCloud_series->metadata()->set("source", QFileInfo(pointCloudCommand->path()).fileName());
+        pointCloud_series->metadata()->set("source", source);
         if (!pointCloud_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
             return false;
@@ -233,7 +246,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         gnomonTreeSeries * tree_series = (gnomonTreeSeries *) treeCommand->tree();
         int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
         tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
-        tree_series->metadata()->set("source", QFileInfo(treeCommand->path()).fileName());
+        tree_series->metadata()->set("source", source);
         if (!tree_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting tree series is void.";
             return false;
@@ -483,14 +496,16 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
     if (path != d->filename) {
         d->filename = path;
 
-        if (d->filename.endsWith("gz")) {
-            d->ext = d->filename.split(".")[d->filename.split(".").size()-2] + ".gz";
+        QStringList filenames = d->filename.split(",");
+
+        if (filenames[0].endsWith("gz")) {
+            d->ext = filenames[0].split(".")[filenames[0].split(".").size()-2] + ".gz";
         } else {
-            d->ext = d->filename.split(".")[d->filename.split(".").size() - 1];
+            d->ext = filenames[0].split(".")[filenames[0].split(".").size() - 1];
         }
 
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-        settings.setValue("path", QUrl(path).adjusted(QUrl::RemoveFilename).toString());
+        settings.setValue("path", QUrl(filenames[0]).adjusted(QUrl::RemoveFilename).toString());
         
         emit readerPathChanged();
     }
