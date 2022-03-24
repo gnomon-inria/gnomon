@@ -85,7 +85,7 @@ public:
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
-    Q_PROPERTY(double timeSeriesSliderMax READ timeSeriesSliderMax NOTIFY timeMaxChanged);
+    Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -215,7 +215,7 @@ public slots:
     double zMax(void) const;
     Mode mode(void) const;
     double currentTime(void) const;
-    double timeSeriesSliderMax(void);
+    double timeMax(void);
 
 public:
     void setCamera(vtkCamera *);
