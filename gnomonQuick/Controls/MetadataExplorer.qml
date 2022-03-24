@@ -185,10 +185,6 @@ Rectangle {
                     _self.dynamicFormMetadata.set(modelData, _form_name.text);
                 }
             }
-
-            Component.onCompleted: {
-                _fc_delegate.load()
-            }
         }
     }
 }
