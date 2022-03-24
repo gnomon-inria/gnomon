@@ -131,6 +131,41 @@ Rectangle {
         }
     }
 
+    Slider {
+        id: _ts_slider
+        from: 0
+        to: viewLogic.timeSeriesSliderMax
+        value: 0
+        stepSize: 1
+        snapMode: Slider.SnapAlways
+
+        visible: viewLogic.timeSeriesSliderMax > 1
+
+        anchors.right: _view.right
+        anchors.left: _view.left
+        anchors.bottom: _view.bottom 
+        anchors.rightMargin: 20
+        anchors.leftMargin: 12
+
+        readonly property int tickWidth: 10
+        background: Rectangle {
+            color: X.Style.backgroundColor;
+            Repeater {
+                model: Math.round(_ts_slider.to - _ts_slider.from + 1)
+                delegate: Rectangle {
+                    x: Math.min(index * (_ts_slider.background.width/_ts_slider.to), _ts_slider.background.width - 10)
+                    implicitWidth: _ts_slider.tickWidth
+                    implicitHeight: parent.height
+                    color:X.Style.accentColor;
+                }
+            }
+        }
+
+        onValueChanged: {
+            viewLogic.currentTime = value;
+        }
+    }
+
     X.Icon { id: _2d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
         icon: X.Icons.icons.crop_square;
