@@ -67,7 +67,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Xml)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 # target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 # target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
+#target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 
 # target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
 

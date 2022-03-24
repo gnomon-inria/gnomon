@@ -15,10 +15,12 @@
 #include <float.h>
 
 #include "gnomonPipelinePort.h"
+#include "gnomonPipelineEdge.h"
 
 #include "gnomonPipelineNode.h"
 #include "gnomonPipelineNode_p.h"
 
+#include <dtkCoreParameter>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodePrivate
@@ -140,6 +142,14 @@ QJsonObject gnomonPipelineNode::parameters(void)
 {
     QJsonObject param;
     return param;
+}
+
+QStringList gnomonPipelineNode::parametersName(void) {
+    return {};
+}
+
+void gnomonPipelineNode::configureParameter(const QString &name, dtkCoreParameter *param) {
+
 }
 
 const QPointF& gnomonPipelineNode::position(void)
@@ -349,6 +359,7 @@ gnomonPipelineEdge *gnomonPipelineNode::outputEdgeAt(int index)
 void gnomonPipelineNode::addInputEdge(gnomonPipelineEdge *edge)
 {
     d->input_edges << edge;
+    d->input_edges_map.insert(edge->target()->name(), edge);
 }
 
 void gnomonPipelineNode::addOutputEdge(gnomonPipelineEdge *edge)
@@ -359,6 +370,7 @@ void gnomonPipelineNode::addOutputEdge(gnomonPipelineEdge *edge)
 void gnomonPipelineNode::removeInputEdge(gnomonPipelineEdge *edge)
 {
     d->input_edges.removeAll(edge);
+    d->input_edges_map.remove(edge->target()->name());
 }
 
 void gnomonPipelineNode::removeOutputEdge(gnomonPipelineEdge *edge)
@@ -454,6 +466,13 @@ const QJsonObject gnomonPipelineNode::toJson(void)
     json.insert("plugin_version", d->version);
     json.insert("description", d->description);
     return json;
+}
+
+gnomonPipelineEdge *gnomonPipelineNode::inputEdgeFromPort(const QString& portName) {
+    if(d->input_edges_map.contains(portName)) {
+        return d->input_edges_map[portName];
+    }
+    return nullptr;
 }
 
 //

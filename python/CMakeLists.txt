@@ -51,6 +51,8 @@ if (PYTHON)
 
     add_dependencies(${PROJECT_NAME} gnomonCore)
     add_dependencies(${PROJECT_NAME} gnomoncore)
+    add_dependencies(${PROJECT_NAME} gnomonPipeline)
+    add_dependencies(${PROJECT_NAME} gnomonpipeline)
     add_dependencies(${PROJECT_NAME} gnomonVisualization)
     add_dependencies(${PROJECT_NAME} gnomonvisualization)
 
