@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../build/python'))
 # -- Project information -----------------------------------------------------
 
 project = 'gnomon'
-copyright = '2021, Inria'
+copyright = '2022, Inria'
 author = 'Mosaic project-team and AMDT team'
 
 # The short X.Y version
