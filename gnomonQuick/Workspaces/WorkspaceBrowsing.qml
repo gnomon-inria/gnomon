@@ -57,7 +57,12 @@ G.Workspace {
         anchors.margins: 10;
 
         onDroppedFromFile: {
-            d.readerPath = decodeURIComponent(path);
+            let urls = path.split(',')
+            let paths = [];
+            for(let i_n in urls) {
+                paths.push(decodeURIComponent(urls[i_n]))
+            }
+            d.readerPath = paths.join(",");
             d.requestReaders();
         }
         viewLogic: d.view;

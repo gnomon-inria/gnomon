@@ -15,49 +15,10 @@ import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM
 
 Rectangle {
-    id: _metadata_explorer;
+    id: _self;
+    
     property int formId;
-    property var dynamicFormMetadata
-
-    onEnabledChanged: {
-        if(enabled) {
-            load_metadata();
-        }
-    }
-
-    onFormIdChanged: {
-        load_metadata();
-    }
-
-    function load_metadata() {
-        // saving metadata
-        for(let i = 0; i < form_collection_metadata.count; i++) {
-            var item_delegate = form_collection_metadata.itemAtIndex(i);
-            item_delegate.save();
-        }
-
-        console.log("Form changed : ", formId)
-        form_collection_metadata.model = undefined;
-        form_metadata.model = undefined;
-        dynamicFormMetadata = undefined;
-        if(GV.World.contains(formId)) {
-            // loading thumbnail
-            _img.source = "image://thumbnails/" + formId;
-
-            // loading dynamicFormMetadata
-            dynamicFormMetadata = GV.World.getDynamicFormMetadata(formId);
-            form_collection_metadata.model = dynamicFormMetadata.keys;
-
-            // setting slider
-            time_slider.times = GV.World.timeKeys(formId);
-            time_slider.to = time_slider.times.length - 1;
-            current_form_metadata_panel.load_frame();
-
-        } else {
-            form_collection_metadata.model = undefined;
-            dynamicFormMetadata = undefined;
-        }
-    }
+    property var dynamicFormMetadata : GV.World.contains(_self.formId) ? GV.World.getDynamicFormMetadata(_self.formId) : undefined;
 
     Rectangle {
         id: current_form;
@@ -67,7 +28,6 @@ Rectangle {
         anchors.margins: 12;
         //width: 2*parent.width/3;
         width: _img_rect.width + (parent.width - _img_rect.width)/2
-
 
         border.color: X.Style.foregroundColor;
         border.width: 1;
@@ -79,7 +39,7 @@ Rectangle {
             anchors.top: parent.top;
             anchors.bottom: parent.bottom;
             anchors.margins: 12
-            width: Math.min(2*_metadata_explorer.width/3, parent.height) - 12;
+            width: Math.min(2*_self.width/3, parent.height) - 12;
 
             color: parent.color;
 
@@ -87,16 +47,17 @@ Rectangle {
                 id: _img
                 anchors.horizontalCenter: parent.horizontalCenter;
                 anchors.verticalCenter: parent.verticalCenter;
+
                 width: Math.min(parent.width, parent.height);
                 fillMode: Image.PreserveAspectFit
-                source: "";
+
+                source: "image://thumbnails/" + _self.formId
             }
-
-
         }
 
         Rectangle {
             id: current_form_metadata_panel;
+
             anchors.left: _img_rect.right;
             anchors.top: parent.top;
             anchors.bottom: parent.bottom;
@@ -107,11 +68,14 @@ Rectangle {
 
             ListView {
                 id: form_metadata;
+                
                 anchors.top: parent.top;
                 anchors.bottom: time_slider.top;
                 anchors.right: parent.right;
                 anchors.left: parent.left;
                 anchors.margins: 12;
+                
+                model : GV.World.contains(_self.formId) ? GV.World.formMetadataKeysAtT(_self.formId, time_slider.t) : undefined;
 
                 delegate: ItemDelegate {
                     id: _f_delegate;
@@ -143,31 +107,17 @@ Rectangle {
 
                         readOnly: true;
                         font.pointSize: 14;
-                        text: "";
-                        //focus: true;
-                        onAccepted: {
-
-                        }
-                    }
-
-                    Component.onCompleted: {
-                        _f_delegate.load()
-                    }
-
-                    function load() {
-                        var text = GV.World.formMetadataValueAtT(
-                            formId,
-                            time_slider.t,
-                            modelData,
-                        );
-                        //console.log(text);
-                        _form_name.text = text;
+                        text: GV.World.formMetadataValueAtT(_self.formId, time_slider.t, modelData);
                     }
                 }
             }
 
             Slider {
                 id: time_slider;
+                
+                property var times : GV.World.contains(_self.formId) ? GV.World.timeKeys(_self.formId) : [0.];
+                property double t : time_slider.times[Math.trunc(time_slider.value)];
+                
                 anchors.bottom: parent.bottom;
                 anchors.left: parent.left;
                 anchors.right: parent.right;
@@ -175,27 +125,14 @@ Rectangle {
 
                 anchors.margins: 12;
 
-                property var times;
-                property double t;
                 enabled: from != to;
                 visible: enabled;
 
                 from: 0;
                 value: 0;
-                to: 0;
+                to: time_slider.times.length - 1;
                 stepSize: 1;
                 snapMode: Slider.SnapAlways;
-
-                onValueChanged: {
-                    if(times) {
-                        t = times[Math.trunc(value)];
-                    }
-                }
-            }
-
-            function load_frame() {
-                //t = times[Math.trunc(value)];
-                form_metadata.model = GV.World.formMetadataKeysAtT(formId, time_slider.t);
             }
         }
     }
@@ -203,12 +140,15 @@ Rectangle {
 
     ListView {
         id: form_collection_metadata;
+
         anchors.left: current_form.right;
         anchors.top: parent.top;
         anchors.bottom: parent.bottom;
         anchors.right: parent.right;
         anchors.margins: 12;
         anchors.rightMargin: 24
+
+        model: _self.dynamicFormMetadata? _self.dynamicFormMetadata.keys : undefined
 
         delegate: ItemDelegate {
             id: _fc_delegate;
@@ -239,28 +179,12 @@ Rectangle {
                 anchors.margins: 5;
 
                 font.pointSize: 14;
-                text: "";
+                text: _self.dynamicFormMetadata.data[modelData];
                 //focus: true;
                 onEditingFinished: {
-                    save();
+                    _self.dynamicFormMetadata.set(modelData, _form_name.text);
                 }
-            }
-
-            Component.onCompleted: {
-                _fc_delegate.load()
-            }
-
-            function load() {
-                _form_name.text = Qt.binding(function() {
-                    return dynamicFormMetadata.data[modelData];
-                })
-            }
-
-            function save() {
-                dynamicFormMetadata.set(modelData, _form_name.text);
             }
         }
     }
-
-
 }

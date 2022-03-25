@@ -49,7 +49,7 @@ Item {
             for(let i_n in _file_dialog.files){
                 paths.push(decodeURIComponent(_file_dialog.files[i_n]))
             }
-            d.readerPath = paths 
+            d.readerPath = paths.join(",")
             d.requestReaders();
         }
     }
@@ -90,7 +90,7 @@ Item {
             }
 
             X.ButtonRaw {
-                text: "Time Series Data";
+                text: "Load Multiple Files";
                 Layout.fillWidth: true;
 
                 onClicked: {

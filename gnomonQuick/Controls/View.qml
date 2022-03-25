@@ -74,10 +74,7 @@ Rectangle {
 
         onDropped: {
             if (drop.hasUrls) {
-                drop.urls.forEach(function (item, index) {
-                    console.log("DROP FILE", item)
-                    self.droppedFromFile(item);
-                });
+                self.droppedFromFile(drop.urls);
             } else {
                 self.droppedFromManager(drag.source.ref);
             }
@@ -134,26 +131,27 @@ Rectangle {
     Slider {
         id: _ts_slider
         from: 0
-        to: viewLogic.timeSeriesSliderMax
+        to: viewLogic.timeMax
         value: 0
         stepSize: 1
         snapMode: Slider.SnapAlways
 
-        visible: viewLogic.timeSeriesSliderMax > 1
+        visible: viewLogic.timeMax > 0
 
         anchors.right: _view.right
         anchors.left: _view.left
         anchors.bottom: _view.bottom 
-        anchors.rightMargin: 20
-        anchors.leftMargin: 12
+        anchors.margins: 6
 
-        readonly property int tickWidth: 10
+        readonly property int tickWidth: 2
         background: Rectangle {
             color: X.Style.backgroundColor;
+            radius: _ts_slider.handle.width/2
+
             Repeater {
                 model: Math.round(_ts_slider.to - _ts_slider.from + 1)
                 delegate: Rectangle {
-                    x: Math.min(index * (_ts_slider.background.width/_ts_slider.to), _ts_slider.background.width - 10)
+                    x:  _ts_slider.handle.width/2 + index*(_ts_slider.background.width - _ts_slider.handle.width)/(_ts_slider.to - _ts_slider.from) - _ts_slider.tickWidth/2
                     implicitWidth: _ts_slider.tickWidth
                     implicitHeight: parent.height
                     color:X.Style.accentColor;
