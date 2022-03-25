@@ -2230,8 +2230,7 @@ void gnomonViewForm::onTimeChanged(double time)
     if (sorted_times.contains(time)) {
         std::sort(sorted_times.begin(), sorted_times.end());
         int value = sorted_times.indexOf(time);
-        // d->time_slider->setValue(value);
-        emit timeChanged(time);
+        this->setCurrentTime(value);
     }
 }
 
