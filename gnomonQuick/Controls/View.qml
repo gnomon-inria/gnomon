@@ -152,8 +152,6 @@ Rectangle {
                 model: Math.round(_ts_slider.to - _ts_slider.from + 1)
                 delegate: Rectangle {
                     x:  _ts_slider.handle.width/2 + index*(_ts_slider.background.width - _ts_slider.handle.width)/(_ts_slider.to - _ts_slider.from) - _ts_slider.tickWidth/2
-
-                    //Math.min(index * (_ts_slider.background.width/_ts_slider.to), _ts_slider.background.width - 10)
                     implicitWidth: _ts_slider.tickWidth
                     implicitHeight: parent.height
                     color:X.Style.accentColor;
