@@ -846,7 +846,7 @@ void gnomonViewFormPrivate::updateFormsTimes(void)
         }
     }
 
-    emit q->timeMaxChanged(this->forms_times.size()-1);
+    emit q->timeMaxChanged(q->timeMax());
 
     // if(this->forms_times.size() < 2) {
     //     this->time_slider->setVisible(false);
@@ -1399,7 +1399,12 @@ double gnomonViewForm::currentTime(void) const
 
 double gnomonViewForm::timeMax(void)
 {
-    return this->times().last();
+    QList<double> times = this->times();
+    if (times.isEmpty()) {
+        return -1;
+    }  else {
+        return this->times().last();
+    }
 }
 
 QList<double> gnomonViewForm::times(void)
