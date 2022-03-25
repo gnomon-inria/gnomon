@@ -134,12 +134,12 @@ Rectangle {
     Slider {
         id: _ts_slider
         from: 0
-        to: viewLogic.timeSeriesSliderMax
+        to: viewLogic.timeMax
         value: 0
         stepSize: 1
         snapMode: Slider.SnapAlways
 
-        visible: viewLogic.timeSeriesSliderMax > 1
+        visible: viewLogic.timeMax > 0
 
         anchors.right: _view.right
         anchors.left: _view.left
