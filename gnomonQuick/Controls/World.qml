@@ -19,6 +19,7 @@ ListView {
 
     clip: true;
     orientation: ListView.Horizontal;
+    spacing: 10;
 
     snapMode: ListView.SnapToItem
 
