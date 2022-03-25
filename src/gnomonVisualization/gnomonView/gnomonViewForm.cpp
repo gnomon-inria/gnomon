@@ -1372,24 +1372,26 @@ void gnomonViewForm::setCurrentTime(double value)
 {
     QList<double> sorted_times = this->times();
     qDebug() << Q_FUNC_INFO <<  this->times();
-    double time = sorted_times[value];
+    if(sorted_times.contains(value)) {
+        double time = sorted_times[value];
 
-    bool valueChanged = false;
-    if (d->c_t != time) {
-        valueChanged = true;
-        d->c_t = time;
+        bool valueChanged = false;
+        if (d->c_t != time) {
+            valueChanged = true;
+            d->c_t = time;
+        }
+
+        // d->time_slider->blockSignals(true);
+        // d->time_slider->setValue(value);
+        // d->time_slider->setToolTip(QString("current time: %1").arg(time));
+        // d->time_slider->blockSignals(false);
+
+        if (valueChanged) {
+            emit timeChanged(time);
+        }
+
+        d->interactor()->Render();
     }
-
-    // d->time_slider->blockSignals(true);
-    // d->time_slider->setValue(value);
-    // d->time_slider->setToolTip(QString("current time: %1").arg(time));
-    // d->time_slider->blockSignals(false);
-
-    if (valueChanged) {
-        emit timeChanged(time);
-    }
-
-    d->interactor()->Render();
 }
 
 double gnomonViewForm::currentTime(void) const
@@ -1535,6 +1537,10 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     d->clearConnections();
 
     emit syncedChanged();
+}
+
+void gnomonViewForm::disconnectTime() {
+    disconnect(d->connectTime);
 }
 
 void gnomonViewForm::setExportColor(const QColor& color)
