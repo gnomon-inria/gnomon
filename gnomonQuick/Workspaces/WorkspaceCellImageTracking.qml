@@ -78,6 +78,13 @@ G.Workspace {
 
             viewLogic: d.target;
 
+            ts_slider.from: _source_view.ts_slider.from
+            ts_slider.to: _source_view.ts_slider.to
+            ts_slider.value: Math.min(_source_view.ts_slider.value+1, ts_slider.to)
+
+            ts_slider.enabled: true;
+            ts_slider.visible: true;
+
             Component.onCompleted: G.Associator.associate(_target_view, d.target);
         }
     }

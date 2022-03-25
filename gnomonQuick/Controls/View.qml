@@ -24,6 +24,7 @@ Rectangle {
     focus: true;
 
     property alias view: _view;
+    property alias ts_slider: _ts_slider
     property var viewLogic;
     property var visualizations;
 
@@ -140,7 +141,7 @@ Rectangle {
 
         anchors.right: _view.right
         anchors.left: _view.left
-        anchors.bottom: _view.bottom 
+        anchors.bottom: _view.bottom
         anchors.margins: 6
 
         readonly property int tickWidth: 2
@@ -160,6 +161,7 @@ Rectangle {
         }
 
         onValueChanged: {
+            console.log(value)
             viewLogic.currentTime = value;
         }
     }
