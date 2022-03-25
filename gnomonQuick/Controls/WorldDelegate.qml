@@ -40,7 +40,7 @@ Item {
         P.FileDialog {
             id: _file_dialog
 
-            nameFilters: [ "Image files (*.png *.tif *.inr *.gz *.ply)", "All files (*)" ]
+            nameFilters: [ GV.World.formWriterNameFilter(form_id), "All files (*)" ]
             title: "save Gnomon Form"
             folder: shortcuts.home
             modality: Qt.WindowModal;
