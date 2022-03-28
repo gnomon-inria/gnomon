@@ -49,10 +49,12 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
     connect(this->target(), &gnomonViewForm::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
+        this->target()->setCurrentTime(this->source()->currentTime()+1.0);
     });
     connect(this->source(), &gnomonViewForm::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
+        this->target()->setCurrentTime(this->source()->currentTime()+1.0);
     });
 }
 
