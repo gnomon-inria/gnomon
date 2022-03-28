@@ -20,7 +20,6 @@ G.Workspace {
     fill: () => {}
 
     property string current_file: "";
-    property int next_idx: 1
 
     P.FileDialog {
         id: _file_dialog;
