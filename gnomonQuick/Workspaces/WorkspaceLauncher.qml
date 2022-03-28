@@ -20,6 +20,7 @@ G.Workspace {
     fill: () => {}
 
     property string current_file: "";
+    property int next_idx: 1
 
     P.FileDialog {
         id: _file_dialog;
@@ -145,9 +146,7 @@ G.Workspace {
                         anchors.fill: parent;
                         hoverEnabled: true;
 
-                        // onClicked: _workspace.state = 'CONF'
-                        // onClicked: _create_project_dialog.open();
-                        onClicked: add_workspace("qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml");
+                        onClicked: switch_from_launcher()
                     }
                     X.ToolTip {
                         visible: _area_2.containsMouse
@@ -194,9 +193,6 @@ G.Workspace {
                 anchors.top: parent.top;
                 anchors.left: parent.left;
                 anchors.right: parent.right;
-
-                // width: _layout.width/2 - _layout.spacing/2;
-                // height: parent.height;
 
                 GridLayout {
 
