@@ -14,11 +14,10 @@ Slider {
     snapMode: Slider.SnapAlways
 
     readonly property int tickWidth: 2 
-    property var assciatedView
-
-    anchors.right: assciatedView.right
-    anchors.left: assciatedView.left
-    anchors.bottom: assciatedView.bottom 
+    
+    anchors.right: parent.right
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom 
     anchors.margins: 6
 
     background: Rectangle {

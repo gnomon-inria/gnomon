@@ -117,8 +117,6 @@ Rectangle {
                 property var times : GV.World.contains(_self.formId) ? GV.World.timeKeys(_self.formId) : [0.];
                 property double t  
 
-                assciatedView: current_form_metadata_panel
-
                 to: time_slider.times.length - 1;
                 enabled: from != to;
                 visible: enabled;
