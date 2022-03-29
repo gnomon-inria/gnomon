@@ -130,7 +130,7 @@ Rectangle {
 
     G.TimeSeriesSlider {
         assciatedView: _view
-        to: ViewLogic.timeMax
+        to: viewLogic.timeMax
         visible: viewLogic.timeMax > 0
 
         onValueChanged: {
