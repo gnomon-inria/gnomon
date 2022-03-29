@@ -241,6 +241,12 @@ X.Dialog {
             available: true
         }
         ListElement {
+            type: "gnomonWorkspaceCellImageTracking"
+            title: "Cell Image Tracking"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
+            available: true
+        }
+        ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
@@ -262,12 +268,6 @@ X.Dialog {
             type: "gnomonWorkspaceSegmentation"
             title: "Segmentation"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
-            available: true
-        }
-        ListElement {
-            type: "gnomonWorkspaceCellImageTracking"
-            title: "CellImageTracking"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
             available: true
         }
     }
