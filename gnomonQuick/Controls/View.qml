@@ -129,9 +129,13 @@ Rectangle {
     }
 
     G.TimeSeriesSlider {
-        asViewLogic: viewLogic
-        asView: _view
-        tickWidth: 2
+        assciatedView: _view
+        to: ViewLogic.timeMax
+        visible: viewLogic.timeMax > 0
+
+        onValueChanged: {
+            viewLogic.currentTime = value;
+        }
     }
 
     X.Icon { id: _2d_icon;

@@ -9,20 +9,16 @@ import xQuick.Style       1.0 as X
 Slider {
     id: _ts_slider
     from: 0
-    to: asViewLogic.timeMax
     value: 0
     stepSize: 1
     snapMode: Slider.SnapAlways
 
-    visible: asViewLogic.timeMax > 0
+    readonly property int tickWidth: 2 
+    property var assciatedView
 
-    property int tickWidth 
-    property var asViewLogic
-    property var asView
-
-    anchors.right: asView.right
-    anchors.left: asView.left
-    anchors.bottom: asView.bottom 
+    anchors.right: assciatedView.right
+    anchors.left: assciatedView.left
+    anchors.bottom: assciatedView.bottom 
     anchors.margins: 6
 
     background: Rectangle {
@@ -38,9 +34,5 @@ Slider {
                 color:X.Style.accentColor;
             }
         }
-    }
-
-    onValueChanged: {
-        asViewLogic.currentTime = value;
     }
 }
