@@ -72,13 +72,6 @@ requirements:
     - swig =4.0
     - vtk =9.1.0
 
-# app:
-#   entry: gnomon # [linux]
-#   entry: open ${PREFIX}/bin/gnomon # [osx]
-#   summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
-#   icon: gnomon_logo.png
-#   type: desk
-
 about:
   home: https://gnomon.gitlabpages.inria.fr/gnomon
   license: LGPL-3.0

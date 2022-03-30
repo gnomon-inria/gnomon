@@ -1,4 +1,4 @@
-The official documentation can be found here: [Gnomon](https://gnomon.gitlabpages.inria.fr/gnomon).
+The official documentation can be found here: [Gnomon](https://gnomon.gitlabpages.inria.fr/gnomon/staging).
 
 Existing plugins
 ====================
@@ -74,7 +74,7 @@ Existing plugins
 
 
 
-To install a plugin : ``conda install -c gnomon -c mosaic -c dtk-forge -c fredboudon -c conda-forge <package>``
+To install a plugin : ``conda install -c gnomon -c mosaic -c dtk-forge6 -c fredboudon -c conda-forge <package>``
 
 
 # Mongo

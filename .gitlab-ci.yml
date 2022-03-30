@@ -27,8 +27,12 @@ test_linux:
     - cd build
     - cmake ..
     - make -j3
-    - CTEST_OUTPUT_ON_FAILURE=1 make test
+    - ctest -T test --timeout 120 --no-compress-output --output-on-failure --output-log report.xml
   extends: .template_retry
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
   only:
     - merge_requests
 
@@ -46,8 +50,12 @@ test_macos:
     - cd build
     - cmake ..
     - make -j2
-    - ctest -T test --timeout 120 --no-compress-output --output-on-failure
+    - ctest -T test --timeout 120 --no-compress-output --output-on-failure --output-log report.xml
   extends: .template_retry
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
   only:
     - merge_requests
 

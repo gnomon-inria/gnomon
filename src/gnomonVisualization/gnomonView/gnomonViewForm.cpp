@@ -1997,6 +1997,11 @@ void gnomonViewForm::removeForm(const QString& name)
     d->formVisibility.remove(name);
     d->forms.remove(name);
 
+    d->updateFormsTimes();
+    if (d->forms.isEmpty()) {
+        d->empty = true;
+    }
+
     this->render();
 
     emit formsChanged();
@@ -2219,6 +2224,8 @@ void gnomonViewForm::update(void)
 void gnomonViewForm::clear(void)
 {
     d->clear();
+    d->updateFormsTimes();
+    d->empty = true;
     emit formsChanged();
 }
 

@@ -22,6 +22,10 @@ __PLUGINS__ = []
 DEBUG = False
 
 
+def get_factory(plugin_group: str):
+    return getattr(gnomon.core, f"{plugin_group}_pluginFactory")
+
+
 def import_plugins(file, excludes=[]):
     file = os.path.dirname(file)
     module = os.path.basename(file)
@@ -49,12 +53,12 @@ def load_plugin_group(group_name: str):
         Entry point group
     """
     for i, entry_point in enumerate(iter_entry_points(group=group_name, name=None)):
-        print(f"loading {entry_point.name}: ", end="")
+        logging.info(f"loading {entry_point.name}: ")
         try:
             importlib.import_module(entry_point.module_name)
-            print("DONE")
+            logging.info(" --> DONE")
         except Exception as e:
-            print("FAIL")
+            logging.info(" --> FAIL")
             print(e)
 
 
@@ -626,7 +630,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         if plugin_name in factory.keys():
             logging.info("Python plugin " + str(plugin_name) + " has been successfully loaded!")
     else:
-        logging.info("Python plugin" + str(plugin_name) + "defined for core version " + str(
+        logging.warn("Python plugin" + str(plugin_name) + "defined for core version " + str(
             coreversion) + " but actual version is ${gnomon_VERSION}")
-        logging.info("plugin not loaded")
+        logging.warn("plugin not loaded")
     return cls

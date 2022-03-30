@@ -350,7 +350,7 @@ void gnomonPipeline::setDescription(const QString& desc)
     }
 }
 
-const QStringList& gnomonPipeline::nodeNames(void)
+QStringList gnomonPipeline::nodeNames(void)
 {
     return d->pipeline_node_names;
 }
@@ -718,6 +718,10 @@ void gnomonPipeline::readFromJson(const QString& url)
         edge->setTarget(d->pipeline_nodes[target.first]->inputPort(target.second));
         edge->link();
     }
+}
+
+QList<QStringList> gnomonPipeline::scheduleGroups(void) {
+    return d->scheduledNodeNameGroups();
 }
 
 

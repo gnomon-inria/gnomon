@@ -17,8 +17,3 @@ cmake .. \
 
 make -j${CPU_COUNT}
 make install
-
-if [ `uname` == Darwin ]
-then
-    cp $RECIPE_DIR/gnomon $PREFIX/bin
-fi
