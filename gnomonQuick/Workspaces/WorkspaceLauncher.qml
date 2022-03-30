@@ -31,12 +31,20 @@ G.Workspace {
         onAccepted: {
             console.log('Loading an existing project');
             load_session(_file_dialog.file);
-            add_to_history(_file_dialog.file)  
+            add_to_history(_file_dialog.file)
         }
     }
 
     Pane {
-        anchors.fill: parent;
+        anchors.fill: parent
+
+        Label {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: "Gnomon v0.60.0"
+        }
 
         RowLayout {
 
@@ -58,7 +66,7 @@ G.Workspace {
                         height: 200;
                         width: 200;
                         radius: 10;
-                        
+
 
                         border.width: 2;
                         border.color: X.Style.accentColor;
@@ -145,9 +153,7 @@ G.Workspace {
                         anchors.fill: parent;
                         hoverEnabled: true;
 
-                        // onClicked: _workspace.state = 'CONF'
-                        // onClicked: _create_project_dialog.open();
-                        onClicked: add_workspace("qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml");
+                        onClicked: switch_from_launcher()
                     }
                     X.ToolTip {
                         visible: _area_2.containsMouse
@@ -194,9 +200,6 @@ G.Workspace {
                 anchors.top: parent.top;
                 anchors.left: parent.left;
                 anchors.right: parent.right;
-
-                // width: _layout.width/2 - _layout.spacing/2;
-                // height: parent.height;
 
                 GridLayout {
 

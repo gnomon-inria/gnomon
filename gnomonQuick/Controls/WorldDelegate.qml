@@ -17,17 +17,41 @@ Item {
 
     id: _world_delegate;
 
-    width: _world.height;
-    height: _world.height;
+    width: _world.height-6;
+    height: _world.height-6;
 
     property var flickable: null;
     property alias ref: _thumbnail.ref;
+
+    Repeater {
+        id: _frame
+        model: [2, 1, 0]
+
+        Rectangle {
+            id: _indicator;
+
+             width: _world_delegate.width
+            height: _world_delegate.height
+            radius: 4;
+
+            anchors.left: _world_delegate.left
+            anchors.top: _world_delegate.top
+            anchors.margins: 3*modelData
+
+            color: Qt.darker(X.Style.backgroundColor);
+
+            border.width: 2;
+            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.highlightColor : X.Style.backgroundColor;
+
+            visible: modelData == 0? true : GV.World.timeKeys(form_id).length > 1;
+        }
+    }
 
     Rectangle {
         id: _thumbnail
 
         anchors.fill: parent;
-        anchors.margins: 5;
+        anchors.margins: 3;
 
         color: "#99D0A3BF"
         radius: 2;
@@ -99,7 +123,7 @@ Item {
             anchors.topMargin: 5
             anchors.left: _thumbnail.left
             anchors.rightMargin: 5
-            visible: parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse) && parent.parent.height > 42
 
             MouseArea { id: _delete_mouse_area;
                 anchors.fill: parent;
@@ -126,7 +150,7 @@ Item {
             anchors.topMargin: 5
             anchors.right: _thumbnail.right
             anchors.rightMargin: 5
-            visible: parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse) && parent.parent.height > 42
 
             MouseArea {
                 id: _save_mouse_area;
@@ -139,21 +163,5 @@ Item {
             ToolTip.visible: _save_mouse_area.containsMouse;
             ToolTip.text: "Save form";
         }
-    }
-
-    Rectangle {
-
-        id: _higlight_indicator;
-
-         width: _world_delegate.width - 1
-        height: _world_delegate.height - 1
-        radius: 4;
-
-        color: "#00000000";
-
-        border.width: 2;
-        border.color: G.Style.highlightColor;
-
-        visible: _world.currentIndex == model.index;
     }
 }
