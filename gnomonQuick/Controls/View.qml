@@ -26,6 +26,7 @@ Rectangle {
     property alias view: _view;
     property var viewLogic;
     property var visualizations;
+    property var ts_slider: _ts_slider
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -128,7 +129,7 @@ Rectangle {
         }
     }
 
-    G.TimeSeriesSlider {
+    G.TimeSeriesSlider { id: _ts_slider;
         to: viewLogic.timeMax
         visible: viewLogic.timeMax > 0
 
