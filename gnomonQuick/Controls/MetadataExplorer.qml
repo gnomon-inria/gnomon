@@ -112,27 +112,18 @@ Rectangle {
                 }
             }
 
-            Slider {
+            G.TimeSeriesSlider {
                 id: time_slider;
-                
                 property var times : GV.World.contains(_self.formId) ? GV.World.timeKeys(_self.formId) : [0.];
-                property double t : time_slider.times[Math.trunc(time_slider.value)];
-                
-                anchors.bottom: parent.bottom;
-                anchors.left: parent.left;
-                anchors.right: parent.right;
-                height: 40;
+                property double t  
 
-                anchors.margins: 12;
-
+                to: time_slider.times.length - 1;
                 enabled: from != to;
                 visible: enabled;
 
-                from: 0;
-                value: 0;
-                to: time_slider.times.length - 1;
-                stepSize: 1;
-                snapMode: Slider.SnapAlways;
+                onValueChanged: {
+                    t = time_slider.times[Math.trunc(value)];
+                }
             }
         }
     }
