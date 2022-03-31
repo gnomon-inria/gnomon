@@ -24,8 +24,8 @@ public:
 
     void run(void) override{ registration::t_run_called = true;};
     QString documentation(void) override {return "empty";};
-    void addImage(gnomonImageSeries *) override {registration::t_add_image_called++;};
-    void removeImages(void) override{registration::t_add_image_called = 0;};
+    void setImage(gnomonImageSeries *) override {registration::t_add_image_called++;};
+    gnomonImageSeries* image() override {return nullptr;};
     gnomonImageSeries* output() override {return nullptr;};
     gnomonDataDictSeries* outputTransformation() override {return nullptr;};
 };
@@ -69,8 +69,8 @@ void gnomonImageRegistrationCommandTestCase::redo(void)
     d->image_series.push_back(new gnomonImageSeries());
     d->image_series.push_back(new gnomonImageSeries());
 
-    d->registration_command->addImage(d->image_series[0]);
-    d->registration_command->addImage(d->image_series[1]);
+    d->registration_command->setImage(d->image_series[0]);
+    d->registration_command->setImage(d->image_series[1]);
 
     d->registration_command->setParameter("method", "rigid");
     d->registration_command->redo();
