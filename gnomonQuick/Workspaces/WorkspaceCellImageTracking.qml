@@ -65,13 +65,7 @@ G.Workspace {
             }
 
             viewLogic: d.source;
-
-            ts_slider.onValueChanged: {
-                let new_val = Math.min(ts_slider.value+1, ts_slider.to)
-                if(new_val != _target_view.ts_slider.value) {
-                    _target_view.ts_slider.value = new_val
-                }
-            }
+            ts_slider.value: Math.max(d.target.currentTime-1, ts_slider.from)
 
             Component.onCompleted: G.Associator.associate(_source_view, d.source);
         }
@@ -85,16 +79,8 @@ G.Workspace {
 
             viewLogic: d.target;
 
-            ts_slider.from: _source_view.ts_slider.from
-            ts_slider.to: _source_view.ts_slider.to
-            ts_slider.value: Math.min(_source_view.ts_slider.value+1, ts_slider.to)
-
-            ts_slider.onValueChanged: {
-                let new_val = Math.max(ts_slider.value-1, ts_slider.from)
-                if(new_val != _source_view.ts_slider.value) {
-                    _source_view.ts_slider.value = new_val
-                }
-            }
+            ts_slider.to: d.source.timeMax
+            ts_slider.value: Math.min(d.source.currentTime+1, ts_slider.to)
 
             ts_slider.enabled: true;
             ts_slider.visible: true;
