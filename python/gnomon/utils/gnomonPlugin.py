@@ -56,7 +56,6 @@ def load_plugin_group(group_name: str):
         logging.info(f"loading {entry_point.name}: ")
         try:
             importlib.import_module(entry_point.module_name)
-            logging.info(" --> DONE")
         except Exception as e:
             logging.info(" --> FAIL")
             print(e)

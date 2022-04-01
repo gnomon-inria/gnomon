@@ -62,3 +62,5 @@ dependencies:
     - qtconsole-base >=5.2
     - qtpy >=2.0
     - pip
+    - pip:
+        - morphonet
