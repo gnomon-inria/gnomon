@@ -30,3 +30,5 @@ dependencies:
     - pyside6
     - qtconsole-base
     - pip
+    - pip:
+        - morphonet

@@ -1,17 +1,3 @@
-# Version: #$Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 project(gnomonWorkspace VERSION ${gnomon_VERSION})
 
 ## #################################################################
@@ -57,6 +43,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceMeshFromImage.h
   # gnomonWorkspaceMeshFilter
   # gnomonWorkspaceMeshFilter.h
+  gnomonWorkspaceMorphonet
+  gnomonWorkspaceMorphonet.h
   # gnomonWorkspacePlantScan3D
   # gnomonWorkspacePlantScan3D.h
   # gnomonWorkspacePointCloudConstructor
@@ -105,6 +93,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspaceMeshConstructor.cpp
   # gnomonWorkspaceMeshFilter.cpp
   # gnomonWorkspaceMeshFromImage.cpp
+  gnomonWorkspaceMorphonet.cpp
   # gnomonWorkspacePlantScan3D.cpp
   # gnomonWorkspacePointCloudConstructor.cpp
   # gnomonWorkspacePointCloudFromImage.cpp
