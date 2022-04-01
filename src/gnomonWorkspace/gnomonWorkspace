@@ -19,7 +19,7 @@
 // #include "gnomonWorkspaceCellComplexConstructor.h"
 // #include "gnomonWorkspaceCellComplexFromCellImage.h"
 // #include "gnomonWorkspaceCellImageQuantification.h"
-// #include "gnomonWorkspaceCellImageTracking.h"
+#include "gnomonWorkspaceCellImageTracking.h"
 // #include "gnomonWorkspaceCellImageConstructor.h"
 // #include "gnomonWorkspaceCellImageFilter.h"
 #include "gnomonWorkspaceRegistration.h"

@@ -135,6 +135,7 @@ public slots:
 
     void   link(gnomonViewForm *other);
     void unlink(gnomonViewForm *other);
+    void disconnectTime();
 
 public slots:
     void drop(int);
