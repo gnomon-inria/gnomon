@@ -4,6 +4,7 @@
 #include "gnomonWorkspaceBrowser.h"
 // #include "gnomonWorkspaceDatabaseBrowser.h"
 // #include "gnomonWorkspaceLSystemSimulator.h"
+#include "gnomonWorkspaceMorphonet.h"
 #include "gnomonWorkspacePythonAlgorithm.h"
 // #include "gnomonWorkspacePythonSimulator.h"
 // #include "gnomonWorkspaceImageConstructor.h"
