@@ -1,0 +1,209 @@
+import QtQuick           2.15
+import QtQuick.Controls  2.15
+import QtQuick.Layouts   1.15
+
+import xQuick            1.0 as X
+import xQuick.Controls   1.0 as X
+import xQuick.Fonts      1.0 as X
+import xQuick.Style      1.0 as X
+
+
+import gnomonQuick.Workspaces 1.0 as G
+import gnomonQuick.Controls   1.0 as G
+
+import gnomon.Workspaces    1.0 as GW
+
+G.Workspace {
+
+    id: _self;
+
+    workspace_title: "Morphonet Connector";
+
+    property alias d: d;
+    property alias mn_ds_info: mn_datasets_info;
+    
+    fill: () => {}
+
+    focus: true;
+
+    GW.WorkspaceMorphonet {
+        id: d;
+
+        onMessage: { 
+            console.log("message: ", msg)
+            _message_dialog.text = msg;
+            _message_dialog.open();
+
+        }
+
+        onConnectionStatusChanged: { 
+            updateDatasetsInfo();
+            d.connected ? drawer.open() : drawer.close()
+        }
+
+    }
+
+    Timer {
+        id: timer
+    }
+
+    ListModel {
+        id: mn_datasets_info
+    }
+
+    X.ButtonRaw {
+        x: parent.width / 2 - 10;
+        y: parent.height /2 - 10;
+        visible: !d.connected;
+        text: "Connect";
+        onClicked: {
+            _connection_dialog.open();
+        }
+    }
+
+    G.View {
+        id: _view;
+
+        anchors.fill: parent;
+        anchors.margins: 10;
+
+        visible: d.connected
+        onDroppedFromManager: {
+            console.info('Retrieving from manager');
+            //TODO check if transform to morphonet data possible
+            d.source.drop(index);
+        }
+
+        viewLogic: d.view;
+
+        Component.onCompleted: G.Associator.associate(_view, d.view);
+
+    }
+
+    Component.onCompleted: {
+        timer.interval= 500; 
+        timer.repeat= false;
+        timer.triggered.connect(function ff () {
+            if(!d.connected) { 
+                _connection_dialog.open();
+                drawer.close()
+            }
+            timer.triggered.disconnect(ff);
+        });
+        timer.start();
+
+        drawel.close();
+    }
+
+    X.Dialog {
+        id: _message_dialog;
+
+        property string text: "";
+
+        y: parent.height/3
+        x: parent.width/6
+        parent: Overlay.overlay
+
+        X.Label {
+            anchors.fill: parent
+            text: _message_dialog.text;
+            font {
+                weight: Font.Bold
+                pointSize: 14
+            }
+        }
+    }
+
+    X.Dialog {
+        id: _connection_dialog
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        width: Math.round(window.width / 3 * 2)
+
+        parent: Overlay.overlay
+        focus: true
+        modal: true
+
+        standardButtons: Dialog.Ok | Dialog.Cancel
+
+        title: " Connect to Morphonet"
+        GridLayout {
+
+            columns: 2
+            width: parent.width
+
+            X.Label {
+                text: "login";
+                font {
+                    pointSize: 14;
+                    weight: Font.Bold
+                }
+            }
+
+            X.TextField {
+                id: _morphonet_login
+                placeholderText: qsTr("Enter login here")
+                text: ""
+                implicitWidth: Math.round(_connection_dialog.width/2)
+                implicitHeight: Math.round(_connection_dialog.height/8)
+                wrapMode: TextInput.WrapAnywhere
+                Keys.onReturnPressed: {
+                    _connection_dialog.accept()
+                }
+
+            }
+
+            X.Label {
+                text: "Password";
+                font {
+                    pointSize: 14;
+                    weight: Font.Bold
+                }
+            }
+
+            X.TextField { 
+                id: _morphonet_passwd
+                placeholderText: qsTr("Enter password here")
+                text: ""
+                echoMode: TextInput.PasswordEchoOnEdit
+                implicitWidth: Math.round(_connection_dialog.width/2)
+                implicitHeight: Math.round(_connection_dialog.height/4)
+                wrapMode: TextInput.WrapAnywhere    
+                Keys.onReturnPressed: {
+                    _connection_dialog.accept()
+                }
+            }
+        }
+
+        onRejected: {
+            _morphonet_passwd = ""
+        }
+
+        onAccepted: {
+            let res = d.login(_morphonet_login.text, _morphonet_passwd.text)
+            if(!res) {
+                _connection_dialog.open()
+            }
+        }
+    }
+
+    function updateDatasetsInfo() {
+        let str_ds = d.datasetsInfo();
+        let ds_info_json = JSON.parse(str_ds);
+
+        mn_datasets_info.clear();
+
+        for(let i in ds_info_json) {
+            mn_datasets_info.append({
+                "textRole": "name", // to display in ComboBox
+                "name": ds_info_json[i]["name"],
+                "morpho_id": ds_info_json[i]["id"],
+                "comments": ds_info_json[i]["comments"] || "",
+                "date": ds_info_json[i]["date"],
+                "id_people": ds_info_json[i]["id_people"]
+                });
+        }
+    }
+}

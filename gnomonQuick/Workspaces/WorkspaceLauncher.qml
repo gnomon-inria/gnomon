@@ -38,14 +38,6 @@ G.Workspace {
     Pane {
         anchors.fill: parent
 
-        Label {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            text: "Gnomon v0.60.0"
-        }
-
         RowLayout {
 
             anchors.centerIn: parent;

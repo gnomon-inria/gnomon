@@ -247,6 +247,12 @@ X.Dialog {
             available: true
         }
         ListElement {
+            type: "gnomonWorkspaceMorphonet"
+            title: "Morphonet"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
+            available: true
+        }
+        ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
@@ -282,6 +288,7 @@ X.Dialog {
         _internal.workspace_groups["gnomonWorkspaceBinarization"] = "binaryImageFromImage"
         _internal.workspace_groups["gnomonWorkspaceBrowser"] = ["binaryImageReader", "cellImageReader", "cellComplexReader", "imageReader", "meshReader", "pointCloudReader"]
         _internal.workspace_groups["gnomonWorkspaceCellImageQuantification"] = "cellImageQuantification"
+        _internal.workspace_groups["gnomonWorkspaceMorphonet"] = ""
         _internal.workspace_groups["gnomonWorkspaceCellImageTracking"] = "cellImageTracking"
         _internal.workspace_groups["gnomonWorkspacePreprocess"] = "imageFilter"
         _internal.workspace_groups["gnomonWorkspacePythonAlgorithm"] = "formAlgorithm"
@@ -301,7 +308,7 @@ X.Dialog {
                 }
             }
             _internal.workspace_plugins[w.type] = plugins
-            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm"))
+            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet"))
         }
     }
 }
