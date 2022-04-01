@@ -99,6 +99,20 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     d->pool->addView(this->targets()->views()[0]);
 
     connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+
+    connect(this->targets()->views()[0], &gnomonViewForm::syncedChanged, [=]() {
+        this->targets()->views()[0]->disconnectTime();
+        this->sources()->views()[0]->disconnectTime();
+        this->sources()->views()[1]->disconnectTime();
+    });
+    for(int i=0; i<2; i++)
+    {
+        connect(this->sources()->views()[i], &gnomonViewForm::syncedChanged, [=]() {
+            this->targets()->views()[0]->disconnectTime();
+            this->sources()->views()[0]->disconnectTime();
+            this->sources()->views()[1]->disconnectTime();
+        });
+    }
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
