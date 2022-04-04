@@ -22,7 +22,6 @@ public:
     gnomonImageSeries *image();
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
     orderedMap inputTypes() override;
-    [[deprecated]] void addInputForm(gnomonAbstractDynamicForm *form) override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 

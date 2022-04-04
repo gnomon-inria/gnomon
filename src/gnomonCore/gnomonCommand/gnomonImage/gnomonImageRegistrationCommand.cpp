@@ -73,7 +73,7 @@ void gnomonImageRegistrationCommand::postdo(void)
 
 void gnomonImageRegistrationCommand::undo()
 {
-    d->inputs["input"] = nullptr;
+    this->setImage(nullptr);
 }
 
 void gnomonImageRegistrationCommand::setImage(gnomonImageSeries *image_series)
@@ -105,16 +105,6 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::input
 gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::inputTypes()
 {
     return d->input_types;
-}
-
-void gnomonImageRegistrationCommand::addInputForm(gnomonAbstractDynamicForm *form)
-{
-    gnomonImageSeries *image = dynamic_cast<gnomonImageSeries *>(form);
-    if (image) {
-        this->setImage(image);
-    } else {
-        dtkWarn() << Q_FUNC_INFO << "cannot cast form to gnomonImageSeries, bad input: " << form;
-    }
 }
 
 QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs()
