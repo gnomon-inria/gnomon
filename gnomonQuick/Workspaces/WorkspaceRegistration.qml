@@ -17,6 +17,7 @@ import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
+import gnomon.Visualization 1.0 as GV
 
 G.Workspace {
 
@@ -69,6 +70,18 @@ G.Workspace {
 
             onDroppedFromManager: {
                 d.sources.views[1].drop(index);
+                if(GV.World.timeKeys(index).length > 1) {
+                    d.sources.views[0].drop(index);
+                    ts_slider.value = Math.max(_source_view_ref.ts_slider.value - 1, ts_slider.from)
+                }
+            }
+
+            ts_slider.value: Math.max(d.sources.views[0].currentTime-1, ts_slider.from)
+            ts_slider.onValueChanged: {
+                let new_val = Math.min(ts_slider.value+1, ts_slider.to)
+                if(new_val != _source_view_ref.ts_slider.value) {
+                    _source_view_ref.ts_slider.value = new_val
+                }
             }
 
             X.Label {
@@ -146,6 +159,17 @@ G.Workspace {
 
             onDroppedFromManager: {
                 d.sources.views[0].drop(index);
+                if(GV.World.timeKeys(index).length > 1) {
+                    d.sources.views[1].drop(index);
+                    ts_slider.value =  Math.min(_source_view_other.ts_slider.value + 1, ts_slider.to)
+                }
+            }
+
+            ts_slider.onValueChanged: {
+                let new_val = Math.max(ts_slider.value-1, ts_slider.from)
+                if(new_val != _source_view_other.ts_slider.value) {
+                    _source_view_other.ts_slider.value = new_val
+                }
             }
 
             X.Label {
