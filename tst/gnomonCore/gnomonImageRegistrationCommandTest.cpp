@@ -13,7 +13,7 @@
 
 namespace registration{
 bool t_run_called = false;
-int t_add_image_called = 0;
+bool t_set_image_called = false;
 bool t_set_parameter_called = false;
 }
 
@@ -24,8 +24,8 @@ public:
 
     void run(void) override{ registration::t_run_called = true;};
     QString documentation(void) override {return "empty";};
-    void addImage(gnomonImageSeries *) override {registration::t_add_image_called++;};
-    void removeImages(void) override{registration::t_add_image_called = 0;};
+    void setImage(gnomonImageSeries *imageSeries) override {registration::t_set_image_called = true;};
+    gnomonImageSeries* image() override {return nullptr;};
     gnomonImageSeries* output() override {return nullptr;};
     gnomonDataDictSeries* outputTransformation() override {return nullptr;};
 };
@@ -37,7 +37,7 @@ inline gnomonAbstractImageRegistration* dummyImageRegistrationPluginCreator(void
 class gnomonImageRegistrationCommandTestCasePrivate
 {
 public:
-    QVector< gnomonImageSeries * > image_series;
+    gnomonImageSeries *image_series;
     gnomonImageRegistrationCommand *registration_command = nullptr;
 };
 
@@ -66,22 +66,19 @@ void gnomonImageRegistrationCommandTestCase::init(void)
 
 void gnomonImageRegistrationCommandTestCase::redo(void)
 {
-    d->image_series.push_back(new gnomonImageSeries());
-    d->image_series.push_back(new gnomonImageSeries());
-
-    d->registration_command->addImage(d->image_series[0]);
-    d->registration_command->addImage(d->image_series[1]);
+    d->image_series = new gnomonImageSeries();
+    d->registration_command->setImage(d->image_series);
 
     d->registration_command->setParameter("method", "rigid");
     d->registration_command->redo();
 
-    QVERIFY(registration::t_add_image_called == 2 && registration::t_run_called && registration::t_set_parameter_called);
+    QVERIFY(registration::t_set_image_called && registration::t_run_called && registration::t_set_parameter_called);
 }
 
 void gnomonImageRegistrationCommandTestCase::undo(void)
 {
     d->registration_command->undo();
-    QVERIFY(registration::t_add_image_called == 0);
+    QVERIFY(registration::t_set_image_called);
 }
 
 void gnomonImageRegistrationCommandTestCase::cleanup(void)
