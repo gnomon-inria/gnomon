@@ -10,6 +10,12 @@ from base64 import b64decode, b64encode
 from functools import wraps
 from typing import Dict, List, Tuple
 
+from typing import List, Callable
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import zipfile
+from json import loads, dump
+
 from pkg_resources import iter_entry_points, resource_filename
 
 from setuptools import findall
@@ -19,7 +25,7 @@ import gnomon.visualization
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
-DEBUG = False
+DEBUG = True
 
 
 def get_factory(plugin_group: str):
@@ -314,6 +320,91 @@ def serialize(attr):
     return decorator
 
 
+def seriesReader(form_attr: str, path_attr: str = "path"):
+    def seriesReaderDecorator(cls: type):
+        def run_decorator(f: Callable):
+            def run_wrapper(self):
+                old_paths = getattr(self, path_attr).split(",")
+                path = old_paths[0]
+                ext = Path(path).suffix
+                # logging.info("======================" + repr(ext) + repr(old_paths))
+                if ext == ".zip" and len(old_paths) > 1:
+                    raise RuntimeError("When opening a series container expected only one.")
+                elif ext != ".zip":
+                    return f(self)
+
+                # series handling
+                new_paths = []
+                time_stamps = []
+                with TemporaryDirectory() as tmpdirname:
+                    # zip file
+                    # logging.info(path)
+                    container = zipfile.ZipFile(path, mode="r")
+                    if "manifest.json" not in container.namelist():
+                        raise RuntimeError("Invalid series container, no manifest.json file found.")
+                    manifest = loads(container.read("manifest.json").decode("utf-8"))
+                    for t, filename in manifest["series"].items():
+                        new_paths.append(container.extract(filename, tmpdirname))
+                        time_stamps.append(t)
+                    container.close()
+                    # logging.info(new_paths)
+                    self.setPath(",".join(new_paths))
+                    f(self)
+                    #logging.info(getattr(self, form_attr))
+                    #setattr(self, form_attr, {t: getattr(self, form_attr)[i] for i, t in enumerate(time_stamps)})
+                    #logging.info(getattr(self, "image")())
+
+                self.setPath = old_paths
+
+            return run_wrapper
+
+        setattr(cls, "run", run_decorator(cls.run))
+        return cls
+    return seriesReaderDecorator
+
+
+def seriesWriter(form_attr: str, path_attr: str = "path"):
+    def seriesWriterDecorator(cls: type):
+        def writerDecorator(f):
+            def run_wrapper(self):
+                paths = getattr(self, path_attr).split(",")
+                path = paths[0]
+                forms = getattr(self, form_attr)
+                if len(forms) == 1:
+                    return f(self)
+                # writing the series
+                with TemporaryDirectory() as tmpdirname:
+                    container = zipfile.ZipFile(Path(path).with_suffix(".zip"), "w", compression=zipfile.ZIP_DEFLATED,
+                                                compresslevel=5)
+                    ext = Path(path).suffix if Path(path).suffix != ".zip" else self.extensions()[0]
+                    manifest = {"extension": ext[1:], "series": {}}
+                    for t, form in forms.items():
+                        filename = Path(path).stem + "_t" + "%05.2f" % t + ext
+                        manifest["series"][t] = filename
+                        filepath = Path(tmpdirname).joinpath(filename)
+                        self.setPath(str(filepath))
+                        setattr(self, form_attr, {t: form})
+                        f(self)
+                        container.write(str(filepath), str(filename))
+                    # writing manifest
+                    filepath = Path(tmpdirname).joinpath("manifest.json")
+                    with open(filepath, "w") as file:
+                        dump(manifest, file)
+                    container.write(filepath, "manifest.json")
+
+                    container.close()
+                    # resetting
+                    setattr(self, form_attr, forms)
+                    setattr(self, path_attr, paths)
+
+            return run_wrapper
+
+        setattr(cls, "run", writerDecorator(cls.run))
+        return cls
+
+    return seriesWriterDecorator
+
+
 def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, base_class=None):
     """
     Registers form data plugins to the plugin factory.
@@ -536,12 +627,11 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     cls.documentation = documentation
 
     cls.__version__ = version
+
     def _version(self):
         return self.__version__
 
     cls.version = _version
-
-
 
     def wrapper(f):
         @wraps(f)
