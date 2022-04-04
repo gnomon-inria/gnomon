@@ -161,7 +161,8 @@ void gnomonWorkspaceRegistration::setInputs(void)
     gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
     bool empty_input = (input_image == nullptr);
 
-    gnomonAlgorithmWorkspace::setInputs();
+    //gnomonAlgorithmWorkspace::setInputs();
+    d->command->setInputForm("input", d->sources->views()[1]->image());
 
     if (empty_input || !d->command->inputs()["input"]) {
         for (const auto& level : dd->image_stack.keys()) {

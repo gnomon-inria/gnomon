@@ -18,7 +18,7 @@ public:
     void   undo(void) override;
 
 public:
-    [[deprecated]] void setImage(gnomonImageSeries *);
+    void setImage(gnomonImageSeries *);
     gnomonImageSeries *image();
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
     orderedMap inputTypes() override;
