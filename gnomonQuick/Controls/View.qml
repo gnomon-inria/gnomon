@@ -299,6 +299,19 @@ Rectangle {
         ToolTip.text: "(Un)Link with other views for this workspace";
     }
 
+    Keys.onPressed: {
+        console.log(event.key)
+        if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
+            event.accepted = true
+            if(event.modifiers & Qt.ShiftModifier) {
+                viewLogic.transmit()
+            } else if (_list_view.count > 0){
+                _form_export_dialog.open();
+                _form_export_dialog.reset();
+            }
+        }
+    }
+
     X.Icon { id: _export_icon;
         icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
         enabled: !viewLogic.inputView
