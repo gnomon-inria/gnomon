@@ -11,7 +11,7 @@ class gnomonViewDataPrivate : public QObject
     Q_OBJECT
 
 public:
-    gnomonViewDataPrivate(QObject *parent = nullptr);
+    gnomonViewDataPrivate(QObject *parent = Q_NULLPTR);
     ~gnomonViewDataPrivate(void);
 
 public:

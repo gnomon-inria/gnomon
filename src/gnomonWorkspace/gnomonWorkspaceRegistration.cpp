@@ -92,6 +92,11 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addInputView(); // floating
     this->addOutputView(); // registered
 
+    this->m_target_dict = new gnomonViewData(this);
+
+    qDebug() << "#############################";
+    qDebug() << this->m_target_dict;
+
     if(!d->pool)
         d->pool = new gnomonViewFormPool(this);
     d->pool->addView(this->sources()->views()[0]);
@@ -222,6 +227,14 @@ void gnomonWorkspaceRegistration::iterate(void)
 
         gnomonPipelineManager::instance()->addForm(output_image);
         gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
+    }
+
+}
+
+void gnomonWorkspaceRegistration::viewOutputs()
+{
+    if(d->command->outputs()["transformation"]) {
+        this->m_target_dict->setForm("gnomonDataDict", d->command->outputs()["transformation"]);
     }
 }
 
