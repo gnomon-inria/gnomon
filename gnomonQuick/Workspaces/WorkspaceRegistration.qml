@@ -124,6 +124,24 @@ G.Workspace {
                     font.pixelSize: 10;
                 }
 
+                G.View {
+                    id: _data_target_view;
+
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+
+                    X.Label {
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+
+                        height: 24
+                        text: "Transformation Matrix"
+                        horizontalAlignment: Text.AlignRight
+                    }
+
+                    viewLogic: d.targetDict;
+                }
+
                 G.Stack {
                     id: _stack;
 
