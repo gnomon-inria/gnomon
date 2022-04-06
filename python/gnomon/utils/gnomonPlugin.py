@@ -25,7 +25,7 @@ import gnomon.visualization
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
-DEBUG = True
+DEBUG = False
 
 
 def get_factory(plugin_group: str):
