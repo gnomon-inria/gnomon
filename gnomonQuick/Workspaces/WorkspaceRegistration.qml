@@ -133,7 +133,7 @@ G.Workspace {
                     X.Label {
                         anchors.centerIn: parent
 
-                        text: d.transformStringAt(_stack.currentIndex-1)
+                        text: d.targetDict.dataDict
                         horizontalAlignment: Text.AlignRight
                         color: X.Style.accentColor
                         font {
@@ -230,7 +230,5 @@ G.Workspace {
 
     Component.onCompleted: {
         d.onParametersChanged();
-        console.log("###############")
-        console.log(d.targetDict.dataDict)
     }
 }
