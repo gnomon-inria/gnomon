@@ -21,6 +21,8 @@ public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
+    Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
+
 
 
 public:
@@ -31,11 +33,13 @@ public:
 public slots:
     void setAcceptForm(const QString&, bool);
     void setInputView(bool);
+    void setDataDict(QString);
 
 public:
     QStringList formNames(void);
     QStringList acceptedForms(void);
     bool inputView(void);
+    QString dataDict(void);
 
 
 public slots:
@@ -45,6 +49,7 @@ signals:
     void exportedForm(gnomonAbstractDynamicForm *);
     void formAdded(const QString&);
     void formsChanged(void);
+    void dictChanged(void);
 
 private:
     class gnomonViewDataPrivate *d;

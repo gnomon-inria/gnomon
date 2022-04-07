@@ -31,6 +31,7 @@ public:
 
 public:
     bool input_view = false;
+    QString data_dict;
 };
 
 gnomonViewDataPrivate::gnomonViewDataPrivate(QObject *parent): QObject(parent)
@@ -134,6 +135,17 @@ QStringList gnomonViewData::acceptedForms()
 bool gnomonViewData::inputView()
 {
     return d->input_view;
+}
+
+QString gnomonViewData::dataDict(void)
+{
+    return d->data_dict;
+}
+
+void gnomonViewData::setDataDict(QString dict)
+{
+    d->data_dict = dict;
+    emit dictChanged();
 }
 // ///////////////////////////////////////////////////////////////////
 

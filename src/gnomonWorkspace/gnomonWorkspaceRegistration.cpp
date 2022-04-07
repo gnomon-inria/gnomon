@@ -235,6 +235,13 @@ void gnomonWorkspaceRegistration::viewOutputs()
     gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["transformation"]) {
         this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]);
+        
+        gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(d->command->outputs()["transformation"]->clone());
+        QVariant transform = transformation->current()->get("transform");
+        QVector<QVector< double>> transform_matrix = transform.value<QVector<QVector< double> > >();
+
+        this->m_target_dict->setDataDict(transformMatrixString(transform_matrix));
+
         int form_count = gnomonFormManager::instance()->formCount(command->outputs()["transformation"]->formName());
         command->outputs()["transformation"]->metadata()->set("name", command->outputs()["transformation"]->formName().remove("gnomon") + QString::number(form_count+1));
         command->outputs()["transformation"]->metadata()->set("source", d->algorithm);
