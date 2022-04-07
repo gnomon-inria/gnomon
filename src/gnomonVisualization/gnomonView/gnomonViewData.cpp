@@ -28,6 +28,9 @@ public:
 
 public:
     QMap<QString, bool> acceptForms;
+
+public:
+    bool input_view = false;
 };
 
 gnomonViewDataPrivate::gnomonViewDataPrivate(QObject *parent): QObject(parent)
@@ -65,7 +68,7 @@ gnomonViewData::gnomonViewData(QObject *parent): QObject(parent)
     d = new gnomonViewDataPrivate(this);
     d->q  = this;
 
-    d->acceptForms["gnomonDataDict"] = true;
+    d->acceptForms["gnomonDataDict"] = false;
 
     connect(this, &gnomonViewData::formAdded, [=]() {
         // this->render();
@@ -83,13 +86,9 @@ void gnomonViewData::setForm(const QString& name, gnomonAbstractDynamicForm *for
     if(gnomonDataDictSeries *dict = dynamic_cast<gnomonDataDictSeries *>(form)) {
         if(d->acceptForms["gnomonDataDict"]) {
             d->forms["gnomonDataDict"] = dict;
-
             emit formAdded("gnomonDataDict");
-        } else {
-            qDebug() << "############### Make a setAdaptedForm ###################";
-        }        
-    }
-    
+        }       
+    }    
 }
 
 gnomonAbstractDynamicForm* gnomonViewData::form(const QString& name)
@@ -104,6 +103,37 @@ void gnomonViewData::clearForm(const QString& name)
 void gnomonViewData::transmit(void)
 {
     d->exportToManager();
+}
+
+void gnomonViewData::setAcceptForm(const QString& name, bool accept)
+{
+    if(d->acceptForms.contains(name)) {
+        d->acceptForms[name] = accept;
+    }
+}
+
+void gnomonViewData::setInputView(bool input)
+{
+    d->input_view = input;
+}
+
+QStringList gnomonViewData::formNames()
+{
+    return d->forms.keys();
+}
+
+QStringList gnomonViewData::acceptedForms()
+{
+    QStringList forms;
+    for(const auto& name : d->acceptForms.keys()){
+        if(d->acceptForms[name])
+            forms << name; 
+    }
+}
+
+bool gnomonViewData::inputView()
+{
+    return d->input_view;
 }
 // ///////////////////////////////////////////////////////////////////
 

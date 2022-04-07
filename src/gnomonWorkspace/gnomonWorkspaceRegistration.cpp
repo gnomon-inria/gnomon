@@ -9,6 +9,7 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonView/gnomonViewFormPool>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 QString transformMatrixString(QVector<QVector<double> > transform_matrix)
 {
@@ -93,10 +94,8 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addOutputView(); // registered
 
     this->m_target_dict = new gnomonViewData(this);
-
-    qDebug() << "#############################";
-    qDebug() << this->m_target_dict;
-
+    this->m_target_dict->setAcceptForm("gnomonDataDict", true);
+    
     if(!d->pool)
         d->pool = new gnomonViewFormPool(this);
     d->pool->addView(this->sources()->views()[0]);
@@ -233,8 +232,12 @@ void gnomonWorkspaceRegistration::iterate(void)
 
 void gnomonWorkspaceRegistration::viewOutputs()
 {
-    if(d->command->outputs()["transformation"]) {
-        this->m_target_dict->setForm("gnomonDataDict", d->command->outputs()["transformation"]);
+    gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
+    if(command->outputs()["transformation"]) {
+        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]);
+        int form_count = gnomonFormManager::instance()->formCount(command->outputs()["transformation"]->formName());
+        command->outputs()["transformation"]->metadata()->set("name", command->outputs()["transformation"]->formName().remove("gnomon") + QString::number(form_count+1));
+        command->outputs()["transformation"]->metadata()->set("source", d->algorithm);
     }
 }
 

@@ -18,9 +18,25 @@ public:
     ~gnomonViewData(void);
 
 public:
+    Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+    Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
+    Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
+
+
+public:
     void setForm(const QString&, gnomonAbstractDynamicForm *);
     gnomonAbstractDynamicForm * form(const QString&) ;
     void clearForm(const QString&);
+
+public slots:
+    void setAcceptForm(const QString&, bool);
+    void setInputView(bool);
+
+public:
+    QStringList formNames(void);
+    QStringList acceptedForms(void);
+    bool inputView(void);
+
 
 public slots:
     void transmit(void);

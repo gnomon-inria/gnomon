@@ -299,7 +299,14 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
             d->commands.insert(form_name, new gnomonTreeWriterCommand);
         }
         writer_plugin = dynamic_cast<gnomonTreeWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
+    } else if (gnomonDataDictSeries *dict = dynamic_cast<gnomonDataDictSeries *>(form)) {
+        form_name = dict->formName();
+        if(!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonDataDictWriterCommand);
+        }
+        writer_plugin = dynamic_cast<gnomonDataDictWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     }
+    
     d->formWriterCommand[item] = d->commands[form_name];
     d->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 
