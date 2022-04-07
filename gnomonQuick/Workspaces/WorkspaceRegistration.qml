@@ -116,27 +116,30 @@ G.Workspace {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                X.Label {
-                    Layout.fillWidth: true;
-
-                    height: 60
-                    text: "Transformation matrix:\n" + d.transformStringAt(_stack.currentIndex-1)
-                    font.pixelSize: 10;
-                }
-
-                G.View {
+                G.Figure {
                     id: _data_target_view;
 
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
 
                     X.Label {
-                        anchors.bottom: parent.bottom
-                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.left: parent.left
 
-                        height: 24
-                        text: "Transformation Matrix"
+                        text: "Transformation matrix"
+                        color: X.Style.accentColor
+                    }
+
+                    X.Label {
+                        anchors.centerIn: parent
+
+                        text: d.transformStringAt(_stack.currentIndex-1)
                         horizontalAlignment: Text.AlignRight
+                        color: X.Style.accentColor
+                        font {
+                            pointSize: 14
+                            bold: true
+                        }
                     }
 
                     viewLogic: d.targetDict;
@@ -227,5 +230,7 @@ G.Workspace {
 
     Component.onCompleted: {
         d.onParametersChanged();
+        console.log("###############")
+        console.log(d.targetDict.dataDict)
     }
 }
