@@ -5,15 +5,13 @@ import warnings
 import importlib
 import re
 import pickle
+import zipfile
 
 from base64 import b64decode, b64encode
 from functools import wraps
-from typing import Dict, List, Tuple
-
-from typing import List, Callable
+from typing import Tuple, Callable
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import zipfile
 from json import loads, dump
 
 from pkg_resources import iter_entry_points, resource_filename
@@ -67,7 +65,7 @@ def load_plugin_group(group_name: str):
             print(e)
 
 
-def available_plugins(group_name: str) -> List[str]:
+def available_plugins(group_name: str) -> list[str]:
     """
     Return the name of every entry point registered in the group (group_name)
 
@@ -78,7 +76,7 @@ def available_plugins(group_name: str) -> List[str]:
 
     Returns
     -------
-    List[str]
+    list[str]
         list of the plugin names in the plugin group (keys of the related factory)
     """
     print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
@@ -105,7 +103,7 @@ def plugin_metadata(group_name):
     return out
 
 
-def default_input_accessors(algo_class, form_class: type) -> Tuple[str, str]:
+def default_input_accessors(algo_class, form_class: type) -> tuple[str, str]:
     """
     Returns the default accessors for an input of type form_class from algo_class.
 
@@ -160,7 +158,7 @@ def default_output_accessors(algo_class, form_class) -> str:
     return bound_method
 
 
-def gnomon_declare_plugins(path: str) -> Dict[str, List[str]]:
+def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
     """
     Returns the entry_points dict used to declare the plugins in plugin groups.
 
@@ -321,8 +319,30 @@ def serialize(attr):
 
 
 def seriesReader(form_attr: str, path_attr: str = "path"):
+    """
+    Decorator for Reader plugins which enables the use of the series container format.
+
+    Wraps the run method to extract and read the forms from the container when a .zip
+    file is selected.
+
+    The decorated plugin must have a run method which can read multiple files
+    (string of comma-seperated paths).
+
+    Parameters
+    ----------
+    form_attr: str
+        Name of the form attribute where the form read are stored.
+    path_attr: str
+        Name of the attribute containing the path to be read.
+
+    Returns
+    -------
+    Class
+        Decorated plugin
+    """
     def seriesReaderDecorator(cls: type):
         def run_decorator(f: Callable):
+            @wraps(f)
             def run_wrapper(self):
                 old_paths = getattr(self, path_attr).split(",")
                 path = old_paths[0]
@@ -364,8 +384,29 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
 
 
 def seriesWriter(form_attr: str, path_attr: str = "path"):
+    """
+    Decorator for Writer plugins which enables the use of the series container format.
+
+    Wraps the run method to write each frame of a form series in a .zip container
+    as well as saving the timestamps. Only applies for series of more than one frame (timestamp).
+
+    The decorated plugin must have a run method which can write a file.
+
+    Parameters
+    ----------
+    form_attr: str
+        Name of the form attribute where the form_series written to the disk is stored.
+    path_attr: str
+        Name of the attribute containing the path where to write.
+
+    Returns
+    -------
+    Class
+        Decorated plugin
+    """
     def seriesWriterDecorator(cls: type):
         def writerDecorator(f):
+            @wraps(f)
             def run_wrapper(self):
                 paths = getattr(self, path_attr).split(",")
                 path = paths[0]
