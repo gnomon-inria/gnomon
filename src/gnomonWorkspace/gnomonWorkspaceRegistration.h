@@ -18,6 +18,8 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
+#include "gnomonVisualization/gnomonView/gnomonViewData.h"
+
 class gnomonViewForm;
 class gnomonViewFormList;
 
@@ -40,6 +42,7 @@ public:
 public:
     Q_PROPERTY(int stackSize READ stackSize NOTIFY stackSizeChanged);
     Q_PROPERTY(int stackLevel READ stackLevel WRITE setStackLevel NOTIFY stackLevelChanged);
+    Q_PROPERTY(gnomonViewData* targetDict READ targetDict CONSTANT);
 
 public:
     int stackSize(void) const;
@@ -56,10 +59,15 @@ public:
 
 public slots:
     virtual void setInputs(void) override;
+    virtual void viewOutputs(void) override;
     void iterate(void);
+
+public: 
+    gnomonViewData *targetDict(void) const {return this->m_target_dict;};
 
 protected:
     class gnomonWorkspaceRegistrationPrivate *dd = nullptr;
+    gnomonViewData *m_target_dict = nullptr;
 };
 
 //
