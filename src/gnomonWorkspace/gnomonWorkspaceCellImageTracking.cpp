@@ -5,8 +5,39 @@
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonWorkspaceCellImageTrackingPrivate
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonWorkspaceCellImageTrackingPrivate
+{
+
+public:
+     gnomonWorkspaceCellImageTrackingPrivate(void);
+    ~gnomonWorkspaceCellImageTrackingPrivate(void);
+
+public:
+    gnomonViewData *source_dict = nullptr;
+};
+
+gnomonWorkspaceCellImageTrackingPrivate::gnomonWorkspaceCellImageTrackingPrivate(void)
+{
+}
+
+gnomonWorkspaceCellImageTrackingPrivate::~gnomonWorkspaceCellImageTrackingPrivate(void)
+{
+}
+
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonWorkspaceCellImageTracking
+// /////////////////////////////////////////////////////////////////////////////
+
+
 gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *parent): gnomonAlgorithmWorkspace(parent)
 {
+    dd = new gnomonWorkspaceCellImageTrackingPrivate;
+
+
     loadPluginGroup("cellImageTracking");
     emit algorithmsLoaded();
 
@@ -18,6 +49,9 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
     //create the views
     this->addInputView();
     this->addOutputView();
+    dd->source_dict = new gnomonViewData();
+    dd->source_dict->setInputView(true);
+    dd->source_dict->setAcceptForm("gnomonDataDict", true);
 
     emit parametersChanged();
 
@@ -47,4 +81,17 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 gnomonWorkspaceCellImageTracking::~gnomonWorkspaceCellImageTracking(void)
 {
 
+}
+
+gnomonViewData *gnomonWorkspaceCellImageTracking::sourceDict(void) const
+{
+    return dd->source_dict;
+}
+
+void gnomonWorkspaceCellImageTracking::setInputs(void)
+{
+    gnomonAlgorithmWorkspace::setInputs();
+
+    gnomonDataDictSeries *input_dict = dynamic_cast<gnomonDataDictSeries *>(dd->source_dict->form("gnomonDataDict"));
+    d->command->setInputForm("transformation", input_dict);
 }

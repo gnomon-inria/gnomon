@@ -48,6 +48,8 @@ public:
             return {"image"};
         } else if(formName == "gnomonCellImage") {
             return {"cellImageInput"};
+        } else if(formName == "gnomonDataDict") {
+            return {"transformation"};
         }
         return {};
     };
