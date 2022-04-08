@@ -21,8 +21,16 @@ Slider {
     anchors.margins: 6
 
     background: Rectangle {
-        color: X.Style.backgroundColor;
+        color: "#00000000";
         radius: _ts_slider.handle.width/2
+        Rectangle {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 2
+            color: X.Style.backgroundColor
+
+        }
 
         Repeater {
             model: Math.round(_ts_slider.to - _ts_slider.from + 1)
@@ -34,4 +42,14 @@ Slider {
             }
         }
     }
+
+    handle: Rectangle {
+        x: _ts_slider.leftPadding + _ts_slider.visualPosition * (_ts_slider.availableWidth - width)
+        y: _ts_slider.background.availableHeight / 2 
+        implicitWidth: 14
+        implicitHeight: 14
+        radius: 7
+    }
+
+
 }

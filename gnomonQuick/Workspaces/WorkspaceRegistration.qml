@@ -116,12 +116,33 @@ G.Workspace {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                X.Label {
-                    Layout.fillWidth: true;
+                G.DataDict {
+                    id: _data_target_view;
 
-                    height: 60
-                    text: "Transformation matrix:\n" + d.transformStringAt(_stack.currentIndex-1)
-                    font.pixelSize: 10;
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+
+                    X.Label {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+
+                        text: "Transformation matrix"
+                        color: X.Style.foregroundColor
+                    }
+
+                    X.Label {
+                        anchors.centerIn: parent
+
+                        text: d.targetDict.dataDict
+                        horizontalAlignment: Text.AlignRight
+                        color: X.Style.foregroundColor
+                        font {
+                            pointSize: 14
+                            bold: true
+                        }
+                    }
+
+                    viewLogic: d.targetDict;
                 }
 
                 G.Stack {
