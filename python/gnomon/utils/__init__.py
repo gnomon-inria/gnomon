@@ -6,5 +6,7 @@ from .gnomonPlugin import (
     visualizationPlugin,
     formDataPlugin,
     available_plugins,
-    serialize
+    serialize,
+    seriesReader,
+    seriesWriter,
 )

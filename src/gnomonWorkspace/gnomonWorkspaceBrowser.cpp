@@ -14,6 +14,7 @@
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
+#include <zip.h>
 
 class gnomonWorkspaceBrowserPrivate: public QObject
 {
@@ -498,10 +499,57 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
 
         QStringList filenames = d->filename.split(",");
 
-        if (filenames[0].endsWith("gz")) {
-            d->ext = filenames[0].split(".")[filenames[0].split(".").size()-2] + ".gz";
+        // check for conformity
+        QString ext = filenames[0].split(".").sliced(1).join(".");
+        for(const auto & fname: filenames) {
+            if(ext != fname.split(".").sliced(1).join(".")) {
+                dtkWarn() << Q_FUNC_INFO << "Selected files don't have the same extension. Please select files with the same extensions.";
+                return;
+            }
+        }
+
+        if(ext.endsWith("zip")) {
+            // reading the manifest
+            int err = 0;
+            zip *z = zip_open(filenames[0].remove("file://").toStdString().c_str(), 0, &err);
+
+            //Search for the file of given name
+            const char *name = "manifest.json";
+            auto index = zip_name_locate(z, name, 0);
+            if(index < 0) {
+                dtkWarn() << Q_FUNC_INFO << "Invalid time series container. Containers doesn't have a manifest.json file.";
+                return;
+            }
+
+            struct zip_stat st{};
+            zip_stat_init(&st);
+            zip_stat(z, name, 0, &st);
+
+            //Alloc memory for its uncompressed contents
+            char *contents = new char[st.size];
+
+            //Read the compressed file
+            zip_file *f = zip_fopen(z, name, 0);
+            zip_fread(f, contents, st.size);
+            zip_fclose(f);
+
+            //And close the archive
+            zip_close(z);
+
+            // getting the extension
+            auto manifest_doc = QJsonDocument::fromJson(QByteArray::fromRawData(contents, (qsizetype)st.size));
+            //delete allocated memory
+            delete[] contents;
+            auto manifest = manifest_doc.object();
+            if(!(manifest.contains("extension") && manifest.contains("series"))) {
+                dtkWarn() << Q_FUNC_INFO << "Invalid time series container. manifest.json does not provide both extension and files fields";
+                return;
+            }
+            d->ext = manifest["extension"].toString();
+
+
         } else {
-            d->ext = filenames[0].split(".")[filenames[0].split(".").size() - 1];
+            d->ext = ext;
         }
 
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
