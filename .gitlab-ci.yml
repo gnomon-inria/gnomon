@@ -170,13 +170,13 @@ deploy_pages:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
     - conda activate base 
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
-    - cd doc
+    - cd doc_md
     - make html
-    - mv build/html ../public
-    - cd ../doc_md
+    - mv _build/html ../public
+    - cd ../doc
     - make html
-    - mkdir -p ../public/staging
-    - cp -R _build/html/* ../public/staging
+    - mkdir -p ../public/legacy
+    - cp -R build/html/* ../public/legacy
   extends: .template_retry
   artifacts:
     paths:
