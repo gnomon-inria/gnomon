@@ -8,6 +8,7 @@ class gnomonCellImageTrackingCommandPrivate
 public:
     gnomonImageSeries* image = nullptr;
     gnomonCellImageSeries* input_cellImage = nullptr;
+    gnomonDataDictSeries* transformation = nullptr;
 
     gnomonCellImageSeries* cellImage = nullptr;
     gnomonTreeSeries* tree = nullptr;
@@ -91,6 +92,16 @@ void gnomonCellImageTrackingCommand::setCellImage(gnomonCellImageSeries *cellIma
     }
 }
 
+void gnomonCellImageTrackingCommand::setTransformation(gnomonDataDictSeries *datadict)
+{
+    if ((!datadict)||(datadict->times().empty())) {
+        d->transformation = nullptr;
+    } else {
+        d->transformation = datadict;
+        Q_ASSERT(this->action);
+        ((gnomonAbstractCellImageTracking *) this->action)->setTransformation(d->transformation);
+    }
+}
 gnomonCellImageSeries *gnomonCellImageTrackingCommand::cellImage()
 {
     return d->cellImage;
@@ -106,6 +117,7 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageTrackingCommand::input
     QMap<QString, gnomonAbstractDynamicForm *> inputs;
     inputs["image"] = d->image;
     inputs["cellImage"] = d->input_cellImage;
+    inputs["transformation"] = d->transformation;
     return inputs;
 }
 
@@ -126,6 +138,7 @@ gnomonAbstractCommand::orderedMap gnomonCellImageTrackingCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("image", "gnomonImage"));
     input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    input_types.emplace_back(std::make_pair("transformation", "gnomonDataDict"));
     return input_types;
 }
 
@@ -141,6 +154,8 @@ void gnomonCellImageTrackingCommand::setInputForm(const QString &name, gnomonAbs
         this->setImage(dynamic_cast<gnomonImageSeries *>(form));
     } else if (name == "cellImage") {
         this->setCellImage(dynamic_cast<gnomonCellImageSeries *>(form));
+    } else if (name == "transformation") {
+        this->setTransformation(dynamic_cast<gnomonDataDictSeries *>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
