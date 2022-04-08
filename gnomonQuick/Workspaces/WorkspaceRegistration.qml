@@ -116,7 +116,7 @@ G.Workspace {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                G.Figure {
+                G.DataDict {
                     id: _data_target_view;
 
                     Layout.fillWidth: true;
@@ -127,7 +127,7 @@ G.Workspace {
                         anchors.left: parent.left
 
                         text: "Transformation matrix"
-                        color: X.Style.accentColor
+                        color: X.Style.foregroundColor
                     }
 
                     X.Label {
@@ -135,7 +135,7 @@ G.Workspace {
 
                         text: d.targetDict.dataDict
                         horizontalAlignment: Text.AlignRight
-                        color: X.Style.accentColor
+                        color: X.Style.foregroundColor
                         font {
                             pointSize: 14
                             bold: true

@@ -4,6 +4,7 @@ ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml
 Dragger 1.0 Dragger.qml
 Figure 1.0 Figure.qml
+DataDict 1.0 DataDict.qml
 LookupTable 1.0 LookupTable.qml
 Monaco 1.0 Monaco.qml
 MetadataExplorer 1.0 MetadataExplorer.qml
