@@ -506,7 +506,7 @@ Rectangle {
             }
         }
 
-        ToolTip.visible: _export_mouse_area.containsMouse;
+        ToolTip.visible: !viewLogic.inputView && _export_mouse_area.containsMouse;
         ToolTip.text: "Export";
     }
 

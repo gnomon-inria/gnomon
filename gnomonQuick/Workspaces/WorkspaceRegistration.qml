@@ -108,19 +108,11 @@ G.Workspace {
             ColumnLayout {
                 anchors.fill: parent
 
-                X.Label {
-                    Layout.fillWidth: true;
-
-                    height: 24
-                    text: "Stack level " + _stack.currentIndex
-                    horizontalAlignment: Text.AlignRight
-                }
-
                 G.DataDict {
                     id: _data_target_view;
 
                     Layout.fillWidth: true;
-                    Layout.fillHeight: true;
+                    height: window.height/8;
 
                     X.Label {
                         anchors.top: parent.top
@@ -143,6 +135,14 @@ G.Workspace {
                     }
 
                     viewLogic: d.targetDict;
+                }
+
+                X.Label {
+                    Layout.fillWidth: true;
+
+                    height: 24
+                    text: "Stack level " + _stack.currentIndex
+                    horizontalAlignment: Text.AlignRight
                 }
 
                 G.Stack {
