@@ -231,7 +231,8 @@ void gnomonWorkspaceRegistration::iterate(void)
 }
 
 void gnomonWorkspaceRegistration::viewOutputs()
-{
+{   
+    gnomonAlgorithmWorkspace::viewOutputs();
     gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["transformation"]) {
         this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]);
