@@ -9,6 +9,7 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonView/gnomonViewFormPool>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 QString transformMatrixString(QVector<QVector<double> > transform_matrix)
 {
@@ -92,6 +93,9 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addInputView(); // floating
     this->addOutputView(); // registered
 
+    this->m_target_dict = new gnomonViewData(this);
+    this->m_target_dict->setAcceptForm("gnomonDataDict", true);
+    
     if(!d->pool)
         d->pool = new gnomonViewFormPool(this);
     d->pool->addView(this->sources()->views()[0]);
@@ -222,6 +226,26 @@ void gnomonWorkspaceRegistration::iterate(void)
 
         gnomonPipelineManager::instance()->addForm(output_image);
         gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
+    }
+
+}
+
+void gnomonWorkspaceRegistration::viewOutputs()
+{   
+    gnomonAlgorithmWorkspace::viewOutputs();
+    gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
+    if(command->outputs()["transformation"]) {
+        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]);
+        
+        gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(d->command->outputs()["transformation"]->clone());
+        QVariant transform = transformation->current()->get("transform");
+        QVector<QVector< double>> transform_matrix = transform.value<QVector<QVector< double> > >();
+
+        this->m_target_dict->setDataDict(transformMatrixString(transform_matrix));
+
+        int form_count = gnomonFormManager::instance()->formCount(command->outputs()["transformation"]->formName());
+        command->outputs()["transformation"]->metadata()->set("name", command->outputs()["transformation"]->formName().remove("gnomon") + QString::number(form_count+1));
+        command->outputs()["transformation"]->metadata()->set("source", d->algorithm);
     }
 }
 
