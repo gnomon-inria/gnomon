@@ -46,8 +46,7 @@ void gnomonViewDataPrivate::exportToManager(void)
     for(const auto& key: this->forms.keys()) {
         QImage image(1, 1, QImage::Format_Indexed8);
         QRgb value;
-
-        value = qRgb(122, 163, 39);
+        value = qRgb(60, 110, 180);
         image.setColor(0, value);
 
         gnomonFormManager::instance()->addForm(this->forms[key],this->export_color,image);
