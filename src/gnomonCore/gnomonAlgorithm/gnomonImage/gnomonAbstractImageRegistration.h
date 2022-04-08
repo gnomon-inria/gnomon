@@ -27,19 +27,25 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void addImage(gnomonImageSeries *) = 0;
-    virtual void removeImages(void) = 0;
+    virtual void setImage(gnomonImageSeries *) = 0;
+    virtual gnomonImageSeries *image() = 0;
 
     virtual gnomonImageSeries* output() = 0;
     virtual gnomonDataDictSeries* outputTransformation() = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
-        dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void addImage(gnomonImageSeries *) since this method accept multiple images of the same type";
+        // dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void setImage(gnomonImageSeries *) since this method accept multiple images of the same type";
+        if(formName == "gnomonImage") {
+            return {"setImage"};
+        }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
-        dtkWarn() << Q_FUNC_INFO << "No getter defined";
+        // dtkWarn() << Q_FUNC_INFO << "No getter defined";
+        if(formName == "gnomonImage") {
+            return {"image"};
+        }
         return {};
     };
     static inline QString defaultOutput(QString formName) {
