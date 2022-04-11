@@ -168,7 +168,8 @@ deploy_pages:
     - linux
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
-    - conda activate base 
+    - mamba env update -f conda/env_linux.yaml
+    - conda activate gnomon-dev
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
     - rm -rf build
     - mkdir build
