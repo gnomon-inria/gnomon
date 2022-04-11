@@ -170,7 +170,11 @@ deploy_pages:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
     - conda activate base 
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
-    - cd doc_md
+    - rm -rf build
+    - mkdir build
+    - cd build
+    - cmake ..
+    - cd ../doc_md
     - make html
     - mv _build/html ../public
     - cd ../doc
