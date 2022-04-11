@@ -67,6 +67,7 @@ autodoc_default_options = {
     'member-order': 'bysource',
     'special-members': '__init__',
 }
+autodoc_mock_imports = ["gnomon.core", "gnomon.visualization", "gnomon.pipeline"]
 
 # -- Options for HTML output -------------------------------------------------
 
