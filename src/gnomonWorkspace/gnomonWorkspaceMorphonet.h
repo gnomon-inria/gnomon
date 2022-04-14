@@ -26,6 +26,7 @@ public:
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged);
     Q_PROPERTY(int timeStart READ timeStart WRITE setTimeStart NOTIFY timeStartChanged);
     Q_PROPERTY(int timeEnd   READ timeEnd   WRITE setTimeEnd   NOTIFY timeEndChanged);
+    Q_PROPERTY(bool uploadMode READ uploadMode WRITE setUploadMode NOTIFY uploadModeChanged);
 
     Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
 
@@ -37,15 +38,17 @@ public:
     int currentId(void) const;
     int timeStart(void) const;
     int timeEnd(void) const;
+    bool uploadMode(void) const;
 
     void setCurrentId(int);
     void setTimeStart(int);
     void setTimeEnd(int);
+    void setUploadMode(bool);
 
     Q_INVOKABLE QString datasetsInfo(const QString& search = "");
-    Q_INVOKABLE void importDatasetPreview(int id=-1);
-    Q_INVOKABLE void importDataset(int time_start, int time_end, int id=-1);
-    Q_INVOKABLE void exportDataset();
+    Q_INVOKABLE void importDatasetPreview(int id, int dim_x, int dim_y, int dim_z);
+    Q_INVOKABLE void importDataset(int time_start, int time_end, int id, int dim_x, int dim_y, int dim_z);
+    Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description);
 
     Q_INVOKABLE gnomonViewForm *view(void);
 
@@ -53,8 +56,14 @@ signals:
     void currentIdChanged(void);
     void timeStartChanged(void);
     void timeEndChanged(void);
-    void connectionStatusChanged();
+    void connectionStatusChanged(void);
+    void uploadModeChanged(void);
     void message(const QString& msg);
+
+public slots:
+    void saveState(void);
+    void restoreState(void);
+
 
 private:
     class gnomonWorkspaceMorphonetPrivate *d;
