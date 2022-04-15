@@ -1,5 +1,11 @@
 # ChangeLog
 
+## version 0.61.0 - 2022-04-15
+ - first morphonet api
+ - 3d and 4d numpy wrapper
+ - support time series
+ - add workspace cellular tracking 
+
 ## version 0.60.0 - 2022-03-15
 - qt6
 - monaco editor for python workspace
