@@ -43,9 +43,15 @@ Slider {
         }
     }
 
+    ToolTip {
+        parent: _ts_slider.handle
+        visible: _ts_slider.pressed
+        text: _ts_slider.value
+    }
+
     handle: Rectangle {
         x: _ts_slider.leftPadding + _ts_slider.visualPosition * (_ts_slider.availableWidth - width)
-        y: _ts_slider.background.availableHeight / 2 
+        //y: _ts_slider.background.availableHeight / 2 
         implicitWidth: 14
         implicitHeight: 14
         radius: 7

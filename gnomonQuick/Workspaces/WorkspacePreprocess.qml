@@ -72,7 +72,7 @@ G.Workspace {
 
             viewLogic: d.source;
 
-            onDroppedFromManager: {
+            onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
                 d.source.drop(index);
             }

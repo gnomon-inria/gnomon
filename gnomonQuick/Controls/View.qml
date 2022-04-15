@@ -73,7 +73,7 @@ Rectangle {
             anchors.centerIn: parent;
         }
 
-        onDropped: {
+        onDropped: (drop) => {
             if (drop.hasUrls) {
                 self.droppedFromFile(drop.urls);
             } else {

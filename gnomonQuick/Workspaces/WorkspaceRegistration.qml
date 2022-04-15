@@ -68,7 +68,7 @@ G.Workspace {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            onDroppedFromManager: {
+            onDroppedFromManager: (index) => {
                 d.sources.views[1].drop(index);
                 if(GV.World.timeKeys(index).length > 1) {
                     d.sources.views[0].drop(index);
@@ -178,7 +178,7 @@ G.Workspace {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            onDroppedFromManager: {
+            onDroppedFromManager: (index) => {
                 d.sources.views[0].drop(index);
                 if(GV.World.timeKeys(index).length > 1) {
                     d.sources.views[1].drop(index);

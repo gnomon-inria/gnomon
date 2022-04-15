@@ -68,10 +68,9 @@ G.Workspace {
         anchors.margins: 10;
 
         visible: d.connected
-        onDroppedFromManager: {
-            console.info('Retrieving from manager');
-            //TODO check if transform to morphonet data possible
-            d.source.drop(index);
+        onDroppedFromManager: (index) => {
+            d.view.drop(index);
+            d.uploadMode = true;
         }
 
         viewLogic: d.view;

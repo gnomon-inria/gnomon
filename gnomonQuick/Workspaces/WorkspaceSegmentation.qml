@@ -72,7 +72,7 @@ G.Workspace {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            onDroppedFromManager: {
+            onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
                 d.source.drop(index);
             }
