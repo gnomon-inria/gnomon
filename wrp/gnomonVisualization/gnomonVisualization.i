@@ -2,15 +2,7 @@
 
 %module(directors="1", package="gnomon.visualization", moduleimport="import _gnomonvisualization") gnomonvisualization
 
-%{
-#define SWIG_FILE_WITH_INIT
-%}
-
-%include "numpy.i"
-
-%init %{
-import_array();
-%}
+%include <gnomonCore/numpyWrapper.i>
 
 %include "std_array.i"
 %include "std_vector.i"
