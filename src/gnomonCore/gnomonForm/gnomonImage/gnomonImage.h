@@ -27,7 +27,7 @@ public:
     }
              gnomonImage(const gnomonImage& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { qDebug()<<Q_FUNC_INFO<<this->data()<<this->data()->channels(); return new gnomonImage(*this); };
+    gnomonAbstractForm *clone(void) { return new gnomonImage(*this); };
 
     ~gnomonImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 
