@@ -129,6 +129,7 @@ QStringList gnomonViewData::acceptedForms()
         if(d->acceptForms[name])
             forms << name; 
     }
+    return forms;
 }
 
 bool gnomonViewData::inputView()

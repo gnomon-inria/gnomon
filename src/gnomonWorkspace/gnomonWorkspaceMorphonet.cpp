@@ -329,7 +329,7 @@ void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int i
     //1 select dataset
     bool ok = d->selectDataset(d->current_id);
     if(!ok) {
-        message("cannot select dataset:" + d->current_id);
+        message("cannot select dataset:" + QString::number(d->current_id));
         return;
     }
 
