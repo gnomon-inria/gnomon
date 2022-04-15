@@ -19,6 +19,7 @@ public:
     void setCellImage(gnomonCellImageSeries *image_series);
     void setAlgorithmName(const QString &) override;
 
+public:
     orderedMap inputTypes() override;
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;

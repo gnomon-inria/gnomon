@@ -28,6 +28,7 @@
 #include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
@@ -298,7 +299,14 @@ void gnomonFormManager::addForm(gnomonAbstractDynamicForm * form, const QColor& 
             d->commands.insert(form_name, new gnomonTreeWriterCommand);
         }
         writer_plugin = dynamic_cast<gnomonTreeWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
+    } else if (gnomonDataDictSeries *dict = dynamic_cast<gnomonDataDictSeries *>(form)) {
+        form_name = dict->formName();
+        if(!d->commands.contains(form_name)) {
+            d->commands.insert(form_name, new gnomonDataDictWriterCommand);
+        }
+        writer_plugin = dynamic_cast<gnomonDataDictWriterCommand *>(d->commands[form_name])->availablePlugins()[0];
     }
+    
     d->formWriterCommand[item] = d->commands[form_name];
     d->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 
@@ -389,6 +397,23 @@ QString gnomonFormManager::formMetadataValueAtT(int id, double t, const QString&
         }
     }
     return {};
+}
+
+QString gnomonFormManager::formWriterNameFilter(int id)
+{
+    QString filter;
+    if (this->contains(id)) {
+        gnomonAbstractDynamicForm* form = d->forms[id];
+        gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
+        QStringList extensions = writer_command->extensions();
+        filter += form->formName().remove("gnomon");
+        filter += " files (";
+        for (const auto& ext : extensions) {
+            filter += "*." + ext + " ";
+        }
+        filter += ")";
+    }
+    return filter;
 }
 
 int gnomonFormManager::formCount(const QString& form_name)

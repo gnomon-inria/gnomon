@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h>
@@ -50,6 +36,9 @@ public:
 //    virtual void insert(double t, T *form) = 0;
 //    virtual void insert(const T& form) = 0;
     virtual void drop(double t) = 0;
+
+    virtual QString formName(void) = 0;
+
     virtual QJsonObject serialize(void) {
         QJsonObject json;
         json["metadata"] = d->metadata->serialize();

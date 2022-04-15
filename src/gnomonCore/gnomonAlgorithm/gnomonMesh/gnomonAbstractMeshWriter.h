@@ -1,24 +1,10 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport>
 
 #include <dtkCore>
 
-#include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
@@ -26,20 +12,13 @@
 //
 // ///////////////////////////////////////////////////////////////////
 
-class GNOMONCORE_EXPORT gnomonAbstractMeshWriter : public gnomonAbstractAlgorithm
+class GNOMONCORE_EXPORT gnomonAbstractMeshWriter : public gnomonAbstractFormWriter
 {
 public:
     virtual ~gnomonAbstractMeshWriter(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
     virtual void setMesh(gnomonMeshSeries *mesh) = 0;
-    virtual void setPath(const QString& path) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -57,10 +36,6 @@ public:
     static inline QString defaultOutput(QString formName) {
         return {};
     };
-
-
-public:
-    virtual QStringList extensions(void) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

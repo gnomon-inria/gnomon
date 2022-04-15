@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonCoreExport.h> // enables the visibility of the concept

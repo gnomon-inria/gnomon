@@ -1,47 +1,22 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageTracking : public dtkWidgetsWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageTracking :  public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace is used to compute the lineage of cells from an intensity image series \
+and a segmented image series (or cell image series).\n\
+\n\
+It outputs the lineage tree and a cell image series where each cell knows its parents. \
+\n")
 
 public:
-     gnomonWorkspaceCellImageTracking(QWidget *parent = nullptr);
+     gnomonWorkspaceCellImageTracking(QObject *parent = nullptr);
     ~gnomonWorkspaceCellImageTracking(void);
-
-public:
-    void enter(void) override;
-    void leave(void) override;
-
-public slots:
-    void apply(void) override;
-    void configure(const QString& text);
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
-
-private:
-    class gnomonWorkspaceCellImageTrackingPrivate *d;
 };
 
 //

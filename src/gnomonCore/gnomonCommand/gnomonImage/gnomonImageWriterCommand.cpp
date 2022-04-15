@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageWriterCommand.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>

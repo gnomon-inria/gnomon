@@ -24,6 +24,7 @@ public:
 
     void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
 
+public:
     orderedMap inputTypes() override;
 
 public:

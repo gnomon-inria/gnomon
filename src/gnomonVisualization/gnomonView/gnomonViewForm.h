@@ -84,6 +84,8 @@ public:
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
+    Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
+    Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -133,6 +135,7 @@ public slots:
 
     void   link(gnomonViewForm *other);
     void unlink(gnomonViewForm *other);
+    void disconnectTime();
 
 public slots:
     void drop(int);
@@ -212,6 +215,8 @@ public slots:
     double zMin(void) const;
     double zMax(void) const;
     Mode mode(void) const;
+    double currentTime(void) const;
+    double timeMax(void);
 
 public:
     void setCamera(vtkCamera *);
@@ -242,12 +247,13 @@ signals:
 
 signals:
     void timeChanged(double);
+    void timeMaxChanged(double);
 
 public:
     QList<double> times(void);
 
 public slots:
-    void timeIndexChange(int);
+    void setCurrentTime(double);
 
 public slots:
     void onTimeChanged(double);

@@ -45,28 +45,25 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
 
 void gnomonImageReaderCommand::predo(void)
 {
-    qWarning() << Q_FUNC_INFO;
-
     ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
-
-    qWarning() << Q_FUNC_INFO << "Done";
 }
 
 void gnomonImageReaderCommand::postdo(void)
 {
-    qWarning() << Q_FUNC_INFO;
-
     gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
-
-    qWarning() << Q_FUNC_INFO << "Data" << image;
 
     if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
         d->image = nullptr;
+        QString str = "pb reading Image " + this->m_path;
+        if(!image) str += "  image is empty";
+        else if(image->times().empty()) str += "  no times available";
+        else str += "  no channels availables";
+        
+        dtkWarn() << Q_FUNC_INFO << str;
+
     } else {
         d->image = image;
     }
-
-    qWarning() << Q_FUNC_INFO << "Done" << this->image();
 }
 
 void gnomonImageReaderCommand::undo()

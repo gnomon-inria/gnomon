@@ -4,11 +4,11 @@ channels:
   - dtk-forge6
   - conda-forge
   - mosaic
-  - fredboudon
+  - morpheme
 
 dependencies:
     - cmake
-    - qt >=5.15.2
+    - qt >=6.2
     - git
     - rust
     - vtk =9.1.0
@@ -18,18 +18,17 @@ dependencies:
     - dtk-imaging
     - dtk-imaging-python
     - dtk-plugins-imaging
-    - python >=3.7
+    - python =3.9
     - ipython
     - numpy
     - scipy
     - swig
     - pymongo
-    - matplotlib
-    - timagetk =2
-    - cellcomplex >=1.0.1
-    - tissue_analysis
-    - tissue_nukem_3d
-    - draco_stem
+    - matplotlib-base
+    - timagetk =3
     - python-lsp-server
-#    - pyside2
+    - pyside6
+    - qtconsole-base
     - pip
+    - pip:
+        - morphonet

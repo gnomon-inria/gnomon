@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -40,7 +26,7 @@ public:
     // Outputs
 public:
     virtual gnomonCellImageSeries *cellImage() const = 0;
-    virtual gnomonTreeSeries *tree() const = 0;
+    virtual gnomonTreeSeries *tree() const { return nullptr; };
 
 public:
     static inline QString defaultSetter(QString formName) {

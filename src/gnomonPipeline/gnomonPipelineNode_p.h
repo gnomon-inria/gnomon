@@ -42,6 +42,7 @@ public:
     QMap<QString, gnomonPipelinePort *> output_ports;
 
     QList<gnomonPipelineEdge *>  input_edges;
+    QMap<QString, gnomonPipelineEdge *> input_edges_map;
     QList<gnomonPipelineEdge *> output_edges;
 
 public:

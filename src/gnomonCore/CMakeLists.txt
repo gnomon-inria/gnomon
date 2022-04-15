@@ -26,6 +26,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormVisitor
   gnomonFormVisitor.h
   gnomonLandmark.h
+  gnomonMorphonetHelper.h
   gnomonPythonPluginLoader
   gnomonPythonPluginLoader.h
   gnomonPythonPluginParser
@@ -34,6 +35,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTypeDef.h
   gnomonTime
   gnomonTime.h
+  simpleCrypt.h
   ${${PROJECT_NAME}_ALGORITHM_HEADERS}
   ${${PROJECT_NAME}_COMMAND_HEADERS}
   ${${PROJECT_NAME}_FORM_HEADERS}
@@ -47,9 +49,11 @@ set(${PROJECT_NAME}_SOURCES
   gnomonDataManager.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
+  gnomonMorphonetHelper.cpp
   gnomonPythonPluginParser.cpp
   gnomonPythonPluginLoader.cpp
   gnomonTime.cpp
+  simpleCrypt.cpp
   ${${PROJECT_NAME}_ALGORITHM_SOURCES}
   ${${PROJECT_NAME}_COMMAND_SOURCES}
   ${${PROJECT_NAME}_FORM_SOURCES}

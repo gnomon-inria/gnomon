@@ -23,6 +23,7 @@
 
 class gnomonPipelineEdge;
 class gnomonPipelinePort;
+class dtkCoreParameter;
 
 class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
 {
@@ -60,6 +61,8 @@ public:
 
     virtual inline QString path(void) { return ""; };
     virtual QJsonObject parameters(void);
+    virtual QStringList parametersName(void);
+    virtual void configureParameter(const QString &name, dtkCoreParameter *param);
 
     const QColor& color(void);
 
@@ -98,6 +101,7 @@ public:
     QList<gnomonPipelineEdge *> inputEdges(void);
     QList<gnomonPipelineEdge *> outputEdges(void);
 
+    gnomonPipelineEdge* inputEdgeFromPort(const QString& portName);
     int inputEdgeCount(void);
     int outputEdgeCount(void);
 

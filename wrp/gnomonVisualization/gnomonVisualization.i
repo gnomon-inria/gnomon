@@ -2,15 +2,7 @@
 
 %module(directors="1", package="gnomon.visualization", moduleimport="import _gnomonvisualization") gnomonvisualization
 
-%{
-#define SWIG_FILE_WITH_INIT
-%}
-
-%include "numpy.i"
-
-%init %{
-import_array();
-%}
+%include <gnomonCore/numpyWrapper.i>
 
 %include "std_array.i"
 %include "std_vector.i"
@@ -33,6 +25,7 @@ import_array();
 //#include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+#include <gnomonVisualization/gnomonView/gnomonViewData.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>
@@ -603,6 +596,7 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterLookupT
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+%include <gnomonVisualization/gnomonView/gnomonViewData.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>

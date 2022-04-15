@@ -20,6 +20,7 @@ public:
     void setBinaryImage(gnomonBinaryImageSeries *binaryImage);
     void setAlgorithmName(const QString &) override;
 
+public:
     orderedMap inputTypes() override;
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;

@@ -1,17 +1,3 @@
-# Version: #$Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 project(gnomonWorkspace VERSION ${gnomon_VERSION})
 
 ## #################################################################
@@ -41,8 +27,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceCellImageFilter.h
   gnomonWorkspaceCellImageQuantification
   gnomonWorkspaceCellImageQuantification.h
-  # gnomonWorkspaceCellImageTracking
-  # gnomonWorkspaceCellImageTracking.h
+  gnomonWorkspaceCellImageTracking
+  gnomonWorkspaceCellImageTracking.h
   # gnomonWorkspaceFusion
   # gnomonWorkspaceFusion.h
   # gnomonWorkspaceImageConstructor
@@ -57,6 +43,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceMeshFromImage.h
   # gnomonWorkspaceMeshFilter
   # gnomonWorkspaceMeshFilter.h
+  gnomonWorkspaceMorphonet
+  gnomonWorkspaceMorphonet.h
   # gnomonWorkspacePlantScan3D
   # gnomonWorkspacePlantScan3D.h
   # gnomonWorkspacePointCloudConstructor
@@ -97,7 +85,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspaceCellImageConstructor.cpp
   # gnomonWorkspaceCellImageFilter.cpp
   gnomonWorkspaceCellImageQuantification.cpp
-  # gnomonWorkspaceCellImageTracking.cpp
+  gnomonWorkspaceCellImageTracking.cpp
   # gnomonWorkspaceImageConstructor.cpp
   # gnomonWorkspaceFusion.cpp
   # gnomonWorkspaceLSystemSimulator.cpp
@@ -105,6 +93,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspaceMeshConstructor.cpp
   # gnomonWorkspaceMeshFilter.cpp
   # gnomonWorkspaceMeshFromImage.cpp
+  gnomonWorkspaceMorphonet.cpp
   # gnomonWorkspacePlantScan3D.cpp
   # gnomonWorkspacePointCloudConstructor.cpp
   # gnomonWorkspacePointCloudFromImage.cpp

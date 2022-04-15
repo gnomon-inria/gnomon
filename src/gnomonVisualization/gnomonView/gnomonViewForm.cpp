@@ -81,8 +81,8 @@ public:
     void setSliceOrientation(gnomonViewForm::Orientation orientation);
     void updateOrientation(void);
 
-// public:
-//     void updateTimeSlider(void);
+public:
+    void updateFormsTimes(void);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -753,6 +753,11 @@ void gnomonViewFormPrivate::updateFormVisualization(const QString& name, const Q
     for(auto& key: parameters.keys()) {
         QVariantHash param = parameters[key].toObject().toVariantHash();
         QString param_type = param["type"].toString();
+        // TODO: Remove when fixed in dtk-core-python
+        if (param_type.contains("dtkCoreParameterRange<") or param_type.contains("dtkCoreParameterNumeric<")) {
+            param_type = param_type.remove(",void");
+            param.insert("type", param_type);
+        }
         auto *parameter = dtkCoreParameter::create(param);
         if(parameter) {
             visu_parameters[key] = parameter;
@@ -831,26 +836,28 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
 //     this->view_menubar->touch();
 // }
 
-// void gnomonViewFormPrivate::updateTimeSlider(void)
-// {
-//     this->forms_times.clear();
+void gnomonViewFormPrivate::updateFormsTimes(void)
+{
+    this->forms_times.clear();
 
-//     for (const auto& key : this->forms.keys()) {
-//         for(auto time : this->forms[key]->times()) {
-//             this->forms_times.insert(time);
-//         }
-//     }
+    for (const auto& key : this->forms.keys()) {
+        for(auto time : this->forms[key]->times()) {
+            this->forms_times.insert(time);
+        }
+    }
 
-//     if(this->forms_times.size() < 2) {
-//         this->time_slider->setVisible(false);
-//         return;
-//     }
+    emit q->timeMaxChanged(q->timeMax());
 
-//     this->time_slider->setVisible(true);
-//     this->time_slider->setOrientation(Qt::Horizontal);
-//     this->time_slider->setMinimum(0);
-//     this->time_slider->setMaximum(this->forms_times.size()-1);
-// }
+    // if(this->forms_times.size() < 2) {
+    //     this->time_slider->setVisible(false);
+    //     return;
+    // }
+
+    // this->time_slider->setVisible(true);
+    // this->time_slider->setOrientation(Qt::Horizontal);
+    // this->time_slider->setMinimum(0);
+    // this->time_slider->setMaximum(this->forms_times.size()-1);
+}
 
 // void gnomonViewFormPrivate::updateKeys(void)
 // {
@@ -1133,11 +1140,11 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
          /*d->addFormMenu(key);
          d->configure(d->formVisualizationPaneItems[key], key);
          d->updateInteractorStyleMenu();
-         d->updateTimeSlider();
          if (d->empty) {
              d->renderer3D->ResetCamera();
          }
          this->render();*/
+         d->updateFormsTimes();
          d->empty = false;
          emit formsChanged();
      });
@@ -1167,7 +1174,7 @@ void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
     this->switchTo3D();
 
     d->updateOrientation();
-    // d->updateTimeSlider();
+    d->updateFormsTimes();
 }
 
 gnomonViewForm::~gnomonViewForm(void)
@@ -1361,28 +1368,39 @@ void gnomonViewForm::sliceChange(int value)
 }
 
 
-void gnomonViewForm::timeIndexChange(int value)
+void gnomonViewForm::setCurrentTime(double value)
 {
     QList<double> sorted_times = this->times();
+    if(sorted_times.contains(value)) {
+        double time = sorted_times[value];
 
-    double time = sorted_times[value];
+        bool valueChanged = false;
+        if (d->c_t != time) {
+            valueChanged = true;
+            d->c_t = time;
+        }
 
-    bool valueChanged = false;
-    if (d->c_t != time) {
-        valueChanged = true;
-        d->c_t = time;
+        if (valueChanged) {
+            emit timeChanged(time);
+        }
+
+        d->interactor()->Render();
     }
+}
 
-    // d->time_slider->blockSignals(true);
-    // d->time_slider->setValue(value);
-    // d->time_slider->setToolTip(QString("current time: %1").arg(time));
-    // d->time_slider->blockSignals(false);
+double gnomonViewForm::currentTime(void) const
+{
+    return d->c_t;
+}
 
-    if (valueChanged) {
-        emit timeChanged(time);
+double gnomonViewForm::timeMax(void)
+{
+    QList<double> times = this->times();
+    if (times.isEmpty()) {
+        return -1;
+    }  else {
+        return this->times().last();
     }
-
-    d->interactor()->Render();
 }
 
 QList<double> gnomonViewForm::times(void)
@@ -1513,6 +1531,10 @@ void gnomonViewForm::unlink(gnomonViewForm *other)
     d->clearConnections();
 
     emit syncedChanged();
+}
+
+void gnomonViewForm::disconnectTime() {
+    disconnect(d->connectTime);
 }
 
 void gnomonViewForm::setExportColor(const QColor& color)
@@ -1969,6 +1991,11 @@ void gnomonViewForm::removeForm(const QString& name)
     d->formVisibility.remove(name);
     d->forms.remove(name);
 
+    d->updateFormsTimes();
+    if (d->forms.isEmpty()) {
+        d->empty = true;
+    }
+
     this->render();
 
     emit formsChanged();
@@ -2191,6 +2218,8 @@ void gnomonViewForm::update(void)
 void gnomonViewForm::clear(void)
 {
     d->clear();
+    d->updateFormsTimes();
+    d->empty = true;
     emit formsChanged();
 }
 
@@ -2208,7 +2237,7 @@ void gnomonViewForm::onTimeChanged(double time)
     if (sorted_times.contains(time)) {
         std::sort(sorted_times.begin(), sorted_times.end());
         int value = sorted_times.indexOf(time);
-        // d->time_slider->setValue(value);
+        this->setCurrentTime(value);
     }
 }
 
