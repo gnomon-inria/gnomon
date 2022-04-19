@@ -20,11 +20,14 @@ Licence: LGPL
 
 ```
 
-## Concepts
-  - what is a workspaxe
-  - forms
-  - pipeline
-  - gnomon-packages
+## Architecture
+```{eval-rst}
+.. toctree::
+    :maxdepth: 2
+
+    concepts
+    packages
+```
 
 ## Usage
 ```{eval-rst}
