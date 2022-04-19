@@ -168,7 +168,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         frequencies = np.asarray((unique, counts)).T
         print(frequencies)
 
-        tissue = TissueImage3D(np.reshape(arr, (dim[0],dim[1],dim[2])), 
+        tissue = TissueImage3D(np.reshape(arr, (dim[2],dim[1],dim[0])), 
                             background=1,
                             not_a_label=0,
                             origin=origin,
