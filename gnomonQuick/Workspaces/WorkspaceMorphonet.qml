@@ -201,7 +201,8 @@ G.Workspace {
                 "morpho_id": ds_info_json[i]["id"],
                 "comments": ds_info_json[i]["comments"] || "",
                 "date": ds_info_json[i]["date"],
-                "id_people": ds_info_json[i]["id_people"]
+                "owner": ds_info_json[i]["owner"],
+                "own": ds_info_json[i]["own"]
                 });
         }
     }

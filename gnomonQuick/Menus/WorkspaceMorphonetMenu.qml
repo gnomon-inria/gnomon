@@ -74,7 +74,9 @@ Control {
                             displayText = mn_ds_info.get(_datasets.currentIndex).name
                             _ds_id.text = mn_ds_info.get(_datasets.currentIndex).morpho_id;
                             _ds_date.text = mn_ds_info.get(_datasets.currentIndex).date;
+                            _ds_owner.text = mn_ds_info.get(_datasets.currentIndex).owner;
                             _ds_comments.text = mn_ds_info.get(_datasets.currentIndex).comments;
+                            _ds_delete.visible = mn_ds_info.get(_datasets.currentIndex).own;
 
                             // idle.start() ??
                             d.importDatasetPreview(d.currentId, Number(_dim_x.text), Number(_dim_y.text), Number(_dim_z.text) );
@@ -92,6 +94,20 @@ Control {
                     X.Label { id: _ds_id; text: "";  font.pixelSize: 12;}
                     X.Label { text: "Date:";  font.pixelSize: 14;}
                     X.Label { id: _ds_date; text: "";  font.pixelSize: 12;}
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true;
+
+                    X.Label { text: "Owner:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
+                    X.Label { id: _ds_owner; text: "";  font.pixelSize: 12;}
+                    X.ButtonRaw {
+                        id: _ds_delete; 
+                        text: "Delete";
+                        onClicked: {
+                           d.deleteDataset();
+                        }
+                    }
                 }
 
                 X.Label { text: "Comments:";  font.pixelSize: 14;}
