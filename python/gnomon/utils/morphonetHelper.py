@@ -209,8 +209,12 @@ class MorphonetHelper(gnomonMorphonetHelper):
         """
         if self.is_connected():
             data=self._net._request({},'/api/userrelatedset/','GET')
+
+            for ds in data:
+                ds['owner'] = self._net.get_guy_by_id(ds['id_people'])
+                ds['own'] = self._net.id_people==ds['id_people']
+
             return json.dumps(data)
-            # TODO can use  get_guy_by_id(self,id_guy) to get author name? 
 
         return ""
 
@@ -384,6 +388,10 @@ class MorphonetHelper(gnomonMorphonetHelper):
             mesh = tools.convert_to_OBJ(tissue, time,
                                         background=background, VoxelSize=tissue.voxelsize,
                                         path_write=None)
+
+            with open("test_obj.obj", 'w', encoding='utf-8') as f:
+                f.write(mesh)
+
             return mesh
         except Exception as e:
             print(e)

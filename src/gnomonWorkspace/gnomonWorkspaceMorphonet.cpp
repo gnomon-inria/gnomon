@@ -277,6 +277,14 @@ void gnomonWorkspaceMorphonet::setUploadMode(bool upload)
     emit uploadModeChanged();
 }
 
+bool gnomonWorkspaceMorphonet::deleteDataset(int id)
+{
+    if(id==-1)
+        id = d->current_id;
+
+    return gnomonMorphonetHelper::instance()->deleteDataset(id);
+}
+
 QString gnomonWorkspaceMorphonet::datasetsInfo(const QString& search)
 {
     QString res = "";
