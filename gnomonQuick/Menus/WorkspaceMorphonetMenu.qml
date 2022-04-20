@@ -228,14 +228,21 @@ Control {
                     }
                 } 
 
-                X.Label { 
+                X.ButtonRaw {
                     id: _dataset_created
-                    text: "Dataset Uploaded with Id: XXXXX"; 
-                    color: X.Style.foregroundColor;
+                    Layout.fillWidth: true;
+
+                    property var link : ""
+
+                    text: "Dataset Uploaded with Id: XXXXX";
                     font.pixelSize: 16;
                     visible: false
-                }
+                    enabled: false
 
+                    onClicked: {
+                        Qt.openUrlExternally(_dataset_created.link);
+                    }
+                }
 
                 X.ButtonRaw {
                     id: _upload_button
@@ -248,15 +255,19 @@ Control {
                         console.info('Importing selected dataset from morphonet!')
                         var res = d.exportDataset(_up_name.text, Number(_up_ncbi.text), Number(_up_type.text), _up_description)
                         if( res != -1) {
-                            var new_text = "Dataset Uploaded with Id: %1"
+                            let new_text = "Dataset Uploaded with Id: %1"
                             _dataset_created.text = new_text.arg(res)
                             _dataset_created.visible = true
-                            _dataset_created.color = "green"
+                            _dataset_created.enabled = true
+                            let new_link = "https://morphonet.org/morphoapi?id_dataset=%1"
+                            _dataset_created.link = new_link.arg(res)
+                            _dataset_created.contentItem.color = "green"
                             // _upload_button.enabled = false //TODO deactivate new upload if successfull
                         } else {
                             _dataset_created.text = "[Error] Dataset Not Uploaded"
-                            _dataset_created.color = "red"
-                            _dataset_created.visible = true    
+                            _dataset_created.contentItem.color = "red"
+                            _dataset_created.visible = true
+                            _dataset_created.enabled =  false
                         }
                     }
 
