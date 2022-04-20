@@ -37,6 +37,9 @@ Control {
         TabButton {
             text: "Upload"
         }
+        TabButton {
+            text: "Plot API"
+        }
     }
 
     StackLayout {
@@ -304,6 +307,20 @@ Control {
 
                 }
             }
+        }
+         Control {
+            //anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            X.ButtonRaw {
+                id: _launch_morphoplot
+                text: "Launch Plot";
+                onClicked: {
+                    d.morphoPlot();
+                }
+            }
+
         }
     }
 
