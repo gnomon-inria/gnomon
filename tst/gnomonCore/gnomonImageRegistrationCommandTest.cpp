@@ -70,6 +70,7 @@ void gnomonImageRegistrationCommandTestCase::redo(void)
     d->registration_command->setImage(d->image_series);
 
     d->registration_command->setParameter("method", "rigid");
+    d->registration_command->setNoAsync();
     d->registration_command->redo();
 
     QVERIFY(registration::t_set_image_called && registration::t_run_called && registration::t_set_parameter_called);
