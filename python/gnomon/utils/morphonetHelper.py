@@ -23,7 +23,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         super().__init__()
         self._net = None
 
-    def obj_to_tissue_image(self, obj: list[str], dim = (100, 100, 100)):
+    def obj_to_tissue_image(self, obj: list[str], voxelsize=0.1):
         """convert a str into a numpy array using a vtk polydata
         1. create a vtkPolydata from obj
         2. a white image of good dimensions
@@ -117,12 +117,16 @@ class MorphonetHelper(gnomonMorphonetHelper):
         print(len(polydatas), " polydatas created. bounds: ", bounds, " ids: ", [i for (_, i) in polydatas])
         
         final_img = vtk.vtkImageData()
-        spacing = [(bounds[ii*2+1] - bounds[ii*2])/dim[ii] for ii in range(0,3)]
+        spacing = [voxelsize]*3
+        dim = [int((bounds[ii*2+1] - bounds[ii*2])/voxelsize) for ii in range(0, 3)]
+        print(dim)
+        # spacing = [(bounds[ii*2+1] - bounds[ii*2])/dim[ii] for ii in range(0,3)]
 
         final_img.SetSpacing(spacing)
         final_img.SetDimensions(dim)
-        final_img.SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1)
-        origin = [bounds[ii*2] + spacing[ii] / 2 for ii in range(0,3)]  
+        # final_img.SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1)
+        # final_img.SetExtent(0, int(bounds[1]-bounds[0]), 0, int(bounds[3]-bounds[2]), 0, int(bounds[5]-bounds[4]))
+        origin = [bounds[ii*2] + spacing[ii] / 2 for ii in range(0, 3)]
         final_img.SetOrigin(origin)
         final_img.ComputeBounds()
         
@@ -134,8 +138,11 @@ class MorphonetHelper(gnomonMorphonetHelper):
         # fill the image with foreground voxels:
         count = final_img.GetNumberOfPoints()
         background_value = 1
+
         for i in range(count):
             final_img.GetPointData().GetScalars().SetTuple1(i, background_value)
+
+        #final_img.GetPointData().GetScalars().Fill(background_value)
 
         print("final image done")
 
@@ -172,7 +179,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
                             background=1,
                             not_a_label=0,
                             origin=origin,
-                            voxelsize=spacing)
+                            voxelsize=spacing[::-1])  # ex spacings
         tissue.cells.volume()
         return tissue
 
@@ -247,14 +254,12 @@ class MorphonetHelper(gnomonMorphonetHelper):
         else:
             return 0
 
-    def loadMnDataAtTime(self, time: int, dim_x: int, dim_y: int, dim_z: int) -> gnomonCellImage:
+    def loadMnDataAtTime(self, time: int, voxelsize: float) -> gnomonCellImage:
         """Load morphonet data at time and return a gnomonCellImageData serialized
 
         Args:
             time (int): time to load
-            dim_x (int): dim x for the image
-            dim_y (int): dim y for the image
-            dim_z (int): dim z for the image
+            voxelsize (float): cubic voxel size for
 
         Returns:
             gnomonCellImage: the image or PyNone
@@ -274,10 +279,9 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         # else:
         try:
-            dim = (dim_x, dim_y, dim_z)
             obj = self._net.get_mesh_at(time)
             obj = obj.split("\n")
-            tissue = self.obj_to_tissue_image(obj, dim=dim)
+            tissue = self.obj_to_tissue_image(obj, voxelsize=voxelsize)
             if tissue is not None:
                 cell_img_data.set_tissue_image(tissue)
                 cell_img = gnomonCellImage()

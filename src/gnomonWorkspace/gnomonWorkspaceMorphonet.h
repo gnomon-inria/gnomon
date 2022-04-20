@@ -47,7 +47,7 @@ public:
 
     Q_INVOKABLE bool deleteDataset(int id=-1);
     Q_INVOKABLE QString datasetsInfo(const QString& search = "");
-    Q_INVOKABLE void importDatasetPreview(int id, int dim_x, int dim_y, int dim_z);
+    Q_INVOKABLE void importDatasetPreview(int id, double voxelsize);
     Q_INVOKABLE void importDataset(int time_start, int time_end, int id, int dim_x, int dim_y, int dim_z);
     Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description);
 

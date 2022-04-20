@@ -27,7 +27,7 @@ public:
     QString decodePassword(const QString& encoded_password);
 
     bool selectDataset(int id);
-    void loadMNDataAtTime(int time, int dim_x, int dim_y, int dim_z);
+    void loadMNDataAtTime(int time, double voxelsize);
 
     enum Status {
         Morphonet_NotLoaded,
@@ -110,9 +110,9 @@ bool gnomonWorkspaceMorphonetPrivate::selectDataset(int id)
     return true;
 }
 
-void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, int dim_x, int dim_y, int dim_z)
+void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsize)
 {
-    gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, dim_x, dim_y, dim_z);
+    gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
 
     if(cell_img) {
         this->img_series->insert(double(time), cell_img);
@@ -296,7 +296,7 @@ QString gnomonWorkspaceMorphonet::datasetsInfo(const QString& search)
     return gnomonMorphonetHelper::instance()->datasetsInfo(search);
 }
 
-void gnomonWorkspaceMorphonet::importDatasetPreview(int id, int dim_x, int dim_y, int dim_z)
+void gnomonWorkspaceMorphonet::importDatasetPreview(int id, double voxelsize)
 {
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
@@ -312,7 +312,7 @@ void gnomonWorkspaceMorphonet::importDatasetPreview(int id, int dim_x, int dim_y
     }
 
     //import first time of selected dataset and set it to the view
-    d->loadMNDataAtTime(d->start_time, dim_x, dim_y, dim_z);
+    d->loadMNDataAtTime(d->start_time, voxelsize);
 
     if(!d->img_series->times().isEmpty())
         d->view->setForm("CellImage", d->img_series); 
