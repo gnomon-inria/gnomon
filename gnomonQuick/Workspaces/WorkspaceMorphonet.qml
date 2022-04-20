@@ -29,6 +29,9 @@ G.Workspace {
     GW.WorkspaceMorphonet {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onMessage: { 
             console.log("message: ", msg)
             _message_dialog.text = msg;
