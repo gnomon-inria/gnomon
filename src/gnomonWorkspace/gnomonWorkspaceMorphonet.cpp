@@ -376,6 +376,12 @@ int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_ty
     return res;
 }
 
+void gnomonWorkspaceMorphonet::morphoPlot(void)
+{
+    gnomonMorphonetHelper::instance()->morphoPlot();
+    qDebug() << Q_FUNC_INFO << "end mn plot";
+}
+
 gnomonViewForm *gnomonWorkspaceMorphonet::view(void)
 {
     return d->view;
