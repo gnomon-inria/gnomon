@@ -79,7 +79,9 @@ Control {
                             _ds_delete.visible = mn_ds_info.get(_datasets.currentIndex).own;
 
                             // idle.start() ??
-                            d.importDatasetPreview(d.currentId, Number(_dim_x.text), Number(_dim_y.text), Number(_dim_z.text) );
+                            d.importDatasetPreview(d.currentId,
+                                 Number(_voxelsize.text)
+                            );
                             _ds_time_start.text = d.timeStart
                             _ds_time_end.text = d.timeEnd
                             //idle.end() ???
@@ -119,14 +121,15 @@ Control {
                     font.pixelSize: 10;
                     wrapMode: Label.WordWrap
                 }
+                /*
 
                 RowLayout {
                     Layout.fillWidth: true;
 
-                    X.Label { 
+                    X.Label {
                         text: "Image Dims:";
                         color: X.Style.foregroundColor;
-                        font.pixelSize: 14; 
+                        font.pixelSize: 14;
                     }
                     X.TextField { id: _dim_x; text: "100"; errorText: "bad Value";
                         validator: IntValidator{bottom: 1; top: 10000;}
@@ -143,12 +146,40 @@ Control {
                         Layout.fillWidth: true;
                         Layout.fillHeight: true
                         hoverEnabled: true
-                        propagateComposedEvents: true 
+                        propagateComposedEvents: true
                     }
 
                     X.ToolTip {
                         visible: _dims_ma.containsMouse
                         text: "image dimensions (x,y,z) in range [1, 10000]"
+                    }
+
+                }
+                */
+
+                RowLayout {
+                    Layout.fillWidth: true;
+
+                    X.Label {
+                        text: "Voxel size:";
+                        color: X.Style.foregroundColor;
+                        font.pixelSize: 14;
+                    }
+                    X.TextField { id: _voxelsize; text: "0.20"; errorText: "bad Value";
+                        //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
+                    }
+
+                    MouseArea{
+                        id: _voxsize_ma
+                        Layout.fillWidth: true;
+                        Layout.fillHeight: true
+                        hoverEnabled: true
+                        propagateComposedEvents: true
+                    }
+
+                    X.ToolTip {
+                        visible: _voxsize_ma.containsMouse
+                        text: "Voxel size (x,y,z) in range [0.01, 10]"
                     }
 
                 }
@@ -195,42 +226,42 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
                     X.Label { text: "NCBI:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { 
-                        id: _up_ncbi; 
+                    X.TextField {
+                        id: _up_ncbi;
                         placeholderText: qsTr("NCBI specie if available");
                         text: "0";
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
-                } 
+                }
 
 
                 RowLayout {
                     Layout.fillWidth: true;
                     X.Label { text: "type:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { 
-                        id: _up_type; 
+                    X.TextField {
+                        id: _up_type;
                         placeholderText: qsTr("type : 0, 1, 2");
                         text: "0";
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 2; }
                     }
-                } 
+                }
 
 
                 RowLayout {
                     Layout.fillWidth: true;
                     X.Label { text: "Description:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { 
-                        id: _up_description; 
+                    X.TextField {
+                        id: _up_description;
                         placeholderText: qsTr("Description");
                         text: "";
                     }
-                } 
+                }
 
-                X.Label { 
+                X.Label {
                     id: _dataset_created
-                    text: "Dataset Uploaded with Id: XXXXX"; 
+                    text: "Dataset Uploaded with Id: XXXXX";
                     color: X.Style.foregroundColor;
                     font.pixelSize: 16;
                     visible: false
@@ -256,7 +287,7 @@ Control {
                         } else {
                             _dataset_created.text = "[Error] Dataset Not Uploaded"
                             _dataset_created.color = "red"
-                            _dataset_created.visible = true    
+                            _dataset_created.visible = true
                         }
                     }
 
@@ -267,7 +298,7 @@ Control {
 
     Connections {
         target: d
-        function onUploadModeChanged() { 
+        function onUploadModeChanged() {
             _bar.setCurrentIndex(d.uploadMode ? 1 : 0)
          }
     }
