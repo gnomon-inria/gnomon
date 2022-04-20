@@ -56,7 +56,7 @@ G.Workspace {
         anchors.fill: parent;
         anchors.margins: 10;
 
-        onDroppedFromFile: {
+        onDroppedFromFile: (path) => {
             let urls = path.split(',')
             let paths = [];
             for(let i_n in urls) {

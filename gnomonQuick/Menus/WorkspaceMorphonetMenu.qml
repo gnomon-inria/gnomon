@@ -108,6 +108,7 @@ Control {
                         text: "Delete";
                         onClicked: {
                            d.deleteDataset();
+                           d.updateDatasetsInfo();
                         }
                     }
                 }
