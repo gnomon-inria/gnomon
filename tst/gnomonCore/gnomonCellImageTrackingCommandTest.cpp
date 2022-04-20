@@ -85,6 +85,7 @@ void gnomonCellImageTrackingCommandTestCase::redo(void) {
     d->tracking_command->setCellImage(&cellimg_series);
     QVERIFY(tracking::t_set_cell_image_called);
 
+    d->tracking_command->setNoAsync();
     d->tracking_command->redo();
     QVERIFY(tracking::t_run_called);
 }

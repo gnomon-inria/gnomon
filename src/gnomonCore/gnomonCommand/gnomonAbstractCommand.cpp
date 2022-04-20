@@ -29,7 +29,6 @@ void gnomonAbstractCommand::redo(void)
     }
     
     if(this->action->is_async) {
-        qDebug() << "launch in async mode";
 
         // cleaning watcher
         if(watcher){
@@ -45,10 +44,7 @@ void gnomonAbstractCommand::redo(void)
         connect(watcher, &QFutureWatcher<void>::finished, this, &gnomonAbstractCommand::finished);
         auto future = QtConcurrent::run(runner, this);
         watcher->setFuture(future);
-
-
     } else {
-        qDebug() << Q_FUNC_INFO << "sync run";
         this->action->run();
         this->postdo();
         this->finished();

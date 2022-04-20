@@ -55,6 +55,7 @@ public:
 
 signals:
     void currentIdChanged(void);
+    void started(void);
     void timeStartChanged(void);
     void timeEndChanged(void);
     void connectionStatusChanged(void);

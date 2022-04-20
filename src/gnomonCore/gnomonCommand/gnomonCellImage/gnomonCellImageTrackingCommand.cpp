@@ -40,7 +40,7 @@ void gnomonCellImageTrackingCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonCellImageTrackingCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonCellImageTrackingCommand::postdo(void)

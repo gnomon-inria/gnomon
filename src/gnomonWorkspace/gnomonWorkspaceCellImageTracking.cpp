@@ -23,15 +23,11 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 
     d->updatePool();
 
-    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
-    /*
-    connect(this->source(), &gnomonViewForm::timeChanged, [=](double time) {
-        auto times = this->source()->times();
-        auto index = times.indexOf(time);
-        this->target()->setCurrentTime(times[std::min(index+1, times.size()-1)]);
+    connect(d->command, &gnomonAbstractCommand::finished, [this]() { 
+        this->viewOutputs();
+        this->finished();
     });
 
-     */
     connect(this->target(), &gnomonViewForm::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
