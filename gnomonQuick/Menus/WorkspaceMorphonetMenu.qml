@@ -127,7 +127,6 @@ Control {
 
                 
                 RowLayout {
-                    id: row_voxel
                     Layout.fillWidth: true;
 
                     X.Label {
@@ -140,21 +139,13 @@ Control {
                     }
 
                     X.ToolTip {
-                    //    visible: _voxsize_ma.containsMouse
-                        visible: false
+                        visible: _voxelsize.hovered
                         text: "Voxel size (x,y,z) in range [0.01, 10]"
                     }
 
                 }
-                //MouseArea {
-                //    id: _voxsize_ma
-                //    anchors.fill: row_voxel
-                //    hoverEnabled: true
-                //    propagateComposedEvents: true
-                //}
-
+                
                 RowLayout {
-                    id: row_times
                     Layout.fillWidth: true;
 
                     X.Label { text: "Time start:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
@@ -172,20 +163,10 @@ Control {
                     }
                     X.ToolTip {
                         id: row_times_tooltip
-                        //visible: _times_ma.containsMouse
-                        visible: false
+                        visible: _ds_time_end.hovered || _ds_time_start.hovered
                         text: "times in range [0, 10000]"
                     }
-
                 }
-
-                //MouseArea {
-                //    id: _times_ma
-                //    anchors.fill: row_times
-                //    hoverEnabled: true
-                //    propagateComposedEvents: true
-                //}
-
 
                 X.ButtonRaw {
                     Layout.fillWidth: true;

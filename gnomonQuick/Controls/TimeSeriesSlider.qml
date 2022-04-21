@@ -8,7 +8,7 @@ import xQuick.Style       1.0 as X
 
 Slider {
     id: _ts_slider
-    value: times.length > 0 ? times[0] : 0
+    value: times && times.length > 0 ? times[0] : 0
     from: 0 
     to: times.length-1
     stepSize: 1
@@ -35,7 +35,7 @@ Slider {
         }
 
         Repeater {
-            model: _ts_slider.times.length
+            model: _ts_slider.times ? _ts_slider.times.length : 0
             delegate: Rectangle {
                 x:  _ts_slider.handle.width/2 + index*(_ts_slider.background.width - _ts_slider.handle.width)/(_ts_slider.to - _ts_slider.from) - _ts_slider.tickWidth/2
                 implicitWidth: _ts_slider.tickWidth
@@ -48,7 +48,7 @@ Slider {
     ToolTip {
         parent: _ts_slider.handle
         visible: _ts_slider.pressed
-        text: _ts_slider.times[_ts_slider.value]
+        text: _ts_slider.times ? _ts_slider.times[_ts_slider.value] : ""
     }
 
     handle: Rectangle {
