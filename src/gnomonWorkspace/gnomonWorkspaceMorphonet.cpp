@@ -370,7 +370,7 @@ int gnomonWorkspaceMorphonet::importDatasetInfos(void)
     return res;
 }
 
-int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_type, QString description)
+int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_type, QString description, double voxelsize)
 {
     int res = -1;
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
@@ -381,7 +381,7 @@ int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_ty
     auto *serie = dynamic_cast<gnomonCellImageSeries *>(d->view->form("gnomonCellImage"));
     
     if(serie)
-        res = gnomonMorphonetHelper::instance()->createDataset(name, serie, id_NCBI, id_type, description);
+        res = gnomonMorphonetHelper::instance()->createDataset(name, serie, id_NCBI, id_type, description, voxelsize);
     else {
         message("Set a cellImageSeries before creating a dataset");
     }
