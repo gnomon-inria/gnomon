@@ -847,6 +847,7 @@ void gnomonViewFormPrivate::updateFormsTimes(void)
     }
 
     emit q->timeMaxChanged(q->timeMax());
+    q->timesChanged();
 
     // if(this->forms_times.size() < 2) {
     //     this->time_slider->setVisible(false);

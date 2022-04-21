@@ -320,7 +320,7 @@ void gnomonWorkspaceMorphonet::importDatasetPreview(int id, double voxelsize)
 }
 
 
-void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int id, int dim_x, int dim_y, int dim_z)
+void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int id, double voxelsize)
 {
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
@@ -347,9 +347,9 @@ void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int i
     d->clear();
 
 
-    // for( each time) {
-      //d->loadMNDataAtTime(d->start_time, dim_x, dim_y, dim_z);
-    // }
+    for(int time = time_start; time <= time_end; time++) {
+      d->loadMNDataAtTime(time, voxelsize);
+    }
 
     if(!d->img_series->times().isEmpty())
         d->view->setForm("CellImage", d->img_series); 
