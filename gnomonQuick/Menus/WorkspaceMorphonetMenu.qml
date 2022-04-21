@@ -118,6 +118,7 @@ Control {
                     X.ButtonRaw {
                         id: _ds_delete; 
                         text: "Delete";
+                        visible: false;
                         onClicked: {
                            d.deleteDataset();
                            d.updateDatasetsInfo();
@@ -146,6 +147,7 @@ Control {
                         font.pixelSize: 14;
                     }
                     X.TextField { id: _voxelsize; text: "1.0"; errorText: "bad Value";
+                        Layout.fillWidth: true;
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
@@ -160,14 +162,16 @@ Control {
                     Layout.fillWidth: true;
 
                     X.Label { text: "Time start:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { id: _ds_time_start; 
+                    X.TextField { id: _ds_time_start;
+                        Layout.fillWidth: true;
                         text: "";
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                         font.pixelSize: 12;              
                     }
                     X.Label { text: "Time  End:";  font.pixelSize: 14;}
-                    X.TextField { id: _ds_time_end; text: "";  
+                    X.TextField { id: _ds_time_end; text: "";
+                        Layout.fillWidth: true;
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                         font.pixelSize: 12;
@@ -266,6 +270,28 @@ Control {
                     }
                 }
 
+                RowLayout {
+                    Layout.fillWidth: true;
+
+                    X.Label {
+                        text: "Voxel size:";
+                        color: X.Style.foregroundColor;
+                        font.pixelSize: 14;
+                    }
+                    X.TextField {
+                        id: _upload_voxelsize;
+                        Layout.fillWidth: true;
+                        text: "1.0";
+                        errorText: "bad Value";
+                        //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
+                    }
+
+                    X.ToolTip {
+                        visible: _upload_voxelsize.hovered
+                        text: "Voxel size (x,y,z) for mesh generation"
+                    }
+                }
+
                 Item {
                     Layout.fillHeight: true
                 }
@@ -319,7 +345,7 @@ Control {
                     onClicked: {
                         //_progress.open();
                         //_progress.start();
-                        var res = d.exportDataset(_up_name.text, Number(_up_ncbi.text), _up_type.currentIndex, _up_description)
+                        var res = d.exportDataset(_up_name.text, Number(_up_ncbi.text), _up_type.currentIndex, _up_description, Number(_upload_voxelsize.text))
                         if( res != -1) {
                             let new_text = "Dataset Uploaded with Id: %1"
                             _dataset_created.text = new_text.arg(res)
