@@ -1,6 +1,7 @@
 import json
 import math
 import numpy as np
+import scipy.ndimage as nd
 import traceback
 
 import vtk
@@ -12,9 +13,11 @@ from gnomon.utils import load_plugin_group
 from gnomon.utils.decorators.form_series import formDictFromSeries
 from morphonet import Net, tools
 
-from timagetk import TissueImage3D, LabelledImage
+from timagetk import TissueImage3D, LabelledImage, SpatialImage
+from timagetk.algorithms.watershed import watershed
 from timagetk.algorithms.resample import isometric_resampling
 
+from visu_core.vtk.utils.polydata_tools import vtk_combine_polydatas
 from visu_core.vtk.utils.image_tools import image_to_vtk_cell_polydatas
 
 load_plugin_group("cellImageData")
@@ -71,10 +74,9 @@ class MorphonetHelper(gnomonMorphonetHelper):
         5. make tissueImage
         """
 
-        polydatas = []
+        polydatas = {}
         vtk_points = vtk.vtkPoints() # one vtk_points for every pd
 
-        bounds = [100000., -1000000., 1000000., -1000000., 1000000., -1000000.]
         idx_availables = [i for i in range(65535)]
         idx_availables.remove(1) # remove background
         line_idx=0
@@ -90,7 +92,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
             polydata.SetPoints(vtk_points)
             polydata.SetPolys(vtk_cells)
 
-            polydatas.append((polydata, cell_idx))
+            polydatas[cell_idx] = polydata
 
         try:
             for line in obj:
@@ -119,19 +121,13 @@ class MorphonetHelper(gnomonMorphonetHelper):
                         cell_idx = idx_availables[0]
                     idx_availables.remove(cell_idx)
 
-                    if len(polydatas) > 0:
-                        new_bounds = polydata.GetBounds()
-                        for i in range(3):
-                            bounds[i*2] = min(bounds[i*2], new_bounds[i*2])
-                            bounds[i*2+1] = max(bounds[i*2+1], new_bounds[i*2+1])
-
                     polydata = vtk.vtkPolyData()
                     polydata.Initialize()
                     vtk_cells = vtk.vtkCellArray()
                     polydata.SetPoints(vtk_points)
                     polydata.SetPolys(vtk_cells)
 
-                    polydatas.append((polydata, cell_idx))
+                    polydatas[cell_idx] = polydata
 
                 if line.startswith('v'):
                     point_id = vtk_points.InsertNextPoint([float(v) for v in line[1:].strip().split(' ')])
@@ -148,16 +144,14 @@ class MorphonetHelper(gnomonMorphonetHelper):
             print(obj[max(line_idx-10, 0):line_idx+1])
             return None
 
-        new_bounds = polydata.GetBounds()
-        for i in range(3):
-            bounds[i*2] = min(bounds[i*2], new_bounds[i*2])
-            bounds[i*2+1] = max(bounds[i*2+1], new_bounds[i*2+1])
+        full_polydata = vtk_combine_polydatas(list(polydatas.values()))
+        bounds = full_polydata.GetBounds()
 
-        print(len(polydatas), " polydatas created. bounds: ", bounds, " ids: ", [i for (_, i) in polydatas])
+        print(len(polydatas), " polydatas created. bounds: ", bounds, " ids: ", list(polydatas.keys()))
         
         final_img = vtk.vtkImageData()
         spacing = [voxelsize]*3
-        dim = [int((bounds[ii*2+1] - bounds[ii*2])/voxelsize) for ii in range(0, 3)]
+        dim = [int(np.ceil((bounds[ii*2+1] - bounds[ii*2])/voxelsize)) for ii in range(0, 3)]
         print(dim)
         # spacing = [(bounds[ii*2+1] - bounds[ii*2])/dim[ii] for ii in range(0,3)]
 
@@ -185,7 +179,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         print("final image done")
 
-        for pd, cell_idx in polydatas:
+        for cell_idx, pd in polydatas.items():
             pol2stenc = vtk.vtkPolyDataToImageStencil()
             pol2stenc.SetTolerance(0)  # important if extruder.SetVector(0, 0, 1) !!!
             pol2stenc.SetInputData(pd)
@@ -214,11 +208,23 @@ class MorphonetHelper(gnomonMorphonetHelper):
         frequencies = np.asarray((unique, counts)).T
         print(frequencies)
 
-        tissue = TissueImage3D(np.reshape(arr, (dim[2],dim[1],dim[0])), 
-                            background=1,
-                            not_a_label=0,
-                            origin=origin,
-                            voxelsize=spacing[::-1])  # ex spacings
+        seg_img = LabelledImage(np.reshape(arr, (dim[2], dim[1], dim[0])).transpose((2,1,0)),
+                                not_a_label=0, origin=origin[::-1], voxelsize=spacing[::-1])  # ex spacings
+
+        # TODO : find a way to fill holes between cells without altering shapes
+        # background_img = seg_img.get_array()==1
+        # eroded_background_img = nd.binary_erosion(background_img, iterations=2)
+        # seg_img[np.bitwise_xor(background_img, eroded_background_img)] = 0
+        # distance_img = np.round(nd.distance_transform_cdt(background_img)).astype(np.uint16)
+        # gradient_img = SpatialImage(distance_img, origin=origin[::-1], voxelsize=spacing[::-1])
+        # seg_img = watershed(gradient_img, seg_img)
+
+        tissue = TissueImage3D(seg_img,
+                               background=1,
+                               not_a_label=0,
+                               origin=origin[::-1],
+                               voxelsize=spacing[::-1])  # ex spacings
+
         tissue.cells.volume()
         return tissue
 
