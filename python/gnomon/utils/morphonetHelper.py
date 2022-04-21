@@ -461,7 +461,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
             logging.info(f"  --> Add feature {feature_name} on {len(feature_dict)} cells")
             tissue.cells.set_feature(feature_name, feature_dict)
 
-    def transform_to_mn_mesh(self, seg_img, time, resolution, border):
+    def transform_to_mn_mesh(self, seg_img, time, voxelsize, border):
         """
         Transform a segmentedimage to a morphonet mesh
 
@@ -471,7 +471,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
             image to transform
         time: int
             time to load
-        resolution: float
+        voxelsize: float
             voxelsize of the image on which marching cubes are computed
         border: bool
             whether to add a border on margin cells
@@ -486,7 +486,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         try:
             tissue = seg_img.data().get_tissue_image()
             labels = tissue.cell_ids()
-            seg_img = isometric_resampling(tissue, method=resolution, interpolation='nearest')
+            seg_img = isometric_resampling(tissue, method=voxelsize, interpolation='nearest')
             if border:
                 seg_img[ 0, :, :] = background
                 seg_img[-1, :, :] = background
@@ -553,7 +553,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         return infos
 
-    def createDataset(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, resolution=0.8, border=True) -> int:
+    def createDataset(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> int:
         """Create and upload a dataset
 
         Args:
@@ -568,7 +568,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         """
         times = np.sort(list(form_series.keys()))
 
-        meshes = {i_t: self.transform_to_mn_mesh(form_series[t], time=i_t, resolution=resolution, border=border) for i_t, t in enumerate(times)}
+        meshes = {i_t: self.transform_to_mn_mesh(form_series[t], time=i_t, voxelsize=voxelsize, border=True) for i_t, t in enumerate(times)}
         infos = self.transform_to_mn_infos(form_series)
 
         old_ds_id = self._net.id_dataset
