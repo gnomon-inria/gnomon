@@ -404,11 +404,11 @@ int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_ty
     return res;
 }
 
-void gnomonWorkspaceMorphonet::morphoPlot(void)
+int gnomonWorkspaceMorphonet::morphoPlot(void)
 {
     auto image = this->view()->cellImage();
     if(!image) {
-        return;
+        return 1;
     }
 
     if(d->morphoplot_process) {
@@ -421,7 +421,7 @@ void gnomonWorkspaceMorphonet::morphoPlot(void)
     }
     delete d->morphoplot_tmp_dir;
     d->morphoplot_tmp_dir = new QTemporaryDir();
-    auto filepath = d->morphoplot_tmp_dir->filePath("edited_seg_img.inr.gz");
+    auto filepath = d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE);
 
 
 
@@ -446,6 +446,7 @@ void gnomonWorkspaceMorphonet::morphoPlot(void)
 
     //gnomonMorphonetHelper::instance()->morphoPlot(form);
     qDebug() << Q_FUNC_INFO << "end mn plot " << d->morphoplot_process->state();
+    return 0;
 }
 
 void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
@@ -457,7 +458,7 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
         // collecting file
         auto reader = gnomonCellImageReaderCommand();
         reader.setAlgorithmName("cellImageReaderTimagetk");
-        reader.setPath(d->morphoplot_tmp_dir->filePath("edited_seg_img.inr.gz"));
+        reader.setPath(d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE));
         reader.setNoAsync();
 
         reader.predo();

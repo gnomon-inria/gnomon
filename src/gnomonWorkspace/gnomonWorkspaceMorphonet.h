@@ -7,6 +7,8 @@
 
 #include <QJSValue>
 
+#define MORPHOPLOT_TMP_FILE "edited_seg_img.inr.gz"
+
 class gnomonViewForm;
 class gnomonPythonAlgorithmPluginCode;
 
@@ -51,7 +53,7 @@ public:
     Q_INVOKABLE void importDataset(int time_start, int time_end, int id, double voxelsize);
     Q_INVOKABLE int importDatasetInfos(void);
     Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description);
-    Q_INVOKABLE void morphoPlot(void);
+    Q_INVOKABLE int morphoPlot(void);
     Q_INVOKABLE void morphoPlotCollect(void);
 
     Q_INVOKABLE gnomonViewForm *view(void);
