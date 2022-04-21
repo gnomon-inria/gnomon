@@ -41,6 +41,7 @@ Control {
         }
         TabButton {
             text: "Plot API"
+            Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
     }
 
@@ -139,7 +140,7 @@ Control {
                     wrapMode: Label.WordWrap
                 }
 
-                
+
                 RowLayout {
                     Layout.fillWidth: true;
 
@@ -158,19 +159,19 @@ Control {
                     }
 
                 }
-                
+
                 RowLayout {
                     Layout.fillWidth: true;
 
                     X.Label { text: "Time start:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { id: _ds_time_start; 
+                    X.TextField { id: _ds_time_start;
                         text: "";
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
-                        font.pixelSize: 12;              
+                        font.pixelSize: 12;
                     }
                     X.Label { text: "Time  End:";  font.pixelSize: 14;}
-                    X.TextField { id: _ds_time_end; text: "";  
+                    X.TextField { id: _ds_time_end; text: "";
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                         font.pixelSize: 12;
@@ -361,9 +362,14 @@ Control {
                     Layout.fillWidth: true
                     text: "Launch Plot";
                     onClicked: {
-                        d.morphoPlot();
                         _launch_morphoplot.enabled = false;
-                        _collect_morphoplot.enabled = true;
+                        let res = d.morphoPlot();
+                        if(res == 0) {
+                            _launch_morphoplot.enabled = false;
+                            _collect_morphoplot.enabled = true;
+                        } else {
+                            _launch_morphoplot.enabled = true;
+                        }
                     }
                 }
 
