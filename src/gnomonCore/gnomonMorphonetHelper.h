@@ -26,9 +26,12 @@ public:
     virtual int endTime() = 0;
 
 public:
-    virtual gnomonCellImage *loadMnDataAtTime(int time, double voxelsize = 0.1) = 0;
+    virtual gnomonCellImage *loadMnDataAtTime(int time, double voxelsize = 0.1, bool load_infos = true) = 0;
+    virtual void loadMnInfos(gnomonCellImageSeries *serie) = 0;
+
     virtual int createDataset(QString name, gnomonCellImageSeries *serie, int id_NCBI=0, int id_type=0, QString description="") = 0;
     virtual bool deleteDataset(int id) = 0;
+
 
 
 private: 

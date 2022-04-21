@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWorkspacePreprocess.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
@@ -42,7 +28,10 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
 
     d->updatePool();
 
-    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+    connect(d->command, &gnomonAbstractCommand::finished, [this]() { 
+        this->viewOutputs();
+        this->finished();
+    });
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)

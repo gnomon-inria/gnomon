@@ -86,7 +86,8 @@ public:
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
-    
+    Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
 // /////////////////////////////////////////////////////////////////////////////
@@ -248,6 +249,7 @@ signals:
 signals:
     void timeChanged(double);
     void timeMaxChanged(double);
+    void timesChanged(void);
 
 public:
     QList<double> times(void);
