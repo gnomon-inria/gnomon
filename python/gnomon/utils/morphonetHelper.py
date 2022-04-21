@@ -525,7 +525,6 @@ def visu_debug(polydata=None, img=None):
     renderWindowInteractor.SetRenderWindow(renderWindow)
     renderWindow.Render()
     renderWindowInteractor.Start()
-    
 
 
 # if __name__ == "__main__":

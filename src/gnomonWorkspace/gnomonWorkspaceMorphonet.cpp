@@ -1,4 +1,7 @@
 #include "gnomonWorkspaceMorphonet.h"
+#include "gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand"
+#include "gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand"
+#include "gnomonManager/gnomonFormManager"
 
 #include <gnomonCore/simpleCrypt.h>
 #include <gnomonCore/gnomonMorphonetHelper.h>
@@ -15,12 +18,13 @@
 #pragma pop_macro("slots")
 
 #include <dtkScript>
+#include <csignal>
 
 class gnomonWorkspaceMorphonetPrivate{
 
 public:
     gnomonWorkspaceMorphonetPrivate() = default;
-    ~gnomonWorkspaceMorphonetPrivate() = default;
+    ~gnomonWorkspaceMorphonetPrivate();
 
 public:
     QString encodePassword(const QString& password);    
@@ -50,10 +54,14 @@ public:
 
     gnomonViewForm *view = nullptr;
     gnomonCellImageSeries *img_series = nullptr;
+
+    QProcess *morphoplot_process =  nullptr;
+    QTemporaryDir *morphoplot_tmp_dir = nullptr;
     //gnomonAbstractDynamicForm *current_form; // time_series ? 
 
 private: 
-    SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073)); 
+    SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073));
+
 };
 
 
@@ -131,6 +139,13 @@ void gnomonWorkspaceMorphonetPrivate::clear(void) {
         delete img;
     } 
 
+}
+
+gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
+    delete morphoplot_process;
+    delete morphoplot_tmp_dir;
+    delete view;
+    delete img_series;
 }
 
 
@@ -378,8 +393,81 @@ int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_ty
 
 void gnomonWorkspaceMorphonet::morphoPlot(void)
 {
-    gnomonMorphonetHelper::instance()->morphoPlot();
-    qDebug() << Q_FUNC_INFO << "end mn plot";
+    auto image = this->view()->cellImage();
+    if(!image) {
+        return;
+    }
+
+    if(d->morphoplot_process) {
+        // cleaning up
+        kill((pid_t)d->morphoplot_process->processId(), SIGINT);
+        d->morphoplot_process->waitForFinished(3000);
+        d->morphoplot_process->kill();
+        d->morphoplot_process->waitForFinished(10000);
+        delete d->morphoplot_process;
+    }
+    delete d->morphoplot_tmp_dir;
+    d->morphoplot_tmp_dir = new QTemporaryDir();
+    auto filepath = d->morphoplot_tmp_dir->filePath("edited_seg_img.inr.gz");
+
+
+
+    auto writer = gnomonCellImageWriterCommand();
+    writer.setCellImage(image);
+    writer.setAlgorithmName("cellImageWriterTissueImage");
+    writer.setPath(filepath);
+    writer.setNoAsync();
+
+    writer.predo();
+    writer.redo();
+    writer.postdo();
+
+    d->morphoplot_process = new QProcess();
+    /*
+    d->morphoplot_process->setProgram("_run_morphoplot");
+    d->morphoplot_process->setArguments({filepath});
+    d->morphoplot_process->start();
+     */
+    d->morphoplot_process->startCommand(QString("_run_morphoplot %1").arg(filepath));
+
+
+    //gnomonMorphonetHelper::instance()->morphoPlot(form);
+    qDebug() << Q_FUNC_INFO << "end mn plot " << d->morphoplot_process->state();
+}
+
+void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
+{
+    if(d->morphoplot_process) {
+        // terminate morphoplot server
+        kill((pid_t)d->morphoplot_process->processId(), SIGINT);
+
+        // collecting file
+        auto reader = gnomonCellImageReaderCommand();
+        reader.setAlgorithmName("cellImageReaderTimagetk");
+        reader.setPath(d->morphoplot_tmp_dir->filePath("edited_seg_img.inr.gz"));
+        reader.setNoAsync();
+
+        reader.predo();
+        reader.redo();
+        reader.postdo();
+
+        auto cellImage_series = dynamic_cast<gnomonCellImageSeries *>(reader.cellImage()->clone());
+
+        int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
+        cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
+        cellImage_series->metadata()->set("source", "Morphoplot");
+        d->view->setCellImage(cellImage_series, {});
+
+
+        // cleaning up
+        d->morphoplot_process->waitForFinished(3000);
+        d->morphoplot_process->kill();
+        d->morphoplot_process->waitForFinished(10000);
+        delete d->morphoplot_process;
+        d->morphoplot_process = nullptr;
+        delete d->morphoplot_tmp_dir;
+        d->morphoplot_tmp_dir = nullptr;
+    }
 }
 
 gnomonViewForm *gnomonWorkspaceMorphonet::view(void)
