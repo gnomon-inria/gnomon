@@ -130,11 +130,11 @@ Rectangle {
     }
 
     G.TimeSeriesSlider { id: _ts_slider;
-        to: viewLogic.timeMax
-        visible: viewLogic.timeMax > 0
+        times: viewLogic.times
+        visible: viewLogic.times.length > 1
 
         onValueChanged: {
-            viewLogic.currentTime = value;
+            viewLogic.currentTime = value
         }
     }
 

@@ -78,13 +78,15 @@ Control {
                             _ds_comments.text = mn_ds_info.get(_datasets.currentIndex).comments;
                             _ds_delete.visible = mn_ds_info.get(_datasets.currentIndex).own;
 
-                            // idle.start() ??
+                            //idle.start()
                             d.importDatasetPreview(d.currentId,
                                  Number(_voxelsize.text)
                             );
                             _ds_time_start.text = d.timeStart
                             _ds_time_end.text = d.timeEnd
-                            //idle.end() ???
+
+                            row_times_tooltip.text = "times in range [" + d.timeStart + ", " + d.timeEnd + "]"
+                            //idle.end()
                         }
                     }
                 }
@@ -122,43 +124,10 @@ Control {
                     font.pixelSize: 10;
                     wrapMode: Label.WordWrap
                 }
-                /*
 
+                
                 RowLayout {
-                    Layout.fillWidth: true;
-
-                    X.Label {
-                        text: "Image Dims:";
-                        color: X.Style.foregroundColor;
-                        font.pixelSize: 14;
-                    }
-                    X.TextField { id: _dim_x; text: "100"; errorText: "bad Value";
-                        validator: IntValidator{bottom: 1; top: 10000;}
-                    }
-                    X.TextField {id: _dim_y; text: "100"; errorText: "bad Value";
-                        validator: IntValidator{bottom: 1; top: 10000;}
-                    }
-                    X.TextField {id: _dim_z; text: "100"; errorText: "bad Value";
-                        validator: IntValidator{bottom: 1; top: 10000;}
-                    }
-
-                    MouseArea{
-                        id: _dims_ma
-                        Layout.fillWidth: true;
-                        Layout.fillHeight: true
-                        hoverEnabled: true
-                        propagateComposedEvents: true
-                    }
-
-                    X.ToolTip {
-                        visible: _dims_ma.containsMouse
-                        text: "image dimensions (x,y,z) in range [1, 10000]"
-                    }
-
-                }
-                */
-
-                RowLayout {
+                    id: row_voxel
                     Layout.fillWidth: true;
 
                     X.Label {
@@ -170,29 +139,51 @@ Control {
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
-                    MouseArea{
-                        id: _voxsize_ma
-                        Layout.fillWidth: true;
-                        Layout.fillHeight: true
-                        hoverEnabled: true
-                        propagateComposedEvents: true
-                    }
-
                     X.ToolTip {
                         visible: _voxsize_ma.containsMouse
                         text: "Voxel size (x,y,z) in range [0.01, 10]"
                     }
 
                 }
+                MouseArea {
+                    id: _voxsize_ma
+                    anchors.fill: row_voxel
+                    hoverEnabled: true
+                    propagateComposedEvents: true
+                }
 
                 RowLayout {
+                    id: row_times
                     Layout.fillWidth: true;
 
                     X.Label { text: "Time start:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.Label { id: _ds_time_start; text: "";  font.pixelSize: 12;}
+                    X.TextField { id: _ds_time_start; 
+                        text: "";
+                        errorText: "bad Value";
+                        validator: IntValidator{bottom: 0; top: 10000;}
+                        font.pixelSize: 12;              
+                    }
                     X.Label { text: "Time  End:";  font.pixelSize: 14;}
-                    X.Label { id: _ds_time_end; text: "";  font.pixelSize: 12;}
+                    X.TextField { id: _ds_time_end; text: "";  
+                        errorText: "bad Value";
+                        validator: IntValidator{bottom: 0; top: 10000;}
+                        font.pixelSize: 12;
+                    }
+                    X.ToolTip {
+                        id: row_times_tooltip
+                        visible: _times_ma.containsMouse
+                        text: "times in range [0, 10000]"
+                    }
+
                 }
+
+                MouseArea {
+                    id: _times_ma
+                    anchors.fill: row_times
+                    hoverEnabled: true
+                    propagateComposedEvents: true
+                }
+
 
                 X.ButtonRaw {
                     Layout.fillWidth: true;
@@ -202,7 +193,7 @@ Control {
                         //_progress.open();
                         //_progress.start();
                         console.info('Importing selected dataset from morphonet!')
-                        //d.importDataset(time_start, time_end)
+                        d.importDataset(Number(_ds_time_start.text), Number(_ds_time_end.text), d.currentId, Number(_voxelsize.text))
                     }
                 }
             }
