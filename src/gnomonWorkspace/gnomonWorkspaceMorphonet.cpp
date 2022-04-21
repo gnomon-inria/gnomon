@@ -27,7 +27,7 @@ public:
     QString decodePassword(const QString& encoded_password);
 
     bool selectDataset(int id);
-    void loadMNDataAtTime(int time, double voxelsize);
+    void loadMNDataAtTime(int time, double voxelsize, bool load_infos);
 
     enum Status {
         Morphonet_NotLoaded,
@@ -110,9 +110,9 @@ bool gnomonWorkspaceMorphonetPrivate::selectDataset(int id)
     return true;
 }
 
-void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsize)
+void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsize, bool load_infos)
 {
-    gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
+    gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize, load_infos);
 
     if(cell_img) {
         this->img_series->insert(double(time), cell_img);
@@ -312,7 +312,7 @@ void gnomonWorkspaceMorphonet::importDatasetPreview(int id, double voxelsize)
     }
 
     //import first time of selected dataset and set it to the view
-    d->loadMNDataAtTime(d->start_time, voxelsize);
+    d->loadMNDataAtTime(d->start_time, voxelsize, false);
 
     if(!d->img_series->times().isEmpty())
         d->view->setForm("CellImage", d->img_series); 
@@ -332,8 +332,6 @@ void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int i
         d->current_id = id;
     }
 
-    qDebug() << Q_FUNC_INFO << "import dataset from id" << d->current_id;
-
     //1 select dataset
     bool ok = d->selectDataset(d->current_id);
     if(!ok) {
@@ -341,20 +339,35 @@ void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int i
         return;
     }
 
-    //TODO
-    //get list of datasets times between the range
-
     d->clear();
 
-
     for(int time = time_start; time <= time_end; time++) {
-      d->loadMNDataAtTime(time, voxelsize);
+      d->loadMNDataAtTime(time, voxelsize, true);
     }
 
     if(!d->img_series->times().isEmpty())
         d->view->setForm("CellImage", d->img_series); 
+}
 
-    qDebug() << Q_FUNC_INFO << "TODO  not implemented";    
+int gnomonWorkspaceMorphonet::importDatasetInfos(void)
+{
+    int res = -1;
+    if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
+        qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
+        return res;
+    }
+
+    auto *serie = dynamic_cast<gnomonCellImageSeries *>(d->view->form("gnomonCellImage"));
+
+    if (serie) {
+        gnomonMorphonetHelper::instance()->loadMnInfos(serie);
+        d->view->setCellImage(serie);
+        res = 1;
+    } else {
+        message("No cellImageSeries! Impossible to update infos");
+    }
+
+    return res;
 }
 
 int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_type, QString description)
