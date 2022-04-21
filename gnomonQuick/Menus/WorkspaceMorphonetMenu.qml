@@ -107,7 +107,7 @@ Control {
                     X.Label { text: "Owner:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
                     X.Label { id: _ds_owner; text: "";  font.pixelSize: 12;}
                     X.ButtonRaw {
-                        id: _ds_delete; 
+                        id: _ds_delete;
                         text: "Delete";
                         onClicked: {
                            d.deleteDataset();
@@ -308,19 +308,38 @@ Control {
                 }
             }
         }
-         Control {
+        Control {
             //anchors.fill: parent
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            X.ButtonRaw {
-                id: _launch_morphoplot
-                text: "Launch Plot";
-                onClicked: {
-                    d.morphoPlot();
+            ColumnLayout {
+                anchors.fill: parent;
+                anchors.margins: 12;
+
+                X.ButtonRaw {
+                    id: _launch_morphoplot
+                    Layout.fillWidth: true
+                    text: "Launch Plot";
+                    onClicked: {
+                        d.morphoPlot();
+                        _launch_morphoplot.enabled = false;
+                        _collect_morphoplot.enabled = true;
+                    }
+                }
+
+                X.ButtonRaw {
+                    id: _collect_morphoplot
+                    Layout.fillWidth: true
+                    enabled: false;
+                    text: "Collect Plot Results";
+                    onClicked: {
+                        d.morphoPlotCollect();
+                        _launch_morphoplot.enabled = true;
+                        _collect_morphoplot.enabled = false;
+                    }
                 }
             }
-
         }
     }
 
