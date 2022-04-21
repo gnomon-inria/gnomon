@@ -67,9 +67,10 @@ Control {
                     Layout.preferredHeight: 28;
                     model: mn_ds_info;
                     displayText: "Choose a Dataset Here";
+                    currentIndex: -1
 
                     onCurrentIndexChanged: {
-                        if (d) {
+                        if (d && _datasets.currentIndex != -1) {
                             d.currentId = mn_ds_info.get(_datasets.currentIndex).morpho_id;
                             displayText = mn_ds_info.get(_datasets.currentIndex).name
                             _ds_id.text = mn_ds_info.get(_datasets.currentIndex).morpho_id;
@@ -208,6 +209,11 @@ Control {
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
+                    X.ToolTip {
+                        visible: _up_ncbi.hovered
+                        text: "NCBI id see: https://www.ncbi.nlm.nih.gov"
+                    }
+
                 }
 
 
@@ -221,6 +227,11 @@ Control {
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 2; }
                     }
+                    X.ToolTip {
+                        visible: _up_type.hovered
+                        text: " 0 for Observed Data, 1 for Simulated Data, 2 for Drawing Data"
+                    }
+
                 }
 
 
