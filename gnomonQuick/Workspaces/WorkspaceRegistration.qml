@@ -46,6 +46,9 @@ G.Workspace {
     GW.WorkspaceRegistration {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onParametersChanged: {
             _self.updateParametersModel();
         }

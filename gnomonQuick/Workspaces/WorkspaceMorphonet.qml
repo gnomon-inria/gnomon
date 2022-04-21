@@ -17,7 +17,7 @@ G.Workspace {
 
     id: _self;
 
-    workspace_title: "Morphonet Connector";
+    workspace_title: "MorphoNet";
 
     property alias d: d;
     property alias mn_ds_info: mn_datasets_info;
@@ -28,6 +28,9 @@ G.Workspace {
 
     GW.WorkspaceMorphonet {
         id: d;
+
+        onStarted: idleStart();
+        onFinished: idleStop();
 
         onMessage: { 
             console.log("message: ", msg)

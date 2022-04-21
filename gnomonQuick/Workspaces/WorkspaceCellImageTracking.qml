@@ -36,6 +36,9 @@ G.Workspace {
     GW.WorkspaceCellImageTracking {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onParametersChanged: {
             _self.updateParametersModel();
         }

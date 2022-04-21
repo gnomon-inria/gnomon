@@ -130,11 +130,11 @@ Rectangle {
     }
 
     G.TimeSeriesSlider { id: _ts_slider;
-        to: viewLogic.timeMax
-        visible: viewLogic.timeMax > 0
+        times: viewLogic.times
+        visible: viewLogic.times.length > 1
 
         onValueChanged: {
-            viewLogic.currentTime = value;
+            viewLogic.currentTime = value
         }
     }
 
@@ -299,8 +299,9 @@ Rectangle {
         ToolTip.text: "(Un)Link with other views for this workspace";
     }
 
-    Keys.onPressed: {
+    Keys.onPressed: (event) => {
         console.log(event.key)
+        event.accepted = false
         if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
             if(event.modifiers & Qt.ShiftModifier) {

@@ -33,9 +33,11 @@ Control {
 
         TabButton {
             text: "Download"
+            Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
         TabButton {
             text: "Upload"
+            Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
         TabButton {
             text: "Plot API"
@@ -64,15 +66,23 @@ Control {
                 anchors.fill: parent
                 anchors.margins: 10
 
+                X.Label {
+                    Layout.fillWidth: true;
+                    text: "Existing Dataset";
+                    color: X.Style.foregroundColor;
+                    font.pixelSize: 18;
+                }
+
                 X.ComboBox {
                     id: _datasets
                     Layout.fillWidth: true;
                     Layout.preferredHeight: 28;
                     model: mn_ds_info;
                     displayText: "Choose a Dataset Here";
+                    currentIndex: -1
 
                     onCurrentIndexChanged: {
-                        if (d) {
+                        if (d && _datasets.currentIndex != -1) {
                             d.currentId = mn_ds_info.get(_datasets.currentIndex).morpho_id;
                             displayText = mn_ds_info.get(_datasets.currentIndex).name
                             _ds_id.text = mn_ds_info.get(_datasets.currentIndex).morpho_id;
@@ -81,13 +91,15 @@ Control {
                             _ds_comments.text = mn_ds_info.get(_datasets.currentIndex).comments;
                             _ds_delete.visible = mn_ds_info.get(_datasets.currentIndex).own;
 
-                            // idle.start() ??
+                            //idle.start()
                             d.importDatasetPreview(d.currentId,
                                  Number(_voxelsize.text)
                             );
                             _ds_time_start.text = d.timeStart
                             _ds_time_end.text = d.timeEnd
-                            //idle.end() ???
+
+                            row_times_tooltip.text = "times in range [" + d.timeStart + ", " + d.timeEnd + "]"
+                            //idle.end()
                         }
                     }
                 }
@@ -111,55 +123,23 @@ Control {
                         text: "Delete";
                         onClicked: {
                            d.deleteDataset();
+                           d.updateDatasetsInfo();
                         }
                     }
                 }
 
-                X.Label { text: "Comments:";  font.pixelSize: 14;}
+                X.Label { text: "Description:";  font.pixelSize: 14;}
                 X.Label {
                     id: _ds_comments;
                     Layout.fillWidth: true;
+                    Layout.minimumHeight: selected_ds_info.height/4;
 
                     text: "";
                     font.pixelSize: 10;
                     wrapMode: Label.WordWrap
                 }
-                /*
 
-                RowLayout {
-                    Layout.fillWidth: true;
-
-                    X.Label {
-                        text: "Image Dims:";
-                        color: X.Style.foregroundColor;
-                        font.pixelSize: 14;
-                    }
-                    X.TextField { id: _dim_x; text: "100"; errorText: "bad Value";
-                        validator: IntValidator{bottom: 1; top: 10000;}
-                    }
-                    X.TextField {id: _dim_y; text: "100"; errorText: "bad Value";
-                        validator: IntValidator{bottom: 1; top: 10000;}
-                    }
-                    X.TextField {id: _dim_z; text: "100"; errorText: "bad Value";
-                        validator: IntValidator{bottom: 1; top: 10000;}
-                    }
-
-                    MouseArea{
-                        id: _dims_ma
-                        Layout.fillWidth: true;
-                        Layout.fillHeight: true
-                        hoverEnabled: true
-                        propagateComposedEvents: true
-                    }
-
-                    X.ToolTip {
-                        visible: _dims_ma.containsMouse
-                        text: "image dimensions (x,y,z) in range [1, 10000]"
-                    }
-
-                }
-                */
-
+                
                 RowLayout {
                     Layout.fillWidth: true;
 
@@ -168,43 +148,53 @@ Control {
                         color: X.Style.foregroundColor;
                         font.pixelSize: 14;
                     }
-                    X.TextField { id: _voxelsize; text: "0.20"; errorText: "bad Value";
+                    X.TextField { id: _voxelsize; text: "1.0"; errorText: "bad Value";
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
-                    MouseArea{
-                        id: _voxsize_ma
-                        Layout.fillWidth: true;
-                        Layout.fillHeight: true
-                        hoverEnabled: true
-                        propagateComposedEvents: true
-                    }
-
                     X.ToolTip {
-                        visible: _voxsize_ma.containsMouse
+                        visible: _voxelsize.hovered
                         text: "Voxel size (x,y,z) in range [0.01, 10]"
                     }
 
                 }
-
+                
                 RowLayout {
                     Layout.fillWidth: true;
 
                     X.Label { text: "Time start:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.Label { id: _ds_time_start; text: "";  font.pixelSize: 12;}
+                    X.TextField { id: _ds_time_start; 
+                        text: "";
+                        errorText: "bad Value";
+                        validator: IntValidator{bottom: 0; top: 10000;}
+                        font.pixelSize: 12;              
+                    }
                     X.Label { text: "Time  End:";  font.pixelSize: 14;}
-                    X.Label { id: _ds_time_end; text: "";  font.pixelSize: 12;}
+                    X.TextField { id: _ds_time_end; text: "";  
+                        errorText: "bad Value";
+                        validator: IntValidator{bottom: 0; top: 10000;}
+                        font.pixelSize: 12;
+                    }
+                    X.ToolTip {
+                        id: row_times_tooltip
+                        visible: _ds_time_end.hovered || _ds_time_start.hovered
+                        text: "times in range [0, 10000]"
+                    }
+                }
+
+                Item {
+                    Layout.fillHeight: true;
                 }
 
                 X.ButtonRaw {
                     Layout.fillWidth: true;
-                    text: "import";
+                    text: "Download";
 
                     onClicked: {
                         //_progress.open();
                         //_progress.start();
-                        console.info('Importing selected dataset from morphonet!')
-                        //d.importDataset(time_start, time_end)
+                        console.info('Downloading selected dataset from morphonet!')
+                        d.importDataset(Number(_ds_time_start.text), Number(_ds_time_end.text), d.currentId, Number(_voxelsize.text))
                     }
                 }
             }
@@ -220,10 +210,21 @@ Control {
                 anchors.fill: parent
                 anchors.margins: 10
 
+                X.Label {
+                    Layout.fillWidth: true;
+                    text: "New Dataset";
+                    color: X.Style.foregroundColor;
+                    font.pixelSize: 18;
+                }
+
                 RowLayout {
                     Layout.fillWidth: true;
                     X.Label { text: "Name:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { id: _up_name; helperText: "New Dataset Name"; }
+                    X.TextField {
+                        id: _up_name;
+                        Layout.fillWidth: true;
+                        helperText: "New Dataset Name";
+                    }
                 }
 
                 RowLayout {
@@ -231,35 +232,45 @@ Control {
                     X.Label { text: "NCBI:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
                     X.TextField {
                         id: _up_ncbi;
+                        Layout.fillWidth: true;
                         placeholderText: qsTr("NCBI specie if available");
                         text: "0";
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
-                }
+                    X.ToolTip {
+                        visible: _up_ncbi.hovered
+                        text: "NCBI id see: https://www.ncbi.nlm.nih.gov"
+                    }
 
+                }
 
                 RowLayout {
                     Layout.fillWidth: true;
-                    X.Label { text: "type:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField {
-                        id: _up_type;
-                        placeholderText: qsTr("type : 0, 1, 2");
-                        text: "0";
-                        errorText: "bad Value";
-                        validator: IntValidator{bottom: 0; top: 2; }
+                    X.Label { text: "Type:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
+                    X.ComboBox { id: _up_type
+                        model: ["0: Observed", "1: Simulated", "2: Drawing"]
+                        currentIndex: 0
+                        Layout.fillWidth: true;
+                    }
+                    X.ToolTip {
+                        visible: _up_type.hovered
+                        text: " 0 for Observed Data, 1 for Simulated Data, 2 for Drawing Data"
                     }
                 }
-
 
                 RowLayout {
                     Layout.fillWidth: true;
                     X.Label { text: "Description:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
                     X.TextField {
                         id: _up_description;
-                        placeholderText: qsTr("Description");
-                        text: "";
+                        Layout.fillWidth: true;
+                        text: "(Uploaded from Gnomon)";
                     }
+                }
+
+                Item {
+                    Layout.fillHeight: true
                 }
 
                 X.ButtonRaw {
@@ -279,15 +290,39 @@ Control {
                 }
 
                 X.ButtonRaw {
+                    id: _sync_infos
+                    Layout.fillWidth: true;
+
+                    text: "Sync cell infos";
+                    visible: false
+
+                    onClicked: {
+                        console.info('Downloading Morphonet cell infos...')
+                        var res = d.importDatasetInfos()
+                        if( res != -1) {
+                            console.log('Successfully upated cell infos!')
+                        }
+                    }
+
+                    X.Icon {
+                        icon: X.Icons.icons.sync;
+                        color: X.Style.foregroundColor;
+
+                        anchors.left: _sync_infos.left;
+                        anchors.leftMargin: 10;
+                        anchors.verticalCenter: _sync_infos.verticalCenter;
+                    }
+                }
+
+                X.ButtonRaw {
                     id: _upload_button
                     Layout.fillWidth: true;
-                    text: "Create dataset and Upload."
+                    text: "Create Dataset and Upload"
 
                     onClicked: {
                         //_progress.open();
                         //_progress.start();
-                        console.info('Importing selected dataset from morphonet!')
-                        var res = d.exportDataset(_up_name.text, Number(_up_ncbi.text), Number(_up_type.text), _up_description)
+                        var res = d.exportDataset(_up_name.text, Number(_up_ncbi.text), _up_type.currentIndex, _up_description)
                         if( res != -1) {
                             let new_text = "Dataset Uploaded with Id: %1"
                             _dataset_created.text = new_text.arg(res)
@@ -297,14 +332,18 @@ Control {
                             _dataset_created.link = new_link.arg(res)
                             _dataset_created.contentItem.color = "green"
                             // _upload_button.enabled = false //TODO deactivate new upload if successfull
+
+                            _sync_infos.visible = true
+
                         } else {
                             _dataset_created.text = "[Error] Dataset Not Uploaded"
                             _dataset_created.contentItem.color = "red"
                             _dataset_created.visible = true
                             _dataset_created.enabled =  false
+
+                            _sync_infos.visible = false
                         }
                     }
-
                 }
             }
         }
