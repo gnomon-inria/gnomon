@@ -1,15 +1,15 @@
 #include "gnomonWorkspaceMorphonet.h"
-#include "gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand"
+
 #include "gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand"
-#include "gnomonManager/gnomonFormManager"
-
-#include <gnomonCore/simpleCrypt.h>
-#include <gnomonCore/gnomonMorphonetHelper.h>
-
+#include "gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand"
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonMorphonetHelper.h>
+#include <gnomonCore/simpleCrypt.h>
+#include "gnomonManager/gnomonFormManager"
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 
+#include <dtkLog>
 #include <QtCore>
 
 #pragma push_macro("slots")
@@ -423,8 +423,6 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
     d->morphoplot_tmp_dir = new QTemporaryDir();
     auto filepath = d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE);
 
-
-
     auto writer = gnomonCellImageWriterCommand();
     writer.setCellImage(image);
     writer.setAlgorithmName("cellImageWriterTissueImage");
@@ -435,18 +433,14 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
     writer.redo();
     writer.postdo();
 
-    d->morphoplot_process = new QProcess();
-    /*
-    d->morphoplot_process->setProgram("_run_morphoplot");
-    d->morphoplot_process->setArguments({filepath});
-    d->morphoplot_process->start();
-     */
-    d->morphoplot_process->startCommand(QString("_run_morphoplot %1").arg(filepath));
-
-
-    //gnomonMorphonetHelper::instance()->morphoPlot(form);
-    qDebug() << Q_FUNC_INFO << "end mn plot " << d->morphoplot_process->state();
-    return 0;
+    if(QFile(filepath).exists()) {
+        d->morphoplot_process = new QProcess();
+        d->morphoplot_process->startCommand(QString("_run_morphoplot %1").arg(filepath));
+        dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
+        return 0;
+    }
+    message("Error: cannot create temporary file. No MorphoPlot launched");
+    return 1;
 }
 
 void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
@@ -460,19 +454,19 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
         reader.setAlgorithmName("cellImageReaderTimagetk");
         reader.setPath(d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE));
         reader.setNoAsync();
-
         reader.predo();
         reader.redo();
         reader.postdo();
 
-        auto cellImage_series = dynamic_cast<gnomonCellImageSeries *>(reader.cellImage()->clone());
-
-        int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
-        cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
-        cellImage_series->metadata()->set("source", "Morphoplot");
-        d->view->setCellImage(cellImage_series, {});
-
-
+        if(reader.cellImage()) {
+            auto cellImage_series = dynamic_cast<gnomonCellImageSeries *>(reader.cellImage()->clone());
+            int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
+            cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
+            cellImage_series->metadata()->set("source", "Morphoplot");
+            d->view->setCellImage(cellImage_series, {});
+        } else {
+            message("Error cannot read data back from MorphoPlot");
+        }
         // cleaning up
         d->morphoplot_process->waitForFinished(3000);
         d->morphoplot_process->kill();
