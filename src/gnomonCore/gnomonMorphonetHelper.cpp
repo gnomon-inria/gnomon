@@ -15,3 +15,4 @@ gnomonMorphonetHelper *gnomonMorphonetHelper::instance(void)
 void setMorphonetHelperCreator(gnomonMorphonetHelperCreator *creator) {
     gnomonMorphonetHelper::s_creator = creator;
 }
+
