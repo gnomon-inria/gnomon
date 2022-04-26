@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 
@@ -167,14 +153,7 @@ gnomonFormManager *gnomonFormManager::instance(void)
 
 void gnomonFormManager::addForm(gnomonAbstractDynamicForm *form, const QColor& color, const QJsonObject &visualization_description, const QImage& image,  vtkCamera *cam)
 {
-    // gnomonAbstractVisualization *visualization,
-
-    // QImage image = visualization->imageRendering();
-
-
-//        gnomonFormManagerItem *item = d->create(form, color, image);
     int item = d->item_counter++;
-
     d->forms.insert(item, form->clone());
     // d->formVisualizations.insert(item, visualization);
     d->visualization_description.insert(item, visualization_description);
@@ -382,9 +361,12 @@ QVariantList gnomonFormManager::timeKeys(int id) {
 }
 
 QStringList gnomonFormManager::formMetadataKeysAtT(int id, double t) {
-    if(contains(id)) {
+    if(contains(id) && d->forms[id]->times().contains(t)) {
         return d->forms[id]->at(t)->metadata().keys();
     } else {
+        qWarning() << Q_FUNC_INFO << "Cannot get metadata for form " << id << " at time " << t;
+        if(contains(id))
+            qWarning() << Q_FUNC_INFO << "available times: " << d->forms[id]->times(); 
         return {};
     }
 }

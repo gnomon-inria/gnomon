@@ -1,3 +1,4 @@
+#include <QtConcurrent>
 #include "gnomonWorkspaceMorphonet.h"
 
 #include "gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand"
@@ -46,8 +47,6 @@ public:
     QSettings settings = QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     Status morphonet_status = Morphonet_NotLoaded;
    
-   
-    //PyObject *mn_module = nullptr, *mn_net = nullptr, *gnm_mn_helper = nullptr;
     int current_id = -1, start_time=-1, end_time=-1;
     bool upload_mode = false;
     gnomonPipelineManager *pipeline_manager;
@@ -55,13 +54,12 @@ public:
     gnomonViewForm *view = nullptr;
     gnomonCellImageSeries *img_series = nullptr;
 
+    QFutureWatcher<void> *watcher = nullptr;
     QProcess *morphoplot_process =  nullptr;
     QTemporaryDir *morphoplot_tmp_dir = nullptr;
-    //gnomonAbstractDynamicForm *current_form; // time_series ? 
 
 private: 
     SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073));
-
 };
 
 
@@ -131,9 +129,18 @@ void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsiz
 
 
 void gnomonWorkspaceMorphonetPrivate::clear(void) {
-    this->view->clear();
 
-    for(auto time : this->img_series->times()) {\
+    if(watcher){
+        watcher->disconnect();
+        if(watcher->isRunning()) {
+            watcher->cancel();
+            watcher->waitForFinished();
+        }
+    }
+    delete watcher;
+    watcher = nullptr;
+
+    for(auto time : this->img_series->times()) {
         auto *img = this->img_series->at(time);
         this->img_series->drop(time);
         delete img;
@@ -142,6 +149,7 @@ void gnomonWorkspaceMorphonetPrivate::clear(void) {
 }
 
 gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
+    this->clear();
     delete morphoplot_process;
     delete morphoplot_tmp_dir;
     delete view;
@@ -156,6 +164,8 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
     d->pipeline_manager = gnomonPipelineManager::instance();
     d->view = new gnomonViewForm(this);
     d->img_series = new gnomonCellImageSeries();
+    d->img_series->metadata()->set("source", "MorphoNet");
+
     d->view->setAcceptForm("gnomonCellImage",true);
 
     connect(d->view, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
@@ -300,43 +310,20 @@ bool gnomonWorkspaceMorphonet::deleteDataset(int id)
     return gnomonMorphonetHelper::instance()->deleteDataset(id);
 }
 
-QString gnomonWorkspaceMorphonet::datasetsInfo(const QString& search)
+QString gnomonWorkspaceMorphonet::importDatasetInfos(const QString& search)
 {
     QString res = "";
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
         return res;
     }
-
+ 
     return gnomonMorphonetHelper::instance()->datasetsInfo(search);
 }
 
-void gnomonWorkspaceMorphonet::importDatasetPreview(int id, double voxelsize)
+void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_start, int time_end)
 {
-    if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
-        qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
-        return;
-    }
-
-    d->clear();
-
-    bool ok = d->selectDataset(id);
-    if(!ok) {
-        message(QString("cannot select dataset: %1").arg(id));
-        return;
-    }
-
-    //import first time of selected dataset and set it to the view
-    d->loadMNDataAtTime(d->start_time, voxelsize, false);
-
-    if(!d->img_series->times().isEmpty())
-        d->view->setForm("CellImage", d->img_series); 
-
-}
-
-
-void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int id, double voxelsize)
-{
+    emit started();
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
         return;
@@ -355,34 +342,42 @@ void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int i
     }
 
     d->clear();
-
-    for(int time = time_start; time <= time_end; time++) {
-      d->loadMNDataAtTime(time, voxelsize, true);
-    }
-
-    if(!d->img_series->times().isEmpty())
-        d->view->setForm("CellImage", d->img_series); 
+    d->watcher = new QFutureWatcher<void>();
+    connect(d->watcher, &QFutureWatcher<void>::finished, [this]() {
+        this->onDataLoaded();
+        this->finished();
+    });
+    
+    auto future = QtConcurrent::run([=](){
+        int t0 = time_start;
+        int t_end = time_end;
+        if(time_start == -1 && time_end == -1) {
+            t0 = d->start_time;
+            t_end = d->start_time;
+        } 
+        
+        for(int time = t0; time <= t_end; time++) {
+            gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
+            if(cell_img) {
+                d->img_series->insert(double(time), cell_img);
+            } else {
+                qWarning() << Q_FUNC_INFO << "load_mn_data_at_time " << time << " returned PyNone or nullptr";
+            }
+        }
+    });
+    d->watcher->setFuture(future);
 }
 
-int gnomonWorkspaceMorphonet::importDatasetInfos(void)
+void gnomonWorkspaceMorphonet::onDataLoaded() 
 {
-    int res = -1;
-    if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
-        qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
-        return res;
+    if(!d->img_series->times().isEmpty()) {
+        d->view->clear();
+        int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
+        d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
+ 
+        d->view->setCellImage(d->img_series, {});
+        emit timeEndChanged();
     }
-
-    auto *serie = dynamic_cast<gnomonCellImageSeries *>(d->view->form("gnomonCellImage"));
-
-    if (serie) {
-        gnomonMorphonetHelper::instance()->loadMnInfos(serie);
-        d->view->setCellImage(serie);
-        res = 1;
-    } else {
-        message("No cellImageSeries! Impossible to update infos");
-    }
-
-    return res;
 }
 
 int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_type, QString description, double voxelsize)
