@@ -45,10 +45,13 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
 
 template <typename T> T *gnomonTimeSeries<T>::at(double t) const
 {
-    Q_ASSERT_X(d_ptr()->forms.contains(t), "at", "Invalid time position : the form is not defined at this time");
-
-    d_ptr()->current_time = t;
-    return this->current();
+    if(d_ptr()->forms.contains(t)) {
+        d_ptr()->current_time = t;
+        return this->current();
+    } else { 
+        dtkWarn() << Q_FUNC_INFO << "Invalid time position : the form is not defined at this time:" << t;
+        return nullptr;
+    }
 }
 
 template <typename T> T *gnomonTimeSeries<T>::current(void) const
