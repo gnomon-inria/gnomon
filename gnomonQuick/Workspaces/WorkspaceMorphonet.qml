@@ -40,7 +40,7 @@ G.Workspace {
         }
 
         onConnectionStatusChanged: { 
-            updateDatasetsInfo();
+            setDatasetInfos();
             d.connected ? drawer.open() : drawer.close()
         }
 
@@ -191,8 +191,8 @@ G.Workspace {
         }
     }
 
-    function updateDatasetsInfo() {
-        let str_ds = d.datasetsInfo();
+    function setDatasetInfos() {
+        let str_ds = d.importDatasetInfos();
         let ds_info_json = JSON.parse(str_ds);
 
         mn_datasets_info.clear();

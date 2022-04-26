@@ -93,7 +93,7 @@ Control {
                             _ds_delete.visible = mn_ds_info.get(_datasets.currentIndex).own;
 
                             //idle.start()
-                            d.importDatasetPreview(d.currentId,
+                            d.importDataset(d.currentId,
                                  Number(_voxelsize.text)
                             );
                             _ds_time_start.text = d.timeStart
@@ -125,7 +125,7 @@ Control {
                         visible: false;
                         onClicked: {
                            d.deleteDataset();
-                           d.updateDatasetsInfo();
+                           d.setDatasetInfos();
                         }
                     }
                 }
@@ -150,7 +150,10 @@ Control {
                         color: X.Style.foregroundColor;
                         font.pixelSize: 14;
                     }
-                    X.TextField { id: _voxelsize; text: "1.0"; errorText: "bad Value";
+                    X.TextField { 
+                        id: _voxelsize;
+                        text: "1.0";
+                        errorText: "bad Value";
                         Layout.fillWidth: true;
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
@@ -198,8 +201,8 @@ Control {
                     onClicked: {
                         //_progress.open();
                         //_progress.start();
-                        console.info('Downloading selected dataset from morphonet!')
-                        d.importDataset(Number(_ds_time_start.text), Number(_ds_time_end.text), d.currentId, Number(_voxelsize.text))
+                        console.info('Downloading selected dataset from MorphoNet!')
+                        d.importDataset(d.currentId, Number(_voxelsize.text), Number(_ds_time_start.text), Number(_ds_time_end.text))
                     }
                 }
             }
