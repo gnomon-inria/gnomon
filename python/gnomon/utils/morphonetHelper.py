@@ -393,6 +393,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
                 cell_img.setData(cell_img_data)
 
                 if cell_img.cellCount() > 0:
+                    cell_img_data.__disown__()
                     return cell_img
                 else:
                     return None
