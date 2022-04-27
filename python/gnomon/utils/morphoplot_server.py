@@ -1,11 +1,14 @@
 import socket
 import zmq
 import pickle
+import time
+import numpy as np
 
-'''
-Config server port,
-Some Specific parameters
-'''
+
+context = zmq.Context()
+m_socket = context.socket(zmq.REP)
+m_socket.bind("tcp://*:9876")
+
 
 def handle_client():
     # set up client config
@@ -16,8 +19,18 @@ def handle_client():
 def start():
     # launch morphoplot into a local Port
     # listen to client
+    test_data = np.zeros((3,3))
+    while True:
+        message = m_socket.recv()
+        # message = pickle.loads(m_socket.recv())
+        print(f"Received request : {message}")
+        time.sleep(1)
+        m_socket.send(pickle.dumps(test_data))
+        data_received = pickle.loads(m_socket.recv())
+        print(f"Received data : {data_received}")
+        time.sleep(1)
+        m_socket.send(pickle.dumps("Final state"))
 
-    pass
 
 if __name__ == "__main__":
     start()

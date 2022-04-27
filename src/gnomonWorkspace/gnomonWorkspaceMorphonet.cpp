@@ -430,6 +430,13 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
     writer.redo();
     writer.postdo();
 
+    // qDebug() <<"###################"<<this->view()->cellImage()->current()->data()->serialize();
+    // d->morphoplot_process = new QProcess();
+    // QString data_serialized =this->view()->cellImage()->current()->data()->serialize();
+    // d->morphoplot_process->startCommand(QString("_gnomonMN_client %1").arg(data_serialized));
+    // dtkInfo() << "gnomonClient launched: " << d->morphoplot_process->state();
+
+
     if(QFile(filepath).exists()) {
         d->morphoplot_process = new QProcess();
         d->morphoplot_process->startCommand(QString("_run_morphoplot %1").arg(filepath));
