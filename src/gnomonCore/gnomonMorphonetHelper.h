@@ -31,8 +31,8 @@ public:
     virtual void loadMnInfos(std::shared_ptr<gnomonCellImageSeries> serie) = 0;
 
     virtual int createDataset(QString name, std::shared_ptr<gnomonCellImageSeries> serie, int id_NCBI=0, int id_type=0, QString description="", double voxelsize=1.) = 0;
+    virtual int sendDataset(QString name, std::shared_ptr<gnomonCellImageSeries> serie, int id_NCBI=0, int id_type=0, QString description="", double voxelsize=1.) = 0;
     virtual bool deleteDataset(int id) = 0;
-
 
 
 private: 

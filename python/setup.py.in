@@ -12,6 +12,7 @@ setup(name='gnomon',
         "console_scripts": [
             "gnomon-utils=gnomon.utils.gnomonCommandLineTools:main",
             "_run_morphoplot=gnomon.utils.run_morphoplot:run_morphoplot",
+            "_morphoplot_server=gnomon.utils.morphoplot_server:main",
             "_gnomonMN_client=gnomon.utils.gnomonMN_client:main",
         ]
       },

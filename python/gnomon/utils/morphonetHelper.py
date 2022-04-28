@@ -593,6 +593,24 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         return self._net.id_dataset
     
+    def sendDataset(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> int:
+        """send a dataset through socket 
+
+        Args:
+            name (str): _name of the dataset
+            form_series (_type_): _images_
+            id_NCBI (int): _NCBI id if available
+            id_type (int): _0:  1 or 2
+            description (str): _dataset description_
+
+        Returns:
+            int: the id of the created dataset or -1 if there is an error
+        """
+        # connect socket as in gnomonMN_client.py
+        # send data to morphoplot_server
+
+
+    
     def deleteDataset(self, id: int) -> bool:
         """Delete a dataset by id
         """

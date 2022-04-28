@@ -57,6 +57,7 @@ public:
 
     QFutureWatcher<void> *watcher = nullptr;
     QProcess *morphoplot_process =  nullptr;
+    QProcess *morphoplot_server_process =  nullptr;
     QTemporaryDir *morphoplot_tmp_dir = nullptr;
 
 private: 
@@ -150,6 +151,7 @@ void gnomonWorkspaceMorphonetPrivate::clearWatcherAndForms(void) {
 gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
     this->clearWatcherAndForms();
     delete morphoplot_process;
+    delete morphoplot_server_process;
     delete morphoplot_tmp_dir;
     delete view;
 }
@@ -416,6 +418,14 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
         d->morphoplot_process->waitForFinished(10000);
         delete d->morphoplot_process;
     }
+    if(d->morphoplot_server_process) {
+        // cleaning up
+        kill((pid_t)d->morphoplot_server_process->processId(), SIGINT);
+        d->morphoplot_server_process->waitForFinished(3000);
+        d->morphoplot_server_process->kill();
+        d->morphoplot_server_process->waitForFinished(10000);
+        delete d->morphoplot_server_process;
+    }
     delete d->morphoplot_tmp_dir;
     d->morphoplot_tmp_dir = new QTemporaryDir();
     auto filepath = d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE);
@@ -430,16 +440,13 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
     writer.redo();
     writer.postdo();
 
-    // qDebug() <<"###################"<<this->view()->cellImage()->current()->data()->serialize();
-    // d->morphoplot_process = new QProcess();
-    // QString data_serialized =this->view()->cellImage()->current()->data()->serialize();
-    // d->morphoplot_process->startCommand(QString("_gnomonMN_client %1").arg(data_serialized));
-    // dtkInfo() << "gnomonClient launched: " << d->morphoplot_process->state();
-
 
     if(QFile(filepath).exists()) {
         d->morphoplot_process = new QProcess();
-        d->morphoplot_process->startCommand(QString("_run_morphoplot %1").arg(filepath));
+        d->morphoplot_server_process = new QProcess();
+        QString data_serialized =this->view()->cellImage()->current()->data()->serialize();
+        d->morphoplot_process->startCommand(QString("_gnomonMN_client %1").arg(filepath));
+        d->morphoplot_server_process->startCommand(QString("_morphoplot_server"));
         dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
         return 0;
     }
