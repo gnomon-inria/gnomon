@@ -3,6 +3,8 @@ import logging
 import math
 import re
 import traceback
+import zmq
+import pickle
 
 import numpy as np
 import scipy.ndimage as nd
@@ -593,7 +595,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         return self._net.id_dataset
     
-    def sendDataset(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> int:
+    def sendDataset(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> bool:
         """send a dataset through socket 
 
         Args:
@@ -606,8 +608,31 @@ class MorphonetHelper(gnomonMorphonetHelper):
         Returns:
             int: the id of the created dataset or -1 if there is an error
         """
-        # connect socket as in gnomonMN_client.py
-        # send data to morphoplot_server
+        times = np.sort(list(form_series.keys()))
+
+        for i_t, time in enumerate(times):
+            serialized_form = form_series[time].data().serialize()
+
+        cell_img_data = serialized_form
+        print("********************")
+        print(cell_img_data)
+
+        context = zmq.Context()
+        m_socket = context.socket(zmq.REQ)
+        m_socket.connect("tcp://localhost:5050")
+        # test_data_reply = "/Users/ksamassa/Developpement/gnomon/gnomon-data/p58-t{:01d}_imgSeg.inr.gz"
+
+        m_socket.send_string("Hello!")
+        message = pickle.loads(m_socket.recv())
+        print(f"Received reply 0[ {message} ]")
+
+        m_socket.send(pickle.dumps(cell_img_data))
+
+        message = pickle.loads(m_socket.recv())
+        print(f"Received reply 1 [ {message} ]")
+
+        return True
+
 
 
     

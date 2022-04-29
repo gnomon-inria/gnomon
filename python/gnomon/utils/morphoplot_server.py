@@ -15,8 +15,6 @@ class MorphoPlot():
         self.mc = morphonet.Plot(start_browser=True, clear_temp=True, only_compute_mesh=False)
         self.config = False
         self.launch_ready = True
-        # sys.argv[1] to be remplaced by data received through socket
-        # self.mc.set_dataset(begin=0, end=0, background=1, segment=sys.argv[1], factor=5, memory=20)
 
     @staticmethod
     def parent_death_handler(self,sig, frame):
@@ -24,24 +22,20 @@ class MorphoPlot():
             self.mc.quit_and_exit()
             exit(0)
 
-    def _set_morpho_data(self, file_path):
-        self.mc.set_dataset(begin=0, end=0, background=1, segment=file_path, factor=5, memory=20)
+    def _set_morpho_data(self, data):
+        self.mc.set_dataset(begin=0, end=0, background=1, segment=data, factor=5, memory=20)
         # self.mc.set_seg(1,data)
     
     def local_server(self):
         test_data = np.zeros((3,3))
-        i_i = 0
         while True:
             message = self.m_socket.recv()
             print(f"Received request : {message}")
             time.sleep(1)
             self.m_socket.send(pickle.dumps(test_data))
             data_received = pickle.loads(self.m_socket.recv())
-            if i_i == 0:
-                self._set_morpho_data(data_received)
-                self.config = True
-                i_i += 1
-            print(f"Received data : {data_received}")
+            self._set_morpho_data(data_received)
+            self.config = True
             time.sleep(1)
             mn_data = self.mc.get_info("Cell Name")
             self.m_socket.send(pickle.dumps(mn_data))
