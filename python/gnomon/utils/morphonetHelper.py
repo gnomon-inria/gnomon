@@ -611,16 +611,11 @@ class MorphonetHelper(gnomonMorphonetHelper):
         times = np.sort(list(form_series.keys()))
 
         for i_t, time in enumerate(times):
-            serialized_form = form_series[time].data().serialize()
-
-        cell_img_data = serialized_form
-        print("********************")
-        print(cell_img_data)
+            cell_img_data = form_series[time].data().get_tissue_image().get_array() 
 
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
         m_socket.connect("tcp://localhost:5050")
-        # test_data_reply = "/Users/ksamassa/Developpement/gnomon/gnomon-data/p58-t{:01d}_imgSeg.inr.gz"
 
         m_socket.send_string("Hello!")
         message = pickle.loads(m_socket.recv())
