@@ -107,6 +107,10 @@ void gnomonWorkspaceBrowserPrivate::findReaders(void)
 bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
+    if(!readerCommand) {
+        dtkWarn() << Q_FUNC_INFO << "cannot create readerCommand " << reader_plugin << " for extension " << this->ext;
+        return false;
+    }
     readerCommand->setAlgorithmName(reader_plugin);
 
     QStringList paths;
