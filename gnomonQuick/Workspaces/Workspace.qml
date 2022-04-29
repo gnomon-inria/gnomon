@@ -19,18 +19,12 @@ Page {
     required property var fill;
 
     // default property alias contents: _contents.children;
-
     property alias parameters: _params.params_model;
 
     G.Parameters {
         id: _params;
-        parameters: d.parameters;
+        parameters: d ? d.parameters : null;
     }
-
-    // Item {
-    //     id: _contents;
-    //     anchors.fill: parent;
-    // }
 
     Rectangle {
 
@@ -49,14 +43,25 @@ Page {
         border.width: 1;
 
         width: 400;
-        height: 48;
+        height: 52;
 
         visible: false;
 
+        ProgressBar {
+            anchors.fill: parent
+            value: sessionLoader.progress
+            visible: window.load_in_progress
+            opacity: 0.5
+        }
+
         RowLayout {
-
-            anchors.fill: parent;
-
+            anchors.left: parent.left;
+            anchors.leftMargin: 0;
+            anchors.right: parent.right;
+            anchors.rightMargin: 0;
+            anchors.top: parent.top;
+            anchors.topMargin: 0;
+            height: 44
             BusyIndicator {
                 id: _banner_indicator;
 
@@ -65,7 +70,7 @@ Page {
             }
 
             X.Label {
-                text: "Computation in progress";
+                text: window.load_in_progress ? "Session loading in progress please dont launch other computations" : "Computation in progress" ;
                 Layout.fillWidth: true;
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft;
             }

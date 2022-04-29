@@ -24,7 +24,7 @@ Item {
 
     Component {
         id: _num_component
-        C.Numeric {param: lparam; paramType: lparam.type}
+        C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
     }
 
     Component {
