@@ -21,10 +21,11 @@ class MorphoPlot():
     def parent_death_handler(self,sig, frame):
         if self.mc is not None:
             self.mc.quit_and_exit()
-            exit(0)
+            exit(0) 
 
     def _set_morpho_data(self, data):
-        self.mc.dataset.set_seg(1,data)
+        self.mc.dataset.seg_from_disk[1] = False
+        self.mc.dataset.set_seg(1, data)
     
     def local_server(self):
         test_data = np.zeros((3,3))
@@ -34,7 +35,8 @@ class MorphoPlot():
             time.sleep(1)
             self.m_socket.send(pickle.dumps(test_data))
             data_received = pickle.loads(self.m_socket.recv())
-            self._set_morpho_data(data_received)
+            print(data_received)
+            self._set_morpho_data(data_received[0.0])
             self.config = True
             time.sleep(1)
             mn_data = self.mc.get_info("Cell Name")

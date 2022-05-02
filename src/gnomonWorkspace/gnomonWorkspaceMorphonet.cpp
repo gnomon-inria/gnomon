@@ -433,13 +433,13 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
 
    if(QFile(filepath).exists()) {
         d->morphoplot_process = new QProcess();
-        d->morphoplot_process->startCommand(QString("_morphoplot_server"));
+        // d->morphoplot_process->startCommand(QString("_morphoplot_server"));
         bool server_found = gnomonMorphonetHelper::instance()->sendDataset("name", image, 1, 3, "description");
         if(!server_found) {
             message("Morphonet Server not found!");
             return 1;
         }
-        dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
+        // dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
         return 0;
     }
     message("Error: cannot create temporary file. No MorphoPlot launched");

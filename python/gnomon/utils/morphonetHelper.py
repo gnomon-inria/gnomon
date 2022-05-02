@@ -610,9 +610,13 @@ class MorphonetHelper(gnomonMorphonetHelper):
         """
         times = np.sort(list(form_series.keys()))
 
+        cell_img_data = {}
         for i_t, time in enumerate(times):
-            cell_img_data = form_series[time].data().get_tissue_image().get_array() 
-
+            cell_img_data[time] = form_series[time].data().get_tissue_image().get_array() 
+        print("*********************")
+        print(cell_img_data.keys())
+        print(cell_img_data.values())
+        
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
         m_socket.connect("tcp://localhost:5050")
