@@ -500,8 +500,10 @@ Rectangle {
                     }
 
                     function select_field() {
-                        currentItem.form_name.selectAll();
-                        currentItem.form_name.forceActiveFocus();
+                        if(currentItem) {
+                            currentItem.form_name.selectAll();
+                            currentItem.form_name.forceActiveFocus();
+                        }
                     }
                 }
             }
