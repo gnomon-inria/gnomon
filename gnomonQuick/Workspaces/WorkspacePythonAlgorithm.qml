@@ -81,7 +81,7 @@ G.Workspace {
                 Layout.fillHeight: true
                 visible: !d.editMode
 
-                onDroppedFromManager: {
+                onDroppedFromManager: (index) => {
                     console.info('Retrieving from manager');
                     d.source.drop(index);
                 }

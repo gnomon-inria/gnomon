@@ -248,7 +248,7 @@ X.Dialog {
         }
         ListElement {
             type: "gnomonWorkspaceMorphonet"
-            title: "Morphonet"
+            title: "MorphoNet"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
             available: true
         }

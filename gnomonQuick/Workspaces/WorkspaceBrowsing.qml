@@ -33,7 +33,7 @@ G.Workspace {
     GW.WorkspaceBrowser {
         id: d;
 
-        onAvailable: {
+        onAvailable: (readers) => {
             _reader_dialog.availableReaders.clear();
             for (var r in readers) {
                 _reader_dialog.availableReaders.append({
@@ -56,7 +56,7 @@ G.Workspace {
         anchors.fill: parent;
         anchors.margins: 10;
 
-        onDroppedFromFile: {
+        onDroppedFromFile: (path) => {
             let urls = path.split(',')
             let paths = [];
             for(let i_n in urls) {
@@ -73,8 +73,7 @@ G.Workspace {
     G.ReaderDialog {
         id: _reader_dialog;
 
-        onReaderSelected: {
-            console.log(reader);
+        onReaderSelected: (reader) => {
             idleStart();
             d.readWith(reader);
         }

@@ -78,14 +78,12 @@ Page {
     }
 
     function idleStart() {
-        console.log("Idle Start");
         _banner.z = Infinity;
         _banner.visible = true;
         _banner_indicator.running = true;
     }
 
     function idleStop() {
-        console.log("Idle Stop");
         _banner.visible = false;
     }
 }

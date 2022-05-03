@@ -36,6 +36,9 @@ G.Workspace {
     GW.WorkspaceCellImageTracking {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onParametersChanged: {
             _self.updateParametersModel();
         }
@@ -58,7 +61,7 @@ G.Workspace {
             Layout.fillWidth: true;
             height: window.height/8;
 
-            onDroppedFromManager: {
+            onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
                 d.sourceDict.drop(index);
             }

@@ -102,7 +102,7 @@ X.Dialog { id: self;
             Layout.fillWidth: true
 
             X.Label { id: titleLabel;
-                      text: self.availableReaders.count > 0 ? self.availableReaders.get(listView.currentIndex).title: "";
+                      text: (self.availableReaders.count > 0 &&  self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).title: "";
                 font {
                     weight: Font.Bold
                     pointSize: 14;
@@ -114,7 +114,7 @@ X.Dialog { id: self;
             }
 
             X.Label { id: descriptionLabel;
-                text: self.availableReaders.count > 0 ? self.availableReaders.get(listView.currentIndex).description: "";
+                text: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).description: "";
 
                 Layout.preferredHeight: 30;
                 Layout.fillWidth: true
