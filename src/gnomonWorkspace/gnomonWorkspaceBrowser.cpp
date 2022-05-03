@@ -107,6 +107,10 @@ void gnomonWorkspaceBrowserPrivate::findReaders(void)
 bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 {
     gnomonAbstractCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
+    if(!readerCommand) {
+        dtkWarn() << Q_FUNC_INFO << "cannot create readerCommand " << reader_plugin << " for extension " << this->ext;
+        return false;
+    }
     readerCommand->setAlgorithmName(reader_plugin);
 
     QStringList paths;
@@ -133,13 +137,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         imageCommand->setPath(path);
         imageCommand->redo();
         gnomonImageSeries * image_series = (gnomonImageSeries *) imageCommand->image();
-        int form_count = gnomonFormManager::instance()->formCount(image_series->formName());
-        image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
-        image_series->metadata()->set("source", source);
         if (!image_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting image series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(image_series->formName());
+            image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
+            image_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonImage",image_series->clone());
             this->pipeline_manager->addClonedForm(image_series,this->browse_view->image());
             this->pipeline_manager->addReader(imageCommand);
@@ -149,13 +153,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellImageCommand->setPath(path);
         cellImageCommand->redo();
         gnomonCellImageSeries * cellImage_series = (gnomonCellImageSeries *) cellImageCommand->cellImage();
-        int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
-        cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
-        cellImage_series->metadata()->set("source", source);
         if (!cellImage_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting cellImage series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
+            cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
+            cellImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellImage",cellImage_series->clone());
             this->pipeline_manager->addClonedForm(cellImage_series,this->browse_view->cellImage());
             this->pipeline_manager->addReader(cellImageCommand);
@@ -165,13 +169,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         cellComplexCommand->setPath(path);
         cellComplexCommand->redo();
         gnomonCellComplexSeries * cellComplex_series = (gnomonCellComplexSeries *) cellComplexCommand->cellComplex();
-        int form_count = gnomonFormManager::instance()->formCount(cellComplex_series->formName());
-        cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
-        cellComplex_series->metadata()->set("source", source);
         if (!cellComplex_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(cellComplex_series->formName());
+            cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
+            cellComplex_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series->clone());
             this->pipeline_manager->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
             this->pipeline_manager->addReader(cellComplexCommand);
@@ -181,13 +185,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         binaryImageCommand->setPath(path);
         binaryImageCommand->redo();
         gnomonBinaryImageSeries * binaryImage_series = (gnomonBinaryImageSeries *) binaryImageCommand->binaryImage();
-        int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
-        binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));        QStringList sources;
-        binaryImage_series->metadata()->set("source", source);
         if (!binaryImage_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
+            binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));        QStringList sources;
+            binaryImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonBinaryImage",binaryImage_series->clone());
             this->pipeline_manager->addClonedForm(binaryImage_series, this->browse_view->binaryImage());
             this->pipeline_manager->addReader(binaryImageCommand);
@@ -197,13 +201,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         dataFrameCommand->setPath(path);
         dataFrameCommand->redo();
         gnomonDataFrameSeries * dataFrame_series = (gnomonDataFrameSeries *) dataFrameCommand->dataFrame();
-        int form_count = gnomonFormManager::instance()->formCount(dataFrame_series->formName());
-        dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
-        dataFrame_series->metadata()->set("source", source);
         if (!dataFrame_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(dataFrame_series->formName());
+            dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
+            dataFrame_series->metadata()->set("source", source);
 //            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series->clone());
 //            this->pipeline_manager->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
             this->pipeline_manager->addReader(dataFrameCommand);
@@ -213,13 +217,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         meshCommand->setPath(path);
         meshCommand->redo();
         gnomonMeshSeries * mesh_series = (gnomonMeshSeries *) meshCommand->mesh();
-        int form_count = gnomonFormManager::instance()->formCount(mesh_series->formName());
-        mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
-        mesh_series->metadata()->set("source", source);
         if (!mesh_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting mesh series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(mesh_series->formName());
+            mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
+            mesh_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonMesh",mesh_series->clone());
             this->pipeline_manager->addClonedForm(mesh_series,this->browse_view->mesh());
             this->pipeline_manager->addReader(meshCommand);
@@ -229,13 +233,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         pointCloudCommand->setPath(path);
         pointCloudCommand->redo();
         gnomonPointCloudSeries * pointCloud_series = (gnomonPointCloudSeries *) pointCloudCommand->pointCloud();
-        int form_count = gnomonFormManager::instance()->formCount(pointCloud_series->formName());
-        pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
-        pointCloud_series->metadata()->set("source", source);
         if (!pointCloud_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(pointCloud_series->formName());
+            pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
+            pointCloud_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series->clone());
             this->pipeline_manager->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
             this->pipeline_manager->addReader(pointCloudCommand);
@@ -245,13 +249,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
         treeCommand->setPath(path);
         treeCommand->redo();
         gnomonTreeSeries * tree_series = (gnomonTreeSeries *) treeCommand->tree();
-        int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
-        tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
-        tree_series->metadata()->set("source", source);
         if (!tree_series) {
             dtkWarn() << Q_FUNC_INFO << "Resulting tree series is void.";
             return false;
         } else {
+            int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
+            tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
+            tree_series->metadata()->set("source", source);
 //            this->browse_figure->setForm("gnomonTree",tree_series->clone());
 //            this->pipeline_manager->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
             this->pipeline_manager->addReader(treeCommand);

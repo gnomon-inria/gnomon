@@ -22,9 +22,9 @@ copyright = '2022, Inria'
 author = 'Mosaic project-team and AMDT team'
 
 # The short X.Y version
-version = '0.60'
+version = '0.61'
 # The full version, including alpha/beta/rc tags
-release = '0.60.0'
+release = '0.61.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -67,6 +67,7 @@ autodoc_default_options = {
     'member-order': 'bysource',
     'special-members': '__init__',
 }
+autodoc_mock_imports = ["gnomon.core", "gnomon.visualization", "gnomon.pipeline"]
 
 # -- Options for HTML output -------------------------------------------------
 

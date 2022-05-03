@@ -317,7 +317,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     plugin_code += "# {# gnomon, plugin.class\n";
     plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
-    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.60.0')\n";
+    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.61.0')\n";
 
     for (const auto &form_type : d->input_forms.keys()) {
         gnomonFormDescription desc = d->input_forms[form_type];

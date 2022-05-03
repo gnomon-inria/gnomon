@@ -2,8 +2,7 @@ image: conda/miniconda3
 
 stages:
   - test
-  - pages
-  - condabuild
+  - build
   - deploy
 
 
@@ -61,7 +60,7 @@ test_macos:
 
 
 conda_build_linux:
-  stage: condabuild
+  stage: build
   tags: 
     - linux
     - large
@@ -78,7 +77,7 @@ conda_build_linux:
     - master
 
 conda_build_macos:
-  stage: condabuild
+  stage: build
   tags: 
     - macos
     - large
@@ -96,7 +95,7 @@ conda_build_macos:
 
 
 conda_build_linux_develop:
-  stage: condabuild
+  stage: build
   tags: 
     - linux
     - large
@@ -162,21 +161,26 @@ anaconda_linux_develop :
     - develop
 
 
-deploy_pages:
-  stage: pages
+pages:
+  stage: deploy
   tags:
     - linux
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
-    - conda activate base 
+    - mamba env update -f conda/env_linux.yaml
+    - conda activate gnomon-dev
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
-    - cd doc
-    - make html
-    - mv build/html ../public
+    - rm -rf build
+    - mkdir build
+    - cd build
+    - cmake ..
     - cd ../doc_md
     - make html
-    - mkdir -p ../public/staging
-    - cp -R _build/html/* ../public/staging
+    - mv _build/html ../public
+    - cd ../doc
+    - make html
+    - mkdir -p ../public/legacy
+    - cp -R build/html/* ../public/legacy
   extends: .template_retry
   artifacts:
     paths:

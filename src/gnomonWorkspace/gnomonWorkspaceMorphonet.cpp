@@ -1,80 +1,38 @@
+#include <QtConcurrent>
 #include "gnomonWorkspaceMorphonet.h"
 
+#include "gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand"
+#include "gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand"
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
+#include <gnomonCore/gnomonMorphonetHelper.h>
 #include <gnomonCore/simpleCrypt.h>
+#include "gnomonManager/gnomonFormManager"
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 
+#include <dtkLog>
 #include <QtCore>
+
 #pragma push_macro("slots")
 #undef slots
 #include <Python.h>
 #pragma pop_macro("slots")
 
 #include <dtkScript>
+#include <csignal>
 
-
-
-/*
-from : https://discourse.vtk.org/t/convert-vtk-array-to-numpy-array/3152/3
-from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
-
-def vtkToNumpy(data):
-    temp = vtk_to_numpy(data.GetPointData().GetScalars())
-    dims = data.GetDimensions()
-    component = data.GetNumberOfScalarComponents()
-    if component == 1:
-        numpy_data = temp.reshape(dims[2], dims[1], dims[0])
-        numpy_data = numpy_data.transpose(2,1,0)
-    elif component == 3 or component == 4:
-        if dims[2] == 1: # a 2D RGB image
-            numpy_data = temp.reshape(dims[1], dims[0], component)
-            numpy_data = numpy_data.transpose(0, 1, 2)
-            numpy_data = np.flipud(numpy_data)
-        else:
-            raise RuntimeError('unknow type')
-    return numpy_data
-
-def numpyToVTK(data, multi_component=False, type='float'):
-    '''
-    multi_components: rgb has 3 components
-    type：float or char
-    '''
-    if type == 'float':
-        data_type = vtk.VTK_FLOAT
-    elif type == 'char':
-        data_type = vtk.VTK_UNSIGNED_CHAR
-    else:
-        raise RuntimeError('unknown type')
-    if multi_component == False:
-        if len(data.shape) == 2:
-            data = data[:, :, np.newaxis]
-        flat_data_array = data.transpose(2,1,0).flatten()
-        vtk_data = numpy_to_vtk(num_array=flat_data_array, deep=True, array_type=data_type)
-        shape = data.shape
-    else:
-        assert len(data.shape) == 3, 'only test for 2D RGB'
-        flat_data_array = data.transpose(1, 0, 2)
-        flat_data_array = np.reshape(flat_data_array, newshape=[-1, data.shape[2]])
-        vtk_data = numpy_to_vtk(num_array=flat_data_array, deep=True, array_type=data_type)
-        shape = [data.shape[0], data.shape[1], 1]
-    img = vtk.vtkImageData()
-    img.GetPointData().SetScalars(vtk_data)
-    img.SetDimensions(shape[0], shape[1], shape[2])
-    return img
-
-    */
 class gnomonWorkspaceMorphonetPrivate{
 
 public:
     gnomonWorkspaceMorphonetPrivate() = default;
-    ~gnomonWorkspaceMorphonetPrivate() = default;
+    ~gnomonWorkspaceMorphonetPrivate();
 
 public:
     QString encodePassword(const QString& password);    
     QString decodePassword(const QString& encoded_password);
 
     bool selectDataset(int id);
-    void loadMNDataAtTime(int time);
+    void loadMNDataAtTime(int time, double voxelsize, bool load_infos);
 
     enum Status {
         Morphonet_NotLoaded,
@@ -82,28 +40,32 @@ public:
         Morphonet_connected
     };
 
+public: 
+    void clear(void);
+
 public:
     QSettings settings = QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     Status morphonet_status = Morphonet_NotLoaded;
-    PyObject *mn_module, *mn_net = nullptr;
+   
     int current_id = -1, start_time=-1, end_time=-1;
+    bool upload_mode = false;
     gnomonPipelineManager *pipeline_manager;
 
     gnomonViewForm *view = nullptr;
-    //gnomonAbstractDynamicForm *current_form; // time_series ? 
+    gnomonCellImageSeries *img_series = nullptr;
+
+    QFutureWatcher<void> *watcher = nullptr;
+    QProcess *morphoplot_process =  nullptr;
+    QTemporaryDir *morphoplot_tmp_dir = nullptr;
 
 private: 
-    SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073)); 
+    SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073));
 };
 
 
 QString gnomonWorkspaceMorphonetPrivate::encodePassword(const QString& password) 
 {
     return crypto.encryptToString(password);
-
-    //QByteArray pswdAndSalt (password.toStdString().c_str()) ;
-    //pswdAndSalt.append(salt);
-    //return QString(QCryptographicHash::hash((pswdAndSalt),QCryptographicHash::Md5).toHex());
 }
 
 
@@ -117,52 +79,83 @@ bool gnomonWorkspaceMorphonetPrivate::selectDataset(int id)
     if(id != -1) {
         qInfo() << Q_FUNC_INFO << "setting morphonet dataset id to" << id;
         current_id = id;
-    }
-
-    dtkScriptInterpreterPython::instance()->childAcquireLock();
-    PyObject *pFunc = PyObject_GetAttrString(this->mn_net, "select_dataset_by_id");
-    PyObject *pArgs = Py_BuildValue("(i)", this->current_id);
-    PyObject_CallObject(pFunc, pArgs);
-    Py_XDECREF(pFunc);
-    Py_XDECREF(pArgs); 
-
-    //  set start_time and end_time
-    PyObject *pMinTime = PyObject_GetAttrString(this->mn_net, "minTime");
-    this->start_time = PyLong_AsLong(pMinTime);
-    Py_XDECREF(pMinTime);
-
-    PyObject *pMaxTime = PyObject_GetAttrString(this->mn_net, "maxTime");
-    this->end_time = PyLong_AsLong(pMaxTime);
-    Py_XDECREF(pMaxTime);
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
-
-    if(this->start_time == -1 || this->end_time == -1) {
-        qWarning() << Q_FUNC_INFO << "Problem selecting dataset id:" << this->current_id << " time:[" << this->start_time << ", " << this->end_time << "]";
+    } else {
         return false;
     }
+
+    //clear current data 
+    this->clear();
+
+    if(gnomonMorphonetHelper::instance()->selectDataset(id)) {
+        this->start_time = gnomonMorphonetHelper::instance()->startTime();
+        this->end_time = gnomonMorphonetHelper::instance()->endTime();
+    } else {
+        qWarning() << Q_FUNC_INFO << "Problem selecting dataset id:" << this->current_id;
+        return false;   
+    }
+
+
+    // dtkScriptInterpreterPython::instance()->childAcquireLock();
+    // PyObject *pFunc = PyObject_GetAttrString(this->mn_net, "select_dataset_by_id");
+    // PyObject *pArgs = Py_BuildValue("(i)", this->current_id);
+    // PyObject_CallObject(pFunc, pArgs);
+    // Py_XDECREF(pFunc);
+    // Py_XDECREF(pArgs); 
+
+    // //  set start_time and end_time
+    // PyObject *pMinTime = PyObject_GetAttrString(this->mn_net, "minTime");
+    // this->start_time = PyLong_AsLong(pMinTime);
+    // Py_XDECREF(pMinTime);
+
+    // PyObject *pMaxTime = PyObject_GetAttrString(this->mn_net, "maxTime");
+    // this->end_time = PyLong_AsLong(pMaxTime);
+    // Py_XDECREF(pMaxTime);
+    // dtkScriptInterpreterPython::instance()->childReleaseLock();
+
 
     return true;
 }
 
-void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time)
+void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsize, bool load_infos)
 {
-    dtkScriptInterpreterPython::instance()->childAcquireLock();
+    gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize, load_infos);
 
-    PyObject *pTime = PyLong_FromLong(long(time));
-
-    // if  Net.is_image_at(self,t,channel=0):
-      //arr = Net.get_image_at (t)
-      //arr np.array of type np.uint8
-      //add the data to the view
-
-    // else // it's a mesh
-      // obj = get_mesh_at
-      // obj: string the 3d data for the mesh
-
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
-
-    qDebug() << Q_FUNC_INFO << "not implemented";
+    if(cell_img) {
+        this->img_series->insert(double(time), cell_img);
+    } else {
+        qWarning() << Q_FUNC_INFO << "load_mn_data_at_time returned PyNone or nullptr";
+    }
 }
+
+
+void gnomonWorkspaceMorphonetPrivate::clear(void) {
+
+    if(watcher){
+        watcher->disconnect();
+        if(watcher->isRunning()) {
+            watcher->cancel();
+            watcher->waitForFinished();
+        }
+    }
+    delete watcher;
+    watcher = nullptr;
+
+    for(auto time : this->img_series->times()) {
+        auto *img = this->img_series->at(time);
+        this->img_series->drop(time);
+        delete img;
+    } 
+
+}
+
+gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
+    this->clear();
+    delete morphoplot_process;
+    delete morphoplot_tmp_dir;
+    delete view;
+    delete img_series;
+}
+
 
 gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbstractWorkspace(parent)
 {
@@ -170,24 +163,21 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
     d->pipeline_manager = gnomonPipelineManager::instance();
     d->view = new gnomonViewForm(this);
-    //d->view->setAcceptForm("gnomonBinaryImage", true);
-    //d->view->setAcceptForm("gnomonCellComplex",true);
-    //d->view->setAcceptForm("gnomonCellImage",true);
-    //d->view->setAcceptForm("gnomonImage",true);
-    //d->view->setAcceptForm("gnomonMesh",true);
-    //d->view->setAcceptForm("gnomonPointCloud",true);
+    d->img_series = new gnomonCellImageSeries();
+    d->img_series->metadata()->set("source", "MorphoNet");
+
+    d->view->setAcceptForm("gnomonCellImage",true);
 
     connect(d->view, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
         //TODO what to do in pipeline manager if data coming from morphonet? 
         d->pipeline_manager->addForm(f);
     });
 
+    int stat;
+    dtkScriptInterpreterPython::instance()->interpret("import gnomon.utils.morphonetHelper", &stat);
 
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
-    d->mn_module = PyImport_ImportModule("morphonet");
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
 
-    if(!d->mn_module) {
+    if(!gnomonMorphonetHelper::instance() ) {
         //timer to wait until qml component is created. Otherwise, it won't catch the message
         QTimer::singleShot(100, this, [this](){
             emit message("Cannot load morphonet, please install it (pip install morphonet)");
@@ -197,15 +187,14 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
         //automatically try to connect to Morphonet using saved login and password
         if(d->settings.contains("morphonet/login") 
-           && d->settings.contains("morphonet/password")  
-           && this->login(d->settings.value("morphonet/login").toString(), d->decodePassword(d->settings.value("morphonet/password").toString()))) {
+            && d->settings.contains("morphonet/password")  
+            && this->login(d->settings.value("morphonet/login").toString(), d->decodePassword(d->settings.value("morphonet/password").toString()))) {
             d->morphonet_status = gnomonWorkspaceMorphonetPrivate::Morphonet_connected;
 
             //timer to wait until qml component is created. Otherwise, it won't catch the message
             QTimer::singleShot(100, this, [this](){
                 emit connectionStatusChanged();
             });
-
         }
     }
 }
@@ -213,10 +202,6 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
 gnomonWorkspaceMorphonet::~gnomonWorkspaceMorphonet()
 {
-    Py_XDECREF(d->mn_module);
-
-    if(d->mn_net) 
-        Py_XDECREF(d->mn_net);
     delete d;
 }
 
@@ -238,37 +223,18 @@ bool gnomonWorkspaceMorphonet::login(const QString& login, const QString& passwd
         return false;
     }
 
-    //try login
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
-    PyObject *pFunc = PyObject_GetAttrString(d->mn_module, "Net");
-    if (pFunc && PyCallable_Check(pFunc)) {
-        PyObject *pArgs = Py_BuildValue("(ss)", login.toStdString().c_str() , passwd.toStdString().c_str());
-        d->mn_net = PyObject_CallObject(pFunc, pArgs);
-        Py_XDECREF(pFunc);
-        Py_XDECREF(pArgs); 
-
-        //check id
-        PyObject *pId = PyObject_GetAttrString(d->mn_net, "id_people");
-        long id = PyLong_AsLong(pId);
-        Py_XDECREF(pId);
-
-        if(id == -1) {
-            emit message("cannot connect to Morphonet with login: " + login);
-            return false;
-        }
-        qInfo() << "Connected to morphonet with id:" << id;
+    if(gnomonMorphonetHelper::instance()->connect(login, passwd)) {
+        qInfo() << "Connected to morphonet";
     } else {
-        emit message("problem with morphonet API, check the installation");
+        emit message("cannot connect to Morphonet with login: " + login);
         return false;
     }
-
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
 
     // save to settings
     d->settings.setValue("morphonet/login", login);
     d->settings.setValue("morphonet/password", d->encodePassword(passwd));
 
-    d->morphonet_status == gnomonWorkspaceMorphonetPrivate::Morphonet_connected;
+    d->morphonet_status = gnomonWorkspaceMorphonetPrivate::Morphonet_connected;
     emit connectionStatusChanged();
     return true;
 }
@@ -281,7 +247,7 @@ bool gnomonWorkspaceMorphonet::disconnect(void)
 
     qDebug() << Q_FUNC_INFO << "TODO  not implemented";    
 
-    d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_disconnected;
+    d->morphonet_status = gnomonWorkspaceMorphonetPrivate::Morphonet_disconnected;
     emit connectionStatusChanged();
     return true;
 }
@@ -307,78 +273,57 @@ int gnomonWorkspaceMorphonet::timeEnd(void) const
     return d->end_time;
 }
 
+bool gnomonWorkspaceMorphonet::uploadMode(void) const
+{
+    return d->upload_mode;
+}
+
 void gnomonWorkspaceMorphonet::setTimeStart(int new_time)
 {
     d->start_time = new_time;
+    emit timeStartChanged();
 }
 
 void gnomonWorkspaceMorphonet::setTimeEnd(int new_time)
 {
     d->end_time = new_time;
+    emit timeEndChanged();
 }
 
 void gnomonWorkspaceMorphonet::setCurrentId(int new_id)
 {
     d->current_id = new_id;
+    emit currentIdChanged();
 }
 
-QString gnomonWorkspaceMorphonet::datasetsInfo(const QString& search)
+void gnomonWorkspaceMorphonet::setUploadMode(bool upload) 
+{
+    d->upload_mode = upload;
+    emit uploadModeChanged();
+}
+
+bool gnomonWorkspaceMorphonet::deleteDataset(int id)
+{
+    if(id==-1)
+        id = d->current_id;
+
+    return gnomonMorphonetHelper::instance()->deleteDataset(id);
+}
+
+QString gnomonWorkspaceMorphonet::importDatasetInfos(const QString& search)
 {
     QString res = "";
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
         return res;
     }
-
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
-      
-    PyObject *pFunc = PyObject_GetAttrString(d->mn_net, "_request");
-    if (pFunc && PyCallable_Check(pFunc)) {
-        PyObject *pDict = PyDict_New();
-        PyObject *pArgs = Py_BuildValue("(Oss)", pDict, "/api/userrelatedset/", "GET");
-        PyObject *ds_list = PyObject_CallObject(pFunc, pArgs);
-        Py_XDECREF(pFunc);
-        Py_XDECREF(pDict);
-        Py_XDECREF(pArgs); 
-
-        //list of dict
-        PyObject *pJson_mod = PyImport_ImportModule("json");
-        PyObject *pJson_dumps = PyObject_GetAttrString(pJson_mod, "dumps");
-        PyObject *pJson_str = PyObject_CallOneArg(pJson_dumps, ds_list);
-        res = PyUnicode_AsUTF8(pJson_str);
-        Py_XDECREF(pJson_mod);
-        Py_XDECREF(pJson_dumps);
-        Py_XDECREF(ds_list);
-        Py_XDECREF(pJson_str);
-    }
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
-
-    //TODO
-    // can use  get_guy_by_id(self,id_guy) to get author name? 
-
-    return res;
+ 
+    return gnomonMorphonetHelper::instance()->datasetsInfo(search);
 }
 
-void gnomonWorkspaceMorphonet::importDatasetPreview(int id)
+void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_start, int time_end)
 {
-    if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
-        qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
-        return;
-    }
-
-    bool ok = d->selectDataset(id);
-    if(!ok) {
-        message("cannot select dataset:" + id);
-        return;
-    }
-
-    //import first time of selected dataset and set it to the view
-    d->loadMNDataAtTime(d->start_time);
-}
-
-
-void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int id)
-{
+    emit started();
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
         return;
@@ -389,38 +334,156 @@ void gnomonWorkspaceMorphonet::importDataset(int time_start, int time_end, int i
         d->current_id = id;
     }
 
-    qDebug() << Q_FUNC_INFO << "import dataset from id" << d->current_id;
-
     //1 select dataset
     bool ok = d->selectDataset(d->current_id);
     if(!ok) {
-        message("cannot select dataset:" + d->current_id);
+        message("cannot select dataset:" + QString::number(d->current_id));
         return;
     }
 
-    // for( each time) {
-      //d->loadMNDataAtTime(d->start_time);
-    // }
-
-    qDebug() << Q_FUNC_INFO << "TODO  not implemented";    
+    d->clear();
+    d->watcher = new QFutureWatcher<void>();
+    connect(d->watcher, &QFutureWatcher<void>::finished, [this]() {
+        this->onDataLoaded();
+        this->finished();
+    });
+    
+    auto future = QtConcurrent::run([=](){
+        int t0 = time_start;
+        int t_end = time_end;
+        if(time_start == -1 && time_end == -1) {
+            t0 = d->start_time;
+            t_end = d->start_time;
+        } 
+        
+        for(int time = t0; time <= t_end; time++) {
+            gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
+            if(cell_img) {
+                d->img_series->insert(double(time), cell_img);
+            } else {
+                qWarning() << Q_FUNC_INFO << "load_mn_data_at_time " << time << " returned PyNone or nullptr";
+            }
+        }
+    });
+    d->watcher->setFuture(future);
 }
 
-void gnomonWorkspaceMorphonet::exportDataset()
+void gnomonWorkspaceMorphonet::onDataLoaded() 
 {
+    if(!d->img_series->times().isEmpty()) {
+        d->view->clear();
+        int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
+        d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
+ 
+        d->view->setCellImage(d->img_series, {});
+        emit timeEndChanged();
+    }
+}
+
+int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_type, QString description, double voxelsize)
+{
+    int res = -1;
     if(d->morphonet_status != gnomonWorkspaceMorphonetPrivate::Morphonet_connected) {
         qWarning() << Q_FUNC_INFO << "Morphonet status is not connected. nothing is done";
-        return;
+        return res;
     }
 
-    //upload_image_at(time, raw_data, channel (int optional))
+    auto *serie = dynamic_cast<gnomonCellImageSeries *>(d->view->form("gnomonCellImage"));
+    
+    if(serie)
+        res = gnomonMorphonetHelper::instance()->createDataset(name, serie, id_NCBI, id_type, description, voxelsize);
+    else {
+        message("Set a cellImageSeries before creating a dataset");
+    }
 
-    //upload from what's in the view
+    return res;
+}
 
-    // raw_data needs to be np.uint8 array
-    qDebug() << Q_FUNC_INFO << "TODO  not implemented";    
+int gnomonWorkspaceMorphonet::morphoPlot(void)
+{
+    auto image = this->view()->cellImage();
+    if(!image) {
+        return 1;
+    }
+
+    if(d->morphoplot_process) {
+        // cleaning up
+        kill((pid_t)d->morphoplot_process->processId(), SIGINT);
+        d->morphoplot_process->waitForFinished(3000);
+        d->morphoplot_process->kill();
+        d->morphoplot_process->waitForFinished(10000);
+        delete d->morphoplot_process;
+    }
+    delete d->morphoplot_tmp_dir;
+    d->morphoplot_tmp_dir = new QTemporaryDir();
+    auto filepath = d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE);
+
+    auto writer = gnomonCellImageWriterCommand();
+    writer.setCellImage(image);
+    writer.setAlgorithmName("cellImageWriterTissueImage");
+    writer.setPath(filepath);
+    writer.setNoAsync();
+
+    writer.predo();
+    writer.redo();
+    writer.postdo();
+
+    if(QFile(filepath).exists()) {
+        d->morphoplot_process = new QProcess();
+        d->morphoplot_process->startCommand(QString("_run_morphoplot %1").arg(filepath));
+        dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
+        return 0;
+    }
+    message("Error: cannot create temporary file. No MorphoPlot launched");
+    return 1;
+}
+
+void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
+{
+    if(d->morphoplot_process) {
+        // terminate morphoplot server
+        kill((pid_t)d->morphoplot_process->processId(), SIGINT);
+
+        // collecting file
+        auto reader = gnomonCellImageReaderCommand();
+        reader.setAlgorithmName("cellImageReaderTimagetk");
+        reader.setPath(d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE));
+        reader.setNoAsync();
+        reader.predo();
+        reader.redo();
+        reader.postdo();
+
+        if(reader.cellImage()) {
+            auto cellImage_series = dynamic_cast<gnomonCellImageSeries *>(reader.cellImage()->clone());
+            int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
+            cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
+            cellImage_series->metadata()->set("source", "Morphoplot");
+            d->view->setCellImage(cellImage_series, {});
+        } else {
+            message("Error cannot read data back from MorphoPlot");
+        }
+        // cleaning up
+        d->morphoplot_process->waitForFinished(3000);
+        d->morphoplot_process->kill();
+        d->morphoplot_process->waitForFinished(10000);
+        delete d->morphoplot_process;
+        d->morphoplot_process = nullptr;
+        delete d->morphoplot_tmp_dir;
+        d->morphoplot_tmp_dir = nullptr;
+    }
 }
 
 gnomonViewForm *gnomonWorkspaceMorphonet::view(void)
 {
     return d->view;
+}
+
+void gnomonWorkspaceMorphonet::saveState(void) 
+{
+    //TODO
+}
+
+void gnomonWorkspaceMorphonet::restoreState(void) 
+{
+    //TODO
 }

@@ -47,7 +47,7 @@ void gnomonImageFilterCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonImageFilterCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonImageFilterCommand::postdo(void)

@@ -50,7 +50,7 @@ void gnomonImageRegistrationCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonImageRegistrationCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonImageRegistrationCommand::postdo(void)

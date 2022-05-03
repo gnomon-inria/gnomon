@@ -10,7 +10,8 @@ setup(name='gnomon',
       license='LGPL-3.0',
       entry_points={
         "console_scripts": [
-            "gnomon-utils=gnomon.utils.gnomonCommandLineTools:main"
+            "gnomon-utils=gnomon.utils.gnomonCommandLineTools:main",
+            "_run_morphoplot=gnomon.utils.run_morphoplot:run_morphoplot",
         ]
       },
       package_data={"": ["core/*.so",

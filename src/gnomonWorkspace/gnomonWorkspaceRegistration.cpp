@@ -81,7 +81,10 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     d->pool->addView(this->sources()->views()[1]);
     d->pool->addView(this->targets()->views()[0]);
 
-    connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+    connect(d->command, &gnomonAbstractCommand::finished, [this]() { 
+        this->viewOutputs();
+        this->finished();
+    });
 
     connect(this->targets()->views()[0], &gnomonViewForm::syncedChanged, [=]() {
         this->targets()->views()[0]->disconnectTime();

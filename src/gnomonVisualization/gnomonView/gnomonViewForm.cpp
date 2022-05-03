@@ -847,6 +847,7 @@ void gnomonViewFormPrivate::updateFormsTimes(void)
     }
 
     emit q->timeMaxChanged(q->timeMax());
+    q->timesChanged();
 
     // if(this->forms_times.size() < 2) {
     //     this->time_slider->setVisible(false);
@@ -1371,7 +1372,6 @@ void gnomonViewForm::sliceChange(int value)
 void gnomonViewForm::setCurrentTime(double value)
 {
     QList<double> sorted_times = this->times();
-    qDebug() << Q_FUNC_INFO <<  this->times();
     if(sorted_times.contains(value)) {
         double time = sorted_times[value];
 
@@ -1380,11 +1380,6 @@ void gnomonViewForm::setCurrentTime(double value)
             valueChanged = true;
             d->c_t = time;
         }
-
-        // d->time_slider->blockSignals(true);
-        // d->time_slider->setValue(value);
-        // d->time_slider->setToolTip(QString("current time: %1").arg(time));
-        // d->time_slider->blockSignals(false);
 
         if (valueChanged) {
             emit timeChanged(time);
