@@ -44,7 +44,7 @@ G.Workspace {
         }
     }
 
-    RowLayout {
+    ColumnLayout {
 
         anchors.top: parent.top;
         anchors.bottom: parent.bottom;
@@ -55,40 +55,85 @@ G.Workspace {
         Layout.fillWidth: true;
         Layout.fillHeight: true;
 
-        G.View {
-
-            id: _source_view;
+        G.DataDict {
+            id: _data_source_view;
 
             Layout.fillWidth: true;
-            Layout.fillHeight: true;
+            height: window.height/8;
 
             onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
-                d.source.drop(index);
+                d.sourceDict.drop(index);
             }
 
-            viewLogic: d.source;
-            ts_slider.value: Math.max(d.target.currentTime-1, ts_slider.from)
+            X.Label {
+                anchors.top: parent.top
+                anchors.left: parent.left
 
-            Component.onCompleted: G.Associator.associate(_source_view, d.source);
+                text: "Transformation matrix"
+                color: X.Style.foregroundColor
+            }
+
+            X.Label {
+                anchors.centerIn: parent
+
+                text: d.sourceDict.dataDict
+                horizontalAlignment: Text.AlignRight
+                color: X.Style.foregroundColor
+                font {
+                    pointSize: 14
+                    bold: true
+                }
+            }
+
+            viewLogic: d.sourceDict;
         }
 
-        G.View {
-
-            id: _target_view;
+        Control {
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            viewLogic: d.target;
+            RowLayout {
+                anchors.fill: parent
 
-            ts_slider.to: d.source.timeMax
-            ts_slider.value: Math.min(d.source.currentTime+1, ts_slider.to)
 
-            ts_slider.enabled: true;
-            ts_slider.visible: true;
+                G.View {
 
-            Component.onCompleted: G.Associator.associate(_target_view, d.target);
+                    id: _source_view;
+
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+
+                    onDroppedFromManager: {
+                        console.info('Retrieving from manager');
+                        d.source.drop(index);
+                    }
+
+                    viewLogic: d.source;
+                    ts_slider.value: Math.max(d.target.currentTime-1, ts_slider.from)
+
+                    Component.onCompleted: G.Associator.associate(_source_view, d.source);
+                }
+
+                G.View {
+
+                    id: _target_view;
+
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+
+                    viewLogic: d.target;
+
+                    ts_slider.to: d.source.timeMax
+                    ts_slider.value: Math.min(d.source.currentTime+1, ts_slider.to)
+
+                    ts_slider.enabled: true;
+                    ts_slider.visible: true;
+
+                    Component.onCompleted: G.Associator.associate(_target_view, d.target);
+                }
+            }
         }
     }
 
