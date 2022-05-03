@@ -8,37 +8,15 @@
 
 #include "gnomonAbstractDynamicForm.h"
 
-class gnomonAbstractForm;
-
-
-//template <typename T, typename Enable = std::enable_if_t<std::is_base_of<gnomonAbstractForm,T>::value>>
-template <typename T>
-class gnomonTimeSeriesPrivate: public gnomonAbstractDynamicFormPrivate
-{
-public:
-    gnomonTimeSeriesPrivate(): gnomonAbstractDynamicFormPrivate(), forms(), current_time(0.0) {}
-public:
-    QMap<double, T*> forms;
-    double current_time = 0.;
-};
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
-
 //template <typename T, typename Enable = std::enable_if_t<std::is_base_of<gnomonAbstractForm,T>::value>>
 template <typename T>
 class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm
 {
 
 public:
-     gnomonTimeSeries(void);
-     gnomonTimeSeries(const gnomonTimeSeries& o);
-    ~gnomonTimeSeries(void);
-
-protected:
-    // for subclassing, see https://wiki.qt.io/D-Pointer#Inheriting_d-pointers_for_optimization
-    gnomonTimeSeries(gnomonTimeSeriesPrivate<T>* otherPrivate);
+     gnomonTimeSeries(void) = default;
+     //gnomonTimeSeries(const gnomonTimeSeries& o);
+    ~gnomonTimeSeries(void) = default;
 
 public:
     gnomonTimeSeries<T>& operator = (const gnomonTimeSeries<T>& o);
@@ -47,7 +25,7 @@ public:
     gnomonAbstractDynamicForm *clone(void) const override;
 
 public:
-    T *at(double t) const override;
+    T *at(double t) override;
     T *current(void) const override;
     double time(void) const override;
     QList<double> times(void) const override;
@@ -63,9 +41,9 @@ public:
 
     void deserialize(QJsonObject &serialization) override;
 
-private:
-    inline gnomonTimeSeriesPrivate<T> *d_ptr(void) const {return dynamic_cast<gnomonTimeSeriesPrivate<T>*>(d);};
-
+protected:
+    QMap<double, T*> m_forms;
+    double m_current_time = 0.;
 };
 
 #include "gnomonTimeSeries.tpp"

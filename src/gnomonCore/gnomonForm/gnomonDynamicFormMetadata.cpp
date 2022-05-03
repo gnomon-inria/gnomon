@@ -1,25 +1,7 @@
 #include "gnomonDynamicFormMetadata.h"
 
-class gnomonDynamicFormMetadataPrivate {
-    friend gnomonDynamicFormMetadata;
-private:
-    QMap<QString, QString> data = {};
-};
-
-gnomonDynamicFormMetadata::gnomonDynamicFormMetadata() {
-    d = new gnomonDynamicFormMetadataPrivate();
-}
-
 gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const QJsonObject &json) {
-    d = new gnomonDynamicFormMetadataPrivate();
     deserialize(json);
-}
-
-gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const gnomonDynamicFormMetadata& other) {
-    d = new gnomonDynamicFormMetadataPrivate();
-    for(const auto& key: other.d->data.keys()) {
-        d->data[key] = other.d->data[key];
-    }
 }
 
 QJsonObject gnomonDynamicFormMetadata::serialize() const {
@@ -28,36 +10,40 @@ QJsonObject gnomonDynamicFormMetadata::serialize() const {
 
 void gnomonDynamicFormMetadata::deserialize(const QJsonObject &json) {
     for(const auto & key: json.keys()) {
-        d->data[key] = json[key].toString();
+        m_data[key] = json[key].toString();
     }
 }
 
-QStringList gnomonDynamicFormMetadata::keys() {
-    return d->data.keys();
+void gnomonDynamicFormMetadata::clear(void) {
+    m_data.clear();
+    emit keysChanged();
+}
+
+QStringList gnomonDynamicFormMetadata::keys() const {
+    return m_data.keys();
 }
 
 QJsonObject gnomonDynamicFormMetadata::data(void) const {
     QJsonObject json;
-    for(const auto& key: d->data.keys()) {
-        json[key] = d->data[key];
+    for(const auto& key: m_data.keys()) {
+        json[key] = m_data[key];
     }
     return json;
 }
 
-QString gnomonDynamicFormMetadata::get(const QString &key) {
-    if (!d->data.contains(key)) {
-        d->data[key] = "default";  // default
-    }
-    return d->data[key];
+QString gnomonDynamicFormMetadata::get(const QString &key) const {
+    if (m_data.contains(key)) {
+        return m_data[key];
+    } 
+
+    qWarning() << Q_FUNC_INFO << "metadata doesnt contains " << key << " keys are " << this->keys();
+    return "default";
+    
 }
 
 void gnomonDynamicFormMetadata::set(const QString &key, const QString &value) {
-    if (!d->data.contains(key) || (value != d->data[key])) {
-        d->data[key] = value;
+    if (!m_data.contains(key) || (value != m_data[key])) {
+        m_data[key] = value;
         emit dataChanged();
     }
-}
-
-gnomonDynamicFormMetadata::~gnomonDynamicFormMetadata() {
-    delete d;
 }
