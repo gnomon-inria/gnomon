@@ -4,6 +4,9 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
+#include "gnomonVisualization/gnomonView/gnomonViewData.h"
+
+
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageTracking :  public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
@@ -17,6 +20,17 @@ It outputs the lineage tree and a cell image series where each cell knows its pa
 public:
      gnomonWorkspaceCellImageTracking(QObject *parent = nullptr);
     ~gnomonWorkspaceCellImageTracking(void);
+
+public:
+    Q_PROPERTY(gnomonViewData* sourceDict READ sourceDict CONSTANT);
+
+    gnomonViewData *sourceDict(void) const;
+
+public slots:
+    virtual void setInputs(void) override;
+
+protected:
+    class gnomonWorkspaceCellImageTrackingPrivate *dd = nullptr;
 };
 
 //

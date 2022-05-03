@@ -8,6 +8,7 @@
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
+#include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonTree/gnomonTree.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
@@ -22,6 +23,9 @@ public:
 
   virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
   virtual void setImage(gnomonImageSeries *image) = 0;
+  virtual inline void setTransformation(gnomonDataDictSeries *data_dict_series) {
+      dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+  };
 
     // Outputs
 public:
@@ -34,6 +38,8 @@ public:
             return {"setImage"};
         } else if(formName == "gnomonCellImage") {
             return {"setCellImage"};
+        } else if(formName == "gnomonDataDict") {
+            return {"setTransformation"};
         }
         return {};
     };
@@ -42,6 +48,8 @@ public:
             return {"image"};
         } else if(formName == "gnomonCellImage") {
             return {"cellImageInput"};
+        } else if(formName == "gnomonDataDict") {
+            return {"transformation"};
         }
         return {};
     };

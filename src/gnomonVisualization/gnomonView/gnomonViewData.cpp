@@ -1,6 +1,30 @@
 #include "gnomonViewData.h"
 
-#include "gnomonManager/gnomonFormManager.h"
+#include <gnomonVisualization/gnomonManager/gnomonFormManager>
+
+
+QString transformMatrixString(QVector<QVector<double> > transform_matrix)
+{
+    QString matrix_string;
+
+    matrix_string += "[";
+    for (int row=0; row<transform_matrix.size(); row++) {
+        if (row > 0) matrix_string += "\n ";
+        matrix_string += " [";
+        for (int col=0; col<transform_matrix[row].size(); col++) {
+            if (col > 0) matrix_string += ",";
+            if (transform_matrix[row][col]>=0) matrix_string += " ";
+            matrix_string += " " + QString::number(transform_matrix[row][col], 'f', 3);
+        }
+        matrix_string += "]";
+    }
+    matrix_string += " ]";
+
+    return matrix_string;
+}
+
+QVector<QVector<double> > identity_matrix = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
+
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewDataPrivate
@@ -83,9 +107,19 @@ gnomonViewData::~gnomonViewData(void)
 
 void gnomonViewData::setForm(const QString& name, gnomonAbstractDynamicForm *form)
 {
+    qDebug()<<Q_FUNC_INFO<<d->acceptForms["gnomonDataDict"]<<dynamic_cast<gnomonDataDictSeries *>(form);
+
     if(gnomonDataDictSeries *dict = dynamic_cast<gnomonDataDictSeries *>(form)) {
         if(d->acceptForms["gnomonDataDict"]) {
             d->forms["gnomonDataDict"] = dict;
+
+            gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(dict->clone());
+            if (dict->current()->keys().contains("transform")) {
+                QVariant transform = transformation->current()->get("transform");
+                QVector<QVector<double>> transform_matrix = transform.value<QVector<QVector<double> > >();
+                this->setDataDict(transformMatrixString(transform_matrix));
+            }
+
             emit formAdded("gnomonDataDict");
         }       
     }    
@@ -100,6 +134,14 @@ void gnomonViewData::clearForm(const QString& name)
 {
     return d->removeForm(name);
 }
+
+void gnomonViewData::drop(int index)
+{
+    gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(index);
+    qDebug()<<Q_FUNC_INFO<<form<<dynamic_cast<gnomonDataDictSeries *>(form);
+    this->setForm("formManager", form);
+}
+
 void gnomonViewData::transmit(void)
 {
     d->exportToManager();
@@ -114,7 +156,10 @@ void gnomonViewData::setAcceptForm(const QString& name, bool accept)
 
 void gnomonViewData::setInputView(bool input)
 {
-    d->input_view = input;
+    if (input != d->input_view) {
+        d->input_view = input;
+        emit inputViewChanged(input);
+    }
 }
 
 QStringList gnomonViewData::formNames()

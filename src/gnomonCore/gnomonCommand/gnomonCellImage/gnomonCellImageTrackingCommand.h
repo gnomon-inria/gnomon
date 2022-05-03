@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
@@ -19,6 +20,7 @@ public:
 public:
     void setImage(gnomonImageSeries *image);
     void setCellImage(gnomonCellImageSeries *cellimage);
+    void setTransformation(gnomonDataDictSeries *datadict);
 
     QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
 

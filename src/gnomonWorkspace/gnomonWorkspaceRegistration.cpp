@@ -11,27 +11,6 @@
 #include <gnomonVisualization/gnomonView/gnomonViewFormPool>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
-QString transformMatrixString(QVector<QVector<double> > transform_matrix)
-{
-    QString matrix_string;
-
-    matrix_string += "[";
-    for (int row=0; row<transform_matrix.size(); row++) {
-        if (row > 0) matrix_string += "\n ";
-        matrix_string += " [";
-        for (int col=0; col<transform_matrix[row].size(); col++) {
-            if (col > 0) matrix_string += ",";
-            if (transform_matrix[row][col]>=0) matrix_string += " ";
-            matrix_string += " " + QString::number(transform_matrix[row][col], 'f', 3);
-        }
-        matrix_string += "]";
-    }
-    matrix_string += " ]";
-
-    return matrix_string;
-}
-
-QVector<QVector<double> > identity_matrix = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceRegistrationPrivate
@@ -192,7 +171,7 @@ void gnomonWorkspaceRegistration::setInputs(void)
     }
 }
 
-QString gnomonWorkspaceRegistration::transformStringAt(int level) const
+/* QString gnomonWorkspaceRegistration::transformStringAt(int level) const
 {
     if (dd->image_stack.contains(level)) {
         if (dd->transformation_stack.contains(level)) {
@@ -213,7 +192,7 @@ QString gnomonWorkspaceRegistration::transformStringAt(int level) const
         dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"is invalid! Image stack only contains"<<dd->image_stack.keys();
         return "";
     }
-}
+} */
 
 void gnomonWorkspaceRegistration::iterate(void)
 {
@@ -239,12 +218,6 @@ void gnomonWorkspaceRegistration::viewOutputs()
     gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["transformation"]) {
         this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]);
-        
-        gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(d->command->outputs()["transformation"]->clone());
-        QVariant transform = transformation->current()->get("transform");
-        QVector<QVector< double>> transform_matrix = transform.value<QVector<QVector< double> > >();
-
-        this->m_target_dict->setDataDict(transformMatrixString(transform_matrix));
 
         int form_count = gnomonFormManager::instance()->formCount(command->outputs()["transformation"]->formName());
         command->outputs()["transformation"]->metadata()->set("name", command->outputs()["transformation"]->formName().remove("gnomon") + QString::number(form_count+1));

@@ -54,8 +54,8 @@ signals:
     void stackSizeChanged(void);
     void stackLevelChanged(void);
 
-public:
-    Q_INVOKABLE QString transformStringAt(int level) const;
+// public:
+//     Q_INVOKABLE QString transformStringAt(int level) const;
 
 public slots:
     virtual void setInputs(void) override;
