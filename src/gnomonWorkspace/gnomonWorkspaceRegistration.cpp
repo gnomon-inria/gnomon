@@ -217,7 +217,7 @@ void gnomonWorkspaceRegistration::viewOutputs()
     gnomonAlgorithmWorkspace::viewOutputs();
     gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["transformation"]) {
-        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]);
+        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]->clone());
 
         int form_count = gnomonFormManager::instance()->formCount(command->outputs()["transformation"]->formName());
         command->outputs()["transformation"]->metadata()->set("name", command->outputs()["transformation"]->formName().remove("gnomon") + QString::number(form_count+1));
