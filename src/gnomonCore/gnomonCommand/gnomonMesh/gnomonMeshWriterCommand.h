@@ -16,13 +16,13 @@ public:
     void   undo(void) override;
 
 public:
-    void setForm(gnomonAbstractDynamicForm *form) override;
-    void setMesh(gnomonMeshSeries *image_series);
+    void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
+    void setMesh(std::shared_ptr<gnomonMeshSeries> image_series);
     void setAlgorithmName(const QString& algo_name) override;
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
     orderedMap inputTypes() override;

@@ -26,7 +26,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     this->m_target_mpl = new gnomonViewMatplotlib(this);
     this->m_target_mpl->setAcceptForm("gnomonDataFrame",true);
-    connect(this->m_target_mpl, &gnomonViewMatplotlib::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+    connect(this->m_target_mpl, &gnomonViewMatplotlib::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
     });
     emit parametersChanged();
@@ -58,19 +58,19 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
 {
     gnomonCellImageQuantificationCommand * command = dynamic_cast<gnomonCellImageQuantificationCommand *>(d->command);
 
-    gnomonAbstractDynamicForm* inputForm = d->command->inputs()["cellImage"];
+    std::shared_ptr<gnomonAbstractDynamicForm> inputForm = d->command->inputs()["cellImage"];
 
     if ((command->cellImage() != nullptr) || (command->dataFrame() != nullptr)) {
         d->registerPipeline();
     }
 
     if(command->cellImage()) {
-        d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage()->clone());
-        gnomonCellImageSeries *out_cellimage = d->sources->views()[0]->cellImage();
+        d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage());
+        std::shared_ptr<gnomonCellImageSeries> out_cellimage = d->sources->views()[0]->cellImage();
         int form_count = gnomonFormManager::instance()->formCount(out_cellimage->formName());
         out_cellimage->metadata()->set("name", out_cellimage->formName().remove("gnomon") + QString::number(form_count+1));
         out_cellimage->metadata()->set("source", d->algorithm);
-        gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), out_cellimage);
+        //gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), out_cellimage);
         gnomonPipelineManager::instance()->addForm(command->cellImage());
         d->sources->views()[0]->setInputView(false);
     }

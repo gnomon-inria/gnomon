@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -29,8 +15,8 @@ public:
     ~gnomonVisualizationCellImageVolume(void);
 
 public:
-	void setCellImage(gnomonCellImageSeries *cellImage) override;
-	gnomonCellImageSeries *cellImage(void) override;
+	void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) override;
+	std::shared_ptr<gnomonCellImageSeries> cellImage(void) override;
 
 public slots:
     void updateOpacity(void);
@@ -62,9 +48,6 @@ public:
     void setParameters(const dtkCoreParameters&) override;
     dtkCoreParameters parameters(void) const override;
     QMap<QString, QString> parameterGroups(void) override;
-
-public:
-    long cellId(long vtkId) override;
 
 private:
 	class gnomonVisualizationCellImageVolumePrivate *dd;

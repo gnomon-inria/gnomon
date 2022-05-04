@@ -6,12 +6,12 @@
 class gnomonCellImageTrackingCommandPrivate
 {
 public:
-    gnomonImageSeries* image = nullptr;
-    gnomonCellImageSeries* input_cellImage = nullptr;
-    gnomonDataDictSeries* transformation = nullptr;
+    std::shared_ptr<gnomonImageSeries> image = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> input_cellImage = nullptr;
+    std::shared_ptr<gnomonDataDictSeries> transformation = nullptr;
 
-    gnomonCellImageSeries* cellImage = nullptr;
-    gnomonTreeSeries* tree = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> cellImage = nullptr;
+    std::shared_ptr<gnomonTreeSeries> tree = nullptr;
 };
 
 gnomonCellImageTrackingCommand::gnomonCellImageTrackingCommand() : d(new gnomonCellImageTrackingCommandPrivate)
@@ -46,7 +46,7 @@ void gnomonCellImageTrackingCommand::predo(void)
 
 void gnomonCellImageTrackingCommand::postdo(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
 
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
@@ -54,7 +54,7 @@ void gnomonCellImageTrackingCommand::postdo(void)
         d->cellImage = cellImage;
     }
 
-    gnomonTreeSeries *tree = ((gnomonAbstractCellImageTracking *) this->action)->tree();
+    std::shared_ptr<gnomonTreeSeries> tree = ((gnomonAbstractCellImageTracking *) this->action)->tree();
 
     if ((!tree)||(tree->times().empty())) {
         d->tree = nullptr;
@@ -69,9 +69,9 @@ void gnomonCellImageTrackingCommand::undo()
     ((gnomonAbstractCellImageTracking *) this->action)->setCellImage(nullptr);
 }
 
-void gnomonCellImageTrackingCommand::setImage(gnomonImageSeries *image)
+void gnomonCellImageTrackingCommand::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())|| (image->current()->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
@@ -80,7 +80,7 @@ void gnomonCellImageTrackingCommand::setImage(gnomonImageSeries *image)
     }
 }
 
-void gnomonCellImageTrackingCommand::setCellImage(gnomonCellImageSeries *cellImage)
+void gnomonCellImageTrackingCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
 {
     if ((!cellImage)||(cellImage->times().empty())) {
         d->input_cellImage = nullptr;
@@ -92,7 +92,7 @@ void gnomonCellImageTrackingCommand::setCellImage(gnomonCellImageSeries *cellIma
     }
 }
 
-void gnomonCellImageTrackingCommand::setTransformation(gnomonDataDictSeries *datadict)
+void gnomonCellImageTrackingCommand::setTransformation(std::shared_ptr<gnomonDataDictSeries> datadict)
 {
     if ((!datadict)||(datadict->times().empty())) {
         d->transformation = nullptr;
@@ -102,28 +102,29 @@ void gnomonCellImageTrackingCommand::setTransformation(gnomonDataDictSeries *dat
         ((gnomonAbstractCellImageTracking *) this->action)->setTransformation(d->transformation);
     }
 }
-gnomonCellImageSeries *gnomonCellImageTrackingCommand::cellImage()
+
+std::shared_ptr<gnomonCellImageSeries> gnomonCellImageTrackingCommand::cellImage()
 {
     return d->cellImage;
 }
 
-gnomonTreeSeries *gnomonCellImageTrackingCommand::tree()
+std::shared_ptr<gnomonTreeSeries> gnomonCellImageTrackingCommand::tree()
 {
     return d->tree;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageTrackingCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageTrackingCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["image"] = d->image;
     inputs["cellImage"] = d->input_cellImage;
     inputs["transformation"] = d->transformation;
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageTrackingCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageTrackingCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["cellImage"] = this->cellImage();
     outputs["tree"] = this->tree();
     return outputs;
@@ -149,13 +150,13 @@ gnomonAbstractCommand::orderedMap gnomonCellImageTrackingCommand::outputTypes() 
     return types;
 }
 
-void gnomonCellImageTrackingCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonCellImageTrackingCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "image") {
-        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else if (name == "cellImage") {
-        this->setCellImage(dynamic_cast<gnomonCellImageSeries *>(form));
+        this->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
     } else if (name == "transformation") {
-        this->setTransformation(dynamic_cast<gnomonDataDictSeries *>(form));
+        this->setTransformation(std::dynamic_pointer_cast<gnomonDataDictSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -167,12 +168,12 @@ QStringList gnomonCellImageTrackingCommand::availablePlugins() {
 
 void gnomonCellImageTrackingCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->cellImage) {
-        d->cellImage = new gnomonCellImageSeries();
+        d->cellImage = std::make_shared<gnomonCellImageSeries>();
     }
     auto tmp = serialization["cellImage"].toObject();
     d->cellImage->deserialize(tmp);
     if(!d->tree) {
-        d->tree = new gnomonTreeSeries();
+        d->tree = std::make_shared<gnomonTreeSeries>();
     }
     auto tmp2 = serialization["tree"].toObject();
     d->tree->deserialize(tmp2);

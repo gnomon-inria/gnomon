@@ -12,23 +12,17 @@
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 
-class gnomonDataFrame;
-
 class GNOMONCORE_EXPORT gnomonAbstractPointCloudQuantification : public gnomonAbstractAlgorithm
 {
-
     //Inputs
 public:
-  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual dtkCoreParameters parameters(void) const override = 0;
-
-  virtual void setImage(gnomonImageSeries *image) = 0;
-  virtual void setPointCloud(gnomonPointCloudSeries *pointCloud) = 0;
+  virtual void setImage(std::shared_ptr<gnomonImageSeries> image) = 0;
+  virtual void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
 
     // Outputs
 public:
-    virtual gnomonPointCloudSeries *pointCloud() const = 0;
-    virtual gnomonDataFrameSeries *dataFrame() const = 0;
+    virtual std::shared_ptr<gnomonPointCloudSeries> pointCloud() const = 0;
+    virtual std::shared_ptr<gnomonDataFrameSeries> dataFrame() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

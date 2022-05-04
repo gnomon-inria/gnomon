@@ -27,13 +27,13 @@ public:
 
     void run(void) override{ fusion::t_run_called = true;};
     QString documentation(void) override {return "empty";};
-    void addImage(gnomonImageSeries *) override { fusion::t_nb_image_added++;};
+    void addImage(std::shared_ptr<gnomonImageSeries> ) override { fusion::t_nb_image_added++;};
     void removeImages(void) override { fusion::t_remove_images_called = true; fusion::t_nb_image_added=0;};
 
     void addLandmarks(const std::vector<gnomonLandmark>&) override {};
     void removeLandmarks(void) override {fusion::t_remove_landmarks = true;};
 
-    gnomonImageSeries *output() override { return nullptr;};
+    std::shared_ptr<gnomonImageSeries> output() override { return nullptr;};
 };
 
 inline gnomonAbstractImageFusion* dummyImageFusionPluginCreator(void)  {
@@ -43,7 +43,7 @@ inline gnomonAbstractImageFusion* dummyImageFusionPluginCreator(void)  {
 class gnomonImageFusionCommandTestCasePrivate
 {
 public:
-    QVector< gnomonImageSeries * > image_series;
+    QVector< std::shared_ptr<gnomonImageSeries> > image_series;
     gnomonImageFusionCommand *fusion_command = nullptr;
 };
 
@@ -71,9 +71,9 @@ void gnomonImageFusionCommandTestCase::init(void)
 
 void gnomonImageFusionCommandTestCase::redo(void)
 {
-    d->image_series.push_back(new gnomonImageSeries());
-    d->image_series.push_back(new gnomonImageSeries());
-    d->image_series.push_back(new gnomonImageSeries());
+    d->image_series.push_back(std::make_shared<gnomonImageSeries>());
+    d->image_series.push_back(std::make_shared<gnomonImageSeries>());
+    d->image_series.push_back(std::make_shared<gnomonImageSeries>());
 
     d->fusion_command->addImage(d->image_series[0]);
     d->fusion_command->addImage(d->image_series[1]);

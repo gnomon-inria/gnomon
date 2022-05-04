@@ -10,7 +10,7 @@
 class gnomonImageWriterCommandPrivate
 {
 public:
-    gnomonImageSeries* image = nullptr;
+    std::shared_ptr<gnomonImageSeries> image = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -58,19 +58,19 @@ void gnomonImageWriterCommand::undo()
     ((gnomonAbstractImageWriter *) this->action)->setPath("");
 }
 
-void gnomonImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonImageWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->image = dynamic_cast<gnomonImageSeries*>(form);
+    d->image = std::dynamic_pointer_cast<gnomonImageSeries>(form);
 }
 
-void gnomonImageWriterCommand::setImage(gnomonImageSeries *image)
+void gnomonImageWriterCommand::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
     d->image = image;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["image"] = d->image;
     return inputs;
 }
@@ -90,9 +90,9 @@ gnomonAbstractCommand::orderedMap gnomonImageWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonImageWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "image") {
-        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

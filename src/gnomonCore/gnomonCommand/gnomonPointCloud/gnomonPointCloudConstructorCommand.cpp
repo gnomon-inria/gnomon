@@ -6,7 +6,7 @@
 class gnomonPointCloudConstructorCommandPrivate
 {
 public:
-    gnomonPointCloudSeries* output = nullptr;
+    std::shared_ptr<gnomonPointCloudSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ void gnomonPointCloudConstructorCommand::predo(void)
 
 void gnomonPointCloudConstructorCommand::postdo(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudConstructor *) this->action)->output();
 
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->output = nullptr;
@@ -58,14 +58,14 @@ void gnomonPointCloudConstructorCommand::undo()
 {
 }
 
-gnomonPointCloudSeries *gnomonPointCloudConstructorCommand::output()
+std::shared_ptr<gnomonPointCloudSeries> gnomonPointCloudConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudConstructorCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudConstructorCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -86,7 +86,7 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudConstructorCommand::outputType
 
 void gnomonPointCloudConstructorCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonPointCloudSeries();
+        d->output = std::make_shared<gnomonPointCloudSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

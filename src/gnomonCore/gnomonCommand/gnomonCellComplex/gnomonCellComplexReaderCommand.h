@@ -15,8 +15,8 @@ public:
     void   undo(void) override;
 
 public:
-    gnomonCellComplexSeries *cellComplex();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
     orderedMap outputTypes() override;
 
     void deserializeResults(QJsonObject &serialization) override;

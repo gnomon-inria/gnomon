@@ -24,8 +24,8 @@ public:
     ~gnomonWorkspaceRegistrationPrivate(void);
 
 public:
-    QHash<int, gnomonImageSeries *> image_stack;
-    QHash<int, gnomonDataDictSeries *> transformation_stack;
+    QHash<int, std::shared_ptr<gnomonImageSeries> > image_stack;
+    QHash<int, std::shared_ptr<gnomonDataDictSeries> > transformation_stack;
 
     int stack_level = -1;
 };
@@ -37,15 +37,9 @@ gnomonWorkspaceRegistrationPrivate::gnomonWorkspaceRegistrationPrivate(void)
 gnomonWorkspaceRegistrationPrivate::~gnomonWorkspaceRegistrationPrivate(void)
 {
     if (!this->image_stack.isEmpty()) {
-        for (const auto& level : this->image_stack.keys()) {
-            delete this->image_stack[level];
-        }
         this->image_stack.clear();
     }
     if (!this->transformation_stack.isEmpty()) {
-        for (const auto& level : this->transformation_stack.keys()) {
-            delete this->transformation_stack[level];
-        }
         this->transformation_stack.clear();
     }
 }
@@ -125,12 +119,12 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
         dd->stack_level = level;
 
         if (dd->image_stack.contains(dd->stack_level)) {
-            gnomonImageSeries *input_image = dd->image_stack[dd->stack_level];
+            std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[dd->stack_level];
             if (input_image != this->sources()->views()[1]->image()) {
                 this->sources()->views()[1]->setImage(input_image);
 
                 if (dd->image_stack.contains(dd->stack_level+1)) {
-                    gnomonImageSeries *output_image = dd->image_stack[dd->stack_level+1];
+                    std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level+1];
                     this->targets()->views()[0]->setImage(output_image);
                 } else {
                     this->targets()->views()[0]->clear();
@@ -144,26 +138,20 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
 
 void gnomonWorkspaceRegistration::setInputs(void)
 {
-    gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
+    std::shared_ptr<gnomonImageSeries> input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["input"]);
     bool empty_input = (input_image == nullptr);
 
     //gnomonAlgorithmWorkspace::setInputs();
     d->command->setInputForm("input", d->sources->views()[1]->image());
 
     if (empty_input || !d->command->inputs()["input"]) {
-        for (const auto& level : dd->image_stack.keys()) {
-            delete dd->image_stack[level];
-        }
         dd->image_stack.clear();
-        for (const auto& level : dd->transformation_stack.keys()) {
-            delete dd->transformation_stack[level];
-        }
         dd->transformation_stack.clear();
         emit stackSizeChanged();
         this->setStackLevel(-1);
 
         if (d->command->inputs()["input"]) {
-            input_image = dynamic_cast<gnomonImageSeries *>(d->command->inputs()["input"]);
+            input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["input"]);
             dd->image_stack.insert(0, input_image);
             emit stackSizeChanged();
             this->setStackLevel(0);
@@ -196,18 +184,20 @@ void gnomonWorkspaceRegistration::setInputs(void)
 
 void gnomonWorkspaceRegistration::iterate(void)
 {
-    gnomonImageSeries *output_image = dynamic_cast<gnomonImageSeries *>(d->command->outputs()["output"]);
+    std::shared_ptr<gnomonImageSeries> output_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->outputs()["output"]);
     if (output_image) {
-        gnomonImageSeries *input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone());
+        //gnomonImageSeries * input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone()); //TODO real clone here. to keep
+
+        std::shared_ptr<gnomonImageSeries> input_image = std::make_shared<gnomonImageSeries>(*(output_image.get())); // this is doing a data->clone() !!
         dd->image_stack.insert(dd->stack_level+1, input_image);
-        gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(d->command->outputs()["transformation"]->clone());
+        std::shared_ptr<gnomonDataDictSeries> transformation = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->command->outputs()["transformation"]);
         dd->transformation_stack.insert(dd->stack_level+1, transformation);
         emit stackSizeChanged();
 
         this->setStackLevel(dd->stack_level+1);
 
         gnomonPipelineManager::instance()->addForm(output_image);
-        gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
+        //gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
     }
 
 }

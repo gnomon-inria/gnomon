@@ -17,6 +17,7 @@
 #include <vtkObject.h>
 
 #include <gnomonVisualizationExport.h>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
 #include "gnomonActor/gnomonActor.h"
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
@@ -31,7 +32,7 @@ public:
     static gnomonPolyDataCellImage *New(void);
 
 public:
-	void setCellImage(gnomonCellImage *cellimage);
+	void setCellImage(std::shared_ptr<gnomonCellImage> cellimage);
 
 public slots:
     void update(void) override;

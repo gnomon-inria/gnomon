@@ -24,31 +24,6 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
-// dtkCoreParameters gnomonAbstractVisualization::parameters(void) const
-// {
-//     return d->parameters;
-// }
-//
-// void gnomonAbstractVisualization::setParameter(const QString& parameter, const QVariant& value)
-// {
-//     if (d->parameters.contains(parameter)) {
-//         d->parameters[parameter]->setValue(value);
-//     }
-//     else
-//         qWarning()<<parameter<<"is not a valid parameter!";
-// }
-//
-// void gnomonAbstractVisualization::setParameters(const dtkCoreParameters& parameters)
-// {
-//     d->parameters = parameters;
-//     for (const auto& param : parameters.keys()) {
-//         if (d->parameters.contains(param)) {
-//             d->parameters[param] = parameters[param];
-//             d->parameters[param]->copy(parameters[param]);
-//         }
-//     }
-// }
-
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonVisualizationExport>
@@ -20,27 +6,16 @@
 #include <QtQml>
 #include <QtGui>
 
-#include <gnomonLandmark.h>
-
-class dtkWidgetsMenu;
-class dtkWidgetsMenuBar;
-
-class gnomonAbstractForm;
-class gnomonAbstractDynamicForm;
-class gnomonAbstractVisualization;
-
-class gnomonInteractorStyle;
-
-struct gnomonLandmark;
-
-template <typename T> class gnomonTimeSeries;
-
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+
+class gnomonAbstractVisualization;
+class gnomonInteractorStyle;
 
 class vtkCamera;
 class vtkRenderer;
@@ -122,7 +97,7 @@ signals:
     void unlinking(void);
 
 signals:
-    void exportedForm(gnomonAbstractDynamicForm *);
+    void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm>);
 
 public slots:
     void switchTo3D  (void);
@@ -145,16 +120,16 @@ public slots:
     void setExportColor(const QColor& color);
 
 public:
-    void setForm(const QString&, gnomonAbstractDynamicForm *,const QJsonObject &visualization={});
-    void setBinaryImage(gnomonBinaryImageSeries *, const QJsonObject &visu_properties={});
-    void setCellComplex(gnomonCellComplexSeries *, const QJsonObject &visu_properties={});
-    void setCellImage(gnomonCellImageSeries *,const QJsonObject &visu_properties={});
-    void setImage(gnomonImageSeries *, const QJsonObject &visu_properties={});
-    void setMesh(gnomonMeshSeries *, const QJsonObject &visu_properties={});
-    void setPointCloud(gnomonPointCloudSeries *, const QJsonObject &visu_properties={});
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ,const QJsonObject &visualization={});
+    void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> , const QJsonObject &visu_properties={});
+    void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> , const QJsonObject &visu_properties={});
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> ,const QJsonObject &visu_properties={});
+    void setImage(std::shared_ptr<gnomonImageSeries> , const QJsonObject &visu_properties={});
+    void setMesh(std::shared_ptr<gnomonMeshSeries> , const QJsonObject &visu_properties={});
+    void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> , const QJsonObject &visu_properties={});
 
 public:
-    void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractVisualization * = nullptr);
+    void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> , gnomonAbstractVisualization * = nullptr);
 
 public:
     QStringList formNames(void);
@@ -170,13 +145,13 @@ signals:
 
 
 public:
-    gnomonAbstractDynamicForm *form(const QString&);
-    gnomonBinaryImageSeries *binaryImage(void);
-    gnomonCellComplexSeries *cellComplex(void);
-    gnomonCellImageSeries *cellImage(void);
-    gnomonImageSeries *image(void);
-    gnomonMeshSeries *mesh(void);
-    gnomonPointCloudSeries *pointCloud(void);
+    std::shared_ptr<gnomonAbstractDynamicForm> form(const QString&);
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage(void);
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex(void);
+    std::shared_ptr<gnomonCellImageSeries> cellImage(void);
+    std::shared_ptr<gnomonImageSeries> image(void);
+    std::shared_ptr<gnomonMeshSeries> mesh(void);
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud(void);
 
 public:
     Q_INVOKABLE QString formVisuName(const QString& name);
@@ -193,10 +168,6 @@ public:
 public:
     vtkRenderer *renderer2D(void);
     vtkRenderer *renderer3D(void);
-
-// public:
-//     dtkWidgetsMenu *menu(void);
-//     dtkWidgetsMenuBar *menubar(void);
 
 public:
     vtkRenderWindowInteractor *interactor(void);
@@ -273,18 +244,6 @@ public slots:
 
 public slots:
     void transmit(void);
-
-// protected:
-//     void dragEnterEvent(QDragEnterEvent *);
-//     void dragLeaveEvent(QDragLeaveEvent *);
-//     void dragMoveEvent(QDragMoveEvent *);
-//     void dropEvent(QDropEvent *);
-
-// signals:
-//     void fileDropped(const QString&);
-
-// protected:
-//     void resizeEvent(QResizeEvent *);
 
 private:
     class gnomonViewFormPrivate *d;

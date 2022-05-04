@@ -4,6 +4,15 @@ gnomonDynamicFormMetadata::gnomonDynamicFormMetadata(const QJsonObject &json) {
     deserialize(json);
 }
 
+gnomonDynamicFormMetadata& gnomonDynamicFormMetadata::operator =(const gnomonDynamicFormMetadata& o) {
+    m_data.clear();
+    for(const auto& k : o.keys()) {
+        m_data[k] = o.m_data[k];
+    }
+
+    return *this;
+}
+
 QJsonObject gnomonDynamicFormMetadata::serialize() const {
     return this->data();
 }

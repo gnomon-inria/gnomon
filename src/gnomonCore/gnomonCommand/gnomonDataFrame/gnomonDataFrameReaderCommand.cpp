@@ -10,7 +10,7 @@
 class gnomonDataFrameReaderCommandPrivate
 {
 public:
-    gnomonDataFrameSeries *dataFrame = nullptr;
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ void gnomonDataFrameReaderCommand::predo(void)
 
 void gnomonDataFrameReaderCommand::postdo(void)
 {
-    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractDataFrameReader *) this->action)->dataFrame();
 
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
@@ -61,14 +61,14 @@ void gnomonDataFrameReaderCommand::undo()
     ((gnomonAbstractDataFrameReader *) this->action)->setPath("");
 }
 
-gnomonDataFrameSeries *gnomonDataFrameReaderCommand::dataFrame()
+std::shared_ptr<gnomonDataFrameSeries> gnomonDataFrameReaderCommand::dataFrame()
 {
     return d->dataFrame;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["dataFrame"] = this->dataFrame();
     return outputs;
 }
@@ -90,7 +90,7 @@ gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {
 
 void gnomonDataFrameReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->dataFrame) {
-        d->dataFrame = new gnomonDataFrameSeries();
+        d->dataFrame = std::make_shared<gnomonDataFrameSeries>();
     }
     auto tmp = serialization["dataFrame"].toObject();
     d->dataFrame->deserialize(tmp);

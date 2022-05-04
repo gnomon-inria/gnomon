@@ -26,7 +26,7 @@ public:
     }
     gnomonCellComplex(const gnomonCellComplex& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonCellComplex(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonCellComplex(*this); };
 
     ~gnomonCellComplex(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

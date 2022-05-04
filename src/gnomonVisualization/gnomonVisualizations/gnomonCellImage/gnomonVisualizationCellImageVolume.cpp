@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizationCellImageVolume.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
@@ -41,8 +27,8 @@
 class gnomonVisualizationCellImageVolumePrivate
 {
 public:
-    gnomonCellImageSeries *cellImageSeries;
-    gnomonCellImage *cellImage;
+    std::shared_ptr<gnomonCellImageSeries> cellImageSeries = nullptr;
+    std::shared_ptr<gnomonCellImage> cellImage;
 
 public:
     vtkSmartPointer<vtkImageData> image = nullptr;
@@ -57,8 +43,6 @@ public:
 
 gnomonVisualizationCellImageVolume::gnomonVisualizationCellImageVolume(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageVolumePrivate)
 {
-    dd->cellImage = Q_NULLPTR;
-
     d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("colormap", "glasbey", "Colormap to apply to the cellImage");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the cellImage rendering");
@@ -67,10 +51,7 @@ gnomonVisualizationCellImageVolume::gnomonVisualizationCellImageVolume(void) : g
 gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
 {
     this->clear();
-
     delete dd;
-
-    dd = NULL;
 }
 
 void gnomonVisualizationCellImageVolume::clear(void)
@@ -101,17 +82,17 @@ void gnomonVisualizationCellImageVolume::setVisible(bool visible)
     }
 }
 
-void gnomonVisualizationCellImageVolume::setCellImage(gnomonCellImageSeries *cellImage)
+void gnomonVisualizationCellImageVolume::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
 {
     dd->cellImageSeries = cellImage;
-    dd->cellImage = (gnomonCellImage *) cellImage->current();
+    dd->cellImage = cellImage->current();
     this->setParameter("alpha",1.0);
 
     if (dd->cellImage)
         this->updateValueRange();
 }
 
-gnomonCellImageSeries *gnomonVisualizationCellImageVolume::cellImage(void)
+std::shared_ptr<gnomonCellImageSeries> gnomonVisualizationCellImageVolume::cellImage(void)
 {
     return dd->cellImageSeries;
 }
@@ -324,15 +305,10 @@ void gnomonVisualizationCellImageVolume::onXZ(void)
 void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
 {
     if (dd->cellImageSeries->times().contains(value)) {
-        dd->cellImage = (gnomonCellImage *) dd->cellImageSeries->at(value);
+        dd->cellImage = dd->cellImageSeries->at(value);
         this->update();
     }
     this->render();
-}
-
-long gnomonVisualizationCellImageVolume::cellId(long vtkId)
-{
-    return vtkId;
 }
 
 //

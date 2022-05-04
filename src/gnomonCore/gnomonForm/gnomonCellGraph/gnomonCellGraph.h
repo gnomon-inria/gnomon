@@ -23,9 +23,9 @@ public:
     explicit gnomonCellGraph(QJsonObject& serialization) : m_data(nullptr) {
         static_cast<gnomonCellGraph*>(this)->deserialize(serialization);
     }
-             gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
+    gnomonCellGraph(const gnomonCellGraph& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonCellGraph(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonCellGraph(*this); };
 
     virtual ~gnomonCellGraph(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

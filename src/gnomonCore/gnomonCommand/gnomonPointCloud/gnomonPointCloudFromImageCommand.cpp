@@ -10,9 +10,8 @@
 class gnomonPointCloudFromImageCommandPrivate
 {
 public:
-    gnomonImageSeries* input = nullptr;
-
-    gnomonPointCloudSeries* output = nullptr;
+    std::shared_ptr<gnomonImageSeries> input;
+    std::shared_ptr<gnomonPointCloudSeries> output;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -51,7 +50,7 @@ void gnomonPointCloudFromImageCommand::predo(void)
 
 void gnomonPointCloudFromImageCommand::postdo(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudFromImage *) this->action)->output();
 
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->output = nullptr;
@@ -65,9 +64,9 @@ void gnomonPointCloudFromImageCommand::undo()
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *image)
+void gnomonPointCloudFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> image)
 {
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
         d->input = nullptr;
     } else {
         d->input = image;
@@ -76,26 +75,26 @@ void gnomonPointCloudFromImageCommand::setInput(gnomonImageSeries *image)
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(d->input);
 }
 
-gnomonImageSeries *gnomonPointCloudFromImageCommand::input()
+std::shared_ptr<gnomonImageSeries> gnomonPointCloudFromImageCommand::input()
 {
     return d->input;
 }
 
-gnomonPointCloudSeries *gnomonPointCloudFromImageCommand::output()
+std::shared_ptr<gnomonPointCloudSeries> gnomonPointCloudFromImageCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudFromImageCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudFromImageCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudFromImageCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -121,9 +120,9 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::outputTypes(
     return output_types;
 }
 
-void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "image") {
-        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -131,7 +130,7 @@ void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, gnomonA
 
 void gnomonPointCloudFromImageCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonPointCloudSeries();
+        d->output = std::make_shared<gnomonPointCloudSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

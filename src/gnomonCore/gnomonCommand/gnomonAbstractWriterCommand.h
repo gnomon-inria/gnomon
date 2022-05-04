@@ -13,12 +13,12 @@ class GNOMONCORE_EXPORT  gnomonAbstractWriterCommand : public gnomonAbstractComm
 public:
     virtual const QString& path() {return this->m_path;}
     virtual void setPath(const QString & path) { m_path = path; };
-    virtual void setForm(gnomonAbstractDynamicForm* form) = 0;
+    virtual void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;
 
 public:
     virtual QStringList extensions(void);
 
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override {
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override {
         return {};
     }
 

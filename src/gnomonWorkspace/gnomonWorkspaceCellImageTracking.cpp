@@ -88,6 +88,6 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
 {
     gnomonAlgorithmWorkspace::setInputs();
 
-    gnomonDataDictSeries *input_dict = dynamic_cast<gnomonDataDictSeries *>(dd->source_dict->form("gnomonDataDict"));
+    std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(dd->source_dict->form("gnomonDataDict"));
     d->command->setInputForm("transformation", input_dict);
 }

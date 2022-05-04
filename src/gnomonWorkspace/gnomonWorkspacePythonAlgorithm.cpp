@@ -119,7 +119,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonImage",true);
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
-        connect(v, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+        connect(v, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             gnomonPipelineManager::instance()->addForm(f);
         });
     });
@@ -323,7 +323,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 
         bool output_form_added = false;
 
-        gnomonBinaryImageSeries *binaryImage = d->algorithm->outputBinaryImage();
+        std::shared_ptr<gnomonBinaryImageSeries> binaryImage = d->algorithm->outputBinaryImage();
         if ((binaryImage) && (binaryImage->times().size() != 0)) {
             d->command->addOutput(binaryImage);
             this->target()->setForm("gnomonBinaryImage", binaryImage);
@@ -341,7 +341,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             binaryImage->metadata()->set("source", d->algorithm_key);
         }
 
-        gnomonCellComplexSeries *cellComplex = d->algorithm->outputCellComplex();
+        std::shared_ptr<gnomonCellComplexSeries> cellComplex = d->algorithm->outputCellComplex();
         if ((cellComplex) && (cellComplex->times().size() != 0)) {
             d->command->addOutput(cellComplex);
             this->target()->setForm("gnomonCellComplex", cellComplex);
@@ -359,7 +359,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             cellComplex->metadata()->set("source", d->algorithm_key);
         }
 
-        gnomonCellImageSeries *cellImage = d->algorithm->outputCellImage();
+        std::shared_ptr<gnomonCellImageSeries> cellImage = d->algorithm->outputCellImage();
         if ((cellImage) && (cellImage->times().size() != 0)) {
             d->command->addOutput(cellImage);
             this->target()->setForm("gnomonCellImage", cellImage);
@@ -377,8 +377,8 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             cellImage->metadata()->set("source", d->algorithm_key);
         }
 
-        gnomonImageSeries *image = d->algorithm->outputImage();
-        if ((image) && (image->times().size() != 0) && (((gnomonImage *) image->current())->channels().size() != 0)) {
+        std::shared_ptr<gnomonImageSeries> image = d->algorithm->outputImage();
+        if ((image) && (image->times().size() != 0) && (image->current()->channels().size() != 0)) {
             d->command->addOutput(image);
             this->target()->setForm("gnomonImage", image);
             QString form_name("image_out");
@@ -394,7 +394,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             image->metadata()->set("source", d->algorithm_key);
         }
 
-        gnomonMeshSeries *mesh = d->algorithm->outputMesh();
+        std::shared_ptr<gnomonMeshSeries> mesh = d->algorithm->outputMesh();
         if ((mesh) && (mesh->times().size() != 0)) {
             d->command->addOutput(mesh);
             this->target()->setForm("gnomonMesh", mesh);
@@ -411,7 +411,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             mesh->metadata()->set("source", d->algorithm_key);
         }
 
-        gnomonPointCloudSeries *pointCloud = d->algorithm->outputPointCloud();
+        std::shared_ptr<gnomonPointCloudSeries> pointCloud = d->algorithm->outputPointCloud();
         if ((pointCloud) && (pointCloud->times().size() != 0)) {
             d->command->addOutput(pointCloud);
             this->target()->setForm("gnomonPointCloud", pointCloud);

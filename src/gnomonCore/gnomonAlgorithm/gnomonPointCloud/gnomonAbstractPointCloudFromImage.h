@@ -14,17 +14,14 @@
 
 class GNOMONCORE_EXPORT gnomonAbstractPointCloudFromImage : public gnomonAbstractAlgorithm
 {
-
     //Inputs
 public:
-  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual dtkCoreParameters parameters(void) const override = 0;
-  virtual void setInput(gnomonImageSeries *image) = 0;
+  virtual void setInput(std::shared_ptr<gnomonImageSeries> image) = 0;
 
     // Outputs
 public:
-    virtual gnomonPointCloudSeries *output() const = 0;
-    virtual gnomonImageSeries *input() const = 0;
+    virtual std::shared_ptr<gnomonPointCloudSeries> output() const = 0;
+    virtual std::shared_ptr<gnomonImageSeries> input() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -45,12 +42,6 @@ public:
         }
         return {};
     };
-
-
-public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractPointCloudFromImage *)

@@ -16,9 +16,9 @@ public:
     void   undo(void) override;
 
 public:
-    gnomonCellImageSeries *output();
+    std::shared_ptr<gnomonCellImageSeries> output();
 
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap outputTypes() override;
 

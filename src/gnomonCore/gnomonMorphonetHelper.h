@@ -1,5 +1,6 @@
 #pragma once
 #include <QtCore>
+#include <memory>
 
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCoreExport>
@@ -26,10 +27,10 @@ public:
     virtual int endTime() = 0;
 
 public:
-    virtual gnomonCellImage *loadMnDataAtTime(int time, double voxelsize = 0.1, bool load_infos = true) = 0;
-    virtual void loadMnInfos(gnomonCellImageSeries *serie) = 0;
+    virtual std::shared_ptr<gnomonCellImage> loadMnDataAtTime(int time, double voxelsize = 0.1, bool load_infos = true) = 0;
+    virtual void loadMnInfos(std::shared_ptr<gnomonCellImageSeries> serie) = 0;
 
-    virtual int createDataset(QString name, gnomonCellImageSeries *serie, int id_NCBI=0, int id_type=0, QString description="", double voxelsize=1.) = 0;
+    virtual int createDataset(QString name, std::shared_ptr<gnomonCellImageSeries> serie, int id_NCBI=0, int id_type=0, QString description="", double voxelsize=1.) = 0;
     virtual bool deleteDataset(int id) = 0;
 
 

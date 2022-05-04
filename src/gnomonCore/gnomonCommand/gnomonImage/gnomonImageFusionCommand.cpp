@@ -10,11 +10,11 @@
 class gnomonImageFusionCommandPrivate
 {
 public:
-    QVector<gnomonImageSeries *> images_series;
+    QVector<std::shared_ptr<gnomonImageSeries> > images_series;
     QVector<std::vector<gnomonLandmark>> landmarks;
     QMap<QString, int> image_indices;
 
-    gnomonImageSeries* output = nullptr;
+    std::shared_ptr<gnomonImageSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -59,9 +59,9 @@ void gnomonImageFusionCommand::predo(void)
 
 void gnomonImageFusionCommand::postdo(void)
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageFusion *) this->action)->output();
+    std::shared_ptr<gnomonImageSeries> image = ((gnomonAbstractImageFusion *) this->action)->output();
 
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
         d->output = nullptr;
     } else {
         d->output = image;
@@ -74,7 +74,7 @@ void gnomonImageFusionCommand::undo()
     ((gnomonAbstractImageFusion *) this->action)->removeLandmarks();
 }
 
-void gnomonImageFusionCommand::addImage(gnomonImageSeries *image_series)
+void gnomonImageFusionCommand::addImage(std::shared_ptr<gnomonImageSeries> image_series)
 {
     int index = d->images_series.size();
     QString input_name = "image" + QString::number(index);
@@ -84,7 +84,7 @@ void gnomonImageFusionCommand::addImage(gnomonImageSeries *image_series)
     reloadImages();
 }
 
-void gnomonImageFusionCommand::changeImage(const QString& name, gnomonImageSeries *image_series) {
+void gnomonImageFusionCommand::changeImage(const QString& name, std::shared_ptr<gnomonImageSeries> image_series) {
     const auto& current_inputs = this->inputs();
     if (current_inputs.contains(name)) {
         d->images_series[d->image_indices[name]] = image_series;
@@ -109,14 +109,14 @@ void gnomonImageFusionCommand::removeLandmarks()
     d->landmarks.clear();
 }
 
-gnomonImageSeries *gnomonImageFusionCommand::output() const
+std::shared_ptr<gnomonImageSeries> gnomonImageFusionCommand::output() const
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageFusionCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     int i = 0;
     for(auto& image_series : d->images_series) {
         QString input_name = d->image_indices.key(i);
@@ -126,9 +126,9 @@ QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::inputs()
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFusionCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageFusionCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -159,12 +159,13 @@ gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::outputTypes() {
     return types;
 }
 
-void gnomonImageFusionCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonImageFusionCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     // TODO: come back later to see if correct
     dtkWarn()<<Q_FUNC_INFO<<"Implementation uncertain !!!";
-    if (this->inputs().contains(name)) {
-        this->changeImage(name, dynamic_cast<gnomonImageSeries *>(form));
-    } else if (auto *form_cast = dynamic_cast<gnomonImageSeries *>(form)) {
+    std::shared_ptr<gnomonImageSeries> form_cast = std::dynamic_pointer_cast<gnomonImageSeries>(form);
+    if (form_cast && this->inputs().contains(name)) {
+        this->changeImage(name, form_cast);
+    } else if (form_cast) {
         this->addImage(form_cast);
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
@@ -173,7 +174,7 @@ void gnomonImageFusionCommand::setInputForm(const QString &name, gnomonAbstractD
 
 void gnomonImageFusionCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonImageSeries();
+        d->output = std::make_shared<gnomonImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

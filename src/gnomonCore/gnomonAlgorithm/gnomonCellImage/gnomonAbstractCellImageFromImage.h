@@ -16,25 +16,25 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageFromImage : public gnomonAbstract
 {
 
 public:
-    virtual void setInput(gnomonImageSeries *image_series) = 0;
-    virtual inline void setCellPoints(gnomonPointCloudSeries *pointCloud_series) {
+    virtual void setInput(std::shared_ptr<gnomonImageSeries> image_series) = 0;
+    virtual inline void setCellPoints(std::shared_ptr<gnomonPointCloudSeries> pointCloud_series) {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
     };
-    virtual inline void setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {
+    virtual inline void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binary_image_series) {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
     };
 
 public:
-    virtual gnomonImageSeries *input(void) const = 0;
-    virtual inline gnomonPointCloudSeries *cellPoints(void) const {
+    virtual std::shared_ptr<gnomonImageSeries> input(void) const = 0;
+    virtual inline std::shared_ptr<gnomonPointCloudSeries> cellPoints(void) const {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
-    virtual inline gnomonBinaryImageSeries *binaryImageSeries() const {
+    virtual inline std::shared_ptr<gnomonBinaryImageSeries> binaryImageSeries() const {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
-    virtual gnomonCellImageSeries *output() const = 0;
+    virtual std::shared_ptr<gnomonCellImageSeries> output() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

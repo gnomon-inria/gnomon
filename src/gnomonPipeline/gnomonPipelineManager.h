@@ -3,11 +3,11 @@
 #include <gnomonPipelineExport.h>
 
 #include <QtCore>
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 
 class gnomonPipeline;
 class gnomonPipelineNode;
 
-class gnomonAbstractDynamicForm;
 class gnomonAbstractAdapterCommand;
 class gnomonAbstractCommand;
 class gnomonAbstractConstructorCommand;
@@ -34,15 +34,15 @@ public:
 public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
-    void addAdapter(gnomonAbstractAdapterCommand *command); //todo delete ?
-    void addAdaptedForm(gnomonAbstractDynamicForm *form); //todo delete ?
-    void addAlgorithm(gnomonAbstractCommand *command);
+    void addAdapter(gnomonAbstractAdapterCommand *command); //todo DEPRECATED !!
+    void addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form); //todo delete ?
+    void addAlgorithm(gnomonAbstractCommand *command); 
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
-    void addForm(gnomonAbstractDynamicForm *form); //todo delete ?
-    void addClonedForm(gnomonAbstractDynamicForm *form, gnomonAbstractDynamicForm *clone);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    void addClonedForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractDynamicForm> clone); // TODO check?
 
 public:
-    void setFormIndex(gnomonAbstractDynamicForm *form, int index=-1);
+    void setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index=-1);
 
 private:
     class gnomonPipelineManagerPrivate *d;

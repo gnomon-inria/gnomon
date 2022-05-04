@@ -24,11 +24,11 @@ public:
 
     void run(void) override{ filter::t_run_called = true;};
     QString documentation(void) override {return "empty";};
-    void setInput(gnomonImageSeries *image_series) override {filter::t_set_input_called = true;};
-    gnomonImageSeries *input() override {return nullptr;};
-    gnomonImageSeries *output() override {return nullptr;};
-    gnomonBinaryImageSeries *mask() override {return nullptr;}
-    void setMask(gnomonBinaryImageSeries *init) override {filter::t_set_mask_called = true;};
+    void setInput(std::shared_ptr<gnomonImageSeries> image_series) override {filter::t_set_input_called = true;};
+    std::shared_ptr<gnomonImageSeries> input() override {return nullptr;};
+    std::shared_ptr<gnomonImageSeries> output() override {return nullptr;};
+    std::shared_ptr<gnomonBinaryImageSeries> mask() override {return nullptr;}
+    void setMask(std::shared_ptr<gnomonBinaryImageSeries> init) override {filter::t_set_mask_called = true;};
 };
 
 inline gnomonAbstractImageFilter* dummyImageFilterPluginCreator(void)  {
@@ -39,7 +39,7 @@ inline gnomonAbstractImageFilter* dummyImageFilterPluginCreator(void)  {
 class gnomonImageFilterCommandTestCasePrivate
 {
 public:
-    gnomonImageSeries *image_series;
+    std::shared_ptr<gnomonImageSeries> image_series;
     gnomonImageFilterCommand *filter_command = nullptr;
 };
 
@@ -67,7 +67,7 @@ void gnomonImageFilterCommandTestCase::init(void)
 
 void gnomonImageFilterCommandTestCase::redo(void)
 {
-    d->filter_command->setInput(new gnomonImageSeries());
+    d->filter_command->setInput(std::make_shared<gnomonImageSeries>());
     d->filter_command->setNoAsync();
     d->filter_command->redo();
 

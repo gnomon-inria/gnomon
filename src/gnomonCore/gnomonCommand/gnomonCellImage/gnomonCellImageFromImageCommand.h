@@ -19,26 +19,26 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *image_series);
-    gnomonImageSeries *input();
+    void setInput(std::shared_ptr<gnomonImageSeries> image_series); 
+    std::shared_ptr<gnomonImageSeries> input();
 
 public:
-    void setCellPoints(gnomonPointCloudSeries *pointCloud_series);
-    gnomonPointCloudSeries *cellPoints();
-    void setBinaryImage(gnomonBinaryImageSeries *binary_image_series);
-    gnomonBinaryImageSeries *binaryImage();;
+    void setCellPoints(std::shared_ptr<gnomonPointCloudSeries> pointCloud_series);
+    std::shared_ptr<gnomonPointCloudSeries> cellPoints();
+    void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binary_image_series);
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage();;
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
     orderedMap inputTypes() override;
-    void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    gnomonCellImageSeries *output();
+    std::shared_ptr<gnomonCellImageSeries> output();
 
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
     orderedMap outputTypes() override;
 
     void deserializeResults(QJsonObject &serialization) override;

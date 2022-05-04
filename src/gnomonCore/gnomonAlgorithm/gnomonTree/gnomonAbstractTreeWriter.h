@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractTreeWriter(void) = default;
 
 public:
-    virtual void setTree(gnomonTreeSeries *tree) = 0;
+    virtual void setTree(std::shared_ptr<gnomonTreeSeries> tree) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

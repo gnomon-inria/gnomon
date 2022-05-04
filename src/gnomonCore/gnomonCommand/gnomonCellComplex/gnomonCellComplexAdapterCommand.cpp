@@ -5,8 +5,8 @@
 class gnomonCellComplexAdapterCommandPrivate
 {
 public:
-    gnomonCellComplexSeries* input = nullptr;
-    gnomonAbstractDynamicForm* output = nullptr;
+    std::shared_ptr<gnomonCellComplexSeries> input;
+    std::shared_ptr<gnomonAbstractDynamicForm> output;
 };
 
 gnomonCellComplexAdapterCommand::gnomonCellComplexAdapterCommand() : d(new gnomonCellComplexAdapterCommandPrivate)
@@ -37,7 +37,7 @@ void gnomonCellComplexAdapterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonCellComplexAdapterCommand::predo(void) {}
 void gnomonCellComplexAdapterCommand::postdo(void)
 {
-    gnomonAbstractDynamicForm *output = ((gnomonAbstractCellComplexAdapter *) this->action)->output();
+    std::shared_ptr<gnomonAbstractDynamicForm> output = ((gnomonAbstractCellComplexAdapter *) this->action)->output();
 
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
@@ -51,7 +51,7 @@ void gnomonCellComplexAdapterCommand::undo()
     ((gnomonAbstractCellComplexAdapter *) this->action)->setInput(nullptr);
 }
 
-void gnomonCellComplexAdapterCommand::setInput(gnomonCellComplexSeries *input)
+void gnomonCellComplexAdapterCommand::setInput(std::shared_ptr<gnomonCellComplexSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -62,26 +62,26 @@ void gnomonCellComplexAdapterCommand::setInput(gnomonCellComplexSeries *input)
     }
 }
 
-gnomonCellComplexSeries *gnomonCellComplexAdapterCommand::input()
+std::shared_ptr<gnomonCellComplexSeries> gnomonCellComplexAdapterCommand::input()
 {
     return d->input;
 }
 
-gnomonAbstractDynamicForm *gnomonCellComplexAdapterCommand::output()
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonCellComplexAdapterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexAdapterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexAdapterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexAdapterCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexAdapterCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -97,9 +97,9 @@ gnomonAbstractCommand::orderedMap gnomonCellComplexAdapterCommand::inputTypes() 
     return types;
 }
 
-void gnomonCellComplexAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonCellComplexAdapterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonCellComplexSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonCellComplexSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

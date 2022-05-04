@@ -2,8 +2,6 @@
 
 #include <QJsonObject>
 
-class gnomonDynamicFormMetadataPrivate;
-
 class gnomonDynamicFormMetadata: public QObject {
     Q_OBJECT
 
@@ -15,6 +13,7 @@ public:
     gnomonDynamicFormMetadata() = default;
     explicit gnomonDynamicFormMetadata(const QJsonObject& json);
     virtual ~gnomonDynamicFormMetadata() = default;
+    gnomonDynamicFormMetadata& operator =(const gnomonDynamicFormMetadata& o);
 
     QJsonObject serialize() const;
     void deserialize(const QJsonObject& json);

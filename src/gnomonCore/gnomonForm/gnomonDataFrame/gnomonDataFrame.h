@@ -23,9 +23,9 @@ public:
     explicit gnomonDataFrame(QJsonObject& serialization) : m_data(nullptr) {
         static_cast<gnomonDataFrame*>(this)->deserialize(serialization);
     }
-             gnomonDataFrame(const gnomonDataFrame& o) : m_data(o.m_data->clone()) {}
+    gnomonDataFrame(const gnomonDataFrame& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonDataFrame(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonDataFrame(*this); };
 
     ~gnomonDataFrame(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

@@ -15,16 +15,16 @@ public:
     void   undo(void) override;
 
 public:
-    void setForm(gnomonAbstractDynamicForm *) override;
-    void setCellComplex(gnomonCellComplexSeries *cellcomplex);
+    void setForm(std::shared_ptr<gnomonAbstractDynamicForm> ) override;
+    void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellcomplex);
     void setAlgorithmName(const QString &) override;
 
 public:
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
 public:
     static bool isEmpty();

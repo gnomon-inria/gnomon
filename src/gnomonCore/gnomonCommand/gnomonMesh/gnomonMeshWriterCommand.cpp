@@ -10,7 +10,7 @@
 class gnomonMeshWriterCommandPrivate
 {
 public:
-    gnomonMeshSeries* mesh = nullptr;
+    std::shared_ptr<gnomonMeshSeries> mesh = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -58,19 +58,19 @@ void gnomonMeshWriterCommand::undo()
     ((gnomonAbstractMeshWriter *) this->action)->setPath("");
 }
 
-void gnomonMeshWriterCommand::setMesh(gnomonMeshSeries *mesh)
+void gnomonMeshWriterCommand::setMesh(std::shared_ptr<gnomonMeshSeries> mesh)
 {
     d->mesh = mesh;
 }
 
-void gnomonMeshWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonMeshWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->mesh = dynamic_cast<gnomonMeshSeries*>(form);
+    d->mesh = std::dynamic_pointer_cast<gnomonMeshSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["mesh"] = d->mesh;
     return inputs;
 }
@@ -90,9 +90,9 @@ gnomonAbstractCommand::orderedMap gnomonMeshWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonMeshWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonMeshWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "mesh") {
-        this->setMesh(dynamic_cast<gnomonMeshSeries *>(form));
+        this->setMesh(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

@@ -225,8 +225,8 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
     }
 
     if(d->command->pointCloud()) {
-        d->view->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(d->command->pointCloud()->clone()));
-        d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
+        d->view->setPointCloud(d->command->pointCloud());
+        //d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
         d->pipeline_manager->addForm(d->command->pointCloud());
         d->view->setInputView(false);
         d->view->setAcceptDrops(true);

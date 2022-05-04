@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractDataFrameWriter(void) = default;
 
 public:
-    virtual void setDataFrame(gnomonDataFrameSeries *DataFrame) = 0;
+    virtual void setDataFrame(std::shared_ptr<gnomonDataFrameSeries> DataFrame) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

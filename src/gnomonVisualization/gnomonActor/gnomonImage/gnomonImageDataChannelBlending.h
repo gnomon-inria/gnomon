@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <vtkObject.h>

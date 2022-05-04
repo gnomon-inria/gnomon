@@ -15,7 +15,7 @@ public:
     virtual ~gnomonAbstractDataDictWriter(void) = default;
 
 public:
-    virtual void setDataDict(gnomonDataDictSeries *datadict) = 0;
+    virtual void setDataDict(std::shared_ptr<gnomonDataDictSeries> datadict) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonDataDict") {

@@ -14,17 +14,13 @@ class dtkImage;
 
 class GNOMONCORE_EXPORT gnomonAbstractMeshFromImage : public gnomonAbstractAlgorithm
 {
-
-    //Inputs
 public:
-  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual dtkCoreParameters parameters(void) const override = 0;
-  virtual void setInput(gnomonImageSeries *images) = 0;
+  virtual void setInput(std::shared_ptr<gnomonImageSeries> images) = 0;
 
     // Outputs
 public:
-    virtual gnomonMeshSeries *output() const = 0;
-    virtual gnomonImageSeries *input() const = 0;
+    virtual std::shared_ptr<gnomonMeshSeries> output() const = 0;
+    virtual std::shared_ptr<gnomonImageSeries> input() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -45,12 +41,6 @@ public:
         }
         return {};
     };
-
-
-public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractMeshFromImage *)

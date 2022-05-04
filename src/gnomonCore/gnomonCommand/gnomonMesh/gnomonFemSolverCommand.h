@@ -16,21 +16,21 @@ public:
     void   undo(void) override;
 
 public:
-    void setMesh(gnomonMeshSeries *mesh);
-    gnomonMeshSeries* inputMesh();
+    void setMesh(std::shared_ptr<gnomonMeshSeries> mesh);
+    std::shared_ptr<gnomonMeshSeries> inputMesh();
     void setAlgorithmName(const QString& algo_name) override;
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap outputTypes() override;
 
-    gnomonMeshSeries *updatedMesh();
+    std::shared_ptr<gnomonMeshSeries> updatedMesh();
 
     void deserializeResults(QJsonObject &serialization) override;
 

@@ -6,8 +6,8 @@
 class gnomonMeshAdapterCommandPrivate
 {
 public:
-    gnomonMeshSeries* input = nullptr;
-    gnomonAbstractDynamicForm* output = nullptr;
+    std::shared_ptr<gnomonMeshSeries> input = nullptr;
+    std::shared_ptr<gnomonAbstractDynamicForm> output = nullptr;
 };
 
 gnomonMeshAdapterCommand::gnomonMeshAdapterCommand() : d(new gnomonMeshAdapterCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonMeshAdapterCommand::predo(void)
 
 void gnomonMeshAdapterCommand::postdo(void)
 {
-    gnomonAbstractDynamicForm *output = ((gnomonAbstractMeshAdapter *) this->action)->output();
+    std::shared_ptr<gnomonAbstractDynamicForm> output = ((gnomonAbstractMeshAdapter *) this->action)->output();
 
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
@@ -56,7 +56,7 @@ void gnomonMeshAdapterCommand::undo()
     ((gnomonAbstractMeshAdapter *) this->action)->setInput(nullptr);
 }
 
-void gnomonMeshAdapterCommand::setInput(gnomonMeshSeries *input)
+void gnomonMeshAdapterCommand::setInput(std::shared_ptr<gnomonMeshSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -67,26 +67,26 @@ void gnomonMeshAdapterCommand::setInput(gnomonMeshSeries *input)
     }
 }
 
-gnomonMeshSeries *gnomonMeshAdapterCommand::input()
+std::shared_ptr<gnomonMeshSeries> gnomonMeshAdapterCommand::input()
 {
     return d->input;
 }
 
-gnomonAbstractDynamicForm *gnomonMeshAdapterCommand::output()
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonMeshAdapterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshAdapterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshAdapterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshAdapterCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshAdapterCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -112,9 +112,9 @@ gnomonAbstractCommand::orderedMap gnomonMeshAdapterCommand::outputTypes() {
     return output_types;
 }
 
-void gnomonMeshAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonMeshAdapterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonMeshSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

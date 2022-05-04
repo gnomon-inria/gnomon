@@ -48,7 +48,7 @@ public slots:
     void exportToManager(void);
     void removeForm(const QString& key);
 public: 
-    QMap<QString, gnomonAbstractDynamicForm *> forms;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
 
 public:
     QMap<QString, bool> acceptForms;
@@ -105,17 +105,13 @@ gnomonViewData::~gnomonViewData(void)
     delete d;
 }
 
-void gnomonViewData::setForm(const QString& name, gnomonAbstractDynamicForm *form)
+void gnomonViewData::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    qDebug()<<Q_FUNC_INFO<<d->acceptForms["gnomonDataDict"]<<dynamic_cast<gnomonDataDictSeries *>(form);
-
-    if(gnomonDataDictSeries *dict = dynamic_cast<gnomonDataDictSeries *>(form)) {
+    if(std::shared_ptr<gnomonDataDictSeries> dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(form)) {
         if(d->acceptForms["gnomonDataDict"]) {
             d->forms["gnomonDataDict"] = dict;
-
-            gnomonDataDictSeries *transformation = dynamic_cast<gnomonDataDictSeries *>(dict->clone());
             if (dict->current()->keys().contains("transform")) {
-                QVariant transform = transformation->current()->get("transform");
+                QVariant transform = dict->current()->get("transform");
                 QVector<QVector<double>> transform_matrix = transform.value<QVector<QVector<double> > >();
                 this->setDataDict(transformMatrixString(transform_matrix));
             }
@@ -125,7 +121,7 @@ void gnomonViewData::setForm(const QString& name, gnomonAbstractDynamicForm *for
     }    
 }
 
-gnomonAbstractDynamicForm* gnomonViewData::form(const QString& name)
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonViewData::form(const QString& name)
 {
     return d->forms[name];
 }
@@ -137,8 +133,7 @@ void gnomonViewData::clearForm(const QString& name)
 
 void gnomonViewData::drop(int index)
 {
-    gnomonAbstractDynamicForm *form = gnomonFormManager::instance()->get(index);
-    qDebug()<<Q_FUNC_INFO<<form<<dynamic_cast<gnomonDataDictSeries *>(form);
+    std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
     this->setForm("formManager", form);
 }
 

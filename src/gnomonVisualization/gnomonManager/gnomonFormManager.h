@@ -1,23 +1,12 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonVisualizationExport>
 
+#include <memory>
 #include <QtCore>
 #include <QtGui>
+
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
 
 class gnomonAbstractForm;
@@ -41,13 +30,10 @@ public:
 signals:
     void added(int id);
 
-public slots:
-    //void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractVisualization* visualization, vtkCamera *cam=0);
-    
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, const QJsonObject &visualization_description,const QImage& image, vtkCamera *cam=0);
-
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
-    void addForm(gnomonAbstractDynamicForm *, const QColor&, const QImage& image);
+public slots:    
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QColor&, const QJsonObject &visualization_description,const QImage& image, vtkCamera *cam=nullptr);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QColor&, const QImage& image);
 
 public slots:
     void saveAs(int id, const QString& filename) const;
@@ -68,7 +54,7 @@ public:
     int formCount(const QString& form_name);
 
 public:
-    gnomonAbstractDynamicForm *get(int index);
+    std::shared_ptr<gnomonAbstractDynamicForm> get(int index);
     // gnomonAbstractVisualization *getVisualization(int index);
     QJsonObject getVisuDescription(int index);
     vtkCamera *getCamera(int index);

@@ -18,21 +18,21 @@ public:
     void   undo(void) override;
 
 public:
-    void addImage(gnomonImageSeries *);
-    void changeImage(const QString&, gnomonImageSeries *);
+    void addImage(std::shared_ptr<gnomonImageSeries> );
+    void changeImage(const QString&, std::shared_ptr<gnomonImageSeries> );
     void reloadImages();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     void setAlgorithmName(const QString &) override;
 
-    gnomonImageSeries *output() const;
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonImageSeries> output() const;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     void deserializeResults(QJsonObject &serialization) override;
 

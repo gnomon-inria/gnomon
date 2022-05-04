@@ -10,7 +10,7 @@
 class gnomonPointCloudWriterCommandPrivate
 {
 public:
-    gnomonPointCloudSeries* pointCloud = nullptr;
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -59,19 +59,19 @@ void gnomonPointCloudWriterCommand::undo()
     ((gnomonAbstractPointCloudWriter *) this->action)->setPath("");
 }
 
-void gnomonPointCloudWriterCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)
+void gnomonPointCloudWriterCommand::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud)
 {
     d->pointCloud = pointCloud;
 }
 
-void gnomonPointCloudWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonPointCloudWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->pointCloud = dynamic_cast<gnomonPointCloudSeries*>(form);
+    d->pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["pointCloud"] = d->pointCloud;
     return inputs;
 }
@@ -91,9 +91,9 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonPointCloudWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonPointCloudWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "pointCloud") {
-        this->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(form));
+        this->setPointCloud(std::dynamic_pointer_cast<gnomonPointCloudSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

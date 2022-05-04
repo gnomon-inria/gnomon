@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractImageWriter(void) = default;
 
 public:
-    virtual void setImage(gnomonImageSeries *image_series) = 0;
+    virtual void setImage(std::shared_ptr<gnomonImageSeries> image_series) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

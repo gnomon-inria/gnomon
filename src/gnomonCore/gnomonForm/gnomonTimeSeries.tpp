@@ -3,39 +3,24 @@
 
 #include <QtGlobal>
 
-/*
-template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(void): gnomonAbstractDynamicForm(new gnomonTimeSeriesPrivate<T>())
-{
-
-}
-
-template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeries<T>& o) : gnomonAbstractDynamicForm(new gnomonTimeSeriesPrivate<T>())
+template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeries<T>& o) : gnomonAbstractDynamicForm()
 {
     for (const auto& time : o.m_forms.keys()) {
-        m_forms[time] = dynamic_cast<T *>(o.m_forms[time]->clone());
+        m_forms[time] = std::make_shared<T>(*(o.m_forms[time].get()));
     }
     m_current_time = o.m_current_time;
-    delete d->metadata;
-    d->metadata = new gnomonDynamicFormMetadata(*o.d->metadata);
+    *(this->p_metadata) = *(o.p_metadata);
 }
 
-template <typename T> gnomonTimeSeries<T>::~gnomonTimeSeries(void)
+
+template <typename T> std::shared_ptr<gnomonAbstractDynamicForm> gnomonTimeSeries<T>::clone(void) const
 {
+    qWarning() << Q_FUNC_INFO << "CLONE USED. check usage";
+
+    gnomonTimeSeries<T> *o = new gnomonTimeSeries<T>(*this);
+    return std::shared_ptr<gnomonAbstractDynamicForm>(o);
 }
 
-template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(gnomonTimeSeriesPrivate<T>* otherPrivate) : gnomonAbstractDynamicForm(otherPrivate)
-{
-}
-*/
-
-template <typename T> gnomonAbstractDynamicForm *gnomonTimeSeries<T>::clone(void) const
-{
-    gnomonTimeSeries<T> *o = new gnomonTimeSeries<T>();
-    o->m_forms = this->m_forms;
-    o->m_current_time = this->m_current_time;
-    o->setMetadata(this->m_metadata);
-    return o;
-}
 
 template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const gnomonTimeSeries<T>& o)
 {
@@ -44,12 +29,12 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
 
     m_forms = o.m_forms;
     m_current_time = o.m_current_time;
-    this->setMetadata(o.m_metadata);
+    *(p_metadata) = *(o.p_metadata);
 
     return (*this);
 }
 
-template <typename T> T *gnomonTimeSeries<T>::at(double t)
+template <typename T> std::shared_ptr<T> gnomonTimeSeries<T>::at(double t)
 {
     if(m_forms.contains(t)) {
         m_current_time = t;
@@ -60,9 +45,21 @@ template <typename T> T *gnomonTimeSeries<T>::at(double t)
     }
 }
 
-template <typename T> T *gnomonTimeSeries<T>::current(void) const
+template <typename T> T *gnomonTimeSeries<T>::at_impl(double t)
+{
+    qDebug() << Q_FUNC_INFO << "at_impl for t " << t << "TOCHECKKKKK";
+    return this->at(t).get();
+}
+
+template <typename T> std::shared_ptr<T> gnomonTimeSeries<T>::current(void) const
 {
     return m_forms[m_current_time];
+}
+
+template <typename T> T *gnomonTimeSeries<T>::current_impl(void) const
+{
+    qDebug() << Q_FUNC_INFO << "current_impl TOCHECKKKKK";
+    return this->current().get();
 }
 
 template <typename T> double gnomonTimeSeries<T>::time(void) const
@@ -75,7 +72,15 @@ template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
     return m_forms.keys();
 }
 
-template <typename T> void gnomonTimeSeries<T>::insert(double t, T* form)
+template <typename T> QMap<QString,QString> gnomonTimeSeries<T>::metadataAtT(double t) const
+{
+    if(this->times().contains(t))
+        return m_forms[t]->metadata(); 
+    else
+        return QMap<QString, QString>();
+}
+
+template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr<T> form)
 {
     if (m_forms.size() == 0) {
         m_current_time = t;
@@ -132,7 +137,7 @@ void gnomonTimeSeries<T>::deserialize(QJsonObject &serialization) {
     QJsonObject forms = serialization["forms"].toObject();
     for(auto& key: forms.keys()) {
         auto formSerialization = forms[key].toObject();
-        m_forms[key.toDouble()] = new T(formSerialization);
+        m_forms[key.toDouble()] = std::make_shared<T>(formSerialization);
     }
 }
 

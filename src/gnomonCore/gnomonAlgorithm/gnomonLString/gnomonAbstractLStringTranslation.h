@@ -36,14 +36,14 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-    virtual void setInputTree(gnomonTreeSeries *tree_series) { return; };
-    virtual void setInputLString(gnomonLStringSeries *lString_series) { return; };
+    virtual void setInputTree(std::shared_ptr<gnomonTreeSeries> tree_series) { return; };
+    virtual void setInputLString(std::shared_ptr<gnomonLStringSeries> lString_series) { return; };
 
 public:
-    virtual gnomonTreeSeries *inputTree(void) const { return nullptr; };
-    virtual gnomonTreeSeries *outputTree(void) const { return nullptr; };
-    virtual gnomonLStringSeries *inputLString(void) const { return nullptr; };
-    virtual gnomonLStringSeries *outputLString(void) const { return nullptr; };
+    virtual std::shared_ptr<gnomonTreeSeries> inputTree(void) const { return nullptr; };
+    virtual std::shared_ptr<gnomonTreeSeries> outputTree(void) const { return nullptr; };
+    virtual std::shared_ptr<gnomonLStringSeries> inputLString(void) const { return nullptr; };
+    virtual std::shared_ptr<gnomonLStringSeries> outputLString(void) const { return nullptr; };
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractLStringTranslation *)

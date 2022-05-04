@@ -24,10 +24,10 @@ public:
 
     void run(void) override{ registration::t_run_called = true;};
     QString documentation(void) override {return "empty";};
-    void setImage(gnomonImageSeries *imageSeries) override {registration::t_set_image_called = true;};
-    gnomonImageSeries* image() override {return nullptr;};
-    gnomonImageSeries* output() override {return nullptr;};
-    gnomonDataDictSeries* outputTransformation() override {return nullptr;};
+    void setImage(std::shared_ptr<gnomonImageSeries> imageSeries) override {registration::t_set_image_called = true;};
+    std::shared_ptr<gnomonImageSeries> image() override {return nullptr;};
+    std::shared_ptr<gnomonImageSeries> output() override {return nullptr;};
+    std::shared_ptr<gnomonDataDictSeries> outputTransformation() override {return nullptr;};
 };
 
 inline gnomonAbstractImageRegistration* dummyImageRegistrationPluginCreator(void)  {
@@ -37,7 +37,7 @@ inline gnomonAbstractImageRegistration* dummyImageRegistrationPluginCreator(void
 class gnomonImageRegistrationCommandTestCasePrivate
 {
 public:
-    gnomonImageSeries *image_series;
+    std::shared_ptr<gnomonImageSeries> image_series;
     gnomonImageRegistrationCommand *registration_command = nullptr;
 };
 
@@ -66,7 +66,7 @@ void gnomonImageRegistrationCommandTestCase::init(void)
 
 void gnomonImageRegistrationCommandTestCase::redo(void)
 {
-    d->image_series = new gnomonImageSeries();
+    d->image_series = std::make_shared<gnomonImageSeries>();
     d->registration_command->setImage(d->image_series);
 
     d->registration_command->setParameter("method", "rigid");

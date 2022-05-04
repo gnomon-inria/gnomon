@@ -48,7 +48,7 @@
 class gnomonPolyDataCellComplexPrivate
 {
 public:
-    gnomonCellComplex *cellComplex;
+    std::shared_ptr<gnomonCellComplex> cellComplex;
 
     double cellScaleFactor;
 
@@ -68,7 +68,7 @@ public:
 vtkStandardNewMacro(gnomonPolyDataCellComplex);
 
 
-void gnomonPolyDataCellComplex::setCellComplex(gnomonCellComplex *cellComplex)
+void gnomonPolyDataCellComplex::setCellComplex(std::shared_ptr<gnomonCellComplex> cellComplex)
 {
     d->cellComplex = cellComplex;
 

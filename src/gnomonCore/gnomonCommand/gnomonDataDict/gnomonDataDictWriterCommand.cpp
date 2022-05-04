@@ -6,7 +6,7 @@
 class gnomonDataDictWriterCommandPrivate
 {
 public:
-    gnomonDataDictSeries *dataDict = nullptr;
+    std::shared_ptr<gnomonDataDictSeries> dataDict = nullptr;
 };
 
 gnomonDataDictWriterCommand::gnomonDataDictWriterCommand() : d(new gnomonDataDictWriterCommandPrivate)
@@ -52,19 +52,19 @@ void gnomonDataDictWriterCommand::undo()
     ((gnomonAbstractDataDictWriter *) this->action)->setPath("");
 }
 
-void gnomonDataDictWriterCommand::setDataDict(gnomonDataDictSeries *dataDict)
+void gnomonDataDictWriterCommand::setDataDict(std::shared_ptr<gnomonDataDictSeries> dataDict)
 {
     d->dataDict = dataDict;
 }
 
-void gnomonDataDictWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonDataDictWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->dataDict = dynamic_cast<gnomonDataDictSeries *>(form);
+    d->dataDict = std::dynamic_pointer_cast<gnomonDataDictSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonDataDictWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataDictWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["dataDict"] = d->dataDict;
     return inputs;
 }
@@ -81,9 +81,9 @@ gnomonAbstractCommand::orderedMap gnomonDataDictWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonDataDictWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonDataDictWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "dataDict") {
-        this->setForm(dynamic_cast<gnomonDataDictSeries *>(form));
+        this->setForm(std::dynamic_pointer_cast<gnomonDataDictSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

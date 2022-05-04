@@ -7,8 +7,38 @@
 %include "std_array.i"
 %include "std_vector.i"
 %include "carrays.i"
-
 %array_class(double, doubleArray);
+
+%include "std_shared_ptr.i"
+
+%shared_ptr(gnomonAbstractForm)
+%shared_ptr(gnomonBinaryImage)
+%shared_ptr(gnomonCellComplex)
+%shared_ptr(gnomonCellGraph)
+%shared_ptr(gnomonCellImage)
+%shared_ptr(gnomonDataDict)
+%shared_ptr(gnomonDataFrame)
+%shared_ptr(gnomonImage)
+%shared_ptr(gnomonLString)
+%shared_ptr(gnomonMesh)
+%shared_ptr(gnomonPointCloud)
+%shared_ptr(gnomonTree)
+%shared_ptr(gnomonSphereForm)
+%shared_ptr(gnomonWallForm)
+
+%shared_ptr(gnomonAbstractDynamicForm)
+%shared_ptr(gnomonBinaryImageSeries)
+%shared_ptr(gnomonCellComplexSeries)
+%shared_ptr(gnomonCellGraphSeries)
+%shared_ptr(gnomonCellImageSeries)
+%shared_ptr(gnomonDataDictSeries)
+%shared_ptr(gnomonDataFrameSeries)
+%shared_ptr(gnomonImageSeries)
+%shared_ptr(gnomonLStringSeries)
+%shared_ptr(gnomonMeshSeries)
+%shared_ptr(gnomonPointCloudSeries)
+%shared_ptr(gnomonTreeSeries)
+
 
 %import <dtkBase/dtkBase.i>
 %import <dtkCore/dtkCore.i>

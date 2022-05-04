@@ -15,22 +15,23 @@ class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm
 
 public:
      gnomonTimeSeries(void) = default;
-     //gnomonTimeSeries(const gnomonTimeSeries& o);
+     gnomonTimeSeries(const gnomonTimeSeries& o);
     ~gnomonTimeSeries(void) = default;
 
 public:
     gnomonTimeSeries<T>& operator = (const gnomonTimeSeries<T>& o);
 
 public:
-    gnomonAbstractDynamicForm *clone(void) const override;
+    std::shared_ptr<gnomonAbstractDynamicForm> clone(void) const override;
 
 public:
-    T *at(double t) override;
-    T *current(void) const override;
+    std::shared_ptr<T> at(double t);
+    std::shared_ptr<T> current(void) const;
     double time(void) const override;
     QList<double> times(void) const override;
+    QMap<QString,QString> metadataAtT(double t) const override;
 
-    void insert(double t, T *form);
+    void insert(double t, std::shared_ptr<T> form);
 //    void insert(const T& form) override;
     void drop(double t) override;
 
@@ -42,7 +43,11 @@ public:
     void deserialize(QJsonObject &serialization) override;
 
 protected:
-    QMap<double, T*> m_forms;
+    T *at_impl(double t) override;
+    T *current_impl(void) const override;
+
+protected:
+    QMap<double, std::shared_ptr<T>> m_forms;
     double m_current_time = 0.;
 };
 

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -20,12 +6,8 @@
 
 #include <dtkCore/dtkCorePlugin>
 
+#include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
-
-class gnomonViewMatplotlib;
-
-class gnomonTree;
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualizationTree : public gnomonAbstractMatplotlibVisualization
 {
@@ -36,8 +18,8 @@ public:
     virtual ~gnomonAbstractMatplotlibVisualizationTree(void) = default;
 
 public:
-	virtual void setTree(gnomonTree *tree) = 0;
-	virtual gnomonTree *tree(void) = 0;
+	virtual void setTree(std::shared_ptr<gnomonTree> tree) = 0;
+	virtual std::shared_ptr<gnomonTree> tree(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonTree") {
@@ -51,20 +33,6 @@ public:
         }
         return {};
     };
-
-public:
-    virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const dtkCoreParameters&) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual QMap<QString, QString> parameterGroups(void) override = 0;
-
-public:
-    virtual QImage imageRendering(void) override = 0;
-
-public slots:
-    virtual void update(void) override = 0;
-    virtual void render(void) override = 0;
-    virtual void clear(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

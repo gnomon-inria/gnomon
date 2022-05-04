@@ -6,54 +6,55 @@
 #include <QtCore>
 #include <dtkCore>
 
+#include "gnomonAbstractForm"
 #include "gnomonDynamicFormMetadata"
-
-class gnomonAbstractForm;
 
 class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
 {
 public:
-             gnomonAbstractDynamicForm(void) = default;
-    virtual ~gnomonAbstractDynamicForm(void) = default;
+             gnomonAbstractDynamicForm(void) : p_metadata(new gnomonDynamicFormMetadata) {};
+    virtual ~gnomonAbstractDynamicForm(void) {delete p_metadata;}
 
 public:
-    virtual gnomonAbstractDynamicForm *clone(void) const = 0;
+    virtual std::shared_ptr<gnomonAbstractDynamicForm> clone(void) const = 0;
 
 public:
-    virtual gnomonAbstractForm* at(double t) = 0;
-    virtual gnomonAbstractForm* current(void) const = 0;
-    //std::shared_ptr<gnomonAbstractForm> at(double t) const = 0;
-    //std::shared_ptr<gnomonAbstractForm> current(void) const = 0;
+    std::shared_ptr<gnomonAbstractForm> at(double t) {
+        return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t));
+    };
+    std::shared_ptr<gnomonAbstractForm> current(void) const {
+        return std::shared_ptr<gnomonAbstractForm>(this->current());
+    };
+
+    virtual QMap<QString,QString> metadataAtT(double t) const = 0;
+
     virtual double time(void) const = 0;
     virtual QList<double> times(void) const = 0;
 
     virtual void drop(double t) = 0;
 
-    virtual QString formName(void) = 0;
+    virtual QString formName(void) = 0; //TODO CRTP to be able to put that as virtual static
 
     virtual QJsonObject serialize(void) {
         QJsonObject json;
-        json["metadata"] = m_metadata.serialize();
+        json["metadata"] = p_metadata->serialize();
         return json;
     }
 
     virtual void deserialize(QJsonObject & json) {
-        m_metadata.deserialize(json);
+        p_metadata->deserialize(json);
     }
 
-    gnomonDynamicFormMetadata& metadata(void) {
-        return m_metadata;
-    }
-
-    void setMetadata(const gnomonDynamicFormMetadata& metadata) {
-        m_metadata.clear();
-        for(QString k : metadata.keys()) {
-            m_metadata.set(k, metadata.get(k));
-        }
+    gnomonDynamicFormMetadata* metadata(void) {
+        return p_metadata;
     }
 
 protected:
-    gnomonDynamicFormMetadata m_metadata;
+    virtual gnomonAbstractForm *at_impl(double t) = 0;
+    virtual gnomonAbstractForm *current_impl(void) const = 0;
+
+protected:
+    gnomonDynamicFormMetadata *p_metadata = nullptr;
 };
 //
 // gnomonAbstractDynamicForm.h ends here

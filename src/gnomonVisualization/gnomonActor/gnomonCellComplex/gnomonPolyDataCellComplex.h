@@ -17,11 +17,10 @@
 #include <vtkObject.h>
 
 #include <gnomonVisualizationExport.h>
+#include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
 
 #include "gnomonActor/gnomonActor.h"
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
-
-class gnomonCellComplex;
 
 class GNOMONVISUALIZATION_EXPORT gnomonPolyDataCellComplex : public gnomonPolyData
 {
@@ -31,7 +30,7 @@ public:
     static gnomonPolyDataCellComplex *New(void);
 
 public:
-	void setCellComplex(gnomonCellComplex *cellComplex);
+	void setCellComplex(std::shared_ptr<gnomonCellComplex> cellComplex);
     void setScaleFactor(double scale_factor);
     void setPropertyName(const QString& property_name);
     void set8Bit(bool value);

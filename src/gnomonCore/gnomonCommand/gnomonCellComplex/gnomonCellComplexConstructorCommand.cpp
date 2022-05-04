@@ -6,7 +6,7 @@
 class gnomonCellComplexConstructorCommandPrivate
 {
 public:
-    gnomonCellComplexSeries* output = nullptr;
+    std::shared_ptr<gnomonCellComplexSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ void gnomonCellComplexConstructorCommand::setAlgorithmName(const QString& algo_n
 void gnomonCellComplexConstructorCommand::predo(void) {}
 void gnomonCellComplexConstructorCommand::postdo(void)
 {
-    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexConstructor *) this->action)->output();
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex = ((gnomonAbstractCellComplexConstructor *) this->action)->output();
 
     if ((!cellComplex)||(cellComplex->times().empty())) {
         d->output = nullptr;
@@ -55,14 +55,14 @@ void gnomonCellComplexConstructorCommand::undo()
 {
 }
 
-gnomonCellComplexSeries *gnomonCellComplexConstructorCommand::output()
+std::shared_ptr<gnomonCellComplexSeries> gnomonCellComplexConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexConstructorCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexConstructorCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -84,7 +84,7 @@ QStringList gnomonCellComplexConstructorCommand::availablePlugins() {
 
 void gnomonCellComplexConstructorCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonCellComplexSeries();
+        d->output = std::make_shared<gnomonCellComplexSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

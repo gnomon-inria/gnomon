@@ -15,8 +15,8 @@ public:
     gnomonAbstractCommand::orderedMap input_types = {{"input", "gnomonImage"}};
     gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"transformation", "gnomonDataDict"}};
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs = {{"input", nullptr}};
-    QMap<QString, gnomonAbstractDynamicForm *> outputs = {{"output", nullptr}, {"transformation", nullptr}};
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs = {{"input", nullptr}};
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs = {{"output", nullptr}, {"transformation", nullptr}};
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -55,16 +55,16 @@ void gnomonImageRegistrationCommand::predo(void)
 
 void gnomonImageRegistrationCommand::postdo(void)
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageRegistration *) this->action)->output();
+    std::shared_ptr<gnomonImageSeries> image = ((gnomonAbstractImageRegistration *) this->action)->output();
 
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
         d->outputs["output"] = nullptr;
     } else {
         d->outputs["output"] = image;
     }
 
-    gnomonDataDictSeries *transformation = ((gnomonAbstractImageRegistration *) this->action)->outputTransformation();
-    if ((!transformation)||(transformation->times().empty())||(((gnomonDataDict *)transformation->current())->keys().empty())) {
+    std::shared_ptr<gnomonDataDictSeries> transformation = ((gnomonAbstractImageRegistration *) this->action)->outputTransformation();
+    if ((!transformation)||(transformation->times().empty())||(transformation->current()->keys().empty())) {
         d->outputs["transformation"] = nullptr;
     } else {
         d->outputs["transformation"] = transformation;
@@ -76,28 +76,27 @@ void gnomonImageRegistrationCommand::undo()
     this->setImage(nullptr);
 }
 
-void gnomonImageRegistrationCommand::setImage(gnomonImageSeries *image_series)
+void gnomonImageRegistrationCommand::setImage(std::shared_ptr<gnomonImageSeries> image_series)
 {
-    if ((!image_series)||(image_series->times().empty())||(((gnomonImage *)image_series->current())->channels().empty())) {
+    if ((!image_series)||(image_series->times().empty())||(image_series->current()->channels().empty())) {
         d->inputs["input"] = nullptr;
     } else {
         d->inputs["input"] = image_series;
     }
-    ((gnomonAbstractImageRegistration *) this->action)->setImage(dynamic_cast<gnomonImageSeries *>(d->inputs["input"]));
+    ((gnomonAbstractImageRegistration *) this->action)->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["input"]));
 }
 
-gnomonImageSeries *gnomonImageRegistrationCommand::image()
+std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::image()
 {
-    return (gnomonImageSeries *)d->inputs["input"];
+    return std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["input"]);
 }
 
-gnomonImageSeries *gnomonImageRegistrationCommand::output()
+std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::output()
 {
-    return (gnomonImageSeries *)d->outputs["output"];
+    return std::dynamic_pointer_cast<gnomonImageSeries>(d->outputs["output"]);
 }
 
-
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageRegistrationCommand::inputs()
 {
     return d->inputs;
 }
@@ -107,7 +106,7 @@ gnomonAbstractCommand::orderedMap gnomonImageRegistrationCommand::inputTypes()
     return d->input_types;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageRegistrationCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageRegistrationCommand::outputs()
 {
     return d->outputs;
 }
@@ -126,10 +125,10 @@ QStringList gnomonImageRegistrationCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
-void gnomonImageRegistrationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonImageRegistrationCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     // TODO: come back later to check if correct
     if(name == "input") {
-        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn() << Q_FUNC_INFO << "unknown input " << name;
         return;
@@ -138,21 +137,21 @@ void gnomonImageRegistrationCommand::setInputForm(const QString &name, gnomonAbs
 
 void gnomonImageRegistrationCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->outputs["output"]) {
-        d->outputs["output"] = new gnomonBinaryImageSeries();
+        d->outputs["output"] = std::make_shared<gnomonBinaryImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
-    dynamic_cast<gnomonImageSeries *>(d->outputs["output"])->deserialize(tmp);
+    d->outputs["output"]->deserialize(tmp);
     if(!d->outputs["transformation"]) {
-        d->outputs["transformation"] = new gnomonBinaryImageSeries();
+        d->outputs["transformation"] = std::make_shared<gnomonBinaryImageSeries>();
     }
     auto tmp2 = serialization["transformation"].toObject();
-    dynamic_cast<gnomonDataDictSeries *>(d->outputs["transformation"])->deserialize(tmp2);
+    d->outputs["transformation"]->deserialize(tmp2);
 }
 
 QJsonObject gnomonImageRegistrationCommand::serializeResults(void) {
     QJsonObject out;
-    out["output"] = dynamic_cast<gnomonImageSeries *>(d->outputs["output"])->serialize();
-    out["transformation"] = dynamic_cast<gnomonDataDictSeries *>(d->outputs["transformation"])->serialize();
+    out["output"] = std::dynamic_pointer_cast<gnomonImageSeries>(d->outputs["output"])->serialize();
+    out["transformation"] = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->outputs["transformation"])->serialize();
     return out;
 }
 

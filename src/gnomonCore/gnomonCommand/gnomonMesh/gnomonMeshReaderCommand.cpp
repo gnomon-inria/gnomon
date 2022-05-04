@@ -6,7 +6,7 @@
 class gnomonMeshReaderCommandPrivate
 {
 public:
-    gnomonMeshSeries *mesh = nullptr;
+    std::shared_ptr<gnomonMeshSeries> mesh = nullptr;
 };
 
 gnomonMeshReaderCommand::gnomonMeshReaderCommand() : d(new gnomonMeshReaderCommandPrivate)
@@ -39,7 +39,7 @@ void gnomonMeshReaderCommand::predo(void)
 
 void gnomonMeshReaderCommand::postdo(void)
 {
-    gnomonMeshSeries *mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
+    std::shared_ptr<gnomonMeshSeries> mesh = ((gnomonAbstractMeshReader *) this->action)->mesh();
 
     if ((!mesh)||(mesh->times().empty())) {
         d->mesh = nullptr;
@@ -53,14 +53,14 @@ void gnomonMeshReaderCommand::undo()
     ((gnomonAbstractMeshReader *) this->action)->setPath("");
 }
 
-gnomonMeshSeries *gnomonMeshReaderCommand::mesh()
+std::shared_ptr<gnomonMeshSeries> gnomonMeshReaderCommand::mesh()
 {
     return d->mesh;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["mesh"] = this->mesh();
     return outputs;
 }
@@ -82,7 +82,7 @@ gnomonAbstractCommand::orderedMap gnomonMeshReaderCommand::outputTypes() {
 
 void gnomonMeshReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->mesh) {
-        d->mesh = new gnomonMeshSeries();
+        d->mesh = std::make_shared<gnomonMeshSeries>();
     }
     auto tmp = serialization["mesh"].toObject();
     d->mesh->deserialize(tmp);

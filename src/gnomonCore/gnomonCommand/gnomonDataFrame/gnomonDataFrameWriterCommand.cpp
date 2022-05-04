@@ -11,7 +11,7 @@
 class gnomonDataFrameWriterCommandPrivate
 {
 public:
-    gnomonDataFrameSeries* dataFrame = nullptr;
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -59,19 +59,19 @@ void gnomonDataFrameWriterCommand::undo()
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath("");
 }
 
-void gnomonDataFrameWriterCommand::setDataFrame(gnomonDataFrameSeries *dataFrame)
+void gnomonDataFrameWriterCommand::setDataFrame(std::shared_ptr<gnomonDataFrameSeries> dataFrame)
 {
     d->dataFrame = dataFrame;
 }
 
-void gnomonDataFrameWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonDataFrameWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form);
+    d->dataFrame = std::dynamic_pointer_cast<gnomonDataFrameSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonDataFrameWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["dataFrame"] = d->dataFrame;
     return inputs;
 }
@@ -91,9 +91,9 @@ gnomonAbstractCommand::orderedMap gnomonDataFrameWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonDataFrameWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonDataFrameWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "dataFrame") {
-        this->setDataFrame(dynamic_cast<gnomonDataFrameSeries *>(form));
+        this->setDataFrame(std::dynamic_pointer_cast<gnomonDataFrameSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

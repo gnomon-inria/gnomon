@@ -16,6 +16,14 @@ gnomonWallForm::~gnomonWallForm(void)
     delete d;
 }
 
+gnomonAbstractForm *gnomonWallForm::clone()
+{
+    gnomonWallForm *res = new gnomonWallForm();
+    res->setNormal(this->normal());
+    res->setPosition(this->position());
+    return res;
+}
+
 void gnomonWallForm::setNormal(gnomon::vec3_t normal)
 {
     d->normal = normal;
