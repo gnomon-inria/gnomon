@@ -10,7 +10,7 @@
 class gnomonCellImageReaderCommandPrivate
 {
 public:
-    gnomonCellImageSeries *cellImage = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> cellImage = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ void gnomonCellImageReaderCommand::predo(void)
 
 void gnomonCellImageReaderCommand::postdo(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageReader *) this->action)->cellImage();
 
     if ((!cellImage)||(cellImage->times().empty())) {
         d->cellImage = nullptr;
@@ -63,14 +63,14 @@ void gnomonCellImageReaderCommand::undo()
     ((gnomonAbstractCellImageReader *) this->action)->setPath("");
 }
 
-gnomonCellImageSeries *gnomonCellImageReaderCommand::cellImage()
+std::shared_ptr<gnomonCellImageSeries> gnomonCellImageReaderCommand::cellImage()
 {
     return d->cellImage;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["cellImage"] = this->cellImage();
     return outputs;
 }
@@ -92,7 +92,7 @@ QStringList gnomonCellImageReaderCommand::availablePlugins() {
 
 void gnomonCellImageReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->cellImage) {
-        d->cellImage = new gnomonCellImageSeries ();
+        d->cellImage = std::make_shared<gnomonCellImageSeries>();
     }
     auto tmp = serialization["cellImage"].toObject();
     d->cellImage->deserialize(tmp);

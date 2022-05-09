@@ -25,23 +25,16 @@ public:
     virtual ~gnomonAbstractImageFusion(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
-    virtual void addImage(gnomonImageSeries *) = 0;
+    virtual void addImage(std::shared_ptr<gnomonImageSeries> ) = 0;
     virtual void removeImages(void) = 0;
 
     virtual void addLandmarks(const std::vector<gnomonLandmark>&) = 0;
     virtual void removeLandmarks(void) = 0;
 
 public:
-    virtual gnomonImageSeries *output() = 0;
+    virtual std::shared_ptr<gnomonImageSeries> output() = 0;
 
 public:
-    // TODO: check later with Guillaume
     static inline QString defaultSetter(QString formName) {
         dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void addImage(gnomonImageSeries *) since this method accept multiple images of the same type";
         return {};

@@ -16,17 +16,17 @@
 class gnomonFormAlgorithmCommandPrivate
 {
 public:
-    gnomonCellComplexSeries* inputCellComplex = nullptr;
-    gnomonCellImageSeries* inputCellImage = nullptr;
-    gnomonImageSeries* inputImage = nullptr;
-    gnomonMeshSeries* inputMesh = nullptr;
-    gnomonPointCloudSeries* inputPointCloud = nullptr;
+    std::shared_ptr<gnomonCellComplexSeries> inputCellComplex;
+    std::shared_ptr<gnomonCellImageSeries> inputCellImage;
+    std::shared_ptr<gnomonImageSeries> inputImage;
+    std::shared_ptr<gnomonMeshSeries> inputMesh;
+    std::shared_ptr<gnomonPointCloudSeries> inputPointCloud;
 
-    gnomonCellComplexSeries* outputCellComplex = nullptr;
-    gnomonCellImageSeries* outputCellImage = nullptr;
-    gnomonImageSeries* outputImage = nullptr;
-    gnomonMeshSeries* outputMesh = nullptr;
-    gnomonPointCloudSeries* outputPointCloud = nullptr;
+    std::shared_ptr<gnomonCellComplexSeries> outputCellComplex;
+    std::shared_ptr<gnomonCellImageSeries> outputCellImage;
+    std::shared_ptr<gnomonImageSeries> outputImage;
+    std::shared_ptr<gnomonMeshSeries> outputMesh;
+    std::shared_ptr<gnomonPointCloudSeries> outputPointCloud;
 
     dtkCoreParameters parameters;
 
@@ -88,40 +88,40 @@ void gnomonFormAlgorithmCommand::undo(void)
 
 }
 
-void gnomonFormAlgorithmCommand::addInput(gnomonAbstractDynamicForm *input)
+void gnomonFormAlgorithmCommand::addInput(std::shared_ptr<gnomonAbstractDynamicForm> input)
 {
-    if (gnomonCellComplexSeries* cellComplex = dynamic_cast<gnomonCellComplexSeries *>(input)) {
+    if (std::shared_ptr<gnomonCellComplexSeries> cellComplex = std::dynamic_pointer_cast<gnomonCellComplexSeries>(input)) {
         d->inputCellComplex = cellComplex;
     }
-    if (gnomonCellImageSeries* cellImage = dynamic_cast<gnomonCellImageSeries *>(input)) {
+    if (std::shared_ptr<gnomonCellImageSeries> cellImage = std::dynamic_pointer_cast<gnomonCellImageSeries>(input)) {
         d->inputCellImage = cellImage;
     }
-    if (gnomonImageSeries* image = dynamic_cast<gnomonImageSeries *>(input)) {
+    if (std::shared_ptr<gnomonImageSeries> image = std::dynamic_pointer_cast<gnomonImageSeries>(input)) {
         d->inputImage = image;
     }
-    if (gnomonMeshSeries* mesh = dynamic_cast<gnomonMeshSeries *>(input)) {
+    if (std::shared_ptr<gnomonMeshSeries> mesh = std::dynamic_pointer_cast<gnomonMeshSeries>(input)) {
         d->inputMesh = mesh;
     }
-    if (gnomonPointCloudSeries* pointCloud = dynamic_cast<gnomonPointCloudSeries *>(input)) {
+    if (std::shared_ptr<gnomonPointCloudSeries> pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(input)) {
         d->inputPointCloud = pointCloud;
     }
 }
 
-void gnomonFormAlgorithmCommand::addOutput(gnomonAbstractDynamicForm *output)
+void gnomonFormAlgorithmCommand::addOutput(std::shared_ptr<gnomonAbstractDynamicForm> output)
 {
-    if (gnomonCellComplexSeries* cellComplex = dynamic_cast<gnomonCellComplexSeries *>(output)) {
+    if (std::shared_ptr<gnomonCellComplexSeries> cellComplex = std::dynamic_pointer_cast<gnomonCellComplexSeries>(output)) {
         d->outputCellComplex = cellComplex;
     }
-    if (gnomonCellImageSeries* cellImage = dynamic_cast<gnomonCellImageSeries *>(output)) {
+    if (std::shared_ptr<gnomonCellImageSeries> cellImage = std::dynamic_pointer_cast<gnomonCellImageSeries>(output)) {
         d->outputCellImage = cellImage;
     }
-    if (gnomonImageSeries* image = dynamic_cast<gnomonImageSeries *>(output)) {
+    if (std::shared_ptr<gnomonImageSeries> image = std::dynamic_pointer_cast<gnomonImageSeries>(output)) {
         d->outputImage = image;
     }
-    if (gnomonMeshSeries* mesh = dynamic_cast<gnomonMeshSeries *>(output)) {
+    if (std::shared_ptr<gnomonMeshSeries> mesh = std::dynamic_pointer_cast<gnomonMeshSeries>(output)) {
         d->outputMesh = mesh;
     }
-    if (gnomonPointCloudSeries* pointCloud = dynamic_cast<gnomonPointCloudSeries *>(output)) {
+    if (std::shared_ptr<gnomonPointCloudSeries> pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(output)) {
         d->outputPointCloud = pointCloud;
     }
 }
@@ -136,9 +136,9 @@ dtkCoreParameters gnomonFormAlgorithmCommand::parameters() const
     return d->parameters;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFormAlgorithmCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     if (d->inputCellComplex) {
         inputs["inputCellComplex"] = d->inputCellComplex;
     }
@@ -168,14 +168,14 @@ gnomonAbstractCommand::orderedMap gnomonFormAlgorithmCommand::inputTypes()
     return input_types;
 }
 
-void gnomonFormAlgorithmCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+void gnomonFormAlgorithmCommand::setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     this->addInput(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonFormAlgorithmCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFormAlgorithmCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     if (d->outputCellComplex) {
         outputs["outputCellComplex"] = d->outputCellComplex;
     }
@@ -206,33 +206,28 @@ gnomonAbstractCommand::orderedMap gnomonFormAlgorithmCommand::outputTypes()
 }
 
 void gnomonFormAlgorithmCommand::deserializeResults(QJsonObject &serialization) {
-    delete d->outputCellComplex;
-    delete d->outputCellImage;
-    delete d->outputImage;
-    delete d->outputMesh;
-    delete d->outputPointCloud;
     if (serialization.contains("outputCellComplex")) {
-        d->outputCellComplex = new gnomonCellComplexSeries();
+        d->outputCellComplex = std::make_shared<gnomonCellComplexSeries>();
         auto cellComplexSerialization = serialization["outputCellComplex"].toObject();
         d->outputCellComplex->deserialize(cellComplexSerialization);
     }
     if (serialization.contains("outputCellImage")) {
-        d->outputCellImage = new gnomonCellImageSeries();
+        d->outputCellImage = std::make_shared<gnomonCellImageSeries>();
         auto cellImageSerialization = serialization["outputCellImage"].toObject();
         d->outputCellImage->deserialize(cellImageSerialization);
     }
     if (serialization.contains("outputImage")) {
-        d->outputImage = new gnomonImageSeries();
+        d->outputImage = std::make_shared<gnomonImageSeries>();
         auto imageSerialization = serialization["outputImage"].toObject();
         d->outputImage->deserialize(imageSerialization);
     }
     if (serialization.contains("outputMesh")) {
-        d->outputMesh = new gnomonMeshSeries();
+        d->outputMesh = std::make_shared<gnomonMeshSeries>();
         auto meshSerialization = serialization["outputMesh"].toObject();
         d->outputMesh->deserialize(meshSerialization);
     }
     if (serialization.contains("outputPointCloud")) {
-        d->outputPointCloud = new gnomonPointCloudSeries();
+        d->outputPointCloud = std::make_shared<gnomonPointCloudSeries>();
         auto pointCloudSerialization = serialization["outputPointCloud"].toObject();
         d->outputPointCloud->deserialize(pointCloudSerialization);
     }
@@ -257,7 +252,5 @@ QJsonObject gnomonFormAlgorithmCommand::serializeResults(void) {
     }
     return outputs;
 }
-
-
 //
 // gnomonFormAlgorithmCommand.cpp ends here

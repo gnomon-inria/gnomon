@@ -1,20 +1,5 @@
 #pragma once
 
-//%begin %{
-//// threads handling
-//#define SWIG_PYTHON_NO_USE_GIL
-//
-//#pragma push_macro("slots")
-//#undef slots
-//#include <Python.h>
-//#pragma pop_macro("slots")
-//
-//#include <dtkScript>
-//
-//#define SWIG_PYTHON_THREAD_BEGIN_BLOCK dtkScriptInterpreterPython::instance()->childAcquireLock();
-//#define SWIG_PYTHON_THREAD_END_BLOCK dtkScriptInterpreterPython::instance()->childReleaseLock();
-//%}
-
 %module(directors="1", package="gnomon.core", moduleimport="import _gnomoncore") gnomoncore
 
 #ifdef SWIGWIN
@@ -24,6 +9,39 @@
 %include <gnomonCore/numpyWrapper.i>
 %include "std_array.i"
 %include "std_vector.i"
+%include "std_shared_ptr.i"
+
+%shared_ptr(gnomonAbstractForm)
+%shared_ptr(gnomonBinaryImage)
+%shared_ptr(gnomonCellComplex)
+%shared_ptr(gnomonCellGraph)
+%shared_ptr(gnomonCellImage)
+%shared_ptr(gnomonDataDict)
+%shared_ptr(gnomonDataFrame)
+%shared_ptr(gnomonImage)
+%shared_ptr(gnomonLString)
+%shared_ptr(gnomonMesh)
+%shared_ptr(gnomonPointCloud)
+%shared_ptr(gnomonTree)
+%shared_ptr(gnomonSphereForm)
+%shared_ptr(gnomonWallForm)
+
+%shared_ptr(gnomonAbstractDynamicForm)
+%shared_ptr(gnomonBinaryImageSeries)
+%shared_ptr(gnomonCellComplexSeries)
+%shared_ptr(gnomonCellGraphSeries)
+%shared_ptr(gnomonCellImageSeries)
+%shared_ptr(gnomonDataDictSeries)
+%shared_ptr(gnomonDataFrameSeries)
+%shared_ptr(gnomonImageSeries)
+%shared_ptr(gnomonLStringSeries)
+%shared_ptr(gnomonMeshSeries)
+%shared_ptr(gnomonPointCloudSeries)
+%shared_ptr(gnomonTreeSeries)
+
+//%shared_ptr(gnomonSphereForm)
+//%shared_ptr(gnomonWallForm)
+
 
 %include <dtkBase/dtkBase.i>
 %import <dtkCore/dtkCore.i>
@@ -169,7 +187,7 @@
 
 
 %typemap(out) QVariant gnomonDataDict::get {
-    int type = $1.type();
+    int type = $1.type(); //TODO typeId ? 
     QString name($1.typeName());
     name = name.remove(' ');
 
@@ -455,7 +473,19 @@
     }
 }
 
-
+%typemap(directorout) gnomonAbstractForm * {
+    //only for at_impl;
+    //coming from a shared_ptr and going to another shared_ptr
+    gnomonAbstractForm *v;
+    void *s_v = 0;
+    int r = SWIG_ConvertPtr($1, &s_v, SWIGTYPE_p_gnomonAbstractForm, 0);
+    if (SWIG_IsOK(r)) {
+        v = reinterpret_cast<gnomonAbstractForm *>(s_v);
+        $result = v->clone();
+    } else {
+        qWarning() << "dir out gnomonAbstractForm *  error at converting ptr : " << SWIG_ErrorType(SWIG_ArgError(r));
+    }
+}
 
 // /////////////////////////////////////////////////////////////////
 // Form series
@@ -463,34 +493,43 @@
 
 %define WRAP_GNOMONCORE_FORM_SERIES(form_name)
     %fragment("To## form_name## Series", "header") {
-        void To## form_name## Series(PyObject *obj, gnomon## form_name## Series *series) {
+        std::shared_ptr<gnomon## form_name## Series> To## form_name## Series(PyObject *obj) {
             PyObject *key, *value;
             Py_ssize_t pos = 0;
             int r;
+            std::shared_ptr<gnomon## form_name## Series> series = std::make_shared<gnomon## form_name## Series>();
             while (PyDict_Next(obj, &pos, &key, &value)) {
                 double t = PyFloat_AsDouble(key);
-                gnomon## form_name##  *v;
+                std::shared_ptr<gnomon## form_name##> v;
                 void *s_v = 0;
-                r = SWIG_ConvertPtr(value, &s_v, SWIGTYPE_p_gnomon## form_name## , 0);
-                if (SWIG_IsOK(r))
-                    v = reinterpret_cast<gnomon## form_name##  *>(s_v);
-                series->insert(t, v);
+                int newmem = 0;
+
+                r = SWIG_ConvertPtrAndOwn(value, &s_v, SWIGTYPE_p_std__shared_ptrT_gnomon## form_name##_t,  0 , &newmem);
+                if (!SWIG_IsOK(r)) {
+                    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(r)), "in To## form_name## Series");
+                }
+                if (s_v) {
+                    v = *(reinterpret_cast< std::shared_ptr< gnomon## form_name## > * >(s_v));
+                    series->insert(t, v);
+                    if (newmem & SWIG_CAST_NEW_MEMORY) delete reinterpret_cast< std::shared_ptr< gnomon## form_name##Series > * >(s_v);
+                }
             }
+            return series;
         }
     }
 
     %fragment("From## form_name## Series", "header") {
-        PyObject *From## form_name## Series(gnomon## form_name## Series *series) {
+        PyObject *From## form_name## Series(std::shared_ptr<gnomon## form_name## Series> series) {
             if (series) {
                 PyObject *dict = PyDict_New();
                 QList<double> times = series->times();
-                gnomon## form_name##  *c;
+                std::shared_ptr<gnomon## form_name##> *c;
                 double t;
                 PyObject *v;
                 for (auto it = times.begin(); it != times.end(); ++it) {
                     t = *it;
-                    c = series->at(t);
-                    v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_gnomon## form_name## , 0 |  0 );
+                    c = new std::shared_ptr<  gnomon## form_name##>(series->at(t)) ;
+                    v = SWIG_NewPointerObj(SWIG_as_voidptr(c), SWIGTYPE_p_std__shared_ptrT_gnomon## form_name##_t, SWIG_POINTER_OWN |  0 );
                     PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
                 }
                 return dict;
@@ -500,36 +539,36 @@
         }
     }
 
-    %typemap(in, fragment="To## form_name## Series") gnomon## form_name## Series *{
-        $1 = new gnomon## form_name## Series();
+    %typemap(in, fragment="To## form_name## Series") std::shared_ptr<gnomon## form_name## Series> {
         if (PyDict_Check($input)) {
-            To## form_name## Series($input, $1);
+            $1 = To## form_name## Series($input);
         } else {
-            qDebug("PyDict is expected as input. Empty time series is returned.");
+            qDebug("typemap in PyDict is expected as input. Empty gnomon## form_name## Series is returned.");
+            $1 = std::make_shared<gnomon## form_name## Series>();
         }
     }
 
-    %typemap(freearg) gnomon## form_name## Series *{
-        if ($1) {
-            delete $1;
-        }
-    }
+    //%typemap(freearg) gnomon## form_name## Series *{
+    //    if ($1) {
+    //        delete $1;
+    //    }
+    //}
 
-    %typemap(directorout, fragment="To## form_name## Series") gnomon## form_name## Series *{
-        $result = new gnomon## form_name## Series();
+    %typemap(directorout, fragment="To## form_name## Series") std::shared_ptr<gnomon## form_name## Series> {
         PyObject *dict = static_cast<PyObject *>($1);
         if (PyDict_Check(dict)) {
-            To## form_name## Series(dict, $result);
+            $result = To## form_name## Series(dict);
         } else {
-            qDebug("PyDict is expected as input. Empty time series is returned.");
+            qDebug("typemap dirout PyDict is expected as input. Empty gnomon## form_name## Series is returned.");
+            $result = std::make_shared<gnomon## form_name## Series>();
         }
     }
 
-    %typemap(out, fragment="From## form_name## Series") gnomon## form_name## Series *{
+    %typemap(out, fragment="From## form_name## Series") std::shared_ptr<gnomon## form_name## Series> {
         $result = From## form_name## Series($1);
     }
 
-    %typemap(directorin, fragment="From## form_name## Series") gnomon## form_name## Series *{
+    %typemap(directorin, fragment="From## form_name## Series") std::shared_ptr<gnomon## form_name## Series> {
         $input = From## form_name## Series($1);
     }
 %enddef

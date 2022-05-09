@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractMeshWriter(void) = default;
 
 public:
-    virtual void setMesh(gnomonMeshSeries *mesh) = 0;
+    virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

@@ -24,8 +24,8 @@ public:
     Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
 
 public:
-    void setForm(const QString&, gnomonAbstractDynamicForm *);
-    gnomonAbstractDynamicForm * form(const QString&) ;
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
+    std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&) ;
     void clearForm(const QString&);
 
 public slots:
@@ -47,7 +47,7 @@ public slots:
     void transmit(void);
 
 signals:
-    void exportedForm(gnomonAbstractDynamicForm *);
+    void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
     void inputViewChanged(bool);
     void formAdded(const QString&);
     void formsChanged(void);

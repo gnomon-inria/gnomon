@@ -16,15 +16,15 @@ public:
     void   undo(void) override;
 
 public:
-    void setInputTree(gnomonTreeSeries *tree_series);
-    gnomonTreeSeries *inputTree();
-    void setInputLString(gnomonLStringSeries *lString_series);
-    gnomonLStringSeries *inputLString();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    void setInputTree(std::shared_ptr<gnomonTreeSeries> tree_series);
+    std::shared_ptr<gnomonTreeSeries> inputTree();
+    void setInputLString(std::shared_ptr<gnomonLStringSeries> lString_series);
+    std::shared_ptr<gnomonLStringSeries> inputLString();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     orderedMap outputTypes() override;
 
@@ -35,9 +35,9 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    gnomonTreeSeries *outputTree();
-    gnomonLStringSeries *outputLString();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonTreeSeries> outputTree();
+    std::shared_ptr<gnomonLStringSeries> outputLString();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
 public:
     static bool isEmpty();

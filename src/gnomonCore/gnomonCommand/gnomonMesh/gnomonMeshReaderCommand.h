@@ -18,8 +18,8 @@ public:
     void   undo(void) override;
 
 public:
-    gnomonMeshSeries *mesh();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonMeshSeries> mesh();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap outputTypes() override;
 

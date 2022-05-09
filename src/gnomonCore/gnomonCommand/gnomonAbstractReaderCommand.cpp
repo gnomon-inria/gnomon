@@ -46,7 +46,7 @@ void gnomonAbstractReaderCommand::setPath(const QString &path) {
     this->m_path = path;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonAbstractReaderCommand::inputs() {
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonAbstractReaderCommand::inputs() {
     return {};
 }
 
@@ -54,6 +54,6 @@ gnomonAbstractCommand::orderedMap gnomonAbstractReaderCommand::inputTypes() {
     return {};
 }
 
-void gnomonAbstractReaderCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonAbstractReaderCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     dtkWarn() << Q_FUNC_INFO << "Reader takes no input form";
 }

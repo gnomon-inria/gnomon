@@ -18,19 +18,19 @@ public:
     void   undo(void) override;
 
 public:
-    void setImage(gnomonImageSeries *image);
-    void setPointCloud(gnomonPointCloudSeries *pointCloud);
+    void setImage(std::shared_ptr<gnomonImageSeries> image);
+    void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud);
     void setAlgorithmName(const QString &) override;
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    gnomonPointCloudSeries *pointCloud();
-    gnomonDataFrameSeries *dataFrame();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     orderedMap outputTypes() override;
 

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -20,12 +6,9 @@
 
 #include <dtkCore>
 
+#include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 
-class gnomonViewMatplotlib;
-
-class gnomonDataFrame;
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualizationDataFrame : public gnomonAbstractMatplotlibVisualization
 {
@@ -36,8 +19,8 @@ public:
     virtual ~gnomonAbstractMatplotlibVisualizationDataFrame(void) = default;
 
 public:
-	virtual void setDataFrame(gnomonDataFrame *dataFrame) = 0;
-	virtual gnomonDataFrame *dataFrame(void) = 0;
+	virtual void setDataFrame(std::shared_ptr<gnomonDataFrame> dataFrame) = 0;
+	virtual std::shared_ptr<gnomonDataFrame> dataFrame(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonDataFrame") {
@@ -51,20 +34,6 @@ public:
         }
         return {};
     };
-
-public:
-    virtual void setParameter(const QString&, const QVariant&) override = 0;
-    virtual void setParameters(const dtkCoreParameters&) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual QMap<QString, QString> parameterGroups(void) override = 0;
-
-public:
-    virtual QImage imageRendering(void) override = 0;
-
-public slots:
-    virtual void update(void) override = 0;
-    virtual void render(void) override = 0;
-    virtual void clear(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

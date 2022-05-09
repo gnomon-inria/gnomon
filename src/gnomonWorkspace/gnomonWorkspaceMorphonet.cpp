@@ -52,7 +52,7 @@ public:
     gnomonPipelineManager *pipeline_manager;
 
     gnomonViewForm *view = nullptr;
-    gnomonCellImageSeries *img_series = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> img_series = nullptr;
 
     QFutureWatcher<void> *watcher = nullptr;
     QProcess *morphoplot_process =  nullptr;
@@ -118,7 +118,7 @@ bool gnomonWorkspaceMorphonetPrivate::selectDataset(int id)
 
 void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsize, bool load_infos)
 {
-    gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize, load_infos);
+    std::shared_ptr<gnomonCellImage> cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize, load_infos);
 
     if(cell_img) {
         this->img_series->insert(double(time), cell_img);
@@ -141,9 +141,7 @@ void gnomonWorkspaceMorphonetPrivate::clear(void) {
     watcher = nullptr;
 
     for(auto time : this->img_series->times()) {
-        auto *img = this->img_series->at(time);
         this->img_series->drop(time);
-        delete img;
     } 
 
 }
@@ -153,7 +151,6 @@ gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
     delete morphoplot_process;
     delete morphoplot_tmp_dir;
     delete view;
-    delete img_series;
 }
 
 
@@ -163,12 +160,12 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
     d->pipeline_manager = gnomonPipelineManager::instance();
     d->view = new gnomonViewForm(this);
-    d->img_series = new gnomonCellImageSeries();
+    d->img_series = std::make_shared<gnomonCellImageSeries>();
     d->img_series->metadata()->set("source", "MorphoNet");
 
     d->view->setAcceptForm("gnomonCellImage",true);
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         //TODO what to do in pipeline manager if data coming from morphonet? 
         d->pipeline_manager->addForm(f);
     });
@@ -357,7 +354,7 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
         } 
         
         for(int time = t0; time <= t_end; time++) {
-            gnomonCellImage *cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
+            std::shared_ptr<gnomonCellImage> cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
             if(cell_img) {
                 d->img_series->insert(double(time), cell_img);
             } else {
@@ -388,7 +385,7 @@ int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_ty
         return res;
     }
 
-    auto *serie = dynamic_cast<gnomonCellImageSeries *>(d->view->form("gnomonCellImage"));
+    auto serie = std::dynamic_pointer_cast<gnomonCellImageSeries>(d->view->form("gnomonCellImage"));
     
     if(serie)
         res = gnomonMorphonetHelper::instance()->createDataset(name, serie, id_NCBI, id_type, description, voxelsize);
@@ -454,7 +451,7 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
         reader.postdo();
 
         if(reader.cellImage()) {
-            auto cellImage_series = dynamic_cast<gnomonCellImageSeries *>(reader.cellImage()->clone());
+            auto cellImage_series = reader.cellImage();
             int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
             cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellImage_series->metadata()->set("source", "Morphoplot");

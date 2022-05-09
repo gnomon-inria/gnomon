@@ -6,8 +6,8 @@
 class gnomonMeshFromImageCommandPrivate
 {
 public:
-    gnomonImageSeries *input = nullptr;
-    gnomonMeshSeries *output = nullptr;
+    std::shared_ptr<gnomonImageSeries> input = nullptr;
+    std::shared_ptr<gnomonMeshSeries> output = nullptr;
 };
 
 gnomonMeshFromImageCommand::gnomonMeshFromImageCommand() : d(new gnomonMeshFromImageCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonMeshFromImageCommand::predo(void)
 
 void gnomonMeshFromImageCommand::postdo(void)
 {
-    gnomonMeshSeries *mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
+    std::shared_ptr<gnomonMeshSeries> mesh = ((gnomonAbstractMeshFromImage *) this->action)->output();
 
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
@@ -56,7 +56,7 @@ void gnomonMeshFromImageCommand::undo()
     ((gnomonAbstractMeshFromImage *) this->action)->setInput(nullptr);
 }
 
-void gnomonMeshFromImageCommand::setInput(gnomonImageSeries *input)
+void gnomonMeshFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -67,26 +67,26 @@ void gnomonMeshFromImageCommand::setInput(gnomonImageSeries *input)
     }
 }
 
-gnomonImageSeries *gnomonMeshFromImageCommand::input()
+std::shared_ptr<gnomonImageSeries> gnomonMeshFromImageCommand::input()
 {
     return d->input;
 }
 
-gnomonMeshSeries *gnomonMeshFromImageCommand::output()
+std::shared_ptr<gnomonMeshSeries> gnomonMeshFromImageCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFromImageCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFromImageCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFromImageCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFromImageCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -112,9 +112,9 @@ gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::outputTypes() {
     return output_types;
 }
 
-void gnomonMeshFromImageCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonMeshFromImageCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -122,7 +122,7 @@ void gnomonMeshFromImageCommand::setInputForm(const QString &name, gnomonAbstrac
 
 void gnomonMeshFromImageCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonMeshSeries();
+        d->output = std::make_shared<gnomonMeshSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

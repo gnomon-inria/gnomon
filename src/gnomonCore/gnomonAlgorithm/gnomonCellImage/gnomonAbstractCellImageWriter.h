@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractCellImageWriter(void) = default;
 
 public:
-    virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
+    virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

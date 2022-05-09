@@ -6,8 +6,8 @@
 class gnomonTreeFromLStringCommandPrivate
 {
 public:
-    gnomonLStringSeries *input = nullptr;
-    gnomonTreeSeries *output = nullptr;
+    std::shared_ptr<gnomonLStringSeries> input = nullptr;
+    std::shared_ptr<gnomonTreeSeries> output = nullptr;
 };
 
 gnomonTreeFromLStringCommand::gnomonTreeFromLStringCommand() : d(new gnomonTreeFromLStringCommandPrivate)
@@ -43,7 +43,7 @@ void gnomonTreeFromLStringCommand::predo(void)
 
 void gnomonTreeFromLStringCommand::postdo(void)
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
+    std::shared_ptr<gnomonTreeSeries> tree = ((gnomonAbstractTreeFromLString *) this->action)->output();
 
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
@@ -62,7 +62,7 @@ void gnomonTreeFromLStringCommand::undo()
 //    d->lsystem = lsystem;
 //}
 
-void gnomonTreeFromLStringCommand::setInput(gnomonLStringSeries *input)
+void gnomonTreeFromLStringCommand::setInput(std::shared_ptr<gnomonLStringSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -73,26 +73,26 @@ void gnomonTreeFromLStringCommand::setInput(gnomonLStringSeries *input)
     }
 }
 
-gnomonLStringSeries *gnomonTreeFromLStringCommand::input()
+std::shared_ptr<gnomonLStringSeries> gnomonTreeFromLStringCommand::input()
 {
     return d->input;
 }
 
-gnomonTreeSeries *gnomonTreeFromLStringCommand::output()
+std::shared_ptr<gnomonTreeSeries> gnomonTreeFromLStringCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeFromLStringCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeFromLStringCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeFromLStringCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -118,9 +118,9 @@ gnomonAbstractCommand::orderedMap gnomonTreeFromLStringCommand::outputTypes() {
     return types;
 }
 
-void gnomonTreeFromLStringCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonTreeFromLStringCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonLStringSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -128,7 +128,7 @@ void gnomonTreeFromLStringCommand::setInputForm(const QString &name, gnomonAbstr
 
 void gnomonTreeFromLStringCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonTreeSeries();
+        d->output = std::make_shared<gnomonTreeSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

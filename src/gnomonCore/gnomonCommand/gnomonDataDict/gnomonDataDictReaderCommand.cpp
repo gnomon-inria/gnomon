@@ -6,7 +6,7 @@
 class gnomonDataDictReaderCommandPrivate
 {
 public:
-    gnomonDataDictSeries *dataDict = nullptr;
+    std::shared_ptr<gnomonDataDictSeries> dataDict = nullptr;
 };
 
 gnomonDataDictReaderCommand::gnomonDataDictReaderCommand() : d(new gnomonDataDictReaderCommandPrivate)
@@ -39,7 +39,7 @@ void gnomonDataDictReaderCommand::predo(void)
 
 void gnomonDataDictReaderCommand::postdo(void)
 {
-    gnomonDataDictSeries *dataDict = ((gnomonAbstractDataDictReader *) this->action)->dataDict();
+    std::shared_ptr<gnomonDataDictSeries> dataDict = ((gnomonAbstractDataDictReader *) this->action)->dataDict();
     if ((!dataDict)||(dataDict->times().empty())) {
         d->dataDict = nullptr;
     } else {
@@ -52,14 +52,14 @@ void gnomonDataDictReaderCommand::undo()
     ((gnomonAbstractDataDictReader *) this->action)->setPath("");
 }
 
-gnomonDataDictSeries *gnomonDataDictReaderCommand::dataDict()
+std::shared_ptr<gnomonDataDictSeries> gnomonDataDictReaderCommand::dataDict()
 {
     return d->dataDict;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonDataDictReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataDictReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["dataDict"] = this->dataDict();
     return outputs;
 }

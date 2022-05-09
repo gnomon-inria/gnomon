@@ -18,8 +18,8 @@ public:
     void   undo(void) override;
 
 public:
-    gnomonPointCloudSeries *pointCloud();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap outputTypes() override;
 

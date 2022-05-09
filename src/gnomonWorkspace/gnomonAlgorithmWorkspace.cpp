@@ -66,7 +66,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 
     d->targets = new gnomonViewFormList(this);
     connect(d->targets, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
-        connect(v, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+        connect(v, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             d->pipeline_manager->addForm(f);
         });
     });
@@ -183,7 +183,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     bool empty_output = true;
 
     int i=0;
-    gnomonAbstractDynamicForm* inputForm = nullptr;
+    std::shared_ptr<gnomonAbstractDynamicForm> inputForm = nullptr;
     for(auto [name, output_type] : d->command->inputTypes()) {
         if (d->command->inputs()[name]) {
             inputForm = d->command->inputs()[name];

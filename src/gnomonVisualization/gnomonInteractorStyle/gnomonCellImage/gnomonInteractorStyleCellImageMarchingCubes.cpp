@@ -140,10 +140,10 @@ void gnomonInteractorStyleCellImageMarchingCubes::OnLeftButtonUp(void)
 void gnomonInteractorStyleCellImageMarchingCubes::OnDoubleClick(long vtkId)
 {
     // this->visu->view()->infoPane()->clear();
-
-    long cellId = dd->visu->cellId(vtkId);
-    QString text = "        Cell ";
-    text.append(QString::number(cellId));
+    qDebug() << Q_FUNC_INFO << "DESACTIVATED FOR NOW";
+        // long cellId = dd->visu->cellId(vtkId);
+        // QString text = "        Cell ";
+        // text.append(QString::number(cellId));
 
     // QVariantMap cellInfo = q->cellInfo(cellId);
 
@@ -171,7 +171,9 @@ void gnomonInteractorStyleCellImageMarchingCubes::updateTextActor(long vtkId)
     this->GetDefaultRenderer()->AddActor2D(dd->textActor);
 
     if (vtkId > -1) {
-        long cellId = dd->visu->cellId(vtkId);
+        qDebug() << Q_FUNC_INFO << "DESACTIVATED FOR NOW";
+        long cellId = 1;
+        //long cellId = dd->visu->cellId(vtkId);
         QString text = "        Cell ";
         text.append(QString::number(cellId));
         dd->textActor->SetInput(text.toStdString().c_str());

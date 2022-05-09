@@ -10,7 +10,7 @@
 class gnomonCellImageWriterCommandPrivate
 {
 public:
-    gnomonCellImageSeries* cellImage = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> cellImage = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -58,19 +58,19 @@ void gnomonCellImageWriterCommand::undo()
     ((gnomonAbstractCellImageWriter *) this->action)->setPath("");
 }
 
-void gnomonCellImageWriterCommand::setCellImage(gnomonCellImageSeries *cellImage)
+void gnomonCellImageWriterCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
 {
     d->cellImage = cellImage;
 }
 
-void gnomonCellImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonCellImageWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->cellImage = dynamic_cast<gnomonCellImageSeries*>(form);
+    d->cellImage = std::dynamic_pointer_cast<gnomonCellImageSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["cellImage"] = d->cellImage;
     return inputs;
 }
@@ -90,9 +90,9 @@ gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonCellImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonCellImageWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "cellImage") {
-        this->setCellImage(dynamic_cast<gnomonCellImageSeries *>(form));
+        this->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

@@ -10,7 +10,7 @@
 class gnomonTreeWriterCommandPrivate
 {
 public:
-    gnomonTreeSeries* tree = nullptr;
+    std::shared_ptr<gnomonTreeSeries> tree = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -58,20 +58,20 @@ void gnomonTreeWriterCommand::undo()
     ((gnomonAbstractTreeWriter *) this->action)->setPath("");
 }
 
-void gnomonTreeWriterCommand::setTree(gnomonTreeSeries *tree)
+void gnomonTreeWriterCommand::setTree(std::shared_ptr<gnomonTreeSeries> tree)
 {
     d->tree = tree;
     ((gnomonAbstractTreeWriter *) this->action)->setTree(tree);
 }
 
-void gnomonTreeWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonTreeWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    setTree(dynamic_cast<gnomonTreeSeries *>(form));
+    setTree(std::dynamic_pointer_cast<gnomonTreeSeries>(form));
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["tree"] = d->tree;
     return inputs;
 }
@@ -91,9 +91,9 @@ gnomonAbstractCommand::orderedMap gnomonTreeWriterCommand::inputTypes() {
     return types;
 }
 
-void gnomonTreeWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonTreeWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "tree") {
-        this->setTree(dynamic_cast<gnomonTreeSeries *>(form));
+        this->setTree(std::dynamic_pointer_cast<gnomonTreeSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

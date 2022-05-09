@@ -27,6 +27,7 @@ public:
              gnomonAbstractForm(void) = default;
     virtual ~gnomonAbstractForm(void) = default;
 
+    virtual gnomonAbstractForm* clone() = 0;
 //public:
 //    virtual void accept(class gnomonFormVisitor *) {};
 //

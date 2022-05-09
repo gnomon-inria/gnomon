@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
 #include "gnomonPolyDataCellImage.h"
 
@@ -48,7 +34,7 @@
 class gnomonPolyDataCellImagePrivate
 {
 public:
-    gnomonCellImage *cellimage;
+    std::shared_ptr<gnomonCellImage> cellimage;
 
     double cellScaleFactor;
     double resamplingSpacing;
@@ -73,7 +59,7 @@ public:
 vtkStandardNewMacro(gnomonPolyDataCellImage);
 
 
-void gnomonPolyDataCellImage::setCellImage(gnomonCellImage *cellimage)
+void gnomonPolyDataCellImage::setCellImage(std::shared_ptr<gnomonCellImage> cellimage)
 {
     d->cellimage = cellimage;
 

@@ -4,8 +4,6 @@
 
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
-class gnomonTree;
-
 class GNOMONCORE_EXPORT gnomonTreeAdapterCommand : public gnomonAbstractAdapterCommand
 {
 public:
@@ -18,19 +16,19 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonTreeSeries *tree_series);
+    void setInput(std::shared_ptr<gnomonTreeSeries> tree_series);
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    gnomonTreeSeries *input();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    std::shared_ptr<gnomonTreeSeries> input();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    gnomonAbstractDynamicForm *output();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonAbstractDynamicForm> output();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     orderedMap outputTypes() override;
 

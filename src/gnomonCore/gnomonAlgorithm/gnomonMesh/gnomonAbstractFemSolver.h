@@ -21,10 +21,10 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-	virtual void setMesh(gnomonMeshSeries *mesh) = 0;
+	virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
 
 public:
-    virtual gnomonMeshSeries *updatedMesh(void) const = 0;
+    virtual std::shared_ptr<gnomonMeshSeries> updatedMesh(void) const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

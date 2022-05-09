@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractCellComplexWriter(void) = default;
 
 public:
-    virtual void setCellComplex(gnomonCellComplexSeries *cellcomplex) = 0;
+    virtual void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellcomplex) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

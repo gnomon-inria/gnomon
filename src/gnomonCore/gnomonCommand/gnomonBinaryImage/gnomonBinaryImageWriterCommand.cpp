@@ -7,7 +7,7 @@
 class gnomonBinaryImageWriterCommandPrivate
 {
 public:
-    gnomonBinaryImageSeries *binaryImage = nullptr;
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage = nullptr;
 };
 
 gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand() : d(new gnomonBinaryImageWriterCommandPrivate)
@@ -51,19 +51,19 @@ void gnomonBinaryImageWriterCommand::undo()
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath("");
 }
 
-void gnomonBinaryImageWriterCommand::setBinaryImage(gnomonBinaryImageSeries *binaryImage)
+void gnomonBinaryImageWriterCommand::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage)
 {
     d->binaryImage = binaryImage;
 }
 
-void gnomonBinaryImageWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonBinaryImageWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->binaryImage = dynamic_cast<gnomonBinaryImageSeries *>(form);
+    d->binaryImage = std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> gnomonBinaryImageWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs;
     inputs["binaryImage"] = d->binaryImage;
     return inputs;
 }
@@ -79,9 +79,9 @@ gnomonAbstractCommand::orderedMap gnomonBinaryImageWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "binaryImage") {
-        this->setForm(dynamic_cast<gnomonImageSeries *>(form));
+        this->setForm(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

@@ -13,13 +13,13 @@ class GNOMONCORE_EXPORT gnomonAbstractBinaryImageFromImage : public gnomonAbstra
 {
     //Inputs
 public:
-    virtual void setInput(gnomonImageSeries *image) = 0;
-    virtual void setInitialization(gnomonBinaryImageSeries *init) {dtkWarn()<<Q_FUNC_INFO<<"Not implemented";};
+    virtual void setInput(std::shared_ptr<gnomonImageSeries> image) = 0;
+    virtual void setInitialization(std::shared_ptr<gnomonBinaryImageSeries> init) {dtkWarn()<<Q_FUNC_INFO<<"Not implemented";};
 
     // Outputs
 public:
-    virtual gnomonImageSeries *input(void) const = 0;
-    virtual inline gnomonBinaryImageSeries *initialization(void) const {
+    virtual std::shared_ptr<gnomonImageSeries> input(void) const = 0;
+    virtual inline std::shared_ptr<gnomonBinaryImageSeries> initialization(void) const {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
@@ -46,19 +46,9 @@ public:
         return {};
     };
 
-    virtual gnomonBinaryImageSeries *output() const = 0;
-
-
-public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters() const override = 0;
-
-
-public:
-    virtual void run() override = 0;
-    virtual QString documentation() override = 0;
-
+    virtual std::shared_ptr<gnomonBinaryImageSeries> output() const = 0;
 };
+
 DTK_DECLARE_OBJECT(gnomonAbstractBinaryImageFromImage *)
 DTK_DECLARE_PLUGIN(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)

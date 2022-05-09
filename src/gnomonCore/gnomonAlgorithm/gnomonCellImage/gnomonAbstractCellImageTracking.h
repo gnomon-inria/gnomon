@@ -15,22 +15,18 @@
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageTracking : public gnomonAbstractAlgorithm
 {
-
     //Inputs
 public:
-  virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-  virtual dtkCoreParameters parameters(void) const override = 0;
-
-  virtual void setCellImage(gnomonCellImageSeries *cellimage) = 0;
-  virtual void setImage(gnomonImageSeries *image) = 0;
-  virtual inline void setTransformation(gnomonDataDictSeries *data_dict_series) {
+  virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
+  virtual void setImage(std::shared_ptr<gnomonImageSeries> image) = 0;
+  virtual inline void setTransformation(std::shared_ptr<gnomonDataDictSeries> data_dict_series) {
       dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
   };
 
     // Outputs
 public:
-    virtual gnomonCellImageSeries *cellImage() const = 0;
-    virtual gnomonTreeSeries *tree() const { return nullptr; };
+    virtual std::shared_ptr<gnomonCellImageSeries> cellImage() const = 0;
+    virtual std::shared_ptr<gnomonTreeSeries> tree() const { return nullptr; };
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -61,12 +57,6 @@ public:
         }
         return {};
     };
-
-
-public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageTracking *)

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -19,10 +5,6 @@
 #include <gnomonVisualizationExport.h>
 
 #include "gnomonAbstractVisualizationImage.h"
-
-class gnomonViewForm;
-
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationImage : public gnomonAbstractVisualizationImage
 {
@@ -33,8 +15,8 @@ public:
     ~gnomonVisualizationImage(void);
 
 public:
-    void setImage(gnomonImageSeries *image) override;
-    gnomonImageSeries *image(void) override;
+    void setImage(std::shared_ptr<gnomonImageSeries> image) override;
+    std::shared_ptr<gnomonImageSeries> image(void) override;
 
 public slots:
     void updateOpacity(void);

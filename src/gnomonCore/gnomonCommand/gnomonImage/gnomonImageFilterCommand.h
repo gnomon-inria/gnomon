@@ -19,19 +19,18 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *image_series);
-    gnomonImageSeries *input();
+    void setInput(std::shared_ptr<gnomonImageSeries> image_series);
+    std::shared_ptr<gnomonImageSeries> input();
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
     orderedMap inputTypes() override;
-    void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
-    void addInputForm(gnomonAbstractDynamicForm *form) override;
-    gnomonBinaryImageSeries *mask();
-    void setMask(gnomonBinaryImageSeries *init);
+    void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
+    std::shared_ptr<gnomonBinaryImageSeries> mask();
+    void setMask(std::shared_ptr<gnomonBinaryImageSeries> init);
 
-    gnomonImageSeries *output();
+    std::shared_ptr<gnomonImageSeries> output();
 
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
     orderedMap outputTypes() override;
 
     void deserializeResults(QJsonObject &serialization) override;

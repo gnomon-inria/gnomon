@@ -20,6 +20,9 @@ public:
     ~gnomonWallForm(void);
 
 public:
+    gnomonAbstractForm *clone() override;
+
+public:
     void setNormal(gnomon::vec3_t);
     void setPosition(gnomon::vec3_t);
 

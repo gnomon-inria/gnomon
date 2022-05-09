@@ -17,7 +17,7 @@ public:
         deserialize(serialization);
     }
     ~gnomonSphereForm(void) = default;
-    gnomonSphereForm *clone(void);
+    gnomonAbstractForm *clone(void);
 
 public:
     QString name(void) const override;

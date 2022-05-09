@@ -22,11 +22,11 @@ public:
     void   undo(void) override;
 
 public:
-    void addInput(gnomonAbstractDynamicForm *input);
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    void addInput(std::shared_ptr<gnomonAbstractDynamicForm> input);
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    void addOutput(gnomonAbstractDynamicForm *output);
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    void addOutput(std::shared_ptr<gnomonAbstractDynamicForm> output);
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     void addParameter(const QString&, dtkCoreParameter *parameter);
 
@@ -44,7 +44,7 @@ public:
     gnomonAbstractFormAlgorithm *formAlgorithm(void);
 
     virtual orderedMap inputTypes() override;
-    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) override;
+    virtual void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     virtual orderedMap outputTypes() override;
 

@@ -18,20 +18,20 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonCellComplexSeries *cellComplex_series);
+    void setInput(std::shared_ptr<gnomonCellComplexSeries> cellComplex_series);
     void setAlgorithmName(const QString &) override;
 
-    gnomonCellComplexSeries *input();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    std::shared_ptr<gnomonCellComplexSeries> input();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    gnomonAbstractDynamicForm *output();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonAbstractDynamicForm> output();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     void deserializeResults(QJsonObject &serialization) override;
 
     QJsonObject serializeResults(void) override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     orderedMap inputTypes() override;
 

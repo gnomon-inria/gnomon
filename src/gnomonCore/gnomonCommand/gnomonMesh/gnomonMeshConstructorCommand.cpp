@@ -6,7 +6,7 @@
 class gnomonMeshConstructorCommandPrivate
 {
 public:
-    gnomonMeshSeries* output = nullptr;
+    std::shared_ptr<gnomonMeshSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ void gnomonMeshConstructorCommand::predo(void)
 
 void gnomonMeshConstructorCommand::postdo(void)
 {
-    gnomonMeshSeries *mesh = ((gnomonAbstractMeshConstructor *) this->action)->output();
+    std::shared_ptr<gnomonMeshSeries> mesh = ((gnomonAbstractMeshConstructor *) this->action)->output();
 
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
@@ -59,14 +59,14 @@ void gnomonMeshConstructorCommand::undo()
 {
 }
 
-gnomonMeshSeries *gnomonMeshConstructorCommand::output()
+std::shared_ptr<gnomonMeshSeries> gnomonMeshConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshConstructorCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshConstructorCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -88,7 +88,7 @@ gnomonAbstractCommand::orderedMap gnomonMeshConstructorCommand::outputTypes() {
 
 void gnomonMeshConstructorCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonMeshSeries();
+        d->output = std::make_shared<gnomonMeshSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

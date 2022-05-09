@@ -15,8 +15,8 @@ public:
     void   undo(void) override;
 
 public:
-    gnomonDataFrameSeries *dataFrame();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap outputTypes() override;
 

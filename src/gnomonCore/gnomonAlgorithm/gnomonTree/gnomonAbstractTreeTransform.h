@@ -8,8 +8,6 @@
 
 #include "gnomonForm/gnomonTree/gnomonTree.h"
 
-class dtkCoreParameter;
-
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -20,16 +18,10 @@ public:
     virtual ~gnomonAbstractTreeTransform(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
+    virtual void setInput(std::shared_ptr<gnomonTreeSeries> ) = 0;
+    virtual std::shared_ptr<gnomonTreeSeries> input() = 0;
 
-public:
-    virtual void setInput(gnomonTreeSeries *) = 0;
-    virtual gnomonTreeSeries *input() = 0;
-
-    virtual gnomonTreeSeries *output() = 0;
+    virtual std::shared_ptr<gnomonTreeSeries> output() = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -50,7 +42,6 @@ public:
         }
         return {};
     };
-
 };
 
 // ///////////////////////////////////////////////////////////////////

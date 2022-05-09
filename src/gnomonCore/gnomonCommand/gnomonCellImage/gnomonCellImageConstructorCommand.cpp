@@ -6,7 +6,7 @@
 class gnomonCellImageConstructorCommandPrivate
 {
 public:
-    gnomonCellImageSeries* output = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ void gnomonCellImageConstructorCommand::predo(void)
 
 void gnomonCellImageConstructorCommand::postdo(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageConstructor *) this->action)->output();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageConstructor *) this->action)->output();
 
     if ((!cellImage)||(cellImage->times().empty())) {
         d->output = nullptr;
@@ -58,14 +58,14 @@ void gnomonCellImageConstructorCommand::undo()
 {
 }
 
-gnomonCellImageSeries *gnomonCellImageConstructorCommand::output()
+std::shared_ptr<gnomonCellImageSeries> gnomonCellImageConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageConstructorCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageConstructorCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -87,7 +87,7 @@ QStringList gnomonCellImageConstructorCommand::availablePlugins() {
 
 void gnomonCellImageConstructorCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonCellImageSeries();
+        d->output = std::make_shared<gnomonCellImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

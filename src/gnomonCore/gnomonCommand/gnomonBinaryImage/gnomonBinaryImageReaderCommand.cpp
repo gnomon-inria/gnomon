@@ -6,7 +6,7 @@
 class GNOMONCORE_EXPORT gnomonBinaryImageReaderCommandPrivate
 {
 public:
-    gnomonBinaryImageSeries *binaryImage = nullptr;
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage = nullptr;
 };
 
 gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand() : d(new gnomonBinaryImageReaderCommandPrivate)
@@ -39,7 +39,7 @@ void gnomonBinaryImageReaderCommand::predo(void)
 
 void gnomonBinaryImageReaderCommand::postdo(void)
 {
-    gnomonBinaryImageSeries *binaryImage = ((gnomonAbstractBinaryImageReader *) this->action)->binaryImage();
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage = ((gnomonAbstractBinaryImageReader *) this->action)->binaryImage();
 
     if ((!binaryImage)||(binaryImage->times().empty())) {
         d->binaryImage = nullptr;
@@ -53,14 +53,14 @@ void gnomonBinaryImageReaderCommand::undo()
     ((gnomonAbstractBinaryImageReader *) this->action)->setPath("");
 }
 
-gnomonBinaryImageSeries *gnomonBinaryImageReaderCommand::binaryImage()
+std::shared_ptr<gnomonBinaryImageSeries> gnomonBinaryImageReaderCommand::binaryImage()
 {
     return d->binaryImage;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonBinaryImageReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonBinaryImageReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs;
     outputs["binaryImage"] = this->binaryImage();
     return outputs;
 }
@@ -82,7 +82,7 @@ QStringList gnomonBinaryImageReaderCommand::availablePlugins() {
 
 void gnomonBinaryImageReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->binaryImage) {
-        d->binaryImage = new gnomonBinaryImageSeries();
+        d->binaryImage = std::make_shared<gnomonBinaryImageSeries>();
     }
     auto tmp = serialization["binaryImage"].toObject();
     d->binaryImage->deserialize(tmp);

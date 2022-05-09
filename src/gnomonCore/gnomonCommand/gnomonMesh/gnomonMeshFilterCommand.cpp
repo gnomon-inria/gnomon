@@ -10,8 +10,8 @@
 class gnomonMeshFilterCommandPrivate
 {
 public:
-    gnomonMeshSeries* input = nullptr;
-    gnomonMeshSeries* output = nullptr;
+    std::shared_ptr<gnomonMeshSeries> input = nullptr;
+    std::shared_ptr<gnomonMeshSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ void gnomonMeshFilterCommand::predo(void)
 
 void gnomonMeshFilterCommand::postdo(void)
 {
-    gnomonMeshSeries *mesh = ((gnomonAbstractMeshFilter *) this->action)->output();
+    std::shared_ptr<gnomonMeshSeries> mesh = ((gnomonAbstractMeshFilter *) this->action)->output();
 
     if ((!mesh)||(mesh->times().empty())) {
         d->output = nullptr;
@@ -64,7 +64,7 @@ void gnomonMeshFilterCommand::undo()
     ((gnomonAbstractMeshFilter *) this->action)->setInput(nullptr);
 }
 
-void gnomonMeshFilterCommand::setInput(gnomonMeshSeries *input)
+void gnomonMeshFilterCommand::setInput(std::shared_ptr<gnomonMeshSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -75,26 +75,26 @@ void gnomonMeshFilterCommand::setInput(gnomonMeshSeries *input)
     }
 }
 
-gnomonMeshSeries *gnomonMeshFilterCommand::input()
+std::shared_ptr<gnomonMeshSeries> gnomonMeshFilterCommand::input()
 {
     return d->input;
 }
 
-gnomonMeshSeries *gnomonMeshFilterCommand::output()
+std::shared_ptr<gnomonMeshSeries> gnomonMeshFilterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFilterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonMeshFilterCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFilterCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -120,9 +120,9 @@ gnomonAbstractCommand::orderedMap gnomonMeshFilterCommand::outputTypes() {
     return output_types;
 }
 
-void gnomonMeshFilterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonMeshFilterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonMeshSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -130,7 +130,7 @@ void gnomonMeshFilterCommand::setInputForm(const QString &name, gnomonAbstractDy
 
 void gnomonMeshFilterCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonMeshSeries();
+        d->output = std::make_shared<gnomonMeshSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

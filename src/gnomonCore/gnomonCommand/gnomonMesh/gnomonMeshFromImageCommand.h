@@ -17,15 +17,15 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *image_series);
+    void setInput(std::shared_ptr<gnomonImageSeries> image_series);
 
-    gnomonImageSeries *input();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    std::shared_ptr<gnomonImageSeries> input();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
-    gnomonMeshSeries *output();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonMeshSeries> output();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap inputTypes() override;
 

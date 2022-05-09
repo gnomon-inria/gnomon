@@ -23,7 +23,7 @@ public:
     void run(void) override{ reader::t_run_called = true;};
     QString documentation(void) override {return "empty";};
     void setPath(const QString& path) override {reader::t_set_path = true;};
-    gnomonImageSeries *image() override {return nullptr;};
+    std::shared_ptr<gnomonImageSeries> image() override {return nullptr;};
     QStringList extensions(void) override {return QStringList();};
 };
 

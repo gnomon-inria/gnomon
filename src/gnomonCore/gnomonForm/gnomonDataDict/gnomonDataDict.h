@@ -23,9 +23,9 @@ public:
     explicit gnomonDataDict(QJsonObject& serialization) : m_data(nullptr) {
         static_cast<gnomonDataDict*>(this)->deserialize(serialization);
     }
-             gnomonDataDict(const gnomonDataDict& o) : m_data(o.m_data->clone()) {}
+    gnomonDataDict(const gnomonDataDict& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonDataDict(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonDataDict(*this); };
 
     ~gnomonDataDict(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

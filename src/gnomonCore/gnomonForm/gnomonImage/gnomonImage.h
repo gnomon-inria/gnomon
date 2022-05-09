@@ -25,9 +25,9 @@ public:
     explicit gnomonImage(QJsonObject& serialization) : m_data(nullptr) {
         static_cast<gnomonImage*>(this)->deserialize(serialization);
     }
-             gnomonImage(const gnomonImage& o) : m_data(o.m_data->clone()) {}
+    gnomonImage(const gnomonImage& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonImage(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonImage(*this); };
 
     ~gnomonImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

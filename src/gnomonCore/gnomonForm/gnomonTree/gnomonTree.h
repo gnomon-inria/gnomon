@@ -25,7 +25,7 @@ public:
     }
     gnomonTree(const gnomonTree& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonTree(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonTree(*this); };
 
     ~gnomonTree(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

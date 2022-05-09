@@ -6,7 +6,7 @@
 class gnomonPointCloudReaderCommandPrivate
 {
 public:
-    gnomonPointCloudSeries *pointCloud = nullptr;
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = nullptr;
 };
 
 gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand() : d(new gnomonPointCloudReaderCommandPrivate)
@@ -39,7 +39,7 @@ void gnomonPointCloudReaderCommand::predo(void)
 
 void gnomonPointCloudReaderCommand::postdo(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudReader *) this->action)->pointCloud();
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudReader *) this->action)->pointCloud();
 
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->pointCloud = nullptr;
@@ -53,14 +53,14 @@ void gnomonPointCloudReaderCommand::undo()
     ((gnomonAbstractPointCloudReader *) this->action)->setPath("");
 }
 
-gnomonPointCloudSeries *gnomonPointCloudReaderCommand::pointCloud()
+std::shared_ptr<gnomonPointCloudSeries> gnomonPointCloudReaderCommand::pointCloud()
 {
     return d->pointCloud;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["pointCloud"] = this->pointCloud();
     return outputs;
 }
@@ -82,7 +82,7 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudReaderCommand::outputTypes() {
 
 void gnomonPointCloudReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->pointCloud) {
-        d->pointCloud = new gnomonPointCloudSeries();
+        d->pointCloud = std::make_shared<gnomonPointCloudSeries>();
     }
     auto tmp = serialization["pointCloud"].toObject();
     d->pointCloud->deserialize(tmp);

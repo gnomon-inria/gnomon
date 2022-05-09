@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractPointCloudWriter(void) = default;
 
 public:
-    virtual void setPointCloud(gnomonPointCloudSeries *pointCloud) = 0;
+    virtual void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

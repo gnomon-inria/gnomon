@@ -6,7 +6,7 @@
 class gnomonCellComplexReaderCommandPrivate
 {
 public:
-    gnomonCellComplexSeries *cellComplex = nullptr;
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex = nullptr;
 };
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand() : d(new gnomonCellComplexReaderCommandPrivate)
@@ -39,7 +39,7 @@ void gnomonCellComplexReaderCommand::predo(void)
 
 void gnomonCellComplexReaderCommand::postdo(void)
 {
-    gnomonCellComplexSeries *cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex = ((gnomonAbstractCellComplexReader *) this->action)->cellComplex();
 
     if((!cellComplex)||(cellComplex->times().empty())) {
         d->cellComplex = nullptr;
@@ -53,14 +53,14 @@ void gnomonCellComplexReaderCommand::undo()
     ((gnomonAbstractCellComplexReader *) this->action)->setPath("");
 }
 
-gnomonCellComplexSeries *gnomonCellComplexReaderCommand::cellComplex()
+std::shared_ptr<gnomonCellComplexSeries> gnomonCellComplexReaderCommand::cellComplex()
 {
     return d->cellComplex;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["cellComplex"] = this->cellComplex();
     return outputs;
 }
@@ -82,7 +82,7 @@ QStringList gnomonCellComplexReaderCommand::availablePlugins() {
 
 void gnomonCellComplexReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->cellComplex) {
-        d->cellComplex = new gnomonCellComplexSeries();
+        d->cellComplex = std::make_shared<gnomonCellComplexSeries>();
     }
     auto tmp = serialization["cellComplex"].toObject();
     d->cellComplex->deserialize(tmp);

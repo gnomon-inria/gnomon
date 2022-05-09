@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizationCellImageMarchingCubes.h"
 
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
@@ -44,8 +30,8 @@
 class gnomonVisualizationCellImageMarchingCubesPrivate
 {
 public:
-    gnomonCellImageSeries *cellImageSeries;
-    gnomonCellImage *cellImage;
+    std::shared_ptr<gnomonCellImageSeries> cellImageSeries;
+    std::shared_ptr<gnomonCellImage> cellImage;
 
 public:
     gnomonPolyDataCellImage *polydata = nullptr;
@@ -113,8 +99,6 @@ void gnomonVisualizationCellImageMarchingCubesPrivate::updateValueRange(void)
 gnomonVisualizationCellImageMarchingCubes::gnomonVisualizationCellImageMarchingCubes(void) : gnomonAbstractVisualizationCellImage(), dd(new gnomonVisualizationCellImageMarchingCubesPrivate)
 {
     dd->q = this;
-    dd->cellImageSeries = Q_NULLPTR;
-    dd->cellImage = Q_NULLPTR;
 
     d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "CellImage property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
@@ -175,10 +159,10 @@ void gnomonVisualizationCellImageMarchingCubes::setVisible(bool visible)
     }
 }
 
-void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeries *cellImage)
+void gnomonVisualizationCellImageMarchingCubes::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
 {
     dd->cellImageSeries = cellImage;
-    dd->cellImage = (gnomonCellImage *) cellImage->current();
+    dd->cellImage = cellImage->current();
 
     if(!dd->cellImage)
         return;
@@ -221,7 +205,7 @@ void gnomonVisualizationCellImageMarchingCubes::setCellImage(gnomonCellImageSeri
 
 }
 
-gnomonCellImageSeries *gnomonVisualizationCellImageMarchingCubes::cellImage(void)
+std::shared_ptr<gnomonCellImageSeries> gnomonVisualizationCellImageMarchingCubes::cellImage(void)
 {
     return dd->cellImageSeries;
 }

@@ -6,7 +6,7 @@
 class gnomonTreeConstructorCommandPrivate
 {
 public:
-    gnomonTreeSeries* output = nullptr;
+    std::shared_ptr<gnomonTreeSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ void gnomonTreeConstructorCommand::predo(void)
 
 void gnomonTreeConstructorCommand::postdo(void)
 {
-    gnomonTreeSeries *tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
+    std::shared_ptr<gnomonTreeSeries> tree = ((gnomonAbstractTreeConstructor *) this->action)->output();
 
     if ((!tree)||(tree->times().empty())) {
         d->output = nullptr;
@@ -58,14 +58,14 @@ void gnomonTreeConstructorCommand::undo()
 {
 }
 
-gnomonTreeSeries *gnomonTreeConstructorCommand::output()
+std::shared_ptr<gnomonTreeSeries> gnomonTreeConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeConstructorCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeConstructorCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -87,7 +87,7 @@ gnomonAbstractCommand::orderedMap gnomonTreeConstructorCommand::outputTypes() {
 
 void gnomonTreeConstructorCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonTreeSeries();
+        d->output = std::make_shared<gnomonTreeSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

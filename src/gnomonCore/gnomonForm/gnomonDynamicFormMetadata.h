@@ -2,8 +2,6 @@
 
 #include <QJsonObject>
 
-class gnomonDynamicFormMetadataPrivate;
-
 class gnomonDynamicFormMetadata: public QObject {
     Q_OBJECT
 
@@ -12,18 +10,17 @@ public:
     Q_PROPERTY(QJsonObject data READ data NOTIFY dataChanged);
 
 public:
-    gnomonDynamicFormMetadata();
-    gnomonDynamicFormMetadata(const gnomonDynamicFormMetadata& other);
+    gnomonDynamicFormMetadata() = default;
     explicit gnomonDynamicFormMetadata(const QJsonObject& json);
-
-    virtual ~gnomonDynamicFormMetadata();
+    virtual ~gnomonDynamicFormMetadata() = default;
+    gnomonDynamicFormMetadata& operator =(const gnomonDynamicFormMetadata& o);
 
     QJsonObject serialize() const;
-
     void deserialize(const QJsonObject& json);
+    void clear(void);
 
 public:
-    QStringList keys(void);
+    QStringList keys(void) const;
     QJsonObject data(void) const;
 
 signals:
@@ -31,9 +28,9 @@ signals:
     void dataChanged();
 
 public:
-    Q_INVOKABLE QString get(const QString &key);
+    Q_INVOKABLE QString get(const QString &key) const;
     Q_INVOKABLE void set(const QString &key, const QString &value);
 
-private:
-    gnomonDynamicFormMetadataPrivate* d = nullptr;
+protected:
+    QMap<QString, QString> m_data = {};
 };

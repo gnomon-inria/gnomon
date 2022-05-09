@@ -13,7 +13,7 @@ public:
     QVariantMap parameters;
 
 public:
-    gnomonMeshSeries* mesh = nullptr;
+    std::shared_ptr<gnomonMeshSeries> mesh = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -60,13 +60,12 @@ void gnomonFemSolverCommand::undo()
     ((gnomonAbstractFemSolver *) this->action)->setMesh(nullptr);
 }
 
-void gnomonFemSolverCommand::setMesh(gnomonMeshSeries *mesh)
+void gnomonFemSolverCommand::setMesh(std::shared_ptr<gnomonMeshSeries> mesh)
 {
     d->mesh = mesh;
-    qDebug()<<"setmesh"<<d->mesh;
 }
 
-gnomonMeshSeries *gnomonFemSolverCommand::updatedMesh()
+std::shared_ptr<gnomonMeshSeries> gnomonFemSolverCommand::updatedMesh()
 {
     return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
 }
@@ -80,8 +79,8 @@ QStringList gnomonFemSolverCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonFemSolverCommand::inputs() {
-    QMap<QString, gnomonAbstractDynamicForm*> inputs;
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFemSolverCommand::inputs() {
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs;
     inputs["inputMesh"] = this->inputMesh();
     return inputs;
 }
@@ -92,8 +91,8 @@ gnomonAbstractCommand::orderedMap gnomonFemSolverCommand::inputTypes() {
     return input_types;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonFemSolverCommand::outputs() {
-    QMap<QString, gnomonAbstractDynamicForm*> outputs;
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFemSolverCommand::outputs() {
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["updatedMesh"] = this->updatedMesh();
     return outputs;
 }
@@ -104,13 +103,13 @@ gnomonAbstractCommand::orderedMap gnomonFemSolverCommand::outputTypes() {
     return output_types;
 }
 
-gnomonMeshSeries *gnomonFemSolverCommand::inputMesh() {
+std::shared_ptr<gnomonMeshSeries> gnomonFemSolverCommand::inputMesh() {
     return this->d->mesh;
 }
 
-void gnomonFemSolverCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonFemSolverCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "inputMesh") {
-        this->setMesh(dynamic_cast<gnomonMeshSeries *>(form));
+        this->setMesh(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -118,7 +117,7 @@ void gnomonFemSolverCommand::setInputForm(const QString &name, gnomonAbstractDyn
 
 void gnomonFemSolverCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->mesh) {
-        d->mesh = new gnomonMeshSeries();
+        d->mesh = std::make_shared<gnomonMeshSeries>();
     }
     auto tmp = serialization["updatedMesh"].toObject();
     d->mesh->deserialize(tmp);

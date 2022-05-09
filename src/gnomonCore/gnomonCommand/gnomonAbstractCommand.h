@@ -2,13 +2,13 @@
 
 #include <gnomonCoreExport>
 
+#include <memory>
 #include <QtCore>
 
 #include <dtkCore/dtkCoreParameter>
 
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm>
-
-class gnomonAbstractDynamicForm;
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 
 class GNOMONCORE_EXPORT gnomonAbstractCommand : public QObject
 {
@@ -59,13 +59,16 @@ public:
     inline virtual void setParameter(const QString& parameter, const QVariant& value) {
         this->action->setParameter(parameter, value);
     }
-    virtual QMap<QString, gnomonAbstractDynamicForm *> inputs() = 0;
+    virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() = 0;
     virtual orderedMap inputTypes() = 0;
-    virtual void setInputForm(const QString& name, gnomonAbstractDynamicForm *form) = 0;
+    virtual void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;
     [[deprecated]] virtual void addInputForm(gnomonAbstractDynamicForm *form) {}
 
-    virtual QMap<QString, gnomonAbstractDynamicForm *> outputs() = 0;
+    virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() = 0;
     virtual orderedMap outputTypes() = 0;
+
+public:
+    static QThread *gui_thread;
 
 protected:
     class gnomonAbstractAlgorithm *action = nullptr;
@@ -73,8 +76,6 @@ protected:
     QString factory_name = "";
     QFutureWatcher<void> *watcher = nullptr;
     bool override_async = false;
-
-
 };
 
 void runner(gnomonAbstractCommand* command);

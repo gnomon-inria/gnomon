@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
 #include "gnomonPolyDataMesh.h"
 
@@ -48,7 +34,7 @@
 class gnomonPolyDataMeshPrivate
 {
 public:
-    gnomonMesh *mesh;
+    std::shared_ptr<gnomonMesh> mesh;
 
     QString property_name;
 
@@ -62,7 +48,7 @@ public:
 vtkStandardNewMacro(gnomonPolyDataMesh);
 
 
-void gnomonPolyDataMesh::setMesh(gnomonMesh *mesh)
+void gnomonPolyDataMesh::setMesh(std::shared_ptr<gnomonMesh> mesh)
 {
     d->mesh = mesh;
 
