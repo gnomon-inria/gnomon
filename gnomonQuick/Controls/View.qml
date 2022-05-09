@@ -432,7 +432,7 @@ Rectangle {
                             font.pointSize: 14;
                             font.bold: true;
                             verticalAlignment: Text.AlignVCenter
-                            text: modelData;
+                            text: modelData ? modelData.replace('gnomon', '') :"";
                         }
 
                         TextField {

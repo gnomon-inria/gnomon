@@ -142,7 +142,7 @@ Item {
             height: 42;
             highlighted: _form_selector.currentIndex == index
 
-            text: modelData;
+            text: modelData ? modelData.replace('gnomon', '') :""
             font.pointSize: 14;
             font.bold: true;
 
