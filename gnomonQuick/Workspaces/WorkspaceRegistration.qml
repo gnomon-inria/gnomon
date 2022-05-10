@@ -57,177 +57,249 @@ G.Workspace {
             _stack.currentIndex = d.stackLevel+1
         }
     }
-
-    GridLayout {
+    StackLayout {
+        id: stack_layout
 
         anchors.fill: parent
-        anchors.margins: 5;
+        currentIndex: 0
+        GridLayout {
 
-        columns: 2;
+            anchors.fill: parent
+            anchors.margins: 5;
 
-        G.View {
-            id: _source_view_other;
+            columns: 2;
 
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
+            G.View {
+                id: _source_view_other;
 
-            onDroppedFromManager: (index) => {
-                d.sources.views[1].drop(index);
-                if(GV.World.timeKeys(index).length > 1) {
-                    d.sources.views[0].drop(index);
-                    ts_slider.value = Math.max(_source_view_ref.ts_slider.value - 1, ts_slider.from)
-                }
-            }
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
 
-            ts_slider.value: Math.max(d.sources.views[0].currentTime-1, ts_slider.from)
-            ts_slider.onValueChanged: {
-                let new_val = Math.min(ts_slider.value+1, ts_slider.to)
-                if(new_val != _source_view_ref.ts_slider.value) {
-                    _source_view_ref.ts_slider.value = new_val
-                }
-            }
-
-            X.Label {
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-
-                height: 24
-                text: "Floating Image"
-                horizontalAlignment: Text.AlignRight
-            }
-
-            viewLogic: d.sources.views[1];
-
-            Component.onCompleted: G.Associator.associate(_source_view_other, d.sources.views[1]);
-        }
-
-        Control {
-            id: _stack_container;
-
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
-
-            ColumnLayout {
-                anchors.fill: parent
-
-                G.DataDict {
-                    id: _data_target_view;
-
-                    Layout.fillWidth: true;
-                    height: window.height/8;
-
-                    X.Label {
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-
-                        text: "Transformation matrix"
-                        color: X.Style.foregroundColor
+                onDroppedFromManager: (index) => {
+                    d.sources.views[1].drop(index);
+                    if(GV.World.timeKeys(index).length > 1) {
+                        d.sources.views[0].drop(index);
+                        ts_slider.value = Math.max(_source_view_ref.ts_slider.value - 1, ts_slider.from)
                     }
+                }
 
-                    X.Label {
-                        anchors.centerIn: parent
-
-                        text: d.targetDict.dataDict
-                        horizontalAlignment: Text.AlignRight
-                        color: X.Style.foregroundColor
-                        font {
-                            pointSize: 14
-                            bold: true
-                        }
+                ts_slider.value: Math.max(d.sources.views[0].currentTime-1, ts_slider.from)
+                ts_slider.onValueChanged: {
+                    let new_val = Math.min(ts_slider.value+1, ts_slider.to)
+                    if(new_val != _source_view_ref.ts_slider.value) {
+                        _source_view_ref.ts_slider.value = new_val
                     }
-
-                    viewLogic: d.targetDict;
                 }
 
                 X.Label {
-                    Layout.fillWidth: true;
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
 
                     height: 24
-                    text: "Stack level " + _stack.currentIndex
+                    text: "Floating Image"
                     horizontalAlignment: Text.AlignRight
                 }
 
-                G.Stack {
-                    id: _stack;
+                viewLogic: d.sources.views[1];
 
-                    count: d.stackSize
-                    currentIndex: d.stackLevel+1
+                Component.onCompleted: G.Associator.associate(_source_view_other, d.sources.views[1]);
+            }
 
-                    Layout.fillHeight: true;
-                    Layout.maximumWidth: _stack_container.width;
-                    Layout.minimumWidth: _stack_container.width;
+            Control {
+                id: _stack_container;
 
-                    onCurrentIndexChanged: {
-                        d.stackLevel = currentIndex-1
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
+
+                ColumnLayout {
+                    anchors.fill: parent
+
+                    G.DataDict {
+                        id: _data_target_view;
+
+                        Layout.fillWidth: true;
+                        height: window.height/8;
+
+                        X.Label {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+
+                            text: "Transformation matrix"
+                            color: X.Style.foregroundColor
+                        }
+
+                        X.Label {
+                            anchors.centerIn: parent
+
+                            text: d.targetDict.dataDict
+                            horizontalAlignment: Text.AlignRight
+                            color: X.Style.foregroundColor
+                            font {
+                                pointSize: 14
+                                bold: true
+                            }
+                        }
+
+                        viewLogic: d.targetDict;
+                    }
+
+                    X.Label {
+                        Layout.fillWidth: true;
+
+                        height: 24
+                        text: "Stack level " + _stack.currentIndex
+                        horizontalAlignment: Text.AlignRight
+                    }
+
+                    G.Stack {
+                        id: _stack;
+
+                        count: d.stackSize
+                        currentIndex: d.stackLevel+1
+
+                        Layout.fillHeight: true;
+                        Layout.maximumWidth: _stack_container.width;
+                        Layout.minimumWidth: _stack_container.width;
+
+                        onCurrentIndexChanged: {
+                            d.stackLevel = currentIndex-1
+                        }
+                    }
+
+                    X.ButtonRaw {
+                        Layout.fillWidth: true;
+
+                        text: "Iterate";
+
+                        onClicked: {
+                            d.iterate();
+                        }
+                    }
+                }
+            }
+
+            G.View {
+                id: _source_view_ref;
+
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
+
+                onDroppedFromManager: (index) => {
+                    d.sources.views[0].drop(index);
+                    if(GV.World.timeKeys(index).length > 1) {
+                        d.sources.views[1].drop(index);
+                        ts_slider.value =  Math.min(_source_view_other.ts_slider.value + 1, ts_slider.to)
                     }
                 }
 
-                X.ButtonRaw {
-                    Layout.fillWidth: true;
-
-                    text: "Iterate";
-
-                    onClicked: {
-                        d.iterate();
+                ts_slider.onValueChanged: {
+                    let new_val = Math.max(ts_slider.value-1, ts_slider.from)
+                    if(new_val != _source_view_other.ts_slider.value) {
+                        _source_view_other.ts_slider.value = new_val
                     }
                 }
+
+                X.Label {
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+
+                    height: 24
+                    text: "Reference Image"
+                    horizontalAlignment: Text.AlignRight
+                }
+
+                viewLogic: d.sources.views[0];
+
+                Component.onCompleted: G.Associator.associate(_source_view_ref, d.sources.views[0]);
+            }
+
+
+            G.View {
+                id: _target_view;
+
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
+
+                X.Icon {
+                    icon: X.Icons.icons.fullscreen
+                    size: 32;
+                    color: X.Style.foregroundColor
+                    x: parent.width / 2
+                    y: 10
+                    
+                    MouseArea {
+                        id: _expand_view_area;
+
+                        anchors.fill: parent;
+
+                        hoverEnabled: true;
+
+                        onClicked: {
+                            stack_layout.currentIndex = 1
+                        }
+                    }
+
+                    ToolTip.visible: _expand_view_area.containsMouse;
+                    ToolTip.text: "Expand View";
+                }
+
+                X.Label {
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+
+                    height: 24
+                    text: "Registered Image"
+                    horizontalAlignment: Text.AlignRight
+                }
+
+                viewLogic: d.target;
+
+                Component.onCompleted: G.Associator.associate(_target_view, d.target);
             }
         }
 
         G.View {
-            id: _source_view_ref;
+                id: _target_view_zoom;
 
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
 
-            onDroppedFromManager: (index) => {
-                d.sources.views[0].drop(index);
-                if(GV.World.timeKeys(index).length > 1) {
-                    d.sources.views[1].drop(index);
-                    ts_slider.value =  Math.min(_source_view_other.ts_slider.value + 1, ts_slider.to)
+                X.Icon {
+                    icon: X.Icons.icons.close_fullscreen
+                    size: 32;
+                    color: X.Style.foregroundColor
+                    x: parent.width / 4
+                    y: 10
+                    
+                    MouseArea {
+                        id: _reduce_view_area;
+
+                        anchors.fill: parent;
+
+                        hoverEnabled: true;
+
+                        onClicked: {
+                            stack_layout.currentIndex = 0
+                        }
+                    }
+
+                    ToolTip.visible: _reduce_view_area.containsMouse;
+                    ToolTip.text: "Reduce View";
                 }
-            }
 
-            ts_slider.onValueChanged: {
-                let new_val = Math.max(ts_slider.value-1, ts_slider.from)
-                if(new_val != _source_view_other.ts_slider.value) {
-                    _source_view_other.ts_slider.value = new_val
+                X.Label {
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+
+                    height: 24
+                    text: "Registered Image"
+                    horizontalAlignment: Text.AlignRight
                 }
-            }
 
-            X.Label {
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
+                viewLogic: d.target
 
-                height: 24
-                text: "Reference Image"
-                horizontalAlignment: Text.AlignRight
-            }
-
-            viewLogic: d.sources.views[0];
-
-            Component.onCompleted: G.Associator.associate(_source_view_ref, d.sources.views[0]);
-        }
-
-        G.View {
-            id: _target_view;
-
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
-
-            X.Label {
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-
-                height: 24
-                text: "Registered Image"
-                horizontalAlignment: Text.AlignRight
-            }
-
-            viewLogic: d.target;
-
-            Component.onCompleted: G.Associator.associate(_target_view, d.target);
+                Component.onCompleted: G.Associator.associate(_target_view_zoom, d.target);
         }
     }
 
