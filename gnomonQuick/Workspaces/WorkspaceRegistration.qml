@@ -223,9 +223,10 @@ G.Workspace {
                 icon: _target_view._fullscreen ? X.Icons.icons.fullscreen : X.Icons.icons.close_fullscreen
                 size: 32;
                 color: X.Style.foregroundColor
-                x: parent.width / 2
-                y: 10
-                
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                anchors.bottomMargin: 30
+
                 MouseArea {
                     id: _expand_view_area;
 
