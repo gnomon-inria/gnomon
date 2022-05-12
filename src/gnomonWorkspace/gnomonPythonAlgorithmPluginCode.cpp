@@ -417,6 +417,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     }
 
     this->setText(plugin_code);
+    emit codeUpdated();
 }
 
 void gnomonPythonAlgorithmPluginCode::parseCode(void)

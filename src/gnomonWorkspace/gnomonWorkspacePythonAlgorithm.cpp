@@ -168,6 +168,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
         QTextStream s(&f);
         d->code->setText(s.readAll());
         d->code->parseCode();
+        emit d->code->codeUpdated();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -311,6 +312,8 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
 
 void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 {
+    this->target()->clear();
+
     if (d->algorithm) {
         int stat;
         QString output;
@@ -446,6 +449,9 @@ void gnomonWorkspacePythonAlgorithm::setEditMode(bool edit)
 {
     if (edit != d->edit_mode) {
         d->edit_mode = edit;
+        if (!d->edit_mode) {
+            this->loadAlgorithm();
+        }
         emit editModeChanged();
     }
 }

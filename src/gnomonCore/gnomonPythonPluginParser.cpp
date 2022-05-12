@@ -77,10 +77,10 @@ gnomonPythonPluginParserPrivate::gnomonPythonPluginParserPrivate(void)
 {
     this->default_data_plugins["gnomonBinaryImage"] = "gnomonBinaryImageDataSpatialImage";
     this->default_data_plugins["gnomonCellComplex"] = "gnomonCellComplexDataPropertyTopomesh";
-    this->default_data_plugins["gnomonCellImage"] = "gnomonCellImageDataPropertySpatialImage";
-    this->default_data_plugins["gnomonImage"] = "gnomonImageDataSpatialImageDict";
+    this->default_data_plugins["gnomonCellImage"] = "gnomonCellImageDataTissueImage";
+    this->default_data_plugins["gnomonImage"] = "gnomonImageDataMultiChannelImage";
     this->default_data_plugins["gnomonMesh"] = "gnomonMeshDataPropertyTopomesh";
-    this->default_data_plugins["gnomonPointCloud"] = "gnomonPointCloudDataPropertyTopomesh";
+    this->default_data_plugins["gnomonPointCloud"] = "gnomonPointCloudDataPandas";
 
     this->parameter_types["Bool"] = "d_bool";
     this->parameter_types["Int"] = "d_int";

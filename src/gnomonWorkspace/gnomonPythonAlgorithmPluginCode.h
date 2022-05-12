@@ -47,6 +47,8 @@ signals:
 //    void saveButtonClicked(void);
 //    void loadButtonClicked(void);
 
+    void codeUpdated(void);
+
 public:
     const QString& pluginName(void) const;
     void setPluginName(const QString& name);
