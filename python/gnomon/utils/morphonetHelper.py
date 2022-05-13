@@ -613,7 +613,6 @@ class MorphonetHelper(gnomonMorphonetHelper):
         cell_img_data = {}
         for i_t, time in enumerate(times):
             cell_img_data[time] = form_series[time].data().get_tissue_image().get_array() 
-        print("*********************")
         print(cell_img_data.keys())
         print(cell_img_data.values())
         
@@ -625,7 +624,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         message = pickle.loads(m_socket.recv())
         print(f"Received reply 0[ {message} ]")
 
-        m_socket.send(pickle.dumps(cell_img_data))
+        m_socket.send(pickle.dumps(cell_img_data[0.0]))
 
         message = pickle.loads(m_socket.recv())
         print(f"Received reply 1 [ {message} ]")

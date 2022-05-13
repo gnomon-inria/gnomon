@@ -469,10 +469,14 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
                 with TemporaryDirectory() as tmpdirname:
                     container = zipfile.ZipFile(Path(path).with_suffix(".zip"), "w", compression=zipfile.ZIP_DEFLATED,
                                                 compresslevel=5)
-                    ext = Path(path).suffix if Path(path).suffix != ".zip" else self.extensions()[0]
+                    ext = Path(path).suffixes if Path(path).suffix != ".zip" else self.extensions()[0]
+                    if len(ext) > 1:
+                        ext = ext[0] + ext[1]
+                    print(ext)
                     manifest = {"extension": ext[1:], "series": {}}
                     for t, form in forms.items():
-                        filename = Path(path).stem + "_t" + "%05.2f" % t + ext
+                        path = path.split(".")[0]
+                        filename = path + "_t" + "%05.2f" % t + ext
                         manifest["series"][t] = filename
                         filepath = Path(tmpdirname).joinpath(filename)
                         self.setPath(str(filepath))
