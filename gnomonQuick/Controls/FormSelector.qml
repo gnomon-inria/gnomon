@@ -4,11 +4,6 @@ import QtQuick.Layouts      1.15
 
 import Qt5Compat.GraphicalEffects
 
-import xQuick.Controls      1.0 as X
-import xQuick.Fonts         1.0 as X
-import xQuick.Style         1.0 as X
-import xQuick.Vis           1.0 as XVis
-
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
@@ -17,8 +12,9 @@ Control {
     id: _control;
 
     property alias model: _list_view.model;
-    property string currentValue: "";
-    property int currentIndex: -1;
+
+    property string currentValue;
+    property int currentIndex;
 
     implicitWidth: parent.width;
     implicitHeight: G.Style.formSelectorHeight;
@@ -46,24 +42,33 @@ Control {
 
         anchors.fill: parent;
 
+        spacing: 2;
         clip: true;
         focus: true;
 
         delegate: G.FormSelectorDelegate {
 
+          //make space for the scroll indicator as well as spacing
           width: parent.width;
-            highlighted: _control.currentIndex == index
 
-            text: modelData ? modelData.replace('gnomon', '') :""
+          highlighted: _control.currentIndex == index
 
-            onClicked: {
-                _control.currentIndex = index;
-                _control.currentValue = modelData;
-            }
+          text: modelData ? modelData.replace('gnomon', '') :""
+
+          onClicked: {
+            _control.currentIndex = index;
+            _control.currentValue = modelData;
+          }
 
         }
 
-        ScrollIndicator.vertical: ScrollIndicator { visible: _form_selector.contentHeight > _form_selector.height; }
+        ScrollIndicator.vertical: ScrollIndicator {
+
+          id: _scroll_indicator;
+
+          width: 8;
+          visible: _list_view.contentHeight > _list_view.height;
+        }
 
     }
 

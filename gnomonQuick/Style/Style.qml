@@ -180,7 +180,6 @@ QtObject {
         property color hoveredWarningColor: S.colors.orange["400"]
         property color hoveredOkColor: S.colors.green["400"]
 
-
         //text colors
         property color textColorBase: S.colors.blue["100"]
         property color textColorOk: S.colors.green["100"]
@@ -189,6 +188,12 @@ QtObject {
         property color textColorNeutral: S.colors.gray["100"]
         property color textColorFaded: S.colors.gray["200"]
 
+        //emboss for different colors
+        property color embossColorBlue: S.colors.blue["400"]
+        property color embossColorNeutral: S.colors.gray["500"]
+
+        //otherColors
+        property color lightBlue: S.colors.blue["200"]
     }
 
     // /////////////////////////////////////////////////////////////////////////////

@@ -103,6 +103,9 @@ Control {
 
         id: _form_selector;
 
+        currentValue: "";
+        currentIndex: -1;
+
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -112,12 +115,6 @@ Control {
         Component.onCompleted: {
             console.log("SELECTOR COMPLETED")
         }
-    }
-
-    X.Separator {
-        anchors.top: _form_selector.bottom;
-        anchors.right: parent.right;
-        anchors.left: parent.left;
     }
 
     ColumnLayout {
@@ -150,7 +147,7 @@ Control {
                 _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
                 _params.updateParametersModel();
 
-                _self.update_menu(_visu_combobox.currentValue);
+                _control.update_menu(_visu_combobox.currentValue);
             }
         }
 

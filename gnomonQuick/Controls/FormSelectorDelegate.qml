@@ -21,8 +21,39 @@ ItemDelegate {
   background: Rectangle {
     opacity: enabled ? 0.8 : 0.1
     color: getBgColor()
+    border.width: 0.5
+    border.color: getEmbossColor()
   }
 
+  contentItem: Row {
+    anchors.leftMargin: 24;
+    anchors.top: _control.top;
+    anchors.bottom: _control.bottom;
+    spacing: 8;
+
+    Rectangle {
+
+      id: _thumbnail
+
+      anchors.verticalCenter: parent.verticalCenter;
+
+      height: 32
+      width: 32
+      radius: G.Style.panelRadius
+      color: G.Style.colors.lightBlue
+    }
+
+    Label {
+
+      anchors.verticalCenter: parent.verticalCenter;
+
+      font: G.Style.fonts.formLabel;
+      color: G.Style.colors.textColorBase;
+      text: _control.text;
+      verticalAlignment: Text.AlignVCenter;
+    }
+
+  }
 
   X.Icon {
     id: _visibility_icon;
@@ -31,13 +62,14 @@ ItemDelegate {
 
     anchors.right: parent.right;
     anchors.verticalCenter: parent.verticalCenter;
-    anchors.margins: 4
+    anchors.leftMargin: 4;
+    anchors.rightMargin: 10;
 
-    size: 33;
+    size: 24;
 
     icon: checked? X.Icons.icons.visibility : X.Icons.icons.visibility_off;
-    color: checked? X.Style.foregroundColor : X.Style.backgroundColor;
-
+    //color: checked? X.Style.foregroundColor : X.Style.backgroundColor;
+    color: G.Style.colors.textColorBase;
 
     MouseArea {
       id: _visibility_mouse_area;
@@ -57,9 +89,10 @@ ItemDelegate {
     anchors.verticalCenter: parent.verticalCenter;
     anchors.margins: 4
 
-    size: 33;
+    size: 24;
 
     icon: X.Icons.icons.delete;
+    color: G.Style.colors.textColorBase;
 
     MouseArea {
 
@@ -80,14 +113,15 @@ ItemDelegate {
     }
   }
 
+  function getEmbossColor() {
+    if(down || highlighted) return G.Style.colors.embossColorBlue;
+    return G.Style.colors.embossColorNeutral;
+  }
+
   function getBgColor() {
     if(down || highlighted) return G.Style.colors.baseColor;
     if(hovered) return G.Style.colors.neutralColor;
     return G.Style.colors.fgColor;
   }
 
-
-  Component.onCompleted: {
-    console.log("CONSTRUCTION COMPLETE")
-  }
 }
