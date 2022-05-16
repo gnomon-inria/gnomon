@@ -41,7 +41,7 @@ Item {
             color: Qt.darker(X.Style.backgroundColor);
 
             border.width: 2;
-            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.highlightColor : X.Style.backgroundColor;
+            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.colors.highlightColor : X.Style.backgroundColor;
 
             visible: modelData == 0? true : GV.World.timeKeys(form_id).length > 1;
         }
