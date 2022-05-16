@@ -17,7 +17,7 @@ G.Workspace {
 
     id: _self;
 
-    workspace_title: "Morphonet Connector";
+    workspace_title: "MorphoNet";
 
     property alias d: d;
     property alias mn_ds_info: mn_datasets_info;
@@ -29,6 +29,9 @@ G.Workspace {
     GW.WorkspaceMorphonet {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onMessage: { 
             console.log("message: ", msg)
             _message_dialog.text = msg;
@@ -37,7 +40,7 @@ G.Workspace {
         }
 
         onConnectionStatusChanged: { 
-            updateDatasetsInfo();
+            setDatasetInfos();
             d.connected ? drawer.open() : drawer.close()
         }
 
@@ -188,8 +191,8 @@ G.Workspace {
         }
     }
 
-    function updateDatasetsInfo() {
-        let str_ds = d.datasetsInfo();
+    function setDatasetInfos() {
+        let str_ds = d.importDatasetInfos();
         let ds_info_json = JSON.parse(str_ds);
 
         mn_datasets_info.clear();
@@ -201,7 +204,8 @@ G.Workspace {
                 "morpho_id": ds_info_json[i]["id"],
                 "comments": ds_info_json[i]["comments"] || "",
                 "date": ds_info_json[i]["date"],
-                "id_people": ds_info_json[i]["id_people"]
+                "owner": ds_info_json[i]["owner"],
+                "own": ds_info_json[i]["own"]
                 });
         }
     }

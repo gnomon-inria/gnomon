@@ -66,7 +66,7 @@ Item {
 
             nameFilters: [ GV.World.formWriterNameFilter(form_id), "All files (*)" ]
             title: "save Gnomon Form"
-            folder: shortcuts.home
+            folder: shortcuts ? shortcuts.home : ""
             modality: Qt.WindowModal;
             fileMode: P.FileDialog.SaveFile
 

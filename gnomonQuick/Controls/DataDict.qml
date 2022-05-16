@@ -62,9 +62,10 @@ Rectangle {
     }
 
     X.Icon { id: _export_icon;
-        icon: X.Icons.icons.arrow_circle_up;
+        icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
+        enabled: !viewLogic.inputView
         size: 32;
-        color: X.Style.foregroundColor;
+        color: viewLogic.inputView ? X.Style.backgroundColor : X.Style.foregroundColor;
 
         anchors.top: _view.top
         anchors.topMargin: 10
@@ -82,7 +83,7 @@ Rectangle {
             }
         }
 
-        ToolTip.visible: _export_mouse_area.containsMouse;
+        ToolTip.visible: !viewLogic.inputView && _export_mouse_area.containsMouse;
         ToolTip.text: "Export";
     }
 

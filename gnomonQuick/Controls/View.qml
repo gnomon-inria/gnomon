@@ -130,11 +130,11 @@ Rectangle {
     }
 
     G.TimeSeriesSlider { id: _ts_slider;
-        to: viewLogic.timeMax
-        visible: viewLogic.timeMax > 0
+        times: viewLogic.times
+        visible: viewLogic.times.length > 1
 
         onValueChanged: {
-            viewLogic.currentTime = value;
+            viewLogic.currentTime = value
         }
     }
 
@@ -299,8 +299,9 @@ Rectangle {
         ToolTip.text: "(Un)Link with other views for this workspace";
     }
 
-    Keys.onPressed: {
+    Keys.onPressed: (event) => {
         console.log(event.key)
+        event.accepted = false
         if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
             if(event.modifiers & Qt.ShiftModifier) {
@@ -431,7 +432,7 @@ Rectangle {
                             font.pointSize: 14;
                             font.bold: true;
                             verticalAlignment: Text.AlignVCenter
-                            text: modelData;
+                            text: modelData ? modelData.replace('gnomon', '') :"";
                         }
 
                         TextField {
@@ -499,14 +500,16 @@ Rectangle {
                     }
 
                     function select_field() {
-                        currentItem.form_name.selectAll();
-                        currentItem.form_name.forceActiveFocus();
+                        if(currentItem) {
+                            currentItem.form_name.selectAll();
+                            currentItem.form_name.forceActiveFocus();
+                        }
                     }
                 }
             }
         }
 
-        ToolTip.visible: _export_mouse_area.containsMouse;
+        ToolTip.visible: !viewLogic.inputView && _export_mouse_area.containsMouse;
         ToolTip.text: "Export";
     }
 
