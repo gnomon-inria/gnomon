@@ -21,6 +21,7 @@ public:
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
+    virtual QMap<QString, QString> parameterGroups(void) = 0;
 
 public:
     virtual void run(void) = 0;

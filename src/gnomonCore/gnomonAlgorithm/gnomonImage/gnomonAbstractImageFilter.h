@@ -21,7 +21,6 @@ public:
     virtual ~gnomonAbstractImageFilter(void) = default;
 
 public:
-    virtual QMap<QString, QString> parameterGroups(void) = 0;
     virtual void setInput(std::shared_ptr<gnomonImageSeries> image_series) = 0;
     virtual std::shared_ptr<gnomonImageSeries> input() = 0;
 

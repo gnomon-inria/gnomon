@@ -21,6 +21,7 @@ class dummyCellImageTrackingPlugin : public gnomonAbstractCellImageTracking {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {tracking::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
+    QMap<QString, QString> parameterGroups(void) override {return QMap<QString, QString>();}
 
     void run(void) override{ tracking::t_run_called = true;};
     QString documentation(void) override {return "empty";};
