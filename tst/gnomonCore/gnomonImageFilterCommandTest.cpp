@@ -21,6 +21,7 @@ class dummyImageFilterPlugin : public gnomonAbstractImageFilter {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {filter::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
+    QMap<QString, QString> parameterGroups(void) override {return QMap<QString, QString>();}
 
     void run(void) override{ filter::t_run_called = true;};
     QString documentation(void) override {return "empty";};
