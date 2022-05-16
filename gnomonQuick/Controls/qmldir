@@ -1,5 +1,6 @@
 module gnomonQuick.Controls
 
+Application 1.0 Application.qml
 ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml
 Dragger 1.0 Dragger.qml
