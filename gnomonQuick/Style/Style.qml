@@ -104,6 +104,11 @@ QtObject {
     property int scrollBarWidth: S.spacing["2"]
     property int scrollBarRadius: S.spacing["1"]
 
+    property int toolBarHeight: S.spacing["6"]
+
+    property int formSelectorHeight: S.spacing["12"]
+    property int formDelegateHeight: S.spacing["7"]
+
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
         source: "qrc:/ttf/Poppins-Regular.ttf"
@@ -236,6 +241,7 @@ QtObject {
             pointSize: S.fontScale["700"],
         })
 
+
         property font h2: Qt.font({
             family: "Poppins",
             weight: Font.Medium,
@@ -246,6 +252,12 @@ QtObject {
             family: "Poppins",
             weight: Font.Normal,
             pointSize: S.fontScale["200"],
+        })
+
+        property font formLabel: Qt.font({
+            family: "Poppins",
+            weight: Font.Medium,
+            pointSize: S.fontScale["100"],
         })
 
     }

@@ -9,50 +9,15 @@ import xQuick.Fonts         1.0 as X
 import xQuick.Style         1.0 as X
 import xQuick.Vis           1.0 as XVis
 
-import gnomonQuick.Controls 1.0 as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
 
-Item {
-    id: _self;
+Control {
+    id: _control;
 
     // TODO: Start with a flickable
 
     required property Item view;
-
-    QtObject {
-        id: _internal;
-
-        property var menu: null;
-    }
-
-    function update_menu(name) {
-        if (_internal.menu) {
-            _internal.menu.destroy();
-            _auto_render_connect.target = null;
-        }
-
-        var source = "qrc:/qml/gnomonQuick/Menus/" + name + ".menu.qml"
-        var defaultSource = "qrc:/qml/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
-
-        var menu_component = Qt.createComponent(source)
-        if(menu_component.status != Component.Ready) {
-            const specific_error_msg = menu_component.errorString()
-            menu_component = Qt.createComponent(defaultSource)
-
-            if(menu_component.status != Component.Ready) {
-                console.error("Can't create visualization menu for", name, specific_error_msg, menu_component.errorString())
-                return;
-            }
-        }
-
-        _internal.menu = menu_component.createObject(_menu, {
-            model: _params.params_model,
-            parameters: _params.parameters,
-        })
-
-        _internal.menu.anchors.fill = _menu;
-
-        _auto_render_connect.target = _internal.menu
-    }
 
     Connections {
         target: view.viewLogic
@@ -62,12 +27,26 @@ Item {
         }
         function onFormsChanged() {
             if(view.viewLogic.formNames.length) {
+                console.log("FORMS CHANGED")
                 _form_selector.currentIndex = 0;
                 _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
             }
             else {
+                console.log("THIS IS WEIRD")
                 _form_selector.currentIndex = -1;
                 _form_selector.currentValue = "";
+            }
+        }
+    }
+
+    Connections {
+        id: _auto_render_connect;
+
+        target: null
+
+        function onValueChanged() {
+            if (_auto_render.checked) {
+                view.viewLogic.update();
             }
         }
     }
@@ -120,126 +99,19 @@ Item {
         }
     }
 
-    ListView {
+    G.FormSelector {
+
         id: _form_selector;
 
-        property string currentValue: "";
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
 
-        height: parent.height / 3;
+        model: view.viewLogic.formNames
 
-        anchors.top: parent.top;
-        anchors.left: parent.left;
-        anchors.right: parent.right;
-
-        model: view.viewLogic.formNames;
-
-        clip: true;
-        focus: true;
-        currentIndex: -1;
-
-        delegate: ItemDelegate {
-            width: _form_selector.width
-            height: 42;
-            highlighted: _form_selector.currentIndex == index
-
-            text: modelData ? modelData.replace('gnomon', '') :""
-            font.pointSize: 14;
-            font.bold: true;
-
-            onClicked: {
-                _form_selector.currentIndex = index;
-                _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
-            }
-
-            Rectangle {
-                radius: 4;
-                anchors.fill: parent
-
-                color: "transparent"
-                z: Infinity
-
-                border.width: 2;
-                border.color: X.Style.accentColor;
-
-                visible: _form_selector.currentIndex == index
-            }
-
-            X.Icon {
-                id: _visibility_icon;
-
-                property bool checked: true;
-
-                anchors.right: parent.right;
-                anchors.verticalCenter: parent.verticalCenter;
-                anchors.margins: 4
-
-                size: 33;
-
-                icon: checked? X.Icons.icons.visibility : X.Icons.icons.visibility_off;
-                color: checked? X.Style.foregroundColor : X.Style.backgroundColor;
-
-
-                MouseArea { id: _visibility_mouse_area;
-                    anchors.fill: parent;
-                    hoverEnabled: true;
-
-                    onClicked: {
-                        _visibility_icon.checked = !_visibility_icon.checked;
-                        view.viewLogic.setFormVisible(view.viewLogic.formNames[index], _visibility_icon.checked)
-                    }
-                }
-            }
-
-            X.Icon {
-
-                anchors.right: _visibility_icon.left;
-                anchors.verticalCenter: parent.verticalCenter;
-                anchors.margins: 4
-
-                size: 33;
-
-                icon: X.Icons.icons.delete;
-
-                MouseArea {
-
-                    anchors.fill: parent;
-                    onClicked: {
-                        if(index === _form_selector.currentIndex) {
-                            if(view.viewLogic.formNames.length)
-                                _form_selector.currentIndex = 0;
-                            else {
-                                _form_selector.currentIndex = -1;
-                                _internal.menu.destroy();
-                            }
-                        }
-                        view.viewLogic.removeForm(view.viewLogic.formNames[index]);
-                        view.viewLogic.update();
-
-                        //console.log("DELETING", index, view.viewLogic.formNames[index])
-                        //_form_delete_modal.formName = view.viewLogic.formNames[index];
-                        //_form_delete_modal.formIndex = index;
-                        //_form_delete_modal.open();
-                    }
-                }
-
-            }
-
-            background: Rectangle {
-                opacity: enabled ? 0.8 : 0.1
-                color: (down || highlighted || hovered) ? Qt.lighter(X.Style.backgroundColor, 1.2) : Qt.darker(X.Style.backgroundColor, 1.2)
-
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: X.Style.borderColor;
-                    anchors.bottom: parent.bottom
-                }
-            }
-
+        Component.onCompleted: {
+            console.log("SELECTOR COMPLETED")
         }
-
-        ScrollIndicator.vertical: ScrollIndicator { visible: _form_selector.contentHeight > _form_selector.height; }
-
     }
 
     X.Separator {
@@ -359,15 +231,43 @@ Item {
         }
     }
 
-    Connections {
-        id: _auto_render_connect;
+    QtObject {
+        id: _internal;
 
-        target: null
+        property var menu: null;
+    }
 
-        function onValueChanged() {
-            if (_auto_render.checked) {
-                    view.viewLogic.update();
+    function update_menu(name) {
+        if (_internal.menu) {
+            _internal.menu.destroy();
+            _auto_render_connect.target = null;
+        }
+
+        var source = "qrc:/qml/gnomonQuick/Menus/" + name + ".menu.qml"
+        var defaultSource = "qrc:/qml/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
+
+        var menu_component = Qt.createComponent(source)
+        if(menu_component.status != Component.Ready) {
+            const specific_error_msg = menu_component.errorString()
+            menu_component = Qt.createComponent(defaultSource)
+
+            if(menu_component.status != Component.Ready) {
+                console.error("Can't create visualization menu for", name, specific_error_msg, menu_component.errorString())
+                return;
             }
         }
+
+        _internal.menu = menu_component.createObject(_menu, {
+            model: _params.params_model,
+            parameters: _params.parameters,
+        })
+
+        _internal.menu.anchors.fill = _menu;
+
+        _auto_render_connect.target = _internal.menu
+    }
+
+    Component.onCompleted: {
+        console.log("VIEW MENU COMPLETED")
     }
 }

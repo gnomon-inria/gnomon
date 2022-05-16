@@ -1,6 +1,11 @@
 module gnomonQuick.Controls
 
 Application 1.0 Application.qml
+Page 1.0 Page.qml
+Panel 1.0 Panel.qml
+FormSelector 1.0 FormSelector.qml
+FormSelectorDelegate 1.0 FormSelectorDelegate.qml
+ToolBar 1.0 ToolBar.qml
 ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml
 Dragger 1.0 Dragger.qml
