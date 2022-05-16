@@ -23,6 +23,13 @@ Control {
 
     property alias algo_combobox: _algos;
 
+    QtObject {
+        id: _internal;
+
+        property var expanded: [];
+    }
+
+
     ColumnLayout {
 
         anchors.fill: parent
@@ -44,6 +51,63 @@ Control {
             }
         }
 
+        Component {
+            id: _section_heading;
+
+            Rectangle {
+                id: _section_rectangle;
+
+                required property string section;
+
+                width: _l.width;
+                height: section ? 33 : 0 
+                z: -1;
+
+                color: X.Style.backgroundColor;
+                radius: 3;
+
+                clip: true;
+
+                Behavior on height {
+                    NumberAnimation { duration: 200 }
+                }
+
+                MouseArea {
+                    anchors.fill: parent;
+                    onClicked: _l.toggleCollapse(parent.section);
+                }
+
+                X.Icon {
+                    id: _icon;
+
+                    anchors.right: parent.right;
+                    anchors.top: parent.top;
+                    anchors.topMargin: 5;
+                    anchors.rightMargin: 5;
+                    size: 30;
+
+                    icon: X.Icons.icons.keyboard_arrow_up;
+
+                    rotation: _l.isSectionExpanded(parent.section) ? 0 : 180;
+
+                    Behavior on rotation {
+                        NumberAnimation { duration: 200 }
+                    }
+                }
+
+                X.Label {
+                    anchors.left: parent.left;
+                    anchors.verticalCenter: parent.verticalCenter;
+                    anchors.leftMargin: 5;
+
+                    text: parent.section //sectionTitle(parent.section);
+                    font.pixelSize: 12;
+                    font.bold: true;
+                }
+            }
+        }
+
+
         ListView {
             id: _l;
 
@@ -56,10 +120,23 @@ Control {
 
             spacing: 10;
 
+
+            section.property: "group"
+            section.criteria: ViewSection.FullString
+            section.delegate: _section_heading;
+
+
             delegate: Loader {
                 property var lparam: param;
-                height: 70;
+
+                anchors.topMargin: 10;
+
+                height: _l.isSectionExpanded(group) ? 70 : 0;
                 width: _l.width;
+
+                clip: true;
+                z: 1;   
+
                 sourceComponent: component
 
                 Connections {
@@ -71,10 +148,40 @@ Control {
                         }
                     }
                 }
+                Behavior on height {
+                    NumberAnimation { duration: 200 }
+                }
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
                 visible: _l.contentHeight > _l.height;
+            }
+
+            function isSectionExpanded(group) {
+
+                if(group) {
+                    return _internal.expanded.includes(group)
+                }
+
+                return true;
+            }
+
+            function toggleCollapse(group) {
+                if(_internal.expanded.includes(group)) _l.collapseSection(group)
+                else _l.expandSection(group)
+            }
+
+            function collapseSection(group) {
+                _internal.expanded = _internal.expanded.filter((item) => item !== group)
+            }
+
+            function expandSection(group) {
+                _internal.expanded = _internal.expanded.concat([group])
+            }
+
+            function sectionTitle(s) {
+                let title = s.replace('_', ' ');
+                return title.charAt(0).toUpperCase() + title.slice(1);
             }
         }
 
@@ -129,6 +236,12 @@ Control {
             Layout.fillWidth: true;
         }
     }
+
+
+    Component.onCompleted: {
+        _internal.expanded = []
+    }
+
 
     background: Rectangle { color: "#00000000"; }
 }
