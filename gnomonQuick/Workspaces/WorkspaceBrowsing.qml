@@ -3,6 +3,7 @@ import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
 import Qt.labs.platform  1.0 as P
+import Qt.labs.settings
 
 import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
@@ -22,6 +23,11 @@ G.Workspace {
     property string current_file: "";
     property alias d: d;
 
+    Settings {
+        id: _cache;
+        category: "ReaderDialogCache";
+    }
+
     fill: () => {}
 
     focus: true;
@@ -34,15 +40,20 @@ G.Workspace {
         id: d;
 
         onAvailable: (readers) => {
-            _reader_dialog.availableReaders.clear();
-            for (var r in readers) {
-                _reader_dialog.availableReaders.append({
-                          "title": r.toString(),
-                    "description": readers[r].toString()
-                });
+            console.log(readers, Object.keys(readers))
+            if(Object.keys(readers).length == 1) {
+                d.readWith(Object.keys(readers)[0])
+            } else {
+                _reader_dialog.availableReaders.clear();
+                for (var r in readers) {
+                    _reader_dialog.availableReaders.append({
+                              "title": r.toString(),
+                        "description": readers[r].toString()
+                    });
+                }
+                // if(d.displayReaderDialog)
+                _reader_dialog.open();
             }
-            // if(d.displayReaderDialog)
-                _reader_dialog.open();          
         }
 
         onFinished: idleStop();
@@ -59,11 +70,17 @@ G.Workspace {
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
             let paths = [];
+            let default_plugin = ""
             for(let i_n in urls) {
-                paths.push(decodeURIComponent(urls[i_n]))
+                let path = decodeURIComponent(urls[i_n])
+                if (default_plugin == "") {
+                    default_plugin = _cache.value(path, "")
+                    console.log(path, " --> ", default_plugin)
+                }
+                paths.push(path)
             }
             d.readerPath = paths.join(",");
-            d.requestReaders();
+            d.requestReaders(default_plugin);
         }
         viewLogic: d.view;
 
@@ -75,6 +92,11 @@ G.Workspace {
 
         onReaderSelected: (reader) => {
             idleStart();
+            let paths = d.readerPath.split(",")
+            for(let i in paths) {
+                console.log("Saving ", reader, " as default reader for ", paths[i])
+                _cache.setValue(paths[i], reader)
+            }
             d.readWith(reader);
         }
     }
