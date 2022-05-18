@@ -45,7 +45,6 @@ ListView {
     Connections {
         target: GV.World
         function onAdded(id) {
-            console.log("form added", id);
             _world_model.append({"form_id": id })
             _control.currentIndex = _world_model.count - 1;
             _control.currentRef = id;
