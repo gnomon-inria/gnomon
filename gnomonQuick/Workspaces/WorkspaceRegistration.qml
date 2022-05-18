@@ -217,10 +217,27 @@ G.Workspace {
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            property bool _fullscreen: true
+            property bool _fullscreen: false
+
+            Behavior on Layout.preferredHeight {
+                NumberAnimation {
+                    duration: 500
+                    easing {
+                        type: _target_view._fullscreen? Easing.OutQuad : Easing.InQuad
+                    }
+                }
+            }
+            Behavior on Layout.preferredWidth {
+                NumberAnimation {
+                    duration: 500
+                    easing {
+                        type: _target_view._fullscreen? Easing.OutQuad : Easing.InQuad
+                    }
+                }
+            }
 
             X.Icon {
-                icon: _target_view._fullscreen ? X.Icons.icons.fullscreen : X.Icons.icons.close_fullscreen
+                icon: _target_view._fullscreen ? X.Icons.icons.close_fullscreen : X.Icons.icons.fullscreen
                 size: 32;
                 color: X.Style.foregroundColor
                 anchors.bottom: parent.bottom
@@ -235,24 +252,17 @@ G.Workspace {
                     hoverEnabled: true;
 
                     onClicked: {
-                        var HEIGHT
-                        var WIDTH
-                        if(_target_view._fullscreen) {
-                            _target_view._fullscreen = false
-                            HEIGHT = _stack_container.height 
-                            WIDTH = _stack_container.width
+                        if(!_target_view._fullscreen) {
+                            _target_view._fullscreen = true
                             _target_view.Layout.preferredHeight = _grid_block.height
                             _target_view.Layout.preferredWidth = _grid_block.width
                             parent.ToolTip.text = "Reduce View"
                         } else {
-                            _target_view._fullscreen = true
+                            _target_view._fullscreen = false
                             _target_view.Layout.preferredHeight = 0
                             _target_view.Layout.preferredWidth = 0
-                            _target_view.Layout.height = HEIGHT
-                            _target_view.Layout.width = WIDTH
                             parent.ToolTip.text = "Expand View"
                         }
-
                     }
                 }
 
