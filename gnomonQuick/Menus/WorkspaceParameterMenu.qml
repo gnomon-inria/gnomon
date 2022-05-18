@@ -23,6 +23,8 @@ Control {
 
     property alias algo_combobox: _algos;
 
+    background: Rectangle { color: "#00000000"; }
+
     QtObject {
         id: _internal;
 
@@ -74,7 +76,7 @@ Control {
 
                 MouseArea {
                     anchors.fill: parent;
-                    onClicked: _l.toggleCollapse(parent.section);
+                    onClicked: toggleCollapse(parent.section);
                 }
 
                 X.Icon {
@@ -88,7 +90,7 @@ Control {
 
                     icon: X.Icons.icons.keyboard_arrow_up;
 
-                    rotation: _l.isSectionExpanded(parent.section) ? 0 : 180;
+                    rotation: isSectionExpanded(parent.section) ? 0 : 180;
 
                     Behavior on rotation {
                         NumberAnimation { duration: 200 }
@@ -100,7 +102,7 @@ Control {
                     anchors.verticalCenter: parent.verticalCenter;
                     anchors.leftMargin: 5;
 
-                    text: parent.section //sectionTitle(parent.section);
+                    text: sectionTitle(parent.section);
                     font.pixelSize: 12;
                     font.bold: true;
                 }
@@ -131,7 +133,7 @@ Control {
 
                 anchors.topMargin: 10;
 
-                height: _l.isSectionExpanded(group) ? 70 : 0;
+                height: isSectionExpanded(group) ? 70 : 0;
                 width: _l.width;
 
                 clip: true;
@@ -157,32 +159,6 @@ Control {
                 visible: _l.contentHeight > _l.height;
             }
 
-            function isSectionExpanded(group) {
-
-                if(group) {
-                    return _internal.expanded.includes(group)
-                }
-
-                return true;
-            }
-
-            function toggleCollapse(group) {
-                if(_internal.expanded.includes(group)) _l.collapseSection(group)
-                else _l.expandSection(group)
-            }
-
-            function collapseSection(group) {
-                _internal.expanded = _internal.expanded.filter((item) => item !== group)
-            }
-
-            function expandSection(group) {
-                _internal.expanded = _internal.expanded.concat([group])
-            }
-
-            function sectionTitle(s) {
-                let title = s.replace('_', ' ');
-                return title.charAt(0).toUpperCase() + title.slice(1);
-            }
         }
 
         X.ButtonRaw {
@@ -243,5 +219,31 @@ Control {
     }
 
 
-    background: Rectangle { color: "#00000000"; }
+    function isSectionExpanded(group) {
+
+        if(group) {
+            return _internal.expanded.includes(group)
+        }
+
+        return true;
+    }
+
+    function toggleCollapse(group) {
+        if(_internal.expanded.includes(group)) collapseSection(group)
+        else expandSection(group)
+    }
+
+    function collapseSection(group) {
+        _internal.expanded = _internal.expanded.filter((item) => item !== group)
+    }
+
+    function expandSection(group) {
+        _internal.expanded = _internal.expanded.concat([group])
+    }
+
+    function sectionTitle(s) {
+        let title = s.replace('_', ' ');
+        return title.charAt(0).toUpperCase() + title.slice(1);
+    }
+
 }
