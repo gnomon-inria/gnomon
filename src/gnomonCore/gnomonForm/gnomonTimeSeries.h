@@ -35,6 +35,8 @@ public:
 //    void insert(const T& form) override;
     void drop(double t) override;
 
+    void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) override;
+
 public:
     virtual inline QString formName(void) override { return T::formName(); }
 

@@ -72,12 +72,12 @@ const QJsonObject gnomonPipelineNodeWriter::toJson(void)
     QJsonObject json = gnomonPipelineNode::toJson();
     json.insert("path", dd->path);
 
-    QJsonObject in;
+    /*QJsonObject in;
     for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
         auto&& input_name = it.key();
         in.insert(input_name, QJsonValue::Null);
     }
-    json.insert("inputs", in);
+    json.insert("inputs", in);*/
 
     return json;
 }

@@ -2,6 +2,7 @@
 
 #include "gnomonCore.h"
 
+#include "gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonCellComplex/gnomonCellComplex.h"
 #include "gnomonCellGraph/gnomonCellGraph.h"
 #include "gnomonCellImage/gnomonCellImage.h"
@@ -20,6 +21,9 @@
 //    dtkObjectManager::instance()->add(dtkMetaType::variantFromValue(this),
 //                                      QString("%1_%2").arg(this->name()).arg(counter++));
 //}
+
+gnomonBinaryImage *gnomonAbstractForm::asBinaryImage()
+{ return dynamic_cast<gnomonBinaryImage *>(this); }
 
 gnomonCellComplex *gnomonAbstractForm::asCellComplex()
 { return dynamic_cast<gnomonCellComplex *>(this); }

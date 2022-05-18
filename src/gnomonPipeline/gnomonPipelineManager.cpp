@@ -9,6 +9,7 @@
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeConstructor.h"
 #include "gnomonPipelineNodeReader.h"
+#include "gnomonPipelineNodeTask.h"
 #include "gnomonPipelineNodeWriter.h"
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
@@ -41,6 +42,8 @@ public:
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> adapter_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeAlgorithm *> algorithm_nodes;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> algorithm_output;
+    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeTask *> task_nodes;
+    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> task_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeConstructor *> constructor_nodes;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> constructor_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , int> form_manager_index;
@@ -82,6 +85,9 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
             } else if (this->algorithm_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->algorithm_nodes[input_form]->outputPorts()[this->algorithm_output[input_form]]);
+            }else if (this->task_nodes.contains(input_form)) {
+                edge = new gnomonPipelineEdge();
+                edge->setSource(this->task_nodes[input_form]->outputPorts()[this->task_output[input_form]]);
             }
             if (edge) {
                 if (gnomonPipelineNodeWriter *writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
@@ -90,6 +96,8 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
                     edge->setTarget(adapter_node->inputPorts()[input]);
                 } else if (gnomonPipelineNodeAlgorithm *algorithm_node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(node)) {
                     edge->setTarget(algorithm_node->inputPorts()[input]);
+                }else if (gnomonPipelineNodeTask *task_node = dynamic_cast<gnomonPipelineNodeTask *>(node)) {
+                    edge->setTarget(task_node->inputPorts()[input]);
                 }
                 edge->link();
 
@@ -248,6 +256,19 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
 
 }
 
+void gnomonPipelineManager::addTask(const QString &task,
+                                    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs,
+                                    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs) {
+    auto node = new gnomonPipelineNodeTask(task, inputs.keys(), outputs.keys());
+    d->node_input_forms[node] = inputs;
+    for (auto it = outputs.begin(); it != outputs.end(); ++it) {
+        auto&& output = it.key();
+        d->task_nodes[outputs[output]] = node;
+        d->task_output[outputs[output]] = output;
+    }
+
+}
+
 
 void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *command)
 {
@@ -317,6 +338,16 @@ void gnomonPipelineManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> f
             d->pipeline_nodes[node->name()] = node;
 
         }
+    } else if (d->task_nodes.contains(form)) {
+        auto *node = d->task_nodes[form];
+
+        if (!d->hasNode(node))
+        {
+            d->linkNodeInputs(node);
+            d->pipeline->addNode(node);
+            d->pipeline_nodes[node->name()] = node;
+
+        }
     }
 }
 
@@ -347,6 +378,8 @@ void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicFo
             output_port = d->adapter_nodes[form]->outputPorts()[d->adapter_output[form]];
         } else if (d->algorithm_nodes.contains(form)) {
             output_port = d->algorithm_nodes[form]->outputPorts()[d->algorithm_output[form]];
+        }else if (d->task_nodes.contains(form)) {
+            output_port = d->task_nodes[form]->outputPorts()[d->task_output[form]];
         }
         if (output_port) {
             output_port->setFormIndex(d->form_manager_index[form]);

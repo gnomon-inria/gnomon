@@ -1,10 +1,13 @@
 from typing import Tuple, List, Dict, Callable
 from threading import Thread
+from functools import partial
 
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
-from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineEdge, gnomonPipelinePort
+from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineNodeTask, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
 
+
+THREADING = True
 
 class PNodeRunner:
     """
@@ -31,6 +34,7 @@ class PNodeRunner:
     inputs: Dict[str, Callable[[gnomonAbstractDynamicForm], None]]
     outputs: Dict[str, Callable[[], gnomonAbstractDynamicForm]]
     _has_path: bool
+    _is_task: bool
     _node: gnomonPipelineNode
 
     def __init__(self, node: gnomonPipelineNode):
@@ -46,20 +50,7 @@ class PNodeRunner:
         algo_name = node.name()
         algo_class = node.algorithmClass()
         self.name = algo_name
-        load_plugin_group(algo_class)
-        factory = get_factory(algo_class)
-        self.algo = factory().create(node.algorithmPlugin())
         self._has_path = False
-
-        # generating input setters
-        self.inputs = {}
-        for input_name in node.inputPortsNames():
-            input_method = "set{}{}".format(input_name[0].capitalize(), input_name[1:])
-            self.inputs[input_name] = getattr(self.algo, input_method)
-        # generating output getters
-        self.outputs = {}
-        for output_name in node.outputPortsNames():
-            self.outputs[output_name] = getattr(self.algo, output_name)
 
         # making connections
         self.inputs_connections = {}
@@ -69,26 +60,61 @@ class PNodeRunner:
                 source: gnomonPipelinePort = edge.source()
                 self.inputs_connections[input_name] = (source.node().name(), source.name())
 
-        # if reader or writer, set default path
-        if hasattr(self.algo, "setPath"):
-            #print(f"path for {self.name} -> {node.path()}")
-            self._has_path = True
-            self.algo.setPath(node.path())
+        if algo_class == "task":
+            self._is_task = True
+            self._node = gnomonPipelineNodeTask._dynamic_cast(self._node)
+            # no plugin instances, need local storage
+            # generating input setters
+            self.inputs = {}
+            self._inputs_storage = {}
+            def _setter(storage_dict, key, form):
+                storage_dict[key] = form
+            for input_name in node.inputPortsNames():
+                self.inputs[input_name] = partial(_setter, self._inputs_storage, input_name)
+            # generating output getters
+            self.outputs = {}
+            self._outputs_storage = {}
+            def _getter(storage_dict, key):
+                return storage_dict[key]
+            for output_name in node.outputPortsNames():
+                self.outputs[output_name] = partial(_getter, self._outputs_storage, output_name)
+        else:
+            self._is_task = False
+            # instantiating algorithm
+            load_plugin_group(algo_class)
+            factory = get_factory(algo_class)
+            self.algo = factory().create(node.algorithmPlugin())
 
-        # setting parameters
-        for param_name in node.parametersName():
-            param = self.algo._parameters[param_name]
-            #print(type(param), param)
-            node.configureParameter(param_name, param)
-            self.algo.setParameter(param_name, param)
-            #print(" ----> ", type(self.algo._parameters[param_name]), self.algo._parameters[param_name])
+            # generating input setters
+            self.inputs = {}
+            for input_name in node.inputPortsNames():
+                input_method = "set{}{}".format(input_name[0].capitalize(), input_name[1:])
+                self.inputs[input_name] = getattr(self.algo, input_method)
+            # generating output getters
+            self.outputs = {}
+            for output_name in node.outputPortsNames():
+                self.outputs[output_name] = getattr(self.algo, output_name)
+
+            # if reader or writer, set default path
+            if hasattr(self.algo, "setPath"):
+                self._has_path = True
+                self.algo.setPath(node.path())
+
+            # setting parameters
+            for param_name in node.parametersName():
+                param = self.algo._parameters[param_name]
+                node.configureParameter(param_name, param)
+                self.algo.setParameter(param_name, param)
 
     def run(self):
         """
         Calls the `run()` method of this node plugin.
         """
         print(f" -- running {self.name}")
-        self.algo.run()
+        if self._is_task:
+            self._outputs_storage.update(self._node.runTask(self._inputs_storage))
+        else:
+            self.algo.run()
 
     def has_path(self) -> bool:
         """
@@ -156,7 +182,6 @@ class PipelineRunner:
         for target_port, source in node.inputs_connections.items():
             source_node, source_port = source
             tmp = self.nodes[source_node].outputs[source_port]()
-            # print(tmp)
             node.inputs[target_port](tmp)
 
     def run(self):
@@ -183,9 +208,12 @@ class PipelineRunner:
         print("computing group : ", sources)
         jobs = []
         for source_node in sources:
-            job = Thread(target=self.nodes[source_node].run)
-            job.start()
-            jobs.append(job)
+            if THREADING:
+                job = Thread(target=self.nodes[source_node].run)
+                job.start()
+                jobs.append(job)
+            else:
+                self.nodes[source_node].run()
 
         for job in jobs:
             job.join()
@@ -231,9 +259,6 @@ def load_pipeline(path: str):
     -------
     PipelineRunner
     """
-    # print("instantiating")
     pipeline = gnomonPipeline()
-    # print("reading")
     pipeline.readFromJson(path)
-    # print("making runner")
     return PipelineRunner(pipeline)
