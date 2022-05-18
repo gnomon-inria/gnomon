@@ -67,6 +67,7 @@ G.Workspace {
 
                 onModified: (contents) => {
                     d.code.text = eval(contents);
+                    d.code.parseCode()
                 }
 
                 Component.onCompleted: {
