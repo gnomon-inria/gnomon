@@ -51,11 +51,11 @@ signals:
 
 public:
     const QString& pluginName(void) const;
-    void setPluginName(const QString& name);
+    void setPluginName(const QString& name, bool update_code=true);
 
 public:
     const QString& pluginDocumentation(void) const;
-    void setPluginDocumentation(const QString& doc);
+    void setPluginDocumentation(const QString& doc, bool update_code=true);
 
 public:
     const QMap<QString, gnomonFormDescription>& inputForms(void) const;

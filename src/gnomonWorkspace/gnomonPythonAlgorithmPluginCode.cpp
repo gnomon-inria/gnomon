@@ -81,12 +81,14 @@ const QString& gnomonPythonAlgorithmPluginCode::pluginName(void) const
     return d->plugin_name;
 }
 
-void gnomonPythonAlgorithmPluginCode::setPluginName(const QString& name)
+void gnomonPythonAlgorithmPluginCode::setPluginName(const QString& name, bool update_code)
 {
     if (name != d->plugin_name) {
         d->plugin_name = name;
+        if (update_code) {
+            this->updateCode();
+        }
         emit pluginNameChanged();
-        this->updateCode();
     }
 }
 
@@ -95,12 +97,14 @@ const QString& gnomonPythonAlgorithmPluginCode::pluginDocumentation(void) const
     return d->plugin_documentation;
 }
 
-void gnomonPythonAlgorithmPluginCode::setPluginDocumentation(const QString& doc)
+void gnomonPythonAlgorithmPluginCode::setPluginDocumentation(const QString& doc, bool update_code)
 {
     if (doc != d->plugin_documentation) {
         d->plugin_documentation = doc;
+        if (update_code) {
+            this->updateCode();
+        }
         emit pluginDocumentationChanged();
-        this->updateCode();
     }
 }
 
@@ -432,11 +436,8 @@ void gnomonPythonAlgorithmPluginCode::parseCode(void)
     QString current_code = this->text();
     d->parser->parsePluginCode(current_code);
 
-    d->plugin_name = d->parser->pluginName();
-    emit pluginNameChanged();
-
-    d->plugin_documentation = d->parser->pluginDocumentation();
-    emit pluginDocumentationChanged();
+    this->setPluginName(d->parser->pluginName(), false);
+    this->setPluginDocumentation(d->parser->pluginDocumentation(), false);
 
     auto input_forms = d->parser->inputForms();
     for (const auto& form_name : input_forms.keys()) {
