@@ -9,67 +9,77 @@ import gnomonQuick.Style as G
 
 Control {
 
-    id: _control;
+  id: _control;
 
-    property alias model: _list_view.model;
+  property alias model: _list_view.model;
 
-    property string currentValue;
-    property int currentIndex;
+  property string currentValue;
+  property int currentIndex;
 
-    implicitWidth: parent.width;
-    implicitHeight: G.Style.formSelectorHeight;
+  signal toggleVisibility(int index, bool flag);
+  signal deleteForm(int index, bool deleteMenu);
 
-    clip: true;
+  implicitWidth: G.Style.smallPanelWidth;
+  implicitHeight: G.Style.formSelectorHeight;
+  clip: true;
 
-    background: Rectangle {
-        radius: G.Style.panelRadius;
-        color: G.Style.colors.gutterColor;
-    }
+  background: Rectangle {
+    radius: G.Style.panelRadius;
+    color: G.Style.colors.gutterColor;
 
-    layer.enabled: true
-    layer.effect: OpacityMask
+  }
+
+  layer.enabled: true
+  layer.effect: OpacityMask
+  {
+    maskSource: Rectangle
     {
-        maskSource: Rectangle
-        {
-             width: _control.width
-            height: _control.height
-            radius: G.Style.panelRadius;
+      width: _control.width
+      height: _control.height
+      radius: G.Style.panelRadius;
+    }
+  }
+
+  ListView {
+    id: _list_view;
+
+    anchors.fill: parent;
+    spacing: 2;
+    clip: true;
+    focus: true;
+
+    delegate: G.FormSelectorDelegate {
+
+      //make space for the scroll indicator as well as spacing
+      width: parent.width;
+      highlighted: _control.currentIndex == index
+      text: modelData ? modelData.replace('gnomon', '') :""
+
+      onClicked: {
+        _control.currentIndex = index;
+        _control.currentValue = modelData;
+      }
+
+      onToggleVisibility: _control.toggleVisibility(index, flag);
+
+      onDeleteForm: {
+
+        if(index === _control.currentIndex) {
+          if(_list_view.model.length) _control.currentIndex = 0;
+          else _control.currentIndex = -1;
         }
+
+        _control.deleteForm(index, _control.currentIndex == -1)
+      }
     }
 
-    ListView {
-        id: _list_view;
+    ScrollIndicator.vertical: ScrollIndicator {
+      id: _scroll_indicator;
 
-        anchors.fill: parent;
-
-        spacing: 2;
-        clip: true;
-        focus: true;
-
-        delegate: G.FormSelectorDelegate {
-
-          //make space for the scroll indicator as well as spacing
-          width: parent.width;
-
-          highlighted: _control.currentIndex == index
-
-          text: modelData ? modelData.replace('gnomon', '') :""
-
-          onClicked: {
-            _control.currentIndex = index;
-            _control.currentValue = modelData;
-          }
-
-        }
-
-        ScrollIndicator.vertical: ScrollIndicator {
-
-          id: _scroll_indicator;
-
-          width: 8;
-          visible: _list_view.contentHeight > _list_view.height;
-        }
-
+      width: 8;
+      visible: _list_view.contentHeight > _list_view.height;
     }
+
+  }
 
 }

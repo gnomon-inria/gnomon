@@ -61,8 +61,8 @@ Control {
 
     default property alias content: _panel.children
 
-    implicitWidth: parent.width
-    implicitHeight: 256
+    implicitWidth: G.Style.smallPanelWidth;
+    implicitHeight: G.Style.smallPanelHeight;
     clip: true;
 
     background: Rectangle {

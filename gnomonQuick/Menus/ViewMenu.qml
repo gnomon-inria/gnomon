@@ -112,9 +112,15 @@ Control {
 
         model: view.viewLogic.formNames
 
-        Component.onCompleted: {
-            console.log("SELECTOR COMPLETED")
+        onToggleVisibility: view.viewLogic.setFormVisible(view.viewLogic.formNames[index], flag)
+
+        onDeleteForm: {
+            if(deleteMenu) _internal.menu.destroy()
+
+            view.viewLogic.removeForm(view.viewLogic.formNames[index]);
+            view.viewLogic.update();
         }
+
     }
 
     ColumnLayout {
@@ -125,8 +131,10 @@ Control {
 
         anchors.margins: 12;
 
-        ComboBox {
+        G.ComboBoxWithLabel {
             id: _visu_combobox;
+
+            label: "Type:"
             model: view.viewLogic.formVisualizations(_form_selector.currentValue);
 
             Layout.fillWidth: true;

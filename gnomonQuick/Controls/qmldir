@@ -5,7 +5,13 @@ Page 1.0 Page.qml
 Panel 1.0 Panel.qml
 FormSelector 1.0 FormSelector.qml
 FormSelectorDelegate 1.0 FormSelectorDelegate.qml
+ComboBoxDelegate 1.0 ComboBoxDelegate.qml
+FormIdentifier 1.0 FormIdentifier.qml
+ComboBox 1.0 ComboBox.qml
+ComboBoxWithLabel 1.0 ComboBoxWithLabel.qml
 ToolBar 1.0 ToolBar.qml
+Icon 1.0 Icon.qml
+IconButton 1.0 IconButton.qml
 ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml
 Dragger 1.0 Dragger.qml

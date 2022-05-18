@@ -10,6 +10,7 @@ import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
 import gnomonQuick.Controls  1.0 as G
+import gnomonQuick.Style  1.0 as G
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM
@@ -19,7 +20,7 @@ Rectangle {
 
     id: self;
 
-    color: Qt.darker(X.Style.alternateBaseColor);
+    color: G.Style.colors.bgColor; //Qt.darker(X.Style.alternateBaseColor);
 
     focus: true;
 
@@ -535,7 +536,7 @@ Rectangle {
         color: "#00000000";
 
         border.width: 2;
-        border.color: X.Style.accentColor;
+        border.color: G.Style.colors.baseColor;
 
         visible: window.currentView == self;
     }

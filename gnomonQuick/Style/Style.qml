@@ -109,6 +109,25 @@ QtObject {
     property int formSelectorHeight: S.spacing["12"]
     property int formDelegateHeight: S.spacing["7"]
 
+    property int iconSmall: S.spacing["4"]
+    property int iconMedium: S.spacing["5"]
+    property int iconLarge: S.spacing["6"]
+
+    property int thumbnailSmall: S.spacing["5"]
+    property int thumbnailMedium: S.spacing["5"]
+    property int thumbnailLarge: S.spacing["7"]
+
+    property int smallPanelWidth: S.spacing["12"]
+    property int mediumPanelWidth: S.spacing["13"]
+    property int largePanelWidth: S.spacing["14"]
+
+    property int smallPanelHeight: S.spacing["12"]
+    property int mediumPanelHeight: S.spacing["13"]
+    property int largePanelHeight: S.spacing["14"]
+
+    //This is not arbitrary but chosen to fit in a 48px section with a label and margins
+    property int comboBoxHeight: 28;
+
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
         source: "qrc:/ttf/Poppins-Regular.ttf"
