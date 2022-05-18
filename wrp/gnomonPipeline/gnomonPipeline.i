@@ -2,9 +2,9 @@
 
 %module(directors="1", package="gnomon.pipeline", moduleimport="import _gnomonpipeline") gnomonpipeline
 
-%import <dtkBase/dtkBase.i>
-%import <dtkCore/dtkCore.i>
+//%include <gnomonCore/gnomonForm.i>
 
+/*
 %include "std_shared_ptr.i"
 
 %shared_ptr(gnomonAbstractForm)
@@ -36,16 +36,25 @@
 %shared_ptr(gnomonTreeSeries)
 
 
+%import(module="gnomon.core") <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+//%import(module="gnomon.core") <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+*/
+
 %{
     #include <dtkCore>
-
+    //#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
+    
     #include <gnomonPipeline.h>
     #include <gnomonPipelineManager.h>
     #include <gnomonPipelineEdge.h>
     #include <gnomonPipelineNode.h>
+    #include <gnomonPipelineNodeTask.h>
     #include <gnomonPipelinePort.h>
 %}
 
+%include <gnomonCore/gnomonForm.i>
+
+//%include <gnomonCore/gnomonCore.i>
 
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
@@ -125,8 +134,11 @@
     $input = list;
 }
 
+
+//%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 %include <gnomonPipeline.h>
 %include <gnomonPipelineManager.h>
 %include <gnomonPipelineEdge.h>
 %include <gnomonPipelineNode.h>
+%include <gnomonPipelineNodeTask.h>
 %include <gnomonPipelinePort.h>

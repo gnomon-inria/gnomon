@@ -147,6 +147,24 @@ void gnomonFormManager::deleteForm(int id)
     // TODO: do something with pipeline ?
 }
 
+void gnomonFormManager::compose(int first, int second) {
+    auto output = d->forms[first]->clone();
+    auto form2 = d->forms[second];
+    output->compose(form2);
+
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs = {
+            {"first", d->forms[first]},
+            {"second", d->forms[second]},
+    };
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs = {
+            {"output",output},
+    };
+    gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
+    gnomonPipelineManager::instance()->addForm(output);
+
+    this->addForm(output, {}, d->formData[first]);
+}
+
 void gnomonFormManager::saveAs(int id, const QString& f) const
 {
     QString file_name = f;

@@ -17,6 +17,7 @@ class GNOMONCORE_EXPORT gnomonWallForm : public gnomonAbstractForm
 public:
     gnomonWallForm(void);
     explicit gnomonWallForm(QJsonObject& serialization);
+    gnomonWallForm(const gnomonWallForm& other);
     ~gnomonWallForm(void);
 
 public:

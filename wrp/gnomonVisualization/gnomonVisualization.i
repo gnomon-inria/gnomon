@@ -11,6 +11,7 @@
 
 %include "std_shared_ptr.i"
 
+/*
 %shared_ptr(gnomonAbstractForm)
 %shared_ptr(gnomonBinaryImage)
 %shared_ptr(gnomonCellComplex)
@@ -38,7 +39,7 @@
 %shared_ptr(gnomonMeshSeries)
 %shared_ptr(gnomonPointCloudSeries)
 %shared_ptr(gnomonTreeSeries)
-
+*/
 
 %import <dtkBase/dtkBase.i>
 %import <dtkCore/dtkCore.i>
@@ -74,6 +75,7 @@
 
 %}
 
+//%include <gnomonCore/gnomonForm.i>
 %include <gnomonCore/gnomonCore.i>
 
 %{

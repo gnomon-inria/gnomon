@@ -141,6 +141,18 @@ void gnomonTimeSeries<T>::deserialize(QJsonObject &serialization) {
     }
 }
 
+template<typename T>
+void gnomonTimeSeries<T>::compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) {
+    if(auto second_form = std::dynamic_pointer_cast<gnomonTimeSeries<T>>(pForm)) {
+        auto times1 = this->times();
+        auto times2 = pForm->times();
+        double offset = times2.first() > times1.last() ? 0. : times1.last() - times2.first() + 1.;
+        for(const auto &t: times2) {
+            this->m_forms[t+offset] = second_form->at(t);
+        }
+    }
+}
+
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////

@@ -15,21 +15,23 @@ public:
              gnomonAbstractDynamicForm(void) : p_metadata(new gnomonDynamicFormMetadata) {};
     virtual ~gnomonAbstractDynamicForm(void) {delete p_metadata;}
 
+
 public:
     virtual std::shared_ptr<gnomonAbstractDynamicForm> clone(void) const = 0;
 
 public:
     std::shared_ptr<gnomonAbstractForm> at(double t) {
-        return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t));
+        return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t)->clone());
     };
     std::shared_ptr<gnomonAbstractForm> current(void) const {
-        return std::shared_ptr<gnomonAbstractForm>(this->current());
+        return std::shared_ptr<gnomonAbstractForm>(this->current()->clone());
     };
 
     virtual QMap<QString,QString> metadataAtT(double t) const = 0;
 
     virtual double time(void) const = 0;
     virtual QList<double> times(void) const = 0;
+    virtual void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) = 0;
 
     virtual void drop(double t) = 0;
 

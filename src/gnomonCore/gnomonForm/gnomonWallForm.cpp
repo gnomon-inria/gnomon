@@ -16,6 +16,12 @@ gnomonWallForm::~gnomonWallForm(void)
     delete d;
 }
 
+gnomonWallForm::gnomonWallForm(const gnomonWallForm& other)
+{
+    this->setNormal(other.normal());
+    this->setPosition(other.position());
+}
+
 gnomonAbstractForm *gnomonWallForm::clone()
 {
     gnomonWallForm *res = new gnomonWallForm();

@@ -55,21 +55,6 @@ QString gnomonPipelineNodeAdapter::toToml(void)
 const QJsonObject gnomonPipelineNodeAdapter::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
-
-    QJsonArray in;
-    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
-        auto&& input_name = it.key();
-        in.append(input_name);
-    }
-    json.insert("input", in);
-
-    QJsonArray out;
-    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
-        auto&& output_name = it.key();
-        out.append(output_name);
-    }
-    json.insert("outputs", out);
-
     return json;
 }
 QString gnomonPipelineNodeAdapter::toLuigiClass(void)
