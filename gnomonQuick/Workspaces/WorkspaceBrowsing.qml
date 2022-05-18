@@ -28,6 +28,21 @@ G.Workspace {
         category: "ReaderDialogCache";
     }
 
+    function requestOpenFiles(urls) {
+        let paths = [];
+        let default_plugin = ""
+        for(let i_n in urls) {
+            let path = decodeURIComponent(urls[i_n])
+            if (default_plugin == "") {
+                default_plugin = _cache.value(path, "")
+                console.log(path, " --> ", default_plugin)
+            }
+            paths.push(path)
+        }
+        d.readerPath = paths.join(",");
+        d.requestReaders(default_plugin);
+    }
+
     fill: () => {}
 
     focus: true;
@@ -69,18 +84,7 @@ G.Workspace {
 
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
-            let paths = [];
-            let default_plugin = ""
-            for(let i_n in urls) {
-                let path = decodeURIComponent(urls[i_n])
-                if (default_plugin == "") {
-                    default_plugin = _cache.value(path, "")
-                    console.log(path, " --> ", default_plugin)
-                }
-                paths.push(path)
-            }
-            d.readerPath = paths.join(",");
-            d.requestReaders(default_plugin);
+            requestOpenFiles(urls)
         }
         viewLogic: d.view;
 
