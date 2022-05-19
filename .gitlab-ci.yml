@@ -170,6 +170,7 @@ pages:
     - mamba env update -f conda/env_linux.yaml
     - conda activate gnomon-dev
     - mamba install -c conda-forge sphinx make matplotlib-base myst-parser doxygen breathe=4.32
+    - pip install sphinx-press-theme
     - rm -rf build
     - mkdir build
     - cd build

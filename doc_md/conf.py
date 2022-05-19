@@ -74,9 +74,23 @@ autodoc_mock_imports = ["gnomon.core", "gnomon.visualization", "gnomon.pipeline"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'nature'
+html_theme = 'press'
 
-html_theme_options = {'body_max_width': '90%'}
+if html_theme == 'press':
+    html_sidebars = {'**': ['util/searchbox.html', 'globaltoc.html']}
+    panels_add_bootstrap_css = True
+    globaltoc_maxdepth = 2
+    globaltoc_includehidden = False
+    globaltoc_collapse = True
+    html_logo = '_static/gnomon_logo.png'
+    html_css_files = ['css/press_custom.css']
+    html_theme_options = {
+        'body_max_width': '90%',
+        "external_links": [
+            ("Source Code", "https://gitlab.inria.fr/gnomon/gnomon"),
+            ("Anaconda.org", "https://anaconda.org/gnomon/gnomon")
+        ]
+    }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

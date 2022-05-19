@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+
+.content:not(.custom) {
+    max-width: 1440px;
+}
+
+.vp-sidebar {
+    font-size: 15px;
+}
+
+pre {
+    font-size: 14px;
+}
+
+body {
+    font-family: 'Poppins';
+}
+
+a {
+    color: #0e4c8b;
+}
