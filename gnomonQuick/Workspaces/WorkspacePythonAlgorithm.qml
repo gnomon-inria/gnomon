@@ -35,7 +35,6 @@ G.Workspace {
         onEditModeChanged: {
             d.code.text = _editor.contents
             if(!d.editMode) {
-                d.loadAlgorithm()
                 _source_view.droppedFromManager(world.currentRef)
             }
         }
@@ -67,7 +66,8 @@ G.Workspace {
                 language: 'python';
 
                 onModified: (contents) => {
-                    d.code.text = contents;
+                    d.code.text = eval(contents);
+                    d.code.parseCode()
                 }
 
                 Component.onCompleted: {
@@ -113,9 +113,7 @@ G.Workspace {
     Connections {
         target: d.code
 
-        function  onInputFormsChanged() { _editor.contents = d.code.text; }
-        function onOutputFormsChanged() { _editor.contents = d.code.text; }
-        function  onParametersChanged() { _editor.contents = d.code.text; }
+        function onCodeUpdated() { _editor.contents = d.code.text; }
     }
 
     Connections {
