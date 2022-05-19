@@ -42,6 +42,7 @@ master_doc = 'index'
 extensions = []
 extensions += ['myst_parser']
 extensions += ['sphinx.ext.autosectionlabel']
+extensions += ['sphinx_panels']  # Enable panels, cards & tabs usage
 extensions += ['sphinx.ext.graphviz']
 extensions += ['sphinx.ext.autodoc']
 extensions += ['sphinx.ext.napoleon']
@@ -51,6 +52,9 @@ myst_heading_anchors = 2
 # Prefix document path to section labels, to use:
 # `path/to/file:heading` instead of just `heading`
 autosectionlabel_prefix_document = True
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'colorful'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

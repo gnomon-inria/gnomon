@@ -1,16 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
-
-.content:not(.custom) {
-    max-width: 1440px;
-}
-
-.vp-sidebar {
-    font-size: 15px;
-}
-
-pre {
-    font-size: 14px;
-}
+@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css);
 
 body {
     font-family: 'Poppins';
@@ -18,4 +7,22 @@ body {
 
 a {
     color: #0e4c8b;
+}
+
+pre {
+    font-family: 'Fira Code';
+    font-size: 14px;
+}
+
+.pre {
+    font-family: 'Fira Code';
+    font-size: 14px;
+}
+
+.content:not(.custom) {
+    max-width: 1440px;
+}
+
+.vp-sidebar {
+    font-size: 15px;
 }
