@@ -162,26 +162,6 @@ X.Dialog {
                         anchors.verticalCenter: parent.verticalCenter;
                     }
 
-                    X.Icon {
-                        icon: X.Icons.icons.help;
-                        size: 18;
-                        color: X.Style.foregroundColor;
-                        visible: _list_view.currentIndex == index & model.available
-
-                        anchors.right: parent.right;
-                        anchors.rightMargin: 10;
-                        anchors.verticalCenter: parent.verticalCenter;
-
-                        MouseArea {
-                            anchors.fill: parent;
-
-                            onClicked: {
-                                // index to choseen workspace page, once it's available
-                                Qt.openUrlExternally("https://gnomon.gitlabpages.inria.fr/gnomon/");
-                            }
-                        }
-                    }
-
                     background: Rectangle {
                         opacity: enabled ? 0.8 : 0.1
                         color: (down || highlighted || hovered) ? Qt.lighter(X.Style.backgroundColor, 1.2) : Qt.darker(X.Style.backgroundColor, 1.2)
