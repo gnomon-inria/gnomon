@@ -102,8 +102,8 @@ Item {
         const params = [];
         const groups = [];
 
-        for (var param_name in parameters) {
-            var p = parameters[param_name];
+        for (var param_name in _self.parameters) {
+            var p = _self.parameters[param_name];
             var prop_dict = {};
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
@@ -113,21 +113,36 @@ Item {
             params.push(prop_dict);
         }
 
-        //Just making sure parameters are grouped correctly
+        console.log("GROUPS: ", groups)
 
-        //We want the general params always on top
-        const general_params = params.filter(p => p.group === "General")
-        for(let p in general_params)
-            params_model.append(general_params[p]);
-
-        //Group all the other parameters
+        //Instantiating the parameters by groups
         for(let i in groups) {
-            if(groups[i] === "General") continue;
             const group_params = params.filter(p => p.group === groups[i])
 
-            for(let p in group_params)
-                params_model.append(group_params[p]);
+            const element = {}
+            element["title"] = groups[i]
+            element["parameters"] = group_params
+            console.log(element)
+            params_model.append(element)
         }
+
+        console.log("CREATE MODEL: ")
+        for(let i = 0; i < params_model.count; i++)
+            console.log(params_model.get(i).title)
+
+        // //We want the general params always on top
+        // const general_params = params.filter(p => p.group === "General")
+        // for(let p in general_params)
+        //     params_model.append(general_params[p]);
+
+        // //Group all the other parameters
+        // for(let i in groups) {
+        //     if(groups[i] === "General") continue;
+        //     const group_params = params.filter(p => p.group === groups[i])
+
+        //     for(let p in group_params)
+        //         params_model.append(group_params[p]);
+        // }
     }
 
 }

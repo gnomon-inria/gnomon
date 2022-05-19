@@ -27,12 +27,10 @@ Control {
         }
         function onFormsChanged() {
             if(view.viewLogic.formNames.length) {
-                console.log("FORMS CHANGED")
                 _form_selector.currentIndex = 0;
                 _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
             }
             else {
-                console.log("THIS IS WEIRD")
                 _form_selector.currentIndex = -1;
                 _form_selector.currentValue = "";
             }
@@ -264,7 +262,7 @@ Control {
 
         _internal.menu = menu_component.createObject(_menu, {
             model: _params.params_model,
-            parameters: _params.parameters,
+            //parameters: _params.parameters,
         })
 
         _internal.menu.anchors.fill = _menu;
@@ -272,7 +270,4 @@ Control {
         _auto_render_connect.target = _internal.menu
     }
 
-    Component.onCompleted: {
-        console.log("VIEW MENU COMPLETED")
-    }
 }

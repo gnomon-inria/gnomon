@@ -128,6 +128,11 @@ QtObject {
     //This is not arbitrary but chosen to fit in a 48px section with a label and margins
     property int comboBoxHeight: 28;
 
+    property int collapsibleMinHeight: S.spacing["5"]
+    property int collapsibleMaxHeight: S.spacing["12"]
+
+    property int controlHeight: S.spacing["8"]
+
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
         source: "qrc:/ttf/Poppins-Regular.ttf"
@@ -206,6 +211,7 @@ QtObject {
         property color textColorWarning: S.colors.orange["100"]
         property color textColorNeutral: S.colors.gray["100"]
         property color textColorFaded: S.colors.gray["200"]
+        property color textColorDeEmphasize: S.colors.gray["600"]
 
         //emboss for different colors
         property color embossColorBlue: S.colors.blue["400"]

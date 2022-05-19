@@ -9,6 +9,8 @@ ComboBoxDelegate 1.0 ComboBoxDelegate.qml
 FormIdentifier 1.0 FormIdentifier.qml
 ComboBox 1.0 ComboBox.qml
 ComboBoxWithLabel 1.0 ComboBoxWithLabel.qml
+CollapsiblePanel 1.0 CollapsiblePanel.qml
+ParameterGroup 1.0 ParameterGroup.qml
 ToolBar 1.0 ToolBar.qml
 Icon 1.0 Icon.qml
 IconButton 1.0 IconButton.qml
