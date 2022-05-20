@@ -23,7 +23,7 @@ public:
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
 
 public:
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> , gnomonAbstractMatplotlibVisualization *  = nullptr);
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
     std::shared_ptr<gnomonAbstractDynamicForm> form (const QString&);
     void clearForm(const QString&);
 

@@ -120,16 +120,16 @@ public slots:
     void setExportColor(const QColor& color);
 
 public:
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ,const QJsonObject &visualization={});
-    void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> , const QJsonObject &visu_properties={});
-    void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> , const QJsonObject &visu_properties={});
-    void setCellImage(std::shared_ptr<gnomonCellImageSeries> ,const QJsonObject &visu_properties={});
-    void setImage(std::shared_ptr<gnomonImageSeries> , const QJsonObject &visu_properties={});
-    void setMesh(std::shared_ptr<gnomonMeshSeries> , const QJsonObject &visu_properties={});
-    void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> , const QJsonObject &visu_properties={});
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ,std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setImage(std::shared_ptr<gnomonImageSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setMesh(std::shared_ptr<gnomonMeshSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
 
 public:
-    void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> , gnomonAbstractVisualization * = nullptr);
+    void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
 
 public:
     QStringList formNames(void);
