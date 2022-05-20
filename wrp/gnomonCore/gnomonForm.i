@@ -309,8 +309,6 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 // /////////////////////////////////////////////////////////////////
 
 
-
-//typemap(in) in gnomonPipeline.i
 %typemap(directorout) QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> {
     PyObject *dict = static_cast<PyObject *>($1);
     if (PyDict_Check(dict)) {
@@ -319,20 +317,53 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         int r;
         while (PyDict_Next(dict, &pos, &key, &value)) {
             QString k = QString(PyUnicode_AsUTF8(key));
-            std::shared_ptr<gnomonAbstractDynamicForm> v;
-            void *s_v = 0;
-            int newmem = 0;
-            qDebug() << Q_FUNC_INFO << "NOT IMPLEMENTED 1234567890";
-            //TODO copy what's in typemap(in)
-            //r = SWIG_ConvertPtrAndOwn(value, &s_v, $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<gnomonAbstractDynamicForm> *), 0, &newmem);
-            //if (!SWIG_IsOK(r)) {
-            //    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(r)), "in directorout QMap<QString, shared_ptr<gnomonAbstractDynamicForm>");
-            //}
-            //if (s_v)
-            //    v = *reinterpret_cast<std::shared_ptr<gnomonAbstractDynamicForm> *>(s_v);
-            //if (newmem & SWIG_CAST_NEW_MEMORY)
-            //    delete reinterpret_cast< std::shared_ptr<gnomonAbstractDynamicForm> * >(s_v);
-            $result.insert(k, v);
+            std::shared_ptr<gnomonAbstractDynamicForm> series;
+            PyObject *k2, *v2;
+            Py_ssize_t pos2 = 0;
+
+            //use the first element to infer the type
+            if(PyDict_Next(value, &pos2, &k2, &v2)) {
+                std::shared_ptr<gnomonAbstractForm> v;
+                void *s_v = 0;
+                int newmem = 0;
+                r = SWIG_ConvertPtrAndOwn(v2, &s_v, SWIGTYPE_p_std__shared_ptrT_gnomonAbstractForm_t,  0 , &newmem);
+                if (!SWIG_IsOK(r)) {
+                    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(r)), "in cast to gnomonAbstractForm");
+                }
+                v = *(reinterpret_cast< std::shared_ptr< gnomonAbstractForm> * >(s_v));
+                if(v->asBinaryImage()) {
+                    series = ToBinaryImageSeries(value);
+                } else if(v->asCellComplex()) {
+                    series = ToCellComplexSeries(value);
+                } else if(v->asCellGraph()) {
+                    series = ToCellGraphSeries(value);
+                } else if(v->asCellImage()) {
+                    series = ToCellImageSeries(value);
+                } else if(v->asDataDict()) {
+                    series = ToDataDictSeries(value);
+                } else if(v->asDataFrame()) {
+                    series = ToDataFrameSeries(value);
+                } else if(v->asImage()) {
+                    series = ToImageSeries(value);
+                } else if(v->asLString()) {
+                    series = ToLStringSeries(value);
+                } else if(v->asMesh()) {
+                    series = ToMeshSeries(value);
+                /*} else if(v->asPointCloud()) {
+                    series = ToPointCloudSeries(value);
+                } else if(v->asSphere()) {
+                    series = ToSphereSeries(value);
+                } else if(v->asTree()) {
+                    series = ToTreeSeries(value);
+                    */
+                } else {
+                    qWarning() << Q_FUNC_INFO << "Cannot cast to derived type: " << v.get();
+                }
+                qDebug() << "inserting "<< k << series->times() << series->formName();
+                $result.insert(k, series);
+            } else {
+                qWarning() << Q_FUNC_INFO << "No abstractDynamicForm for k " << k;
+            }
         }
     } else {
         qDebug("PyDict is expected as input. Empty QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> is returned.");
@@ -437,6 +468,66 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         PyDict_SetItem($result, k, v);
     }
 }
+
+
+ 
+// /////////////////////////////////////////////////////////////////
+// String dictionary
+// /////////////////////////////////////////////////////////////////
+
+%typemap(in) QMap<QString, QString> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QString> is returned.");
+    }
+}
+
+%typemap(in) const QMap<QString, QString>& {
+    $1 = new QMap<QString, QString>;
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QString> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<QString, QString>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<QString, QString> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        int r;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            QString k = QString(PyUnicode_AsUTF8(key));
+            QString v = QString(PyUnicode_AsUTF8(value));
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<QString, QString> is returned.");
+    }
+}
+
 
 %include <QtCore/QVariant.i>
 %include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
