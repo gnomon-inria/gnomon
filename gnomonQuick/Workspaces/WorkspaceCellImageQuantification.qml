@@ -62,6 +62,7 @@ G.Workspace {
 
             onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
+                window.currentView = _source_view
                 d.source.drop(index);
             }
 
