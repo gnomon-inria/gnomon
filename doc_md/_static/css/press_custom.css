@@ -6,7 +6,7 @@ body {
 }
 
 a {
-    color: #0e4c8b;
+    color: #3271B8;
 }
 
 pre {
@@ -19,10 +19,27 @@ pre {
     font-size: 14px;
 }
 
+.navbar a {
+    color: #CED4DE;
+}
+
+.navbar a:hover {
+    color: #CED4DE;
+}
+
+.navbar {
+    background-color: #383D42;
+}
+
 .content:not(.custom) {
     max-width: 1440px;
 }
 
 .vp-sidebar {
-    font-size: 15px;
+    font-size: 14px;
+}
+
+.card-header {
+    font-size: 18px;
+    font-weight: bold;
 }

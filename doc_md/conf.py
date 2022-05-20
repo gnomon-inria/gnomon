@@ -87,6 +87,7 @@ if html_theme == 'press':
     globaltoc_includehidden = False
     globaltoc_collapse = True
     html_logo = '_static/gnomon_logo.png'
+    html_favicon = '_static/gnomon_icon.ico'
     html_css_files = ['css/press_custom.css']
     html_theme_options = {
         'body_max_width': '90%',
