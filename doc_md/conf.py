@@ -83,13 +83,14 @@ html_theme = 'press'
 
 if html_theme == 'press':
     html_sidebars = {'**': ['util/searchbox.html', 'globaltoc.html']}
-    panels_add_bootstrap_css = True
     globaltoc_maxdepth = 2
     globaltoc_includehidden = False
     globaltoc_collapse = True
     html_logo = '_static/gnomon_logo.png'
     html_favicon = '_static/gnomon_icon.ico'
     html_css_files = ['css/press_custom.css']
+    html_show_sphinx = True
+    html_show_copyright = False
     html_theme_options = {
         "external_links": [
             ("Source Code", "https://gitlab.inria.fr/gnomon/gnomon"),

@@ -1,17 +1,43 @@
+---
+sd_hide_title: true
+---
+
 # Gnomon
+
+::::::{div} landing-title
+    :style: "padding: 0.1rem 0.5rem 0.6rem 0; background-size: cover; background-image: url(_static/image_quantification.png), linear-gradient(315deg, var(--sd-color-white) 0%, var(--sd-color-primary) 50%); clip-path: polygon(0px 0px, 100% 0%, 100% 100%, 0% calc(100% - 3rem)); -webkit-clip-path: polygon(0px 0px, 100% 0%, 100% 100%, 0% calc(100% - 3rem));"
+
+::::{grid} 2
+    :gutter: 2 3 3 3
+    :margin: 4 4 1 2
+
+:::{grid-item}
+    :columns: 12 4 4 4
+
+```{image} _static/gnomon_logo.png
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
+```
+:::
+
+:::{grid-item}
+    :class: sd-text-white sd-fs-4
+    :columns: 12 8 8 8
+
+<h1>Gnomon</h1>
+
+A computational platform to analyze and simulate the development of living forms in 3D.
 
 ![version](https://anaconda.org/gnomon/gnomon/badges/version.svg)
 ![last release](https://anaconda.org/gnomon/gnomon/badges/latest_release_date.svg)
 ![platforms](https://anaconda.org/gnomon/gnomon/badges/platforms.svg)
 ![license](https://anaconda.org/gnomon/gnomon/badges/license.svg)
 
+:::
+::::
 
-Gnomon is a computational platform to analyze and simulate the development of living forms in 3D.
+::::::
 
-```{eval-rst}
-.. image:: _static/image_quantification.png
-    :width: 100%
-```
 
 ```{eval-rst}
 .. toctree::
@@ -31,15 +57,15 @@ Gnomon is a computational platform to analyze and simulate the development of li
 
 ```
 
-
-## Overview
+---
 
 ```{eval-rst}
 .. grid:: 2
     :gutter: 3
   
     .. grid-item-card:: 
-        :class-header: sd-text-light sd-bg-primary
+        :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
+        :class-footer: sd-bg-light
     
         Installation
         ^^^
@@ -56,7 +82,8 @@ Gnomon is a computational platform to analyze and simulate the development of li
             How to install gnomon
     
     .. grid-item-card:: 
-        :class-header: sd-text-light sd-bg-primary
+        :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
+        :class-footer: sd-bg-light
     
         Getting started
         ^^^
@@ -74,7 +101,8 @@ Gnomon is a computational platform to analyze and simulate the development of li
 
     
     .. grid-item-card::
-        :class-header: sd-text-light sd-bg-primary 
+        :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
+        :class-footer: sd-bg-light
     
         Examples
         ^^^
@@ -91,7 +119,8 @@ Gnomon is a computational platform to analyze and simulate the development of li
             Tutorials on simple scenarios
     
     .. grid-item-card:: 
-        :class-header: sd-text-light sd-bg-primary
+        :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
+        :class-footer: sd-bg-light
     
         Architecture
         ^^^

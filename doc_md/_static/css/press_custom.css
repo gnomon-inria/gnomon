@@ -4,7 +4,7 @@
 :root {
     --sd-color-primary: #3271B8;
     --sd-color-dark: #383D42;
-    --sd-color-light: #CED4DE;
+    --sd-color-light: #EDEFF2;
 }
 
 body {
@@ -33,6 +33,7 @@ pre {
     color: var(--sd-color-light);
 }
 
+
 .navbar {
     background-color: var(--sd-color-dark);
 }
@@ -41,8 +42,17 @@ pre {
     max-width: 90%;
 }
 
+.page-nav {
+    max-width: 100%;
+}
+
 .vp-sidebar {
     font-size: 14px;
+    margin: 8px;
+}
+
+.vp-sidebar .toctree-l1 a:hover {
+    color: var(--sd-color-primary);
 }
 
 .card-header {
