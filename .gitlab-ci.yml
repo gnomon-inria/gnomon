@@ -189,3 +189,4 @@ pages:
   only:
     - master
     - develop
+    - merge_requests
