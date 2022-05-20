@@ -44,7 +44,7 @@ Item {
             }
         }
 
-        _internal.menu = menu_component.createObject(_menu, {
+         _internal.menu = menu_component.createObject(_menu, {
             model: _params.params_model,
             parameters: _params.parameters,
         })
@@ -61,11 +61,12 @@ Item {
             _params.updateParametersModel();
         }
         function onFormsChanged() {
-            if(view.viewLogic.formNames.length) {
+             if(view.viewLogic.formNames.length) {
                 _form_selector.currentIndex = 0;
                 _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
             }
             else {
+                console.log("formsChanged  no formNames ")
                 _form_selector.currentIndex = -1;
                 _form_selector.currentValue = "";
             }
@@ -204,7 +205,9 @@ Item {
 
                     anchors.fill: parent;
                     onClicked: {
-                        if(index === _form_selector.currentIndex) {
+                        let set_index = (index === _form_selector.currentIndex);
+                        view.viewLogic.removeForm("gnomon".concat(text))
+                        if (set_index){
                             if(view.viewLogic.formNames.length)
                                 _form_selector.currentIndex = 0;
                             else {
@@ -212,13 +215,6 @@ Item {
                                 _internal.menu.destroy();
                             }
                         }
-                        view.viewLogic.removeForm(view.viewLogic.formNames[index]);
-                        view.viewLogic.update();
-
-                        //console.log("DELETING", index, view.viewLogic.formNames[index])
-                        //_form_delete_modal.formName = view.viewLogic.formNames[index];
-                        //_form_delete_modal.formIndex = index;
-                        //_form_delete_modal.open();
                     }
                 }
 

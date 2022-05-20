@@ -74,6 +74,7 @@ Rectangle {
         }
 
         onDropped: (drop) => {
+            _view.focus = true
             if (drop.hasUrls) {
                 self.droppedFromFile(drop.urls);
             } else {
