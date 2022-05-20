@@ -37,9 +37,8 @@ public:
 
 public:
     QHash<int, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
-    // QHash<int, gnomonAbstractVisualization *> formVisualizations;
-    QHash<int, QJsonObject> visualization_description;
-    QHash<int, gnomonAbstractMatplotlibVisualization *> formMatplotlibVisualizations;
+    QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
+    QHash<int, std::shared_ptr<gnomonAbstractMatplotlibVisualization> > formMatplotlibVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
     QHash<int, QImage> formData;
     QHash<int, vtkCamera *> formCameras;
@@ -140,7 +139,6 @@ void gnomonFormManager::deleteForm(int id)
         return;
     }
     d->forms.remove(id);
-    // d->formVisualizations.remove(id);
     d->formCameras.remove(id);
     d->formData.remove(id);
     d->formWriterCommand.remove(id);
@@ -194,17 +192,16 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return s_instance;
 }
 
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QColor& color, const QJsonObject &visualization_description, const QImage& image,  vtkCamera *cam)
+void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVisualization> visualization, const QImage& image,  vtkCamera *cam)
 {
+    qDebug() << Q_FUNC_INFO << form.get() << visualization.get() ;
     int item = d->item_counter++;
     d->forms.insert(item, form);
-    // d->formVisualizations.insert(item, visualization);
-    d->visualization_description.insert(item, visualization_description);
+     d->formVisualizations.insert(item, visualization);
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
 
     gnomonPipelineManager::instance()->setFormIndex(form, item);
-    //gnomonPipelineManager::instance()->addClonedForm(form, d->forms[item]);
 
     QString form_name = form->formName();
     d->addFormWriter(form_name, item);
@@ -216,12 +213,11 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
     emit added(item);
 }
 
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QColor& color, gnomonAbstractMatplotlibVisualization* visualization)
+void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractMatplotlibVisualization> visualization)
 {
     QImage image = visualization->imageRendering();
     form->metadata()->moveToThread(QThread::currentThread());
 
-//    gnomonFormManagerItem *item = d->create(form, color, image);
     int item = d->item_counter++;
 
     d->forms.insert(item, form);
@@ -229,7 +225,6 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
     d->formData.insert(item, image);
 
     gnomonPipelineManager::instance()->setFormIndex(form, item);
-    //gnomonPipelineManager::instance()->addClonedForm(form, d->forms[item]);
 
     QString form_name = form->formName();
     d->addFormWriter(form_name, item);
@@ -242,9 +237,8 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
 }
 
 
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QColor& color, const QImage& image)
+void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
 {
-//    gnomonFormManagerItem *item = d->create(form, color, image);
     int item = d->item_counter++;
     form->metadata()->moveToThread(QThread::currentThread());
 
@@ -253,7 +247,6 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
     d->formData.insert(item, image);
 
     gnomonPipelineManager::instance()->setFormIndex(form, item);
-    //gnomonPipelineManager::instance()->addClonedForm(form, d->forms[item]);
 
     QString form_name = form->formName();
     d->addFormWriter(form_name, item);
@@ -270,14 +263,9 @@ std::shared_ptr<gnomonAbstractDynamicForm> gnomonFormManager::get(int index)
     return d->forms.value(index, nullptr);
 }
 
-// gnomonAbstractVisualization *gnomonFormManager::getVisualization(int index)
-// {
-//     return d->formVisualizations.value(index, nullptr);
-// }
-
-QJsonObject gnomonFormManager::getVisuDescription(int index)
+std::shared_ptr<gnomonAbstractVisualization> gnomonFormManager::getVisualization(int index)
 {
-    return d->visualization_description.value(index);
+    return d->formVisualizations.value(index, nullptr);
 }
 
 vtkCamera *gnomonFormManager::getCamera(int index)
@@ -321,7 +309,6 @@ QVariantList gnomonFormManager::timeKeys(int id) {
     if(contains(id)) {
         const auto& times = d->forms[id]->times();
         QVariantList out;
-        //out.reserve(times.size());
         for(double time : times) {
             out.append(time);
         }
@@ -334,7 +321,6 @@ QVariantList gnomonFormManager::timeKeys(int id) {
 QStringList gnomonFormManager::formMetadataKeysAtT(int id, double t) {
     if(contains(id) && d->forms[id]->times().contains(t)) {
         return d->forms[id]->metadataAtT(t).keys();
-        //return d->forms[id]->at(t)->metadata().keys();
     } else {
         qWarning() << Q_FUNC_INFO << "Cannot get metadata for form " << id << " at time " << t;
         if(contains(id))
@@ -378,7 +364,6 @@ int gnomonFormManager::formCount(const QString& form_name)
         return  d->formCounter[form_name];
     }
 }
-
 
 #include "gnomonFormManager.moc"
 //
