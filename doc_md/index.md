@@ -39,7 +39,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
     :gutter: 3
   
     .. grid-item-card:: 
-        :class-header: sd-text-light sd-bg-secondary
+        :class-header: sd-text-light sd-bg-primary
     
         Installation
         ^^^
@@ -48,7 +48,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
         +++
         
         .. button-link:: installation.html
-            :color: secondary
+            :color: primary
             :expand:
             :outline:
             :click-parent:
@@ -56,7 +56,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
             How to install gnomon
     
     .. grid-item-card:: 
-        :class-header: sd-text-light sd-bg-secondary
+        :class-header: sd-text-light sd-bg-primary
     
         Getting started
         ^^^
@@ -65,7 +65,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
         +++
         
         .. button-link:: image_scenario_examples.html
-            :color: secondary
+            :color: primary
             :expand:
             :outline:
             :click-parent:
@@ -74,7 +74,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
 
     
     .. grid-item-card::
-        :class-header: sd-text-light sd-bg-secondary 
+        :class-header: sd-text-light sd-bg-primary 
     
         Examples
         ^^^
@@ -83,7 +83,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
         +++
         
         .. button-link:: image_scenario_examples.html
-            :color: secondary
+            :color: primary
             :expand:
             :outline:
             :click-parent:
@@ -91,7 +91,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
             Tutorials on simple scenarios
     
     .. grid-item-card:: 
-        :class-header: sd-text-light sd-bg-secondary
+        :class-header: sd-text-light sd-bg-primary
     
         Architecture
         ^^^
@@ -100,7 +100,7 @@ Gnomon is a computational platform to analyze and simulate the development of li
         +++
     
         .. button-link:: concepts.html
-            :color: secondary
+            :color: primary
             :expand:
             :outline:
             :click-parent:

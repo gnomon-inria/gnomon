@@ -91,7 +91,6 @@ if html_theme == 'press':
     html_favicon = '_static/gnomon_icon.ico'
     html_css_files = ['css/press_custom.css']
     html_theme_options = {
-        'body_max_width': '70%',
         "external_links": [
             ("Source Code", "https://gitlab.inria.fr/gnomon/gnomon"),
             ("Anaconda.org", "https://anaconda.org/gnomon/gnomon")

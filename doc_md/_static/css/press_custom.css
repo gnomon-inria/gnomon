@@ -1,12 +1,18 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
 @import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css);
 
+:root {
+    --sd-color-primary: #3271B8;
+    --sd-color-dark: #383D42;
+    --sd-color-light: #CED4DE;
+}
+
 body {
     font-family: 'Poppins';
 }
 
 a {
-    color: #3271B8;
+    color: var(--sd-color-primary);
 }
 
 pre {
@@ -20,19 +26,19 @@ pre {
 }
 
 .navbar a {
-    color: #CED4DE;
+    color: var(--sd-color-light);
 }
 
 .navbar a:hover {
-    color: #CED4DE;
+    color: var(--sd-color-light);
 }
 
 .navbar {
-    background-color: #383D42;
+    background-color: var(--sd-color-dark);
 }
 
 .content:not(.custom) {
-    max-width: 1440px;
+    max-width: 90%;
 }
 
 .vp-sidebar {
