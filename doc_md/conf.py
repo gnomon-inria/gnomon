@@ -42,12 +42,13 @@ master_doc = 'index'
 extensions = []
 extensions += ['myst_parser']
 extensions += ['sphinx.ext.autosectionlabel']
-extensions += ['sphinx_panels']  # Enable panels, cards & tabs usage
+extensions += ['sphinx_design']  # Enable panels, cards & tabs usage
 extensions += ['sphinx.ext.graphviz']
 extensions += ['sphinx.ext.autodoc']
 extensions += ['sphinx.ext.napoleon']
 
 myst_heading_anchors = 2
+myst_enable_extensions = ["colon_fence"]
 
 # Prefix document path to section labels, to use:
 # `path/to/file:heading` instead of just `heading`
@@ -90,7 +91,7 @@ if html_theme == 'press':
     html_favicon = '_static/gnomon_icon.ico'
     html_css_files = ['css/press_custom.css']
     html_theme_options = {
-        'body_max_width': '90%',
+        'body_max_width': '70%',
         "external_links": [
             ("Source Code", "https://gitlab.inria.fr/gnomon/gnomon"),
             ("Anaconda.org", "https://anaconda.org/gnomon/gnomon")
