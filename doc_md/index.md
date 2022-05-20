@@ -8,6 +8,10 @@
 
 Gnomon is a computational platform to analyze and simulate the development of living forms in 3D.
 
+```{eval-rst}
+.. image:: _static/image_quantification.png
+    :width: 100%
+```
 
 ```{eval-rst}
 .. toctree::
