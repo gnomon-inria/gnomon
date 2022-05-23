@@ -15,7 +15,6 @@ import gnomonQuick.Controls   1.0 as G
 import gnomon.Workspaces      1.0 as GW
 
 G.Workspace {
-
     id: _self;
 
     workspace_title: "Browsing";

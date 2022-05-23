@@ -45,14 +45,6 @@ Item {
         fileMode: P.FileDialog.OpenFiles;
 
         onAccepted: {
-            /*
-            let paths = [];
-            for(let i_n in _file_dialog.files){
-                paths.push(decodeURIComponent(_file_dialog.files[i_n]))
-            }
-            d.readerPath = paths.join(",")
-            d.requestReaders();
-            */
             window.current_workspace().requestOpenFiles(_file_dialog.files)
         }
     }
@@ -69,14 +61,11 @@ Item {
             extensionFilters: _extensions_model;
 
             onFileDoubleClicked: {
-                //d.readerPath = decodeURIComponent(fileUrl);
-                //d.requestReaders();
                 window.current_workspace().requestOpenFiles([fileUrl])
             }
         }
 
         RowLayout {
-
             spacing: 10
 
             X.ButtonRaw {
@@ -101,13 +90,10 @@ Item {
                     _file_dialog.open()
                 }
             }
-
         }
-
     }
 
     Component.onCompleted: {
-
         const extensions = d.extensions;
 
         const regexps = extensions.reduce((prev, curr) => {
