@@ -120,7 +120,7 @@ Item {
             const group_params = params.filter(p => p.group === groups[i])
 
             const element = {}
-            element["title"] = groups[i]
+            element["group"] = groups[i]
             element["parameters"] = group_params
             console.log(element)
             params_model.append(element)
@@ -128,7 +128,8 @@ Item {
 
         console.log("CREATE MODEL: ")
         for(let i = 0; i < params_model.count; i++)
-            console.log(params_model.get(i).title)
+            console.log(params_model.get(i).parameters)
+
 
         // //We want the general params always on top
         // const general_params = params.filter(p => p.group === "General")

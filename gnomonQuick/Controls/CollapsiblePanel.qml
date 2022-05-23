@@ -14,9 +14,10 @@ Control {
   default property alias content: _panel.content
   property alias title: _panel_name.text
   property bool collapsed: true;
+  property int panelHeight: _panel.panel.childrenRect.height + G.Style.smallColumnSpacing;
 
   implicitWidth: G.Style.smallPanelWidth;
-  implicitHeight: _header.height + _panel.contentHeight;
+  implicitHeight: _header.height + _panel.height;
   clip: true;
 
   Control {
@@ -30,9 +31,9 @@ Control {
     Label {
       id: _panel_name
 
-      height: parent.height;
-      anchors.left: parent.left;
-      anchors.verticalCenter: parent.verticalCenter;
+      height: _header.height;
+      anchors.left: _header.left;
+      anchors.verticalCenter: _header.verticalCenter;
 
       font: G.Style.fonts.subHeader
       color: G.Style.colors.textColorBase;
@@ -41,13 +42,17 @@ Control {
     G.IconButton {
       id: _collapse_button
 
-      anchors.right: parent.right;
-      anchors.verticalCenter: parent.verticalCenter;
+      anchors.right: _header.right;
+      anchors.verticalCenter: _header.verticalCenter;
       iconName: _control.collapsed ? G.Icons.icons["plus"] : G.Icons.icons["minus"]
-      color: _control.collapsed ? G.Style.colors.textColorDeEmphasize : G.Style.colors.textColorBase
+      color: _control.collapsed ? G.Style.colors.textColorBase : G.Style.colors.textColorDeEmphasize
       size: G.Style.iconMedium;
 
-      onClicked: _control.collapsed = !_control.collapsed
+      onClicked: {
+        _control.collapsed = !_control.collapsed
+        console.log("PANEL HEIGHT:" + _panel.height)
+        console.log("PANEL CONTENT HEIGHT:" + _panel.childrenRect.height)
+      }
     }
 
   }
@@ -55,18 +60,17 @@ Control {
     id: _panel
 
     anchors.top: _header.bottom;
-    height: _control.collapsed ? 0 : _panel.implicitContentHeight;
+    implicitHeight: _control.collapsed ? 0 : _control.panelHeight;
     width: _control.width
 
     opacity: _control.collapsed ? 0 : 1;
 
-
     Behavior on height {
-      NumberAnimation { duration: 200 }
+      NumberAnimation { duration: 1000 }
     }
 
     Behavior on opacity {
-      NumberAnimation { duration: 200 }
+      NumberAnimation { duration: 100 }
     }
 
   }

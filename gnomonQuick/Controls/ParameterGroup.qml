@@ -13,36 +13,32 @@ G.CollapsiblePanel {
 
   clip: true;
   collapsed: false;
+  panelHeight: _parameters.childrenRect.height;
 
   signal valueChanged();
 
-  Component.onCompleted: {
-    // for(let p in _control.parameters) {
-    //   _parameters_model.append(_control.parameters[p]);
-    // }
+  // Component.onCompleted: {
+  //   // for(let p in _control.parameters) {
+  //   //   _parameters_model.append(_control.parameters[p]);
+  //   // }
 
-    console.log("BUILDING COLLAPSIBLE PANEL")
-    //console.log(_control.parameters)
-    console.log(_control.title)
-    console.log("MODEL LENGTH", _control.model.count)
-  }
+  //   console.log("BUILDING COLLAPSIBLE PANEL")
+  //   //console.log(_control.parameters)
+  //   console.log(_control.title)
+  //   console.log("MODEL LENGTH", _control.model.count)
+  //   for(let i = 0; i < _control.model.count; i++)
+  //     console.log(_control.model.get(i).param.type)
+  // }
 
 
   ListView {
     id: _parameters;
 
     spacing: G.Style.smallRowSpacing;
-    // model: ListModel {
-    //   id: _parameters_model;
-    //   dynamicRoles: true;
-    // }
-
 
     delegate: Loader {
 
       property var lparam: param;
-
-      anchors.topMargin: 10;
 
       height: _control.collapsed ? 0 : G.Style.controlHeight;
       width: _control.width;

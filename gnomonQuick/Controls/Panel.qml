@@ -61,6 +61,11 @@ Control {
 
     default property alias content: _panel.children
 
+    //this comes in handy to size a panel wrt to the
+    //its children, or any other thing that requires
+    //to access the actual panel
+    property Control panel: _panel;
+
     implicitWidth: G.Style.smallPanelWidth;
     implicitHeight: G.Style.smallPanelHeight;
     clip: true;
@@ -92,6 +97,9 @@ Control {
 
     }
 
+    Component.onCompleted: {
+        console.log("PANEL CHILDREN RECT: " + _panel.childrenRect.height)
+    }
 }
 
 //

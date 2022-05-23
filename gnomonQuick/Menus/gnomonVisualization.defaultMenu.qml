@@ -17,12 +17,12 @@ ListView {
 
     Component.onCompleted: {
         for(let i = 0; i < _control.model.count; i++)
-            console.log("PARAMS: " + _control.model.get(i).title, _control.model.get(i).parameters.count)
+            console.log("PARAMS: " + _control.model.get(i).group, _control.model.get(i).parameters.count)
 
     }
 
     delegate: G.ParameterGroup {
-        title: title;
+        title: group;
         model: parameters;
         width: _control.width;
 
