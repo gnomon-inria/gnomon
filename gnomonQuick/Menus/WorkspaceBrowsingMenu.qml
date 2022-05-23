@@ -89,7 +89,6 @@ Item {
                     if(_finder.selectedFile) {
                         d.readerPath = decodeURIComponent(_finder.selectedFile);
                         d.requestReaders("");
-                        //window.current_workspace().requestOpenFiles([_finder.selectedFile])
                     }
                 }
             }

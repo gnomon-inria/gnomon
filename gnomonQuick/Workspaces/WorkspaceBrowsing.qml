@@ -35,7 +35,6 @@ G.Workspace {
             let path = decodeURIComponent(urls[i_n])
             if (default_plugin == "") {
                 default_plugin = _cache.value(path, "")
-                console.log(path, " --> ", default_plugin)
             }
             paths.push(path)
         }
@@ -55,7 +54,6 @@ G.Workspace {
         id: d;
 
         onAvailable: (readers) => {
-            console.log(readers, Object.keys(readers))
             if(Object.keys(readers).length == 1) {
                 d.readWith(Object.keys(readers)[0])
             } else {
@@ -66,7 +64,6 @@ G.Workspace {
                         "description": readers[r].toString()
                     });
                 }
-                // if(d.displayReaderDialog)
                 _reader_dialog.open();
             }
         }
@@ -98,7 +95,7 @@ G.Workspace {
             idleStart();
             let paths = d.readerPath.split(",")
             for(let i in paths) {
-                console.log("Saving ", reader, " as default reader for ", paths[i])
+                console.debug("Saving", reader, "as default reader for", paths[i])
                 _cache.setValue(paths[i], reader)
             }
             d.readWith(reader);
