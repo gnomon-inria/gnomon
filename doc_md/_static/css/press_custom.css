@@ -67,6 +67,10 @@ pre {
     border-left-color: var(--sd-color-primary);
 }
 
+.admonition.hint, .admonition.tip {
+    background-color: var(--sd-color-light);
+    border-color: var(--sd-color-primary-light);
+}
 
 .card-header {
     font-size: 18px;

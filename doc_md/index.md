@@ -50,6 +50,7 @@ A computational platform to analyze and simulate the development of living forms
     getting_started
     shortcuts
     examples
+    workspaces
     run_pipeline
     package
     existing_abstraction_existing_data_plugin
