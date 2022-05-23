@@ -45,10 +45,11 @@ A computational platform to analyze and simulate the development of living forms
     :maxdepth: 2
     
     installation
-    shortcuts
     concepts
     packages
-    image_scenario_examples
+    getting_started
+    shortcuts
+    examples
     run_pipeline
     package
     existing_abstraction_existing_data_plugin
@@ -91,7 +92,7 @@ A computational platform to analyze and simulate the development of living forms
         Discover the basic functionalities of the Gnomon platform : load data, visualize it and open your first workspace.
         +++
         
-        .. button-link:: image_scenario_examples.html
+        .. button-link:: getting_started.html
             :color: primary
             :expand:
             :outline:
@@ -110,7 +111,7 @@ A computational platform to analyze and simulate the development of living forms
         Perform simple 3D image analysis tasks such as signal enhancement and cell segmentation.
         +++
         
-        .. button-link:: image_scenario_examples.html
+        .. button-link:: examples.html
             :color: primary
             :expand:
             :outline:

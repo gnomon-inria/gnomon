@@ -3,8 +3,11 @@
 
 :root {
     --sd-color-primary: #3271B8;
+    --sd-color-primary-light: #80B8E3;
     --sd-color-dark: #383D42;
     --sd-color-light: #EDEFF2;
+
+    --sd-color-card-border-hover: var(--sd-color-primary);
 }
 
 body {
@@ -54,6 +57,16 @@ pre {
 .vp-sidebar .toctree-l1 a:hover {
     color: var(--sd-color-primary);
 }
+
+.vp-sidebar .toctree-l1.current a {
+    border-left:.5rem solid var(--sd-color-primary-light);
+}
+
+.vp-sidebar .toctree-l1 a.current {
+    color: var(--sd-color-primary);
+    border-left-color: var(--sd-color-primary);
+}
+
 
 .card-header {
     font-size: 18px;
