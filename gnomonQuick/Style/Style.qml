@@ -1,51 +1,3 @@
-// Style.qml ---
-//
-// Filename: Style.qml
-// Description:
-// Author: Romain TETLEY
-// Maintainer:
-// Created: lun. mai 16 10:15:44 2022 (+0200)
-// Version:
-// Package-Requires: ()
-// Last-Updated:
-//           By:
-//     Update #: 0
-// URL:
-// Doc URL:
-// Keywords:
-// Compatibility:
-//
-//
-
-// Commentary:
-//
-//
-//
-//
-
-// Change Log:
-//
-//
-//
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or (at
-// your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
-//
-//
-
-// Code:
-
-
 pragma Singleton
 
 import QtQuick          2.15
@@ -175,6 +127,30 @@ QtObject {
 
 
     // /////////////////////////////////////////////////////////////////////////////
+    //  Keeping the sizing scale like this anyways
+    // /////////////////////////////////////////////////////////////////////////////
+
+    property QtObject sizes: QtObject {
+        property int s1: S.spacing["1"] //4
+        property int s2: S.spacing["2"] //8
+        property int s3: S.spacing["3"] //12
+        property int s4: S.spacing["4"] //16
+        property int s5: S.spacing["5"] //24
+        property int s6: S.spacing["6"] //32
+        property int s7: S.spacing["7"] //48
+        property int s8: S.spacing["8"] //64
+        property int s9: S.spacing["9"] //96
+        property int s10: S.spacing["10"] //128
+        property int s11: S.spacing["11"] //192
+        property int s12: S.spacing["12"] //256
+        property int s13: S.spacing["13"] //384
+        property int s14: S.spacing["14"] //512
+        property int s15: S.spacing["15"] //640
+        property int s16: S.spacing["16"] //768
+    }
+
+
+    // /////////////////////////////////////////////////////////////////////////////
     // Color definitions
     // /////////////////////////////////////////////////////////////////////////////
 
@@ -293,6 +269,3 @@ QtObject {
     }
 
 }
-
-//
-// Style.qml ends here

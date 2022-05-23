@@ -13,35 +13,27 @@ G.CollapsiblePanel {
 
   clip: true;
   collapsed: false;
-  panelHeight: _parameters.childrenRect.height;
+  panelHeight: _parameters.childrenRect.height + G.Style.smallColumnSpacing;
 
   signal valueChanged();
-
-  // Component.onCompleted: {
-  //   // for(let p in _control.parameters) {
-  //   //   _parameters_model.append(_control.parameters[p]);
-  //   // }
-
-  //   console.log("BUILDING COLLAPSIBLE PANEL")
-  //   //console.log(_control.parameters)
-  //   console.log(_control.title)
-  //   console.log("MODEL LENGTH", _control.model.count)
-  //   for(let i = 0; i < _control.model.count; i++)
-  //     console.log(_control.model.get(i).param.type)
-  // }
-
 
   ListView {
     id: _parameters;
 
-    spacing: G.Style.smallRowSpacing;
+    anchors.fill: _control.panel;
+    //implicitHeight: _parameters.childrenRect.height
+    //width: parent.width
+    spacing: G.Style.smallColumnSpacing;
 
+    Component.onCompleted: {
+      console.log("LIST VIEW H/W: " + _parameters.height + ", " + _parameters.width)
+    }
     delegate: Loader {
 
       property var lparam: param;
 
       height: _control.collapsed ? 0 : G.Style.controlHeight;
-      width: _control.width;
+      width: _parameters.width;//_control.width - 4;
 
       opacity: _control.collapsed ? 0 : 1;
       clip: true;
@@ -63,6 +55,7 @@ G.CollapsiblePanel {
       Behavior on opacity {
         NumberAnimation { duration: 200 }
       }
+
     }
   }
 

@@ -15,6 +15,7 @@ Control {
   property alias title: _panel_name.text
   property bool collapsed: true;
   property int panelHeight: _panel.panel.childrenRect.height + G.Style.smallColumnSpacing;
+  property Control panel: _panel.panel;
 
   implicitWidth: G.Style.smallPanelWidth;
   implicitHeight: _header.height + _panel.height;

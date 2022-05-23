@@ -51,7 +51,7 @@
 import QtQuick
 import QtQuick.Controls
 
-//Atomic
+//Gnomon
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
@@ -66,6 +66,7 @@ Control {
     //to access the actual panel
     property Control panel: _panel;
 
+    //padding: 2
     implicitWidth: G.Style.smallPanelWidth;
     implicitHeight: G.Style.smallPanelHeight;
     clip: true;
@@ -99,6 +100,8 @@ Control {
 
     Component.onCompleted: {
         console.log("PANEL CHILDREN RECT: " + _panel.childrenRect.height)
+        console.log("PANEL HEIGHT: " + _panel.height)
+        console.log("PANEL WIDTH: " + _panel.width)
     }
 }
 

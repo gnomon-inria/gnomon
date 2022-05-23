@@ -37,7 +37,7 @@ ComboBox {
     size: G.Style.iconSmall;
     icon: G.Icons.icons["apple-keyboard-control"]
 
-    rotation: _control.down ? 180 : 0
+    rotation: _control.down ? 0 : 180
 
     Behavior on rotation {
       NumberAnimation { duration: 200 }

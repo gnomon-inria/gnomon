@@ -43,9 +43,9 @@ Control {
         target: null
 
         function onValueChanged() {
-            if (_auto_render.checked) {
-                view.viewLogic.update();
-            }
+            // if (_auto_render.checked) {
+            //     view.viewLogic.update();
+            // }
         }
     }
 
@@ -149,7 +149,7 @@ Control {
             onCurrentValueChanged: {
                 _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
 
-                _auto_render.checked = false
+                //_auto_render.checked = false
                 _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
                 _params.updateParametersModel();
 
@@ -167,71 +167,113 @@ Control {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-
         }
 
-        X.ButtonRaw {
-            text: "Render";
+        Item {
+            id: _button_container
 
+            height: G.Style.sizes.s8
             Layout.fillWidth: true;
-            enabled: view.viewLogic.formNames.length > 0;
-            visible: view.viewLogic.formNames.length > 0;
 
-            onClicked: {
-                view.viewLogic.update();
-            }
+            G.Button {
 
-            X.CheckBox{ id: _auto_render
+                id: _render
 
-                text: ""
-                contentItem: null;
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container
+                anchors.margins: G.Style.smallPadding
 
-                anchors.top: parent.top
-                anchors.topMargin: 5
-                anchors.right: parent.right
-                anchors.rightMargin: 5
-
-                height: parent.height - 10;
-
-
-                MouseArea { id: _auto_render_mouse_area;
-                    anchors.fill: parent;
-                    hoverEnabled: true;
-
-                    propagateComposedEvents: true
-
-                    onClicked: mouse.accepted = false;
-                    onPressed: mouse.accepted = false;
-                    onReleased: mouse.accepted = false;
-                    onDoubleClicked: mouse.accepted = false;
-                    onPositionChanged: mouse.accepted = false;
-                    onPressAndHold: mouse.accepted = false;
-                }
-
-                ToolTip.visible: _auto_render_mouse_area.containsMouse;
-                ToolTip.text: "Auto-render";
+                text: "Render"
+                enabled: view.viewLogic.formNames.length > 0;
 
                 onClicked: {
-                    if (_auto_render.checked) {
-                        console.info('launching Render!')
-                        view.viewLogic.update();
-                    }
+                    view.viewLogic.update();
                 }
+
             }
+
+            G.Button {
+
+                anchors.right: _render.left
+                anchors.verticalCenter: _button_container
+                anchors.margins: G.Style.smallPadding
+
+                text: "Clear"
+                flat: true
+                enabled: view.viewLogic.formNames.length > 0;
+
+                onClicked: {
+                    view.viewLogic.clear();
+                    _internal.menu.destroy();
+                }
+
+            }
+
         }
 
-        X.ButtonRaw {
-            text: "Clear";
+        // X.ButtonRaw {
+        //     text: "Render";
 
-            Layout.fillWidth: true;
-            enabled: view.viewLogic.formNames.length > 0;
-            visible: view.viewLogic.formNames.length > 0;
+        //     Layout.fillWidth: true;
+        //     enabled: view.viewLogic.formNames.length > 0;
+        //     visible: view.viewLogic.formNames.length > 0;
 
-            onClicked: {
-                view.viewLogic.clear();
-                _internal.menu.destroy();
-            }
-        }
+        //     onClicked: {
+        //         view.viewLogic.update();
+        //     }
+
+        //     X.CheckBox{ id: _auto_render
+
+        //         text: ""
+        //         contentItem: null;
+
+        //         anchors.top: parent.top
+        //         anchors.topMargin: 5
+        //         anchors.right: parent.right
+        //         anchors.rightMargin: 5
+
+        //         height: parent.height - 10;
+
+
+        //         MouseArea {
+        //             id: _auto_render_mouse_area;
+        //             anchors.fill: parent;
+        //             hoverEnabled: true;
+
+        //             propagateComposedEvents: true
+
+        //             onClicked: mouse.accepted = false;
+        //             onPressed: mouse.accepted = false;
+        //             onReleased: mouse.accepted = false;
+        //             onDoubleClicked: mouse.accepted = false;
+        //             onPositionChanged: mouse.accepted = false;
+        //             onPressAndHold: mouse.accepted = false;
+        //         }
+
+        //         ToolTip.visible: _auto_render_mouse_area.containsMouse;
+        //         ToolTip.text: "Auto-render";
+
+        //         onClicked: {
+        //             if (_auto_render.checked) {
+        //                 console.info('launching Render!')
+        //                 view.viewLogic.update();
+        //             }
+        //         }
+        //     }
+        // }
+
+        // X.ButtonRaw {
+        //     text: "Clear";
+
+        //     Layout.fillWidth: true;
+        //     enabled: view.viewLogic.formNames.length > 0;
+        //     visible: view.viewLogic.formNames.length > 0;
+
+        //     onClicked: {
+        //         view.viewLogic.clear();
+        //         _internal.menu.destroy();
+        //     }
+        // }
     }
 
     QtObject {
