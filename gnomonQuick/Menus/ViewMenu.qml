@@ -26,11 +26,12 @@ Control {
             _params.updateParametersModel();
         }
         function onFormsChanged() {
-            if(view.viewLogic.formNames.length) {
+             if(view.viewLogic.formNames.length) {
                 _form_selector.currentIndex = 0;
                 _form_selector.currentValue = view.viewLogic.formNames[_form_selector.currentIndex];
             }
             else {
+                console.log("formsChanged  no formNames ")
                 _form_selector.currentIndex = -1;
                 _form_selector.currentValue = "";
             }
