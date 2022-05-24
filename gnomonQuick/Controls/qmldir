@@ -17,6 +17,7 @@ IconButton 1.0 IconButton.qml
 Button 1.0 Button.qml
 ClutGradient 1.0 ClutGradient.qml
 Colormap 1.0 Colormap.qml
+ColorMapSelector 1.0 ColorMapSelector.qml
 Dragger 1.0 Dragger.qml
 Figure 1.0 Figure.qml
 DataDict 1.0 DataDict.qml

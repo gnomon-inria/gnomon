@@ -50,62 +50,25 @@ Control {
         }
     }
 
-    X.Dialog {
-        //dialog deactivated for now. maybe to delete
-        id: _form_delete_modal;
+    Label {
+        id: _form_label
 
-        property string formName: "";
-        property int formIndex: -1;
+        anchors.top: parent.top
+        anchors.left: parent.left
 
-        x: Math.round((window.width - width) / 2)
-        y: Math.round((window.height - height) / 2)
-        width: Math.round(window.width / 3 * 2)
-        height: Math.round(window.height / 3)
-
-        title: "Confirm Action"
-
-        X.Label {
-
-            font {
-                pointSize: 14;
-                weight: Font.Bold;
-            }
-            //font.weight: bold;
-            //color: "red"
-            text: "Are you sure you wish to delete " + _form_delete_modal.formName + " ?";
-        }
-
-        parent: Overlay.overlay
-
-        focus: true;
-        modal: true;
-
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        onAccepted: {
-            if(formIndex === _form_selector.currentIndex) {
-                if(view.viewLogic.formNames.length)
-                    _form_selector.currentIndex = 0;
-                else {
-                    _form_selector.currentIndex = -1;
-                    _internal.menu.destroy();
-                }
-
-            }
-            view.viewLogic.removeForm(formName);
-            view.viewLogic.update();
-            _form_delete_modal.close();
-        }
+        text: "Forms"
+        font: G.Style.fonts.header
+        color: G.Style.colors.textColorBase
     }
 
     G.FormSelector {
 
-        id: _form_selector;
+        id: _form_selector
 
-        currentValue: "";
-        currentIndex: -1;
+        currentValue: ""
+        currentIndex: -1
 
-        anchors.top: parent.top
+        anchors.top: _form_label.bottom
         anchors.left: parent.left
         anchors.right: parent.right
 
@@ -181,7 +144,7 @@ Control {
                 id: _render
 
                 anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container
+                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 text: "Render"
@@ -196,7 +159,7 @@ Control {
             G.Button {
 
                 anchors.right: _render.left
-                anchors.verticalCenter: _button_container
+                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 text: "Clear"

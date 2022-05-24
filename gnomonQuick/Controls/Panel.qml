@@ -1,52 +1,3 @@
-// Panel.qml ---
-//
-// Filename: Panel.qml
-// Description:
-// Author: Romain TETLEY
-// Maintainer:
-// Created: ven. mai 13 07:53:20 2022 (+0200)
-// Version:
-// Package-Requires: ()
-// Last-Updated:
-//           By:
-//     Update #: 0
-// URL:
-// Doc URL:
-// Keywords:
-// Compatibility:
-//
-//
-
-// Commentary:
-// This control is a panel in a gutter with emboss. Useful for making slick
-// interfaces
-//
-//
-//
-
-// Change Log:
-//
-//
-//
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or (at
-// your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
-//
-//
-
-// Code:
-
-
 //Qt
 import QtQuick
 import QtQuick.Controls
@@ -88,6 +39,10 @@ Control {
         topInset: 2
         bottomInset: 2
 
+        leftPadding: 2
+        rightPadding: 2
+        topPadding: 2
+        bottomPadding: 2
 
         background: Rectangle {
             color: G.Style.colors.bgColor;
@@ -99,6 +54,3 @@ Control {
     }
 
 }
-
-//
-// Panel.qml ends here
