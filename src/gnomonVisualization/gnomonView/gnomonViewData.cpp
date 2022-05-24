@@ -68,10 +68,21 @@ gnomonViewDataPrivate::~gnomonViewDataPrivate(void)
 void gnomonViewDataPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
-        QImage image(1, 1, QImage::Format_Indexed8);
+        QImage image(100, 100, QImage::Format_RGB32);
         QRgb value;
-        value = qRgb(60, 110, 180);
-        image.setColor(0, value);
+        value = qRgb(168,168,168); 
+        for(int w=0; w<100; w++) {
+            for(int h=0; h<100; h++) {
+                image.setPixel(w,h,value);
+            }
+        }
+
+        QPainter p;
+        p.begin(&image);
+        p.setPen(QPen(Qt::white));
+        p.setFont(QFont("Times", 60, QFont::Bold));
+        p.drawText(image.rect(), Qt::AlignCenter, "{ }");
+        p.end();
 
         gnomonFormManager::instance()->addForm(this->forms[key],image);
         q->emit exportedForm(this->forms[key]);
