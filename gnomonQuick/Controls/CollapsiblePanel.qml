@@ -49,11 +49,7 @@ Control {
       color: _control.collapsed ? G.Style.colors.textColorBase : G.Style.colors.textColorDeEmphasize
       size: G.Style.iconMedium;
 
-      onClicked: {
-        _control.collapsed = !_control.collapsed
-        console.log("PANEL HEIGHT:" + _panel.height)
-        console.log("PANEL CONTENT HEIGHT:" + _panel.childrenRect.height)
-      }
+      onClicked: _control.collapsed = !_control.collapsed
     }
 
   }

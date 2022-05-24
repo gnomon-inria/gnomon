@@ -21,13 +21,8 @@ G.CollapsiblePanel {
     id: _parameters;
 
     anchors.fill: _control.panel;
-    //implicitHeight: _parameters.childrenRect.height
-    //width: parent.width
     spacing: G.Style.smallColumnSpacing;
 
-    Component.onCompleted: {
-      console.log("LIST VIEW H/W: " + _parameters.height + ", " + _parameters.width)
-    }
     delegate: Loader {
 
       property var lparam: param;

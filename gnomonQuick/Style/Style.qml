@@ -88,41 +88,21 @@ QtObject {
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
         source: "qrc:/ttf/Poppins-Regular.ttf"
-        Component.onCompleted: {
-            console.log("NAME POPPINS REGULAR", _poppinsRegular.name)
-            console.log("STATUS", _poppinsRegular.status)
-
-        }
     }
 
     property FontLoader medium: FontLoader {
         id: _poppinsMedium
         source: "qrc:/ttf/Poppins-Medium.ttf"
-        Component.onCompleted: {
-            console.log("NAME POPPINS MEDIUM", _poppinsMedium.name)
-            console.log("STATUS", _poppinsMedium.status)
-
-        }
     }
 
     property FontLoader light: FontLoader {
         id: _poppinsLight
         source: "qrc:/ttf/Poppins-Light.ttf"
-        Component.onCompleted: {
-            console.log("NAME POPPINS LIGHT", _poppinsMedium.name)
-            console.log("STATUS", _poppinsMedium.status)
-
-        }
     }
 
     property FontLoader bold: FontLoader {
         id: _poppinsBold
         source: "qrc:/ttf/Poppins-Bold.ttf"
-        Component.onCompleted: {
-            console.log("NAME POPPINS BOLD", _poppinsMedium.name)
-            console.log("STATUS", _poppinsMedium.status)
-
-        }
     }
 
 

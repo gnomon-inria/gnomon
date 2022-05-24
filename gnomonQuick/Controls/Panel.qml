@@ -98,11 +98,6 @@ Control {
 
     }
 
-    Component.onCompleted: {
-        console.log("PANEL CHILDREN RECT: " + _panel.childrenRect.height)
-        console.log("PANEL HEIGHT: " + _panel.height)
-        console.log("PANEL WIDTH: " + _panel.width)
-    }
 }
 
 //

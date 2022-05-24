@@ -113,8 +113,6 @@ Item {
             params.push(prop_dict);
         }
 
-        console.log("GROUPS: ", groups)
-
         //Instantiating the parameters by groups
         for(let i in groups) {
             const group_params = params.filter(p => p.group === groups[i])
@@ -122,28 +120,8 @@ Item {
             const element = {}
             element["group"] = groups[i]
             element["parameters"] = group_params
-            console.log(element)
             params_model.append(element)
         }
-
-        console.log("CREATE MODEL: ")
-        for(let i = 0; i < params_model.count; i++)
-            console.log(params_model.get(i).parameters)
-
-
-        // //We want the general params always on top
-        // const general_params = params.filter(p => p.group === "General")
-        // for(let p in general_params)
-        //     params_model.append(general_params[p]);
-
-        // //Group all the other parameters
-        // for(let i in groups) {
-        //     if(groups[i] === "General") continue;
-        //     const group_params = params.filter(p => p.group === groups[i])
-
-        //     for(let p in group_params)
-        //         params_model.append(group_params[p]);
-        // }
     }
 
 }
