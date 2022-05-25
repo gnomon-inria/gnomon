@@ -10,7 +10,9 @@ import xQuick.Fonts      1.0 as X
 import xQuick.Models     1.0 as X
 import xQuick.Style      1.0 as X
 
-import gnomonQuick.Workspaces 1.0 as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Style as G
 
 G.Workspace {
 
@@ -35,16 +37,68 @@ G.Workspace {
         }
     }
 
-    Pane {
+    G.Panel {
         anchors.fill: parent
 
         RowLayout {
 
             anchors.centerIn: parent;
             anchors.fill: parent
-            spacing: 10;
+            spacing: 12;
 
-            GridLayout {
+            Item {
+                width: parent.width/3
+                Layout.fillHeight: true
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    spacing: 12;
+
+                    Item {
+                        id: _button_container
+
+                        height: G.Style.sizes.s6
+                        Layout.fillWidth: true;
+
+                        G.Button {
+                            id: _open
+
+                            anchors.right: _button_container.right;
+                            anchors.verticalCenter: _button_container
+                            anchors.margins: G.Style.largePadding
+
+                            text: "New"
+
+                            onClicked: {
+                                switch_from_launcher()
+                            }
+
+                        }
+
+                        G.Button {
+
+                            anchors.right: _open.left
+                            anchors.verticalCenter: _button_container
+                            anchors.margins: G.Style.largePadding
+
+                            text: "Load"
+                            flat: true
+
+                            onClicked: {
+                                _file_dialog.open()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /*    GridLayout {
 
                 columns: 3;
                 rows: 2;
@@ -153,10 +207,10 @@ G.Workspace {
                     }
                 }
             }
-        }
+        }*/
     }
 
-    X.Dialog {
+    /*X.Dialog {
 
         id: _create_project_dialog;
 
@@ -345,7 +399,7 @@ G.Workspace {
         onAccepted: {
             window.create_project(new_p_name.text, new_p_context.text, new_p_tags.text);
         }
-    }
+    }*/
 
     Component.onCompleted:  window.drawelr_closed = true;
 }
