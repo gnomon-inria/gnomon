@@ -483,4 +483,5 @@ void gnomonWorkspaceMorphonet::saveState(void)
 void gnomonWorkspaceMorphonet::restoreState(void) 
 {
     //TODO
+    d->view->restoreState();
 }

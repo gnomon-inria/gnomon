@@ -325,6 +325,8 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
         return;
     }
 
+    this->formVisualization[name]->clearConnections();
+    this->formVisualization[name]->clear();
     this->formVisualization[name]->setView(q);
     this->formVisualization[name]->update();
     this->formVisualization[name]->setVisible(true);
@@ -468,6 +470,16 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
 void gnomonViewForm::transmit(void)
 {
     d->exportToManager();
+}
+
+void gnomonViewForm::restoreState(void) {
+    for (const auto& key : d->formVisualization.keys()) {
+        d->formVisualization[key]->clearConnections();
+        d->formVisualization[key]->clear();
+        d->formVisualization[key]->setView(this);
+        d->formVisualization[key]->update();
+        d->formVisualization[key]->setVisible(d->formVisibility[key]);
+    }
 }
 
 void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)

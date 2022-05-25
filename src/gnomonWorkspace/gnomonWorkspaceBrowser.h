@@ -40,8 +40,8 @@ public slots:
     void setReaderPath(const QString&);
     void requestReaders(QString default_reader);
     bool readWith(const QString&);
-    inline void saveState() {};  // nothing to be saved or restored
-    inline void restoreState() {};
+    inline void saveState() {};  // nothing to be saved
+    void restoreState();
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();

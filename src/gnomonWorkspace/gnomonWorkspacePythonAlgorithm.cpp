@@ -485,6 +485,23 @@ bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
     return false;
 }
 
+void gnomonWorkspacePythonAlgorithm::saveState(void)
+{
+    //TODO
+}
+
+void gnomonWorkspacePythonAlgorithm::restoreState(void)
+{
+    //TODO
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
+    }
+}
+
+
 
 //
 // gnomonWorkspacePythonAlgorithm.cpp ends here
