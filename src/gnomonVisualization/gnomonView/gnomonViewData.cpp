@@ -68,10 +68,36 @@ gnomonViewDataPrivate::~gnomonViewDataPrivate(void)
 void gnomonViewDataPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
-        QImage image(1, 1, QImage::Format_Indexed8);
-        QRgb value;
-        value = qRgb(60, 110, 180);
-        image.setColor(0, value);
+        QImage image(1500, 1500, QImage::Format_RGB32);
+        QRgb value = qRgb(168, 168, 168);
+        for(int w=0; w<image.width(); w++) {
+            for(int h=0; h<image.height(); h++) {
+                image.setPixel(w,h,value);
+            }
+        }
+
+        int n_lines = 1;
+        QString dict_string = " {";
+        if (this->forms.contains("gnomonDataDict")) {
+            auto dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(this->forms["gnomonDataDict"]);
+            if (dict->current()->keys().size() > 0) {
+                dict_string += "\n";
+                n_lines += 1;
+            }
+            for (const auto& key : dict->current()->keys()) {
+                dict_string += "     " + key + "\n";
+                n_lines += 1;
+            }
+        }
+        dict_string += " }";
+        int font_size = image.height() / (2.5*(n_lines+1));
+
+        QPainter p;
+        p.begin(&image);
+        p.setPen(QPen(Qt::white));
+        p.setFont(QFont("Times", font_size, QFont::Bold));
+        p.drawText(image.rect(), Qt::AlignLeft|Qt::AlignVCenter, dict_string);
+        p.end();
 
         gnomonFormManager::instance()->addForm(this->forms[key],image);
         q->emit exportedForm(this->forms[key]);
