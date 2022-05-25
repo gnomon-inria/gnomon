@@ -245,6 +245,13 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 void gnomonAlgorithmWorkspace::restoreState(void) {
     QString previousAlgo = algoName();
     unSerialize(d->savedState);
+
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
+    }
 }
 
 void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms) {

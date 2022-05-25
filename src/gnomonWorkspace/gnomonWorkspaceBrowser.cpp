@@ -588,6 +588,11 @@ gnomonViewForm *gnomonWorkspaceBrowser::view(void)
     return d->browse_view;
 }
 
+void gnomonWorkspaceBrowser::restoreState(void)
+{
+    d->browse_view->restoreState();
+}
+
 QUrl gnomonWorkspaceBrowser::defaultReadPath()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");

@@ -244,6 +244,7 @@ public slots:
 
 public slots:
     void transmit(void);
+    void restoreState(void);
 
 private:
     class gnomonViewFormPrivate *d;
