@@ -10,12 +10,12 @@ import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
 import xQuick.Style      1.0 as X
 
-import gnomonQuick.Menus      1.0 as G
-import gnomonQuick.Workspaces 1.0 as G
-import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Menus as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
 
 Control {
-
     id: _menu;
 
     property var parameters
@@ -23,26 +23,22 @@ Control {
 
     property alias algo_combobox: _algos;
 
-    background: Rectangle { color: "#00000000"; }
-
-    QtObject {
-        id: _internal;
-
-        property var expanded: [];
-    }
-
-
     ColumnLayout {
 
         anchors.fill: parent
-        anchors.margins: 10
 
-        X.ComboBox {
-            id: _algos
-            Layout.fillWidth: true;
-            Layout.preferredHeight: 28;
+        anchors.margins: 12;
+
+        G.ComboBoxWithLabel {
+            id: _algos;
+
+            label: "Algorithm:"
             model: d ? d.algorithms : null;
-            currentIndex: d ? d.currentIndex : undefined;
+
+            Layout.fillWidth: true;
+            /* Layout.leftMargin: 20 */
+            /* Layout.rightMargin: 20 */
+
             onCurrentIndexChanged: {
                 _auto_apply.checked = false
 
@@ -51,155 +47,60 @@ Control {
                     d.algoName = d.algorithms[d.currentIndex];
                 }
             }
-        }
 
-        Component {
-            id: _section_heading;
-
-            Rectangle {
-                id: _section_rectangle;
-
-                required property string section;
-
-                width: _l.width;
-                height: section ? 33 : 0 
-                z: -1;
-
-                color: X.Style.backgroundColor;
-                radius: 3;
-
-                clip: true;
-
-                Behavior on height {
-                    NumberAnimation { duration: 200 }
-                }
-
-                MouseArea {
-                    anchors.fill: parent;
-                    onClicked: toggleCollapse(parent.section);
-                }
-
-                X.Icon {
-                    id: _icon;
-
-                    anchors.right: parent.right;
-                    anchors.top: parent.top;
-                    anchors.topMargin: 5;
-                    anchors.rightMargin: 5;
-                    size: 30;
-
-                    icon: X.Icons.icons.keyboard_arrow_up;
-
-                    rotation: isSectionExpanded(parent.section) ? 0 : 180;
-
-                    Behavior on rotation {
-                        NumberAnimation { duration: 200 }
-                    }
-                }
-
-                X.Label {
-                    anchors.left: parent.left;
-                    anchors.verticalCenter: parent.verticalCenter;
-                    anchors.leftMargin: 5;
-
-                    text: sectionTitle(parent.section);
-                    font.pixelSize: 12;
-                    font.bold: true;
-                }
+            onCurrentValueChanged: {
+                _params.parameters =  d.parameters
+                _params.updateParametersModel();
             }
         }
 
+        G.Parameters {
+            id: _params;
+        }
 
         ListView {
-            id: _l;
+            id: _control;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
+
+            spacing: G.Style.smallColumnSpacing;
             clip: true;
 
-            model: parameters
+            model: _params.params_model
 
-            spacing: 10;
+            signal valueChanged();
 
+            delegate: G.ParameterGroup {
+                title: group;
+                model: parameters;
+                width: _control.width;
 
-            section.property: "group"
-            section.criteria: ViewSection.FullString
-            section.delegate: _section_heading;
-
-
-            delegate: Loader {
-                property var lparam: param;
-
-                anchors.topMargin: 10;
-
-                height: isSectionExpanded(group) ? 70 : 0;
-                width: _l.width;
-
-                clip: true;
-                z: 1;   
-
-                sourceComponent: component
-
-                Connections {
-                    target: param
-                    function onValueChanged() {
-                        if (_auto_apply.checked) {
-                            console.info('launching Run!')
-                            d.run();
-                        }
-                    }
+                onValueChanged: {
+                    _control.valueChanged();
                 }
-                Behavior on height {
-                    NumberAnimation { duration: 200 }
+            }
+
+            onValueChanged: {
+                if (_auto_apply.checked) {
+                    console.info('launching Run!')
+                    d.run();
                 }
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
-                visible: _l.contentHeight > _l.height;
+                visible: _control.contentHeight > _control.height;
             }
-
         }
 
-        X.ButtonRaw {
-            text: "Apply";
+        Item {
+            height: G.Style.sizes.s8
+            Layout.fillWidth: true;
 
-            onClicked: {
-                //_progress.open();
-                //_progress.start();
-                console.info('launching Run!')
-                d.run();
-            }
+            CheckBox{ id: _auto_apply
 
-            X.CheckBox{ id: _auto_apply
-
-                text: ""
-                contentItem: null;
-
-                anchors.top: parent.top
-                anchors.topMargin: 5
-                anchors.right: parent.right
-                anchors.rightMargin: 5
-
-                height: parent.height - 10;
-
-
-                MouseArea { id: _auto_apply_mouse_area;
-                    anchors.fill: parent;
-                    hoverEnabled: true;
-
-                    propagateComposedEvents: true
-
-                    onClicked: mouse.accepted = false;
-                    onPressed: mouse.accepted = false;
-                    onReleased: mouse.accepted = false;
-                    onDoubleClicked: mouse.accepted = false;
-                    onPositionChanged: mouse.accepted = false;
-                    onPressAndHold: mouse.accepted = false;
-                }
-
-                ToolTip.visible: _auto_apply_mouse_area.containsMouse;
-                ToolTip.text: "Auto-apply";
+                text: "Apply automatically"
 
                 onClicked: {
                     if (_auto_apply.checked) {
@@ -208,42 +109,29 @@ Control {
                     }
                 }
             }
+        }
 
+        Item {
+            id: _button_container
+
+            height: G.Style.sizes.s8
             Layout.fillWidth: true;
+
+            G.Button {
+
+                id: _apply
+
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container
+                anchors.margins: G.Style.smallPadding
+
+                text: "Apply"
+
+                onClicked: {
+                    console.info('launching Run!')
+                    d.run();
+                }
+            }
         }
     }
-
-
-    Component.onCompleted: {
-        _internal.expanded = []
-    }
-
-
-    function isSectionExpanded(group) {
-
-        if(group) {
-            return _internal.expanded.includes(group)
-        }
-
-        return true;
-    }
-
-    function toggleCollapse(group) {
-        if(_internal.expanded.includes(group)) collapseSection(group)
-        else expandSection(group)
-    }
-
-    function collapseSection(group) {
-        _internal.expanded = _internal.expanded.filter((item) => item !== group)
-    }
-
-    function expandSection(group) {
-        _internal.expanded = _internal.expanded.concat([group])
-    }
-
-    function sectionTitle(s) {
-        let title = s.replace('_', ' ');
-        return title.charAt(0).toUpperCase() + title.slice(1);
-    }
-
 }
