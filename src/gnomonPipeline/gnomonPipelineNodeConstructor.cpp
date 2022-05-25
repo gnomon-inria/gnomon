@@ -87,13 +87,6 @@ const QJsonObject gnomonPipelineNodeConstructor::toJson(void)
     }
     json.insert("parameters", parameters);
 
-    QJsonArray out;
-    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
-        auto&& output_name = it.key();
-        out.append(output_name);
-    }
-    json.insert("outputs", out);
-
     return json;
 }
 

@@ -8,12 +8,14 @@
 
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
+#include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization"
+#include "gnomonVisualizations/gnomonAbstractVisualization"
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
-class gnomonAbstractVisualization;
-class gnomonAbstractMatplotlibVisualization;
+//class gnomonAbstractVisualization;
+//class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManagerItem;
 
@@ -31,13 +33,14 @@ signals:
     void added(int id);
 
 public slots:    
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QColor&, const QJsonObject &visualization_description,const QImage& image, vtkCamera *cam=nullptr);
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QColor&, gnomonAbstractMatplotlibVisualization* visualization);
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QColor&, const QImage& image);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> visualization,const QImage& image, vtkCamera *cam=nullptr);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractMatplotlibVisualization> visualization);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image);
 
 public slots:
     void saveAs(int id, const QString& filename) const;
     void deleteForm(int id);
+    void compose(int first, int second);
 
 public:
     Q_INVOKABLE bool contains(int id);
@@ -55,8 +58,8 @@ public:
 
 public:
     std::shared_ptr<gnomonAbstractDynamicForm> get(int index);
-    // gnomonAbstractVisualization *getVisualization(int index);
-    QJsonObject getVisuDescription(int index);
+    std::shared_ptr<gnomonAbstractVisualization> getVisualization(int index);
+    //QJsonObject getVisuDescription(int index);
     vtkCamera *getCamera(int index);
 
 public:

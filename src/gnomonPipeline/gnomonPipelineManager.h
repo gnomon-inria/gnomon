@@ -36,7 +36,9 @@ public slots:
     void addWriter(gnomonAbstractWriterCommand *command);
     void addAdapter(gnomonAbstractAdapterCommand *command); //todo DEPRECATED !!
     void addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form); //todo delete ?
-    void addAlgorithm(gnomonAbstractCommand *command); 
+    void addAlgorithm(gnomonAbstractCommand *command);
+    void addTask(const QString &task, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs,
+                 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs);
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
     void addClonedForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractDynamicForm> clone); // TODO check?

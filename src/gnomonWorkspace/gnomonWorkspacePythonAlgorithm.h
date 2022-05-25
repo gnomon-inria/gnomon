@@ -100,6 +100,10 @@ public:
 
     QJSValue parameters(void);
 
+public slots:
+    void saveState(void);
+    void restoreState(void);
+
 private:
     class gnomonWorkspacePythonAlgorithmPrivate *d;
 };

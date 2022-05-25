@@ -1,5 +1,6 @@
 #include "gnomonWorkspaceCellImageTracking.h"
 #include "gnomonAlgorithmWorkspace_p.h"
+#include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage"
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
@@ -72,6 +73,23 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
         this->source()->disconnectTime();
         this->target()->setCurrentTime(this->source()->currentTime()+1.0);
     });
+    connect(this->target(), &gnomonViewForm::formAdded, [=](const QString &name) {
+        const QString plugin_name = "visualizationCellImageMarchingCubes";
+        if(name == "gnomonCellImage" &&
+        gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
+        {
+            this->target()->setFormVisuName(name, plugin_name);
+        }
+    });
+    connect(this->source(), &gnomonViewForm::formAdded, [=](const QString &name) {
+        const QString plugin_name = "visualizationCellImageMarchingCubes";
+        if(name == "gnomonCellImage" &&
+           gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
+        {
+            this->source()->setFormVisuName(name, plugin_name);
+        }
+    });
+
 }
 
 gnomonWorkspaceCellImageTracking::~gnomonWorkspaceCellImageTracking(void)

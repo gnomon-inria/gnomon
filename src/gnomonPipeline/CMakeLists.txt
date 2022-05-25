@@ -23,6 +23,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPipelineNodeConstructor.h
   gnomonPipelineNodeReader
   gnomonPipelineNodeReader.h
+  gnomonPipelineNodeTask
+  gnomonPipelineNodeTask.h
   gnomonPipelineNodeWriter
   gnomonPipelineNodeWriter.h
   gnomonPipelinePort.h)
@@ -38,6 +40,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonPipelineNodeAlgorithm.cpp
   gnomonPipelineNodeConstructor.cpp
   gnomonPipelineNodeReader.cpp
+  gnomonPipelineNodeTask.cpp
   gnomonPipelineNodeWriter.cpp
   gnomonPipelinePort.cpp)
 

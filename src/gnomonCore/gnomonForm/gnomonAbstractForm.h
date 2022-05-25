@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+class gnomonBinaryImage;
 class gnomonCellComplex;
 class gnomonCellGraph;
 class gnomonCellImage;
@@ -42,8 +43,8 @@ public:
     virtual QJsonObject serialize(void) = 0;
     virtual void deserialize(QJsonObject&) = 0;
 
-
 public:
+    gnomonBinaryImage *asBinaryImage();
     gnomonCellComplex *asCellComplex();
     gnomonCellGraph *asCellGraph();
     gnomonCellImage *asCellImage();

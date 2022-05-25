@@ -1,12 +1,13 @@
 #include "gnomonPipeline.h"
 
 #include "gnomon"
-#include "gnomonPipelineNode.h"
 #include "gnomonPipelineEdge.h"
+#include "gnomonPipelineNode.h"
 #include "gnomonPipelinePort.h"
 
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeReader.h"
+#include "gnomonPipelineNodeTask.h"
 #include "gnomonPipelineNodeWriter.h"
 
 #include <cmath>
@@ -395,10 +396,13 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
 QStringList gnomonPipeline::scheduledNodeNames(bool recompute_form_indices)
 {
     int form_index = 0;
+    //int group_id = 0;
     QStringList scheduled_node_names;
     QList<QStringList> node_groups = d->scheduledNodeNameGroups();
     for (const auto& group_node_names : node_groups) {
+        //qInfo() << "group: " << group_id++;
         for (const auto& node_name : group_node_names) {
+            //qInfo() << "-- node name: " << node_name;
             if (recompute_form_indices) {
                 auto node = d->pipeline_nodes[node_name];
                 for (auto output : node->outputPorts()) {
@@ -685,6 +689,15 @@ void gnomonPipeline::readFromJson(const QString& url)
                 gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(algorithm_class, algorithm_plugin, path, inputs);
                 node->setName(name);
                 this->addNode(node);
+            } else if (algorithm_class == "task") {
+                QStringList inputs = node_json.value("inputs").toObject().keys();
+                QStringList outputs;
+                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                    outputs.append(output_variant.toString());
+                }
+                auto *node = new gnomonPipelineNodeTask(algorithm_plugin, inputs, outputs);
+                node->setName(name);
+                this->addNode(node);
             } else {
                 QStringList inputs = node_json.value("inputs").toObject().keys();
                 QStringList outputs;
@@ -712,6 +725,7 @@ void gnomonPipeline::readFromJson(const QString& url)
 
     for (QPair<QString, QString> target : edges.keys()) {
         QPair<QString, QString> source = edges[target];
+
 
         gnomonPipelineEdge *edge = new gnomonPipelineEdge();
         edge->setSource(d->pipeline_nodes[source.first]->outputPort(source.second));

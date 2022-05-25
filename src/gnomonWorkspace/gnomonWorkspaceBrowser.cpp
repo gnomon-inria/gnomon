@@ -25,7 +25,7 @@ public:
     ~gnomonWorkspaceBrowserPrivate(void);
 
 public:
-    void findReaders(void);
+    void findReaders(const QString &default_plugin);
 
 public slots:
     bool readForm(const QString& reader_plugin);
@@ -84,19 +84,21 @@ gnomonWorkspaceBrowserPrivate::~gnomonWorkspaceBrowserPrivate(void)
 {
 }
 
-void gnomonWorkspaceBrowserPrivate::findReaders(void)
+void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
 {
     if (this->fileReaderCommands.contains(this->ext))
     {
-        if (this->fileReaderCommands[this->ext].size()==1) {
-            this->readForm(this->fileReaderCommands[this->ext].keys()[0]);
+        auto available_plugins = this->fileReaderCommands[this->ext].keys();
+
+        QVariantMap reader_descs;
+        if(available_plugins.contains(default_plugin)) {
+            reader_descs[default_plugin] = fileReaderDescriptions[ext][default_plugin];
         } else {
-            QVariantMap reader_descs;
-            for (const auto &key : this->fileReaderCommands[this->ext].keys()) {
-                reader_descs[key] = fileReaderDescriptions[ext][key];
+            for (const auto &plugin_name : available_plugins) {
+                reader_descs[plugin_name] = fileReaderDescriptions[ext][plugin_name];
             }
-            emit q->available(reader_descs);
         }
+        emit q->available(reader_descs);
     } else {
         dtkWarn() << Q_FUNC_INFO << "File format"<<this->ext<<"is not supported.";
     }
@@ -571,9 +573,9 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
     }
 }
 
-void gnomonWorkspaceBrowser::requestReaders(void)
+void gnomonWorkspaceBrowser::requestReaders(QString default_reader="")
 {
-    d->findReaders();
+    d->findReaders(default_reader);
 }
 
 bool gnomonWorkspaceBrowser::readWith(const QString& reader)
@@ -584,6 +586,11 @@ bool gnomonWorkspaceBrowser::readWith(const QString& reader)
 gnomonViewForm *gnomonWorkspaceBrowser::view(void)
 {
     return d->browse_view;
+}
+
+void gnomonWorkspaceBrowser::restoreState(void)
+{
+    d->browse_view->restoreState();
 }
 
 QUrl gnomonWorkspaceBrowser::defaultReadPath()

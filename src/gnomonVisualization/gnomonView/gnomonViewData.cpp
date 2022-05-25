@@ -73,7 +73,7 @@ void gnomonViewDataPrivate::exportToManager(void)
         value = qRgb(60, 110, 180);
         image.setColor(0, value);
 
-        gnomonFormManager::instance()->addForm(this->forms[key],this->export_color,image);
+        gnomonFormManager::instance()->addForm(this->forms[key],image);
         q->emit exportedForm(this->forms[key]);
     }
 }
@@ -95,7 +95,6 @@ gnomonViewData::gnomonViewData(QObject *parent): QObject(parent)
     d->acceptForms["gnomonDataDict"] = false;
 
     connect(this, &gnomonViewData::formAdded, [=]() {
-        // this->render();
         emit formsChanged();
     });
 }

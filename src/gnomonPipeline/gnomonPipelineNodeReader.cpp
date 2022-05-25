@@ -72,13 +72,6 @@ const QJsonObject gnomonPipelineNodeReader::toJson(void)
     QJsonObject json = gnomonPipelineNode::toJson();
     json.insert("path", dd->path);
 
-    QJsonArray out;
-    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
-        auto&& output_name = it.key();
-        out.append(output_name);
-    }
-    json.insert("outputs", out);
-
     return json;
 }
 

@@ -6,6 +6,7 @@
 
 #include "gnomonAbstractModel.h"
 
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
 
@@ -20,9 +21,9 @@ public:
     virtual void run(double timeMin, double timeMax, double dt) = 0;
 
 public:
-    virtual QMap<QString, gnomonAbstractDynamicForm *> forms() = 0;
-    virtual void setForm(QString, gnomonMeshSeries *) = 0;
-    virtual void setForm(QString, gnomonCellComplexSeries *) = 0;
+    virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms() = 0;
+    virtual void setForm(QString, std::shared_ptr<gnomonMeshSeries>) = 0;
+    virtual void setForm(QString, std::shared_ptr<gnomonCellComplexSeries>) = 0;
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractEvolutionModel *)
