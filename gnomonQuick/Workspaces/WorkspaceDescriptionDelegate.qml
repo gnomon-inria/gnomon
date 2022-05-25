@@ -20,22 +20,39 @@ Item {
         spacing: 6
         anchors.fill: _self;
 
-        X.Label {
-            id: _title;
-
+        RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: _title.contentHeight * 1.2;
-            Layout.minimumHeight: _title.contentHeight;
-            horizontalAlignment: Text.AlignLeft;
 
-            text: _self.title;
+            X.Label {
+                id: _title;
 
-            font {
-                weight: Font.Bold
-                pointSize: 16;
+                Layout.preferredHeight: _title.contentHeight * 1.2;
+                Layout.minimumHeight: _title.contentHeight;
+                horizontalAlignment: Text.AlignLeft;
+
+                text: _self.title;
+
+                font {
+                    weight: Font.Bold
+                    pointSize: 16;
+                }
+            }
+
+            X.Icon {
+                icon: X.Icons.icons.help;
+                size: 18;
+                color: X.Style.foregroundColor;
+
+                MouseArea {
+                    anchors.fill: parent;
+
+                    onClicked: {
+                        // use _self.title  to choseen workspace page, once it's available
+                        Qt.openUrlExternally("https://gnomon.gitlabpages.inria.fr/gnomon/");
+                    }
+                }
             }
         }
-
         ScrollView {
             id: _description_view;
 

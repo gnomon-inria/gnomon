@@ -105,9 +105,9 @@ G.Workspace {
                     border.color: X.Style.accentColor;
 
                     X.Icon {
-                        icon: X.Icons.icons.folder;
-                        size: 112;
-                        color: _area_1.containsMouse ? Qt.lighter(X.Style.baseColor) : X.Style.baseColor;
+                        icon: X.Icons.icons.play_arrow;
+                        size: 120;
+                        color: _area_1.containsMouse ? Qt.lighter(X.Style.accentColor) : X.Style.accentColor;
                         anchors.centerIn: parent;
                     }
 
@@ -134,9 +134,9 @@ G.Workspace {
                     border.color: X.Style.accentColor;
 
                     X.Icon {
-                        icon: X.Icons.icons.create_new_folder;
-                        size: 112;
-                        color: _area_2.containsMouse ? Qt.lighter(X.Style.baseColor) : X.Style.baseColor;
+                        icon: X.Icons.icons.add
+                        size: 120;
+                        color: _area_2.containsMouse ? Qt.lighter(X.Style.accentColor) : X.Style.accentColor;
                         anchors.centerIn: parent;
                     }
 

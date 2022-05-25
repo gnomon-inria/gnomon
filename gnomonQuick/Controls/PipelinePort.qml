@@ -15,7 +15,7 @@ Rectangle {
     property bool highlighted: port ? port.formIndex === window.world.currentIndex : false;
 
     color: _self.highlighted
-        ? G.Style.highlightColor
+        ? G.Style.colors.highlightColor
         : "#CCCCCC"
     height: 10;
     width: 10;

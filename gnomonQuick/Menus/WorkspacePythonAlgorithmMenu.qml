@@ -152,6 +152,36 @@ Item {
                 anchors.fill: parent;
                 anchors.margins: 10;
 
+                RowLayout {
+
+                    Layout.fillWidth: true
+
+                    X.Label {
+                        Layout.fillWidth: true;
+                        text: "Python Plugin Code";
+                        color: X.Style.foregroundColor;
+                        font.pixelSize: 18;
+                    }
+
+                    X.Icon { id: _update_icon;
+                        icon: X.Icons.icons.sync;
+                        size: 32;
+                        color: X.Style.foregroundColor;
+
+                        MouseArea { id: _update_mouse_area;
+                            anchors.fill: parent;
+                            hoverEnabled: true;
+
+                            onClicked: {
+                                d.code.updateCode();
+                            }
+                        }
+
+                        ToolTip.visible: _update_mouse_area.containsMouse;
+                        ToolTip.text: "Update code";
+                    }
+                }
+
                 X.TextField {
                     id: _plugin_name
 

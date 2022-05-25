@@ -41,7 +41,7 @@ Item {
             color: Qt.darker(X.Style.backgroundColor);
 
             border.width: 2;
-            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.highlightColor : X.Style.backgroundColor;
+            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.colors.highlightColor : X.Style.backgroundColor;
 
             visible: modelData == 0? true : GV.World.timeKeys(form_id).length > 1;
         }
@@ -60,6 +60,8 @@ Item {
         Drag.dragType: Drag.Automatic
         Drag.hotSpot: Qt.point(_world.height/2, _world.height/2);
         property int ref: form_id
+
+        signal droppedFromManager(int index)
 
         P.FileDialog {
             id: _file_dialog
@@ -105,6 +107,29 @@ Item {
 
             onContainsMouseChanged: {
                 flickable.interactive = !containsMouse;
+            }
+        }
+
+        DropArea {
+
+            id: _drop;
+
+            anchors.fill: parent;
+
+            X.Icon {
+                icon: X.Icons.icons.arrow_circle_down;
+                size: 56;
+                color: "#44999999";
+                visible: _drop.containsDrag;
+                anchors.centerIn: parent;
+            }
+
+            onDropped: {
+                // console.log("Dropping item on ", form_id, drop)
+                if (!drop.hasUrls) {
+                    GV.World.compose(form_id, drag.source.ref)
+                }
+                drop.accept();
             }
         }
 

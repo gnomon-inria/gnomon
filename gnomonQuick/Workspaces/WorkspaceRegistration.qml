@@ -59,6 +59,7 @@ G.Workspace {
     }
 
     GridLayout {
+        id: _grid_block
 
         anchors.fill: parent
         anchors.margins: 5;
@@ -72,6 +73,7 @@ G.Workspace {
             Layout.fillHeight: true;
 
             onDroppedFromManager: (index) => {
+                window.currentView = _source_view_other
                 d.sources.views[1].drop(index);
                 if(GV.World.timeKeys(index).length > 1) {
                     d.sources.views[0].drop(index);
@@ -182,6 +184,7 @@ G.Workspace {
             Layout.fillHeight: true;
 
             onDroppedFromManager: (index) => {
+                window.currentView = _source_view_ref
                 d.sources.views[0].drop(index);
                 if(GV.World.timeKeys(index).length > 1) {
                     d.sources.views[1].drop(index);
@@ -210,11 +213,64 @@ G.Workspace {
             Component.onCompleted: G.Associator.associate(_source_view_ref, d.sources.views[0]);
         }
 
+
         G.View {
             id: _target_view;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
+            property bool _fullscreen: false
+
+            Behavior on Layout.preferredHeight {
+                NumberAnimation {
+                    duration: 500
+                    easing {
+                        type: _target_view._fullscreen? Easing.OutQuad : Easing.InQuad
+                    }
+                }
+            }
+            Behavior on Layout.preferredWidth {
+                NumberAnimation {
+                    duration: 500
+                    easing {
+                        type: _target_view._fullscreen? Easing.OutQuad : Easing.InQuad
+                    }
+                }
+            }
+
+            X.Icon {
+                icon: _target_view._fullscreen ? X.Icons.icons.close_fullscreen : X.Icons.icons.fullscreen
+                size: 32;
+                color: X.Style.foregroundColor
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                anchors.bottomMargin: 30
+
+                MouseArea {
+                    id: _expand_view_area;
+
+                    anchors.fill: parent;
+
+                    hoverEnabled: true;
+
+                    onClicked: {
+                        if(!_target_view._fullscreen) {
+                            _target_view._fullscreen = true
+                            _target_view.Layout.preferredHeight = _grid_block.height
+                            _target_view.Layout.preferredWidth = _grid_block.width
+                            parent.ToolTip.text = "Reduce View"
+                        } else {
+                            _target_view._fullscreen = false
+                            _target_view.Layout.preferredHeight = 0
+                            _target_view.Layout.preferredWidth = 0
+                            parent.ToolTip.text = "Expand View"
+                        }
+                    }
+                }
+
+                ToolTip.visible: _expand_view_area.containsMouse;
+                ToolTip.text: "Expand View";
+            }
 
             X.Label {
                 anchors.bottom: parent.bottom
