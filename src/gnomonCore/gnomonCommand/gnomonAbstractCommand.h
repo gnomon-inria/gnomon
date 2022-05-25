@@ -59,6 +59,7 @@ public:
     inline virtual void setParameter(const QString& parameter, const QVariant& value) {
         this->action->setParameter(parameter, value);
     }
+    inline virtual QMap<QString, QString> parameterGroups() const {return this->action->parameterGroups();};
     virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() = 0;
     virtual orderedMap inputTypes() = 0;
     virtual void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;

@@ -30,7 +30,7 @@ public:
     gnomonViewForm* view(void);
     virtual gnomonInteractorStyle * interactorStyle(void);
     virtual dtkCoreParameters parameters(void) const = 0;
-    virtual QMap<QString, QString> parameterGroups(void) = 0;
+    virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 
 public:
     virtual QImage imageRendering(void) = 0;

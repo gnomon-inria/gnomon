@@ -119,7 +119,16 @@ void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
 
 QJSValue gnomonAlgorithmWorkspace::parameters(void)
 {
-    return dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
+    QJSValue parameters = dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
+    QMap<QString, QString> parameter_groups = d->command->parameterGroups();
+
+    QJSValueIterator it(parameters);
+    while (it.hasNext()) {
+        it.next();
+        QString group = parameter_groups.contains(it.name()) ? parameter_groups[it.name()] : "";
+        it.value().setProperty("group", group != "" ? group : nullptr);
+    }
+    return parameters;
 }
 
 gnomonViewFormList* gnomonAlgorithmWorkspace::sources(void) const
