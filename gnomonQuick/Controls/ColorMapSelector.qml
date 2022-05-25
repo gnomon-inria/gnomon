@@ -14,11 +14,16 @@ ComboBox {
 
     required property var param
 
+    //HAD TO BRING THIS IN CAUSE THE BACKEND IS NOT CONSISTENT
+    //AND DEPENDING ON WHETHER IT IS A LUT OR COLORMAP THE ACCESSORS
+    //ARE NOT THE SAME
+    property bool lut: false
+
     implicitWidth: G.Style.smallPanelWidth
     implicitHeight: G.Style.comboBoxHeight
 
     model: _control.param.availableCluts
-    currentIndex: _control.model.indexOf(param.identifier)
+    currentIndex: _control.lut ? _control.model.indexOf(param.colorMapName) : _control.model.indexOf(param.identifier)
 
     background: Rectangle {
         color: "transparent" //G.Style.colors.bgColor
@@ -62,7 +67,7 @@ ComboBox {
 
             id: _gradient
 
-            cmap: param.value
+            cmap: _control.lut ? param.colorMap : param.value
         }
     }
 
@@ -90,9 +95,15 @@ ComboBox {
         }
     }
 
+    //HAD TO ADD ANOTHER CONNECTION IN CASE ITS A LUT
     Connections {
         target: _control.param
         function onValueChanged(cmap) {
+            // TODO: Find a better way to ensure gradient refresh
+            _gradient.orientation = Gradient.Vertical
+            _gradient.orientation = Gradient.Horizontal
+        }
+        function onColorMapChanged(cmap) {
             // TODO: Find a better way to ensure gradient refresh
             _gradient.orientation = Gradient.Vertical
             _gradient.orientation = Gradient.Horizontal

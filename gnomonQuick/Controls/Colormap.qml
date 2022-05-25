@@ -10,6 +10,9 @@ Control {
 
 	required property var param;
 
+    implicitHeight: _label.implicitHeight + _cluts.implicitHeight + _value.implicitHeight
+    width: G.Style.smallPanelWidth
+
 	Label {
 
         id: _label
@@ -49,10 +52,6 @@ Control {
 
 	background: Rectangle{
         color: "transparent"
-    }
-
-    Component.onCompleted: {
-        console.log("CLUTS: " + _control.param.availableCluts)
     }
 
 }

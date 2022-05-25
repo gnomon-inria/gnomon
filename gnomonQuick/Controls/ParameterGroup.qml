@@ -35,7 +35,8 @@ G.CollapsiblePanel {
 
       property var lparam: param
 
-      height: _control.collapsed ? 0 : G.Style.controlHeight
+      height: _control.collapsed ? 0 :
+        implicitHeight ? implicitHeight : G.Style.controlHeight
       width: _parameters.width
 
       opacity: _control.collapsed ? 0 : 1

@@ -24,7 +24,8 @@ Item {
 
     Component {
         id: _num_component
-        C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
+        //C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
+        G.NumericParameter {param: lparam}
     }
 
     Component {
@@ -107,7 +108,7 @@ Item {
             var prop_dict = {};
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
-
+            console.log("GETTING PARAM: " + p.type)
             prop_dict["group"] = p.group ? p.group : "General";
             if(!groups.includes(prop_dict["group"])) groups.push(prop_dict["group"])
             params.push(prop_dict);
