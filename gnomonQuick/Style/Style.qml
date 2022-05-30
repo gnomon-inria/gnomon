@@ -37,6 +37,8 @@ QtObject {
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
 
+    property int cardRadius: S.spacing["3"]
+
     property int buttonRadius: S.spacing["1"]
     property int buttonPadding: S.spacing["2"]
     property int buttonWidth: S.spacing["10"]
@@ -73,9 +75,9 @@ QtObject {
     property int mediumPanelWidth: S.spacing["13"]
     property int largePanelWidth: S.spacing["14"]
 
-    property int smallDelegateHeight: S.spacing["7"]
-    property int mediumDelegateHeight: S.spacing["8"]
-    property int largeDelegateHeight: S.spacing["9"]
+    property int smallDelegateHeight: S.spacing["8"]
+    property int mediumDelegateHeight: S.spacing["9"]
+    property int largeDelegateHeight: S.spacing["10"]
 
     property int smallPanelHeight: S.spacing["12"]
     property int mediumPanelHeight: S.spacing["13"]
@@ -231,7 +233,6 @@ QtObject {
             pointSize: S.fontScale["700"],
         })
 
-
         property font h2: Qt.font({
             family: "Poppins",
             weight: Font.Medium,
@@ -248,6 +249,24 @@ QtObject {
             family: "Poppins",
             weight: Font.Medium,
             pointSize: S.fontScale["100"],
+        })
+
+        property font cardTitle: Qt.font({
+            family: "Poppins",
+            weight: Font.Medium,
+            pointSize: S.fontScale["250"],
+        })
+
+        property font cardText: Qt.font({
+            family: "Poppins",
+            weight: Font.Medium,
+            pointSize: S.fontScale["200"],
+        })
+
+        property font cardLabel: Qt.font({
+            family: "Poppins",
+            weight: Font.Normal,
+            pointSize: S.fontScale["150"],
         })
 
     }

@@ -46,7 +46,7 @@ G.Workspace {
 
             anchors.centerIn: parent;
             anchors.fill: parent
-            spacing: G.Style.largeRowSpacing;
+            spacing: 0
 
             Item {
                 implicitWidth: parent.width/3
@@ -61,16 +61,16 @@ G.Workspace {
                         id: _gnomon_header
 
                         Layout.fillWidth: true;
-                        height: G.Style.sizes.s10
+                        Layout.fillHeight: true;
 
                         Image {
                             id: _logo
 
                             anchors.left: _gnomon_header.left;
-                            anchors.verticalCenter: _gnomon_header.verticalCenter;
+                            anchors.top: _gnomon_header.top;
                             anchors.margins: G.Style.mediumPadding
 
-                            height: G.Style.sizes.s10
+                            height: 0.75*parent.height
                             fillMode: Image.PreserveAspectFit
 
                             source: "qrc:/assets/gnomon_logo.png"
@@ -96,7 +96,7 @@ G.Workspace {
                         Label {
                             anchors.left: _logo.right;
                             anchors.right: _gnomon_header.right;
-                            anchors.verticalCenter: _gnomon_header.verticalCenter;
+                            anchors.verticalCenter: _logo.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
 
                             height: G.Style.sizes.s9
@@ -113,7 +113,7 @@ G.Workspace {
                         Label {
                             anchors.left: _logo.right;
                             anchors.right: _gnomon_header.right;
-                            anchors.verticalCenter: _gnomon_header.verticalCenter;
+                            anchors.verticalCenter: _logo.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
 
                             height: G.Style.sizes.s8
@@ -123,14 +123,97 @@ G.Workspace {
 
                             text: "Deciphering morphogenesis"
 
+                            wrapMode: Text.Wrap
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignBottom
                         }
                     }
 
-                    Control {
+                    Item {
+                        id: _start_header
+
                         Layout.fillWidth: true;
-                        Layout.fillHeight: true;
+                        height: G.Style.sizes.s7
+
+                        Label {
+                            id: _start_label
+
+                            anchors.fill: _start_header
+                            anchors.margins: G.Style.mediumPadding
+
+                            height: G.Style.sizes.s7
+
+                            font: G.Style.fonts.h2
+                            color: G.Style.colors.baseColor;
+
+                            text: "Getting started"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+
+                    Repeater {
+
+                        model: ListModel {
+                           ListElement {
+                               header: "Get started with tutorials"
+                               paragraph: "Start your Gnomon journey with some basic tutorials. Get familiar with the philosophy of the platform with some easy use cases."
+                               link: "https://gnomon.gitlabpages.inria.fr/gnomon/getting_started.html"
+                           }
+                           ListElement {
+                               header: "Learn more about Gnomon"
+                               paragraph: "Visit our online documentation to get more information, and discover how to unleash the power of algorithms in Gnomon."
+                               link: "https://gnomon.gitlabpages.inria.fr/gnomon"
+                           }
+                           ListElement {
+                               header: "What's up?"
+                               paragraph: "Visit our social media to keep in touch! Stay tuned to the latest advances in morphogenesis analysis and simulation."
+                               link: "https://gnomon.gitlabpages.inria.fr/gnomon"
+                           }
+                        }
+
+                        Rectangle {
+                            Layout.fillWidth: true;
+                            Layout.fillHeight: true;
+
+                            color: G.Style.colors.fgColor;
+                            radius: G.Style.cardRadius;
+
+                            Label {
+                                anchors.fill: parent
+                                anchors.margins: G.Style.mediumPadding;
+
+                                text: header
+                                font: G.Style.fonts.cardTitle
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+                                color: G.Style.colors.textColorBase;
+                            }
+
+                            Label {
+                                anchors.fill: parent
+                                anchors.margins: G.Style.mediumPadding;
+
+                                text: paragraph
+                                font: G.Style.fonts.cardLabel
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignBottom
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.textColorBase;
+                            }
+                            
+                            MouseArea {
+                                id: _start_mouse_area
+                                anchors.fill: parent;
+                                hoverEnabled: true;
+                                onClicked: {
+                                    Qt.openUrlExternally(link);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -164,7 +247,7 @@ G.Workspace {
 
                             text: "Recent projects"
 
-                            horizontalAlignment: Text.AlignHCenter
+                            horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
                         }
 
@@ -215,33 +298,60 @@ G.Workspace {
                             color: G.Style.colors.gutterColor;
                         }
 
-                        ListView {
-                            id: _list_view;
+                        GridView {
+                            id: _project_grid
 
                             model: window.recent_projects
 
-                            anchors.fill: parent;
-                            anchors.margins: G.Style.smallRowSpacing;
+                            cellWidth: _projects.width/2 - G.Style.smallPadding;
+                            cellHeight: G.Style.largeDelegateHeight;
+                            displayMarginBeginning: G.Style.smallPadding;
+                            displayMarginEnd: G.Style.smallPadding;
 
-                            spacing: G.Style.smallRowSpacing;
+                            anchors.fill: parent
+                            anchors.margins: G.Style.smallPadding;
+
                             clip: true;
                             focus: true;
 
                             delegate: Rectangle {
-                                color: G.Style.colors.bgColor;
-                                height: G.Style.largeDelegateHeight;
-                                width: _list_view.width;
-                                radius: G.Style.panelRadius;
+                                height: _project_grid.cellHeight - G.Style.smallPadding
+                                width: _project_grid.cellWidth - G.Style.smallPadding
+                                radius: G.Style.cardRadius;
 
+                                color: _project_mouse_area.containsMouse? G.Style.colors.fgColor : G.Style.colors.bgColor;
                                 border.width: 2;
                                 border.color: G.Style.colors.baseColor;
 
+                                Rectangle {
+                                    id: _thumbnail;
+
+                                    anchors.left: parent.left;
+                                    anchors.verticalCenter: parent.verticalCenter;
+                                    anchors.margins: G.Style.smallPadding;
+
+                                    height: parent.height - 2*G.Style.smallPadding
+                                    width: parent.height - 2*G.Style.smallPadding
+                                    radius: G.Style.panelRadius
+                                    color: G.Style.colors.lightBlue
+
+                                    Image {
+                                        anchors.fill: _thumbnail;
+                                        fillMode: Image.PreserveAspectFit
+                                        source: "image://thumbnails/project_" + index
+                                    }
+
+                                }
+
                                 Label {
-                                    anchors.fill: parent
-                                    anchors.margins: G.Style.smallRowSpacing;
+                                    anchors.left: _thumbnail.right
+                                    anchors.right: parent.right
+                                    anchors.top: _thumbnail.top;
+                                    anchors.bottom: _thumbnail.bottom;
+                                    anchors.margins: G.Style.smallPadding;
 
                                     text: name
-                                    font: G.Style.fonts.h3
+                                    font: G.Style.fonts.cardText
 
                                     horizontalAlignment: Text.AlignLeft
                                     verticalAlignment: Text.AlignTop
@@ -249,11 +359,14 @@ G.Workspace {
                                 }
 
                                 Label {
-                                    anchors.fill: parent
-                                    anchors.margins: G.Style.smallRowSpacing;
+                                    anchors.left: _thumbnail.right
+                                    anchors.right: parent.right
+                                    anchors.top: _thumbnail.top;
+                                    anchors.bottom: _thumbnail.bottom;
+                                    anchors.margins: G.Style.smallPadding;
 
                                     text: "Description: "+description
-                                    font: G.Style.fonts.label
+                                    font: G.Style.fonts.cardLabel
 
                                     horizontalAlignment: Text.AlignLeft
                                     verticalAlignment: Text.AlignBottom
@@ -261,11 +374,11 @@ G.Workspace {
                                     color: G.Style.colors.textColorBase;
                                 }
 
-                                ToolTip.visible: _mouse_area_loader.containsMouse;
+                                ToolTip.visible: _project_mouse_area.containsMouse;
                                 ToolTip.text: source;
 
                                 MouseArea {
-                                    id: _mouse_area_loader
+                                    id: _project_mouse_area
                                     anchors.fill: parent;
                                     hoverEnabled: true;
                                     onClicked: load_session(source)
@@ -276,9 +389,8 @@ G.Workspace {
                               id: _scroll_indicator;
 
                               width: 8;
-                              visible: _list_view.contentHeight > _list_view.height;
+                              visible: _project_grid.contentHeight > _project_grid.height;
                             }
-
                         }
                     }
                 }
@@ -315,12 +427,12 @@ G.Workspace {
                             wrapMode: Text.Wrap
                             color: X.Style.foregroundColor;
 
-                            ToolTip.visible: _mouse_area_loader.containsMouse;
+                            ToolTip.visible: _project_mouse_area.containsMouse;
                             ToolTip.text: source;
                         }
 
                         MouseArea {
-                            id: _mouse_area_loader
+                            id: _project_mouse_area
                             anchors.fill: parent;
                             hoverEnabled: true;
                             onClicked: load_session(source)
