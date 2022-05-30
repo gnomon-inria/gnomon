@@ -13,6 +13,8 @@ import xQuick.Style      1.0 as X
 import gnomonQuick.Controls as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
+
 
 G.Workspace {
 
@@ -62,7 +64,6 @@ G.Workspace {
                     Item {
                         id: _button_container
 
-                        height: G.Style.sizes.s6
                         Layout.fillWidth: true;
 
                         G.Button {
@@ -72,7 +73,10 @@ G.Workspace {
                             anchors.verticalCenter: _button_container
                             anchors.margins: G.Style.largePadding
 
+                            height: G.Style.sizes.s7
+
                             text: "New"
+                            iconName: G.Icons.icons["plus"]
 
                             onClicked: {
                                 switch_from_launcher()
@@ -86,7 +90,10 @@ G.Workspace {
                             anchors.verticalCenter: _button_container
                             anchors.margins: G.Style.largePadding
 
+                            height: G.Style.sizes.s7
+
                             text: "Load"
+                            iconName: G.Icons.icons["play"]
                             flat: true
 
                             onClicked: {

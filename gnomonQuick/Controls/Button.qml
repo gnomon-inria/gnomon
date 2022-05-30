@@ -17,6 +17,8 @@ Button {
 
   property int type: G.Style.ButtonType.Base
   property bool empty: false
+  property string iconName: undefined
+
   flat: false
 
   leftPadding: G.Style.buttonPadding
@@ -29,19 +31,44 @@ Button {
 // Content Item
 // /////////////////////////////////////////////////////////////////////////////
 
-  contentItem: Label {
+  contentItem: Item {
 
-    id: _text
+    G.Icon {
+        id: _icon
 
-    text: _control.text.toUpperCase()
+        anchors.left: parent.left;
+        anchors.verticalCenter: parent.verticalCenter
 
-    font: G.Style.fonts.button
+        size: (2/3) * _control.height
 
-    horizontalAlignment: Text.AlignHCenter
-    verticalAlignment: Text.AlignVCenter
+        visible: _control.iconName
+        icon: _control.iconName
+        color: _control.flat || _control.empty ? _getBgColor() : _getTextColor()
 
-    color: _control.flat || _control.empty ? _getBgColor() : _getTextColor()
+        MouseArea {
+            id: _icon_area;
 
+            anchors.fill: parent;
+            hoverEnabled: true;
+        }
+    }
+
+    Label {
+        id: _text
+
+        anchors.right: parent.right;
+        anchors.left: _control.iconName? _icon.right : parent.left;
+        anchors.verticalCenter: parent.verticalCenter
+
+        text: _control.text.toUpperCase()
+
+        font: G.Style.fonts.button
+
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+
+        color: _control.flat || _control.empty ? _getBgColor() : _getTextColor()
+    }
   }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +92,7 @@ Button {
 // /////////////////////////////////////////////////////////////////////////////
 
   Binding on state {
-    when: _control.hovered
+    when: _control.hovered || _icon_area.containsMouse
     value: "hovered"
   }
 
@@ -85,6 +112,10 @@ Button {
       PropertyChanges {
         target: _text;
 //        font: G.Style.fonts.buttonHovered
+        color: _getTextColor()
+      }
+      PropertyChanges {
+        target: _icon;
         color: _getTextColor()
       }
       PropertyChanges {
