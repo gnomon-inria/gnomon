@@ -13,7 +13,7 @@ G.CollapsiblePanel {
 
   clip: true
   collapsed: false
-  panelHeight: _parameters.childrenRect.height + G.Style.smallColumnSpacing
+  panelHeight: _parameters.childrenRect.height + 2 * G.Style.smallColumnSpacing
 
   signal valueChanged()
 
@@ -25,11 +25,12 @@ G.CollapsiblePanel {
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     anchors.horizontalCenter: parent.horizontalCenter
+    anchors.topMargin: G.Style.smallColumnSpacing
 
     width: _control.width - G.Style.sizes.s3
 
 
-    spacing: G.Style.smallColumnSpacing
+    spacing: G.Style.mediumColumnSpacing
 
     delegate: Loader {
 

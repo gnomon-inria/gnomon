@@ -12,6 +12,7 @@ ComboBoxWithLabel 1.0 ComboBoxWithLabel.qml
 CollapsiblePanel 1.0 CollapsiblePanel.qml
 ParameterGroup 1.0 ParameterGroup.qml
 Slider 1.0 Slider.qml
+RangeSlider 1.0 RangeSlider.qml
 NumericParameter 1.0 NumericParameter.qml
 ToolBar 1.0 ToolBar.qml
 Icon 1.0 Icon.qml
