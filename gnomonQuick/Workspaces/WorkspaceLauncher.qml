@@ -221,9 +221,56 @@ G.Workspace {
                             model: window.recent_projects
 
                             anchors.fill: parent;
-                            spacing: 2;
+                            anchors.margins: G.Style.smallRowSpacing;
+
+                            spacing: G.Style.smallRowSpacing;
                             clip: true;
                             focus: true;
+
+                            delegate: Rectangle {
+                                color: G.Style.colors.bgColor;
+                                height: G.Style.largeDelegateHeight;
+                                width: _list_view.width;
+                                radius: G.Style.panelRadius;
+
+                                border.width: 2;
+                                border.color: G.Style.colors.baseColor;
+
+                                Label {
+                                    anchors.fill: parent
+                                    anchors.margins: G.Style.smallRowSpacing;
+
+                                    text: name
+                                    font: G.Style.fonts.h3
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignTop
+                                    color: G.Style.colors.textColorBase;
+                                }
+
+                                Label {
+                                    anchors.fill: parent
+                                    anchors.margins: G.Style.smallRowSpacing;
+
+                                    text: "Description: "+description
+                                    font: G.Style.fonts.label
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignBottom
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase;
+                                }
+
+                                ToolTip.visible: _mouse_area_loader.containsMouse;
+                                ToolTip.text: source;
+
+                                MouseArea {
+                                    id: _mouse_area_loader
+                                    anchors.fill: parent;
+                                    hoverEnabled: true;
+                                    onClicked: load_session(source)
+                                }
+                            }
 
                             ScrollIndicator.vertical: ScrollIndicator {
                               id: _scroll_indicator;

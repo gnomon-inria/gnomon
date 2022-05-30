@@ -73,6 +73,10 @@ QtObject {
     property int mediumPanelWidth: S.spacing["13"]
     property int largePanelWidth: S.spacing["14"]
 
+    property int smallDelegateHeight: S.spacing["7"]
+    property int mediumDelegateHeight: S.spacing["8"]
+    property int largeDelegateHeight: S.spacing["9"]
+
     property int smallPanelHeight: S.spacing["12"]
     property int mediumPanelHeight: S.spacing["13"]
     property int largePanelHeight: S.spacing["14"]
