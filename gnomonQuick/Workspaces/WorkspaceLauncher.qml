@@ -46,11 +46,93 @@ G.Workspace {
 
             anchors.centerIn: parent;
             anchors.fill: parent
-            spacing: 12;
+            spacing: G.Style.largeRowSpacing;
 
             Item {
-                width: parent.width/3
+                implicitWidth: parent.width/3
                 Layout.fillHeight: true
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: G.Style.mediumColumnSpacing
+                    spacing: G.Style.mediumColumnSpacing;
+
+                    Item {
+                        id: _gnomon_header
+
+                        Layout.fillWidth: true;
+                        height: G.Style.sizes.s10
+
+                        Image {
+                            id: _logo
+
+                            anchors.left: _gnomon_header.left;
+                            anchors.verticalCenter: _gnomon_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
+
+                            height: G.Style.sizes.s10
+                            fillMode: Image.PreserveAspectFit
+
+                            source: "qrc:/assets/gnomon_logo.png"
+                        }
+
+                        Label {
+                            anchors.top: _logo.bottom;
+                            anchors.left: _logo.left;
+                            anchors.right: _logo.right;
+                            anchors.margins: G.Style.smallPadding
+
+                            height: G.Style.sizes.s2
+
+                            font: G.Style.fonts.subHeader
+                            color: G.Style.colors.textColorBase;
+
+                            text: "version 0.61.0"
+
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        Label {
+                            anchors.left: _logo.right;
+                            anchors.right: _gnomon_header.right;
+                            anchors.verticalCenter: _gnomon_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
+
+                            height: G.Style.sizes.s9
+
+                            font: G.Style.fonts.h1
+                            color: G.Style.colors.textColorBase;
+
+                            text: "Gnomon"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignTop
+                        }
+
+                        Label {
+                            anchors.left: _logo.right;
+                            anchors.right: _gnomon_header.right;
+                            anchors.verticalCenter: _gnomon_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
+
+                            height: G.Style.sizes.s8
+
+                            font: G.Style.fonts.h3
+                            color: G.Style.colors.textColorBase;
+
+                            text: "Deciphering morphogenesis"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignBottom
+                        }
+                    }
+
+                    Control {
+                        Layout.fillWidth: true;
+                        Layout.fillHeight: true;
+                    }
+                }
             }
 
             Item {
@@ -59,19 +141,39 @@ G.Workspace {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 12;
+                    anchors.margins: G.Style.mediumColumnSpacing
+                    spacing: G.Style.mediumColumnSpacing;
 
                     Item {
-                        id: _button_container
+                        id: _project_header
 
                         Layout.fillWidth: true;
+                        height: G.Style.sizes.s7
+
+                        Label {
+                            id: _project_label
+
+                            anchors.left: _project_header.left;
+                            anchors.verticalCenter: _project_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
+
+                            height: G.Style.sizes.s7
+
+                            font: G.Style.fonts.h2
+                            color: G.Style.colors.baseColor;
+
+                            text: "Recent projects"
+
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
 
                         G.Button {
-                            id: _open
+                            id: _new
 
-                            anchors.right: _button_container.right;
-                            anchors.verticalCenter: _button_container
-                            anchors.margins: G.Style.largePadding
+                            anchors.right: _project_header.right;
+                            anchors.verticalCenter: _project_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
 
                             height: G.Style.sizes.s7
 
@@ -86,19 +188,50 @@ G.Workspace {
 
                         G.Button {
 
-                            anchors.right: _open.left
-                            anchors.verticalCenter: _button_container
-                            anchors.margins: G.Style.largePadding
+                            anchors.right: _new.left
+                            anchors.verticalCenter: _project_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
 
                             height: G.Style.sizes.s7
 
                             text: "Load"
                             iconName: G.Icons.icons["play"]
-                            flat: true
+                            empty: true
 
                             onClicked: {
                                 _file_dialog.open()
                             }
+                        }
+                    }
+
+                    Control {
+                        id: _projects
+
+                        Layout.fillWidth: true;
+                        Layout.fillHeight: true;
+
+                        background: Rectangle {
+                            radius: G.Style.panelRadius;
+                            color: G.Style.colors.gutterColor;
+                        }
+
+                        ListView {
+                            id: _list_view;
+
+                            model: window.recent_projects
+
+                            anchors.fill: parent;
+                            spacing: 2;
+                            clip: true;
+                            focus: true;
+
+                            ScrollIndicator.vertical: ScrollIndicator {
+                              id: _scroll_indicator;
+
+                              width: 8;
+                              visible: _list_view.contentHeight > _list_view.height;
+                            }
+
                         }
                     }
                 }

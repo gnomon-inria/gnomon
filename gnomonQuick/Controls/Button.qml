@@ -22,7 +22,7 @@ Button {
   flat: false
 
   leftPadding: G.Style.buttonPadding
-  rightPadding: G.Style.buttonPadding
+  rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
   implicitWidth: Math.max(G.Style.buttonWidth,
     implicitContentWidth + leftPadding + rightPadding)
   implicitHeight: 32
@@ -53,11 +53,27 @@ Button {
         }
     }
 
+    Rectangle {
+        id: _separator
+
+        anchors.left: _icon.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.margins: G.Style.buttonPadding
+
+        height: parent.height - 4
+        width: 2
+
+        visible: _control.iconName && !_control.flat
+
+        color: _control.empty ? _getBgColor() : _getTextColor()
+
+    }
+
     Label {
         id: _text
 
         anchors.right: parent.right;
-        anchors.left: _control.iconName? _icon.right : parent.left;
+        anchors.left: _control.iconName? _separator.right : parent.left;
         anchors.verticalCenter: parent.verticalCenter
 
         text: _control.text.toUpperCase()
@@ -119,8 +135,13 @@ Button {
         color: _getTextColor()
       }
       PropertyChanges {
+        target: _separator;
+        color: _getTextColor()
+      }
+      PropertyChanges {
         target: _background;
         color: _getHoveredBgColor()
+        border.width: 0
       }
     }
 
