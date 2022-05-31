@@ -31,6 +31,12 @@ QtObject {
         Button
     }
 
+    enum CardType {
+        Base,
+        Background,
+        Foreground
+    }
+
     // TODO: Define light theme and make the colors in colorTheme object conditional
     property int mode: Style.Mode.Dark
     // property alias colors: _colorTheme

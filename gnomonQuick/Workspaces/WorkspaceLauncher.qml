@@ -174,45 +174,16 @@ G.Workspace {
                            }
                         }
 
-                        Rectangle {
+                        G.Card {
                             Layout.fillWidth: true;
                             Layout.fillHeight: true;
 
-                            color: G.Style.colors.fgColor;
-                            radius: G.Style.cardRadius;
+                            type: G.Style.CardType.Foreground
+                            title: header
+                            body: paragraph
 
-                            Label {
-                                anchors.fill: parent
-                                anchors.margins: G.Style.mediumPadding;
-
-                                text: header
-                                font: G.Style.fonts.cardTitle
-
-                                horizontalAlignment: Text.AlignLeft
-                                verticalAlignment: Text.AlignTop
-                                color: G.Style.colors.textColorBase;
-                            }
-
-                            Label {
-                                anchors.fill: parent
-                                anchors.margins: G.Style.mediumPadding;
-
-                                text: paragraph
-                                font: G.Style.fonts.cardLabel
-
-                                horizontalAlignment: Text.AlignLeft
-                                verticalAlignment: Text.AlignBottom
-                                wrapMode: Text.Wrap
-                                color: G.Style.colors.textColorBase;
-                            }
-                            
-                            MouseArea {
-                                id: _start_mouse_area
-                                anchors.fill: parent;
-                                hoverEnabled: true;
-                                onClicked: {
-                                    Qt.openUrlExternally(link);
-                                }
+                            onClicked: {
+                                Qt.openUrlExternally(link);
                             }
                         }
                     }
@@ -267,11 +238,9 @@ G.Workspace {
                             onClicked: {
                                 switch_from_launcher()
                             }
-
                         }
 
                         G.Button {
-
                             anchors.right: _new.left
                             anchors.verticalCenter: _project_header.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
@@ -315,74 +284,19 @@ G.Workspace {
                             clip: true;
                             focus: true;
 
-                            delegate: Rectangle {
+                            delegate: G.Card {
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
-                                radius: G.Style.cardRadius;
 
-                                color: _project_mouse_area.containsMouse? G.Style.colors.fgColor : G.Style.colors.bgColor;
-                                border.width: 2;
-                                border.color: G.Style.colors.baseColor;
+                                type: G.Style.CardType.Background
+                                outline: true
+                                title: name
+                                body: "Description: " + description
+                                tooltip: source
+                                thumbnail: "image://thumbnails/project_" + index
 
-                                Rectangle {
-                                    id: _thumbnail;
-
-                                    anchors.left: parent.left;
-                                    anchors.verticalCenter: parent.verticalCenter;
-                                    anchors.margins: G.Style.smallPadding;
-
-                                    height: parent.height - 2*G.Style.smallPadding
-                                    width: parent.height - 2*G.Style.smallPadding
-                                    radius: G.Style.panelRadius
-                                    color: G.Style.colors.lightBlue
-
-                                    Image {
-                                        anchors.fill: _thumbnail;
-                                        fillMode: Image.PreserveAspectFit
-                                        source: "image://thumbnails/project_" + index
-                                    }
-
-                                }
-
-                                Label {
-                                    anchors.left: _thumbnail.right
-                                    anchors.right: parent.right
-                                    anchors.top: _thumbnail.top;
-                                    anchors.bottom: _thumbnail.bottom;
-                                    anchors.margins: G.Style.smallPadding;
-
-                                    text: name
-                                    font: G.Style.fonts.cardText
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignTop
-                                    color: G.Style.colors.textColorBase;
-                                }
-
-                                Label {
-                                    anchors.left: _thumbnail.right
-                                    anchors.right: parent.right
-                                    anchors.top: _thumbnail.top;
-                                    anchors.bottom: _thumbnail.bottom;
-                                    anchors.margins: G.Style.smallPadding;
-
-                                    text: "Description: "+description
-                                    font: G.Style.fonts.cardLabel
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignBottom
-                                    wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase;
-                                }
-
-                                ToolTip.visible: _project_mouse_area.containsMouse;
-                                ToolTip.text: source;
-
-                                MouseArea {
-                                    id: _project_mouse_area
-                                    anchors.fill: parent;
-                                    hoverEnabled: true;
-                                    onClicked: load_session(source)
+                                onClicked: {
+                                    load_session(source)
                                 }
                             }
 
@@ -397,309 +311,7 @@ G.Workspace {
                 }
             }
         }
-
-        /*    GridLayout {
-
-                columns: 3;
-                rows: 2;
-
-                Layout.leftMargin: 40;
-
-                Repeater {
-                    model: window.recent_projects
-                    Rectangle {
-                        color: X.Style.baseColor;
-                        height: 200;
-                        width: 200;
-                        radius: 10;
-
-
-                        border.width: 2;
-                        border.color: X.Style.accentColor;
-
-                        X.Label {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            text: "<b>" + name + "</b> <br> <br> <i>description: </i> <br>" + description
-                            font {
-                                pointSize: 12;
-                            }
-
-                            wrapMode: Text.Wrap
-                            color: X.Style.foregroundColor;
-
-                            ToolTip.visible: _project_mouse_area.containsMouse;
-                            ToolTip.text: source;
-                        }
-
-                        MouseArea {
-                            id: _project_mouse_area
-                            anchors.fill: parent;
-                            hoverEnabled: true;
-                            onClicked: load_session(source)
-                        }
-                    }
-                }
-            }
-
-            ColumnLayout {
-
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight;
-                Layout.rightMargin: 20;
-
-                width: parent.width/2;
-                spacing: 10
-
-                Rectangle {
-                    width: 200;
-                    height: 200;
-                    radius: 10;
-                    color: "transparent";
-                    border.width: 2;
-                    border.color: X.Style.accentColor;
-
-                    X.Icon {
-                        icon: X.Icons.icons.play_arrow;
-                        size: 120;
-                        color: _area_1.containsMouse ? Qt.lighter(X.Style.accentColor) : X.Style.accentColor;
-                        anchors.centerIn: parent;
-                    }
-
-                    MouseArea {
-                        id: _area_1;
-                        anchors.fill: parent;
-                        hoverEnabled: true;
-
-                        onClicked: _file_dialog.open();
-                    }
-
-                    X.ToolTip {
-                        visible: _area_1.containsMouse
-                        text: "Load an existing project";
-                    }
-                }
-
-                Rectangle {
-                    width: 200;
-                    height: 200;
-                    radius: 10;
-                    color: "transparent";
-                    border.width: 2;
-                    border.color: X.Style.accentColor;
-
-                    X.Icon {
-                        icon: X.Icons.icons.add
-                        size: 120;
-                        color: _area_2.containsMouse ? Qt.lighter(X.Style.accentColor) : X.Style.accentColor;
-                        anchors.centerIn: parent;
-                    }
-
-                    MouseArea {
-                        id: _area_2;
-                        anchors.fill: parent;
-                        hoverEnabled: true;
-
-                        onClicked: switch_from_launcher()
-                    }
-                    X.ToolTip {
-                        visible: _area_2.containsMouse
-                        text: "Create a new project";
-                    }
-                }
-            }
-        }*/
     }
-
-    /*X.Dialog {
-
-        id: _create_project_dialog;
-
-        x: (parent.width - width)/2
-        y: (parent.height - height)/2
-        parent: Overlay.overlay
-
-        focus: true
-        modal: true
-        title: "Create a project"
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        width: window.width * 3/4;
-        height: window.height * 3/4;
-
-        Flickable {
-
-            id: _contents;
-
-            anchors.fill: parent;
-            anchors.margins: 20;
-
-            contentHeight: _layout.height;
-
-            clip: true;
-
-            ColumnLayout {
-
-                id: _layout;
-
-                spacing: 10;
-
-                anchors.top: parent.top;
-                anchors.left: parent.left;
-                anchors.right: parent.right;
-
-                GridLayout {
-
-                    id: _form;
-
-                    columns: 2;
-                    rows: 4;
-
-                    width: parent.width;
-
-                    X.LabelCaption {
-                        text: 'Name';
-                    }
-                    X.TextField {
-                        id: new_p_name;
-                        Layout.fillWidth: true;
-                    }
-                    X.LabelCaption {
-                        text: 'Icon';
-                    }
-                    X.ComboBox {
-                        Layout.fillWidth: true;
-                    }
-                    X.LabelCaption {
-                        text: 'Tags';
-                    }
-                    X.TextField {
-                        id: new_p_tags;
-                        Layout.fillWidth: true;
-                    }
-                    X.LabelCaption {
-                        text: 'Context';
-                    }
-                    X.ComboBox {
-                        id: new_p_context;
-                        Layout.fillWidth: true;
-                    }
-                }
-
-                Item { Layout.fillHeight: true; }
-
-                TextField {
-
-                    id: _plugins_field;
-
-                    height: 32;
-
-                    Layout.fillWidth: true;
-
-                    onTextChanged: _plugins_model.refilter();
-
-                    X.Icon {
-                        icon: X.Icons.icons.search;
-                        color: X.Style.foregroundColor;
-
-                        anchors.right: parent.right;
-                        anchors.rightMargin: 10;
-                        anchors.verticalCenter: parent.verticalCenter;
-                    }
-                }
-
-                GridView {
-
-                    id: _plugins_view;
-
-                    Layout.fillWidth: true;
-
-                    height: _plugins_view,contentHeight;
-
-                    cellWidth: parent.width / 4;
-                    cellHeight: cellWidth;
-
-                    clip: true;
-
-                    model: X.FilterProxyModel
-                    {
-                        id: _plugins_model
-
-                        model: ListModel {
-                            id: _plugins_list;
-
-                            ListElement { name: "Plugin 1"; }
-                            ListElement { name: "Plugin 2"; }
-                            ListElement { name: "Plugin 3"; }
-                            ListElement { name: "Plugin 4"; }
-                            ListElement { name: "Plugin 5"; }
-                            ListElement { name: "Plugin 6"; }
-                            ListElement { name: "Plugin 7"; }
-                            ListElement { name: "Plugin 8"; }
-                            ListElement { name: "Plugin 9"; }
-                            ListElement { name: "Plugin 10"; }
-                            ListElement { name: "Plugin 11"; }
-                            ListElement { name: "Plugin 12"; }
-                            ListElement { name: "Plugin 13"; }
-                            ListElement { name: "Plugin 14"; }
-                        }
-
-                        delegate: X.Card {
-
-                            topInset: 5;
-                            leftInset: 5;
-                            rightInset: 5;
-                            bottomInset: 5;
-
-                            width: _plugins_view.cellWidth;
-                            height: _plugins_view.cellHeight;
-
-                            X.Icon {
-                                id: _plugins_icon;
-                                // icon: Object.values(Icons.icons)[index];
-                                icon: X.Icons.icons.plumbing; // Object.values(Icons.icons)[index];
-                                size: _plugins_view.cellWidth / 3;
-                                color: X.Style.textColor;
-                                anchors.centerIn: parent;
-                            }
-                            X.LabelHint1 {
-                                text: _plugins_list.get(model.index).name;
-                                anchors.top: _plugins_icon.bottom;
-                                anchors.topMargin: 10;
-                                anchors.horizontalCenter: parent.horizontalCenter;
-                            }
-                            X.Icon {
-                                id: _plugins_icon_checked;
-                                icon: X.Icons.icons.radio_button_unchecked;
-                                size: 20;
-                                color: X.Style.accentColor;
-                                anchors.top: parent.top;
-                                anchors.topMargin: 10;
-                                anchors.right: parent.right;
-                                anchors.rightMargin: 10;
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent;
-                                onClicked: _plugins_icon_checked.icon = (_plugins_icon_checked.icon == X.Icons.icons.radio_button_unchecked) ? X.Icons.icons.check_circle : X.Icons.icons.radio_button_unchecked;
-                            }
-                        }
-
-                        filterAccepts: function(item) {
-
-                            return _plugins_list.get(item.index).name.includes(_plugins_field.text);
-                        }
-                    }
-                }
-            }
-
-            ScrollBar.vertical: ScrollBar { visible: _contents.contentHeight > _contents.height; }
-
-        }
-
-        onAccepted: {
-            window.create_project(new_p_name.text, new_p_context.text, new_p_tags.text);
-        }
-    }*/
 
     Component.onCompleted:  window.drawelr_closed = true;
 }

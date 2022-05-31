@@ -5,6 +5,7 @@ Page 1.0 Page.qml
 Panel 1.0 Panel.qml
 FormSelector 1.0 FormSelector.qml
 FormSelectorDelegate 1.0 FormSelectorDelegate.qml
+Card 1.0 Card.qml
 ComboBoxDelegate 1.0 ComboBoxDelegate.qml
 FormIdentifier 1.0 FormIdentifier.qml
 ComboBox 1.0 ComboBox.qml
