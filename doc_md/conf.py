@@ -48,7 +48,7 @@ extensions += ['sphinx.ext.autodoc']
 extensions += ['sphinx.ext.napoleon']
 
 myst_heading_anchors = 2
-myst_enable_extensions = ["colon_fence"]
+myst_enable_extensions = ["colon_fence", "amsmath", "dollarmath"]
 
 # Prefix document path to section labels, to use:
 # `path/to/file:heading` instead of just `heading`
