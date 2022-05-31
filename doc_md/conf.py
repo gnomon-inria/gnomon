@@ -42,15 +42,20 @@ master_doc = 'index'
 extensions = []
 extensions += ['myst_parser']
 extensions += ['sphinx.ext.autosectionlabel']
+extensions += ['sphinx_design']  # Enable panels, cards & tabs usage
 extensions += ['sphinx.ext.graphviz']
 extensions += ['sphinx.ext.autodoc']
 extensions += ['sphinx.ext.napoleon']
 
 myst_heading_anchors = 2
+myst_enable_extensions = ["colon_fence", "amsmath", "dollarmath"]
 
 # Prefix document path to section labels, to use:
 # `path/to/file:heading` instead of just `heading`
 autosectionlabel_prefix_document = True
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'friendly'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -74,9 +79,24 @@ autodoc_mock_imports = ["gnomon.core", "gnomon.visualization", "gnomon.pipeline"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'nature'
+html_theme = 'press'
 
-html_theme_options = {'body_max_width': '90%'}
+if html_theme == 'press':
+    html_sidebars = {'**': ['util/searchbox.html', 'globaltoc.html']}
+    globaltoc_maxdepth = 2
+    globaltoc_includehidden = False
+    globaltoc_collapse = True
+    html_logo = '_static/gnomon_logo.png'
+    html_favicon = '_static/gnomon_icon.ico'
+    html_css_files = ['css/press_custom.css']
+    html_show_sphinx = True
+    html_show_copyright = False
+    html_theme_options = {
+        "external_links": [
+            ("Source Code", "https://gitlab.inria.fr/gnomon/gnomon"),
+            ("Anaconda.org", "https://anaconda.org/gnomon/gnomon")
+        ]
+    }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

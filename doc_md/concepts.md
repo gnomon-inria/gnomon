@@ -2,7 +2,7 @@
 
 Gnomon provides a new *integrated modeling environment* (IME) for studying morphogenesis in biology.
 
-This IME provides a *project manager*, a *session manager*, *workspaces* to apply families of algorithms to forms (to transform them), *plugins* corresponding to algorithms able to transform forms, a data bus called the *form manager* to handle computed forms, and *abstractions* that formalize and unify in the system the notion of :math:`(DS)^2` simulation.
+This IME provides a *project manager*, a *session manager*, *workspaces* to apply families of algorithms to forms (to transform them), *plugins* corresponding to algorithms able to transform forms, a data bus called the *form manager* to handle computed forms, and *abstractions* that formalize and unify in the system the notion of $(DS)^2$ simulation.
 
 
 ## Forms
@@ -25,9 +25,9 @@ Gnomon provides a new computational environment dedicated to the modeling and si
 
 Interestingly, Gnomon manipulates natively not only forms, but also sequences of forms, which formalizes the idea of a biological system developing throughout time. Many of its workspaces are able to handle directly temporal sequences of forms.
 
-```latex
+$$
 n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
-```
+$$
 
 
 ## Form manager
