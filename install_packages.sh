@@ -30,6 +30,6 @@ for d in */; do
     mamba env update -n gnomon-dev -f conda/env.yaml
     rm conda/env.yaml
     mv conda/env.yaml.bak conda/env.yaml
-    python setup.py install
+    pip install -e .
     cd ..
 done
