@@ -49,7 +49,7 @@ G.Workspace {
             spacing: 0
 
             Item {
-                implicitWidth: parent.width/3
+                implicitWidth: G.Style.mediumPanelWidth
                 Layout.fillHeight: true
 
                 ColumnLayout {
@@ -61,7 +61,7 @@ G.Workspace {
                         id: _gnomon_header
 
                         Layout.fillWidth: true;
-                        Layout.fillHeight: true;
+                        implicitHeight: G.Style.largeDelegateHeight;
 
                         Image {
                             id: _logo
