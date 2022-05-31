@@ -70,19 +70,20 @@ G.Workspace {
                             anchors.top: _gnomon_header.top;
                             anchors.margins: G.Style.mediumPadding
 
-                            height: 0.75*parent.height
+                            height: 0.75 * parent.height
                             fillMode: Image.PreserveAspectFit
 
                             source: "qrc:/assets/gnomon_logo.png"
                         }
 
                         Label {
+
+                            id: _version_tag
+
                             anchors.top: _logo.bottom;
                             anchors.left: _logo.left;
                             anchors.right: _logo.right;
                             anchors.margins: G.Style.smallPadding
-
-                            height: G.Style.sizes.s2
 
                             font: G.Style.fonts.subHeader
                             color: G.Style.colors.textColorBase;
@@ -94,12 +95,13 @@ G.Workspace {
                         }
 
                         Label {
+
+                            id: _title
+
                             anchors.left: _logo.right;
                             anchors.right: _gnomon_header.right;
                             anchors.verticalCenter: _logo.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
-
-                            height: G.Style.sizes.s9
 
                             font: G.Style.fonts.h1
                             color: G.Style.colors.textColorBase;
@@ -111,12 +113,11 @@ G.Workspace {
                         }
 
                         Label {
-                            anchors.left: _logo.right;
-                            anchors.right: _gnomon_header.right;
-                            anchors.verticalCenter: _logo.verticalCenter;
-                            anchors.margins: G.Style.mediumPadding
 
-                            height: G.Style.sizes.s8
+                            id: _tagline
+
+                            anchors.left: _title.left;
+                            anchors.top: _title.bottom;
 
                             font: G.Style.fonts.h3
                             color: G.Style.colors.textColorBase;
