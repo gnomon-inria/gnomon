@@ -14,7 +14,7 @@ Control {
 	required property var param;
 
     implicitHeight: _label.implicitHeight + _cluts.implicitHeight
-        + _controls_row.implicitHeight + _value.implicitHeight
+        + _controls_row.implicitHeight + _controls_row.anchors.topMargin + _value.implicitHeight
     width: G.Style.smallPanelWidth
 
     X.ToolTip {
@@ -56,8 +56,9 @@ Control {
         anchors.top: _cluts.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.topMargin: G.Style.smallPadding
 
-        X.RangeSlider {
+        G.RangeSlider {
             id: _range
 
             Layout.fillWidth: true;

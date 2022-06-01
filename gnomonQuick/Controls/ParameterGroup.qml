@@ -27,7 +27,7 @@ G.CollapsiblePanel {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.topMargin: G.Style.smallColumnSpacing
 
-    width: _control.width - G.Style.sizes.s3
+    width: _control.width - G.Style.sizes.s4
 
 
     spacing: G.Style.mediumColumnSpacing

@@ -50,7 +50,7 @@ Item {
 
     Component {
         id: _range_component
-        C.Range {param: lparam; decimals: 2}
+        G.RangeParameter {param: lparam; decimals: 2}
     }
 
     Component {
